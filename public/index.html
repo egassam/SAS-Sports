@@ -147,7 +147,7 @@ async function loadFeed(){
   status.textContent=chosen?`Fetching current ${chosen} data from the official athletics source…`:'Fetching current in-season data from official athletics sources…';
   try{
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
-    const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.conference} · ${meta.state}`:'';
+    const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
     const requested=chosen?[chosen]:['Football','Volleyball','Soccer','Cross Country'];
     const liveGroups=[]; let liveOk=0;
     await Promise.all(requested.map(async sp=>{
