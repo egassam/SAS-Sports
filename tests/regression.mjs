@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
+const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+
+function contains(source,pattern,message){
+  assert.match(source,pattern,message);
+}
+function count(source,text){
+  return source.split(text).length-1;
+}
+
+// Exact recap identity: opponent, sport and event date must all participate.
+contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist');
+contains(worker,/if\(!opponent\|\|!text\.includes\(opponent\)\)return false/,'Opponent mismatch must reject a recap');
+contains(worker,/sportName.*return false/,'Sport mismatch must reject a recap');
+contains(worker,/urlDate.*published.*dateText/s,'Event date must be verified');
+
+// The same generator must serve all sports, with meaningful sport-specific priorities.
+contains(worker,/function highlightPriorities\(sport\)/,'Global sport-aware highlight rules must exist');
+for(const sport of ['football','volleyball','soccer','cross country','basketball','baseball','softball','track','swimming','wrestling','tennis','golf','rowing']){
+  assert.ok(worker.includes(`includes('${sport}')`),`Missing highlight priorities for ${sport}`);
+}
+contains(worker,/Never write bare statements|Reject vague lines/,'Generic one-line highlights must be rejected');
+contains(worker,/cleanItems\.length>=3/,'At least three complete highlights are required');
+
+// Feed speed: recaps are lazy and known schools use a single official schedule.
+contains(worker,/if\(known\)return\[known\]/,'Known sport feeds must use one official schedule URL');
+contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain lazy');
+contains(worker,/cache\.put\(cacheKey/,'Verified expanded highlights must remain cached');
+
+// Current-season results only.
+contains(worker,/filterActiveSeason/,'Active-season filter must exist');
+contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
+contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
+
+// Exactly one prominent official recap action in the modal template.
+assert.equal(count(page,'View Full Official Recap'),1,'Expanded results must render exactly one official recap button');
+
+// Branded loading state must always be perceptible, including cached responses.
+contains(page,/highlight-loader-mark[^>]*[^]*>SAS</,'SAS loader mark must exist');
+contains(page,/Fetching SAS verified highlights…/,'Verified-highlight loading message must exist');
+contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1.5 seconds');
+
+console.log('SAS Sports regression checks passed');
