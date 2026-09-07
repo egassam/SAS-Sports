@@ -28,7 +28,7 @@ contains(worker,/cleanItems\.length>=3/,'At least three complete highlights are 
 // Feed speed: recaps are lazy and known schools use a single official schedule.
 contains(worker,/if\(known\)return\[known\]/,'Known sport feeds must use one official schedule URL');
 contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain lazy');
-contains(worker,/cache\.put\(cacheKey/,'Verified expanded highlights must remain cached');
+contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
@@ -57,10 +57,13 @@ contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links mus
 contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
 contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
 contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
+contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'Official roster athletes must remain eligible without Instagram');
+contains(worker,/Prefer athletes whose official bio verifies an Instagram account/,'Verified Instagram athletes must be preferred');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
+contains(page,/a\.instagram_url\|\|a\.profile_url/,'Athlete cards must fall back to official profiles');
 contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');
 
 // Exactly one prominent official recap action in the modal template.

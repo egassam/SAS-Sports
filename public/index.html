@@ -68,7 +68,7 @@ function section(label,items,kind=''){if(!items.length)return'';return `<div cla
 function featuredAthletesRow(g){
   const athletes=g.featured_athletes||[];if(!athletes.length)return'';
   const initials=name=>String(name||'').split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase();
-  return `<div class="featured"><div class="featured-label">Featured Athletes</div><div class="featured-row">${athletes.map(a=>`<a class="athlete-card" href="${esc(a.instagram_url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(a.name)} on Instagram"><div class="athlete-photo"><span>${esc(initials(a.name))}</span>${a.image_url?`<img src="${esc(a.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:''}</div><div class="athlete-shade"><div class="athlete-name">${esc(a.name)}</div><div class="athlete-instagram">Instagram</div></div></a>`).join('')}</div></div>`;
+  return `<div class="featured"><div class="featured-label">Featured Athletes</div><div class="featured-row">${athletes.map(a=>{const href=a.instagram_url||a.profile_url,label=a.instagram_url?'Instagram':'Official Profile';return `<a class="athlete-card" href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(a.name)} ${esc(label)}"><div class="athlete-photo"><span>${esc(initials(a.name))}</span>${a.image_url?`<img src="${esc(a.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:''}</div><div class="athlete-shade"><div class="athlete-name">${esc(a.name)}</div><div class="athlete-instagram">${esc(label)}</div></div></a>`}).join('')}</div></div>`;
 }
 function populateSportFilter(groups=[]){
   const selected=sportFilter.value;

@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.3.0';
+const VERSION='3.3.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -113,10 +113,12 @@ async function featuredAthletes(schoolId,sport){
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html);
-      if(instagram_url)found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url)});
+      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url)});
     }catch{}
   }));
-  return found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
+  // Prefer athletes whose official bio verifies an Instagram account, but never
+  // leave a sport empty merely because the school does not publish social links.
+  return found.sort((a,b)=>Number(Boolean(b.instagram_url))-Number(Boolean(a.instagram_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
@@ -434,8 +436,10 @@ function recapMatchesEvent(raw,e,recapUrl=''){
 function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
-  const text=visibleText(raw),start=Math.max(text.search(/HOW IT HAPPENED/i),0);
-  return text.slice(start,start+12000);
+  const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
+  if(!article)return'';
+  const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);
+  return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);
 }
 function highlightPriorities(sport){
   const s=matchText(sport);
@@ -563,14 +567,12 @@ export default{
     if(url.pathname==='/live/highlights'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
       if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
-      const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('highlight_cache',VERSION);
-      const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
-      const cached=await cache.match(cacheKey);if(cached)return cached;
       const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);
       if(!event)return json({detail:'Event not found'},404);
       const response=json(event),stored=new Response(response.body,response);
-      stored.headers.set('cache-control','public, max-age=900');
-      if(event.highlights_verified)env?.ASSETS&&request.method==='GET'&&await cache.put(cacheKey,stored.clone());
+      // Highlights are event-specific and must be revalidated against the current
+      // official recap every time the expanded card opens.
+      stored.headers.set('cache-control','no-store, no-cache, must-revalidate');
       return stored;
     }
     if(url.pathname==='/live/feed/grouped'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);if(!result.events.length)return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);return json(groupEvents(result.events));}
