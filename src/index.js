@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.3.15';
+const VERSION='2.4.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -189,7 +189,59 @@ function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';ret
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.school_score&&e.opponent_score?2:0)+(e.result_count||0),pd=(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[];for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today')upcoming.push(e);else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
-async function fetchUrl(url,school,sport,now){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html),events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
+function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
+function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
+  const map=new Map();
+  const re=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m;
+  while((m=re.exec(raw))){
+    if(!/\brecap\b/i.test(visibleText(m[2])))continue;
+    const before=raw.slice(Math.max(0,m.index-30000),m.index);
+    const labels=extractEventLabels(before).filter(x=>/^Completed Event:/i.test(x));
+    const event=parseLabel(labels.at(-1),school,sport,sourceUrl,now);
+    const recapUrl=absoluteUrl(m[1],sourceUrl);
+    if(event&&recapUrl)map.set(eventMergeKey(event),recapUrl);
+  }
+  return map;
+}
+function extractOfficialHighlights(raw){
+  const hit=raw.search(/HOW IT HAPPENED/i);
+  if(hit<0)return[];
+  let section=raw.slice(hit,hit+30000);
+  const stop=section.slice(20).search(/(?:QUICK FACTS|TEAM NOTES|PLAYER NOTES|UP NEXT|FROM THE HEAD COACH)/i);
+  if(stop>=0)section=section.slice(0,stop+20);
+  const items=[];let m;
+  const block=/<(?:li|p)\b[^>]*>([\s\S]*?)<\/(?:li|p)>/gi;
+  while((m=block.exec(section))){
+    let item=visibleText(m[1]).replace(/^[-–•]\s*/,'').trim();
+    if(item.length<25||item.length>500||/^(how it happened|quick facts)$/i.test(item))continue;
+    if(!items.includes(item))items.push(item);
+    if(items.length===5)break;
+  }
+  return items;
+}
+async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
+  const recapMap=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
+  await Promise.all(events.filter(e=>e.status==='Final').map(async e=>{
+    const recapUrl=recapMap.get(eventMergeKey(e));
+    if(!recapUrl){e.highlight_status='Official recap not yet available.';return;}
+    e.recap_url=recapUrl;
+    if(e.highlights?.length)return;
+    try{
+      const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});
+      if(!r.ok){e.highlight_status='Official recap is linked, but highlights could not be loaded.';return;}
+      const highlights=extractOfficialHighlights(await r.text());
+      if(highlights.length){
+        e.highlights=highlights;
+        e.source={...e.source,name:'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
+      }else e.highlight_status='Official recap available; open it for complete highlights.';
+    }catch{
+      e.highlight_status='Official recap is linked, but highlights could not be loaded.';
+    }
+  }));
+  return events;
+}
+async function fetchUrl(url,school,sport,now){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];if(events.length)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
 async function fetchLive(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};const urls=candidateUrls(school,sport),errors=[],successful=[],responses=await Promise.allSettled(urls.map(url=>fetchUrl(url,school,sport,now)));for(let i=0;i<responses.length;i++){const item=responses[i];if(item.status==='fulfilled'){if(item.value.ok&&item.value.events.length)successful.push(item.value);else errors.push(`${item.value.url}: HTTP ${item.value.http_status}, labels ${item.value.label_count}, events ${item.value.event_count}`);}else errors.push(`${urls[i]}: ${item.reason?.message||item.reason?.name||'FetchError'}`);}const events=mergeEvents(successful.map(x=>x.events));if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};}
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
