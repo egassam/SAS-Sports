@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.4.2';
+const VERSION='2.4.3';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -134,6 +134,7 @@ function enrichMeetEvent(event,date){
   const detail=VERIFIED_MEET_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(detail){
     event.results=detail.rows;
+    event.highlights=["K-State's men's and women's teams both won the meet titles.",'Max Larson won the men\'s 6K in 18:27.2.','Emma Baum led the K-State women with a runner-up 5K finish in 17:41.9.'];
     event.headline="Women's team: 1st · 20 pts / Men's team: 1st · 19 pts";
     event.result_count=detail.rows.length;
     event.has_more_results=detail.rows.length>3;
