@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.9.2';
+const VERSION='3.0.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -388,95 +388,74 @@ async function generateAIHighlights(env,e,raw){
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
   const article=recapArticleText(raw);
   if(article.length<80)return{items:null,state:'recap_text_unavailable'};
-  const prompt=`Write four engaging, information-rich highlights that make a fan understand how this college sports event unfolded.
-Use ONLY facts from the official recap below and paraphrase them in fresh language.
+  const prompt=`Write exactly four engaging, factual highlights explaining how this ${e.sport} event unfolded.
+Use only the official recap. Paraphrase; never copy. Each highlight must be one complete sentence of 18-38 words.
+Prioritize ${highlightPriorities(e.sport)}. Include names, timing, score context and why the moment mattered when available.
+Reject vague lines like "X scored," "Y won it," or "Team A outshot Team B."
+Return four lines only, with each line beginning "- ".
 
-Quality requirements:
-- Each highlight must be a complete 18-to-38-word sentence.
-- Explain the moment and why it mattered: include the score situation, inning/set/period/minute, turning point, record, milestone, or decisive statistic when available.
-- For this ${e.sport} event, prioritize: ${highlightPriorities(e.sport)}.
-- Name the relevant athletes and include assists, distances, times, set scores, or other sport-specific details when the recap provides them.
-- Use active, varied language. Make the event feel alive while remaining factual.
-- Never write bare statements such as "X scored," "Y tied it," "Z won it," or "Team A outshot Team B."
-- Do not merely restate the final score, invent drama, speculate, quote the article, or repeat the same fact.
-
-Event: ${e.school} vs ${e.opponent}; sport: ${e.sport}; date: ${e.start_time?.slice(0,10)||''}; final: ${e.school_score??''}-${e.opponent_score??''}
-
+Event: ${e.school} vs ${e.opponent}; date ${e.start_time?.slice(0,10)||''}; final ${e.school_score??''}-${e.opponent_score??''}
 Official recap:
-${article}`;
-  const request={
-    messages:[{role:'user',content:prompt}],
-    max_tokens:500,
-    temperature:0.1,
-    response_format:{
-      type:'json_schema',
-      json_schema:{
-        type:'object',
-        properties:{highlights:{type:'array',items:{type:'string',minLength:70,maxLength:260},minItems:4,maxItems:4}},
-        required:['highlights']
-      }
+${article.slice(0,10000)}`;
+  try{
+    const request=env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast',{
+      messages:[{role:'user',content:prompt}],max_tokens:500,temperature:0.15
+    });
+    const out=await Promise.race([
+      request,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Highlight generation timed out')),8000))
+    ]);
+    const response=String(out?.response??out?.result?.response??'').trim();
+    let list=response.split(/\n+/).map(x=>clean(x.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,''))).filter(Boolean);
+    if(list.length<3){
+      const start=response.indexOf('['),end=response.lastIndexOf(']');
+      if(start>=0&&end>start){try{const parsed=JSON.parse(response.slice(start,end+1));if(Array.isArray(parsed))list=parsed}catch{}}
     }
-  };
-  let lastError=null;
-  for(const model of ['@cf/meta/llama-3.1-8b-instruct-fast','@cf/meta/llama-3.3-70b-instruct-fp8-fast']){
-    try{
-      const out=await env.AI.run(model,request);
-      const response=out?.response??out?.result?.response;
-      let parsed=response;
-      if(typeof response==='string'){
-        const rawText=response.trim(),start=rawText.indexOf('{'),end=rawText.lastIndexOf('}');
-        if(start<0||end<=start)throw new Error('Structured highlight object missing');
-        parsed=JSON.parse(rawText.slice(start,end+1));
-      }
-      const list=Array.isArray(parsed)?parsed:parsed?.highlights;
-      if(!Array.isArray(list))throw new Error('Highlight array missing');
-      const cleanItems=list.map(clean).filter(x=>{
-        if(!x||x.length>300||!/[.!?]$/.test(x))return false;
-        const words=x.split(/\s+/).length;
-        return words>=14&&words<=42&&!/^[A-Z][A-Za-z'. -]+ (?:scored|tied it|won it|outshot)/.test(x);
-      }).slice(0,4);
-      if(cleanItems.length>=3)return{items:cleanItems,state:'recap_generated',model};
-      lastError=new Error('Highlights lacked event detail');
-    }catch(error){lastError=error}
+    const cleanItems=list.map(clean).filter(x=>{
+      if(!x||x.length>320||!/[.!?]$/.test(x))return false;
+      const words=x.split(/\s+/).length;
+      return words>=12&&words<=45;
+    }).slice(0,4);
+    return cleanItems.length>=3?{items:cleanItems,state:'recap_generated'}:{items:null,state:'insufficient_highlights'};
+  }catch(error){
+    return{items:null,state:'ai_failed',error:clean(error?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
   }
-  return{items:null,state:'ai_failed',error:clean(lastError?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
 }
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
-  if(!target)return events;
-  if(target.highlights_verified)return events;
+  if(!target||target.highlights_verified)return events;
   const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const direct=recapIndex.map.get(eventMergeKey(target));
   const day=target.start_time?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
-  const candidates=[...new Set(ordered)].slice(0,30);
-  const recapPages=new Map();
-  await Promise.all(candidates.map(async recapUrl=>{
-    try{const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});if(r.ok)recapPages.set(recapUrl,await r.text());}catch{}
-  }));
-  const recapUrl=candidates.find(url=>recapMatchesEvent(recapPages.get(url)||'',target,url));
+  const candidates=[...new Set(ordered)].slice(0,8);
+  let recapUrl=null,recapHtml=null;
+  // The schedule's direct recap is almost always correct. Fetch candidates one at
+  // a time and stop on the first exact match instead of downloading every article.
+  for(const candidate of candidates){
+    try{
+      const r=await fetch(candidate,{headers:HEADERS,redirect:'follow'});
+      if(!r.ok)continue;
+      const html=await r.text();
+      if(recapMatchesEvent(html,target,candidate)){recapUrl=candidate;recapHtml=html;break}
+    }catch{}
+  }
   if(!recapUrl){
-    target.highlights=[];
-    target.highlight_state='recap_not_found';
+    target.highlights=[];target.highlight_state='recap_not_found';
     target.highlight_status='An exact official recap could not be matched to this event.';
     return events;
   }
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
-  const recapHtml=recapPages.get(recapUrl);
   const aiResult=await generateAIHighlights(env,target,recapHtml);
   target.highlight_state=aiResult.state;
   if(aiResult.error)target.highlight_error=aiResult.error;
   if(aiResult.items){
-    target.highlights=aiResult.items;
-    target.highlights_verified=true;
-    target.highlight_status=null;
+    target.highlights=aiResult.items;target.highlights_verified=true;target.highlight_status=null;
   }else{
     target.highlights=[];
-    target.highlight_status=aiResult.state==='binding_unavailable'
-      ?'Highlight service is not connected. Use the official recap link for this event.'
-      :'Verified recap highlights could not be generated. Use the official recap link for this event.';
+    target.highlight_status='Verified recap highlights could not be generated. Use the official recap link for this event.';
   }
   return events;
 }
@@ -493,7 +472,18 @@ export default{
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list);}
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
-    if(url.pathname==='/live/highlights'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);return event?json(event):json({detail:'Event not found'},404);}
+    if(url.pathname==='/live/highlights'){
+      const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
+      if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
+      const cache=caches.default,cacheKey=new Request(url.toString(),{method:'GET'});
+      const cached=await cache.match(cacheKey);if(cached)return cached;
+      const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);
+      if(!event)return json({detail:'Event not found'},404);
+      const response=json(event),stored=new Response(response.body,response);
+      stored.headers.set('cache-control','public, max-age=900');
+      if(event.highlights_verified)env?.ASSETS&&request.method==='GET'&&await cache.put(cacheKey,stored.clone());
+      return stored;
+    }
     if(url.pathname==='/live/feed/grouped'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);if(!result.events.length)return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);return json(groupEvents(result.events));}
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});}
     return env.ASSETS.fetch(request);
