@@ -35,6 +35,15 @@ contains(worker,/filterActiveSeason/,'Active-season filter must exist');
 contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 
+// Featured athletes: verified Instagram links load after results and never delay scores.
+contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
+contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
+contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
+contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
+contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
+contains(page,/Featured Athletes/,'Featured Athletes row must render');
+contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');
+
 // Exactly one prominent official recap action in the modal template.
 assert.equal(count(page,'View Full Official Recap'),1,'Expanded results must render exactly one official recap button');
 
