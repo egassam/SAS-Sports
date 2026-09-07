@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.9.1';
+const VERSION='2.9.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -368,6 +368,21 @@ function recapArticleText(raw){
   const text=visibleText(raw),start=Math.max(text.search(/HOW IT HAPPENED/i),0);
   return text.slice(start,start+12000);
 }
+function highlightPriorities(sport){
+  const s=matchText(sport);
+  if(s.includes('football'))return'touchdowns, pivotal drives, turnovers, explosive plays, defensive stops, and records';
+  if(s.includes('volleyball'))return'set swings, decisive runs, kills, hitting efficiency, blocks, aces, and match records';
+  if(s.includes('soccer'))return'goals with minutes and assists, saves, disallowed goals, cards, shot pressure, and records';
+  if(s.includes('cross country'))return'individual places and times, team scoring, winning margins, course records, and personal bests';
+  if(s.includes('basketball'))return'decisive scoring runs, lead changes, clutch baskets, standout stat lines, rebounds, assists, and records';
+  if(s.includes('baseball')||s.includes('softball'))return'scoring innings, go-ahead hits, home runs, pitching performances, defensive plays, and records';
+  if(s.includes('track')||s.includes('swimming'))return'winning performances, times or marks, records, qualifying standards, relays, and team placement';
+  if(s.includes('wrestling'))return'pivotal bouts, falls, technical falls, ranked wins, bonus points, and team-score swings';
+  if(s.includes('tennis'))return'decisive singles and doubles matches, tiebreaks, clinching points, ranked wins, and comebacks';
+  if(s.includes('golf'))return'round scores, leaderboard movement, birdie runs, individual placement, team placement, and records';
+  if(s.includes('rowing'))return'boat classes, finish times, margins, heat progression, medal finishes, and team placement';
+  return'decisive moments, standout participants, score changes, records, milestones, and sport-specific statistics';
+}
 async function generateAIHighlights(env,e,raw){
   if(e.highlights_verified)return{items:e.highlights,state:'verified'};
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
@@ -379,6 +394,7 @@ Use ONLY facts from the official recap below and paraphrase them in fresh langua
 Quality requirements:
 - Each highlight must be a complete 18-to-38-word sentence.
 - Explain the moment and why it mattered: include the score situation, inning/set/period/minute, turning point, record, milestone, or decisive statistic when available.
+- For this ${e.sport} event, prioritize: ${highlightPriorities(e.sport)}.
 - Name the relevant athletes and include assists, distances, times, set scores, or other sport-specific details when the recap provides them.
 - Use active, varied language. Make the event feel alive while remaining factual.
 - Never write bare statements such as "X scored," "Y tied it," "Z won it," or "Team A outshot Team B."
