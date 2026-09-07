@@ -30,6 +30,23 @@ contains(worker,/if\(known\)return\[known\]/,'Known sport feeds must use one off
 contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain lazy');
 contains(worker,/cache\.put\(cacheKey/,'Verified expanded highlights must remain cached');
 
+// The initial three-school rollout must keep explicit official sources for every
+// home-screen sport. A missing route must fail the build before deployment.
+const rolloutSchools={
+  kstate:'kstatesports.com',
+  kansas:'kuathletics.com',
+  florida:'floridagators.com'
+};
+for(const [school,domain] of Object.entries(rolloutSchools)){
+  for(const sport of ['Cross Country','Soccer','Volleyball','Football']){
+    assert.ok(
+      worker.includes(`'${school}|${sport}':'https://${domain}/`)||
+      worker.includes(`'${school}|${sport}':'https://www.${domain}/`),
+      `Missing official ${school} ${sport} source`
+    );
+  }
+}
+
 // Current-season results only.
 contains(worker,/filterActiveSeason/,'Active-season filter must exist');
 contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
