@@ -153,7 +153,16 @@ async function loadFeed(){
     await Promise.all(requested.map(async sp=>{
       try{
         const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}`,1);
-        const groups=await r.json(); if(Array.isArray(groups)&&groups.length){liveGroups.push(...groups);liveOk++}
+        const groups=await r.json();
+        if(Array.isArray(groups)&&groups.length){
+          liveGroups.push(...groups);liveOk++;
+          // Render progressively so one slower official source never holds back
+          // sports that have already finished loading.
+          currentGroups=liveGroups.slice().sort((a,b)=>requested.indexOf(a.sport)-requested.indexOf(b.sport));
+          populateSportFilter(currentGroups);if(chosen)sportFilter.value=chosen;
+          updateCounts();render(currentGroups);
+          status.textContent=`Loaded ${liveOk}/${requested.length} official source${liveOk===1?'':'s'}…`;
+        }
       }catch(e){}
     }));
     // Web-live mode never labels bundled/pilot events as current. Only data fetched
