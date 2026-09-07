@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.6.1';
+const VERSION='2.7.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -157,6 +157,7 @@ function enrichGameEvent(event){
   const detail=VERIFIED_GAME_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(!detail)return event;
   event.highlights=detail.highlights;
+  event.highlights_verified=true;
   event.game_stats=detail.stats;
   event.recap_url=detail.source_url;
   event.source={...event.source,name:'Official athletics game recap',url:detail.source_url};
@@ -168,6 +169,7 @@ function enrichMeetEvent(event,date){
   if(detail){
     event.results=detail.rows;
     event.highlights=["K-State's men's and women's teams both won the meet titles.",'Max Larson won the men\'s 6K in 18:27.2.','Emma Baum led the K-State women with a runner-up 5K finish in 17:41.9.'];
+    event.highlights_verified=true;
     event.headline="Women's team: 1st · 20 pts / Men's team: 1st · 19 pts";
     event.result_count=detail.rows.length;
     event.has_more_results=detail.rows.length>3;
@@ -314,7 +316,35 @@ function recapMatchesEvent(raw,e){
   }
   return true;
 }
-async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
+function recapArticleText(raw){
+  const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
+  if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
+  const text=visibleText(raw),start=Math.max(text.search(/HOW IT HAPPENED/i),0);
+  return text.slice(start,start+12000);
+}
+async function generateAIHighlights(env,e,raw){
+  if(!env?.AI||e.highlights_verified)return null;
+  const article=recapArticleText(raw);if(article.length<80)return null;
+  const prompt=`Create 3 to 5 concise key highlights for this college sports event.
+Use ONLY facts in the official recap below. Include important scoring plays, standout athletes, records, turning points, and meaningful statistics.
+Paraphrase all facts in fresh language. Do not quote or copy sentences. Do not speculate. Do not repeat the final score as a highlight unless needed for context.
+Each highlight must be one complete sentence under 24 words.
+Return only a valid JSON array of strings.
+
+Event: ${e.school} vs ${e.opponent}; sport: ${e.sport}; date: ${e.start_time?.slice(0,10)||''}; final: ${e.school_score??''}-${e.opponent_score??''}
+
+Official recap:
+${article}`;
+  try{
+    const out=await env.AI.run('@cf/meta/llama-3.1-8b-instruct',{messages:[{role:'user',content:prompt}],max_tokens:350,temperature:0.2});
+    const rawText=String(out?.response||out?.result?.response||'').replace(/^```(?:json)?\s*|\s*```$/g,'').trim();
+    const parsed=JSON.parse(rawText);
+    if(!Array.isArray(parsed))return null;
+    const cleanItems=parsed.map(clean).filter(x=>x&&x.length<=220&&/[.!?]$/.test(x)).slice(0,5);
+    return cleanItems.length>=2?cleanItems:null;
+  }catch{return null}
+}
+async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const recapPages=new Map();
   await Promise.all(recapIndex.candidates.slice(0,16).map(async recapUrl=>{
@@ -332,6 +362,10 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
       if(!recapHtml){e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';return;}
       const extracted=extractOfficialHighlights(recapHtml);
       e.highlights=[...new Set([...(e.highlights||[]),...extracted])].slice(0,5);
+      if(aiTargetId===e.id){
+        const aiItems=await generateAIHighlights(env,e,recapHtml);
+        if(aiItems){e.highlights=aiItems;e.highlights_verified=true;e.highlight_status=null;}
+      }
       e.source={...e.source,name:'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
       if(!extracted.length)e.highlight_status='Official recap available; open it for complete highlights.';
     }catch{
@@ -340,8 +374,8 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
   }));
   return events;
 }
-async function fetchUrl(url,school,sport,now){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];if(events.length)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
-async function fetchLive(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};const urls=candidateUrls(school,sport),errors=[],successful=[],responses=await Promise.allSettled(urls.map(url=>fetchUrl(url,school,sport,now)));for(let i=0;i<responses.length;i++){const item=responses[i];if(item.status==='fulfilled'){if(item.value.ok&&item.value.events.length)successful.push(item.value);else errors.push(`${item.value.url}: HTTP ${item.value.http_status}, labels ${item.value.label_count}, events ${item.value.event_count}`);}else errors.push(`${urls[i]}: ${item.reason?.message||item.reason?.name||'FetchError'}`);}const events=mergeEvents(successful.map(x=>x.events));if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];if(events.length)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
+async function fetchLive(schoolId,sport,env=null,aiTargetId=null){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};const urls=candidateUrls(school,sport),errors=[],successful=[],responses=await Promise.allSettled(urls.map(url=>fetchUrl(url,school,sport,now,env,aiTargetId)));for(let i=0;i<responses.length;i++){const item=responses[i];if(item.status==='fulfilled'){if(item.value.ok&&item.value.events.length)successful.push(item.value);else errors.push(`${item.value.url}: HTTP ${item.value.http_status}, labels ${item.value.label_count}, events ${item.value.event_count}`);}else errors.push(`${urls[i]}: ${item.reason?.message||item.reason?.name||'FetchError'}`);}const events=mergeEvents(successful.map(x=>x.events));if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};}
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
@@ -353,7 +387,7 @@ export default{
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list);}
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
-    if(url.pathname==='/live/feed/grouped'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);if(!result.events.length)return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);return json(groupEvents(result.events));}
+    if(url.pathname==='/live/highlights'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);return event?json(event):json({detail:'Event not found'},404);}\n    if(url.pathname==='/live/feed/grouped'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);if(!result.events.length)return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);return json(groupEvents(result.events));}
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});}
     return env.ASSETS.fetch(request);
   }
