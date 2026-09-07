@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.6.0';
+const VERSION='2.6.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -133,6 +133,22 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
       {label:'Shots on goal',value:'K-State 3 · Nebraska 6'},
       {label:'Saves',value:'K-State 6 · Nebraska 3'},
       {label:'Corners',value:'K-State 1 · Nebraska 9'}
+    ]
+  },
+  'kstate|Soccer|2026-08-20|missouri-state':{
+    source_url:'https://www.kstatesports.com/news/2026/8/20/soccer-k-state-registers-home-shutout-win-in-2026-home-opener',
+    highlights:[
+      'McKinnan Braswell scored the game-winner in the sixth minute from a Rilyn Rintoul assist.',
+      'Rilyn Rintoul doubled the lead in the 58th minute, assisted by Gabby DeMers.',
+      'Kennedy Miller completed the scoring in the 76th minute.',
+      'K-State dominated the shot count 32-2 and tied its school record with 13 shots on goal.',
+      'Maddie Sibbing’s shutout tied the K-State career record with her 10th.'
+    ],
+    stats:[
+      {label:'Shots',value:'K-State 32 · Missouri State 2'},
+      {label:'Shots on goal',value:'K-State 13 · Missouri State 1'},
+      {label:'Saves',value:'K-State 1 · Missouri State 10'},
+      {label:'Corners',value:'K-State 11 · Missouri State 1'}
     ]
   }
 }));
@@ -268,12 +284,14 @@ function automaticFinalHighlights(e){
       if(schoolScore===opponentScore)items.push(`The event finished tied at ${schoolScore}-${opponentScore}.`);
       else if(schoolScore>opponentScore){
         const margin=schoolScore-opponentScore;
-        items.push(`${e.school} earned the victory by ${margin} ${margin===1?'point':'points'}.`);
+        const unit=e.sport==='Soccer'?'goal':e.sport==='Volleyball'?'set':e.sport==='Baseball'||e.sport==='Softball'?'run':'point';
+        items.push(`${e.school} earned the victory by ${margin} ${unit}${margin===1?'':'s'}.`);
         if(opponentScore===0)items.push(`${e.school} recorded a shutout.`);
         if(e.sport==='Volleyball'&&schoolScore===3&&opponentScore===0)items.push(`${e.school} completed a straight-set sweep.`);
       }else{
         const margin=opponentScore-schoolScore;
-        items.push(`${e.opponent} won by ${margin} ${margin===1?'point':'points'}.`);
+        const unit=e.sport==='Soccer'?'goal':e.sport==='Volleyball'?'set':e.sport==='Baseball'||e.sport==='Softball'?'run':'point';
+        items.push(`${e.opponent} won by ${margin} ${unit}${margin===1?'':'s'}.`);
       }
     }
   }else if(e.headline)items.push(`Official result: ${e.headline}.`);
