@@ -557,7 +557,8 @@ export default{
     if(url.pathname==='/live/highlights'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
       if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
-      const cache=caches.default,cacheKey=new Request(url.toString(),{method:'GET'});
+      const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('highlight_cache',VERSION);
+      const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
       const cached=await cache.match(cacheKey);if(cached)return cached;
       const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);
       if(!event)return json({detail:'Event not found'},404);
