@@ -215,6 +215,7 @@ function extractOfficialHighlights(raw){
   while((m=block.exec(section))){
     let item=visibleText(m[1]).replace(/^[-–•]\s*/,'').trim();
     if(item.length<25||item.length>500||/^(how it happened|quick facts)$/i.test(item))continue;
+    const words=item.split(/\s+/);if(words.length>22)item=words.slice(0,22).join(' ')+'…';
     if(!items.includes(item))items.push(item);
     if(items.length===5)break;
   }
