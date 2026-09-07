@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.5.0';
+const VERSION='2.5.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -213,7 +213,13 @@ function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
     const recapUrl=link?absoluteUrl(link[1],sourceUrl):null;
     if(recapUrl)map.set(eventMergeKey(marker.event),recapUrl);
   }
-  return map;
+  const candidates=[] ,seenCandidates=new Set(map.values());
+  const anyRecap=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?\bRecap\b[\s\S]*?)<\/a>/gi;
+  while((m=anyRecap.exec(raw))){
+    const recapUrl=absoluteUrl(m[1],sourceUrl);
+    if(recapUrl&&!seenCandidates.has(recapUrl)){seenCandidates.add(recapUrl);candidates.push(recapUrl);}
+  }
+  return{map,candidates:[...map.values(),...candidates]};
 }
 function shortHighlight(text){
   let item=clean(text);if(!item)return null;
@@ -227,17 +233,6 @@ function extractOfficialHighlights(raw){
   const meta=raw.match(/<meta\b[^>]*(?:name|property)=["'](?:description|og:description)["'][^>]*content=["']([^"']+)["']/i)
     ||raw.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:name|property)=["'](?:description|og:description)["']/i);
   if(meta)add(meta[1]);
-  const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
-  if(bodyMatch){
-    try{
-      const body=JSON.parse(bodyMatch[1]);
-      for(const sentence of body.split(/(?<=[.!?])\s+/)){
-        if(items.length>=4)break;
-        if(/\b(?:privacy|copyright|ticket|subscribe)\b/i.test(sentence))continue;
-        add(sentence);
-      }
-    }catch{}
-  }
   const hit=raw.search(/HOW IT HAPPENED/i);
   if(hit>=0){
     let section=raw.slice(hit,hit+30000);
@@ -270,17 +265,21 @@ function recapMatchesEvent(raw,e){
   return true;
 }
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
-  const recapMap=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
+  const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
+  const recapPages=new Map();
+  await Promise.all(recapIndex.candidates.slice(0,16).map(async recapUrl=>{
+    try{const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});if(r.ok)recapPages.set(recapUrl,await r.text());}catch{}
+  }));
   await Promise.all(events.filter(e=>e.status==='Final').map(async e=>{
     if(!e.highlights?.length)e.highlights=[finalScoreHighlight(e)];
-    const recapUrl=recapMap.get(eventMergeKey(e));
+    const direct=recapIndex.map.get(eventMergeKey(e));
+    const recapUrl=(direct&&recapMatchesEvent(recapPages.get(direct)||'',e)?direct:null)
+      ||recapIndex.candidates.find(url=>recapMatchesEvent(recapPages.get(url)||'',e));
     if(!recapUrl){e.highlight_status='Official recap not yet available.';return;}
     e.recap_url=recapUrl;
     try{
-      const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});
-      if(!r.ok){e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';return;}
-      const recapHtml=await r.text();
-      if(!recapMatchesEvent(recapHtml,e)){e.recap_url=null;e.highlight_status='No verified event-specific recap is available yet.';return;}
+      const recapHtml=recapPages.get(recapUrl);
+      if(!recapHtml){e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';return;}
       const extracted=extractOfficialHighlights(recapHtml);
       e.highlights=[...new Set([...(e.highlights||[]),...extracted])].slice(0,5);
       e.source={...e.source,name:'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
