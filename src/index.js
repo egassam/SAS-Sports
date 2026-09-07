@@ -88,22 +88,73 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
   };
 }
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
-  const text=decodeHtml(raw); const events=[]; const seen=new Set();
+  const text=decodeHtml(raw)
+    .replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<script[\s\S]*?<\/script>/gi,' ')
+    .replace(/<style[\s\S]*?<\/style>/gi,' ')
+    .replace(/<[^>]+>/g,' ')
+    .replace(/\s+/g,' ');
+
+  const events=[];
+  const seen=new Set();
+
   const specs=[
-    ['Live',/Live Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)(?:\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4}))?(?=["<])/gi],
-    ['Upcoming',/Upcoming Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})(?:\s+at\s+([^"<]{1,20}))?(?=["<])/gi],
-    ['Final',/Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*(?:(Win|Loss|Tie|Draw)?\s*,?\s*)?(\d+(?:\.\d+)?)?\s*,?\s*(?:to|-)?\s*,?\s*(\d+(?:\.\d+)?)?(?:[^"<]*)?(?=["<])/gi]
+    ['Live',/Live Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)(?:\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4}))?(?= Live Event:| Upcoming Event:| Completed Event:|$)/gi],
+    ['Upcoming',/Upcoming Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})(?:\s+at\s+(.+?))?(?= Live Event:| Upcoming Event:| Completed Event:|$)/gi],
+    ['Final',/Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*(?:(Win|Loss|Tie|Draw)\s*,\s*)?(.*?)(?= Live Event:| Upcoming Event:| Completed Event:|$)/gi]
   ];
+
   for(const [status,re] of specs){
-    let m; while((m=re.exec(text))){
-      const parsedSport=clean(m[1])||sport; if(!sportMatches(sport,parsedSport)) continue;
-      const opponent=clean(m[3]); if(!opponent) continue;
-      const e=makeEvent({school,sport,status,relation:clean(m[2])||'vs',opponent,date:clean(m[4]),time:status==='Upcoming'?clean(m[5]):null,schoolScore:status==='Final'?clean(m[6]):null,oppScore:status==='Final'?clean(m[7]):null,sourceUrl,now});
-      if(!seen.has(e.id)){seen.add(e.id);events.push(e);}
+    let m;
+    while((m=re.exec(text))){
+      const parsedSport=clean(m[1])||sport;
+      if(!sportMatches(sport,parsedSport)) continue;
+
+      const opponent=clean(m[3]);
+      if(!opponent) continue;
+
+      let schoolScore=null;
+      let oppScore=null;
+
+      if(status==='Final'){
+        const resultText=clean(m[6]);
+        const scoreMatch=resultText && resultText.match(/(\d+(?:\.\d+)?)\s*(?:to|-|–)\s*(\d+(?:\.\d+)?)/i);
+        if(scoreMatch){
+          schoolScore=scoreMatch[1];
+          oppScore=scoreMatch[2];
+        }
+      }
+
+      const e=makeEvent({
+        school,
+        sport,
+        status,
+        relation:clean(m[2])||'vs',
+        opponent,
+        date:clean(m[4]),
+        time:status==='Upcoming'?clean(m[5]):null,
+        schoolScore,
+        oppScore,
+        sourceUrl,
+        now
+      });
+
+      if(!seen.has(e.id)){
+        seen.add(e.id);
+        events.push(e);
+      }
     }
   }
+
   const rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
-  return events.sort((a,b)=>{ const r=(rank[a.status]??4)-(rank[b.status]??4); if(r) return r; const ta=a.start_time?Date.parse(a.start_time):0, tb=b.start_time?Date.parse(b.start_time):0; return a.status==='Final'?tb-ta:ta-tb; });
+
+  return events.sort((a,b)=>{
+    const r=(rank[a.status]??4)-(rank[b.status]??4);
+    if(r) return r;
+    const ta=a.start_time?Date.parse(a.start_time):0;
+    const tb=b.start_time?Date.parse(b.start_time):0;
+    return a.status==='Final'?tb-ta:ta-tb;
+  });
 }
 function inSeason(sport,month){
   const windows=SEASONS[sport]; if(!windows) return true;
