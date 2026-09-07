@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.0.1';
+const VERSION='3.1.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -54,6 +54,52 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 function decodeHtml(s){return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
+function rosterUrls(school,sport){
+  const base=school.athletics_url.replace(/\/$/,'');
+  return[...new Set((SPORT_PATHS[sport]||[slug(sport)]).map(p=>`${base}/sports/${p}/roster`))];
+}
+function dailyRank(value){
+  const day=new Date().toISOString().slice(0,10);let h=2166136261;
+  for(const ch of `${day}|${value}`){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}
+  return h>>>0;
+}
+function rosterProfiles(raw,base){
+  const out=[],seen=new Set();let m;
+  const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?!coaches\/|staff\/)[^"'?#]+\/\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
+  while((m=re.exec(raw))){
+    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);
+    if(url&&name&&name.length<=80&&!seen.has(url)){seen.add(url);out.push({name,url})}
+  }
+  return out;
+}
+function verifiedInstagram(raw){
+  let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
+  while((m=re.exec(raw))){
+    try{
+      const u=new URL(decodeHtml(m[1])),parts=u.pathname.split('/').filter(Boolean);
+      const handle=(parts[0]||'').toLowerCase();
+      if(parts.length===1&&handle&&!['kstatesports','explore','accounts','p','reel','reels'].includes(handle))return`https://www.instagram.com/${parts[0]}/`;
+    }catch{}
+  }
+  return null;
+}
+async function featuredAthletes(schoolId,sport){
+  const school=schools.find(s=>s.id===schoolId);if(!school)return[];
+  let profiles=[];
+  for(const rosterUrl of rosterUrls(school,sport)){
+    try{const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;profiles=rosterProfiles(await r.text(),r.url||rosterUrl);if(profiles.length)break}catch{}
+  }
+  profiles.sort((a,b)=>dailyRank(a.url)-dailyRank(b.url));
+  const found=[];
+  await Promise.all(profiles.slice(0,18).map(async profile=>{
+    try{
+      const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
+      const instagram_url=verifiedInstagram(await r.text());
+      if(instagram_url)found.push({name:profile.name,instagram_url,profile_url:profile.url});
+    }catch{}
+  }));
+  return found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
+}
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
   const m=String(dateText||'').match(/^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})$/);
@@ -481,6 +527,15 @@ export default{
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list);}
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
+    if(url.pathname==='/live/athletes'){
+      const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');
+      if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const cache=caches.default,cacheKey=new Request(url.toString(),{method:'GET'});
+      const cached=await cache.match(cacheKey);if(cached)return cached;
+      const response=json(await featuredAthletes(school,sport)),stored=new Response(response.body,response);
+      stored.headers.set('cache-control','public, max-age=21600');
+      await cache.put(cacheKey,stored.clone());return stored;
+    }
     if(url.pathname==='/live/highlights'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
       if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
