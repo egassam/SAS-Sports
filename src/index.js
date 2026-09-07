@@ -73,7 +73,7 @@ function rosterProfiles(raw,base){
     return score;
   };
   while((m=re.exec(raw))){
-    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)return;
+    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)continue;
     const previous=byUrl.get(url);
     if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url});
   }
