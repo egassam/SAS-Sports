@@ -1,11 +1,12 @@
 {
   "name": "sas-sports-cloudflare",
-  "version": "2.3.14",
+  "version": "3.0.1",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "check": "node --check src/index.js"
+    "check": "node --check src/index.js && node tests/regression.mjs",
+    "test": "node tests/regression.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
