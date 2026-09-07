@@ -1,7 +1,7 @@
 import schools from './schools.json';
 
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (compatible; SAS-Sports/2.3.1; Cloudflare-Worker)',
+  'User-Agent': 'Mozilla/5.0 (compatible; SAS-Sports/2.3.2; Cloudflare-Worker)',
   'Accept': 'text/html,application/xhtml+xml'
 };
 
@@ -120,6 +120,9 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
 
       const opponent=clean(m[3]);
       if(!opponent) continue;
+      // Sidearm tournament pages can include neutral-site matches between other teams.
+      // Do not mislabel those embedded 'Team A vs Team B' entries as this school's event.
+      if(/\b(?:vs\.?|versus)\b/i.test(opponent)) continue;
 
       const e=makeEvent({
         school,
@@ -207,7 +210,7 @@ export default {
 
     if(url.pathname==='/web') return env.ASSETS.fetch(new Request(new URL('/index.html',url),request));
 
-    if(url.pathname==='/api/status') return json({name:'SAS Sports API',version:'2.3.1',mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
+    if(url.pathname==='/api/status') return json({name:'SAS Sports API',version:'2.3.2',mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
 
     if(url.pathname==='/schools'){
       let list=schools;
