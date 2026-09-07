@@ -178,6 +178,16 @@ async function openEvent(id){
     try{const r=await apiFetch(`/events/${encodeURIComponent(id)}`);e=await r.json()}catch{}
   }
   if(!e){$('#modalTitle').textContent='Event unavailable';$('#modalBody').innerHTML='<div class="empty">Could not load event details.</div>';return}
+  if(e.status==='Final'&&e.school_id&&e.sport){
+    $('#modalTitle').textContent=e.title;
+    $('#modalSub').textContent=`${e.school} · ${e.sport}`;
+    $('#modalBody').innerHTML='<div class="empty">Building verified event highlights…</div>';
+    try{
+      const r=await apiFetch(`/live/highlights?school=${encodeURIComponent(e.school_id)}&sport=${encodeURIComponent(e.sport)}&event_id=${encodeURIComponent(e.id)}`,1);
+      const enriched=await r.json();
+      if(enriched&&enriched.id)Object.assign(e,enriched);
+    }catch{}
+  }
   $('#modalTitle').textContent=e.title; $('#modalSub').textContent=`${e.school} · ${e.sport}`;
   const teamSummary=(e.results||[]).filter(x=>/\bteam$/i.test(x.participant||'')).map(x=>`${x.group}: ${x.result||x.place||x.value||''}`).join(' / ');
   const score=e.school_score!=null?`${e.school_score}–${e.opponent_score}`:(e.headline||teamSummary||'—');
