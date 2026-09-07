@@ -58,7 +58,7 @@ contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser mus
 contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
 contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'Official roster athletes must remain eligible without Instagram');
-contains(worker,/Prefer athletes whose official bio verifies an Instagram account/,'Verified Instagram athletes must be preferred');
+contains(worker,/profiles\.slice\(0,3\)/,'Athlete discovery must stay within the Worker request budget');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');

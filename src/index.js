@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.3.1';
+const VERSION='3.3.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -109,16 +109,17 @@ async function featuredAthletes(schoolId,sport){
   }
   profiles.sort((a,b)=>dailyRank(a.url)-dailyRank(b.url));
   const found=[];
-  await Promise.all(profiles.slice(0,18).map(async profile=>{
+  // Every official roster profile is now a valid card because the official bio
+  // is the fallback destination. Fetch only the three selected profiles so one
+  // school view cannot exhaust the Worker's subrequest or CPU allowance.
+  await Promise.all(profiles.slice(0,3).map(async profile=>{
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html);
       found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url)});
     }catch{}
   }));
-  // Prefer athletes whose official bio verifies an Instagram account, but never
-  // leave a sport empty merely because the school does not publish social links.
-  return found.sort((a,b)=>Number(Boolean(b.instagram_url))-Number(Boolean(a.instagram_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
+  return found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
