@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.8.0';
+const VERSION='2.8.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -149,6 +149,22 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
       {label:'Shots on goal',value:'K-State 8 · South Dakota State 1'},
       {label:'Saves',value:'K-State 1 · South Dakota State 6'},
       {label:'Corners',value:'K-State 2 · South Dakota State 3'}
+    ]
+  },
+  'kstate|Soccer|2026-08-13|seattle-u':{
+    source_url:'https://www.kstatesports.com/news/2026/8/13/soccer-k-state-thumps-seattle-u-in-2026-season-opener',
+    highlights:[
+      'McKinnan Braswell headed in Rilyn Rintoul’s cross in the 12th minute for the eventual game-winner.',
+      'Rintoul scored from her own rebound in the 23rd minute after assisting the opening goal.',
+      'Freshmen Lauren Moylan and Kennedy Miller scored their first collegiate goals seven minutes apart in the second half.',
+      'K-State’s four goals tied the program record for goals in a season opener.',
+      'The Wildcats held a 14-9 advantage in shots and put eight attempts on goal.'
+    ],
+    stats:[
+      {label:'Shots',value:'K-State 14 · Seattle U. 9'},
+      {label:'Shots on goal',value:'K-State 8 · Seattle U. 3'},
+      {label:'Saves',value:'K-State 3 · Seattle U. 4'},
+      {label:'Corners',value:'K-State 4 · Seattle U. 6'}
     ]
   },
   'kstate|Soccer|2026-08-20|missouri-state':{
@@ -362,13 +378,29 @@ Event: ${e.school} vs ${e.opponent}; sport: ${e.sport}; date: ${e.start_time?.sl
 Official recap:
 ${article}`;
   try{
-    const out=await env.AI.run('@cf/meta/llama-3.1-8b-instruct',{messages:[{role:'user',content:prompt}],max_tokens:450,temperature:0.2});
-    const rawText=String(out?.response||out?.result?.response||'').trim();
-    const start=rawText.indexOf('['),end=rawText.lastIndexOf(']');
-    if(start<0||end<=start)return{items:null,state:'invalid_ai_response'};
-    const parsed=JSON.parse(rawText.slice(start,end+1));
-    if(!Array.isArray(parsed))return{items:null,state:'invalid_ai_response'};
-    const cleanItems=parsed.map(clean).filter(x=>x&&x.length<=220&&/[.!?]$/.test(x)).slice(0,5);
+    const out=await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast',{
+      messages:[{role:'user',content:prompt}],
+      max_tokens:450,
+      temperature:0.2,
+      response_format:{
+        type:'json_schema',
+        json_schema:{
+          type:'object',
+          properties:{highlights:{type:'array',items:{type:'string'},minItems:3,maxItems:5}},
+          required:['highlights']
+        }
+      }
+    });
+    const response=out?.response??out?.result?.response;
+    let parsed=response;
+    if(typeof response==='string'){
+      const rawText=response.trim(),start=rawText.indexOf('{'),end=rawText.lastIndexOf('}');
+      if(start<0||end<=start)return{items:null,state:'invalid_ai_response'};
+      parsed=JSON.parse(rawText.slice(start,end+1));
+    }
+    const list=Array.isArray(parsed)?parsed:parsed?.highlights;
+    if(!Array.isArray(list))return{items:null,state:'invalid_ai_response'};
+    const cleanItems=list.map(clean).filter(x=>x&&x.length<=220&&/[.!?]$/.test(x)).slice(0,5);
     return cleanItems.length>=2?{items:cleanItems,state:'recap_generated'}:{items:null,state:'insufficient_ai_highlights'};
   }catch(error){
     return{items:null,state:'ai_failed',error:clean(error?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
