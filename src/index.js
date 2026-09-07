@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.3.13';
+const VERSION='2.3.14';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
