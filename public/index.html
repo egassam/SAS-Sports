@@ -192,7 +192,11 @@ async function openEvent(id){
     $('#modalSub').textContent=`${e.school} · ${e.sport}`;
     $('#modalBody').innerHTML='<div class="highlight-loader" role="status" aria-live="polite"><div class="highlight-loader-mark" aria-hidden="true">SAS</div><div class="highlight-loader-text">Fetching SAS verified highlights…</div></div>';
     try{
-      const r=await apiFetch(`/live/highlights?school=${encodeURIComponent(e.school_id)}&sport=${encodeURIComponent(e.sport)}&event_id=${encodeURIComponent(e.id)}`,1);
+      // Start the request immediately, but keep the branded loader visible long
+      // enough to be perceived even when Cloudflare returns a cached response.
+      const highlightRequest=apiFetch(`/live/highlights?school=${encodeURIComponent(e.school_id)}&sport=${encodeURIComponent(e.sport)}&event_id=${encodeURIComponent(e.id)}`,1);
+      await new Promise(resolve=>setTimeout(resolve,850));
+      const r=await highlightRequest;
       const enriched=await r.json();
       if(enriched&&enriched.id)Object.assign(e,enriched);
     }catch{}
