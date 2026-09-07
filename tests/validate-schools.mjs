@@ -9,6 +9,7 @@ const base=(value('base')||process.env.SAS_SPORTS_BASE_URL||DEFAULT_BASE).replac
 const schoolIds=(value('schools')||args.find(x=>!x.startsWith('--'))||DEFAULT_SCHOOLS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
 const sports=(value('sports')||DEFAULT_SPORTS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
 const timeout=Number(value('timeout')||45000);
+const deep=args.includes('--deep');
 
 async function getJson(path){
   let lastError;
@@ -55,8 +56,8 @@ async function validateSport(school,sport){
     assert.ok((athlete.instagram_url||athlete.profile_url)?.startsWith('https://'),'athlete has no clickable destination');
   }
 
-  const newestFinal=(group.results||[])[0];let highlight='SKIP';
-  if(newestFinal){
+  const newestFinal=(group.results||[])[0];let highlight=deep?'SKIP:NO_FINAL':'NOT_RUN';
+  if(deep&&newestFinal){
     const detail=await getJson(`/live/highlights?${encoded}&event_id=${encodeURIComponent(newestFinal.id)}`);
     assert.equal(detail.id,newestFinal.id,'highlight response belongs to a different event');
     assert.equal(detail.opponent,newestFinal.opponent,'highlight opponent does not match');
@@ -82,4 +83,5 @@ for(const schoolId of schoolIds){
 console.table(rows);
 console.log(`\nCertified ${rows.filter(x=>x.status.startsWith('PASS')).length}/${rows.length} school-sport feeds against ${base}.`);
 console.log('PASS* means required checks passed, but the newest final had no usable official recap.');
+if(!deep)console.log('Run one school with --deep to additionally generate and verify its newest highlights.');
 if(failed)process.exitCode=1;

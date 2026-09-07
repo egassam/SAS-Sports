@@ -41,10 +41,10 @@ This repository is intended to deploy to Cloudflare from the `main` branch. If d
 
 ## School certification
 - Run `npm run test:schools` to certify Kansas State, Kansas, and Florida.
-- Run `npm run test:school -- new-school-id` to apply the same checks to a newly added school.
+- Run `npm run test:school -- new-school-id --deep` to apply the same checks plus event-highlight generation to a newly added school.
 - Optional filters: `--schools=kstate,kansas`, `--sports="Cross Country,Soccer"`, and `--base=https://preview.example.com`.
 
-The certification checks the official feed domain, current-season events, final results, exactly three clickable roster athletes, and event-matched highlights. `PASS*` means the core checks passed but the newest final did not have a usable official recap.
+The standard certification checks the official feed domain, current-season events, final results, and exactly three clickable roster athletes. Deep mode also verifies that highlights belong to the correct event, date, and opponent. `PASS*` means the core checks passed but the newest final did not have a usable official recap.
 
 ## Important
 Do not open `public/index.html` directly from Android or a desktop file browser. The Worker is the live backend and must be running for current data.
