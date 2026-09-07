@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.2.0';
+const VERSION='3.2.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -258,7 +258,12 @@ function enrichMeetEvent(event,date){
   const detail=VERIFIED_MEET_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(detail){
     event.results=detail.rows;
-    event.highlights=["K-State's men's and women's teams both won the meet titles.",'Max Larson won the men\'s 6K in 18:27.2.','Emma Baum led the K-State women with a runner-up 5K finish in 17:41.9.'];
+    event.highlights=[
+      "K-State swept both team championships, with the women scoring 20 points and the men finishing one point better at 19.",
+      "Max Larson led a commanding 1-2-3 men’s finish, winning the 6K in 18:27.2 ahead of Jackson Esquibel and Brock Olsen.",
+      "Emma Baum’s 17:41.9 runner-up performance started a five-runner K-State women’s pack that captured places two through six.",
+      "The Wildcat men placed five runners inside the top eight, while all six leading K-State women crossed among the first eight finishers."
+    ];
     event.highlights_verified=true;
     event.headline="Women's team: 1st · 20 pts / Men's team: 1st · 19 pts";
     event.result_count=detail.rows.length;
