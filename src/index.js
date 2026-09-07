@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.1';
+const VERSION='3.4.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -39,7 +39,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
   'florida|Football':'https://floridagators.com/sports/football/schedule',
   'arizona|Volleyball':'https://arizonawildcats.com/sports/womens-volleyball/schedule',
-  'arizona|Soccer':'https://arizonawildcats.com/sports/soccer/schedule',
+  'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
   'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
   'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
   'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
@@ -79,7 +79,7 @@ function dailyRank(value){
 }
 function rosterProfiles(raw,base){
   const byUrl=new Map();let m;
-  const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?!coaches\/|staff\/)[^"'?#]+\/\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?!coaches\/|staff\/)(?:player\/[^"'?#]+|[^"'?#]+\/\d+))[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
   const nameScore=name=>{
     if(!name||name.length>80||/^(?:jersey\s+number\s+)?\d+$/i.test(name))return-1;
     let score=/^[A-Za-zÀ-ÿ'’.-]+(?:\s+[A-Za-zÀ-ÿ'’.-]+)+$/.test(name)?10:0;

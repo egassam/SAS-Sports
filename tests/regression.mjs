@@ -60,6 +60,7 @@ contains(page,/no cached results are being shown as current/i,'UI must not subst
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
 contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
 contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
+contains(worker,/player\\\/\[\^"'\?#\]\+/,'Next-generation player roster URLs must be supported');
 contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'Official roster athletes must remain eligible without Instagram');
 contains(worker,/profiles\.slice\(0,3\)/,'Athlete discovery must stay within the Worker request budget');
