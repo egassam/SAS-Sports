@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.3.8';
+const VERSION='2.3.9';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -85,6 +85,12 @@ function extractEventLabels(raw){
   const attrRe=/(?:aria-label|title)\s*=\s*["']([^"']*(?:Upcoming|Completed|Live) Event:[^"']*)["']/gi;
   let m;
   while((m=attrRe.exec(decoded)))add(m[1]);
+
+  // Some SIDEARM result headings are rendered as element text instead of attributes.
+  // Read every event heading independently so one neutral-site result cannot consume
+  // or hide the following K-State result.
+  const headingRe=/<h[1-6]\b[^>]*>([\s\S]*?(?:Upcoming|Completed|Live) Event:[\s\S]*?)<\/h[1-6]>/gi;
+  while((m=headingRe.exec(raw)))add(visibleText(m[1]));
 
   // SIDEARM does not always expose completed results in the same attributes as upcoming events.
   // Always scan rendered-visible text as a second source, then deduplicate.
