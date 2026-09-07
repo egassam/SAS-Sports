@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.7.0';
+const VERSION='2.7.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -133,6 +133,22 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
       {label:'Shots on goal',value:'K-State 3 · Nebraska 6'},
       {label:'Saves',value:'K-State 6 · Nebraska 3'},
       {label:'Corners',value:'K-State 1 · Nebraska 9'}
+    ]
+  },
+  'kstate|Soccer|2026-08-23|south-dakota-state':{
+    source_url:'https://www.kstatesports.com/news/2026/8/23/https-www-kstatesports-com-documents-2026-8-14-2026-27-k-state-soccer-3-pdf',
+    highlights:[
+      'South Dakota State went down a player after its goalkeeper received a red card in the 20th minute.',
+      'Langley Mayers opened the scoring in the 29th minute, assisted by Rilyn Rintoul and Chloe Dillbeck.',
+      'Gabby DeMers added K-State’s second goal in the 52nd minute from Lauren Moylan and Mayers assists.',
+      'Maddie Sibbing earned her school-record 11th career shutout and tied the K-State record with 11 career wins.',
+      'K-State outshot South Dakota State 22-5 and allowed only one shot on goal.'
+    ],
+    stats:[
+      {label:'Shots',value:'K-State 22 · South Dakota State 5'},
+      {label:'Shots on goal',value:'K-State 8 · South Dakota State 1'},
+      {label:'Saves',value:'K-State 1 · South Dakota State 6'},
+      {label:'Corners',value:'K-State 2 · South Dakota State 3'}
     ]
   },
   'kstate|Soccer|2026-08-20|missouri-state':{
@@ -323,8 +339,10 @@ function recapArticleText(raw){
   return text.slice(start,start+12000);
 }
 async function generateAIHighlights(env,e,raw){
-  if(!env?.AI||e.highlights_verified)return null;
-  const article=recapArticleText(raw);if(article.length<80)return null;
+  if(e.highlights_verified)return{items:e.highlights,state:'verified'};
+  if(!env?.AI)return{items:null,state:'binding_unavailable'};
+  const article=recapArticleText(raw);
+  if(article.length<80)return{items:null,state:'recap_text_unavailable'};
   const prompt=`Create 3 to 5 concise key highlights for this college sports event.
 Use ONLY facts in the official recap below. Include important scoring plays, standout athletes, records, turning points, and meaningful statistics.
 Paraphrase all facts in fresh language. Do not quote or copy sentences. Do not speculate. Do not repeat the final score as a highlight unless needed for context.
@@ -336,13 +354,17 @@ Event: ${e.school} vs ${e.opponent}; sport: ${e.sport}; date: ${e.start_time?.sl
 Official recap:
 ${article}`;
   try{
-    const out=await env.AI.run('@cf/meta/llama-3.1-8b-instruct',{messages:[{role:'user',content:prompt}],max_tokens:350,temperature:0.2});
-    const rawText=String(out?.response||out?.result?.response||'').replace(/^```(?:json)?\s*|\s*```$/g,'').trim();
-    const parsed=JSON.parse(rawText);
-    if(!Array.isArray(parsed))return null;
+    const out=await env.AI.run('@cf/meta/llama-3.1-8b-instruct',{messages:[{role:'user',content:prompt}],max_tokens:450,temperature:0.2});
+    const rawText=String(out?.response||out?.result?.response||'').trim();
+    const start=rawText.indexOf('['),end=rawText.lastIndexOf(']');
+    if(start<0||end<=start)return{items:null,state:'invalid_ai_response'};
+    const parsed=JSON.parse(rawText.slice(start,end+1));
+    if(!Array.isArray(parsed))return{items:null,state:'invalid_ai_response'};
     const cleanItems=parsed.map(clean).filter(x=>x&&x.length<=220&&/[.!?]$/.test(x)).slice(0,5);
-    return cleanItems.length>=2?cleanItems:null;
-  }catch{return null}
+    return cleanItems.length>=2?{items:cleanItems,state:'recap_generated'}:{items:null,state:'insufficient_ai_highlights'};
+  }catch(error){
+    return{items:null,state:'ai_failed',error:clean(error?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
+  }
 }
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
@@ -351,23 +373,37 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
     try{const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});if(r.ok)recapPages.set(recapUrl,await r.text());}catch{}
   }));
   await Promise.all(events.filter(e=>e.status==='Final').map(async e=>{
-    if(!e.highlights?.length)e.highlights=automaticFinalHighlights(e);
     const direct=recapIndex.map.get(eventMergeKey(e));
     const recapUrl=(direct&&recapMatchesEvent(recapPages.get(direct)||'',e)?direct:null)
       ||recapIndex.candidates.find(url=>recapMatchesEvent(recapPages.get(url)||'',e));
-    if(!recapUrl){e.highlight_status='Official recap not yet available.';return;}
+    if(!recapUrl){
+      if(!e.highlights_verified)e.highlights=automaticFinalHighlights(e);
+      e.highlight_state='score_only';
+      e.highlight_status='Official recap not yet available.';
+      return;
+    }
     e.recap_url=recapUrl;
     try{
       const recapHtml=recapPages.get(recapUrl);
       if(!recapHtml){e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';return;}
       const extracted=extractOfficialHighlights(recapHtml);
-      e.highlights=[...new Set([...(e.highlights||[]),...extracted])].slice(0,5);
-      if(aiTargetId===e.id){
-        const aiItems=await generateAIHighlights(env,e,recapHtml);
-        if(aiItems){e.highlights=aiItems;e.highlights_verified=true;e.highlight_status=null;}
+      if(!e.highlights_verified)e.highlights=extracted;
+      e.highlight_state=e.highlights_verified?'verified':(extracted.length?'recap_excerpt':'recap_ready');
+      if(aiTargetId===e.id&&!e.highlights_verified){
+        const aiResult=await generateAIHighlights(env,e,recapHtml);
+        e.highlight_state=aiResult.state;
+        if(aiResult.error)e.highlight_error=aiResult.error;
+        if(aiResult.items){
+          e.highlights=aiResult.items;
+          e.highlights_verified=true;
+          e.highlight_status=null;
+        }else{
+          e.highlights=[];
+          e.highlight_status='Verified recap highlights could not be generated. Use the official recap link for this event.';
+        }
       }
       e.source={...e.source,name:'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
-      if(!extracted.length)e.highlight_status='Official recap available; open it for complete highlights.';
+      if(!e.highlights_verified&&!e.highlights?.length&&!e.highlight_status)e.highlight_status='Official recap available; open it for complete highlights.';
     }catch{
       e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';
     }
