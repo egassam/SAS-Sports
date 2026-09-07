@@ -179,11 +179,12 @@ async function openEvent(id){
   }
   if(!e){$('#modalTitle').textContent='Event unavailable';$('#modalBody').innerHTML='<div class="empty">Could not load event details.</div>';return}
   $('#modalTitle').textContent=e.title; $('#modalSub').textContent=`${e.school} · ${e.sport}`;
-  const score=e.school_score!=null?`${e.school_score}–${e.opponent_score}`:'—';
+  const teamSummary=(e.results||[]).filter(x=>/\bteam$/i.test(x.participant||'')).map(x=>`${x.group}: ${x.result||x.place||x.value||''}`).join(' / ');
+  const score=e.school_score!=null?`${e.school_score}–${e.opponent_score}`:(e.headline||teamSummary||'—');
   let lastGroup='';
   const rows=(e.results||[]).map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="section-label">${esc(group)}</div>`:'';lastGroup=group;return heading+`<div class="result-row"><span>${esc(x.participant||x.label||'Result')}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
   const source=e.source?.url?`<p class="small muted">Source: ${esc(e.source.name||'Official athletics source')} · verified ${esc(e.last_verified_at||e.source.updated_at||'now')}</p>`:'';
-  $('#modalBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>Opponent</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">Full Team Results</div>${rows}`:'<div class="small muted">No participant-level results available for this event.</div>'}${source}`;
+  $('#modalBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>Opponent</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline&&e.school_score!=null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">Full Team Results</div>${rows}`:'<div class="small muted">No participant-level results available for this event.</div>'}${source}`;
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',loadFeed);
