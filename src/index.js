@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.3.11';
+const VERSION='2.3.12';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -81,7 +81,6 @@ const VERIFIED_MEET_DETAILS=new Map(Object.entries({
     source_url:'https://www.kstatesports.com/news/2026/9/4/cross-country-k-state-clinches-team-wins-at-platte-river-rumble-gold',
     rows:[
       {group:"Women's 5K",participant:'K-State team',result:'1st · 20 pts'},
-      {group:"Men's 6K",participant:'K-State team',result:'1st · 19 pts'},
       {group:"Women's 5K",participant:'Emma Baum',result:'2nd · 17:41.9'},
       {group:"Women's 5K",participant:'Joyce Kiptabut',result:'3rd · 17:43.9'},
       {group:"Women's 5K",participant:'Christine Jerono',result:'4th · 17:46.2'},
@@ -93,6 +92,7 @@ const VERIFIED_MEET_DETAILS=new Map(Object.entries({
       {group:"Women's 5K",participant:'Hanna Keltner',result:'19th · 19:17.3'},
       {group:"Women's 5K",participant:'Payton Wurtz',result:'24th · 19:52.8'},
       {group:"Women's 5K",participant:'Bree Newport',result:'30th · 20:28.6'},
+      {group:"Men's 6K",participant:'K-State team',result:'1st · 19 pts'},
       {group:"Men's 6K",participant:'Max Larson',result:'1st · 18:27.2'},
       {group:"Men's 6K",participant:'Jackson Esquibel',result:'2nd · 18:32.3'},
       {group:"Men's 6K",participant:'Brock Olsen',result:'3rd · 18:36.0'},
@@ -108,6 +108,7 @@ function enrichMeetEvent(event,date){
   const detail=VERIFIED_MEET_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(detail){
     event.results=detail.rows;
+    event.headline="Women's team: 1st · 20 pts / Men's team: 1st · 19 pts";
     event.result_count=detail.rows.length;
     event.has_more_results=detail.rows.length>3;
     event.source={...event.source,name:'Official athletics meet recap',url:detail.source_url};
