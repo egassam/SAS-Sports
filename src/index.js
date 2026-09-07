@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.5.1';
+const VERSION='2.5.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -119,6 +119,21 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
       {label:'Saves',value:'K-State 8 · Iowa 4'},
       {label:'Corners',value:'K-State 4 · Iowa 7'}
     ]
+  },
+  'kstate|Soccer|2026-08-30|nebraska':{
+    source_url:'https://www.kstatesports.com/news/2026/8/30/soccer-k-state-nebraska-play-to-draw-on-sunday-night',
+    highlights:[
+      'K-State and Nebraska finished in a scoreless draw.',
+      'Maddie Sibbing saved a Nebraska penalty kick in the 67th minute.',
+      'Sibbing made six saves and recorded her school-record 12th career shutout.',
+      'The result extended K-State’s school-record unbeaten streak to six matches.'
+    ],
+    stats:[
+      {label:'Shots',value:'K-State 12 · Nebraska 15'},
+      {label:'Shots on goal',value:'K-State 3 · Nebraska 6'},
+      {label:'Saves',value:'K-State 6 · Nebraska 3'},
+      {label:'Corners',value:'K-State 1 · Nebraska 9'}
+    ]
   }
 }));
 function enrichGameEvent(event){
@@ -224,7 +239,7 @@ function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
 function shortHighlight(text){
   let item=clean(text);if(!item)return null;
   const words=item.split(/\s+/);
-  if(words.length>22)item=words.slice(0,22).join(' ')+'…';
+  if(words.length>22||!/[.!?]$/.test(item))return null;
   return item;
 }
 function extractOfficialHighlights(raw){
