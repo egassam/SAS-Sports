@@ -54,6 +54,11 @@ for(const [school,domain] of Object.entries(rolloutSchools)){
 contains(worker,/filterActiveSeason/,'Active-season filter must exist');
 contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
 contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game cards must be supported');
+contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
+contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
+contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
+contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placement text must mark a completed meet final');
+contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 

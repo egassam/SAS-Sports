@@ -34,6 +34,10 @@ function validateEvent(event,schoolId,sport){
   assert.equal(event.school_id,schoolId,'wrong school attached to event');
   assert.equal(event.sport,sport,'wrong sport attached to event');
   assert.ok(event.id&&event.title&&event.status,'event identity is incomplete');
+  assert.ok(event.opponent&&!/^(?:undefined|null)$/i.test(event.opponent),'event opponent or meet name is invalid');
+  assert.ok(!/\b(?:undefined|null)\b/i.test(event.title),'event title contains a missing value');
+  assert.ok(!event.headline||!/^(?:undefined|null)$/i.test(event.headline),'event headline contains a missing value');
+  assert.ok(!(event.results||[]).some(item=>/^(?:undefined|null)$/i.test(item?.value)),'event result contains a missing value');
   assert.ok(event.source?.url?.startsWith('https://'),'event lacks an official HTTPS source');
   if(DEFAULT_SPORTS.includes(sport)&&event.start_time)assert.equal(new Date(event.start_time).getUTCFullYear(),currentFallYear(),'stale season event returned');
   if(event.status==='Final')assert.ok(event.headline||event.school_score!=null||event.results?.length,'final event has no score or result');
@@ -48,6 +52,12 @@ async function validateSport(school,sport){
   events.forEach(event=>validateEvent(event,school.id,sport));
   const officialHost=new URL(school.athletics_url).hostname.replace(/^www\./,'');
   assert.ok(events.every(event=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(officialHost)),'event points outside the official athletics domain');
+  const officialResponse=await fetch(events[0].source.url,{headers:{accept:'text/html'}});
+  if(officialResponse.ok){
+    const officialHtml=await officialResponse.text();
+    const officialHasCompleted=/(?:Completed Event:|schedule-event-item--completed|s-game-card-standard__header-game-(?:team-score|pre-score))/i.test(officialHtml);
+    if(officialHasCompleted)assert.ok((group.results||[]).length>0,'official schedule has completed events but app returned zero results');
+  }
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.equal(athletes.length,3,'featured athlete row must contain exactly three athletes');
