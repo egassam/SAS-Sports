@@ -37,6 +37,8 @@ contains(page,/no cached results are being shown as current/i,'UI must not subst
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
+contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
+contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
 contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
