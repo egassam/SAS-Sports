@@ -1,15 +1,15 @@
 import schools from './schools.json';
 
-const VERSION='3.2.1';
+const VERSION='3.3.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
 };
 
 const SPORT_PATHS={
-  'Football':['football'],'Volleyball':['womens-volleyball','volleyball'],
+  'Football':['football'],'Volleyball':['womens-volleyball','wvball','volleyball'],
   "Women's Volleyball":['womens-volleyball','volleyball'],"Men's Volleyball":['mens-volleyball','volleyball'],
-  'Soccer':['womens-soccer','soccer','mens-soccer'],"Women's Soccer":['womens-soccer','soccer'],"Men's Soccer":['mens-soccer','soccer'],
+  'Soccer':['womens-soccer','wsoc','soccer','mens-soccer'],"Women's Soccer":['womens-soccer','soccer'],"Men's Soccer":['mens-soccer','soccer'],
   'Cross Country':['cross-country'],'Track & Field':['track-and-field','track-field'],
   'Basketball':['mens-basketball','womens-basketball','basketball'],"Men's Basketball":['mens-basketball','basketball'],"Women's Basketball":['womens-basketball','basketball'],
   'Baseball':['baseball'],'Softball':['softball'],'Wrestling':['wrestling'],
@@ -28,10 +28,16 @@ const KNOWN_URLS=new Map(Object.entries({
   'kstate|Cross Country':'https://www.kstatesports.com/sports/cross-country/schedule',
   'kstate|Track & Field':'https://www.kstatesports.com/sports/track-and-field/schedule',
   'kstate|Football':'https://www.kstatesports.com/sports/football/schedule',
-  'kansas|Volleyball':'https://kuathletics.com/sports/womens-volleyball/schedule/2026',
-  'kansas|Soccer':'https://kuathletics.com/sports/womens-soccer/schedule/text',
+  'kansas|Volleyball':'https://kuathletics.com/sports/wvball/schedule',
+  'kansas|Soccer':'https://kuathletics.com/sports/wsoc/schedule',
   'kansas|Cross Country':'https://kuathletics.com/sports/cross-country/schedule',
   'kansas|Track & Field':'https://kuathletics.com/sports/track-and-field/schedule',
+  'kansas|Football':'https://kuathletics.com/sports/football/schedule',
+  'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
+  'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
+  'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
+  'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
+  'florida|Football':'https://floridagators.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
