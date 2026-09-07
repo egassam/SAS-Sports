@@ -1,7 +1,7 @@
 import schools from './schools.json';
 
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (compatible; SAS-Sports/2.3.2; Cloudflare-Worker)',
+  'User-Agent': 'Mozilla/5.0 (compatible; SAS-Sports/2.3.3; Cloudflare-Worker)',
   'Accept': 'text/html,application/xhtml+xml'
 };
 
@@ -58,9 +58,14 @@ function sportMatches(a,b){
 }
 
 function candidateUrls(school,sport){
-  const out=[]; const known=KNOWN_URLS.get(`${school.id}|${sport}`); if(known) out.push(known);
+  const out=[];
+  const known=KNOWN_URLS.get(`${school.id}|${sport}`);
+  if(known) out.push(known);
   const base=school.athletics_url.replace(/\/$/,'');
   for(const p of (SPORT_PATHS[sport] || [slug(sport)])) out.push(`${base}/sports/${p}/schedule`);
+  // The athletics homepage/scoreboard is often fresher than a sport schedule page
+  // immediately after an event ends. Merge it rather than trusting one page alone.
+  out.push(`${base}/`);
   return [...new Set(out)];
 }
 
@@ -121,7 +126,6 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
       const opponent=clean(m[3]);
       if(!opponent) continue;
       // Sidearm tournament pages can include neutral-site matches between other teams.
-      // Do not mislabel those embedded 'Team A vs Team B' entries as this school's event.
       if(/\b(?:vs\.?|versus)\b/i.test(opponent)) continue;
 
       const e=makeEvent({
@@ -155,6 +159,28 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   });
 }
 
+function eventMergeKey(e){
+  const day=e.start_time?e.start_time.slice(0,10):'';
+  return `${e.school_id}|${e.sport}|${slug(e.opponent||'')}|${day}`;
+}
+
+function mergeEvents(eventLists){
+  const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4};
+  const byKey=new Map();
+  for(const events of eventLists){
+    for(const e of events){
+      const key=eventMergeKey(e);
+      const prev=byKey.get(key);
+      if(!prev){byKey.set(key,e);continue;}
+      const ew=statusWeight[e.status]??0, pw=statusWeight[prev.status]??0;
+      const eDetail=(e.school_score&&e.opponent_score?2:0)+(e.result_count||0);
+      const pDetail=(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0);
+      if(ew>pw || (ew===pw && eDetail>pDetail)) byKey.set(key,e);
+    }
+  }
+  return [...byKey.values()];
+}
+
 function inSeason(sport,month){
   const windows=SEASONS[sport]; if(!windows) return true;
   return windows.some(([a,b])=>a<=b ? month>=a&&month<=b : month>=a||month<=b);
@@ -183,25 +209,43 @@ function groupEvents(events,now=new Date()){
 
 async function fetchLive(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId); const now=new Date();
-  if(!school) return {events:[],source_url:null,fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
+  if(!school) return {events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
 
+  const urls=candidateUrls(school,sport);
   const errors=[];
-  for(const url of candidateUrls(school,sport)){
-    try{
-      const r=await fetch(url,{headers:HEADERS,redirect:'follow'});
-      if(!r.ok){errors.push(`${url}: HTTP ${r.status}`);continue;}
+  const successful=[];
 
-      const html=await r.text();
-      const events=parseHtml(html,school,sport,r.url||url,now);
+  const responses=await Promise.allSettled(urls.map(async url=>{
+    const r=await fetch(url,{headers:HEADERS,redirect:'follow'});
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const html=await r.text();
+    const finalUrl=r.url||url;
+    return {url:finalUrl,events:parseHtml(html,school,sport,finalUrl,now)};
+  }));
 
-      if(events.length) return {events,source_url:r.url||url,fetched_at:now.toISOString(),live_source_used:true,error:null};
-      errors.push(`No schedule events parsed from ${r.url||url}`);
-    }catch(e){
-      errors.push(`${url}: ${e?.name||'FetchError'}`);
+  for(let i=0;i<responses.length;i++){
+    const item=responses[i];
+    if(item.status==='fulfilled'){
+      if(item.value.events.length) successful.push(item.value);
+      else errors.push(`No schedule events parsed from ${item.value.url}`);
+    }else{
+      errors.push(`${urls[i]}: ${item.reason?.message||item.reason?.name||'FetchError'}`);
     }
   }
 
-  return {events:[],source_url:null,fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-3).join('; ')||'No live source available'};
+  const events=mergeEvents(successful.map(x=>x.events));
+  if(events.length){
+    return {
+      events,
+      source_url:successful[0]?.url||null,
+      source_urls:successful.map(x=>x.url),
+      fetched_at:now.toISOString(),
+      live_source_used:true,
+      error:null
+    };
+  }
+
+  return {events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-4).join('; ')||'No live source available'};
 }
 
 export default {
@@ -210,7 +254,7 @@ export default {
 
     if(url.pathname==='/web') return env.ASSETS.fetch(new Request(new URL('/index.html',url),request));
 
-    if(url.pathname==='/api/status') return json({name:'SAS Sports API',version:'2.3.2',mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
+    if(url.pathname==='/api/status') return json({name:'SAS Sports API',version:'2.3.3',mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
 
     if(url.pathname==='/schools'){
       let list=schools;
@@ -230,7 +274,7 @@ export default {
       if(!school||!sport) return json({detail:'school and sport are required'},400);
 
       const result=await fetchLive(school,sport);
-      if(!result.events.length) return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,fetched_at:result.fetched_at,error:result.error}},502);
+      if(!result.events.length) return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);
 
       return json(groupEvents(result.events));
     }
@@ -240,7 +284,7 @@ export default {
       if(!school||!sport) return json({detail:'school and sport are required'},400);
 
       const result=await fetchLive(school,sport);
-      return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});
+      return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});
     }
 
     return env.ASSETS.fetch(request);
