@@ -184,7 +184,7 @@ async function openEvent(id){
   let lastGroup='';
   const rows=(e.results||[]).map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
   const resultsTitle=e.event_type==='MEET'?'Full Meet Results':'Full Team Results';
-  const highlights=(e.highlights||[]).length?`<div class="highlights"><h4>Game Highlights</h4><ul>${e.highlights.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'';
+  const highlights=(e.highlights||[]).length?`<div class="highlights"><h4>Event Highlights</h4><ul>${e.highlights.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'';
   const gameStats=(e.game_stats||[]).length?`<div class="game-stats">${e.game_stats.map(x=>`<div class="game-stat"><span>${esc(x.label)}</span><strong>${esc(x.value)}</strong></div>`).join('')}</div>`:'';
   const highlightStatus=e.highlight_status?`<div class="highlight-status">${esc(e.highlight_status)}${e.recap_url?` <a class="official-link" href="${esc(e.recap_url)}" target="_blank" rel="noopener">Open official recap</a>`:''}</div>`:'';
   const source=e.source?.url?`<p class="small muted">Source: <a class="official-link" href="${esc(e.source.url)}" target="_blank" rel="noopener">${esc(e.source.name||'Official athletics source')}</a> · verified ${esc(e.last_verified_at||e.source.updated_at||'now')}</p>`:'';
