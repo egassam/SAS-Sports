@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.1.1';
+const VERSION='3.2.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -79,6 +79,11 @@ function rosterProfiles(raw,base){
   }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
 }
+function athleteImage(raw,base){
+  const hit=raw.match(/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)/i)
+    ||raw.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+  return hit?absoluteUrl(hit[1],base):null;
+}
 function verifiedInstagram(raw){
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
@@ -101,8 +106,8 @@ async function featuredAthletes(schoolId,sport){
   await Promise.all(profiles.slice(0,18).map(async profile=>{
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
-      const instagram_url=verifiedInstagram(await r.text());
-      if(instagram_url)found.push({name:profile.name,instagram_url,profile_url:profile.url});
+      const html=await r.text(),instagram_url=verifiedInstagram(html);
+      if(instagram_url)found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url)});
     }catch{}
   }));
   return found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
