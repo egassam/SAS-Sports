@@ -40,7 +40,7 @@ This repository is intended to deploy to Cloudflare from the `main` branch. If d
 - Open the local URL Wrangler prints.
 
 ## School certification
-- Run `npm run test:schools` to certify Kansas State, Kansas, and Florida.
+- Run `npm run test:schools` to certify every completed school in the rollout matrix.
 - Run `npm run test:school -- new-school-id --deep` to apply the same checks plus event-highlight generation to a newly added school.
 - Optional filters: `--schools=kstate,kansas`, `--sports="Cross Country,Soccer"`, and `--base=https://preview.example.com`.
 

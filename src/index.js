@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.3.2';
+const VERSION='3.4.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -38,6 +38,14 @@ const KNOWN_URLS=new Map(Object.entries({
   'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
   'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
   'florida|Football':'https://floridagators.com/sports/football/schedule',
+  'arizona|Volleyball':'https://arizonawildcats.com/sports/womens-volleyball/schedule',
+  'arizona|Soccer':'https://arizonawildcats.com/sports/soccer/schedule',
+  'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
+  'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
+  'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
+  'arizona-state|Soccer':'https://thesundevils.com/sports/soccer/schedule',
+  'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
+  'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',

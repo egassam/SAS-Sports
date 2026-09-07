@@ -35,7 +35,9 @@ contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-re
 const rolloutSchools={
   kstate:'kstatesports.com',
   kansas:'kuathletics.com',
-  florida:'floridagators.com'
+  florida:'floridagators.com',
+  arizona:'arizonawildcats.com',
+  'arizona-state':'thesundevils.com'
 };
 for(const [school,domain] of Object.entries(rolloutSchools)){
   for(const sport of ['Cross Country','Soccer','Volleyball','Football']){
