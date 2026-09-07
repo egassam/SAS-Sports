@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.4.1';
+const VERSION='2.4.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -204,17 +204,6 @@ function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
     const event=parseLabel(labels.at(-1),school,sport,sourceUrl,now);
     if(event)map.set(eventMergeKey(event),recapUrl);
   }
-  // SIDEARM variants place recap links outside the event heading container.
-  // Their completed-event headings and recap links remain in the same order,
-  // so use that order as a safe fallback when contextual pairing is absent.
-  const finals=[],seenEvents=new Set();
-  for(const label of extractEventLabels(raw).filter(x=>/^Completed Event:/i.test(x))){
-    const event=parseLabel(label,school,sport,sourceUrl,now);
-    if(!event)continue;
-    const key=eventMergeKey(event);
-    if(!seenEvents.has(key)){seenEvents.add(key);finals.push(event);}
-  }
-  finals.forEach((event,i)=>{const key=eventMergeKey(event);if(!map.has(key)&&recapUrls[i])map.set(key,recapUrls[i]);});
   return map;
 }
 function shortHighlight(text){
@@ -244,6 +233,22 @@ function finalScoreHighlight(e){
   if(e.headline)return `Official result: ${e.headline}.`;
   return `${e.school} completed its ${e.sport} event against ${e.opponent||'the listed opponent'}.`;
 }
+function recapMatchesEvent(raw,e){
+  const text=visibleText(raw).toLowerCase().replace(/[^a-z0-9]+/g,' ');
+  const opponent=String(e.opponent||'').toLowerCase().replace(/^\s*\([^)]*\)\s*/,'').replace(/[^a-z0-9]+/g,' ').trim();
+  if(!opponent||!text.includes(opponent))return false;
+  const sportName=String(e.sport||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  if(sportName&&!text.includes(sportName))return false;
+  const day=e.start_time?.slice(0,10);
+  if(day){
+    const [year,month,date]=day.split('-').map(Number);
+    const names=['january','february','march','april','may','june','july','august','september','october','november','december'];
+    const datePhrase=`${names[month-1]} ${date} ${year}`;
+    const compactDate=`${month} ${date} ${year}`;
+    if(!text.includes(datePhrase)&&!text.includes(compactDate))return false;
+  }
+  return true;
+}
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
   const recapMap=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   await Promise.all(events.filter(e=>e.status==='Final').map(async e=>{
@@ -254,7 +259,9 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
     try{
       const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});
       if(!r.ok){e.highlight_status='Official recap is linked, but additional highlights could not be loaded.';return;}
-      const extracted=extractOfficialHighlights(await r.text());
+      const recapHtml=await r.text();
+      if(!recapMatchesEvent(recapHtml,e)){e.recap_url=null;e.highlight_status='No verified event-specific recap is available yet.';return;}
+      const extracted=extractOfficialHighlights(recapHtml);
       e.highlights=[...new Set([...(e.highlights||[]),...extracted])].slice(0,5);
       e.source={...e.source,name:'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
       if(!extracted.length)e.highlight_status='Official recap available; open it for complete highlights.';
