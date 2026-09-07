@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.4.4';
+const VERSION='2.4.5';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -109,12 +109,13 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
     highlights:[
       'Allison Marshall scored from 19 yards in the 23rd minute, assisted by Gabby DeMers.',
       'Two additional K-State first-half goals were disallowed after VAR reviews.',
+      'Iowa’s Reilly Heman equalized in the 50th minute, assisted by Berit Parten.',
       'Maddie Sibbing tied her collegiate career high with eight saves.',
       'The draw extended K-State’s school-record unbeaten streak to seven matches.'
     ],
     stats:[
-      {label:'Shots',value:'K-State 13 · Iowa 25'},
-      {label:'Shots on goal',value:'K-State 7 · Iowa 9'},
+      {label:'Shots',value:'K-State 11 · Iowa 25'},
+      {label:'Shots on goal',value:'K-State 5 · Iowa 9'},
       {label:'Saves',value:'K-State 8 · Iowa 4'},
       {label:'Corners',value:'K-State 4 · Iowa 7'}
     ]
