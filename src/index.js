@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.5.3';
+const VERSION='2.6.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -259,10 +259,26 @@ function extractOfficialHighlights(raw){
   }
   return items.slice(0,5);
 }
-function finalScoreHighlight(e){
-  if(e.school_score!=null&&e.opponent_score!=null)return `Final score: ${e.school} ${e.school_score}, ${e.opponent} ${e.opponent_score}.`;
-  if(e.headline)return `Official result: ${e.headline}.`;
-  return `${e.school} completed its ${e.sport} event against ${e.opponent||'the listed opponent'}.`;
+function automaticFinalHighlights(e){
+  const items=[];
+  if(e.school_score!=null&&e.opponent_score!=null){
+    const schoolScore=Number(e.school_score),opponentScore=Number(e.opponent_score);
+    items.push(`Final score: ${e.school} ${e.school_score}, ${e.opponent} ${e.opponent_score}.`);
+    if(Number.isFinite(schoolScore)&&Number.isFinite(opponentScore)){
+      if(schoolScore===opponentScore)items.push(`The event finished tied at ${schoolScore}-${opponentScore}.`);
+      else if(schoolScore>opponentScore){
+        const margin=schoolScore-opponentScore;
+        items.push(`${e.school} earned the victory by ${margin} ${margin===1?'point':'points'}.`);
+        if(opponentScore===0)items.push(`${e.school} recorded a shutout.`);
+        if(e.sport==='Volleyball'&&schoolScore===3&&opponentScore===0)items.push(`${e.school} completed a straight-set sweep.`);
+      }else{
+        const margin=opponentScore-schoolScore;
+        items.push(`${e.opponent} won by ${margin} ${margin===1?'point':'points'}.`);
+      }
+    }
+  }else if(e.headline)items.push(`Official result: ${e.headline}.`);
+  else items.push(`${e.school} completed its ${e.sport} event against ${e.opponent||'the listed opponent'}.`);
+  return items;
 }
 function recapMatchesEvent(raw,e){
   const text=visibleText(raw).toLowerCase().replace(/[^a-z0-9]+/g,' ');
@@ -287,7 +303,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now){
     try{const r=await fetch(recapUrl,{headers:HEADERS,redirect:'follow'});if(r.ok)recapPages.set(recapUrl,await r.text());}catch{}
   }));
   await Promise.all(events.filter(e=>e.status==='Final').map(async e=>{
-    if(!e.highlights?.length)e.highlights=[finalScoreHighlight(e)];
+    if(!e.highlights?.length)e.highlights=automaticFinalHighlights(e);
     const direct=recapIndex.map.get(eventMergeKey(e));
     const recapUrl=(direct&&recapMatchesEvent(recapPages.get(direct)||'',e)?direct:null)
       ||recapIndex.candidates.find(url=>recapMatchesEvent(recapPages.get(url)||'',e));
