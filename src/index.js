@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.5.2';
+const VERSION='2.5.3';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -142,6 +142,7 @@ function enrichGameEvent(event){
   if(!detail)return event;
   event.highlights=detail.highlights;
   event.game_stats=detail.stats;
+  event.recap_url=detail.source_url;
   event.source={...event.source,name:'Official athletics game recap',url:detail.source_url};
   return event;
 }
