@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.7.1';
+const VERSION='2.7.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -268,6 +268,14 @@ function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   while((m=anyRecap.exec(raw))){
     const recapUrl=absoluteUrl(m[1],sourceUrl);
     if(recapUrl&&!seenCandidates.has(recapUrl)){seenCandidates.add(recapUrl);candidates.push(recapUrl);}
+  }
+  // K-State sometimes labels a final only as "Game Center" even when the official
+  // recap exists in the sport's Related News. Include official dated news articles
+  // as candidates; recapMatchesEvent still requires the exact sport, opponent and date.
+  const newsLink=/<a\b[^>]*href=["']([^"']*\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)[^"']*["'][^>]*>/gi;
+  while((m=newsLink.exec(raw))){
+    const articleUrl=absoluteUrl(m[1],sourceUrl);
+    if(articleUrl&&!seenCandidates.has(articleUrl)){seenCandidates.add(articleUrl);candidates.push(articleUrl);}
   }
   return{map,candidates:[...map.values(),...candidates]};
 }
