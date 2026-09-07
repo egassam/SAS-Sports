@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.4.5';
+const VERSION='2.5.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -193,18 +193,25 @@ function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return t
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[];for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today')upcoming.push(e);else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
-  const map=new Map(),recapUrls=[],seenUrls=new Set();
-  const re=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const map=new Map(),markers=[],seenMarker=new Set();
+  const addMarker=(label,index,length)=>{
+    const event=parseLabel(visibleText(label),school,sport,sourceUrl,now);
+    if(!event||event.status!=='Final')return;
+    const id=`${eventMergeKey(event)}|${index}`;
+    if(!seenMarker.has(id)){seenMarker.add(id);markers.push({event,index,end:index+length});}
+  };
   let m;
-  while((m=re.exec(raw))){
-    if(!/\brecap\b/i.test(visibleText(m[2])))continue;
-    const recapUrl=absoluteUrl(m[1],sourceUrl);
-    if(!recapUrl||seenUrls.has(recapUrl))continue;
-    seenUrls.add(recapUrl);recapUrls.push(recapUrl);
-    const before=raw.slice(Math.max(0,m.index-30000),m.index);
-    const labels=extractEventLabels(before).filter(x=>/^Completed Event:/i.test(x));
-    const event=parseLabel(labels.at(-1),school,sport,sourceUrl,now);
-    if(event)map.set(eventMergeKey(event),recapUrl);
+  const attr=/(?:aria-label|title)\s*=\s*["']([^"']*Completed Event:[^"']*)["']/gi;
+  while((m=attr.exec(raw)))addMarker(m[1],m.index,m[0].length);
+  const heading=/<h[1-6]\b[^>]*>([\s\S]*?Completed Event:[\s\S]*?)<\/h[1-6]>/gi;
+  while((m=heading.exec(raw)))addMarker(m[1],m.index,m[0].length);
+  markers.sort((a,b)=>a.index-b.index);
+  for(let i=0;i<markers.length;i++){
+    const marker=markers[i],next=markers.find(x=>x.index>marker.index);
+    const block=raw.slice(marker.end,Math.min(next?.index||raw.length,marker.end+40000));
+    const link=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?\bRecap\b[\s\S]*?)<\/a>/i);
+    const recapUrl=link?absoluteUrl(link[1],sourceUrl):null;
+    if(recapUrl)map.set(eventMergeKey(marker.event),recapUrl);
   }
   return map;
 }
@@ -220,6 +227,17 @@ function extractOfficialHighlights(raw){
   const meta=raw.match(/<meta\b[^>]*(?:name|property)=["'](?:description|og:description)["'][^>]*content=["']([^"']+)["']/i)
     ||raw.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:name|property)=["'](?:description|og:description)["']/i);
   if(meta)add(meta[1]);
+  const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
+  if(bodyMatch){
+    try{
+      const body=JSON.parse(bodyMatch[1]);
+      for(const sentence of body.split(/(?<=[.!?])\s+/)){
+        if(items.length>=4)break;
+        if(/\b(?:privacy|copyright|ticket|subscribe)\b/i.test(sentence))continue;
+        add(sentence);
+      }
+    }catch{}
+  }
   const hit=raw.search(/HOW IT HAPPENED/i);
   if(hit>=0){
     let section=raw.slice(hit,hit+30000);
