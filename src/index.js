@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='2.9.0';
+const VERSION='2.9.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -373,10 +373,16 @@ async function generateAIHighlights(env,e,raw){
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
   const article=recapArticleText(raw);
   if(article.length<80)return{items:null,state:'recap_text_unavailable'};
-  const prompt=`Create 3 to 5 concise key highlights for this college sports event.
-Use ONLY facts in the official recap below. Prioritize scoring plays, standout athletes, records, turning points, and meaningful statistics.
-Paraphrase in fresh language. Never copy sentences, speculate, add facts, or use generic statements.
-Each highlight must be one complete sentence under 24 words.
+  const prompt=`Write four engaging, information-rich highlights that make a fan understand how this college sports event unfolded.
+Use ONLY facts from the official recap below and paraphrase them in fresh language.
+
+Quality requirements:
+- Each highlight must be a complete 18-to-38-word sentence.
+- Explain the moment and why it mattered: include the score situation, inning/set/period/minute, turning point, record, milestone, or decisive statistic when available.
+- Name the relevant athletes and include assists, distances, times, set scores, or other sport-specific details when the recap provides them.
+- Use active, varied language. Make the event feel alive while remaining factual.
+- Never write bare statements such as "X scored," "Y tied it," "Z won it," or "Team A outshot Team B."
+- Do not merely restate the final score, invent drama, speculate, quote the article, or repeat the same fact.
 
 Event: ${e.school} vs ${e.opponent}; sport: ${e.sport}; date: ${e.start_time?.slice(0,10)||''}; final: ${e.school_score??''}-${e.opponent_score??''}
 
@@ -390,7 +396,7 @@ ${article}`;
       type:'json_schema',
       json_schema:{
         type:'object',
-        properties:{highlights:{type:'array',items:{type:'string'},minItems:3,maxItems:5}},
+        properties:{highlights:{type:'array',items:{type:'string',minLength:70,maxLength:260},minItems:4,maxItems:4}},
         required:['highlights']
       }
     }
@@ -408,9 +414,13 @@ ${article}`;
       }
       const list=Array.isArray(parsed)?parsed:parsed?.highlights;
       if(!Array.isArray(list))throw new Error('Highlight array missing');
-      const cleanItems=list.map(clean).filter(x=>x&&x.length<=220&&/[.!?]$/.test(x)).slice(0,5);
-      if(cleanItems.length>=2)return{items:cleanItems,state:'recap_generated',model};
-      lastError=new Error('Insufficient complete highlights');
+      const cleanItems=list.map(clean).filter(x=>{
+        if(!x||x.length>300||!/[.!?]$/.test(x))return false;
+        const words=x.split(/\s+/).length;
+        return words>=14&&words<=42&&!/^[A-Z][A-Za-z'. -]+ (?:scored|tied it|won it|outshot)/.test(x);
+      }).slice(0,4);
+      if(cleanItems.length>=3)return{items:cleanItems,state:'recap_generated',model};
+      lastError=new Error('Highlights lacked event detail');
     }catch(error){lastError=error}
   }
   return{items:null,state:'ai_failed',error:clean(lastError?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
