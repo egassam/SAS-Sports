@@ -148,7 +148,7 @@ async function loadFeed(){
   try{
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
     const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
-    const requested=chosen?[chosen]:['Football','Volleyball','Soccer','Cross Country'];
+    const requested=chosen?[chosen]:['Cross Country','Soccer','Volleyball','Football'];
     const liveGroups=[]; let liveOk=0;
     await Promise.all(requested.map(async sp=>{
       try{
@@ -158,7 +158,7 @@ async function loadFeed(){
     }));
     // Web-live mode never labels bundled/pilot events as current. Only data fetched
     // from the official athletics source during this request is displayed here.
-    currentGroups=liveGroups;
+    currentGroups=liveGroups.sort((a,b)=>requested.indexOf(a.sport)-requested.indexOf(b.sport));
     populateSportFilter(currentGroups); if(chosen)sportFilter.value=chosen; updateCounts(); render(currentGroups);
     const total=currentGroups.reduce((n,g)=>n+g.live.length+g.results.length+g.upcoming.length+g.other.length,0);
     if(liveOk){
