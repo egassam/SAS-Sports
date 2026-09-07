@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.1.0';
+const VERSION='3.1.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -64,13 +64,20 @@ function dailyRank(value){
   return h>>>0;
 }
 function rosterProfiles(raw,base){
-  const out=[],seen=new Set();let m;
+  const byUrl=new Map();let m;
   const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?!coaches\/|staff\/)[^"'?#]+\/\d+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const nameScore=name=>{
+    if(!name||name.length>80||/^(?:jersey\s+number\s+)?\d+$/i.test(name))return-1;
+    let score=/^[A-Za-zÀ-ÿ'’.-]+(?:\s+[A-Za-zÀ-ÿ'’.-]+)+$/.test(name)?10:0;
+    if(/jersey|number|image|photo/i.test(name))score-=10;
+    return score;
+  };
   while((m=re.exec(raw))){
-    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);
-    if(url&&name&&name.length<=80&&!seen.has(url)){seen.add(url);out.push({name,url})}
+    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)return;
+    const previous=byUrl.get(url);
+    if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url});
   }
-  return out;
+  return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
 }
 function verifiedInstagram(raw){
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
@@ -530,7 +537,8 @@ export default{
     if(url.pathname==='/live/athletes'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');
       if(!school||!sport)return json({detail:'school and sport are required'},400);
-      const cache=caches.default,cacheKey=new Request(url.toString(),{method:'GET'});
+      const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('athlete_cache',VERSION);
+      const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
       const cached=await cache.match(cacheKey);if(cached)return cached;
       const response=json(await featuredAthletes(school,sport)),stored=new Response(response.body,response);
       stored.headers.set('cache-control','public, max-age=21600');
