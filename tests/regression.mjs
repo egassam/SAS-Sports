@@ -13,6 +13,7 @@ function count(source,text){
 
 // Exact recap identity: opponent, sport and event date must all participate.
 contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist');
+contains(worker,/storyPageContentBody/,'Next-generation official recap bodies must be supported');
 contains(worker,/if\(!opponent\|\|!text\.includes\(opponent\)\)return false/,'Opponent mismatch must reject a recap');
 contains(worker,/sportName.*return false/,'Sport mismatch must reject a recap');
 contains(worker,/urlDate.*published.*dateText/s,'Event date must be verified');

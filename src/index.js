@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.2';
+const VERSION='3.4.3';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -475,6 +475,8 @@ function recapMatchesEvent(raw,e,recapUrl=''){
 function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
+  const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
+  if(storyBody)return visibleText(storyBody).slice(0,14000);
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
   if(!article)return'';
   const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);
