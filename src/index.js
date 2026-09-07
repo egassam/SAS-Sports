@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.0.0';
+const VERSION='3.0.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -389,7 +389,7 @@ async function generateAIHighlights(env,e,raw){
   const article=recapArticleText(raw);
   if(article.length<80)return{items:null,state:'recap_text_unavailable'};
   const prompt=`Write exactly four engaging, factual highlights explaining how this ${e.sport} event unfolded.
-Use only the official recap. Paraphrase; never copy. Each highlight must be one complete sentence of 18-38 words.
+Use only the official recap. Paraphrase; never copy. Each highlight must be one complete sentence of 16-36 words.
 Prioritize ${highlightPriorities(e.sport)}. Include names, timing, score context and why the moment mattered when available.
 Reject vague lines like "X scored," "Y won it," or "Team A outshot Team B."
 Return four lines only, with each line beginning "- ".
@@ -398,7 +398,7 @@ Event: ${e.school} vs ${e.opponent}; date ${e.start_time?.slice(0,10)||''}; fina
 Official recap:
 ${article.slice(0,10000)}`;
   try{
-    const request=env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast',{
+    const request=env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast',{
       messages:[{role:'user',content:prompt}],max_tokens:500,temperature:0.15
     });
     const out=await Promise.race([
@@ -406,15 +406,24 @@ ${article.slice(0,10000)}`;
       new Promise((_,reject)=>setTimeout(()=>reject(new Error('Highlight generation timed out')),8000))
     ]);
     const response=String(out?.response??out?.result?.response??'').trim();
-    let list=response.split(/\n+/).map(x=>clean(x.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,''))).filter(Boolean);
-    if(list.length<3){
-      const start=response.indexOf('['),end=response.lastIndexOf(']');
-      if(start>=0&&end>start){try{const parsed=JSON.parse(response.slice(start,end+1));if(Array.isArray(parsed))list=parsed}catch{}}
+    let list=[];
+    const start=response.indexOf('['),end=response.lastIndexOf(']');
+    if(start>=0&&end>start){
+      try{
+        const parsed=JSON.parse(response.slice(start,end+1));
+        list=Array.isArray(parsed)?parsed:(parsed?.highlights||[]);
+      }catch{}
     }
-    const cleanItems=list.map(clean).filter(x=>{
-      if(!x||x.length>320||!/[.!?]$/.test(x))return false;
+    if(list.length<3){
+      list=response.split(/\n+/)
+        .map(x=>clean(x.replace(/^\s*(?:[-*•]|\d+[.)])\s*/,'').replace(/^["']|["',]+$/g,'')))
+        .filter(x=>x&&/[.!?]$/.test(x));
+    }
+    if(list.length<3)list=response.match(/[^.!?\n]{25,}[.!?]/g)||[];
+    const cleanItems=[...new Set(list.map(clean))].filter(x=>{
+      if(!x||x.length>360||!/[.!?]$/.test(x))return false;
       const words=x.split(/\s+/).length;
-      return words>=12&&words<=45;
+      return words>=8&&words<=50;
     }).slice(0,4);
     return cleanItems.length>=3?{items:cleanItems,state:'recap_generated'}:{items:null,state:'insufficient_highlights'};
   }catch(error){
