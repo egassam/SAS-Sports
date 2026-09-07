@@ -3,6 +3,9 @@
   "name": "sas-sports",
   "main": "./src/index.js",
   "compatibility_date": "2026-09-05",
+  "ai": {
+    "binding": "AI"
+  },
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS",
