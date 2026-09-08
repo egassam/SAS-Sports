@@ -77,6 +77,9 @@ contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names mu
 contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placement text must mark a completed meet final');
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
+contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
+contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
+contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
@@ -114,5 +117,11 @@ assert.equal(count(page,'View Full Official Recap'),1,'Expanded results must ren
 contains(page,/highlight-loader-mark[^>]*[^]*>SAS</,'SAS loader mark must exist');
 contains(page,/Fetching SAS verified highlights…/,'Verified-highlight loading message must exist');
 contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1.5 seconds');
+
+const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
+contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
+contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
+contains(schoolValidator,/recap points outside the official athletics domain/,'Recap URLs must remain on the official school domain');
+contains(schoolValidator,/recap incorrectly points to a venue or ticket service/,'Venue and ticket links must fail recap certification');
 
 console.log('SAS Sports regression checks passed');
