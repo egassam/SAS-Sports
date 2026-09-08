@@ -124,6 +124,7 @@ contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:log
 contains(worker,/replace\(\/\\\\u002F\/gi,'\/'\)/,'Escaped WMT portrait URLs must be decoded');
 contains(worker,/payloadImages\.get\(slug\(name\)\)/,'Embedded portraits must be matched to athlete names');
 contains(worker,/imgAlt=decodeHtml/,'Image-only roster cards must recover the athlete name from official alt text');
+contains(worker,/headshot\|photo/,'Publisher image-label suffixes must not become part of athlete names');
 contains(worker,/payloadImages\.get\(slug\(imgTitle\.replace/,'WMT portrait assets must join to roster cards through their official file titles');
 contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-URI placeholders must be rejected');
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
