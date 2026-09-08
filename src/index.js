@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.6';
+const VERSION='3.4.7';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -79,7 +79,10 @@ function dailyRank(value){
 }
 function rosterProfiles(raw,base){
   const byUrl=new Map();let m;
-  const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?!coaches\/|staff\/)(?:player\/[^"'?#]+|[^"'?#]+\/\d+))[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
+  // Capture the complete roster href first. Validating inside this expression
+  // allowed a staff URL like /roster/season/2026/staff/name to be truncated to
+  // /roster/season/2026 and incorrectly accepted as an athlete profile.
+  const re=/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi;
   const nameScore=name=>{
     if(!name||name.length>80||/^(?:jersey\s+number\s+)?\d+$/i.test(name))return-1;
     let score=/^[A-Za-zÀ-ÿ'’.-]+(?:\s+[A-Za-zÀ-ÿ'’.-]+)+$/.test(name)?10:0;
@@ -88,10 +91,11 @@ function rosterProfiles(raw,base){
   };
   while((m=re.exec(raw))){
     const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)continue;
-    // WMT nests staff below seasonal roster paths such as
-    // /roster/season/2026/staff/name. Keep coaches and staff out of the
-    // athlete carousel regardless of where that segment appears.
-    if(/\/(?:staff|coaches)\//i.test(new URL(url).pathname))continue;
+    const path=new URL(url).pathname;
+    // Only real player profile shapes are eligible. This rejects seasonal
+    // roster pages and staff/coach profiles even when their URLs are nested.
+    if(/\/(?:staff|coaches)\//i.test(path))continue;
+    if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
     if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url});
   }
