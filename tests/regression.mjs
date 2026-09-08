@@ -123,6 +123,8 @@ contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected be
 contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:logo/,'Every publisher portrait source must pass a final generic-image guard');
 contains(worker,/replace\(\/\\\\u002F\/gi,'\/'\)/,'Escaped WMT portrait URLs must be decoded');
 contains(worker,/payloadImages\.get\(slug\(name\)\)/,'Embedded portraits must be matched to athlete names');
+contains(worker,/imgAlt=decodeHtml/,'Image-only roster cards must recover the athlete name from official alt text');
+contains(worker,/payloadImages\.get\(slug\(imgTitle\.replace/,'WMT portrait assets must join to roster cards through their official file titles');
 contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-URI placeholders must be rejected');
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
 contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
