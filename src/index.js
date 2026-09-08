@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.8.1';
+const VERSION='3.8.2';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -106,7 +106,7 @@ function rosterProfiles(raw,base){
     return score;
   };
   while((m=re.exec(raw))){
-    const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=visibleText(m[2])||clean(imgAlt);if(!url)continue;
+    const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=clean((visibleText(m[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(!url)continue;
     const path=new URL(url).pathname;
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
