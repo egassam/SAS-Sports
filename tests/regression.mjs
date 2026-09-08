@@ -66,6 +66,11 @@ contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be ac
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
 contains(worker,/if\(cardRecap\)event\.recap_url=cardRecap/,'WMT schedule-card recap identity must be preserved');
+contains(worker,/\(\?:\(\?!<\\\/a>\)\[\\s\\S\]\)\*\?\\bRecap/,'Recap anchors must not cross a closing anchor boundary');
+contains(worker,/delete target\.recap_url/,'Unverified recap URLs must be removed before rendering');
+const recapAnchor=/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i;
+const venueThenRecap='<a href="https://maps.google.com/venue">Venue</a><a href="/news/2026/09/03/game-recap"><span>Recap</span></a>';
+assert.equal(venueThenRecap.match(recapAnchor)?.[1],'/news/2026/09/03/game-recap','Venue links must never be mislabeled as recaps');
 contains(worker,/const scoreText=rawResult\|\|visibleText\(block\)/,'WMT scores split outside the result label must use the full event card');
 contains(worker,/visibleText\(block\)\.match\(\/\\b\(\[WLTD\]\)/,'WMT final-score fallback must recover numeric scores from the full card');
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
