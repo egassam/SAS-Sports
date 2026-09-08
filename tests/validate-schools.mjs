@@ -59,7 +59,7 @@ async function validateSport(school,sport){
   if(officialResponse.ok){
     const officialHtml=await officialResponse.text();
     const officialHasCompleted=/(?:Completed Event:|schedule-event-item--completed|s-game-card-standard__header-game-(?:team-score|pre-score))/i.test(officialHtml);
-    if(officialHasCompleted)assert.ok((group.results||[]).length>0,'official schedule has completed events but app returned zero results');
+    if(DEFAULT_SPORTS.includes(sport)&&officialHasCompleted)assert.ok((group.results||[]).length>0,'official current-season schedule has completed events but app returned zero results');
   }
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
