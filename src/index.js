@@ -1,6 +1,8 @@
 import schools from './schools.json';
 
-const VERSION='3.7.2';
+const VERSION='3.8.0';
+const FEED_FRESH_MS=5*60*1000;
+const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -798,12 +800,39 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   return events;
 }
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
-async function fetchLive(schoolId,sport,env=null,aiTargetId=null){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};const urls=candidateUrls(school,sport),errors=[],successful=[],responses=await Promise.allSettled(urls.map(url=>fetchUrl(url,school,sport,now,env,aiTargetId)));for(let i=0;i<responses.length;i++){const item=responses[i];if(item.status==='fulfilled'){if(item.value.ok&&item.value.events.length)successful.push(item.value);else errors.push(`${item.value.url}: HTTP ${item.value.http_status}, labels ${item.value.label_count}, events ${item.value.event_count}`);}else errors.push(`${urls[i]}: ${item.reason?.message||item.reason?.name||'FetchError'}`);}const events=mergeEvents(successful.map(x=>x.events));if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};}
+async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
+  const school=schools.find(s=>s.id===schoolId),now=new Date();
+  if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
+  const urls=candidateUrls(school,sport),errors=[],successful=[];
+  // Candidate paths are fallbacks, not independent feeds. Stop after the first
+  // usable official schedule instead of hammering every possible publisher URL.
+  for(const url of urls){
+    try{
+      const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
+      if(item.ok&&item.events.length){successful.push(item);break}
+      errors.push(`${item.url}: HTTP ${item.http_status}, labels ${item.label_count}, events ${item.event_count}`);
+    }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
+  }
+  const events=mergeEvents(successful.map(x=>x.events));
+  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};
+  return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
+}
+function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);return new Request(key.toString(),{method:'GET'});}
+function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
+function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
+async function freshGroupedFeed(url,school,sport,env,cache,key){
+  const result=await fetchLive(school,sport,env);
+  if(!result.events.length)return null;
+  const response=json(groupEvents(result.events)),stored=new Response(response.body,response);
+  stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
+  stored.headers.set('x-sas-fetched-at',result.fetched_at);
+  await cache.put(key,stored.clone());return stored;
+}
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
 export default{
-  async fetch(request,env){
+  async fetch(request,env,ctx){
     const url=new URL(request.url);
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
@@ -816,9 +845,10 @@ export default{
       const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('athlete_cache',VERSION);
       const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
       const cached=await cache.match(cacheKey);if(cached)return cached;
-      const response=json(await featuredAthletes(school,sport)),stored=new Response(response.body,response);
-      stored.headers.set('cache-control','public, max-age=21600');
-      await cache.put(cacheKey,stored.clone());return stored;
+      const athletes=await featuredAthletes(school,sport),response=json(athletes),stored=new Response(response.body,response);
+      const complete=athletes.length===3&&athletes.every(a=>a.image_url);
+      stored.headers.set('cache-control',`public, max-age=${complete?21600:300}`);
+      if(athletes.length)await cache.put(cacheKey,stored.clone());return stored;
     }
     if(url.pathname==='/live/highlights'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
@@ -831,7 +861,19 @@ export default{
       stored.headers.set('cache-control','no-store, no-cache, must-revalidate');
       return stored;
     }
-    if(url.pathname==='/live/feed/grouped'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);if(!result.events.length)return json({detail:{message:'Live source returned no usable events',source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,error:result.error}},502);return json(groupEvents(result.events));}
+    if(url.pathname==='/live/feed/grouped'){
+      const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const cache=caches.default,key=feedCacheKey(url,school,sport),cached=await cache.match(key),force=url.searchParams.get('refresh')==='1';
+      if(cached&&!force){
+        const age=cachedAge(cached);
+        if(age<=FEED_FRESH_MS)return cacheResponse(cached,'fresh');
+        if(age<=FEED_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
+      }
+      const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);
+      if(fresh)return cacheResponse(fresh,'live');
+      if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(cached,'stale-fallback');
+      return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
+    }
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});}
     return env.ASSETS.fetch(request);
   }
