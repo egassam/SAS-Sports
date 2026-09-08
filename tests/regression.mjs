@@ -71,9 +71,11 @@ contains(worker,/roster\\\/\[\^"'\?#\]\+/,'Complete next-generation roster URLs 
 contains(worker,/\\\/\(\?:staff\|coaches\)\\\//,'Seasonal staff and coach profiles must be excluded from featured athletes');
 contains(worker,/Capture the complete roster href first/,'Roster links must not be truncated before staff validation');
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
-contains(worker,/return found[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
+contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'Official roster athletes must remain eligible without Instagram');
-contains(worker,/profiles\.slice\(0,3\)/,'Athlete discovery must stay within the Worker request budget');
+contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must search past profiles with generic images');
+contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
+contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
