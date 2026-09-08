@@ -29,6 +29,9 @@ contains(worker,/cleanItems\.length>=3/,'At least three complete highlights are 
 // Feed speed: recaps are lazy and known schools use a single official schedule.
 contains(worker,/if\(known\)return\[known\]/,'Known sport feeds must use one official schedule URL');
 contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain lazy');
+contains(worker,/pathname\.replace\(\/\\\/schedule/,'Unlinked recaps must fall back to the official sport-news archive');
+contains(worker,/datePath\?\.test\(link\)/,'News fallback must only inspect articles from the event date');
+contains(worker,/const tryCandidates=async urls/,'All recap candidates must use the same exact-match verification');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 
 // The initial three-school rollout must keep explicit official sources for every
