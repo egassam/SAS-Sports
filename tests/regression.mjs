@@ -83,6 +83,13 @@ contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
+contains(worker,/FEED_FRESH_MS=5\*60\*1000/,'Verified live feeds must have a short freshness window');
+contains(worker,/stale-refreshing/,'Stale verified feeds must remain visible while refreshing');
+contains(worker,/stale-fallback/,'A temporary official-source failure must fall back to a verified feed');
+contains(worker,/for\(const url of urls\)/,'Official fallback URLs must be tried sequentially');
+contains(worker,/successful\.push\(item\);break/,'Source discovery must stop after the first usable official schedule');
+contains(page,/refresh\.addEventListener\('click',\(\)=>loadFeed\(true\)\)/,'Manual refresh must explicitly bypass the fresh feed cache');
+contains(page,/school\.addEventListener\('change',\(\)=>loadFeed\(false\)\)/,'School navigation must use the resilient feed cache');
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
@@ -117,7 +124,8 @@ contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:log
 contains(worker,/replace\(\/\\\\u002F\/gi,'\/'\)/,'Escaped WMT portrait URLs must be decoded');
 contains(worker,/payloadImages\.get\(slug\(name\)\)/,'Embedded portraits must be matched to athlete names');
 contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-URI placeholders must be rejected');
-contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
+contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
+contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
