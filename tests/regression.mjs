@@ -103,8 +103,8 @@ contains(worker,/\\\/\(\?:staff\|coaches\)\\\//,'Seasonal staff and coach profil
 contains(worker,/Capture the complete roster href first/,'Roster links must not be truncated before staff validation');
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
-contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'Official roster athletes must remain eligible without Instagram');
-contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must search past profiles with generic images');
+contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
+contains(worker,/profiles\.slice\(0,18\)/,'Athlete discovery must search a broad verified-account pool');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
@@ -136,7 +136,7 @@ contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
-contains(page,/a\.instagram_url\|\|a\.profile_url/,'Athlete cards must fall back to official profiles');
+contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
 contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');
 
 // Exactly one prominent official recap action in the modal template.
