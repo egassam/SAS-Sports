@@ -76,6 +76,10 @@ contains(worker,/found\.push\(\{name:profile\.name,instagram_url,profile_url/,'O
 contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must search past profiles with generic images');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
+contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
+contains(worker,/athleteImage\(m\[2\],base,name\)/,'Roster cards must provide the primary portrait source');
+contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must be prioritized');
+contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
