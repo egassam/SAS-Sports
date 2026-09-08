@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.6.2';
+const VERSION='3.6.3';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -125,6 +125,22 @@ function athleteImage(raw,base,name,trustedContainer=false){
     if(/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|sport[_-]?mark)/i.test(decoded)||/\.svg(?:$|\?)/i.test(decoded))return;
     candidates.push({url,score});
   };
+  // Prefer Schema.org Person data because it binds the full athlete name and
+  // portrait URL in the same official record, independent of visual layout.
+  const wantedName=matchText(name);let schemaMatch;
+  const schemas=/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  const visitSchema=value=>{
+    if(!value||typeof value!=='object')return null;
+    if(String(value['@type']||'').toLowerCase()==='person'&&matchText(value.name)===wantedName){
+      const image=typeof value.image==='string'?value.image:value.image?.url;
+      if(image)return absoluteUrl(image,base);
+    }
+    for(const child of Array.isArray(value)?value:Object.values(value)){const found=visitSchema(child);if(found)return found}
+    return null;
+  };
+  while((schemaMatch=schemas.exec(raw))){
+    try{const schemaImage=visitSchema(JSON.parse(decodeHtml(schemaMatch[1])));if(schemaImage)add(schemaImage,50)}catch{}
+  }
   const identityMatch=(url='',alt='')=>{
     const tokens=String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(/\s+/).filter(x=>x.length>1);
     const haystack=`${decodeHtml(url)} ${decodeHtml(alt)}`.toLowerCase().replace(/[^a-z0-9]+/g,' ');
