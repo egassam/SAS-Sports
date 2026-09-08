@@ -16,7 +16,7 @@ contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist')
 contains(worker,/florida-state-suffers-seasons-first-loss/,'Florida–Florida State must retain its verified opponent recap');
 contains(worker,/eventDay>=today/,'Past-dated events must never remain in the upcoming schedule');
 contains(worker,/storyPageContentBody/,'Next-generation official recap bodies must be supported');
-contains(worker,/if\(!opponent\|\|!text\.includes\(opponent\)\)return false/,'Opponent mismatch must reject a recap');
+contains(worker,/!text\.includes\(opponent\)&&!fuzzyOpponent/,'Opponent mismatch must reject a recap');
 contains(worker,/sportName.*return false/,'Sport mismatch must reject a recap');
 contains(worker,/urlDate.*published.*dateText/s,'Event date must be verified');
 contains(worker,/adjacentPublication/,'Official recaps published the next day must still match the event');
@@ -41,6 +41,7 @@ contains(worker,/datePath\?\.test\(link\)/,'News fallback must only inspect arti
 contains(worker,/const tryCandidates=async urls/,'All recap candidates must use the same exact-match verification');
 contains(worker,/const embeddedNews=/,'Escaped WMT news-archive URLs must be discovered');
 contains(worker,/const embeddedRelativeNews=/,'Escaped relative Sidearm news-archive URLs must be discovered');
+contains(worker,/word\.startsWith\(token\.slice\(0,7\)\)/,'Official recap matching must tolerate adjectival opponent-name variants');
 contains(worker,/const payloadRe=\/"content","/,'Embedded WMT article paragraphs must be extracted');
 contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substantial before use');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
