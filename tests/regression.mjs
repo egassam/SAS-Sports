@@ -24,6 +24,9 @@ contains(worker,/const direct=target\.recap_url\|\|recapIndex\.map/,'Exact sched
 
 // The same generator must serve all sports, with meaningful sport-specific priorities.
 contains(worker,/function highlightPriorities\(sport\)/,'Global sport-aware highlight rules must exist');
+contains(worker,/COMBINED_TEAM_SPORTS=new Set\(\['Basketball','Swimming & Diving'\]\)/,'Split men’s and women’s winter feeds must be aggregated');
+contains(worker,/team_label,title:`\$\{team_label\} · \$\{event.title\}`/,'Combined winter events must be clearly labeled by team');
+contains(worker,/e\.team_label\|\|''/,'Men’s and women’s events must never overwrite one another');
 for(const sport of ['football','volleyball','soccer','cross country','basketball','baseball','softball','track','swimming','wrestling','tennis','golf','rowing']){
   assert.ok(worker.includes(`includes('${sport}')`),`Missing highlight priorities for ${sport}`);
 }
@@ -89,7 +92,7 @@ contains(worker,/FEED_FRESH_MS=5\*60\*1000/,'Verified live feeds must have a sho
 contains(worker,/stale-refreshing/,'Stale verified feeds must remain visible while refreshing');
 contains(worker,/stale-fallback/,'A temporary official-source failure must fall back to a verified feed');
 contains(worker,/for\(const url of urls\)/,'Official fallback URLs must be tried sequentially');
-contains(worker,/successful\.push\(item\);break/,'Source discovery must stop after the first usable official schedule');
+contains(worker,/successful\.push\(item\);if\(!combined\)break/,'Single-team sports must stop after the first usable official schedule');
 contains(page,/refresh\.addEventListener\('click',\(\)=>loadFeed\(true\)\)/,'Manual refresh must explicitly bypass the fresh feed cache');
 contains(page,/school\.addEventListener\('change',\(\)=>loadFeed\(false\)\)/,'School navigation must use the resilient feed cache');
 
