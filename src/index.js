@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.2';
+const VERSION='3.5.3';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -414,7 +414,12 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const opponent=visibleText(nameMatch?.[2]);
     if(dateParts.length<2||!opponent)continue;
     const rawResult=visibleText((block.match(/schedule-event-grid-result__label[^>]*>([\s\S]{0,900}?)<\/strong>/i)||[])[1]);
-    const score=rawResult.match(/\b([WLTD])\b[\s\S]*?(\d+)\s*[-–]\s*(\d+)/i);
+    // WMT sometimes places the numeric score outside the result-label <strong>.
+    // Search the complete event card as a fallback so "T Tie" and "L Loss"
+    // cannot survive while their adjacent 1-1 or 0-1 score is discarded.
+    const scoreText=rawResult||visibleText(block);
+    const score=scoreText.match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i)
+      ||visibleText(block).match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(rawResult||'Completed'):null);
     const date=`${dateParts[0]} ${dateParts[1]}, ${year}`;
     events.push(makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
