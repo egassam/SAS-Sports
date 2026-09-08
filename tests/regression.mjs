@@ -13,6 +13,7 @@ function count(source,text){
 
 // Exact recap identity: opponent, sport and event date must all participate.
 contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist');
+contains(worker,/eventDay>=today/,'Past-dated events must never remain in the upcoming schedule');
 contains(worker,/storyPageContentBody/,'Next-generation official recap bodies must be supported');
 contains(worker,/if\(!opponent\|\|!text\.includes\(opponent\)\)return false/,'Opponent mismatch must reject a recap');
 contains(worker,/sportName.*return false/,'Sport mismatch must reject a recap');
@@ -93,6 +94,8 @@ contains(page,/school\.addEventListener\('change',\(\)=>loadFeed\(false\)\)/,'Sc
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
+contains(worker,/VERIFIED_TEAM_TAG_INSTAGRAM/,'Official team-tag Instagram verification must be supported');
+contains(worker,/verifiedInstagram\(html\)\|\|VERIFIED_TEAM_TAG_INSTAGRAM/,'Team-tag verification must safely follow direct roster-page verification');
 contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
 contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
 contains(worker,/roster\\\/\[\^"'\?#\]\+/,'Complete next-generation roster URLs must be captured before validation');
