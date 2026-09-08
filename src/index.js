@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.9.1';
+const VERSION='3.9.2';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -208,7 +208,7 @@ async function featuredAthletes(schoolId,sport){
   // Search a broad roster pool so cards can rotate among verified accounts.
   // athletes sometimes publish a school logo as their social image until a
   // headshot is uploaded, so those generic images must not occupy a photo card.
-  await Promise.all(profiles.slice(0,18).map(async profile=>{
+  await Promise.all(profiles.slice(0,9).map(async profile=>{
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html)||VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
