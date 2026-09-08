@@ -63,6 +63,8 @@ contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
+contains(worker,/const scoreText=rawResult\|\|visibleText\(block\)/,'WMT scores split outside the result label must use the full event card');
+contains(worker,/visibleText\(block\)\.match\(\/\\b\(\[WLTD\]\)/,'WMT final-score fallback must recover numeric scores from the full card');
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
 contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placement text must mark a completed meet final');
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
