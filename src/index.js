@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.9';
+const VERSION='3.5.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -77,8 +77,21 @@ function dailyRank(value){
   for(const ch of `${day}|${value}`){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}
   return h>>>0;
 }
+function rosterPayloadImages(raw,base){
+  // WMT sends roster portraits inside its embedded application payload while
+  // the server-rendered <img> contains only a transparent lazy-load placeholder.
+  const text=String(raw||'').replace(/\\u002F/gi,'/').replace(/\\u0026/gi,'&').replace(/\\\//g,'/');
+  const images=new Map();let m;
+  const re=/"([^"]+\.(?:jpe?g|png|webp|avif))","(https?:\/\/[^"]+\.(?:jpe?g|png|webp|avif)(?:\?[^"]*)?)"/gi;
+  while((m=re.exec(text))){
+    const key=slug(decodeHtml(m[1]).replace(/\.[^.]+$/,''));
+    const url=absoluteUrl(m[2],base);
+    if(key&&url)images.set(key,url);
+  }
+  return images;
+}
 function rosterProfiles(raw,base){
-  const byUrl=new Map();let m;
+  const byUrl=new Map(),payloadImages=rosterPayloadImages(raw,base);let m;
   // Capture the complete roster href first. Validating inside this expression
   // allowed a staff URL like /roster/season/2026/staff/name to be truncated to
   // /roster/season/2026 and incorrectly accepted as an athlete profile.
@@ -97,7 +110,7 @@ function rosterProfiles(raw,base){
     if(/\/(?:staff|coaches)\//i.test(path))continue;
     if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
-    const image_url=athleteImage(m[2],base,name)||previous?.image_url||null;
+    const image_url=payloadImages.get(slug(name))||athleteImage(m[2],base,name)||previous?.image_url||null;
     if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
@@ -107,6 +120,7 @@ function athleteImage(raw,base,name){
   const candidates=[];
   const add=(value,score=0)=>{
     const url=absoluteUrl(value,base);if(!url)return;
+    if(!/^https?:/i.test(url))return;
     const decoded=decodeHtml(url);
     if(/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|sport[_-]?mark)/i.test(decoded)||/\.svg(?:$|\?)/i.test(decoded))return;
     candidates.push({url,score});
