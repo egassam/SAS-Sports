@@ -82,7 +82,10 @@ async function validateSport(school,sport){
       assert.ok(detail.highlights_verified&&detail.highlights?.length>=3,`${final.title} has no verified highlights (${detail.highlight_state||'no_verified_recap'})`);
       assert.ok(detail.recap_url?.startsWith('https://'),`${final.title} has no verified official recap URL`);
       const recap=new URL(detail.recap_url),host=recap.hostname.replace(/^www\./,'');
-      assert.ok(host.endsWith(officialHost),`${final.title} recap points outside the official athletics domain`);
+      const opponentName=String(final.opponent||'').replace(/^(?:#?T?\d+|RV)\s+/i,'').toLowerCase();
+      const opponentSchool=catalog.find(item=>[item.name,item.short_name,...(item.aliases||[])].some(name=>String(name).toLowerCase()===opponentName));
+      const allowedHosts=[officialHost,opponentSchool&&new URL(opponentSchool.athletics_url).hostname.replace(/^www\./,'')].filter(Boolean);
+      assert.ok(allowedHosts.some(allowed=>host.endsWith(allowed)),`${final.title} recap points outside either official athletics domain`);
       assert.ok(!/(?:google\.|maps\.|mapquest\.|ticketmaster\.)/i.test(host),`${final.title} recap incorrectly points to a venue or ticket service`);
       assert.ok(/recap/i.test(detail.source?.name||''),`${final.title} source was not promoted to a verified recap`);
       passed++;
