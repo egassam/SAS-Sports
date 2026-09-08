@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.2';
+const VERSION='4.1.3';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -470,9 +470,17 @@ function extractEventLabels(raw){
   for(const re of patterns)while((m=re.exec(text)))add(m[0]);
   return out;
 }
+function scheduleYearForDate(raw,dateText,now){
+  const text=visibleText(raw),range=text.match(/\b(20\d{2})\s*[-–]\s*(\d{2,4})\b[^.]{0,80}\bSchedule\b/i);
+  if(range){
+    const start=Number(range[1]),end=Number(range[2].length===2?String(start).slice(0,2)+range[2]:range[2]);
+    const monthName=String(dateText||'').trim().slice(0,3).toLowerCase(),month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(monthName)+1;
+    if(month)return month>=7?start:end;
+  }
+  return Number((text.match(/\b(20\d{2})\s+[^.]{0,40}\bSchedule\b/i)||[])[1])||now.getUTCFullYear();
+}
 function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
   const starts=[...raw.matchAll(/<div\b[^>]*data-test-id=["']s-game-card-standard__root["'][^>]*>/gi)].map(x=>x.index),events=[];
-  const year=Number((visibleText(raw).match(/\b(20\d{2})\s+[^.]{0,40}\bSchedule\b/i)||[])[1])||now.getUTCFullYear();
   for(let i=0;i<starts.length;i++){
     const block=raw.slice(starts[i],starts[i+1]||Math.min(raw.length,starts[i]+60000));
     const opponentLink=visibleText((block.match(/<a\b[^>]*data-test-id=["']s-game-card-standard__header-team-opponent-link["'][^>]*>([\s\S]*?)<\/a>/i)||[])[1]);
@@ -487,6 +495,7 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     // expanded word so completed games are never mistaken for upcoming ones.
     const score=result?.match(/\b([WLTD])\b(?:\s*,?\s*(?:Win|Loss|Tie|Draw))?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const status=score||(eventType(sport)==='MEET'&&result)?'Final':'Upcoming';
+    const year=scheduleYearForDate(raw,dateText,now);
     const date=`${dateText.replace(/\([^)]*\)/g,'').trim()}, ${year}`;
     events.push(makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
   }
@@ -494,7 +503,6 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
 }
 function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
   const starts=[...raw.matchAll(/<div\b[^>]*class=["'][^"']*\bschedule-event-item(?=\s|["'])[^"']*["'][^>]*>/gi)].map(x=>x.index),events=[];
-  const year=Number((visibleText(raw).match(/\b(20\d{2})\s+[^.]{0,40}\bSchedule\b/i)||[])[1])||now.getUTCFullYear();
   for(let i=0;i<starts.length;i++){
     const block=raw.slice(starts[i],starts[i+1]||Math.min(raw.length,starts[i]+60000));
     const opening=(block.match(/^<div\b[^>]*>/i)||[])[0]||'';
@@ -513,7 +521,8 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const score=scoreText.match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i)
       ||visibleText(block).match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(rawResult||'Completed'):null);
-    const date=`${dateParts[0]} ${dateParts[1]}, ${year}`;
+    const dateText=`${dateParts[0]} ${dateParts[1]}`,year=scheduleYearForDate(raw,dateText,now);
+    const date=`${dateText}, ${year}`;
     const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
     // Preserve the recap attached to this exact WMT schedule card. Some schools
     // publish after midnight, so the article URL can be dated one day later.
