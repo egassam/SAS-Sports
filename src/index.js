@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.7';
+const VERSION='3.4.8';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -101,10 +101,27 @@ function rosterProfiles(raw,base){
   }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
 }
-function athleteImage(raw,base){
-  const hit=raw.match(/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)/i)
-    ||raw.match(/<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
-  return hit?absoluteUrl(hit[1],base):null;
+function athleteImage(raw,base,name){
+  const candidates=[];
+  const add=(value,score=0)=>{
+    const url=absoluteUrl(value,base);if(!url)return;
+    const decoded=decodeHtml(url);
+    if(/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|sport[_-]?mark)/i.test(decoded)||/\.svg(?:$|\?)/i.test(decoded))return;
+    candidates.push({url,score});
+  };
+  let m;
+  const meta=/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi;
+  while((m=meta.exec(raw)))add(m[1]||m[2],1);
+  const wanted=String(name||'').toLowerCase().split(/\s+/).filter(Boolean);
+  const imgs=/<img\b([^>]*)>/gi;
+  while((m=imgs.exec(raw))){
+    const attrs=m[1],src=(attrs.match(/(?:src|data-src)=["']([^"']+)/i)||[])[1],alt=decodeHtml((attrs.match(/alt=["']([^"']*)/i)||[])[1]||'').toLowerCase();
+    let score=/(?:headshot|roster|player|athlete|bio)/i.test(attrs)?5:0;
+    if(wanted.length&&wanted.every(part=>alt.includes(part)))score+=10;
+    add(src,score);
+  }
+  candidates.sort((a,b)=>b.score-a.score);
+  return candidates[0]?.url||null;
 }
 function verifiedInstagram(raw){
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
@@ -125,17 +142,19 @@ async function featuredAthletes(schoolId,sport){
   }
   profiles.sort((a,b)=>dailyRank(a.url)-dailyRank(b.url));
   const found=[];
-  // Every official roster profile is now a valid card because the official bio
-  // is the fallback destination. Fetch only the three selected profiles so one
-  // school view cannot exhaust the Worker's subrequest or CPU allowance.
-  await Promise.all(profiles.slice(0,3).map(async profile=>{
+  // Check enough roster profiles to produce three real portraits. Newly added
+  // athletes sometimes publish a school logo as their social image until a
+  // headshot is uploaded, so those generic images must not occupy a photo card.
+  await Promise.all(profiles.slice(0,9).map(async profile=>{
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html);
-      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url)});
+      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)});
     }catch{}
   }));
-  return found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3);
+  const ranked=found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
+  const photographed=ranked.filter(a=>a.image_url);
+  return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
