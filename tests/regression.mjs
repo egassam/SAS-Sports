@@ -96,7 +96,11 @@ contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must search past pro
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
-contains(worker,/athleteImage\(m\[2\],base,name\)/,'Roster cards must provide the primary portrait source');
+contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Roster cards must provide the primary portrait source');
+contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Only the athlete’s own roster-card container may be trusted without filename identity');
+contains(worker,/if\(!trustedContainer&&!identityMatch\(src,alt\)\)continue/,'Unrelated profile-page images must be rejected globally');
+contains(worker,/imageOwners=new Map/,'Duplicate portraits must be detected across athletes');
+contains(worker,/athlete\.image_url=null/,'Duplicate portraits must fall back to safe initials');
 contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must be prioritized');
 contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
 contains(worker,/function rosterPayloadImages\(/,'Embedded WMT roster portrait data must be parsed');
