@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.4';
+const VERSION='3.5.5';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -425,7 +425,7 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
     // Preserve the recap attached to this exact WMT schedule card. Some schools
     // publish after midnight, so the article URL can be dated one day later.
-    const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?\bRecap\b[\s\S]*?)<\/a>/i);
+    const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i);
     const cardRecap=recapLink?absoluteUrl(recapLink[1],sourceUrl):null;
     if(cardRecap)event.recap_url=cardRecap;
     events.push(event);
@@ -473,7 +473,7 @@ function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
     if(recapUrl)map.set(eventMergeKey(marker.event),recapUrl);
   }
   const candidates=[] ,seenCandidates=new Set(map.values());
-  const anyRecap=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?\bRecap\b[\s\S]*?)<\/a>/gi;
+  const anyRecap=/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/gi;
   while((m=anyRecap.exec(raw))){
     const recapUrl=absoluteUrl(m[1],sourceUrl);
     if(recapUrl&&!seenCandidates.has(recapUrl)){seenCandidates.add(recapUrl);candidates.push(recapUrl);}
@@ -695,6 +695,9 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
     }catch{}
   }
   if(!recapUrl){
+    // Never leave an unverified schedule-card link behind. The UI must not
+    // offer a recap button unless that URL passed the exact event checks.
+    delete target.recap_url;
     target.highlights=[];target.highlight_state='recap_not_found';
     target.highlight_status='An exact official recap could not be matched to this event.';
     return events;
