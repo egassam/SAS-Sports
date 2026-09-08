@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.3';
+const VERSION='3.5.4';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -422,7 +422,13 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||visibleText(block).match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(rawResult||'Completed'):null);
     const date=`${dateParts[0]} ${dateParts[1]}, ${year}`;
-    events.push(makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
+    const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
+    // Preserve the recap attached to this exact WMT schedule card. Some schools
+    // publish after midnight, so the article URL can be dated one day later.
+    const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?\bRecap\b[\s\S]*?)<\/a>/i);
+    const cardRecap=recapLink?absoluteUrl(recapLink[1],sourceUrl):null;
+    if(cardRecap)event.recap_url=cardRecap;
+    events.push(event);
   }
   return events;
 }
@@ -542,10 +548,14 @@ function recapMatchesEvent(raw,e,recapUrl=''){
   if(day){
     const [year,month,date]=day.split('-').map(Number);
     const urlDate=new RegExp(`/news/${year}/0?${month}/0?${date}/`).test(recapUrl);
+    const urlDateMatch=recapUrl.match(/\/news\/(20\d{2})\/(\d{1,2})\/(\d{1,2})\//);
+    const articleDay=urlDateMatch?Date.UTC(Number(urlDateMatch[1]),Number(urlDateMatch[2])-1,Number(urlDateMatch[3])):NaN;
+    const eventDay=Date.UTC(year,month-1,date);
+    const adjacentPublication=Number.isFinite(articleDay)&&Math.abs(articleDay-eventDay)<=86400000;
     const names=['january','february','march','april','may','june','july','august','september','october','november','december'];
     const published=matchText((raw.match(/<meta\b[^>]*(?:property|name)=["'](?:article:published_time|date)["'][^>]*content=["']([^"']+)/i)||[])[1]||'');
     const dateText=matchText(`${names[month-1]} ${date} ${year}`);
-    if(!urlDate&&!published.includes(matchText(day))&&!text.includes(dateText))return false;
+    if(!urlDate&&!adjacentPublication&&!published.includes(matchText(day))&&!text.includes(dateText))return false;
   }
   return true;
 }
@@ -637,7 +647,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target||target.highlights_verified)return events;
   const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
-  const direct=recapIndex.map.get(eventMergeKey(target));
+  const direct=target.recap_url||recapIndex.map.get(eventMergeKey(target));
   const day=target.start_time?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
