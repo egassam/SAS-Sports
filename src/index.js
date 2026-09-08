@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.1';
+const VERSION='4.1.2';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -437,8 +437,8 @@ function filterActiveSeason(events,sport,now){
     return events.filter(e=>!e.start_time||new Date(e.start_time).getUTCFullYear()===year);
   }
   if(ACADEMIC_YEAR_SPORTS.has(sport)){
-    const year=now.getUTCFullYear(),fall=now.getUTCMonth()+1>=7,allowed=new Set(fall?[year,year+1]:[year-1,year]);
-    return events.filter(e=>!e.start_time||allowed.has(new Date(e.start_time).getUTCFullYear()));
+    const year=now.getUTCFullYear(),startYear=now.getUTCMonth()+1>=7?year:year-1;
+    return events.filter(e=>{if(!e.start_time)return true;const date=new Date(e.start_time),eventYear=date.getUTCFullYear(),month=date.getUTCMonth()+1;return(eventYear===startYear&&month>=7)||(eventYear===startYear+1&&month<=6)});
   }
   return events;
 }
