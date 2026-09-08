@@ -112,6 +112,7 @@ contains(worker,/athlete\.image_url=null/,'Duplicate portraits must fall back to
 contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must be prioritized');
 contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
 contains(worker,/function rosterPayloadImages\(/,'Embedded WMT roster portrait data must be parsed');
+contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected before athlete-photo selection');
 contains(worker,/replace\(\/\\\\u002F\/gi,'\/'\)/,'Escaped WMT portrait URLs must be decoded');
 contains(worker,/payloadImages\.get\(slug\(name\)\)/,'Embedded portraits must be matched to athlete names');
 contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-URI placeholders must be rejected');
