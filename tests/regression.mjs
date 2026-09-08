@@ -33,8 +33,8 @@ for(const sport of ['football','volleyball','soccer','cross country','basketball
 contains(worker,/Never write bare statements|Reject vague lines/,'Generic one-line highlights must be rejected');
 contains(worker,/cleanItems\.length>=3/,'At least three complete highlights are required');
 
-// Feed speed: recaps are lazy and known schools use a single official schedule.
-contains(worker,/if\(known\)return\[known\]/,'Known sport feeds must use one official schedule URL');
+// Feed speed: recaps are lazy and known schools use only explicit official schedules.
+contains(worker,/Array\.isArray\(known\)\?known:\[known\]/,'Known sport feeds must use explicit official schedule URLs');
 contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain lazy');
 contains(worker,/pathname\.replace\(\/\\\/schedule/,'Unlinked recaps must fall back to the official sport-news archive');
 contains(worker,/datePath\?\.test\(link\)/,'News fallback must only inspect articles from the event date');
