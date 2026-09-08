@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.8.2';
+const VERSION='3.8.3';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -84,7 +84,7 @@ function rosterPayloadImages(raw,base){
   // the server-rendered <img> contains only a transparent lazy-load placeholder.
   const text=String(raw||'').replace(/\\u002F/gi,'/').replace(/\\u0026/gi,'&').replace(/\\\//g,'/');
   const images=new Map();let m;
-  const re=/"([^"]+\.(?:jpe?g|png|webp|avif))","(https?:\/\/[^"]+\.(?:jpe?g|png|webp|avif)(?:\?[^"]*)?)"/gi;
+  const re=/"([^"]+\.(?:jpe?g|png|webp|avif))",(?:"[^"]*",)?"(https?:\/\/[^"]+\.(?:jpe?g|png|webp|avif)(?:\?[^"]*)?)"/gi;
   while((m=re.exec(text))){
     const key=slug(decodeHtml(m[1]).replace(/\.[^.]+$/,''));
     const url=absoluteUrl(m[2],base);
