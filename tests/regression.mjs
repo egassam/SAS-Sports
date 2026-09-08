@@ -70,6 +70,8 @@ contains(worker,/ACADEMIC_YEAR_SPORTS/,'Winter and spring results must be constr
 contains(worker,/eventYear===startYear&&month>=7/,'Academic-year filtering must exclude the previous spring during fall');
 contains(worker,/eventYear===startYear\+1&&month<=6/,'Academic-year filtering must retain the following spring');
 contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game cards must be supported');
+contains(worker,/function scheduleYearForDate\(/,'Academic schedule year ranges must be parsed');
+contains(worker,/month>=7\?start:end/,'Fall cards must use the first schedule year and spring cards the second');
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
@@ -162,6 +164,7 @@ contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
+contains(schoolValidator,/DEFAULT_SPORTS\.includes\(sport\)&&officialHasCompleted/,'Prior winter results must not cause a false current-season certification failure');
 contains(schoolValidator,/recap points outside either official athletics domain/,'Recap URLs must remain on one of the two official athletics domains');
 contains(schoolValidator,/recap incorrectly points to a venue or ticket service/,'Venue and ticket links must fail recap certification');
 
