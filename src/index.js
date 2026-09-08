@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.8.0';
+const VERSION='3.8.1';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -106,14 +106,14 @@ function rosterProfiles(raw,base){
     return score;
   };
   while((m=re.exec(raw))){
-    const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)continue;
+    const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=visibleText(m[2])||clean(imgAlt);if(!url)continue;
     const path=new URL(url).pathname;
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
     if(/\/(?:staff|coaches)\//i.test(path))continue;
     if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
-    const image_url=payloadImages.get(slug(name))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
+    const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
     // SIDEARM often publishes the portrait and the visible athlete name in two
     // separate anchors that share the same profile URL. Keep an image-only
     // anchor long enough to join it to the later name anchor.
