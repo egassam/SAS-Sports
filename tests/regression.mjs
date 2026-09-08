@@ -68,6 +68,8 @@ contains(worker,/schedule-event-item--completed/,'WMT completed events must be r
 contains(worker,/if\(cardRecap\)event\.recap_url=cardRecap/,'WMT schedule-card recap identity must be preserved');
 contains(worker,/\(\?:\(\?!<\\\/a>\)\[\\s\\S\]\)\*\?\\bRecap/,'Recap anchors must not cross a closing anchor boundary');
 contains(worker,/delete target\.recap_url/,'Unverified recap URLs must be removed before rendering');
+contains(worker,/opponentSchoolFor\(target,school\)/,'Official opponent recaps must be checked when the selected school omits its recap');
+contains(worker,/directOpponent=index\.map\.get\(eventMergeKey\(mirror\)\)/,'Opponent recap lookup must mirror the exact teams and event date');
 const recapAnchor=/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i;
 const venueThenRecap='<a href="https://maps.google.com/venue">Venue</a><a href="/news/2026/09/03/game-recap"><span>Recap</span></a>';
 assert.equal(venueThenRecap.match(recapAnchor)?.[1],'/news/2026/09/03/game-recap','Venue links must never be mislabeled as recaps');
@@ -97,6 +99,7 @@ contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder imag
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
 contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Roster cards must provide the primary portrait source');
+contains(worker,/if\(!previous&&image_url\)byUrl\.set\(url,\{name:'',url,image_url\}\)/,'Image-only roster anchors must survive until joined to the athlete name anchor');
 contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Only the athlete’s own roster-card container may be trusted without filename identity');
 contains(worker,/if\(!trustedContainer&&!identityMatch\(src,alt\)\)continue/,'Unrelated profile-page images must be rejected globally');
 contains(worker,/c-rosterbio__player__image/,'SIDEARM athlete biography portraits must be selected ahead of thumbnail rails');
