@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.9.0';
+const VERSION='3.9.1';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -205,10 +205,10 @@ async function featuredAthletes(schoolId,sport){
   // first, then retain the daily shuffle within each group.
   profiles.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
   const found=[];
-  // Check enough roster profiles to produce three real portraits. Newly added
+  // Search a broad roster pool so cards can rotate among verified accounts.
   // athletes sometimes publish a school logo as their social image until a
   // headshot is uploaded, so those generic images must not occupy a photo card.
-  await Promise.all(profiles.slice(0,9).map(async profile=>{
+  await Promise.all(profiles.slice(0,18).map(async profile=>{
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html)||VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
@@ -223,7 +223,7 @@ async function featuredAthletes(schoolId,sport){
   const imageOwners=new Map();
   for(const athlete of found){if(!athlete.image_url)continue;const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
   for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
-  const ranked=found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
+  const ranked=found.filter(a=>a.instagram_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
   const photographed=ranked.filter(a=>a.image_url);
   return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
 }
