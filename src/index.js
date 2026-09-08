@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.4';
+const VERSION='4.1.5';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -808,11 +808,13 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
           const linkHtml=html.replace(/\\u002F/gi,'/').replace(/\\\//g,'/');
           const newsLink=/<a\b[^>]*href=["']([^"']*\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)[^"']*["'][^>]*>/gi;
           const embeddedNews=/"(https?:\/\/[^"]+\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)"/gi;
+          const embeddedRelativeNews=/"(\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)"/gi;
           const addNewsLink=value=>{const link=absoluteUrl(value,newsUrl.href);if(link&&datePath?.test(link)&&!links.includes(link))links.push(link);};
           while((m=newsLink.exec(linkHtml))){
             addNewsLink(m[1]);
           }
           while((m=embeddedNews.exec(linkHtml)))addNewsLink(m[1]);
+          while((m=embeddedRelativeNews.exec(linkHtml)))addNewsLink(m[1]);
           const newsMatch=await tryCandidates(links.slice(0,8));
           if(newsMatch){recapUrl=newsMatch.url;recapHtml=newsMatch.html;}
         }
