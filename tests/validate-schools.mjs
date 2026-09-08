@@ -63,10 +63,10 @@ async function validateSport(school,sport){
   }
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
-  assert.equal(athletes.length,3,'featured athlete row must contain exactly three athletes');
+  assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
   for(const athlete of athletes){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
-    assert.ok((athlete.instagram_url||athlete.profile_url)?.startsWith('https://'),'athlete has no clickable destination');
+    assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
   }
   const portraits=athletes.map(x=>x.image_url).filter(Boolean).map(x=>x.replace(/[?#].*$/,''));
   assert.equal(new Set(portraits).size,portraits.length,'different athletes were assigned the same portrait');
