@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.5';
+const VERSION='3.6.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -445,7 +445,21 @@ function parseSchemaEvents(raw,school,sport,sourceUrl,now){
   }
   return events;
 }
-function parseHtml(raw,school,sport,sourceUrl,now=new Date()){const events=[],seen=new Set();for(const label of extractEventLabels(raw)){const e=parseLabel(label,school,sport,sourceUrl,now);if(e&&!seen.has(e.id)){seen.add(e.id);events.push(e);}}if(!events.length)for(const e of parseSidearmGameCards(raw,school,sport,sourceUrl,now))if(e&&!seen.has(e.id)){seen.add(e.id);events.push(e)}if(!events.length)for(const e of parseWmtScheduleCards(raw,school,sport,sourceUrl,now))if(e&&!seen.has(e.id)){seen.add(e.id);events.push(e)}if(!events.length)for(const e of parseSchemaEvents(raw,school,sport,sourceUrl,now))if(e&&!seen.has(e.id)){seen.add(e.id);events.push(e)}const rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});}
+function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
+  // Athletics sites routinely combine old and new widgets during redesigns.
+  // Run every platform adapter and merge normalized events; never stop after the
+  // first parser returns a partial schedule.
+  const eventLists=[];
+  eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
+  const sourceAdapters=[
+    {name:'sidearm',parse:parseSidearmGameCards},
+    {name:'wmt',parse:parseWmtScheduleCards},
+    {name:'schema',parse:parseSchemaEvents}
+  ];
+  for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
+  const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
+  return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
+}
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${slug(e.opponent||'')}|${day}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
