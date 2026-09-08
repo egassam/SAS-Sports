@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.0.0';
+const VERSION='4.1.0';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -22,7 +22,7 @@ const SPORT_PATHS={
   'Cross Country':['cross-country'],'Track & Field':['track-and-field','track-field'],
   'Basketball':['mens-basketball','womens-basketball','basketball'],"Men's Basketball":['mens-basketball','basketball'],"Women's Basketball":['womens-basketball','basketball'],
   'Baseball':['baseball'],'Softball':['softball'],'Wrestling':['wrestling'],
-  'Swimming & Diving':['swimming-and-diving','swimming-diving','swimming'],'Tennis':['womens-tennis','mens-tennis','tennis'],
+  'Swimming & Diving':['womens-swimming-and-diving','mens-swimming-and-diving','womens-swimming-diving','mens-swimming-diving','swimming-and-diving','swimming-diving','swimming'],'Tennis':['womens-tennis','mens-tennis','tennis'],
   'Golf':['mens-golf','womens-golf','golf'],'Rowing':['rowing'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
   'Field Hockey':['field-hockey'],'Hockey':['mens-ice-hockey','womens-ice-hockey','ice-hockey','hockey'],
   'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics'],'Beach Volleyball':['beach-volleyball'],
@@ -30,6 +30,18 @@ const SPORT_PATHS={
   'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing'],'Triathlon':['triathlon'],
   'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],'STUNT':['stunt']
 };
+const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
+function teamLabelForSource(sport,url){
+  if(!COMBINED_TEAM_SPORTS.has(sport))return null;
+  const path=new URL(url).pathname;
+  if(/\/mens-|\/men-|\/m-/i.test(path))return"Men's";
+  if(/\/womens-|\/women-|\/w-/i.test(path))return"Women's";
+  return null;
+}
+function labelTeamEvents(events,sport,url){
+  const team_label=teamLabelForSource(sport,url);if(!team_label)return events;
+  return events.map(event=>({...event,team_label,title:`${team_label} · ${event.title}`}));
+}
 
 const KNOWN_URLS=new Map(Object.entries({
   'kstate|Volleyball':'https://www.kstatesports.com/sports/womens-volleyball/schedule',
@@ -199,7 +211,13 @@ async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
   let profiles=[];
   for(const rosterUrl of rosterUrls(school,sport)){
-    try{const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;profiles=rosterProfiles(await r.text(),r.url||rosterUrl);if(profiles.length)break}catch{}
+    try{
+      const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;
+      const discovered=rosterProfiles(await r.text(),r.url||rosterUrl);
+      profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
+      if(profiles.length&&!COMBINED_TEAM_SPORTS.has(sport))break;
+      if(profiles.length>=18)break;
+    }catch{}
   }
   // Roster-card portraits are the most reliable source. Put those athletes
   // first, then retain the daily shuffle within each group.
@@ -527,7 +545,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
-function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${slug(e.opponent||'')}|${day}`;}
+function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
@@ -821,17 +839,19 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   return events;
 }
-async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?parseHtml(html,school,sport,finalUrl,now):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
+  const combined=COMBINED_TEAM_SPORTS.has(sport);
   for(const url of urls){
+    if(combined&&successful.length&&teamLabelForSource(sport,url)==null)continue;
     try{
       const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
-      if(item.ok&&item.events.length){successful.push(item);break}
+      if(item.ok&&item.events.length){successful.push(item);if(!combined)break;continue}
       errors.push(`${item.url}: HTTP ${item.http_status}, labels ${item.label_count}, events ${item.event_count}`);
     }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
   }
