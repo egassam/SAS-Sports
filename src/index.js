@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.1';
+const VERSION='3.5.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -547,6 +547,18 @@ function recapMatchesEvent(raw,e,recapUrl=''){
 function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
+  // WMT stores article paragraphs in its embedded application payload instead
+  // of articleBody or server-rendered <article> markup.
+  const payloadParts=[];let payloadMatch;
+  const payloadRe=/"content","((?:\\.|[^"\\]){80,})"/gi;
+  while((payloadMatch=payloadRe.exec(raw))&&payloadParts.length<20){
+    try{
+      const decoded=JSON.parse(`"${payloadMatch[1]}"`);
+      if(/<p\b|<br\b|<li\b/i.test(decoded))payloadParts.push(visibleText(decoded));
+    }catch{}
+  }
+  const payloadText=clean(payloadParts.join(' '));
+  if(payloadText&&payloadText.length>=80)return payloadText.slice(0,14000);
   const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
   if(storyBody)return visibleText(storyBody).slice(0,14000);
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
@@ -653,11 +665,14 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await fetch(newsUrl,{headers:HEADERS,redirect:'follow'});
         if(r.ok){
           const html=await r.text(),links=[];let m;
+          const linkHtml=html.replace(/\\u002F/gi,'/').replace(/\\\//g,'/');
           const newsLink=/<a\b[^>]*href=["']([^"']*\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)[^"']*["'][^>]*>/gi;
-          while((m=newsLink.exec(html))){
-            const link=absoluteUrl(m[1],newsUrl.href);
-            if(link&&datePath?.test(link)&&!links.includes(link))links.push(link);
+          const embeddedNews=/"(https?:\/\/[^"]+\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)"/gi;
+          const addNewsLink=value=>{const link=absoluteUrl(value,newsUrl.href);if(link&&datePath?.test(link)&&!links.includes(link))links.push(link);};
+          while((m=newsLink.exec(linkHtml))){
+            addNewsLink(m[1]);
           }
+          while((m=embeddedNews.exec(linkHtml)))addNewsLink(m[1]);
           const newsMatch=await tryCandidates(links.slice(0,8));
           if(newsMatch){recapUrl=newsMatch.url;recapHtml=newsMatch.html;}
         }
