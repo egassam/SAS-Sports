@@ -104,7 +104,7 @@ contains(worker,/Capture the complete roster href first/,'Roster links must not 
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
-contains(worker,/profiles\.slice\(0,18\)/,'Athlete discovery must search a broad verified-account pool');
+contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must stay within the proven safe request budget');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
