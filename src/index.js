@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.6.3';
+const VERSION='3.7.0';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -111,7 +111,11 @@ function rosterProfiles(raw,base){
     if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
     const image_url=payloadImages.get(slug(name))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
-    if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
+    // SIDEARM often publishes the portrait and the visible athlete name in two
+    // separate anchors that share the same profile URL. Keep an image-only
+    // anchor long enough to join it to the later name anchor.
+    if(!previous&&image_url)byUrl.set(url,{name:'',url,image_url});
+    else if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
@@ -583,6 +587,12 @@ function automaticFinalHighlights(e){
   return items;
 }
 function matchText(s){return String(s||'').toLowerCase().replace(/\b(?:exhibition|neutral|rv|ranked)\b/g,' ').replace(/#[0-9]+|\([^)]+\)/g,' ').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();}
+function opponentSchoolFor(event,currentSchool){
+  const wanted=matchText(event.opponent);
+  if(!wanted)return null;
+  return schools.find(candidate=>candidate.id!==currentSchool.id&&[candidate.name,candidate.short_name,...(candidate.aliases||[])]
+    .some(label=>{const value=matchText(label);return value===wanted||(value.length>3&&wanted.length>3&&(value.includes(wanted)||wanted.includes(value)));}))||null;
+}
 function recapMatchesEvent(raw,e,recapUrl=''){
   // Match against the article itself, not navigation or schedule widgets that can
   // contain unrelated opponents and dates.
@@ -742,6 +752,25 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         }
       }
     }catch{}
+  }
+  // A school may publish a box score but no recap even though the opponent
+  // published an official article. Check that opponent's official schedule as
+  // a controlled fallback, still requiring the exact event date and teams.
+  if(!recapUrl){
+    const opponentSchool=opponentSchoolFor(target,school);
+    if(opponentSchool){
+      for(const opponentScheduleUrl of candidateUrls(opponentSchool,sport).slice(0,4)){
+        try{
+          const r=await fetch(opponentScheduleUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;
+          const html=await r.text(),index=recapUrlsByEvent(html,opponentSchool,sport,r.url||opponentScheduleUrl,now);
+          const mirror={...target,school_id:opponentSchool.id,school:opponentSchool.short_name||opponentSchool.name,opponent:school.short_name||school.name};
+          const directOpponent=index.map.get(eventMergeKey(mirror));
+          const orderedOpponent=[directOpponent,...index.candidates.filter(url=>datePath?.test(url)),...index.candidates].filter(Boolean);
+          const opponentMatch=await tryCandidates([...new Set(orderedOpponent)].slice(0,8));
+          if(opponentMatch){recapUrl=opponentMatch.url;recapHtml=opponentMatch.html;break;}
+        }catch{}
+      }
+    }
   }
   if(!recapUrl){
     // Never leave an unverified schedule-card link behind. The UI must not
