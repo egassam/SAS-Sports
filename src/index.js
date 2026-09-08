@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.6.1';
+const VERSION='3.6.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -131,6 +131,14 @@ function athleteImage(raw,base,name,trustedContainer=false){
     return tokens.length>=2&&tokens.every(token=>haystack.includes(token));
   };
   let m;
+  // Next-generation SIDEARM profile pages explicitly mark the athlete's own
+  // biography portrait. Prefer it over the surrounding roster thumbnail rail.
+  const bioPortrait=raw.match(/c-rosterbio__player__image[^>]*>[\s\S]{0,1200}?<img\b([^>]*)>/i);
+  if(bioPortrait){
+    const attrs=bioPortrait[1],rawSrc=(attrs.match(/(?:src|data-src|srcset|data-srcset)=["']([^"']+)/i)||[])[1];
+    const src=rawSrc?.split(',')[0]?.trim()?.split(/\s+/)[0];
+    add(src,30);
+  }
   const meta=/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi;
   while((m=meta.exec(raw))){const src=m[1]||m[2];if(identityMatch(src))add(src,1)}
   const wanted=String(name||'').toLowerCase().split(/\s+/).filter(Boolean);
