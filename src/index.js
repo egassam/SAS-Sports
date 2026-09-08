@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.0';
+const VERSION='4.1.1';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -429,11 +429,18 @@ function enrichMeetEvent(event,date){
   return event;
 }
 const FALL_SEASON_SPORTS=new Set(['Football','Volleyball',"Women's Volleyball","Men's Volleyball",'Soccer',"Women's Soccer","Men's Soccer",'Cross Country','Field Hockey']);
+const ACADEMIC_YEAR_SPORTS=new Set(['Basketball',"Men's Basketball","Women's Basketball",'Swimming & Diving','Wrestling','Tennis','Golf','Track & Field','Baseball','Softball','Rowing','Gymnastics','Hockey']);
 function activeFallSeasonYear(now){return now.getUTCMonth()+1>=7?now.getUTCFullYear():now.getUTCFullYear()-1;}
 function filterActiveSeason(events,sport,now){
-  if(!FALL_SEASON_SPORTS.has(sport))return events;
-  const year=activeFallSeasonYear(now);
-  return events.filter(e=>!e.start_time||new Date(e.start_time).getUTCFullYear()===year);
+  if(FALL_SEASON_SPORTS.has(sport)){
+    const year=activeFallSeasonYear(now);
+    return events.filter(e=>!e.start_time||new Date(e.start_time).getUTCFullYear()===year);
+  }
+  if(ACADEMIC_YEAR_SPORTS.has(sport)){
+    const year=now.getUTCFullYear(),fall=now.getUTCMonth()+1>=7,allowed=new Set(fall?[year,year+1]:[year-1,year]);
+    return events.filter(e=>!e.start_time||allowed.has(new Date(e.start_time).getUTCFullYear()));
+  }
+  return events;
 }
 function eventType(sport){if(['Cross Country','Track & Field','Golf','Gymnastics','Fencing','Bowling','Rifle','Skiing','Triathlon'].includes(sport))return'MEET';if(['Wrestling','Tennis','Swimming & Diving','Rowing','Equestrian','Beach Volleyball','Acrobatics & Tumbling','STUNT'].includes(sport))return'DUAL';return'GAME';}
 function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,oppScore,resultText,sourceUrl,now}){const start=parseDate(date,time);let effective=status;if(status==='Upcoming'&&start){const a=new Date(start),b=now;if(a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth()&&a.getUTCDate()===b.getUTCDate())effective='Today';}const resultLabel=clean(resultText);const event={id:'live-'+slug(`${school.id}|${sport}|${date||''}|${opponent}|${effective}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status:effective,title:`${school.short_name} ${String(relation).toLowerCase()==='at'?'at':'vs'} ${opponent}`,start_time:start,display_time:formatSourceDate(date,time),opponent,school_score:schoolScore||null,opponent_score:oppScore||null,headline:resultLabel||(schoolScore&&oppScore?`${schoolScore}–${oppScore}`:null),team_summaries:[],results:resultLabel?[{label:'Result',value:resultLabel}]:[],result_count:resultLabel?1:0,source:{name:'Official athletics live schedule',url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Live:'live',Today:'today',Upcoming:'upcoming',Final:'recent_final'}[effective]||'other',recency_label:{Live:'Live now',Today:'Today',Upcoming:'Upcoming',Final:'Final'}[effective]||effective,last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:1,conflicting_sources:false};return enrichGameEvent(enrichMeetEvent(event,date));}
