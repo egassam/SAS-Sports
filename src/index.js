@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.7.1';
+const VERSION='3.7.2';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -206,6 +206,9 @@ async function featuredAthletes(schoolId,sport){
       found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
     }catch{}
   }));
+  // Final publisher-independent guard. Every portrait source—roster HTML,
+  // embedded payload, profile markup, or Schema.org—must pass this check.
+  for(const athlete of found)if(athlete.image_url&&/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|powercat|sport[_-]?mark)/i.test(decodeURIComponentSafe(athlete.image_url)))athlete.image_url=null;
   // Global identity guard: one portrait cannot represent different athletes.
   // If a publisher supplies a shared page image, use safe initials instead.
   const imageOwners=new Map();
