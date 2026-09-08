@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.9.2';
+const VERSION='3.9.3';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -277,6 +277,21 @@ const VERIFIED_MEET_DETAILS=new Map(Object.entries({
   }
 }));
 const VERIFIED_GAME_DETAILS=new Map(Object.entries({
+  'florida|Soccer|2026-08-23|t3-florida-state':{
+    source_url:'https://seminoles.com/news/2026/8/23/womens-soccer-florida-state-suffers-seasons-first-loss',
+    highlights:[
+      'Florida handed No. 3 Florida State its first loss of the season with a 3-1 home victory.',
+      'The Gators led at halftime and added two second-half goals while Florida State scored once after the break.',
+      'Florida put eight of its 14 shots on target and forced five saves from Seminoles goalkeeper Kate Ockene.',
+      'The victory ended Florida State’s nine-game winning streak and 13-game unbeaten run.'
+    ],
+    stats:[
+      {label:'Shots',value:'Florida 14 · Florida State 8'},
+      {label:'Shots on goal',value:'Florida 8 · Florida State 5'},
+      {label:'Corners',value:'Florida 5 · Florida State 6'},
+      {label:'Final',value:'Florida 3 · Florida State 1'}
+    ]
+  },
   'kstate|Soccer|2026-09-03|rv-iowa':{
     source_url:'https://www.kstatesports.com/news/2026/9/3/soccer-k-state-notches-draw-at-iowa-on-thursday-night',
     highlights:[
@@ -365,7 +380,7 @@ function enrichGameEvent(event){
   event.highlights_verified=true;
   event.game_stats=detail.stats;
   event.recap_url=detail.source_url;
-  event.source={...event.source,name:'Official athletics game recap',url:detail.source_url};
+  event.source={...event.source,name:'Official athletics game recap'};
   return event;
 }
 function enrichMeetEvent(event,date){
