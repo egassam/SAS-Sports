@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.4';
+const VERSION='3.4.5';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -344,7 +344,10 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     if(!opponent||!dateText)continue;
     const relation=(visibleText((block.match(/<span\b[^>]*class=["'][^"']*s-stamp__text[^"']*["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])||(eventType(sport)==='MEET'?'at':'vs')).toLowerCase()==='at'?'at':'vs';
     const result=visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-team-score["'][^>]*>([\s\S]*?)<\/span>/i)||block.match(/data-test-id=["']s-game-card-standard__header-game-pre-score["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1]);
-    const score=result?.match(/([WLTD])\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
+    // New SIDEARM cards render outcomes as "W Win 70-7", "L Loss 1-3",
+    // "T Tie 1-1", or "D Draw 0-0". Accept both the short marker and the
+    // expanded word so completed games are never mistaken for upcoming ones.
+    const score=result?.match(/\b([WLTD])\b(?:\s*,?\s*(?:Win|Loss|Tie|Draw))?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const status=score||(eventType(sport)==='MEET'&&result)?'Final':'Upcoming';
     const date=`${dateText.replace(/\([^)]*\)/g,'').trim()}, ${year}`;
     events.push(makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
