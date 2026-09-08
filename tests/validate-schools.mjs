@@ -41,6 +41,9 @@ function validateEvent(event,schoolId,sport){
   assert.ok(event.source?.url?.startsWith('https://'),'event lacks an official HTTPS source');
   if(DEFAULT_SPORTS.includes(sport)&&event.start_time)assert.equal(new Date(event.start_time).getUTCFullYear(),currentFallYear(),'stale season event returned');
   if(event.status==='Final')assert.ok(event.headline||event.school_score!=null||event.results?.length,'final event has no score or result');
+  if(event.status==='Final'&&event.event_type==='GAME'){
+    assert.ok(event.school_score!=null&&event.opponent_score!=null,'final game is missing its numeric score');
+  }
 }
 
 async function validateSport(school,sport){
