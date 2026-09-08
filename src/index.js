@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.7.0';
+const VERSION='3.7.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -86,10 +86,11 @@ function rosterPayloadImages(raw,base){
   while((m=re.exec(text))){
     const key=slug(decodeHtml(m[1]).replace(/\.[^.]+$/,''));
     const url=absoluteUrl(m[2],base);
-    if(key&&url)images.set(key,url);
+    if(key&&url&&!/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|powercat|sport[_-]?mark)/i.test(decodeURIComponentSafe(url)))images.set(key,url);
   }
   return images;
 }
+function decodeURIComponentSafe(value){try{return decodeURIComponent(value)}catch{return String(value||'')}}
 function rosterProfiles(raw,base){
   const byUrl=new Map(),payloadImages=rosterPayloadImages(raw,base);let m;
   // Capture the complete roster href first. Validating inside this expression
