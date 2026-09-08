@@ -67,7 +67,8 @@ for(const [school,domain] of Object.entries(rolloutSchools)){
 contains(worker,/filterActiveSeason/,'Active-season filter must exist');
 contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
 contains(worker,/ACADEMIC_YEAR_SPORTS/,'Winter and spring results must be constrained to the current academic year');
-contains(worker,/fall\?\[year,year\+1\]:\[year-1,year\]/,'Academic-year rollover must retain fall and following spring events');
+contains(worker,/eventYear===startYear&&month>=7/,'Academic-year filtering must exclude the previous spring during fall');
+contains(worker,/eventYear===startYear\+1&&month<=6/,'Academic-year filtering must retain the following spring');
 contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game cards must be supported');
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
