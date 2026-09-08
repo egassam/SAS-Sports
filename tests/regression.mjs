@@ -80,6 +80,10 @@ contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be
 contains(worker,/athleteImage\(m\[2\],base,name\)/,'Roster cards must provide the primary portrait source');
 contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must be prioritized');
 contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
+contains(worker,/function rosterPayloadImages\(/,'Embedded WMT roster portrait data must be parsed');
+contains(worker,/replace\(\/\\\\u002F\/gi,'\/'\)/,'Escaped WMT portrait URLs must be decoded');
+contains(worker,/payloadImages\.get\(slug\(name\)\)/,'Embedded portraits must be matched to athlete names');
+contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-URI placeholders must be rejected');
 contains(worker,/cache-control','public, max-age=21600/,'Athlete discovery must be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
