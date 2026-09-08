@@ -154,7 +154,7 @@ async function loadFeaturedAthletes(groups,schoolId){
     }catch{}
   }))
 }
-async function loadFeed(){
+async function loadFeed(forceRefresh=false){
   refresh.disabled=true;
   const id=school.value||'kstate';
   const chosen=sportFilter.value;
@@ -166,7 +166,8 @@ async function loadFeed(){
     const liveGroups=[]; let liveOk=0;
     await Promise.all(requested.map(async sp=>{
       try{
-        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}`,1);
+        const refreshQuery=forceRefresh?'&refresh=1':'';
+        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
         const groups=await r.json();
         if(Array.isArray(groups)&&groups.length){
           liveGroups.push(...groups);liveOk++;
@@ -232,10 +233,10 @@ async function openEvent(id){
   $('#modalBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>Opponent</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${highlights}${!highlights?recapButton:''}${gameStats}${highlightStatus}${source}`;
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
-refresh.addEventListener('click',loadFeed);
-school.addEventListener('change',loadFeed);
+refresh.addEventListener('click',()=>loadFeed(true));
+school.addEventListener('change',()=>loadFeed(false));
 conference.addEventListener('change',()=>{fillSchools();loadFeed()});
-sportFilter.addEventListener('change',loadFeed);
+sportFilter.addEventListener('change',()=>loadFeed(false));
 search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
 favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite()});
