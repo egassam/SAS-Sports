@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.6.0';
+const VERSION='3.6.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -110,13 +110,13 @@ function rosterProfiles(raw,base){
     if(/\/(?:staff|coaches)\//i.test(path))continue;
     if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
-    const image_url=payloadImages.get(slug(name))||athleteImage(m[2],base,name)||previous?.image_url||null;
+    const image_url=payloadImages.get(slug(name))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
     if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
 }
-function athleteImage(raw,base,name){
+function athleteImage(raw,base,name,trustedContainer=false){
   const candidates=[];
   const add=(value,score=0)=>{
     const url=absoluteUrl(value,base);if(!url)return;
@@ -125,15 +125,21 @@ function athleteImage(raw,base,name){
     if(/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|sport[_-]?mark)/i.test(decoded)||/\.svg(?:$|\?)/i.test(decoded))return;
     candidates.push({url,score});
   };
+  const identityMatch=(url='',alt='')=>{
+    const tokens=String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(/\s+/).filter(x=>x.length>1);
+    const haystack=`${decodeHtml(url)} ${decodeHtml(alt)}`.toLowerCase().replace(/[^a-z0-9]+/g,' ');
+    return tokens.length>=2&&tokens.every(token=>haystack.includes(token));
+  };
   let m;
   const meta=/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi;
-  while((m=meta.exec(raw)))add(m[1]||m[2],1);
+  while((m=meta.exec(raw))){const src=m[1]||m[2];if(identityMatch(src))add(src,1)}
   const wanted=String(name||'').toLowerCase().split(/\s+/).filter(Boolean);
   const imgs=/<img\b([^>]*)>/gi;
   while((m=imgs.exec(raw))){
     const attrs=m[1],rawSrc=(attrs.match(/(?:src|data-src|srcset|data-srcset)=["']([^"']+)/i)||[])[1];
     const src=rawSrc?.split(',')[0]?.trim()?.split(/\s+/)[0],alt=decodeHtml((attrs.match(/alt=["']([^"']*)/i)||[])[1]||'').toLowerCase();
-    let score=/(?:headshot|roster|player|athlete|bio)/i.test(attrs)?5:0;
+    if(!trustedContainer&&!identityMatch(src,alt))continue;
+    let score=trustedContainer?10:/(?:headshot|roster|player|athlete|bio)/i.test(attrs)?5:0;
     if(wanted.length&&wanted.every(part=>alt.includes(part)))score+=10;
     add(src,score);
   }
@@ -171,6 +177,11 @@ async function featuredAthletes(schoolId,sport){
       found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
     }catch{}
   }));
+  // Global identity guard: one portrait cannot represent different athletes.
+  // If a publisher supplies a shared page image, use safe initials instead.
+  const imageOwners=new Map();
+  for(const athlete of found){if(!athlete.image_url)continue;const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
+  for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
   const ranked=found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
   const photographed=ranked.filter(a=>a.image_url);
   return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
