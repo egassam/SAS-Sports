@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.5';
+const VERSION='4.1.6';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -666,7 +666,9 @@ function recapMatchesEvent(raw,e,recapUrl=''){
   const article=recapArticleText(raw);
   const text=matchText(`${title} ${article}`);
   const opponent=matchText(e.opponent);
-  if(!opponent||!text.includes(opponent))return false;
+  const articleWords=text.split(' '),opponentTokens=opponent.split(' ').filter(word=>word.length>=4&&!['team','senior','national'].includes(word));
+  const fuzzyOpponent=opponentTokens.length&&opponentTokens.every(token=>articleWords.some(word=>word.startsWith(token.slice(0,7))));
+  if(!opponent||(!text.includes(opponent)&&!fuzzyOpponent))return false;
   const sportName=matchText(e.sport);
   if(sportName&&!text.includes(sportName)&&!matchText(recapUrl).includes(sportName))return false;
   const day=e.start_time?.slice(0,10);
