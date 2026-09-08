@@ -54,6 +54,7 @@ for(const [school,domain] of Object.entries(rolloutSchools)){
 contains(worker,/filterActiveSeason/,'Active-season filter must exist');
 contains(worker,/activeFallSeasonYear/,'Fall results must be constrained to the current season');
 contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game cards must be supported');
+contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
