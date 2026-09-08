@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.5.0';
+const VERSION='3.5.1';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -626,14 +626,42 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
   const candidates=[...new Set(ordered)].slice(0,8);
   let recapUrl=null,recapHtml=null;
+  const tryCandidates=async urls=>{
+    for(const candidate of urls){
+      try{
+        const r=await fetch(candidate,{headers:HEADERS,redirect:'follow'});
+        if(!r.ok)continue;
+        const html=await r.text();
+        if(recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+      }catch{}
+    }
+    return null;
+  };
   // The schedule's direct recap is almost always correct. Fetch candidates one at
   // a time and stop on the first exact match instead of downloading every article.
-  for(const candidate of candidates){
+  const scheduledMatch=await tryCandidates(candidates);
+  if(scheduledMatch){recapUrl=scheduledMatch.url;recapHtml=scheduledMatch.html;}
+  // Some WMT schedules publish completed events before attaching their recap
+  // links. The official sport-news archive already contains those recaps, so use
+  // it as a same-domain fallback and still require exact opponent, sport and date.
+  if(!recapUrl){
     try{
-      const r=await fetch(candidate,{headers:HEADERS,redirect:'follow'});
-      if(!r.ok)continue;
-      const html=await r.text();
-      if(recapMatchesEvent(html,target,candidate)){recapUrl=candidate;recapHtml=html;break}
+      const newsUrl=new URL(sourceUrl);
+      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,'/news');
+      if(newsPath!==newsUrl.pathname){
+        newsUrl.pathname=newsPath;newsUrl.search='';
+        const r=await fetch(newsUrl,{headers:HEADERS,redirect:'follow'});
+        if(r.ok){
+          const html=await r.text(),links=[];let m;
+          const newsLink=/<a\b[^>]*href=["']([^"']*\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[^"'?#]+)[^"']*["'][^>]*>/gi;
+          while((m=newsLink.exec(html))){
+            const link=absoluteUrl(m[1],newsUrl.href);
+            if(link&&datePath?.test(link)&&!links.includes(link))links.push(link);
+          }
+          const newsMatch=await tryCandidates(links.slice(0,8));
+          if(newsMatch){recapUrl=newsMatch.url;recapHtml=newsMatch.html;}
+        }
+      }
     }catch{}
   }
   if(!recapUrl){
