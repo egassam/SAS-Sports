@@ -17,6 +17,8 @@ contains(worker,/storyPageContentBody/,'Next-generation official recap bodies mu
 contains(worker,/if\(!opponent\|\|!text\.includes\(opponent\)\)return false/,'Opponent mismatch must reject a recap');
 contains(worker,/sportName.*return false/,'Sport mismatch must reject a recap');
 contains(worker,/urlDate.*published.*dateText/s,'Event date must be verified');
+contains(worker,/adjacentPublication/,'Official recaps published the next day must still match the event');
+contains(worker,/const direct=target\.recap_url\|\|recapIndex\.map/,'Exact schedule-card recaps must be tried first');
 
 // The same generator must serve all sports, with meaningful sport-specific priorities.
 contains(worker,/function highlightPriorities\(sport\)/,'Global sport-aware highlight rules must exist');
@@ -63,6 +65,7 @@ contains(worker,/function parseSidearmGameCards\(/,'Next-generation Sidearm game
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
+contains(worker,/if\(cardRecap\)event\.recap_url=cardRecap/,'WMT schedule-card recap identity must be preserved');
 contains(worker,/const scoreText=rawResult\|\|visibleText\(block\)/,'WMT scores split outside the result label must use the full event card');
 contains(worker,/visibleText\(block\)\.match\(\/\\b\(\[WLTD\]\)/,'WMT final-score fallback must recover numeric scores from the full card');
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
