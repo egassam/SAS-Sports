@@ -135,6 +135,11 @@ contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-UR
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
 contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
+contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
+contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
+contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
+contains(page,/inBatches\(requested,4/,'Automatic sport feeds must load within a safe concurrency budget');
+contains(page,/inBatches\(groups,4/,'Athlete discovery must load within a safe concurrency budget');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
 contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
