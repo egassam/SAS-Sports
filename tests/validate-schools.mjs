@@ -69,13 +69,23 @@ async function validateSport(school,sport){
     assert.ok((athlete.instagram_url||athlete.profile_url)?.startsWith('https://'),'athlete has no clickable destination');
   }
 
-  const newestFinal=(group.results||[])[0];let highlight=deep?'SKIP:NO_FINAL':'NOT_RUN';
-  if(deep&&newestFinal){
-    const detail=await getJson(`/live/highlights?${encoded}&event_id=${encodeURIComponent(newestFinal.id)}`);
-    assert.equal(detail.id,newestFinal.id,'highlight response belongs to a different event');
-    assert.equal(detail.opponent,newestFinal.opponent,'highlight opponent does not match');
-    assert.equal(detail.start_time?.slice(0,10),newestFinal.start_time?.slice(0,10),'highlight event date does not match');
-    highlight=detail.highlights_verified&&detail.highlights?.length>=3?'PASS':`WARN:${detail.highlight_state||'no_verified_recap'}`;
+  const finals=group.results||[];let highlight=deep?(finals.length?'PENDING':'PASS:0/0'):'NOT_RUN';
+  if(deep&&finals.length){
+    let passed=0;
+    for(const final of finals){
+      const detail=await getJson(`/live/highlights?${encoded}&event_id=${encodeURIComponent(final.id)}`);
+      assert.equal(detail.id,final.id,'highlight response belongs to a different event');
+      assert.equal(detail.opponent,final.opponent,'highlight opponent does not match');
+      assert.equal(detail.start_time?.slice(0,10),final.start_time?.slice(0,10),'highlight event date does not match');
+      assert.ok(detail.highlights_verified&&detail.highlights?.length>=3,`${final.title} has no verified highlights (${detail.highlight_state||'no_verified_recap'})`);
+      assert.ok(detail.recap_url?.startsWith('https://'),`${final.title} has no verified official recap URL`);
+      const recap=new URL(detail.recap_url),host=recap.hostname.replace(/^www\./,'');
+      assert.ok(host.endsWith(officialHost),`${final.title} recap points outside the official athletics domain`);
+      assert.ok(!/(?:google\.|maps\.|mapquest\.|ticketmaster\.)/i.test(host),`${final.title} recap incorrectly points to a venue or ticket service`);
+      assert.ok(/recap/i.test(detail.source?.name||''),`${final.title} source was not promoted to a verified recap`);
+      passed++;
+    }
+    highlight=`PASS:${passed}/${finals.length}`;
   }
   return{events:events.length,results:(group.results||[]).length,upcoming:(group.upcoming||[]).length,athletes:athletes.length,highlight};
 }
@@ -87,14 +97,13 @@ for(const schoolId of schoolIds){
   if(!school){rows.push({school:schoolId,sport:'—',status:'FAIL',detail:'school is missing from catalog'});failed=true;continue}
   for(const sport of sports){
     try{
-      const result=await validateSport(school,sport),warning=String(result.highlight).startsWith('WARN:');
-      rows.push({school:schoolId,sport,status:warning?'PASS*':'PASS',events:result.events,results:result.results,upcoming:result.upcoming,athletes:result.athletes,highlights:result.highlight});
+      const result=await validateSport(school,sport);
+      rows.push({school:schoolId,sport,status:'PASS',events:result.events,results:result.results,upcoming:result.upcoming,athletes:result.athletes,highlights:result.highlight});
     }catch(error){rows.push({school:schoolId,sport,status:'FAIL',detail:error.message});failed=true}
   }
 }
 
 console.table(rows);
 console.log(`\nCertified ${rows.filter(x=>x.status.startsWith('PASS')).length}/${rows.length} school-sport feeds against ${base}.`);
-console.log('PASS* means required checks passed, but the newest final had no usable official recap.');
-if(!deep)console.log('Run one school with --deep to additionally generate and verify its newest highlights.');
+if(!deep)console.log('Run a new school with --deep before release; every current-season final must return verified highlights and the correct official recap.');
 if(failed)process.exitCode=1;
