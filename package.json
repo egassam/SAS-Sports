@@ -1,6 +1,6 @@
 {
   "name": "sas-sports-cloudflare",
-  "version": "3.5.5",
+  "version": "3.6.0",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
@@ -8,7 +8,8 @@
     "check": "node --check src/index.js && node tests/regression.mjs",
     "test": "node tests/regression.mjs",
     "test:schools": "node tests/validate-schools.mjs",
-    "test:school": "node tests/validate-schools.mjs"
+    "test:school": "node tests/validate-schools.mjs",
+    "certify:new-school": "node tests/validate-schools.mjs --deep"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
