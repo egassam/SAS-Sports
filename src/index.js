@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.3';
+const VERSION='4.1.4';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -34,8 +34,8 @@ const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
   const path=new URL(url).pathname;
-  if(/\/mens-|\/men-|\/m-/i.test(path))return"Men's";
-  if(/\/womens-|\/women-|\/w-/i.test(path))return"Women's";
+  if(/\/(?:mens(?:-|\/)|men-|m-)/i.test(path))return"Men's";
+  if(/\/(?:womens(?:-|\/)|women-|w-)/i.test(path))return"Women's";
   return null;
 }
 function labelTeamEvents(events,sport,url){
@@ -54,19 +54,23 @@ const KNOWN_URLS=new Map(Object.entries({
   'kansas|Cross Country':'https://kuathletics.com/sports/cross-country/schedule',
   'kansas|Track & Field':'https://kuathletics.com/sports/track-and-field/schedule',
   'kansas|Football':'https://kuathletics.com/sports/football/schedule',
+  'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
   'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
   'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
   'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
   'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
   'florida|Football':'https://floridagators.com/sports/football/schedule',
+  'florida|Swimming & Diving':'https://floridagators.com/sports/swimming-and-diving/schedule',
   'arizona|Volleyball':'https://arizonawildcats.com/sports/womens-volleyball/schedule',
   'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
   'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
   'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
+  'arizona|Swimming & Diving':'https://arizonawildcats.com/sports/swimming-and-diving/schedule',
   'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
   'arizona-state|Soccer':'https://thesundevils.com/sports/soccer/schedule',
   'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
   'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
+  'arizona-state|Swimming & Diving':['https://thesundevils.com/sports/mens/swimming-diving/schedule','https://thesundevils.com/sports/womens/swimming-diving/schedule'],
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
@@ -245,7 +249,7 @@ async function featuredAthletes(schoolId,sport){
   const photographed=ranked.filter(a=>a.image_url);
   return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
 }
-function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
+function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return Array.isArray(known)?known:[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
   const m=String(dateText||'').match(/^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})$/);
   if(!m)return null;
