@@ -32,6 +32,9 @@ contains(worker,/if\(events\.length&&aiTargetId\)/,'Recap enrichment must remain
 contains(worker,/pathname\.replace\(\/\\\/schedule/,'Unlinked recaps must fall back to the official sport-news archive');
 contains(worker,/datePath\?\.test\(link\)/,'News fallback must only inspect articles from the event date');
 contains(worker,/const tryCandidates=async urls/,'All recap candidates must use the same exact-match verification');
+contains(worker,/const embeddedNews=/,'Escaped WMT news-archive URLs must be discovered');
+contains(worker,/const payloadRe=\/"content","/,'Embedded WMT article paragraphs must be extracted');
+contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substantial before use');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 
 // The initial three-school rollout must keep explicit official sources for every
