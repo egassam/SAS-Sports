@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.5';
+const VERSION='3.4.6';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -88,6 +88,10 @@ function rosterProfiles(raw,base){
   };
   while((m=re.exec(raw))){
     const url=absoluteUrl(m[1],base),name=visibleText(m[2]);if(!url)continue;
+    // WMT nests staff below seasonal roster paths such as
+    // /roster/season/2026/staff/name. Keep coaches and staff out of the
+    // athlete carousel regardless of where that segment appears.
+    if(/\/(?:staff|coaches)\//i.test(new URL(url).pathname))continue;
     const previous=byUrl.get(url);
     if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url});
   }
