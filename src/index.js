@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='3.4.8';
+const VERSION='3.4.9';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
   'Accept':'text/html,application/xhtml+xml'
@@ -97,7 +97,9 @@ function rosterProfiles(raw,base){
     if(/\/(?:staff|coaches)\//i.test(path))continue;
     if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
-    if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url});
+    const image_url=athleteImage(m[2],base,name)||previous?.image_url||null;
+    if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
+    else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
 }
@@ -115,7 +117,8 @@ function athleteImage(raw,base,name){
   const wanted=String(name||'').toLowerCase().split(/\s+/).filter(Boolean);
   const imgs=/<img\b([^>]*)>/gi;
   while((m=imgs.exec(raw))){
-    const attrs=m[1],src=(attrs.match(/(?:src|data-src)=["']([^"']+)/i)||[])[1],alt=decodeHtml((attrs.match(/alt=["']([^"']*)/i)||[])[1]||'').toLowerCase();
+    const attrs=m[1],rawSrc=(attrs.match(/(?:src|data-src|srcset|data-srcset)=["']([^"']+)/i)||[])[1];
+    const src=rawSrc?.split(',')[0]?.trim()?.split(/\s+/)[0],alt=decodeHtml((attrs.match(/alt=["']([^"']*)/i)||[])[1]||'').toLowerCase();
     let score=/(?:headshot|roster|player|athlete|bio)/i.test(attrs)?5:0;
     if(wanted.length&&wanted.every(part=>alt.includes(part)))score+=10;
     add(src,score);
@@ -140,7 +143,9 @@ async function featuredAthletes(schoolId,sport){
   for(const rosterUrl of rosterUrls(school,sport)){
     try{const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;profiles=rosterProfiles(await r.text(),r.url||rosterUrl);if(profiles.length)break}catch{}
   }
-  profiles.sort((a,b)=>dailyRank(a.url)-dailyRank(b.url));
+  // Roster-card portraits are the most reliable source. Put those athletes
+  // first, then retain the daily shuffle within each group.
+  profiles.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
   const found=[];
   // Check enough roster profiles to produce three real portraits. Newly added
   // athletes sometimes publish a school logo as their social image until a
@@ -149,7 +154,7 @@ async function featuredAthletes(schoolId,sport){
     try{
       const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
       const html=await r.text(),instagram_url=verifiedInstagram(html);
-      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)});
+      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
     }catch{}
   }));
   const ranked=found.sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
