@@ -117,6 +117,7 @@ contains(page,/school\.addEventListener\('change'/,'School navigation must use t
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
 contains(worker,/BLOCKED_INSTAGRAM_HANDLES/,'Known school and team Instagram accounts must be rejected');
 contains(worker,/sundevilathletics/,'Arizona State’s institutional Instagram must never be used as an athlete account');
+contains(worker,/texastech_fb/,'Texas Tech’s institutional Instagram must never be used as an athlete account');
 contains(worker,/replace\(\/\^@\/,''\)/,'Instagram handles must remove a publisher-provided leading @');
 contains(worker,/const socialOwners=new Map\(\)/,'Duplicate Instagram destinations must be detected across athletes');
 contains(worker,/for\(const athlete of owners\)athlete\.instagram_url=null/,'Shared team Instagram destinations must be rejected');
