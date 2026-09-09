@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.3.0';
+const VERSION='4.3.1';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -14,8 +14,14 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'kstate|Tennis|Mallory Renfro':'https://www.instagram.com/mallorymrenfro/',
   'kstate|Tennis|Maralgoo Chogsomjav':'https://www.instagram.com/maralgoo917/',
   'kstate|Tennis|Varvara Bernovich':'https://www.instagram.com/bernovich.varka/',
+  'kansas|Cross Country|Emmah Jemutai':'https://www.instagram.com/emmah_jemutai/',
+  'kansas|Cross Country|Mia Murray':'https://www.instagram.com/_mia.murray/',
+  'kansas|Soccer|Sophie Dawe':'https://www.instagram.com/sophia.dawe/',
   'kansas|Soccer|Marit McLaughlin':'https://www.instagram.com/marit.mclaughlin/',
-  'kansas|Soccer|Livvy Moore':'https://www.instagram.com/livvy.moore/'
+  'kansas|Soccer|Livvy Moore':'https://www.instagram.com/livvy.moore/',
+  'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
+  'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
+  'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/'
 }));
 
 const SPORT_PATHS={
