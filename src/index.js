@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.6';
+const VERSION='4.6.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -96,6 +96,11 @@ const KNOWN_URLS=new Map(Object.entries({
   'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
   'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
   'arizona-state|Swimming & Diving':['https://thesundevils.com/sports/mens/swimming-diving/schedule','https://thesundevils.com/sports/womens/swimming-diving/schedule'],
+  'texas-tech|Volleyball':'https://texastech.com/sports/womens-volleyball/schedule',
+  'texas-tech|Soccer':'https://texastech.com/sports/womens-soccer/schedule',
+  'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
+  'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
+  'texas-tech|Football':'https://texastech.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
