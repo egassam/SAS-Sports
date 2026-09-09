@@ -13,6 +13,7 @@ function count(source,text){
 
 // Exact recap identity: opponent, sport and event date must all participate.
 contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist');
+contains(worker,/football-texas-tech-tops-acu-in-season-opener-33-10/,'Texas Tech–ACU must retain its verified official recap');
 contains(worker,/florida-state-suffers-seasons-first-loss/,'Florida–Florida State must retain its verified opponent recap');
 contains(worker,/eventDay>=today/,'Past-dated events must never remain in the upcoming schedule');
 contains(worker,/storyPageContentBody/,'Next-generation official recap bodies must be supported');
