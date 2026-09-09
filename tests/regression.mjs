@@ -163,6 +163,17 @@ contains(page,/highlight-loader-mark[^>]*[^]*>SAS</,'SAS loader mark must exist'
 contains(page,/Fetching SAS verified highlights…/,'Verified-highlight loading message must exist');
 contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1.5 seconds');
 
+// Live lifecycle refresh: poll quickly during games, periodically while idle, and
+// bypass the worker cache so upcoming events can become live and finals can land.
+contains(page,/const LIVE_REFRESH_MS=30\*1000/,'Live events must refresh every 30 seconds');
+contains(page,/IDLE_REFRESH_MS=5\*60\*1000/,'Upcoming events must be checked periodically for live transitions');
+contains(page,/hasLiveEvents\(\)\?LIVE_REFRESH_MS:IDLE_REFRESH_MS/,'Refresh cadence must accelerate whenever an event is live');
+contains(page,/loadFeed\(true,\{automatic:true\}\)/,'Automatic refresh must bypass the verified feed freshness cache');
+contains(page,/visibilitychange/,'Returning to SAS Sports must refresh stale live data');
+contains(page,/Fetching SAS Approved Results/,'Every live refresh must show the SAS approved-results loader');
+contains(page,/Checking live scores, finals, and highlights/,'The live refresh loader must describe the complete refresh');
+contains(page,/REFRESH_LOADER_MIN_MS=1500/,'The live refresh loader must remain visible for 1.5 seconds');
+
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
