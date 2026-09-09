@@ -95,7 +95,7 @@ contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
-contains(worker,/FEED_FRESH_MS=5\*60\*1000/,'Verified live feeds must have a short freshness window');
+contains(worker,/FEED_FRESH_MS=25\*1000/,'Shared live-feed cache must refresh within the 30-second polling window');
 contains(worker,/stale-refreshing/,'Stale verified feeds must remain visible while refreshing');
 contains(worker,/stale-fallback/,'A temporary official-source failure must fall back to a verified feed');
 contains(worker,/for\(const url of urls\)/,'Official fallback URLs must be tried sequentially');
@@ -115,7 +115,7 @@ contains(worker,/Capture the complete roster href first/,'Roster links must not 
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
-contains(worker,/Math\.min\(profiles\.length,36\)/,'Every team must receive a deterministic expanded verification scan');
+contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a deterministic bounded verification scan');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
 for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allaoui','Keeghan Edwards','Claire Stegall']){
@@ -159,8 +159,8 @@ contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports mus
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');
-contains(page,/inBatches\(requested,4/,'Automatic sport feeds must load within a safe concurrency budget');
-contains(page,/inBatches\(groups,4/,'Athlete discovery must load within a safe concurrency budget');
+contains(page,/inBatches\(requested,2/,'Automatic sport feeds must load within a safe concurrency budget');
+contains(page,/inBatches\(groups,1/,'Athlete discovery must avoid parallel roster scans');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
 contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
@@ -179,7 +179,7 @@ contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1
 contains(page,/const LIVE_REFRESH_MS=30\*1000/,'Live events must refresh every 30 seconds');
 contains(page,/IDLE_REFRESH_MS=5\*60\*1000/,'Upcoming events must be checked periodically for live transitions');
 contains(page,/hasLiveEvents\(\)\?LIVE_REFRESH_MS:IDLE_REFRESH_MS/,'Refresh cadence must accelerate whenever an event is live');
-contains(page,/loadFeed\(true,\{automatic:true\}\)/,'Automatic refresh must bypass the verified feed freshness cache');
+contains(page,/loadFeed\(false,\{automatic:true\}\)/,'Automatic refresh must reuse the shared verified feed cache');
 contains(page,/visibilitychange/,'Returning to SAS Sports must refresh stale live data');
 contains(page,/Fetching SAS Approved Results/,'Every live refresh must show the SAS approved-results loader');
 contains(page,/Checking live scores, finals, and highlights/,'The live refresh loader must describe the complete refresh');
