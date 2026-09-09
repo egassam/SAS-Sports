@@ -60,7 +60,7 @@
 </div>
 <script>
 const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), favoriteTeams=$('#favoriteTeams'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
-let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, liveRefreshTimer=null, lastFeedRefresh=0;
+let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, liveRefreshTimer=null, lastFeedRefresh=0;
 const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const BOOTSTRAP_SPORTS=['Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
 const AUTO_SEASON_WINDOWS={
@@ -181,12 +181,13 @@ async function loadSchools(){
     status.textContent=`Loaded ${allSchools.length} schools from the SAS Sports package; reconnecting to live backend…`;
   }
 }
-async function loadFeaturedAthletes(groups,schoolId){
+async function loadFeaturedAthletes(groups,schoolId,generation){
   await inBatches(groups,1,async g=>{
     try{
       const r=await apiFetch(`/live/athletes?school=${encodeURIComponent(schoolId)}&sport=${encodeURIComponent(g.sport)}`,1);
       const athletes=await r.json();
-      if(Array.isArray(athletes)&&athletes.length){g.featured_athletes=athletes;render(currentGroups)}
+      if(generation!==feedGeneration||school.value!==schoolId||!currentGroups.includes(g))return;
+      if(Array.isArray(athletes)){g.featured_athletes=athletes;render(currentGroups)}
     }catch{}
   })
 }
@@ -203,8 +204,9 @@ function scheduleLiveRefresh(){
   liveRefreshTimer=setTimeout(()=>loadFeed(false,{automatic:true}),delay);
 }
 async function loadFeed(forceRefresh=false,{automatic=false}={}){
-  if(feedLoading)return;
+  if(feedLoading){queuedFeedRequest={forceRefresh,automatic};return}
   feedLoading=true;
+  const generation=++feedGeneration;
   const loaderShownAt=showLiveRefreshLoader();
   refresh.disabled=true;
   const id=school.value||'kstate';
@@ -214,13 +216,14 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
     const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
     const requested=chosen?[chosen]:automaticSports().filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
-    const previousAthletes=new Map(currentGroups.map(g=>[g.sport,g.featured_athletes]));
+    const previousAthletes=new Map(currentGroups.filter(g=>g.school_id===id).map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
     await inBatches(requested,1,async sp=>{
       try{
         const refreshQuery=forceRefresh?'&refresh=1':'';
         const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
         const groups=await r.json();
+        if(generation!==feedGeneration||school.value!==id)return;
         if(Array.isArray(groups)&&groups.length){
           for(const group of groups)if(previousAthletes.get(group.sport))group.featured_athletes=previousAthletes.get(group.sport);
           liveGroups.push(...groups);liveOk++;
@@ -233,6 +236,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
         }
       }catch(e){}
     });
+    if(generation!==feedGeneration||school.value!==id)return;
     // Web-live mode never labels bundled/pilot events as current. Only data fetched
     // from the official athletics source during this request is displayed here.
     // Keep a sponsored in-season sport visible even before its next schedule is
@@ -245,7 +249,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
       lastFeedRefresh=Date.now();
       status.textContent=`${hasLiveEvents()?'LIVE AUTO-REFRESH ON':'LIVE SOURCE'} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${liveOk}/${requested.length} official source${liveOk===1?'':'s'} reached · ${total} current events`;
       // Athlete links load after scores so this optional feature never delays the feed.
-      loadFeaturedAthletes(currentGroups,id);
+      loadFeaturedAthletes(currentGroups,id,generation);
     }else{
       status.textContent='LIVE SOURCE UNAVAILABLE · no cached results are being shown as current';
       feed.innerHTML='<div class="empty">SAS Sports reached the web server, but the selected official athletics source did not return usable live data. No old packaged results are being substituted.</div>';
@@ -253,7 +257,9 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   }catch(err){status.textContent='SAS Sports could not reach its live web backend.';feed.innerHTML='<div class="empty">Live backend connection failed. Open SAS Sports from its hosted https:// web address, not from a local index.html file.</div>'}
   finally{
     await hideLiveRefreshLoader(loaderShownAt);
-    refresh.disabled=false;feedLoading=false;scheduleLiveRefresh();
+    refresh.disabled=false;feedLoading=false;
+    const queued=queuedFeedRequest;queuedFeedRequest=null;
+    if(queued)queueMicrotask(()=>loadFeed(queued.forceRefresh,{automatic:queued.automatic}));else scheduleLiveRefresh();
   }
 }
 async function openEvent(id){
@@ -294,7 +300,7 @@ async function openEvent(id){
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));
-school.addEventListener('change',()=>loadFeed(false));
+school.addEventListener('change',()=>{feedGeneration++;currentGroups=[];updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
 conference.addEventListener('change',()=>{fillSchools();loadFeed()});
 sportFilter.addEventListener('change',()=>loadFeed(false));
 search.addEventListener('input',()=>render(currentGroups));
