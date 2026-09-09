@@ -192,11 +192,15 @@ contains(page,/Fetching SAS Approved Results/,'Every live refresh must show the 
 contains(page,/Checking live scores, finals, and highlights/,'The live refresh loader must describe the complete refresh');
 contains(page,/REFRESH_LOADER_MIN_MS=1500/,'The live refresh loader must remain visible for 1.5 seconds');
 
-// Favorite team must be the persistent homepage selection, not merely a star.
-contains(page,/return localStorage\.getItem\('sas-sports-favorite'\)\|\|new URLSearchParams/,'Favorite team must take priority on homepage startup');
+// Favorite teams must persist, migrate the original single favorite, and remain quickly selectable.
+contains(page,/function favoriteSchoolIds\(\)/,'Multiple favorite teams must be supported');
+contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Favorite teams must persist on the device');
+contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
+contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
+contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
 contains(page,/★ Favorite/,'Selected homepage team must have a clear favorite label');
 contains(page,/☆ Set favorite/,'Users must have a clear control for choosing a homepage team');
-contains(page,/will now appear on your SAS Sports homepage/,'Favorite selection must provide confirmation');
+contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
