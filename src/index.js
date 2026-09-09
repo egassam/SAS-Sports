@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.4.3';
+const VERSION='4.5.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -69,6 +69,11 @@ const KNOWN_URLS=new Map(Object.entries({
   'kansas|Football':'https://kuathletics.com/sports/football/schedule',
   'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
   'kansas|Rowing':'https://kuathletics.com/sports/womens-rowing/schedule',
+  'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/schedule',
+  'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/schedule',
+  'oklahoma-state|Football':'https://okstate.com/sports/football/schedule',
+  'oklahoma-state|Tennis':['https://okstate.com/sports/womens-tennis/schedule','https://okstate.com/sports/mens-tennis/schedule'],
+  'oklahoma-state|Wrestling':'https://okstate.com/sports/wrestling/schedule',
   'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
   'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
   'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
@@ -510,7 +515,8 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     const dateText=visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-date(?:-details)?["'][^>]*>([\s\S]*?)<\/span>|data-test-id=["']s-game-card-standard__header-game-date["'][^>]*>([\s\S]*?)<\/p>/i)||[]).slice(1).find(Boolean));
     if(!opponent||!dateText)continue;
     const relation=(visibleText((block.match(/<span\b[^>]*class=["'][^"']*s-stamp__text[^"']*["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])||(eventType(sport)==='MEET'?'at':'vs')).toLowerCase()==='at'?'at':'vs';
-    const result=visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-team-score["'][^>]*>([\s\S]*?)<\/span>/i)||block.match(/data-test-id=["']s-game-card-standard__header-game-pre-score["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1]);
+    const result=visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-team-score["'][^>]*>([\s\S]*?)<\/span>/i)||block.match(/data-test-id=["']s-game-card-standard__header-game-pre-score["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])
+      ||(eventType(sport)==='MEET'?(visibleText(block).match(/\b(?:\d+(?:st|nd|rd|th)\s*-\s*\d+\s*pts?\.?|M:\s*[^|]{1,35}(?:\|\s*W:\s*[^|]{1,35})?|No Team Scores)\b/i)||[])[0]:null);
     // New SIDEARM cards render outcomes as "W Win 70-7", "L Loss 1-3",
     // "T Tie 1-1", or "D Draw 0-0". Accept both the short marker and the
     // expanded word so completed games are never mistaken for upcoming ones.
@@ -519,6 +525,27 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     const year=scheduleYearForDate(raw,dateText,now);
     const date=`${dateText.replace(/\([^)]*\)/g,'').trim()}, ${year}`;
     events.push(makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
+  }
+  return events;
+}
+function parseSidearmGameCenterCards(raw,school,sport,sourceUrl,now){
+  const starts=[...raw.matchAll(/<div\b[^>]*class=["'][^"']*\bs-game-card\s+s-game-card__game-center\b[^"']*["'][^>]*>/gi)].map(x=>x.index),events=[];
+  for(let i=0;i<starts.length;i++){
+    const block=raw.slice(starts[i],starts[i+1]||Math.min(raw.length,starts[i]+60000));
+    const rawOpponent=visibleText((block.match(/<p\b[^>]*class=["'][^"']*s-game-card__opponent-name[^"']*["'][^>]*>([\s\S]*?)<\/p>/i)||[])[1]);
+    const relation=/^at\b/i.test(rawOpponent)?'at':'vs',opponent=clean(rawOpponent?.replace(/^(?:at|vs\.?|versus)\s+/i,''));
+    const dateBox=(block.match(/<div\b[^>]*class=["'][^"']*s-game-card__date--desktop[^"']*["'][^>]*>([\s\S]{0,600}?)<\/div>/i)||[])[1];
+    const dateParts=[...(dateBox||'').matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    if(!opponent||dateParts.length<2)continue;
+    const scoreBox=(block.match(/<div\b[^>]*class=["'][^"']*s-game-card__status-time-and-score__game-score[^"']*["'][^>]*>([\s\S]{0,12000}?)<\/div>\s*<\/div>/i)||[])[1]||'';
+    const scores=[...scoreBox.matchAll(/<span\b[^>]*class=["'][^"']*s-text-title(?:\s|["'])[^"']*["'][^>]*>\s*(\d+)\s*<\/span>/gi)].map(x=>x[1]);
+    // Game-center cards display the opponent score before the selected school's score.
+    const opponentScore=scores[0]||null,schoolScore=scores[1]||null,status=schoolScore!=null&&opponentScore!=null?'Final':'Upcoming';
+    const year=scheduleYearForDate(raw,`${dateParts[0]} ${dateParts[1]}`,now),date=`${dateParts[0]} ${dateParts[1]}, ${year}`;
+    const event=makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore,oppScore:opponentScore,resultText:status==='Final'?`${schoolScore}-${opponentScore}`:null,sourceUrl,now});
+    const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label=["'][^"']*Recap[^"']*["'])[^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,500}?\bRecap\b[\s\S]{0,500}?<\/a>/i);
+    if(recapLink)event.recap_url=absoluteUrl(recapLink[1],sourceUrl);
+    events.push(event);
   }
   return events;
 }
@@ -575,6 +602,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
   const sourceAdapters=[
     {name:'sidearm',parse:parseSidearmGameCards},
+    {name:'sidearm-game-center',parse:parseSidearmGameCenterCards},
     {name:'wmt',parse:parseWmtScheduleCards},
     {name:'schema',parse:parseSchemaEvents}
   ];
