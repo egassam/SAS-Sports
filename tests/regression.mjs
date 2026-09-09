@@ -128,6 +128,7 @@ for(const verified of ['Lyla Louderbaugh','Ebba Nordstedt','Anna Wallin']){
   assert.ok(worker.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
 }
 contains(worker,/'Rowing':\['womens-rowing','rowing'\]/,'Women’s rowing must try the official sport slug before the legacy fallback');
+contains(worker,/'Golf':\['womens-golf','mens-golf','golf'\]/,'Generic golf must inspect the women’s roster containing the verified Kansas athletes first');
 contains(worker,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
 contains(worker,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
