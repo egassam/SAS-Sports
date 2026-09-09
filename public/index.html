@@ -12,6 +12,7 @@
 .live-refresh-loader{position:fixed;top:max(14px,env(safe-area-inset-top));left:50%;z-index:50;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);padding:11px 16px 11px 11px;border:1px solid #315a64;border-radius:18px;background:rgba(7,17,31,.96);box-shadow:0 16px 48px rgba(0,0,0,.4);color:#dffcf2;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-16px);transition:opacity .2s ease,transform .2s ease,visibility .2s}.live-refresh-loader.show{opacity:1;visibility:visible;transform:translate(-50%,0)}.live-refresh-loader .highlight-loader-mark{width:46px;height:46px;border-radius:14px;font-size:17px;flex:0 0 auto}.live-refresh-copy{min-width:0}.live-refresh-title{font-size:14px;font-weight:900;white-space:nowrap}.live-refresh-note{margin-top:2px;color:var(--muted);font-size:11px;white-space:nowrap}
 @media(max-width:820px){.top-controls{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.shell{padding:12px 9px 58px}.hero{padding:12px;border-radius:18px}.top-controls{grid-template-columns:1fr}.brandbar{align-items:flex-start}.brand p{max-width:250px}.sport{border-radius:16px}.row{align-items:center}.event-title{max-width:240px}.statusline{align-items:flex-start;flex-direction:column}.detail-grid{grid-template-columns:1fr}.brandbar>.pill{display:none}}
+.favorite-teams{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:11px}.favorite-teams:empty{display:none}.favorite-teams-label{color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.favorite-team{padding:7px 10px;border-radius:999px;background:#0a192a;color:#dce8f5;border:1px solid #29435f;font-size:12px}.favorite-team.active{color:#07111f;background:linear-gradient(135deg,var(--accent2),var(--accent));border-color:transparent}
 </style>
 </head>
 <body>
@@ -32,6 +33,7 @@
     <input id="search" type="search" placeholder="Search event…" aria-label="Search event">
     <div style="display:flex;gap:8px"><button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school">☆</button><button id="refresh">Refresh</button></div>
   </div>
+  <div id="favoriteTeams" class="favorite-teams" aria-label="Favorite teams"></div>
   <div class="summary">
     <div class="stat"><b id="liveCount">0</b><span>Live</span></div>
     <div class="stat"><b id="resultCount">0</b><span>Recent results</span></div>
@@ -57,7 +59,7 @@
   </div>
 </div>
 <script>
-const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
+const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), favoriteTeams=$('#favoriteTeams'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
 let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, liveRefreshTimer=null, lastFeedRefresh=0;
 const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const BOOTSTRAP_SPORTS=['Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
@@ -80,7 +82,12 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const localTime=v=>{if(!v)return'';try{return new Date(v).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}catch{return v}};
 const eventTime=e=>e.display_time||localTime(e.start_time);
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-function savedSchool(){return localStorage.getItem('sas-sports-favorite')||new URLSearchParams(location.search).get('school')||localStorage.getItem('sas-sports-school')||'kstate'}
+function favoriteSchoolIds(){
+  try{const saved=JSON.parse(localStorage.getItem('sas-sports-favorites')||'[]');if(Array.isArray(saved))return[...new Set(saved.filter(id=>typeof id==='string'&&id))]}catch{}
+  const legacy=localStorage.getItem('sas-sports-favorite');return legacy?[legacy]:[];
+}
+function saveFavoriteSchoolIds(ids){localStorage.setItem('sas-sports-favorites',JSON.stringify([...new Set(ids)]));localStorage.removeItem('sas-sports-favorite')}
+function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
 function badge(e){const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
 function card(e,kind){const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(e.recency_label||'')}${(e.display_time||e.start_time)?' · '+esc(eventTime(e)):''}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
@@ -124,11 +131,13 @@ function updateCounts(){
   $('#liveCount').textContent=live; $('#resultCount').textContent=results; $('#upcomingCount').textContent=upcoming; $('#sportCount').textContent=currentGroups.length;
 }
 function updateFavorite(){
-  const fav=localStorage.getItem('sas-sports-favorite'); const on=fav===school.value;
+  const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   const team=allSchools.find(s=>s.id===school.value)?.name||'this team';
   favorite.textContent=on?'★ Favorite':'☆ Set favorite'; favorite.classList.toggle('on',on);
-  favorite.title=on?`${team} is your homepage team`:`Make ${team} your homepage team`;
+  favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
+  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My teams</span>${favorites.map(id=>{const item=allSchools.find(s=>s.id===id);return item?`<button class="favorite-team ${id===school.value?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
+  favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value)return;const item=allSchools.find(s=>s.id===id);if(item){conference.value=item.conference;fillSchools();school.value=id;loadFeed(false)}}));
 }
 function fillSchools(){
   const conf=conference.value;
@@ -283,7 +292,7 @@ conference.addEventListener('change',()=>{fillSchools();loadFeed()});
 sportFilter.addEventListener('change',()=>loadFeed(false));
 search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
-favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed as your homepage team.`:`★ ${team} will now appear on your SAS Sports homepage.`});
+favorite.addEventListener('click',()=>{const favorites=favoriteSchoolIds(),on=favorites.includes(school.value);saveFavoriteSchoolIds(on?favorites.filter(id=>id!==school.value):[...favorites,school.value]);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed from your favorite teams.`:`★ ${team} added to your SAS Sports homepage favorites.`});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
