@@ -70,7 +70,10 @@ const AUTO_SEASON_WINDOWS={
   'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]]
 };
 const HOME_SPORT_PRIORITY=['Cross Country','Soccer','Volleyball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Softball','Baseball','Basketball','Football'];
-const SCHOOL_SPORTS={'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field']};
+const SCHOOL_SPORTS={
+  'kstate':['Baseball','Basketball','Cross Country','Football','Golf','Rowing','Soccer','Tennis','Track & Field','Volleyball'],
+  'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field']
+};
 function monthInWindow(month,[start,end]){return start<=end?month>=start&&month<=end:month>=start||month<=end}
 function automaticSports(date=new Date()){
   const month=date.getMonth()+1;
@@ -213,7 +216,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     const requested=chosen?[chosen]:automaticSports().filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
     const previousAthletes=new Map(currentGroups.map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
-    await inBatches(requested,2,async sp=>{
+    await inBatches(requested,1,async sp=>{
       try{
         const refreshQuery=forceRefresh?'&refresh=1':'';
         const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
