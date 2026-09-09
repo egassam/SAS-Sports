@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.4.1';
+const VERSION='4.4.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -35,7 +35,7 @@ const SPORT_PATHS={
   'Basketball':['mens-basketball','womens-basketball','basketball'],"Men's Basketball":['mens-basketball','basketball'],"Women's Basketball":['womens-basketball','basketball'],
   'Baseball':['baseball'],'Softball':['softball'],'Wrestling':['wrestling'],
   'Swimming & Diving':['womens-swimming-and-diving','mens-swimming-and-diving','womens-swimming-diving','mens-swimming-diving','swimming-and-diving','swimming-diving','swimming'],'Tennis':['womens-tennis','mens-tennis','tennis'],
-  'Golf':['mens-golf','womens-golf','golf'],'Rowing':['womens-rowing','rowing'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
+  'Golf':['womens-golf','mens-golf','golf'],'Rowing':['womens-rowing','rowing'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
   'Field Hockey':['field-hockey'],'Hockey':['mens-ice-hockey','womens-ice-hockey','ice-hockey','hockey'],
   'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['womens-water-polo','mens-water-polo','water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
