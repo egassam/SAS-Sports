@@ -94,6 +94,7 @@ contains(worker,/No Team Scores/,'Next-generation SIDEARM meet placements must b
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
 contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEARM game-center schedules must be supported');
+contains(worker,/Legacy\/standard SIDEARM pages already have a cheaper exact parser/,'Next-generation card scanning must not duplicate standard SIDEARM work');
 contains(worker,/Game-center cards display the opponent score before/,'Game-center score order must be normalized to the selected school');
 contains(worker,/'oklahoma-state\|Cross Country':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State cross country must use its official MXCT schedule');
 contains(worker,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
@@ -176,12 +177,12 @@ contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports mus
 contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
-contains(page,/SCHOOL_SPORTS=\{'oklahoma-state'/,'Completed schools may define their sponsored sport set');
+contains(page,/'kstate':\['Baseball','Basketball','Cross Country'/,'K-State must load only sports it sponsors');
 contains(page,/automaticSports\(\)\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip sports the selected school does not sponsor');
 contains(page,/if\(!chosen&&SCHOOL_SPORTS\[id\]\)/,'Sponsored sports must remain visible while waiting for a new schedule');
 contains(page,/\|\|\(g\.featured_athletes\|\|\[\]\)\.length/,'A sport with verified athletes must remain visible without current events');
 assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');
-contains(page,/inBatches\(requested,2/,'Automatic sport feeds must load within a safe concurrency budget');
+contains(page,/inBatches\(requested,1/,'Automatic sport feeds must load sequentially within the Worker resource budget');
 contains(page,/inBatches\(groups,1/,'Athlete discovery must avoid parallel roster scans');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
