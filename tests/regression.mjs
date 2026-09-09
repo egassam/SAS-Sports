@@ -148,6 +148,9 @@ contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading mus
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
 contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
+contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
+contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
+assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');
 contains(page,/inBatches\(requested,4/,'Automatic sport feeds must load within a safe concurrency budget');
 contains(page,/inBatches\(groups,4/,'Athlete discovery must load within a safe concurrency budget');
 contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
