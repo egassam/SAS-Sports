@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 const DEFAULT_BASE='https://sas-sports.lovetogivepain.workers.dev';
-const DEFAULT_SCHOOLS=['kstate','kansas','florida','arizona','arizona-state'];
+const DEFAULT_SCHOOLS=['kstate','kansas','florida','arizona','arizona-state','texas-tech'];
 const DEFAULT_SPORTS=['Cross Country','Soccer','Volleyball','Football'];
 const args=process.argv.slice(2);
 const value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
