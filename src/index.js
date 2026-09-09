@@ -1,7 +1,7 @@
 import schools from './schools.json';
 
-const VERSION='4.3.1';
-const FEED_FRESH_MS=5*60*1000;
+const VERSION='4.4.0';
+const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
@@ -240,8 +240,8 @@ async function featuredAthletes(schoolId,sport){
   // Inspect deterministic roster batches until three verified athletes are
   // found. This avoids randomly skipping smaller teams while keeping large
   // football rosters within a safe official-site request budget.
-  for(let start=0;start<Math.min(profiles.length,36)&&found.filter(a=>a.instagram_url).length<3;start+=6){
-    await Promise.all(profiles.slice(start,start+6).map(async profile=>{
+  for(let start=0;start<Math.min(profiles.length,18)&&found.filter(a=>a.instagram_url).length<3;start+=3){
+    await Promise.all(profiles.slice(start,start+3).map(async profile=>{
       try{
         const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
         const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
