@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.1';
+const VERSION='4.5.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -43,6 +43,10 @@ const SPORT_PATHS={
   'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],'STUNT':['stunt']
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
+const KNOWN_ROSTER_URLS=new Map(Object.entries({
+  'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/roster',
+  'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/roster'
+}));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
   const path=new URL(url).pathname;
@@ -113,6 +117,7 @@ function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
 function rosterUrls(school,sport){
+  const known=KNOWN_ROSTER_URLS.get(`${school.id}|${sport}`);if(known)return Array.isArray(known)?known:[known];
   const base=school.athletics_url.replace(/\/$/,'');
   return[...new Set((SPORT_PATHS[sport]||[slug(sport)]).map(p=>`${base}/sports/${p}/roster`))];
 }
