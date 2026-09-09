@@ -64,6 +64,7 @@ async function validateSport(school,sport){
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
+  if(DEFAULT_SCHOOLS.includes(school.id)&&DEFAULT_SPORTS.includes(sport))assert.equal(athletes.length,3,'certified school/sport must return three verified featured athletes');
   for(const athlete of athletes){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
     assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
