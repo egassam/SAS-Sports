@@ -124,6 +124,12 @@ for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allao
 for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
   assert.ok(worker.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
 }
+for(const verified of ['Lyla Louderbaugh','Ebba Nordstedt','Anna Wallin']){
+  assert.ok(worker.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
+}
+contains(worker,/'Rowing':\['womens-rowing','rowing'\]/,'Women’s rowing must try the official sport slug before the legacy fallback');
+contains(worker,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
+contains(worker,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
