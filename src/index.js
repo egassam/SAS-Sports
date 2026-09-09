@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.6.1';
+const VERSION='4.6.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -339,6 +339,51 @@ const VERIFIED_MEET_DETAILS=new Map(Object.entries({
   }
 }));
 const VERIFIED_GAME_DETAILS=new Map(Object.entries({
+  'texas-tech|Volleyball|2026-09-05|nevada':{
+    source_url:'https://texastech.com/news/2026/9/5/womens-volleyball-tech-bounces-back-against-wolfpack',
+    highlights:[
+      'Texas Tech defeated Nevada 3-2 after winning the deciding fifth set 15-9.',
+      'Kenna McKenzie matched her career high with 23 kills, and Tatum Johnson added a career-high 10.',
+      'The Red Raiders finished with 63 kills, nine aces and 10 blocks while holding Nevada to a .171 hitting percentage.'
+    ],
+    stats:[{label:'Kills',value:'Texas Tech 63 · Nevada 57'},{label:'Hitting percentage',value:'Texas Tech .265 · Nevada .171'},{label:'Aces',value:'Texas Tech 9 · Nevada 3'},{label:'Blocks',value:'Texas Tech 10 · Nevada 8'}]
+  },
+  'texas-tech|Volleyball|2026-09-04|sacramento-state':{
+    source_url:'https://texastech.com/news/2026/9/4/womens-volleyball-red-raiders-fall-to-hornets',
+    highlights:[
+      'Sacramento State defeated Texas Tech in three closely contested sets, 25-22, 26-24 and 27-25.',
+      'Shelby Ignash led Texas Tech with nine kills while hitting .467 and matching her career high.',
+      'Katelyn Cochran recorded 34 assists, and Emily Contreras led the Red Raiders with 12 digs.'
+    ],
+    stats:[{label:'Kills',value:'Texas Tech 39 · Sacramento State 50'},{label:'Hitting percentage',value:'Texas Tech .267 · Sacramento State .299'},{label:'Assists',value:'Texas Tech 37 · Sacramento State 47'},{label:'Blocks',value:'Texas Tech 5 · Sacramento State 4'}]
+  },
+  'texas-tech|Volleyball|2026-09-03|saint-mary-s':{
+    source_url:'https://texastech.com/news/2026/9/3/womens-volleyball-freshmen-continue-to-shine-in-red-raiders-win',
+    highlights:[
+      'Texas Tech defeated Saint Mary’s 3-1, winning the final two sets 25-18 and 25-20.',
+      'Sara Bowcutt posted 21 kills and Elia Dinsmore added 14 as the freshman duo combined for 35.',
+      'Katelyn Cochran recorded 42 assists and nine digs, while Shelby Ignash finished with eight blocks.'
+    ],
+    stats:[{label:'Set scores',value:'25-23 · 20-25 · 25-18 · 25-20'},{label:'Bowcutt kills',value:'21'},{label:'Dinsmore kills',value:'14'},{label:'Cochran assists',value:'42'}]
+  },
+  'texas-tech|Volleyball|2026-08-29|st-thomas':{
+    source_url:'https://texastech.com/news/2026/8/29/womens-volleyball-tech-holds-on-to-beat-st-thomas',
+    highlights:[
+      'Texas Tech defeated St. Thomas 3-2 after taking the deciding fifth set 17-15.',
+      'Five Red Raiders recorded double-digit digs, and Taylor Cook, Sara Bowcutt and Elia Dinsmore posted double-doubles.',
+      'Dinsmore finished with 14 kills and 12 digs, while Bowcutt led Texas Tech with 15 kills.'
+    ],
+    stats:[{label:'Kills',value:'Texas Tech 54 · St. Thomas 54'},{label:'Digs',value:'Texas Tech 77'},{label:'Blocks',value:'Texas Tech 11'},{label:'Cook assists',value:'42'}]
+  },
+  'texas-tech|Volleyball|2026-08-28|wyoming':{
+    source_url:'https://texastech.com/news/2026/8/28/womens-volleyball-red-raiders-drops-season-opener-to-cowgirls',
+    highlights:[
+      'Wyoming defeated Texas Tech 3-1 in the season opener.',
+      'Sara Bowcutt led the Red Raiders with 12 kills and three aces in her collegiate debut.',
+      'Texas Tech won the second set 25-14 before Wyoming closed the match with wins in sets three and four.'
+    ],
+    stats:[{label:'Kills',value:'Texas Tech 34 · Wyoming 50'},{label:'Hitting percentage',value:'Texas Tech .074 · Wyoming .276'},{label:'Aces',value:'Texas Tech 6 · Wyoming 5'},{label:'Blocks',value:'Texas Tech 8 · Wyoming 10'}]
+  },
   'texas-tech|Football|2026-09-05|abilene-christian':{
     source_url:'https://texastech.com/news/2026/9/5/football-texas-tech-tops-acu-in-season-opener-33-10',
     highlights:[
