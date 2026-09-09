@@ -118,6 +118,9 @@ contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accoun
 contains(worker,/Math\.min\(profiles\.length,36\)/,'Every team must receive a deterministic expanded verification scan');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
+for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allaoui','Keeghan Edwards','Claire Stegall']){
+  assert.ok(worker.includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
+}
 for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
   assert.ok(worker.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
 }
