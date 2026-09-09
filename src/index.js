@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.1.6';
+const VERSION='4.3.0';
 const FEED_FRESH_MS=5*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -11,6 +11,9 @@ const HEADERS={
 // Accounts verified through direct tags from an official school/team social
 // account. These are explicit identity matches, not name-based guesses.
 const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
+  'kstate|Tennis|Mallory Renfro':'https://www.instagram.com/mallorymrenfro/',
+  'kstate|Tennis|Maralgoo Chogsomjav':'https://www.instagram.com/maralgoo917/',
+  'kstate|Tennis|Varvara Bernovich':'https://www.instagram.com/bernovich.varka/',
   'kansas|Soccer|Marit McLaughlin':'https://www.instagram.com/marit.mclaughlin/',
   'kansas|Soccer|Livvy Moore':'https://www.instagram.com/livvy.moore/'
 }));
@@ -225,18 +228,21 @@ async function featuredAthletes(schoolId,sport){
   }
   // Roster-card portraits are the most reliable source. Put those athletes
   // first, then retain the daily shuffle within each group.
-  profiles.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
+  const overrideFor=profile=>VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
+  profiles.sort((a,b)=>Number(Boolean(overrideFor(b)))-Number(Boolean(overrideFor(a)))||Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
   const found=[];
-  // Search a broad roster pool so cards can rotate among verified accounts.
-  // athletes sometimes publish a school logo as their social image until a
-  // headshot is uploaded, so those generic images must not occupy a photo card.
-  await Promise.all(profiles.slice(0,9).map(async profile=>{
-    try{
-      const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
-      const html=await r.text(),instagram_url=verifiedInstagram(html)||VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
-      found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
-    }catch{}
-  }));
+  // Inspect deterministic roster batches until three verified athletes are
+  // found. This avoids randomly skipping smaller teams while keeping large
+  // football rosters within a safe official-site request budget.
+  for(let start=0;start<Math.min(profiles.length,36)&&found.filter(a=>a.instagram_url).length<3;start+=6){
+    await Promise.all(profiles.slice(start,start+6).map(async profile=>{
+      try{
+        const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
+        const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
+        found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
+      }catch{}
+    }));
+  }
   // Final publisher-independent guard. Every portrait source—roster HTML,
   // embedded payload, profile markup, or Schema.org—must pass this check.
   for(const athlete of found)if(athlete.image_url&&/(?:logo|placeholder|default|favicon|icon|brand|pitchfork|powercat|sport[_-]?mark)/i.test(decodeURIComponentSafe(athlete.image_url)))athlete.image_url=null;
