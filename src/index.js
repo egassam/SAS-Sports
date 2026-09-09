@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.6.2';
+const VERSION='4.6.3';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -231,7 +231,7 @@ function athleteImage(raw,base,name,trustedContainer=false){
   candidates.sort((a,b)=>b.score-a.score);
   return candidates[0]?.url||null;
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','texastech_fb','texastech','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
