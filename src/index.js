@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.2';
+const VERSION='4.5.3';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -22,6 +22,8 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'kansas|Golf|Lyla Louderbaugh':'https://www.instagram.com/lyla_louderbaugh/',
   'kansas|Golf|Ebba Nordstedt':'https://www.instagram.com/ebbaanordstedt/',
   'kansas|Golf|Anna Wallin':'https://www.instagram.com/annawalliinn/',
+  'oklahoma-state|Cross Country|Denis Kipngetich':'https://www.instagram.com/deniskipngetich604/',
+  'oklahoma-state|Cross Country|Brian Musau':'https://www.instagram.com/brianmuangemusau/',
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/'
