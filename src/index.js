@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.5';
+const VERSION='4.5.6';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -226,13 +226,14 @@ function athleteImage(raw,base,name,trustedContainer=false){
   candidates.sort((a,b)=>b.score-a.score);
   return candidates[0]?.url||null;
 }
+const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
     try{
       const u=new URL(decodeHtml(m[1])),parts=u.pathname.split('/').filter(Boolean);
-      const handle=(parts[0]||'').toLowerCase();
-      if(parts.length===1&&handle&&!['kstatesports','explore','accounts','p','reel','reels'].includes(handle))return`https://www.instagram.com/${parts[0]}/`;
+      const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
+      if(parts.length===1&&handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;
     }catch{}
   }
   return null;
@@ -274,6 +275,11 @@ async function featuredAthletes(schoolId,sport){
   const imageOwners=new Map();
   for(const athlete of found){if(!athlete.image_url)continue;const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
   for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
+  // A shared social destination is a school or team account, not an athlete's
+  // verified identity. Reject it even when the publisher changes handles.
+  const socialOwners=new Map();
+  for(const athlete of found){if(!athlete.instagram_url)continue;const key=athlete.instagram_url.toLowerCase().replace(/[?#].*$/,'');if(!socialOwners.has(key))socialOwners.set(key,[]);socialOwners.get(key).push(athlete)}
+  for(const owners of socialOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.instagram_url=null;
   const ranked=found.filter(a=>a.instagram_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
   const photographed=ranked.filter(a=>a.image_url);
   return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
