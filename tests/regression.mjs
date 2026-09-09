@@ -108,7 +108,7 @@ contains(worker,/stale-fallback/,'A temporary official-source failure must fall 
 contains(worker,/for\(const url of urls\)/,'Official fallback URLs must be tried sequentially');
 contains(worker,/successful\.push\(item\);if\(!combined\)break/,'Single-team sports must stop after the first usable official schedule');
 contains(page,/refresh\.addEventListener\('click',\(\)=>loadFeed\(true\)\)/,'Manual refresh must explicitly bypass the fresh feed cache');
-contains(page,/school\.addEventListener\('change',\(\)=>loadFeed\(false\)\)/,'School navigation must use the resilient feed cache');
+contains(page,/school\.addEventListener\('change'/,'School navigation must use the resilient feed cache');
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
@@ -184,7 +184,11 @@ contains(page,/\|\|\(g\.featured_athletes\|\|\[\]\)\.length/,'A sport with verif
 assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');
 contains(page,/inBatches\(requested,1/,'Automatic sport feeds must load sequentially within the Worker resource budget');
 contains(page,/inBatches\(groups,1/,'Athlete discovery must avoid parallel roster scans');
-contains(page,/loadFeaturedAthletes\(currentGroups,id\)/,'Athletes must load after the live feed');
+contains(page,/loadFeaturedAthletes\(currentGroups,id,generation\)/,'Athletes must load after the live feed with a school-generation guard');
+contains(page,/generation!==feedGeneration\|\|school\.value!==schoolId/,'Late athlete responses must not render after a school change');
+contains(page,/queuedFeedRequest=\{forceRefresh,automatic\}/,'A school change during loading must queue the newest request');
+contains(page,/currentGroups\.filter\(g=>g\.school_id===id\)/,'Athletes from the previous school must never be reused');
+contains(page,/school\.addEventListener\('change',\(\)=>\{feedGeneration\+\+/,'Changing schools must invalidate in-flight athlete responses immediately');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
 contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
 contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');
