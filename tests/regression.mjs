@@ -135,6 +135,9 @@ for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich
 for(const verified of ['Lyla Louderbaugh','Ebba Nordstedt','Anna Wallin']){
   assert.ok(worker.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
 }
+for(const verified of ['Denis Kipngetich','Brian Musau']){
+  assert.ok(worker.includes(`'oklahoma-state|Cross Country|${verified}'`),`Missing verified Oklahoma State Cross Country Instagram for ${verified}`);
+}
 contains(worker,/'Rowing':\['womens-rowing','rowing'\]/,'Women’s rowing must try the official sport slug before the legacy fallback');
 contains(worker,/'Golf':\['womens-golf','mens-golf','golf'\]/,'Generic golf must inspect the women’s roster containing the verified Kansas athletes first');
 contains(worker,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
