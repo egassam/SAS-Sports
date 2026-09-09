@@ -53,7 +53,8 @@ const rolloutSchools={
   kansas:'kuathletics.com',
   florida:'floridagators.com',
   arizona:'arizonawildcats.com',
-  'arizona-state':'thesundevils.com'
+  'arizona-state':'thesundevils.com',
+  'texas-tech':'texastech.com'
 };
 for(const [school,domain] of Object.entries(rolloutSchools)){
   for(const sport of ['Cross Country','Soccer','Volleyball','Football']){
