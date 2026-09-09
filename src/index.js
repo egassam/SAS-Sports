@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.4.0';
+const VERSION='4.4.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -19,6 +19,9 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'kansas|Soccer|Sophie Dawe':'https://www.instagram.com/sophia.dawe/',
   'kansas|Soccer|Marit McLaughlin':'https://www.instagram.com/marit.mclaughlin/',
   'kansas|Soccer|Livvy Moore':'https://www.instagram.com/livvy.moore/',
+  'kansas|Golf|Lyla Louderbaugh':'https://www.instagram.com/lyla_louderbaugh/',
+  'kansas|Golf|Ebba Nordstedt':'https://www.instagram.com/ebbaanordstedt/',
+  'kansas|Golf|Anna Wallin':'https://www.instagram.com/annawalliinn/',
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/'
@@ -32,7 +35,7 @@ const SPORT_PATHS={
   'Basketball':['mens-basketball','womens-basketball','basketball'],"Men's Basketball":['mens-basketball','basketball'],"Women's Basketball":['womens-basketball','basketball'],
   'Baseball':['baseball'],'Softball':['softball'],'Wrestling':['wrestling'],
   'Swimming & Diving':['womens-swimming-and-diving','mens-swimming-and-diving','womens-swimming-diving','mens-swimming-diving','swimming-and-diving','swimming-diving','swimming'],'Tennis':['womens-tennis','mens-tennis','tennis'],
-  'Golf':['mens-golf','womens-golf','golf'],'Rowing':['rowing'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
+  'Golf':['mens-golf','womens-golf','golf'],'Rowing':['womens-rowing','rowing'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
   'Field Hockey':['field-hockey'],'Hockey':['mens-ice-hockey','womens-ice-hockey','ice-hockey','hockey'],
   'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['womens-water-polo','mens-water-polo','water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
@@ -58,12 +61,14 @@ const KNOWN_URLS=new Map(Object.entries({
   'kstate|Cross Country':'https://www.kstatesports.com/sports/cross-country/schedule',
   'kstate|Track & Field':'https://www.kstatesports.com/sports/track-and-field/schedule',
   'kstate|Football':'https://www.kstatesports.com/sports/football/schedule',
+  'kstate|Rowing':'https://www.kstatesports.com/sports/womens-rowing/schedule',
   'kansas|Volleyball':'https://kuathletics.com/sports/wvball/schedule',
   'kansas|Soccer':'https://kuathletics.com/sports/wsoc/schedule',
   'kansas|Cross Country':'https://kuathletics.com/sports/cross-country/schedule',
   'kansas|Track & Field':'https://kuathletics.com/sports/track-and-field/schedule',
   'kansas|Football':'https://kuathletics.com/sports/football/schedule',
   'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
+  'kansas|Rowing':'https://kuathletics.com/sports/womens-rowing/schedule',
   'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
   'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
   'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
