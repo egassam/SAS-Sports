@@ -169,7 +169,7 @@ async function loadSchools(){
   }
 }
 async function loadFeaturedAthletes(groups,schoolId){
-  await inBatches(groups,4,async g=>{
+  await inBatches(groups,1,async g=>{
     try{
       const r=await apiFetch(`/live/athletes?school=${encodeURIComponent(schoolId)}&sport=${encodeURIComponent(g.sport)}`,1);
       const athletes=await r.json();
@@ -187,7 +187,7 @@ async function hideLiveRefreshLoader(shownAt){
 function scheduleLiveRefresh(){
   clearTimeout(liveRefreshTimer);
   const delay=hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS;
-  liveRefreshTimer=setTimeout(()=>loadFeed(true,{automatic:true}),delay);
+  liveRefreshTimer=setTimeout(()=>loadFeed(false,{automatic:true}),delay);
 }
 async function loadFeed(forceRefresh=false,{automatic=false}={}){
   if(feedLoading)return;
@@ -203,7 +203,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     const requested=chosen?[chosen]:automaticSports();
     const previousAthletes=new Map(currentGroups.map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
-    await inBatches(requested,4,async sp=>{
+    await inBatches(requested,2,async sp=>{
       try{
         const refreshQuery=forceRefresh?'&refresh=1':'';
         const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
@@ -285,7 +285,7 @@ search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
 favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed as your homepage team.`:`★ ${team} will now appear on your SAS Sports homepage.`});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(true,{automatic:true})});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
 (async()=>{try{await loadSchools();await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
