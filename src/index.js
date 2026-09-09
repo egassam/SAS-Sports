@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.6.3';
+const VERSION='4.6.4';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -231,8 +231,24 @@ function athleteImage(raw,base,name,trustedContainer=false){
   candidates.sort((a,b)=>b.score-a.score);
   return candidates[0]?.url||null;
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','texastech_fb','texastech','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
+  // Some official athlete bios publish personal social links only inside a
+  // Schema.org Person record. Accept those identity-bound links before scanning
+  // page navigation, which commonly contains the school or team account.
+  let schemaMatch;const schemas=/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  const personInstagram=value=>{
+    if(!value||typeof value!=='object')return null;
+    if(String(value['@type']||'').toLowerCase()==='person'){
+      for(const link of Array.isArray(value.sameAs)?value.sameAs:[value.sameAs]){
+        if(typeof link!=='string')continue;
+        try{const u=new URL(link),parts=u.pathname.split('/').filter(Boolean),handle=(parts[0]||'').replace(/^@/,'').toLowerCase();if(/(?:^|\.)instagram\.com$/i.test(u.hostname)&&parts.length===1&&handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return `https://www.instagram.com/${handle}/`}catch{}
+      }
+    }
+    for(const child of Array.isArray(value)?value:Object.values(value)){const found=personInstagram(child);if(found)return found}
+    return null;
+  };
+  while((schemaMatch=schemas.exec(raw))){try{const found=personInstagram(JSON.parse(decodeHtml(schemaMatch[1])));if(found)return found}catch{}}
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
     try{
