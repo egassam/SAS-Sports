@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.3';
+const VERSION='4.5.4';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -539,6 +539,9 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
   return events;
 }
 function parseSidearmGameCenterCards(raw,school,sport,sourceUrl,now){
+  // Legacy/standard SIDEARM pages already have a cheaper exact parser. Do not
+  // run this large-card scan over those documents as well.
+  if(/data-test-id=["']s-game-card-standard__root["']/i.test(raw))return[];
   const starts=[...raw.matchAll(/<div\b[^>]*class=["'][^"']*\bs-game-card\s+s-game-card__game-center\b[^"']*["'][^>]*>/gi)].map(x=>x.index),events=[];
   for(let i=0;i<starts.length;i++){
     const block=raw.slice(starts[i],starts[i+1]||Math.min(raw.length,starts[i]+60000));
