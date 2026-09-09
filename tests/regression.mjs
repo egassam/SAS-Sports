@@ -78,6 +78,7 @@ contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be ac
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
 contains(worker,/if\(cardRecap\)event\.recap_url=cardRecap/,'WMT schedule-card recap identity must be preserved');
+contains(worker,/const recapIndex=target\.recap_url\?\{map:new Map\(\),candidates:\[\]\}/,'Direct schedule-card recaps must bypass expensive full-page rescans');
 contains(worker,/\(\?:\(\?!<\\\/a>\)\[\\s\\S\]\)\*\?\\bRecap/,'Recap anchors must not cross a closing anchor boundary');
 contains(worker,/delete target\.recap_url/,'Unverified recap URLs must be removed before rendering');
 contains(worker,/opponentSchoolFor\(target,school\)/,'Official opponent recaps must be checked when the selected school omits its recap');
