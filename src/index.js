@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.0';
+const VERSION='4.5.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -524,7 +524,10 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     const status=score||(eventType(sport)==='MEET'&&result)?'Final':'Upcoming';
     const year=scheduleYearForDate(raw,dateText,now);
     const date=`${dateText.replace(/\([^)]*\)/g,'').trim()}, ${year}`;
-    events.push(makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now}));
+    const event=makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
+    const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label=["'][^"']*Recap[^"']*["'])[^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,500}?\bRecap\b[\s\S]{0,500}?<\/a>/i);
+    if(recapLink)event.recap_url=absoluteUrl(recapLink[1],sourceUrl);
+    events.push(event);
   }
   return events;
 }
@@ -818,7 +821,9 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target||target.highlights_verified)return events;
-  const recapIndex=recapUrlsByEvent(raw,school,sport,sourceUrl,now);
+  // A card-bound recap is already tied to the exact event. Avoid rescanning a
+  // very large schedule document when this direct identity is available.
+  const recapIndex=target.recap_url?{map:new Map(),candidates:[]}:recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const direct=target.recap_url||recapIndex.map.get(eventMergeKey(target));
   const day=target.start_time?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
