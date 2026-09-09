@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.5.4';
+const VERSION='4.5.5';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
