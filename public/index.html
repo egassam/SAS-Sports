@@ -9,11 +9,16 @@
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f8fafc;background:#07111f;--panel:#0d1b2d;--panel2:#11243a;--line:#213751;--muted:#9db0c7;--accent:#42d3ff;--accent2:#7cf7c4;--warn:#ffd27a;--danger:#ff7a90}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#102b49 0,#07111f 40%,#050b14 100%)}button,select,input{font:inherit}.shell{max-width:1160px;margin:auto;padding:16px 14px 72px}.brandbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.brand{display:flex;align-items:center;gap:12px}.mark{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;font-weight:950;letter-spacing:-1px;color:#07111f;background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 10px 30px rgba(66,211,255,.14)}.brand h1{margin:0;font-size:25px;line-height:1}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}.live-dot{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--accent2);box-shadow:0 0 14px var(--accent2);margin-right:6px}.hero{background:linear-gradient(145deg,rgba(17,36,58,.97),rgba(8,21,36,.97));border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.top-controls{display:grid;grid-template-columns:minmax(150px,.55fr) minmax(220px,1.15fr) minmax(180px,.75fr) minmax(180px,.75fr) auto;gap:10px}select,input{width:100%;background:#081524;color:#f8fafc;border:1px solid #29435f;border-radius:12px;padding:11px 13px;outline:none}select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(66,211,255,.12)}button{border:0;border-radius:12px;padding:11px 14px;font-weight:850;cursor:pointer;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#07111f}.ghost{background:#0a192a;color:#dce8f5;border:1px solid #29435f}.favorite{min-width:46px}.favorite.on{color:var(--warn);border-color:#6b5d35}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.stat{background:#091726;border:1px solid #223a55;border-radius:13px;padding:10px 12px}.stat b{display:block;font-size:20px;line-height:1.05}.stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.tab{background:#0a192a;color:#cfe0f2;border:1px solid #29435f;padding:8px 11px;border-radius:999px}.tab.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#07111f;border-color:transparent}.statusline{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:13px;color:var(--muted);font-size:12px}.sport-nav{display:flex;gap:7px;overflow:auto;padding:12px 2px 3px;scrollbar-width:none}.sport-nav::-webkit-scrollbar{display:none}.sport-chip{white-space:nowrap;background:#0a192a;color:#cfe0f2;border:1px solid #29435f;border-radius:999px;padding:7px 10px;font-size:12px;text-decoration:none}.sport-chip.active-season{border-color:#4a806e;color:#a9f5d9}.feed{margin-top:8px}.sport{margin:15px 0;background:rgba(8,21,36,.89);border:1px solid var(--line);border-radius:20px;overflow:hidden;scroll-margin-top:10px}.sport-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line);background:rgba(17,36,58,.66)}.sport-title{font-size:19px;font-weight:950;margin:0}.featured{padding:13px 15px 5px}.featured-label{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase;color:#9ab1ca;margin-bottom:9px}.featured-label::before{content:'★';color:var(--accent2);font-size:12px}.featured-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.athlete-card{position:relative;isolation:isolate;min-height:118px;overflow:hidden;border-radius:15px;border:1px solid #31516d;background:linear-gradient(145deg,#17334d,#0b1b2d);color:#fff;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.athlete-card:hover,.athlete-card:focus{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 12px 28px rgba(66,211,255,.14)}.athlete-photo,.athlete-photo img{position:absolute;inset:0;width:100%;height:100%}.athlete-photo{display:grid;place-items:center;background:linear-gradient(135deg,#1b4962,#18314d);font-size:30px;font-weight:950;color:#bffbe4}.athlete-photo img{object-fit:cover;object-position:center 22%;z-index:1}.athlete-shade{position:absolute;z-index:2;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:30px 11px 10px;background:linear-gradient(to bottom,transparent 25%,rgba(3,10,18,.28) 48%,rgba(3,10,18,.94) 100%)}.athlete-name{font-size:14px;font-weight:950;line-height:1.15;text-shadow:0 1px 8px #000}.athlete-instagram{display:flex;align-items:center;gap:5px;margin-top:5px;color:#aef4da;font-size:10px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}.athlete-instagram::before{content:'◎';font-size:13px}.athlete-instagram::after{content:'↗';font-size:11px}@media(max-width:560px){.featured{padding-left:10px;padding-right:10px}.featured-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.athlete-card{min-width:0;min-height:102px;border-radius:12px}.athlete-shade{padding:24px 7px 7px}.athlete-name{font-size:11px;line-height:1.12}.athlete-instagram{font-size:8px;gap:3px}.athlete-instagram::before{font-size:10px}.athlete-instagram::after{font-size:9px}}.sport-school{font-size:12px;color:var(--muted);margin-top:3px}.season{font-size:10px;font-weight:900;border-radius:999px;padding:6px 9px;background:#11263a;border:1px solid #2b4561;color:#c9d9ea;text-transform:uppercase;letter-spacing:.05em}.season.active{color:#06151c;background:var(--accent2);border-color:transparent}.section{padding:9px 11px 13px}.section-label{font-size:10px;font-weight:950;letter-spacing:.13em;text-transform:uppercase;color:#7f9ab7;padding:4px 5px 6px}.section-label.live{color:var(--accent2)}.card{background:linear-gradient(145deg,#0d1b2d,#0a1727);border:1px solid #203750;border-radius:15px;padding:12px;margin:7px 0;cursor:pointer;transition:transform .12s,border-color .12s}.card:hover{transform:translateY(-1px);border-color:#335573}.card.live-card{border-color:#316a5b;box-shadow:inset 3px 0 0 var(--accent2)}.row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.event-title{font-weight:880}.small{font-size:12px}.muted{color:var(--muted)}.score{font-size:22px;font-weight:950;white-space:nowrap}.pending{margin-top:8px;color:var(--warn);font-weight:850;font-size:12px}.status-badge{display:inline-block;margin-right:6px;border-radius:999px;padding:3px 7px;background:#132942;border:1px solid #29435f;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.status-badge.live{background:#13352d;border-color:#29614f;color:#9ff2d3}.status-badge.final{background:#18253a;color:#cbd8e6}.results{margin-top:9px;padding-top:8px;border-top:1px solid #1e344d}.result-row{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:3px 0}.empty{padding:34px 18px;text-align:center;color:var(--muted);border:1px dashed #29435f;border-radius:18px;background:rgba(8,21,36,.5);margin-top:18px}.footer-note{text-align:center;color:#65809e;font-size:11px;margin-top:24px}.modal-backdrop{position:fixed;inset:0;background:rgba(1,7,13,.78);display:none;align-items:flex-end;justify-content:center;z-index:20;padding:14px}.modal-backdrop.open{display:flex}.modal{width:min(720px,100%);max-height:86vh;overflow:auto;background:#0b192a;border:1px solid #29435f;border-radius:20px 20px 14px 14px;padding:16px;box-shadow:0 25px 80px #000}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.modal h3{margin:0 0 5px;font-size:21px}.close{background:#13243a;color:#d9e7f5;border:1px solid #29435f;padding:8px 11px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:14px 0}.detail-box{border:1px solid #203750;border-radius:12px;padding:10px;background:#091625}.detail-box span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}.detail-box b{font-size:13px}.modal .result-row{padding:9px 11px;border-bottom:1px solid #18304a}.modal .result-row:last-child{border-bottom:0}.result-group-head{margin:16px 0 0;padding:10px 12px;border-radius:12px 12px 0 0;background:linear-gradient(135deg,rgba(124,247,196,.18),rgba(66,211,255,.12));border:1px solid #315a64;color:#bffbe4;font-size:13px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.result-group-head:first-child{margin-top:4px}.meet-result-row{background:#091726}.meet-result-row:nth-of-type(odd){background:#0c1c2e}.meet-result-row.team-result{background:#102a35;color:#e8fff7;border-left:3px solid var(--accent2);font-size:13px}.meet-result-row span{min-width:0}.meet-result-row strong{white-space:nowrap;color:#f8fafc}.highlights{margin-top:14px;padding:13px 14px;border:1px solid #315a64;border-radius:14px;background:linear-gradient(145deg,rgba(124,247,196,.09),rgba(66,211,255,.06))}.highlights h4{margin:0 0 8px;color:#bffbe4;font-size:13px;text-transform:uppercase;letter-spacing:.09em}.highlights ul{margin:0;padding-left:19px}.highlights li{margin:7px 0;line-height:1.4}.game-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.game-stat{padding:9px 10px;border-radius:10px;background:#091726;border:1px solid #203750}.game-stat span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}.game-stat strong{font-size:12px}.highlight-status{margin-top:12px;padding:11px 12px;border:1px dashed #31506f;border-radius:12px;color:var(--muted);font-size:12px}.official-link{color:#8de7ff;font-weight:800;text-decoration:none}.official-link:hover{text-decoration:underline}.recap-button{display:inline-block;margin-top:11px;padding:9px 12px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#07111f;font-size:12px;font-weight:900;text-decoration:none}.highlight-loader{min-height:146px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;border:1px dashed #31506f;border-radius:16px;background:linear-gradient(145deg,rgba(124,247,196,.05),rgba(66,211,255,.04));color:var(--muted);text-align:center}.highlight-loader-mark{width:58px;height:58px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#07111f;font-size:20px;font-weight:950;letter-spacing:-1px;box-shadow:0 0 0 0 rgba(124,247,196,.38);animation:sasPulse 1.35s ease-in-out infinite}.highlight-loader-text{font-size:15px;font-weight:750;color:#c7d7e8}@keyframes sasPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(124,247,196,.30)}50%{transform:scale(1.06);box-shadow:0 0 0 12px rgba(124,247,196,0)}}@media(prefers-reduced-motion:reduce){.highlight-loader-mark{animation:none}}
+.live-refresh-loader{position:fixed;top:max(14px,env(safe-area-inset-top));left:50%;z-index:50;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 28px);padding:11px 16px 11px 11px;border:1px solid #315a64;border-radius:18px;background:rgba(7,17,31,.96);box-shadow:0 16px 48px rgba(0,0,0,.4);color:#dffcf2;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-16px);transition:opacity .2s ease,transform .2s ease,visibility .2s}.live-refresh-loader.show{opacity:1;visibility:visible;transform:translate(-50%,0)}.live-refresh-loader .highlight-loader-mark{width:46px;height:46px;border-radius:14px;font-size:17px;flex:0 0 auto}.live-refresh-copy{min-width:0}.live-refresh-title{font-size:14px;font-weight:900;white-space:nowrap}.live-refresh-note{margin-top:2px;color:var(--muted);font-size:11px;white-space:nowrap}
 @media(max-width:820px){.top-controls{grid-template-columns:1fr 1fr}.summary{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.shell{padding:12px 9px 58px}.hero{padding:12px;border-radius:18px}.top-controls{grid-template-columns:1fr}.brandbar{align-items:flex-start}.brand p{max-width:250px}.sport{border-radius:16px}.row{align-items:center}.event-title{max-width:240px}.statusline{align-items:flex-start;flex-direction:column}.detail-grid{grid-template-columns:1fr}.brandbar>.pill{display:none}}
 </style>
 </head>
 <body>
+<div id="liveRefreshLoader" class="live-refresh-loader" role="status" aria-live="polite" aria-hidden="true">
+  <div class="highlight-loader-mark" aria-hidden="true">SAS</div>
+  <div class="live-refresh-copy"><div class="live-refresh-title">Fetching SAS Approved Results</div><div class="live-refresh-note">Checking live scores, finals, and highlights…</div></div>
+</div>
 <div class="shell">
 <header class="brandbar">
   <div class="brand"><div class="mark">SAS</div><div><h1>SAS Sports</h1><p>Every school. Every sport. Results first.</p></div></div>
@@ -53,7 +58,8 @@
 </div>
 <script>
 const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
-let allSchools=[], currentGroups=[], currentView='all';
+let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, liveRefreshTimer=null, lastFeedRefresh=0;
+const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const BOOTSTRAP_SPORTS=['Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
 const AUTO_SEASON_WINDOWS={
   'Football':[[8,1]],'Volleyball':[[8,12]],'Soccer':[[8,12]],'Cross Country':[[8,11]],
@@ -166,7 +172,22 @@ async function loadFeaturedAthletes(groups,schoolId){
     }catch{}
   })
 }
-async function loadFeed(forceRefresh=false){
+function hasLiveEvents(groups=currentGroups){return groups.some(g=>(g.live||[]).length)}
+function showLiveRefreshLoader(){const el=$('#liveRefreshLoader');el.classList.add('show');el.setAttribute('aria-hidden','false');return Date.now()}
+async function hideLiveRefreshLoader(shownAt){
+  const remaining=REFRESH_LOADER_MIN_MS-(Date.now()-shownAt);
+  if(remaining>0)await new Promise(resolve=>setTimeout(resolve,remaining));
+  const el=$('#liveRefreshLoader');el.classList.remove('show');el.setAttribute('aria-hidden','true');
+}
+function scheduleLiveRefresh(){
+  clearTimeout(liveRefreshTimer);
+  const delay=hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS;
+  liveRefreshTimer=setTimeout(()=>loadFeed(true,{automatic:true}),delay);
+}
+async function loadFeed(forceRefresh=false,{automatic=false}={}){
+  if(feedLoading)return;
+  feedLoading=true;
+  const loaderShownAt=showLiveRefreshLoader();
   refresh.disabled=true;
   const id=school.value||'kstate';
   const chosen=sportFilter.value;
@@ -175,6 +196,7 @@ async function loadFeed(forceRefresh=false){
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
     const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
     const requested=chosen?[chosen]:automaticSports();
+    const previousAthletes=new Map(currentGroups.map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
     await inBatches(requested,4,async sp=>{
       try{
@@ -182,6 +204,7 @@ async function loadFeed(forceRefresh=false){
         const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
         const groups=await r.json();
         if(Array.isArray(groups)&&groups.length){
+          for(const group of groups)if(previousAthletes.get(group.sport))group.featured_athletes=previousAthletes.get(group.sport);
           liveGroups.push(...groups);liveOk++;
           // Render progressively so one slower official source never holds back
           // sports that have already finished loading.
@@ -198,7 +221,8 @@ async function loadFeed(forceRefresh=false){
     populateSportFilter(currentGroups); if(chosen)sportFilter.value=chosen; updateCounts(); render(currentGroups);
     const total=currentGroups.reduce((n,g)=>n+g.live.length+g.results.length+g.upcoming.length+g.other.length,0);
     if(liveOk){
-      status.textContent=`LIVE SOURCE · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${liveOk}/${requested.length} official source${liveOk===1?'':'s'} reached · ${total} current events`;
+      lastFeedRefresh=Date.now();
+      status.textContent=`${hasLiveEvents()?'LIVE AUTO-REFRESH ON':'LIVE SOURCE'} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${liveOk}/${requested.length} official source${liveOk===1?'':'s'} reached · ${total} current events`;
       // Athlete links load after scores so this optional feature never delays the feed.
       loadFeaturedAthletes(currentGroups,id);
     }else{
@@ -206,7 +230,10 @@ async function loadFeed(forceRefresh=false){
       feed.innerHTML='<div class="empty">SAS Sports reached the web server, but the selected official athletics source did not return usable live data. No old packaged results are being substituted.</div>';
     }
   }catch(err){status.textContent='SAS Sports could not reach its live web backend.';feed.innerHTML='<div class="empty">Live backend connection failed. Open SAS Sports from its hosted https:// web address, not from a local index.html file.</div>'}
-  finally{refresh.disabled=false}
+  finally{
+    await hideLiveRefreshLoader(loaderShownAt);
+    refresh.disabled=false;feedLoading=false;scheduleLiveRefresh();
+  }
 }
 async function openEvent(id){
   modalWrap.classList.add('open'); modalWrap.setAttribute('aria-hidden','false');
@@ -253,6 +280,7 @@ search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
 favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite()});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(true,{automatic:true})});
 populateSportFilter();
 (async()=>{try{await loadSchools();await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
