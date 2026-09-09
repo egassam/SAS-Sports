@@ -106,7 +106,7 @@ contains(page,/school\.addEventListener\('change',\(\)=>loadFeed\(false\)\)/,'Sc
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
 contains(worker,/VERIFIED_TEAM_TAG_INSTAGRAM/,'Official team-tag Instagram verification must be supported');
-contains(worker,/verifiedInstagram\(html\)\|\|VERIFIED_TEAM_TAG_INSTAGRAM/,'Team-tag verification must safely follow direct roster-page verification');
+contains(worker,/verifiedInstagram\(html\)\|\|overrideFor\(profile\)/,'Team-tag verification must safely follow direct roster-page verification');
 contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
 contains(worker,/jersey\\s\+number/,'Jersey-number labels must be rejected in favor of athlete names');
 contains(worker,/roster\\\/\[\^"'\?#\]\+/,'Complete next-generation roster URLs must be captured before validation');
@@ -115,7 +115,12 @@ contains(worker,/Capture the complete roster href first/,'Roster links must not 
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
-contains(worker,/profiles\.slice\(0,9\)/,'Athlete discovery must stay within the proven safe request budget');
+contains(worker,/Math\.min\(profiles\.length,36\)/,'Every team must receive a deterministic expanded verification scan');
+contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
+contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
+for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
+  assert.ok(worker.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
+}
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
