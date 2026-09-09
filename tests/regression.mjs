@@ -112,6 +112,11 @@ contains(page,/school\.addEventListener\('change'/,'School navigation must use t
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
+contains(worker,/BLOCKED_INSTAGRAM_HANDLES/,'Known school and team Instagram accounts must be rejected');
+contains(worker,/sundevilathletics/,'Arizona State’s institutional Instagram must never be used as an athlete account');
+contains(worker,/replace\(\/\^@\/,''\)/,'Instagram handles must remove a publisher-provided leading @');
+contains(worker,/const socialOwners=new Map\(\)/,'Duplicate Instagram destinations must be detected across athletes');
+contains(worker,/for\(const athlete of owners\)athlete\.instagram_url=null/,'Shared team Instagram destinations must be rejected');
 contains(worker,/VERIFIED_TEAM_TAG_INSTAGRAM/,'Official team-tag Instagram verification must be supported');
 contains(worker,/verifiedInstagram\(html\)\|\|overrideFor\(profile\)/,'Team-tag verification must safely follow direct roster-page verification');
 contains(worker,/function rosterProfiles\(raw,base\)/,'Roster profile parser must exist');
