@@ -78,7 +78,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const localTime=v=>{if(!v)return'';try{return new Date(v).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}catch{return v}};
 const eventTime=e=>e.display_time||localTime(e.start_time);
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-function savedSchool(){const qp=new URLSearchParams(location.search).get('school');return qp||localStorage.getItem('sas-sports-school')||'kstate'}
+function savedSchool(){return localStorage.getItem('sas-sports-favorite')||new URLSearchParams(location.search).get('school')||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
 function badge(e){const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
 function card(e,kind){const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(e.recency_label||'')}${(e.display_time||e.start_time)?' · '+esc(eventTime(e)):''}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
@@ -123,7 +123,10 @@ function updateCounts(){
 }
 function updateFavorite(){
   const fav=localStorage.getItem('sas-sports-favorite'); const on=fav===school.value;
-  favorite.textContent=on?'★':'☆'; favorite.classList.toggle('on',on); favorite.title=on?'Favorite school':'Make favorite school';
+  const team=allSchools.find(s=>s.id===school.value)?.name||'this team';
+  favorite.textContent=on?'★ Favorite':'☆ Set favorite'; favorite.classList.toggle('on',on);
+  favorite.title=on?`${team} is your homepage team`:`Make ${team} your homepage team`;
+  favorite.setAttribute('aria-label',favorite.title);
 }
 function fillSchools(){
   const conf=conference.value;
@@ -278,7 +281,7 @@ conference.addEventListener('change',()=>{fillSchools();loadFeed()});
 sportFilter.addEventListener('change',()=>loadFeed(false));
 search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
-favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite()});
+favorite.addEventListener('click',()=>{const on=localStorage.getItem('sas-sports-favorite')===school.value;if(on)localStorage.removeItem('sas-sports-favorite');else localStorage.setItem('sas-sports-favorite',school.value);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed as your homepage team.`:`★ ${team} will now appear on your SAS Sports homepage.`});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(true,{automatic:true})});
 populateSportFilter();
