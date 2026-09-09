@@ -70,6 +70,7 @@ const AUTO_SEASON_WINDOWS={
   'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]]
 };
 const HOME_SPORT_PRIORITY=['Cross Country','Soccer','Volleyball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Softball','Baseball','Basketball','Football'];
+const SCHOOL_SPORTS={'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field']};
 function monthInWindow(month,[start,end]){return start<=end?month>=start&&month<=end:month>=start||month<=end}
 function automaticSports(date=new Date()){
   const month=date.getMonth()+1;
@@ -116,7 +117,7 @@ function visibleGroup(g,q){
 function render(groups){
   const q=search.value.trim().toLowerCase();
   const chosenSport=sportFilter.value;
-  const filtered=groups.filter(g=>!chosenSport||g.sport===chosenSport).map(g=>visibleGroup(g,q)).filter(g=>g.live.length||g.results.length||g.upcoming.length||g.other.length);
+  const filtered=groups.filter(g=>!chosenSport||g.sport===chosenSport).map(g=>visibleGroup(g,q)).filter(g=>g.live.length||g.results.length||g.upcoming.length||g.other.length||(g.featured_athletes||[]).length);
   if(!filtered.length){
     const label=chosenSport?` for ${esc(chosenSport)}`:'';
     const viewLabel=currentView==='all'?'events':currentView;
@@ -209,7 +210,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   try{
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
     const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
-    const requested=chosen?[chosen]:automaticSports();
+    const requested=chosen?[chosen]:automaticSports().filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
     const previousAthletes=new Map(currentGroups.map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
     await inBatches(requested,2,async sp=>{
@@ -231,6 +232,9 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     });
     // Web-live mode never labels bundled/pilot events as current. Only data fetched
     // from the official athletics source during this request is displayed here.
+    // Keep a sponsored in-season sport visible even before its next schedule is
+    // published; its verified featured athletes can still load in that section.
+    if(!chosen&&SCHOOL_SPORTS[id])for(const sp of requested)if(!liveGroups.some(g=>g.sport===sp))liveGroups.push({school_id:id,school:meta?.name||id,sport:sp,in_season:true,season_label:'In season',live:[],results:[],upcoming:[],other:[]});
     currentGroups=liveGroups.sort((a,b)=>requested.indexOf(a.sport)-requested.indexOf(b.sport));
     populateSportFilter(currentGroups); if(chosen)sportFilter.value=chosen; updateCounts(); render(currentGroups);
     const total=currentGroups.reduce((n,g)=>n+g.live.length+g.results.length+g.upcoming.length+g.other.length,0);
