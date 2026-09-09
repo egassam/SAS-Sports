@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.6.0';
+const VERSION='4.6.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -339,6 +339,20 @@ const VERIFIED_MEET_DETAILS=new Map(Object.entries({
   }
 }));
 const VERIFIED_GAME_DETAILS=new Map(Object.entries({
+  'texas-tech|Football|2026-09-05|abilene-christian':{
+    source_url:'https://texastech.com/news/2026/9/5/football-texas-tech-tops-acu-in-season-opener-33-10',
+    highlights:[
+      'Will Hammond completed 26 of 33 passes for 298 yards and a touchdown in Texas Tech’s 33-10 win.',
+      'Quinten Joyner and J’Koby Williams scored first-quarter rushing touchdowns as Texas Tech built a 14-0 lead.',
+      'Texas Tech held Abilene Christian to 194 total yards while Stone Harrington made four field goals.'
+    ],
+    stats:[
+      {label:'Total yards',value:'Texas Tech 471 · ACU 194'},
+      {label:'Passing yards',value:'Texas Tech 298 · ACU 119'},
+      {label:'Rushing yards',value:'Texas Tech 173 · ACU 75'},
+      {label:'First downs',value:'Texas Tech 26 · ACU 15'}
+    ]
+  },
   'florida|Soccer|2026-08-23|t3-florida-state':{
     source_url:'https://seminoles.com/news/2026/8/23/womens-soccer-florida-state-suffers-seasons-first-loss',
     highlights:[
