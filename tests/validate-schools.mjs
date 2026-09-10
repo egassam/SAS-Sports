@@ -80,7 +80,9 @@ async function validateSport(school,sport){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
     assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
   }
-  const portraits=athletes.map(x=>x.image_url).filter(Boolean).map(x=>x.replace(/[?#].*$/,''));
+  // SIDEARM's crop service identifies the actual portrait in the query string;
+  // removing it makes every distinct athlete image look like the same URL.
+  const portraits=athletes.map(x=>x.image_url).filter(Boolean).map(x=>x.replace(/#.*$/,''));
   assert.equal(new Set(portraits).size,portraits.length,'different athletes were assigned the same portrait');
 
   const finals=group.results||[];let highlight=deep?(finals.length?'PENDING':'PASS:0/0'):'NOT_RUN';
