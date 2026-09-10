@@ -191,7 +191,7 @@ async function loadFeaturedAthletes(groups,schoolId,generation){
   const cachedGroups=[];
   for(const g of groups){
     try{
-      const saved=JSON.parse(localStorage.getItem(`sas-athletes:${schoolId}:${g.sport}`)||'null');
+      const saved=JSON.parse(localStorage.getItem(`sas-athletes:v2:${schoolId}:${g.sport}`)||'null');
       if(saved&&Date.now()-saved.saved_at<ttl&&Array.isArray(saved.athletes)&&saved.athletes.length){
         g.featured_athletes=saved.athletes;cachedGroups.push(g);
       }
@@ -205,7 +205,7 @@ async function loadFeaturedAthletes(groups,schoolId,generation){
       if(generation!==feedGeneration||school.value!==schoolId||!currentGroups.includes(g))return;
       if(Array.isArray(athletes)){
         g.featured_athletes=athletes;
-        if(athletes.length)try{localStorage.setItem(`sas-athletes:${schoolId}:${g.sport}`,JSON.stringify({saved_at:Date.now(),athletes}))}catch{}
+        if(athletes.length)try{localStorage.setItem(`sas-athletes:v2:${schoolId}:${g.sport}`,JSON.stringify({saved_at:Date.now(),athletes}))}catch{}
         render(currentGroups);
       }
     }catch{}
