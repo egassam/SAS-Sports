@@ -131,6 +131,7 @@ contains(worker,/Capture the complete roster href first/,'Roster links must not 
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
+contains(worker,/if\(tagged\.length>=2\)/,'Known identity-verified athletes must use the fast roster-card path');
 contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a deterministic bounded verification scan');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
@@ -179,6 +180,7 @@ contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-UR
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
 contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
+contains(page,/sas-athletes:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport for instant switching');
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
 contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');

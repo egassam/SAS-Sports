@@ -276,6 +276,20 @@ async function featuredAthletes(schoolId,sport){
   // first, then retain the daily shuffle within each group.
   const overrideFor=profile=>VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
   profiles.sort((a,b)=>Number(Boolean(overrideFor(b)))-Number(Boolean(overrideFor(a)))||Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
+  // Official-team tags are already identity verified. Return them directly
+  // from the roster card instead of refetching many biography pages. This is
+  // the fast path for KU and Oklahoma State cross country and prevents Worker
+  // CPU exhaustion during a school change.
+  const tagged=profiles.filter(profile=>overrideFor(profile)).map(profile=>({
+    name:profile.name,
+    instagram_url:overrideFor(profile),
+    profile_url:profile.url,
+    image_url:profile.image_url||null
+  }));
+  if(tagged.length>=2){
+    tagged.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name));
+    return tagged.slice(0,3);
+  }
   const found=[];
   // Inspect deterministic roster batches until three verified athletes are
   // found. This avoids randomly skipping smaller teams while keeping large

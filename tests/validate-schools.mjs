@@ -71,8 +71,8 @@ async function validateSport(school,sport){
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
-  // Fewer than three is valid when the official roster does not expose three
-  // identity-verifiable Instagram accounts. Never fill the row with guesses.
+  const minimum=protectedSchool?.athlete_minimums?.[sport]??0;
+  assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
   for(const athlete of athletes){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
     assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
