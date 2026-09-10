@@ -137,7 +137,7 @@ contains(worker,/roster\\\/\[\^"'\?#\]\+/,'Complete next-generation roster URLs 
 contains(worker,/\\\/\(\?:staff\|coaches\)\\\//,'Seasonal staff and coach profiles must be excluded from featured athletes');
 contains(worker,/Capture the complete roster href first/,'Roster links must not be truncated before staff validation');
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
-contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
+contains(worker,/const selected=\[[\s\S]*\]\.slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
 contains(worker,/if\(tagged\.length>=2\)/,'Known identity-verified athletes must use the fast roster-card path');
 contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a deterministic bounded verification scan');
