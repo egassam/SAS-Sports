@@ -231,6 +231,7 @@ contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection 
 
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
+contains(schoolValidator,/item\?\.value\?\?item\?\.result/,'Certification must accept normalized game values and expanded meet results');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
 contains(schoolValidator,/DEFAULT_SPORTS\.includes\(sport\)&&officialHasCompleted/,'Prior winter results must not cause a false current-season certification failure');
 contains(schoolValidator,/recap points outside either official athletics domain/,'Recap URLs must remain on one of the two official athletics domains');
