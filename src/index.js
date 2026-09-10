@@ -1,7 +1,7 @@
 import schools from './schools.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.7.0';
+const VERSION='4.7.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -287,8 +287,17 @@ async function featuredAthletes(schoolId,sport){
     image_url:profile.image_url||null
   }));
   if(tagged.length>=2){
+    // The fast path must enforce the same identity rules as biography-page
+    // discovery. Some publishers reuse a generic roster image across cards.
+    const imageOwners=new Map(),socialOwners=new Map();
+    for(const athlete of tagged){
+      if(athlete.image_url){const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
+      if(athlete.instagram_url){const key=athlete.instagram_url.toLowerCase().replace(/[?#].*$/,'');if(!socialOwners.has(key))socialOwners.set(key,[]);socialOwners.get(key).push(athlete)}
+    }
+    for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
+    for(const owners of socialOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.instagram_url=null;
     tagged.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name));
-    return tagged.slice(0,3);
+    return tagged.filter(athlete=>athlete.instagram_url).slice(0,3);
   }
   const found=[];
   // Inspect deterministic roster batches until three verified athletes are
