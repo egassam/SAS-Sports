@@ -23,7 +23,9 @@ jobs:
 
   live-certified-schools:
     runs-on: ubuntu-latest
-    needs: guardrails
+    # Isolation makes repeated live requests. Finish it before per-school
+    # certification so the test suite cannot overload the production Worker.
+    needs: [guardrails, cross-school-isolation]
     strategy:
       fail-fast: false
       # The Worker has a strict CPU budget. Serial live certification prevents

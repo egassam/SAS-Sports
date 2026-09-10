@@ -25,7 +25,10 @@ async function getJson(path){
       return body;
     }catch(error){
       lastError=error;
-      if(attempt<3)await new Promise(resolve=>setTimeout(resolve,attempt*750));
+      if(attempt<3){
+        const overloaded=/HTTP 503|resource limits|Error 1102/i.test(String(error?.message));
+        await new Promise(resolve=>setTimeout(resolve,overloaded?attempt*3000:attempt*750));
+      }
     }finally{clearTimeout(timer)}
   }
   throw lastError;
