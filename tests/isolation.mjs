@@ -31,6 +31,26 @@ function assertOwned(groups,schoolId,sport){
   for(const event of events(groups))assert.equal(event.school_id,schoolId,`${schoolId} received a contaminated event`);
 }
 
+function stableFeed(groups){
+  return groups.map(group=>({
+    school_id:group.school_id,
+    sport:group.sport,
+    live:(group.live||[]).map(stableEvent),
+    results:(group.results||[]).map(stableEvent),
+    upcoming:(group.upcoming||[]).map(stableEvent),
+    other:(group.other||[]).map(stableEvent)
+  }));
+}
+function stableEvent(event){
+  return{
+    id:event.id,school_id:event.school_id,sport:event.sport,status:event.status,
+    title:event.title,start_time:event.start_time,opponent:event.opponent,
+    school_score:event.school_score,opponent_score:event.opponent_score,
+    headline:event.headline,results:event.results,recap_url:event.recap_url,
+    source_url:event.source?.url
+  };
+}
+
 const rows=[];
 for(let index=0;index<manifest.schools.length;index++){
   const first=manifest.schools[index];
@@ -43,7 +63,7 @@ for(let index=0;index<manifest.schools.length;index++){
   assertOwned(firstBefore,first.id,firstSport);
   assertOwned(middle,second.id,secondSport);
   assertOwned(firstAfter,first.id,firstSport);
-  assert.deepEqual(firstAfter,firstBefore,`${first.name} changed after loading ${second.name}; cache keys may be leaking`);
+  assert.deepEqual(stableFeed(firstAfter),stableFeed(firstBefore),`${first.name} stable event data changed after loading ${second.name}; cache keys may be leaking`);
   rows.push({school:first.name,switched_to:second.name,status:'PASS'});
 }
 console.table(rows);

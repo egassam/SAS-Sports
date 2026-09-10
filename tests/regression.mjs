@@ -232,6 +232,8 @@ contains(page,/☆ Set favorite/,'Users must have a clear control for choosing a
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
+const isolationValidator=readFileSync(new URL('./isolation.mjs',import.meta.url),'utf8');
+contains(isolationValidator,/stableFeed\(firstAfter\)/,'Isolation checks must ignore refresh timestamps and compare stable event data');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
 contains(schoolValidator,/item\?\.value\?\?item\?\.result/,'Certification must accept normalized game values and expanded meet results');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
