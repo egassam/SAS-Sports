@@ -74,6 +74,10 @@ contains(worker,/month>=7\?start:end/,'Fall cards must use the first schedule ye
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
+contains(worker,/hasScore=schoolScore!=null&&oppScore!=null/,'Any event carrying both team scores must be classified as final');
+contains(worker,/hasOutcome=.*Win\|Loss\|Tie\|Draw/s,'A published W/L/T/D outcome must override an incorrect upcoming marker');
+contains(worker,/effective=hasScore\|\|hasOutcome\?'Final':status/,'Completed result evidence must override publisher CSS status');
+contains(worker,/key\.searchParams\.set\('feed_cache',VERSION\)/,'Feed cache must be versioned so corrected event status replaces stale cards');
 contains(worker,/if\(cardRecap\)event\.recap_url=cardRecap/,'WMT schedule-card recap identity must be preserved');
 contains(worker,/const recapIndex=target\.recap_url\?\{map:new Map\(\),candidates:\[\]\}/,'Direct schedule-card recaps must bypass expensive full-page rescans');
 contains(worker,/\(\?:\(\?!<\\\/a>\)\[\\s\\S\]\)\*\?\\bRecap/,'Recap anchors must not cross a closing anchor boundary');
