@@ -180,7 +180,7 @@ contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-UR
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
 contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
-contains(page,/sas-athletes:v2:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport with a versioned key for instant, safe switching');
+contains(page,/sas-athletes:v3:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport with a versioned key for instant, safe switching');
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
 contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
