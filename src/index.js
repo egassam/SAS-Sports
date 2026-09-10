@@ -1,7 +1,7 @@
 import schools from './schools.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.7.3';
+const VERSION='4.8.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -261,6 +261,19 @@ function verifiedInstagram(raw){
   }
   return null;
 }
+async function instagramProfileImage(instagramUrl){
+  if(!instagramUrl)return null;
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),2500);
+  try{
+    const r=await fetch(instagramUrl,{headers:{...HEADERS,'User-Agent':'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/140 Mobile Safari/537.36'},redirect:'follow',signal:controller.signal});
+    if(!r.ok)return null;
+    const html=await r.text();
+    const meta=html.match(/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+    const imageUrl=absoluteUrl(meta?.[1]||meta?.[2],r.url||instagramUrl);
+    if(!imageUrl||/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl)))return null;
+    return imageUrl;
+  }catch{return null}finally{clearTimeout(timer)}
+}
 async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
   let profiles=[];
@@ -326,8 +339,9 @@ async function featuredAthletes(schoolId,sport){
   for(const athlete of found){if(!athlete.instagram_url)continue;const key=athlete.instagram_url.toLowerCase().replace(/[?#].*$/,'');if(!socialOwners.has(key))socialOwners.set(key,[]);socialOwners.get(key).push(athlete)}
   for(const owners of socialOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.instagram_url=null;
   const ranked=found.filter(a=>a.instagram_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
-  const photographed=ranked.filter(a=>a.image_url);
-  return photographed.length>=3?photographed.slice(0,3):[...photographed,...ranked.filter(a=>!a.image_url)].slice(0,3);
+  const selected=[...ranked.filter(a=>a.image_url),...ranked.filter(a=>!a.image_url)].slice(0,3);
+  await Promise.all(selected.map(async athlete=>{if(!athlete.image_url)athlete.image_url=await instagramProfileImage(athlete.instagram_url)}));
+  return selected;
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return Array.isArray(known)?known:[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){
