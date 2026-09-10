@@ -72,7 +72,12 @@ const AUTO_SEASON_WINDOWS={
 const HOME_SPORT_PRIORITY=['Cross Country','Soccer','Volleyball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Softball','Baseball','Basketball','Football'];
 const SCHOOL_SPORTS={
   'kstate':['Baseball','Basketball','Cross Country','Football','Golf','Rowing','Soccer','Tennis','Track & Field','Volleyball'],
-  'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field']
+  'kansas':['Basketball','Cross Country','Football','Golf','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball'],
+  'florida':['Baseball','Basketball','Cross Country','Football','Golf','Gymnastics','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball'],
+  'arizona':['Baseball','Basketball','Beach Volleyball','Cross Country','Football','Golf','Gymnastics','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball'],
+  'arizona-state':['Baseball','Basketball','Beach Volleyball','Cross Country','Football','Golf','Gymnastics','Hockey','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Water Polo','Wrestling'],
+  'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field'],
+  'texas-tech':['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']
 };
 function monthInWindow(month,[start,end]){return start<=end?month>=start&&month<=end:month>=start||month<=end}
 function automaticSports(date=new Date()){
@@ -182,12 +187,27 @@ async function loadSchools(){
   }
 }
 async function loadFeaturedAthletes(groups,schoolId,generation){
+  const ttl=6*60*60*1000;
+  const cachedGroups=[];
+  for(const g of groups){
+    try{
+      const saved=JSON.parse(localStorage.getItem(`sas-athletes:${schoolId}:${g.sport}`)||'null');
+      if(saved&&Date.now()-saved.saved_at<ttl&&Array.isArray(saved.athletes)&&saved.athletes.length){
+        g.featured_athletes=saved.athletes;cachedGroups.push(g);
+      }
+    }catch{}
+  }
+  if(cachedGroups.length&&generation===feedGeneration&&school.value===schoolId)render(currentGroups);
   await inBatches(groups,1,async g=>{
     try{
       const r=await apiFetch(`/live/athletes?school=${encodeURIComponent(schoolId)}&sport=${encodeURIComponent(g.sport)}`,1);
       const athletes=await r.json();
       if(generation!==feedGeneration||school.value!==schoolId||!currentGroups.includes(g))return;
-      if(Array.isArray(athletes)){g.featured_athletes=athletes;render(currentGroups)}
+      if(Array.isArray(athletes)){
+        g.featured_athletes=athletes;
+        if(athletes.length)try{localStorage.setItem(`sas-athletes:${schoolId}:${g.sport}`,JSON.stringify({saved_at:Date.now(),athletes}))}catch{}
+        render(currentGroups);
+      }
     }catch{}
   })
 }

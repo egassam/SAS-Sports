@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 
 const DEFAULT_BASE='https://sas-sports.lovetogivepain.workers.dev';
-const DEFAULT_SCHOOLS=['kstate','kansas','florida','arizona','arizona-state','texas-tech'];
+const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
+const DEFAULT_SCHOOLS=certification.schools.map(x=>x.id);
 const DEFAULT_SPORTS=['Cross Country','Soccer','Volleyball','Football'];
 const args=process.argv.slice(2);
 const value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const base=(value('base')||process.env.SAS_SPORTS_BASE_URL||DEFAULT_BASE).replace(/\/$/,'');
 const schoolIds=(value('schools')||args.find(x=>!x.startsWith('--'))||DEFAULT_SCHOOLS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
-const sports=(value('sports')||DEFAULT_SPORTS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
+const requestedSports=value('sports')?.split(',').map(x=>x.trim()).filter(Boolean)||null;
 const timeout=Number(value('timeout')||45000);
 const deep=args.includes('--deep');
 
@@ -23,7 +25,10 @@ async function getJson(path){
       return body;
     }catch(error){
       lastError=error;
-      if(attempt<3)await new Promise(resolve=>setTimeout(resolve,attempt*750));
+      if(attempt<3){
+        const overloaded=/HTTP 503|resource limits|Error 1102/i.test(String(error?.message));
+        await new Promise(resolve=>setTimeout(resolve,overloaded?attempt*3000:attempt*750));
+      }
     }finally{clearTimeout(timer)}
   }
   throw lastError;
@@ -37,7 +42,10 @@ function validateEvent(event,schoolId,sport){
   assert.ok(event.opponent&&!/^(?:undefined|null)$/i.test(event.opponent),'event opponent or meet name is invalid');
   assert.ok(!/\b(?:undefined|null)\b/i.test(event.title),'event title contains a missing value');
   assert.ok(!event.headline||!/^(?:undefined|null)$/i.test(event.headline),'event headline contains a missing value');
-  assert.ok(!(event.results||[]).some(item=>/^(?:undefined|null)$/i.test(item?.value)),'event result contains a missing value');
+  for(const item of event.results||[]){
+    const resultValue=item?.value??item?.result;
+    assert.ok(resultValue!=null&&String(resultValue).trim()&&!/^(?:undefined|null)$/i.test(String(resultValue)),'event result contains a missing value');
+  }
   assert.ok(event.source?.url?.startsWith('https://'),'event lacks an official HTTPS source');
   if(DEFAULT_SPORTS.includes(sport)&&event.start_time)assert.equal(new Date(event.start_time).getUTCFullYear(),currentFallYear(),'stale season event returned');
   if(event.status==='Final')assert.ok(event.headline||event.school_score!=null||event.results?.length,'final event has no score or result');
@@ -53,8 +61,10 @@ async function validateSport(school,sport){
   const group=groups[0],events=['live','results','upcoming','other'].flatMap(key=>group[key]||[]);
   assert.ok(events.length>0,'official feed returned no events');
   events.forEach(event=>validateEvent(event,school.id,sport));
-  const officialHost=new URL(school.athletics_url).hostname.replace(/^www\./,'');
-  assert.ok(events.every(event=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(officialHost)),'event points outside the official athletics domain');
+  const protectedSchool=certification.schools.find(x=>x.id===school.id);
+  const officialHosts=protectedSchool?.official_hosts||[new URL(school.athletics_url).hostname.replace(/^www\./,'')];
+  const officialHost=officialHosts[0];
+  assert.ok(events.every(event=>officialHosts.some(allowed=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(allowed))),'event points outside the official athletics domain');
   const officialResponse=await fetch(events[0].source.url,{headers:{accept:'text/html'}});
   if(officialResponse.ok){
     const officialHtml=await officialResponse.text();
@@ -64,7 +74,8 @@ async function validateSport(school,sport){
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
-  if(DEFAULT_SCHOOLS.includes(school.id)&&DEFAULT_SPORTS.includes(sport))assert.equal(athletes.length,3,'certified school/sport must return three verified featured athletes');
+  const minimum=protectedSchool?.athlete_minimums?.[sport]??0;
+  assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
   for(const athlete of athletes){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
     assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
@@ -96,16 +107,40 @@ async function validateSport(school,sport){
   return{events:events.length,results:(group.results||[]).length,upcoming:(group.upcoming||[]).length,athletes:athletes.length,highlight};
 }
 
+async function validateAthletes(school,sport){
+  const athletes=await getJson(`/live/athletes?school=${encodeURIComponent(school.id)}&sport=${encodeURIComponent(sport)}`);
+  const protectedSchool=certification.schools.find(x=>x.id===school.id);
+  const minimum=protectedSchool?.athlete_minimums?.[sport]??0;
+  assert.ok(Array.isArray(athletes),'featured athlete response must be an array');
+  assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
+  assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
+  for(const athlete of athletes){
+    assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
+    assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
+  }
+  return athletes.length;
+}
+
 const catalog=await getJson('/schools');
 const rows=[];let failed=false;
 for(const schoolId of schoolIds){
   const school=catalog.find(item=>item.id===schoolId);
   if(!school){rows.push({school:schoolId,sport:'—',status:'FAIL',detail:'school is missing from catalog'});failed=true;continue}
+  const protectedSchool=certification.schools.find(item=>item.id===schoolId);
+  const sports=requestedSports||protectedSchool?.critical_sports||DEFAULT_SPORTS;
   for(const sport of sports){
     try{
       const result=await validateSport(school,sport);
       rows.push({school:schoolId,sport,status:'PASS',events:result.events,results:result.results,upcoming:result.upcoming,athletes:result.athletes,highlights:result.highlight});
     }catch(error){rows.push({school:schoolId,sport,status:'FAIL',detail:error.message});failed=true}
+  }
+  // Audit athlete loading for every declared sponsored sport independently of
+  // schedule seasonality. This catches a broken roster without requiring that
+  // the sport currently has games or completed events.
+  for(const sport of protectedSchool?.athlete_sports||[]){
+    if(sports.includes(sport))continue;
+    try{rows.push({school:schoolId,sport:`${sport} athletes`,status:'PASS',athletes:await validateAthletes(school,sport),highlights:'NOT_RUN'})}
+    catch(error){rows.push({school:schoolId,sport:`${sport} athletes`,status:'FAIL',detail:error.message});failed=true}
   }
 }
 

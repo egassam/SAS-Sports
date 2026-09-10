@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
 function contains(source,pattern,message){
   assert.match(source,pattern,message);
@@ -50,19 +51,12 @@ contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-re
 
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
-const rolloutSchools={
-  kstate:'kstatesports.com',
-  kansas:'kuathletics.com',
-  florida:'floridagators.com',
-  arizona:'arizonawildcats.com',
-  'arizona-state':'thesundevils.com',
-  'texas-tech':'texastech.com'
-};
-for(const [school,domain] of Object.entries(rolloutSchools)){
-  for(const sport of ['Cross Country','Soccer','Volleyball','Football']){
+const rolloutSchools=Object.fromEntries(certification.schools.map(school=>[school.id,school]));
+assert.deepEqual(Object.keys(rolloutSchools),['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech'],'The seven-school certification baseline changed unexpectedly');
+for(const [school,definition] of Object.entries(rolloutSchools)){
+  for(const sport of definition.critical_sports){
     assert.ok(
-      worker.includes(`'${school}|${sport}':'https://${domain}/`)||
-      worker.includes(`'${school}|${sport}':'https://www.${domain}/`),
+      definition.official_hosts.some(domain=>worker.includes(`'${school}|${sport}':'https://${domain}/`)||worker.includes(`'${school}|${sport}':'https://www.${domain}/`)),
       `Missing official ${school} ${sport} source`
     );
   }
@@ -137,6 +131,7 @@ contains(worker,/Capture the complete roster href first/,'Roster links must not 
 contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may enter the featured athlete carousel');
 contains(worker,/return photographed\.length>=3[\s\S]*slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
+contains(worker,/if\(tagged\.length>=2\)/,'Known identity-verified athletes must use the fast roster-card path');
 contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a deterministic bounded verification scan');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
@@ -185,6 +180,7 @@ contains(worker,/if\(!\/\^https\?:\/i\.test\(url\)\)return/,'Transparent data-UR
 contains(worker,/complete\?21600:300/,'Complete athlete discovery must be cached longer than incomplete portrait sets');
 contains(worker,/if\(athletes\.length\)await cache\.put/,'Empty athlete failures must never be cached');
 contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading must exist');
+contains(page,/sas-athletes:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport for instant switching');
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
 contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
@@ -236,7 +232,10 @@ contains(page,/☆ Set favorite/,'Users must have a clear control for choosing a
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
+const isolationValidator=readFileSync(new URL('./isolation.mjs',import.meta.url),'utf8');
+contains(isolationValidator,/stableFeed\(firstAfter\)/,'Isolation checks must ignore refresh timestamps and compare stable event data');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
+contains(schoolValidator,/item\?\.value\?\?item\?\.result/,'Certification must accept normalized game values and expanded meet results');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
 contains(schoolValidator,/DEFAULT_SPORTS\.includes\(sport\)&&officialHasCompleted/,'Prior winter results must not cause a false current-season certification failure');
 contains(schoolValidator,/recap points outside either official athletics domain/,'Recap URLs must remain on one of the two official athletics domains');

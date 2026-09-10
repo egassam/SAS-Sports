@@ -1,6 +1,7 @@
 import schools from './schools.json';
+import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.6.4';
+const VERSION='4.7.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -76,6 +77,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
   'kansas|Rowing':'https://kuathletics.com/sports/womens-rowing/schedule',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/schedule',
+  'oklahoma-state|Soccer':'https://okstate.com/sports/womens-soccer/schedule',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/schedule',
   'oklahoma-state|Football':'https://okstate.com/sports/football/schedule',
   'oklahoma-state|Tennis':['https://okstate.com/sports/womens-tennis/schedule','https://okstate.com/sports/mens-tennis/schedule'],
@@ -148,7 +150,7 @@ function rosterPayloadImages(raw,base){
 }
 function decodeURIComponentSafe(value){try{return decodeURIComponent(value)}catch{return String(value||'')}}
 function rosterProfiles(raw,base){
-  const byUrl=new Map(),payloadImages=rosterPayloadImages(raw,base);let m;
+  const byUrl=new Map(),payloadImages=rosterPayloadImages(raw,base),socials=rosterSocialInstagrams(raw);let m;
   // Capture the complete roster href first. Validating inside this expression
   // allowed a staff URL like /roster/season/2026/staff/name to be truncated to
   // /roster/season/2026 and incorrectly accepted as an athlete profile.
@@ -175,7 +177,7 @@ function rosterProfiles(raw,base){
     else if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
-  return[...byUrl.values()].filter(x=>nameScore(x.name)>0);
+  return[...byUrl.values()].filter(x=>nameScore(x.name)>0).map(profile=>({...profile,instagram_url:socials.get(profile.name.toLowerCase())||null}));
 }
 function athleteImage(raw,base,name,trustedContainer=false){
   const candidates=[];
@@ -273,8 +275,21 @@ async function featuredAthletes(schoolId,sport){
   }
   // Roster-card portraits are the most reliable source. Put those athletes
   // first, then retain the daily shuffle within each group.
-  const overrideFor=profile=>VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
+  const overrideFor=profile=>profile.instagram_url||VERIFIED_TEAM_TAG_INSTAGRAM.get(`${schoolId}|${sport}|${profile.name}`)||null;
   profiles.sort((a,b)=>Number(Boolean(overrideFor(b)))-Number(Boolean(overrideFor(a)))||Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.url)-dailyRank(b.url));
+  // Official roster-card social labels and official-team tags are already
+  // identity verified. Return them without refetching many biography pages.
+  // This keeps large football rosters within Worker request limits.
+  const tagged=profiles.filter(profile=>overrideFor(profile)).map(profile=>({
+    name:profile.name,
+    instagram_url:overrideFor(profile),
+    profile_url:profile.url,
+    image_url:profile.image_url||null
+  }));
+  if(tagged.length>=2){
+    tagged.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name));
+    return tagged.slice(0,3);
+  }
   const found=[];
   // Inspect deterministic roster batches until three verified athletes are
   // found. This avoids randomly skipping smaller teams while keeping large
