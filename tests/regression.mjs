@@ -113,6 +113,10 @@ contains(page,/school\.addEventListener\('change'/,'School navigation must use t
 
 // Featured athletes: verified Instagram links load after results and never delay scores.
 contains(worker,/function verifiedInstagram\(raw\)/,'Athlete Instagram links must be verified');
+contains(worker,/async function instagramProfileImage\(instagramUrl\)/,'Verified Instagram profile portraits must be available as an official-photo fallback');
+contains(worker,/setTimeout\(\(\)=>controller\.abort\(\),2500\)/,'Instagram portrait fallback must not delay athlete switching indefinitely');
+contains(worker,/if\(!athlete\.image_url\)athlete\.image_url=await instagramProfileImage\(athlete\.instagram_url\)/,'Instagram portraits may only replace missing official photos');
+contains(worker,/return selected/,'Athletes without publisher portraits must remain eligible through the Instagram fallback');
 contains(worker,/personInstagram/,'Identity-bound Schema.org Person social links must be supported');
 contains(worker,/value\['@type'\].*person/i,'Only official Person identity records may supply embedded athlete Instagram links');
 contains(worker,/ttumensgolf/,'Texas Tech golf team Instagram must never be used as an athlete account');
