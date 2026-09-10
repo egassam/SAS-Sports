@@ -6,7 +6,7 @@
     {"id":"florida","name":"Florida","official_hosts":["floridagators.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
     {"id":"arizona","name":"Arizona","official_hosts":["arizonawildcats.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
     {"id":"arizona-state","name":"Arizona State","official_hosts":["thesundevils.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
-    {"id":"oklahoma-state","name":"Oklahoma State","official_hosts":["okstate.com"],"critical_sports":["Cross Country","Soccer","Football"],"athlete_sports":["Baseball","Basketball","Cross Country","Football","Golf","Tennis","Wrestling","Equestrian","Soccer","Softball","Track & Field"],"athlete_minimums":{"Baseball":1,"Basketball":1,"Cross Country":2,"Football":3,"Golf":1,"Tennis":1,"Wrestling":1,"Equestrian":1,"Soccer":1,"Softball":1,"Track & Field":1}},
+    {"id":"oklahoma-state","name":"Oklahoma State","official_hosts":["okstate.com"],"critical_sports":["Cross Country","Soccer","Football"],"athlete_sports":["Baseball","Basketball","Cross Country","Football","Golf","Tennis","Wrestling","Equestrian","Soccer","Softball","Track & Field"],"athlete_minimums":{"Baseball":1,"Basketball":1,"Cross Country":2,"Football":3,"Golf":1,"Tennis":1,"Wrestling":1,"Soccer":1,"Softball":1}},
     {"id":"texas-tech","name":"Texas Tech","official_hosts":["texastech.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]}
   ]
 }
