@@ -65,12 +65,18 @@ async function validateSport(school,sport){
   const officialHosts=protectedSchool?.official_hosts||[new URL(school.athletics_url).hostname.replace(/^www\./,'')];
   const officialHost=officialHosts[0];
   assert.ok(events.every(event=>officialHosts.some(allowed=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(allowed))),'event points outside the official athletics domain');
-  const officialResponse=await fetch(events[0].source.url,{headers:{accept:'text/html'}});
-  if(officialResponse.ok){
-    const officialHtml=await officialResponse.text();
-    const officialHasCompleted=/(?:Completed Event:|schedule-event-item--completed|s-game-card-standard__header-game-(?:team-score|pre-score))/i.test(officialHtml);
-    if(DEFAULT_SPORTS.includes(sport)&&officialHasCompleted)assert.ok((group.results||[]).length>0,'official current-season schedule has completed events but app returned zero results');
-  }
+  // This is a supplemental comparison against the publisher page. A slow or
+  // blocked third-party page must not hang the entire certification run.
+  const officialController=new AbortController(),officialTimer=setTimeout(()=>officialController.abort(),12000);
+  try{
+    const officialResponse=await fetch(events[0].source.url,{headers:{accept:'text/html'},signal:officialController.signal});
+    if(officialResponse.ok){
+      const officialHtml=await officialResponse.text();
+      const officialHasCompleted=/(?:Completed Event:|schedule-event-item--completed|s-game-card-standard__header-game-(?:team-score|pre-score))/i.test(officialHtml);
+      if(DEFAULT_SPORTS.includes(sport)&&officialHasCompleted)assert.ok((group.results||[]).length>0,'official current-season schedule has completed events but app returned zero results');
+    }
+  }catch(error){if(error?.name!=='AbortError')throw error}
+  finally{clearTimeout(officialTimer)}
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
