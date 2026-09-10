@@ -107,6 +107,20 @@ async function validateSport(school,sport){
   return{events:events.length,results:(group.results||[]).length,upcoming:(group.upcoming||[]).length,athletes:athletes.length,highlight};
 }
 
+async function validateAthletes(school,sport){
+  const athletes=await getJson(`/live/athletes?school=${encodeURIComponent(school.id)}&sport=${encodeURIComponent(sport)}`);
+  const protectedSchool=certification.schools.find(x=>x.id===school.id);
+  const minimum=protectedSchool?.athlete_minimums?.[sport]??0;
+  assert.ok(Array.isArray(athletes),'featured athlete response must be an array');
+  assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
+  assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
+  for(const athlete of athletes){
+    assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
+    assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
+  }
+  return athletes.length;
+}
+
 const catalog=await getJson('/schools');
 const rows=[];let failed=false;
 for(const schoolId of schoolIds){
@@ -119,6 +133,14 @@ for(const schoolId of schoolIds){
       const result=await validateSport(school,sport);
       rows.push({school:schoolId,sport,status:'PASS',events:result.events,results:result.results,upcoming:result.upcoming,athletes:result.athletes,highlights:result.highlight});
     }catch(error){rows.push({school:schoolId,sport,status:'FAIL',detail:error.message});failed=true}
+  }
+  // Audit athlete loading for every declared sponsored sport independently of
+  // schedule seasonality. This catches a broken roster without requiring that
+  // the sport currently has games or completed events.
+  for(const sport of protectedSchool?.athlete_sports||[]){
+    if(sports.includes(sport))continue;
+    try{rows.push({school:schoolId,sport:`${sport} athletes`,status:'PASS',athletes:await validateAthletes(school,sport),highlights:'NOT_RUN'})}
+    catch(error){rows.push({school:schoolId,sport:`${sport} athletes`,status:'FAIL',detail:error.message});failed=true}
   }
 }
 
