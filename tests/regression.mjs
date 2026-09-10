@@ -160,7 +160,7 @@ contains(worker,/'Golf':\['womens-golf','mens-golf','golf'\]/,'Generic golf must
 contains(worker,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
 contains(worker,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
-contains(worker,/photographed\.length>=3/,'Featured athlete selection must prefer three real portraits');
+contains(worker,/\.\.\.ranked\.filter\(a=>a\.image_url\),\.\.\.ranked\.filter\(a=>!a\.image_url\)/,'Official portraits must remain preferred before Instagram fallback');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');
 contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Roster cards must provide the primary portrait source');
 contains(worker,/if\(!previous&&image_url\)byUrl\.set\(url,\{name:'',url,image_url\}\)/,'Image-only roster anchors must survive until joined to the athlete name anchor');
