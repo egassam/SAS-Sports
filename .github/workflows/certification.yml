@@ -40,7 +40,7 @@ jobs:
       # the test runner itself from creating false resource-limit failures.
       max-parallel: 1
       matrix:
-        school: [kstate, kansas, florida, arizona, arizona-state, oklahoma-state, texas-tech]
+        school: [kstate, kansas, florida, arizona, arizona-state, oklahoma-state, texas-tech, baylor, byu]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
