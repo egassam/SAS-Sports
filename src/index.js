@@ -1,7 +1,7 @@
 import schools from './schools.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.7.1';
+const VERSION='4.7.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -291,7 +291,7 @@ async function featuredAthletes(schoolId,sport){
     // discovery. Some publishers reuse a generic roster image across cards.
     const imageOwners=new Map(),socialOwners=new Map();
     for(const athlete of tagged){
-      if(athlete.image_url){const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
+      if(athlete.image_url){const key=athlete.image_url.replace(/#.*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
       if(athlete.instagram_url){const key=athlete.instagram_url.toLowerCase().replace(/[?#].*$/,'');if(!socialOwners.has(key))socialOwners.set(key,[]);socialOwners.get(key).push(athlete)}
     }
     for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
@@ -318,7 +318,7 @@ async function featuredAthletes(schoolId,sport){
   // Global identity guard: one portrait cannot represent different athletes.
   // If a publisher supplies a shared page image, use safe initials instead.
   const imageOwners=new Map();
-  for(const athlete of found){if(!athlete.image_url)continue;const key=athlete.image_url.replace(/[?#].*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
+  for(const athlete of found){if(!athlete.image_url)continue;const key=athlete.image_url.replace(/#.*$/,'');if(!imageOwners.has(key))imageOwners.set(key,[]);imageOwners.get(key).push(athlete)}
   for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
   // A shared social destination is a school or team account, not an athlete's
   // verified identity. Reject it even when the publisher changes handles.
