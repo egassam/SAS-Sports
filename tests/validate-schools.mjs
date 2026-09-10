@@ -39,7 +39,10 @@ function validateEvent(event,schoolId,sport){
   assert.ok(event.opponent&&!/^(?:undefined|null)$/i.test(event.opponent),'event opponent or meet name is invalid');
   assert.ok(!/\b(?:undefined|null)\b/i.test(event.title),'event title contains a missing value');
   assert.ok(!event.headline||!/^(?:undefined|null)$/i.test(event.headline),'event headline contains a missing value');
-  assert.ok(!(event.results||[]).some(item=>/^(?:undefined|null)$/i.test(item?.value)),'event result contains a missing value');
+  for(const item of event.results||[]){
+    const resultValue=item?.value??item?.result;
+    assert.ok(resultValue!=null&&String(resultValue).trim()&&!/^(?:undefined|null)$/i.test(String(resultValue)),'event result contains a missing value');
+  }
   assert.ok(event.source?.url?.startsWith('https://'),'event lacks an official HTTPS source');
   if(DEFAULT_SPORTS.includes(sport)&&event.start_time)assert.equal(new Date(event.start_time).getUTCFullYear(),currentFallYear(),'stale season event returned');
   if(event.status==='Final')assert.ok(event.headline||event.school_score!=null||event.results?.length,'final event has no score or result');
