@@ -1,6 +1,6 @@
 import schools from './schools.json';
 
-const VERSION='4.6.4';
+const VERSION='4.7.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -76,6 +76,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
   'kansas|Rowing':'https://kuathletics.com/sports/womens-rowing/schedule',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/schedule',
+  'oklahoma-state|Soccer':'https://okstate.com/sports/womens-soccer/schedule',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/schedule',
   'oklahoma-state|Football':'https://okstate.com/sports/football/schedule',
   'oklahoma-state|Tennis':['https://okstate.com/sports/womens-tennis/schedule','https://okstate.com/sports/mens-tennis/schedule'],

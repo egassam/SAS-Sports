@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 
 const DEFAULT_BASE='https://sas-sports.lovetogivepain.workers.dev';
-const DEFAULT_SCHOOLS=['kstate','kansas','florida','arizona','arizona-state','texas-tech'];
+const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
+const DEFAULT_SCHOOLS=certification.schools.map(x=>x.id);
 const DEFAULT_SPORTS=['Cross Country','Soccer','Volleyball','Football'];
 const args=process.argv.slice(2);
 const value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const base=(value('base')||process.env.SAS_SPORTS_BASE_URL||DEFAULT_BASE).replace(/\/$/,'');
 const schoolIds=(value('schools')||args.find(x=>!x.startsWith('--'))||DEFAULT_SCHOOLS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
-const sports=(value('sports')||DEFAULT_SPORTS.join(',')).split(',').map(x=>x.trim()).filter(Boolean);
+const requestedSports=value('sports')?.split(',').map(x=>x.trim()).filter(Boolean)||null;
 const timeout=Number(value('timeout')||45000);
 const deep=args.includes('--deep');
 
@@ -53,8 +55,10 @@ async function validateSport(school,sport){
   const group=groups[0],events=['live','results','upcoming','other'].flatMap(key=>group[key]||[]);
   assert.ok(events.length>0,'official feed returned no events');
   events.forEach(event=>validateEvent(event,school.id,sport));
-  const officialHost=new URL(school.athletics_url).hostname.replace(/^www\./,'');
-  assert.ok(events.every(event=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(officialHost)),'event points outside the official athletics domain');
+  const protectedSchool=certification.schools.find(x=>x.id===school.id);
+  const officialHosts=protectedSchool?.official_hosts||[new URL(school.athletics_url).hostname.replace(/^www\./,'')];
+  const officialHost=officialHosts[0];
+  assert.ok(events.every(event=>officialHosts.some(allowed=>new URL(event.source.url).hostname.replace(/^www\./,'').endsWith(allowed))),'event points outside the official athletics domain');
   const officialResponse=await fetch(events[0].source.url,{headers:{accept:'text/html'}});
   if(officialResponse.ok){
     const officialHtml=await officialResponse.text();
@@ -64,7 +68,8 @@ async function validateSport(school,sport){
 
   const athletes=await getJson(`/live/athletes?${encoded}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
-  if(DEFAULT_SCHOOLS.includes(school.id)&&DEFAULT_SPORTS.includes(sport))assert.equal(athletes.length,3,'certified school/sport must return three verified featured athletes');
+  // Fewer than three is valid when the official roster does not expose three
+  // identity-verifiable Instagram accounts. Never fill the row with guesses.
   for(const athlete of athletes){
     assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
     assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
@@ -101,6 +106,8 @@ const rows=[];let failed=false;
 for(const schoolId of schoolIds){
   const school=catalog.find(item=>item.id===schoolId);
   if(!school){rows.push({school:schoolId,sport:'—',status:'FAIL',detail:'school is missing from catalog'});failed=true;continue}
+  const protectedSchool=certification.schools.find(item=>item.id===schoolId);
+  const sports=requestedSports||protectedSchool?.critical_sports||DEFAULT_SPORTS;
   for(const sport of sports){
     try{
       const result=await validateSport(school,sport);

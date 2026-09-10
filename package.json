@@ -1,12 +1,15 @@
 {
   "name": "sas-sports-cloudflare",
-  "version": "4.6.4",
+  "version": "4.7.0",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "check": "node --check src/index.js && node tests/regression.mjs",
+    "check": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
     "test": "node tests/regression.mjs",
+    "test:release": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
+    "test:certified": "node tests/validate-schools.mjs",
+    "test:isolation": "node tests/isolation.mjs",
     "test:schools": "node tests/validate-schools.mjs",
     "test:school": "node tests/validate-schools.mjs",
     "certify:new-school": "node tests/validate-schools.mjs --deep"

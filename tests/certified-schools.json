@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "schools": [
+    {"id":"kstate","name":"Kansas State","official_hosts":["kstatesports.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"kansas","name":"Kansas","official_hosts":["kuathletics.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"florida","name":"Florida","official_hosts":["floridagators.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"arizona","name":"Arizona","official_hosts":["arizonawildcats.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"arizona-state","name":"Arizona State","official_hosts":["thesundevils.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"oklahoma-state","name":"Oklahoma State","official_hosts":["okstate.com"],"critical_sports":["Cross Country","Soccer","Football"]},
+    {"id":"texas-tech","name":"Texas Tech","official_hosts":["texastech.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]}
+  ]
+}
