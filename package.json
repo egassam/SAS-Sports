@@ -6,7 +6,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "check": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
-    "test": "node tests/regression.mjs",
+    "test": "node tests/regression.mjs && node tests/roster-socials.mjs",
     "test:release": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
     "test:certified": "node tests/validate-schools.mjs",
     "test:isolation": "node tests/isolation.mjs",
