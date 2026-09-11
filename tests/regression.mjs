@@ -48,6 +48,7 @@ contains(worker,/word\.startsWith\(token\.slice\(0,7\)\)/,'Official recap matchi
 contains(worker,/const payloadRe=\/"content","/,'Embedded WMT article paragraphs must be extracted');
 contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substantial before use');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
+contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
