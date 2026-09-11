@@ -58,7 +58,7 @@ contains(worker,/if\(\/\\bschedule-event-item/,'Large pages must gate the WMT pa
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
 const rolloutSchools=Object.fromEntries(certification.schools.map(school=>[school.id,school]));
-assert.deepEqual(Object.keys(rolloutSchools),['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech'],'The seven-school certification baseline changed unexpectedly');
+assert.deepEqual(Object.keys(rolloutSchools),['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor'],'The eight-school certification baseline changed unexpectedly');
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
