@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.1';
+const VERSION='4.9.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -109,7 +109,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
   'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
-  'baylor|Soccer':'https://baylorbears.com/sports/soccer/schedule',
+  'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
   'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule',
   'baylor|Football':'https://baylorbears.com/sports/football/schedule',
   'byu|Cross Country':'https://byucougars.com/sports/womens-cross-country/schedule',

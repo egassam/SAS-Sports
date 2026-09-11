@@ -49,6 +49,7 @@ contains(worker,/const payloadRe=\/"content","/,'Embedded WMT article paragraphs
 contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substantial before use');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worker must use the authoritative sponsored-sports manifest');
+contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
 assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),3,'Feed, athlete, and highlight endpoints must all reject unsupported school-sport requests');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 
