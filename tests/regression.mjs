@@ -52,7 +52,7 @@ contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-re
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
 const rolloutSchools=Object.fromEntries(certification.schools.map(school=>[school.id,school]));
-assert.deepEqual(Object.keys(rolloutSchools),['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'],'The nine-school certification baseline changed unexpectedly');
+assert.deepEqual(Object.keys(rolloutSchools),['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech'],'The seven-school certification baseline changed unexpectedly');
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(

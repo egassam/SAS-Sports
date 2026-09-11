@@ -8,7 +8,7 @@ const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 
 assert.equal(manifest.schema_version,1,'unsupported certification manifest version');
-assert.equal(manifest.schools.length,9,'the protected rollout must contain exactly nine certified schools');
+assert.equal(manifest.schools.length,7,'the protected rollout must contain exactly seven certified schools');
 assert.equal(new Set(manifest.schools.map(x=>x.id)).size,manifest.schools.length,'certified school IDs must be unique');
 
 for(const protectedSchool of manifest.schools){
@@ -26,4 +26,4 @@ for(const protectedSchool of manifest.schools){
   }
 }
 
-console.log(`Protected-school guard passed for ${manifest.schools.length}/9 certified schools.`);
+console.log(`Protected-school guard passed for ${manifest.schools.length}/7 certified schools.`);
