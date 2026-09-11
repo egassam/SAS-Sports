@@ -245,7 +245,7 @@ contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection 
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 const isolationValidator=readFileSync(new URL('./isolation.mjs',import.meta.url),'utf8');
 contains(isolationValidator,/stableFeed\(firstAfter\)/,'Isolation checks must ignore refresh timestamps and compare stable event data');
-contains(isolationValidator,/for\(const firstSport of first\.critical_sports\)/,'Isolation must cover every critical sport, not only the first sport');
+contains(isolationValidator,/const sports=full\?first\.critical_sports:\[first\.critical_sports\[0\]\]/,'Full isolation must cover every critical sport while smoke mode remains bounded');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
 contains(schoolValidator,/item\?\.value\?\?item\?\.result/,'Certification must accept normalized game values and expanded meet results');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');

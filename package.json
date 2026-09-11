@@ -7,9 +7,11 @@
     "deploy": "wrangler deploy",
     "check": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
     "test": "node tests/regression.mjs && node tests/roster-socials.mjs",
-    "test:release": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs",
+    "test:release": "node --check src/index.js && node tests/regression.mjs && node tests/protect-certified.mjs && node tests/isolation-local.mjs",
     "test:certified": "node tests/validate-schools.mjs",
-    "test:isolation": "node tests/isolation.mjs",
+    "test:isolation": "node tests/isolation.mjs --mode=smoke",
+    "test:isolation:smoke": "node tests/isolation.mjs --mode=smoke",
+    "test:isolation:full": "node tests/isolation.mjs --mode=full",
     "test:schools": "node tests/validate-schools.mjs",
     "test:school": "node tests/validate-schools.mjs",
     "certify:new-school": "node tests/validate-schools.mjs --deep"

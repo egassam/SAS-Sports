@@ -1,6 +1,8 @@
 name: SAS Sports certification
 
 on:
+  schedule:
+    - cron: '0 8 * * 1'
   pull_request:
   push:
     branches: [main]
@@ -10,6 +12,11 @@ on:
         description: Optional school ID to deep-certify before adding it to the protected list
         required: false
         type: string
+      full_audit:
+        description: Run the throttled all-sports isolation audit
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: certification-${{ github.event.pull_request.number || github.ref }}
@@ -29,7 +36,7 @@ jobs:
     # Pull requests test their parser and invariants locally. The public URL is
     # still the old deployment until merge, so testing it here creates false
     # failures and notification spam. Live certification runs after main moves.
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full_audit) }}
     runs-on: ubuntu-latest
     # Isolation makes repeated live requests. Finish it before per-school
     # certification so the test suite cannot overload the production Worker.
@@ -40,7 +47,7 @@ jobs:
       # the test runner itself from creating false resource-limit failures.
       max-parallel: 1
       matrix:
-        school: [kstate, kansas, florida, arizona, arizona-state, oklahoma-state, texas-tech, baylor]
+        school: [kstate, kansas, florida, arizona, arizona-state, oklahoma-state, texas-tech, baylor, byu]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,7 +56,7 @@ jobs:
       - run: node tests/validate-schools.mjs --schools=${{ matrix.school }}
 
   cross-school-isolation:
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full_audit) }}
     runs-on: ubuntu-latest
     needs: guardrails
     steps:
@@ -57,7 +64,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm run test:isolation
+      - run: npm run test:isolation:smoke
+
+  full-live-isolation:
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.full_audit) }}
+    runs-on: ubuntu-latest
+    needs: guardrails
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run test:isolation:full
 
   candidate-school:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.candidate_school != '' }}

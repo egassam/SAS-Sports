@@ -6,10 +6,14 @@ const args=process.argv.slice(2);
 const value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const base=(value('base')||process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
 const timeout=Number(value('timeout')||45000);
+const mode=value('mode')||'smoke';
+const full=mode==='full';
+const pauseMs=Number(value('pause-ms')||(full?2000:1250));
+const pause=()=>new Promise(resolve=>setTimeout(resolve,pauseMs));
 
 async function json(path){
   let lastError;
-  for(let attempt=1;attempt<=3;attempt++){
+  for(let attempt=1;attempt<=4;attempt++){
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),timeout);
     try{
@@ -19,9 +23,9 @@ async function json(path){
       return body;
     }catch(error){
       lastError=error;
-      if(attempt<3){
+      if(attempt<4){
         const overloaded=/HTTP 503|resource limits|Error 1102/i.test(String(error?.message));
-        await new Promise(resolve=>setTimeout(resolve,overloaded?attempt*3000:attempt*500));
+        await new Promise(resolve=>setTimeout(resolve,overloaded?attempt*10000:attempt*750));
       }
     }
     finally{clearTimeout(timer)}
@@ -62,17 +66,21 @@ for(let index=0;index<manifest.schools.length;index++){
   const first=manifest.schools[index];
   const second=manifest.schools[(index+1)%manifest.schools.length];
   const path=(school,sport)=>`/live/feed/grouped?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}`;
-  for(const firstSport of first.critical_sports){
+  const sports=full?first.critical_sports:[first.critical_sports[0]];
+  for(const firstSport of sports){
     const secondSport=second.critical_sports.includes(firstSport)?firstSport:second.critical_sports[0];
     const firstBefore=await json(path(first.id,firstSport));
+    await pause();
     const middle=await json(path(second.id,secondSport));
+    await pause();
     const firstAfter=await json(path(first.id,firstSport));
     assertOwned(firstBefore,first.id,firstSport);
     assertOwned(middle,second.id,secondSport);
     assertOwned(firstAfter,first.id,firstSport);
     assert.deepEqual(stableFeed(firstAfter),stableFeed(firstBefore),`${first.name} ${firstSport} changed after loading ${second.name} ${secondSport}; cache keys may be leaking`);
     rows.push({school:first.name,sport:firstSport,switched_to:second.name,status:'PASS'});
+    await pause();
   }
 }
 console.table(rows);
-console.log(`Cross-school A→B→A isolation passed for all ${rows.length} critical school-sport feeds across ${manifest.schools.length} certified schools against ${base}.`);
+console.log(`${full?'Full':'Smoke'} cross-school A→B→A isolation passed for ${rows.length} school-sport feeds across ${manifest.schools.length} certified schools against ${base}.`);
