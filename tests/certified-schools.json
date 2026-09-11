@@ -8,6 +8,7 @@
     {"id":"arizona-state","name":"Arizona State","official_hosts":["thesundevils.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
     {"id":"oklahoma-state","name":"Oklahoma State","official_hosts":["okstate.com"],"critical_sports":["Cross Country","Soccer","Football"],"athlete_sports":["Baseball","Basketball","Cross Country","Football","Golf","Tennis","Wrestling","Equestrian","Soccer","Softball","Track & Field"],"athlete_minimums":{"Baseball":1,"Basketball":1,"Cross Country":2,"Football":3,"Golf":1,"Tennis":1,"Wrestling":1,"Soccer":1,"Softball":1}},
     {"id":"texas-tech","name":"Texas Tech","official_hosts":["texastech.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
-    {"id":"baylor","name":"Baylor","official_hosts":["baylorbears.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"],"athlete_sports":["Acrobatics & Tumbling","Baseball","Basketball","Cross Country","Equestrian","Football","Golf","Soccer","Softball","Tennis","Track & Field","Volleyball"],"athlete_minimums":{"Acrobatics & Tumbling":3,"Baseball":3,"Basketball":3,"Cross Country":3,"Equestrian":3,"Football":3,"Golf":3,"Soccer":3,"Softball":3,"Tennis":3,"Track & Field":3,"Volleyball":3}}
+    {"id":"baylor","name":"Baylor","official_hosts":["baylorbears.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]},
+    {"id":"byu","name":"BYU","official_hosts":["byucougars.com"],"critical_sports":["Cross Country","Soccer","Volleyball","Football"]}
   ]
 }

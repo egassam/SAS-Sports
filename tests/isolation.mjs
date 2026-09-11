@@ -61,16 +61,18 @@ const rows=[];
 for(let index=0;index<manifest.schools.length;index++){
   const first=manifest.schools[index];
   const second=manifest.schools[(index+1)%manifest.schools.length];
-  const firstSport=first.critical_sports[0],secondSport=second.critical_sports[0];
   const path=(school,sport)=>`/live/feed/grouped?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}`;
-  const firstBefore=await json(path(first.id,firstSport));
-  const middle=await json(path(second.id,secondSport));
-  const firstAfter=await json(path(first.id,firstSport));
-  assertOwned(firstBefore,first.id,firstSport);
-  assertOwned(middle,second.id,secondSport);
-  assertOwned(firstAfter,first.id,firstSport);
-  assert.deepEqual(stableFeed(firstAfter),stableFeed(firstBefore),`${first.name} stable event data changed after loading ${second.name}; cache keys may be leaking`);
-  rows.push({school:first.name,switched_to:second.name,status:'PASS'});
+  for(const firstSport of first.critical_sports){
+    const secondSport=second.critical_sports.includes(firstSport)?firstSport:second.critical_sports[0];
+    const firstBefore=await json(path(first.id,firstSport));
+    const middle=await json(path(second.id,secondSport));
+    const firstAfter=await json(path(first.id,firstSport));
+    assertOwned(firstBefore,first.id,firstSport);
+    assertOwned(middle,second.id,secondSport);
+    assertOwned(firstAfter,first.id,firstSport);
+    assert.deepEqual(stableFeed(firstAfter),stableFeed(firstBefore),`${first.name} ${firstSport} changed after loading ${second.name} ${secondSport}; cache keys may be leaking`);
+    rows.push({school:first.name,sport:firstSport,switched_to:second.name,status:'PASS'});
+  }
 }
 console.table(rows);
-console.log(`Cross-school A→B→A isolation passed for ${rows.length}/7 certified schools against ${base}.`);
+console.log(`Cross-school A→B→A isolation passed for all ${rows.length} critical school-sport feeds across ${manifest.schools.length} certified schools against ${base}.`);

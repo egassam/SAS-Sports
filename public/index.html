@@ -70,7 +70,7 @@ const AUTO_SEASON_WINDOWS={
   'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]]
 };
 const HOME_SPORT_PRIORITY=['Cross Country','Soccer','Volleyball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Softball','Baseball','Basketball','Football'];
-const SCHOOL_SPORTS={
+let SCHOOL_SPORTS={
   'kstate':['Baseball','Basketball','Cross Country','Football','Golf','Rowing','Soccer','Tennis','Track & Field','Volleyball'],
   'kansas':['Basketball','Cross Country','Football','Golf','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball'],
   'florida':['Baseball','Basketball','Cross Country','Football','Golf','Gymnastics','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball'],
@@ -78,7 +78,8 @@ const SCHOOL_SPORTS={
   'arizona-state':['Baseball','Basketball','Beach Volleyball','Cross Country','Football','Golf','Gymnastics','Hockey','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Water Polo','Wrestling'],
   'oklahoma-state':['Baseball','Basketball','Cross Country','Football','Golf','Tennis','Wrestling','Equestrian','Soccer','Softball','Track & Field'],
   'texas-tech':['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball'],
-  'baylor':['Acrobatics & Tumbling','Baseball','Basketball','Cross Country','Equestrian','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']
+  'baylor':['Acrobatics & Tumbling','Baseball','Basketball','Cross Country','Equestrian','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball'],
+  'byu':['Baseball','Basketball','Cross Country','Football','Golf','Gymnastics','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']
 };
 function monthInWindow(month,[start,end]){return start<=end?month>=start&&month<=end:month>=start||month<=end}
 function automaticSports(date=new Date()){
@@ -182,7 +183,7 @@ async function loadSchools(){
   try{
     const r=await apiFetch('/schools');
     const liveSchools=await r.json();
-    if(Array.isArray(liveSchools)&&liveSchools.length){allSchools=liveSchools;populateSchoolControls()}
+    if(Array.isArray(liveSchools)&&liveSchools.length){allSchools=liveSchools;SCHOOL_SPORTS=Object.fromEntries(liveSchools.filter(s=>Array.isArray(s.sponsored_sports)).map(s=>[s.id,s.sponsored_sports]));populateSchoolControls()}
   }catch(err){
     status.textContent=`Loaded ${allSchools.length} schools from the SAS Sports package; reconnecting to live backend…`;
   }

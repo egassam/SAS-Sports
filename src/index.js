@@ -1,7 +1,8 @@
 import schools from './schools.json';
+import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.8.5';
+const VERSION='4.9.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -47,30 +48,10 @@ const SPORT_PATHS={
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
-  'byu|Baseball':'https://byucougars.com/sports/baseball/roster',
-  'byu|Basketball':['https://byucougars.com/sports/mens-basketball/roster','https://byucougars.com/sports/womens-basketball/roster'],
   'byu|Cross Country':['https://byucougars.com/sports/mens-cross-country/roster','https://byucougars.com/sports/womens-cross-country/roster'],
-  'byu|Football':'https://byucougars.com/sports/football/roster',
-  'byu|Golf':['https://byucougars.com/sports/mens-golf/roster','https://byucougars.com/sports/womens-golf/roster'],
-  'byu|Gymnastics':'https://byucougars.com/sports/womens-gymnastics/roster',
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/roster',
-  'byu|Softball':'https://byucougars.com/sports/softball/roster',
-  'byu|Swimming & Diving':['https://byucougars.com/sports/mens-swimming-and-diving/roster','https://byucougars.com/sports/womens-swimming-and-diving/roster'],
-  'byu|Tennis':['https://byucougars.com/sports/mens-tennis/roster','https://byucougars.com/sports/womens-tennis/roster'],
-  'byu|Track & Field':['https://byucougars.com/sports/mens-track-and-field/roster','https://byucougars.com/sports/womens-track-and-field/roster'],
-  'byu|Volleyball':['https://byucougars.com/sports/mens-volleyball/roster','https://byucougars.com/sports/womens-volleyball/roster'],
-  'baylor|Acrobatics & Tumbling':'https://baylorbears.com/sports/acrobatics-tumbling/roster',
-  'baylor|Baseball':'https://baylorbears.com/sports/baseball/roster',
-  'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/roster','https://baylorbears.com/sports/womens-basketball/roster'],
-  'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/roster',
-  'baylor|Equestrian':'https://baylorbears.com/sports/equestrian/roster',
-  'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/roster',
-  'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/roster',
-  'baylor|Football':'https://baylorbears.com/sports/football/roster',
-  'baylor|Golf':['https://baylorbears.com/sports/mens-golf/roster','https://baylorbears.com/sports/womens-golf/roster'],
-  'baylor|Softball':'https://baylorbears.com/sports/softball/roster',
-  'baylor|Tennis':['https://baylorbears.com/sports/mens-tennis/roster','https://baylorbears.com/sports/womens-tennis/roster'],
-  'baylor|Track & Field':'https://baylorbears.com/sports/track-and-field/roster',
+  'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/roster',
+  'byu|Football':'https://byucougars.com/sports/football/roster',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/roster',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/roster'
 }));
@@ -128,12 +109,12 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
   'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
-  'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
+  'baylor|Soccer':'https://baylorbears.com/sports/soccer/schedule',
   'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule',
   'baylor|Football':'https://baylorbears.com/sports/football/schedule',
-  'byu|Cross Country':['https://byucougars.com/sports/mens-cross-country/schedule','https://byucougars.com/sports/womens-cross-country/schedule'],
+  'byu|Cross Country':'https://byucougars.com/sports/womens-cross-country/schedule',
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
-  'byu|Volleyball':['https://byucougars.com/sports/womens-volleyball/schedule','https://byucougars.com/sports/mens-volleyball/schedule'],
+  'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule',
   'byu|Football':'https://byucougars.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
@@ -764,15 +745,18 @@ function parseSchemaEvents(raw,school,sport,sourceUrl,now){
   return events;
 }
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
+  // Athletics sites routinely combine old and new widgets during redesigns.
+  // Run every platform adapter and merge normalized events; never stop after the
+  // first parser returns a partial schedule.
   const eventLists=[];
-  // Large athletics pages can exceed the Worker CPU budget if every publisher
-  // parser scans the complete document. Detect each widget first, while still
-  // supporting hybrid redesign pages that genuinely contain multiple formats.
-  if(/(?:Upcoming|Completed|Live) Event:/i.test(raw))eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
-  if(/data-test-id=["']s-game-card-standard__root["']/i.test(raw))eventLists.push(parseSidearmGameCards(raw,school,sport,sourceUrl,now));
-  if(/\bs-game-card\s+s-game-card__game-center\b/i.test(raw))eventLists.push(parseSidearmGameCenterCards(raw,school,sport,sourceUrl,now));
-  if(/\bschedule-event-item(?=\s|["'])/i.test(raw))eventLists.push(parseWmtScheduleCards(raw,school,sport,sourceUrl,now));
-  if(/"@type"\s*:\s*"Event"/i.test(raw))eventLists.push(parseSchemaEvents(raw,school,sport,sourceUrl,now));
+  eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
+  const sourceAdapters=[
+    {name:'sidearm',parse:parseSidearmGameCards},
+    {name:'sidearm-game-center',parse:parseSidearmGameCenterCards},
+    {name:'wmt',parse:parseWmtScheduleCards},
+    {name:'schema',parse:parseSchemaEvents}
+  ];
+  for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
   const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
@@ -1076,7 +1060,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   return events;
 }
-async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,hasLabels=/(?:Upcoming|Completed|Live) Event:/i.test(html),labels=hasLabels?extractEventLabels(html):[];let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(html),has_completed:/Completed Event:/i.test(html),events};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
@@ -1097,6 +1081,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
 }
 function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
+function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
 async function freshGroupedFeed(url,school,sport,env,cache,key){
@@ -1115,12 +1100,13 @@ export default{
     const url=new URL(request.url);
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
-    if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list);}
+    if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,sponsored_sports:sponsoredSports[s.id]||null})));}
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
     if(url.pathname==='/live/athletes'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');
       if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('athlete_cache',VERSION);
       const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
       const cached=await cache.match(cacheKey);if(cached)return cached;
@@ -1132,6 +1118,7 @@ export default{
     if(url.pathname==='/live/highlights'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
       if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
+      const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);
       if(!event)return json({detail:'Event not found'},404);
       const response=json(event),stored=new Response(response.body,response);
@@ -1142,6 +1129,7 @@ export default{
     }
     if(url.pathname==='/live/feed/grouped'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const cache=caches.default,key=feedCacheKey(url,school,sport),cached=await cache.match(key),force=url.searchParams.get('refresh')==='1';
       if(cached&&!force){
         const age=cachedAge(cached);

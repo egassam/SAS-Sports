@@ -1,0 +1,11 @@
+{
+  "kstate": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Rowing", "Soccer", "Tennis", "Track & Field", "Volleyball"],
+  "kansas": ["Basketball", "Cross Country", "Football", "Golf", "Rowing", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"],
+  "florida": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Gymnastics", "Lacrosse", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"],
+  "arizona": ["Baseball", "Basketball", "Beach Volleyball", "Cross Country", "Football", "Golf", "Gymnastics", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"],
+  "arizona-state": ["Baseball", "Basketball", "Beach Volleyball", "Cross Country", "Football", "Golf", "Gymnastics", "Hockey", "Lacrosse", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball", "Water Polo", "Wrestling"],
+  "oklahoma-state": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Tennis", "Wrestling", "Equestrian", "Soccer", "Softball", "Track & Field"],
+  "texas-tech": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Soccer", "Softball", "Tennis", "Track & Field", "Volleyball"],
+  "baylor": ["Acrobatics & Tumbling", "Baseball", "Basketball", "Cross Country", "Equestrian", "Football", "Golf", "Soccer", "Softball", "Tennis", "Track & Field", "Volleyball"],
+  "byu": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Gymnastics", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"]
+}
