@@ -50,6 +50,8 @@ contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substanti
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor soccer must use its working women\'s-soccer schedule route');
+contains(worker,/'baylor\|Basketball':\['https:\/\/baylorbears\.com\/sports\/mens-basketball\/roster','https:\/\/baylorbears\.com\/sports\/womens-basketball\/roster'\]/,'Baylor combined basketball must use both official rosters');
+contains(worker,/'baylor\|Tennis':\['https:\/\/baylorbears\.com\/sports\/mens-tennis\/roster','https:\/\/baylorbears\.com\/sports\/womens-tennis\/roster'\]/,'Baylor combined tennis audit must use both official rosters');
 contains(worker,/if\(\/data-test-id=\["'\]s-game-card-standard__root/,'Large pages must gate the SIDEARM parser by its widget marker');
 contains(worker,/if\(\/\\bschedule-event-item/,'Large pages must gate the WMT parser by its widget marker');
 
@@ -247,6 +249,7 @@ const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.
 const isolationValidator=readFileSync(new URL('./isolation.mjs',import.meta.url),'utf8');
 contains(isolationValidator,/stableFeed\(firstAfter\)/,'Isolation checks must ignore refresh timestamps and compare stable event data');
 contains(schoolValidator,/for\(const final of finals\)/,'Deep certification must inspect every final event');
+contains(schoolValidator,/const athletesOnly=args\.includes\('--athletes-only'\)/,'Certification must support isolated all-sport athlete audits');
 contains(schoolValidator,/item\?\.value\?\?item\?\.result/,'Certification must accept normalized game values and expanded meet results');
 contains(schoolValidator,/has no verified highlights/,'A final without verified highlights must fail certification');
 contains(schoolValidator,/DEFAULT_SPORTS\.includes\(sport\)&&officialHasCompleted/,'Prior winter results must not cause a false current-season certification failure');

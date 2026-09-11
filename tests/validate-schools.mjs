@@ -12,6 +12,7 @@ const schoolIds=(value('schools')||args.find(x=>!x.startsWith('--'))||DEFAULT_SC
 const requestedSports=value('sports')?.split(',').map(x=>x.trim()).filter(Boolean)||null;
 const timeout=Number(value('timeout')||45000);
 const deep=args.includes('--deep');
+const athletesOnly=args.includes('--athletes-only');
 
 async function getJson(path){
   let lastError;
@@ -137,6 +138,11 @@ for(const schoolId of schoolIds){
   const protectedSchool=certification.schools.find(item=>item.id===schoolId);
   const sports=requestedSports||protectedSchool?.critical_sports||DEFAULT_SPORTS;
   for(const sport of sports){
+    if(athletesOnly){
+      try{rows.push({school:schoolId,sport:`${sport} athletes`,status:'PASS',athletes:await validateAthletes(school,sport),highlights:'NOT_RUN'})}
+      catch(error){rows.push({school:schoolId,sport:`${sport} athletes`,status:'FAIL',detail:error.message});failed=true}
+      continue;
+    }
     try{
       const result=await validateSport(school,sport);
       rows.push({school:schoolId,sport,status:'PASS',events:result.events,results:result.results,upcoming:result.upcoming,athletes:result.athletes,highlights:result.highlight});

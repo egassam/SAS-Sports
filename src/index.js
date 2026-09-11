@@ -1,7 +1,7 @@
 import schools from './schools.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.8.4';
+const VERSION='4.8.5';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -47,10 +47,18 @@ const SPORT_PATHS={
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
+  'baylor|Acrobatics & Tumbling':'https://baylorbears.com/sports/acrobatics-tumbling/roster',
+  'baylor|Baseball':'https://baylorbears.com/sports/baseball/roster',
+  'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/roster','https://baylorbears.com/sports/womens-basketball/roster'],
   'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/roster',
+  'baylor|Equestrian':'https://baylorbears.com/sports/equestrian/roster',
   'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/roster',
   'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/roster',
   'baylor|Football':'https://baylorbears.com/sports/football/roster',
+  'baylor|Golf':['https://baylorbears.com/sports/mens-golf/roster','https://baylorbears.com/sports/womens-golf/roster'],
+  'baylor|Softball':'https://baylorbears.com/sports/softball/roster',
+  'baylor|Tennis':['https://baylorbears.com/sports/mens-tennis/roster','https://baylorbears.com/sports/womens-tennis/roster'],
+  'baylor|Track & Field':'https://baylorbears.com/sports/track-and-field/roster',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/roster',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/roster'
 }));
