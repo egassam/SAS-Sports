@@ -50,6 +50,8 @@ contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substanti
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor soccer must use its working women\'s-soccer schedule route');
+contains(worker,/if\(\/data-test-id=\["'\]s-game-card-standard__root/,'Large pages must gate the SIDEARM parser by its widget marker');
+contains(worker,/if\(\/\\bschedule-event-item/,'Large pages must gate the WMT parser by its widget marker');
 
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
@@ -101,8 +103,8 @@ contains(worker,/Legacy\/standard SIDEARM pages already have a cheaper exact par
 contains(worker,/Game-center cards display the opponent score before/,'Game-center score order must be normalized to the selected school');
 contains(worker,/'oklahoma-state\|Cross Country':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State cross country must use its official MXCT schedule');
 contains(worker,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
-contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
-contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
+contains(worker,/if\(\/data-test-id=\["'\]s-game-card-standard__root/,'SIDEARM parsing must run only when its widget is present');
+contains(worker,/if\(\/\\bschedule-event-item/,'WMT parsing must run only when its widget is present');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 contains(worker,/FEED_FRESH_MS=25\*1000/,'Shared live-feed cache must refresh within the 30-second polling window');

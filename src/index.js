@@ -1,7 +1,7 @@
 import schools from './schools.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.8.3';
+const VERSION='4.8.4';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -740,18 +740,15 @@ function parseSchemaEvents(raw,school,sport,sourceUrl,now){
   return events;
 }
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
-  // Athletics sites routinely combine old and new widgets during redesigns.
-  // Run every platform adapter and merge normalized events; never stop after the
-  // first parser returns a partial schedule.
   const eventLists=[];
-  eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
-  const sourceAdapters=[
-    {name:'sidearm',parse:parseSidearmGameCards},
-    {name:'sidearm-game-center',parse:parseSidearmGameCenterCards},
-    {name:'wmt',parse:parseWmtScheduleCards},
-    {name:'schema',parse:parseSchemaEvents}
-  ];
-  for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
+  // Large athletics pages can exceed the Worker CPU budget if every publisher
+  // parser scans the complete document. Detect each widget first, while still
+  // supporting hybrid redesign pages that genuinely contain multiple formats.
+  if(/(?:Upcoming|Completed|Live) Event:/i.test(raw))eventLists.push(extractEventLabels(raw).map(label=>parseLabel(label,school,sport,sourceUrl,now)).filter(Boolean));
+  if(/data-test-id=["']s-game-card-standard__root["']/i.test(raw))eventLists.push(parseSidearmGameCards(raw,school,sport,sourceUrl,now));
+  if(/\bs-game-card\s+s-game-card__game-center\b/i.test(raw))eventLists.push(parseSidearmGameCenterCards(raw,school,sport,sourceUrl,now));
+  if(/\bschedule-event-item(?=\s|["'])/i.test(raw))eventLists.push(parseWmtScheduleCards(raw,school,sport,sourceUrl,now));
+  if(/"@type"\s*:\s*"Event"/i.test(raw))eventLists.push(parseSchemaEvents(raw,school,sport,sourceUrl,now));
   const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
@@ -1055,7 +1052,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   return events;
 }
-async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,hasLabels=/(?:Upcoming|Completed|Live) Event:/i.test(html),labels=hasLabels?extractEventLabels(html):[];let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(html),has_completed:/Completed Event:/i.test(html),events};}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
