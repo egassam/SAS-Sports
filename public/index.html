@@ -271,7 +271,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
       lastFeedRefresh=Date.now();
       status.textContent=`${hasLiveEvents()?'LIVE AUTO-REFRESH ON':'LIVE SOURCE'} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${liveOk}/${requested.length} official source${liveOk===1?'':'s'} reached · ${total} current events`;
     }else{
-      status.textContent='LIVE SOURCE UNAVAILABLE · showing verified athletes while the schedule source recovers';
+      status.textContent='LIVE SOURCE UNAVAILABLE · no cached results are being shown as current · verified athletes may still load';
       feed.innerHTML='<div class="empty">The official schedule source did not return usable live data. Verified athlete profiles can still load below.</div>';
     }
     // Schedule and roster readiness are independent contracts. A publisher
