@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.4';
+const VERSION='4.12.5';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -203,6 +203,23 @@ function rosterProfiles(raw,base){
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
+    const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
+    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
+    const instagram_url=officialCardInstagram(instagram);
+    const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
+    const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(body,base,name,true)||null;
+    byUrl.set(url,{name,url,image_url,instagram_url});
+  }
+  // Large WMT rosters, including Cincinnati Football, render compact list
+  // items instead of cards. The player name, portrait and social link remain
+  // identity-bound inside one official roster row.
+  const wmtListItems=String(raw||'').split(/<li\b[^>]*class=["'][^"']*\broster-list-item(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
+  for(const body of wmtListItems){
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    if(!profileMatch)continue;
+    const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
+    if(!url||\/(?:staff|coaches)\//i.test(path))continue;
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
     const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
