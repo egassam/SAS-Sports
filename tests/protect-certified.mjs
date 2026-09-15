@@ -8,6 +8,7 @@ const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];
+const ATHLETE_VERIFICATION_SOURCES=new Set(['official_roster_profiles','official_team_instagram']);
 const fallbackSource=page.match(/let SCHOOL_SPORTS=(\{[\s\S]*?\n\});/)?.[1];
 assert.ok(fallbackSource,'packaged UI sponsored-sports fallback is missing');
 const fallbackSports=Function(`"use strict";return (${fallbackSource})`)();
@@ -16,7 +17,7 @@ assert.equal(manifest.schema_version,1,'unsupported certification manifest versi
 assert.deepEqual(manifest.schools.map(x=>x.id).slice(0,REQUIRED_BASELINE.length),REQUIRED_BASELINE,'the protected nine-school baseline was removed, reordered, or weakened');
 assert.equal(new Set(manifest.schools.map(x=>x.id)).size,manifest.schools.length,'certified school IDs must be unique');
 
-for(const protectedSchool of manifest.schools){
+for(const [schoolIndex,protectedSchool] of manifest.schools.entries()){
   const school=catalog.find(x=>x.id===protectedSchool.id);
   assert.ok(school,`${protectedSchool.name} was removed from the school catalog`);
   const catalogHost=new URL(school.athletics_url).hostname.replace(/^www\./,'');
@@ -30,6 +31,14 @@ for(const protectedSchool of manifest.schools){
     const routeStart=worker.indexOf(routePrefix);
     const routeText=worker.slice(routeStart,routeStart+500);
     assert.ok(protectedSchool.official_hosts.some(host=>routeText.includes(host)),`${protectedSchool.name} ${sport} route no longer uses its certified official domain`);
+  }
+  if(schoolIndex>=REQUIRED_BASELINE.length){
+    const verification=protectedSchool.athlete_verification;
+    assert.ok(verification?.reviewed_at,`${protectedSchool.name} is missing its athlete-verification review date`);
+    assert.ok(verification.sources?.length,`${protectedSchool.name} is missing athlete-verification sources`);
+    assert.ok(verification.sources.every(source=>ATHLETE_VERIFICATION_SOURCES.has(source)),`${protectedSchool.name} uses an unapproved athlete-verification source`);
+    assert.ok(protectedSchool.athlete_sports?.length,`${protectedSchool.name} has no protected athlete sport after verification`);
+    for(const sport of protectedSchool.athlete_sports)assert.ok((protectedSchool.athlete_minimums?.[sport]||0)>0,`${protectedSchool.name} ${sport} has no protected verified-athlete minimum`);
   }
 }
 

@@ -19,10 +19,16 @@ Set `SAS_SPORTS_BASE_URL` to test a preview instead of production.
 
 1. Add the school's official catalog, schedule, roster, and sponsored-sport
    configuration without editing the protected baseline.
-2. Deep-certify it with
+2. Audit athlete identities from both official roster/profile links and each
+   official school-sport Instagram account. An official team tag or an
+   unambiguous athlete/account identification in an official post is accepted;
+   name guesses and team-profile substitutes are rejected. Record the review
+   date and source type in `athlete_verification`, and protect every successful
+   sport with a positive `athlete_minimums` value.
+3. Deep-certify it with
    `node tests/validate-schools.mjs --schools=NEW_ID --deep --base=PREVIEW_URL`.
-3. Run the complete release gate against the same preview URL.
-4. Only after every test passes, add the school to `certified-schools.json` and
+4. Run the complete release gate against the same preview URL.
+5. Only after every test passes, add the school to `certified-schools.json` and
    to the workflow matrix. That makes future changes protect it automatically.
 
 Live checks retry temporary network failures. They intentionally run one school

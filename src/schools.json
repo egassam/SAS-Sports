@@ -113,8 +113,8 @@
     ],
     "providers": [
       {
-        "provider": "SIDEARM",
-        "slug": "gobearcats",
+      "provider": "CUSTOM",
+      "slug": "gobearcats",
         "provider_school_id": null
       }
     ]

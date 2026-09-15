@@ -32,6 +32,7 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
   'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
   'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
+  ,'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
 }));
 
 const SPORT_PATHS={
