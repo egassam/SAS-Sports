@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.5';
+const VERSION='4.12.6';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -122,7 +122,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'byu|Football':'https://byucougars.com/sports/football/schedule',
   'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
   'ucf|Soccer':'https://ucfknights.com/sports/womens-soccer/schedule',
-  'ucf|Volleyball':'https://ucfknights.com/sports/womens-volleyball/schedule',
+  'ucf|Volleyball':'https://ucfknights.com/sports/volleyball/schedule',
   'ucf|Football':'https://ucfknights.com/sports/football/schedule',
   'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
   'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
