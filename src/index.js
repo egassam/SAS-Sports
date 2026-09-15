@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.9';
+const VERSION='4.10.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -100,7 +100,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
   'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
   'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
-  'arizona|Swimming & Diving':'https://arizonawildcats.com/sports/swimming-and-diving/schedule',
+  'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule','https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule'],
   'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
   'arizona-state|Soccer':'https://thesundevils.com/sports/soccer/schedule',
   'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',

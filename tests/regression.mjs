@@ -106,6 +106,7 @@ contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEAR
 contains(worker,/Legacy\/standard SIDEARM pages already have a cheaper exact parser/,'Next-generation card scanning must not duplicate standard SIDEARM work');
 contains(worker,/Game-center cards display the opponent score before/,'Game-center score order must be normalized to the selected school');
 contains(worker,/'oklahoma-state\|Cross Country':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State cross country must use its official MXCT schedule');
+contains(worker,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
 contains(worker,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
