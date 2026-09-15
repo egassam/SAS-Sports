@@ -88,6 +88,8 @@ contains(worker,/schedule-event-item__opponent-name/,'Current WMT Nuxt opponent 
 contains(worker,/schedule-event-item-result__label/,'Current WMT Nuxt result labels must be supported');
 contains(page,/Schedule and roster readiness are independent contracts/,'Athlete loading must remain independent of schedule-parser success');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
+contains(worker,/No Team Scores\\b\|\\d\+\(\?:st\|nd\|rd\|th\)/,'WMT meet completion must require a published placement or result');
+contains(worker,/\.test\(rawResult\|\|''\)/,'WMT time labels must not be treated as completed results');
 contains(worker,/hasScore=schoolScore!=null&&oppScore!=null/,'Any event carrying both team scores must be classified as final');
 contains(worker,/hasOutcome=.*Win\|Loss\|Tie\|Draw/s,'A published W/L/T/D outcome must override an incorrect upcoming marker');
 contains(worker,/effective=hasScore\|\|hasOutcome\?'Final':status/,'Completed result evidence must override publisher CSS status');
