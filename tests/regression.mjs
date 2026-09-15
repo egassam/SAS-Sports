@@ -78,6 +78,9 @@ contains(worker,/month>=7\?start:end/,'Fall cards must use the first schedule ye
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
 contains(worker,/schedule-event-date__box/,'Current WMT Nuxt date cards must be supported');
+contains(worker,/schedule-event-date__month/,'Split-month WMT date cards must be supported');
+contains(worker,/schedule-event-date__day/,'Split-day WMT date cards must be supported');
+contains(worker,/if\(!dateParts\.length\)/,'Split WMT dates must be used when the legacy date box is absent');
 contains(worker,/schedule-event-item__opponent-name/,'Current WMT Nuxt opponent names must be supported');
 contains(worker,/schedule-event-item-result__label/,'Current WMT Nuxt result labels must be supported');
 contains(page,/Schedule and roster readiness are independent contracts/,'Athlete loading must remain independent of schedule-parser success');

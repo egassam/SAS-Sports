@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.11.0';
+const VERSION='4.12.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -776,7 +776,15 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||block.match(/schedule-event-date__box[^>]*>([\s\S]{0,1200}?)<\/strong>/i)
       ||[]
     )[1];
-    const dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    let dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    // Current WMT cards split dates into month and day spans instead of the
+    // older date-box strong element. Without this fallback, only future
+    // Schema.org events survive and every completed result disappears.
+    if(!dateParts.length){
+      const splitMonth=visibleText((block.match(/schedule-event-date__month[^>]*>([\s\S]{0,100}?)<\/span>/i)||[])[1]);
+      const splitDay=visibleText((block.match(/schedule-event-date__day[^>]*>([\s\S]{0,40}?)<\/span>/i)||[])[1]);
+      if(splitMonth&&splitDay)dateParts=[`${splitMonth} ${splitDay}`];
+    }
     const legacyName=block.match(/schedule-default-event__name[^>]*>\s*<strong\b[^>]*>([\s\S]*?)<\/strong>([\s\S]{0,500}?)<\/strong>/i);
     const modernOpponent=visibleText((block.match(/schedule-event-item__opponent-name[^>]*>([\s\S]{0,500}?)<\/strong>/i)||[])[1]);
     const modernRelation=visibleText((block.match(/schedule-event-item__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
