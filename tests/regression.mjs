@@ -148,6 +148,7 @@ contains(worker,/roster\\\/\(\?:player/,'Only complete player-profile URLs may e
 contains(worker,/const selected=\[[\s\S]*\]\.slice\(0,3\)/,'Featured athletes must be limited to three');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)/,'Unverified social accounts must not enter the featured rotation');
 contains(worker,/if\(tagged\.length>=2\)/,'Known identity-verified athletes must use the fast roster-card path');
+contains(worker,/fetch\(athlete\.profile_url/,'Fast-path athletes must still load official profile portraits');
 contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a deterministic bounded verification scan');
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');

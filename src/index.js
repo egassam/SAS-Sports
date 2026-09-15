@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.7';
+const VERSION='4.9.8';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -364,7 +364,12 @@ async function featuredAthletes(schoolId,sport){
     for(const owners of imageOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.image_url=null;
     for(const owners of socialOwners.values())if(new Set(owners.map(x=>x.name)).size>1)for(const athlete of owners)athlete.instagram_url=null;
     tagged.sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name));
-    return tagged.filter(athlete=>athlete.instagram_url).slice(0,3);
+    const selected=tagged.filter(athlete=>athlete.instagram_url).slice(0,3);
+    await Promise.all(selected.map(async athlete=>{
+      if(athlete.image_url)return;
+      try{const r=await fetch(athlete.profile_url,{headers:HEADERS,redirect:'follow'});if(r.ok)athlete.image_url=officialProfileImage(await r.text(),r.url||athlete.profile_url)}catch{}
+    }));
+    return selected;
   }
   const found=[];
   // Inspect deterministic roster batches until three verified athletes are
