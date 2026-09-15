@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.3';
+const VERSION='4.9.4';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -704,26 +704,34 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
   for(let i=0;i<starts.length;i++){
     const block=raw.slice(starts[i],starts[i+1]||Math.min(raw.length,starts[i]+60000));
     const opening=(block.match(/^<div\b[^>]*>/i)||[])[0]||'';
-    const completed=/schedule-event-item--completed/i.test(opening);
-    const dateBox=(block.match(/schedule-event-grid-date-mobile__box[^>]*>([\s\S]{0,700}?)<\/strong>/i)||[])[1];
-    const dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1]));
-    const nameMatch=block.match(/schedule-default-event__name[^>]*>\s*<strong\b[^>]*>([\s\S]*?)<\/strong>([\s\S]{0,500}?)<\/strong>/i);
-    const relation=visibleText(nameMatch?.[1]).toLowerCase().startsWith('at')?'at':'vs';
-    const opponent=visibleText(nameMatch?.[2]);
-    if(dateParts.length<2||!opponent)continue;
-    const rawResult=visibleText((block.match(/schedule-event-grid-result__label[^>]*>([\s\S]{0,900}?)<\/strong>/i)||[])[1]);
-    // WMT sometimes places the numeric score outside the result-label <strong>.
-    // Search the complete event card as a fallback so "T Tie" and "L Loss"
-    // cannot survive while their adjacent 1-1 or 0-1 score is discarded.
+    // WMT has two live layouts: the legacy grid card and the newer Nuxt card.
+    // Treat a published result as completion even when the new card omits the
+    // old schedule-event-item--completed modifier.
+    const rawResult=visibleText((
+      block.match(/schedule-event-grid-result__label[^>]*>([\s\S]{0,900}?)<\/strong>/i)
+      ||block.match(/schedule-event-item-result__label[^>]*>([\s\S]{0,900}?)<\/div>/i)
+      ||[]
+    )[1]);
+    const completed=/schedule-event-item--completed/i.test(opening)||Boolean(rawResult);
+    const dateBox=(
+      block.match(/schedule-event-grid-date-mobile__box[^>]*>([\s\S]{0,700}?)<\/strong>/i)
+      ||block.match(/schedule-event-date__box[^>]*>([\s\S]{0,1200}?)<\/strong>/i)
+      ||[]
+    )[1];
+    const dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    const legacyName=block.match(/schedule-default-event__name[^>]*>\s*<strong\b[^>]*>([\s\S]*?)<\/strong>([\s\S]{0,500}?)<\/strong>/i);
+    const modernOpponent=visibleText((block.match(/schedule-event-item__opponent-name[^>]*>([\s\S]{0,500}?)<\/strong>/i)||[])[1]);
+    const modernRelation=visibleText((block.match(/schedule-event-item__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
+    const relation=(modernRelation||visibleText(legacyName?.[1])).toLowerCase().startsWith('at')?'at':'vs';
+    const opponent=modernOpponent||visibleText(legacyName?.[2]);
+    if(dateParts.length<1||!opponent)continue;
     const scoreText=rawResult||visibleText(block);
     const score=scoreText.match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i)
       ||visibleText(block).match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
     const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(rawResult||'Completed'):null);
-    const dateText=`${dateParts[0]} ${dateParts[1]}`,year=scheduleYearForDate(raw,dateText,now);
+    const dateText=dateParts[0],time=dateParts[1]||null,year=scheduleYearForDate(raw,dateText,now);
     const date=`${dateText}, ${year}`;
-    const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
-    // Preserve the recap attached to this exact WMT schedule card. Some schools
-    // publish after midnight, so the article URL can be dated one day later.
+    const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i);
     const cardRecap=recapLink?absoluteUrl(recapLink[1],sourceUrl):null;
     if(cardRecap)event.recap_url=cardRecap;
