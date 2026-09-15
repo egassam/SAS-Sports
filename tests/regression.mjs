@@ -77,6 +77,10 @@ contains(worker,/function scheduleYearForDate\(/,'Academic schedule year ranges 
 contains(worker,/month>=7\?start:end/,'Fall cards must use the first schedule year and spring cards the second');
 contains(worker,/Win\|Loss\|Tie\|Draw/,'Expanded SIDEARM result words must be accepted between the outcome marker and score');
 contains(worker,/function parseWmtScheduleCards\(/,'WMT schedule cards must be supported');
+contains(worker,/schedule-event-date__box/,'Current WMT Nuxt date cards must be supported');
+contains(worker,/schedule-event-item__opponent-name/,'Current WMT Nuxt opponent names must be supported');
+contains(worker,/schedule-event-item-result__label/,'Current WMT Nuxt result labels must be supported');
+contains(page,/Schedule and roster readiness are independent contracts/,'Athlete loading must remain independent of schedule-parser success');
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
 contains(worker,/hasScore=schoolScore!=null&&oppScore!=null/,'Any event carrying both team scores must be classified as final');
 contains(worker,/hasOutcome=.*Win\|Loss\|Tie\|Draw/s,'A published W/L/T/D outcome must override an incorrect upcoming marker');
