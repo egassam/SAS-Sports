@@ -270,12 +270,13 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     if(liveOk){
       lastFeedRefresh=Date.now();
       status.textContent=`${hasLiveEvents()?'LIVE AUTO-REFRESH ON':'LIVE SOURCE'} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${liveOk}/${requested.length} official source${liveOk===1?'':'s'} reached · ${total} current events`;
-      // Athlete links load after scores so this optional feature never delays the feed.
-      loadFeaturedAthletes(currentGroups,id,generation);
     }else{
-      status.textContent='LIVE SOURCE UNAVAILABLE · no cached results are being shown as current';
-      feed.innerHTML='<div class="empty">SAS Sports reached the web server, but the selected official athletics source did not return usable live data. No old packaged results are being substituted.</div>';
+      status.textContent='LIVE SOURCE UNAVAILABLE · showing verified athletes while the schedule source recovers';
+      feed.innerHTML='<div class="empty">The official schedule source did not return usable live data. Verified athlete profiles can still load below.</div>';
     }
+    // Schedule and roster readiness are independent contracts. A publisher
+    // layout change in one feed must never suppress the other.
+    if(currentGroups.length)loadFeaturedAthletes(currentGroups,id,generation);
   }catch(err){status.textContent='SAS Sports could not reach its live web backend.';feed.innerHTML='<div class="empty">Live backend connection failed. Open SAS Sports from its hosted https:// web address, not from a local index.html file.</div>'}
   finally{
     await hideLiveRefreshLoader(loaderShownAt);
