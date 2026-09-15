@@ -90,6 +90,8 @@ contains(page,/Schedule and roster readiness are independent contracts/,'Athlete
 contains(worker,/schedule-event-item--completed/,'WMT completed events must be recognized as results');
 contains(worker,/No Team Scores\\b\|\\d\+\(\?:st\|nd\|rd\|th\)/,'WMT meet completion must require a published placement or result');
 contains(worker,/\.test\(rawResult\|\|''\)/,'WMT time labels must not be treated as completed results');
+contains(worker,/scheduledDay<now\)completed=true/,'Past WMT meets without placement text must still appear in Results');
+contains(worker,/meaningfulResult\?rawResult:'Completed'/,'WMT time labels must never become final result text');
 contains(worker,/hasScore=schoolScore!=null&&oppScore!=null/,'Any event carrying both team scores must be classified as final');
 contains(worker,/hasOutcome=.*Win\|Loss\|Tie\|Draw/s,'A published W/L/T/D outcome must override an incorrect upcoming marker');
 contains(worker,/effective=hasScore\|\|hasOutcome\?'Final':status/,'Completed result evidence must override publisher CSS status');
