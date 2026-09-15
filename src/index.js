@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.1';
+const VERSION='4.12.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -770,7 +770,7 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||block.match(/schedule-event-item-result__label[^>]*>([\s\S]{0,900}?)<\/div>/i)
       ||[]
     )[1]);
-    const completed=/schedule-event-item--completed/i.test(opening)||Boolean(rawResult);
+    const completed=/schedule-event-item--completed/i.test(opening)||/^(?:[WLTD]\b|Win\b|Loss\b|Tie\b|Draw\b|Final\b|Completed\b|No Team Scores\b|\d+(?:st|nd|rd|th)\b)/i.test(rawResult||'');
     const dateBox=(
       block.match(/schedule-event-grid-date-mobile__box[^>]*>([\s\S]{0,700}?)<\/strong>/i)
       ||block.match(/schedule-event-date__box[^>]*>([\s\S]{0,1200}?)<\/strong>/i)
