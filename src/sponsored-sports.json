@@ -7,5 +7,7 @@
   "oklahoma-state": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Tennis", "Wrestling", "Equestrian", "Soccer", "Softball", "Track & Field"],
   "texas-tech": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Soccer", "Softball", "Tennis", "Track & Field", "Volleyball"],
   "baylor": ["Acrobatics & Tumbling", "Baseball", "Basketball", "Cross Country", "Equestrian", "Football", "Golf", "Soccer", "Softball", "Tennis", "Track & Field", "Volleyball"],
-  "byu": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Gymnastics", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"]
+  "byu": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Gymnastics", "Soccer", "Softball", "Swimming & Diving", "Tennis", "Track & Field", "Volleyball"],
+  "ucf": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Rowing", "Soccer", "Softball", "Tennis", "Track & Field", "Volleyball"],
+  "cincinnati": ["Baseball", "Basketball", "Cross Country", "Football", "Golf", "Lacrosse", "Soccer", "Swimming & Diving", "Track & Field", "Volleyball"]
 }

@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.10.0';
+const VERSION='4.11.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -119,6 +119,14 @@ const KNOWN_URLS=new Map(Object.entries({
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
   'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule',
   'byu|Football':'https://byucougars.com/sports/football/schedule',
+  'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
+  'ucf|Soccer':'https://ucfknights.com/sports/womens-soccer/schedule',
+  'ucf|Volleyball':'https://ucfknights.com/sports/womens-volleyball/schedule',
+  'ucf|Football':'https://ucfknights.com/sports/football/schedule',
+  'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
+  'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
+  'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule',
+  'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
