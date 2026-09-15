@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.3';
+const VERSION='4.12.4';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -174,6 +174,14 @@ function rosterPayloadImages(raw,base){
   return images;
 }
 function decodeURIComponentSafe(value){try{return decodeURIComponent(value)}catch{return String(value||'')}}
+function officialCardInstagram(value){
+  // Some WMT publishers accidentally prepend instagram.com twice. Because
+  // this link is inside the named athlete's official roster card, recover the
+  // final handle while still rejecting navigation/team destinations.
+  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)/gi)];
+  const handle=matches.at(-1)?.[1]?.replace(/^@/,'').toLowerCase();
+  return handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle)?`https://www.instagram.com/${handle}/`:null;
+}
 function rosterProfiles(raw,base){
   const byUrl=new Map(),payloadImages=rosterPayloadImages(raw,base),socials=rosterSocialInstagrams(raw);let m;
   // Capture the complete roster href first. Validating inside this expression
@@ -189,7 +197,7 @@ function rosterProfiles(raw,base){
   // WMT/Nuxt keeps each athlete's name, profile, portrait, and Instagram link
   // inside one roster card but does not publish SIDEARM's social aria-label.
   // Bind fields inside the card so navigation/team accounts remain ineligible.
-  const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card-item\b[^"']*["'][^>]*>/i).slice(1);
+  const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card(?:-item)?(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
   for(const body of wmtCards){
     const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
@@ -198,8 +206,7 @@ function rosterProfiles(raw,base){
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
     const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
-    let instagram_url=null;
-    try{if(instagram){const u=new URL(decodeHtml(instagram)),parts=u.pathname.split('/').filter(Boolean);if(parts.length===1)instagram_url=`https://www.instagram.com/${parts[0]}/`}}catch{}
+    const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(body,base,name,true)||null;
     byUrl.set(url,{name,url,image_url,instagram_url});
@@ -214,8 +221,7 @@ function rosterProfiles(raw,base){
     const url=absoluteUrl(profileMatch[1],base),name=clean(visibleText(profileMatch[2]));
     if(!url||nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
-    let instagram_url=null;
-    try{if(instagram){const u=new URL(decodeHtml(instagram)),parts=u.pathname.split('/').filter(Boolean);if(parts.length===1)instagram_url=`https://www.instagram.com/${parts[0]}/`}}catch{}
+    const instagram_url=officialCardInstagram(instagram);
     const previous=byUrl.get(url);
     byUrl.set(url,{name,url,image_url:previous?.image_url||null,instagram_url:instagram_url||previous?.instagram_url||null});
   }
