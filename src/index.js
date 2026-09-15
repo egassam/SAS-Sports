@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.2';
+const VERSION='4.12.3';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -770,7 +770,7 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||block.match(/schedule-event-item-result__label[^>]*>([\s\S]{0,900}?)<\/div>/i)
       ||[]
     )[1]);
-    const completed=/schedule-event-item--completed/i.test(opening)||/^(?:[WLTD]\b|Win\b|Loss\b|Tie\b|Draw\b|Final\b|Completed\b|No Team Scores\b|\d+(?:st|nd|rd|th)\b)/i.test(rawResult||'');
+    let completed=/schedule-event-item--completed/i.test(opening)||/^(?:[WLTD]\b|Win\b|Loss\b|Tie\b|Draw\b|Final\b|Completed\b|No Team Scores\b|\d+(?:st|nd|rd|th)\b)/i.test(rawResult||'');
     const dateBox=(
       block.match(/schedule-event-grid-date-mobile__box[^>]*>([\s\S]{0,700}?)<\/strong>/i)
       ||block.match(/schedule-event-date__box[^>]*>([\s\S]{0,1200}?)<\/strong>/i)
@@ -797,11 +797,17 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const defaultOpponent=defaultNames.find(name=>matchText(name)!==matchText(school.name));
     const opponent=modernOpponent||defaultOpponent||visibleText(legacyName?.[2]);
     if(dateParts.length<1||!opponent)continue;
+    const dateText=dateParts[0],time=dateParts[1]||null,year=scheduleYearForDate(raw,dateText,now);
+    // Meet publishers often leave only "All Day" on completed cards. The
+    // official scheduled date is still safe completion evidence once that
+    // calendar day has ended; future time labels remain Upcoming.
+    const scheduledDay=new Date(`${dateText}, ${year} 23:59:59`);
+    if(eventType(sport)==='MEET'&&!Number.isNaN(scheduledDay.getTime())&&scheduledDay<now)completed=true;
     const scoreText=rawResult||visibleText(block);
     const score=scoreText.match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i)
       ||visibleText(block).match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
-    const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(rawResult||'Completed'):null);
-    const dateText=dateParts[0],time=dateParts[1]||null,year=scheduleYearForDate(raw,dateText,now);
+    const meaningfulResult=/^(?:[WLTD]\b|Win\b|Loss\b|Tie\b|Draw\b|Final\b|Completed\b|No Team Scores\b|\d+(?:st|nd|rd|th)\b)/i.test(rawResult||'');
+    const result=score?`${score[1].toUpperCase()}, ${score[2]}-${score[3]}`:(completed?(meaningfulResult?rawResult:'Completed'):null);
     const date=`${dateText}, ${year}`;
     const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation,opponent,date,time,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i);
