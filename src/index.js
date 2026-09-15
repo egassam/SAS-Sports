@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.0';
+const VERSION='4.12.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -785,11 +785,17 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       const splitDay=visibleText((block.match(/schedule-event-date__day[^>]*>([\s\S]{0,40}?)<\/span>/i)||[])[1]);
       if(splitMonth&&splitDay)dateParts=[`${splitMonth} ${splitDay}`];
     }
+    if(!dateParts.length){
+      const splitTimes=[...block.matchAll(/<time\b[^>]*>([\s\S]{0,100}?)<\/time>/gi)].slice(0,2).map(x=>visibleText(x[1])).filter(Boolean);
+      if(splitTimes.length>=2)dateParts=[`${splitTimes[0]} ${splitTimes[1]}`];
+    }
     const legacyName=block.match(/schedule-default-event__name[^>]*>\s*<strong\b[^>]*>([\s\S]*?)<\/strong>([\s\S]{0,500}?)<\/strong>/i);
+    const defaultNames=[...block.matchAll(/<strong\b[^>]*class=["'][^"']*schedule-default-event__name(?=\s|["'])[^"']*["'][^>]*>([\s\S]{0,1000}?)<\/strong>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
     const modernOpponent=visibleText((block.match(/schedule-event-item__opponent-name[^>]*>([\s\S]{0,500}?)<\/strong>/i)||[])[1]);
-    const modernRelation=visibleText((block.match(/schedule-event-item__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
+    const modernRelation=visibleText((block.match(/(?:schedule-event-item|schedule-default-event)__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
     const relation=(modernRelation||visibleText(legacyName?.[1])).toLowerCase().startsWith('at')?'at':'vs';
-    const opponent=modernOpponent||visibleText(legacyName?.[2]);
+    const defaultOpponent=defaultNames.find(name=>matchText(name)!==matchText(school.name));
+    const opponent=modernOpponent||defaultOpponent||visibleText(legacyName?.[2]);
     if(dateParts.length<1||!opponent)continue;
     const scoreText=rawResult||visibleText(block);
     const score=scoreText.match(/\b([WLTD])\b\s*(?:Win|Loss|Tie|Draw)?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i)
