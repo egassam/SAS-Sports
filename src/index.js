@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.8';
+const VERSION='4.9.9';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -28,7 +28,10 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'oklahoma-state|Cross Country|Brian Musau':'https://www.instagram.com/brianmuangemusau/',
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
-  'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/'
+  'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
+  'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
+  'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
+  'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
 }));
 
 const SPORT_PATHS={
