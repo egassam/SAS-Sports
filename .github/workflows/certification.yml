@@ -37,6 +37,10 @@ jobs:
     # still the old deployment until merge, so testing it here creates false
     # failures and notification spam. Live certification runs after main moves.
     if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && !inputs.full_audit) }}
+    # A push tests the currently deployed Worker, which may still be the old
+    # version waiting on this check. Report those results without deadlocking
+    # deployment; manual/scheduled audits remain strict release evidence.
+    continue-on-error: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     # Isolation makes repeated live requests. Finish it before per-school
     # certification so the test suite cannot overload the production Worker.
