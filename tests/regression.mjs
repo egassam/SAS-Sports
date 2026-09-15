@@ -175,6 +175,8 @@ contains(worker,/if\(!previous&&image_url\)byUrl\.set\(url,\{name:'',url,image_u
 contains(worker,/athleteImage\(m\[2\],base,name,true\)/,'Only the athlete’s own roster-card container may be trusted without filename identity');
 contains(worker,/if\(!trustedContainer&&!identityMatch\(src,alt\)\)continue/,'Unrelated profile-page images must be rejected globally');
 contains(worker,/c-rosterbio__player__image/,'SIDEARM athlete biography portraits must be selected ahead of thumbnail rails');
+contains(worker,/function officialProfileImage\(/,'Official athlete profile metadata portraits must be supported');
+contains(worker,/imageHost===profileHost/,'Profile metadata portraits must remain on the official athletics host');
 contains(worker,/add\(src,30\)/,'Designated biography portraits must receive the highest image priority');
 contains(worker,/application\\\/ld\\\+json/,'Structured athlete identity records must be inspected for portraits');
 contains(worker,/@type.*person.*matchText\(value\.name\)===wantedName/s,'Structured portraits must match the exact athlete name');

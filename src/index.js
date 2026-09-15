@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.6';
+const VERSION='4.9.7';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -279,6 +279,14 @@ function athleteImage(raw,base,name,trustedContainer=false){
   candidates.sort((a,b)=>b.score-a.score);
   return candidates[0]?.url||null;
 }
+function officialProfileImage(raw,profileUrl){
+  const match=String(raw||'').match(/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+  const imageUrl=absoluteUrl(match?.[1]||match?.[2],profileUrl);if(!imageUrl)return null;
+  try{
+    const imageHost=new URL(imageUrl).hostname.replace(/^www\./,''),profileHost=new URL(profileUrl).hostname.replace(/^www\./,'');
+    return imageHost===profileHost&&!/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl))?imageUrl:null;
+  }catch{return null}
+}
 const BLOCKED_INSTAGRAM_HANDLES=new Set(['kstatesports','sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   // Some official athlete bios publish personal social links only inside a
@@ -367,7 +375,7 @@ async function featuredAthletes(schoolId,sport){
       try{
         const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
         const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
-        found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
+        found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:officialProfileImage(html,r.url||profile.url)||athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
       }catch{}
     }));
   }
