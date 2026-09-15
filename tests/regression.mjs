@@ -185,6 +185,7 @@ contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must b
 contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
 contains(worker,/function rosterPayloadImages\(/,'Embedded WMT roster portrait data must be parsed');
 contains(worker,/roster-card-item/,'WMT roster cards must bind athlete identity and Instagram links');
+contains(worker,/const wmtRows=/,'WMT roster table rows must bind athlete identity and Instagram links');
 contains(worker,/\(\?:"\[\^"\]\*",\)\?/,'WMT portrait payloads may include an official description between filename and URL');
 contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected before athlete-photo selection');
 contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:logo/,'Every publisher portrait source must pass a final generic-image guard');
