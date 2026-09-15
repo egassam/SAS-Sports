@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.9.4';
+const VERSION='4.9.5';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -174,6 +174,24 @@ function rosterProfiles(raw,base){
     if(/jersey|number|image|photo/i.test(name))score-=10;
     return score;
   };
+  // WMT/Nuxt keeps each athlete's name, profile, portrait, and Instagram link
+  // inside one roster card but does not publish SIDEARM's social aria-label.
+  // Bind fields inside the card so navigation/team accounts remain ineligible.
+  const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card-item\b[^"']*["'][^>]*>/i).slice(1);
+  for(const body of wmtCards){
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    if(!profileMatch)continue;
+    const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
+    if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
+    const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
+    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
+    let instagram_url=null;
+    try{if(instagram){const u=new URL(decodeHtml(instagram)),parts=u.pathname.split('/').filter(Boolean);if(parts.length===1)instagram_url=`https://www.instagram.com/${parts[0]}/`}}catch{}
+    const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
+    const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(body,base,name,true)||null;
+    byUrl.set(url,{name,url,image_url,instagram_url});
+  }
   while((m=re.exec(raw))){
     const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=clean((visibleText(m[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(!url)continue;
     const path=new URL(url).pathname;
@@ -190,7 +208,7 @@ function rosterProfiles(raw,base){
     else if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
-  return[...byUrl.values()].filter(x=>nameScore(x.name)>0).map(profile=>({...profile,instagram_url:socials.get(profile.name.toLowerCase())||null}));
+  return[...byUrl.values()].filter(x=>nameScore(x.name)>0).map(profile=>({...profile,instagram_url:profile.instagram_url||socials.get(profile.name.toLowerCase())||null}));
 }
 function athleteImage(raw,base,name,trustedContainer=false){
   const candidates=[];

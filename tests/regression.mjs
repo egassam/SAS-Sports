@@ -184,6 +184,7 @@ contains(worker,/athlete\.image_url=null/,'Duplicate portraits must fall back to
 contains(worker,/Boolean\(b\.image_url\)/,'Roster profiles with portraits must be prioritized');
 contains(worker,/\|\|profile\.image_url/,'Profile-page image lookup must fall back to the roster portrait');
 contains(worker,/function rosterPayloadImages\(/,'Embedded WMT roster portrait data must be parsed');
+contains(worker,/roster-card-item/,'WMT roster cards must bind athlete identity and Instagram links');
 contains(worker,/\(\?:"\[\^"\]\*",\)\?/,'WMT portrait payloads may include an official description between filename and URL');
 contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected before athlete-photo selection');
 contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:logo/,'Every publisher portrait source must pass a final generic-image guard');
@@ -199,11 +200,13 @@ contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading mus
 contains(page,/sas-athletes:v3:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport with a versioned key for instant, safe switching');
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
-contains(page,/requested=chosen\?\[chosen\]:automaticSports\(\)/,'All sports must request the current season instead of a hard-coded fall list');
+contains(page,/const requested=chosen\?\[chosen\]:\['Cross Country'\]/,'Homepage must automatically load only Cross Country');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
+contains(page,/🟢 /,'In-season sports must have a green dot in the sport dropdown');
+contains(page,/Number\(active\.has\(b\)\)-Number\(active\.has\(a\)\)/,'In-season sports must sort above out-of-season sports');
 contains(page,/'kstate':\['Baseball','Basketball','Cross Country'/,'K-State must load only sports it sponsors');
-contains(page,/automaticSports\(\)\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip sports the selected school does not sponsor');
+contains(page,/\['Cross Country'\]\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip Cross Country when a school does not sponsor it');
 contains(page,/if\(!chosen&&SCHOOL_SPORTS\[id\]\)/,'Sponsored sports must remain visible while waiting for a new schedule');
 contains(page,/\|\|\(g\.featured_athletes\|\|\[\]\)\.length/,'A sport with verified athletes must remain visible without current events');
 assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');

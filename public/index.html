@@ -110,9 +110,12 @@ function featuredAthletesRow(g){
 }
 function populateSportFilter(groups=[]){
   const selected=sportFilter.value;
-  const available=[...new Set(groups.map(g=>g.sport))];
-  const ordered=[...new Set([...available,...BOOTSTRAP_SPORTS])];
-  sportFilter.innerHTML='<option value="">All sports</option>'+ordered.map(s=>`<option value="${esc(s)}">${esc(s)}${available.includes(s)?' · data':''}</option>`).join('');
+  const sponsored=SCHOOL_SPORTS[school.value]||BOOTSTRAP_SPORTS;
+  const available=new Set(groups.map(g=>g.sport));
+  const active=new Set(automaticSports());
+  const priority=sport=>{const index=HOME_SPORT_PRIORITY.indexOf(sport);return index<0?Number.MAX_SAFE_INTEGER:index};
+  const ordered=[...new Set(sponsored)].sort((a,b)=>Number(active.has(b))-Number(active.has(a))||priority(a)-priority(b)||a.localeCompare(b));
+  sportFilter.innerHTML='<option value="">Cross Country · Home</option>'+ordered.map(s=>`<option value="${esc(s)}">${active.has(s)?'🟢 ':''}${esc(s)}${available.has(s)?' · loaded':''}</option>`).join('');
   if(ordered.includes(selected))sportFilter.value=selected;
 }
 function visibleGroup(g,q){
@@ -237,7 +240,9 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   try{
     localStorage.setItem('sas-sports-school',id); setUrlSchool(id); updateFavorite();
     const meta=allSchools.find(s=>s.id===id); $('#schoolMeta').textContent=meta?`${meta.name} · ${meta.conference}`:'';
-    const requested=chosen?[chosen]:automaticSports().filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
+    // Keep the homepage focused: Cross Country is the only automatic feed.
+    // Every other sponsored sport remains one selection away in the dropdown.
+    const requested=chosen?[chosen]:['Cross Country'].filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
     const previousAthletes=new Map(currentGroups.filter(g=>g.school_id===id).map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[]; let liveOk=0;
     await inBatches(requested,1,async sp=>{
@@ -323,7 +328,7 @@ async function openEvent(id){
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));
-school.addEventListener('change',()=>{feedGeneration++;currentGroups=[];updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
+school.addEventListener('change',()=>{feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
 conference.addEventListener('change',()=>{fillSchools();loadFeed()});
 sportFilter.addEventListener('change',()=>loadFeed(false));
 search.addEventListener('input',()=>render(currentGroups));
