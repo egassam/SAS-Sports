@@ -203,6 +203,8 @@ contains(worker,/roster-card\(\?:-item\)\?/,'WMT roster cards must bind athlete 
 contains(worker,/roster-card\(\?:-item\)\?/,'WMT roster parsers must support both roster-card layout generations');
 contains(worker,/matches\.at\(-1\)/,'Malformed repeated WMT Instagram prefixes must recover the athlete handle');
 contains(worker,/const wmtRows=/,'WMT roster table rows must bind athlete identity and Instagram links');
+contains(worker,/const wmtListItems=/,'WMT football roster list rows must bind athlete identity and Instagram links');
+contains(worker,/roster-list-item\(\?=\\s\|\["'\]\)/,'WMT list parsing must target complete athlete rows');
 contains(worker,/\(\?:"\[\^"\]\*",\)\?/,'WMT portrait payloads may include an official description between filename and URL');
 contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected before athlete-photo selection');
 contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:logo/,'Every publisher portrait source must pass a final generic-image guard');
