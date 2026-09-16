@@ -126,7 +126,7 @@ export async function onboardSchool(args){
   if(args.certify){
     await run(process.execPath,['tests/onboarding.mjs']);
     await run('npm',['run','test:release']);
-    if(args.apply)await run(process.execPath,['tests/validate-schools.mjs',`--schools=${school.id}`,args.deep?'--deep':'']);
+    if(args.apply){const liveArgs=['tests/validate-schools.mjs',`--schools=${school.id}`];if(args.deep)liveArgs.push('--deep');await run(process.execPath,liveArgs);}
     else console.log('Live certification skipped until the reviewed draft is applied.');
   }
   return{draft,validation};
