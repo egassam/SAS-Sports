@@ -112,6 +112,9 @@ contains(worker,/visibleText\(block\)\.match\(\/\\b\(\[WLTD\]\)/,'WMT final-scor
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
 contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placement text must mark a completed meet final');
 contains(worker,/No Team Scores/,'Next-generation SIDEARM meet placements must be captured as finals');
+contains(worker,/function meetTeamResultRows\(/,'Meet team results must be normalized across publisher formats');
+contains(worker,/Men\\(\\?:'s\\)\\?\\|Women\\(\\?:'s\\)\\?/,'Men and women team placements must be recognized from official result labels');
+contains(worker,/participant:`\\$\\{school\\} team`/,'Normalized meet placements must render as highlighted team-result rows');
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
 contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEARM game-center schedules must be supported');

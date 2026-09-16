@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.18.0-sec-alabama-candidate';
+const VERSION='4.18.1-xc-team-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -746,13 +746,23 @@ function enrichMeetEvent(event,date){
     return event;
   }
   const label=event.headline||'';
-  const teamRows=[];
-  for(const part of label.split('/')){
-    const m=part.trim().match(/^(M|W)\s*\(([^)]+)\)$/i);
-    if(m)teamRows.push({group:m[1].toUpperCase()==='M'?"Men's Team":"Women's Team",participant:event.school,result:m[2]});
-  }
+  const teamRows=meetTeamResultRows(label,event.school);
   if(teamRows.length){event.results=teamRows;event.result_count=teamRows.length;}
   return event;
+}
+function meetTeamResultRows(label,school){
+  const text=clean(label)||'',rows=[],seen=new Set();
+  const add=(division,result)=>{
+    result=clean(result)?.replace(/^[:\-–—|]+|[:\-–—|]+$/g,'').trim();
+    if(!result||/^(?:a\.?m\.?|p\.?m\.?)\b/i.test(result)||/^\d{1,2}:\d{2}\s*(?:a\.?m\.?|p\.?m\.?)$/i.test(result))return;
+    const group=/^(?:m|men|men's)$/i.test(division)?"Men's Team":"Women's Team",key=`${group}|${result}`;
+    if(seen.has(key))return;seen.add(key);rows.push({group,participant:`${school} team`,result});
+  };
+  // Official publishers use several compact formats for meet finishes:
+  // M (1st) / W (2nd), Men 1st (24) | Women 1st (31), and Men: 1st Women: 2nd.
+  for(const m of text.matchAll(/\b(M|W)\s*\(([^)]+)\)/gi))add(m[1],m[2]);
+  for(const m of text.matchAll(/\b(Men(?:'s)?|Women(?:'s)?)\s*:?[ \t]+((?:\d+(?:st|nd|rd|th)|champion|runner-up)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
+  return rows;
 }
 const FALL_SEASON_SPORTS=new Set(['Football','Volleyball',"Women's Volleyball","Men's Volleyball",'Soccer',"Women's Soccer","Men's Soccer",'Cross Country','Field Hockey']);
 const ACADEMIC_YEAR_SPORTS=new Set(['Basketball',"Men's Basketball","Women's Basketball",'Swimming & Diving','Wrestling','Tennis','Golf','Track & Field','Baseball','Softball','Rowing','Gymnastics','Hockey']);
