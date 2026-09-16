@@ -32,6 +32,17 @@ jobs:
           node-version: 22
       - run: npm run test:release
 
+  certification-matrix:
+    runs-on: ubuntu-latest
+    needs: guardrails
+    outputs:
+      schools: ${{ steps.matrix.outputs.schools }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: matrix
+        shell: bash
+        run: echo "schools=$(node -e \"const x=require('./tests/certified-schools.json');process.stdout.write(JSON.stringify(x.schools.map(s=>s.id)))\")" >> "$GITHUB_OUTPUT"
+
   live-certified-schools:
     # Pull requests test their parser and invariants locally. The public URL is
     # still the old deployment until merge, so testing it here creates false
@@ -44,14 +55,14 @@ jobs:
     runs-on: ubuntu-latest
     # Isolation makes repeated live requests. Finish it before per-school
     # certification so the test suite cannot overload the production Worker.
-    needs: [guardrails, cross-school-isolation]
+    needs: [guardrails, cross-school-isolation, certification-matrix]
     strategy:
       fail-fast: false
       # The Worker has a strict CPU budget. Serial live certification prevents
       # the test runner itself from creating false resource-limit failures.
       max-parallel: 1
       matrix:
-        school: [kstate, kansas, florida, arizona, arizona-state, oklahoma-state, texas-tech, baylor, byu, ucf, cincinnati]
+        school: ${{ fromJSON(needs.certification-matrix.outputs.schools) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
