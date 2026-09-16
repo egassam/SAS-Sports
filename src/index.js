@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.17.0';
+const VERSION='4.18.0-sec-alabama-candidate';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -57,6 +57,11 @@ const SPORT_PATHS={
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
+  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
+  'alabama|Football':'https://rolltide.com/sports/football/roster',
+  'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
+  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
+  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster',
   'byu|Cross Country':['https://byucougars.com/sports/mens-cross-country/roster','https://byucougars.com/sports/womens-cross-country/roster'],
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/roster',
   'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/roster',
@@ -104,6 +109,11 @@ function labelTeamEvents(events,sport,url){
 }
 
 const KNOWN_URLS=new Map(Object.entries({
+  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule',
+  'alabama|Football':'https://rolltide.com/sports/football/schedule',
+  'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
+  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule',
+  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/schedule',
   'kstate|Volleyball':'https://www.kstatesports.com/sports/womens-volleyball/schedule',
   'kstate|Soccer':'https://www.kstatesports.com/sports/womens-soccer/schedule',
   'kstate|Cross Country':'https://www.kstatesports.com/sports/cross-country/schedule',
