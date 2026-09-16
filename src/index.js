@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.14.0';
+const VERSION='4.14.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -76,6 +76,8 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/roster'
   ,'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/roster'
   ,'iowa-state|Football':'https://cyclones.com/sports/football/roster'
+  ,'iowa-state|Swimming & Diving':'https://cyclones.com/sports/womens-swimming-and-diving/roster'
+  ,'iowa-state|Tennis':'https://cyclones.com/sports/womens-tennis/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
@@ -465,7 +467,16 @@ async function featuredAthletes(schoolId,sport){
   const ranked=found.filter(a=>a.instagram_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name));
   const selected=[...ranked.filter(a=>a.image_url),...ranked.filter(a=>!a.image_url)].slice(0,3);
   await Promise.all(selected.map(async athlete=>{if(!athlete.image_url)athlete.image_url=await instagramProfileImage(athlete.instagram_url)}));
-  return selected;
+  // Some official publishers provide current roster portraits and profile
+  // pages without publishing personal social links. Keep the carousel useful
+  // in that case by filling the remaining slots with official roster profiles.
+  // Personal Instagram links are still shown only when identity verified.
+  const used=new Set(selected.map(athlete=>athlete.profile_url));
+  const officialProfiles=profiles
+    .filter(profile=>!used.has(profile.url)&&profile.image_url)
+    .sort((a,b)=>dailyRank(a.name)-dailyRank(b.name))
+    .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url}));
+  return [...selected,...officialProfiles].slice(0,3);
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return Array.isArray(known)?known:[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
 function parsedSourceDate(dateText,timeText){

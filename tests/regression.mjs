@@ -127,6 +127,8 @@ contains(worker,/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soc
 contains(worker,/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens-volleyball\/schedule'/,'Houston Volleyball must use its official women’s schedule');
 contains(worker,/'iowa-state\|Soccer':'https:\/\/cyclones\.com\/sports\/womens-soccer\/schedule'/,'Iowa State Soccer must use its populated women’s schedule');
 contains(worker,/'iowa-state\|Volleyball':'https:\/\/cyclones\.com\/sports\/womens-volleyball\/schedule'/,'Iowa State Volleyball must use its populated women’s schedule');
+contains(worker,/'iowa-state\|Swimming & Diving':'https:\/\/cyclones\.com\/sports\/womens-swimming-and-diving\/roster'/,'Iowa State swimming must use its current official roster');
+contains(worker,/'iowa-state\|Tennis':'https:\/\/cyclones\.com\/sports\/womens-tennis\/roster'/,'Iowa State tennis must use its current official roster');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
@@ -148,6 +150,8 @@ contains(worker,/async function instagramProfileImage\(instagramUrl\)/,'Verified
 contains(worker,/setTimeout\(\(\)=>controller\.abort\(\),2500\)/,'Instagram portrait fallback must not delay athlete switching indefinitely');
 contains(worker,/if\(!athlete\.image_url\)athlete\.image_url=await instagramProfileImage\(athlete\.instagram_url\)/,'Instagram portraits may only replace missing official photos');
 contains(worker,/return selected/,'Athletes without publisher portraits must remain eligible through the Instagram fallback');
+contains(worker,/const officialProfiles=profiles/,'Official roster profiles must fill athlete cards when personal social links are unavailable');
+contains(page,/social\?'Instagram':'Official profile'/,'Athlete cards must label official-profile fallbacks clearly');
 contains(worker,/personInstagram/,'Identity-bound Schema.org Person social links must be supported');
 contains(worker,/value\['@type'\].*person/i,'Only official Person identity records may supply embedded athlete Instagram links');
 contains(worker,/ttumensgolf/,'Texas Tech golf team Instagram must never be used as an athlete account');
@@ -253,7 +257,7 @@ contains(page,/currentGroups\.filter\(g=>g\.school_id===id\)/,'Athletes from the
 contains(page,/school\.addEventListener\('change',\(\)=>\{feedGeneration\+\+/,'Changing schools must invalidate in-flight athlete responses immediately');
 contains(page,/sportFilter\.addEventListener\('change',[\s\S]*feedGeneration\+\+;[\s\S]*currentGroups=\[\][\s\S]*loadFeed\(false\)/,'Changing sports must invalidate the previous feed before queueing the newest selection');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
-contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
+contains(page,/href="\$\{esc\(href\)\}"/,'Athlete cards must link to a verified Instagram or official roster profile');
 contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');
 
 // Exactly one prominent official recap action in the modal template.
