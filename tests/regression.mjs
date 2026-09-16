@@ -276,6 +276,16 @@ contains(page,/highlight-loader-mark[^>]*[^]*>SAS</,'SAS loader mark must exist'
 contains(page,/Fetching SAS verified highlights…/,'Verified-highlight loading message must exist');
 contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1.5 seconds');
 
+// Football schedule pages do not consistently publish live state. Reconcile the
+// official schedule with a short-cache scoreboard during game windows.
+contains(worker,/function fetchFootballScoreboard\(/,'Football live scoreboard reconciliation must exist');
+contains(worker,/college-football\\\/scoreboard\\\?limit=1000/,'Football reconciliation must use the college-football scoreboard');
+contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress football games must become Live');
+contains(worker,/event\.school_score=ours\.score/,'Live football scores must update the selected school');
+contains(worker,/function reconcileFootballScores\(/,'Live scores must reconcile onto official schedule events');
+contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
+contains(worker,/if\(sport===['"]Football['"]\)/,'Scoreboard reconciliation must remain isolated to Football');
+
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and
 // bypass the worker cache so upcoming events can become live and finals can land.
 contains(page,/const LIVE_REFRESH_MS=30\*1000/,'Live events must refresh every 30 seconds');
