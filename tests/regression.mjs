@@ -298,8 +298,8 @@ contains(page,/Checking live scores, finals, and highlights/,'The live refresh l
 contains(page,/REFRESH_LOADER_MIN_MS=1500/,'The live refresh loader must remain visible for 1.5 seconds');
 
 // Favorite teams must persist, migrate the original single favorite, and remain quickly selectable.
-contains(page,/const TEAM_THEMES=/,'Favorite-team color themes must exist');
-contains(page,/function applyFavoriteTheme\(/,'Favorite selection must apply its team theme');
+contains(page,/const TEAM_THEMES=/,'School color themes must exist');
+contains(page,/function applyCurrentSchoolTheme\(/,'The currently loaded school must apply its team theme');
 contains(page,/--theme-on-accent/,'Team controls must use explicit contrast-safe text colors');
 contains(page,/prefers-contrast:more/,'High-contrast preferences must receive stronger borders');
 contains(page,/forced-colors:active/,'System forced-colors mode must remain supported');
