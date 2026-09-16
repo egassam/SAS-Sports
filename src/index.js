@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.7';
+const VERSION='4.12.8';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -837,7 +837,10 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const defaultOpponent=defaultNames.find(name=>matchText(name)!==matchText(school.name));
     const opponent=modernOpponent||defaultOpponent||visibleText(legacyName?.[2]);
     if(dateParts.length<1||!opponent)continue;
-    const dateText=dateParts[0],time=dateParts[1]||null,year=scheduleYearForDate(raw,dateText,now);
+    // WMT publishers such as Cincinnati prefix card dates with a weekday
+    // ("Sat Nov 28"). Normalize that display-only prefix so the canonical
+    // date parser can enforce future/final status correctly.
+    const dateText=dateParts[0].replace(/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\s+/i,''),time=dateParts[1]||null,year=scheduleYearForDate(raw,dateText,now);
     // Meet publishers often leave only "All Day" on completed cards. The
     // official scheduled date is still safe completion evidence once that
     // calendar day has ended; future time labels remain Upcoming.

@@ -83,6 +83,7 @@ contains(worker,/schedule-event-date__month/,'Split-month WMT date cards must be
 contains(worker,/schedule-event-date__day/,'Split-day WMT date cards must be supported');
 contains(worker,/if\(!dateParts\.length\)/,'Split WMT dates must be used when the legacy date box is absent');
 contains(worker,/const splitTimes=/,'Two-time-tag WMT date cards must be supported');
+contains(worker,/dateParts\[0\]\.replace\(\/\^\(\?:Mon\|Tue\|Wed\|Thu\|Fri\|Sat\|Sun\)/,'WMT weekday-prefixed dates must be normalized before status classification');
 contains(worker,/schedule-default-event__name/,'Default-event WMT opponent names must be supported');
 contains(worker,/matchText\(name\)!==matchText\(school\.name\)/,'The selected school must not be mistaken for its opponent');
 contains(worker,/schedule-event-item__opponent-name/,'Current WMT Nuxt opponent names must be supported');
