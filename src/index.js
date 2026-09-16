@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.13.3';
+const VERSION='4.14.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -72,6 +72,10 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/roster'
   ,'houston|Football':'https://uhcougars.com/sports/football/roster'
   ,'houston|Tennis':'https://uhcougars.com/sports/womens-tennis/roster'
+  ,'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/roster'
+  ,'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/roster'
+  ,'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/roster'
+  ,'iowa-state|Football':'https://cyclones.com/sports/football/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
@@ -150,6 +154,10 @@ const KNOWN_URLS=new Map(Object.entries({
   'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/schedule',
   'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/schedule',
   'houston|Football':'https://uhcougars.com/sports/football/schedule',
+  'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/schedule',
+  'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/schedule',
+  'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/schedule',
+  'iowa-state|Football':'https://cyclones.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',

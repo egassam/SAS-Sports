@@ -125,6 +125,8 @@ contains(worker,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-socc
 contains(worker,/'colorado\|Volleyball':'https:\/\/cubuffs\.com\/sports\/womens-volleyball\/schedule'/,'Colorado Volleyball must use its populated women’s schedule');
 contains(worker,/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soccer\/schedule'/,'Houston Soccer must use its official women’s schedule');
 contains(worker,/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens-volleyball\/schedule'/,'Houston Volleyball must use its official women’s schedule');
+contains(worker,/'iowa-state\|Soccer':'https:\/\/cyclones\.com\/sports\/womens-soccer\/schedule'/,'Iowa State Soccer must use its populated women’s schedule');
+contains(worker,/'iowa-state\|Volleyball':'https:\/\/cyclones\.com\/sports\/womens-volleyball\/schedule'/,'Iowa State Volleyball must use its populated women’s schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
