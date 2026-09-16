@@ -249,7 +249,7 @@ contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports mus
 contains(page,/const requested=chosen\?\[chosen\]:\['Cross Country'\]/,'Homepage must automatically load only Cross Country');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
-contains(page,/🟢 /,'In-season sports must have a green dot in the sport dropdown');
+contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');
 contains(page,/Number\(active\.has\(b\)\)-Number\(active\.has\(a\)\)/,'In-season sports must sort above out-of-season sports');
 contains(page,/'kstate':\['Baseball','Basketball','Cross Country'/,'K-State must load only sports it sponsors');
 contains(page,/\['Cross Country'\]\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip Cross Country when a school does not sponsor it');
@@ -298,6 +298,13 @@ contains(page,/Checking live scores, finals, and highlights/,'The live refresh l
 contains(page,/REFRESH_LOADER_MIN_MS=1500/,'The live refresh loader must remain visible for 1.5 seconds');
 
 // Favorite teams must persist, migrate the original single favorite, and remain quickly selectable.
+contains(page,/const TEAM_THEMES=/,'Favorite-team color themes must exist');
+contains(page,/function applyFavoriteTheme\(/,'Favorite selection must apply its team theme');
+contains(page,/--theme-on-accent/,'Team controls must use explicit contrast-safe text colors');
+contains(page,/prefers-contrast:more/,'High-contrast preferences must receive stronger borders');
+contains(page,/forced-colors:active/,'System forced-colors mode must remain supported');
+contains(page,/focus-visible/,'Keyboard focus must remain visually explicit');
+contains(page,/status-badge\.live::before/,'Live state must include a non-color visual marker');
 contains(page,/function favoriteSchoolIds\(\)/,'Multiple favorite teams must be supported');
 contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Favorite teams must persist on the device');
 contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
