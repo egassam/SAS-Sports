@@ -150,6 +150,7 @@ contains(worker,/personInstagram/,'Identity-bound Schema.org Person social links
 contains(worker,/value\['@type'\].*person/i,'Only official Person identity records may supply embedded athlete Instagram links');
 contains(worker,/ttumensgolf/,'Texas Tech golf team Instagram must never be used as an athlete account');
 for(const verified of ['Chelsea Peterson','Mia Goettsche','Brynnli Tolbert'])contains(worker,new RegExp(`'byu\\|Soccer\\|${verified}'`),`Missing officially verified BYU Soccer Instagram for ${verified}`);
+for(const verified of ['Petja Drame','Valeriia Krokhotina','Iva Sepa'])contains(worker,new RegExp(`'houston\\|Tennis\\|${verified}'`),`Missing officially verified Houston Tennis Instagram for ${verified}`);
 contains(worker,/texastechwgolf/,'Texas Tech women’s golf Instagram must never be used as an athlete account');
 contains(worker,/BLOCKED_INSTAGRAM_HANDLES/,'Known school and team Instagram accounts must be rejected');
 contains(worker,/sundevilathletics/,'Arizona State’s institutional Instagram must never be used as an athlete account');

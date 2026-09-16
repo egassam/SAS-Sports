@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.13.1';
+const VERSION='4.13.2';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -35,6 +35,9 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
   ,'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
   ,'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
+  ,'houston|Tennis|Petja Drame':'https://www.instagram.com/petja.drame/'
+  ,'houston|Tennis|Valeriia Krokhotina':'https://www.instagram.com/leriiakrokhotina/'
+  ,'houston|Tennis|Iva Sepa':'https://www.instagram.com/sepa_iva/'
 }));
 
 const SPORT_PATHS={
@@ -68,6 +71,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/roster'
   ,'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/roster'
   ,'houston|Football':'https://uhcougars.com/sports/football/roster'
+  ,'houston|Tennis':'https://uhcougars.com/sports/womens-tennis/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
