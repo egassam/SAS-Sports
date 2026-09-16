@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readdir,readFile} from 'node:fs/promises';
 import {detectPublisher,discoverLinks,inferSport,buildSources,validateDraft} from '../scripts/onboard-school.mjs';
 
 const sidearm=`
@@ -52,5 +53,17 @@ assert.equal(incomplete.warnings.length,2);
 const unsafe=validateDraft({school:{id:'bad',name:'Bad',athletics_url:'http://example.edu'},publisher:'UNKNOWN',sponsored_sports:[]});
 assert.equal(unsafe.valid,false);
 assert.ok(unsafe.errors.length>=3);
+
+let draftNames=[];
+try{draftNames=(await readdir(new URL('../onboarding/drafts/',import.meta.url))).filter(name=>name.endsWith('.json'))}catch{}
+const catalog=JSON.parse(await readFile(new URL('../src/schools.json',import.meta.url),'utf8'));
+const sponsored=JSON.parse(await readFile(new URL('../src/sponsored-sports.json',import.meta.url),'utf8'));
+for(const name of draftNames){
+  const draft=JSON.parse(await readFile(new URL(`../onboarding/drafts/${name}`,import.meta.url),'utf8'));
+  const result=validateDraft(draft);
+  assert.equal(result.valid,true,`${name}: ${result.errors.join('; ')}`);
+  assert.ok(catalog.some(s=>s.id===draft.school.id),`${name}: school is missing from catalog`);
+  if(sponsored[draft.school.id])assert.deepEqual(sponsored[draft.school.id],draft.sponsored_sports,`${name}: applied sports differ from reviewed draft`);
+}
 
 console.log('SAS Sports onboarding discovery and validation checks passed');
