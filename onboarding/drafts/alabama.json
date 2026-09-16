@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "generated_at": "2026-09-16T20:30:00.000Z",
+  "school": {
+    "id": "alabama",
+    "name": "Alabama",
+    "short_name": "Alabama",
+    "conference": "SEC",
+    "state": "Alabama",
+    "athletics_url": "https://rolltide.com"
+  },
+  "publisher": "SIDEARM",
+  "sponsored_sports": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "sources": {
+    "Baseball": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/baseball/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/baseball/roster"
+      ]
+    },
+    "Basketball": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/mens-basketball/schedule",
+        "https://rolltide.com/sports/womens-basketball/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/mens-basketball/roster",
+        "https://rolltide.com/sports/womens-basketball/roster"
+      ]
+    },
+    "Cross Country": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/xctrack/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/xctrack/roster"
+      ]
+    },
+    "Football": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/football/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/football/roster"
+      ]
+    },
+    "Golf": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/mens-golf/schedule",
+        "https://rolltide.com/sports/womens-golf/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/mens-golf/roster",
+        "https://rolltide.com/sports/womens-golf/roster"
+      ]
+    },
+    "Gymnastics": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/womens-gymnastics/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/womens-gymnastics/roster"
+      ]
+    },
+    "Rowing": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/womens-rowing/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/womens-rowing/roster"
+      ]
+    },
+    "Soccer": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/womens-soccer/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/womens-soccer/roster"
+      ]
+    },
+    "Softball": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/softball/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/softball/roster"
+      ]
+    },
+    "Swimming & Diving": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/swimming-diving/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/swimming-diving/roster"
+      ]
+    },
+    "Tennis": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/mens-tennis/schedule",
+        "https://rolltide.com/sports/womens-tennis/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/mens-tennis/roster",
+        "https://rolltide.com/sports/womens-tennis/roster"
+      ]
+    },
+    "Track & Field": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/xctrack/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/xctrack/roster"
+      ]
+    },
+    "Volleyball": {
+      "schedule_urls": [
+        "https://rolltide.com/sports/womens-volleyball/schedule"
+      ],
+      "roster_urls": [
+        "https://rolltide.com/sports/womens-volleyball/roster"
+      ]
+    }
+  },
+  "certification": {
+    "release_tests": false,
+    "deep_live": false,
+    "isolation": false,
+    "mobile_switching": false,
+    "all_existing_schools": false
+  },
+  "notes": [
+    "Official Alabama pages use a SIDEARM-style schedule surface.",
+    "Cross Country and Track & Field share the xctrack schedule and roster.",
+    "Basketball, Golf, and Tennis require both men's and women's official sources.",
+    "Football and Soccer current schedules were verified on the official athletics domain on 2026-09-16."
+  ]
+}
