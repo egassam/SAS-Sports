@@ -128,6 +128,9 @@ contains(worker,/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
+contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
+contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
+contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 contains(worker,/FEED_FRESH_MS=25\*1000/,'Shared live-feed cache must refresh within the 30-second polling window');
 contains(worker,/stale-refreshing/,'Stale verified feeds must remain visible while refreshing');

@@ -2,12 +2,13 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.13.0';
+const VERSION='4.13.1';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
-  'Accept':'text/html,application/xhtml+xml'
+  'Accept':'text/html,application/xhtml+xml',
+  'Accept-Language':'en-US,en;q=0.9'
 };
 
 // Accounts verified through direct tags from an official school/team social
@@ -906,6 +907,18 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
+function compactScheduleHtml(raw,sourceUrl){
+  let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'')}catch{return raw}
+  const path=(()=>{try{return new URL(sourceUrl).pathname}catch{return''}})();
+  if(host!=='uhcougars.com'&&!(host==='cubuffs.com'&&/\/football\//i.test(path)))return raw;
+  const markers=['data-test-id="s-game-card-standard__root"',"data-test-id='s-game-card-standard__root'",'schedule-event-item'];
+  const starts=markers.map(marker=>raw.indexOf(marker)).filter(index=>index>=0);
+  if(!starts.length)return raw;
+  const start=Math.min(...starts),table=raw.indexOf('schedule__view-box--table',start),footer=raw.indexOf('<footer',start);
+  let end=[table,footer].filter(index=>index>start).sort((a,b)=>a-b)[0]||Math.min(raw.length,start+1500000);
+  end=Math.min(raw.length,end+4000);
+  return raw.slice(0,50000)+raw.slice(Math.max(0,start-1000),end);
+}
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
@@ -1206,7 +1219,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   return events;
 }
-async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,labels=extractEventLabels(html);let events=r.ok?labelTeamEvents(parseHtml(html,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(html)),has_completed:/Completed Event:/i.test(decodeHtml(html)),events};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,parseable=compactScheduleHtml(html,finalUrl),labels=extractEventLabels(parseable);let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(parseable)),has_completed:/Completed Event:/i.test(decodeHtml(parseable)),events};}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
