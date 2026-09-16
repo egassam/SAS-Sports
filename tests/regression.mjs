@@ -249,6 +249,7 @@ contains(page,/generation!==feedGeneration\|\|school\.value!==schoolId/,'Late at
 contains(page,/queuedFeedRequest=\{forceRefresh,automatic\}/,'A school change during loading must queue the newest request');
 contains(page,/currentGroups\.filter\(g=>g\.school_id===id\)/,'Athletes from the previous school must never be reused');
 contains(page,/school\.addEventListener\('change',\(\)=>\{feedGeneration\+\+/,'Changing schools must invalidate in-flight athlete responses immediately');
+contains(page,/sportFilter\.addEventListener\('change',[\s\S]*feedGeneration\+\+;[\s\S]*currentGroups=\[\][\s\S]*loadFeed\(false\)/,'Changing sports must invalidate the previous feed before queueing the newest selection');
 contains(page,/Featured Athletes/,'Featured Athletes row must render');
 contains(page,/href="\$\{esc\(a\.instagram_url\)\}"/,'Athlete cards must link only to verified Instagram accounts');
 contains(page,/rel="noopener noreferrer"/,'External Instagram links must open safely');

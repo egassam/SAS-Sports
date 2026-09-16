@@ -334,7 +334,15 @@ function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute(
 refresh.addEventListener('click',()=>loadFeed(true));
 school.addEventListener('change',()=>{feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
 conference.addEventListener('change',()=>{fillSchools();loadFeed()});
-sportFilter.addEventListener('change',()=>loadFeed(false));
+sportFilter.addEventListener('change',()=>{
+  // Invalidate the previous sport immediately. If its request is still in
+  // flight, its late response must not repopulate the dropdown or overwrite
+  // the newly selected sport; loadFeed will retain only the newest queued run.
+  feedGeneration++;
+  currentGroups=[];updateCounts();
+  feed.innerHTML='<div class="empty">Loading the selected sport…</div>';
+  loadFeed(false);
+});
 search.addEventListener('input',()=>render(currentGroups));
 tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
 favorite.addEventListener('click',()=>{const favorites=favoriteSchoolIds(),on=favorites.includes(school.value);saveFavoriteSchoolIds(on?favorites.filter(id=>id!==school.value):[...favorites,school.value]);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed from your favorite teams.`:`★ ${team} added to your SAS Sports homepage favorites.`});
