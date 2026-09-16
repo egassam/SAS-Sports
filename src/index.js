@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.14.1';
+const VERSION='4.15.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -78,6 +78,10 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'iowa-state|Football':'https://cyclones.com/sports/football/roster'
   ,'iowa-state|Swimming & Diving':'https://cyclones.com/sports/womens-swimming-and-diving/roster'
   ,'iowa-state|Tennis':'https://cyclones.com/sports/womens-tennis/roster'
+  ,'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/roster'
+  ,'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/roster'
+  ,'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/roster'
+  ,'tcu|Football':'https://gofrogs.com/sports/football/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
@@ -160,6 +164,10 @@ const KNOWN_URLS=new Map(Object.entries({
   'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/schedule',
   'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/schedule',
   'iowa-state|Football':'https://cyclones.com/sports/football/schedule',
+  'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/schedule',
+  'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/schedule',
+  'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/schedule',
+  'tcu|Football':'https://gofrogs.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
