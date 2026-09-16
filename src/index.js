@@ -950,18 +950,18 @@ function parseSchemaEvents(raw,school,sport,sourceUrl,now){
 }
 function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
   const events=[];let row;
-  const rows=/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi;
+  const rows=/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
   while((row=rows.exec(raw))){
     const cells=[];let cell;
-    const cellRe=/<td\\b[^>]*>([\\s\\S]*?)<\\/td>/gi;
+    const cellRe=/<td\b[^>]*>([\s\S]*?)<\/td>/gi;
     while((cell=cellRe.exec(row[1])))cells.push(visibleText(cell[1]));
     if(cells.length<7)continue;
     const [dateText,time,site,opponent,,,publishedResult]=cells;
     const category=cells[5];
     if(category&&!sportMatches(category,sport))continue;
-    const year=scheduleYearForDate(raw,dateText,now),date=`${dateText.replace(/\\s*\\([^)]*\\)\\s*$/,'')}, ${year}`;
+    const year=scheduleYearForDate(raw,dateText,now),date=`${dateText.replace(/\s*\([^)]*\)\s*$/,'')}, ${year}`;
     const parsedDay=Date.parse(`${date} ${time||''}`),today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
-    const meaningfulResult=clean(publishedResult?.replace(/^(?:N|H|A)\\s*-?\\s*/i,''));
+    const meaningfulResult=clean(publishedResult?.replace(/^(?:N|H|A)\s*-?\s*/i,''));
     const completed=Number.isFinite(parsedDay)&&parsedDay<today;
     const resultText=meaningfulResult&&!/^-?$/.test(meaningfulResult)?meaningfulResult:(completed?'Completed':null);
     events.push(makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/away/i.test(site)?'at':'vs',opponent,date,time,schoolScore:null,oppScore:null,resultText,sourceUrl,now}));
