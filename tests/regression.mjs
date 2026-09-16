@@ -52,6 +52,7 @@ contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worke
 contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
 assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),3,'Feed, athlete, and highlight endpoints must all reject unsupported school-sport requests');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
+contains(worker,/eventDay>today[\s\S]*effective='Upcoming';schoolScore=null;oppScore=null;resultLabel=null/,'Future games must discard leaked scores and remain upcoming');
 
 // The initial three-school rollout must keep explicit official sources for every
 // home-screen sport. A missing route must fail the build before deployment.
@@ -206,6 +207,7 @@ contains(worker,/matches\.at\(-1\)/,'Malformed repeated WMT Instagram prefixes m
 contains(worker,/const wmtRows=/,'WMT roster table rows must bind athlete identity and Instagram links');
 contains(worker,/const wmtListItems=/,'WMT football roster list rows must bind athlete identity and Instagram links');
 contains(worker,/roster-list-item\(\?=\\s\|\["'\]\)/,'WMT list parsing must target complete athlete rows');
+contains(worker,/if\(!url\|\|\/\(\?:staff\|coaches\)\\\//,'WMT list roster staff guard must remain valid JavaScript');
 contains(worker,/\(\?:"\[\^"\]\*",\)\?/,'WMT portrait payloads may include an official description between filename and URL');
 contains(worker,/pitchfork\|powercat/,'Embedded school marks must be rejected before athlete-photo selection');
 contains(worker,/for\(const athlete of found\)if\(athlete\.image_url&&\/\(\?:logo/,'Every publisher portrait source must pass a final generic-image guard');
