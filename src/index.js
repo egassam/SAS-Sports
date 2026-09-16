@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.18.2-xc-full-results';
+const VERSION='4.18.3-global-xc-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -817,6 +817,17 @@ async function attachOfficialMeetResults(event){
   }catch{}
   return event;
 }
+function discoverOfficialMeetResultUrl(raw,base){
+  const candidates=[];let match;
+  const html=String(raw||'').replace(/\\u002F/gi,'/').replace(/\\\//g,'/');
+  const links=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]{0,500}?)<\/a>/gi;
+  while((match=links.exec(html))){
+    const label=visibleText(match[2]),url=absoluteUrl(match[1],base);
+    if(!url)continue;
+    if(/\b(?:results?|final results?|meet results?)\b/i.test(label)||/(?:tfrrs\.org\/results\/xc\/|\/documents\/.*\.pdf(?:$|[?#]))/i.test(url))candidates.push(url);
+  }
+  return candidates.find(x=>/tfrrs\.org\/results\/xc\//i.test(x))||candidates.find(x=>/\.pdf(?:$|[?#])/i.test(x))||candidates[0]||null;
+}
 const FALL_SEASON_SPORTS=new Set(['Football','Volleyball',"Women's Volleyball","Men's Volleyball",'Soccer',"Women's Soccer","Men's Soccer",'Cross Country','Field Hockey']);
 const ACADEMIC_YEAR_SPORTS=new Set(['Basketball',"Men's Basketball","Women's Basketball",'Swimming & Diving','Wrestling','Tennis','Golf','Track & Field','Baseball','Softball','Rowing','Gymnastics','Hockey']);
 function activeFallSeasonYear(now){return now.getUTCMonth()+1>=7?now.getUTCFullYear():now.getUTCFullYear()-1;}
@@ -1270,6 +1281,7 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
+  if(target.event_type==='MEET'&&!target.result_url)target.result_url=discoverOfficialMeetResultUrl(raw,sourceUrl);
   await attachOfficialMeetResults(target);
   if(target.highlights_verified)return events;
   // A card-bound recap is already tied to the exact event. Avoid rescanning a
@@ -1342,6 +1354,13 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         }catch{}
       }
     }
+  }
+  // Results links are not consistently present on schedule cards. Many schools
+  // publish the official timing link only inside the recap, so discover and
+  // parse it here through the same school-neutral meet-results pipeline.
+  if(target.event_type==='MEET'&&recapHtml){
+    target.result_url=target.result_url||discoverOfficialMeetResultUrl(recapHtml,recapUrl);
+    await attachOfficialMeetResults(target);
   }
   if(!recapUrl){
     // Never leave an unverified schedule-card link behind. The UI must not

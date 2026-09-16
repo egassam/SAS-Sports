@@ -119,6 +119,8 @@ contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
+contains(worker,/function discoverOfficialMeetResultUrl\(/,'Meet-result discovery must work independently of school');
+contains(worker,/target\.result_url=target\.result_url\|\|discoverOfficialMeetResultUrl\(recapHtml,recapUrl\)/,'Recap-only official result links must feed the shared parser');
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
 contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEARM game-center schedules must be supported');
