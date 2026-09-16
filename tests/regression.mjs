@@ -115,6 +115,10 @@ contains(worker,/No Team Scores/,'Next-generation SIDEARM meet placements must b
 contains(worker,/function meetTeamResultRows\(/,'Meet team results must be normalized across publisher formats');
 contains(worker,/Men\\(\\?:'s\\)\\?\\|Women\\(\\?:'s\\)\\?/,'Men and women team placements must be recognized from official result labels');
 contains(worker,/participant:`\\$\\{school\\} team`/,'Normalized meet placements must render as highlighted team-result rows');
+contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross-country tables must be parsed');
+contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
+contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
+contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
 contains(worker,/if\(raw==null\)return['"]{2}/,'Missing HTML fragments must never become the literal word undefined');
 contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must be supported');
 contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEARM game-center schedules must be supported');

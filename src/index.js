@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.18.1-xc-team-results';
+const VERSION='4.18.2-xc-full-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -764,6 +764,59 @@ function meetTeamResultRows(label,school){
   for(const m of text.matchAll(/\b(Men(?:'s)?|Women(?:'s)?)\s*:?[ \t]+((?:\d+(?:st|nd|rd|th)|champion|runner-up)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
   return rows;
 }
+function ordinal(value){
+  const n=Number(value);if(!Number.isFinite(n))return clean(value);
+  const mod100=n%100,suffix=mod100>=11&&mod100<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th');
+  return `${n}${suffix}`;
+}
+function officialSchoolNames(school){
+  return [school.id,school.name,school.short_name,...(school.aliases||[])].map(matchText).filter(Boolean);
+}
+function schoolNameMatches(value,school){
+  const name=matchText(value),wanted=officialSchoolNames(school);
+  return wanted.includes(name)||wanted.some(x=>x.length>=5&&(name.startsWith(`${x} `)||x.startsWith(`${name} `)));
+}
+function tableRows(table){
+  const rows=[];let match;
+  const re=/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+  while((match=re.exec(table||''))){
+    const cells=[...match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map(x=>visibleText(x[1]));
+    if(cells.length)rows.push(cells);
+  }
+  return rows;
+}
+function parseTfrrsCrossCountryResults(raw,school){
+  const results=[];let match;
+  const sections=/<h3\b[^>]*>([\s\S]*?(?:Team|Individual) Results[\s\S]*?)<\/h3>[\s\S]{0,4000}?<table\b[^>]*>([\s\S]*?)<\/table>/gi;
+  while((match=sections.exec(raw||''))){
+    const heading=visibleText(match[1]),meta=heading.match(/\b(Men|Women)\s+([^()]*?)\s+(Team|Individual) Results\b/i);
+    if(!meta)continue;
+    const group=`${meta[1][0].toUpperCase()+meta[1].slice(1).toLowerCase()}'s ${clean(meta[2])}`;
+    if(meta[3].toLowerCase()==='team'){
+      for(const cells of tableRows(match[2])){
+        if(cells.length<5||!schoolNameMatches(cells[1],school))continue;
+        results.push({group,participant:`${school.name} team`,result:`${ordinal(cells[0])} · ${cells[4]} pts`});
+      }
+    }else{
+      for(const cells of tableRows(match[2])){
+        if(cells.length<6||!schoolNameMatches(cells[3],school))continue;
+        results.push({group,participant:cells[1],result:`${ordinal(cells[0])} · ${cells[5]}`});
+      }
+    }
+  }
+  return results;
+}
+async function attachOfficialMeetResults(event){
+  if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
+  try{
+    const url=new URL(event.result_url);
+    if(!/(^|\.)tfrrs\.org$/i.test(url.hostname))return event;
+    const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(!response.ok)return event;
+    const rows=parseTfrrsCrossCountryResults(await response.text(),schools.find(x=>x.id===event.school_id));
+    if(rows.length){event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.meet_results_verified=true;}
+  }catch{}
+  return event;
+}
 const FALL_SEASON_SPORTS=new Set(['Football','Volleyball',"Women's Volleyball","Men's Volleyball",'Soccer',"Women's Soccer","Men's Soccer",'Cross Country','Field Hockey']);
 const ACADEMIC_YEAR_SPORTS=new Set(['Basketball',"Men's Basketball","Women's Basketball",'Swimming & Diving','Wrestling','Tennis','Golf','Track & Field','Baseball','Softball','Rowing','Gymnastics','Hockey']);
 function activeFallSeasonYear(now){return now.getUTCMonth()+1>=7?now.getUTCFullYear():now.getUTCFullYear()-1;}
@@ -854,6 +907,8 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     const event=makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label=["'][^"']*Recap[^"']*["'])[^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,500}?\bRecap\b[\s\S]{0,500}?<\/a>/i);
     if(recapLink)event.recap_url=absoluteUrl(recapLink[1],sourceUrl);
+    const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*Results?[^"']*["'][^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\bResults?\b[\s\S]{0,300}?<\/a>/i);
+    if(resultLink)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
     events.push(event);
   }
   return events;
@@ -1214,7 +1269,9 @@ ${article.slice(0,10000)}`;
 }
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
-  if(!target||target.highlights_verified)return events;
+  if(!target)return events;
+  await attachOfficialMeetResults(target);
+  if(target.highlights_verified)return events;
   // A card-bound recap is already tied to the exact event. Avoid rescanning a
   // very large schedule document when this direct identity is available.
   const recapIndex=target.recap_url?{map:new Map(),candidates:[]}:recapUrlsByEvent(raw,school,sport,sourceUrl,now);
