@@ -948,6 +948,26 @@ function parseSchemaEvents(raw,school,sport,sourceUrl,now){
   }
   return events;
 }
+function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
+  const events=[];let row;
+  const rows=/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi;
+  while((row=rows.exec(raw))){
+    const cells=[];let cell;
+    const cellRe=/<td\\b[^>]*>([\\s\\S]*?)<\\/td>/gi;
+    while((cell=cellRe.exec(row[1])))cells.push(visibleText(cell[1]));
+    if(cells.length<7)continue;
+    const [dateText,time,site,opponent,,,publishedResult]=cells;
+    const category=cells[5];
+    if(category&&!sportMatches(category,sport))continue;
+    const year=scheduleYearForDate(raw,dateText,now),date=`${dateText.replace(/\\s*\\([^)]*\\)\\s*$/,'')}, ${year}`;
+    const parsedDay=Date.parse(`${date} ${time||''}`),today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+    const meaningfulResult=clean(publishedResult?.replace(/^(?:N|H|A)\\s*-?\\s*/i,''));
+    const completed=Number.isFinite(parsedDay)&&parsedDay<today;
+    const resultText=meaningfulResult&&!/^-?$/.test(meaningfulResult)?meaningfulResult:(completed?'Completed':null);
+    events.push(makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/away/i.test(site)?'at':'vs',opponent,date,time,schoolScore:null,oppScore:null,resultText,sourceUrl,now}));
+  }
+  return events;
+}
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
@@ -958,6 +978,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
     {name:'sidearm',parse:parseSidearmGameCards},
     {name:'sidearm-game-center',parse:parseSidearmGameCenterCards},
     {name:'wmt',parse:parseWmtScheduleCards},
+    {name:'text-schedule',parse:parseTextScheduleRows},
     {name:'schema',parse:parseSchemaEvents}
   ];
   for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
