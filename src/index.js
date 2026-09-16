@@ -109,10 +109,10 @@ function labelTeamEvents(events,sport,url){
 }
 
 const KNOWN_URLS=new Map(Object.entries({
-  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule',
+  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
-  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule',
+  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/schedule',
   'kstate|Volleyball':'https://www.kstatesports.com/sports/womens-volleyball/schedule',
   'kstate|Soccer':'https://www.kstatesports.com/sports/womens-soccer/schedule',
