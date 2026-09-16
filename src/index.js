@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.16.0';
+const VERSION='4.17.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1267,6 +1267,58 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   return events;
 }
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,parseable=compactScheduleHtml(html,finalUrl),labels=extractEventLabels(parseable);let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(parseable)),has_completed:/Completed Event:/i.test(decodeHtml(parseable)),events};}
+function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
+function scoreboardTeamMatchesSchool(team,school){
+  const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
+  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation,team?.name].map(normalizedTeamName).filter(Boolean);
+  if(wanted.some(x=>exact.includes(x)))return true;
+  const full=normalizedTeamName(team?.displayName);
+  return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
+}
+function scoreboardDateKey(value){const n=Date.parse(value||'');return Number.isFinite(n)?new Date(n).toISOString().slice(0,10):''}
+function scoreboardDates(now){
+  return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
+}
+async function fetchFootballScoreboard(school,now){
+  const found=[];
+  for(const date of scoreboardDates(now)){
+    const url=`https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=1000&dates=${date}`;
+    try{
+      const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
+      if(!response.ok)continue;
+      const payload=await response.json();
+      for(const item of payload?.events||[]){
+        const competition=item?.competitions?.[0],competitors=competition?.competitors||[];
+        const ours=competitors.find(c=>scoreboardTeamMatchesSchool(c?.team,school));
+        if(!ours)continue;
+        const opponent=competitors.find(c=>c!==ours);if(!opponent)continue;
+        const type=competition?.status?.type||item?.status?.type||{},state=String(type.state||'').toLowerCase();
+        if(state!=='in'&&state!=='post'&&!type.completed)continue;
+        const start=new Date(competition?.date||item?.date||now.toISOString()),dateText=start.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
+        const status=state==='in'?'Live':'Final',detail=clean(type.shortDetail||type.detail||(status==='Live'?'Live now':'Final'));
+        const event=makeEvent({school,sport:'Football',status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:null,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
+        if(status==='Live'){
+          event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
+        }else event.recency_label='Final';
+        event.source={name:'Live college football scoreboard',url,updated_at:now.toISOString()};
+        event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
+        found.push(event);
+      }
+    }catch{}
+  }
+  return mergeEvents([found]);
+}
+function reconcileFootballScores(scheduleEvents,scoreEvents){
+  const events=scheduleEvents.slice();
+  for(const score of scoreEvents){
+    const day=scoreboardDateKey(score.start_time);
+    const index=events.findIndex(event=>event.sport==='Football'&&scoreboardDateKey(event.start_time)===day);
+    if(index<0){events.push(score);continue}
+    const official=events[index];
+    events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source};
+  }
+  return events;
+}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
@@ -1282,8 +1334,13 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
       errors.push(`${item.url}: HTTP ${item.http_status}, labels ${item.label_count}, events ${item.event_count}`);
     }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
   }
-  const events=mergeEvents(successful.map(x=>x.events));
-  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:successful.map(x=>x.url),fetched_at:now.toISOString(),live_source_used:true,error:null};
+  let events=mergeEvents(successful.map(x=>x.events));
+  if(sport==='Football'){
+    const scoreboard=await fetchFootballScoreboard(school,now);
+    events=reconcileFootballScores(events,scoreboard);
+    if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
+  }
+  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null};
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
 }
 function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
