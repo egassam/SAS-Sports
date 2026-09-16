@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.12.8';
+const VERSION='4.13.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -33,6 +33,7 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
   'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
   ,'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
+  ,'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
 }));
 
 const SPORT_PATHS={
@@ -58,6 +59,14 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'byu|Football':'https://byucougars.com/sports/football/roster',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/roster',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/roster'
+  ,'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/roster'
+  ,'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/roster'
+  ,'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/roster'
+  ,'colorado|Football':'https://cubuffs.com/sports/football/roster'
+  ,'houston|Cross Country':'https://uhcougars.com/sports/cross-country/roster'
+  ,'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/roster'
+  ,'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/roster'
+  ,'houston|Football':'https://uhcougars.com/sports/football/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
@@ -128,6 +137,14 @@ const KNOWN_URLS=new Map(Object.entries({
   'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
   'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule',
   'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
+  'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/schedule',
+  'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/schedule',
+  'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/schedule',
+  'colorado|Football':'https://cubuffs.com/sports/football/schedule',
+  'houston|Cross Country':'https://uhcougars.com/sports/cross-country/schedule',
+  'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/schedule',
+  'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/schedule',
+  'houston|Football':'https://uhcougars.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
