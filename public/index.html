@@ -60,7 +60,7 @@
 </div>
 <script>
 const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), favoriteTeams=$('#favoriteTeams'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
-let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, liveRefreshTimer=null, lastFeedRefresh=0;
+let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, activeFeedController=null, liveRefreshTimer=null, lastFeedRefresh=0;
 const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const BOOTSTRAP_SPORTS=['Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
 const AUTO_SEASON_WINDOWS={
@@ -175,28 +175,43 @@ function populateSchoolControls(){
   if(wantedSchool)conference.value=wantedSchool.conference;
   fillSchools(); if(allSchools.some(s=>s.id===wanted))school.value=wanted;
 }
-async function apiFetch(path, attempts=4){
+async function apiFetch(path, attempts=4,{signal}={}){
   let last;
   for(let i=0;i<attempts;i++){
     try{
-      const r=await fetch(path,{cache:'no-store'});
+      const r=await fetch(path,{cache:'no-store',signal});
       if(r.ok)return r;
       last=new Error(`HTTP ${r.status}`);
-    }catch(e){last=e}
-    if(i<attempts-1)await new Promise(resolve=>setTimeout(resolve,250*(i+1)));
+    }catch(e){
+      if(e?.name==='AbortError')throw e;
+      last=e;
+    }
+    if(i<attempts-1)await new Promise((resolve,reject)=>{
+      const timer=setTimeout(resolve,250*(i+1));
+      signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(new DOMException('Aborted','AbortError'))},{once:true});
+    });
   }
   throw last||new Error('Backend unavailable');
 }
 async function loadSchools(){
-  // Render the packaged school catalog immediately so the selector never stays blank.
-  allSchools=BOOTSTRAP_SCHOOLS.slice();
+  // Only expose schools with completed sport mappings. The packaged catalog
+  // still provides an immediate selector while the live backend connects.
+  const completedIds=new Set(Object.keys(SCHOOL_SPORTS));
+  allSchools=BOOTSTRAP_SCHOOLS.filter(s=>completedIds.has(s.id));
   populateSchoolControls();
   try{
     const r=await apiFetch('/schools');
     const liveSchools=await r.json();
-    if(Array.isArray(liveSchools)&&liveSchools.length){allSchools=liveSchools;SCHOOL_SPORTS=Object.fromEntries(liveSchools.filter(s=>Array.isArray(s.sponsored_sports)).map(s=>[s.id,s.sponsored_sports]));populateSchoolControls()}
+    if(Array.isArray(liveSchools)&&liveSchools.length){
+      const completed=liveSchools.filter(s=>Array.isArray(s.sponsored_sports)&&s.sponsored_sports.length);
+      if(completed.length){
+        allSchools=completed;
+        SCHOOL_SPORTS=Object.fromEntries(completed.map(s=>[s.id,s.sponsored_sports]));
+        populateSchoolControls();
+      }
+    }
   }catch(err){
-    status.textContent=`Loaded ${allSchools.length} schools from the SAS Sports package; reconnecting to live backend…`;
+    status.textContent=`Loaded ${allSchools.length} completed schools from the SAS Sports package; reconnecting to live backend…`;
   }
 }
 async function loadFeaturedAthletes(groups,schoolId,generation){
@@ -240,6 +255,8 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   if(feedLoading){queuedFeedRequest={forceRefresh,automatic};return}
   feedLoading=true;
   const generation=++feedGeneration;
+  const feedController=new AbortController();
+  activeFeedController=feedController;
   const loaderShownAt=showLiveRefreshLoader();
   refresh.disabled=true;
   const id=school.value||'kstate';
@@ -256,7 +273,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     await inBatches(requested,1,async sp=>{
       try{
         const refreshQuery=forceRefresh?'&refresh=1':'';
-        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1);
+        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1,{signal:feedController.signal});
         const groups=await r.json();
         if(generation!==feedGeneration||school.value!==id)return;
         if(Array.isArray(groups)&&groups.length){
@@ -294,6 +311,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   finally{
     await hideLiveRefreshLoader(loaderShownAt);
     refresh.disabled=false;feedLoading=false;
+    if(activeFeedController===feedController)activeFeedController=null;
     const queued=queuedFeedRequest;queuedFeedRequest=null;
     if(queued)queueMicrotask(()=>loadFeed(queued.forceRefresh,{automatic:queued.automatic}));else scheduleLiveRefresh();
   }
@@ -336,12 +354,13 @@ async function openEvent(id){
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));
-school.addEventListener('change',()=>{feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
+school.addEventListener('change',()=>{activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();updateCounts();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});
 conference.addEventListener('change',()=>{fillSchools();loadFeed()});
 sportFilter.addEventListener('change',()=>{
   // Invalidate the previous sport immediately. If its request is still in
   // flight, its late response must not repopulate the dropdown or overwrite
   // the newly selected sport; loadFeed will retain only the newest queued run.
+  activeFeedController?.abort();
   feedGeneration++;
   currentGroups=[];updateCounts();
   feed.innerHTML='<div class="empty">Loading the selected sport…</div>';
