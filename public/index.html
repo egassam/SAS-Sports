@@ -137,8 +137,8 @@ function favoriteSchoolIds(){
   const legacy=localStorage.getItem('sas-sports-favorite');return legacy?[legacy]:[];
 }
 function saveFavoriteSchoolIds(ids){localStorage.setItem('sas-sports-favorites',JSON.stringify([...new Set(ids)]));localStorage.removeItem('sas-sports-favorite')}
-function applyFavoriteTheme(favorites=favoriteSchoolIds()){
-  const themeId=favorites.includes(school.value)?school.value:(favorites[0]||'sas');
+function applyCurrentSchoolTheme(){
+  const themeId=school.value||savedSchool()||'sas';
   const theme=TEAM_THEMES[themeId]||TEAM_THEMES.sas,root=document.documentElement;
   root.dataset.teamTheme=themeId;
   root.style.setProperty('--team-primary',theme.primary);
@@ -199,7 +199,7 @@ function updateCounts(){
 }
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
-  applyFavoriteTheme(favorites);
+  applyCurrentSchoolTheme();
   const team=allSchools.find(s=>s.id===school.value)?.name||'this team';
   favorite.textContent=on?'★ Favorite':'☆ Set favorite'; favorite.classList.toggle('on',on);
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
