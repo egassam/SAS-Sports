@@ -133,6 +133,10 @@ contains(worker,/'tcu\|Cross Country':'https:\/\/gofrogs\.com\/sports\/cross-cou
 contains(worker,/'tcu\|Soccer':'https:\/\/gofrogs\.com\/sports\/womens-soccer\/schedule'/,'TCU Soccer must use its official women’s schedule');
 contains(worker,/'tcu\|Volleyball':'https:\/\/gofrogs\.com\/sports\/womens-volleyball\/schedule'/,'TCU Volleyball must use its official women’s schedule');
 contains(worker,/'tcu\|Football':'https:\/\/gofrogs\.com\/sports\/football\/schedule'/,'TCU Football must use its official schedule');
+contains(worker,/'utah\|Cross Country':'https:\/\/utahutes\.com\/sports\/cross-country\/schedule'/,'Utah Cross Country must use its official schedule');
+contains(worker,/'utah\|Soccer':'https:\/\/utahutes\.com\/sports\/womens-soccer\/schedule'/,'Utah Soccer must use its official schedule');
+contains(worker,/'west-virginia\|Cross Country':'https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule'/,'West Virginia Cross Country must use its populated women’s schedule');
+contains(worker,/'west-virginia\|Football':'https:\/\/wvusports\.com\/sports\/football\/schedule'/,'West Virginia Football must use its official schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');

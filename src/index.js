@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.15.0';
+const VERSION='4.16.0';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -82,6 +82,14 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/roster'
   ,'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/roster'
   ,'tcu|Football':'https://gofrogs.com/sports/football/roster'
+  ,'utah|Cross Country':'https://utahutes.com/sports/cross-country/roster'
+  ,'utah|Soccer':'https://utahutes.com/sports/womens-soccer/roster'
+  ,'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/roster'
+  ,'utah|Football':'https://utahutes.com/sports/football/roster'
+  ,'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/roster'
+  ,'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/roster'
+  ,'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/roster'
+  ,'west-virginia|Football':'https://wvusports.com/sports/football/roster'
 }));
 function teamLabelForSource(sport,url){
   if(!COMBINED_TEAM_SPORTS.has(sport))return null;
@@ -168,6 +176,14 @@ const KNOWN_URLS=new Map(Object.entries({
   'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/schedule',
   'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/schedule',
   'tcu|Football':'https://gofrogs.com/sports/football/schedule',
+  'utah|Cross Country':'https://utahutes.com/sports/cross-country/schedule',
+  'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
+  'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/schedule',
+  'utah|Football':'https://utahutes.com/sports/football/schedule',
+  'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/schedule',
+  'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/schedule',
+  'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/schedule',
+  'west-virginia|Football':'https://wvusports.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
