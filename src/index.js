@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.23.1-xc-two-gender-contract';
+const VERSION='4.23.2-xc-live-contract';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1570,14 +1570,16 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
   const recapRows=target.sport==='Cross Country'?parseCrossCountryRecapRows(recapHtml,target):[];
-  target.recap_result_count=recapRows.length;
-  if(recapRows.length){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
+  const recapComplete=target.sport!=='Cross Country'||completeCrossCountryRows(recapRows);
+  target.recap_result_count=recapComplete?recapRows.length:0;
+  if(recapRows.length&&recapComplete){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
   // Cross-country feed enrichment is deterministic and cacheable. Do not run
   // highlight generation while assembling the feed; the expanded card can ask
   // for prose separately without delaying or risking the verified result rows.
   if(resultsOnly)return events;
   const aiResult=await generateAIHighlights(env,target,recapHtml);
-  if(!recapRows.length&&aiResult.results?.length){
+  const generatedComplete=target.sport!=='Cross Country'||completeCrossCountryRows(aiResult.results||[]);
+  if(!recapComplete&&aiResult.results?.length&&generatedComplete){
     target.results=aiResult.results;
     target.result_count=aiResult.results.length;
     target.has_more_results=aiResult.results.length>3;
@@ -1595,7 +1597,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
 }
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,parseable=compactScheduleHtml(html,finalUrl),labels=extractEventLabels(parseable);let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);else if(events.length&&sport==='Cross Country'){
   const target=events.filter(event=>event.status==='Final').sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0))[0];
-  if(target&&(target.result_url||target.recap_url))events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,null,target.id,true);
+  if(target&&(target.result_url||target.recap_url))events=await Promise.race([attachOfficialHighlights(events,html,school,sport,finalUrl,now,null,target.id,true),new Promise(resolve=>setTimeout(()=>resolve(events),7000))]);
 }return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(parseable)),has_completed:/Completed Event:/i.test(decodeHtml(parseable)),events};}
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
