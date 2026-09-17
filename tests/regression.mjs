@@ -169,6 +169,7 @@ contains(worker,/event\.recap_result_count>0&&event\.results\?\.length/,'Exact r
 contains(worker,/femaleProfiles>maleProfiles/,'Cross-country recap division must use official athlete profile gender evidence');
 contains(worker,/official=officialNames\.filter/,'Cross-country recap rows must prefer official linked athlete names');
 contains(worker,/lastIndexOf\(last\)/,'Cross-country recap rows must resolve surname-only result references');
+contains(worker,/const metadataNames=/,'Cross-country surname resolution must include official athlete metadata');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
 contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
