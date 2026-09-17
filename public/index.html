@@ -18,6 +18,7 @@ body{transition:background .35s ease}
 .mark,button:not(.ghost),.tab.active,.recap-button,.highlight-loader-mark{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#fff);border:2px solid var(--team-secondary,var(--accent))}
 button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 6px var(--team-primary,var(--accent2))}
 .status-badge.live::before{content:'● ';font-size:.8em}.status-badge.final::before{content:'✓ ';font-size:.9em}
+.result-row{min-width:0}.result-row span,.result-row strong{min-width:0;overflow-wrap:anywhere;word-break:break-word}.modal{overflow-x:hidden}
 @media(prefers-contrast:more){.hero,.sport,.card,.modal,select,input,.ghost{border-width:2px}.muted{color:#d7e2ee}}
 @media(forced-colors:active){*{forced-color-adjust:auto}.live-dot{border:1px solid CanvasText}.status-badge,.season,.favorite-team{border:2px solid CanvasText}}
 .hero{background:linear-gradient(145deg,var(--team-panel,#11243a),var(--team-panel-dark,#081524))}
@@ -390,7 +391,8 @@ async function openEvent(id){
   const teamSummary=(e.results||[]).filter(x=>/\bteam$/i.test(x.participant||'')).map(x=>`${x.group}: ${x.result||x.place||x.value||''}`).join(' / ');
   const score=e.school_score!=null?`${e.school_score}–${e.opponent_score}`:(e.headline||teamSummary||'—');
   let lastGroup='';
-  const rows=(e.results||[]).map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
+  const displayResults=e.event_type==='MEET'?(e.results||[]).filter(x=>x.group||x.participant):(e.results||[]);
+  const rows=displayResults.map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
   const resultsTitle=e.event_type==='MEET'?'Full Meet Results':'Full Team Results';
   const recapUrl=e.recap_url||(/recap/i.test(e.source?.name||'')?e.source?.url:null);
   const recapButton=recapUrl?`<a class="recap-button" href="${esc(recapUrl)}" target="_blank" rel="noopener">View Full Official Recap</a>`:'';

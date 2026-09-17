@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.19.0-global-xc-full-results';
+const VERSION='4.20.0-global-xc-results-contract';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -764,6 +764,7 @@ function meetTeamResultRows(label,school){
   // and Men: 1st Women: 2nd.
   for(const m of text.matchAll(/\b(M|W)\s*\(([^)]+)\)/gi))add(m[1],m[2]);
   for(const m of text.matchAll(/\b(M|W)\s*:\s*((?:\d+(?:st|nd|rd|th)|champion|runner-up|no team scores?)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
+  for(const m of text.matchAll(/\b(M|W)\s*[-–—]\s*((?:\d+(?:st|nd|rd|th)|champion|runner-up|NTS|no team scores?)(?:\s*\([^)]*\))?)/gi))add(m[1],/^NTS$/i.test(m[2])?'No team score':m[2]);
   for(const m of text.matchAll(/\b(Men(?:'s)?|Women(?:'s)?)\s*:?[ \t]+((?:\d+(?:st|nd|rd|th)|champion|runner-up)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
   return rows;
 }
@@ -981,13 +982,17 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     // "T Tie 1-1", or "D Draw 0-0". Accept both the short marker and the
     // expanded word so completed games are never mistaken for upcoming ones.
     const score=result?.match(/\b([WLTD])\b(?:\s*,?\s*(?:Win|Loss|Tie|Draw))?\s*,?\s*(\d+)\s*[-–]\s*(\d+)/i);
-    const status=score||(eventType(sport)==='MEET'&&result)?'Final':'Upcoming';
     const year=scheduleYearForDate(raw,dateText,now);
     const date=`${dateText.replace(/\([^)]*\)/g,'').trim()}, ${year}`;
-    const event=makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result,sourceUrl,now});
+    const scheduledDay=new Date(`${date} 23:59:59`);
+    const completedMeet=eventType(sport)==='MEET'&&!Number.isNaN(scheduledDay.getTime())&&scheduledDay<now;
+    const status=score||(eventType(sport)==='MEET'&&result)||completedMeet?'Final':'Upcoming';
+    const event=makeEvent({school,sport,status,relation,opponent,date,time:null,schoolScore:score?.[2]||null,oppScore:score?.[3]||null,resultText:result||(completedMeet?'Completed':null),sourceUrl,now});
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label=["'][^"']*Recap[^"']*["'])[^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,500}?\bRecap\b[\s\S]{0,500}?<\/a>/i);
     if(recapLink)event.recap_url=absoluteUrl(recapLink[1],sourceUrl);
-    const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*Results?[^"']*["'][^>]*>/i)||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\bResults?\b[\s\S]{0,300}?<\/a>/i);
+    const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*Results?[^"']*["'][^>]*>/i)
+      ||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\bResults?\b[\s\S]{0,300}?<\/a>/i)
+      ||block.match(/<a\b[^>]*href=["']([^"']*(?:tfrrs\.org\/results\/xc\/|\/documents\/[^"']+\.pdf(?:\?[^"']*)?))[^"']*["'][^>]*>/i);
     if(resultLink)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
     events.push(event);
   }
@@ -1521,6 +1526,10 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
     }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
   }
   let events=mergeEvents(successful.map(x=>x.events));
+  // Cross-country cards must use one global results contract. Enrich every
+  // completed meet that already exposes an official result link before the
+  // grouped feed is cached, so the summary count and cards match the modal.
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&event.result_url).map(event=>attachOfficialMeetResults(event)));
   if(sport==='Football'){
     const scoreboard=await fetchFootballScoreboard(school,now);
     events=reconcileFootballScores(events,scoreboard);

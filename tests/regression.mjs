@@ -114,6 +114,7 @@ contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placem
 contains(worker,/No Team Scores/,'Next-generation SIDEARM meet placements must be captured as finals');
 contains(worker,/function meetTeamResultRows\(/,'Meet team results must be normalized across publisher formats');
 assert.ok(worker.includes(String.raw`text.matchAll(/\b(M|W)\s*:\s*`),'Compact M: 3rd | W: 5th team placements must be recognized globally');
+assert.ok(worker.includes(String.raw`text.matchAll(/\b(M|W)\s*[-–—]\s*`),'Compact M-3rd/W-NTS team placements must be recognized globally');
 assert.ok(worker.includes("Men(?:'s)?|Women(?:'s)?"),'Men and women team placements must be recognized from official result labels');
 assert.ok(worker.includes('${school} team'),'Normalized meet placements must render as highlighted team-result rows');
 contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross-country tables must be parsed');
@@ -123,6 +124,7 @@ contains(worker,/function fetchOfficialPdfText\(/,'Official document landing pag
 contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
+contains(worker,/sport===['"]Cross Country['"].*Promise\.all.*attachOfficialMeetResults/s,'Cross-country result links must be enriched before the grouped feed is cached');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
 contains(worker,/function discoverOfficialMeetResultUrl\(/,'Meet-result discovery must work independently of school');
 contains(worker,/target\.result_url=target\.result_url\|\|discoverOfficialMeetResultUrl\(recapHtml,recapUrl\)/,'Recap-only official result links must feed the shared parser');
