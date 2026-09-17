@@ -110,6 +110,7 @@ assert.equal(venueThenRecap.match(recapAnchor)?.[1],'/news/2026/09/03/game-recap
 contains(worker,/const scoreText=rawResult\|\|visibleText\(block\)/,'WMT scores split outside the result label must use the full event card');
 contains(worker,/visibleText\(block\)\.match\(\/\\b\(\[WLTD\]\)/,'WMT final-score fallback must recover numeric scores from the full card');
 contains(worker,/const opponent=opponentLink\|\|meetName/,'Sidearm meet names must be used when no opponent link exists');
+contains(worker,/s-game-card-standard__header-game-post-score/,'SIDEARM compact meet finishes must be read from the post-score field');
 contains(worker,/eventType\(sport\)===['"]MEET['"]&&result/,'Sidearm meet placement text must mark a completed meet final');
 contains(worker,/No Team Scores/,'Next-generation SIDEARM meet placements must be captured as finals');
 contains(worker,/function meetTeamResultRows\(/,'Meet team results must be normalized across publisher formats');

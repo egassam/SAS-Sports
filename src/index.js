@@ -977,6 +977,7 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     if(!opponent||!dateText)continue;
     const relation=(visibleText((block.match(/<span\b[^>]*class=["'][^"']*s-stamp__text[^"']*["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])||(eventType(sport)==='MEET'?'at':'vs')).toLowerCase()==='at'?'at':'vs';
     const result=visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-team-score["'][^>]*>([\s\S]*?)<\/span>/i)||block.match(/data-test-id=["']s-game-card-standard__header-game-pre-score["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])
+      ||visibleText((block.match(/data-test-id=["']s-game-card-standard__header-game-post-score["'][^>]*>([\s\S]*?)<\/span>/i)||[])[1])
       ||(eventType(sport)==='MEET'?(visibleText(block).match(/\b(?:\d+(?:st|nd|rd|th)\s*-\s*\d+\s*pts?\.?|M:\s*[^|]{1,35}(?:\|\s*W:\s*[^|]{1,35})?|No Team Scores)\b/i)||[])[0]:null);
     // New SIDEARM cards render outcomes as "W Win 70-7", "L Loss 1-3",
     // "T Tie 1-1", or "D Draw 0-0". Accept both the short marker and the
