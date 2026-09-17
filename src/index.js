@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.22.1-global-xc-document-results';
+const VERSION='4.22.2-asu-xc-isolated';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -892,6 +892,44 @@ function parseCrossCountryFlatPdfResults(text,school){
   }
   return rows;
 }
+function athleticLiveMeetId(resultUrl){
+  try{
+    const url=new URL(resultUrl);
+    if(!/(?:^|\.)(?:athletic\.net|athletic\.live|anet\.live)$/i.test(url.hostname)&&!/results\.|live\./i.test(url.hostname))return null;
+    return (url.pathname.match(/\/meets\/(\d+)/i)||[])[1]||null;
+  }catch{return null}
+}
+function parseAthleticLiveCrossCountryResults(payload,school){
+  const rows=[],seen=new Set(),rounds=payload&&typeof payload==='object'?payload.results:null,teamRounds=payload&&typeof payload==='object'?payload.teamResults:null;
+  const add=(group,participant,result)=>{const key=`${group}|${participant}|${result}`;if(!seen.has(key)){seen.add(key);rows.push({group,participant,result})}};
+  if(!rounds||typeof rounds!=='object')return rows;
+  for(const [roundId,splits] of Object.entries(rounds)){
+    const athletes=splits?.split_final;if(!athletes||typeof athletes!=='object')continue;
+    const matching=Object.values(athletes).filter(athlete=>athlete&&schoolNameMatches(athlete.tn,school));
+    if(!matching.length)continue;
+    const gender=matching.find(athlete=>/^[MF]$/i.test(athlete.g||''))?.g?.toUpperCase()==='F'?"Women's":"Men's";
+    const teams=teamRounds?.[roundId]?.split_final;
+    if(teams&&typeof teams==='object'){
+      const team=Object.values(teams).find(candidate=>candidate&&schoolNameMatches(candidate.n,school));
+      if(team&&team.p!=null&&team.pt!=null)add(`${gender} Team`,`${school.name} team`,`${ordinal(team.p)} · ${team.pt} pts`);
+    }
+    matching.sort((a,b)=>(Number(a.p)||9999)-(Number(b.p)||9999)||String(a.n||'').localeCompare(String(b.n||'')));
+    for(const athlete of matching){
+      if(!athlete.n||athlete.p==null||!athlete.m)continue;
+      add(`${gender} Individual Results`,clean(athlete.n),`${ordinal(athlete.p)} · ${clean(athlete.m)}`);
+    }
+  }
+  const order={"Men's Team":0,"Men's Individual Results":1,"Women's Team":2,"Women's Individual Results":3};
+  return rows.sort((a,b)=>(order[a.group]??9)-(order[b.group]??9));
+}
+async function fetchAthleticLiveCrossCountryResults(resultUrl,school){
+  const meetId=athleticLiveMeetId(resultUrl);if(!meetId)return[];
+  const url=`https://trackmeet-io.firebaseio.com/meet_${meetId}/liveBySplit.json`;
+  const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},redirect:'follow'});
+  if(!response.ok)return[];
+  const length=Number(response.headers.get('content-length')||0);if(length>3*1024*1024)return[];
+  return parseAthleticLiveCrossCountryResults(await response.json(),school);
+}
 async function fetchOfficialPdfText(resultUrl){
   let response=await fetch(resultUrl,{headers:HEADERS,redirect:'follow'});if(!response.ok)return null;
   let type=response.headers.get('content-type')||'',bytes;
@@ -916,7 +954,9 @@ async function attachOfficialMeetResults(event){
   try{
     const url=new URL(event.result_url);
     const school=schools.find(x=>x.id===event.school_id);let rows=[];
-    if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
+    if(athleticLiveMeetId(url.href)){
+      rows=await fetchAthleticLiveCrossCountryResults(url.href,school);
+    }else if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
       const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
     }else{
       // SIDEARM commonly exposes official documents through a landing URL such
@@ -1086,6 +1126,10 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||[]
     )[1];
     let dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    // New WMT cards can put the weekday in the first <time> and the actual
+    // month/day in the second. Treat those as one date instead of interpreting
+    // "Sep 4" as the event time.
+    if(dateParts.length>=2&&/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?[,]?$/i.test(dateParts[0]))dateParts=[`${dateParts[0]} ${dateParts[1]}`,dateParts[2]].filter(Boolean);
     // Current WMT cards split dates into month and day spans instead of the
     // older date-box strong element. Without this fallback, only future
     // Schema.org events survive and every completed result disappears.
@@ -1103,8 +1147,9 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const modernOpponent=visibleText((block.match(/schedule-event-item__opponent-name[^>]*>([\s\S]{0,500}?)<\/strong>/i)||[])[1]);
     const modernRelation=visibleText((block.match(/(?:schedule-event-item|schedule-default-event)__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
     const relation=(modernRelation||visibleText(legacyName?.[1])).toLowerCase().startsWith('at')?'at':'vs';
-    const defaultOpponent=defaultNames.find(name=>matchText(name)!==matchText(school.name));
-    const opponent=modernOpponent||defaultOpponent||visibleText(legacyName?.[2]);
+    const nestedOpponent=clean(visibleText(legacyName?.[2])?.replace(/^(?:at|vs\.?|versus)\s+/i,''));
+    const defaultOpponent=defaultNames.map(name=>clean(name?.replace(/^(?:at|vs\.?|versus)\s+/i,''))).find(name=>name&&matchText(name)!==matchText(school.name)&&!/^(?:at|vs|versus)$/i.test(name));
+    const opponent=modernOpponent||nestedOpponent||defaultOpponent;
     if(dateParts.length<1||!opponent)continue;
     // WMT publishers such as Cincinnati prefix card dates with a weekday
     // ("Sat Nov 28"). Normalize that display-only prefix so the canonical
@@ -1125,6 +1170,9 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i);
     const cardRecap=recapLink?absoluteUrl(recapLink[1],sourceUrl):null;
     if(cardRecap)event.recap_url=cardRecap;
+    const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*(?:Final\s+)?Results?[^"']*["'][^>]*>/i)
+      ||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\b(?:Final\s+)?Results?\b[\s\S]{0,300}?<\/a>/i);
+    if(resultLink)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
     events.push(event);
   }
   return events;
