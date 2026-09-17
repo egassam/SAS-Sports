@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.9-kstate-xc-detail-standard';
+const VERSION='4.21.10-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1340,8 +1340,8 @@ function parseCrossCountryRecapRows(raw,event){
     const placeMatches=[...before.matchAll(/\b(\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)(?:-place)?\b/gi)];
     const placeMatch=placeMatches.at(-1);if(!placeMatch)continue;
     const nameArea=before.slice(0,placeMatch.index),names=[...nameArea.matchAll(/\b([A-Z][A-Za-z'’.-]+\s+[A-Z][A-Za-z'’.-]+)\b/g)].map(x=>x[1]);
-    const official=officialNames.filter(name=>nameArea.toLowerCase().includes(name.toLowerCase())).at(-1);
-    const lastWord=(nameArea.match(/([A-Z][A-Za-z'’.-]+)\W*$/)||[])[1],surname=lastWord&&surnameMap.get(lastWord.toLowerCase());
+    const lowerNameArea=nameArea.toLowerCase(),official=officialNames.filter(name=>lowerNameArea.includes(name.toLowerCase())).at(-1);
+    const surname=[...surnameMap.entries()].map(([last,name])=>({name,index:lowerNameArea.lastIndexOf(last)})).filter(x=>x.index>=0).sort((a,b)=>b.index-a.index)[0]?.name;
     const participant=official||surname||names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish|Freshman\b/i.test(name));
     if(!participant)continue;
     const rawPlace=placeMatch[1].toLowerCase(),place=ordinals[rawPlace]||placeMatch[1].replace(/-place$/i,'');
