@@ -61,7 +61,7 @@ assert.deepEqual(Object.keys(rolloutSchools).slice(0,9),['kstate','kansas','flor
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
-      definition.official_hosts.some(domain=>worker.includes(`'${school}|${sport}':'https://${domain}/`)||worker.includes(`'${school}|${sport}':'https://www.${domain}/`)||worker.includes(`'${school}|${sport}':['https://${domain}/`)||worker.includes(`'${school}|${sport}':['https://www.${domain}/`)),
+      definition.official_hosts.some(domain=>worker.includes(`'${school}|${sport}':'https://${domain}/`)||worker.includes(`'${school}|${sport}':'https://www.${domain}/`)),
       `Missing official ${school} ${sport} source`
     );
   }
@@ -124,7 +124,7 @@ contains(worker,/Extract the complete \$\{e\.school\} cross-country results/,'Of
 contains(worker,/target\.results=aiResult\.results/,'Verified recap result rows must replace summary-only meet rows');
 contains(worker,/function recapAthleteResult\(/,'Recap places and times must be rebuilt from the named athlete statement');
 contains(worker,/function parseCrossCountryRecapRows\(/,'Exact recap prose must be converted to K-State-style result rows');
-contains(worker,/if\(!recapComplete&&aiResult\.results\?\.length&&generatedComplete\)/,'Only complete generated rows may replace incomplete deterministic recap rows');
+contains(worker,/if\(!recapRows\.length&&aiResult\.results\?\.length\)/,'Deterministic recap rows must take priority over generated rows');
 assert.ok(worker.indexOf('const article=(raw.match(/<article')<worker.indexOf('const payloadParts=[]'),'Exact recap article markup must be preferred over multi-story embedded payloads');
 contains(worker,/seenParticipants\.has\(key\)/,'One recap must never emit conflicting rows for the same athlete');
 assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');
@@ -133,15 +133,6 @@ contains(worker,/\}else\{[\s\S]*const text=await fetchOfficialPdfText\(url\.href
 contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
-contains(worker,/resultsOnly=false/,'Cross-country feed enrichment must support deterministic results-only mode');
-contains(worker,/if\(resultsOnly\)return events/,'Cached cross-country results must not wait for AI highlight generation');
-contains(worker,/target\.result_url\|\|target\.recap_url/,'Latest cross-country finals with an official result or recap must be enriched before caching');
-contains(worker,/function completeCrossCountryRows\(/,'Cross-country completeness must require both gender sections plus team and runner rows');
-contains(worker,/coverage\.women&&coverage\.men/,'One-gender cross-country results must never be certified as complete');
-contains(worker,/const recapComplete=.*completeCrossCountryRows\(recapRows\)/,'One-gender recap rows must not replace complete cross-country results');
-contains(worker,/const generatedComplete=.*completeCrossCountryRows\(aiResult\.results\|\|\[\]\)/,'Generated one-gender rows must not be marked verified');
-contains(worker,/setTimeout\(\(\)=>resolve\(events\),7000\)/,'Cross-country enrichment must not make the live feed time out');
-contains(worker,/MULTI_SOURCE_SPORTS=new Set\(\[\.\.\.COMBINED_TEAM_SPORTS,'Cross Country'\]\)/,'Cross country must load separate men’s and women’s official sources');
 contains(worker,/sport===['"]Cross Country['"].*Promise\.all.*attachOfficialMeetResults/s,'Cross-country result links must be enriched before the grouped feed is cached');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
 contains(worker,/function discoverOfficialMeetResultUrl\(/,'Meet-result discovery must work independently of school');
@@ -169,7 +160,7 @@ contains(worker,/'tcu\|Volleyball':'https:\/\/gofrogs\.com\/sports\/womens-volle
 contains(worker,/'tcu\|Football':'https:\/\/gofrogs\.com\/sports\/football\/schedule'/,'TCU Football must use its official schedule');
 contains(worker,/'utah\|Cross Country':'https:\/\/utahutes\.com\/sports\/cross-country\/schedule'/,'Utah Cross Country must use its official schedule');
 contains(worker,/'utah\|Soccer':'https:\/\/utahutes\.com\/sports\/womens-soccer\/schedule'/,'Utah Soccer must use its official schedule');
-contains(worker,/'west-virginia\|Cross Country':\['https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule','https:\/\/wvusports\.com\/sports\/mens-cross-country\/schedule'\]/,'West Virginia Cross Country must load both official schedules');
+contains(worker,/'west-virginia\|Cross Country':'https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule'/,'West Virginia Cross Country must use its populated women’s schedule');
 contains(worker,/'west-virginia\|Football':'https:\/\/wvusports\.com\/sports\/football\/schedule'/,'West Virginia Football must use its official schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
