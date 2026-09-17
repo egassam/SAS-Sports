@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.2-kstate-xc-detail-standard';
+const VERSION='4.21.3-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1306,6 +1306,20 @@ function highlightPriorities(sport){
   if(s.includes('rowing'))return'boat classes, finish times, margins, heat progression, medal finishes, and team placement';
   return'decisive moments, standout participants, score changes, records, milestones, and sport-specific statistics';
 }
+function recapAthleteResult(article,participant){
+  const lower=article.toLowerCase(),name=participant.toLowerCase();let at=lower.indexOf(name);
+  const words={first:'1st',second:'2nd',third:'3rd',fourth:'4th',fifth:'5th',sixth:'6th',seventh:'7th',eighth:'8th',ninth:'9th',tenth:'10th'};
+  while(at>=0){
+    const statement=article.slice(at,at+name.length+190).split(/[.!?]\s/)[0];
+    const time=statement.match(/\b\d{1,2}:\d{2}(?:\.\d+)?\b/);
+    const numeric=statement.match(/\b\d+(?:st|nd|rd|th)(?:-place)?\b/i);
+    const written=statement.match(/\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b/i);
+    const place=numeric?.[0]?.replace(/-place$/i,'')||words[written?.[1]?.toLowerCase()];
+    if(place&&time)return`${place} · ${time[0]}`;
+    at=lower.indexOf(name,at+name.length);
+  }
+  return null;
+}
 async function generateAIHighlights(env,e,raw){
   if(e.highlights_verified)return{items:e.highlights,state:'verified'};
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
@@ -1342,23 +1356,17 @@ ${article.slice(0,10000)}`;
       if(start>=0&&end>start)try{
         const parsed=JSON.parse(response.slice(start,end+1));
         list=Array.isArray(parsed?.highlights)?parsed.highlights:[];
-        const articleKey=matchText(article),articleLower=article.toLowerCase();
-        const verifiedRows=(Array.isArray(parsed?.results)?parsed.results:[]).filter(row=>{
+        const articleKey=matchText(article);
+        const verifiedRows=(Array.isArray(parsed?.results)?parsed.results:[]).map(row=>{
           const group=clean(row?.group),participant=clean(row?.participant),result=clean(row?.result);
-          if(!group||!participant||!result||result.length>120)return false;
+          if(!group||!participant||!result||result.length>120)return null;
           const isTeam=/\bteam$/i.test(participant),nameKey=matchText(participant.replace(/\s+team$/i,''));
-          if(!isTeam&&(!nameKey||!articleKey.includes(nameKey)))return false;
-          const evidence=[...result.matchAll(/\b\d{1,2}:\d{2}(?:\.\d+)?\b|\b\d+(?:st|nd|rd|th)\b|\b\d+\s*(?:pts?|points?)\b/gi)].map(x=>x[0].toLowerCase());
-          if(!evidence.length)return false;
-          if(isTeam&&/^1st\b/i.test(result)&&/\b(?:team title|team victory|won the team|team championship)\b/i.test(article))return true;
-          const participantLower=participant.replace(/\s+team$/i,'').toLowerCase();let at=articleLower.indexOf(participantLower);
-          while(at>=0){
-            const sameStatement=articleLower.slice(at,at+participantLower.length+150).split(/[.!?]\s/)[0];
-            if(evidence.every(value=>sameStatement.includes(value)))return true;
-            at=articleLower.indexOf(participantLower,at+participantLower.length);
-          }
-          return false;
-        }).map(row=>({group:clean(row.group),participant:clean(row.participant),result:clean(row.result)}));
+          if(isTeam&&/^1st\b/i.test(result)&&/\b(?:team title|team victory|won the team|team championship)\b/i.test(article))return{group,participant,result:'1st'};
+          if(isTeam)return null;
+          if(!nameKey||!articleKey.includes(nameKey))return null;
+          const sourceResult=recapAthleteResult(article,participant);
+          return sourceResult?{group,participant,result:sourceResult}:null;
+        }).filter(Boolean);
         const seenParticipants=new Set();
         meetResults=verifiedRows.filter(row=>{const key=matchText(row.participant);if(seenParticipants.has(key))return false;seenParticipants.add(key);return true;});
       }catch{}

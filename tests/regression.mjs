@@ -122,7 +122,7 @@ contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross
 contains(worker,/function parseCrossCountryPdfResults\(/,'Official cross-country PDF results must use the shared full-results parser');
 contains(worker,/Extract the complete \$\{e\.school\} cross-country results/,'Official recap text must produce K-State-style detailed cross-country rows');
 contains(worker,/target\.results=aiResult\.results/,'Verified recap result rows must replace summary-only meet rows');
-contains(worker,/const sameStatement=articleLower\.slice/,'Recap places and times must be verified in the athlete statement');
+contains(worker,/function recapAthleteResult\(/,'Recap places and times must be rebuilt from the named athlete statement');
 contains(worker,/seenParticipants\.has\(key\)/,'One recap must never emit conflicting rows for the same athlete');
 assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');
 contains(worker,/function fetchOfficialPdfText\(/,'Official document landing pages must resolve their PDF asset');
