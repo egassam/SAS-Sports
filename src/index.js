@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.12-kstate-xc-detail-standard';
+const VERSION='4.21.13-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1337,6 +1337,7 @@ function parseCrossCountryRecapRows(raw,event){
   const metadataNames=[...String(raw).matchAll(/"givenName":"([^"]+)","familyName":"([^"]+)"/gi)].map(x=>clean(`${decodeHtml(x[1])} ${decodeHtml(x[2])}`)).filter(Boolean);
   const officialNames=[...new Set([...linkedNames,...metadataNames])];
   const surnameMap=new Map(officialNames.map(name=>[name.split(/\s+/).at(-1).toLowerCase(),name]));
+  const wholeWordLastIndex=(text,term)=>[...text.matchAll(new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`,'g'))].at(-1)?.index??-1;
   for(const timeMatch of article.matchAll(/\b\d{1,2}:\d{2}(?:\.\d+)?\b/g)){
     const before=article.slice(Math.max(0,timeMatch.index-190),timeMatch.index);
     const placeMatches=[...before.matchAll(/\b(\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)(?:-place)?\b/gi)];
@@ -1345,7 +1346,7 @@ function parseCrossCountryRecapRows(raw,event){
     const lowerNameArea=nameArea.toLowerCase();
     const identityMatches=[
       ...officialNames.map(name=>({name,index:lowerNameArea.lastIndexOf(name.toLowerCase())})),
-      ...surnameMap.entries().map(([last,name])=>({name,index:lowerNameArea.lastIndexOf(last)}))
+      ...surnameMap.entries().map(([last,name])=>({name,index:wholeWordLastIndex(lowerNameArea,last)}))
     ].filter(x=>x.index>=0).sort((a,b)=>b.index-a.index);
     const participant=identityMatches[0]?.name||names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish|Freshman\b/i.test(name));
     if(!participant)continue;
