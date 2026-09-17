@@ -129,6 +129,7 @@ assert.ok(worker.indexOf('const article=(raw.match(/<article')<worker.indexOf('c
 contains(worker,/seenParticipants\.has\(key\)/,'One recap must never emit conflicting rows for the same athlete');
 assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');
 contains(worker,/function fetchOfficialPdfText\(/,'Official document landing pages must resolve their PDF asset');
+contains(worker,/\}else\{[\s\S]*const text=await fetchOfficialPdfText\(url\.href\)/,'Official document landing URLs must be parsed even when the requested URL does not end in .pdf');
 contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
