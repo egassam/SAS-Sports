@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.22.1-global-xc-document-results';
+const VERSION='4.22.2-asu-xc-isolated';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1086,6 +1086,10 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
       ||[]
     )[1];
     let dateParts=[...(dateBox||'').matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1])).filter(Boolean);
+    // New WMT cards can put the weekday in the first <time> and the actual
+    // month/day in the second. Treat those as one date instead of interpreting
+    // "Sep 4" as the event time.
+    if(dateParts.length>=2&&/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?[,]?$/i.test(dateParts[0]))dateParts=[`${dateParts[0]} ${dateParts[1]}`,dateParts[2]].filter(Boolean);
     // Current WMT cards split dates into month and day spans instead of the
     // older date-box strong element. Without this fallback, only future
     // Schema.org events survive and every completed result disappears.
@@ -1103,8 +1107,9 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const modernOpponent=visibleText((block.match(/schedule-event-item__opponent-name[^>]*>([\s\S]{0,500}?)<\/strong>/i)||[])[1]);
     const modernRelation=visibleText((block.match(/(?:schedule-event-item|schedule-default-event)__divider[^>]*>([\s\S]{0,100}?)<\/strong>/i)||[])[1]);
     const relation=(modernRelation||visibleText(legacyName?.[1])).toLowerCase().startsWith('at')?'at':'vs';
-    const defaultOpponent=defaultNames.find(name=>matchText(name)!==matchText(school.name));
-    const opponent=modernOpponent||defaultOpponent||visibleText(legacyName?.[2]);
+    const nestedOpponent=clean(visibleText(legacyName?.[2])?.replace(/^(?:at|vs\.?|versus)\s+/i,''));
+    const defaultOpponent=defaultNames.map(name=>clean(name?.replace(/^(?:at|vs\.?|versus)\s+/i,''))).find(name=>name&&matchText(name)!==matchText(school.name)&&!/^(?:at|vs|versus)$/i.test(name));
+    const opponent=modernOpponent||nestedOpponent||defaultOpponent;
     if(dateParts.length<1||!opponent)continue;
     // WMT publishers such as Cincinnati prefix card dates with a weekday
     // ("Sat Nov 28"). Normalize that display-only prefix so the canonical
@@ -1125,6 +1130,9 @@ function parseWmtScheduleCards(raw,school,sport,sourceUrl,now){
     const recapLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*?\bRecap\b(?:(?!<\/a>)[\s\S])*?)<\/a>/i);
     const cardRecap=recapLink?absoluteUrl(recapLink[1],sourceUrl):null;
     if(cardRecap)event.recap_url=cardRecap;
+    const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*(?:Final\s+)?Results?[^"']*["'][^>]*>/i)
+      ||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\b(?:Final\s+)?Results?\b[\s\S]{0,300}?<\/a>/i);
+    if(resultLink)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
     events.push(event);
   }
   return events;
