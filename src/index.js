@@ -1,8 +1,9 @@
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
+import {extractText} from 'unpdf';
 
-const VERSION='4.18.4-global-xc-team-rows';
+const VERSION='4.19.0-global-xc-full-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -808,13 +809,79 @@ function parseTfrrsCrossCountryResults(raw,school){
   }
   return results;
 }
+function crossCountryEventDate(event){
+  const date=new Date(event?.start_time||'');
+  return Number.isNaN(date.getTime())?null:`${date.getUTCMonth()+1}/${date.getUTCDate()}`;
+}
+function pdfDivisionAt(text,index){
+  const before=text.slice(Math.max(0,index-2500),index);
+  const labels=[...before.matchAll(/\b(MEN(?:'S)?|WOMEN(?:'S)?)\b/gi)];
+  if(labels.length)return/^men/i.test(labels.at(-1)[1])?"Men's":"Women's";
+  return "Women's";
+}
+function pdfAthleteBlocks(text){
+  const lines=String(text||'').split(/\r?\n/).map(clean).filter(Boolean),blocks=[];
+  const classYear=/^(?:redshirt\s+)?(?:freshman|sophomore|junior|senior|graduate(?: student)?|fifth year)$/i;
+  for(let i=0;i<lines.length-2;i++){
+    if(!/^[A-Z][A-Za-zÀ-ÖØ-öø-ÿ'’.-]{1,30}$/.test(lines[i])||!/^[A-Z][A-Za-zÀ-ÖØ-öø-ÿ'’ .-]{1,40}$/.test(lines[i+1]))continue;
+    const yearOffset=lines.slice(i+2,i+7).findIndex(x=>classYear.test(x));
+    if(yearOffset<0)continue;
+    blocks.push({line:i,name:`${lines[i]} ${lines[i+1]}`});
+  }
+  return{lines,blocks};
+}
+function parseCrossCountryPdfResults(text,event,school){
+  const date=crossCountryEventDate(event);if(!date)return[];
+  const {lines,blocks}=pdfAthleteBlocks(text),rows=[],seen=new Set();
+  const dateRe=new RegExp(`^${date.replace('/','\\/')}\\b`),timeRe=/\b(\d{1,2}:\d{2}(?:\.\d+)?)\b/,placeRe=/\b(\d+)(?:st|nd|rd|th)\b/i;
+  const add=(group,participant,result)=>{const key=`${group}|${participant}|${result}`;if(!seen.has(key)){seen.add(key);rows.push({group,participant,result})}};
+  // Cumulative-results PDFs commonly start with one meet-summary row. Preserve
+  // its published team place before the individual athlete blocks.
+  const firstAthlete=blocks[0]?.line??lines.length;
+  for(let i=0;i<firstAthlete;i++){
+    const line=lines[i];if(!dateRe.test(line))continue;
+    const place=line.match(placeRe);if(!place)continue;
+    const division=pdfDivisionAt(text,text.indexOf(line));
+    add(`${division} Team`,`${school.name} team`,ordinal(place[1]));
+  }
+  for(let b=0;b<blocks.length;b++){
+    const current=blocks[b],end=blocks[b+1]?.line??lines.length;
+    const section=lines.slice(current.line,end),division=pdfDivisionAt(text,text.indexOf(lines[current.line]));
+    for(const line of section){
+      if(!dateRe.test(line)||/---/.test(line))continue;
+      const time=line.match(timeRe),place=line.match(placeRe);
+      if(time&&place)add(`${division} Individual Results`,current.name,`${ordinal(place[1])} · ${time[1]}`);
+    }
+  }
+  return rows;
+}
+async function fetchOfficialPdfText(resultUrl){
+  let response=await fetch(resultUrl,{headers:HEADERS,redirect:'follow'});if(!response.ok)return null;
+  let type=response.headers.get('content-type')||'',bytes;
+  if(/application\/pdf/i.test(type))bytes=new Uint8Array(await response.arrayBuffer());
+  else{
+    const html=await response.text(),decoded=html.replace(/\\u002F/gi,'/').replace(/\\\//g,'/').replace(/&amp;/g,'&');
+    const urls=[...decoded.matchAll(/https?:\/\/[^"'<> ]+\.pdf(?:\?[^"'<> ]*)?/gi)].map(x=>x[0]);
+    const asset=urls.find(x=>{try{return new URL(x).hostname!==new URL(resultUrl).hostname}catch{return false}})||urls.at(-1);
+    if(!asset)return null;
+    response=await fetch(asset,{headers:HEADERS,redirect:'follow'});if(!response.ok||!/application\/pdf/i.test(response.headers.get('content-type')||''))return null;
+    bytes=new Uint8Array(await response.arrayBuffer());
+  }
+  if(!bytes||bytes.byteLength>12*1024*1024)return null;
+  const extracted=await extractText(bytes,{mergePages:true});
+  return typeof extracted.text==='string'?extracted.text:null;
+}
 async function attachOfficialMeetResults(event){
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   try{
     const url=new URL(event.result_url);
-    if(!/(^|\.)tfrrs\.org$/i.test(url.hostname))return event;
-    const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(!response.ok)return event;
-    const rows=parseTfrrsCrossCountryResults(await response.text(),schools.find(x=>x.id===event.school_id));
+    const school=schools.find(x=>x.id===event.school_id);let rows=[];
+    if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
+      const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
+    }else if(/\.pdf(?:$|[?#])/i.test(url.href)){
+      const text=await fetchOfficialPdfText(url.href);
+      if(text)rows=parseCrossCountryPdfResults(text,event,school);
+    }
     if(rows.length){event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.meet_results_verified=true;}
   }catch{}
   return event;

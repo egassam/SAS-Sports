@@ -117,6 +117,9 @@ assert.ok(worker.includes(String.raw`text.matchAll(/\b(M|W)\s*:\s*`),'Compact M:
 assert.ok(worker.includes("Men(?:'s)?|Women(?:'s)?"),'Men and women team placements must be recognized from official result labels');
 assert.ok(worker.includes('${school} team'),'Normalized meet placements must render as highlighted team-result rows');
 contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross-country tables must be parsed');
+contains(worker,/function parseCrossCountryPdfResults\(/,'Official cross-country PDF results must use the shared full-results parser');
+contains(worker,/function fetchOfficialPdfText\(/,'Official document landing pages must resolve their PDF asset');
+contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
