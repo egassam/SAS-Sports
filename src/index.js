@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.13-kstate-xc-detail-standard';
+const VERSION='4.21.14-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1334,7 +1334,8 @@ function parseCrossCountryRecapRows(raw,event){
   const ordinals={first:'1st',second:'2nd',third:'3rd',fourth:'4th',fifth:'5th',sixth:'6th',seventh:'7th',eighth:'8th',ninth:'9th',tenth:'10th'};
   const excluded=new Set(['Florida Intercollegiate','Southern Showcase','Arturo Barrios','Big Twelve','NCAA South','Cross Country','Head Coach','Distance Coach']);
   const linkedNames=[...String(raw).matchAll(/\/roster\/player\/[^"']+["'][^>]*\btitle=["']([^"']+)["']/gi)].map(x=>clean(decodeHtml(x[1]))).filter(Boolean);
-  const metadataNames=[...String(raw).matchAll(/"givenName":"([^"]+)","familyName":"([^"]+)"/gi)].map(x=>clean(`${decodeHtml(x[1])} ${decodeHtml(x[2])}`)).filter(Boolean);
+  const metadataAthletes=[...String(raw).matchAll(/"givenName":"([^"]+)","familyName":"([^"]+)"[^}]{0,180}?"gender":"(female|male)"/gi)].map(x=>({name:clean(`${decodeHtml(x[1])} ${decodeHtml(x[2])}`),gender:x[3].toLowerCase()})).filter(x=>x.name);
+  const metadataNames=metadataAthletes.map(x=>x.name),genderMap=new Map(metadataAthletes.map(x=>[matchText(x.name),x.gender]));
   const officialNames=[...new Set([...linkedNames,...metadataNames])];
   const surnameMap=new Map(officialNames.map(name=>[name.split(/\s+/).at(-1).toLowerCase(),name]));
   const wholeWordLastIndex=(text,term)=>[...text.matchAll(new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`,'g'))].at(-1)?.index??-1;
@@ -1348,10 +1349,11 @@ function parseCrossCountryRecapRows(raw,event){
       ...officialNames.map(name=>({name,index:lowerNameArea.lastIndexOf(name.toLowerCase())})),
       ...surnameMap.entries().map(([last,name])=>({name,index:wholeWordLastIndex(lowerNameArea,last)}))
     ].filter(x=>x.index>=0).sort((a,b)=>b.index-a.index);
-    const participant=identityMatches[0]?.name||names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish|Freshman\b/i.test(name));
+    const participant=identityMatches[0]?.name||names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish|Freshm(?:an|en)\b|PL NAME|Cowboy Preview/i.test(name));
     if(!participant)continue;
     const rawPlace=placeMatch[1].toLowerCase(),place=ordinals[rawPlace]||placeMatch[1].replace(/-place$/i,'');
-    add(participant,`${place} · ${timeMatch[0]}`);
+    const athleteDivision=genderMap.get(matchText(participant))==='female'?"Women's":genderMap.get(matchText(participant))==='male'?"Men's":division;
+    add(participant,`${place} · ${timeMatch[0]}`,`${athleteDivision} Individual Results`);
   }
   return rows;
 }
