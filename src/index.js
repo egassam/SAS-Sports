@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.0-kstate-xc-detail-standard';
+const VERSION='4.21.1-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1342,14 +1342,19 @@ ${article.slice(0,10000)}`;
       if(start>=0&&end>start)try{
         const parsed=JSON.parse(response.slice(start,end+1));
         list=Array.isArray(parsed?.highlights)?parsed.highlights:[];
-        const articleKey=matchText(article);
+        const articleKey=matchText(article),articleLower=article.toLowerCase();
         meetResults=(Array.isArray(parsed?.results)?parsed.results:[]).filter(row=>{
           const group=clean(row?.group),participant=clean(row?.participant),result=clean(row?.result);
           if(!group||!participant||!result||result.length>120)return false;
           const isTeam=/\bteam$/i.test(participant),nameKey=matchText(participant.replace(/\s+team$/i,''));
           if(!isTeam&&(!nameKey||!articleKey.includes(nameKey)))return false;
-          const evidence=result.match(/\b\d{1,2}:\d{2}(?:\.\d+)?\b|\b\d+(?:st|nd|rd|th)\b|\b\d+\s*(?:pts?|points?)\b/i);
-          return Boolean(evidence&&article.toLowerCase().includes(evidence[0].toLowerCase()));
+          const evidence=[...result.matchAll(/\b\d{1,2}:\d{2}(?:\.\d+)?\b|\b\d+(?:st|nd|rd|th)\b|\b\d+\s*(?:pts?|points?)\b/gi)].map(x=>x[0].toLowerCase());
+          if(!evidence.length)return false;
+          if(isTeam&&/^1st\b/i.test(result)&&/\b(?:team title|team victory|won the team|team championship)\b/i.test(article))return true;
+          const participantLower=participant.replace(/\s+team$/i,'').toLowerCase(),at=articleLower.indexOf(participantLower);
+          if(at<0)return false;
+          const nearby=articleLower.slice(Math.max(0,at-220),at+participantLower.length+320);
+          return evidence.every(value=>nearby.includes(value));
         }).map(row=>({group:clean(row.group),participant:clean(row.participant),result:clean(row.result)}));
       }catch{}
     }else{
