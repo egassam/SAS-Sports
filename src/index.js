@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.5-kstate-xc-detail-standard';
+const VERSION='4.21.6-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1511,6 +1511,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
   const recapRows=target.sport==='Cross Country'?parseCrossCountryRecapRows(recapHtml,target):[];
+  target.recap_result_count=recapRows.length;
   if(recapRows.length){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
   const aiResult=await generateAIHighlights(env,target,recapHtml);
   if(!recapRows.length&&aiResult.results?.length){
