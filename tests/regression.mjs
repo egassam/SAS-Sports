@@ -123,6 +123,10 @@ assert.ok(worker.includes("Men(?:'s)?|Women(?:'s)?"),'Men and women team placeme
 assert.ok(worker.includes('${school} team'),'Normalized meet placements must render as highlighted team-result rows');
 contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross-country tables must be parsed');
 contains(worker,/function parseCrossCountryPdfResults\(/,'Official cross-country PDF results must use the shared full-results parser');
+contains(worker,/function parseAthleticLiveCrossCountryResults\(/,'AthleticLIVE cross-country results must use the structured official feed');
+contains(worker,/meet_\$\{meetId\}\/liveBySplit\.json/,'AthleticLIVE result links must resolve both races from the meet feed');
+contains(worker,/teamRounds\?\.\[roundId\]\?\.split_final/,'AthleticLIVE team scores must stay paired with each gender round');
+contains(worker,/schoolNameMatches\(athlete\.tn,school\)/,'AthleticLIVE rows must be filtered to the selected school');
 contains(worker,/Extract the complete \$\{e\.school\} cross-country results/,'Official recap text must produce K-State-style detailed cross-country rows');
 contains(worker,/target\.results=aiResult\.results/,'Verified recap result rows must replace summary-only meet rows');
 contains(worker,/function recapAthleteResult\(/,'Recap places and times must be rebuilt from the named athlete statement');
