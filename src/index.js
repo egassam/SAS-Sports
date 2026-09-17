@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.8-kstate-xc-detail-standard';
+const VERSION='4.21.9-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1325,19 +1325,24 @@ function recapAthleteResult(article,participant){
 }
 function parseCrossCountryRecapRows(raw,event){
   const article=recapArticleText(raw);if(article.length<80)return[];
-  const division=/\bwomen(?:'s)?\b/i.test(article.slice(0,1200))&&!/\bmen(?:'s)?\b/i.test(article.slice(0,1200))?"Women's":"Men's";
+  const femaleProfiles=(String(raw).match(/"gender":"female"/gi)||[]).length,maleProfiles=(String(raw).match(/"gender":"male"/gi)||[]).length;
+  const lead=article.slice(0,1200),division=femaleProfiles>maleProfiles||(/\bwomen(?:'s)?\b/i.test(lead)&&!/\bmen(?:'s)?\b/i.test(lead))?"Women's":"Men's";
   const rows=[],seen=new Set(),add=(participant,result,group=`${division} Individual Results`)=>{const key=matchText(participant);if(key&&!seen.has(key)){seen.add(key);rows.push({group,participant,result})}};
   const teamWin=/\b(?:team title|team victory|won the team|team championship)\b/i.test(article);
   const teamPoints=(article.match(/\b(?:team|knights|wildcats|cougars|utes|cowboys|raiders|bearcats|bears|mountaineers)[^.]{0,90}?\b(\d+)\s+points\b/i)||[])[1];
   if(teamWin)add(`${event.school} team`,teamPoints?`1st · ${teamPoints} pts`:'1st',`${division} Team`);
   const ordinals={first:'1st',second:'2nd',third:'3rd',fourth:'4th',fifth:'5th',sixth:'6th',seventh:'7th',eighth:'8th',ninth:'9th',tenth:'10th'};
   const excluded=new Set(['Florida Intercollegiate','Southern Showcase','Arturo Barrios','Big Twelve','NCAA South','Cross Country','Head Coach','Distance Coach']);
+  const officialNames=[...String(raw).matchAll(/\/roster\/player\/[^"']+["'][^>]*\btitle=["']([^"']+)["']/gi)].map(x=>clean(decodeHtml(x[1]))).filter(Boolean);
+  const surnameMap=new Map(officialNames.map(name=>[name.split(/\s+/).at(-1).toLowerCase(),name]));
   for(const timeMatch of article.matchAll(/\b\d{1,2}:\d{2}(?:\.\d+)?\b/g)){
     const before=article.slice(Math.max(0,timeMatch.index-190),timeMatch.index);
     const placeMatches=[...before.matchAll(/\b(\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)(?:-place)?\b/gi)];
     const placeMatch=placeMatches.at(-1);if(!placeMatch)continue;
     const nameArea=before.slice(0,placeMatch.index),names=[...nameArea.matchAll(/\b([A-Z][A-Za-z'’.-]+\s+[A-Z][A-Za-z'’.-]+)\b/g)].map(x=>x[1]);
-    const participant=names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish$/i.test(name));
+    const official=officialNames.filter(name=>nameArea.toLowerCase().includes(name.toLowerCase())).at(-1);
+    const lastWord=(nameArea.match(/([A-Z][A-Za-z'’.-]+)\W*$/)||[])[1],surname=lastWord&&surnameMap.get(lastWord.toLowerCase());
+    const participant=official||surname||names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish|Freshman\b/i.test(name));
     if(!participant)continue;
     const rawPlace=placeMatch[1].toLowerCase(),place=ordinals[rawPlace]||placeMatch[1].replace(/-place$/i,'');
     add(participant,`${place} · ${timeMatch[0]}`);
