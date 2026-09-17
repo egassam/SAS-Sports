@@ -892,6 +892,44 @@ function parseCrossCountryFlatPdfResults(text,school){
   }
   return rows;
 }
+function athleticLiveMeetId(resultUrl){
+  try{
+    const url=new URL(resultUrl);
+    if(!/(?:^|\.)(?:athletic\.net|athletic\.live|anet\.live)$/i.test(url.hostname)&&!/results\.|live\./i.test(url.hostname))return null;
+    return (url.pathname.match(/\/meets\/(\d+)/i)||[])[1]||null;
+  }catch{return null}
+}
+function parseAthleticLiveCrossCountryResults(payload,school){
+  const rows=[],seen=new Set(),rounds=payload&&typeof payload==='object'?payload.results:null,teamRounds=payload&&typeof payload==='object'?payload.teamResults:null;
+  const add=(group,participant,result)=>{const key=`${group}|${participant}|${result}`;if(!seen.has(key)){seen.add(key);rows.push({group,participant,result})}};
+  if(!rounds||typeof rounds!=='object')return rows;
+  for(const [roundId,splits] of Object.entries(rounds)){
+    const athletes=splits?.split_final;if(!athletes||typeof athletes!=='object')continue;
+    const matching=Object.values(athletes).filter(athlete=>athlete&&schoolNameMatches(athlete.tn,school));
+    if(!matching.length)continue;
+    const gender=matching.find(athlete=>/^[MF]$/i.test(athlete.g||''))?.g?.toUpperCase()==='F'?"Women's":"Men's";
+    const teams=teamRounds?.[roundId]?.split_final;
+    if(teams&&typeof teams==='object'){
+      const team=Object.values(teams).find(candidate=>candidate&&schoolNameMatches(candidate.n,school));
+      if(team&&team.p!=null&&team.pt!=null)add(`${gender} Team`,`${school.name} team`,`${ordinal(team.p)} · ${team.pt} pts`);
+    }
+    matching.sort((a,b)=>(Number(a.p)||9999)-(Number(b.p)||9999)||String(a.n||'').localeCompare(String(b.n||'')));
+    for(const athlete of matching){
+      if(!athlete.n||athlete.p==null||!athlete.m)continue;
+      add(`${gender} Individual Results`,clean(athlete.n),`${ordinal(athlete.p)} · ${clean(athlete.m)}`);
+    }
+  }
+  const order={"Men's Team":0,"Men's Individual Results":1,"Women's Team":2,"Women's Individual Results":3};
+  return rows.sort((a,b)=>(order[a.group]??9)-(order[b.group]??9));
+}
+async function fetchAthleticLiveCrossCountryResults(resultUrl,school){
+  const meetId=athleticLiveMeetId(resultUrl);if(!meetId)return[];
+  const url=`https://trackmeet-io.firebaseio.com/meet_${meetId}/liveBySplit.json`;
+  const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},redirect:'follow'});
+  if(!response.ok)return[];
+  const length=Number(response.headers.get('content-length')||0);if(length>3*1024*1024)return[];
+  return parseAthleticLiveCrossCountryResults(await response.json(),school);
+}
 async function fetchOfficialPdfText(resultUrl){
   let response=await fetch(resultUrl,{headers:HEADERS,redirect:'follow'});if(!response.ok)return null;
   let type=response.headers.get('content-type')||'',bytes;
@@ -916,7 +954,9 @@ async function attachOfficialMeetResults(event){
   try{
     const url=new URL(event.result_url);
     const school=schools.find(x=>x.id===event.school_id);let rows=[];
-    if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
+    if(athleticLiveMeetId(url.href)){
+      rows=await fetchAthleticLiveCrossCountryResults(url.href,school);
+    }else if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
       const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
     }else{
       // SIDEARM commonly exposes official documents through a landing URL such
