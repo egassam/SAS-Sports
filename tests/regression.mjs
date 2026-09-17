@@ -171,6 +171,8 @@ contains(worker,/const identityMatches=/,'Cross-country recap rows must prefer t
 contains(worker,/wholeWordLastIndex\(lowerNameArea,last\)/,'Cross-country recap rows must resolve surname-only result references');
 contains(worker,/const metadataNames=/,'Cross-country surname resolution must include official athlete metadata');
 contains(worker,/wholeWordLastIndex/,'Cross-country surname matching must not match inside unrelated words');
+contains(worker,/const athleteDivision=genderMap/,'Mixed cross-country recaps must group each athlete by official gender metadata');
+contains(worker,/PL NAME\|Cowboy Preview/,'Cross-country recap parsing must reject table headers and meet titles as athletes');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
 contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
