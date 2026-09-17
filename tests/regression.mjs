@@ -166,6 +166,8 @@ contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every 
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(worker,/e\.recap_result_count\?100:0/,'Exact recap results must outrank larger cumulative-PDF row sets');
 contains(worker,/event\.recap_result_count>0&&event\.results\?\.length/,'Exact recap rows must not be overwritten by cumulative PDF enrichment');
+contains(worker,/femaleProfiles>maleProfiles/,'Cross-country recap division must use official athlete profile gender evidence');
+contains(worker,/const official=officialNames\.filter/,'Cross-country recap rows must prefer official linked athlete names');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
 contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
