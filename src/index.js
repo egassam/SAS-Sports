@@ -810,7 +810,7 @@ function parseTfrrsCrossCountryResults(raw,school){
   return results;
 }
 function crossCountryEventDate(event){
-  const date=new Date(event?.start_time||'');
+  const date=new Date(event?.start_time||event?.display_time||'');
   return Number.isNaN(date.getTime())?null:`${date.getUTCMonth()+1}/${date.getUTCDate()}`;
 }
 function pdfDivisionAt(text,index){

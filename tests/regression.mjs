@@ -118,6 +118,7 @@ assert.ok(worker.includes("Men(?:'s)?|Women(?:'s)?"),'Men and women team placeme
 assert.ok(worker.includes('${school} team'),'Normalized meet placements must render as highlighted team-result rows');
 contains(worker,/function parseTfrrsCrossCountryResults\(/,'Official TFRRS cross-country tables must be parsed');
 contains(worker,/function parseCrossCountryPdfResults\(/,'Official cross-country PDF results must use the shared full-results parser');
+assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');
 contains(worker,/function fetchOfficialPdfText\(/,'Official document landing pages must resolve their PDF asset');
 contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
