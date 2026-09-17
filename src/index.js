@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.22.0-kstate-xc-results-contract';
+const VERSION='4.22.1-global-xc-document-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -918,7 +918,11 @@ async function attachOfficialMeetResults(event){
     const school=schools.find(x=>x.id===event.school_id);let rows=[];
     if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
       const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
-    }else if(/\.pdf(?:$|[?#])/i.test(url.href)){
+    }else{
+      // SIDEARM commonly exposes official documents through a landing URL such
+      // as /documents/YYYY/M/D/file.pdf. The response itself can be HTML before
+      // redirecting or embedding the PDF asset, so do not require the requested
+      // URL to end in .pdf before using the document resolver.
       const text=await fetchOfficialPdfText(url.href);
       if(text){const flat=parseCrossCountryFlatPdfResults(text,school);rows=flat.length>=2?flat:parseCrossCountryPdfResults(text,event,school);}
     }
