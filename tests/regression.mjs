@@ -124,7 +124,7 @@ contains(worker,/Extract the complete \$\{e\.school\} cross-country results/,'Of
 contains(worker,/target\.results=aiResult\.results/,'Verified recap result rows must replace summary-only meet rows');
 contains(worker,/function recapAthleteResult\(/,'Recap places and times must be rebuilt from the named athlete statement');
 contains(worker,/function parseCrossCountryRecapRows\(/,'Exact recap prose must be converted to K-State-style result rows');
-contains(worker,/if\(!recapRows\.length&&aiResult\.results\?\.length\)/,'Deterministic recap rows must take priority over generated rows');
+contains(worker,/if\(!recapComplete&&aiResult\.results\?\.length&&generatedComplete\)/,'Only complete generated rows may replace incomplete deterministic recap rows');
 assert.ok(worker.indexOf('const article=(raw.match(/<article')<worker.indexOf('const payloadParts=[]'),'Exact recap article markup must be preferred over multi-story embedded payloads');
 contains(worker,/seenParticipants\.has\(key\)/,'One recap must never emit conflicting rows for the same athlete');
 assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');
@@ -138,6 +138,9 @@ contains(worker,/if\(resultsOnly\)return events/,'Cached cross-country results m
 contains(worker,/target\.result_url\|\|target\.recap_url/,'Latest cross-country finals with an official result or recap must be enriched before caching');
 contains(worker,/function completeCrossCountryRows\(/,'Cross-country completeness must require both gender sections plus team and runner rows');
 contains(worker,/coverage\.women&&coverage\.men/,'One-gender cross-country results must never be certified as complete');
+contains(worker,/const recapComplete=.*completeCrossCountryRows\(recapRows\)/,'One-gender recap rows must not replace complete cross-country results');
+contains(worker,/const generatedComplete=.*completeCrossCountryRows\(aiResult\.results\|\|\[\]\)/,'Generated one-gender rows must not be marked verified');
+contains(worker,/setTimeout\(\(\)=>resolve\(events\),7000\)/,'Cross-country enrichment must not make the live feed time out');
 contains(worker,/MULTI_SOURCE_SPORTS=new Set\(\[\.\.\.COMBINED_TEAM_SPORTS,'Cross Country'\]\)/,'Cross country must load separate men’s and women’s official sources');
 contains(worker,/sport===['"]Cross Country['"].*Promise\.all.*attachOfficialMeetResults/s,'Cross-country result links must be enriched before the grouped feed is cached');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
