@@ -133,6 +133,9 @@ contains(worker,/\}else\{[\s\S]*const text=await fetchOfficialPdfText\(url\.href
 contains(worker,/extractText\(bytes,\{mergePages:true\}\)/,'Official PDF result text must be extracted in the Worker');
 contains(worker,/event\.result_url=absoluteUrl\(resultLink\[1\],sourceUrl\)/,'Official meet-result links must remain attached to their event');
 contains(worker,/await attachOfficialMeetResults\(target\)/,'Expanded meet cards must load official full results');
+contains(worker,/resultsOnly=false/,'Cross-country feed enrichment must support deterministic results-only mode');
+contains(worker,/if\(resultsOnly\)return events/,'Cached cross-country results must not wait for AI highlight generation');
+contains(worker,/target\.result_url\|\|target\.recap_url/,'Latest cross-country finals with an official result or recap must be enriched before caching');
 contains(worker,/sport===['"]Cross Country['"].*Promise\.all.*attachOfficialMeetResults/s,'Cross-country result links must be enriched before the grouped feed is cached');
 contains(worker,/meet_results_verified=true/,'Full meet results must be marked as verified');
 contains(worker,/function discoverOfficialMeetResultUrl\(/,'Meet-result discovery must work independently of school');
