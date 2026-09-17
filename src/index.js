@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.7-kstate-xc-detail-standard';
+const VERSION='4.21.8-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -874,6 +874,9 @@ async function fetchOfficialPdfText(resultUrl){
 }
 async function attachOfficialMeetResults(event){
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
+  // Exact rows parsed from the event's official recap are already tied to this
+  // meet. Never replace them with a season/cumulative PDF linked from it.
+  if(event.recap_result_count>0&&event.results?.length)return event;
   try{
     const url=new URL(event.result_url);
     const school=schools.find(x=>x.id===event.school_id);let rows=[];
