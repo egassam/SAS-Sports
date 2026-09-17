@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.23.0-cached-xc-full-results';
+const VERSION='4.23.1-xc-two-gender-contract';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -57,6 +57,7 @@ const SPORT_PATHS={
   'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],'STUNT':['stunt']
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
+const MULTI_SOURCE_SPORTS=new Set([...COMBINED_TEAM_SPORTS,'Cross Country']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
@@ -159,7 +160,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
   'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule',
   'baylor|Football':'https://baylorbears.com/sports/football/schedule',
-  'byu|Cross Country':'https://byucougars.com/sports/womens-cross-country/schedule',
+  'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
   'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule',
   'byu|Football':'https://byucougars.com/sports/football/schedule',
@@ -191,7 +192,7 @@ const KNOWN_URLS=new Map(Object.entries({
   'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
   'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/schedule',
   'utah|Football':'https://utahutes.com/sports/football/schedule',
-  'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/schedule',
+  'west-virginia|Cross Country':['https://wvusports.com/sports/womens-cross-country/schedule','https://wvusports.com/sports/mens-cross-country/schedule'],
   'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/schedule',
   'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/schedule',
   'west-virginia|Football':'https://wvusports.com/sports/football/schedule',
@@ -926,7 +927,7 @@ async function attachOfficialMeetResults(event){
       const text=await fetchOfficialPdfText(url.href);
       if(text){const flat=parseCrossCountryFlatPdfResults(text,school);rows=flat.length>=2?flat:parseCrossCountryPdfResults(text,event,school);}
     }
-    if(rows.length){event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.meet_results_verified=true;}
+    if(rows.length&&(event.sport!=='Cross Country'||completeCrossCountryRows(rows))){event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.meet_results_verified=true;}
   }catch{}
   return event;
 }
@@ -1192,7 +1193,9 @@ function compactScheduleHtml(raw,sourceUrl){
   return raw.slice(0,50000)+raw.slice(Math.max(0,start-1000),end);
 }
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}`;}
-function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
+function crossCountryGenderCoverage(rows=[]){const groups=rows.map(row=>String(row?.group||'').toLowerCase());return{women:groups.some(group=>group.includes('women')),men:groups.some(group=>/(^|\s)men(?:'s)?\b/.test(group))};}
+function completeCrossCountryRows(rows=[]){const coverage=crossCountryGenderCoverage(rows);return coverage.women&&coverage.men&&rows.some(row=>/ team$/i.test(row?.participant||''))&&rows.some(row=>!/ team$/i.test(row?.participant||'')&&/\d{1,2}:\d{2}/.test(row?.result||''));}
+function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}if(e.sport==='Cross Country'&&prev.sport==='Cross Country'){const rows=[...(prev.results||[]),...(e.results||[])],seen=new Set();prev.results=rows.filter(row=>{const rowKey=JSON.stringify(row);if(seen.has(rowKey))return false;seen.add(rowKey);return true;});prev.result_count=prev.results.length;prev.has_more_results=prev.results.length>3;prev.meet_results_verified=completeCrossCountryRows(prev.results);prev.recap_url=prev.recap_url||e.recap_url;prev.result_url=prev.result_url||e.result_url;continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
@@ -1652,9 +1655,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
-  const combined=COMBINED_TEAM_SPORTS.has(sport);
+  const combined=MULTI_SOURCE_SPORTS.has(sport);
   for(const url of urls){
-    if(combined&&successful.length&&teamLabelForSource(sport,url)==null)continue;
+    if(COMBINED_TEAM_SPORTS.has(sport)&&successful.length&&teamLabelForSource(sport,url)==null)continue;
     try{
       const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
       if(item.ok&&item.events.length){successful.push(item);if(!combined)break;continue}
