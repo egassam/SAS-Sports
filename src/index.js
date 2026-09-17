@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.3-kstate-xc-detail-standard';
+const VERSION='4.21.4-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1272,8 +1272,13 @@ function recapMatchesEvent(raw,e,recapUrl=''){
 function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
+  const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
+  if(storyBody)return visibleText(storyBody).slice(0,14000);
+  const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
+  if(article){const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);}
   // WMT stores article paragraphs in its embedded application payload instead
-  // of articleBody or server-rendered <article> markup.
+  // of articleBody or server-rendered <article> markup. Keep this last because
+  // a page payload can include several unrelated stories and meet results.
   const payloadParts=[];let payloadMatch;
   const payloadRe=/"content","((?:\\.|[^"\\]){80,})"/gi;
   while((payloadMatch=payloadRe.exec(raw))&&payloadParts.length<20){
@@ -1284,12 +1289,7 @@ function recapArticleText(raw){
   }
   const payloadText=clean(payloadParts.join(' '));
   if(payloadText&&payloadText.length>=80)return payloadText.slice(0,14000);
-  const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
-  if(storyBody)return visibleText(storyBody).slice(0,14000);
-  const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
-  if(!article)return'';
-  const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);
-  return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);
+  return'';
 }
 function highlightPriorities(sport){
   const s=matchText(sport);
