@@ -2,7 +2,7 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 
-const VERSION='4.18.3-global-xc-results';
+const VERSION='4.18.4-global-xc-team-rows';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -759,8 +759,10 @@ function meetTeamResultRows(label,school){
     if(seen.has(key))return;seen.add(key);rows.push({group,participant:`${school} team`,result});
   };
   // Official publishers use several compact formats for meet finishes:
-  // M (1st) / W (2nd), Men 1st (24) | Women 1st (31), and Men: 1st Women: 2nd.
+  // M (1st) / W (2nd), M: 1st | W: 2nd, Men 1st (24) | Women 1st (31),
+  // and Men: 1st Women: 2nd.
   for(const m of text.matchAll(/\b(M|W)\s*\(([^)]+)\)/gi))add(m[1],m[2]);
+  for(const m of text.matchAll(/\b(M|W)\s*:\s*((?:\d+(?:st|nd|rd|th)|champion|runner-up|no team scores?)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
   for(const m of text.matchAll(/\b(Men(?:'s)?|Women(?:'s)?)\s*:?[ \t]+((?:\d+(?:st|nd|rd|th)|champion|runner-up)(?:\s*\([^)]*\))?)/gi))add(m[1],m[2]);
   return rows;
 }
