@@ -167,7 +167,7 @@ contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must b
 contains(worker,/e\.recap_result_count\?100:0/,'Exact recap results must outrank larger cumulative-PDF row sets');
 contains(worker,/event\.recap_result_count>0&&event\.results\?\.length/,'Exact recap rows must not be overwritten by cumulative PDF enrichment');
 contains(worker,/femaleProfiles>maleProfiles/,'Cross-country recap division must use official athlete profile gender evidence');
-contains(worker,/official=officialNames\.filter/,'Cross-country recap rows must prefer official linked athlete names');
+contains(worker,/const identityMatches=/,'Cross-country recap rows must prefer the nearest official athlete identity');
 contains(worker,/lastIndexOf\(last\)/,'Cross-country recap rows must resolve surname-only result references');
 contains(worker,/const metadataNames=/,'Cross-country surname resolution must include official athlete metadata');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
