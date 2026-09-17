@@ -165,6 +165,7 @@ contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
 contains(worker,/e\.recap_result_count\?100:0/,'Exact recap results must outrank larger cumulative-PDF row sets');
+contains(worker,/event\.recap_result_count>0&&event\.results\?\.length/,'Exact recap rows must not be overwritten by cumulative PDF enrichment');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
 contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
