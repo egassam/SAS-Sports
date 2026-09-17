@@ -123,6 +123,8 @@ contains(worker,/function parseCrossCountryPdfResults\(/,'Official cross-country
 contains(worker,/Extract the complete \$\{e\.school\} cross-country results/,'Official recap text must produce K-State-style detailed cross-country rows');
 contains(worker,/target\.results=aiResult\.results/,'Verified recap result rows must replace summary-only meet rows');
 contains(worker,/function recapAthleteResult\(/,'Recap places and times must be rebuilt from the named athlete statement');
+contains(worker,/function parseCrossCountryRecapRows\(/,'Exact recap prose must be converted to K-State-style result rows');
+contains(worker,/if\(!recapRows\.length&&aiResult\.results\?\.length\)/,'Deterministic recap rows must take priority over generated rows');
 assert.ok(worker.indexOf('const article=(raw.match(/<article')<worker.indexOf('const payloadParts=[]'),'Exact recap article markup must be preferred over multi-story embedded payloads');
 contains(worker,/seenParticipants\.has\(key\)/,'One recap must never emit conflicting rows for the same athlete');
 assert.ok(worker.includes("event?.start_time||event?.display_time"),'PDF result matching must support publisher events without ISO timestamps');

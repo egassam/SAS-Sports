@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.21.4-kstate-xc-detail-standard';
+const VERSION='4.21.5-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1320,6 +1320,27 @@ function recapAthleteResult(article,participant){
   }
   return null;
 }
+function parseCrossCountryRecapRows(raw,event){
+  const article=recapArticleText(raw);if(article.length<80)return[];
+  const division=/\bwomen(?:'s)?\b/i.test(article.slice(0,1200))&&!/\bmen(?:'s)?\b/i.test(article.slice(0,1200))?"Women's":"Men's";
+  const rows=[],seen=new Set(),add=(participant,result,group=`${division} Individual Results`)=>{const key=matchText(participant);if(key&&!seen.has(key)){seen.add(key);rows.push({group,participant,result})}};
+  const teamWin=/\b(?:team title|team victory|won the team|team championship)\b/i.test(article);
+  const teamPoints=(article.match(/\b(?:team|knights|wildcats|cougars|utes|cowboys|raiders|bearcats|bears|mountaineers)[^.]{0,90}?\b(\d+)\s+points\b/i)||[])[1];
+  if(teamWin)add(`${event.school} team`,teamPoints?`1st · ${teamPoints} pts`:'1st',`${division} Team`);
+  const ordinals={first:'1st',second:'2nd',third:'3rd',fourth:'4th',fifth:'5th',sixth:'6th',seventh:'7th',eighth:'8th',ninth:'9th',tenth:'10th'};
+  const excluded=new Set(['Florida Intercollegiate','Southern Showcase','Arturo Barrios','Big Twelve','NCAA South','Cross Country','Head Coach','Distance Coach']);
+  for(const timeMatch of article.matchAll(/\b\d{1,2}:\d{2}(?:\.\d+)?\b/g)){
+    const before=article.slice(Math.max(0,timeMatch.index-190),timeMatch.index);
+    const placeMatches=[...before.matchAll(/\b(\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)(?:-place)?\b/gi)];
+    const placeMatch=placeMatches.at(-1);if(!placeMatch)continue;
+    const nameArea=before.slice(0,placeMatch.index),names=[...nameArea.matchAll(/\b([A-Z][A-Za-z'’.-]+\s+[A-Z][A-Za-z'’.-]+)\b/g)].map(x=>x[1]);
+    const participant=names.reverse().find(name=>!excluded.has(name)&&!/^Personal Best|Season Best|All Time|Best Finish$/i.test(name));
+    if(!participant)continue;
+    const rawPlace=placeMatch[1].toLowerCase(),place=ordinals[rawPlace]||placeMatch[1].replace(/-place$/i,'');
+    add(participant,`${place} · ${timeMatch[0]}`);
+  }
+  return rows;
+}
 async function generateAIHighlights(env,e,raw){
   if(e.highlights_verified)return{items:e.highlights,state:'verified'};
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
@@ -1489,8 +1510,10 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
+  const recapRows=target.sport==='Cross Country'?parseCrossCountryRecapRows(recapHtml,target):[];
+  if(recapRows.length){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
   const aiResult=await generateAIHighlights(env,target,recapHtml);
-  if(aiResult.results?.length){
+  if(!recapRows.length&&aiResult.results?.length){
     target.results=aiResult.results;
     target.result_count=aiResult.results.length;
     target.has_more_results=aiResult.results.length>3;
