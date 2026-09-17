@@ -3,7 +3,7 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 
-const VERSION='4.20.0-global-xc-results-contract';
+const VERSION='4.21.0-kstate-xc-detail-standard';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1311,7 +1311,14 @@ async function generateAIHighlights(env,e,raw){
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
   const article=recapArticleText(raw);
   if(article.length<80)return{items:null,state:'recap_text_unavailable'};
-  const prompt=`Write exactly four engaging, factual highlights explaining how this ${e.sport} event unfolded.
+  const detailedCrossCountry=e.sport==='Cross Country'&&e.event_type==='MEET';
+  const prompt=detailedCrossCountry?`Extract the complete ${e.school} cross-country results explicitly stated in this official recap.
+Return strict JSON only with this shape:
+{"highlights":["four factual complete sentences"],"results":[{"group":"Women's Team or Men's Team or Women's 5K or Men's 8K","participant":"athlete full name or ${e.school} team","result":"place · time and/or team points"}]}
+Include separate team rows and every ${e.school} runner whose place or time is stated. Never infer a missing place, time, distance, sex, athlete, or score. Do not include another school's athletes.
+Event: ${e.school} at ${e.opponent}; date ${e.start_time?.slice(0,10)||''}
+Official recap:
+${article.slice(0,10000)}`:`Write exactly four engaging, factual highlights explaining how this ${e.sport} event unfolded.
 Use only the official recap. Paraphrase; never copy. Each highlight must be one complete sentence of 16-36 words.
 Prioritize ${highlightPriorities(e.sport)}. Include names, timing, score context and why the moment mattered when available.
 Reject vague lines like "X scored," "Y won it," or "Team A outshot Team B."
@@ -1322,20 +1329,37 @@ Official recap:
 ${article.slice(0,10000)}`;
   try{
     const request=env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast',{
-      messages:[{role:'user',content:prompt}],max_tokens:500,temperature:0.15
+      messages:[{role:'user',content:prompt}],max_tokens:detailedCrossCountry?1800:500,temperature:0.05
     });
     const out=await Promise.race([
       request,
       new Promise((_,reject)=>setTimeout(()=>reject(new Error('Highlight generation timed out')),8000))
     ]);
     const response=String(out?.response??out?.result?.response??'').trim();
-    let list=[];
-    const start=response.indexOf('['),end=response.lastIndexOf(']');
-    if(start>=0&&end>start){
+    let list=[],meetResults=[];
+    if(detailedCrossCountry){
+      const start=response.indexOf('{'),end=response.lastIndexOf('}');
+      if(start>=0&&end>start)try{
+        const parsed=JSON.parse(response.slice(start,end+1));
+        list=Array.isArray(parsed?.highlights)?parsed.highlights:[];
+        const articleKey=matchText(article);
+        meetResults=(Array.isArray(parsed?.results)?parsed.results:[]).filter(row=>{
+          const group=clean(row?.group),participant=clean(row?.participant),result=clean(row?.result);
+          if(!group||!participant||!result||result.length>120)return false;
+          const isTeam=/\bteam$/i.test(participant),nameKey=matchText(participant.replace(/\s+team$/i,''));
+          if(!isTeam&&(!nameKey||!articleKey.includes(nameKey)))return false;
+          const evidence=result.match(/\b\d{1,2}:\d{2}(?:\.\d+)?\b|\b\d+(?:st|nd|rd|th)\b|\b\d+\s*(?:pts?|points?)\b/i);
+          return Boolean(evidence&&article.toLowerCase().includes(evidence[0].toLowerCase()));
+        }).map(row=>({group:clean(row.group),participant:clean(row.participant),result:clean(row.result)}));
+      }catch{}
+    }else{
+      const start=response.indexOf('['),end=response.lastIndexOf(']');
+      if(start>=0&&end>start){
       try{
         const parsed=JSON.parse(response.slice(start,end+1));
         list=Array.isArray(parsed)?parsed:(parsed?.highlights||[]);
       }catch{}
+      }
     }
     if(list.length<3){
       list=response.split(/\n+/)
@@ -1348,7 +1372,7 @@ ${article.slice(0,10000)}`;
       const words=x.split(/\s+/).length;
       return words>=8&&words<=50;
     }).slice(0,4);
-    return cleanItems.length>=3?{items:cleanItems,state:'recap_generated'}:{items:null,state:'insufficient_highlights'};
+    return cleanItems.length>=3?{items:cleanItems,results:meetResults,state:'recap_generated'}:{items:null,results:meetResults,state:'insufficient_highlights'};
   }catch(error){
     return{items:null,state:'ai_failed',error:clean(error?.message||'AI request failed')?.slice(0,160)||'AI request failed'};
   }
@@ -1448,6 +1472,12 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
   const aiResult=await generateAIHighlights(env,target,recapHtml);
+  if(aiResult.results?.length){
+    target.results=aiResult.results;
+    target.result_count=aiResult.results.length;
+    target.has_more_results=aiResult.results.length>3;
+    target.meet_results_verified=true;
+  }
   target.highlight_state=aiResult.state;
   if(aiResult.error)target.highlight_error=aiResult.error;
   if(aiResult.items){
