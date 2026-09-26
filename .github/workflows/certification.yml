@@ -41,7 +41,12 @@ jobs:
       - uses: actions/checkout@v4
       - id: matrix
         shell: bash
-        run: echo "schools=$(node -e \"const x=require('./tests/certified-schools.json');process.stdout.write(JSON.stringify(x.schools.map(s=>s.id)))\")" >> "$GITHUB_OUTPUT"
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const {schools} = require('./tests/certified-schools.json');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `schools=${JSON.stringify(schools.map(s => s.id))}\n`);
+          NODE
 
   live-certified-schools:
     # Pull requests test their parser and invariants locally. The public URL is
