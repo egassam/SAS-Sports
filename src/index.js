@@ -4,7 +4,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './kansas-cross-country.mjs';
 
-const VERSION='4.24.0-ku-xc-results';
+const VERSION='4.24.1-kstate-recap-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -734,7 +734,9 @@ function enrichMeetEvent(event,date){
   if(applyVerifiedKansasMeet(event))return event;
   const detail=VERIFIED_MEET_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(detail){
-    event.results=detail.rows;
+    event.results=detail.rows.map(row=>({...row}));
+    event.meet_results_verified=true;
+    event.recap_result_count=detail.rows.length;
     event.highlights=[
       "K-State swept both team championships, with the women scoring 20 points and the men finishing one point better at 19.",
       "Max Larson led a commanding 1-2-3 men’s finish, winning the 6K in 18:27.2 ahead of Jackson Esquibel and Brock Olsen.",
@@ -911,6 +913,9 @@ async function fetchOfficialPdfText(resultUrl){
   return typeof extracted.text==='string'?extracted.text:null;
 }
 async function attachOfficialMeetResults(event){
+  // K-State's recap contains both divisions. A single linked PDF can contain
+  // only women and must never replace the event's complete recap table.
+  if(isKStateCrossCountry(event))return attachKStateRecapResults(event);
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   // Exact rows parsed from the event's official recap are already tied to this
   // meet. Never replace them with a season/cumulative PDF linked from it.
@@ -1399,6 +1404,72 @@ function parseCrossCountryRecapRows(raw,event){
   }
   return rows;
 }
+function isKStateCrossCountry(event){
+  return event?.school_id==='kstate'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
+}
+function parseKStateRecapTable(raw,event){
+  if(!isKStateCrossCountry(event))return[];
+  // Use the labeled results list, not prose that mixes historical PRs, other
+  // teams, or athletes whose place follows rather than precedes their time.
+  const article=recapArticleText(raw).replace(/[’‘]/g,"'"),rows=[];
+  const headings=[...article.matchAll(/\b(Women|Men)'s\s+Team\s+(?:Finishes|Results)\s*\((\d+(?:\.\d+)?)\s*k\b[^)]*\)/gi)];
+  for(let i=0;i<headings.length;i++){
+    const heading=headings[i],group=`${/^women$/i.test(heading[1])?"Women's":"Men's"} ${heading[2]}K`;
+    const section=article.slice(heading.index+heading[0].length,headings[i+1]?.index??article.length);
+    const parts=section.split(/K-State(?:'s)?\s+Individual\s+Results/i);if(parts.length!==2)continue;
+    const team=parts[0].match(/\b(\d+)\.\s*K-State\s*,\s*(\d+)\s*(?:pts|points)\b/i);
+    if(team)rows.push({group,participant:'K-State team',result:`${ordinal(team[1])} · ${team[2]} pts`});
+    const individuals=parts[1].split(/--\s*k-statesports|How to follow/i)[0];
+    for(const match of individuals.matchAll(/(?:^|\s)(\d+|DNF|DNS)\.\s+([\p{L}][\p{L}'’. -]*?)\s*,\s*(\d{1,2}:\d{2}(?:\.\d+)?|DNF|DNS)\b/gu)){
+      const participant=clean(match[2]),result=/^\d+$/.test(match[1])?`${ordinal(match[1])} · ${match[3]}`:match[3];
+      rows.push({group,participant,result});
+    }
+  }
+  const seen=new Set();
+  return rows.filter(row=>{const key=`${row.group}|${row.participant}`;if(seen.has(key))return false;seen.add(key);return true;});
+}
+function kstateResultsComplete(rows){
+  return ["Women's","Men's"].every(division=>{
+    const group=rows.filter(row=>row.group.startsWith(division));
+    return group.some(row=>/ team$/.test(row.participant))&&group.some(row=>!/ team$/.test(row.participant));
+  });
+}
+async function attachKStateRecapResults(event,raw=null,recapUrl=event?.recap_url){
+  if(!isKStateCrossCountry(event))return event;
+  if(event.recap_result_count&&kstateResultsComplete(event.results||[]))return event;
+  const incomplete=()=>{
+    event.meet_results_verified=false;event.highlight_state='official_results_partial';
+    event.highlight_status='Some official race results could not be loaded. Open the official recap for both divisions.';
+    return event;
+  };
+  try{
+    const url=new URL(recapUrl);
+    if(!/^(?:www\.)?kstatesports\.com$/i.test(url.hostname)||!url.pathname.startsWith('/news/'))return incomplete();
+    if(raw==null){
+      const response=await fetch(url.href,{headers:HEADERS,redirect:'follow',signal:AbortSignal.timeout(6500)});
+      if(!response.ok)return incomplete();raw=await response.text();
+    }
+    if(!recapMatchesEvent(raw,event,url.href))return incomplete();
+    const rows=parseKStateRecapTable(raw,event);
+    if(!rows.length)return incomplete();
+    const complete=kstateResultsComplete(rows);
+    // Retain a known schedule team placing if its detailed division is missing.
+    const missingTeams=(event.results||[]).filter(row=>/ team$/.test(row.participant)&&!rows.some(r=>/ team$/.test(r.participant)&&r.group.split(' ')[0]===row.group.split(' ')[0]));
+    event.results=[...rows,...missingTeams];event.result_count=event.results.length;event.has_more_results=event.result_count>3;
+    event.recap_result_count=rows.length;event.recap_url=url.href;
+    event.source={...event.source,name:'Official athletics meet recap',url:url.href};
+    event.headline=event.results.filter(row=>/ team$/.test(row.participant)).map(row=>`${row.group.startsWith("Women's")?"Women's":"Men's"} team: ${row.result}`).join(' / ');
+    event.highlights=rows.filter(row=>/ team$/.test(row.participant)).map(row=>`K-State's ${row.group.toLowerCase()} team finished ${row.result.replace(' · ',' with ')}.`);
+    for(const division of ["Women's","Men's"]){
+      const leader=rows.find(row=>row.group.startsWith(division)&&!/ team$/.test(row.participant));
+      if(leader)event.highlights.push(`${leader.participant} led K-State in the ${leader.group.toLowerCase()}, finishing ${leader.result.replace(' · ',' in ')}.`);
+    }
+    event.highlights_verified=complete;event.meet_results_verified=complete;
+    event.highlight_state=complete?'official_recap_results':'official_results_partial';
+    event.highlight_status=complete?null:'Some official race results could not be loaded. Open the official recap for both divisions.';
+    return event;
+  }catch{return incomplete();}
+}
 async function generateAIHighlights(env,e,raw){
   if(e.highlights_verified)return{items:e.highlights,state:'verified'};
   if(!env?.AI)return{items:null,state:'binding_unavailable'};
@@ -1479,7 +1550,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!target)return events;
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
-  if(!isKansasCrossCountry(target)){
+  if(!isKansasCrossCountry(target)&&!isKStateCrossCountry(target)){
     if(target.event_type==='MEET'&&!target.result_url)target.result_url=discoverOfficialMeetResultUrl(raw,sourceUrl);
     await attachOfficialMeetResults(target);
   }
@@ -1558,7 +1629,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Results links are not consistently present on schedule cards. Many schools
   // publish the official timing link only inside the recap, so discover and
   // parse it here through the same school-neutral meet-results pipeline.
-  if(target.event_type==='MEET'&&recapHtml&&!isKansasCrossCountry(target)){
+  if(target.event_type==='MEET'&&recapHtml&&!isKansasCrossCountry(target)&&!isKStateCrossCountry(target)){
     target.result_url=target.result_url||discoverOfficialMeetResultUrl(recapHtml,recapUrl);
     await attachOfficialMeetResults(target);
   }
@@ -1572,6 +1643,10 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
+  if(isKStateCrossCountry(target)){
+    await attachKStateRecapResults(target,recapHtml,recapUrl);
+    return events;
+  }
   if(isKansasCrossCountry(target)){
     const attached=await attachKansasRaceDocuments(target,recapHtml,recapUrl,fetchOfficialPdfText);
     if(!attached){
@@ -1673,7 +1748,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&event.result_url&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   if(sport==='Football'){
     const scoreboard=await fetchFootballScoreboard(school,now);
     events=reconcileFootballScores(events,scoreboard);
