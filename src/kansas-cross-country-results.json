@@ -1,0 +1,261 @@
+[
+  {
+    "date": "2026-09-05",
+    "event": "Bob Timmons Classic",
+    "verified_at": "2026-09-25",
+    "recap_url": "https://kuathletics.com/news/2026/9/5/cross-country-jayhawks-sweep-bob-timmons-classic-to-begin-2026-season",
+    "result_urls": [
+      "https://kuathletics.com/documents/2026/9/5/Bob_Timmon_s_Classic_Women_s_5K_Results.pdf",
+      "https://kuathletics.com/documents/2026/9/5/Bob_Timmons_Classic_Men_s_6K_Results.pdf"
+    ],
+    "rows": [
+      {
+        "group": "Women's 5K",
+        "participant": "Kansas team",
+        "result": "1st · 31 pts"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Irine Jepkirui",
+        "result": "1st · 17:19.6"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Jael Cherotich",
+        "result": "2nd · 17:46.9"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Naomi Hunter",
+        "result": "5th · 18:45.6"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Madelyn Wallace",
+        "result": "11th · 19:23.7"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Maliaka McLeod",
+        "result": "14th · 19:35.9"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Sydney Owens",
+        "result": "15th · 19:39.2"
+      },
+      {
+        "group": "Women's 5K",
+        "participant": "Bethany Druse",
+        "result": "25th · 20:54.5"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Kansas team",
+        "result": "1st · 24 pts"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Paul Ngasharr",
+        "result": "2nd · 18:00.8"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Barnabas Ndiwa",
+        "result": "3rd · 18:19.2"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Blake Wohler",
+        "result": "4th · 18:22.8"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Samuel Trumble",
+        "result": "5th · 18:28.5"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Carter Cline",
+        "result": "10th · 18:48.7"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Sawyer Schmidt",
+        "result": "11th · 18:50.0"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Hobbs Campbell",
+        "result": "13th · 18:52.6"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Andrew Schumacher",
+        "result": "15th · 19:10.5"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Parker Walion",
+        "result": "21st · 19:28.5"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Ryan Whittlesey",
+        "result": "27th · 19:44.8"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Nathan Thengvall",
+        "result": "30th · 19:48.0"
+      },
+      {
+        "group": "Men's 6K",
+        "participant": "Lenny Njoroge",
+        "result": "41st · 20:12.7"
+      }
+    ]
+  },
+  {
+    "date": "2026-09-25",
+    "event": "Gans Creek Classic",
+    "verified_at": "2026-09-26",
+    "recap_url": "https://kuathletics.com/news/2026/9/25/cross-country-kansas-mens-team-places-10th-womens-team-finishes-12th-at-gans-creek-classic",
+    "result_urls": [
+      "https://kuathletics.com/documents/2026/9/25/Women_s_6K_Results_Full.pdf",
+      "https://kuathletics.com/documents/2026/9/25/Men_s_8K_Results_Full.pdf"
+    ],
+    "rows": [
+      {
+        "group": "Women's 6K",
+        "participant": "Kansas team",
+        "result": "12th · 344 pts"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Emmaculate Jemutai",
+        "result": "10th · 19:43.6"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Irine Jepkirui",
+        "result": "11th · 19:44.9"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Jael Cherotich",
+        "result": "38th · 20:30.8"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Maureen Chepkirui",
+        "result": "150th · 21:39.8"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Naomi Hunter",
+        "result": "158th · 21:43.4"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Kaitlyn Swartz",
+        "result": "170th · 21:53.1"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Malaika McLeod",
+        "result": "188th · 22:02.1"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Madelyn Wallace",
+        "result": "194th · 22:08.4"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Bethany Druse",
+        "result": "207th · 22:22.3"
+      },
+      {
+        "group": "Women's 6K",
+        "participant": "Sydney Owens",
+        "result": "234th · 22:54.3"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Kansas team",
+        "result": "10th · 273 pts"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Stephen Maroro",
+        "result": "6th · 22:46.9"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Barnabas Ndiwa",
+        "result": "22nd · 23:22.3"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Blake Wohler",
+        "result": "63rd · 23:57.6"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Sawyer Schmidt",
+        "result": "88th · 24:11.1"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Hobbs Campbell",
+        "result": "99th · 24:15.5"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Parker Walion",
+        "result": "102nd · 24:17.9"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Ryo Higuchi",
+        "result": "115th · 24:26.2"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Samuel Trumble",
+        "result": "132nd · 24:34.9"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Lenny Njoroge",
+        "result": "154th · 24:47.8"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Ryan Whittlesey",
+        "result": "239th · 25:56.4"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Carter Cline",
+        "result": "DNF"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Reagan Kibet",
+        "result": "DNS"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Paul Ngasharr",
+        "result": "DNS"
+      },
+      {
+        "group": "Men's 8K",
+        "participant": "Andrew Schumacher",
+        "result": "DNS"
+      }
+    ]
+  }
+]

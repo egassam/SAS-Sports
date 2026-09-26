@@ -2,8 +2,9 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
+import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './kansas-cross-country.mjs';
 
-const VERSION='4.22.1-global-xc-document-results';
+const VERSION='4.24.0-ku-xc-results';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -730,6 +731,7 @@ function enrichGameEvent(event){
 }
 function enrichMeetEvent(event,date){
   if(event.event_type!=='MEET'||event.status!=='Final')return event;
+  if(applyVerifiedKansasMeet(event))return event;
   const detail=VERIFIED_MEET_DETAILS.get(`${event.school_id}|${event.sport}|${event.start_time?.slice(0,10)||''}|${slug(event.opponent||'')}`);
   if(detail){
     event.results=detail.rows;
@@ -1037,7 +1039,7 @@ function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
     const resultLink=block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*(?:aria-label|title)=["'][^"']*Results?[^"']*["'][^>]*>/i)
       ||block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]{0,300}?\bResults?\b[\s\S]{0,300}?<\/a>/i)
       ||block.match(/<a\b[^>]*href=["']([^"']*(?:tfrrs\.org\/results\/xc\/|\/documents\/[^"']+\.pdf(?:\?[^"']*)?))[^"']*["'][^>]*>/i);
-    if(resultLink)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
+    if(resultLink&&!event.kansas_results_verified)event.result_url=absoluteUrl(resultLink[1],sourceUrl);
     events.push(event);
   }
   return events;
@@ -1475,8 +1477,12 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
-  if(target.event_type==='MEET'&&!target.result_url)target.result_url=discoverOfficialMeetResultUrl(raw,sourceUrl);
-  await attachOfficialMeetResults(target);
+  // KU publishes separate race PDFs; the generic first-link resolver selects
+  // its cumulative season PDF and must not overwrite verified race rows.
+  if(!isKansasCrossCountry(target)){
+    if(target.event_type==='MEET'&&!target.result_url)target.result_url=discoverOfficialMeetResultUrl(raw,sourceUrl);
+    await attachOfficialMeetResults(target);
+  }
   if(target.highlights_verified)return events;
   // A card-bound recap is already tied to the exact event. Avoid rescanning a
   // very large schedule document when this direct identity is available.
@@ -1552,7 +1558,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Results links are not consistently present on schedule cards. Many schools
   // publish the official timing link only inside the recap, so discover and
   // parse it here through the same school-neutral meet-results pipeline.
-  if(target.event_type==='MEET'&&recapHtml){
+  if(target.event_type==='MEET'&&recapHtml&&!isKansasCrossCountry(target)){
     target.result_url=target.result_url||discoverOfficialMeetResultUrl(recapHtml,recapUrl);
     await attachOfficialMeetResults(target);
   }
@@ -1566,6 +1572,15 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   target.recap_url=recapUrl;
   target.source={...target.source,name:target.event_type==='MEET'?'Official athletics meet recap':'Official athletics game recap',url:recapUrl,updated_at:now.toISOString()};
+  if(isKansasCrossCountry(target)){
+    const attached=await attachKansasRaceDocuments(target,recapHtml,recapUrl,fetchOfficialPdfText);
+    if(!attached){
+      target.highlights=[];
+      target.highlight_state='official_results_unavailable';
+      target.highlight_status='Detailed official race results could not be loaded. Open the official recap for full results.';
+    }
+    return events;
+  }
   const recapRows=target.sport==='Cross Country'?parseCrossCountryRecapRows(recapHtml,target):[];
   target.recap_result_count=recapRows.length;
   if(recapRows.length){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
@@ -1658,7 +1673,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&event.result_url).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&event.result_url&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   if(sport==='Football'){
     const scoreboard=await fetchFootballScoreboard(school,now);
     events=reconcileFootballScores(events,scoreboard);
