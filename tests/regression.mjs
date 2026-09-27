@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
+const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -61,7 +62,7 @@ assert.deepEqual(Object.keys(rolloutSchools).slice(0,9),['kstate','kansas','flor
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
-      definition.official_hosts.some(domain=>worker.includes(`'${school}|${sport}':'https://${domain}/`)||worker.includes(`'${school}|${sport}':'https://www.${domain}/`)),
+      definition.official_hosts.some(domain=>(school==='kstate'?kstateModule:worker).includes(`'${school}|${sport}':'https://${domain}/`)||(school==='kstate'?kstateModule:worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
       `Missing official ${school} ${sport} source`
     );
   }
@@ -229,7 +230,7 @@ for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allao
   assert.ok(worker.includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
 }
 for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
-  assert.ok(worker.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
+  assert.ok(kstateModule.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
 }
 for(const verified of ['Lyla Louderbaugh','Ebba Nordstedt','Anna Wallin']){
   assert.ok(worker.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
@@ -239,7 +240,7 @@ for(const verified of ['Denis Kipngetich','Brian Musau']){
 }
 contains(worker,/'Rowing':\['womens-rowing','rowing'\]/,'Women’s rowing must try the official sport slug before the legacy fallback');
 contains(worker,/'Golf':\['womens-golf','mens-golf','golf'\]/,'Generic golf must inspect the women’s roster containing the verified Kansas athletes first');
-contains(worker,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
+contains(kstateModule,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
 contains(worker,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/\.\.\.ranked\.filter\(a=>a\.image_url\),\.\.\.ranked\.filter\(a=>!a\.image_url\)/,'Official portraits must remain preferred before Instagram fallback');
