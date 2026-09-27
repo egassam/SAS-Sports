@@ -6,8 +6,9 @@ Last updated: September 27, 2026, America/Chicago.
 
 ## Current state
 
-The K-State school module is implemented and locally validated on `refactor/kstate-school-module-20260927`, based on main `3ed968bda3ecef6bf6003b0663456e2beab7d383`. Candidate version: **4.25.0-kstate-module**. Saved on GitHub as draft [PR #12](https://github.com/egassam/SAS-Sports/pull/12); the application commit's GitHub checks passed. **The module has not been merged or deployed.** The last verified live version remains the September 26 cross-country correction recorded in the table below.
+**K-State module extraction is complete, merged and live as `4.25.0-kstate-module`.** [PR #12](https://github.com/egassam/SAS-Sports/pull/12) was merged after user approval on September 27 at 14:50:17 UTC (09:50:17 America/Chicago), producing application commit `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095`. This completion session verified the production version and opened both expanded cross-country races in the live app. Gans Creek retains 18 rows (9 women, 7 men, 2 teams); Platte River retains 20 rows (11 women, 7 men, 2 teams). The next separate school-module session is **KU**.
 
+**Outstanding shared operational issue:** post-merge workflow run `36327362690` failed its live cross-school-isolation job with HTTP 503 / Cloudflare Error 1102 (Worker exceeded resource limits). Guardrails, certification matrix and Cloudflare build passed; dependent live-school certification was skipped. Do not report the full live audit as passing. K-State module completion means extraction parity plus the scoped live verification below, not fresh certification of every sport.
 See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-State's existing school-specific backend policies are now in `src/schools/kstate.mjs`; generic publisher logic and shared catalog/display metadata remain shared.
 
 | Item | Verified value |
@@ -15,16 +16,16 @@ See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-Sta
 | Repository | `egassam/SAS-Sports` |
 | Default branch | `main` |
 | Live K-State page | https://sas-sports.lovetogivepain.workers.dev/?school=kstate |
-| Working application version | `4.24.1-kstate-recap-results` |
-| Verified application commit | `19ec2ecb2ac03b8c7d242cb14a23146878857ab0` |
-| Verified application tree | `b8b7958477f593181f8ba2e52355e65f768c5bb8` |
+| Working application version | `4.25.0-kstate-module` |
+| Verified application commit | `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095` |
+| Pre-extraction recovery tree | `b8b7958477f593181f8ba2e52355e65f768c5bb8` |
 | Preserved baseline branch | `checkpoint/kstate-xc-verified-20260926` |
 | Baseline branch target | `19ec2ecb2ac03b8c7d242cb14a23146878857ab0` |
 | Merged correction | https://github.com/egassam/SAS-Sports/pull/11 |
 | Correction commit | `0d7212d952a1f1c4254b6e699cbfeeb2331a712b` |
 | Prior KU correction | https://github.com/egassam/SAS-Sports/pull/10 |
 
-The baseline branch is a named recovery checkpoint. Do not move it during normal development. Documentation commits after this application commit do not represent additional application changes. Use the current main branch for new work, retaining this exact application commit as the comparison/recovery reference.
+The baseline branch is a named recovery checkpoint. Do not move it during normal development. Documentation commits after this application commit do not represent additional application changes. Use the current main branch for new work, retaining the September 26 baseline branch target as the pre-extraction comparison/recovery reference.
 
 ## What was fixed and why it mattered
 
@@ -39,7 +40,7 @@ Official recap sources:
 - https://www.kstatesports.com/news/2026/9/25/cross-country-wildcats-showcase-significant-personal-improvement-at-gans-creek-classic
 - https://www.kstatesports.com/news/2026/9/4/cross-country-k-state-clinches-team-wins-at-platte-river-rumble-gold
 
-### Verified live results
+### Verified live results (rechecked September 27)
 
 | School / event | Women | Men | Team rows | Total rows |
 | --- | ---: | ---: | ---: | ---: |
@@ -48,9 +49,9 @@ Official recap sources:
 
 Gans Creek: women 18th / 499 points; men 17th / 449 points. The expanded live page displayed every runner, including the final listed women and men, with the expected names, places and times. Platte River's expanded live page retained the complete original table and highlights.
 
-KU's live feed after this deployment retained 26 Gans Creek rows and 21 Bob Timmons rows. This is a scoped K-State/KU verification, not a claim that every sport at every school is currently correct.
+KU's live feed after the September 26 correction retained 26 Gans Creek rows and 21 Bob Timmons rows. Those KU live counts were not rechecked in this completion session. This is a scoped K-State/KU verification, not a claim that every sport at every school is currently correct.
 
-### Validation completed
+### September 26 correction validation
 
 - `npm run test:release` passed.
 - `npm test` passed.
@@ -73,7 +74,7 @@ Separate files alone do not guarantee isolation. Test each module against that s
 Agreed sequence:
 
 1. **Completed:** preserve today's working version as the baseline.
-2. **Implemented and locally validated:** K-State module extraction; merge/deployment and live verification remain pending.
+2. **Completed:** K-State module extraction, approved merge/deployment, and scoped live cross-country verification.
 3. A separate later session: bring KU's existing cross-country adapter into the school-module structure.
 4. Correct and verify each remaining school individually, one school per new session.
 
@@ -81,15 +82,14 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-1. Read this file from the current GitHub main branch before beginning. Root `AGENTS.md` also directs this.
-2. Check current main, application version and local changes. Reconcile any changes since this handoff without silently reverting them.
-3. Resume the K-State module branch/PR before starting another school. Confirm its current merge/deployment status. The code is implemented; do not repeat the extraction.
-4. Review `src/schools/kstate.mjs` and `docs/KSTATE_MODULE.md`. The shared Worker imports the module's schedule overrides, verified socials and soccer facts, and creates its cross-country handlers with shared helpers.
-5. Run `npm run test:release` if code changes, preserving `tests/kstate-cross-country.mjs`, `tests/kstate-module.mjs`, the frozen baseline fixture and KU tests. The 18/20 cross-country result rows are mandatory.
-6. Merge/deploy only with applicable user authorization, then verify candidate version `4.25.0-kstate-module` and open both live K-State expanded results. Current local evidence is not a deployed verification.
-7. After K-State is merged and live-verified, update this file and make KU the next separate school-module session. Preserve earlier session records.
+1. Read this file from current GitHub main and inspect current source/version before editing.
+2. K-State extraction is complete; do not repeat it or reopen PR #12. Start **KU's school module** when the user begins that separate session.
+3. Review `docs/KSTATE_MODULE.md`, `src/schools/kstate.mjs`, and KU's existing `src/kansas-cross-country.mjs`. Preserve the shared result contract and verified cross-country records.
+4. Keep all module, K-State, KU and 18-school deterministic isolation protections enabled. Run `npm run test:release` when code changes.
+5. Preserve K-State's 18/20 result rows. Live cross-school resource-limit failure remains an operational follow-up; investigate it before claiming broader live certification. The failed job log did not identify the requested school/sport, so do not assign its cause to a specific module without evidence.
+6. Update this same handoff and append the new session record. Keep one school per session unless the user changes scope.
 
-Do not automatically broaden work to all schools. Do not claim future publisher changes are fully supported: the current K-State parser depends on its labeled recap-result sections and reports partial results when those cannot be loaded.
+No fresh all-sport K-State live certification was performed. The current K-State parser depends on labeled recap-result sections and reports partial results when those cannot be loaded.
 
 ## Publication and permission history
 
@@ -211,3 +211,22 @@ Limitations and remaining tasks: no new live per-sport certification, browser ve
 
 
 Publication checkpoint: draft PR https://github.com/egassam/SAS-Sports/pull/12 contains application commit `bb3f23124562ab496cc240a0a526e465d92e7f7d`. Its remote tree `e3273d03b3ada3d458bd099f2e2b2235767c727d` matched the tested local tree exactly. GitHub certification run `36327250369` completed successfully on that commit (PR checks; no live-school certification). The bundled HTTP feed and highlights endpoints were also replayed against the saved official HTML and returned identical 18/20 result rows. This documentation checkpoint adds the publication identifiers after those code checks. The PR is unmerged and the candidate is not deployed.
+
+
+### September 27, 2026 — K-State module completion
+
+User: “Complete KSTATE module.”
+
+The current main handoff and AGENTS.md were read, and main was cloned at `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095` with a clean working tree. The handoff was stale: PR #12 had already merged following the user's earlier approval, and Cloudflare had successfully built it. No application reimplementation, additional application changes or new application deployment was needed.
+
+Validation actually completed in this session:
+- `npm run test:release` and `npm test` both passed on the merged application.
+- This includes all ten K-State source-route baseline checks, five saved soccer records, three verified tennis identities through the athlete path, KU/K-State result regressions, 18 protected schools and 71 cache identities.
+- Production `/api/status` returned `4.25.0-kstate-module`.
+- A forced-refresh K-State cross-country feed returned both teams and all 18/20 result rows.
+- Both live expanded results were opened through the UI and inspected in full. Gans Creek showed 9 women, 7 men, 2 teams, 4 highlights and an official recap link; Platte River showed 11 women, 7 men, 2 teams, 4 highlights and an official recap link. The final listed runners and times were present. Screenshots confirmed readable grouped tables.
+- A supplementary direct Python expanded-endpoint comparison received HTTP 403; it did not establish API parity or recheck KU. The successful live browser checks and forced feed are the live evidence for this session.
+- Inspected merge check results: Cloudflare build, guardrails and certification matrix succeeded. Live cross-school-isolation job `108642654825`, run `36327362690`, failed at the firstBefore fetch (tests/isolation.mjs:74) after retries with HTTP 503 / Cloudflare resource limit Error 1102. Dependent live-school tests were skipped. This is unresolved; no claim that every school or sport passed live certification.
+- Completion changes only this canonical Markdown handoff, preserving prior session history. KU is the next separate module session.
+
+Publication history reconciliation: the previous session's user approved merging/deploying PR #12 after it was prepared. Merge completed at 14:50:17 UTC. The historical pre-approval records above are retained as history and are superseded by the current-state section.
