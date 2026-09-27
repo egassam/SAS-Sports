@@ -6,7 +6,9 @@ Last updated: September 27, 2026, America/Chicago.
 
 ## Current state
 
-The K-State cross-country correction is deployed and visually verified. The user reviewed it and said, “This looks great now to me.” The agreed first preparation step—preserve the working baseline—is complete. **No school-module migration was performed in this session.**
+The K-State school module is implemented and locally validated on `refactor/kstate-school-module-20260927`, based on main `3ed968bda3ecef6bf6003b0663456e2beab7d383`. Candidate version: **4.25.0-kstate-module**. Saved on GitHub as draft [PR #12](https://github.com/egassam/SAS-Sports/pull/12); the application commit's GitHub checks passed. **The module has not been merged or deployed.** The last verified live version remains the September 26 cross-country correction recorded in the table below.
+
+See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-State's existing school-specific backend policies are now in `src/schools/kstate.mjs`; generic publisher logic and shared catalog/display metadata remain shared.
 
 | Item | Verified value |
 | --- | --- |
@@ -71,21 +73,21 @@ Separate files alone do not guarantee isolation. Test each module against that s
 Agreed sequence:
 
 1. **Completed:** preserve today's working version as the baseline.
-2. **Next session:** move K-State's working logic into its school module and verify identical behavior.
+2. **Implemented and locally validated:** K-State module extraction; merge/deployment and live verification remain pending.
 3. A separate later session: bring KU's existing cross-country adapter into the school-module structure.
 4. Correct and verify each remaining school individually, one school per new session.
 
-The user's “Do the first one” was applied to item 1 of this sequence. Do not mark K-State modularization complete; it has not started.
+The September 26 “Do the first one” applied to baseline preservation. The separate September 27 “Start KSTATE module” request authorized the extraction now prepared on its own branch.
 
 ## Instructions for the next session
 
 1. Read this file from the current GitHub main branch before beginning. Root `AGENTS.md` also directs this.
 2. Check current main, application version and local changes. Reconcile any changes since this handoff without silently reverting them.
-3. Begin with K-State as the first school module. Preserve the current output while extracting its school-specific behavior. Inventory all existing K-State hooks, including sports and athlete sources; do not call the whole school modularized if only cross country has moved.
-4. Existing K-State cross-country functions are still in `src/index.js`: `isKStateCrossCountry`, `parseKStateRecapTable`, `kstateResultsComplete`, and `attachKStateRecapResults`. The first-event record remains in `VERIFIED_MEET_DETAILS`; `enrichMeetEvent`, `attachOfficialMeetResults`, `attachOfficialHighlights`, and `fetchLive` contain integration points.
-5. Preserve `tests/kstate-cross-country.mjs` and its two factual result-list fixtures. Preserve KU's `src/kansas-cross-country.mjs`, `src/kansas-cross-country-results.json`, and tests. Decide module boundaries from the actual code; the conversation did not mandate a specific folder layout.
-6. Verify baseline output parity, school isolation, correct source identity and incomplete-source behavior. Before claiming a published fix, verify its live feed and expanded results.
-7. Update this file with the school completed, actual validation/publication state, remaining risks and next school. Append the session conversation/decisions. Then stop when the user ends that school session.
+3. Resume the K-State module branch/PR before starting another school. Confirm its current merge/deployment status. The code is implemented; do not repeat the extraction.
+4. Review `src/schools/kstate.mjs` and `docs/KSTATE_MODULE.md`. The shared Worker imports the module's schedule overrides, verified socials and soccer facts, and creates its cross-country handlers with shared helpers.
+5. Run `npm run test:release` if code changes, preserving `tests/kstate-cross-country.mjs`, `tests/kstate-module.mjs`, the frozen baseline fixture and KU tests. The 18/20 cross-country result rows are mandatory.
+6. Merge/deploy only with applicable user authorization, then verify candidate version `4.25.0-kstate-module` and open both live K-State expanded results. Current local evidence is not a deployed verification.
+7. After K-State is merged and live-verified, update this file and make KU the next separate school-module session. Preserve earlier session records.
 
 Do not automatically broaden work to all schools. Do not claim future publisher changes are fully supported: the current K-State parser depends on its labeled recap-result sections and reports partial results when those cannot be loaded.
 
@@ -186,3 +188,26 @@ The user asked, "Did you finish before I ran out of usage?" The assistant initia
 Direct GitHub inspection confirmed the recovery branch checkpoint/kstate-xc-verified-20260926 exists at 19ec2ecb2ac03b8c7d242cb14a23146878857ab0. The handoff and startup instructions existed in local documentation commit 9735515 but were absent from GitHub main. This session publishes those documentation files to finish the authorized save. The earlier wording that the handoff was saved referred to the local copy; the GitHub save was outstanding.
 
 Scope clarification: the requested "first one" in the September 26 sequence was preserving the working baseline, which was completed. School-module migration was deliberately deferred to the next session. K-State remains the next module. This session changes documentation only; no new application tests or live verification were performed. The September 26 results above retain their original verification date.
+
+
+### September 27, 2026 — K-State module implementation
+
+User: “Start KSTATE module.” Earlier in the thread the user ended the save session; no module changes had been made at that point. This request begins the actual module implementation.
+
+The current GitHub handoff and AGENTS.md were read before work. Main was fetched at `3ed968bda3ecef6bf6003b0663456e2beab7d383`; an isolated worktree/branch was created from that commit. The previous application baseline passed the release suite before extraction.
+
+Implemented `src/schools/kstate.mjs`: six schedule overrides, three verified tennis identities, institutional social exclusion, five saved soccer recaps, original meet snapshot/highlights, and all K-State cross-country guards/parser/completeness/enrichment. Common publisher helpers, cache behavior, UI and shared metadata remain in their existing owners. Existing test harnesses now inject the real module. Added a permanent module test and frozen pre-refactor baseline fixture. Candidate version is `4.25.0-kstate-module`.
+
+Validation actually completed:
+- `npm run test:release` passed, including 18 protected schools and 71 critical school/sport cache identities, KU and K-State cross-country checks, and the new module test.
+- `npm test` passed, including roster social identity checks.
+- All ten K-State schedule/roster route outputs, five soccer enrichments and three verified tennis identities passed baseline checks; the tennis accounts were tested through the featured-athlete function with a deterministic roster fixture.
+- Before/after comparison preserved 218 catalog school/sport schedule and roster route combinations and all saved game/social/source maps.
+- Saved official K-State schedule/recap HTML replayed through production fetchLive and expanded results produced matching outputs (ignoring execution timestamps), including 18 Gans Creek rows and 20 Platte River rows.
+- Offline esbuild bundle and actual bundled Worker import plus `/api/status` passed. Initial bundling used an older dependency directory missing unpdf; selecting the previous K-State checkout's complete installed dependencies resolved it without source/dependency changes.
+- `git diff --check` passed.
+
+Limitations and remaining tasks: no new live per-sport certification, browser verification, merge or deployment has been performed for this candidate. The recap parser still requires the official labeled sections and reports incomplete results explicitly. Complete K-State publication/live verification before moving to KU in a later session.
+
+
+Publication checkpoint: draft PR https://github.com/egassam/SAS-Sports/pull/12 contains application commit `bb3f23124562ab496cc240a0a526e465d92e7f7d`. Its remote tree `e3273d03b3ada3d458bd099f2e2b2235767c727d` matched the tested local tree exactly. GitHub certification run `36327250369` completed successfully on that commit (PR checks; no live-school certification). The bundled HTTP feed and highlights endpoints were also replayed against the saved official HTML and returned identical 18/20 result rows. This documentation checkpoint adds the publication identifiers after those code checks. The PR is unmerged and the candidate is not deployed.
