@@ -6,7 +6,7 @@ Last updated: September 27, 2026, America/Chicago.
 
 ## Current state
 
-The K-State school module is implemented and locally validated on `refactor/kstate-school-module-20260927`, based on main `3ed968bda3ecef6bf6003b0663456e2beab7d383`. Candidate version: **4.25.0-kstate-module**. Publication status will be recorded in the September 27 session entry below. **The module has not been merged or deployed.** The last verified live version remains the September 26 cross-country correction recorded in the table below.
+The K-State school module is implemented and locally validated on `refactor/kstate-school-module-20260927`, based on main `3ed968bda3ecef6bf6003b0663456e2beab7d383`. Candidate version: **4.25.0-kstate-module**. Saved on GitHub as draft [PR #12](https://github.com/egassam/SAS-Sports/pull/12); the application commit's GitHub checks passed. **The module has not been merged or deployed.** The last verified live version remains the September 26 cross-country correction recorded in the table below.
 
 See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-State's existing school-specific backend policies are now in `src/schools/kstate.mjs`; generic publisher logic and shared catalog/display metadata remain shared.
 
@@ -208,3 +208,6 @@ Validation actually completed:
 - `git diff --check` passed.
 
 Limitations and remaining tasks: no new live per-sport certification, browser verification, merge or deployment has been performed for this candidate. The recap parser still requires the official labeled sections and reports incomplete results explicitly. Complete K-State publication/live verification before moving to KU in a later session.
+
+
+Publication checkpoint: draft PR https://github.com/egassam/SAS-Sports/pull/12 contains application commit `bb3f23124562ab496cc240a0a526e465d92e7f7d`. Its remote tree `e3273d03b3ada3d458bd099f2e2b2235767c727d` matched the tested local tree exactly. GitHub certification run `36327250369` completed successfully on that commit (PR checks; no live-school certification). The bundled HTTP feed and highlights endpoints were also replayed against the saved official HTML and returned identical 18/20 result rows. This documentation checkpoint adds the publication identifiers after those code checks. The PR is unmerged and the candidate is not deployed.
