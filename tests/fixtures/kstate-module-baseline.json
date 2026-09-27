@@ -1,0 +1,354 @@
+{
+  "baseline_commit": "19ec2ecb2ac03b8c7d242cb14a23146878857ab0",
+  "routes": {
+    "Baseball": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/baseball/schedule",
+        "https://www.kstatesports.com/"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/baseball/roster"
+      ]
+    },
+    "Basketball": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/mens-basketball/schedule",
+        "https://www.kstatesports.com/sports/womens-basketball/schedule",
+        "https://www.kstatesports.com/sports/basketball/schedule",
+        "https://www.kstatesports.com/"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/mens-basketball/roster",
+        "https://www.kstatesports.com/sports/womens-basketball/roster",
+        "https://www.kstatesports.com/sports/basketball/roster"
+      ]
+    },
+    "Cross Country": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/cross-country/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/cross-country/roster"
+      ]
+    },
+    "Football": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/football/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/football/roster"
+      ]
+    },
+    "Golf": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/womens-golf/schedule",
+        "https://www.kstatesports.com/sports/mens-golf/schedule",
+        "https://www.kstatesports.com/sports/golf/schedule",
+        "https://www.kstatesports.com/"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/womens-golf/roster",
+        "https://www.kstatesports.com/sports/mens-golf/roster",
+        "https://www.kstatesports.com/sports/golf/roster"
+      ]
+    },
+    "Rowing": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/womens-rowing/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/womens-rowing/roster",
+        "https://www.kstatesports.com/sports/rowing/roster"
+      ]
+    },
+    "Soccer": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/womens-soccer/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/womens-soccer/roster",
+        "https://www.kstatesports.com/sports/wsoc/roster",
+        "https://www.kstatesports.com/sports/soccer/roster",
+        "https://www.kstatesports.com/sports/mens-soccer/roster"
+      ]
+    },
+    "Tennis": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/womens-tennis/schedule",
+        "https://www.kstatesports.com/sports/mens-tennis/schedule",
+        "https://www.kstatesports.com/sports/tennis/schedule",
+        "https://www.kstatesports.com/"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/womens-tennis/roster",
+        "https://www.kstatesports.com/sports/mens-tennis/roster",
+        "https://www.kstatesports.com/sports/tennis/roster"
+      ]
+    },
+    "Track & Field": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/track-and-field/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/track-and-field/roster",
+        "https://www.kstatesports.com/sports/track-field/roster"
+      ]
+    },
+    "Volleyball": {
+      "schedule": [
+        "https://www.kstatesports.com/sports/womens-volleyball/schedule"
+      ],
+      "roster": [
+        "https://www.kstatesports.com/sports/womens-volleyball/roster",
+        "https://www.kstatesports.com/sports/wvball/roster",
+        "https://www.kstatesports.com/sports/volleyball/roster"
+      ]
+    }
+  },
+  "soccer": [
+    {
+      "input": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-09-03T12:00:00Z",
+        "opponent": "rv-iowa",
+        "status": "Final",
+        "event_type": "GAME"
+      },
+      "expected": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-09-03T12:00:00Z",
+        "opponent": "rv-iowa",
+        "status": "Final",
+        "event_type": "GAME",
+        "highlights": [
+          "Allison Marshall scored from 19 yards in the 23rd minute, assisted by Gabby DeMers.",
+          "Two additional K-State first-half goals were disallowed after VAR reviews.",
+          "Iowa’s Reilly Heman equalized in the 50th minute, assisted by Berit Parten.",
+          "Maddie Sibbing tied her collegiate career high with eight saves.",
+          "The draw extended K-State’s school-record unbeaten streak to seven matches."
+        ],
+        "highlights_verified": true,
+        "game_stats": [
+          {
+            "label": "Shots",
+            "value": "K-State 11 · Iowa 25"
+          },
+          {
+            "label": "Shots on goal",
+            "value": "K-State 5 · Iowa 9"
+          },
+          {
+            "label": "Saves",
+            "value": "K-State 8 · Iowa 4"
+          },
+          {
+            "label": "Corners",
+            "value": "K-State 4 · Iowa 7"
+          }
+        ],
+        "recap_url": "https://www.kstatesports.com/news/2026/9/3/soccer-k-state-notches-draw-at-iowa-on-thursday-night",
+        "source": {
+          "name": "Official athletics game recap"
+        }
+      }
+    },
+    {
+      "input": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-30T12:00:00Z",
+        "opponent": "nebraska",
+        "status": "Final",
+        "event_type": "GAME"
+      },
+      "expected": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-30T12:00:00Z",
+        "opponent": "nebraska",
+        "status": "Final",
+        "event_type": "GAME",
+        "highlights": [
+          "K-State and Nebraska finished in a scoreless draw.",
+          "Maddie Sibbing saved a Nebraska penalty kick in the 67th minute.",
+          "Sibbing made six saves and recorded her school-record 12th career shutout.",
+          "The result extended K-State’s school-record unbeaten streak to six matches."
+        ],
+        "highlights_verified": true,
+        "game_stats": [
+          {
+            "label": "Shots",
+            "value": "K-State 12 · Nebraska 15"
+          },
+          {
+            "label": "Shots on goal",
+            "value": "K-State 3 · Nebraska 6"
+          },
+          {
+            "label": "Saves",
+            "value": "K-State 6 · Nebraska 3"
+          },
+          {
+            "label": "Corners",
+            "value": "K-State 1 · Nebraska 9"
+          }
+        ],
+        "recap_url": "https://www.kstatesports.com/news/2026/8/30/soccer-k-state-nebraska-play-to-draw-on-sunday-night",
+        "source": {
+          "name": "Official athletics game recap"
+        }
+      }
+    },
+    {
+      "input": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-23T12:00:00Z",
+        "opponent": "south-dakota-state",
+        "status": "Final",
+        "event_type": "GAME"
+      },
+      "expected": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-23T12:00:00Z",
+        "opponent": "south-dakota-state",
+        "status": "Final",
+        "event_type": "GAME",
+        "highlights": [
+          "South Dakota State went down a player after its goalkeeper received a red card in the 20th minute.",
+          "Langley Mayers opened the scoring in the 29th minute, assisted by Rilyn Rintoul and Chloe Dillbeck.",
+          "Gabby DeMers added K-State’s second goal in the 52nd minute from Lauren Moylan and Mayers assists.",
+          "Maddie Sibbing earned her school-record 11th career shutout and tied the K-State record with 11 career wins.",
+          "K-State outshot South Dakota State 22-5 and allowed only one shot on goal."
+        ],
+        "highlights_verified": true,
+        "game_stats": [
+          {
+            "label": "Shots",
+            "value": "K-State 22 · South Dakota State 5"
+          },
+          {
+            "label": "Shots on goal",
+            "value": "K-State 8 · South Dakota State 1"
+          },
+          {
+            "label": "Saves",
+            "value": "K-State 1 · South Dakota State 6"
+          },
+          {
+            "label": "Corners",
+            "value": "K-State 2 · South Dakota State 3"
+          }
+        ],
+        "recap_url": "https://www.kstatesports.com/news/2026/8/23/https-www-kstatesports-com-documents-2026-8-14-2026-27-k-state-soccer-3-pdf",
+        "source": {
+          "name": "Official athletics game recap"
+        }
+      }
+    },
+    {
+      "input": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-13T12:00:00Z",
+        "opponent": "seattle-u",
+        "status": "Final",
+        "event_type": "GAME"
+      },
+      "expected": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-13T12:00:00Z",
+        "opponent": "seattle-u",
+        "status": "Final",
+        "event_type": "GAME",
+        "highlights": [
+          "McKinnan Braswell headed in Rilyn Rintoul’s cross in the 12th minute for the eventual game-winner.",
+          "Rintoul scored from her own rebound in the 23rd minute after assisting the opening goal.",
+          "Freshmen Lauren Moylan and Kennedy Miller scored their first collegiate goals seven minutes apart in the second half.",
+          "K-State’s four goals tied the program record for goals in a season opener.",
+          "The Wildcats held a 14-9 advantage in shots and put eight attempts on goal."
+        ],
+        "highlights_verified": true,
+        "game_stats": [
+          {
+            "label": "Shots",
+            "value": "K-State 14 · Seattle U. 9"
+          },
+          {
+            "label": "Shots on goal",
+            "value": "K-State 8 · Seattle U. 3"
+          },
+          {
+            "label": "Saves",
+            "value": "K-State 3 · Seattle U. 4"
+          },
+          {
+            "label": "Corners",
+            "value": "K-State 4 · Seattle U. 6"
+          }
+        ],
+        "recap_url": "https://www.kstatesports.com/news/2026/8/13/soccer-k-state-thumps-seattle-u-in-2026-season-opener",
+        "source": {
+          "name": "Official athletics game recap"
+        }
+      }
+    },
+    {
+      "input": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-20T12:00:00Z",
+        "opponent": "missouri-state",
+        "status": "Final",
+        "event_type": "GAME"
+      },
+      "expected": {
+        "school_id": "kstate",
+        "sport": "Soccer",
+        "start_time": "2026-08-20T12:00:00Z",
+        "opponent": "missouri-state",
+        "status": "Final",
+        "event_type": "GAME",
+        "highlights": [
+          "McKinnan Braswell scored the game-winner in the sixth minute from a Rilyn Rintoul assist.",
+          "Rilyn Rintoul doubled the lead in the 58th minute, assisted by Gabby DeMers.",
+          "Kennedy Miller completed the scoring in the 76th minute.",
+          "K-State dominated the shot count 32-2 and tied its school record with 13 shots on goal.",
+          "Maddie Sibbing’s shutout tied the K-State career record with her 10th."
+        ],
+        "highlights_verified": true,
+        "game_stats": [
+          {
+            "label": "Shots",
+            "value": "K-State 32 · Missouri State 2"
+          },
+          {
+            "label": "Shots on goal",
+            "value": "K-State 13 · Missouri State 1"
+          },
+          {
+            "label": "Saves",
+            "value": "K-State 1 · Missouri State 10"
+          },
+          {
+            "label": "Corners",
+            "value": "K-State 11 · Missouri State 1"
+          }
+        ],
+        "recap_url": "https://www.kstatesports.com/news/2026/8/20/soccer-k-state-registers-home-shutout-win-in-2026-home-opener",
+        "source": {
+          "name": "Official athletics game recap"
+        }
+      }
+    }
+  ],
+  "verified_instagrams": {
+    "kstate|Tennis|Mallory Renfro": "https://www.instagram.com/mallorymrenfro/",
+    "kstate|Tennis|Maralgoo Chogsomjav": "https://www.instagram.com/maralgoo917/",
+    "kstate|Tennis|Varvara Bernovich": "https://www.instagram.com/bernovich.varka/"
+  }
+}
