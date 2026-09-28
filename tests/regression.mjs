@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
+const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -62,7 +63,7 @@ assert.deepEqual(Object.keys(rolloutSchools).slice(0,9),['kstate','kansas','flor
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
-      definition.official_hosts.some(domain=>(school==='kstate'?kstateModule:worker).includes(`'${school}|${sport}':'https://${domain}/`)||(school==='kstate'?kstateModule:worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
+      definition.official_hosts.some(domain=>(school==='kstate'?kstateModule:school==='kansas'?kansasModule:worker).includes(`'${school}|${sport}':'https://${domain}/`)||(school==='kstate'?kstateModule:school==='kansas'?kansasModule:worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
       `Missing official ${school} ${sport} source`
     );
   }
@@ -227,13 +228,13 @@ contains(worker,/Math\.min\(profiles\.length,18\)/,'Every team must receive a de
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
 for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allaoui','Keeghan Edwards','Claire Stegall']){
-  assert.ok(worker.includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
+  assert.ok((worker+kansasModule).includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
 }
 for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
   assert.ok(kstateModule.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
 }
 for(const verified of ['Lyla Louderbaugh','Ebba Nordstedt','Anna Wallin']){
-  assert.ok(worker.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
+  assert.ok(kansasModule.includes(`'kansas|Golf|${verified}'`),`Missing verified Kansas Golf Instagram for ${verified}`);
 }
 for(const verified of ['Denis Kipngetich','Brian Musau']){
   assert.ok(worker.includes(`'oklahoma-state|Cross Country|${verified}'`),`Missing verified Oklahoma State Cross Country Instagram for ${verified}`);
@@ -241,7 +242,7 @@ for(const verified of ['Denis Kipngetich','Brian Musau']){
 contains(worker,/'Rowing':\['womens-rowing','rowing'\]/,'Women’s rowing must try the official sport slug before the legacy fallback');
 contains(worker,/'Golf':\['womens-golf','mens-golf','golf'\]/,'Generic golf must inspect the women’s roster containing the verified Kansas athletes first');
 contains(kstateModule,/'kstate\|Rowing':'https:\/\/www\.kstatesports\.com\/sports\/womens-rowing\/schedule'/,'K-State Rowing must use its official schedule');
-contains(worker,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
+contains(kansasModule,/'kansas\|Rowing':'https:\/\/kuathletics\.com\/sports\/womens-rowing\/schedule'/,'Kansas Rowing must use its official schedule');
 contains(worker,/logo\|placeholder\|default/,'Generic logos and placeholder images must be rejected');
 contains(worker,/\.\.\.ranked\.filter\(a=>a\.image_url\),\.\.\.ranked\.filter\(a=>!a\.image_url\)/,'Official portraits must remain preferred before Instagram fallback');
 contains(worker,/srcset\|data-srcset/,'Lazy-loaded roster card portraits must be parsed');

@@ -1,0 +1,36 @@
+{
+  "retrieved_at": "2026-09-28",
+  "schedules": [
+    "https://kuathletics.com/sports/baseball/schedule",
+    "https://kuathletics.com/sports/mens-basketball/schedule",
+    "https://kuathletics.com/sports/womens-basketball/schedule",
+    "https://kuathletics.com/sports/cross-country/schedule",
+    "https://kuathletics.com/sports/football/schedule",
+    "https://kuathletics.com/sports/womens-golf/schedule",
+    "https://kuathletics.com/sports/mens-golf/schedule",
+    "https://kuathletics.com/sports/womens-rowing/schedule",
+    "https://kuathletics.com/sports/wsoc/schedule",
+    "https://kuathletics.com/sports/softball/schedule",
+    "https://kuathletics.com/sports/womens-swimming-and-diving/schedule",
+    "https://kuathletics.com/sports/womens-tennis/schedule",
+    "https://kuathletics.com/sports/track-and-field/schedule",
+    "https://kuathletics.com/sports/wvball/schedule"
+  ],
+  "recaps": {
+    "track-and-field-20641": "https://kuathletics.com/news/2026/6/12/track-field-jemutai-breaks-two-school-records-on-day-two-of-ncaa-outdoor-championships",
+    "track-and-field-20643": "https://kuathletics.com/news/2026/6/14/track-field-jemutai-finishes-sixth-in-1-500-meters-and-800-meters-to-close-out-ncaa-outdoor-championships",
+    "wsoc-20542": "https://kuathletics.com/news/2026/9/24/womens-soccer-herrema-castans-lead-kansas-to-2-0-victory-over-arizona-state",
+    "wsoc-20543": "https://kuathletics.com/news/2026/9/27/womens-soccer-gregorski-records-brace-to-lead-kansas-to-2-0-win-over-arizona",
+    "cross-country-20671": "https://kuathletics.com/news/2026/9/5/cross-country-jayhawks-sweep-bob-timmons-classic-to-begin-2026-season",
+    "cross-country-20672": "https://kuathletics.com/news/2026/9/25/cross-country-kansas-mens-team-places-10th-womens-team-finishes-12th-at-gans-creek-classic",
+    "wvball-20591": "https://kuathletics.com/news/2026/9/25/womens-volleyball-no-19-kansas-sweeps-houston-in-big-12-opener",
+    "wvball-20592": "https://kuathletics.com/news/2026/9/27/womens-volleyball-no-19-jayhawks-break-program-record-for-consecutive-set-wins-in-sweep-of-texas-tech",
+    "mens-golf-20683": "https://kuathletics.com/news/2026/9/1/mens-golf-kansas-wins-new-york-harbor-cup-carlier-finishes-as-co-champion",
+    "mens-golf-20684": "https://kuathletics.com/news/2026/9/9/mens-golf-baker-jayhawks-place-eighth-at-folds-of-honor",
+    "womens-golf-20710": "https://kuathletics.com/news/2026/9/9/womens-golf-jayhawks-finish-fifth-at-folds-of-honor-collegiate-",
+    "womens-golf-20711": "https://kuathletics.com/news/2026/9/23/womens-golf-jayhawks-finish-eighth-at-golfweek-red-sky-classic",
+    "football-20530": "https://kuathletics.com/news/2026/9/11/football-jayhawks-fall-to-23-missouri-in-border-showdown",
+    "football-20529": "https://kuathletics.com/news/2026/9/19/football-kansas-falls-to-arizona-state-24-17-in-inaugural-union-jack-classic"
+  },
+  "note": "Schedule fixtures preserve selected source payload values/reference encoding. Recap fixtures contain event facts only; golf fixtures preserve the ordered numeric and athlete-name tokens used for reviewed-fact fingerprinting. Full copyrighted article text is not distributed."
+}
