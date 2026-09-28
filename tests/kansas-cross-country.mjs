@@ -1,3 +1,4 @@
+import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -83,7 +84,7 @@ assert.deepEqual(gansLater.results,gans.rows,'later meets must parse without the
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const schools=JSON.parse(read('../src/schools.json'));
 let requests=[];
-const worker=Function('kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialHighlights,fetchLive,parseHtml};`)(kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('unexpected PDF extraction');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{requests.push(String(url));throw Error('unexpected request');});
+const worker=Function('kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialHighlights,fetchLive,parseHtml};`)(kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('unexpected PDF extraction');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{requests.push(String(url));throw Error('unexpected request');});
 const current=event();worker.enrichMeetEvent(current);
 await worker.attachOfficialHighlights([current],'',schools.find(s=>s.id==='kansas'),'Cross Country','https://kuathletics.com/sports/cross-country/schedule',new Date('2026-09-25'),null,current.id);
 assert.deepEqual(requests,[],'verified KU modal must not fetch cumulative PDF or AI/prose results');

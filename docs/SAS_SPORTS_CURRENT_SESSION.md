@@ -1,12 +1,15 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 27, 2026, America/Chicago.
+Last updated: September 28, 2026, America/Chicago.
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
 
-**K-State module extraction is complete, merged and live as `4.25.0-kstate-module`.** [PR #12](https://github.com/egassam/SAS-Sports/pull/12) was merged after user approval on September 27 at 14:50:17 UTC (09:50:17 America/Chicago), producing application commit `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095`. This completion session verified the production version and opened both expanded cross-country races in the live app. Gans Creek retains 18 rows (9 women, 7 men, 2 teams); Platte River retains 20 rows (11 women, 7 men, 2 teams). The next separate school-module session is **KU**.
+**KU candidate `4.26.0-kansas-module` is implemented and locally verified; publication/live verification is pending.** This session began from GitHub main `9f18a6c`, which contained only the completed K-State handoff. The earlier conversation's claimed KU in-progress changes were not present in the repository. KU was implemented from the verified main baseline. See `docs/KANSAS_MODULE.md` for scope and source gaps. Do not begin another school in this session.
+
+
+**K-State module extraction is complete, merged and live as `4.25.0-kstate-module`.** [PR #12](https://github.com/egassam/SAS-Sports/pull/12) was merged after user approval on September 27 at 14:50:17 UTC (09:50:17 America/Chicago), producing application commit `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095`. This completion session verified the production version and opened both expanded cross-country races in the live app. Gans Creek retains 18 rows (9 women, 7 men, 2 teams); Platte River retains 20 rows (11 women, 7 men, 2 teams). KU is being completed in the September 28 session below.
 
 **Outstanding shared operational issue:** post-merge workflow run `36327362690` failed its live cross-school-isolation job with HTTP 503 / Cloudflare Error 1102 (Worker exceeded resource limits). Guardrails, certification matrix and Cloudflare build passed; dependent live-school certification was skipped. Do not report the full live audit as passing. K-State module completion means extraction parity plus the scoped live verification below, not fresh certification of every sport.
 See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-State's existing school-specific backend policies are now in `src/schools/kstate.mjs`; generic publisher logic and shared catalog/display metadata remain shared.
@@ -82,14 +85,13 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-1. Read this file from current GitHub main and inspect current source/version before editing.
-2. K-State extraction is complete; do not repeat it or reopen PR #12. Start **KU's school module** when the user begins that separate session.
-3. Review `docs/KSTATE_MODULE.md`, `src/schools/kstate.mjs`, and KU's existing `src/kansas-cross-country.mjs`. Preserve the shared result contract and verified cross-country records.
-4. Keep all module, K-State, KU and 18-school deterministic isolation protections enabled. Run `npm run test:release` when code changes.
-5. Preserve K-State's 18/20 result rows. Live cross-school resource-limit failure remains an operational follow-up; investigate it before claiming broader live certification. The failed job log did not identify the requested school/sport, so do not assign its cause to a specific module without evidence.
-6. Update this same handoff and append the new session record. Keep one school per session unless the user changes scope.
+1. Read this file from current GitHub main and inspect the current source/version before editing.
+2. Finish any explicitly recorded KU publication/live verification tasks below before calling KU complete. Do not repeat K-State extraction or reopen PR #12.
+3. Keep one school per session. After KU is complete, stop; wait for the user to name the next school in a new session.
+4. Preserve K-State's 18/20 and KU's 26/21 XC rows. Keep all deterministic module, school and cache protections; run `npm run test:release` for code changes.
+5. Do not claim all sports have finals where the school has not published results. KU tennis/softball/track source limitations are in `docs/KANSAS_MODULE.md`. Reviewed golf rows apply only to four exact unchanged articles.
+6. Update this same handoff with actual publication/live evidence and append the session record. The previous cross-school resource-limit failure remains unresolved unless fresh evidence establishes otherwise.
 
-No fresh all-sport K-State live certification was performed. The current K-State parser depends on labeled recap-result sections and reports partial results when those cannot be loaded.
 
 ## Publication and permission history
 
@@ -230,3 +232,13 @@ Validation actually completed in this session:
 - Completion changes only this canonical Markdown handoff, preserving prior session history. KU is the next separate module session.
 
 Publication history reconciliation: the previous session's user approved merging/deploying PR #12 after it was prepared. Merge completed at 14:50:17 UTC. The historical pre-approval records above are retained as history and are superseded by the current-state section.
+
+### September 28, 2026 — finish KU module
+
+User asked where SAS Sports work stood, then instructed: “Finish ku.” The assistant recovered GitHub main and read this current handoff plus AGENTS.md. Main did not contain the KU in-progress work described in conversation history, so the implementation started from `9f18a6c` on branch `refactor/kansas-school-module-20260928`.
+
+Implemented the KU module and the fixes documented in `docs/KANSAS_MODULE.md`: selected schedule-payload parsing, 12 explicit sport routes, baseball restoration, corrected swimming source, both golf/basketball divisions, exact dates and doubleheaders, tournament end-date recap matching, preserved/future XC pipeline, and 22 reviewed individual golf placings with changed-fact protection. The Red Sky published total discrepancy is explained in the expanded view. No other school module was started.
+
+Validation so far: initial baseline `npm run test:release` passed; candidate `npm run test:release`, `npm test`, the new Kansas module source-fixture suite, offline esbuild Worker bundle, and `git diff --check` passed. K-State 18/20 and KU 21/26 result protections passed; 18 protected schools and 71 cache identities passed. Official KU pages were downloaded on September 28 and tested against their current selected schedule data and 14 exact recap identities. The actual bundled Worker feed/highlight endpoints were replayed against downloaded official HTML for all 12 KU sports. All 207 non-KU sport source-route combinations and all verified social identities match the pre-change version. No new universal all-sport live certification is claimed.
+
+Publication checkpoint: code/handoff are prepared locally. Commit/PR, deployment status and live checks will be recorded before ending this session. The user requests a stop after KU; do not continue to another school.

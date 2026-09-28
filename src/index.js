@@ -3,9 +3,9 @@ import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
-import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './kansas-cross-country.mjs';
+import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 
-const VERSION='4.25.0-kstate-module';
+const VERSION='4.26.0-kansas-module';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -18,14 +18,7 @@ const HEADERS={
 // account. These are explicit identity matches, not name-based guesses.
 const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   ...kstateSchool.verifiedInstagrams,
-  'kansas|Cross Country|Emmah Jemutai':'https://www.instagram.com/emmah_jemutai/',
-  'kansas|Cross Country|Mia Murray':'https://www.instagram.com/_mia.murray/',
-  'kansas|Soccer|Sophie Dawe':'https://www.instagram.com/sophia.dawe/',
-  'kansas|Soccer|Marit McLaughlin':'https://www.instagram.com/marit.mclaughlin/',
-  'kansas|Soccer|Livvy Moore':'https://www.instagram.com/livvy.moore/',
-  'kansas|Golf|Lyla Louderbaugh':'https://www.instagram.com/lyla_louderbaugh/',
-  'kansas|Golf|Ebba Nordstedt':'https://www.instagram.com/ebbaanordstedt/',
-  'kansas|Golf|Anna Wallin':'https://www.instagram.com/annawalliinn/',
+  ...kansasSchool.verifiedInstagrams,
   'oklahoma-state|Cross Country|Denis Kipngetich':'https://www.instagram.com/deniskipngetich604/',
   'oklahoma-state|Cross Country|Brian Musau':'https://www.instagram.com/brianmuangemusau/',
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
@@ -105,24 +98,18 @@ function teamLabelForSource(sport,url){
   return null;
 }
 function labelTeamEvents(events,sport,url){
-  const team_label=teamLabelForSource(sport,url);if(!team_label)return events;
+  const team_label=teamLabelForSource(sport,url);if(!team_label||events.some(event=>event.team_label))return events;
   return events.map(event=>({...event,team_label,title:`${team_label} · ${event.title}`}));
 }
 
 const KNOWN_URLS=new Map(Object.entries({
   ...kstateSchool.scheduleUrls,
+  ...kansasSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/schedule',
-  'kansas|Volleyball':'https://kuathletics.com/sports/wvball/schedule',
-  'kansas|Soccer':'https://kuathletics.com/sports/wsoc/schedule',
-  'kansas|Cross Country':'https://kuathletics.com/sports/cross-country/schedule',
-  'kansas|Track & Field':'https://kuathletics.com/sports/track-and-field/schedule',
-  'kansas|Football':'https://kuathletics.com/sports/football/schedule',
-  'kansas|Swimming & Diving':'https://kuathletics.com/sports/swimming-and-diving/schedule',
-  'kansas|Rowing':'https://kuathletics.com/sports/womens-rowing/schedule',
   'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/schedule',
   'oklahoma-state|Soccer':'https://okstate.com/sports/womens-soccer/schedule',
   'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/schedule',
@@ -211,6 +198,7 @@ const clean=s=>s==null?null:(String(s).replace(/\s+/g,' ').replace(/^[ ,\t\r\n]+
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
+const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -1045,6 +1033,7 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
   return events;
 }
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
+  if(school.id==='kansas'){const events=kansasHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
@@ -1073,7 +1062,7 @@ function compactScheduleHtml(raw,sourceUrl){
   end=Math.min(raw.length,end+4000);
   return raw.slice(0,50000)+raw.slice(Math.max(0,start-1000),end);
 }
-function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}`;}
+function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}${e.school_id==='kansas'&&e.official_event_id?'|'+e.official_event_id:''}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
@@ -1359,7 +1348,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!target)return events;
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
-  if(!isKansasCrossCountry(target)&&!isKStateCrossCountry(target)){
+  if(target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
     if(target.event_type==='MEET'&&!target.result_url)target.result_url=discoverOfficialMeetResultUrl(raw,sourceUrl);
     await attachOfficialMeetResults(target);
   }
@@ -1368,7 +1357,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // very large schedule document when this direct identity is available.
   const recapIndex=target.recap_url?{map:new Map(),candidates:[]}:recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const direct=target.recap_url||recapIndex.map.get(eventMergeKey(target));
-  const day=target.start_time?.slice(0,10)||'';
+  const day=(target.school_id==='kansas'&&target.event_type==='MEET'?target.end_time||target.start_time:target.start_time)?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
   const candidates=[...new Set(ordered)].slice(0,8);
@@ -1379,7 +1368,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await fetch(candidate,{headers:HEADERS,redirect:'follow'});
         if(!r.ok)continue;
         const html=await r.text();
-        if(recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;
@@ -1438,7 +1427,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Results links are not consistently present on schedule cards. Many schools
   // publish the official timing link only inside the recap, so discover and
   // parse it here through the same school-neutral meet-results pipeline.
-  if(target.event_type==='MEET'&&recapHtml&&!isKansasCrossCountry(target)&&!isKStateCrossCountry(target)){
+  if(target.event_type==='MEET'&&recapHtml&&target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
     target.result_url=target.result_url||discoverOfficialMeetResultUrl(recapHtml,recapUrl);
     await attachOfficialMeetResults(target);
   }
@@ -1465,6 +1454,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
     }
     return events;
   }
+  if(kansasHandlers.applyGolfRecap(target,recapHtml,recapUrl))return events;
   const recapRows=target.sport==='Cross Country'?parseCrossCountryRecapRows(recapHtml,target):[];
   target.recap_result_count=recapRows.length;
   if(recapRows.length){target.results=recapRows;target.result_count=recapRows.length;target.has_more_results=recapRows.length>3;target.meet_results_verified=true;}
@@ -1485,7 +1475,22 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   }
   return events;
 }
-async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url,parseable=compactScheduleHtml(html,finalUrl),labels=extractEventLabels(parseable);let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(decodeHtml(parseable)),has_completed:/Completed Event:/i.test(decodeHtml(parseable)),events};}
+async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
+  const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url;
+  const parseable=compactScheduleHtml(html,finalUrl),labels=school.id==='kansas'?[]:extractEventLabels(parseable);
+  let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];
+  if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);
+  if(school.id==='kansas'&&sport==='Cross Country'&&!aiTargetId){
+    // Future KU races use the same official two-document path in the feed and
+    // the expanded view; a missing document stays explicitly partial.
+    for(const event of events.filter(e=>isKansasCrossCountry(e)&&!e.kansas_results_verified))await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,event.id);
+  }
+  if(school.id==='kansas'&&sport==='Golf'&&!aiTargetId){
+    for(const event of events.filter(kansasHandlers.hasReviewedGolf))await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,event.id);
+  }
+  return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
+}
+
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
   const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
@@ -1544,9 +1549,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
-  const combined=COMBINED_TEAM_SPORTS.has(sport);
+  const combined=school.id==='kansas'?kansasSchool.combinedSports.has(sport):COMBINED_TEAM_SPORTS.has(sport);
   for(const url of urls){
-    if(combined&&successful.length&&teamLabelForSource(sport,url)==null)continue;
+    if(combined&&successful.length&&school.id!=='kansas'&&teamLabelForSource(sport,url)==null)continue;
     try{
       const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
       if(item.ok&&item.events.length){successful.push(item);if(!combined)break;continue}

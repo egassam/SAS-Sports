@@ -1,0 +1,156 @@
+[
+  {
+    "official_event_id": "20683",
+    "date": "2026-08-31",
+    "event": "NY Harbor Cup",
+    "division": "Men's",
+    "recap_url": "https://kuathletics.com/news/2026/9/1/mens-golf-kansas-wins-new-york-harbor-cup-carlier-finishes-as-co-champion",
+    "article_fingerprint": "940687945",
+    "verified_at": "2026-09-28",
+    "rows": [
+      {
+        "group": "Men's Individual Results",
+        "participant": "Arthur Carlier",
+        "result": "T-1st"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Nicolas Vidal Reig",
+        "result": "3rd"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Ty Lasley",
+        "result": "T-13th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Will Baker",
+        "result": "T-17th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Hartej Grewal",
+        "result": "T-34th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Brady Rapp",
+        "result": "T-47th"
+      }
+    ]
+  },
+  {
+    "official_event_id": "20684",
+    "date": "2026-09-07",
+    "event": "Folds of Honor Collegiate",
+    "division": "Men's",
+    "recap_url": "https://kuathletics.com/news/2026/9/9/mens-golf-baker-jayhawks-place-eighth-at-folds-of-honor",
+    "article_fingerprint": "3115386334",
+    "verified_at": "2026-09-28",
+    "rows": [
+      {
+        "group": "Men's Individual Results",
+        "participant": "Will Baker",
+        "result": "3rd"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Arthur Carlier",
+        "result": "T-12th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Nicolas Vidal Reig",
+        "result": "T-40th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Max Jelinek",
+        "result": "T-46th"
+      },
+      {
+        "group": "Men's Individual Results",
+        "participant": "Ty Lasley",
+        "result": "58th"
+      }
+    ]
+  },
+  {
+    "official_event_id": "20710",
+    "date": "2026-09-07",
+    "event": "Folds of Honor Collegiate",
+    "division": "Women's",
+    "recap_url": "https://kuathletics.com/news/2026/9/9/womens-golf-jayhawks-finish-fifth-at-folds-of-honor-collegiate-",
+    "article_fingerprint": "989436225",
+    "verified_at": "2026-09-28",
+    "rows": [
+      {
+        "group": "Women's Individual Results",
+        "participant": "Anna Wallin",
+        "result": "T-12th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Lyla Louderbaugh",
+        "result": "T-12th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Hannah Hall",
+        "result": "T-20th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Kinslea Jones",
+        "result": "T-32nd"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Ebba Nordstedt",
+        "result": "T-32nd"
+      }
+    ]
+  },
+  {
+    "official_event_id": "20711",
+    "date": "2026-09-21",
+    "event": "Golfweek Red Sky Classic",
+    "division": "Women's",
+    "recap_url": "https://kuathletics.com/news/2026/9/23/womens-golf-jayhawks-finish-eighth-at-golfweek-red-sky-classic",
+    "article_fingerprint": "4087878934",
+    "verified_at": "2026-09-28",
+    "rows": [
+      {
+        "group": "Women's Individual Results",
+        "participant": "Lyla Louderbaugh",
+        "result": "T-10th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Ebba Nordstedt",
+        "result": "T-47th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Kinslea Jones",
+        "result": "T-51st"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Anna Wallin",
+        "result": "T-54th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Hannah Hall",
+        "result": "T-54th"
+      },
+      {
+        "group": "Women's Individual Results",
+        "participant": "Marieke Ebens",
+        "result": "T-86th"
+      }
+    ]
+  }
+]
