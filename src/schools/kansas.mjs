@@ -100,6 +100,13 @@ export function createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesE
       }
       const recap=result.recap?.url?officialUrl(result.recap.url,sourceUrl):null;
       if(result.recap?.url&&recap)event.recap_url=recap;
+      // KU's 9/11/2026 SDSU card points to the later Wichita State recap.
+      // Repair only this exact published mistake; corrected or future cards
+      // keep their own source. The normal fetched-article identity check still
+      // validates the replacement before any highlights are accepted.
+      if(sport==='Volleyball'&&event.official_event_id==='20586'&&day==='2026-09-11'&&opponent==='South Dakota State'&&division==="Women's"&&recap==='https://kuathletics.com/news/2026/9/15/womens-volleyball-jayhawks-earn-fourth-straight-sweep-in-win-over-shockers'){
+        event.recap_url='https://kuathletics.com/news/2026/9/11/womens-volleyball-kansas-earns-second-straight-sweep-in-win-over-south-dakota-state';
+      }
       const boxscore=result.boxscore?.url;
       if(boxscore)event.boxscore_url=officialUrl(boxscore,sourceUrl);
       if(sport==='Golf'&&summary&&event.status==='Final'){
