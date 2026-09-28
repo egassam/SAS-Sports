@@ -6,7 +6,7 @@ Last updated: September 28, 2026, America/Chicago.
 
 ## Current state
 
-**KU module is merged and live as `4.26.0-kansas-module`; final verification found one scoped recap-link correction, now prepared as `4.26.1-kansas-recap`.** PR #13 merged at 12:14:43 UTC on September 28, producing `5d0ee5347e6258694d6b29bb03a499c57efeb321`; Cloudflare build succeeded. Production status, all 12 KU sport feeds, full XC/golf result parity, and existing tests were checked in the completion session below. The remaining correction fixes KU's erroneous South Dakota State volleyball recap URL. Do not begin another school. See `docs/KANSAS_MODULE.md` for source gaps.
+**KU module is complete, merged, deployed, and live as `4.26.1-kansas-recap`.** PR #14 merged at 13:54:46 America/Chicago on September 28, producing `c9a02452107bad023ff06214f4ba99668f06d5a4`. Post-merge certification run `36468538013` passed. Production status and the exact South Dakota State volleyball event were rechecked after deployment: the card now uses the correct September 11 KU recap and its expanded endpoint returns four verified event-specific highlights. The broader KU verification below remains accurate, with the documented tennis, softball, and track source limitations. KU is finished; do not begin another school until the user starts a new school-module session.
 
 
 **K-State module extraction is complete, merged and live as `4.25.0-kstate-module`.** [PR #12](https://github.com/egassam/SAS-Sports/pull/12) was merged after user approval on September 27 at 14:50:17 UTC (09:50:17 America/Chicago), producing application commit `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095`. This completion session verified the production version and opened both expanded cross-country races in the live app. Gans Creek retains 18 rows (9 women, 7 men, 2 teams); Platte River retains 20 rows (11 women, 7 men, 2 teams). KU is being completed in the September 28 session below.
@@ -19,8 +19,8 @@ See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-Sta
 | Repository | `egassam/SAS-Sports` |
 | Default branch | `main` |
 | Live K-State page | https://sas-sports.lovetogivepain.workers.dev/?school=kstate |
-| Working application version | `4.26.0-kansas-module` (KU follow-up `4.26.1-kansas-recap` pending) |
-| Verified application commit | `5d0ee5347e6258694d6b29bb03a499c57efeb321` |
+| Working application version | `4.26.1-kansas-recap` |
+| Verified application commit | `c9a02452107bad023ff06214f4ba99668f06d5a4` |
 | Pre-extraction recovery tree | `b8b7958477f593181f8ba2e52355e65f768c5bb8` |
 | Preserved baseline branch | `checkpoint/kstate-xc-verified-20260926` |
 | Baseline branch target | `19ec2ecb2ac03b8c7d242cb14a23146878857ab0` |
@@ -86,7 +86,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 ## Instructions for the next session
 
 1. Read this file from current GitHub main and inspect the current source/version before editing.
-2. Finish any explicitly recorded KU publication/live verification tasks below before calling KU complete. Do not repeat K-State extraction or reopen PR #12.
+2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12, #13, or #14.
 3. Keep one school per session. After KU is complete, stop; wait for the user to name the next school in a new session.
 4. Preserve K-State's 18/20 and KU's 26/21 XC rows. Keep all deterministic module, school and cache protections; run `npm run test:release` for code changes.
 5. Do not claim all sports have finals where the school has not published results. KU tennis/softball/track source limitations are in `docs/KANSAS_MODULE.md`. Reviewed golf rows apply only to four exact unchanged articles.
@@ -259,3 +259,11 @@ Checks actually completed:
 - Initial Python urllib requests received HTTP 403 in this environment. Standard curl and the browser succeeded. No bypass or alternate network configuration was used.
 
 Final correction publication/live verification is pending at this checkpoint. End the session after KU's correction and handoff save; do not start another school.
+
+#### Final correction verification
+
+PR #14 merged at 18:54:46 UTC (13:54:46 America/Chicago), producing merge commit `c9a02452107bad023ff06214f4ba99668f06d5a4`. GitHub post-merge certification run `36468538013` completed successfully. Production `/api/status` returned `4.26.1-kansas-recap`.
+
+A forced live KU volleyball feed returned official event `20586` as South Dakota State, final 3-0, with the corrected September 11 KU recap URL. The live expanded endpoint then fetched that same official recap, identified it as an official athletics game recap, and returned four event-specific verified highlights naming Taylor Stanley, Reese Ptacek, Aisha Aiono, and Reese Messer. The incorrect Wichita State link is no longer returned for this event.
+
+KU is complete. The session stops here without starting another school. The historical full-audit resource-limit limitation remains; this scoped completion does not claim a fresh universal certification of every school.
