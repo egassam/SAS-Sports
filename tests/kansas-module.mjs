@@ -51,6 +51,28 @@ assert.ok(byPath.get('womens-swimming-and-diving').length>0,'swimming must use t
 const sources=JSON.parse(fixture('sources.json'));
 for(const [name,url] of Object.entries(sources.recaps))responses.set(url,fixture(name+'-recap.html'));
 
+// A publisher's erroneous recap link must never redirect an older match to a
+// different opponent. Exercise schedule parsing through the expanded endpoint.
+const sdsu=structuredClone(byPath.get('wvball').find(e=>e.official_event_id==='20586'));
+const sdsuUrl='https://kuathletics.com/news/2026/9/11/womens-volleyball-kansas-earns-second-straight-sweep-in-win-over-south-dakota-state';
+assert.equal(sdsu.recap_url,sdsuUrl);
+const sdsuArticle='<title>Kansas Earns Second-Straight Sweep in Win over South Dakota State</title><div id="storyPageContentBody">Kansas volleyball defeated South Dakota State on September 11, 2026. Taylor Stanley led Kansas with 16 kills and five aces in the three-set victory.</div></section>';
+responses.set(sdsuUrl,sdsuArticle);
+requests=[];
+await worker.attachOfficialHighlights([sdsu],'',school,'Volleyball',kansasSchool.scheduleUrls['kansas|Volleyball'],now,null,sdsu.id);
+assert.deepEqual(requests,[sdsuUrl],'the corrected exact recap must be fetched and accepted without unrelated fallback requests');
+assert.equal(sdsu.recap_url,sdsuUrl);
+assert.equal(sdsu.source.name,'Official athletics game recap');
+assert.equal(worker.kansasHandlers.matchesRecap(sdsuArticle,{...sdsu,opponent:'Wichita State'},sdsuUrl),false);
+assert.equal(worker.kansasHandlers.matchesRecap(sdsuArticle,{...sdsu,start_time:'2027-09-11T12:00:00Z'},sdsuUrl),false);
+const volleyballRaw=`<script id="__NUXT_DATA__" type="application/json">${fixture('wvball.json')}</script>`;
+const wrongRecap='https://kuathletics.com/news/2026/9/15/womens-volleyball-jayhawks-earn-fourth-straight-sweep-in-win-over-shockers';
+const updatedRecap=sdsuUrl+'-corrected';
+const updatedRaw=volleyballRaw.replaceAll(new URL(wrongRecap).pathname,new URL(updatedRecap).pathname);
+assert.notEqual(updatedRaw,volleyballRaw,'test must actually replace the published source link');
+const updatedEvents=worker.parseHtml(updatedRaw,school,'Volleyball',kansasSchool.scheduleUrls['kansas|Volleyball'],now);
+assert.equal(updatedEvents.find(e=>e.official_event_id==='20586').recap_url,updatedRecap,'later publisher corrections must not be overwritten');
+
 // Combined feeds must include both teams; identical tournament names/dates cannot merge.
 for(const [sport,count] of [['Golf',26],['Basketball',70]]){
   const result=await worker.fetchLive('kansas',sport);

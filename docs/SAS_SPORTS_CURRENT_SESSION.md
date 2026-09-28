@@ -6,7 +6,7 @@ Last updated: September 28, 2026, America/Chicago.
 
 ## Current state
 
-**KU candidate `4.26.0-kansas-module` is implemented and locally verified; publication/live verification is pending.** This session began from GitHub main `9f18a6c`, which contained only the completed K-State handoff. The earlier conversation's claimed KU in-progress changes were not present in the repository. KU was implemented from the verified main baseline. See `docs/KANSAS_MODULE.md` for scope and source gaps. Do not begin another school in this session.
+**KU module is merged and live as `4.26.0-kansas-module`; final verification found one scoped recap-link correction, now prepared as `4.26.1-kansas-recap`.** PR #13 merged at 12:14:43 UTC on September 28, producing `5d0ee5347e6258694d6b29bb03a499c57efeb321`; Cloudflare build succeeded. Production status, all 12 KU sport feeds, full XC/golf result parity, and existing tests were checked in the completion session below. The remaining correction fixes KU's erroneous South Dakota State volleyball recap URL. Do not begin another school. See `docs/KANSAS_MODULE.md` for source gaps.
 
 
 **K-State module extraction is complete, merged and live as `4.25.0-kstate-module`.** [PR #12](https://github.com/egassam/SAS-Sports/pull/12) was merged after user approval on September 27 at 14:50:17 UTC (09:50:17 America/Chicago), producing application commit `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095`. This completion session verified the production version and opened both expanded cross-country races in the live app. Gans Creek retains 18 rows (9 women, 7 men, 2 teams); Platte River retains 20 rows (11 women, 7 men, 2 teams). KU is being completed in the September 28 session below.
@@ -19,8 +19,8 @@ See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-Sta
 | Repository | `egassam/SAS-Sports` |
 | Default branch | `main` |
 | Live K-State page | https://sas-sports.lovetogivepain.workers.dev/?school=kstate |
-| Working application version | `4.25.0-kstate-module` |
-| Verified application commit | `30d6edd0f46f1ceebaed1fd7f5eca54921f0f095` |
+| Working application version | `4.26.0-kansas-module` (KU follow-up `4.26.1-kansas-recap` pending) |
+| Verified application commit | `5d0ee5347e6258694d6b29bb03a499c57efeb321` |
 | Pre-extraction recovery tree | `b8b7958477f593181f8ba2e52355e65f768c5bb8` |
 | Preserved baseline branch | `checkpoint/kstate-xc-verified-20260926` |
 | Baseline branch target | `19ec2ecb2ac03b8c7d242cb14a23146878857ab0` |
@@ -242,3 +242,20 @@ Implemented the KU module and the fixes documented in `docs/KANSAS_MODULE.md`: s
 Validation so far: initial baseline `npm run test:release` passed; candidate `npm run test:release`, `npm test`, the new Kansas module source-fixture suite, offline esbuild Worker bundle, and `git diff --check` passed. K-State 18/20 and KU 21/26 result protections passed; 18 protected schools and 71 cache identities passed. Official KU pages were downloaded on September 28 and tested against their current selected schedule data and 14 exact recap identities. The actual bundled Worker feed/highlight endpoints were replayed against downloaded official HTML for all 12 KU sports. All 207 non-KU sport source-route combinations and all verified social identities match the pre-change version. No new universal all-sport live certification is claimed.
 
 Publication checkpoint: code/handoff are prepared locally. Commit/PR, deployment status and live checks will be recorded before ending this session. The user requests a stop after KU; do not continue to another school.
+
+
+### September 28, 2026 — KU deployed verification and final recap correction
+
+User: “Finish ku.” Read current main AGENTS.md and this entire handoff before work. Main was clean at `5d0ee5347e6258694d6b29bb03a499c57efeb321`. PR #13 had already merged; the historical publication checkpoint above was stale. No module reimplementation was needed.
+
+Checks actually completed:
+- Production `/api/status` returned `4.26.0-kansas-module`. Cloudflare merge build succeeded; PR run `36420513423` passed. Merged `npm run test:release` and `npm test` passed locally.
+- Live KU feeds checked for all 12 sports: XC 2 finals/4 upcoming; soccer 11/9 and 1 other; volleyball 12/16; football 3/9; golf 4/22; swimming 0/13; rowing 0/9; baseball 0/38; basketball 0/70; softball 0/31 and 2 pending games; tennis 2 completed meets/6 upcoming without detailed results; track empty due to the prior-season source. Empty track is the documented source gap, not a passed current-results certification.
+- Live expanded endpoints checked for all 34 listed completed events. XC feed/expanded rows match exactly (Gans Creek 26, Bob Timmons 21); all four golf events match exactly (7/6/6/7 rows, 22 individual placings). Both XC modals and Red Sky golf were visually checked in the browser, with complete division groups, highlights and recap links.
+- Soccer 11, football 3, and 11 volleyball recaps returned verified highlights. Saint Louis and Tulsa soccer initially hit the existing eight-second AI timeout, then returned four highlights on individual retry. This is observed transient AI dependency, not a new reliability fix. Both tennis events correctly report that an exact recap was not found.
+- One real defect remains in the deployed version: the September 11 South Dakota State volleyball schedule card links to the September 15 Wichita State recap. The actual correct KU article was retrieved. Prepared a KU-only exact school/sport/event ID/date/opponent/division/incorrect-URL repair. Corrected or later source links are not overridden; standard fetched-article identity verification still applies. No shared parser behavior changes. Version bump invalidates existing feed caches.
+- All 12 athlete endpoints returned three named athletes with portrait URLs. Nine sports returned verified Instagram destinations; swimming, rowing and tennis use the existing official-profile fallback with null Instagram, introduced in earlier commit `d7f1d7e`. These are not newly verified Instagram accounts. No athlete policy changes were made.
+- Live KU → Florida → KU stable comparison passed, and K-State feed retained 18/20 XC rows. Merge run `36420592088` failed its earlier cross-school comparison because KU IDs switched from old descriptive IDs to new official event IDs during rollout. This is consistent with a deployment race; it is not evidence of mixed-school records. The full 18-school live suite was not rerun, and the prior resource-limit issue is not claimed resolved.
+- Initial Python urllib requests received HTTP 403 in this environment. Standard curl and the browser succeeded. No bypass or alternate network configuration was used.
+
+Final correction publication/live verification is pending at this checkpoint. End the session after KU's correction and handoff save; do not start another school.
