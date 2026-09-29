@@ -6,6 +6,8 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
+**Project scope (user, September 29): only K-State and KU are expected to work correctly now.** Every other school still needs its own school module built the same way as `src/schools/kstate.mjs` and `src/schools/kansas.mjs`, one school per session, with tests against that school's real official sources. Until a school is converted, its live-certification failures are expected. They are not regressions and not a reason to patch that school inside shared code. As of this date, Oklahoma State, Utah and Alabama fail athlete-Instagram checks, and the other 13 non-module schools pass only the basic certification checks.
+
 **The September 29 local-time fix is merged, deployed and live as `4.28.1-local-time`.** PR #19 merged at 15:25 UTC as `79c157d8ce8349439cab3c23931d46f5fb920682`, and production switched at about 15:29 UTC.
 
 Official schedule times are stored as the school's local wall clock, while ESPN times are true UTC and "today" was computed in UTC. So a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate next-day Live card, and dropped out of Upcoming at 00:00 UTC. The fix adds a per-school time zone (a state map plus a Tennessee override). It converts ESPN times into that frame and uses the school's local date in the shared `makeEvent`, `groupEvents` and text-row checks and in the KU module.
@@ -95,6 +97,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
 1. Read this file from current GitHub main and inspect the current source/version before editing.
 2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12 through #16.
