@@ -99,3 +99,5 @@ Tests: `tests/oklahoma-state-cross-country.mjs` (`npm run test:oklahoma-state-xc
 - It checks rows, group order, headline and fields; feed/expanded parity (complete and missing-document cases); idempotence; wrong-date, unofficial and non-matching-recap sources; and school/sport/status isolation.
 - Mutation checks showed the group-order and missing-document parity assertions fail without the module hooks.
 - `tests/regression.mjs` now requires `mxct` as the first XC schedule candidate.
+
+**Production (September 29, 19:00 UTC).** PR #23 was merged as `0629321`. Production reports `4.29.2-feed-retry` (PR #24, merged afterwards, did not change `src/`). Forced feeds returned Preview 31 rows and Jamboree 37 rows, with the headlines above, and `/live/highlights` was identical to the feed for both meets. K-State XC 18/20 and KU XC 26/21 were unchanged.

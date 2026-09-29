@@ -8,16 +8,16 @@ Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country,
 
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
 
-**Oklahoma State Cross Country fix is ready in PR #23 (https://github.com/egassam/SAS-Sports/pull/23), not merged.** Branch `oklahoma-state-xc-results`: application commit `7057360`, then test-only commit `e89d463`. CI run `36608526812` passed guardrails, certification-matrix and the Cloudflare preview build.
+**Oklahoma State Cross Country is merged, deployed and verified in production.** The user merged PR #23 (https://github.com/egassam/SAS-Sports/pull/23) at about 18:26 UTC on September 29 as merge commit `0629321`. PR #24 (`ae5e65f`, feed retry) merged afterwards, so production now reports `4.29.2-feed-retry`; it carries the same Cross Country code.
 
-On the branch preview (`4.29.1-oklahoma-state-xc-results`), both OSU meets match K-State's format, and the feed and expanded view are identical:
+At 19:00 UTC, forced production feeds matched K-State's format, and `/live/highlights` was identical to the feed for both meets:
 
 | Meet | Rows | Headline |
 | --- | --- | --- |
 | Cowboy Preview | 31: `Women's 3K`, then `Men's 5K` | `Women's team: 1st · 26 pts / Men's team: 1st · 31 pts` |
 | Cowboy Jamboree | 37: `Women's 6K` (15 athletes), then `Men's 8K` (20 athletes) | `Women's team: 2nd · 64 pts / Men's team: 2nd · 44 pts` |
 
-**Production stays on `4.29.0` until the user merges PR #23.** Merging deploys it. The table below is the pre-fix production state (user report, September 29):
+The table below is the pre-fix production state (user report, September 29), kept for history:
 
 | Item | K-State (reference) | Oklahoma State now |
 | --- | --- | --- |
@@ -123,12 +123,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Next: Oklahoma State Cross Country publication.** PR #23 is waiting for the user to merge it. After the merge:
-  - Confirm production `/api/status` returns `4.29.1-oklahoma-state-xc-results`.
-  - Force-refresh the OSU XC grouped feed and check Preview 31 rows and Jamboree 37 rows, women first, with K-State headlines.
-  - Check that `/live/highlights` for both meets equals the feed.
-  - Check that K-State XC is still 18/20 and KU XC 26/21.
-  - Record the results here. Start no other OSU sport until that is done.
+- **Oklahoma State Cross Country is complete** (verified in production September 29). Start the next single sport the user names.
 - **Other Oklahoma State follow-ups (later, one sport at a time):**
   - official schedule fixtures other than women's Tennis (okstate.com 403s the sandbox intermittently)
   - the women's cross country/track roster
@@ -534,4 +529,17 @@ Limitations:
 - The preview diagnostic gives the women's page event count, not meet names.
 - Production was not changed.
 - The Cloudflare 1102 issue remains open.
+
+#### Production verification (Oklahoma State Cross Country)
+
+- **Merge:** the user merged PR #23 at about 18:26 UTC as `0629321`. PR #24 (`4.29.2-feed-retry`) merged afterwards. It did not change `src/`, so production carries the #23 Cross Country code.
+- **Version:** production `/api/status` returned `4.29.2-feed-retry` at 19:00 UTC. The first post-merge attempt, around 18:30, could not run because this session's command safety check failed transiently.
+- **Forced production grouped feeds (`refresh=1`):**
+  - Oklahoma State Cross Country: Preview 31 rows (`Women's 3K` 15, `Men's 5K` 16) and Jamboree 37 rows (`Women's 6K` 16, `Men's 8K` 21), counts including team rows.
+    - Headlines: `Women's team: 1st · 26 pts / Men's team: 1st · 31 pts` and `Women's team: 2nd · 64 pts / Men's team: 2nd · 44 pts`.
+    - `recap_result_count` equals the row count, `meet_results_verified` is true, and each meet has a verified recap link.
+  - K-State XC: 18 and 20 rows, unchanged.
+  - KU XC: 26 and 21 rows, unchanged.
+- **Expanded view:** production `/live/highlights` for both Oklahoma State meets was identical to the feed on results, headline, counts, verification fields, highlights, recap and result links.
+- **Open:** the Cloudflare 1102 resource-limit issue.
 
