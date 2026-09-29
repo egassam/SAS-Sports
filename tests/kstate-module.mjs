@@ -13,7 +13,7 @@ const school=schools.find(s=>s.id==='kstate');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected fetch ${url}`);return new Response(responses.get(String(url)));};
-const worker=Function('kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents};`)(kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
+const worker=Function('kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
 
 // Frozen from the pre-module application commit, never regenerated during tests.
 assert.equal(Object.keys(baseline.routes).length,10);
@@ -53,6 +53,37 @@ const reconciled=worker.reconcileScoreboardEvents([womenSchedule,menSchedule],li
 assert.equal(reconciled.length,2,'a men\'s score must not create or overwrite a women\'s event');
 assert.equal(reconciled.find(x=>x.team_label==="Women's").status,'Upcoming');
 assert.equal(reconciled.find(x=>x.team_label==="Men's").verification_state,'official_schedule+live_scoreboard');
+// A 7 PM Central tip-off is 01:00 UTC the next day. The official card and the
+// ESPN score must still reconcile, and tonight's game must stay in Upcoming
+// after 00:00 UTC.
+assert.equal(worker.schoolTimeZone(school),'America/Chicago');
+const eveningScoreboard=(state,detail,ours,theirs)=>({events:[{date:'2026-01-18T01:00Z',competitions:[{date:'2026-01-18T01:00Z',status:{type:{state,completed:state==='post',shortDetail:detail}},competitors:[
+  {homeAway:'home',score:ours,team:{id:'2306',location:'Kansas State',displayName:'Kansas State Wildcats',shortDisplayName:'Kansas State'}},
+  {homeAway:'away',score:theirs,team:{id:'999',location:'Iowa State',displayName:'Iowa State Cyclones',shortDisplayName:'Iowa State'}}
+]}]}]});
+const eveningOfficial=(now,status='Upcoming',schoolScore=null,oppScore=null)=>({...worker.makeEvent({school,sport:'Basketball',status,relation:'vs',opponent:'Iowa State',date:'January 17, 2026',time:'7:00 PM',schoolScore,oppScore,resultText:null,sourceUrl:'https://www.kstatesports.com/sports/mens-basketball/schedule',now}),team_label:"Men's"});
+const beforeTip=new Date('2026-01-18T00:30:00Z');
+const pregame=worker.groupEvents([eveningOfficial(beforeTip)],beforeTip)[0];
+assert.equal(pregame.upcoming.length,1,'a 7 PM game stays upcoming at 6:30 PM Central');
+assert.equal(pregame.upcoming[0].status,'Today');
+const duringGame=new Date('2026-01-18T02:00:00Z');
+const eveningLive=worker.parseScoreboardPayload(eveningScoreboard('in','1st Half - 2:10','30','28'),school,'Basketball',kstateSchool.liveScoreboards.Basketball[0],scoreUrl,duringGame);
+assert.equal(eveningLive[0].start_time,'2026-01-17T19:00:00.000Z','ESPN UTC time is expressed in K-State local time');
+const eveningOfficialCard=eveningOfficial(duringGame);
+const eveningReconciled=worker.reconcileScoreboardEvents([eveningOfficialCard],eveningLive);
+assert.equal(eveningReconciled.length,1,'an evening score must update the official card, not add a duplicate');
+assert.equal(eveningReconciled[0].id,eveningOfficialCard.id);
+assert.equal(eveningReconciled[0].status,'Live');
+assert.equal(eveningReconciled[0].verification_state,'official_schedule+live_scoreboard');
+const liveGroup=worker.groupEvents(eveningReconciled,duringGame)[0];
+assert.equal(liveGroup.live.length,1);
+assert.equal(liveGroup.upcoming.length,0);
+const nextMorning=new Date('2026-01-18T15:00:00Z');
+const eveningFinal=worker.parseScoreboardPayload(eveningScoreboard('post','Final','71','68'),school,'Basketball',kstateSchool.liveScoreboards.Basketball[0],scoreUrl,nextMorning);
+const finalGroup=worker.groupEvents(worker.reconcileScoreboardEvents([eveningOfficial(nextMorning,'Final','71','68')],eveningFinal),nextMorning)[0];
+assert.equal(finalGroup.results.length,1,'the finished evening game appears once in Results');
+const tbd=worker.parseScoreboardPayload({events:[{...eveningScoreboard('in','Live','10','8').events[0],date:'2026-01-17T05:00Z',competitions:[{...eveningScoreboard('in','Live','10','8').events[0].competitions[0],date:'2026-01-17T05:00Z',timeValid:false}]}]},school,'Basketball',kstateSchool.liveScoreboards.Basketball[0],scoreUrl,duringGame);
+assert.equal(tbd[0].start_time.slice(0,10),'2026-01-17','an unconfirmed ESPN time keeps its published calendar day');
 assert.deepEqual(Object.fromEntries([...worker.VERIFIED_TEAM_TAG_INSTAGRAM].filter(([key])=>key.startsWith('kstate|'))),baseline.verified_instagrams);
 assert.equal(worker.officialCardInstagram('https://instagram.com/kstatesports/'),null);
 assert.equal(worker.officialCardInstagram('https://instagram.com/sundevilathletics/'),null);
@@ -88,4 +119,4 @@ const first=()=>({school_id:'kstate',school:'Kansas State',sport:'Cross Country'
 const one=first();worker.enrichMeetEvent(one);one.results[0].result='changed';
 const two=first();worker.enrichMeetEvent(two);assert.equal(two.results[0].result,'1st · 20 pts');
 assert.equal(two.results.length,20);
-console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball scoreboards, 5 exact soccer records, 3 verified tennis accounts through the athlete path, school/event isolation, and independent result snapshots passed.');
+console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, school/event isolation, and independent result snapshots passed.');
