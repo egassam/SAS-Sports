@@ -6,6 +6,21 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
+**Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
+
+**Oklahoma State Cross Country does not yet match K-State's results format (user report, September 29).** The module is live, but a production comparison of the grouped feed found:
+
+| Item | K-State (reference) | Oklahoma State now |
+| --- | --- | --- |
+| Result groups | One group per race, labeled by division and distance (`Women's 6K`, `Men's 8K`), with the team row first | Team and individuals split into separate groups (`Men's Team`, `Men's Individual Results`), with no distance |
+| Order | Women first, then men | Men first |
+| Headline | `Women's team: 18th · 499 pts / Men's team: 17th · 449 pts` | Raw schedule text for one team only (`1st - 31 pts.`) |
+| Cowboy Jamboree (Sept 26) | n/a | 1 row, `Result: 2nd - 44 pts.`, with no athletes, although the official results PDF and recap links are present |
+| Recap fields | `recap_result_count` set; highlights from the official recap | No `recap_result_count` in the feed |
+| Schedule source | n/a | Only the men's `mxct` schedule; the women's program schedule is not loaded |
+
+Cowboy Preview does carry 31 correct rows: both teams 1st (men 31 pts, women 26 pts), 15 men and 14 women with places and times. Its data is right; its format is not.
+
 **Oklahoma State module is merged, deployed and live as `4.29.0-oklahoma-state-module`.** The user merged PR #21 (https://github.com/egassam/SAS-Sports/pull/21) at 17:31 UTC on September 29 as merge commit `da5b91efa3647fed90dc0a1ef247db89f4d05992`. Production verification is recorded under "Oklahoma State production verification" below. See `docs/OKLAHOMA_STATE_MODULE.md`. Oklahoma State's athlete-certification failure was a validator rule, not an app defect. It is fixed by the new opt-in `athlete_profile_fallback_sports` certification field, which affects only Oklahoma State. Verified schools are now K-State, KU and Oklahoma State. Utah and Alabama still fail athlete checks unchanged.
 
 **Project scope (user, September 29): only K-State and KU are expected to work correctly now.** Every other school still needs its own school module built the same way as `src/schools/kstate.mjs` and `src/schools/kansas.mjs`, one school per session, with tests against that school's real official sources. Until a school is converted, its live-certification failures are expected. They are not regressions and not a reason to patch that school inside shared code. As of this date, Oklahoma State, Utah and Alabama fail athlete-Instagram checks, and the other 13 non-module schools pass only the basic certification checks.
@@ -99,7 +114,8 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Oklahoma State follow-ups (module is live):** official schedule fixtures other than women's Tennis; the women's cross country/track program; Cowboy Jamboree's 1-row result; deep recap certification; and a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior). Otherwise, start the next school the user names.
+- **Next: Oklahoma State Cross Country only.** Make both meets match K-State's results contract: one group per race labeled with division and distance, team row first, women before men, a both-team headline in K-State's wording, and Cowboy Jamboree populated from its official results PDF/recap with every published athlete. Keep feed and expanded view identical. Add fixture tests against the official Cowboy Preview/Jamboree documents. Do not change other sports in that session.
+- **Other Oklahoma State follow-ups (later, one sport at a time):** official schedule fixtures other than women's Tennis; the women's cross country/track program; Cowboy Jamboree's 1-row result; deep recap certification; and a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior). Otherwise, start the next school the user names.
 
 - Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
@@ -451,4 +467,8 @@ Certification:
 - Colorado failed Soccer and Volleyball with HTTP 503, Cloudflare Error 1102 (Worker exceeded resource limits). That is the known open resource-limit issue, hit while caches were cold after the version bump, not a Colorado data change. A local rerun after the CI run passed Colorado 4/4.
 
 Open: the Cloudflare 1102 resource-limit issue remains and recurred in this run. The Oklahoma State follow-ups listed in the next-session instructions remain.
+
+#### Cross Country results format gap (user report)
+
+User: "Oklahoma State had merge but the results section does not match KSTATE. We should only be focusing on one sport at a time." The assistant compared the production grouped Cross Country feeds for K-State and Oklahoma State. The differences are recorded in the current-state table above, and Oklahoma State Cross Country is the next single-sport task. `AGENTS.md` now states the one-sport-at-a-time rule and names K-State as the results-format reference. No application code was changed in this step.
 
