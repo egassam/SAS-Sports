@@ -24,7 +24,10 @@ Set `SAS_SPORTS_BASE_URL` to test a preview instead of production.
    unambiguous athlete/account identification in an official post is accepted;
    name guesses and team-profile substitutes are rejected. Record the review
    date and source type in `athlete_verification`, and protect every successful
-   sport with a positive `athlete_minimums` value.
+   sport with a positive `athlete_minimums` value. When an official roster
+   publishes no personal links, list that sport in
+   `athlete_profile_fallback_sports`; its athletes may then carry no Instagram
+   only if their profile is an official roster URL on the school's domain.
 3. Deep-certify it with
    `node tests/validate-schools.mjs --schools=NEW_ID --deep --base=PREVIEW_URL`.
 4. Run the complete release gate against the same preview URL.

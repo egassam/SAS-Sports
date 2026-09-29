@@ -4,8 +4,9 @@ import sponsoredSports from './sponsored-sports.json';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 
-const VERSION='4.28.1-local-time';
+const VERSION='4.29.0-oklahoma-state-module';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -19,8 +20,7 @@ const HEADERS={
 const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   ...kstateSchool.verifiedInstagrams,
   ...kansasSchool.verifiedInstagrams,
-  'oklahoma-state|Cross Country|Denis Kipngetich':'https://www.instagram.com/deniskipngetich604/',
-  'oklahoma-state|Cross Country|Brian Musau':'https://www.instagram.com/brianmuangemusau/',
+  ...oklahomaStateSchool.verifiedInstagrams,
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
@@ -51,6 +51,7 @@ const SPORT_PATHS={
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
+  ...oklahomaStateSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -59,9 +60,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'byu|Cross Country':['https://byucougars.com/sports/mens-cross-country/roster','https://byucougars.com/sports/womens-cross-country/roster'],
   'byu|Soccer':'https://byucougars.com/sports/womens-soccer/roster',
   'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/roster',
-  'byu|Football':'https://byucougars.com/sports/football/roster',
-  'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/roster',
-  'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/roster'
+  'byu|Football':'https://byucougars.com/sports/football/roster'
   ,'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/roster'
   ,'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/roster'
   ,'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/roster'
@@ -93,6 +92,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
 function schoolCombinedSports(school){
   if(school?.id==='kansas')return kansasSchool.combinedSports;
   if(school?.id==='kstate')return kstateSchool.combinedSports;
+  if(school?.id==='oklahoma-state')return oklahomaStateSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -110,17 +110,12 @@ function labelTeamEvents(events,school,sport,url){
 const KNOWN_URLS=new Map(Object.entries({
   ...kstateSchool.scheduleUrls,
   ...kansasSchool.scheduleUrls,
+  ...oklahomaStateSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/schedule',
-  'oklahoma-state|Cross Country':'https://okstate.com/sports/mxct/schedule',
-  'oklahoma-state|Soccer':'https://okstate.com/sports/womens-soccer/schedule',
-  'oklahoma-state|Track & Field':'https://okstate.com/sports/mxct/schedule',
-  'oklahoma-state|Football':'https://okstate.com/sports/football/schedule',
-  'oklahoma-state|Tennis':['https://okstate.com/sports/womens-tennis/schedule','https://okstate.com/sports/mens-tennis/schedule'],
-  'oklahoma-state|Wrestling':'https://okstate.com/sports/wrestling/schedule',
   'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
   'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
   'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
@@ -213,6 +208,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
+const oklahomaStateHandlers=createOklahomaStateHandlers();
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -1061,7 +1057,8 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
     {name:'schema',parse:parseSchemaEvents}
   ];
   for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
-  const events=mergeEvents(eventLists),rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
+  const merged=mergeEvents(eventLists);
+  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
 function compactScheduleHtml(raw,sourceUrl){

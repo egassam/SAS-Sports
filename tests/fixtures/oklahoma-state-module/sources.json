@@ -1,0 +1,26 @@
+{
+  "retrieved": "2026-09-29",
+  "rosters": {
+    "mxct-roster.html.gz": "https://okstate.com/sports/mxct/roster",
+    "wrestling-roster.html.gz": "https://okstate.com/sports/wrestling/roster"
+  },
+  "shared_program_meets": {
+    "source": "https://okstate.com/sports/mxct/schedule",
+    "note": "Meet names and dates as published on the official schedule and returned by production 4.28.1-local-time on 2026-09-29. The schedule HTML itself could not be downloaded from the development sandbox (okstate.com bot protection returned HTTP 403).",
+    "meets": [
+      {"date": "2026-09-05", "name": "Cowboy Preview", "status": "Final"},
+      {"date": "2026-09-26", "name": "Cowboy Jamboree", "status": "Final"},
+      {"date": "2026-10-17", "name": "Weis-Crockett Invitational", "status": "Upcoming"},
+      {"date": "2026-10-31", "name": "Big 12 Cross Country Championships", "status": "Upcoming"},
+      {"date": "2026-11-13", "name": "NCAA Midwest Regional Championships", "status": "Upcoming"},
+      {"date": "2026-11-21", "name": "NCAA Cross Country Championships", "status": "Upcoming"}
+    ]
+  },
+  "tennis_diagnostic": {
+    "source": "https://sas-sports.lovetogivepain.workers.dev/api/diagnostic?school=oklahoma-state&sport=Tennis",
+    "observed": "2026-09-29T16:28:12Z",
+    "womens_tennis_events": 21,
+    "mens_tennis_events": 4,
+    "grouped_feed": "[] because only the first (women's) source was used"
+  }
+}
