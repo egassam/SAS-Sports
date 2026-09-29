@@ -53,5 +53,28 @@
       "retrieved": "2026-09-29T16:41Z",
       "note": "Official page still headed 2025-26 Cowgirl Tennis Schedule; 21 matches from 2026-01-23 to 2026-04-12 and no 2026-27 dual schedule."
     }
+  },
+  "cross_country_results": {
+    "retrieved": "2026-09-29",
+    "note": "Unmodified official results PDFs. okstate.com served each /documents/ page, which links the file on SIDEARM's S3 host; the PDF was downloaded from that published link. The Jamboree recap and a second request for the Preview document page returned the okstate.com bot-protection 403 and were not retried around it; recap pages used in tests are minimal synthetic wrappers.",
+    "cowboy-preview-2026-results.pdf": {
+      "document_page": "https://okstate.com/documents/2026/9/5/2026_Cowboy_Preview_Results.pdf",
+      "file": "https://s3.us-east-2.amazonaws.com/sidearm.nextgen.sites/okstate.com/documents/2026/9/5/2026_Cowboy_Preview_Results.pdf?timestamp=20260905031356",
+      "recap": "https://okstate.com/news/2026/9/5/cowboy-cross-country-track-top-ranked-cowboys-open-season-with-dominant-victory-at-cowboy-preview",
+      "races": {
+        "Women's 3K": "Oklahoma State 1st, 26 pts; 14 placed athletes (4 scratched)",
+        "Men's 5K": "Oklahoma State 1st, 31 pts; 15 placed athletes"
+      }
+    },
+    "cowboy-jamboree-2026-results.pdf": {
+      "document_page": "https://okstate.com/documents/2026/9/26/2026_Cowboy_Jamboree_Results.pdf",
+      "file": "https://s3.us-east-2.amazonaws.com/sidearm.nextgen.sites/okstate.com/documents/2026/9/26/2026_Cowboy_Jamboree_Results.pdf?timestamp=20260926111921",
+      "recap": "https://okstate.com/news/2026/9/26/cowboy-cross-country-track-cowboy-cross-country-places-second-at-88th-annual-cowboy-jamboree",
+      "races": {
+        "Women's 6K": "Oklahoma State 2nd, 64 pts; 15 placed athletes (Kailey Stockton listed with no place or time)",
+        "Men's 8K": "Oklahoma State 2nd, 44 pts; 20 placed athletes",
+        "Races #3-6": "high school races, not Oklahoma State"
+      }
+    }
   }
 }
