@@ -6,6 +6,8 @@ Last updated: September 28, 2026, America/Chicago.
 
 ## Current state
 
+**The September 28 K-State dual-team and live-score work is complete, merged, deployed, and live as `4.28.0-kstate-live-scores`.** PR #15 added explicit men’s and women’s K-State Golf sources and labels while preserving both Basketball teams. Production Golf verification returned both divisions, 4 results and 22 upcoming events. PR #16 added independent ESPN scoreboard inputs for K-State Football and both Basketball programs, merged at application commit `a23a16b3b1d2a5fafec5327041953fcb4b672d43`. The scoreboards run alongside the official K-State schedules, reconcile on sport/date/division, and can supply a game even when the school schedule has no usable live state. Production returned the new version and healthy current Football/Basketball feeds; no K-State game was in progress at verification time, so an actual live-game transition was not observable. Historical live payload fixtures verify score, clock/period, final state, team identity, and men’s/women’s isolation.
+
 **KU module is complete, merged, deployed, and live as `4.26.1-kansas-recap`.** PR #14 merged at 13:54:46 America/Chicago on September 28, producing `c9a02452107bad023ff06214f4ba99668f06d5a4`. Post-merge certification run `36468538013` passed. Production status and the exact South Dakota State volleyball event were rechecked after deployment: the card now uses the correct September 11 KU recap and its expanded endpoint returns four verified event-specific highlights. The broader KU verification below remains accurate, with the documented tennis, softball, and track source limitations. KU is finished; do not begin another school until the user starts a new school-module session.
 
 
@@ -19,8 +21,8 @@ See `docs/KSTATE_MODULE.md` for the ownership inventory and test contract. K-Sta
 | Repository | `egassam/SAS-Sports` |
 | Default branch | `main` |
 | Live K-State page | https://sas-sports.lovetogivepain.workers.dev/?school=kstate |
-| Working application version | `4.26.1-kansas-recap` |
-| Verified application commit | `c9a02452107bad023ff06214f4ba99668f06d5a4` |
+| Working application version | `4.28.0-kstate-live-scores` |
+| Verified application commit | `a23a16b3b1d2a5fafec5327041953fcb4b672d43` |
 | Pre-extraction recovery tree | `b8b7958477f593181f8ba2e52355e65f768c5bb8` |
 | Preserved baseline branch | `checkpoint/kstate-xc-verified-20260926` |
 | Baseline branch target | `19ec2ecb2ac03b8c7d242cb14a23146878857ab0` |
@@ -86,7 +88,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 ## Instructions for the next session
 
 1. Read this file from current GitHub main and inspect the current source/version before editing.
-2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12, #13, or #14.
+2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12 through #16.
 3. Keep one school per session. After KU is complete, stop; wait for the user to name the next school in a new session.
 4. Preserve K-State's 18/20 and KU's 26/21 XC rows. Keep all deterministic module, school and cache protections; run `npm run test:release` for code changes.
 5. Do not claim all sports have finals where the school has not published results. KU tennis/softball/track source limitations are in `docs/KANSAS_MODULE.md`. Reviewed golf rows apply only to four exact unchanged articles.
@@ -267,3 +269,26 @@ PR #14 merged at 18:54:46 UTC (13:54:46 America/Chicago), producing merge commit
 A forced live KU volleyball feed returned official event `20586` as South Dakota State, final 3-0, with the corrected September 11 KU recap URL. The live expanded endpoint then fetched that same official recap, identified it as an official athletics game recap, and returned four event-specific verified highlights naming Taylor Stanley, Reese Ptacek, Aisha Aiono, and Reese Messer. The incorrect Wichita State link is no longer returned for this event.
 
 KU is complete. The session stops here without starting another school. The historical full-audit resource-limit limitation remains; this scoped completion does not claim a fresh universal certification of every school.
+
+### September 28, 2026 — K-State dual teams and independent live scores
+
+User opened a new K-State session with two items: show both teams for sports sponsored for men and women (Golf was the reported example), and replace dependence on the school page for live sports, with Football and men’s Basketball as the initial easy targets. The user asked for working changes to be implemented as the session progressed.
+
+Diagnosis found that K-State Golf stopped after the first usable women’s page and had no division label. Basketball already loaded both programs. The Worker’s alternate scoreboard path existed only for Football and ran after official schedule retrieval. Historical ESPN scoreboards confirmed K-State identity `2306` for Football and men’s Basketball.
+
+PR #15, https://github.com/egassam/SAS-Sports/pull/15, added K-State-specific combined-sport ownership and separate men’s/women’s schedule sources for Golf and Basketball. CI passed, the PR merged as `c4ab5faf5dbf369e367da761222bf96f370ed996`, and production deployed `4.27.0-kstate-dual-teams`. A forced production Golf feed then returned both `Women's` and `Men's` labels, with 4 results and 22 upcoming events. Basketball’s existing two-division behavior remained protected.
+
+PR #16, https://github.com/egassam/SAS-Sports/pull/16, generalized the scoreboard parser/reconciler and configured K-State Football plus men’s and women’s Basketball ESPN scoreboard paths. Score retrieval begins independently of schedule parsing, uses a 15-second upstream cache, retains official schedule/recap fields, and replaces live/final state, scores, game detail and provenance. It appends the scoreboard event when no official schedule match exists. Basketball matching includes the division label so a men’s score cannot overwrite a women’s event. Other schools retain the pre-existing Football fallback.
+
+Validation and publication actually completed:
+
+- `npm run test:release`, `npm test`, `git diff --check`, and Wrangler deployment dry-run passed.
+- The release suite preserved 18 protected schools, 71 critical school/sport cache identities, K-State XC 18/20 rows and KU XC 21/26 rows.
+- Deterministic historical scoreboard fixtures verified K-State matching, a live 71-68 Basketball score, `2nd Half - 4:12`, source provenance, official-schedule reconciliation, and men’s/women’s isolation.
+- PR #16 certification run `36511562983` passed. The tested local and remote tree SHA matched at `010538960efeec2776cdf5eaf37337aa3c4d1a7c`.
+- PR #16 merged as application commit `a23a16b3b1d2a5fafec5327041953fcb4b672d43`; Cloudflare deployed production version `4.28.0-kstate-live-scores`.
+- Forced production feeds returned Football with 4 results/8 upcoming and Basketball with 66 upcoming across both `Men's` and `Women's`, with no feed error. No K-State Football or Basketball game was live during this verification, so no claim is made that an actual in-progress contest was observed in this session.
+
+Provider recommendation: the ESPN public scoreboard is the practical immediate source because it covers college Football and both Basketball programs without a key. It is not a contracted API. If SAS Sports later needs a formal SLA or redistribution terms, evaluate a licensed feed such as Sportradar or SportsDataIO. NCAA/Genius live-stat pages vary by event and are better treated as a supplemental fallback than the primary normalized feed.
+
+Both requested K-State items are complete. The unresolved historical Cloudflare resource-limit issue still prevents a universal all-school live-audit claim; this session’s evidence is scoped to the tests and production feeds listed above.
