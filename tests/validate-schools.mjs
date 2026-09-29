@@ -55,6 +55,21 @@ function validateEvent(event,schoolId,sport){
   }
 }
 
+// An athlete either has an identity-verified Instagram account or, only for
+// sports a school declares in athlete_profile_fallback_sports, is an official
+// roster profile on that school's athletics domain with no social destination.
+// Team accounts and name guesses are never substituted for missing links.
+function validateAthlete(athlete,protectedSchool,sport,officialHosts){
+  assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
+  const fallbackAllowed=(protectedSchool?.athlete_profile_fallback_sports||[]).includes(sport);
+  if(athlete.instagram_url==null&&fallbackAllowed){
+    let profile=null;try{profile=new URL(athlete.profile_url)}catch{}
+    assert.ok(profile?.protocol==='https:'&&officialHosts.some(host=>profile.hostname.replace(/^www\./,'').endsWith(host))&&/\/roster\//.test(profile.pathname),'profile-only athlete lacks an official roster profile');
+    return;
+  }
+  assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
+}
+
 async function validateSport(school,sport){
   const encoded=`school=${encodeURIComponent(school.id)}&sport=${encodeURIComponent(sport)}`;
   const groups=await getJson(`/live/feed/grouped?${encoded}`);
@@ -83,10 +98,7 @@ async function validateSport(school,sport){
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
   const minimum=protectedSchool?.athlete_minimums?.[sport]??0;
   assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
-  for(const athlete of athletes){
-    assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
-    assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
-  }
+  for(const athlete of athletes)validateAthlete(athlete,protectedSchool,sport,officialHosts);
   // SIDEARM's crop service identifies the actual portrait in the query string;
   // removing it makes every distinct athlete image look like the same URL.
   const portraits=athletes.map(x=>x.image_url).filter(Boolean).map(x=>x.replace(/#.*$/,''));
@@ -123,10 +135,8 @@ async function validateAthletes(school,sport){
   assert.ok(Array.isArray(athletes),'featured athlete response must be an array');
   assert.ok(athletes.length>=minimum,`expected at least ${minimum} verified featured athletes but received ${athletes.length}`);
   assert.ok(athletes.length<=3,'featured athlete row must contain no more than three athletes');
-  for(const athlete of athletes){
-    assert.ok(/\S+\s+\S+/.test(athlete.name),'athlete name is missing or looks like a jersey number');
-    assert.ok(athlete.instagram_url?.startsWith('https://www.instagram.com/'),'athlete has no verified Instagram destination');
-  }
+  const officialHosts=protectedSchool?.official_hosts||[new URL(school.athletics_url).hostname.replace(/^www\./,'')];
+  for(const athlete of athletes)validateAthlete(athlete,protectedSchool,sport,officialHosts);
   return athletes.length;
 }
 

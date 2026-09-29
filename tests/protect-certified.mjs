@@ -7,6 +7,7 @@ const catalog=readJson('../src/schools.json');
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
 const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
+const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];
@@ -28,12 +29,16 @@ for(const [schoolIndex,protectedSchool] of manifest.schools.entries()){
   assert.deepEqual(fallbackSports[protectedSchool.id],sponsored[protectedSchool.id],`${protectedSchool.name} UI fallback differs from the authoritative sponsored-sports manifest`);
   for(const sport of protectedSchool.critical_sports)assert.ok(sponsored[protectedSchool.id].includes(sport),`${protectedSchool.name} ${sport} is certified but absent from its sponsored-sports guard`);
   for(const sport of protectedSchool.critical_sports){
-    const source=protectedSchool.id==='kstate'?kstateModule:protectedSchool.id==='kansas'?kansasModule:worker;
+    const source=protectedSchool.id==='kstate'?kstateModule:protectedSchool.id==='kansas'?kansasModule:protectedSchool.id==='oklahoma-state'?oklahomaStateModule:worker;
     const routePrefix=`'${protectedSchool.id}|${sport}':`;
     assert.ok(source.includes(routePrefix),`${protectedSchool.name} ${sport} lost its explicit official schedule route`);
     const routeStart=source.indexOf(routePrefix);
     const routeText=source.slice(routeStart,routeStart+500);
     assert.ok(protectedSchool.official_hosts.some(host=>routeText.includes(host)),`${protectedSchool.name} ${sport} route no longer uses its certified official domain`);
+  }
+  for(const sport of protectedSchool.athlete_profile_fallback_sports||[]){
+    assert.ok(protectedSchool.athlete_sports?.includes(sport),`${protectedSchool.name} ${sport} profile fallback is not a protected athlete sport`);
+    assert.ok((protectedSchool.athlete_minimums?.[sport]||0)>0,`${protectedSchool.name} ${sport} profile fallback has no protected athlete minimum`);
   }
   if(schoolIndex>=REQUIRED_BASELINE.length){
     const verification=protectedSchool.athlete_verification;

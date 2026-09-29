@@ -6,6 +6,8 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
+**Oklahoma State module (September 29 session): PR #21 (https://github.com/egassam/SAS-Sports/pull/21) is open and verified on its Cloudflare preview; not merged, so not in production.** Production remains `4.28.1-local-time`. The candidate is `4.29.0-oklahoma-state-module`. See `docs/OKLAHOMA_STATE_MODULE.md` and the September 29 Oklahoma State session record below. Oklahoma State's athlete-certification failure was a validator rule, not an app defect. It is fixed by the new opt-in `athlete_profile_fallback_sports` certification field, which affects only Oklahoma State. With that validator, all 11 Oklahoma State athlete checks passed against current production data. Utah and Alabama still fail unchanged.
+
 **Project scope (user, September 29): only K-State and KU are expected to work correctly now.** Every other school still needs its own school module built the same way as `src/schools/kstate.mjs` and `src/schools/kansas.mjs`, one school per session, with tests against that school's real official sources. Until a school is converted, its live-certification failures are expected. They are not regressions and not a reason to patch that school inside shared code. As of this date, Oklahoma State, Utah and Alabama fail athlete-Instagram checks, and the other 13 non-module schools pass only the basic certification checks.
 
 **The September 29 local-time fix is merged, deployed and live as `4.28.1-local-time`.** PR #19 merged at 15:25 UTC as `79c157d8ce8349439cab3c23931d46f5fb920682`, and production switched at about 15:29 UTC.
@@ -96,6 +98,8 @@ Agreed sequence:
 The September 26 “Do the first one” applied to baseline preservation. The separate September 27 “Start KSTATE module” request authorized the extraction now prepared on its own branch.
 
 ## Instructions for the next session
+
+- **Oklahoma State first:** PR #21 is open, CI guardrails/certification-matrix passed, and the branch preview passed Oklahoma State certification 11/11. Merge only with explicit user approval, because merging deploys production. After a merge, verify production `/api/status` returns `4.29.0-oklahoma-state-module` and recheck OSU Golf, Tennis, Track & Field and Cross Country plus the K-State/KU XC counts. Still open for OSU: official schedule fixtures other than women's Tennis, the women's cross country/track program, Cowboy Jamboree's 1-row result, deep recap certification, and a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior).
 
 - Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
@@ -373,4 +377,51 @@ Post-merge run `36590082760`:
 - The K-State and KU CI jobs started around 15:28, possibly against the previous deployment. They were therefore rerun locally against `4.28.1-local-time`: all 8 feeds passed. K-State Cross Country initially returned a sandbox-side "fetch failed" twice while fetching the official site directly; it passed on retry with a 90-second timeout.
 
 The 1102 resource-limit issue did not recur in this run, but it is not claimed resolved.
+
+### September 29, 2026 — Oklahoma State module
+
+Request (delivered as a scheduled session prompt): start the Oklahoma State module. Read AGENTS.md, this handoff and both finished module docs; build `src/schools/oklahoma-state.mjs` in the K-State/KU pattern; diagnose the Tennis/Equestrian/Track & Field "athlete has no verified Instagram destination" failures in runs `36590082760` and `36570340731` without inventing accounts; preserve K-State/KU; ask before PR, merge or deploy.
+
+The assistant fetched main at `42a26c8`, read this file in full, and reported the handoff state and an Oklahoma State inventory before editing. After a later scheduled prompt said the user approved the plan, implementation proceeded locally using the recommended defaults: an opt-in fallback for Oklahoma State only, and no reuse of cross-country Instagram identities for Track & Field. That prompt came through the scheduler, not as a direct user message, so nothing was pushed or published.
+
+Diagnosis:
+- Job `109481412069` (run `36590082760`) showed 8/11 Oklahoma State rows passing. Tennis, Equestrian and Track & Field athletes failed.
+- Live `/live/athletes` showed those sports returning the existing official-profile fallback (`instagram_url: null`, official okstate.com profile and portrait). The official `mxct` roster lists 55 men and publishes no Instagram links.
+- The validator required Instagram for every returned athlete, so the fallback could never pass. It was not an app defect.
+- Other defects found live: Track & Field displayed the six cross-country meets from the shared `mxct` schedule. Golf loaded only the women's page. Tennis returned `[]`: production `/api/diagnostic` showed women's 21 and men's 4 parsed events, but only the first source was used, and the season filter then removed everything.
+
+Implemented (see `docs/OKLAHOMA_STATE_MODULE.md`):
+- The new module owns routes for all 11 sports, `combinedSports` (Basketball, Golf, Tennis), the two verified cross-country identities, and the shared-schedule XC/track split.
+- `src/index.js` holds no `oklahoma-state|` configuration. It gained one handler call in `parseHtml` and one `schoolCombinedSports` branch.
+- `athlete_profile_fallback_sports` was added to the validator, the Oklahoma State manifest entry, `tests/README.md` and the protected-school guard. Equestrian and Track & Field minimums were added.
+- Test harnesses now inject the new module.
+- New test `tests/oklahoma-state-module.mjs`, with gzipped unmodified official roster fixtures (`mxct`, wrestling). Version bumped to `4.29.0-oklahoma-state-module`.
+
+Tests actually run:
+- Baseline before changes: `npm run test:release` and `npm test` passed.
+- After changes: `npm run test:release` and `npm test` passed. This includes 18 protected schools, 71 cache identities, K-State XC 18/20, KU XC 21/26, both existing module suites and the new Oklahoma State suite. `git diff --check` passed.
+- Wrangler `deploy --dry-run` bundle passed, and the bundled Worker's `/api/status` returned `4.29.0-oklahoma-state-module`. Nothing was uploaded.
+- The new behavioral assertions were confirmed to fail with the split filter disabled ("Track & Field must not display cross-country meets") and with Golf/Tennis combination removed.
+- Route parity: 219 catalog school/sport combinations dumped before and after. Only Oklahoma State Golf, Tennis and Soccer (unused fallback rosters) changed, and the verified-identity map is identical.
+- Updated validator against production, athletes only: Oklahoma State 11/11 passed. Utah Volleyball and Alabama Soccer athletes still fail unchanged.
+
+Limitations:
+- okstate.com's bot protection returned HTTP 403 to the sandbox after the first burst of downloads. Retries were stopped rather than circumvented, so official schedule HTML fixtures are missing.
+- Tennis/Golf orchestration is tested with minimal synthetic pages. The XC/track split uses the real meet names/dates as served by production.
+- The women's program, Cowboy Jamboree result completeness and deep recap certification remain open.
+
+Publication status: application commit `1a55077` on `oklahoma-state-module`. A later scheduled routine ("Oklahoma State: open PR when tests pass") authorized a push and PR but not a merge. Both suites were re-run and passed, main was unchanged at `42a26c8`, and the branch was pushed. PR #21 was opened. GitHub run `36599105600`: guardrails and certification-matrix passed; live-school jobs were skipped as usual for PRs. The Cloudflare Workers Builds preview deployed.
+
+#### Preview verification and Tennis correction
+
+- The preview `https://oklahoma-state-module-sas-sports.lovetogivepain.workers.dev` returned `4.29.0-oklahoma-state-module`.
+- Forced OSU feeds:
+  - Golf: `Men's` and `Women's`, 5 results and 24 upcoming.
+  - Cross Country: 6 meets.
+  - Track & Field: no cross-country meets. With no track meets published, the existing 502 "no usable events" response is returned.
+  - Tennis: still empty.
+- okstate.com briefly accepted one request. The official women's Tennis page is still the "2025-26 Cowgirl Tennis Schedule" (21 matches, January 23–April 12, 2026), and the men's events are also outside 2026–27. The earlier explanation, that only the first source was used, was incomplete. Loading both divisions is correct, but Tennis is empty because okstate.com has not published 2026–27 schedules. That page was added as a real fixture with a test.
+- `validate-schools` against the preview: Oklahoma State 11/11 passed. Preview K-State XC 18/20 and KU XC 26/21 were unchanged.
+- The docs/fixture follow-up commit was tested with `npm run test:release` and `npm test` before its push.
+- Production remains `4.28.1-local-time` until the user approves merging PR #21.
 
