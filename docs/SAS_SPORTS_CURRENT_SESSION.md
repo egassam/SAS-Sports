@@ -6,7 +6,13 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
-**September 29 local-time fix is in open PR #19 (branch `ccr-a8791a1a-rg8qi0`); it is running on a Cloudflare preview URL but is not merged or deployed to production.** Candidate version `4.28.1-local-time`. Official schedule times are stored as the school's local wall clock; ESPN times are true UTC, and "today" was computed in UTC. As a result, a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate Live card dated the next day, and left the Upcoming list at 00:00 UTC (7 PM CDT / 6 PM CST). The fix adds a per-school time zone (state map plus a Tennessee override). ESPN times are converted into that frame, and the shared `makeEvent`, `groupEvents` and text-row "today" checks use the school's local date. So do the KU module's future/past/in-progress checks. Production remains `4.28.0-kstate-live-scores` until a PR is approved and merged.
+**Project scope (user, September 29): only K-State and KU are expected to work correctly now.** Every other school still needs its own school module built the same way as `src/schools/kstate.mjs` and `src/schools/kansas.mjs`, one school per session, with tests against that school's real official sources. Until a school is converted, its live-certification failures are expected. They are not regressions and not a reason to patch that school inside shared code. As of this date, Oklahoma State, Utah and Alabama fail athlete-Instagram checks, and the other 13 non-module schools pass only the basic certification checks.
+
+**The September 29 local-time fix is merged, deployed and live as `4.28.1-local-time`.** PR #19 merged at 15:25 UTC as `79c157d8ce8349439cab3c23931d46f5fb920682`, and production switched at about 15:29 UTC.
+
+Official schedule times are stored as the school's local wall clock, while ESPN times are true UTC and "today" was computed in UTC. So a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate next-day Live card, and dropped out of Upcoming at 00:00 UTC. The fix adds a per-school time zone (a state map plus a Tennessee override). It converts ESPN times into that frame and uses the school's local date in the shared `makeEvent`, `groupEvents` and text-row checks and in the KU module.
+
+An actual evening game has not yet been observed through the fix; deterministic fixtures cover it.
 
 **K-State live display preview is deployed.** PR #18 corrected the initial PR #17 preview after the user selected Football and saw an empty Live tab. The opt-in URL `https://sas-sports.lovetogivepain.workers.dev/?school=kstate&demo=live` now opens on Football + Live with a persistent, clearly labeled 28–21 sample and supports Basketball's 71–68 sample when selected. The button moves the example through Final, Upcoming, and Live while selecting the corresponding tab. The regular app and feed API retain genuine data only. This demonstrates display states, not a real in-progress ESPN game. September 29 forced Football and Basketball production feeds had no live K-State contest.
 
@@ -91,6 +97,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
 1. Read this file from current GitHub main and inspect the current source/version before editing.
 2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12 through #16.
@@ -337,3 +344,33 @@ The preview URL https://ccr-a8791a1a-rg8qi0-sas-sports.lovetogivepain.workers.de
 - Cross Country: Gans Creek 18 rows and Platte River 20 rows.
 
 No live evening game was available, so the fixed reconciliation path has only fixture coverage so far. Merging PR #19 is what would deploy production.
+
+#### Merge and production verification
+
+User: “Yes, merge it and verify production.” PR #19 checks on head `6acb5ef` had passed (guardrails, certification-matrix, Cloudflare preview build). Merged as `79c157d8ce8349439cab3c23931d46f5fb920682`. Production `/api/status` returned `4.28.1-local-time` at 15:29 UTC.
+
+Forced production feeds with no feed error:
+
+| School | Sport | Result |
+| --- | --- | --- |
+| K-State | Football | 4 results / 8 upcoming |
+| K-State | Basketball | 66 upcoming |
+| K-State | Golf | 4 results / 22 upcoming |
+| K-State | Cross Country | Gans Creek 18 rows, Platte River 20 rows |
+| KU | Cross Country | Gans Creek 26 rows, Bob Timmons 21 rows |
+| KU | Volleyball | 12 results / 16 upcoming |
+| KU | Golf | 1 live / 4 results / 21 upcoming |
+| Arizona | Football | 4 results / 9 upcoming |
+| BYU | Football | 4 results / 17 upcoming |
+| UCF | Football | 4 results / 15 upcoming |
+
+KU Golf's live event is the Men's Windon Memorial Classic, Sept 28–29, correctly shown as "Tournament in progress" on its final day.
+
+Post-merge run `36590082760`:
+- guardrails and cross-school isolation smoke passed.
+- 15 of 18 live school certifications passed; Oklahoma State, Utah and Alabama failed.
+- Those same three schools also failed on the previous main run `36570340731`, before this change. Their failures are athlete checks ("athlete has no verified Instagram destination") unrelated to date handling. They remain an open, pre-existing issue.
+- The K-State and KU CI jobs started around 15:28, possibly against the previous deployment. They were therefore rerun locally against `4.28.1-local-time`: all 8 feeds passed. K-State Cross Country initially returned a sandbox-side "fetch failed" twice while fetching the official site directly; it passed on retry with a 90-second timeout.
+
+The 1102 resource-limit issue did not recur in this run, but it is not claimed resolved.
+
