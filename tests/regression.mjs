@@ -355,6 +355,33 @@ contains(page,/★ Favorite/,'Selected homepage team must have a clear favorite 
 contains(page,/☆ Set favorite/,'Users must have a clear control for choosing a homepage team');
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
+// The selected sport's feed must survive a transient Worker failure. Cloudflare
+// serves Error 1102 (Worker exceeded resource limits) as HTTP 503; one such
+// response previously blanked Oklahoma State Golf. Run the page's real helper.
+{
+  const helper=page.match(/const TRANSIENT_HTTP_STATUS=[\s\S]*?\nasync function apiFetch\([\s\S]*?\n\}\n/);
+  assert.ok(helper,'The page must define apiFetch with its transient-status list');
+  contains(page,/apiFetch\(`\/live\/feed\/grouped\?[^`]*`,3,\{signal:feedController\.signal,transientOnly:true\}\)/,'The sport feed must retry transient failures (3 attempts, transient statuses only)');
+  const run=async(responses,attempts,options)=>{
+    const calls=[];
+    const fetchStub=async path=>{calls.push(path);const next=responses.shift();if(next instanceof Error)throw next;return{ok:next>=200&&next<300,status:next};};
+    const immediate=fn=>{fn();return 0;};
+    const apiFetch=new Function('fetch','setTimeout','clearTimeout','DOMException',`${helper[0]}return apiFetch;`)(fetchStub,immediate,()=>{},globalThis.DOMException);
+    try{const r=await apiFetch('/live/feed/grouped?school=oklahoma-state&sport=Golf',attempts,options);return{status:r.status,calls:calls.length};}
+    catch(e){return{error:e.message,calls:calls.length};}
+  };
+  const feed={transientOnly:true};
+  assert.deepEqual(await run([503,200],3,feed),{status:200,calls:2},'A Cloudflare 1102 (503) followed by success must render the feed');
+  assert.deepEqual(await run([503,503,200],3,feed),{status:200,calls:3},'Two transient failures are retried before giving up');
+  assert.deepEqual(await run([503,503,503],3,feed),{error:'HTTP 503',calls:3},'Retries are bounded to three attempts');
+  assert.deepEqual(await run([new TypeError('Failed to fetch'),200],3,feed),{status:200,calls:2},'A dropped connection is retried');
+  assert.deepEqual(await run([502,200],3,feed),{error:'HTTP 502',calls:1},'A deliberate 502 "no usable events" answer is not retried');
+  assert.deepEqual(await run([404,200],3,feed),{error:'HTTP 404',calls:1},'A 404 is not retried');
+  assert.deepEqual(await run([500,500,200],4),{status:200,calls:3},'Other callers keep their existing retry-on-any-failure behavior');
+  const aborted=new Error('aborted');aborted.name='AbortError';
+  assert.deepEqual(await run([aborted,200],3,feed),{error:'aborted',calls:1},'A superseded request (school or sport switched) is not retried');
+}
+
 const schoolValidator=readFileSync(new URL('./validate-schools.mjs',import.meta.url),'utf8');
 const isolationValidator=readFileSync(new URL('./isolation.mjs',import.meta.url),'utf8');
 contains(isolationValidator,/stableFeed\(firstAfter\)/,'Isolation checks must ignore refresh timestamps and compare stable event data');
