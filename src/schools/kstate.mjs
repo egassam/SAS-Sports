@@ -3,7 +3,22 @@
 // Exact published snapshots retain their original event/school/date keys.
 export const kstateSchool={
   id:'kstate',
+  // K-State publishes these programs on separate men's and women's pages.
+  // Both sources must be loaded and labeled before the shared feed is merged.
+  combinedSports:new Set(['Basketball','Golf']),
   scheduleUrls:{
+    'kstate|Basketball':[
+      'https://www.kstatesports.com/sports/mens-basketball/schedule',
+      'https://www.kstatesports.com/sports/womens-basketball/schedule',
+      'https://www.kstatesports.com/sports/basketball/schedule',
+      'https://www.kstatesports.com/'
+    ],
+    'kstate|Golf':[
+      'https://www.kstatesports.com/sports/womens-golf/schedule',
+      'https://www.kstatesports.com/sports/mens-golf/schedule',
+      'https://www.kstatesports.com/sports/golf/schedule',
+      'https://www.kstatesports.com/'
+    ],
     'kstate|Volleyball':'https://www.kstatesports.com/sports/womens-volleyball/schedule',
     'kstate|Soccer':'https://www.kstatesports.com/sports/womens-soccer/schedule',
     'kstate|Cross Country':'https://www.kstatesports.com/sports/cross-country/schedule',

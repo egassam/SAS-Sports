@@ -30,6 +30,8 @@ contains(worker,/const direct=target\.recap_url\|\|recapIndex\.map/,'Exact sched
 // The same generator must serve all sports, with meaningful sport-specific priorities.
 contains(worker,/function highlightPriorities\(sport\)/,'Global sport-aware highlight rules must exist');
 contains(worker,/COMBINED_TEAM_SPORTS=new Set\(\['Basketball','Swimming & Diving'\]\)/,'Split men’s and women’s winter feeds must be aggregated');
+contains(worker,/function schoolCombinedSports\(school\)/,'School modules must be able to opt into split men’s and women’s feeds');
+contains(kstateModule,/combinedSports:new Set\(\['Basketball','Golf'\]\)/,'K-State must combine both basketball and golf teams');
 contains(worker,/team_label,title:`\$\{team_label\} · \$\{event.title\}`/,'Combined winter events must be clearly labeled by team');
 contains(worker,/e\.team_label\|\|''/,'Men’s and women’s events must never overwrite one another');
 for(const sport of ['football','volleyball','soccer','cross country','basketball','baseball','softball','track','swimming','wrestling','tennis','golf','rowing']){
