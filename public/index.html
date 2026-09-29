@@ -25,6 +25,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .sport,.modal{border-color:var(--team-line,var(--line))}
 .sport-head{background:color-mix(in srgb,var(--team-primary,var(--accent2)) 18%,#0b192a)}
 .live-refresh-loader{border-color:var(--team-primary,var(--accent2))}
+.demo-panel{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;padding:13px 15px;border:2px solid #e4b74f;border-radius:14px;background:#302615;color:#fff0c5;font-size:13px}.demo-panel[hidden]{display:none}.demo-panel strong{font-size:14px}.demo-panel button{border-color:#e4b74f;color:#fff0c5}
 </style>
 </head>
 <body>
@@ -61,6 +62,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="statusline"><div id="status">Loading SAS Sports…</div><div id="schoolMeta"></div></div>
   <nav id="sportNav" class="sport-nav"></nav>
 </section>
+<div id="demoPanel" class="demo-panel" hidden><strong>DEMO · Sample game, not a live score</strong><span id="demoStep">Watch an upcoming game move to Live, then Final.</span><button id="demoAdvance" class="ghost" type="button">Next step</button></div>
 <main id="feed" class="feed"></main>
 <div class="footer-note">SAS Sports · school-first web test · live official-source refresh · v1.8 reconciliation engine</div>
 </div>
@@ -73,6 +75,23 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 <script>
 const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), favoriteTeams=$('#favoriteTeams'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
 let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, activeFeedController=null, liveRefreshTimer=null, lastFeedRefresh=0;
+const demoRequested=new URLSearchParams(location.search).get('demo')==='live';
+let demoStage=0;
+function demoActive(){return demoRequested&&school.value==='kstate'&&sportFilter.value==='Basketball'}
+function demoEvent(){
+  const state=['Upcoming','Live','Final'][demoStage];
+  return {id:'sas-demo-basketball',school_id:'kstate',school:'Kansas State',sport:'Basketball',title:"DEMO · Men's · K-State vs Sample Opponent",opponent:'Sample Opponent',team_label:"Men's",status:state,recency_label:state==='Live'?'2nd Half · 4:12':state==='Final'?'Final':'Sample tipoff',school_score:demoStage?71:null,opponent_score:demoStage?68:null,results:[],demo:true};
+}
+function displayedGroups(){
+  if(!demoActive())return currentGroups;
+  const sample=demoEvent(),bucket=demoStage===0?'upcoming':demoStage===1?'live':'results';
+  return currentGroups.map(g=>g.sport==='Basketball'?{...g,[bucket]:[sample,...(g[bucket]||[])]}:g);
+}
+function updateDemo(){
+  const panel=$('#demoPanel');panel.hidden=!demoActive();
+  if(!panel.hidden){$('#demoStep').textContent=['Upcoming sample · advancing to Live','Live sample · 71–68 · 2nd Half, 4:12','Final sample · 71–68'][demoStage];$('#demoAdvance').textContent=demoStage===2?'Replay demo':'Next step'}
+  updateCounts();render(displayedGroups());
+}
 const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const TEAM_THEMES={
   sas:{primary:'#7cf7c4',secondary:'#42d3ff',panel:'#11243a',panelDark:'#081524',line:'#29435f',onAccent:'#07111f'},
@@ -197,8 +216,8 @@ function render(groups){
   feed.querySelectorAll('[data-event-id]').forEach(el=>el.addEventListener('click',()=>openEvent(el.dataset.eventId)));
 }
 function updateCounts(){
-  const live=currentGroups.reduce((n,g)=>n+g.live.length,0), results=currentGroups.reduce((n,g)=>n+g.results.length,0), upcoming=currentGroups.reduce((n,g)=>n+g.upcoming.length,0);
-  $('#liveCount').textContent=live; $('#resultCount').textContent=results; $('#upcomingCount').textContent=upcoming; $('#sportCount').textContent=currentGroups.length;
+  const groups=displayedGroups(),live=groups.reduce((n,g)=>n+g.live.length,0), results=groups.reduce((n,g)=>n+g.results.length,0), upcoming=groups.reduce((n,g)=>n+g.upcoming.length,0);
+  $('#liveCount').textContent=live; $('#resultCount').textContent=results; $('#upcomingCount').textContent=upcoming; $('#sportCount').textContent=groups.length;
 }
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
@@ -274,7 +293,7 @@ async function loadFeaturedAthletes(groups,schoolId,generation){
       }
     }catch{}
   }
-  if(cachedGroups.length&&generation===feedGeneration&&school.value===schoolId)render(currentGroups);
+  if(cachedGroups.length&&generation===feedGeneration&&school.value===schoolId)render(displayedGroups());
   await inBatches(groups,1,async g=>{
     try{
       const r=await apiFetch(`/live/athletes?school=${encodeURIComponent(schoolId)}&sport=${encodeURIComponent(g.sport)}`,1);
@@ -283,7 +302,7 @@ async function loadFeaturedAthletes(groups,schoolId,generation){
       if(Array.isArray(athletes)){
         g.featured_athletes=athletes;
         if(athletes.length)try{localStorage.setItem(`sas-athletes:v3:${schoolId}:${g.sport}`,JSON.stringify({saved_at:Date.now(),athletes}))}catch{}
-        render(currentGroups);
+        render(displayedGroups());
       }
     }catch{}
   })
@@ -332,7 +351,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
           // sports that have already finished loading.
           currentGroups=liveGroups.slice().sort((a,b)=>requested.indexOf(a.sport)-requested.indexOf(b.sport));
           populateSportFilter(currentGroups);if(chosen)sportFilter.value=chosen;
-          updateCounts();render(currentGroups);
+          updateDemo();
           status.textContent=`Loaded ${liveOk}/${requested.length} official source${liveOk===1?'':'s'}…`;
         }
       }catch(e){}
@@ -344,7 +363,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     // published; its verified featured athletes can still load in that section.
     if(!chosen&&SCHOOL_SPORTS[id])for(const sp of requested)if(!liveGroups.some(g=>g.sport===sp))liveGroups.push({school_id:id,school:meta?.name||id,sport:sp,in_season:true,season_label:'In season',live:[],results:[],upcoming:[],other:[]});
     currentGroups=liveGroups.sort((a,b)=>requested.indexOf(a.sport)-requested.indexOf(b.sport));
-    populateSportFilter(currentGroups); if(chosen)sportFilter.value=chosen; updateCounts(); render(currentGroups);
+    populateSportFilter(currentGroups); if(chosen)sportFilter.value=chosen; updateDemo();
     const total=currentGroups.reduce((n,g)=>n+g.live.length+g.results.length+g.upcoming.length+g.other.length,0);
     if(liveOk){
       lastFeedRefresh=Date.now();
@@ -368,12 +387,12 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
 async function openEvent(id){
   modalWrap.classList.add('open'); modalWrap.setAttribute('aria-hidden','false');
   let e=null;
-  for(const g of currentGroups){for(const bucket of ['live','results','upcoming','other']){e=(g[bucket]||[]).find(x=>x.id===id);if(e)break}if(e)break}
+  for(const g of displayedGroups()){for(const bucket of ['live','results','upcoming','other']){e=(g[bucket]||[]).find(x=>x.id===id);if(e)break}if(e)break}
   if(!e){
     try{const r=await apiFetch(`/events/${encodeURIComponent(id)}`);e=await r.json()}catch{}
   }
   if(!e){$('#modalTitle').textContent='Event unavailable';$('#modalBody').innerHTML='<div class="empty">Could not load event details.</div>';return}
-  if(e.status==='Final'&&e.school_id&&e.sport){
+  if(e.status==='Final'&&!e.demo&&e.school_id&&e.sport){
     $('#modalTitle').textContent=e.title;
     $('#modalSub').textContent=`${e.school} · ${e.sport}`;
     $('#modalBody').innerHTML='<div class="highlight-loader" role="status" aria-live="polite"><div class="highlight-loader-mark" aria-hidden="true">SAS</div><div class="highlight-loader-text">Fetching SAS verified highlights…</div></div>';
@@ -416,13 +435,15 @@ sportFilter.addEventListener('change',()=>{
   feed.innerHTML='<div class="empty">Loading the selected sport…</div>';
   loadFeed(false);
 });
-search.addEventListener('input',()=>render(currentGroups));
-tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(currentGroups)});
+search.addEventListener('input',()=>render(displayedGroups()));
+tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render(displayedGroups())});
 favorite.addEventListener('click',()=>{const favorites=favoriteSchoolIds(),on=favorites.includes(school.value);saveFavoriteSchoolIds(on?favorites.filter(id=>id!==school.value):[...favorites,school.value]);updateFavorite();const team=allSchools.find(s=>s.id===school.value)?.name||'Team';status.textContent=on?`${team} removed from your favorite teams.`:`★ ${team} added to your SAS Sports homepage favorites.`});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
-(async()=>{try{await loadSchools();await loadFeed()}catch(e){status.textContent=e.message}})();
+$('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;updateDemo()});
+if(demoRequested){setTimeout(()=>{if(demoStage===0){demoStage=1;updateDemo()}},4000);setTimeout(()=>{if(demoStage===1){demoStage=2;updateDemo()}},12000)}
+(async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Basketball'}await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
 </body>
 </html>
