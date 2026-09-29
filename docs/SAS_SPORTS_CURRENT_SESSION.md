@@ -1,10 +1,12 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 28, 2026, America/Chicago.
+Last updated: September 29, 2026, America/Chicago.
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**K-State live display preview is deployed.** PR #17 merged at `a3ca8468a9dd29eeee78f896828990afaca7364e`. The opt-in URL `https://sas-sports.lovetogivepain.workers.dev/?school=kstate&demo=live` displays a clearly labeled sample men's Basketball event moving Upcoming → Live → Final with a Replay button. The regular app and feed API retain genuine data only. Production browser verification saw the sample in all three states, including the 71–68 live score and period. This demonstrates the display transition, not a real in-progress ESPN game. September 29 forced Football and Basketball production feeds had no live K-State contest.
 
 **The September 28 K-State dual-team and live-score work is complete, merged, deployed, and live as `4.28.0-kstate-live-scores`.** PR #15 added explicit men’s and women’s K-State Golf sources and labels while preserving both Basketball teams. Production Golf verification returned both divisions, 4 results and 22 upcoming events. PR #16 added independent ESPN scoreboard inputs for K-State Football and both Basketball programs, merged at application commit `a23a16b3b1d2a5fafec5327041953fcb4b672d43`. The scoreboards run alongside the official K-State schedules, reconcile on sport/date/division, and can supply a game even when the school schedule has no usable live state. Production returned the new version and healthy current Football/Basketball feeds; no K-State game was in progress at verification time, so an actual live-game transition was not observable. Historical live payload fixtures verify score, clock/period, final state, team identity, and men’s/women’s isolation.
 
@@ -292,3 +294,11 @@ Validation and publication actually completed:
 Provider recommendation: the ESPN public scoreboard is the practical immediate source because it covers college Football and both Basketball programs without a key. It is not a contracted API. If SAS Sports later needs a formal SLA or redistribution terms, evaluate a licensed feed such as Sportradar or SportsDataIO. NCAA/Genius live-stat pages vary by event and are better treated as a supplemental fallback than the primary normalized feed.
 
 Both requested K-State items are complete. The unresolved historical Cloudflare resource-limit issue still prevents a universal all-school live-audit claim; this session’s evidence is scoped to the tests and production feeds listed above.
+
+### September 29, 2026 — K-State live display test
+
+User: “Can we text the live feed so I can see it work on the app?” followed by “Test.” Treated “text” as “test” and checked production `/api/status` (`4.28.0-kstate-live-scores`) plus forced K-State Football, Basketball and Golf feeds. Football had 4 results/8 upcoming, Basketball had 66 upcoming across both divisions, and Golf had 4 results/22 upcoming across both divisions. None had a live event. The September 29 browser check confirmed the ordinary K-State page was serving its current schedule.
+
+Added a K-State Basketball preview behind the explicit `demo=live` query parameter. Its sample card and panel both say DEMO, and the sample never enters the API or the ordinary URL. It advances from Upcoming to Live to Final automatically or with the button. The sample uses the existing card and count layout and does not impersonate an official event or attach an official source. PR #17 passed certification run `36568485438`, then merged as `a3ca8468a9dd29eeee78f896828990afaca7364e`; Cloudflare served the updated page. Local `npm run test:release`, inline script syntax and `git diff --check` passed. The production browser displayed the sample in Upcoming, Live (71–68, 2nd Half · 4:12), and Final states, and allowed replay.
+
+An actual K-State in-progress ESPN → app transition remains unobserved because no game was live at test time. The earlier historical scoreboard fixtures continue to cover that data path deterministically. Keep the demo visibly marked and opt-in; do not count its sample as a real live game or a universal live-feed certification.
