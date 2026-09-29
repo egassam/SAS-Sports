@@ -75,6 +75,7 @@
         "Men's 8K": "Oklahoma State 2nd, 44 pts; 20 placed athletes",
         "Races #3-6": "high school races, not Oklahoma State"
       }
-    }
+    },
+    "text_fixtures": "*.txt.gz hold the text extracted from each PDF with unpdf extractText(bytes,{mergePages:true}), exactly as the Worker calls it; the test re-extracts and compares whenever unpdf is installed."
   }
 }

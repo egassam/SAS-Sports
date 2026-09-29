@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {extractText} from 'unpdf';
+import {gunzipSync} from 'node:zlib';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers,parseOklahomaStateMeetResults} from '../src/schools/oklahoma-state.mjs';
@@ -8,6 +8,19 @@ import {rosterSocialInstagrams} from '../src/roster-socials.js';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const pdf=name=>readFileSync(new URL('./fixtures/oklahoma-state-module/'+name,import.meta.url));
+// Text as the Worker's unpdf call extracts it from each official PDF. CI runs
+// without installed packages, so the stub is keyed to the exact PDF bytes and
+// the text is re-extracted and compared whenever unpdf is available.
+const pdfText=name=>gunzipSync(pdf(name.replace(/\.pdf$/,'.txt.gz'))).toString('utf8');
+const pdfFiles=['cowboy-preview-2026-results.pdf','cowboy-jamboree-2026-results.pdf'];
+const extractText=async(bytes,options)=>{
+  assert.deepEqual(options,{mergePages:true});
+  const name=pdfFiles.find(file=>Buffer.from(bytes).equals(pdf(file)));
+  assert.ok(name,'only the official PDF fixtures are extracted');
+  return{totalPages:0,text:pdfText(name)};
+};
+const unpdf=await import('unpdf').catch(()=>null);
+if(unpdf)for(const file of pdfFiles)assert.equal((await unpdf.extractText(new Uint8Array(pdf(file)),{mergePages:true})).text,pdfText(file),`${file}: committed text must equal unpdf extraction`);
 const sources=JSON.parse(read('./fixtures/oklahoma-state-module/sources.json')).cross_country_results;
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const school=schools.find(s=>s.id==='oklahoma-state');
@@ -103,7 +116,7 @@ for(const key of Object.keys(meets)){
 }
 
 // The same parser handles a future meet in either published format.
-const future=parseOklahomaStateMeetResults((await extractText(new Uint8Array(pdf(meets.jamboree.file)),{mergePages:true})).text,worker.ordinal);
+const future=parseOklahomaStateMeetResults(pdfText(meets.jamboree.file),worker.ordinal);
 assert.deepEqual(future,jamboree.results);
 
 // Missing, wrong or unofficial documents are explicitly partial; no rows are invented.
@@ -136,4 +149,4 @@ for(const change of [{school_id:'kstate'},{sport:'Track & Field'},{status:'Upcom
   await handlers.attachMeetResults(other);assert.deepEqual(other,before);
 }
 
-console.log('Oklahoma State XC: Cowboy Preview 31 rows and Cowboy Jamboree 37 rows from the official results PDFs, women first, K-State headline, feed/modal parity, partial and isolation checks passed.');
+console.log(`Oklahoma State XC: Cowboy Preview 31 rows and Cowboy Jamboree 37 rows from the official results PDFs (${unpdf?'text re-extracted with unpdf':'committed unpdf text'}), women first, K-State headline, feed/modal parity, partial and isolation checks passed.`);
