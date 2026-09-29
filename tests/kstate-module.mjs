@@ -13,7 +13,7 @@ const school=schools.find(s=>s.id==='kstate');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected fetch ${url}`);return new Response(responses.get(String(url)));};
-const worker=Function('kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS};`)(kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
+const worker=Function('kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource};`)(kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
 
 // Frozen from the pre-module application commit, never regenerated during tests.
 assert.equal(Object.keys(baseline.routes).length,10);
@@ -22,6 +22,11 @@ for(const [sport,expected] of Object.entries(baseline.routes)){
   assert.deepEqual(worker.candidateUrls(school,sport),expected.schedule,`${sport} schedule parity`);
   assert.deepEqual(worker.rosterUrls(school,sport),expected.roster,`${sport} roster parity`);
 }
+assert.deepEqual([...kstateSchool.combinedSports].sort(),['Basketball','Golf']);
+assert.equal(worker.schoolCombinedSports(school).has('Golf'),true);
+assert.equal(worker.teamLabelForSource(school,'Golf','https://www.kstatesports.com/sports/womens-golf/schedule'),"Women's");
+assert.equal(worker.teamLabelForSource(school,'Golf','https://www.kstatesports.com/sports/mens-golf/schedule'),"Men's");
+assert.equal(worker.teamLabelForSource(school,'Tennis','https://www.kstatesports.com/sports/womens-tennis/schedule'),null,'K-State only sponsors women\'s tennis');
 assert.deepEqual(Object.fromEntries([...worker.VERIFIED_TEAM_TAG_INSTAGRAM].filter(([key])=>key.startsWith('kstate|'))),baseline.verified_instagrams);
 assert.equal(worker.officialCardInstagram('https://instagram.com/kstatesports/'),null);
 assert.equal(worker.officialCardInstagram('https://instagram.com/sundevilathletics/'),null);
@@ -57,4 +62,4 @@ const first=()=>({school_id:'kstate',school:'Kansas State',sport:'Cross Country'
 const one=first();worker.enrichMeetEvent(one);one.results[0].result='changed';
 const two=first();worker.enrichMeetEvent(two);assert.equal(two.results[0].result,'1st · 20 pts');
 assert.equal(two.results.length,20);
-console.log('K-State module: all 10 sport source routes, 5 exact soccer records, 3 verified tennis accounts through the athlete path, school/event isolation, and independent result snapshots passed.');
+console.log('K-State module: all 10 sport source routes, both basketball/golf teams, 5 exact soccer records, 3 verified tennis accounts through the athlete path, school/event isolation, and independent result snapshots passed.');
