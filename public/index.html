@@ -62,7 +62,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="statusline"><div id="status">Loading SAS Sports…</div><div id="schoolMeta"></div></div>
   <nav id="sportNav" class="sport-nav"></nav>
 </section>
-<div id="demoPanel" class="demo-panel" hidden><strong>DEMO · Sample game, not a live score</strong><span id="demoStep">Watch an upcoming game move to Live, then Final.</span><button id="demoAdvance" class="ghost" type="button">Next step</button></div>
+<div id="demoPanel" class="demo-panel" hidden><strong>DEMO · Sample game, not a live score</strong><span id="demoStep">Sample score shown in the Live tab.</span><button id="demoAdvance" class="ghost" type="button">Show Final</button></div>
 <main id="feed" class="feed"></main>
 <div class="footer-note">SAS Sports · school-first web test · live official-source refresh · v1.8 reconciliation engine</div>
 </div>
@@ -76,20 +76,21 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refresh=$('#refresh'), school=$('#school'), conference=$('#conference'), sportFilter=$('#sportFilter'), search=$('#search'), favorite=$('#favorite'), favoriteTeams=$('#favoriteTeams'), tabs=$('#tabs'), sportNav=$('#sportNav'), modalWrap=$('#modalWrap');
 let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, activeFeedController=null, liveRefreshTimer=null, lastFeedRefresh=0;
 const demoRequested=new URLSearchParams(location.search).get('demo')==='live';
-let demoStage=0;
-function demoActive(){return demoRequested&&school.value==='kstate'&&sportFilter.value==='Basketball'}
+let demoStage=1;
+function demoActive(){return demoRequested&&school.value==='kstate'&&['Football','Basketball'].includes(sportFilter.value)}
 function demoEvent(){
   const state=['Upcoming','Live','Final'][demoStage];
-  return {id:'sas-demo-basketball',school_id:'kstate',school:'Kansas State',sport:'Basketball',title:"DEMO · Men's · K-State vs Sample Opponent",opponent:'Sample Opponent',team_label:"Men's",status:state,recency_label:state==='Live'?'2nd Half · 4:12':state==='Final'?'Final':'Sample tipoff',school_score:demoStage?71:null,opponent_score:demoStage?68:null,results:[],demo:true};
+  const basketball=sportFilter.value==='Basketball';
+  return {id:'sas-demo-'+sportFilter.value.toLowerCase(),school_id:'kstate',school:'Kansas State',sport:sportFilter.value,title:basketball?"DEMO · Men's · K-State vs Sample Opponent":'DEMO · K-State vs Sample Opponent',opponent:'Sample Opponent',team_label:basketball?"Men's":null,status:state,recency_label:state==='Live'?(basketball?'2nd Half · 4:12':'3rd Quarter · 8:42'):state==='Final'?'Final':'Sample kickoff',school_score:demoStage?(basketball?71:28):null,opponent_score:demoStage?(basketball?68:21):null,results:[],demo:true};
 }
 function displayedGroups(){
   if(!demoActive())return currentGroups;
   const sample=demoEvent(),bucket=demoStage===0?'upcoming':demoStage===1?'live':'results';
-  return currentGroups.map(g=>g.sport==='Basketball'?{...g,[bucket]:[sample,...(g[bucket]||[])]}:g);
+  return currentGroups.map(g=>g.sport===sample.sport?{...g,[bucket]:[sample,...(g[bucket]||[])]}:g);
 }
 function updateDemo(){
   const panel=$('#demoPanel');panel.hidden=!demoActive();
-  if(!panel.hidden){$('#demoStep').textContent=['Upcoming sample · advancing to Live','Live sample · 71–68 · 2nd Half, 4:12','Final sample · 71–68'][demoStage];$('#demoAdvance').textContent=demoStage===2?'Replay demo':'Next step'}
+  if(!panel.hidden){const e=demoEvent();$('#demoStep').textContent=['Upcoming sample','Live sample','Final sample'][demoStage]+(demoStage?` · ${e.school_score}–${e.opponent_score}${demoStage===1?' · '+e.recency_label:''}`:'');$('#demoAdvance').textContent=['Show Live','Show Final','Show Upcoming'][demoStage]}
   updateCounts();render(displayedGroups());
 }
 const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
@@ -441,9 +442,8 @@ favorite.addEventListener('click',()=>{const favorites=favoriteSchoolIds(),on=fa
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
-$('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;updateDemo()});
-if(demoRequested){setTimeout(()=>{if(demoStage===0){demoStage=1;updateDemo()}},4000);setTimeout(()=>{if(demoStage===1){demoStage=2;updateDemo()}},12000)}
-(async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Basketball'}await loadFeed()}catch(e){status.textContent=e.message}})();
+$('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;currentView=['upcoming','live','results'][demoStage];tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));updateDemo()});
+(async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Football';currentView='live';tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='live'))}await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
 </body>
 </html>
