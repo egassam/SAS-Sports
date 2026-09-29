@@ -6,6 +6,15 @@ export const kstateSchool={
   // K-State publishes these programs on separate men's and women's pages.
   // Both sources must be loaded and labeled before the shared feed is merged.
   combinedSports:new Set(['Basketball','Golf']),
+  // Live game state comes from an independent scoreboard. The official
+  // athletics pages remain the schedule/recap source of record.
+  liveScoreboards:{
+    Football:[{path:'football/college-football',sourceName:'Live college football scoreboard'}],
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
+  },
   scheduleUrls:{
     'kstate|Basketball':[
       'https://www.kstatesports.com/sports/mens-basketball/schedule',
