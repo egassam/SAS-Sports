@@ -1,6 +1,6 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country, PR #23).
+Last updated: September 29, 2026, America/Chicago (Oklahoma State Golf feed retry, PR #24).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
@@ -8,7 +8,16 @@ Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country,
 
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
 
-**Oklahoma State Cross Country fix is ready in PR #23 (https://github.com/egassam/SAS-Sports/pull/23), not merged.** Branch `oklahoma-state-xc-results`: application commit `7057360`, then test-only commit `e89d463`. CI run `36608526812` passed guardrails, certification-matrix and the Cloudflare preview build.
+**Oklahoma State Golf "shows nothing" fix is ready in PR #24 (https://github.com/egassam/SAS-Sports/pull/24), not merged.** Branch `oklahoma-state-golf-feed-retry`, application commit `ae3a252`, version `4.29.2-feed-retry`. CI run `36615257572` passed guardrails and certification-matrix, and the Cloudflare preview build succeeded. The cause was shared, not Oklahoma State data:
+- **What failed:** the Golf feed intermittently returned Cloudflare Error 1102 as HTTP 503. The page made only one feed attempt, so the sport showed "LIVE SOURCE UNAVAILABLE".
+- **The fix:** the sport feed now retries transient failures only, with up to 3 attempts.
+- **Preview:** OSU Golf shows 5 results and 24 upcoming across `Men's` and `Women's`, including after an injected 503.
+
+Production stays on `4.29.1` until the user merges PR #24. See the September 29 Oklahoma State Golf session record below.
+
+**Oklahoma State Cross Country (PR #23) is merged and live as `4.29.1-oklahoma-state-xc-results`** (merge `0629321`, 18:26 UTC). Production spot check at about 18:47 UTC: `/api/status` returned `4.29.1-oklahoma-state-xc-results`. The OSU XC grouped feed returned Jamboree 37 rows and Preview 31 rows with the K-State headlines, and the production page showed women first. Production `/live/highlights` parity and production K-State/KU XC counts were not rechecked in this session; the PR #24 preview kept K-State 18/20 and KU 26/21. The PR #23 record follows.
+
+PR #23 history: the Oklahoma State Cross Country fix was prepared in PR #23 (https://github.com/egassam/SAS-Sports/pull/23). Branch `oklahoma-state-xc-results`: application commit `7057360`, then test-only commit `e89d463`. CI run `36608526812` passed guardrails, certification-matrix and the Cloudflare preview build.
 
 On the branch preview (`4.29.1-oklahoma-state-xc-results`), both OSU meets match K-State's format, and the feed and expanded view are identical:
 
@@ -17,7 +26,7 @@ On the branch preview (`4.29.1-oklahoma-state-xc-results`), both OSU meets match
 | Cowboy Preview | 31: `Women's 3K`, then `Men's 5K` | `Women's team: 1st · 26 pts / Men's team: 1st · 31 pts` |
 | Cowboy Jamboree | 37: `Women's 6K` (15 athletes), then `Men's 8K` (20 athletes) | `Women's team: 2nd · 64 pts / Men's team: 2nd · 44 pts` |
 
-**Production stays on `4.29.0` until the user merges PR #23.** Merging deploys it. The table below is the pre-fix production state (user report, September 29):
+The user merged PR #23; it is live (above). The table below is the pre-fix production state (user report, September 29):
 
 | Item | K-State (reference) | Oklahoma State now |
 | --- | --- | --- |
@@ -123,7 +132,15 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Next: Oklahoma State Cross Country publication.** PR #23 is waiting for the user to merge it. After the merge:
+- **Next: Oklahoma State Golf publication.** PR #24 is waiting for the user to merge it. After the merge:
+  - Confirm production `/api/status` returns `4.29.2-feed-retry`.
+  - Open OSU Golf in the browser and check both divisions, 5 results and 24 upcoming (counts may change as tournaments finish).
+  - Recheck K-State, KU and OSU Cross Country (18/20, 26/21, 37/31).
+- **Open Oklahoma State Golf questions (one sport, later):**
+  - Ben Hogan Collegiate (Sep 28) is marked Final/"Completed", but its expanded highlights come from a mid-tournament recap. Multi-day tournament end dates are not carried; K-State's Powercat Classic shows the same. Needs the official schedule's date range; okstate.com returned 403 to the sandbox.
+  - OSU result text is the schedule's own ("6th out of 16 teams", "5th/15"), with no team score, where K-State's reads "7th of 16 (836)".
+  - Schooner Fall Classic and Folds of Honor expanded views report "An exact official recap could not be matched".
+- **Done: Oklahoma State Cross Country publication (PR #23).** Remaining checks from its list:
   - Confirm production `/api/status` returns `4.29.1-oklahoma-state-xc-results`.
   - Force-refresh the OSU XC grouped feed and check Preview 31 rows and Jamboree 37 rows, women first, with K-State headlines.
   - Check that `/live/highlights` for both meets equals the feed.
@@ -534,4 +551,50 @@ Limitations:
 - The preview diagnostic gives the women's page event count, not meet names.
 - Production was not changed.
 - The Cloudflare 1102 issue remains open.
+
+### September 29, 2026 — Oklahoma State Golf "shows nothing"
+
+The request arrived as a scheduled session prompt: fix Oklahoma State Golf only, after the user reported "I'm going through Oklahoma State and golf and tennis show nothing." Tennis is left alone; okstate.com still lists only 2025–26 matches. Main was fetched at `0629321` (PR #23 merged). This file, AGENTS.md, both module docs and both school modules were read before editing.
+
+**Reported before editing (production `4.29.1`, Playwright Chromium at 390×844):**
+- **Golf renders when the feed succeeds.** Oklahoma State, Golf selected: 0 Live / 5 Results / 24 Upcoming.
+  - Both divisions are labeled, and the Results and Upcoming tabs are filled.
+  - Feed and athletes requests returned 200, with no page errors.
+- **The feed matches K-State's shape:** same fields, division labels and start dates, no end dates.
+- **Root cause (shared):**
+  - The Golf feed intermittently returned Cloudflare Error 1102 (HTTP 503): 1 of 8 forced OSU Golf requests, plus 1 of 3 earlier. K-State Golf had 0 of 8, but its `/live/highlights` returned 503 for all 4 events at the time.
+  - The page's sport feed used `apiFetch(…,1)`, so one 503 showed "LIVE SOURCE UNAVAILABLE · The official schedule source did not return usable live data". Injecting one 503 in the browser reproduced that screen.
+  - PR #23's version bump had just emptied the feed caches, which makes these failures more likely.
+- **Also reported:** Ben Hogan shows Final with mid-tournament highlights; OSU result text differs from K-State's. Both are recorded as open questions above.
+
+**Authorization:** a later scheduled routine relayed the user's go-ahead for the proposed retry change, a push and a PR, and no merge.
+
+**Change:**
+- In `public/index.html`, `apiFetch` gained an opt-in `transientOnly` mode that retries only 429/503/504/520–524 and dropped connections.
+  - A deliberate 502 "no usable events" and 404 stop at once.
+  - An aborted (superseded) request is not retried.
+- The sport feed uses 3 attempts with `transientOnly`; other callers are unchanged.
+- Version `4.29.2-feed-retry`.
+- No Oklahoma State module or Worker logic changed.
+
+**Tests actually run:**
+- `npm run test:release` and `npm test` passed. That covers 18 protected schools, 71 cache identities, K-State XC 18/20, KU XC 21/26 and OSU XC 31/37.
+- Inline page script `node --check` and `git diff --check` passed.
+- A new `tests/regression.mjs` block runs the page's real `apiFetch` against a stubbed `fetch` in 8 cases.
+- Mutation checks: reverting the feed call to one attempt fails the suite, and removing the transient-only guard fails the 502 case.
+- Local browser check: the edited page against the production API, with the first Golf request forced to 503, retried once and showed 29 events.
+- No official okstate.com Golf fixture was added: okstate.com returned the Incapsula 403 to the sandbox and was not circumvented. What is tested is the page's retry behavior; the Golf data path is unchanged.
+
+**Publication:** branch `oklahoma-state-golf-feed-retry`, commit `ae3a252`, PR #24. CI run `36615257572`: guardrails and certification-matrix passed, and live-school jobs were skipped as usual for PRs. The Cloudflare preview build succeeded. Not merged; the user merges.
+
+**Preview verification** (https://oklahoma-state-golf-feed-retry-sas-sports.lovetogivepain.workers.dev, `4.29.2-feed-retry`, browser at phone width):
+- **OSU Golf:** Results shows 5 finals and Upcoming shows 24 events, with both `Men's` and `Women's`.
+- **OSU Golf with the first feed request forced to 503:** the page retried once (503 then 200) and showed all 29 events.
+- **Cross Country:** OSU showed Jamboree/Preview women first. K-State showed Gans Creek/Platte River and KU showed Gans Creek/Bob Timmons, with team rows.
+- **Preview API row counts:** K-State XC 18/20, KU XC 26/21, OSU XC 37/31. K-State Golf showed both divisions.
+
+**Limitations:**
+- The Cloudflare 1102 limit itself is not fixed; the change only keeps one failure from blanking the page. Three consecutive failures still show the unavailable message.
+- When the user saw the empty screen is unknown, so the timing link to PR #23's cache reset is likely but unproven.
+- Production is unchanged until PR #24 is merged.
 

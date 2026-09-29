@@ -99,3 +99,23 @@ Tests: `tests/oklahoma-state-cross-country.mjs` (`npm run test:oklahoma-state-xc
 - It checks rows, group order, headline and fields; feed/expanded parity (complete and missing-document cases); idempotence; wrong-date, unofficial and non-matching-recap sources; and school/sport/status isolation.
 - Mutation checks showed the group-order and missing-document parity assertions fail without the module hooks.
 - `tests/regression.mjs` now requires `mxct` as the first XC schedule candidate.
+
+## Golf "shows nothing" (PR #24, `4.29.2-feed-retry`)
+
+User report (Sept 29): Oklahoma State Golf showed nothing.
+
+On production `4.29.1`, the module's Golf output was correct:
+- `Men's` and `Women's`, 5 results and 24 upcoming.
+- The same feed shape as K-State Golf.
+- The page rendered it whenever the feed request succeeded.
+
+The empty screen was Cloudflare Error 1102 (HTTP 503) on a feed request. The shared page tried only once, so one failure showed "LIVE SOURCE UNAVAILABLE". The fix is in the shared page, not this module: the sport feed now retries transient failures only (429/503/504/52x and dropped connections), with up to 3 attempts. The module and the Worker are unchanged.
+
+Tests: `tests/regression.mjs` runs the page's real `apiFetch` against a stubbed `fetch` in 8 cases. No okstate.com Golf fixture was added because okstate.com returned 403 to the sandbox.
+
+On the preview, OSU Golf showed 5 results and 24 upcoming, including after an injected 503. OSU XC stayed at 37/31 rows.
+
+Open Golf questions for a later session:
+- **Ben Hogan Collegiate:** Final/"Completed" on its Sep 28 start date, but its expanded highlights come from a mid-tournament recap. End dates are not carried.
+- **Result text:** it is the schedule's own ("6th out of 16 teams", "5th/15"), with no team score.
+- **Recap matching:** two women's events report no exact recap match.
