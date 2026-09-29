@@ -5,7 +5,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 
-const VERSION='4.27.0-kstate-dual-teams';
+const VERSION='4.28.0-kstate-live-scores';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1508,40 +1508,49 @@ function scoreboardDateKey(value){const n=Date.parse(value||'');return Number.is
 function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
 }
-async function fetchFootballScoreboard(school,now){
+function liveScoreboardProviders(school,sport){
+  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:null;
+  if(configured?.length)return configured;
+  return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
+}
+function parseScoreboardPayload(payload,school,sport,provider,url,now){
   const found=[];
-  for(const date of scoreboardDates(now)){
-    const url=`https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?limit=1000&dates=${date}`;
+  for(const item of payload?.events||[]){
+    const competition=item?.competitions?.[0],competitors=competition?.competitors||[];
+    const ours=competitors.find(c=>scoreboardTeamMatchesSchool(c?.team,school));
+    if(!ours)continue;
+    const opponent=competitors.find(c=>c!==ours);if(!opponent)continue;
+    const type=competition?.status?.type||item?.status?.type||{},state=String(type.state||'').toLowerCase();
+    if(state!=='in'&&state!=='post'&&!type.completed)continue;
+    const start=new Date(competition?.date||item?.date||now.toISOString()),dateText=start.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
+    const status=state==='in'?'Live':'Final',detail=clean(type.shortDetail||type.detail||(status==='Live'?'Live now':'Final'));
+    const event=makeEvent({school,sport,status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:null,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
+    if(status==='Live'){
+      event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
+    }else event.recency_label='Final';
+    if(provider.team_label){event.team_label=provider.team_label;event.title=`${provider.team_label} · ${event.title}`;}
+    event.source={name:provider.sourceName||'Live game scoreboard',url,updated_at:now.toISOString()};
+    event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
+    found.push(event);
+  }
+  return mergeEvents([found]);
+}
+async function fetchLiveScoreboards(school,sport,now){
+  const found=[];
+  for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?limit=1000&dates=${date}`;
     try{
       const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
-      if(!response.ok)continue;
-      const payload=await response.json();
-      for(const item of payload?.events||[]){
-        const competition=item?.competitions?.[0],competitors=competition?.competitors||[];
-        const ours=competitors.find(c=>scoreboardTeamMatchesSchool(c?.team,school));
-        if(!ours)continue;
-        const opponent=competitors.find(c=>c!==ours);if(!opponent)continue;
-        const type=competition?.status?.type||item?.status?.type||{},state=String(type.state||'').toLowerCase();
-        if(state!=='in'&&state!=='post'&&!type.completed)continue;
-        const start=new Date(competition?.date||item?.date||now.toISOString()),dateText=start.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
-        const status=state==='in'?'Live':'Final',detail=clean(type.shortDetail||type.detail||(status==='Live'?'Live now':'Final'));
-        const event=makeEvent({school,sport:'Football',status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:null,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
-        if(status==='Live'){
-          event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
-        }else event.recency_label='Final';
-        event.source={name:'Live college football scoreboard',url,updated_at:now.toISOString()};
-        event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
-        found.push(event);
-      }
+      if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));
     }catch{}
   }
   return mergeEvents([found]);
 }
-function reconcileFootballScores(scheduleEvents,scoreEvents){
+function reconcileScoreboardEvents(scheduleEvents,scoreEvents){
   const events=scheduleEvents.slice();
   for(const score of scoreEvents){
     const day=scoreboardDateKey(score.start_time);
-    const index=events.findIndex(event=>event.sport==='Football'&&scoreboardDateKey(event.start_time)===day);
+    const index=events.findIndex(event=>event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===(score.team_label||null));
     if(index<0){events.push(score);continue}
     const official=events[index];
     events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source};
@@ -1552,6 +1561,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   const urls=candidateUrls(school,sport),errors=[],successful=[];
+  // Start the independent scoreboard immediately. A stale or failed school
+  // page must not suppress a live football/basketball score.
+  const scoreboardPromise=fetchLiveScoreboards(school,sport,now);
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
   const combined=schoolCombinedSports(school).has(sport);
@@ -1568,9 +1580,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
   if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
-  if(sport==='Football'){
-    const scoreboard=await fetchFootballScoreboard(school,now);
-    events=reconcileFootballScores(events,scoreboard);
+  const scoreboard=await scoreboardPromise;
+  if(scoreboard.length){
+    events=reconcileScoreboardEvents(events,scoreboard);
     if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
   }
   if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null};

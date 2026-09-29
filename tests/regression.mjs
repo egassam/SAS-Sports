@@ -316,15 +316,15 @@ contains(page,/highlight-loader-mark[^>]*[^]*>SAS</,'SAS loader mark must exist'
 contains(page,/Fetching SAS verified highlights…/,'Verified-highlight loading message must exist');
 contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1.5 seconds');
 
-// Football schedule pages do not consistently publish live state. Reconcile the
-// official schedule with a short-cache scoreboard during game windows.
-contains(worker,/function fetchFootballScoreboard\(/,'Football live scoreboard reconciliation must exist');
-contains(worker,/college-football\/scoreboard\?limit=1000/,'Football reconciliation must use the college-football scoreboard');
-contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress football games must become Live');
-contains(worker,/event\.school_score=ours\.score/,'Live football scores must update the selected school');
-contains(worker,/function reconcileFootballScores\(/,'Live scores must reconcile onto official schedule events');
+// School schedule pages do not consistently publish live state. Reconcile the
+// official schedule with short-cache football and basketball scoreboards.
+contains(worker,/function fetchLiveScoreboards\(/,'Independent live scoreboard retrieval must exist');
+contains(worker,/provider\.path\}\/scoreboard\?limit=1000/,'Live reconciliation must use the configured sport scoreboard');
+contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress games must become Live');
+contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
+contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');
 contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
-contains(worker,/if\(sport===['"]Football['"]\)/,'Scoreboard reconciliation must remain isolated to Football');
+contains(worker,/kstateSchool\.liveScoreboards\?\.\[sport\]/,'K-State scoreboards must be explicitly configured per sport');
 
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and
 // bypass the worker cache so upcoming events can become live and finals can land.
