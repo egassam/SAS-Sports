@@ -77,6 +77,14 @@ assert.deepEqual([...new Set(tennis.events.map(e=>e.team_label))].sort(),["Men's
 const tennisGroups=worker.groupEvents(tennis.events);
 assert.equal(tennisGroups.length,1,'a current men\'s schedule must keep the Tennis feed populated');
 assert.deepEqual([...tennisGroups[0].upcoming,...tennisGroups[0].results].map(e=>e.title),["Men's · Oklahoma State at Texas Tech"]);
+// Real official women's page (retrieved 2026-09-29): still the 2025-26
+// season, so an empty current Tennis feed is a source gap, not a parser bug.
+const womensTennisPage=fixture('womens-tennis-schedule.html.gz');
+assert.match(womensTennisPage,/2025-26 Cowgirl Tennis Schedule/);
+const womensTennisEvents=worker.parseHtml(womensTennisPage,school,'Tennis','https://okstate.com/sports/womens-tennis/schedule',now);
+assert.equal(womensTennisEvents.length,21,'every published women\'s match is parsed');
+assert.ok(womensTennisEvents.every(e=>e.start_time>='2026-01-23'&&e.start_time<'2026-04-13'),'published matches keep their 2025-26 season dates');
+assert.deepEqual(worker.groupEvents(womensTennisEvents,now),[],'no stale-season matches are presented as the current season');
 // Golf: both divisions are merged and labeled.
 responses=new Map([['https://okstate.com/sports/womens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Women's Golf Schedule</h1><table>${textRow('Oct 5','The Ally')}</table>`],['https://okstate.com/sports/mens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Men's Golf Schedule</h1><table>${textRow('Oct 12','Big 12 Match Play')}</table>`]]);requests=[];
 const golf=await worker.fetchLive('oklahoma-state','Golf');

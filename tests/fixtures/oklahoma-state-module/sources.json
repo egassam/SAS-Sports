@@ -8,12 +8,36 @@
     "source": "https://okstate.com/sports/mxct/schedule",
     "note": "Meet names and dates as published on the official schedule and returned by production 4.28.1-local-time on 2026-09-29. The schedule HTML itself could not be downloaded from the development sandbox (okstate.com bot protection returned HTTP 403).",
     "meets": [
-      {"date": "2026-09-05", "name": "Cowboy Preview", "status": "Final"},
-      {"date": "2026-09-26", "name": "Cowboy Jamboree", "status": "Final"},
-      {"date": "2026-10-17", "name": "Weis-Crockett Invitational", "status": "Upcoming"},
-      {"date": "2026-10-31", "name": "Big 12 Cross Country Championships", "status": "Upcoming"},
-      {"date": "2026-11-13", "name": "NCAA Midwest Regional Championships", "status": "Upcoming"},
-      {"date": "2026-11-21", "name": "NCAA Cross Country Championships", "status": "Upcoming"}
+      {
+        "date": "2026-09-05",
+        "name": "Cowboy Preview",
+        "status": "Final"
+      },
+      {
+        "date": "2026-09-26",
+        "name": "Cowboy Jamboree",
+        "status": "Final"
+      },
+      {
+        "date": "2026-10-17",
+        "name": "Weis-Crockett Invitational",
+        "status": "Upcoming"
+      },
+      {
+        "date": "2026-10-31",
+        "name": "Big 12 Cross Country Championships",
+        "status": "Upcoming"
+      },
+      {
+        "date": "2026-11-13",
+        "name": "NCAA Midwest Regional Championships",
+        "status": "Upcoming"
+      },
+      {
+        "date": "2026-11-21",
+        "name": "NCAA Cross Country Championships",
+        "status": "Upcoming"
+      }
     ]
   },
   "tennis_diagnostic": {
@@ -21,6 +45,13 @@
     "observed": "2026-09-29T16:28:12Z",
     "womens_tennis_events": 21,
     "mens_tennis_events": 4,
-    "grouped_feed": "[] because only the first (women's) source was used"
+    "grouped_feed": "[] on production and on the 4.29.0 preview. The women's page has no 2026-27 events (fixture); the men's page was not downloaded, but the preview feed shows its 4 events are also outside the 2026-27 season"
+  },
+  "schedules": {
+    "womens-tennis-schedule.html.gz": {
+      "url": "https://okstate.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-09-29T16:41Z",
+      "note": "Official page still headed 2025-26 Cowgirl Tennis Schedule; 21 matches from 2026-01-23 to 2026-04-12 and no 2026-27 dual schedule."
+    }
   }
 }

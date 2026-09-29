@@ -6,7 +6,7 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
-**Oklahoma State module (September 29 session): implemented and tested locally on branch `oklahoma-state-module`; not pushed, no PR, not merged or deployed.** Production remains `4.28.1-local-time`. The candidate is `4.29.0-oklahoma-state-module`. See `docs/OKLAHOMA_STATE_MODULE.md` and the September 29 Oklahoma State session record below. Oklahoma State's athlete-certification failure was a validator rule, not an app defect. It is fixed by the new opt-in `athlete_profile_fallback_sports` certification field, which affects only Oklahoma State. With that validator, all 11 Oklahoma State athlete checks passed against current production data. Utah and Alabama still fail unchanged.
+**Oklahoma State module (September 29 session): PR #21 (https://github.com/egassam/SAS-Sports/pull/21) is open and verified on its Cloudflare preview; not merged, so not in production.** Production remains `4.28.1-local-time`. The candidate is `4.29.0-oklahoma-state-module`. See `docs/OKLAHOMA_STATE_MODULE.md` and the September 29 Oklahoma State session record below. Oklahoma State's athlete-certification failure was a validator rule, not an app defect. It is fixed by the new opt-in `athlete_profile_fallback_sports` certification field, which affects only Oklahoma State. With that validator, all 11 Oklahoma State athlete checks passed against current production data. Utah and Alabama still fail unchanged.
 
 **Project scope (user, September 29): only K-State and KU are expected to work correctly now.** Every other school still needs its own school module built the same way as `src/schools/kstate.mjs` and `src/schools/kansas.mjs`, one school per session, with tests against that school's real official sources. Until a school is converted, its live-certification failures are expected. They are not regressions and not a reason to patch that school inside shared code. As of this date, Oklahoma State, Utah and Alabama fail athlete-Instagram checks, and the other 13 non-module schools pass only the basic certification checks.
 
@@ -99,7 +99,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Oklahoma State first:** the module is committed locally on `oklahoma-state-module` only. If this session's container was reclaimed before a push, the commit is lost and must be redone from `docs/OKLAHOMA_STATE_MODULE.md`. With user approval: push the branch, open the PR, confirm CI, and check the Cloudflare preview for OSU Golf (both `Men's` and `Women's`), Tennis (non-empty, labeled), Track & Field (no cross-country meets) and Cross Country (6 meets). Then run `node tests/validate-schools.mjs --schools=oklahoma-state --base=PREVIEW_URL`. Merge only with approval. Still open for OSU: official schedule HTML fixtures (okstate.com returned HTTP 403 to the sandbox), the women's cross country/track program, Cowboy Jamboree's 1-row result, and deep recap certification.
+- **Oklahoma State first:** PR #21 is open, CI guardrails/certification-matrix passed, and the branch preview passed Oklahoma State certification 11/11. Merge only with explicit user approval, because merging deploys production. After a merge, verify production `/api/status` returns `4.29.0-oklahoma-state-module` and recheck OSU Golf, Tennis, Track & Field and Cross Country plus the K-State/KU XC counts. Still open for OSU: official schedule fixtures other than women's Tennis, the women's cross country/track program, Cowboy Jamboree's 1-row result, deep recap certification, and a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior).
 
 - Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
@@ -410,5 +410,18 @@ Limitations:
 - Tennis/Golf orchestration is tested with minimal synthetic pages. The XC/track split uses the real meet names/dates as served by production.
 - The women's program, Cowboy Jamboree result completeness and deep recap certification remain open.
 
-Publication status: local commit on `oklahoma-state-module` only; commit ID in the Git log. No push, PR, merge, deployment, preview or live verification of the new code.
+Publication status: application commit `1a55077` on `oklahoma-state-module`. A later scheduled routine ("Oklahoma State: open PR when tests pass") authorized a push and PR but not a merge. Both suites were re-run and passed, main was unchanged at `42a26c8`, and the branch was pushed. PR #21 was opened. GitHub run `36599105600`: guardrails and certification-matrix passed; live-school jobs were skipped as usual for PRs. The Cloudflare Workers Builds preview deployed.
+
+#### Preview verification and Tennis correction
+
+- The preview `https://oklahoma-state-module-sas-sports.lovetogivepain.workers.dev` returned `4.29.0-oklahoma-state-module`.
+- Forced OSU feeds:
+  - Golf: `Men's` and `Women's`, 5 results and 24 upcoming.
+  - Cross Country: 6 meets.
+  - Track & Field: no cross-country meets. With no track meets published, the existing 502 "no usable events" response is returned.
+  - Tennis: still empty.
+- okstate.com briefly accepted one request. The official women's Tennis page is still the "2025-26 Cowgirl Tennis Schedule" (21 matches, January 23–April 12, 2026), and the men's events are also outside 2026–27. The earlier explanation, that only the first source was used, was incomplete. Loading both divisions is correct, but Tennis is empty because okstate.com has not published 2026–27 schedules. That page was added as a real fixture with a test.
+- `validate-schools` against the preview: Oklahoma State 11/11 passed. Preview K-State XC 18/20 and KU XC 26/21 were unchanged.
+- The docs/fixture follow-up commit was tested with `npm run test:release` and `npm test` before its push.
+- Production remains `4.28.1-local-time` until the user approves merging PR #21.
 
