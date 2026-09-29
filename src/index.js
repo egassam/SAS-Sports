@@ -5,7 +5,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 
-const VERSION='4.28.0-kstate-live-scores';
+const VERSION='4.29.0-kansas-live-scores';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1497,7 +1497,8 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
 }
 
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
-function scoreboardTeamMatchesSchool(team,school){
+function scoreboardTeamMatchesSchool(team,school,provider){
+  if(provider?.teamId)return String(team?.id||'')===String(provider.teamId);
   const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
   const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation,team?.name].map(normalizedTeamName).filter(Boolean);
   if(wanted.some(x=>exact.includes(x)))return true;
@@ -1509,7 +1510,8 @@ function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
 }
 function liveScoreboardProviders(school,sport){
-  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:null;
+  const module=school?.id==='kstate'?kstateSchool:school?.id==='kansas'?kansasSchool:null;
+  const configured=module?.liveScoreboards?.[sport];
   if(configured?.length)return configured;
   return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
 }
@@ -1517,7 +1519,7 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
   const found=[];
   for(const item of payload?.events||[]){
     const competition=item?.competitions?.[0],competitors=competition?.competitors||[];
-    const ours=competitors.find(c=>scoreboardTeamMatchesSchool(c?.team,school));
+    const ours=competitors.find(c=>scoreboardTeamMatchesSchool(c?.team,school,provider));
     if(!ours)continue;
     const opponent=competitors.find(c=>c!==ours);if(!opponent)continue;
     const type=competition?.status?.type||item?.status?.type||{},state=String(type.state||'').toLowerCase();

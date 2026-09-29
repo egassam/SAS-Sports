@@ -77,11 +77,12 @@ const $=s=>document.querySelector(s), feed=$('#feed'), status=$('#status'), refr
 let allSchools=[], currentGroups=[], currentView='all', feedLoading=false, queuedFeedRequest=null, feedGeneration=0, activeFeedController=null, liveRefreshTimer=null, lastFeedRefresh=0;
 const demoRequested=new URLSearchParams(location.search).get('demo')==='live';
 let demoStage=1;
-function demoActive(){return demoRequested&&school.value==='kstate'&&['Football','Basketball'].includes(sportFilter.value)}
+function demoActive(){return demoRequested&&['kstate','kansas'].includes(school.value)&&['Football','Basketball'].includes(sportFilter.value)}
 function demoEvent(){
   const state=['Upcoming','Live','Final'][demoStage];
-  const basketball=sportFilter.value==='Basketball';
-  return {id:'sas-demo-'+sportFilter.value.toLowerCase(),school_id:'kstate',school:'Kansas State',sport:sportFilter.value,title:basketball?"DEMO · Men's · K-State vs Sample Opponent":'DEMO · K-State vs Sample Opponent',opponent:'Sample Opponent',team_label:basketball?"Men's":null,status:state,recency_label:state==='Live'?(basketball?'2nd Half · 4:12':'3rd Quarter · 8:42'):state==='Final'?'Final':'Sample kickoff',school_score:demoStage?(basketball?71:28):null,opponent_score:demoStage?(basketball?68:21):null,results:[],demo:true};
+  const basketball=sportFilter.value==='Basketball',kansas=school.value==='kansas';
+  const name=kansas?'KU':'K-State',score=basketball?(kansas?74:71):(kansas?35:28),opponentScore=basketball?(kansas?69:68):(kansas?24:21);
+  return {id:`sas-demo-${school.value}-${sportFilter.value.toLowerCase()}`,school_id:school.value,school:kansas?'Kansas':'Kansas State',sport:sportFilter.value,title:`DEMO · ${basketball?"Men's · ":''}${name} vs Sample Opponent`,opponent:'Sample Opponent',team_label:basketball?"Men's":null,status:state,recency_label:state==='Live'?(basketball?'2nd Half · 4:12':'3rd Quarter · 8:42'):state==='Final'?'Final':basketball?'Sample tipoff':'Sample kickoff',school_score:demoStage?score:null,opponent_score:demoStage?opponentScore:null,results:[],demo:true};
 }
 function displayedGroups(){
   if(!demoActive())return currentGroups;
@@ -443,7 +444,7 @@ $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListene
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
 $('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;currentView=['upcoming','live','results'][demoStage];tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));updateDemo()});
-(async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Football';currentView='live';tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='live'))}await loadFeed()}catch(e){status.textContent=e.message}})();
+(async()=>{try{await loadSchools();if(demoRequested&&['kstate','kansas'].includes(school.value)){populateSportFilter();sportFilter.value='Football';currentView='live';tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='live'))}await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
 </body>
 </html>

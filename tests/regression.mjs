@@ -324,7 +324,9 @@ contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress ga
 contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
 contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');
 contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
-contains(worker,/kstateSchool\.liveScoreboards\?\.\[sport\]/,'K-State scoreboards must be explicitly configured per sport');
+contains(worker,/school\?\.id===['"]kstate['"]\?kstateSchool:school\?\.id===['"]kansas['"]\?kansasSchool/,'K-State and KU scoreboards must be configured in their own modules');
+contains(worker,/module\?\.liveScoreboards\?\.\[sport\]/,'School scoreboard paths must remain sport-specific');
+contains(worker,/provider\?\.teamId/,'Explicit ESPN team identity must prevent Kansas/Kansas State mixups');
 
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and
 // bypass the worker cache so upcoming events can become live and finals can land.

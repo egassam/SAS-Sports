@@ -6,6 +6,13 @@ export {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} 
 export const kansasSchool={
   id:'kansas',
   combinedSports:new Set(['Basketball','Golf']),
+  liveScoreboards:{
+    Football:[{path:'football/college-football',teamId:'2305',sourceName:'Live college football scoreboard'}],
+    Basketball:[
+      {path:'basketball/mens-college-basketball',teamId:'2305',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',teamId:'2305',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
+  },
   scheduleUrls:{
   'kansas|Volleyball':'https://kuathletics.com/sports/wvball/schedule',
   'kansas|Soccer':'https://kuathletics.com/sports/wsoc/schedule',

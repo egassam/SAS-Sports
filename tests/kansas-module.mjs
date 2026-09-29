@@ -11,7 +11,37 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected network request: ${url}`);return new Response(responses.get(String(url)));};
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,fetchUrl,groupEvents,mergeEvents,attachOfficialHighlights,kansasHandlers,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,fetchUrl,groupEvents,mergeEvents,attachOfficialHighlights,kansasHandlers,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents};')(...Object.values(deps));
+assert.deepEqual(worker.liveScoreboardProviders(school,'Football').map(x=>[x.path,x.teamId]),[['football/college-football','2305']]);
+assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(x=>[x.path,x.team_label,x.teamId]),[
+  ['basketball/mens-college-basketball',"Men's",'2305'],
+  ['basketball/womens-college-basketball',"Women's",'2305']
+]);
+const provider=kansasSchool.liveScoreboards.Basketball[0];
+const scoreboardUrl='https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?limit=1000&dates=20270116';
+const payload={events:[{date:'2027-01-16T20:00:00Z',competitions:[{date:'2027-01-16T20:00:00Z',status:{type:{state:'in',shortDetail:'2nd Half - 4:12'}},competitors:[
+  {homeAway:'home',score:'74',team:{id:'2305',location:'Kansas',displayName:'Kansas Jayhawks',shortDisplayName:'Kansas'}},
+  {homeAway:'away',score:'69',team:{id:'2306',location:'Kansas State',displayName:'Kansas State Wildcats',shortDisplayName:'Kansas State'}}
+]}]}]};
+const liveMen=worker.parseScoreboardPayload(payload,school,'Basketball',provider,scoreboardUrl,new Date('2027-01-16T21:00:00Z'));
+assert.equal(liveMen.length,1,'KU must match ESPN team 2305 once, not the Kansas State competitor');
+assert.equal(liveMen[0].status,'Live');
+assert.equal(liveMen[0].team_label,"Men's");
+assert.equal(liveMen[0].school_score,'74');
+assert.equal(liveMen[0].opponent_score,'69');
+assert.equal(liveMen[0].headline,'2nd Half - 4:12');
+assert.equal(liveMen[0].verification_state,'live_scoreboard');
+const womenSchedule={...liveMen[0],id:'ku-women-schedule',team_label:"Women's",title:"Women's · KU vs Kansas State",status:'Upcoming',school_score:null,opponent_score:null};
+const menSchedule={...womenSchedule,id:'ku-men-schedule',team_label:"Men's",title:"Men's · KU vs Kansas State"};
+const reconciled=worker.reconcileScoreboardEvents([womenSchedule,menSchedule],liveMen);
+assert.equal(reconciled.length,2);
+assert.equal(reconciled.find(x=>x.team_label==="Women's").status,'Upcoming','men’s live scores must not overwrite women’s games');
+assert.equal(reconciled.find(x=>x.team_label==="Men's").verification_state,'official_schedule+live_scoreboard');
+const footballProvider=kansasSchool.liveScoreboards.Football[0];
+const footballFinal=worker.parseScoreboardPayload({...payload,events:payload.events.map(event=>({...event,competitions:event.competitions.map(c=>({...c,status:{type:{state:'post',completed:true,shortDetail:'Final'}}}))}))},school,'Football',footballProvider,scoreboardUrl,new Date('2027-01-16T21:00:00Z'));
+assert.equal(footballFinal.length,1);
+assert.equal(footballFinal[0].status,'Final');
+assert.equal(footballFinal[0].school_score,'74');
 const expectedCounts={'baseball':38,'mens-basketball':36,'womens-basketball':34,'cross-country':6,'football':12,'womens-golf':12,'mens-golf':14,'womens-rowing':9,'wsoc':21,'softball':33,'womens-swimming-and-diving':13,'womens-tennis':8,'track-and-field':34,'wvball':28};
 const byPath=new Map();
 assert.deepEqual(Object.keys(kansasSchool.scheduleUrls).map(key=>key.split('|')[1]).sort(),[...sponsoredSports.kansas].sort());
@@ -118,4 +148,22 @@ const athletes=await worker.featuredAthletes('kansas','Golf');
 assert.equal(athletes.length,3);
 for(const athlete of athletes)assert.equal(athlete.instagram_url,kansasSchool.verifiedInstagrams[`kansas|Golf|${athlete.name}`]);
 assert.equal(worker.VERIFIED_TEAM_TAG_INSTAGRAM.get('kstate|Golf|Lyla Louderbaugh'),undefined);
-console.log('Kansas module: 12 sports / 14 official schedules, both golf/basketball teams, exact years and doubleheaders, current XC 21/26 rows, 14 recap identities, 22 reviewed golfer placings, future/changed-article guards, and verified athlete isolation passed.');
+// An independent KU scoreboard must still create a live card if its official
+// schedule is unavailable. It cannot interpret Kansas State as KU.
+const today=new Date().toISOString().slice(0,10),todayKey=today.replaceAll('-','');
+const game={...payload.events[0],date:today+'T12:00:00Z',competitions:payload.events[0].competitions.map(c=>({...c,date:today+'T12:00:00Z'}))};
+const livePayload=JSON.stringify({events:[game]});
+for(const sport of ['Football','Basketball'])for(const item of kansasSchool.liveScoreboards[sport]){
+  if(item.team_label==="Women's")continue;
+  responses.set(`https://site.api.espn.com/apis/site/v2/sports/${item.path}/scoreboard?limit=1000&dates=${todayKey}`,livePayload);
+}
+responses.delete(kansasSchool.scheduleUrls['kansas|Football']);
+const footballFeed=await worker.fetchLive('kansas','Football');
+assert.equal(footballFeed.events.length,1,'a scoreboard-only live game must survive a failed school schedule');
+assert.equal(footballFeed.events[0].status,'Live');
+assert.equal(footballFeed.events[0].school_id,'kansas');
+assert.equal(footballFeed.events[0].live_score_source?.includes('espn.com'),true);
+const basketballFeed=await worker.fetchLive('kansas','Basketball');
+assert.equal(basketballFeed.events.filter(e=>e.status==='Live').length,1);
+assert.equal(basketballFeed.events.filter(e=>e.team_label==="Women's").length,34,'men’s scoreboard cannot alter KU women’s schedule');
+console.log('Kansas module: 12 sports / 14 official schedules, both golf/basketball teams, independent KU football/basketball scoreboards, exact years and doubleheaders, current XC 21/26 rows, 14 recap identities, 22 reviewed golfer placings, future/changed-article guards, and verified athlete isolation passed.');
