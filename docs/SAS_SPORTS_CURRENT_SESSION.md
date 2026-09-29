@@ -6,6 +6,8 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
+**September 29 local-time fix is committed on branch `ccr-a8791a1a-rg8qi0` but not merged or deployed.** Candidate version `4.28.1-local-time`. Official schedule times are stored as the school's local wall clock; ESPN times are true UTC, and "today" was computed in UTC. As a result, a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate Live card dated the next day, and left the Upcoming list at 00:00 UTC (7 PM CDT / 6 PM CST). The fix adds a per-school time zone (state map plus a Tennessee override). ESPN times are converted into that frame, and the shared `makeEvent`, `groupEvents` and text-row "today" checks use the school's local date. So do the KU module's future/past/in-progress checks. Production remains `4.28.0-kstate-live-scores` until a PR is approved and merged.
+
 **K-State live display preview is deployed.** PR #18 corrected the initial PR #17 preview after the user selected Football and saw an empty Live tab. The opt-in URL `https://sas-sports.lovetogivepain.workers.dev/?school=kstate&demo=live` now opens on Football + Live with a persistent, clearly labeled 28–21 sample and supports Basketball's 71–68 sample when selected. The button moves the example through Final, Upcoming, and Live while selecting the corresponding tab. The regular app and feed API retain genuine data only. This demonstrates display states, not a real in-progress ESPN game. September 29 forced Football and Basketball production feeds had no live K-State contest.
 
 **The September 28 K-State dual-team and live-score work is complete, merged, deployed, and live as `4.28.0-kstate-live-scores`.** PR #15 added explicit men’s and women’s K-State Golf sources and labels while preserving both Basketball teams. Production Golf verification returned both divisions, 4 results and 22 upcoming events. PR #16 added independent ESPN scoreboard inputs for K-State Football and both Basketball programs, merged at application commit `a23a16b3b1d2a5fafec5327041953fcb4b672d43`. The scoreboards run alongside the official K-State schedules, reconcile on sport/date/division, and can supply a game even when the school schedule has no usable live state. Production returned the new version and healthy current Football/Basketball feeds; no K-State game was in progress at verification time, so an actual live-game transition was not observable. Historical live payload fixtures verify score, clock/period, final state, team identity, and men’s/women’s isolation.
@@ -89,6 +91,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+0. If the user approves, open a PR for `ccr-a8791a1a-rg8qi0` (local-time fix), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
 1. Read this file from current GitHub main and inspect the current source/version before editing.
 2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12 through #16.
 3. Keep one school per session. After KU is complete, stop; wait for the user to name the next school in a new session.
@@ -308,3 +311,18 @@ An actual K-State in-progress ESPN → app transition remains unobserved because
 User supplied a phone screenshot showing K-State Football selected, the Live tab empty, and a 0 Live count. The initial demo had only activated for Basketball, and its automatic Final step could also leave Live empty. Corrected the opt-in preview to start and remain on Football's Live tab, with a labeled 28–21 sample and quarter; it also follows a switch to Basketball with a labeled 71–68 sample. The step button selects the corresponding tab when it moves through Final, Upcoming, and Live. The normal URL and backend feed still return only real events.
 
 Local `npm run test:release`, inline JavaScript syntax and diff checks passed. PR #18 certification run `36570019605` passed; the PR merged as `304d3a7b011b0f5a9508cb9706f5f93181f644dd`. Cloudflare served the updated HTML. Production browser verification opened the demo URL on Football + Live, saw a 1 Live count and the labeled `3rd Quarter · 8:42` / 28–21 card, then switched to Basketball and saw its labeled `2nd Half · 4:12` / 71–68 card. Those are sample cards only. No actual in-progress game was available for live provider verification.
+
+### September 29, 2026 — review suggestions and local-time fix
+
+User asked for an analysis of the code and Markdown files. Assistant reported, among other suggestions: the ESPN/official date mismatch for evening games; the UTC "today" rollover; cold-cache and heavy-endpoint contributors to the Cloudflare 1102 failures; school-specific branches remaining in shared code; and stale handoff/README content. A script reproduced the evening-game defect against the current code: a 7 PM Central game produced a Live card dated January 18 plus a dropped official card.
+
+User: “Yes, fix the time-zone bugs.” Implemented `schoolTimeZone`, `localWallClock`, `schoolNow` and `schoolToday` in `src/index.js`. `parseScoreboardPayload` now expresses ESPN UTC times in the school's local time and uses the Eastern calendar day when ESPN marks a time as unconfirmed (`timeValid:false`). `makeEvent`, `parseTextScheduleRows` and `groupEvents` compare against the school's local date. The KU module receives `schoolNow` for its future/past/tournament-in-progress checks (its default keeps old behavior if not injected). Version bumped to `4.28.1-local-time` so feed caches refresh.
+
+Tests actually run:
+- Baseline before changes: `npm run test:release` and `npm test` passed.
+- After changes: both passed again, `git diff --check` passed, and an offline esbuild bundle passed.
+- New K-State module assertions cover five cases: a 7 PM game still in Upcoming at 6:30 PM Central; ESPN 01:00Z mapped to 7 PM local; one reconciled Live card with the official ID; one Final result the next morning; and the calendar day kept for an unconfirmed ESPN time.
+- The behavioral assertions were confirmed to fail on the previous code (“a 7 PM game stays upcoming at 6:30 PM Central”).
+
+Publication: committed and pushed to `ccr-a8791a1a-rg8qi0` only. No PR, merge, deployment or live verification has been performed. This is a shared-code change affecting every school's day boundaries; the 18-school protection and 71 cache-identity checks passed locally. The Cloudflare 1102 issue remains unresolved.
+

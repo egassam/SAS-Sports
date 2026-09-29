@@ -5,7 +5,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 
-const VERSION='4.28.0-kstate-live-scores';
+const VERSION='4.28.1-local-time';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -201,9 +201,18 @@ const SEASONS={
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 const clean=s=>s==null?null:(String(s).replace(/\s+/g,' ').replace(/^[ ,\t\r\n]+|[ ,\t\r\n]+$/g,'')||null);
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+// Official schedule times are stored as the school's local wall clock with a
+// Z suffix. Compare days and convert provider UTC times in that same frame so
+// an evening game is not moved to the next day or dropped at 00:00 UTC.
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
+const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
+function schoolTimeZone(school){return SCHOOL_TIME_ZONES[school?.id]||STATE_TIME_ZONES[school?.state]||(school?.state?'America/New_York':'America/Chicago');}
+function localWallClock(value,timeZone){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(value)).map(p=>[p.type,p.value]));return new Date(Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour)%24,Number(parts.minute),Number(parts.second)));}
+function schoolNow(now,school){return localWallClock(now,schoolTimeZone(school));}
+function schoolToday(now,school){const local=schoolNow(now,school);return Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());}
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
-const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal});
+const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -839,13 +848,13 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
   // Publisher cards occasionally leak the preceding game's score into a
   // future matchup. The official event date is authoritative: a game after
   // today cannot be a final and must not retain an inherited score/outcome.
-  const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+  const today=schoolToday(now,school);
   const eventDay=start?Date.parse(start.slice(0,10)+'T00:00:00Z'):NaN;
   if(eventType(sport)==='GAME'&&Number.isFinite(eventDay)&&eventDay>today){
     effective='Upcoming';schoolScore=null;oppScore=null;resultLabel=null;hasScore=false;hasOutcome=false;
   }
   if(eventType(sport)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome)effective='Upcoming';
-  if(effective==='Upcoming'&&start){const a=new Date(start),b=now;if(a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth()&&a.getUTCDate()===b.getUTCDate())effective='Today';}
+  if(effective==='Upcoming'&&start){const a=new Date(start),b=schoolNow(now,school);if(a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth()&&a.getUTCDate()===b.getUTCDate())effective='Today';}
   const event={id:'live-'+slug(`${school.id}|${sport}|${date||''}|${opponent}|${effective}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status:effective,title:`${school.short_name} ${String(relation).toLowerCase()==='at'?'at':'vs'} ${opponent}`,start_time:start,display_time:formatSourceDate(date,time),opponent,school_score:schoolScore||null,opponent_score:oppScore||null,headline:resultLabel||(schoolScore&&oppScore?`${schoolScore}–${oppScore}`:null),team_summaries:[],results:resultLabel?[{label:'Result',value:resultLabel}]:[],result_count:resultLabel?1:0,source:{name:'Official athletics live schedule',url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Live:'live',Today:'today',Upcoming:'upcoming',Final:'recent_final'}[effective]||'other',recency_label:{Live:'Live now',Today:'Today',Upcoming:'Upcoming',Final:'Final'}[effective]||effective,last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:1,conflicting_sources:false};
   return enrichGameEvent(enrichMeetEvent(event,date));
 }
@@ -1029,7 +1038,7 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
     const category=cells[5];
     if(category&&!sportMatches(category,sport))continue;
     const year=scheduleYearForDate(raw,dateText,now),date=`${dateText.replace(/\s*\([^)]*\)\s*$/,'')}, ${year}`;
-    const parsedDay=Date.parse(`${date} ${time||''}`),today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+    const parsedDay=Date.parse(`${date} ${time||''}`),today=schoolToday(now,school);
     const meaningfulResult=clean(publishedResult?.replace(/^(?:N|H|A)\s*-?\s*/i,''));
     const completed=Number.isFinite(parsedDay)&&parsedDay<today;
     const resultText=meaningfulResult&&!/^-?$/.test(meaningfulResult)?meaningfulResult:(completed?'Completed':null);
@@ -1070,7 +1079,7 @@ function compactScheduleHtml(raw,sourceUrl){
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}${e.school_id==='kansas'&&e.official_event_id?'|'+e.official_event_id:''}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
-function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport;events=filterActiveSeason(events,sport,now);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,local=schoolNow(now,schools.find(s=>s.id===events[0].school_id));events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
@@ -1522,9 +1531,13 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     const opponent=competitors.find(c=>c!==ours);if(!opponent)continue;
     const type=competition?.status?.type||item?.status?.type||{},state=String(type.state||'').toLowerCase();
     if(state!=='in'&&state!=='post'&&!type.completed)continue;
-    const start=new Date(competition?.date||item?.date||now.toISOString()),dateText=start.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
+    // ESPN dates are true UTC; express them in the school's local wall clock.
+    // Unconfirmed start times are published at Eastern midnight, so use only
+    // that Eastern calendar day.
+    const start=new Date(competition?.date||item?.date||now.toISOString()),timeValid=competition?.timeValid!==false,local=localWallClock(start,timeValid?schoolTimeZone(school):'America/New_York');
+    const dateText=local.toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'}),timeText=timeValid?`${local.getUTCHours()%12||12}:${String(local.getUTCMinutes()).padStart(2,'0')} ${local.getUTCHours()>=12?'PM':'AM'}`:null;
     const status=state==='in'?'Live':'Final',detail=clean(type.shortDetail||type.detail||(status==='Live'?'Live now':'Final'));
-    const event=makeEvent({school,sport,status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:null,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
+    const event=makeEvent({school,sport,status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:timeText,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
     if(status==='Live'){
       event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
     }else event.recency_label='Final';

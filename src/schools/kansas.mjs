@@ -63,7 +63,7 @@ function golfFacts(article,record){
 }
 function golfFingerprint(article,record){let hash=2166136261;for(const c of golfFacts(article,record).join('|'))hash=Math.imul(hash^c.codePointAt(0),16777619)>>>0;return String(hash);}
 
-export function createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal}){
+export function createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow=now=>now}){
   const officialUrl=(value,base)=>{
     try{const url=new URL(value,base);return url.protocol==='https:'&&url.hostname==='kuathletics.com'?url.href:null;}catch{return null;}
   };
@@ -71,16 +71,17 @@ export function createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesE
     if(school.id!=='kansas'||!officialUrl(sourceUrl,sourceUrl))return null;
     const data=kansasScheduleData(raw);
     if(!data?.sport?.title||!sportMatches(data.sport.title,sport))return null;
-    const events=[];
+    // Source dates are KU wall-clock days; compare them with the local clock.
+    const events=[],local=schoolNow(now,school),today=local.toISOString().slice(0,10);
     const division=/^Women's/i.test(data.sport.title)?"Women's":/^Men's/i.test(data.sport.title)?"Men's":null;
     for(const game of data.games){
       const day=game?.date?.slice(0,10),opponent=clean(game?.opponent?.title);
       if(!opponent||!/^20\d{2}-\d{2}-\d{2}$/.test(day||''))continue;
-      const future=day>now.toISOString().slice(0,10);
+      const future=day>today;
       const result=future?{}:game.result||{},ours=clean(result.team_score),theirs=clean(result.opponent_score),scored=ours!==null&&theirs!==null;
       const summary=clean([result.prescore_info,scored?`${result.status==='N'?'':result.status||''} ${ours}-${theirs}`:null,result.postscore_info].filter(Boolean).join(' '));
       const end=game.enddate?.slice(0,10),endDay=end&&end>=day?end:day;
-      const past=Date.parse(endDay+'T23:59:59Z')<now.getTime();
+      const past=Date.parse(endDay+'T23:59:59Z')<local.getTime();
       const meet=['Cross Country','Golf','Track & Field'].includes(sport)||((sport==='Tennis'||sport==='Rowing')&&endDay>day);
       const complete=!future&&(scored||Boolean(summary)||game.game_state_display==='GAMECOMPLETE');
       const status=complete?'Final':past&&meet?'Final':past?'Unknown':'Upcoming';
@@ -94,7 +95,7 @@ export function createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesE
       if(division){event.team_label=division;event.title=`${division} · ${event.title}`;}
       if(meet&&event.event_type==='DUAL')event.event_type='MEET';
       if(past&&!complete&&!meet){event.status='Unknown';event.priority_bucket='other';event.recency_label='Result pending';event.headline='Official result not yet published';}
-      if(endDay>day&&!past&&!complete&&day<now.toISOString().slice(0,10)){event.status='Live';event.priority_bucket='live';event.recency_label='Tournament in progress';}
+      if(endDay>day&&!past&&!complete&&day<today){event.status='Live';event.priority_bucket='live';event.recency_label='Tournament in progress';}
       if(/cancel|postpon|abandon/i.test(game.noplay_text||'')){
         event.status='Unknown';event.priority_bucket='other';event.recency_label=clean(game.noplay_text);event.headline=clean(game.noplay_text);event.results=[];event.result_count=0;
       }
