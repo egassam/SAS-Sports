@@ -11,6 +11,7 @@
 | Men's and women's programs loaded and labeled for Basketball, Golf and Tennis | `oklahomaStateSchool.combinedSports` |
 | Two cross-country Instagram identities verified by official team-account tags | `oklahomaStateSchool.verifiedInstagrams` |
 | Shared `/sports/mxct/` schedule split between Cross Country and Track & Field | `createOklahomaStateHandlers().filterEvents`, called from `parseHtml` only for `oklahoma-state` |
+| Cross Country results from each meet's official results document (feed and expanded view) | `parseOklahomaStateMeetResults` and `attachMeetResults`, called from the shared `attachOfficialMeetResults` / `attachOfficialHighlights` hooks |
 | Generic SIDEARM parsing, roster/profile parsing, social identity guards, official-profile fallback, feed orchestration, cache, UI | Shared Worker (unchanged) |
 
 ## Fixes
@@ -34,8 +35,8 @@ A before/after route dump across all 219 catalog school/sport combinations chang
 ## Known source gaps
 
 - okstate.com's bot protection (Incapsula) returned HTTP 403 to the development sandbox for most downloads on September 29. Only the women's Tennis schedule was obtained as an official schedule fixture. The production and preview Workers were not blocked.
-- The women's program (`/sports/womens-cross-country-track/`) is not loaded. The `mxct` roster is 55 men and is already more than the athlete scan budget, so adding the women's roster has no effect without a roster-combination change. Whether the `mxct` schedule contains both divisions' results needs the official HTML.
-- Cowboy Jamboree (Sept 26) reports 1 result row versus 31 for Cowboy Preview. Cross-country result completeness has not been diagnosed.
+- The women's program roster is not loaded. The `mxct` roster is 55 men and is already more than the athlete scan budget, so adding the women's roster has no effect without a roster-combination change. (The women's schedule question is settled under Cross Country results below.)
+- okstate.com's bot protection returned 403 for both Cross Country recaps from the sandbox, so recap pages in tests are synthetic wrappers. The deployed Worker fetched and verified both recaps.
 - The men's golf page has no fixture. On the Cloudflare preview it returned both divisions: 5 results and 24 upcoming events, with men's events labeled.
 - No deep (recap/highlight) certification has been run for Oklahoma State.
 
@@ -49,3 +50,52 @@ Branch preview `https://oklahoma-state-module-sas-sports.lovetogivepain.workers.
 - **Tennis:** empty, for the source reason above.
 
 `node tests/validate-schools.mjs --schools=oklahoma-state --base=<preview>` passed 11/11. On the preview, K-State XC kept 18/20 rows and KU XC kept 26/21.
+
+## Cross Country results (PR #23, `4.29.1-oklahoma-state-xc-results`)
+
+Oklahoma State Cross Country now follows K-State's results contract:
+
+- One group per collegiate race, labeled by division and distance.
+- `Oklahoma State team` row first, then every placed athlete as `place · time`.
+- Women before men.
+- Headline `Women's team: … / Men's team: …`.
+- `recap_result_count`, `meet_results_verified`, `highlights_verified` and four row-derived highlights, built as K-State builds them.
+
+Rows come from the meet's official results PDF, which is linked from the schedule card. The parser handles both formats okstate.com published this season:
+
+- **DirectAthletics MeetPro** (Cowboy Jamboree): the race title is printed in each page footer, and the team column is truncated to `Oklahoma Stat`.
+- **Bib-number format** (Cowboy Preview): headers such as `Mens 5,000 meters`.
+
+Parsing rules:
+
+- High-school races and other teams, including Oklahoma and Oklahoma Christian, are excluded.
+- Scratched entrants and entrants listed without a place or time get no row.
+- The document must carry the meet's date.
+- The document must be on okstate.com `/documents/` or SIDEARM's okstate S3 path.
+- The card's recap link is kept only if `recapMatchesEvent` accepts it; otherwise it is removed.
+- `source` names the results document.
+
+A missing, wrong-date or unofficial document is marked `official_results_partial`. The schedule row stays, and no rows are invented.
+
+The feed (`fetchLive`) and the expanded view (`attachOfficialHighlights`) call the same handler. The expanded view no longer uses recap prose or AI rows. Those previously produced mislabeled rows: two men filed under `Women's`, "Senior Laban", and the women's score shown as the men's team result.
+
+| Meet | Women | Men | Headline |
+| --- | --- | --- | --- |
+| Cowboy Preview (Sept 5) | `Women's 3K`: team 1st · 26 pts + 14 athletes | `Men's 5K`: team 1st · 31 pts + 15 athletes | `Women's team: 1st · 26 pts / Men's team: 1st · 31 pts` |
+| Cowboy Jamboree (Sept 26) | `Women's 6K`: team 2nd · 64 pts + 15 athletes | `Men's 8K`: team 2nd · 44 pts + 20 athletes | `Women's team: 2nd · 64 pts / Men's team: 2nd · 44 pts` |
+
+Jamboree also lists Kailey Stockton as `--` with no place or time; she gets no row.
+
+**Women's schedule decision.** The women's program schedule is not needed for results:
+
+- Each meet's results document linked from `mxct` contains both collegiate races, and the `mxct` recap covers both teams.
+- On the preview Worker, `/api/diagnostic` returned HTTP 200 for `/sports/womens-cross-country-track/schedule` with the same 6 events as `mxct` (587 KB vs 589 KB page). The diagnostic reports counts, not meet names.
+- The women's page is therefore only a fallback candidate after `mxct`. `fetchLive` stops at the first usable source, so it is not fetched normally.
+
+Tests: `tests/oklahoma-state-cross-country.mjs` (`npm run test:oklahoma-state-xc`, also part of `npm test` and `npm run test:release`).
+
+- It uses the unmodified official PDFs (`cowboy-preview-2026-results.pdf` and `cowboy-jamboree-2026-results.pdf`), downloaded 2026-09-29 through the links on okstate.com's document pages.
+- It also uses their `unpdf` text (`*.txt.gz`). CI runs without installed packages, so the Worker's `extractText` is stubbed by exact PDF bytes. When `unpdf` is installed, the test re-extracts both PDFs and requires the result to equal the committed text.
+- It checks rows, group order, headline and fields; feed/expanded parity (complete and missing-document cases); idempotence; wrong-date, unofficial and non-matching-recap sources; and school/sport/status isolation.
+- Mutation checks showed the group-order and missing-document parity assertions fail without the module hooks.
+- `tests/regression.mjs` now requires `mxct` as the first XC schedule candidate.
