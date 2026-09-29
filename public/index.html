@@ -244,13 +244,18 @@ function populateSchoolControls(){
   if(wantedSchool)conference.value=wantedSchool.conference;
   fillSchools(); if(allSchools.some(s=>s.id===wanted))school.value=wanted;
 }
-async function apiFetch(path, attempts=4,{signal}={}){
+// Cloudflare serves a Worker resource-limit failure (Error 1102) as 503. Those
+// and dropped connections are transient; a deliberate answer such as 502
+// "no usable events" or 404 is not, so transientOnly callers stop on it.
+const TRANSIENT_HTTP_STATUS=new Set([429,503,504,520,521,522,523,524]);
+async function apiFetch(path, attempts=4,{signal,transientOnly=false}={}){
   let last;
   for(let i=0;i<attempts;i++){
     try{
       const r=await fetch(path,{cache:'no-store',signal});
       if(r.ok)return r;
       last=new Error(`HTTP ${r.status}`);
+      if(transientOnly&&!TRANSIENT_HTTP_STATUS.has(r.status))break;
     }catch(e){
       if(e?.name==='AbortError')throw e;
       last=e;
@@ -342,7 +347,8 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     await inBatches(requested,1,async sp=>{
       try{
         const refreshQuery=forceRefresh?'&refresh=1':'';
-        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,1,{signal:feedController.signal});
+        // One transient Worker failure must not blank the selected sport.
+        const r=await apiFetch(`/live/feed/grouped?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}${refreshQuery}`,3,{signal:feedController.signal,transientOnly:true});
         const groups=await r.json();
         if(generation!==feedGeneration||school.value!==id)return;
         if(Array.isArray(groups)&&groups.length){
