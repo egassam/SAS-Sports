@@ -1,6 +1,6 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 29, 2026, America/Chicago.
+Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country, PR #23).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
@@ -8,7 +8,16 @@ Last updated: September 29, 2026, America/Chicago.
 
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
 
-**Oklahoma State Cross Country does not yet match K-State's results format (user report, September 29).** The module is live, but a production comparison of the grouped feed found:
+**Oklahoma State Cross Country fix is ready in PR #23 (https://github.com/egassam/SAS-Sports/pull/23), not merged.** Branch `oklahoma-state-xc-results`: application commit `7057360`, then test-only commit `e89d463`. CI run `36608526812` passed guardrails, certification-matrix and the Cloudflare preview build.
+
+On the branch preview (`4.29.1-oklahoma-state-xc-results`), both OSU meets match K-State's format, and the feed and expanded view are identical:
+
+| Meet | Rows | Headline |
+| --- | --- | --- |
+| Cowboy Preview | 31: `Women's 3K`, then `Men's 5K` | `Women's team: 1st · 26 pts / Men's team: 1st · 31 pts` |
+| Cowboy Jamboree | 37: `Women's 6K` (15 athletes), then `Men's 8K` (20 athletes) | `Women's team: 2nd · 64 pts / Men's team: 2nd · 44 pts` |
+
+**Production stays on `4.29.0` until the user merges PR #23.** Merging deploys it. The table below is the pre-fix production state (user report, September 29):
 
 | Item | K-State (reference) | Oklahoma State now |
 | --- | --- | --- |
@@ -114,8 +123,19 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Next: Oklahoma State Cross Country only.** Make both meets match K-State's results contract: one group per race labeled with division and distance, team row first, women before men, a both-team headline in K-State's wording, and Cowboy Jamboree populated from its official results PDF/recap with every published athlete. Keep feed and expanded view identical. Add fixture tests against the official Cowboy Preview/Jamboree documents. Do not change other sports in that session.
-- **Other Oklahoma State follow-ups (later, one sport at a time):** official schedule fixtures other than women's Tennis; the women's cross country/track program; Cowboy Jamboree's 1-row result; deep recap certification; and a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior). Otherwise, start the next school the user names.
+- **Next: Oklahoma State Cross Country publication.** PR #23 is waiting for the user to merge it. After the merge:
+  - Confirm production `/api/status` returns `4.29.1-oklahoma-state-xc-results`.
+  - Force-refresh the OSU XC grouped feed and check Preview 31 rows and Jamboree 37 rows, women first, with K-State headlines.
+  - Check that `/live/highlights` for both meets equals the feed.
+  - Check that K-State XC is still 18/20 and KU XC 26/21.
+  - Record the results here. Start no other OSU sport until that is done.
+- **Other Oklahoma State follow-ups (later, one sport at a time):**
+  - official schedule fixtures other than women's Tennis (okstate.com 403s the sandbox intermittently)
+  - the women's cross country/track roster
+  - deep recap certification
+  - a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior)
+
+  Otherwise, start the next school the user names.
 
 - Next work: convert the next school the user names into its own module. Before or with the first conversion, consider defining a common school-module interface (schedule parser, recap matcher, results handlers, scoreboards, time zone). Shared code should then look up handlers by school instead of using `school.id==='kansas'` / `'kstate'` branches.
 0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
@@ -471,4 +491,47 @@ Open: the Cloudflare 1102 resource-limit issue remains and recurred in this run.
 #### Cross Country results format gap (user report)
 
 User: "Oklahoma State had merge but the results section does not match KSTATE. We should only be focusing on one sport at a time." The assistant compared the production grouped Cross Country feeds for K-State and Oklahoma State. The differences are recorded in the current-state table above, and Oklahoma State Cross Country is the next single-sport task. `AGENTS.md` now states the one-sport-at-a-time rule and names K-State as the results-format reference. No application code was changed in this step.
+
+### September 29, 2026 — Oklahoma State Cross Country results format
+
+The request arrived as a scheduled session prompt: fix Oklahoma State Cross Country only, so its results match K-State's; push a branch and open a PR; check the Cloudflare preview; do not merge. Main was fetched at `3f2ecf4` (includes PR #22). This file, AGENTS.md, both module docs and both school modules were read before editing.
+
+Reported before editing (production `4.29.0`):
+- **Feed:** Preview had correct data in the wrong shape: `Men's Team` / `Men's Individual Results` groups, no distance, men first, and raw schedule text as the headline. Jamboree had one row, `Result: 2nd - 44 pts.`.
+- **Expanded view:** it was worse and differed from the feed.
+  - Jamboree: 2 men labeled `Women's` and marked verified.
+  - Preview: 5 rows, including "Senior Laban", the women's 26 pts as the men's team score, and women under men.
+  - Cause: the same recap-prose path K-State had before its fix.
+- **Cloudflare:** the first OSU production feed request returned Cloudflare 1102; a retry succeeded.
+
+Official sources:
+- **Results PDFs:** okstate.com served each `/documents/` page; the PDF was downloaded from the SIDEARM S3 link that page publishes.
+  - Jamboree: DirectAthletics MeetPro, 22 pages. The race title is in the page footer and the team column is truncated to `Oklahoma Stat`, which is why the shared parser found nothing.
+  - Preview: bib-number format with headers such as `Mens 5,000 meters`.
+- **Blocked:** a first Preview document request, both recaps, and the `mxct` and women's schedule pages returned the Incapsula 403. These were not circumvented. The Preview document was obtained on one normal retry minutes later.
+
+Implemented in `src/schools/oklahoma-state.mjs`: a parser for both formats and one attach handler used by both the feed and the expanded view. Full contract: `docs/OKLAHOMA_STATE_MODULE.md`.
+
+Shared code received three one-line hooks. The women's program schedule was added as a fallback candidate after `mxct`. Version: `4.29.1-oklahoma-state-xc-results`.
+
+Tests actually run:
+- **Local suites:** `npm run test:release` and `npm test` passed, both with and without installed packages (CI runs without). This covers 18 protected schools, 71 cache identities, K-State XC 18/20, KU XC 26/21, and the new `tests/oklahoma-state-cross-country.mjs` on the unmodified official PDFs.
+- **Other local checks:** `git diff --check` passed. The Wrangler dry-run bundle's `/api/status` returned the new version, with nothing uploaded. Mutation checks confirmed that removing either module hook fails the suite.
+- **First CI run (`36608331537`):** guardrails failed because the new test imported `unpdf`, which CI does not install. Fix commit `e89d463` commits the extracted text, stubs `extractText` by exact PDF bytes, and re-extracts and compares when `unpdf` is present. The next CI run, `36608526812`, passed.
+
+Preview verification (https://oklahoma-state-xc-results-sas-sports.lovetogivepain.workers.dev, built from `7057360`):
+- **OSU feed (forced):** Jamboree 37 rows and Preview 31 rows, in the table above.
+  - `recap_result_count` equals the row count; `meet_results_verified` and `highlights_verified` are true.
+  - The Worker verified both recaps.
+  - `source` is `Official meet results`.
+- **Expanded view:** `/live/highlights` for both meets was identical to the feed on every result field.
+- **Other schools on the preview:** K-State XC 18/20 and KU XC 26/21, unchanged.
+- **Women's schedule:** preview `/api/diagnostic` returned HTTP 200 and 6 events for `/sports/womens-cross-country-track/schedule`, the same count as `mxct`. The results documents already hold both races, so it stays a fallback only.
+- `e89d463` changes tests only; its preview build succeeded.
+
+Limitations:
+- The recaps could not be downloaded here, so test recaps are synthetic wrappers.
+- The preview diagnostic gives the women's page event count, not meet names.
+- Production was not changed.
+- The Cloudflare 1102 issue remains open.
 

@@ -147,7 +147,7 @@ contains(worker,/function parseSchemaEvents\(/,'Schema.org schedule events must 
 contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEARM game-center schedules must be supported');
 contains(worker,/Legacy\/standard SIDEARM pages already have a cheaper exact parser/,'Next-generation card scanning must not duplicate standard SIDEARM work');
 contains(worker,/Game-center cards display the opponent score before/,'Game-center score order must be normalized to the selected school');
-contains(oklahomaStateModule,/'oklahoma-state\|Cross Country':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State cross country must use its official MXCT schedule');
+contains(oklahomaStateModule,/'oklahoma-state\|Cross Country':\['https:\/\/okstate\.com\/sports\/mxct\/schedule',/,'Oklahoma State cross country must use its official MXCT schedule first');
 contains(worker,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
 contains(oklahomaStateModule,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
 contains(worker,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
