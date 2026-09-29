@@ -6,7 +6,7 @@ Last updated: September 29, 2026, America/Chicago.
 
 ## Current state
 
-**September 29 local-time fix is committed on branch `ccr-a8791a1a-rg8qi0` but not merged or deployed.** Candidate version `4.28.1-local-time`. Official schedule times are stored as the school's local wall clock; ESPN times are true UTC, and "today" was computed in UTC. As a result, a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate Live card dated the next day, and left the Upcoming list at 00:00 UTC (7 PM CDT / 6 PM CST). The fix adds a per-school time zone (state map plus a Tennessee override). ESPN times are converted into that frame, and the shared `makeEvent`, `groupEvents` and text-row "today" checks use the school's local date. So do the KU module's future/past/in-progress checks. Production remains `4.28.0-kstate-live-scores` until a PR is approved and merged.
+**September 29 local-time fix is in open PR #19 (branch `ccr-a8791a1a-rg8qi0`); it is running on a Cloudflare preview URL but is not merged or deployed to production.** Candidate version `4.28.1-local-time`. Official schedule times are stored as the school's local wall clock; ESPN times are true UTC, and "today" was computed in UTC. As a result, a 7 PM Central K-State game failed to reconcile with its ESPN score, appeared as a separate Live card dated the next day, and left the Upcoming list at 00:00 UTC (7 PM CDT / 6 PM CST). The fix adds a per-school time zone (state map plus a Tennessee override). ESPN times are converted into that frame, and the shared `makeEvent`, `groupEvents` and text-row "today" checks use the school's local date. So do the KU module's future/past/in-progress checks. Production remains `4.28.0-kstate-live-scores` until a PR is approved and merged.
 
 **K-State live display preview is deployed.** PR #18 corrected the initial PR #17 preview after the user selected Football and saw an empty Live tab. The opt-in URL `https://sas-sports.lovetogivepain.workers.dev/?school=kstate&demo=live` now opens on Football + Live with a persistent, clearly labeled 28–21 sample and supports Basketball's 71–68 sample when selected. The button moves the example through Final, Upcoming, and Live while selecting the corresponding tab. The regular app and feed API retain genuine data only. This demonstrates display states, not a real in-progress ESPN game. September 29 forced Football and Basketball production feeds had no live K-State contest.
 
@@ -91,7 +91,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-0. If the user approves, open a PR for `ccr-a8791a1a-rg8qi0` (local-time fix), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
+0. If the user approves, merge PR #19 (local-time fix; preview already verified), confirm CI, merge, and verify production `/api/status` returns `4.28.1-local-time`. Then check a forced K-State Basketball feed during an evening game if one is available. Until then, the fix is local/branch-only.
 1. Read this file from current GitHub main and inspect the current source/version before editing.
 2. KU and K-State are complete. Start no additional school until the user names it in a new school-module session; do not reopen PR #12 through #16.
 3. Keep one school per session. After KU is complete, stop; wait for the user to name the next school in a new session.
@@ -326,3 +326,14 @@ Tests actually run:
 
 Publication: committed and pushed to `ccr-a8791a1a-rg8qi0` only. No PR, merge, deployment or live verification has been performed. This is a shared-code change affecting every school's day boundaries; the 18-school protection and 71 cache-identity checks passed locally. The Cloudflare 1102 issue remains unresolved.
 
+
+#### Preview build follow-up
+
+The branch push created PR #19 (https://github.com/egassam/SAS-Sports/pull/19), not yet merged. Cloudflare Workers Builds built the branch as a **preview**, not production. Its check reported success, and PR guardrails and certification-matrix passed. Production `/api/status` still returned `4.28.0-kstate-live-scores`, and main was unchanged at `37d5be3`.
+
+The preview URL https://ccr-a8791a1a-rg8qi0-sas-sports.lovetogivepain.workers.dev returned `4.28.1-local-time`. Forced K-State feeds on the preview returned the following, with no feed error:
+- Basketball: 66 upcoming across both divisions.
+- Football: 4 results and 8 upcoming.
+- Cross Country: Gans Creek 18 rows and Platte River 20 rows.
+
+No live evening game was available, so the fixed reconciliation path has only fixture coverage so far. Merging PR #19 is what would deploy production.
