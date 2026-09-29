@@ -5,7 +5,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 
-const VERSION='4.26.1-kansas-recap';
+const VERSION='4.27.0-kstate-dual-teams';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -90,15 +90,20 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/roster'
   ,'west-virginia|Football':'https://wvusports.com/sports/football/roster'
 }));
-function teamLabelForSource(sport,url){
-  if(!COMBINED_TEAM_SPORTS.has(sport))return null;
+function schoolCombinedSports(school){
+  if(school?.id==='kansas')return kansasSchool.combinedSports;
+  if(school?.id==='kstate')return kstateSchool.combinedSports;
+  return COMBINED_TEAM_SPORTS;
+}
+function teamLabelForSource(school,sport,url){
+  if(!schoolCombinedSports(school).has(sport))return null;
   const path=new URL(url).pathname;
   if(/\/(?:mens(?:-|\/)|men-|m-)/i.test(path))return"Men's";
   if(/\/(?:womens(?:-|\/)|women-|w-)/i.test(path))return"Women's";
   return null;
 }
-function labelTeamEvents(events,sport,url){
-  const team_label=teamLabelForSource(sport,url);if(!team_label||events.some(event=>event.team_label))return events;
+function labelTeamEvents(events,school,sport,url){
+  const team_label=teamLabelForSource(school,sport,url);if(!team_label||events.some(event=>event.team_label))return events;
   return events.map(event=>({...event,team_label,title:`${team_label} · ${event.title}`}));
 }
 
@@ -423,7 +428,7 @@ async function featuredAthletes(schoolId,sport){
       const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;
       const discovered=rosterProfiles(await r.text(),r.url||rosterUrl);
       profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
-      if(profiles.length&&!COMBINED_TEAM_SPORTS.has(sport))break;
+      if(profiles.length&&!schoolCombinedSports(school).has(sport))break;
       if(profiles.length>=18)break;
     }catch{}
   }
@@ -1478,7 +1483,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url;
   const parseable=compactScheduleHtml(html,finalUrl),labels=school.id==='kansas'?[]:extractEventLabels(parseable);
-  let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),sport,finalUrl):[];
+  let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),school,sport,finalUrl):[];
   if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);
   if(school.id==='kansas'&&sport==='Cross Country'&&!aiTargetId){
     // Future KU races use the same official two-document path in the feed and
@@ -1549,9 +1554,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
-  const combined=school.id==='kansas'?kansasSchool.combinedSports.has(sport):COMBINED_TEAM_SPORTS.has(sport);
+  const combined=schoolCombinedSports(school).has(sport);
   for(const url of urls){
-    if(combined&&successful.length&&school.id!=='kansas'&&teamLabelForSource(sport,url)==null)continue;
+    if(combined&&successful.length&&teamLabelForSource(school,sport,url)==null)continue;
     try{
       const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
       if(item.ok&&item.events.length){successful.push(item);if(!combined)break;continue}
