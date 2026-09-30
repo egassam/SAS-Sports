@@ -1,0 +1,9 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/football/schedule",
+      "retrieved": "2026-09-30T15:45Z",
+      "note": "Official 2026 Utah Football schedule, unmodified. Its __NUXT_DATA__ carries W/L, scores and recaps for W 66-14 Idaho (Sep 3), W 43-10 Arkansas (Sep 12), W 33-0 Utah State (Sep 19) and W 31-17 at Iowa State (Sep 26). utahutes.com returned HTTP 403 to the sandbox on most attempts; this copy came through on a normal retry."
+    }
+  }
+}

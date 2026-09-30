@@ -1,3 +1,4 @@
+import {createScheduleDataEnricher} from '../sidearm-schedule-data.mjs';
 // Utah school module. Shared publisher utilities stay in the Worker; this file
 // owns utahutes.com routes and Utah's program combinations. Routes start as the
 // exact candidates production used before the module existed (route parity);
@@ -41,3 +42,15 @@ export const utahSchool={
     'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/roster'
   }
 };
+
+// utahutes.com schedule page data (see src/sidearm-schedule-data.mjs), applied
+// only to sports checked against an official Utah page.
+// W/L headline, one Result row and exact recap, as K-State shows results.
+const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
+// Published start times (local wall clock).
+const PAYLOAD_TIME_SPORTS=new Set(['Football']);
+
+export function createUtahHandlers({slug}={}){
+  const enrichScheduleEvents=createScheduleDataEnricher({schoolId:'utah',host:'utahutes.com',slug,resultSports:PAYLOAD_RESULT_SPORTS,timeSports:PAYLOAD_TIME_SPORTS});
+  return{enrichScheduleEvents};
+}
