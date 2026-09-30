@@ -87,6 +87,11 @@
       "url": "https://okstate.com/sports/mens-basketball/schedule",
       "retrieved": "2026-09-30T01:15Z",
       "note": "Official 2026-27 Cowboy Basketball schedule, unmodified: 3 completed July tour exhibitions and 47 upcoming, 5 of them with published times. The women's page returned 403 to the sandbox; it was checked on the branch preview instead."
+    },
+    "wrestling-schedule.html.gz": {
+      "url": "https://okstate.com/sports/wrestling/schedule",
+      "retrieved": "2026-09-30T01:25Z",
+      "note": "Official 2026-27 Cowboy Wrestling schedule, unmodified: 17 events, 9 with published times; TBA, All Day and blank times stay date-only (Wyoming has a date-field time but no published time text)."
     }
   },
   "cross_country_results": {
