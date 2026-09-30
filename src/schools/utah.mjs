@@ -1,4 +1,4 @@
-import {createScheduleDataEnricher,sidearmScheduleGames} from '../sidearm-schedule-data.mjs';
+import {createScheduleDataEnricher,sidearmScheduleGames,sidearmStartTime} from '../sidearm-schedule-data.mjs';
 // Utah school module. Shared publisher utilities stay in the Worker; this file
 // owns utahutes.com routes and Utah's program combinations. Routes start as the
 // exact candidates production used before the module existed (route parity);
@@ -152,7 +152,27 @@ export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers
       return event;
     });
   }
-  const enrichScheduleEvents=(events,raw,school,sport,sourceUrl)=>mergeGolfRounds(labelSkiingRaces(enrichFromPageData(events,raw,school,sport,sourceUrl),raw,school,sport,sourceUrl),raw,school,sport,sourceUrl);
+  // A doubleheader is two games on one day against one opponent. The shared
+  // merge keeps one event per day and opponent, so the second game vanished.
+  // Restore each scheduled game from the page data, labeled Game 1, Game 2
+  // (game_number keeps them apart in the shared merge),
+  // with its own published time. Only unplayed games are split; played
+  // doubleheaders keep the page's own result cards.
+  const DOUBLEHEADER_SPORTS=new Set(['Softball','Baseball']);
+  function splitDoubleheaders(events,raw,school,sport,sourceUrl){
+    if(school?.id!=='utah'||!DOUBLEHEADER_SPORTS.has(sport))return events;
+    try{if(new URL(sourceUrl).hostname!=='utahutes.com')return events;}catch{return events;}
+    const games=sidearmScheduleGames(raw),out=[];
+    for(const event of events){
+      const day=String(event.start_time||'').slice(0,10);
+      const same=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===slug(event.opponent||'')).sort((a,b)=>a.date.localeCompare(b.date));
+      const times=same.map(game=>sidearmStartTime(game.date,game.time));
+      if(event.status==='Final'||same.length<2||times.some(t=>!t)){out.push(event);continue;}
+      same.forEach((game,i)=>out.push({...event,...times[i],game_number:i+1,id:`${event.id}-game-${i+1}`,title:`${event.title} · Game ${i+1}`}));
+    }
+    return out;
+  }
+  const enrichScheduleEvents=(events,raw,school,sport,sourceUrl)=>splitDoubleheaders(mergeGolfRounds(labelSkiingRaces(enrichFromPageData(events,raw,school,sport,sourceUrl),raw,school,sport,sourceUrl),raw,school,sport,sourceUrl),raw,school,sport,sourceUrl);
   function isUtahCrossCountry(event){
     return event?.school_id==='utah'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   }

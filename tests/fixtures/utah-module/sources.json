@@ -49,6 +49,11 @@
       "url": "https://utahutes.com/sports/womens-soccer/schedule",
       "retrieved": "2026-09-30T22:20Z",
       "note": "Official 2026 Utah Soccer schedule, unmodified. Page data gives local start times for 19 of 24 games; the 5 postseason placeholders (Big 12 tournament, NCAA rounds) have no time yet."
+    },
+    "softball-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/softball/schedule",
+      "retrieved": "2026-09-30T22:20Z",
+      "note": "Official 2026-27 Utah Softball fall schedule, unmodified: 5 games, including an Oct 11 doubleheader vs Southern Utah (1 p.m. and 3 p.m.) marked is_a_doubleheader in the page data."
     }
   },
   "recaps": {
