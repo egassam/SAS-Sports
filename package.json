@@ -6,8 +6,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "check": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs",
-    "test": "node tests/regression.mjs && node tests/roster-socials.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs",
-    "test:release": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs && node tests/isolation-local.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs",
+    "test": "node tests/regression.mjs && node tests/roster-socials.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs",
+    "test:release": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs && node tests/isolation-local.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs",
     "test:certified": "node tests/validate-schools.mjs",
     "test:isolation": "node tests/isolation.mjs --mode=smoke",
     "test:isolation:smoke": "node tests/isolation.mjs --mode=smoke",
@@ -21,7 +21,7 @@
     "test:kstate-xc": "node tests/kstate-cross-country.mjs",
     "test:kstate-module": "node tests/kstate-module.mjs",
     "test:kansas-module": "node tests/kansas-module.mjs",
-    "test:oklahoma-state-module": "node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs"
+    "test:oklahoma-state-module": "node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

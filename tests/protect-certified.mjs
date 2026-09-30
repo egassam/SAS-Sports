@@ -8,6 +8,9 @@ const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
 const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
 const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
+const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
+// School modules own their routes; unconverted schools keep them in the Worker.
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];
@@ -29,7 +32,7 @@ for(const [schoolIndex,protectedSchool] of manifest.schools.entries()){
   assert.deepEqual(fallbackSports[protectedSchool.id],sponsored[protectedSchool.id],`${protectedSchool.name} UI fallback differs from the authoritative sponsored-sports manifest`);
   for(const sport of protectedSchool.critical_sports)assert.ok(sponsored[protectedSchool.id].includes(sport),`${protectedSchool.name} ${sport} is certified but absent from its sponsored-sports guard`);
   for(const sport of protectedSchool.critical_sports){
-    const source=protectedSchool.id==='kstate'?kstateModule:protectedSchool.id==='kansas'?kansasModule:protectedSchool.id==='oklahoma-state'?oklahomaStateModule:worker;
+    const source=schoolModuleSource[protectedSchool.id]||worker;
     const routePrefix=`'${protectedSchool.id}|${sport}':`;
     assert.ok(source.includes(routePrefix),`${protectedSchool.name} ${sport} lost its explicit official schedule route`);
     const routeStart=source.indexOf(routePrefix);

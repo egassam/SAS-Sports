@@ -5,6 +5,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
+import {utahSchool} from './schools/utah.mjs';
 
 const VERSION='4.29.12-oklahoma-state-equestrian-times';
 const FEED_FRESH_MS=25*1000;
@@ -52,6 +53,7 @@ const SPORT_PATHS={
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...oklahomaStateSchool.rosterUrls,
+  ...utahSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -80,10 +82,6 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/roster'
   ,'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/roster'
   ,'tcu|Football':'https://gofrogs.com/sports/football/roster'
-  ,'utah|Cross Country':'https://utahutes.com/sports/cross-country/roster'
-  ,'utah|Soccer':'https://utahutes.com/sports/womens-soccer/roster'
-  ,'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/roster'
-  ,'utah|Football':'https://utahutes.com/sports/football/roster'
   ,'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/roster'
   ,'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/roster'
   ,'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/roster'
@@ -93,6 +91,7 @@ function schoolCombinedSports(school){
   if(school?.id==='kansas')return kansasSchool.combinedSports;
   if(school?.id==='kstate')return kstateSchool.combinedSports;
   if(school?.id==='oklahoma-state')return oklahomaStateSchool.combinedSports;
+  if(school?.id==='utah')return utahSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -111,6 +110,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...kstateSchool.scheduleUrls,
   ...kansasSchool.scheduleUrls,
   ...oklahomaStateSchool.scheduleUrls,
+  ...utahSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -169,10 +169,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/schedule',
   'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/schedule',
   'tcu|Football':'https://gofrogs.com/sports/football/schedule',
-  'utah|Cross Country':'https://utahutes.com/sports/cross-country/schedule',
-  'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
-  'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/schedule',
-  'utah|Football':'https://utahutes.com/sports/football/schedule',
   'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/schedule',
   'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/schedule',
   'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/schedule',
