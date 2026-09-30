@@ -135,6 +135,18 @@ for(const [target,sport,url] of [[{id:'kstate'},'Football',footballUrl],[school,
   assert.deepEqual(payloadHandlers.enrichScheduleEvents(events,footballPage,target,sport,url),bare(),'other schools, sports not yet verified, and unofficial hosts are unchanged');
 }
 
+// Soccer: published start times; results keep the K-State format they had.
+const soccer=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer','https://okstate.com/sports/womens-soccer/schedule',now);
+const soccerUpcoming=soccer.filter(e=>e.status!=='Final'),soccerFinals=soccer.filter(e=>e.status==='Final');
+assert.equal(soccerUpcoming.length,13);assert.equal(soccerFinals.length,12);
+assert.deepEqual(soccerUpcoming.filter(e=>/,/.test(e.display_time)).map(e=>`${e.opponent} ${e.display_time}`),[
+  'Arizona Oct 2, 7:00 PM','Texas Tech Oct 8, 7:00 PM','UCF Oct 11, 11:30 AM','Arizona State Oct 16, 7:00 PM',
+  'Utah Oct 22, 7:00 PM','West Virginia Oct 25, 1:00 PM','Iowa State Oct 29, 6:00 PM','Colorado Nov 5, 8:00 PM'
+]);
+assert.equal(soccerUpcoming.find(e=>e.opponent==='Arizona').start_time,'2026-10-02T19:00:00.000Z');
+assert.ok(soccerUpcoming.filter(e=>e.opponent==='TBD').every(e=>!/,/.test(e.display_time)),'TBA postseason dates have no invented time');
+assert.deepEqual(soccerFinals.slice(0,3).map(e=>e.headline),['L, 0-1','L, 1-2','W, 3-1'],'soccer results are unchanged');
+
 // Golf: the published team placing in K-State's wording ("7th of 16").
 // okstate.com publishes no team score on the schedule, so none is added.
 for(const [value,expected] of [['7th/16','7th of 16'],['9th out of 12 teams','9th of 12'],['T3rd of 10','T3rd of 10'],['1st/12','1st of 12'],['Completed',null],['',null]])assert.equal(oklahomaStatePlacing(value),expected,`placing ${value}`);
@@ -178,4 +190,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Soccer start times, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
