@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport} from '../src/schools/oklahoma-state.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=path=>gunzipSync(readFileSync(new URL('./fixtures/oklahoma-state-module/'+path,import.meta.url))).toString('utf8');
@@ -85,6 +85,27 @@ const womensTennisEvents=worker.parseHtml(womensTennisPage,school,'Tennis','http
 assert.equal(womensTennisEvents.length,21,'every published women\'s match is parsed');
 assert.ok(womensTennisEvents.every(e=>e.start_time>='2026-01-23'&&e.start_time<'2026-04-13'),'published matches keep their 2025-26 season dates');
 assert.deepEqual(worker.groupEvents(womensTennisEvents,now),[],'no stale-season matches are presented as the current season');
+// Football: the official page's game data supplies K-State's result format
+// (W/L, school score first) and each game's exact recap. The rendered cards
+// show only the two scores, opponent first, and no recap link.
+const footballUrl='https://okstate.com/sports/football/schedule',footballPage=fixture('football-schedule.html.gz');
+assert.equal(oklahomaStateScheduleGames(footballPage).length,13,'every published game is decoded from the page data');
+const football=worker.parseHtml(footballPage,school,'Football',footballUrl,now),footballFinals=football.filter(e=>e.status==='Final');
+assert.equal(football.filter(e=>e.status!=='Final').length,8,'upcoming games are unchanged');
+assert.deepEqual(footballFinals.map(e=>[e.opponent,e.headline,e.school_score,e.opponent_score]),[
+  ['West Virginia','W, 41-24','41','24'],['Murray State','W, 59-0','59','0'],['Oregon','W, 39-31','39','31'],['Tulsa','L, 10-24','10','24']
+]);
+assert.ok(footballFinals.every(e=>e.results.length===1&&e.results[0].label==='Result'&&e.results[0].value===e.headline),'one Result row, as K-State shows');
+assert.equal(footballFinals.find(e=>e.opponent==='Tulsa').recap_url,'https://okstate.com/news/2026/9/5/cowboy-football-tulsa-spoils-morris-debut');
+assert.ok(footballFinals.every(e=>/^https:\/\/okstate\.com\/news\/2026\/9\/\d+\/cowboy-football-/.test(e.recap_url)),'every final links its own official recap');
+const payloadHandlers=createOklahomaStateHandlers({slug:value=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')});
+const bare=()=>worker.parseHtml(footballPage.replace(/<script\b[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,''),school,'Football',footballUrl,now).filter(e=>e.status==='Final');
+assert.deepEqual(bare().map(e=>e.headline),['41-24','59-0','39-31','10-24'],'without page data the cards keep their previous output');
+for(const [target,sport,url] of [[{id:'kstate'},'Football',footballUrl],[school,'Soccer',footballUrl],[school,'Football','https://example.org/sports/football/schedule']]){
+  const events=bare().map(e=>({...e}));
+  assert.deepEqual(payloadHandlers.enrichScheduleEvents(events,footballPage,target,sport,url),bare(),'other schools, sports not yet verified, and unofficial hosts are unchanged');
+}
+
 // Golf: both divisions are merged and labeled.
 responses=new Map([['https://okstate.com/sports/womens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Women's Golf Schedule</h1><table>${textRow('Oct 5','The Ally')}</table>`],['https://okstate.com/sports/mens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Men's Golf Schedule</h1><table>${textRow('Oct 12','Big 12 Match Play')}</table>`]]);requests=[];
 const golf=await worker.fetchLive('oklahoma-state','Golf');
@@ -113,4 +134,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, Football W/L results and recaps from page data, both Tennis/Golf divisions, official roster athletes.');
