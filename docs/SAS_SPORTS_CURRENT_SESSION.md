@@ -1,6 +1,6 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 30, 2026, America/Chicago (Utah PRs #44–#51; reliability PRs #53–#55).
+Last updated: September 30, 2026, evening, America/Chicago (Utah finish: PRs #59–#62).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
@@ -54,6 +54,22 @@ Last updated: September 30, 2026, America/Chicago (Utah PRs #44–#51; reliabili
   - **Volleyball athlete certification** fails ("no verified Instagram destination"). The Worker found one verified Instagram among the roster profiles, and two slots use official profiles. The fix (Oklahoma State's opt-in `athlete_profile_fallback_sports`) needs the official roster checked first. The roster returned 403 to the sandbox all afternoon, so nothing was changed.
   - **Golf placings:** the page publishes none, so completed tournaments read `Completed`.
   - **Start times** are enabled only for Football.
+- **Utah finish (later September 30; user: "Start new session and finish Utah"):**
+  - **Volleyball start times, #59 (`999baa0`, `4.31.6`):** production shows 16/16 upcoming timed. Kansas State (Oct 3) keeps the card's 5:30 PM because Utah's own page data disagrees (5:00 PM).
+  - **Volleyball athletes, #60 (`ff73a87`):** the official roster has 19 players and 1 personal Instagram. Volleyball is added to Utah's `athlete_profile_fallback_sports`; Utah certification is 4/4.
+  - **Soccer start times, #61 (`56bdb41`, `4.31.7`):** production shows 8/13 upcoming timed. The 5 postseason placeholders have no published time.
+  - **Softball doubleheaders, #62 (`4.31.8`), open, awaiting the user's approval:**
+    - The Oct 11 doubleheader vs Southern Utah showed as one game.
+    - The Utah module now restores each unplayed doubleheader game (Softball, Baseball) as Game 1 / Game 2.
+    - It needs one shared line: `eventMergeKey` includes `game_number` when an event has one. Output for all other saved pages is byte-identical.
+    - The preview showed 5 games, K-State XC 18/20, KU XC 26/21 and a 36/36 load test.
+  - **Blocked by utahutes.com 403 all evening, not changed:**
+    - Baseball page (4/58 upcoming timed in production).
+    - Women's Basketball page.
+    - Men's Basketball: its page lists 36 of 40 games as TBA, so there are almost no times to add yet.
+  - **Golf placings:** Utah publishes no placing field. The Jackson Stephens Cup recap gives a match-play bracket result ("ties for second place in match play"), not a stroke-play place. Golf stays `Completed` with the official recap.
+  - **Softball** was already fully timed.
+  - **Route cleanup (six sports still carry unused generic or homepage candidates):** proposed to the user as one routes-only PR, not started.
 
 **Merge permission (user, September 29–30).** The user added a standing merge permission to `AGENTS.md` item 6 (commit `afc7ed4`). Follow its conditions exactly.
 
@@ -195,7 +211,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Utah (in progress).** Open items, one sport per PR:
+- **Utah:** #62 (Softball doubleheaders) awaits the user's merge decision. Remaining when utahutes.com allows the downloads: Baseball and Women's Basketball start times (fixture-verified), and the route cleanup if the user approves. Earlier list, for reference:
   - Volleyball athlete certification: get the official `womens-volleyball` roster (403 on September 30). If it publishes no personal links for most players, add Volleyball to Utah's `athlete_profile_fallback_sports` in `tests/certified-schools.json`, as done for Oklahoma State.
   - Golf placings, if a verifiable official source exists.
   - Start times for the other game sports (Soccer, Volleyball, Baseball, Softball, Basketball) via the page-data enricher's `timeSports`, each checked against its page.
@@ -788,3 +804,23 @@ User (screenshot, Utah Basketball): "As you can see off season sports do not loa
 - Node `fetch` from the sandbox reaches Cloudflare YYZ, where every `refresh=1` returned 1102 in under 1 s, while curl through the proxy (IAD) returned 200.
 - Cached feeds, status, athletes and the page all loaded at YYZ.
 - Asked the user to check the Cloudflare plan.
+
+### September 30, 2026 (evening) — Finish Utah
+
+User: "Everything is working great now. Start new session and finish Utah." The handoff was read from main (`9ccda93`); work continued in this conversation.
+
+**Merged and verified in production:**
+- **#59:** Volleyball times.
+- **#60:** Volleyball athlete certification (Utah 4/4).
+- **#61:** Soccer times.
+
+Every code PR passed the `AGENTS.md` item 6 gate on its preview:
+- K-State XC 18/20, KU XC 26/21;
+- 36/36 forced refreshes of the changed sport;
+- CI green.
+
+After each merge, production feed and expanded view were checked.
+
+**#62 (Softball doubleheaders)** passed the same gate but touches one shared line, so it waits for the user.
+
+**Not done:** utahutes.com returned 403 for the Baseball and Women's Basketball pages on every spaced attempt; not circumvented. The container restarted once mid-session (a background download and one gate run were re-run).
