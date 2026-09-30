@@ -7,7 +7,7 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 
-const VERSION='4.31.0-utah-cross-country';
+const VERSION='4.31.1-utah-beach-volleyball';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1059,7 +1059,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   ];
   for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
   const merged=mergeEvents(eventLists);
-  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl),raw,school,sport,sourceUrl):school.id==='utah'?utahHandlers.enrichScheduleEvents(merged,raw,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
+  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl),raw,school,sport,sourceUrl):school.id==='utah'?utahHandlers.enrichScheduleEvents(utahHandlers.filterEvents(merged,raw,school,sport,sourceUrl,now),raw,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
 function compactScheduleHtml(raw,sourceUrl){
@@ -1507,8 +1507,9 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   if(school.id==='kansas'&&sport==='Golf'&&!aiTargetId){
     for(const event of events.filter(kansasHandlers.hasReviewedGolf))await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,event.id);
   }
-  // Oklahoma State's shared program page can hold no meets for this sport.
-  const empty_schedule=school.id==='oklahoma-state'&&r.ok&&oklahomaStateHandlers.isEmptyProgramSchedule(events);
+  // Oklahoma State's shared program page can hold no meets for this sport;
+  // a Utah spring page can hold only a past season.
+  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events));
   return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,empty_schedule,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
 }
 

@@ -1,4 +1,4 @@
-import {createScheduleDataEnricher} from '../sidearm-schedule-data.mjs';
+import {createScheduleDataEnricher,sidearmScheduleGames} from '../sidearm-schedule-data.mjs';
 // Utah school module. Shared publisher utilities stay in the Worker; this file
 // owns utahutes.com routes and Utah's program combinations. Routes start as the
 // exact candidates production used before the module existed (route parity);
@@ -10,7 +10,9 @@ export const utahSchool={
   scheduleUrls:{
     'utah|Baseball':['https://utahutes.com/sports/baseball/schedule','https://utahutes.com/'],
     'utah|Basketball':['https://utahutes.com/sports/mens-basketball/schedule','https://utahutes.com/sports/womens-basketball/schedule','https://utahutes.com/sports/basketball/schedule','https://utahutes.com/'],
-    'utah|Beach Volleyball':['https://utahutes.com/sports/beach-volleyball/schedule','https://utahutes.com/'],
+    // A missing slug renders SIDEARM's empty "@season @sport" template, whose
+    // site-wide ticker lists other sports' events; never fall back to it.
+    'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/schedule',
     'utah|Cross Country':'https://utahutes.com/sports/cross-country/schedule',
     'utah|Football':'https://utahutes.com/sports/football/schedule',
     'utah|Golf':['https://utahutes.com/sports/womens-golf/schedule','https://utahutes.com/sports/mens-golf/schedule','https://utahutes.com/sports/golf/schedule','https://utahutes.com/'],
@@ -27,7 +29,7 @@ export const utahSchool={
   rosterUrls:{
     'utah|Baseball':'https://utahutes.com/sports/baseball/roster',
     'utah|Basketball':['https://utahutes.com/sports/mens-basketball/roster','https://utahutes.com/sports/womens-basketball/roster','https://utahutes.com/sports/basketball/roster'],
-    'utah|Beach Volleyball':'https://utahutes.com/sports/beach-volleyball/roster',
+    'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/roster',
     'utah|Cross Country':'https://utahutes.com/sports/cross-country/roster',
     'utah|Football':'https://utahutes.com/sports/football/roster',
     'utah|Golf':['https://utahutes.com/sports/womens-golf/roster','https://utahutes.com/sports/mens-golf/roster','https://utahutes.com/sports/golf/roster'],
@@ -83,6 +85,12 @@ export function parseUtahRecapResults(raw,event,{slug,ordinal}){
   return rows;
 }
 
+// Spring sports whose official page keeps showing a past season until the
+// next schedule is published. Only the current academic year (July-June) is
+// current; a page with none is a valid empty schedule, not a failed source.
+const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball']);
+function academicYearStart(now){const d=new Date(now);return d.getUTCMonth()+1>=7?d.getUTCFullYear():d.getUTCFullYear()-1;}
+
 export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers}={}){
   const enrichScheduleEvents=createScheduleDataEnricher({schoolId:'utah',host:'utahutes.com',slug,resultSports:PAYLOAD_RESULT_SPORTS,timeSports:PAYLOAD_TIME_SPORTS});
   function isUtahCrossCountry(event){
@@ -125,5 +133,20 @@ export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{enrichScheduleEvents,isUtahCrossCountry,attachMeetResults};
+  const emptiedBySeason=new WeakSet();
+  // The page's site-wide ticker also lists other sports' events, and the
+  // shared sport match accepts indoor "Volleyball" for Beach Volleyball. Keep
+  // only events in this page's own schedule data, then only the current season.
+  function filterEvents(events,raw,school,sport,sourceUrl,now=new Date()){
+    if(school?.id!=='utah'||!ACADEMIC_SEASON_SPORTS.has(sport))return events;
+    try{if(new URL(sourceUrl).hostname!=='utahutes.com')return events;}catch{return events;}
+    const games=sidearmScheduleGames(raw);
+    const scheduled=event=>games.some(game=>game.date.slice(0,10)===String(event.start_time||'').slice(0,10)&&slug(game.opponent.title||'')===slug(event.opponent||''));
+    const start=Date.UTC(academicYearStart(now),6,1),end=Date.UTC(academicYearStart(now)+1,6,1);
+    const kept=events.filter(event=>{const t=Date.parse(String(event.start_time||'').slice(0,10)+'T00:00:00Z');return scheduled(event)&&Number.isFinite(t)&&t>=start&&t<end;});
+    if(events.length&&!kept.length)emptiedBySeason.add(kept);
+    return kept;
+  }
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
+  return{enrichScheduleEvents,isUtahCrossCountry,attachMeetResults,filterEvents,isEmptySchedule};
 }

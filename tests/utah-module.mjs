@@ -19,7 +19,7 @@ const fetch=async url=>{
   return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
 };
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official utahutes.com routes.
 const sports=sponsoredSports.utah;
@@ -109,4 +109,21 @@ const wrong=xcFinals().find(e=>e.opponent==='UVU Invitational');wrong.recap_url=
 await worker.attachOfficialMeetResults(wrong);
 assert.deepEqual([wrong.headline,wrong.meet_results_verified],['3rd / 8',false]);
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps.');
+// Beach Volleyball: the real page (womens-beach-volleyball) still shows the
+// 2025 spring season. Past seasons are not current: the page is a valid empty
+// schedule, so the app shows its empty-schedule note instead of old matches.
+assert.deepEqual(worker.candidateUrls(school,'Beach Volleyball'),['https://utahutes.com/sports/womens-beach-volleyball/schedule'],'no fallback to the site-wide ticker');
+const beachUrl='https://utahutes.com/sports/womens-beach-volleyball/schedule',beachRaw=fixture('beach-volleyball-schedule.html.gz');
+assert.equal(worker.parseHtml(beachRaw,school,'Beach Volleyball',beachUrl,new Date('2025-04-01T12:00:00Z')).filter(e=>e.start_time.startsWith('2025')).length>=30,true,'in its own season the matches are kept');
+const beachNow=worker.parseHtml(beachRaw,school,'Beach Volleyball',beachUrl,now);
+assert.deepEqual(beachNow,[],'no 2025 matches in the 2026-27 season, and no indoor matches from the site-wide ticker');
+assert.equal(worker.parseHtml(beachRaw,school,'Volleyball','https://utahutes.com/sports/womens-volleyball/schedule',now).length>0,true,'indoor Volleyball keeps its own parsing');
+recapFixtures.set(beachUrl,beachRaw);
+const beachSource=await worker.fetchUrl(beachUrl,school,'Beach Volleyball',now);
+assert.equal(beachSource.empty_schedule,true,'an official page with only a past season is an empty schedule');
+// A slug utahutes.com does not have renders an empty template: no events.
+assert.deepEqual(worker.parseHtml(fixture('missing-sport-template.html.gz'),school,'Beach Volleyball',beachUrl,now),[]);
+// Other sports on Utah pages are not season-filtered by this rule.
+assert.equal(worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now).length,football.length);
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball route and past-season empty schedule.');
