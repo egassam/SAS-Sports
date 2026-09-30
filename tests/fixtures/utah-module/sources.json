@@ -29,6 +29,11 @@
       "url": "https://utahutes.com/sports/alpine-skiing/schedule",
       "retrieved": "2026-09-30T17:35Z",
       "note": "Official 2027 Utah Skiing schedule, unmodified: 31 races, Jan 2 - Mar 13, 2027. Each race's meet (Utah Invitational, RMISA Qualifiers, Denver Invitational, ...) is in the page data's tournament field. The old skiing route served the empty template (missing-sport-template.html.gz), so the feed returned 502."
+    },
+    "golf-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/mens-golf/schedule",
+      "retrieved": "2026-09-30T17:50Z",
+      "note": "Official 2026-27 Utah Men's Golf schedule, unmodified. Each round day is its own entry: Jackson Stephens Cup Sep 14-16 (all rounds final, each with a daily recap), Mark Simpson Collegiate Sep 29 (final) - Sep 30 (today), then 11 upcoming tournaments. No placings are published (prescore_info empty). The site links only mens-golf."
     }
   },
   "recaps": {
