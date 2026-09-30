@@ -1626,6 +1626,12 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
 }
 function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
+// The last successfully built feed, kept for a week. It is served only when
+// asked for (cached=1) or when a rebuild fails, always labeled with its age,
+// so a Worker CPU-limit failure (Cloudflare 1102) never blanks a sport that
+// loaded recently at this Cloudflare location.
+const LAST_GOOD_MS=7*24*60*60*1000;
+function lastGoodFeedKey(url,school,sport){const key=new URL('/__sas_cache/feed-last-good',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
@@ -1635,7 +1641,8 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   const response=json(groupEvents(result.events)),stored=new Response(response.body,response);
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
   stored.headers.set('x-sas-fetched-at',result.fetched_at);
-  await cache.put(key,stored.clone());return stored;
+  const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
+  await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood)]);return stored;
 }
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
@@ -1676,6 +1683,13 @@ export default{
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const cache=caches.default,key=feedCacheKey(url,school,sport),cached=await cache.match(key),force=url.searchParams.get('refresh')==='1';
+      // A saved copy only, never a rebuild: cheap enough to answer when the
+      // live rebuild just failed.
+      if(url.searchParams.get('cached')==='1'){
+        const saved=cached||await cache.match(lastGoodFeedKey(url,school,sport));
+        if(saved&&cachedAge(saved)<=LAST_GOOD_MS)return cacheResponse(saved,'saved');
+        return json({detail:{message:'No saved schedule is available',school,sport}},404);
+      }
       if(cached&&!force){
         const age=cachedAge(cached);
         if(age<=FEED_FRESH_MS)return cacheResponse(cached,'fresh');
@@ -1684,6 +1698,8 @@ export default{
       const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);
       if(fresh)return cacheResponse(fresh,'live');
       if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(cached,'stale-fallback');
+      const lastGood=await cache.match(lastGoodFeedKey(url,school,sport));
+      if(lastGood&&cachedAge(lastGood)<=LAST_GOOD_MS)return cacheResponse(lastGood,'saved');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});}

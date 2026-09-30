@@ -364,7 +364,7 @@ contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection 
 {
   const helper=page.match(/const TRANSIENT_HTTP_STATUS=[\s\S]*?\nasync function apiFetch\([\s\S]*?\n\}\n/);
   assert.ok(helper,'The page must define apiFetch with its transient-status list');
-  contains(page,/apiFetch\(`\/live\/feed\/grouped\?[^`]*`,3,\{signal:feedController\.signal,transientOnly:true\}\)/,'The sport feed must retry transient failures (3 attempts, transient statuses only)');
+  contains(page,/const path=`\/live\/feed\/grouped\?[^`]*`;[\s\S]{0,400}?apiFetch\(path\+refreshQuery,3,\{signal:feedController\.signal,transientOnly:true\}\)/,'The sport feed must retry transient failures (3 attempts, transient statuses only)');
   const run=async(responses,attempts,options)=>{
     const calls=[];
     const fetchStub=async path=>{calls.push(path);const next=responses.shift();if(next instanceof Error)throw next;return{ok:next>=200&&next<300,status:next};};
@@ -398,7 +398,7 @@ contains(schoolValidator,/recap incorrectly points to a venue or ticket service/
 
 // A reached official schedule with no current events is shown as such, not as
 // a failed source (Oklahoma State Tennis/Track & Field, K-State Track & Field).
-contains(page,/if\(Array\.isArray\(groups\)&&!groups\.length\)\{liveOk\+\+;emptySports\.add\(sp\);\}/,'an empty [] feed must count as a reached official source');
+contains(page,/if\(Array\.isArray\(groups\)&&!groups\.length\)\{liveOk\+\+;emptySports\.add\(sp\);(?:if\(savedAt!=null\)savedEmpty\.set\(sp,savedAt\);)?\}/,'an empty [] feed must count as a reached official source');
 contains(page,/No current or upcoming \$\{esc\(g\.sport\)\} events are on \$\{esc\(g\.school\)\}'s official schedule yet\./,'reached sports with no current events must explain the empty schedule');
 contains(page,/season_label:'No current schedule',schedule_reached:true/,'an empty sport keeps a labeled section');
 console.log('SAS Sports regression checks passed');
