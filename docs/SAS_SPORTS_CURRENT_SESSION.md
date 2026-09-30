@@ -58,7 +58,7 @@ Last updated: September 30, 2026, evening, America/Chicago (Utah finish: PRs #59
   - **Volleyball start times, #59 (`999baa0`, `4.31.6`):** production shows 16/16 upcoming timed. Kansas State (Oct 3) keeps the card's 5:30 PM because Utah's own page data disagrees (5:00 PM).
   - **Volleyball athletes, #60 (`ff73a87`):** the official roster has 19 players and 1 personal Instagram. Volleyball is added to Utah's `athlete_profile_fallback_sports`; Utah certification is 4/4.
   - **Soccer start times, #61 (`56bdb41`, `4.31.7`):** production shows 8/13 upcoming timed. The 5 postseason placeholders have no published time.
-  - **Softball doubleheaders, #62 (`4.31.8`), open, awaiting the user's approval:**
+  - **Softball doubleheaders, #62 (`cdb4c11`, `4.31.8`), merged with the user's approval ("Yes to both"):**
     - The Oct 11 doubleheader vs Southern Utah showed as one game.
     - The Utah module now restores each unplayed doubleheader game (Softball, Baseball) as Game 1 / Game 2.
     - It needs one shared line: `eventMergeKey` includes `game_number` when an event has one. Output for all other saved pages is byte-identical.
@@ -69,7 +69,13 @@ Last updated: September 30, 2026, evening, America/Chicago (Utah finish: PRs #59
     - Men's Basketball: its page lists 36 of 40 games as TBA, so there are almost no times to add yet.
   - **Golf placings:** Utah publishes no placing field. The Jackson Stephens Cup recap gives a match-play bracket result ("ties for second place in match play"), not a stroke-play place. Golf stays `Completed` with the official recap.
   - **Softball** was already fully timed.
-  - **Route cleanup (six sports still carry unused generic or homepage candidates):** proposed to the user as one routes-only PR, not started.
+  - **Route cleanup, #64 (`920650c`, `4.31.9`), one batched PR with the user's approval:**
+    - Baseball, Basketball, Gymnastics, Softball, Swimming & Diving and Track & Field route only to their official pages.
+    - A test requires every Utah route to be a sport page the site lists.
+    - Preview and production feeds were identical to before for all six sports (36/36 load test each).
+  - **Production verification:**
+    - Softball shows Oct 11 Game 1 at 1:00 PM and Game 2 at 3:00 PM.
+    - K-State XC 18/20, KU XC 26/21 after both merges.
 
 **Merge permission (user, September 29–30).** The user added a standing merge permission to `AGENTS.md` item 6 (commit `afc7ed4`). Follow its conditions exactly.
 
@@ -211,7 +217,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Utah:** #62 (Softball doubleheaders) awaits the user's merge decision. Remaining when utahutes.com allows the downloads: Baseball and Women's Basketball start times (fixture-verified), and the route cleanup if the user approves. Earlier list, for reference:
+- **Utah is complete except for source-blocked items:** Baseball and Women's Basketball start times, once utahutes.com allows the page downloads (fixture-verified, one sport per PR). Earlier list, for reference:
   - Volleyball athlete certification: get the official `womens-volleyball` roster (403 on September 30). If it publishes no personal links for most players, add Volleyball to Utah's `athlete_profile_fallback_sports` in `tests/certified-schools.json`, as done for Oklahoma State.
   - Golf placings, if a verifiable official source exists.
   - Start times for the other game sports (Soccer, Volleyball, Baseball, Softball, Basketball) via the page-data enricher's `timeSports`, each checked against its page.
