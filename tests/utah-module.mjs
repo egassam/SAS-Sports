@@ -150,5 +150,10 @@ assert.deepEqual(ski.slice(0,5).map(e=>`${e.display_time} ${e.opponent}`),[
 ]);
 assert.ok(ski.every(e=>e.title.endsWith(e.opponent)&&/ · /.test(e.opponent)),'every race names its meet');
 assert.equal(new Set(ski.map(e=>e.id)).size,31,'race ids stay unique');
+// The page served to the Worker also lists last season's finals (March
+// 2026) outside its schedule data; they are not current.
+const lastSeason='<a aria-label="Completed Event: Skiing vs Slalom on March 13, 2026, , 2nd">x</a><a aria-label="Completed Event: Skiing vs 20K Freestyle (M) on March 14, 2026, , 1st">x</a>';
+assert.ok(worker.parseHtml(lastSeason,school,'Skiing','https://example.com/',now).length===2,'the injected labels parse as finals');
+assert.deepEqual(worker.parseHtml(skiRaw.replace('</body>',lastSeason+'</body>'),school,'Skiing',skiUrl,now).map(e=>e.id),ski.map(e=>e.id),'last season is not current');
 
 console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names.');

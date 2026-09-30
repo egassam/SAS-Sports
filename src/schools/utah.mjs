@@ -89,7 +89,7 @@ export function parseUtahRecapResults(raw,event,{slug,ordinal}){
 // Spring sports whose official page keeps showing a past season until the
 // next schedule is published. Only the current academic year (July-June) is
 // current; a page with none is a valid empty schedule, not a failed source.
-const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball','Lacrosse']);
+const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball','Lacrosse','Skiing']);
 function academicYearStart(now){const d=new Date(now);return d.getUTCMonth()+1>=7?d.getUTCFullYear():d.getUTCFullYear()-1;}
 
 export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers}={}){
