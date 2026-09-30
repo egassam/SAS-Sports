@@ -187,4 +187,16 @@ assert.ok(mensTennis.events.every(e=>e.team_label==="Men's"&&e.title.startsWith(
 assert.equal(worker.teamLabelForSource(school,'Tennis','https://utahutes.com/sports/womens-tennis/schedule'),"Women's");
 assert.equal(worker.teamLabelForSource(schools.find(s=>s.id==='kstate'),'Tennis','https://www.kstatesports.com/sports/womens-tennis/schedule'),null,'other schools keep their own policy');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams.');
+// Volleyball: published start times from the page data (the rendered cards
+// show a time for only some games). Results are unchanged.
+const vbUrl='https://utahutes.com/sports/womens-volleyball/schedule',vbRaw=fixture('volleyball-schedule.html.gz');
+const vb=worker.parseHtml(vbRaw,school,'Volleyball',vbUrl,now);
+const vbUpcoming=vb.filter(e=>e.status!=='Final');
+assert.equal(vbUpcoming.length,18);
+assert.ok(vbUpcoming.every(e=>/, \d{1,2}:\d{2} [AP]M$/.test(e.display_time)),'every upcoming match shows its start time');
+assert.deepEqual(vbUpcoming.slice(2,7).map(e=>`${e.display_time} ${e.opponent}`),['Oct 1, 5:00 PM #19 Kansas','Oct 3, 5:30 PM Kansas State','Oct 8, 7:00 PM West Virginia','Oct 15, 7:00 PM #22 BYU','Oct 17, 1:00 PM Iowa State']);
+assert.equal(vbUpcoming.find(e=>e.opponent==='UCF').start_time,'2026-11-27T11:30:00.000Z','local wall clock, as for Football');
+const vbBare=worker.parseHtml(vbRaw.replace(/<script\b[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,''),school,'Volleyball',vbUrl,now);
+assert.deepEqual(vb.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),vbBare.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),'results are unchanged');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball start times.');
