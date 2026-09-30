@@ -623,3 +623,18 @@ Limitations:
 - **Soccer "Live source unavailable" at 8:25 PM Central (01:25 UTC).** This came during the #36/#37 deploys. Each version bump clears every cached feed, and a cold rebuild hit the known resource limit. At 01:31 UTC, three cached requests and a forced refresh all returned Soccer normally. Lesson: batch a school's fixes into fewer deploys.
 - **Tennis.** The user doubted the empty feed because K-State shows upcoming tennis. The men's page, downloaded on retry, is the 2026–27 schedule, which corrects the earlier note. Its 4 events are all past individual tournaments. K-State drops its past tournaments the same way, so Oklahoma State matches K-State; it simply has nothing published after Sept 27. See the Tennis note in Current state.
 
+#### Empty-schedule message and KU test clock (user-approved merges)
+
+User: "Add the Tennis empty-schedule message", then, after PR review, "Yes, merge both". Both PRs were outside the one-school/one-sport condition of `AGENTS.md` item 6, so the user approved the merges explicitly.
+- **PR #39** (`f1f9d9c`): test-only. `tests/kansas-module.mjs` used fixtures captured 2026-09-28 but ran `fetchLive` on the real clock. After Sept 29, the Men's Windon Memorial (Sep 28–29) became Final without reviewed placings, and the test failed on unmodified `main`. The assertion now covers only tournaments finished by the fixture capture time.
+- **PR #40** (`470be87`): shared page change in `public/index.html`.
+  - A sport whose official source is reached but lists no current events shows "No current or upcoming <sport> events are on <school>'s official schedule yet."
+  - A valid empty `[]` feed now counts as a reached source and gets a "No current schedule" section. It previously showed "LIVE SOURCE UNAVAILABLE"; production confirmed that before the merge for Oklahoma State and K-State Track & Field.
+  - `VERSION` was not bumped (page-only), so feed caches stayed warm.
+- **Tests:** `npm run test:release` and `npm test` passed, with and without installed packages. New static checks in `tests/regression.mjs` failed when only the page change was reverted. The inline script syntax check passed.
+- **Browser checks** (Playwright with the pre-installed Chromium; the proxy CA was trusted via its SPKI hash, with certificate checks left on), on the preview and then production:
+  - Oklahoma State Tennis and Track & Field show the message with "1/1 official source reached".
+  - K-State Track & Field shows the message.
+  - K-State Tennis is unchanged (8 upcoming).
+- **XC guards in production:** K-State 18/20, KU 26/21, Oklahoma State 37/31.
+
