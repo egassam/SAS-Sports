@@ -4,6 +4,23 @@
       "url": "https://utahutes.com/sports/football/schedule",
       "retrieved": "2026-09-30T15:45Z",
       "note": "Official 2026 Utah Football schedule, unmodified. Its __NUXT_DATA__ carries W/L, scores and recaps for W 66-14 Idaho (Sep 3), W 43-10 Arkansas (Sep 12), W 33-0 Utah State (Sep 19) and W 31-17 at Iowa State (Sep 26). utahutes.com returned HTTP 403 to the sandbox on most attempts; this copy came through on a normal retry."
+    },
+    "cross-country-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/cross-country/schedule",
+      "retrieved": "2026-09-30T16:05Z",
+      "note": "Official 2026 Utah Cross Country schedule, unmodified. Final meets: UVU Invitational (Sep 4, 3rd / 8), Beehive Invitational (Sep 10, No Score), John McNichols Invitational (Sep 19, 2nd / 28); each card links its official recap. No results documents are linked."
+    }
+  },
+  "recaps": {
+    "xc-recap-uvu-invitational.html.gz": {
+      "url": "https://utahutes.com/news/2026/9/4/utah-cross-country-places-third-in-season-opener-at-uvu-invitational",
+      "retrieved": "2026-09-30T16:10Z",
+      "note": "Official recap, unmodified. One results table under UVU INVITATIONAL: 76 Points, 3rd / 8, seven Utah runners."
+    },
+    "xc-recap-john-mcnichols-invitational.html.gz": {
+      "url": "https://utahutes.com/news/2026/9/19/vringer-paces-no-20-utah-cross-country-to-runner-up-finish-at-john-mcnichols-invitational",
+      "retrieved": "2026-09-30T16:20Z",
+      "note": "Official recap, unmodified. Two results tables: the championship race (2nd / 28, 107 Points, eight Utah runners) and the \"OPEN RACE\" (two Utah runners). Its prose also reports an alumna's result at another event, which has no table."
     }
   }
 }

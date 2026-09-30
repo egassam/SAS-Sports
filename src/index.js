@@ -7,7 +7,7 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 
-const VERSION='4.30.0-utah-football';
+const VERSION='4.31.0-utah-cross-country';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -204,7 +204,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
-const utahHandlers=createUtahHandlers({slug});
+const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>fetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
@@ -788,6 +788,8 @@ async function attachOfficialMeetResults(event){
   if(isKStateCrossCountry(event))return attachKStateRecapResults(event);
   // Oklahoma State's results document holds both collegiate races.
   if(oklahomaStateHandlers.isOklahomaStateCrossCountry(event))return oklahomaStateHandlers.attachMeetResults(event);
+  // Utah publishes its race results as tables in the official meet recap.
+  if(utahHandlers.isUtahCrossCountry(event))return utahHandlers.attachMeetResults(event);
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   // Exact rows parsed from the event's official recap are already tied to this
   // meet. Never replace them with a season/cumulative PDF linked from it.
@@ -1359,9 +1361,10 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
-  // Oklahoma State meets use the same results-document path as the feed, with
-  // the card's own links; recap prose and AI extraction must not replace it.
-  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
+  // Oklahoma State and Utah meets use the same official results path as the
+  // feed, with the card's own links; recap prose and AI extraction must not
+  // replace it.
+  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
   if(target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
@@ -1598,7 +1601,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
     events=reconcileScoreboardEvents(events,scoreboard);
