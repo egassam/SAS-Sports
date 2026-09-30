@@ -192,6 +192,7 @@ contains(worker,/stale-refreshing/,'Stale verified feeds must remain visible whi
 contains(worker,/stale-fallback/,'A temporary official-source failure must fall back to a verified feed');
 contains(worker,/for\(const url of urls\)/,'Official fallback URLs must be tried sequentially');
 contains(worker,/successful\.push\(item\);if\(!combined\)break/,'Single-team sports must stop after the first usable official schedule');
+contains(worker,/if\(scheduleYearPage\.raw!==raw\)\{\s*const text=visibleText\(raw\)/,'The season heading must be read once per page, not once per card (large pages exceeded the Worker CPU limit, error 1102)');
 contains(page,/refresh\.addEventListener\('click',\(\)=>loadFeed\(true\)\)/,'Manual refresh must explicitly bypass the fresh feed cache');
 contains(page,/school\.addEventListener\('change'/,'School navigation must use the resilient feed cache');
 
