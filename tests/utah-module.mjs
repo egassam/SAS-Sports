@@ -19,7 +19,7 @@ const fetch=async url=>{
   return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
 };
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl,groupEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official utahutes.com routes.
 const sports=sponsoredSports.utah;
@@ -156,4 +156,24 @@ const lastSeason='<a aria-label="Completed Event: Skiing vs Slalom on March 13, 
 assert.ok(worker.parseHtml(lastSeason,school,'Skiing','https://example.com/',now).length===2,'the injected labels parse as finals');
 assert.deepEqual(worker.parseHtml(skiRaw.replace('</body>',lastSeason+'</body>'),school,'Skiing',skiUrl,now).map(e=>e.id),ski.map(e=>e.id),'last season is not current');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names.');
+// Golf: Utah's only page is mens-golf, which lists each round day. K-State
+// shows one event per tournament; the page publishes no placings.
+assert.deepEqual(worker.candidateUrls(school,'Golf'),['https://utahutes.com/sports/mens-golf/schedule']);
+const golfUrl='https://utahutes.com/sports/mens-golf/schedule',golfRaw=fixture('golf-schedule.html.gz'),golfNow=new Date('2026-09-30T18:00:00Z');
+const golf=worker.parseHtml(golfRaw,school,'Golf',golfUrl,golfNow);
+assert.deepEqual(golf.map(e=>`${e.status} ${e.display_time} ${e.opponent}`),[
+  'Today Sep 30 Mark Simpson Collegiate','Upcoming Oct 5 Hamptons Intercollegiate','Upcoming Oct 12 Big 12 Match Play',
+  'Upcoming Oct 18 Williams Cup','Upcoming Feb 11 John Burns Collegiate','Upcoming Feb 28 Las Vegas Collegiate',
+  'Upcoming Mar 15 Black Desert Collegiate','Upcoming Mar 19 The Schenkel','Upcoming Apr 16 The Thunderbird',
+  'Upcoming Apr 26 Big 12 Championships','Upcoming May 15 NCAA Regionals','Upcoming May 28 NCAA Championships',
+  'Final Sep 14 Jackson Stephens Cup'
+],'one event per tournament');
+const stephens=golf.at(-1),simpson=golf[0];
+assert.equal(stephens.recap_url,'https://utahutes.com/news/2026/9/16/mens-golf-utah-golf-ties-for-second-place-in-match-play','the final round\'s recap');
+assert.equal(stephens.id,'live-utah-golf-sep-14-2026-jackson-stephens-cup-final');
+assert.deepEqual([simpson.headline,simpson.recap_url,simpson.results],[null,undefined,[]],'a tournament in progress has no result yet');
+assert.equal(new Set(golf.map(e=>e.id)).size,golf.length);
+const golfGroup=worker.groupEvents(golf,golfNow)[0];
+assert.deepEqual([golfGroup.results.length,golfGroup.upcoming.length,golfGroup.upcoming[0].opponent],[1,12,'Mark Simpson Collegiate'],'the tournament in progress is listed');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament.');

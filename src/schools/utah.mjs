@@ -15,7 +15,8 @@ export const utahSchool={
     'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/schedule',
     'utah|Cross Country':'https://utahutes.com/sports/cross-country/schedule',
     'utah|Football':'https://utahutes.com/sports/football/schedule',
-    'utah|Golf':['https://utahutes.com/sports/womens-golf/schedule','https://utahutes.com/sports/mens-golf/schedule','https://utahutes.com/sports/golf/schedule','https://utahutes.com/'],
+    // Utah sponsors men's golf only; the other slugs render the empty template.
+    'utah|Golf':'https://utahutes.com/sports/mens-golf/schedule',
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/schedule','https://utahutes.com/sports/mens-gymnastics/schedule','https://utahutes.com/sports/gymnastics/schedule','https://utahutes.com/'],
     // Utah sponsors men's lacrosse only; the other slugs render the empty template.
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/schedule',
@@ -33,7 +34,7 @@ export const utahSchool={
     'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/roster',
     'utah|Cross Country':'https://utahutes.com/sports/cross-country/roster',
     'utah|Football':'https://utahutes.com/sports/football/roster',
-    'utah|Golf':['https://utahutes.com/sports/womens-golf/roster','https://utahutes.com/sports/mens-golf/roster','https://utahutes.com/sports/golf/roster'],
+    'utah|Golf':'https://utahutes.com/sports/mens-golf/roster',
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/roster','https://utahutes.com/sports/mens-gymnastics/roster','https://utahutes.com/sports/gymnastics/roster'],
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/roster',
     'utah|Skiing':'https://utahutes.com/sports/alpine-skiing/roster',
@@ -110,7 +111,47 @@ export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers
     }
     return events;
   }
-  const enrichScheduleEvents=(events,raw,school,sport,sourceUrl)=>labelSkiingRaces(enrichFromPageData(events,raw,school,sport,sourceUrl),raw,school,sport,sourceUrl);
+  // The golf page lists each round day as its own entry. K-State shows one
+  // event per tournament: merge consecutive days of the same tournament from
+  // the page's schedule data. The tournament is Final only when every round
+  // is; a finished one keeps its first day's date and the final round's
+  // official recap, an unfinished one shows its next round.
+  // Events outside the page's schedule data (site-wide ticker) are dropped.
+  const rank={Live:0,Today:1,Upcoming:2,Final:3};
+  function mergeGolfRounds(events,raw,school,sport,sourceUrl){
+    if(school?.id!=='utah'||sport!=='Golf')return events;
+    try{if(new URL(sourceUrl).hostname!=='utahutes.com')return events;}catch{return events;}
+    const games=sidearmScheduleGames(raw);
+    if(!games.length)return events;
+    const day=value=>String(value||'').slice(0,10),dayMs=value=>Date.parse(day(value)+'T00:00:00Z');
+    const rounds=events.filter(event=>games.some(game=>day(game.date)===day(event.start_time)&&slug(game.opponent.title||'')===slug(event.opponent||'')))
+      .sort((a,b)=>dayMs(a.start_time)-dayMs(b.start_time));
+    const tournaments=[];
+    for(const round of rounds){
+      const last=tournaments.at(-1),previous=last?.rounds.at(-1);
+      if(previous&&slug(previous.opponent)===slug(round.opponent)&&dayMs(round.start_time)-dayMs(previous.start_time)<=86400000)last.rounds.push(round);
+      else tournaments.push({rounds:[round]});
+    }
+    return tournaments.map(({rounds})=>{
+      const first=rounds[0],final=rounds.at(-1);
+      if(rounds.length===1)return first;
+      const status=rounds.every(round=>round.status==='Final')?'Final':rounds.map(round=>round.status).sort((a,b)=>(rank[a]??4)-(rank[b]??4))[0];
+      const event={...first,status,id:first.id.replace(/-(?:final|today|upcoming|live)$/,'-'+status.toLowerCase())};
+      event.priority_bucket={Live:'live',Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status]||'other';
+      event.recency_label={Live:'Live now',Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status]||status;
+      if(status==='Final'){
+        event.headline=final.headline;event.results=final.results;event.result_count=final.result_count;
+        if(final.recap_url)event.recap_url=final.recap_url;else delete event.recap_url;
+      }else{
+        // In progress or ahead: show the next round to be played.
+        const next=rounds.find(round=>round.status!=='Final');
+        event.start_time=next.start_time;event.display_time=next.display_time;
+        event.headline=null;event.results=[];event.result_count=0;delete event.recap_url;
+      }
+      return event;
+    });
+  }
+  const enrichScheduleEvents=(events,raw,school,sport,sourceUrl)=>mergeGolfRounds(labelSkiingRaces(enrichFromPageData(events,raw,school,sport,sourceUrl),raw,school,sport,sourceUrl),raw,school,sport,sourceUrl);
   function isUtahCrossCountry(event){
     return event?.school_id==='utah'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   }
