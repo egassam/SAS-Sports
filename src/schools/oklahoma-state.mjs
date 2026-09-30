@@ -64,6 +64,8 @@ export function oklahomaStateMeetSport(event){
   return month>=8&&month<=11?'Cross Country':'Track & Field';
 }
 
+// Sports whose schedule-payload results have been checked against K-State's format.
+const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const TEAM_ROW=/^(\d+)\s+Oklahoma\s+State\s+(\d+)\s+[\d(]/i;
 // Both published formats: "44 RODRIGUEZ, Adelynn SO Oklahoma Stat (37) 21:36.0"
@@ -150,7 +152,35 @@ function officialDocumentUrl(value){
   return null;
 }
 
-export function createOklahomaStateHandlers({ordinal,recapMatchesEvent,fetchPdfText,fetch,headers}={}){
+// okstate.com schedule pages embed every game as structured Nuxt data
+// (<script id="__NUXT_DATA__">, a devalue-encoded array). Decode it to plain
+// game objects; the rendered cards omit W/L and recap links.
+export function oklahomaStateScheduleGames(raw){
+  const script=String(raw||'').match(/<script\b[^>]*id=["']__NUXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+  if(!script)return[];
+  let data;try{data=JSON.parse(script[1]);}catch{return[];}
+  if(!Array.isArray(data))return[];
+  const wrappers=new Set(['Reactive','ShallowReactive','Ref','ShallowRef','EmptyRef','EmptyShallowRef']);
+  const resolve=(index,depth)=>{
+    if(depth>8||typeof index!=='number'||index<0||index>=data.length)return null;
+    const value=data[index];
+    if(Array.isArray(value)){
+      if(typeof value[0]==='string'&&wrappers.has(value[0]))return resolve(value[1],depth);
+      return value.map(item=>resolve(item,depth+1));
+    }
+    if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,typeof item==='number'?resolve(item,depth+1):item]));
+    return value;
+  };
+  const games=[];
+  data.forEach((value,index)=>{
+    if(!value||Array.isArray(value)||typeof value!=='object'||!('result' in value)||!('opponent' in value)||!('date' in value))return;
+    const game=resolve(index,0);
+    if(game&&typeof game.date==='string'&&game.opponent&&typeof game.opponent==='object')games.push(game);
+  });
+  return games;
+}
+
+export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText,fetch,headers}={}){
   const officialPath=url=>{
     try{const u=new URL(url);return u.protocol==='https:'&&u.hostname==='okstate.com'?u.pathname:null;}catch{return null;}
   };
@@ -208,5 +238,28 @@ export function createOklahomaStateHandlers({ordinal,recapMatchesEvent,fetchPdfT
     if(!path||!SHARED_PROGRAM_PATH.test(path))return events;
     return events.filter(event=>event.school_id==='oklahoma-state'&&oklahomaStateMeetSport(event)===sport);
   }
-  return{filterEvents,isOklahomaStateCrossCountry,attachMeetResults};
+  // Published W/L result, scores and the exact recap from the schedule's own
+  // game data, matched by date and opponent. Only verified sports opt in.
+  function enrichScheduleEvents(events,raw,school,sport,sourceUrl){
+    if(school?.id!=='oklahoma-state'||!PAYLOAD_RESULT_SPORTS.has(sport)||!officialPath(sourceUrl))return events;
+    const games=oklahomaStateScheduleGames(raw);if(!games.length)return events;
+    for(const event of events){
+      if(event.school_id!=='oklahoma-state'||event.event_type!=='GAME'||event.status!=='Final')continue;
+      const day=String(event.start_time||'').slice(0,10),opponent=slug(event.opponent||'');
+      const matches=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===opponent);
+      if(matches.length!==1)continue;
+      const result=matches[0].result||{},outcome=String(result.status||'').toUpperCase();
+      const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
+      if(!['W','L','T'].includes(outcome)||!/^\d+$/.test(team)||!/^\d+$/.test(other))continue;
+      event.school_score=team;event.opponent_score=other;
+      event.headline=`${outcome}, ${team}-${other}`;
+      event.results=[{label:'Result',value:event.headline}];event.result_count=1;
+      const recap=result.recap?.url;
+      if(typeof recap==='string'){
+        try{const url=new URL(recap,sourceUrl);if(url.hostname==='okstate.com'&&url.pathname.startsWith('/news/'))event.recap_url=url.href;}catch{}
+      }
+    }
+    return events;
+  }
+  return{filterEvents,enrichScheduleEvents,isOklahomaStateCrossCountry,attachMeetResults};
 }
