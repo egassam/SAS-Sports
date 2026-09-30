@@ -393,4 +393,9 @@ contains(schoolValidator,/DEFAULT_SPORTS\.includes\(sport\)&&officialHasComplete
 contains(schoolValidator,/recap points outside either official athletics domain/,'Recap URLs must remain on one of the two official athletics domains');
 contains(schoolValidator,/recap incorrectly points to a venue or ticket service/,'Venue and ticket links must fail recap certification');
 
+// A reached official schedule with no current events is shown as such, not as
+// a failed source (Oklahoma State Tennis/Track & Field, K-State Track & Field).
+contains(page,/if\(Array\.isArray\(groups\)&&!groups\.length\)\{liveOk\+\+;emptySports\.add\(sp\);\}/,'an empty [] feed must count as a reached official source');
+contains(page,/No current or upcoming \$\{esc\(g\.sport\)\} events are on \$\{esc\(g\.school\)\}'s official schedule yet\./,'reached sports with no current events must explain the empty schedule');
+contains(page,/season_label:'No current schedule',schedule_reached:true/,'an empty sport keeps a labeled section');
 console.log('SAS Sports regression checks passed');
