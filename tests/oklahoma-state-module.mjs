@@ -147,6 +147,14 @@ assert.equal(soccerUpcoming.find(e=>e.opponent==='Arizona').start_time,'2026-10-
 assert.ok(soccerUpcoming.filter(e=>e.opponent==='TBD').every(e=>!/,/.test(e.display_time)),'TBA postseason dates have no invented time');
 assert.deepEqual(soccerFinals.slice(0,3).map(e=>e.headline),['L, 0-1','L, 1-2','W, 3-1'],'soccer results are unchanged');
 
+// Softball: published start times; "Time TBA" stays date-only.
+const softball=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Softball','https://okstate.com/sports/softball/schedule',now);
+assert.deepEqual(softball.filter(e=>e.status!=='Final').map(e=>`${e.opponent} ${e.display_time}`),[
+  'Seminole State Sep 30, 6:00 PM','Wichita State Oct 4','Oklahoma Christian Oct 7, 6:00 PM','Langston Oct 11',
+  'Oklahoma Baptist Oct 13, 6:00 PM','Arkansas Oct 17','Murray State Oct 27, 6:00 PM'
+]);
+assert.deepEqual(softball.filter(e=>e.status==='Final').map(e=>e.headline),['W, 6-0'],'softball result is unchanged');
+
 // Golf: the published team placing in K-State's wording ("7th of 16").
 // okstate.com publishes no team score on the schedule, so none is added.
 for(const [value,expected] of [['7th/16','7th of 16'],['9th out of 12 teams','9th of 12'],['T3rd of 10','T3rd of 10'],['1st/12','1st of 12'],['Completed',null],['',null]])assert.equal(oklahomaStatePlacing(value),expected,`placing ${value}`);
@@ -190,4 +198,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Soccer start times, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Soccer and Softball start times, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
