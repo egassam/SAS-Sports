@@ -57,6 +57,16 @@
       "url": "https://okstate.com/sports/football/schedule",
       "retrieved": "2026-09-30T00:55Z",
       "note": "Official 2026 Cowboy Football schedule, unmodified. Its __NUXT_DATA__ payload carries W/L, scores and recap links for the four completed games: L 10-24 at Tulsa (Sep 5), W 39-31 vs Oregon (Sep 12), W 59-0 vs Murray State (Sep 19), W 41-24 at West Virginia (Sep 26)."
+    },
+    "mens-golf-schedule.html.gz": {
+      "url": "https://okstate.com/sports/mens-golf/schedule",
+      "retrieved": "2026-09-30T01:05Z",
+      "note": "Official men's golf schedule, unmodified. Published placings: 1st/12 Sahalee (Sep 12), 5th/15 Fighting Illini (Sep 18), 7th/16 Ben Hogan (Sep 28); no team scores on the schedule."
+    },
+    "womens-golf-schedule.html.gz": {
+      "url": "https://okstate.com/sports/womens-golf/schedule",
+      "retrieved": "2026-09-30T01:05Z",
+      "note": "Official women's golf schedule, unmodified. Published placings: 9th out of 12 teams Folds of Honor (Sep 7), 6th out of 16 teams Schooner (Sep 19)."
     }
   },
   "cross_country_results": {
