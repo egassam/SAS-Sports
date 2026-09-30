@@ -1,4 +1,4 @@
-import {utahSchool} from '../src/schools/utah.mjs';
+import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
@@ -14,7 +14,7 @@ const fixture=read('./fixtures/kstate-gans-2026-results.txt');
 const html=(text=fixture,title='Gans Creek Classic')=>`<title>Cross Country ${title}</title><article>${text}</article>`;
 const event=()=>({id:'gans',school_id:'kstate',school:'Kansas State',sport:'Cross Country',event_type:'MEET',status:'Final',start_time:'2026-09-25T12:00:00Z',opponent:'Gans Creek Classic',recap_url:gansUrl,result_url:'https://www.kstatesports.com/documents/2026/9/25/women.pdf',results:[]});
 let requests=[],responseHtml=html(),fail=false;
-const worker=Function('oklahomaStateSchool','createOklahomaStateHandlers','utahSchool','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialMeetResults,attachOfficialHighlights,parseKStateRecapTable,attachKStateRecapResults,groupEvents};`)(oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('K-State must not take the first-PDF path');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{
+const worker=Function('oklahomaStateSchool','createOklahomaStateHandlers','utahSchool','createUtahHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialMeetResults,attachOfficialHighlights,parseKStateRecapTable,attachKStateRecapResults,groupEvents};`)(oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('K-State must not take the first-PDF path');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{
   requests.push(String(url));if(fail)throw Error('unavailable');assert.equal(String(url),gansUrl);return new Response(responseHtml);
 });
 const rows=worker.parseKStateRecapTable(html(),event());

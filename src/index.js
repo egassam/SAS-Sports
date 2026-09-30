@@ -5,9 +5,9 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
-import {utahSchool} from './schools/utah.mjs';
+import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 
-const VERSION='4.29.12-oklahoma-state-equestrian-times';
+const VERSION='4.30.0-utah-football';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -204,6 +204,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
+const utahHandlers=createUtahHandlers({slug});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>fetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
@@ -1056,7 +1057,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   ];
   for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
   const merged=mergeEvents(eventLists);
-  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl),raw,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
+  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl),raw,school,sport,sourceUrl):school.id==='utah'?utahHandlers.enrichScheduleEvents(merged,raw,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
 function compactScheduleHtml(raw,sourceUrl){
