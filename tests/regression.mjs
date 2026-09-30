@@ -5,6 +5,8 @@ const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
 const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
 const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
+const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -66,7 +68,7 @@ assert.deepEqual(Object.keys(rolloutSchools).slice(0,9),['kstate','kansas','flor
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
-      definition.official_hosts.some(domain=>(school==='kstate'?kstateModule:school==='kansas'?kansasModule:school==='oklahoma-state'?oklahomaStateModule:worker).includes(`'${school}|${sport}':'https://${domain}/`)||(school==='kstate'?kstateModule:school==='kansas'?kansasModule:school==='oklahoma-state'?oklahomaStateModule:worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
+      definition.official_hosts.some(domain=>(schoolModuleSource[school]||worker).includes(`'${school}|${sport}':'https://${domain}/`)||(schoolModuleSource[school]||worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
       `Missing official ${school} ${sport} source`
     );
   }
@@ -163,8 +165,8 @@ contains(worker,/'tcu\|Cross Country':'https:\/\/gofrogs\.com\/sports\/cross-cou
 contains(worker,/'tcu\|Soccer':'https:\/\/gofrogs\.com\/sports\/womens-soccer\/schedule'/,'TCU Soccer must use its official women’s schedule');
 contains(worker,/'tcu\|Volleyball':'https:\/\/gofrogs\.com\/sports\/womens-volleyball\/schedule'/,'TCU Volleyball must use its official women’s schedule');
 contains(worker,/'tcu\|Football':'https:\/\/gofrogs\.com\/sports\/football\/schedule'/,'TCU Football must use its official schedule');
-contains(worker,/'utah\|Cross Country':'https:\/\/utahutes\.com\/sports\/cross-country\/schedule'/,'Utah Cross Country must use its official schedule');
-contains(worker,/'utah\|Soccer':'https:\/\/utahutes\.com\/sports\/womens-soccer\/schedule'/,'Utah Soccer must use its official schedule');
+contains(utahModule,/'utah\|Cross Country':'https:\/\/utahutes\.com\/sports\/cross-country\/schedule'/,'Utah Cross Country must use its official schedule');
+contains(utahModule,/'utah\|Soccer':'https:\/\/utahutes\.com\/sports\/womens-soccer\/schedule'/,'Utah Soccer must use its official schedule');
 contains(worker,/'west-virginia\|Cross Country':'https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule'/,'West Virginia Cross Country must use its populated women’s schedule');
 contains(worker,/'west-virginia\|Football':'https:\/\/wvusports\.com\/sports\/football\/schedule'/,'West Virginia Football must use its official schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
