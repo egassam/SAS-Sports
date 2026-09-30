@@ -8,4 +8,22 @@ The user wants one school-module project per conversation.
 4. At the end of each school session, update the current-state and next-session sections of that same Markdown file and append the session's conversation/decision record. Preserve earlier records through append-only session history and Git version history.
 5. Record tests actually run, publication status, commit/PR identifiers, live verification, limitations, and remaining tasks accurately. A local fix is not a deployed fix.
 
-This records the user's continuity preference; it does not grant additional publication or deployment permission. Follow current user instructions and applicable authorization requirements.
+6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
+   - **Code PRs:**
+     - `npm run test:release` and `npm test` pass locally on the final commit.
+     - CI on the PR head is green, and the PR has no merge conflict.
+     - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows the changed sport in K-State's results format.
+     - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
+     - The change stays within the one school and sport in scope.
+   - **Docs-only PRs:** CI is green and the PR has no merge conflict.
+
+   If any condition fails or is uncertain, stop and ask the user instead of merging.
+
+   After merging a code PR:
+   - Verify production `/api/status` and the changed sport's feed and expanded view, plus K-State and KU XC.
+   - Record the result in the handoff.
+   - If production is wrong, tell the user immediately and open a revert PR for them to approve.
+
+   Never force-push `main`, bypass branch protection, or merge PRs the agent did not open.
+
+This file records the user's continuity preference and the standing merge permission above. It grants no other publication or deployment permission. Follow current user instructions and applicable authorization requirements.
