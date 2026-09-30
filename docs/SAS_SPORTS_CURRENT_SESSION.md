@@ -21,7 +21,12 @@ Last updated: September 29, 2026 evening, America/Chicago (Oklahoma State all sp
 Details are in `docs/OKLAHOMA_STATE_MODULE.md` under "All sports vs K-State".
 
 Still open for Oklahoma State:
-- **Tennis:** empty feed; source gap. The women's page is still the 2025–26 schedule (re-checked September 30), and the men's page stayed blocked.
+- **Tennis:** empty feed, which matches K-State's behavior; it is a source gap, not a parser bug.
+  - The men's page is the "2026-27 Cowboy Tennis Schedule" (downloaded September 30). It lists only 4 fall individual tournaments, all already over: UTR Shootout Stillwater (Aug 29–30), UTR Shootout Tulsa (Sep 12–14), ITA All-American Championships (Sep 19–27) and UTR PTT Norfolk (Sep 21–27).
+  - The women's page is still the 2025–26 schedule.
+  - Past tournaments without a team result are not listed. K-State is the same: its women's page parses 16 events, and its feed shows only the 8 upcoming (Oct 2–Nov 17) with 0 results.
+  - Oklahoma State's feed stays empty until okstate.com publishes October-onward events.
+  - Correction: the September 29 note that the men's events were "outside 2026–27" was wrong. It had been inferred from the feed, not checked against the page.
 - **Women's Basketball:** start times unverified. Its page returned 403 to the sandbox; the preview showed no timed games.
 
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
@@ -143,7 +148,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 - **Oklahoma State is complete except for source-blocked items.** When okstate.com lets the sandbox download them:
   - Take the women's Basketball page as a fixture and check its times.
-  - Re-inspect the men's Tennis page (4 events), and watch for a 2026–27 women's Tennis schedule.
+  - Watch for October-onward Tennis events on either page. The men's 2026–27 page was inspected September 30; see the Tennis note above.
 
   One sport per PR, as before.
 - **Other Oklahoma State follow-ups:** the women's cross country/track roster; deep recap certification.
@@ -611,4 +616,10 @@ Limitations:
 - Women's Basketball showed no timed games on the preview; it is unverified whether its page has any.
 - Tennis stays empty for the source reason recorded September 29.
 - Cloudflare 1102 remains open. No 1102 was seen during this session's checks.
+
+#### Follow-up questions (same session)
+
+- **Volleyball.** The user asked where Oklahoma State Volleyball went. Oklahoma State sponsors no volleyball, and `src/sponsored-sports.json` has never listed it (11 sports since the file's first commit, `3d8b66c`). K-State Volleyball was checked: in season, 12 results / 16 upcoming.
+- **Soccer "Live source unavailable" at 8:25 PM Central (01:25 UTC).** This came during the #36/#37 deploys. Each version bump clears every cached feed, and a cold rebuild hit the known resource limit. At 01:31 UTC, three cached requests and a forced refresh all returned Soccer normally. Lesson: batch a school's fixes into fewer deploys.
+- **Tennis.** The user doubted the empty feed because K-State shows upcoming tennis. The men's page, downloaded on retry, is the 2026–27 schedule, which corrects the earlier note. Its 4 events are all past individual tournaments. K-State drops its past tournaments the same way, so Oklahoma State matches K-State; it simply has nothing published after Sept 27. See the Tennis note in Current state.
 
