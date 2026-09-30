@@ -17,7 +17,8 @@ export const utahSchool={
     'utah|Football':'https://utahutes.com/sports/football/schedule',
     'utah|Golf':['https://utahutes.com/sports/womens-golf/schedule','https://utahutes.com/sports/mens-golf/schedule','https://utahutes.com/sports/golf/schedule','https://utahutes.com/'],
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/schedule','https://utahutes.com/sports/mens-gymnastics/schedule','https://utahutes.com/sports/gymnastics/schedule','https://utahutes.com/'],
-    'utah|Lacrosse':['https://utahutes.com/sports/womens-lacrosse/schedule','https://utahutes.com/sports/mens-lacrosse/schedule','https://utahutes.com/sports/lacrosse/schedule','https://utahutes.com/'],
+    // Utah sponsors men's lacrosse only; the other slugs render the empty template.
+    'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/schedule',
     'utah|Skiing':['https://utahutes.com/sports/skiing/schedule','https://utahutes.com/'],
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
     'utah|Softball':['https://utahutes.com/sports/softball/schedule','https://utahutes.com/'],
@@ -34,7 +35,7 @@ export const utahSchool={
     'utah|Football':'https://utahutes.com/sports/football/roster',
     'utah|Golf':['https://utahutes.com/sports/womens-golf/roster','https://utahutes.com/sports/mens-golf/roster','https://utahutes.com/sports/golf/roster'],
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/roster','https://utahutes.com/sports/mens-gymnastics/roster','https://utahutes.com/sports/gymnastics/roster'],
-    'utah|Lacrosse':['https://utahutes.com/sports/womens-lacrosse/roster','https://utahutes.com/sports/mens-lacrosse/roster','https://utahutes.com/sports/lacrosse/roster'],
+    'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/roster',
     'utah|Skiing':'https://utahutes.com/sports/skiing/roster',
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/roster',
     'utah|Softball':'https://utahutes.com/sports/softball/roster',
@@ -88,7 +89,7 @@ export function parseUtahRecapResults(raw,event,{slug,ordinal}){
 // Spring sports whose official page keeps showing a past season until the
 // next schedule is published. Only the current academic year (July-June) is
 // current; a page with none is a valid empty schedule, not a failed source.
-const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball']);
+const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball','Lacrosse']);
 function academicYearStart(now){const d=new Date(now);return d.getUTCMonth()+1>=7?d.getUTCFullYear():d.getUTCFullYear()-1;}
 
 export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers}={}){
