@@ -19,6 +19,11 @@
       "url": "https://utahutes.com/sports/skiing/schedule",
       "retrieved": "2026-09-30T17:20Z",
       "note": "What utahutes.com serves for a sport slug it does not have (Utah's skiing page is alpine-skiing): SIDEARM's unfilled \"@season @sport Schedule\" template with no schedule data. The old beach-volleyball route served the same template, whose site-wide ticker put indoor volleyball matches on Beach Volleyball."
+    },
+    "lacrosse-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/mens-lacrosse/schedule",
+      "retrieved": "2026-09-30T17:25Z",
+      "note": "Official Utah (men's) Lacrosse schedule, unmodified: the 2026 spring season (15 games, Jan 23 - May 1, 2026; last two L 13-14 and L 12-13 vs Air Force). No 2027 games are published. The site links only mens-lacrosse."
     }
   },
   "recaps": {

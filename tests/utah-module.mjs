@@ -126,4 +126,14 @@ assert.deepEqual(worker.parseHtml(fixture('missing-sport-template.html.gz'),scho
 // Other sports on Utah pages are not season-filtered by this rule.
 assert.equal(worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now).length,football.length);
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball route and past-season empty schedule.');
+// Lacrosse: Utah's only page is mens-lacrosse, which still shows the 2026
+// spring season (2025-26). It is not current in 2026-27: empty schedule.
+assert.deepEqual(worker.candidateUrls(school,'Lacrosse'),['https://utahutes.com/sports/mens-lacrosse/schedule']);
+const laxUrl='https://utahutes.com/sports/mens-lacrosse/schedule',laxRaw=fixture('lacrosse-schedule.html.gz');
+const laxSpring=worker.parseHtml(laxRaw,school,'Lacrosse',laxUrl,new Date('2026-05-02T12:00:00Z')).filter(e=>e.status==='Final');
+assert.ok(laxSpring.length>=13&&laxSpring.some(e=>e.opponent==='Air Force'),'in its own season the games are kept');
+assert.deepEqual(worker.parseHtml(laxRaw,school,'Lacrosse',laxUrl,now),[],'no 2026 spring games in the 2026-27 season');
+recapFixtures.set(laxUrl,laxRaw);
+assert.equal((await worker.fetchUrl(laxUrl,school,'Lacrosse',now)).empty_schedule,true);
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules.');
