@@ -1,12 +1,28 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country, PR #23).
+Last updated: September 29, 2026 evening, America/Chicago (Oklahoma State all sports, PRs #27–#36).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
 
 **Merge permission (user, September 29–30).** The user added a standing merge permission to `AGENTS.md` item 6 (commit `afc7ed4`). Follow its conditions exactly.
+
+**Oklahoma State: all sports checked against K-State; production is `4.29.12-oklahoma-state-equestrian-times` (September 30 UTC).** The user said "Finish all of Oklahoma State". Each sport was fixed, verified on its preview, merged by the agent under `AGENTS.md` item 6, and verified in production, one at a time:
+
+| Sport | PR | Production |
+| --- | --- | --- |
+| Football | #27, #30 | `W, 41-24`-style results with exact recaps; verified expanded highlights; published start times |
+| Golf | #28 | Placings as `7th of 16` |
+| Track & Field | #29 | 200 `[]` instead of 502 |
+| Soccer, Softball, Baseball, Basketball, Wrestling, Equestrian | #31–#36 | Published start times; results unchanged (already in K-State's format) |
+| Cross Country | #23 | Complete since September 29 |
+
+Details are in `docs/OKLAHOMA_STATE_MODULE.md` under "All sports vs K-State".
+
+Still open for Oklahoma State:
+- **Tennis:** empty feed; source gap. The women's page is still the 2025–26 schedule (re-checked September 30), and the men's page stayed blocked.
+- **Women's Basketball:** start times unverified. Its page returned 403 to the sandbox; the preview showed no timed games.
 
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
 
@@ -125,12 +141,13 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Oklahoma State Cross Country is complete** (verified in production September 29). Start the next single sport the user names.
-- **Other Oklahoma State follow-ups (later, one sport at a time):**
-  - official schedule fixtures other than women's Tennis (okstate.com 403s the sandbox intermittently)
-  - the women's cross country/track roster
-  - deep recap certification
-  - a Track & Field empty-state response instead of the 502 "no usable events" (shared behavior)
+- **Oklahoma State is complete except for source-blocked items.** When okstate.com lets the sandbox download them:
+  - Take the women's Basketball page as a fixture and check its times.
+  - Re-inspect the men's Tennis page (4 events), and watch for a 2026–27 women's Tennis schedule.
+
+  One sport per PR, as before.
+- **Other Oklahoma State follow-ups:** the women's cross country/track roster; deep recap certification.
+- **Observed outside scope (not changed):** K-State Football's Sept 26 Cincinnati expanded view uses a Cincinnati-site article whose URL says "31-20", but the game was 31–26. Check it in a K-State session.
 
   Otherwise, start the next school the user names.
 
@@ -548,4 +565,50 @@ Limitations:
 #### Merge permission decision
 
 The user asked whether the agent could merge changes to save time. The assistant proposed merge conditions: local suites pass, CI is green, the branch preview is verified with K-State/KU XC unchanged, the change stays in one sport, and production is checked afterwards with a revert path. The user chose to cover both code and docs PRs. The session's safety check blocked the agent from editing `AGENTS.md` itself as self-modification. The user then added the rule as item 6 (commit `afc7ed4`).
+
+### September 30, 2026 — Oklahoma State all sports
+
+User: "New session. Finish all of Oklahoma State". Main was fetched at `a7b2f4b`, and `AGENTS.md` (including item 6) and this file were read.
+- **PR #24** (`4.29.2-feed-retry`): reconciled. It was a front-end retry for transient 1102/503 feed failures and did not change school data.
+- **Inventory:** production feeds for all 11 Oklahoma State sports were compared with K-State's. Gaps found:
+  - Football: bare `41-24` scores, no recaps.
+  - Golf: `7th/16` and `6th out of 16 teams` wording.
+  - Track & Field: 502.
+  - All sports: no published start times.
+  - Tennis: empty feed.
+  - No change needed: the Soccer, Softball and Basketball feeds and expanded views.
+
+Source finding: okstate.com schedule pages embed every game as structured Nuxt data (W/L, scores, recap links, golf placing, local time). The module now decodes it and applies each part only to sports verified against an official page. See `docs/OKLAHOMA_STATE_MODULE.md`.
+
+Publication, one sport per PR. Each was merged by the agent under `AGENTS.md` item 6 and verified in production (version, the sport's feed/expanded view, K-State XC 18/20, KU XC 26/21):
+
+| PR | Sport | Merge | Version |
+| --- | --- | --- | --- |
+| #27 | Football results/recaps | `061390f` | `4.29.3` |
+| #28 | Golf placings | `212154d` | `4.29.4` |
+| #29 | Track & Field empty feed | `4e618b1` | `4.29.5` |
+| #30 | Football times | `9e9ce79` | `4.29.6` |
+| #31 | Soccer times | `2ea1a7d` | `4.29.7` |
+| #32 | Softball times | `83eae71` | `4.29.8` |
+| #33 | Baseball times | `23fef47` | `4.29.9` |
+| #34 | Basketball times | `83a55b6` | `4.29.10` |
+| #35 | Wrestling times | `4a1910f` | `4.29.11` |
+| #36 | Equestrian times | `3eb79bd` | `4.29.12` |
+
+Tests actually run for every PR:
+- `npm run test:release` and `npm test`, with and without installed packages.
+- `git diff --check`.
+- A mutation check with the sport switched off, which failed the new assertions.
+
+New unmodified official fixtures (gzipped): Football, men's and women's Golf, Soccer, Softball, Baseball, men's Basketball, Wrestling and Equestrian schedules.
+
+Final production sweep at `4.29.12`: all 11 Oklahoma State sports returned HTTP 200. The first forced Equestrian check right after the #36 deploy returned the pre-merge output; three later forced refreshes all showed the change, consistent with a deploy switchover.
+
+While enabling Soccer times, the tests caught that the W/L rewrite was not gated to its own sport list. It was gated in #31, before merge.
+
+Limitations:
+- okstate.com returned 403 to the sandbox for the men's Tennis and women's Basketball pages. Other pages downloaded on later retries. Nothing was circumvented.
+- Women's Basketball showed no timed games on the preview; it is unverified whether its page has any.
+- Tennis stays empty for the source reason recorded September 29.
+- Cloudflare 1102 remains open. No 1102 was seen during this session's checks.
 

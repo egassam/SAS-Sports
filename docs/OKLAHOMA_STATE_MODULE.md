@@ -10,6 +10,8 @@
 | Explicit roster routes for all 11 sports | `oklahomaStateSchool.rosterUrls` (previously two inline `KNOWN_ROSTER_URLS` entries plus generic fallbacks) |
 | Men's and women's programs loaded and labeled for Basketball, Golf and Tennis | `oklahomaStateSchool.combinedSports` |
 | Two cross-country Instagram identities verified by official team-account tags | `oklahomaStateSchool.verifiedInstagrams` |
+| Game data embedded in okstate.com schedule pages (`__NUXT_DATA__`): W/L results, recaps, golf placings, start times, per verified sport | `oklahomaStateScheduleGames` and `enrichScheduleEvents`, called from `parseHtml` |
+| Empty Track & Field schedule on the shared page returned as 200 `[]` | `isEmptyProgramSchedule`, read by `fetchUrl`/`fetchLive`/`freshGroupedFeed` only for `oklahoma-state` |
 | Shared `/sports/mxct/` schedule split between Cross Country and Track & Field | `createOklahomaStateHandlers().filterEvents`, called from `parseHtml` only for `oklahoma-state` |
 | Cross Country results from each meet's official results document (feed and expanded view) | `parseOklahomaStateMeetResults` and `attachMeetResults`, called from the shared `attachOfficialMeetResults` / `attachOfficialHighlights` hooks |
 | Generic SIDEARM parsing, roster/profile parsing, social identity guards, official-profile fallback, feed orchestration, cache, UI | Shared Worker (unchanged) |
@@ -34,10 +36,9 @@ A before/after route dump across all 219 catalog school/sport combinations chang
 
 ## Known source gaps
 
-- okstate.com's bot protection (Incapsula) returned HTTP 403 to the development sandbox for most downloads on September 29. Only the women's Tennis schedule was obtained as an official schedule fixture. The production and preview Workers were not blocked.
+- okstate.com's bot protection (Incapsula) returns HTTP 403 to the development sandbox intermittently. On September 30 these schedules downloaded and are now fixtures: Football, Soccer, Softball, Baseball, men's and women's Golf, men's Basketball, Wrestling and Equestrian. The women's Tennis page downloaded too and is unchanged. The men's Tennis and women's Basketball pages stayed blocked. The production and preview Workers were not blocked.
 - The women's program roster is not loaded. The `mxct` roster is 55 men and is already more than the athlete scan budget, so adding the women's roster has no effect without a roster-combination change. (The women's schedule question is settled under Cross Country results below.)
 - okstate.com's bot protection returned 403 for both Cross Country recaps from the sandbox, so recap pages in tests are synthetic wrappers. The deployed Worker fetched and verified both recaps.
-- The men's golf page has no fixture. On the Cloudflare preview it returned both divisions: 5 results and 24 upcoming events, with men's events labeled.
 - No deep (recap/highlight) certification has been run for Oklahoma State.
 
 ## Preview verification (PR #21, commit `1a55077`)
@@ -101,3 +102,38 @@ Tests: `tests/oklahoma-state-cross-country.mjs` (`npm run test:oklahoma-state-xc
 - `tests/regression.mjs` now requires `mxct` as the first XC schedule candidate.
 
 **Production (September 29, 19:00 UTC).** PR #23 was merged as `0629321`. Production reports `4.29.2-feed-retry` (PR #24, merged afterwards, did not change `src/`). Forced feeds returned Preview 31 rows and Jamboree 37 rows, with the headlines above, and `/live/highlights` was identical to the feed for both meets. K-State XC 18/20 and KU XC 26/21 were unchanged.
+
+## All sports vs K-State (September 30, `4.29.12-oklahoma-state-equestrian-times`)
+
+okstate.com schedule pages embed each game as structured Nuxt data. It includes the published W/L, both scores, the recap and box-score links, golf placing text, and the local start time. The rendered cards omit most of this.
+
+`oklahomaStateScheduleGames` decodes that data and keeps each game once; a "next game" widget can repeat a game. `enrichScheduleEvents` applies it per sport, and only for sports verified against an official page:
+
+- `PAYLOAD_RESULT_SPORTS` (W/L headline `W, 41-24`, one `Result` row, exact okstate.com `/news/` recap): Football.
+- `PAYLOAD_PLACING_SPORTS` (`7th of 16`): Golf. The schedule publishes no team score, so none is added.
+- `PAYLOAD_TIME_SPORTS` (`Oct 2, 7:00 PM`): Football, Soccer, Softball, Baseball, Basketball, Wrestling, Equestrian.
+  - A time is used only when the published time text is a real time that agrees with the page's date field.
+  - TBA/TBD games stay date-only.
+  - Times are the school's local wall clock, the same convention the shared code uses for K-State.
+
+Games are matched by date and opponent. Anything ambiguous or unmatched is left unchanged.
+
+| Sport | PR (merge) | Result in production |
+| --- | --- | --- |
+| Cross Country | #23 (`0629321`) | K-State race groups (September 29) |
+| Football | #27 (`061390f`), #30 (`9e9ce79`) | 4 finals `W, 41-24` / `W, 59-0` / `W, 39-31` / `L, 10-24`, each with its recap; the expanded view gives 4 verified highlights; UCF `Oct 10, 11:00 AM` |
+| Golf | #28 (`212154d`) | `7th of 16`, `6th of 16`, `5th of 15`, `1st of 12`, `9th of 12`; 24 upcoming; the expanded view gives 4 verified highlights |
+| Track & Field | #29 (`4e618b1`) | 200 `[]` (only cross-country meets published), as K-State's track feed; was 502 |
+| Soccer | #31 (`2ea1a7d`) | 12 results unchanged; 8 of 13 upcoming timed |
+| Softball | #32 (`83eae71`) | 1 result unchanged; 4 of 7 upcoming timed |
+| Baseball | #33 (`23fef47`) | 16 of 60 games timed |
+| Basketball | #34 (`83a55b6`) | Men's: 5 upcoming timed; 3 July tour results unchanged. Women's: 0 timed on the preview; the page could not be downloaded here, so whether its games have times is unverified |
+| Wrestling | #35 (`4a1910f`) | 9 of 17 timed; "All Day", TBA and blank times date-only |
+| Equestrian | #36 (`3eb79bd`) | TCU and Baylor timed (`12:00 PM`); 12 upcoming |
+| Tennis | none | Empty. The official women's page, re-downloaded September 30, is still the "2025-26 Cowgirl Tennis Schedule" (21 matches, Jan 23–Apr 12, 2026). The men's page (4 events) stayed blocked here and was not re-inspected. This is a source gap, not a parser defect |
+
+Checked and unchanged:
+- The Soccer, Softball and Basketball feeds and expanded views already matched K-State: a `W, 3-1` headline, the exact official recap, and 4 verified highlights.
+- The three July men's basketball tour exhibitions and the August 6 soccer exhibition are published, with recaps, on the official schedules.
+
+Every PR ran `npm run test:release` and `npm test`, including without installed packages, plus a mutation check (switching the sport off fails the new assertions). Each PR's CI was green with no merge conflict before merging. On its branch preview, the sport matched and K-State XC 18/20 and KU XC 26/21 were unchanged. After each merge, production was checked for the version, the sport, and K-State/KU XC.
