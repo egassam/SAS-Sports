@@ -1,10 +1,40 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 29, 2026 evening, America/Chicago (Oklahoma State all sports, PRs #27–#36).
+Last updated: September 30, 2026, America/Chicago (Utah module and Utah sports, PRs #44–#51).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Utah: module set up, and 8 sports fixed; production is `4.31.5-utah-tennis` (September 30 UTC).** The user chose Utah ("Let's start the next school" → "Utah") and approved the agent merging the setup PR. Every PR below was verified on its branch preview (K-State XC 18/20, KU XC 26/21 each time), merged by the agent under `AGENTS.md` item 6, and verified in production. Details are in `docs/UTAH_MODULE.md`.
+
+| Sport | PR | Production |
+| --- | --- | --- |
+| Setup (route parity) | #44 | `src/schools/utah.mjs`; 219/219 routes identical |
+| Football | #45 | `W, 31-17` with exact recaps; published start times. The SIDEARM page-data reader moved to `src/sidearm-schedule-data.mjs` (Oklahoma State unchanged) |
+| Cross Country | #46 | Race rows from official recap tables: `Women's team: 2nd · 107 pts`, runners, `Women's Open` group |
+| Beach Volleyball | #47 | Showed indoor volleyball matches. Now uses the real `womens-beach-volleyball` page; the 2025 season there is past, so the app shows the empty-schedule note |
+| Lacrosse | #48 | Spring 2026 games shown as current. Now `mens-lacrosse` only, with the empty-schedule note |
+| Skiing | #49 | Was 502. Now `alpine-skiing`: 31 races of 2027, labeled `Denver Invitational · Giant Slalom` |
+| Golf | #50 | Only today's round. Now `mens-golf`, one event per tournament (Jackson Stephens Cup final + recap; Mark Simpson today; 11 upcoming) |
+| Tennis | #51 | Women only. Now both teams, labeled (26 women's + 22 men's) |
+
+- **Root cause of the out-of-season failures (user report: "Utah's sports out of season are not working properly"):**
+  - Several inherited routes used slugs utahutes.com does not have. Those render SIDEARM's empty "@season @sport" template, whose site-wide ticker lists other sports' events.
+  - Spring sports' pages keep showing last season.
+  - The Utah module now:
+    - routes to the real slugs;
+    - for Beach Volleyball, Lacrosse and Skiing, keeps only events in the page's own schedule data and in the current academic year (`filterEvents`, with an `empty_schedule` flag).
+- **Checked and correct:**
+  - Gymnastics: only the Dec 12 Red Rocks Preview is published for 2026-27.
+  - Swimming & Diving: both teams, labeled.
+  - Baseball, Basketball and Softball: upcoming only.
+  - Track & Field: empty-schedule note.
+  - Soccer and Volleyball: already in K-State's format.
+- **Still open for Utah:**
+  - **Volleyball athlete certification** fails ("no verified Instagram destination"). The Worker found one verified Instagram among the roster profiles, and two slots use official profiles. The fix (Oklahoma State's opt-in `athlete_profile_fallback_sports`) needs the official roster checked first. The roster returned 403 to the sandbox all afternoon, so nothing was changed.
+  - **Golf placings:** the page publishes none, so completed tournaments read `Completed`.
+  - **Start times** are enabled only for Football.
 
 **Merge permission (user, September 29–30).** The user added a standing merge permission to `AGENTS.md` item 6 (commit `afc7ed4`). Follow its conditions exactly.
 
@@ -145,6 +175,13 @@ Agreed sequence:
 The September 26 “Do the first one” applied to baseline preservation. The separate September 27 “Start KSTATE module” request authorized the extraction now prepared on its own branch.
 
 ## Instructions for the next session
+
+- **Utah (in progress).** Open items, one sport per PR:
+  - Volleyball athlete certification: get the official `womens-volleyball` roster (403 on September 30). If it publishes no personal links for most players, add Volleyball to Utah's `athlete_profile_fallback_sports` in `tests/certified-schools.json`, as done for Oklahoma State.
+  - Golf placings, if a verifiable official source exists.
+  - Start times for the other game sports (Soccer, Volleyball, Baseball, Softball, Basketball) via the page-data enricher's `timeSports`, each checked against its page.
+  - Utah routes still carrying unused generic or homepage candidates: Baseball, Basketball, Gymnastics, Softball, Swimming & Diving, Track & Field. They work today; remove them only with a fixture-backed check.
+  - utahutes.com returns HTTP 403 to the sandbox on most attempts. Retry with spacing; do not circumvent.
 
 - **Oklahoma State is complete except for source-blocked items.** When okstate.com lets the sandbox download them:
   - Take the women's Basketball page as a fixture and check its times.
@@ -663,3 +700,50 @@ User: "KSTATE sports soccer, volleyball, golf are not showing expanded results a
 - Soccer and Volleyball spot checks: 4 highlights each.
 - K-State XC 18/20, KU XC 26/21.
 
+### September 30, 2026 — Utah module and Utah sports
+
+User: "Let's start the next school for making it a module" → "Utah". The user then said "Yes maybe on your own" to the agent merging the setup PR.
+
+**Setup, PR #44** (`cf972b3`):
+- Utah routes moved into `src/schools/utah.mjs` as a pure move; the 219-combination route dump was identical.
+- The preview matched production for all 15 sports.
+
+**Football, PR #45** (`1d82277`, `4.30.0-utah-football`):
+- The SIDEARM page-data reader moved from the Oklahoma State module to `src/sidearm-schedule-data.mjs`. On the preview, Oklahoma State Football, Golf and Soccer were identical to production.
+- Utah enables it for Football: `W, 31-17`/`W, 33-0`/`W, 43-10`/`W, 66-14` with recaps, and 3 published start times.
+
+**Cross Country, PR #46** (`738fd3b`, `4.31.0-utah-cross-country`):
+- Utah links no results documents; each meet's official recap has results tables. `parseUtahRecapResults` produces K-State's contract.
+- Production:
+  - UVU `Women's team: 3rd · 76 pts` + 7 runners;
+  - John McNichols `2nd · 107 pts` + 8 runners + 2 in `Women's Open`;
+  - Beehive keeps `No Score` with its 1 runner.
+- The expanded view matched the feed in the browser.
+
+**User report:** "Looks like Utahs sports out of season are not working properly." A production survey found:
+- Beach Volleyball showed indoor matches;
+- Lacrosse showed spring 2026 as current;
+- Skiing returned 502;
+- Golf showed only today's round;
+- Tennis showed the women only.
+
+The cause is in "Current state" above. One PR each:
+- **#47 Beach Volleyball** (`1b8e491`, `4.31.1`): the real route, plus the current-season and page-data filter. Production 200 `[]`; the UI shows the empty-schedule note.
+- **#48 Lacrosse** (`72706e3`, `4.31.2`): the `mens-lacrosse` route and the same filter. Production 200 `[]` with the note.
+- **#49 Skiing** (`79e74e2`, `4.31.3`): the `alpine-skiing` route with meet labels.
+  - The first preview also showed March 2026 finals outside the page data, so Skiing joined the filter in a second commit.
+  - Production: 0 results, 31 labeled 2027 races.
+  - That first preview also showed K-State XC 2/20 once (the Gans Creek recap was unavailable, a kstatesports.com flake). It was 18/20 on the rebuilt preview and in production before the merge.
+- **#50 Golf** (`b5c544e`, `4.31.4`): the `mens-golf` route, with round days merged into one event per tournament. In production, the Jackson Stephens Cup expanded view generated highlights from the final recap.
+- **#51 Tennis** (`1ac0410`, `4.31.5`): Tennis became a Utah combined sport. Production shows 48 events (26 women's, 22 men's), labeled.
+
+**Tests:** for every PR:
+- `npm run test:release` and `npm test` passed, with and without installed packages;
+- a mutation check failed the new test;
+- CI was green.
+
+All fixtures are unmodified official pages, documented in `tests/fixtures/utah-module/sources.json`.
+
+**Final production survey (about 18:30 UTC):** all 15 Utah sports return 200; the table is in `docs/UTAH_MODULE.md`. K-State XC 18/20 and KU XC 26/21 after every merge.
+
+**Not done:** Volleyball athlete certification (roster 403, see "Current state"); Golf placings; start times beyond Football.
