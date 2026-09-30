@@ -881,14 +881,26 @@ function extractEventLabels(raw){
   for(const re of patterns)while((m=re.exec(text)))add(m[0]);
   return out;
 }
+// The season heading depends only on the page. Every schedule parser calls
+// this once per card, so read the page's visible text once per page: large
+// SIDEARM pages (~900 KB) otherwise cost hundreds of CPU milliseconds and
+// intermittently exceed the Worker's CPU limit (Cloudflare 1102).
+let scheduleYearPage={raw:null,range:null,single:null};
+function scheduleYearHeadings(raw){
+  if(scheduleYearPage.raw!==raw){
+    const text=visibleText(raw);
+    scheduleYearPage={raw,range:text.match(/\b(20\d{2})\s*[-–]\s*(\d{2,4})\b[^.]{0,80}\bSchedule\b/i),single:text.match(/\b(20\d{2})\s+[^.]{0,40}\bSchedule\b/i)};
+  }
+  return scheduleYearPage;
+}
 function scheduleYearForDate(raw,dateText,now){
-  const text=visibleText(raw),range=text.match(/\b(20\d{2})\s*[-–]\s*(\d{2,4})\b[^.]{0,80}\bSchedule\b/i);
+  const {range,single}=scheduleYearHeadings(raw);
   if(range){
     const start=Number(range[1]),end=Number(range[2].length===2?String(start).slice(0,2)+range[2]:range[2]);
     const monthName=String(dateText||'').trim().slice(0,3).toLowerCase(),month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(monthName)+1;
     if(month)return month>=7?start:end;
   }
-  return Number((text.match(/\b(20\d{2})\s+[^.]{0,40}\bSchedule\b/i)||[])[1])||now.getUTCFullYear();
+  return Number((single||[])[1])||now.getUTCFullYear();
 }
 function parseSidearmGameCards(raw,school,sport,sourceUrl,now){
   const starts=[...raw.matchAll(/<div\b[^>]*data-test-id=["']s-game-card-standard__root["'][^>]*>/gi)].map(x=>x.index),events=[];
