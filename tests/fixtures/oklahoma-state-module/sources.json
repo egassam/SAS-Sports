@@ -92,6 +92,11 @@
       "url": "https://okstate.com/sports/wrestling/schedule",
       "retrieved": "2026-09-30T01:25Z",
       "note": "Official 2026-27 Cowboy Wrestling schedule, unmodified: 17 events, 9 with published times; TBA, All Day and blank times stay date-only (Wyoming has a date-field time but no published time text)."
+    },
+    "equestrian-schedule.html.gz": {
+      "url": "https://okstate.com/sports/equestrian/schedule",
+      "retrieved": "2026-09-30T01:28Z",
+      "note": "Official 2026-27 Equestrian schedule, unmodified: 13 events including the Sep 18 Black vs Orange intrasquad; published times only for TCU (Oct 30) and Baylor (Nov 13), 12 p.m."
     }
   },
   "cross_country_results": {
