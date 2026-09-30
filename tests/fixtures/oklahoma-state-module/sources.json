@@ -82,6 +82,11 @@
       "url": "https://okstate.com/sports/baseball/schedule",
       "retrieved": "2026-09-30T01:08Z",
       "note": "Official 2027 Cowboy Baseball schedule, unmodified: 60 games from Feb 19 to Jun 18, 2027; 16 with published times, the rest TBA."
+    },
+    "mens-basketball-schedule.html.gz": {
+      "url": "https://okstate.com/sports/mens-basketball/schedule",
+      "retrieved": "2026-09-30T01:15Z",
+      "note": "Official 2026-27 Cowboy Basketball schedule, unmodified: 3 completed July tour exhibitions and 47 upcoming, 5 of them with published times. The women's page returned 403 to the sandbox; it was checked on the branch preview instead."
     }
   },
   "cross_country_results": {
