@@ -136,4 +136,24 @@ assert.deepEqual(worker.parseHtml(laxRaw,school,'Lacrosse',laxUrl,now),[],'no 20
 recapFixtures.set(laxUrl,laxRaw);
 assert.equal((await worker.fetchUrl(laxUrl,school,'Lacrosse',now)).empty_schedule,true);
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules.');
+// Skiing: the real page is alpine-skiing (the old slug is the empty
+// template, which made the feed 502). Each race is labeled with its meet.
+assert.deepEqual(worker.candidateUrls(school,'Skiing'),['https://utahutes.com/sports/alpine-skiing/schedule']);
+const skiUrl='https://utahutes.com/sports/alpine-skiing/schedule',skiRaw=fixture('skiing-schedule.html.gz');
+const ski=worker.parseHtml(skiRaw,school,'Skiing',skiUrl,now);
+assert.equal(ski.length,31,'all 31 races of the 2027 season');
+assert.ok(ski.every(e=>e.status==='Upcoming'&&e.start_time.startsWith('2027')));
+assert.deepEqual(ski.slice(0,5).map(e=>`${e.display_time} ${e.opponent}`),[
+  'Jan 2 Utah Invitational · 10K Freestyle (I)','Jan 4 Utah Invitational · Classic Sprints',
+  'Jan 6 RMISA Qualifiers · 20K Classic (M)','Jan 7 RMISA Qualifiers · Freestyle Sprints',
+  'Jan 15 Denver Invitational · Giant Slalom'
+]);
+assert.ok(ski.every(e=>e.title.endsWith(e.opponent)&&/ · /.test(e.opponent)),'every race names its meet');
+assert.equal(new Set(ski.map(e=>e.id)).size,31,'race ids stay unique');
+// The page served to the Worker also lists last season's finals (March
+// 2026) outside its schedule data; they are not current.
+const lastSeason='<a aria-label="Completed Event: Skiing vs Slalom on March 13, 2026, , 2nd">x</a><a aria-label="Completed Event: Skiing vs 20K Freestyle (M) on March 14, 2026, , 1st">x</a>';
+assert.ok(worker.parseHtml(lastSeason,school,'Skiing','https://example.com/',now).length===2,'the injected labels parse as finals');
+assert.deepEqual(worker.parseHtml(skiRaw.replace('</body>',lastSeason+'</body>'),school,'Skiing',skiUrl,now).map(e=>e.id),ski.map(e=>e.id),'last season is not current');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names.');
