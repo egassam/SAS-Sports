@@ -67,7 +67,7 @@ export function oklahomaStateMeetSport(event){
 // Sports whose schedule-payload results have been checked against K-State's format.
 const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
 // Sports whose published start times (local wall clock) are shown as K-State shows them.
-const PAYLOAD_TIME_SPORTS=new Set(['Football']);
+const PAYLOAD_TIME_SPORTS=new Set(['Football','Soccer']);
 const MONTH_ABBR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // "2:45 p.m. CT", "11 a.m. CT", "11:30 AM (CDT)" with a matching payload date
 // "2026-09-05T14:45:00" -> the school's local wall clock. TBA/TBD has no time.
@@ -291,7 +291,7 @@ export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetc
         if(placing){event.headline=placing;event.results=[{label:'Result',value:placing}];event.result_count=1;}
         continue;
       }
-      if(event.event_type!=='GAME')continue;
+      if(event.event_type!=='GAME'||!PAYLOAD_RESULT_SPORTS.has(sport))continue;
       const outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       if(!['W','L','T'].includes(outcome)||!/^\d+$/.test(team)||!/^\d+$/.test(other))continue;
