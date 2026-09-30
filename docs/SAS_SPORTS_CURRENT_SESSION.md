@@ -17,7 +17,11 @@ Last updated: September 30, 2026, America/Chicago (Utah PRs #44–#51; reliabili
 - **Still open:**
   - At some Cloudflare locations (seen at Toronto, YYZ), every forced rebuild fails with 1102 while cached feeds load. Old and new code behave the same, so this is probably the account's per-request CPU limit.
   - The user was asked to check the Cloudflare plan: Workers Free allows 10 ms of CPU; Workers Paid ($5/month) allows 30 s.
-  - The daily live health check (#3) is on branch `live-health-check`, not merged: its result would depend on which location the GitHub runner reaches.
+  - **Resolved later on September 30:**
+    - The user upgraded the Cloudflare plan. Forced refreshes via Toronto then passed 10/10, and the full health check 48/48.
+    - The daily live health check (#3) is merged: `.github/workflows/live-health.yml`, daily at 11:23 UTC, plus manual runs. `npm run test:live-health` runs it locally.
+    - It force-refreshes every sponsored sport of K-State, KU, Oklahoma State and Utah. It fails on any sport still failing after 3 attempts, or on a first-attempt 1102 rate above 5%.
+    - The load-test merge rule is in `AGENTS.md` item 6 (PR #57, merged by the user).
   - The pre-merge load-test rule (#2) was drafted for the user to add to `AGENTS.md`; the agent does not edit that file.
 - **Testing note:** Cloudflare's cache is per location, and requests from the sandbox alternate between IAD, ATL and EWR. A copy saved at one location is not visible at another. Node's `fetch` in the sandbox bypasses the proxy and reaches YYZ; use curl, or `NODE_USE_ENV_PROXY=1`.
 

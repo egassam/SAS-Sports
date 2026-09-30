@@ -1,0 +1,30 @@
+name: SAS Sports live health
+
+# Daily check that every sponsored sport of the finished school modules
+# loads in production (see tests/live-health.mjs). A failed run emails the
+# repository owner through GitHub's normal workflow notifications.
+on:
+  schedule:
+    # 11:23 UTC = 6:23 AM Central (daylight time).
+    - cron: '23 11 * * *'
+  workflow_dispatch:
+    inputs:
+      schools:
+        description: Comma-separated school IDs (default kstate,kansas,oklahoma-state,utah)
+        required: false
+        type: string
+
+concurrency:
+  group: live-health
+  cancel-in-progress: false
+
+jobs:
+  live-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tests/live-health.mjs ${{ inputs.schools && format('--schools={0}', inputs.schools) || '' }}
