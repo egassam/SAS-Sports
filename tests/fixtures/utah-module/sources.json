@@ -9,6 +9,16 @@
       "url": "https://utahutes.com/sports/cross-country/schedule",
       "retrieved": "2026-09-30T16:05Z",
       "note": "Official 2026 Utah Cross Country schedule, unmodified. Final meets: UVU Invitational (Sep 4, 3rd / 8), Beehive Invitational (Sep 10, No Score), John McNichols Invitational (Sep 19, 2nd / 28); each card links its official recap. No results documents are linked."
+    },
+    "beach-volleyball-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/womens-beach-volleyball/schedule",
+      "retrieved": "2026-09-30T17:40Z",
+      "note": "Official Utah Beach Volleyball schedule, unmodified. The page still shows the 2025 spring season (35 matches, Feb 22 - Apr 25, 2025); no 2026-27 matches are published."
+    },
+    "missing-sport-template.html.gz": {
+      "url": "https://utahutes.com/sports/skiing/schedule",
+      "retrieved": "2026-09-30T17:20Z",
+      "note": "What utahutes.com serves for a sport slug it does not have (Utah's skiing page is alpine-skiing): SIDEARM's unfilled \"@season @sport Schedule\" template with no schedule data. The old beach-volleyball route served the same template, whose site-wide ticker put indoor volleyball matches on Beach Volleyball."
     }
   },
   "recaps": {
