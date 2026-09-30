@@ -16,7 +16,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));return responses.has(String(url))?new Response(responses.get(String(url))):new Response('not found',{status:404});};
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,groupEvents,makeEvent,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,schoolCombinedSports,teamLabelForSource};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,freshGroupedFeed,groupEvents,makeEvent,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,schoolCombinedSports,teamLabelForSource};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official routes.
 const sports=sponsoredSports['oklahoma-state'];
@@ -64,6 +64,25 @@ const programPage=`<h1>2026-27 Cross Country/Track & Field Schedule</h1><table>$
 assert.deepEqual(worker.parseHtml(programPage,school,'Cross Country',mxct,now).map(e=>e.opponent),['Weis-Crockett Invitational','Big 12 Cross Country Championships']);
 assert.deepEqual(worker.parseHtml(programPage,school,'Track & Field',mxct,now).map(e=>e.opponent),['Arkansas Invitational','Big 12 Indoor Championships']);
 assert.equal(worker.parseHtml(programPage,schools.find(s=>s.id==='utah'),'Track & Field','https://utahutes.com/sports/cross-country/schedule',now).length,4,'other schools keep shared parsing');
+
+// Track & Field: the shared program page currently lists only cross-country
+// meets. That is a valid empty schedule (200 []), as K-State's track feed is,
+// not the 502 "no usable events" of a failed source.
+const xcOnlyPage=`<h1>2026-27 Cross Country/Track & Field Schedule</h1><table>${textRow('Oct 17','Weis-Crockett Invitational')}${textRow('Oct 31','Big 12 Cross Country Championships')}</table>`;
+responses=new Map([[mxct,xcOnlyPage]]);requests=[];
+const track=await worker.fetchLive('oklahoma-state','Track & Field');
+assert.deepEqual(track.events,[]);assert.equal(track.live_source_used,true);assert.equal(track.error,null);assert.equal(track.source_url,mxct);
+let stored=null;const fakeCache={put:async(key,response)=>{stored=await response.clone().json();}};
+const trackFeed=await worker.freshGroupedFeed(new URL('https://example.test/live/feed/grouped'),'oklahoma-state','Track & Field',null,fakeCache,'key');
+assert.ok(trackFeed,'an empty official schedule is a response, not a failure');assert.equal(trackFeed.status,200);
+assert.deepEqual(await trackFeed.json(),[]);assert.deepEqual(stored,[]);
+assert.equal((await worker.fetchLive('oklahoma-state','Cross Country')).events.length,2,'the same page still serves Cross Country');
+responses=new Map();
+const failedTrack=await worker.fetchLive('oklahoma-state','Track & Field');
+assert.equal(failedTrack.live_source_used,false,'an unavailable page is still a failed source');
+assert.equal(await worker.freshGroupedFeed(new URL('https://example.test/live/feed/grouped'),'oklahoma-state','Track & Field',null,fakeCache,'key'),null);
+responses=new Map([['https://utahutes.com/sports/track-and-field/schedule','<h1>Track</h1><table></table>']]);
+assert.equal((await worker.fetchLive('utah','Track & Field')).live_source_used,false,'other schools keep the failed-source behavior');
 
 // Tennis: a stale women's page used to stop the loop and empty the feed.
 // Pages are synthetic orchestration inputs (the official HTML was unavailable).
@@ -149,4 +168,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, Football W/L results and recaps from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results and recaps from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
