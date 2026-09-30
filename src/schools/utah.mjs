@@ -19,7 +19,7 @@ export const utahSchool={
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/schedule','https://utahutes.com/sports/mens-gymnastics/schedule','https://utahutes.com/sports/gymnastics/schedule','https://utahutes.com/'],
     // Utah sponsors men's lacrosse only; the other slugs render the empty template.
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/schedule',
-    'utah|Skiing':['https://utahutes.com/sports/skiing/schedule','https://utahutes.com/'],
+    'utah|Skiing':'https://utahutes.com/sports/alpine-skiing/schedule',
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
     'utah|Softball':['https://utahutes.com/sports/softball/schedule','https://utahutes.com/'],
     'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/schedule','https://utahutes.com/sports/mens-swimming-and-diving/schedule','https://utahutes.com/sports/womens-swimming-diving/schedule','https://utahutes.com/sports/mens-swimming-diving/schedule','https://utahutes.com/sports/swimming-and-diving/schedule','https://utahutes.com/sports/swimming-diving/schedule','https://utahutes.com/sports/swimming/schedule','https://utahutes.com/'],
@@ -36,7 +36,7 @@ export const utahSchool={
     'utah|Golf':['https://utahutes.com/sports/womens-golf/roster','https://utahutes.com/sports/mens-golf/roster','https://utahutes.com/sports/golf/roster'],
     'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/roster','https://utahutes.com/sports/mens-gymnastics/roster','https://utahutes.com/sports/gymnastics/roster'],
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/roster',
-    'utah|Skiing':'https://utahutes.com/sports/skiing/roster',
+    'utah|Skiing':'https://utahutes.com/sports/alpine-skiing/roster',
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/roster',
     'utah|Softball':'https://utahutes.com/sports/softball/roster',
     'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/roster','https://utahutes.com/sports/mens-swimming-and-diving/roster','https://utahutes.com/sports/womens-swimming-diving/roster','https://utahutes.com/sports/mens-swimming-diving/roster','https://utahutes.com/sports/swimming-and-diving/roster','https://utahutes.com/sports/swimming-diving/roster','https://utahutes.com/sports/swimming/roster'],
@@ -93,7 +93,24 @@ const ACADEMIC_SEASON_SPORTS=new Set(['Beach Volleyball','Lacrosse']);
 function academicYearStart(now){const d=new Date(now);return d.getUTCMonth()+1>=7?d.getUTCFullYear():d.getUTCFullYear()-1;}
 
 export function createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch,headers}={}){
-  const enrichScheduleEvents=createScheduleDataEnricher({schoolId:'utah',host:'utahutes.com',slug,resultSports:PAYLOAD_RESULT_SPORTS,timeSports:PAYLOAD_TIME_SPORTS});
+  const enrichFromPageData=createScheduleDataEnricher({schoolId:'utah',host:'utahutes.com',slug,resultSports:PAYLOAD_RESULT_SPORTS,timeSports:PAYLOAD_TIME_SPORTS});
+  // Skiing lists each race ("Giant Slalom") as the opponent; the meet it
+  // belongs to ("Utah Invitational") is the page data's tournament.
+  function labelSkiingRaces(events,raw,school,sport,sourceUrl){
+    if(school?.id!=='utah'||sport!=='Skiing')return events;
+    try{if(new URL(sourceUrl).hostname!=='utahutes.com')return events;}catch{return events;}
+    const games=sidearmScheduleGames(raw);
+    for(const event of events){
+      const race=event.opponent||'',day=String(event.start_time||'').slice(0,10);
+      const matches=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===slug(race));
+      const meet=String(matches[0]?.tournament?.title||'').trim();
+      if(matches.length!==1||!meet||slug(race).includes(slug(meet)))continue;
+      event.opponent=`${meet} · ${race}`;
+      event.title=event.title.slice(0,event.title.length-race.length)+event.opponent;
+    }
+    return events;
+  }
+  const enrichScheduleEvents=(events,raw,school,sport,sourceUrl)=>labelSkiingRaces(enrichFromPageData(events,raw,school,sport,sourceUrl),raw,school,sport,sourceUrl);
   function isUtahCrossCountry(event){
     return event?.school_id==='utah'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   }
