@@ -34,6 +34,11 @@
       "url": "https://utahutes.com/sports/mens-golf/schedule",
       "retrieved": "2026-09-30T17:50Z",
       "note": "Official 2026-27 Utah Men's Golf schedule, unmodified. Each round day is its own entry: Jackson Stephens Cup Sep 14-16 (all rounds final, each with a daily recap), Mark Simpson Collegiate Sep 29 (final) - Sep 30 (today), then 11 upcoming tournaments. No placings are published (prescore_info empty). The site links only mens-golf."
+    },
+    "mens-tennis-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/mens-tennis/schedule",
+      "retrieved": "2026-09-30T17:55Z",
+      "note": "Official 2026-27 Utah Men's Tennis schedule, unmodified: 22 events from the Utah Invitational (Oct 2) through the spring. Tennis used to stop at the women's page, so none of these appeared."
     }
   },
   "recaps": {

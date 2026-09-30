@@ -36,8 +36,9 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(utahSchool.rosterUrls[`utah|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'utah\|/.test(read('../src/index.js')),'Utah configuration must live in its module, not shared code');
-// Program combinations are unchanged from the shared policy Utah used before.
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Swimming & Diving']);
+// Program combinations: Tennis joins Basketball and Swimming & Diving (Utah
+// publishes separate men's and women's tennis pages).
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Swimming & Diving','Tennis']);
 assert.equal(worker.teamLabelForSource(school,'Basketball','https://utahutes.com/sports/womens-basketball/schedule'),"Women's");
 assert.ok(!worker.schoolCombinedSports(schools.find(s=>s.id==='kstate')).has('Swimming & Diving'),'other schools keep their own combination policy');
 
@@ -176,4 +177,14 @@ assert.equal(new Set(golf.map(e=>e.id)).size,golf.length);
 const golfGroup=worker.groupEvents(golf,golfNow)[0];
 assert.deepEqual([golfGroup.results.length,golfGroup.upcoming.length,golfGroup.upcoming[0].opponent],[1,12,'Mark Simpson Collegiate'],'the tournament in progress is listed');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, unchanged program combinations, Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament.');
+// Tennis: both official team pages, each event labeled by team.
+assert.deepEqual(worker.candidateUrls(school,'Tennis'),['https://utahutes.com/sports/womens-tennis/schedule','https://utahutes.com/sports/mens-tennis/schedule']);
+const mensTennisUrl='https://utahutes.com/sports/mens-tennis/schedule',mensTennisRaw=fixture('mens-tennis-schedule.html.gz');
+recapFixtures.set(mensTennisUrl,mensTennisRaw);
+const mensTennis=await worker.fetchUrl(mensTennisUrl,school,'Tennis',now);
+assert.equal(mensTennis.events.length,22,'all 22 men\'s events');
+assert.ok(mensTennis.events.every(e=>e.team_label==="Men's"&&e.title.startsWith("Men's · ")),'men\'s events are labeled');
+assert.equal(worker.teamLabelForSource(school,'Tennis','https://utahutes.com/sports/womens-tennis/schedule'),"Women's");
+assert.equal(worker.teamLabelForSource(schools.find(s=>s.id==='kstate'),'Tennis','https://www.kstatesports.com/sports/womens-tennis/schedule'),null,'other schools keep their own policy');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams.');
