@@ -638,3 +638,28 @@ User: "Add the Tennis empty-schedule message", then, after PR review, "Yes, merg
   - K-State Tennis is unchanged (8 upcoming).
 - **XC guards in production:** K-State 18/20, KU 26/21, Oklahoma State 37/31.
 
+#### Multi-day tournament recaps (user-approved merge)
+
+User: "KSTATE sports soccer, volleyball, golf are not showing expanded results and highlights." Every completed K-State event in the three sports was opened through production `/live/highlights`:
+- **Soccer:** 11/11 had highlights.
+- **Volleyball:** 11/13. Creighton's AI generation timed out once and succeeded on two retries. The two exhibitions report no recap; not confirmed on kstatesports.com.
+- **Golf:** a real bug. Schooner Fall Classic always returned `recap_not_found`; Annika returned `recap_not_found` or HTTP 503 / Cloudflare 1102. Oklahoma State Golf had the same bug: Folds of Honor returned `recap_not_found`, and three tournaments returned 1102.
+
+**Cause:** `recapMatchesEvent` required the article URL date within ±1 day of the event start. Golf is listed by start date, and recaps are published on the final day (Schooner Sep 19 → Sep 21; Annika and Folds of Honor Sep 7 → Sep 9). The rejected direct recap sent the expanded view into the costly fallback search, which hit 1102.
+
+**PR #42** (`dc432ff`, merged with the user's approval because it is a shared change):
+- For `MEET` events, a recap may be dated from 1 day before the start to 4 days after it; the name and sport must still match.
+- Games keep ±1 day.
+- `VERSION` is unchanged; highlights are not cached.
+
+**Tests:**
+- `tests/kstate-module.mjs` adds the official Schooner recap fixture. It checks a match on the tournament, and no match for an event a week earlier, for the next tournament it previews (Powercat), or for a `GAME`.
+- Reverting `src/index.js` fails the test.
+- `npm run test:release` and `npm test` passed, with and without installed packages.
+- The Annika recap could not be fetched from the sandbox (kstatesports.com bot-protection redirect loop; not circumvented).
+
+**Production after merge (12:23 UTC):**
+- Golf: all 4 K-State and all 5 Oklahoma State tournaments returned 4 highlights, with no 1102. Highlights match each card, e.g. Schooner "seventh … 836", Annika "11th … 906".
+- Soccer and Volleyball spot checks: 4 highlights each.
+- K-State XC 18/20, KU XC 26/21.
+
