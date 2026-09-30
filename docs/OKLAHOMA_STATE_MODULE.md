@@ -130,7 +130,7 @@ Games are matched by date and opponent. Anything ambiguous or unmatched is left 
 | Basketball | #34 (`83a55b6`) | Men's: 5 upcoming timed; 3 July tour results unchanged. Women's: 0 timed on the preview; the page could not be downloaded here, so whether its games have times is unverified |
 | Wrestling | #35 (`4a1910f`) | 9 of 17 timed; "All Day", TBA and blank times date-only |
 | Equestrian | #36 (`3eb79bd`) | TCU and Baylor timed (`12:00 PM`); 12 upcoming |
-| Tennis | none | Empty. The official women's page, re-downloaded September 30, is still the "2025-26 Cowgirl Tennis Schedule" (21 matches, Jan 23–Apr 12, 2026). The men's page (4 events) stayed blocked here and was not re-inspected. This is a source gap, not a parser defect |
+| Tennis | none | Empty, as K-State would be with the same source. The men's page is the 2026-27 schedule (checked September 30), with 4 fall individual tournaments that all ended by Sep 27. Past tournaments without a team result are not listed, for K-State too (K-State's 16 parsed events → 8 upcoming, 0 results). The women's page is still 2025–26. The earlier "men's events outside 2026–27" note was wrong |
 
 Checked and unchanged:
 - The Soccer, Softball and Basketball feeds and expanded views already matched K-State: a `W, 3-1` headline, the exact official recap, and 4 verified highlights.
