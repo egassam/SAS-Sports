@@ -2,6 +2,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/ok
 import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/kansas-cross-country.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
@@ -14,7 +15,7 @@ const school=schools.find(s=>s.id==='kstate');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected fetch ${url}`);return new Response(responses.get(String(url)));};
-const worker=Function('oklahomaStateSchool','createOklahomaStateHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(oklahomaStateSchool,createOklahomaStateHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
+const worker=Function('oklahomaStateSchool','createOklahomaStateHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {recapMatchesEvent,candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(oklahomaStateSchool,createOklahomaStateHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
 
 // Frozen from the pre-module application commit, never regenerated during tests.
 assert.equal(Object.keys(baseline.routes).length,10);
@@ -120,4 +121,15 @@ const first=()=>({school_id:'kstate',school:'Kansas State',sport:'Cross Country'
 const one=first();worker.enrichMeetEvent(one);one.results[0].result='changed';
 const two=first();worker.enrichMeetEvent(two);assert.equal(two.results[0].result,'1st · 20 pts');
 assert.equal(two.results.length,20);
-console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, school/event isolation, and independent result snapshots passed.');
+// Multi-day golf: K-State published the Schooner Fall Classic recap on the
+// final day (Sep 21), two days after the listed start (Sep 19). The official
+// recap must still match; games keep the +/-1 day window.
+const schoonerRecap=gunzipSync(readFileSync(new URL('./fixtures/kstate-module/golf-schooner-2026-recap.html.gz',import.meta.url))).toString('utf8');
+const schoonerUrl='https://www.kstatesports.com/news/2026/9/21/womens-golf-wildcats-finish-seventh-at-schooner-fall-classic';
+const golfMeet=(start,change={})=>({school_id:'kstate',school:'Kansas State',sport:'Golf',event_type:'MEET',status:'Final',opponent:'Schooner Fall Classic',start_time:start,...change});
+assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-19T12:00:00.000Z'),schoonerUrl),true,'a final-day recap matches a multi-day tournament');
+assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-14T12:00:00.000Z'),schoonerUrl),false,'a recap a week after the start is not this event');
+assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-28T12:00:00.000Z',{opponent:'Powercat Classic'}),schoonerUrl),false,'the next tournament (Powercat, Sep 28), which this article previews, does not take its recap');
+assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-19T12:00:00.000Z',{event_type:'GAME'}),schoonerUrl),false,'games keep the one-day window');
+
+console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, multi-day golf recap matching, school/event isolation, and independent result snapshots passed.');

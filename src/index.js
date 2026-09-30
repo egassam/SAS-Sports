@@ -1188,7 +1188,10 @@ function recapMatchesEvent(raw,e,recapUrl=''){
     const urlDateMatch=recapUrl.match(/\/news\/(20\d{2})\/(\d{1,2})\/(\d{1,2})\//);
     const articleDay=urlDateMatch?Date.UTC(Number(urlDateMatch[1]),Number(urlDateMatch[2])-1,Number(urlDateMatch[3])):NaN;
     const eventDay=Date.UTC(year,month-1,date);
-    const adjacentPublication=Number.isFinite(articleDay)&&Math.abs(articleDay-eventDay)<=86400000;
+    // Multi-day meets (golf tournaments) publish their recap on the final day,
+    // up to several days after the listed start date. Games keep a +/-1 day window.
+    const afterStart=e.event_type==='MEET'?4*86400000:86400000;
+    const adjacentPublication=Number.isFinite(articleDay)&&articleDay-eventDay>=-86400000&&articleDay-eventDay<=afterStart;
     const names=['january','february','march','april','may','june','july','august','september','october','november','december'];
     const published=matchText((raw.match(/<meta\b[^>]*(?:property|name)=["'](?:article:published_time|date)["'][^>]*content=["']([^"']+)/i)||[])[1]||'');
     const dateText=matchText(`${names[month-1]} ${date} ${year}`);
