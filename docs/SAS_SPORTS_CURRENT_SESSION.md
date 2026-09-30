@@ -6,6 +6,8 @@ Last updated: September 29, 2026, America/Chicago (Oklahoma State Cross Country,
 
 ## Current state
 
+**Merge permission (user, September 29–30).** The user added a standing merge permission to `AGENTS.md` item 6 (commit `afc7ed4`). Follow its conditions exactly.
+
 **Working rule (user, September 29): one sport at a time.** Within a school, fix, verify and publish one sport before starting another. K-State's output is the reference each sport's results section must match.
 
 **Oklahoma State Cross Country is merged, deployed and verified in production.** The user merged PR #23 (https://github.com/egassam/SAS-Sports/pull/23) at about 18:26 UTC on September 29 as merge commit `0629321`. PR #24 (`ae5e65f`, feed retry) merged afterwards, so production now reports `4.29.2-feed-retry`; it carries the same Cross Country code.
@@ -542,4 +544,8 @@ Limitations:
   - KU XC: 26 and 21 rows, unchanged.
 - **Expanded view:** production `/live/highlights` for both Oklahoma State meets was identical to the feed on results, headline, counts, verification fields, highlights, recap and result links.
 - **Open:** the Cloudflare 1102 resource-limit issue.
+
+#### Merge permission decision
+
+The user asked whether the agent could merge changes to save time. The assistant proposed merge conditions: local suites pass, CI is green, the branch preview is verified with K-State/KU XC unchanged, the change stays in one sport, and production is checked afterwards with a revert path. The user chose to cover both code and docs PRs. The session's safety check blocked the agent from editing `AGENTS.md` itself as self-modification. The user then added the rule as item 6 (commit `afc7ed4`).
 
