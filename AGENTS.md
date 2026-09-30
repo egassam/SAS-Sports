@@ -15,6 +15,7 @@ The user wants one school-module project per conversation.
      - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows the changed sport in K-State's results format.
      - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
      - The change stays within the one school and sport in scope.
+     - On that preview, 36 forced refreshes (`refresh=1`) of the changed school and sport all return HTTP 200, with no Cloudflare 1102 or 503 errors.
    - **Docs-only PRs:** CI is green and the PR has no merge conflict.
 
    If any condition fails or is uncertain, stop and ask the user instead of merging.
