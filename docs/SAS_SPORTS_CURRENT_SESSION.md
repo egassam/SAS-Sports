@@ -1,10 +1,25 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 30, 2026, America/Chicago (Utah module and Utah sports, PRs #44–#51).
+Last updated: September 30, 2026, America/Chicago (Utah PRs #44–#51; reliability PRs #53–#55).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Reliability (September 30, user-approved, all merged and verified in production).** The user's screenshot showed Utah Basketball "LIVE SOURCE UNAVAILABLE".
+- **#53 (`f5833e4`) fixed the cause.** Cloudflare 1102 (Worker CPU limit): `scheduleYearForDate` converted the whole page to text once per game card, costing 177–417 ms of CPU per ~900 KB SIDEARM page. It now reads the page once (32–48 ms), with byte-identical output. Production went from 8/36 forced-refresh failures to 36/36 successes.
+- **#54 (`cd7cba8`):** `tests/parse-budget.mjs` fails if a parse converts a large page to text more than 4 times, or exceeds 400 ms. It runs in `npm test` and `test:release`.
+- **#55 (`76a7b74`):**
+  - Every successful feed also saves a 7-day last-good copy.
+  - `cached=1` serves saved copies without rebuilding.
+  - After a failed load, the app shows the last good copy (from the server, then from the device's localStorage), labeled "Saved schedule · updated X ago".
+  - `VERSION` is unchanged.
+- **Still open:**
+  - At some Cloudflare locations (seen at Toronto, YYZ), every forced rebuild fails with 1102 while cached feeds load. Old and new code behave the same, so this is probably the account's per-request CPU limit.
+  - The user was asked to check the Cloudflare plan: Workers Free allows 10 ms of CPU; Workers Paid ($5/month) allows 30 s.
+  - The daily live health check (#3) is on branch `live-health-check`, not merged: its result would depend on which location the GitHub runner reaches.
+  - The pre-merge load-test rule (#2) was drafted for the user to add to `AGENTS.md`; the agent does not edit that file.
+- **Testing note:** Cloudflare's cache is per location, and requests from the sandbox alternate between IAD, ATL and EWR. A copy saved at one location is not visible at another. Node's `fetch` in the sandbox bypasses the proxy and reaches YYZ; use curl, or `NODE_USE_ENV_PROXY=1`.
 
 **Utah: module set up, and 8 sports fixed; production is `4.31.5-utah-tennis` (September 30 UTC).** The user chose Utah ("Let's start the next school" → "Utah") and approved the agent merging the setup PR. Every PR below was verified on its branch preview (K-State XC 18/20, KU XC 26/21 each time), merged by the agent under `AGENTS.md` item 6, and verified in production. Details are in `docs/UTAH_MODULE.md`.
 
@@ -747,3 +762,25 @@ All fixtures are unmodified official pages, documented in `tests/fixtures/utah-m
 **Final production survey (about 18:30 UTC):** all 15 Utah sports return 200; the table is in `docs/UTAH_MODULE.md`. K-State XC 18/20 and KU XC 26/21 after every merge.
 
 **Not done:** Volleyball athlete certification (roster 403, see "Current state"); Golf placings; start times beyond Football.
+
+### September 30, 2026 — Off-season "LIVE SOURCE UNAVAILABLE" and reliability
+
+User (screenshot, Utah Basketball): "As you can see off season sports do not load anything."
+
+**Diagnosis:**
+- The feed API returned 200 to single requests, but 2/16, and later 8/36, forced refreshes returned HTTP 503, Cloudflare 1102.
+- Profiling put nearly all the CPU in `parseSidearmGameCards` → `scheduleYearForDate(raw, …)` per card.
+
+**What was done, after user approval** ("Yes to all", then "Yes build #4"):
+- **#53:**
+  - Old and new parse output identical on every saved page (12 combinations).
+  - Preview 36/36; production 36/36 after merge.
+- **#54:** the budget test fails on pre-#53 code (61 whole-page reads in one parse).
+- **#55:**
+  - The browser test (intercepted 503s) passed on the preview and in production for all four cases: normal load; live down → server copy; everything down → device copy; no copy → "unavailable".
+  - K-State XC 18/20, KU XC 26/21.
+
+**Found while building the monitor:**
+- Node `fetch` from the sandbox reaches Cloudflare YYZ, where every `refresh=1` returned 1102 in under 1 s, while curl through the proxy (IAD) returned 200.
+- Cached feeds, status, athletes and the page all loaded at YYZ.
+- Asked the user to check the Cloudflare plan.
