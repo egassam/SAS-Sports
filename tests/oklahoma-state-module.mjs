@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames} from '../src/schools/oklahoma-state.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames,oklahomaStatePlacing} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=path=>gunzipSync(readFileSync(new URL('./fixtures/oklahoma-state-module/'+path,import.meta.url))).toString('utf8');
@@ -106,6 +106,21 @@ for(const [target,sport,url] of [[{id:'kstate'},'Football',footballUrl],[school,
   assert.deepEqual(payloadHandlers.enrichScheduleEvents(events,footballPage,target,sport,url),bare(),'other schools, sports not yet verified, and unofficial hosts are unchanged');
 }
 
+// Golf: the published team placing in K-State's wording ("7th of 16").
+// okstate.com publishes no team score on the schedule, so none is added.
+for(const [value,expected] of [['7th/16','7th of 16'],['9th out of 12 teams','9th of 12'],['T3rd of 10','T3rd of 10'],['1st/12','1st of 12'],['Completed',null],['',null]])assert.equal(oklahomaStatePlacing(value),expected,`placing ${value}`);
+const golfFinals=[];
+for(const [division,label,count] of [['mens',"Men's",12],['womens',"Women's",12]]){
+  const events=worker.parseHtml(fixture(`${division}-golf-schedule.html.gz`),school,'Golf',`https://okstate.com/sports/${division}-golf/schedule`,now);
+  assert.equal(events.filter(e=>e.status!=='Final').length,count,`${label} upcoming golf events are unchanged`);
+  golfFinals.push(...events.filter(e=>e.status==='Final'));
+}
+assert.deepEqual(golfFinals.map(e=>[e.opponent,e.headline]),[
+  ['Ben Hogan Collegiate','7th of 16'],['Fighting Illini Invitational','5th of 15'],['Sahalee Players Championship','1st of 12'],
+  ['Schooner Fall Classic','6th of 16'],['Folds of Honor Collegiate','9th of 12']
+]);
+assert.ok(golfFinals.every(e=>e.results.length===1&&e.results[0].label==='Result'&&e.results[0].value===e.headline&&/^https:\/\/okstate\.com\/news\//.test(e.recap_url)));
+
 // Golf: both divisions are merged and labeled.
 responses=new Map([['https://okstate.com/sports/womens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Women's Golf Schedule</h1><table>${textRow('Oct 5','The Ally')}</table>`],['https://okstate.com/sports/mens-golf/schedule',`<h1>${startYear}-${yy(startYear+1)} Men's Golf Schedule</h1><table>${textRow('Oct 12','Big 12 Match Play')}</table>`]]);requests=[];
 const golf=await worker.fetchLive('oklahoma-state','Golf');
@@ -134,4 +149,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, Football W/L results and recaps from page data, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, Football W/L results and recaps from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');

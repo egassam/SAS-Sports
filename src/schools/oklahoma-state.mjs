@@ -66,6 +66,14 @@ export function oklahomaStateMeetSport(event){
 
 // Sports whose schedule-payload results have been checked against K-State's format.
 const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
+// Meet sports whose published team placing is rewritten to K-State's wording.
+const PAYLOAD_PLACING_SPORTS=new Set(['Golf']);
+// "7th/16", "9th out of 12 teams", "T3rd of 10" -> "7th of 16". No score is
+// added: okstate.com publishes only the placing on the schedule.
+export function oklahomaStatePlacing(value){
+  const m=String(value||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i);
+  return m?`${m[1]?'T':''}${m[2]}${m[3].toLowerCase()} of ${m[4]}`:null;
+}
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const TEAM_ROW=/^(\d+)\s+Oklahoma\s+State\s+(\d+)\s+[\d(]/i;
 // Both published formats: "44 RODRIGUEZ, Adelynn SO Oklahoma Stat (37) 21:36.0"
@@ -241,14 +249,21 @@ export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetc
   // Published W/L result, scores and the exact recap from the schedule's own
   // game data, matched by date and opponent. Only verified sports opt in.
   function enrichScheduleEvents(events,raw,school,sport,sourceUrl){
-    if(school?.id!=='oklahoma-state'||!PAYLOAD_RESULT_SPORTS.has(sport)||!officialPath(sourceUrl))return events;
-    const games=oklahomaStateScheduleGames(raw);if(!games.length)return events;
+    const games=school?.id==='oklahoma-state'&&(PAYLOAD_RESULT_SPORTS.has(sport)||PAYLOAD_PLACING_SPORTS.has(sport))&&officialPath(sourceUrl)?oklahomaStateScheduleGames(raw):[];
+    if(!games.length)return events;
     for(const event of events){
-      if(event.school_id!=='oklahoma-state'||event.event_type!=='GAME'||event.status!=='Final')continue;
+      if(event.school_id!=='oklahoma-state'||event.status!=='Final')continue;
       const day=String(event.start_time||'').slice(0,10),opponent=slug(event.opponent||'');
       const matches=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===opponent);
       if(matches.length!==1)continue;
-      const result=matches[0].result||{},outcome=String(result.status||'').toUpperCase();
+      const result=matches[0].result||{};
+      if(PAYLOAD_PLACING_SPORTS.has(sport)&&event.event_type==='MEET'){
+        const placing=oklahomaStatePlacing(result.prescore_info);
+        if(placing){event.headline=placing;event.results=[{label:'Result',value:placing}];event.result_count=1;}
+        continue;
+      }
+      if(event.event_type!=='GAME')continue;
+      const outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       if(!['W','L','T'].includes(outcome)||!/^\d+$/.test(team)||!/^\d+$/.test(other))continue;
       event.school_score=team;event.opponent_score=other;
