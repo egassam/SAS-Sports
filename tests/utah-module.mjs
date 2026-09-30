@@ -218,4 +218,21 @@ assert.deepEqual(worker.groupEvents(sb,now)[0].upcoming.map(e=>`${e.display_time
 assert.equal(new Set(sb.map(e=>e.id)).size,5);
 assert.equal(worker.parseHtml(sbRaw,school,'Soccer',sbUrl,now).some(e=>e.game_number),false,'only Softball and Baseball split doubleheaders');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball and Soccer start times, Softball doubleheaders.');
+// Every route is a sport page the official site itself links to. A slug the
+// site lacks renders SIDEARM's empty template, whose site-wide ticker put
+// other sports' events on the wrong sport; the homepage has the same ticker.
+// The site's menu links (/sports/<slug>/) and its sport list in the page data
+// ("wbvball","womens-beach-volleyball","beachvb","Beach Volleyball").
+const sitePage=fixture('lacrosse-schedule.html.gz');
+const siteSlugs=new Set([...sitePage.matchAll(/\/sports\/([a-z][a-z0-9-]+)\//g),...sitePage.matchAll(/"[a-z]+","([a-z][a-z0-9]*(?:-[a-z0-9]+)+)","[a-z0-9]+","[A-Z][^"]{2,40}"/g)].map(m=>m[1]));
+for(const [name,map] of [['schedule',utahSchool.scheduleUrls],['roster',utahSchool.rosterUrls]]){
+  for(const [key,urls] of Object.entries(map)){
+    for(const url of [].concat(urls)){
+      const m=url.match(/^https:\/\/utahutes\.com\/sports\/([a-z0-9-]+)\/(?:schedule|roster)$/);
+      assert.ok(m,`${key} ${name} route must be an official sport page, not ${url}`);
+      assert.ok(siteSlugs.has(m[1]),`${key} ${name} route uses /sports/${m[1]}/, which utahutes.com does not link to`);
+    }
+  }
+}
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball and Soccer start times, Softball doubleheaders, every route an official sport page.');

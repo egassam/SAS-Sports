@@ -9,8 +9,8 @@ export const utahSchool={
   // women's pages; both teams are shown, labeled by team.
   combinedSports:new Set(['Basketball','Swimming & Diving','Tennis']),
   scheduleUrls:{
-    'utah|Baseball':['https://utahutes.com/sports/baseball/schedule','https://utahutes.com/'],
-    'utah|Basketball':['https://utahutes.com/sports/mens-basketball/schedule','https://utahutes.com/sports/womens-basketball/schedule','https://utahutes.com/sports/basketball/schedule','https://utahutes.com/'],
+    'utah|Baseball':'https://utahutes.com/sports/baseball/schedule',
+    'utah|Basketball':['https://utahutes.com/sports/mens-basketball/schedule','https://utahutes.com/sports/womens-basketball/schedule'],
     // A missing slug renders SIDEARM's empty "@season @sport" template, whose
     // site-wide ticker lists other sports' events; never fall back to it.
     'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/schedule',
@@ -18,32 +18,32 @@ export const utahSchool={
     'utah|Football':'https://utahutes.com/sports/football/schedule',
     // Utah sponsors men's golf only; the other slugs render the empty template.
     'utah|Golf':'https://utahutes.com/sports/mens-golf/schedule',
-    'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/schedule','https://utahutes.com/sports/mens-gymnastics/schedule','https://utahutes.com/sports/gymnastics/schedule','https://utahutes.com/'],
+    'utah|Gymnastics':'https://utahutes.com/sports/womens-gymnastics/schedule',
     // Utah sponsors men's lacrosse only; the other slugs render the empty template.
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/schedule',
     'utah|Skiing':'https://utahutes.com/sports/alpine-skiing/schedule',
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/schedule',
-    'utah|Softball':['https://utahutes.com/sports/softball/schedule','https://utahutes.com/'],
-    'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/schedule','https://utahutes.com/sports/mens-swimming-and-diving/schedule','https://utahutes.com/sports/womens-swimming-diving/schedule','https://utahutes.com/sports/mens-swimming-diving/schedule','https://utahutes.com/sports/swimming-and-diving/schedule','https://utahutes.com/sports/swimming-diving/schedule','https://utahutes.com/sports/swimming/schedule','https://utahutes.com/'],
+    'utah|Softball':'https://utahutes.com/sports/softball/schedule',
+    'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/schedule','https://utahutes.com/sports/mens-swimming-and-diving/schedule'],
     'utah|Tennis':['https://utahutes.com/sports/womens-tennis/schedule','https://utahutes.com/sports/mens-tennis/schedule'],
-    'utah|Track & Field':['https://utahutes.com/sports/track-and-field/schedule','https://utahutes.com/sports/track-field/schedule','https://utahutes.com/'],
+    'utah|Track & Field':'https://utahutes.com/sports/track-and-field/schedule',
     'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'utah|Baseball':'https://utahutes.com/sports/baseball/roster',
-    'utah|Basketball':['https://utahutes.com/sports/mens-basketball/roster','https://utahutes.com/sports/womens-basketball/roster','https://utahutes.com/sports/basketball/roster'],
+    'utah|Basketball':['https://utahutes.com/sports/mens-basketball/roster','https://utahutes.com/sports/womens-basketball/roster'],
     'utah|Beach Volleyball':'https://utahutes.com/sports/womens-beach-volleyball/roster',
     'utah|Cross Country':'https://utahutes.com/sports/cross-country/roster',
     'utah|Football':'https://utahutes.com/sports/football/roster',
     'utah|Golf':'https://utahutes.com/sports/mens-golf/roster',
-    'utah|Gymnastics':['https://utahutes.com/sports/womens-gymnastics/roster','https://utahutes.com/sports/mens-gymnastics/roster','https://utahutes.com/sports/gymnastics/roster'],
+    'utah|Gymnastics':'https://utahutes.com/sports/womens-gymnastics/roster',
     'utah|Lacrosse':'https://utahutes.com/sports/mens-lacrosse/roster',
     'utah|Skiing':'https://utahutes.com/sports/alpine-skiing/roster',
     'utah|Soccer':'https://utahutes.com/sports/womens-soccer/roster',
     'utah|Softball':'https://utahutes.com/sports/softball/roster',
-    'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/roster','https://utahutes.com/sports/mens-swimming-and-diving/roster','https://utahutes.com/sports/womens-swimming-diving/roster','https://utahutes.com/sports/mens-swimming-diving/roster','https://utahutes.com/sports/swimming-and-diving/roster','https://utahutes.com/sports/swimming-diving/roster','https://utahutes.com/sports/swimming/roster'],
+    'utah|Swimming & Diving':['https://utahutes.com/sports/womens-swimming-and-diving/roster','https://utahutes.com/sports/mens-swimming-and-diving/roster'],
     'utah|Tennis':['https://utahutes.com/sports/womens-tennis/roster','https://utahutes.com/sports/mens-tennis/roster'],
-    'utah|Track & Field':['https://utahutes.com/sports/track-and-field/roster','https://utahutes.com/sports/track-field/roster'],
+    'utah|Track & Field':'https://utahutes.com/sports/track-and-field/roster',
     'utah|Volleyball':'https://utahutes.com/sports/womens-volleyball/roster'
   }
 };

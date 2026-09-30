@@ -7,7 +7,7 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 
-const VERSION='4.31.8-utah-softball-doubleheaders';
+const VERSION='4.31.9-utah-route-cleanup';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
