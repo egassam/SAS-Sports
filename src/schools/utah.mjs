@@ -53,7 +53,7 @@ export const utahSchool={
 // W/L headline, one Result row and exact recap, as K-State shows results.
 const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
 // Published start times (local wall clock).
-const PAYLOAD_TIME_SPORTS=new Set(['Football']);
+const PAYLOAD_TIME_SPORTS=new Set(['Football','Volleyball']);
 
 const decodeHtml=value=>String(value||'').replace(/&nbsp;|&#160;/gi,' ').replace(/&quot;|&#34;/gi,'"').replace(/&#39;|&#x27;|&rsquo;|&lsquo;/gi,"'")
   .replace(/&bull;|&#8226;/gi,'\u2022').replace(/&amp;/gi,'&').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n)));
