@@ -240,12 +240,18 @@ export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetc
   }
   // The shared page serves both Cross Country and Track & Field. Keep only
   // the meets that belong to the requested sport; other pages are unchanged.
+  // A page whose meets all belong to the other sport is a valid, empty
+  // schedule (e.g. no track meets published yet), not a failed source.
+  const emptiedBySplit=new WeakSet();
   function filterEvents(events,school,sport,sourceUrl){
     if(school?.id!=='oklahoma-state'||!['Cross Country','Track & Field'].includes(sport))return events;
     const path=officialPath(sourceUrl);
     if(!path||!SHARED_PROGRAM_PATH.test(path))return events;
-    return events.filter(event=>event.school_id==='oklahoma-state'&&oklahomaStateMeetSport(event)===sport);
+    const kept=events.filter(event=>event.school_id==='oklahoma-state'&&oklahomaStateMeetSport(event)===sport);
+    if(events.length&&!kept.length)emptiedBySplit.add(kept);
+    return kept;
   }
+  const isEmptyProgramSchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySplit.has(events);
   // Published W/L result, scores and the exact recap from the schedule's own
   // game data, matched by date and opponent. Only verified sports opt in.
   function enrichScheduleEvents(events,raw,school,sport,sourceUrl){
@@ -276,5 +282,5 @@ export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetc
     }
     return events;
   }
-  return{filterEvents,enrichScheduleEvents,isOklahomaStateCrossCountry,attachMeetResults};
+  return{filterEvents,isEmptyProgramSchedule,enrichScheduleEvents,isOklahomaStateCrossCountry,attachMeetResults};
 }

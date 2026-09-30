@@ -6,7 +6,7 @@ import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 
-const VERSION='4.29.4-oklahoma-state-golf';
+const VERSION='4.29.5-oklahoma-state-track';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1504,7 +1504,9 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   if(school.id==='kansas'&&sport==='Golf'&&!aiTargetId){
     for(const event of events.filter(kansasHandlers.hasReviewedGolf))await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,event.id);
   }
-  return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
+  // Oklahoma State's shared program page can hold no meets for this sport.
+  const empty_schedule=school.id==='oklahoma-state'&&r.ok&&oklahomaStateHandlers.isEmptyProgramSchedule(events);
+  return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,empty_schedule,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
 }
 
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
@@ -1582,11 +1584,13 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
   const combined=schoolCombinedSports(school).has(sport);
+  let emptySchedule=null;
   for(const url of urls){
     if(combined&&successful.length&&teamLabelForSource(school,sport,url)==null)continue;
     try{
       const item=await fetchUrl(url,school,sport,now,env,aiTargetId);
       if(item.ok&&item.events.length){successful.push(item);if(!combined)break;continue}
+      if(item.empty_schedule){emptySchedule??=item;continue}
       errors.push(`${item.url}: HTTP ${item.http_status}, labels ${item.label_count}, events ${item.event_count}`);
     }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
   }
@@ -1601,6 +1605,8 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
     if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
   }
   if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null};
+  // The official page was read and publishes no events for this sport yet.
+  if(emptySchedule)return{events:[],source_url:emptySchedule.url,source_urls:[emptySchedule.url],fetched_at:now.toISOString(),live_source_used:true,error:null};
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
 }
 function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
@@ -1609,7 +1615,7 @@ function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
 async function freshGroupedFeed(url,school,sport,env,cache,key){
   const result=await fetchLive(school,sport,env);
-  if(!result.events.length)return null;
+  if(!result.events.length&&!result.live_source_used)return null;
   const response=json(groupEvents(result.events)),stored=new Response(response.body,response);
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
   stored.headers.set('x-sas-fetched-at',result.fetched_at);
