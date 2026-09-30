@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames,oklahomaStatePlacing} from '../src/schools/oklahoma-state.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames,oklahomaStatePlacing,oklahomaStateStartTime} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=path=>gunzipSync(readFileSync(new URL('./fixtures/oklahoma-state-module/'+path,import.meta.url))).toString('utf8');
@@ -108,9 +108,19 @@ assert.deepEqual(worker.groupEvents(womensTennisEvents,now),[],'no stale-season 
 // (W/L, school score first) and each game's exact recap. The rendered cards
 // show only the two scores, opponent first, and no recap link.
 const footballUrl='https://okstate.com/sports/football/schedule',footballPage=fixture('football-schedule.html.gz');
-assert.equal(oklahomaStateScheduleGames(footballPage).length,13,'every published game is decoded from the page data');
+assert.equal(oklahomaStateScheduleGames(footballPage).length,12,'every published game is decoded once (the next-game widget repeats UCF)');
 const football=worker.parseHtml(footballPage,school,'Football',footballUrl,now),footballFinals=football.filter(e=>e.status==='Final');
 assert.equal(football.filter(e=>e.status!=='Final').length,8,'upcoming games are unchanged');
+// Published start times, as K-State shows them; TBA games stay date-only.
+const ucf=football.find(e=>e.opponent==='UCF');
+assert.equal(ucf.start_time,'2026-10-10T11:00:00.000Z');assert.equal(ucf.display_time,'Oct 10, 11:00 AM');
+assert.ok(football.filter(e=>e.status!=='Final'&&e.opponent!=='UCF').every(e=>/T12:00:00\.000Z$/.test(e.start_time)&&!/,/.test(e.display_time)),'TBA games have no invented time');
+for(const [date,time,expected] of [
+  ['2026-09-05T14:45:00','2:45 p.m. CT',['2026-09-05T14:45:00.000Z','Sep 5, 2:45 PM']],
+  ['2026-09-12T11:00:00','11 a.m. CT',['2026-09-12T11:00:00.000Z','Sep 12, 11:00 AM']],
+  ['2026-10-11T11:30:00','11:30 AM (CDT)',['2026-10-11T11:30:00.000Z','Oct 11, 11:30 AM']],
+  ['2026-10-17T00:00:00','TBA',null],['2026-10-17T19:00:00','6 p.m. CT',null],['bad','7 p.m.',null]
+])assert.deepEqual(oklahomaStateStartTime(date,time)&&[oklahomaStateStartTime(date,time).start_time,oklahomaStateStartTime(date,time).display_time],expected,`start time ${date} ${time}`);
 assert.deepEqual(footballFinals.map(e=>[e.opponent,e.headline,e.school_score,e.opponent_score]),[
   ['West Virginia','W, 41-24','41','24'],['Murray State','W, 59-0','59','0'],['Oregon','W, 39-31','39','31'],['Tulsa','L, 10-24','10','24']
 ]);
@@ -168,4 +178,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results and recaps from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
