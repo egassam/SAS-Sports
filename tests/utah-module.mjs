@@ -19,7 +19,7 @@ const fetch=async url=>{
   return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
 };
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl,groupEvents};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl,groupEvents,mergeEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official utahutes.com routes.
 const sports=sponsoredSports.utah;
@@ -207,4 +207,15 @@ assert.deepEqual(socUpcoming.map(e=>e.display_time),['Oct 1, 5:00 PM','Oct 8, 5:
 const socBare=worker.parseHtml(socRaw.replace(/<script\b[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,''),school,'Soccer',socUrl,now);
 assert.deepEqual(soc.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),socBare.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),'results are unchanged');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball and Soccer start times.');
+// Softball: the Oct 11 doubleheader is two games. Both survive the shared
+// merge, labeled Game 1 and Game 2 with their published times.
+const sbUrl='https://utahutes.com/sports/softball/schedule',sbRaw=fixture('softball-schedule.html.gz');
+const sb=worker.mergeEvents([worker.parseHtml(sbRaw,school,'Softball',sbUrl,now)]);
+assert.deepEqual(worker.groupEvents(sb,now)[0].upcoming.map(e=>`${e.display_time} ${e.title}`),[
+  'Oct 1, 4:00 PM Utah vs Utah Valley','Oct 2, 4:00 PM Utah vs Weber State','Oct 7, 6:30 PM Utah vs Utah State',
+  'Oct 11, 1:00 PM Utah vs Southern Utah · Game 1','Oct 11, 3:00 PM Utah vs Southern Utah · Game 2'
+]);
+assert.equal(new Set(sb.map(e=>e.id)).size,5);
+assert.equal(worker.parseHtml(sbRaw,school,'Soccer',sbUrl,now).some(e=>e.game_number),false,'only Softball and Baseball split doubleheaders');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball and Soccer start times, Softball doubleheaders.');
