@@ -155,6 +155,15 @@ assert.deepEqual(softball.filter(e=>e.status!=='Final').map(e=>`${e.opponent} ${
 ]);
 assert.deepEqual(softball.filter(e=>e.status==='Final').map(e=>e.headline),['W, 6-0'],'softball result is unchanged');
 
+// Baseball: 16 of 60 games have published times; TBA games stay date-only.
+const baseball=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball','https://okstate.com/sports/baseball/schedule',now);
+assert.equal(baseball.length,60);
+const timedBaseball=baseball.filter(e=>/,/.test(e.display_time));
+assert.equal(timedBaseball.length,16);
+assert.deepEqual(timedBaseball.slice(0,3).map(e=>`${e.opponent} ${e.display_time}`),['Texas State Feb 24, 6:00 PM','Iowa Feb 26, 11:00 AM','Oregon Feb 27, 3:00 PM']);
+assert.equal(timedBaseball.find(e=>e.opponent==='Utah'&&e.start_time.startsWith('2027-04-09')).display_time,'Apr 9, 7:00 PM');
+assert.ok(baseball.filter(e=>!/,/.test(e.display_time)).every(e=>/T12:00:00\.000Z$/.test(e.start_time)),'TBA games have no invented time');
+
 // Golf: the published team placing in K-State's wording ("7th of 16").
 // okstate.com publishes no team score on the schedule, so none is added.
 for(const [value,expected] of [['7th/16','7th of 16'],['9th out of 12 teams','9th of 12'],['T3rd of 10','T3rd of 10'],['1st/12','1st of 12'],['Completed',null],['',null]])assert.equal(oklahomaStatePlacing(value),expected,`placing ${value}`);
@@ -198,4 +207,4 @@ assert.ok(wrestlers.every(a=>validAthlete(a,'Wrestling')&&a.instagram_url&&a.pro
 assert.equal(new Set(wrestlers.map(a=>a.instagram_url.toLowerCase())).size,3);
 assert.deepEqual(requests,[sources.rosters['wrestling-roster.html.gz']],'identity-bound roster links need no biography fetches');
 
-console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Soccer and Softball start times, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
+console.log('Oklahoma State module checks passed: 11 routes, shared XC/track split, empty Track & Field schedule as 200 [], Football W/L results, recaps and start times from page data, Soccer, Softball and Baseball start times, Golf placings in the K-State wording, both Tennis/Golf divisions, official roster athletes.');
