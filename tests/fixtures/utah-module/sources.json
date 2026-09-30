@@ -44,6 +44,11 @@
       "url": "https://utahutes.com/sports/womens-volleyball/schedule",
       "retrieved": "2026-09-30T22:05Z",
       "note": "Official 2026 Utah Volleyball schedule, unmodified. Its page data gives a local start time for 30 of 31 games; Kansas State (Oct 3) is inconsistent on the page itself (date 5:00 PM, text 5:30 PM), so the page-data time is not used for it."
+    },
+    "soccer-schedule.html.gz": {
+      "url": "https://utahutes.com/sports/womens-soccer/schedule",
+      "retrieved": "2026-09-30T22:20Z",
+      "note": "Official 2026 Utah Soccer schedule, unmodified. Page data gives local start times for 19 of 24 games; the 5 postseason placeholders (Big 12 tournament, NCAA rounds) have no time yet."
     }
   },
   "recaps": {

@@ -199,4 +199,12 @@ assert.equal(vbUpcoming.find(e=>e.opponent==='UCF').start_time,'2026-11-27T11:30
 const vbBare=worker.parseHtml(vbRaw.replace(/<script\b[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,''),school,'Volleyball',vbUrl,now);
 assert.deepEqual(vb.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),vbBare.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),'results are unchanged');
 
-console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball start times.');
+// Soccer: published start times from the page data; postseason placeholders
+// have no published time and keep their date only.
+const socUrl='https://utahutes.com/sports/womens-soccer/schedule',socRaw=fixture('soccer-schedule.html.gz');
+const soc=worker.parseHtml(socRaw,school,'Soccer',socUrl,now),socUpcoming=soc.filter(e=>e.status!=='Final');
+assert.deepEqual(socUpcoming.map(e=>e.display_time),['Oct 1, 5:00 PM','Oct 8, 5:00 PM','Oct 11, 10:00 AM','Oct 16, 7:00 PM','Oct 22, 6:00 PM','Oct 25, 12:00 PM','Oct 30, 7:00 PM','Nov 5, 7:00 PM','Nov 9','Nov 20','Nov 26','Dec 4','Dec 10']);
+const socBare=worker.parseHtml(socRaw.replace(/<script\b[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,''),school,'Soccer',socUrl,now);
+assert.deepEqual(soc.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),socBare.filter(e=>e.status==='Final').map(e=>[e.id,e.headline,e.recap_url]),'results are unchanged');
+
+console.log('Utah module checks passed: 15 sports route to utahutes.com through the module, no Utah configuration in shared code, program combinations (Tennis now combined), Football W/L results, recaps and start times from page data, Cross Country race results from official recaps, Beach Volleyball and Lacrosse routes and past-season empty schedules, Skiing route and meet names, Golf route and one event per tournament, both Tennis teams, Volleyball and Soccer start times.');
