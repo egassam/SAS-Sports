@@ -66,6 +66,20 @@ export function oklahomaStateMeetSport(event){
 
 // Sports whose schedule-payload results have been checked against K-State's format.
 const PAYLOAD_RESULT_SPORTS=new Set(['Football']);
+// Sports whose published start times (local wall clock) are shown as K-State shows them.
+const PAYLOAD_TIME_SPORTS=new Set(['Football']);
+const MONTH_ABBR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+// "2:45 p.m. CT", "11 a.m. CT", "11:30 AM (CDT)" with a matching payload date
+// "2026-09-05T14:45:00" -> the school's local wall clock. TBA/TBD has no time.
+export function oklahomaStateStartTime(date,time){
+  const d=String(date||'').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  const t=String(time||'').match(/^\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?(?=[\s(]|$)/i);
+  if(!d||!t)return null;
+  const hour=Number(t[1])%12+(t[3].toLowerCase()==='p'?12:0),minute=Number(t[2]||0);
+  if(hour!==Number(d[4])||minute!==Number(d[5]))return null;
+  const month=Number(d[2]),day=Number(d[3]);
+  return{start_time:`${d[1]}-${d[2]}-${d[3]}T${d[4]}:${d[5]}:00.000Z`,display_time:`${MONTH_ABBR[month-1]} ${day}, ${hour%12||12}:${String(minute).padStart(2,'0')} ${hour>=12?'PM':'AM'}`};
+}
 // Meet sports whose published team placing is rewritten to K-State's wording.
 const PAYLOAD_PLACING_SPORTS=new Set(['Golf']);
 // "7th/16", "9th out of 12 teams", "T3rd of 10" -> "7th of 16". No score is
@@ -179,11 +193,14 @@ export function oklahomaStateScheduleGames(raw){
     if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,typeof item==='number'?resolve(item,depth+1):item]));
     return value;
   };
-  const games=[];
+  // A game can appear twice (the schedule and a "next game" widget); keep one.
+  const games=[],seen=new Set();
   data.forEach((value,index)=>{
     if(!value||Array.isArray(value)||typeof value!=='object'||!('result' in value)||!('opponent' in value)||!('date' in value))return;
     const game=resolve(index,0);
-    if(game&&typeof game.date==='string'&&game.opponent&&typeof game.opponent==='object')games.push(game);
+    if(!game||typeof game.date!=='string'||!game.opponent||typeof game.opponent!=='object')return;
+    const key=game.id??`${game.date}|${game.opponent.title}`;
+    if(seen.has(key))return;seen.add(key);games.push(game);
   });
   return games;
 }
@@ -255,13 +272,19 @@ export function createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetc
   // Published W/L result, scores and the exact recap from the schedule's own
   // game data, matched by date and opponent. Only verified sports opt in.
   function enrichScheduleEvents(events,raw,school,sport,sourceUrl){
-    const games=school?.id==='oklahoma-state'&&(PAYLOAD_RESULT_SPORTS.has(sport)||PAYLOAD_PLACING_SPORTS.has(sport))&&officialPath(sourceUrl)?oklahomaStateScheduleGames(raw):[];
+    const enabled=PAYLOAD_RESULT_SPORTS.has(sport)||PAYLOAD_PLACING_SPORTS.has(sport)||PAYLOAD_TIME_SPORTS.has(sport);
+    const games=school?.id==='oklahoma-state'&&enabled&&officialPath(sourceUrl)?oklahomaStateScheduleGames(raw):[];
     if(!games.length)return events;
     for(const event of events){
-      if(event.school_id!=='oklahoma-state'||event.status!=='Final')continue;
+      if(event.school_id!=='oklahoma-state')continue;
       const day=String(event.start_time||'').slice(0,10),opponent=slug(event.opponent||'');
       const matches=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===opponent);
       if(matches.length!==1)continue;
+      if(event.status!=='Final'){
+        const start=PAYLOAD_TIME_SPORTS.has(sport)?oklahomaStateStartTime(matches[0].date,matches[0].time):null;
+        if(start)Object.assign(event,start);
+        continue;
+      }
       const result=matches[0].result||{};
       if(PAYLOAD_PLACING_SPORTS.has(sport)&&event.event_type==='MEET'){
         const placing=oklahomaStatePlacing(result.prescore_info);
