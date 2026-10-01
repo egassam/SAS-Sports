@@ -7,16 +7,17 @@ export const arizonaStateSchool={
   id:'arizona-state',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball','Lacrosse','Water Polo','Gymnastics','Track & Field','Cross Country']),
-  // Basketball and Swimming & Diving publish separate men's and women's pages.
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball','Lacrosse','Water Polo','Gymnastics','Track & Field','Cross Country','Golf']),
+  // Basketball, Golf and Swimming & Diving publish separate men's and women's
+  // pages; both teams are shown, labeled by team.
+  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
   scheduleUrls:{
     'arizona-state|Baseball':['https://thesundevils.com/sports/baseball/schedule','https://thesundevils.com/'],
     'arizona-state|Basketball':['https://thesundevils.com/sports/mens-basketball/schedule','https://thesundevils.com/sports/womens-basketball/schedule'],
     'arizona-state|Beach Volleyball':'https://thesundevils.com/sports/beach-volleyball/schedule',
     'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
     'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
-    'arizona-state|Golf':['https://thesundevils.com/sports/womens-golf/schedule','https://thesundevils.com/sports/mens-golf/schedule','https://thesundevils.com/sports/golf/schedule','https://thesundevils.com/'],
+    'arizona-state|Golf':['https://thesundevils.com/sports/mens-golf/schedule','https://thesundevils.com/sports/womens-golf/schedule'],
     'arizona-state|Gymnastics':'https://thesundevils.com/sports/gymnastics/schedule',
     'arizona-state|Hockey':'https://thesundevils.com/sports/ice-hockey/schedule',
     'arizona-state|Lacrosse':'https://thesundevils.com/sports/lacrosse/schedule',
@@ -63,6 +64,9 @@ function cardBlocks(raw){
   return blocks;
 }
 
+// Tournaments and meets without a vs./at divider read "ASU at ...", as
+// K-State's do ("K-State at Powercat Classic").
+const MEET_SPORTS=new Set(['Golf','Cross Country','Track & Field','Gymnastics']);
 const MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 // The page's JSON-LD lists every event with its full start time (UTC). Cards
 // show only month and day, and a page titled "2027 Baseball Schedule" also
@@ -147,13 +151,18 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       const firstHalf=MONTHS.indexOf(month.slice(0,3).toLowerCase())>=6;
       if(year!==(firstHalf?season:season+1)){pastSeason++;continue;}
       const date=`${month} ${day}, ${year}`;
-      const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date,
+      const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider&&MEET_SPORTS.has(sport)?'at':'vs',opponent,date,
         // K-State's results show the date only; upcoming games show the published time.
         time:completed||!/\d/.test(timeText)?null:timeText,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
       const recap=(block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*schedule-event-recap-link/i)||[])[1];
       const recapUrl=recap?absoluteUrl(recap,sourceUrl):null;
       if(recapUrl&&new URL(recapUrl).hostname==='thesundevils.com'&&new URL(recapUrl).pathname.startsWith('/news/'))event.recap_url=recapUrl;
+      // Golf cards publish the team finish as text: "1st, -40/800",
+      // "T6th, +32/896", "T2, -1 (851)". K-State's wording is "1st of 12
+      // (864)"; the field size is not published here, so it is "1st (800)".
+      const golf=sport==='Golf'&&completed?field(block,/schedule-event-grid-result__text[^>]*>([\s\S]*?)<\/span>/i).match(/^(T-?)?(\d+)(?:st|nd|rd|th)?,\s*(?:[+-]?\d+|E)\s*(?:\/\s*(\d{3,4})|\(\s*(\d{3,4})\s*\))$/i):null;
+      if(golf){const placing=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]||golf[4]})`;event.headline=placing;event.results=[{label:'Result',value:placing}];event.result_count=1;}
       // A completed meet with no published team result reads "Completed".
       if(completed&&event.status==='Final'&&!event.headline){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       events.push(event);

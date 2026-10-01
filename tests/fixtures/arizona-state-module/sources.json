@@ -74,6 +74,16 @@
       "url": "https://thesundevils.com/sports/cross-country/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official 2026 Cross Country schedule, unmodified (served gzip-compressed). 6 cards: Dave Murray Invitational (Sep 4, final, recap + Wingfoot results link), Meadows Challenge (Sep 26, final, no recap; its Live Results link is the preview article), 4 upcoming."
+    },
+    "mens-golf-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/mens-golf/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026-2027 Men's Golf schedule, unmodified. 14 cards: finals Sahalee Players Invitational (T6th, +32/896), Fighting Illini Invitational (1st, -40/800; recap), Ben Hogan Collegiate (no result text); 11 upcoming."
+    },
+    "womens-golf-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/womens-golf/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026-27 Women's Golf schedule, unmodified. 12 cards: final Mason Rudolph Championship (T2, -1 (851); recap); 11 upcoming. Cards have no vs./at divider."
     }
   },
   "recaps": {
