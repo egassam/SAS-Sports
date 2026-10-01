@@ -60,7 +60,7 @@ const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,10]);
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
-const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Wrestling',footballUrl,now);
+const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Water Polo',footballUrl,now);
 assert.ok(otherShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
 const arizona=schools.find(s=>s.id==='arizona');
 assert.ok(worker.parseHtml(fixture('football-schedule.html.gz'),arizona,'Football','https://arizonawildcats.com/sports/football/schedule',now).some(e=>e.opponent==='vs.'),'other schools are unchanged');
