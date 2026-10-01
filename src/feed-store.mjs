@@ -10,6 +10,7 @@
 // production copies):
 //   feed|<scope>|<version>|<school>|<sport>  feed JSON; metadata {b: built at ms, h: 1 when hot}
 //   want|<scope>|<version>|<school>|<sport>  ""; metadata {t: last viewed ms}
+//   fail|<scope>|<version>|<school>|<sport>  ""; a failed scheduled rebuild, expires after failPauseS
 //   cron|<scope>|<version>                   ""; metadata: last run summary
 
 export const FEED_STORE={
@@ -20,6 +21,7 @@ export const FEED_STORE={
   wantedForMs:6*60*60*1000,    // keep refreshing a feed for 6 h after its last view
   wantNoteEveryS:10*60,        // a location records a view at most every 10 min per feed
   perRun:20,                   // most rebuilds in one Cron Trigger run (30 s CPU limit)
+  failPauseS:10*60,            // after a failed scheduled rebuild, leave that feed alone this long
   keepS:7*24*60*60,
   readCacheS:30
 };
@@ -68,13 +70,20 @@ export function createFeedStore({kv,version,scope='prod',now=()=>Date.now(),cach
   // refresh interval, oldest first, at most perRun of them.
   async function due(){
     if(!kv)return[];
-    const[wanted,stored]=await Promise.all([listAll(`want|${scope}|${version}|`),listAll(`feed|${scope}|${version}|`)]);
+    const[wanted,stored,failing]=await Promise.all([listAll(`want|${scope}|${version}|`),listAll(`feed|${scope}|${version}|`),listAll(`fail|${scope}|${version}|`)]);
+    const paused=new Set(failing.map(k=>`${parse(k.name).school}|${parse(k.name).sport}`));
     const built=new Map(stored.map(k=>[`${parse(k.name).school}|${parse(k.name).sport}`,k.metadata||{}]));
     const t=now();
     return wanted.filter(k=>t-(k.metadata?.t||0)<=settings.wantedForMs).map(k=>{
       const{school,sport}=parse(k.name),meta=built.get(`${school}|${sport}`)||{};
       return{school,sport,builtAt:meta.b||0,hot:meta.h===1};
-    }).filter(f=>t-f.builtAt>=(f.hot?settings.hotEveryMs:settings.coolEveryMs)).sort((a,b)=>a.builtAt-b.builtAt).slice(0,settings.perRun);
+    }).filter(f=>!paused.has(`${f.school}|${f.sport}`)&&t-f.builtAt>=(f.hot?settings.hotEveryMs:settings.coolEveryMs)).sort((a,b)=>a.builtAt-b.builtAt).slice(0,settings.perRun);
+  }
+  // A feed whose scheduled rebuild failed is not retried for failPauseS, so
+  // a school that refuses us is not asked again every minute.
+  async function noteFailure(school,sport){
+    if(!kv)return;
+    try{await kv.put(id('fail',school,sport),'',{expirationTtl:settings.failPauseS})}catch{}
   }
   async function noteRun(summary){
     if(!kv)return;
@@ -88,5 +97,5 @@ export function createFeedStore({kv,version,scope='prod',now=()=>Date.now(),cach
     return{enabled:true,scope,version,last_run:run?.metadata||null,viewed_feeds:viewed.size,stored_feeds:stored.length,
       oldest_viewed_copy_s:kept.length?Math.round((t-Math.min(...kept.map(k=>k.metadata?.b||t)))/1000):null};
   }
-  return{read,servable,write,noteView,due,noteRun,status};
+  return{read,servable,write,noteView,due,noteFailure,noteRun,status};
 }
