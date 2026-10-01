@@ -13,7 +13,7 @@ const school=schools.find(s=>s.id==='arizona-state');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const fetch=async url=>{throw Error(`Unexpected network request: ${url}`);};
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,groupEvents};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,groupEvents,arizonaStateHandlers};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official thesundevils.com routes.
 const sports=sponsoredSports['arizona-state'];
