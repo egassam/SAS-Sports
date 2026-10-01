@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis']),
@@ -22,7 +22,7 @@ export const byuSchool={
     'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
     'byu|Football':'https://byucougars.com/sports/football/schedule',
     'byu|Golf':['https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/womens-golf/schedule'],
-    'byu|Gymnastics':['https://byucougars.com/sports/womens-gymnastics/schedule','https://byucougars.com/sports/mens-gymnastics/schedule','https://byucougars.com/sports/gymnastics/schedule','https://byucougars.com/'],
+    'byu|Gymnastics':'https://byucougars.com/sports/womens-gymnastics/schedule',
     'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
     'byu|Softball':'https://byucougars.com/sports/softball/schedule',
     'byu|Swimming & Diving':['https://byucougars.com/sports/mens-swimming-and-diving/schedule','https://byucougars.com/sports/womens-swimming-and-diving/schedule'],
@@ -128,12 +128,17 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='byu'||!byuSchool.cardSports.has(sport))return null;
     raw=String(raw||'');
-    const events=[];
+    // Spring pages keep showing last season until the next one is published.
+    // Only the current academic year (July-June, Mountain time) is current; a
+    // page with none is a valid empty schedule, not a failed source.
+    const local=new Date(now.getTime()-7*3600000),season=local.getUTCMonth()>=6?local.getUTCFullYear():local.getUTCFullYear()-1;
+    const events=[];let pastSeason=0;
     for(const {block,index} of cardBlocks(raw)){
       // The datetime attribute is local wall clock; its date is the published day.
       const start=(block.match(/<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       if(start.length!==3)continue;
       const [year,month,day]=start;
+      if((month>=7?year:year-1)!==season){pastSeason++;continue;}
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#11 Utah", "No. 2 Pittsburgh") describe the week, not the opponent.
       let opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:(?:#|No\.\s*)(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
@@ -148,7 +153,7 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       // Internal meets: "Navy vs. Royal" (BYU's own squads), "Intersquad Meet",
       // "Alumni Meet".
       if(eventType(sport)!=='GAME'&&(/\b(?:intra|inter)squad\b|\bscrimmage\b|\balumni\b/i.test(opponent)||/\svs\.?\s/i.test(opponent)))continue;
-      const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+)\s*-\s*(\d+)$/i);
+      const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/i);
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       // Meets publish a team finish as text ("1st - 19 points").
       const meet=eventType(sport)!=='GAME';
@@ -180,8 +185,11 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       if(recapUrl)event.recap_url=recapUrl;
       events.push(event);
     }
-    return events.length?events:null;
+    if(!events.length){if(!pastSeason)return null;emptiedBySeason.add(events);}
+    return events;
   }
+  const emptiedBySeason=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   // BYU recaps rarely name the sport ("byu-utah-tech", "No. 14 BYU Opens
   // Season with 63-7 Win over Utah Tech"), so the shared matcher rejects every
   // one. A Recap link from the sport's own schedule card is already bound to
@@ -254,5 +262,5 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,matchesRecap,isByuCrossCountry,attachMeetResults};
+  return{parseSchedule,isEmptySchedule,matchesRecap,isByuCrossCountry,attachMeetResults};
 }

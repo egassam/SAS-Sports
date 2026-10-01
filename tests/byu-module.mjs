@@ -254,12 +254,26 @@ assert.deepEqual([swim.mens.length,swim.womens.length],[9,10]);
 assert.ok(![...swim.mens,...swim.womens].some(e=>/Navy|Royal|Alumni|squad/i.test(e.title)),'internal meets are left out');
 assert.equal(worker.mergeEvents([swim.mens,swim.womens]).length,19,'the same meet on both pages keeps separate team events');
 assert.deepEqual(swim.womens.slice(0,4).map(e=>`${e.title} ${e.display_time}`),["Women's · BYU at CMU Shootout Oct 2, 4:00 PM","Women's · BYU at UC Santa Barbara Invite (Swimming) Oct 16","Women's · BYU at MPSF Open Water Championships Oct 17","Women's · BYU vs Utah Tech Sprint Dual Nov 6, 4:00 PM"]);
+// Gymnastics: the official page still shows the 2025-26 season, which
+// production showed as current (13 results from January). Only the current
+// academic year (July-June) counts, so today it is an empty schedule.
+assert.equal(byuSchool.scheduleUrls['byu|Gymnastics'],'https://byucougars.com/sports/womens-gymnastics/schedule');
+const gymUrl='https://byucougars.com/sports/womens-gymnastics/schedule';
+const gymNow=worker.parseHtml(fixture('womens-gymnastics-schedule.html.gz'),school,'Gymnastics',gymUrl,now);
+assert.deepEqual(gymNow,[]);assert.ok(worker.byuHandlers.isEmptySchedule(gymNow),'a past-season page is a valid empty schedule');
+// In that season the same page reads in K-State's format, decimal scores included.
+const gymInSeason=worker.parseHtml(fixture('womens-gymnastics-schedule.html.gz'),school,'Gymnastics',gymUrl,new Date('2026-04-30T16:00:00Z'));
+assert.deepEqual(gymInSeason.slice(0,2).map(e=>`${e.display_time} ${e.title} ${e.headline}`),['Jan 9 BYU vs Oregon State W, 195.675-194.525','Jan 12 BYU vs Utah L, 195.725-197.300']);
+assert.equal(gymInSeason[0].recap_url,'https://byucougars.com/news/2026/01/10/byu-upsets-no-7-oregon-state-195675-194525-in-season-opener');
+// The season filter leaves current-season sports untouched (volleyball above
+// is unchanged) and spring events of the same academic year stay (golf in May).
+assert.ok(golf.mens.some(e=>e.start_time.startsWith('2027-05-28')));
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Gymnastics',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field',footballUrl,now),null,'other BYU sports keep the shared parsers');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);

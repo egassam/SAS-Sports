@@ -125,3 +125,11 @@ Production read the inherited generic routes and showed 54 upcoming meets, 23 of
 - **Undated cards.** The two NCAA cards with no date yet are left out until they are dated.
 
 Result: 9 men's and 10 women's meets, from the CMU Shootout (Oct 2–3) to the Big 12 Championships (Feb 23–27).
+
+## Gymnastics (`4.37.0-byu-gymnastics`)
+
+Production showed the 2025-26 season (13 results from January 2026) as current. Gymnastics now routes only to `womens-gymnastics` and joins `cardSports`, and the reader gains a current-season filter used by every card sport:
+- **Current academic year only (July–June, Mountain time).** A page whose events are all from a past season returns `[]`, flagged as an empty schedule (`byuHandlers.isEmptySchedule`, hooked beside Utah's and Arizona State's). The app shows its empty-schedule note rather than a failed source. Current-season sports are unchanged, including golf's May 2027 events.
+- **Decimal scores.** `W 195.675-194.525` reads as `W, 195.675-194.525`. A fixture test dated April 2026 shows the page in K-State's format with its recaps.
+
+The 2026-27 meets will appear when byucougars.com publishes them; no code change is needed.
