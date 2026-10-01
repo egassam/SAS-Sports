@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.1-byu-track-field';
+const VERSION='4.37.2-kstate-volleyball-live';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -21,6 +21,11 @@ const HEADERS={
   'Accept':'text/html,application/xhtml+xml',
   'Accept-Language':'en-US,en;q=0.9'
 };
+// ESPN's scoreboard API refuses any user agent carrying a web address (403
+// from its edge for "+https://.../bot" and "+https://.../about"). Scoreboard
+// requests use the same product name without the link (user-approved,
+// October 1, 2026); school sites keep the full identity above.
+const SCOREBOARD_USER_AGENT=`Mozilla/5.0 (compatible; SAS-Sports/${VERSION})`;
 // Every official-site download is cached per Cloudflare location (see
 // source-fetch.mjs); the Cache API key uses this Worker's own origin.
 let sourceCacheOrigin=null;
@@ -1538,8 +1543,12 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
   const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
-  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation,team?.name].map(normalizedTeamName).filter(Boolean);
-  if(wanted.some(x=>exact.includes(x)))return true;
+  // A nickname alone ("Wildcats", team.name) is shared by many schools: ESPN's
+  // New Hampshire Wildcats matched K-State's "Wildcats" alias. Match on the
+  // school's location, full or short name, or abbreviation only.
+  const nicknames=new Set([team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
+  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation].map(normalizedTeamName).filter(Boolean);
+  if(wanted.some(x=>!nicknames.has(x)&&exact.includes(x)))return true;
   const full=normalizedTeamName(team?.displayName);
   return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
 }
@@ -1571,6 +1580,16 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     if(status==='Live'){
       event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
     }else event.recency_label='Final';
+    // Volleyball scores are sets won (0-0 during the first set). The live
+    // headline adds the current set's points; a final reads like K-State's
+    // official results ("W, 3-1").
+    if(sport==='Volleyball'){
+      const points=team=>(team?.linescores||[]).map(line=>Number(line?.value)).filter(Number.isFinite);
+      const ourSets=points(ours),theirSets=points(opponent);
+      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length)event.headline=`${detail} \u00b7 ${ourSets.at(-1)}-${theirSets.at(-1)}`;
+      const won=Number(ours.score),lost=Number(opponent.score);
+      if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+    }
     if(provider.team_label){event.team_label=provider.team_label;event.title=`${provider.team_label} · ${event.title}`;}
     event.source={name:provider.sourceName||'Live game scoreboard',url,updated_at:now.toISOString()};
     event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
@@ -1583,7 +1602,7 @@ async function fetchLiveScoreboards(school,sport,now){
   for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
     const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?limit=1000&dates=${date}`;
     try{
-      const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
+      const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
       if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));
     }catch{}
   }

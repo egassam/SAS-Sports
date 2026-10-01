@@ -57,6 +57,11 @@ contains(worker,/word\.startsWith\(token\.slice\(0,7\)\)/,'Official recap matchi
 contains(worker,/const payloadRe=\/"content","/,'Embedded WMT article paragraphs must be extracted');
 contains(worker,/payloadText\.length>=80/,'Embedded recap text must be substantial before use');
 contains(worker,/Highlights are event-specific[\s\S]*no-store, no-cache, must-revalidate/,'Expanded highlights must be revalidated instead of served stale');
+// ESPN's edge refuses user agents carrying a web address; scoreboard requests
+// send the product name only, and school-site downloads keep the full identity.
+contains(worker,/const SCOREBOARD_USER_AGENT=`Mozilla\/5\.0 \(compatible; SAS-Sports\/\$\{VERSION\}\)`;/,'Scoreboard requests must identify as SAS-Sports without a link');
+contains(worker,/'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application\/json'/,'ESPN scoreboards must use the scoreboard user agent');
+contains(worker,/'User-Agent':`Mozilla\/5\.0 \(compatible; SAS-Sports\/\$\{VERSION\}; \+\$\{BOT_INFO_URL\}\)`/,'School-site downloads keep the full identity with the info link');
 contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worker must use the authoritative sponsored-sports manifest');
 contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
 assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),3,'Feed, athlete, and highlight endpoints must all reject unsupported school-sport requests');
