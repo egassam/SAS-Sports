@@ -87,6 +87,13 @@ Production showed the 2026 season as current results (`ASU vs vs.`, `W Win 195.1
 
 Production showed 15 meets of the 2025-26 season as current results (`Completed`). Track & Field joins `cardSports`, and its route is only the official `track-field` page. The page still shows the 2025-26 season (Jan 9 - Jun 10, 2026) (15 cards), so the feed is an empty schedule (200 `[]` with the app's note) until the next season is published.
 
+## Cross Country (`4.33.0-arizona-state-cross-country`)
+
+Production showed one meet, `ASU at at` / `Completed`, with no race rows. Cross Country joins `cardSports`, and `attachMeetResults` (school-gated hooks in the feed, `attachOfficialMeetResults` and the expanded view, as for Utah) reads the meet's own official recap:
+- **Dave Murray Invitational (Sep 4):** `Women's 4K` (12 runners, Kelli Gaffney 1st · 13:47.3) then `Men's 6K` (6 runners); 18 rows; highlights name each race's leader. The recap gives no team scores, so the headline stays `Completed`. Times are kept as published (`19.22.9` for Ryan Lish is the recap's own typo).
+- **Meadows Challenge (Sep 26):** the card links no recap or results (its "Live Results" link is the preview article), so the meet shows `Completed` with "No official recap or results are published for this meet on thesundevils.com." Nothing is invented.
+- 4 upcoming meets.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |

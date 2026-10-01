@@ -5,15 +5,22 @@ import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
-import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
+import {arizonaStateSchool,createArizonaStateHandlers,parseArizonaStateRecapResults} from '../src/schools/arizona-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const school=schools.find(s=>s.id==='arizona-state');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const fetch=async url=>{throw Error(`Unexpected network request: ${url}`);};
+// Official recaps served from fixtures; any other request fails the test.
+const recapFixtures=new Map(),requests=[];
+const fetch=async url=>{
+  requests.push(String(url));
+  const body=recapFixtures.get(String(url));
+  if(body==null)throw Error(`Unexpected network request: ${url}`);
+  return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
+};
 const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,groupEvents,arizonaStateHandlers};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,groupEvents,arizonaStateHandlers,attachOfficialMeetResults};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official thesundevils.com routes.
 const sports=sponsoredSports['arizona-state'];
@@ -142,4 +149,25 @@ assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Track & Field'],'htt
 const trackFieldPast=worker.parseHtml(fixture('track-field-schedule.html.gz'),school,'Track & Field','https://thesundevils.com/sports/track-field/schedule',now);
 assert.deepEqual(trackFieldPast,[]);
 assert.ok(worker.arizonaStateHandlers.isEmptySchedule(trackFieldPast));
+// Cross Country: race rows from the meet's own official recap ("Women's 4K
+// Run" / "1:" / "Kelli Gaffney" / "(13:47.3)"), grouped as K-State does.
+const xcUrl='https://thesundevils.com/sports/cross-country/schedule';
+const xc=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
+assert.deepEqual(xc.map(e=>`${e.status} ${e.display_time} ${e.title}`),['Final Sep 4 ASU at Dave Murray Invitational','Final Sep 26 ASU at Meadows Challenge','Upcoming Oct 16 ASU at Arturo Barrios Invitational','Upcoming Oct 31 ASU at Big 12 Championships','Upcoming Nov 13 ASU at NCAA West Regionals','Upcoming Nov 21 ASU at NCAA National Championships']);
+const [daveMurray,meadows]=xc;
+recapFixtures.set(daveMurray.recap_url,fixture('xc-recap-dave-murray-invitational.html.gz'));
+await worker.attachOfficialMeetResults(daveMurray);
+assert.equal(daveMurray.meet_results_verified,true);
+assert.equal(daveMurray.headline,'Completed','the recap publishes no team scores');
+assert.deepEqual([...new Set(daveMurray.results.map(r=>r.group))],["Women's 4K","Men's 6K"],'women first, labeled by distance');
+assert.deepEqual([daveMurray.results.filter(r=>r.group==="Women's 4K").length,daveMurray.results.filter(r=>r.group==="Men's 6K").length],[12,6]);
+assert.deepEqual(daveMurray.results[0],{group:"Women's 4K",participant:'Kelli Gaffney',result:'1st · 13:47.3'});
+assert.deepEqual(daveMurray.results.at(-1),{group:"Men's 6K",participant:'Ryan Lish',result:'25th · 19.22.9'},'times are kept exactly as published');
+assert.equal(daveMurray.recap_result_count,18);
+assert.deepEqual(daveMurray.highlights,["Kelli Gaffney led Arizona State in the women's 4K race, finishing 1st in 13:47.3.","Tyler Daillak led Arizona State in the men's 6K race, finishing 11th in 18:19.2."]);
+const fetched=requests.length;await worker.attachOfficialMeetResults(daveMurray);
+assert.equal(requests.length,fetched,'the expanded view reuses verified rows');
+await worker.attachOfficialMeetResults(meadows);
+assert.deepEqual([meadows.headline,meadows.meet_results_verified,meadows.highlight_status],['Completed',false,'No official recap or results are published for this meet on thesundevils.com.'],'a meet without an official recap says so and invents nothing');
+assert.deepEqual(parseArizonaStateRecapResults('<p>Women’s 4K Run</p><p>1:</p><p>A Runner</p><p>13:47</p>',{decodeHtml:x=>x,ordinal:n=>n}),[],'rows need a parenthesized time');
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);
