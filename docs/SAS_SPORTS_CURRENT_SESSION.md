@@ -275,6 +275,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
 - **BYU (in progress):** Football is done (#94). Continue one sport per PR, adding each to `byuSchool.cardSports` with an unmodified fixture, as for Arizona State (season filter, empty schedules, team labels for Basketball/Swimming & Diving, XC race rows from official recaps). Suggested order: Volleyball, Soccer, Cross Country (fall, in season), then the rest. Check each sport's card recaps against `byuHandlers.matchesRecap`. Fix Track & Field's routes (502). byucougars.com served the sandbox without 403 on October 1.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
 - **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
@@ -1032,4 +1033,31 @@ BYU (next in catalog order among reachable schools) was chosen.
 **Testing note:** Python's `urllib` gets HTTP 403 from the Worker's own host; use curl for gate checks.
 
 **Not done:** the other 11 BYU sports (see "Current state"). BYU athlete certification was not reviewed.
+
+### October 1, 2026 — School load at scale; global source cache planned and paused
+
+User: "If schools are still blocking you what will they do if 20000 people are using the app?" The agent answered:
+- The 403s hit the development sandbox, not production.
+- Since #85, school downloads scale with Cloudflare locations × pages ÷ save window, not with users. A 15-sport school could see roughly 300 schedule checks a minute at 20,000 users spread over about 40 locations.
+- If a school blocks us, users get the labeled saved copy for up to 7 days.
+
+The agent recommended item 1: one copy per school page for the whole network.
+
+**Plan approved by the user, then paused:**
+- One SQLite-backed Durable Object per school host, behind the existing per-location cache.
+- Single-flight downloads, with the existing save windows and conditional rechecks.
+- robots.txt rules and refusal backoff shared globally.
+- A ceiling of about 20 downloads a minute per school; over the ceiling, the saved copy is served.
+- A per-school downloads-per-hour view; a code off switch; direct fetch only if the Durable Object itself fails (never to route around a school refusal).
+- Merge only with the user's yes. The user dropped the hour-long post-merge watch (no users yet); a short production check is enough.
+
+**Blocker found before any code was written:**
+- Cloudflare's Version URLs (the model this Worker's Builds still uses for `<branch>-sas-sports` previews) "are not generated for Workers that implement a Durable Object".
+- Worker Previews support Durable Objects, but they need:
+  - a one-time, irreversible dashboard switch by the user;
+  - a `previews` block in `wrangler.jsonc` with the AI and Durable Object bindings, since Previews do not inherit production settings;
+  - Wrangler 4.135.0 or later (the lockfile installs 4.133.0).
+- Workers KV was rejected as the alternative: changes take up to 60 s to reach other locations, so most locations would still download each schedule.
+
+User: "Pause". Nothing was built or pushed. Rough cost estimate for later: Durable Object requests are 1 million/month included, then $0.15/million, plus duration; the agent guessed $10–60/month at 20,000 users, to be measured on a preview.
 
