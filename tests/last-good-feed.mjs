@@ -9,6 +9,7 @@ import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool} from '../src/schools/arizona-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
@@ -28,7 +29,7 @@ const fetch=async url=>{
   return new Response('not found',{status:404});
 };
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,caches:{default:cache}};
+const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,caches:{default:cache}};
 const {handler}=Function(...Object.keys(deps),source+';return {handler};')(...Object.values(deps));
 const base='https://sas-sports.example/live/feed/grouped?school=utah&sport=Football';
 const call=async(query='')=>handler.fetch(new Request(base+query),{},{waitUntil(){}});

@@ -1,4 +1,5 @@
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool} from '../src/schools/arizona-state.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
@@ -45,7 +46,7 @@ const reset=()=>{
   }
 };
 const fetch=async url=>{requests.push(String(url));const make=responses.get(String(url));return make?make():new Response('not found',{status:404});};
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
+const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
 const worker=Function(...Object.keys(deps),source+';return {attachOfficialMeetResults,attachOfficialHighlights,ordinal};')(...Object.values(deps));
 
 // The event as production's official schedule card presents it today.

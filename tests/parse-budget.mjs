@@ -13,6 +13,7 @@ import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool} from '../src/schools/arizona-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
@@ -23,7 +24,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
   .replace('function visibleText(raw){','function visibleText(raw){if(typeof raw==="string"&&raw.length>'+LARGE+')__largeRead();');
 assert.ok(source.includes('__largeRead()'),'visibleText instrumentation must apply');
 const fetch=async url=>{throw Error(`Unexpected network request: ${url}`);};
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,__largeRead:()=>{largeReads++;}};
+const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,__largeRead:()=>{largeReads++;}};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml};')(...Object.values(deps));
 
 // Official pages by the site they come from. Roster pages are never parsed

@@ -6,6 +6,7 @@ import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
+import {arizonaStateSchool} from './schools/arizona-state.mjs';
 
 const VERSION='4.31.9-utah-route-cleanup';
 const FEED_FRESH_MS=25*1000;
@@ -54,6 +55,7 @@ const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...oklahomaStateSchool.rosterUrls,
   ...utahSchool.rosterUrls,
+  ...arizonaStateSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -92,6 +94,7 @@ function schoolCombinedSports(school){
   if(school?.id==='kstate')return kstateSchool.combinedSports;
   if(school?.id==='oklahoma-state')return oklahomaStateSchool.combinedSports;
   if(school?.id==='utah')return utahSchool.combinedSports;
+  if(school?.id==='arizona-state')return arizonaStateSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -111,6 +114,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...kansasSchool.scheduleUrls,
   ...oklahomaStateSchool.scheduleUrls,
   ...utahSchool.scheduleUrls,
+  ...arizonaStateSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -127,11 +131,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
   'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
   'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule','https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule'],
-  'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
-  'arizona-state|Soccer':'https://thesundevils.com/sports/soccer/schedule',
-  'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
-  'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
-  'arizona-state|Swimming & Diving':['https://thesundevils.com/sports/mens/swimming-diving/schedule','https://thesundevils.com/sports/womens/swimming-diving/schedule'],
   'texas-tech|Volleyball':'https://texastech.com/sports/womens-volleyball/schedule',
   'texas-tech|Soccer':'https://texastech.com/sports/womens-soccer/schedule',
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',

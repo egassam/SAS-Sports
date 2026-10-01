@@ -5,6 +5,7 @@ import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool} from '../src/schools/arizona-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
@@ -18,7 +19,7 @@ const fetch=async url=>{
   if(body==null)throw Error(`Unexpected network request: ${url}`);
   return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
 };
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,attachOfficialMeetResults,attachOfficialHighlights,fetchUrl,groupEvents,mergeEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official utahutes.com routes.

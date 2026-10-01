@@ -1,4 +1,5 @@
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool} from '../src/schools/arizona-state.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -12,7 +13,7 @@ const school=schools.find(s=>s.id==='kansas'),now=new Date('2026-09-28T12:00:00Z
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected network request: ${url}`);return new Response(responses.get(String(url)));};
-const deps={oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,fetchUrl,groupEvents,mergeEvents,attachOfficialHighlights,kansasHandlers,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS};')(...Object.values(deps));
 const expectedCounts={'baseball':38,'mens-basketball':36,'womens-basketball':34,'cross-country':6,'football':12,'womens-golf':12,'mens-golf':14,'womens-rowing':9,'wsoc':21,'softball':33,'womens-swimming-and-diving':13,'womens-tennis':8,'track-and-field':34,'wvball':28};
 const byPath=new Map();
