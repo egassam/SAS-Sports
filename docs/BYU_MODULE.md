@@ -107,3 +107,13 @@ K-State reads `1st of 12 (864)`, but BYU's cards publish neither the field size 
 - The shared recap search uses the last day for BYU meets: one school-gated line beside Kansas's in `attachOfficialHighlights`.
 - `byuHandlers.matchesRecap` requires a multi-day meet's recap to be dated on or after the last day.
 - For Golf, the title must state the final team place ("finish fourth", "takes third", "wins" for first), and a title with "day one", "round one" or "suspends" is refused. In-progress stories are often published on the same last day, and a day-one title can even name the final place (Vuori: "in fourth" after day one; final 4th).
+
+## Tennis (`4.36.8-byu-tennis`)
+
+Production read only the first route (the women's page). Tennis now routes to both official pages, is added to `combinedSports` (teams labeled, separate ids) and joins `cardSports`.
+- **Event names.** Men's cards name only the host ("at SMU", "at ITA" twice on Nov 5). For Tennis, the tournament heading (other than "Exhibition") names the event: `Sherwood Invitational`, `ITA Masters`, `ITA Sectional Championships`.
+- **Finished tournaments** are final with `Completed`: individual tournaments publish no team result.
+
+Result: men's 4 completed and 4 upcoming; women's USTA SoCal Championships completed (its recap is dated Sep 28, after the Sep 27 finish) and 6 upcoming.
+
+**Multi-day recap dates.** The shared matcher allows a match's recap up to one day after its start. For a BYU event with `end_time`, `matchesRecap` checks against the last day instead, as Kansas does. The women's USTA SoCal recap (dated Sep 28, for Sep 24–27) now opens in the expanded view. Golf's final-recap rules are unchanged.
