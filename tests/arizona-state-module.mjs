@@ -38,7 +38,7 @@ for(const sport of sports){
 }
 assert.ok(!/'arizona-state\|/.test(read('../src/index.js')),'Arizona State configuration must live in its module, not shared code');
 // Program combinations are unchanged from the shared policy.
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Swimming & Diving']);
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Swimming & Diving']);
 assert.equal(worker.teamLabelForSource(school,'Swimming & Diving','https://thesundevils.com/sports/womens/swimming-diving/schedule'),"Women's");
 // The neighbouring Arizona school keeps its own routes in shared code.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='arizona'),'Football')[0],'https://arizonawildcats.com/sports/football/schedule');
@@ -170,4 +170,17 @@ assert.equal(requests.length,fetched,'the expanded view reuses verified rows');
 await worker.attachOfficialMeetResults(meadows);
 assert.deepEqual([meadows.headline,meadows.meet_results_verified,meadows.highlight_status],['Completed',false,'No official recap or results are published for this meet on thesundevils.com.'],'a meet without an official recap says so and invents nothing');
 assert.deepEqual(parseArizonaStateRecapResults('<p>Women’s 4K Run</p><p>1:</p><p>A Runner</p><p>13:47</p>',{decodeHtml:x=>x,ordinal:n=>n}),[],'rows need a parenthesized time');
+// Golf: both official pages, labeled by team; the card's team finish
+// ("1st, -40/800", "T2, -1 (851)") in K-State's wording without the
+// unpublished field size.
+assert.deepEqual(arizonaStateSchool.scheduleUrls['arizona-state|Golf'],['https://thesundevils.com/sports/mens-golf/schedule','https://thesundevils.com/sports/womens-golf/schedule']);
+assert.ok(worker.schoolCombinedSports(school).has('Golf'));
+assert.equal(worker.teamLabelForSource(school,'Golf','https://thesundevils.com/sports/womens-golf/schedule'),"Women's");
+const mensGolf=worker.parseHtml(fixture('mens-golf-schedule.html.gz'),school,'Golf','https://thesundevils.com/sports/mens-golf/schedule',now);
+const womensGolf=worker.parseHtml(fixture('womens-golf-schedule.html.gz'),school,'Golf','https://thesundevils.com/sports/womens-golf/schedule',now);
+assert.deepEqual(mensGolf.filter(e=>e.status==='Final').map(e=>[e.display_time,e.title,e.headline]),[['Sep 12','ASU at Sahalee Players Invitational','T6th (896)'],['Sep 18','ASU at Fighting Illini Invitational','1st (800)'],['Sep 28','ASU at Ben Hogan Collegiate','Completed']]);
+assert.deepEqual(womensGolf.filter(e=>e.status==='Final').map(e=>[e.display_time,e.title,e.headline]),[['Sep 18','ASU at Mason Rudolph Championship','T2nd (851)']]);
+assert.deepEqual([mensGolf.length,womensGolf.length],[14,12]);
+assert.ok(womensGolf.every(e=>e.title.startsWith('ASU at ')),'tournament cards without a divider read "ASU at", as K-State\'s do');
+assert.equal(mensGolf.find(e=>/Augusta/.test(e.opponent)).title,'ASU vs Augusta/Haskins Invitational','a published "vs." is kept');
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);

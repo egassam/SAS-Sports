@@ -94,6 +94,13 @@ Production showed one meet, `ASU at at` / `Completed`, with no race rows. Cross 
 - **Meadows Challenge (Sep 26):** the card links no recap or results (its "Live Results" link is the preview article), so the meet shows `Completed` with "No official recap or results are published for this meet on thesundevils.com." Nothing is invented.
 - 4 upcoming meets.
 
+## Golf (`4.33.1-arizona-state-golf`)
+
+Production showed the women's page only (it was the first route candidate and Golf was not a combined sport), as `ASU vs Mason Rudolph Championship` / `Completed`. Golf is now a combined sport with only the two official pages (`mens-golf`, `womens-golf`), labeled by team, and joins `cardSports`:
+- The card's team finish (`schedule-event-grid-result__text`: `1st, -40/800`, `T6th, +32/896`, `T2, -1 (851)`) becomes K-State's wording without the field size, which the card does not publish: `1st (800)`, `T6th (896)`, `T2nd (851)`. A completed tournament without one reads `Completed` (Ben Hogan Collegiate).
+- Men's: 3 finals, 11 upcoming; women's: 1 final, 11 upcoming.
+- Tournament and meet cards without a vs./at divider read `ASU at …`, as K-State's do (`MEET_SPORTS`: Golf, Cross Country, Track & Field, Gymnastics). Cross Country, Football and Wrestling output is unchanged.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
