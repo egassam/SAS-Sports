@@ -1,12 +1,30 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 1, 2026, America/Chicago (BYU module + Football: PR #94; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 1, 2026, America/Chicago (BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
 
-**BYU: module set up and Football converted; production is `4.36.0-byu-football` (21:07:49 UTC, October 1).** User: "Let's add the next big 12 school". The sandbox still gets HTTP 403 from arizonawildcats.com and baylorbears.com. byucougars.com returns 200, so BYU is the next reachable school in catalog order. PR #94 (https://github.com/egassam/SAS-Sports/pull/94) was merged by the agent under `AGENTS.md` item 6 as `8cbbb30`. Details are in `docs/BYU_MODULE.md`.
+**BYU: all 12 sports converted; production is `4.37.1-byu-track-field` (23:10 UTC, October 1).** User: "Finish BYU, do all the sports". The agent opened and merged PRs #97–#107 one sport at a time under `AGENTS.md` item 6 (#94 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/BYU_MODULE.md`.
+- Reader features added along the way:
+  - `No. N` rankings dropped;
+  - plain relative Recap links read;
+  - internal games and meets skipped;
+  - `TBA`/`TBD` opponents named after their tournament heading (and tennis events named after theirs);
+  - card recaps refused when dated outside the event;
+  - meet team finishes (`Women's team: 1st · 19 pts`) and golf places;
+  - a current-season filter with empty schedules.
+- Recap safety:
+  - **Recaps must name BYU.** On the Soccer preview, the shared opponent-site fallback had matched a cubuffs.com Colorado vs New Mexico story to the Sep 3 Colorado State game. A recap must now name BYU in its own title or article.
+  - **Golf recaps must be final.** On the Golf preview, in-progress "after day one" stories were used. A golf recap must now be dated on or after the last day and state the final place.
+  - **Multi-day events** are checked against their last day.
+- Shared-code touches, all gated to BYU or behavior-identical for other schools:
+  - BYU added beside Kansas in the recap-search day rule;
+  - BYU's empty-schedule clause reads the parse result before team labeling (#107 preview returned 502 without this);
+  - the regression route check accepts route lists.
+
+**Earlier the same day: BYU module set up and Football converted (`4.36.0-byu-football`, 21:07:49 UTC).** User: "Let's add the next big 12 school". The sandbox still gets HTTP 403 from arizonawildcats.com and baylorbears.com. byucougars.com returns 200, so BYU is the next reachable school in catalog order. PR #94 (https://github.com/egassam/SAS-Sports/pull/94) was merged by the agent under `AGENTS.md` item 6 as `8cbbb30`. Details are in `docs/BYU_MODULE.md`.
 - **Setup:**
   - `src/schools/byu.mjs` holds routes for all 12 sports, `combinedSports` and the 3 verified Soccer Instagram tags.
   - 438/438 catalog routes are identical before and after.
@@ -276,7 +294,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 ## Instructions for the next session
 
 - **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
-- **BYU (in progress):** Football is done (#94). Continue one sport per PR, adding each to `byuSchool.cardSports` with an unmodified fixture, as for Arizona State (season filter, empty schedules, team labels for Basketball/Swimming & Diving, XC race rows from official recaps). Suggested order: Volleyball, Soccer, Cross Country (fall, in season), then the rest. Check each sport's card recaps against `byuHandlers.matchesRecap`. Fix Track & Field's routes (502). byucougars.com served the sandbox without 403 on October 1.
+- **BYU is complete** (#94, #97–#107). Gymnastics and Track & Field become non-empty when byucougars.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/BYU_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 1, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox; ucfknights.com (SIDEARM) returned 200.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
 - **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
 - **Arizona State is complete** (see "Current state"). Next: the next Big 12 school the user names. Most Big 12 sites returned 403 to the sandbox on October 1; ucfknights.com, byucougars.com (custom platform) and gobearcats.com (custom) returned 200.
@@ -1060,4 +1078,43 @@ The agent recommended item 1: one copy per school page for the whole network.
 - Workers KV was rejected as the alternative: changes take up to 60 s to reach other locations, so most locations would still download each schedule.
 
 User: "Pause". Nothing was built or pushed. Rough cost estimate for later: Durable Object requests are 1 million/month included, then $0.15/million, plus duration; the agent guessed $10–60/month at 20,000 users, to be measured on a preview.
+
+### October 1, 2026 — Finish BYU (all sports)
+
+User: "How many schools are complete now?" The agent answered:
+- complete: K-State, KU, Oklahoma State, Utah and Arizona State (some with source-blocked gaps);
+- in progress: BYU (Football only);
+- not converted: 62 other schools, including 10 Big 12 schools.
+
+User: "Finish BYU, do all the sports". All 17 official schedule pages downloaded (200). One sport per PR, each merged by the agent under `AGENTS.md` item 6:
+
+| PR | Sport | Merge | Notes |
+| --- | --- | --- | --- |
+| #97 | Volleyball | `594fdf8` | `No.` rankings, plain Recap links, internal scrimmage skipped |
+| #98 | Soccer | `1dc49ec` | Tournament names, recap date check; second commit: recaps must name BYU |
+| #99 | Cross Country | `bd00cd7` | Both teams, team finishes, recap-table race rows; regression route check accepts lists |
+| #100 | Basketball | `437b046` | Both pages only; `TBD` bracket game named |
+| #101 | Baseball | `ee15b9c` | Official page only |
+| #102 | Softball | `25365aa` | Official page only |
+| #103 | Golf | `d449e91` | Both teams, placings; final recaps only (`end_time`, title states place) |
+| #104 | Tennis | `47d8b10` | Both teams, tournaments named by headings; multi-day recap dates |
+| #105 | Swimming & Diving | `8613b16` | Both pages only; internal meets skipped |
+| #106 | Gymnastics | `1365361` | Current-season filter, empty schedule, decimal scores |
+| #107 | Track & Field | `c6682ba` | Official pages (was 502); two-team empty schedule fix |
+
+**Before every merge:**
+- `npm run test:release` and `npm test` passed on the final commit, and named mutations failed `tests/byu-module.mjs`.
+- CI was green (guardrails, certification-matrix, Workers Builds), with no conflict.
+- Preview: the sport's feed in K-State format, expanded views checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes. After #106, all 12 BYU sports were recounted on the preview.
+
+**After each merge:** a production check after a 45 s wait (version, feed, expanded views, XC). The final survey (~23:10 UTC) gave all 12 BYU sports 200 and XC 18/20 and 26/21.
+
+**Found by the gates and fixed before merge:**
+- Soccer Sep 3 used a Colorado story.
+- Golf used day-one stories.
+- The tennis USTA recap was refused by the one-day window.
+- Track & Field returned 502 because of the labeling identity issue.
+- A Cross Country highlight read "finishing 13:21.4".
+
+**Not done:** BYU athlete certification review. Recap coverage is limited where BYU publishes none (see `docs/BYU_MODULE.md`).
 
