@@ -8,7 +8,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahom
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
 
-const VERSION='4.32.0-arizona-state-football';
+const VERSION='4.32.1-arizona-state-soccer';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
@@ -1522,7 +1522,7 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   }
   // Oklahoma State's shared program page can hold no meets for this sport;
   // a Utah spring page can hold only a past season.
-  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events));
+  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events)||school.id==='arizona-state'&&arizonaStateHandlers.isEmptySchedule(events));
   return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,content_length:html.length,label_count:labels.length,event_count:events.length,empty_schedule,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
 }
 

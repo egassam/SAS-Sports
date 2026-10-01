@@ -60,11 +60,21 @@ const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,10]);
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
-const soccerShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Soccer',footballUrl,now);
-assert.ok(soccerShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
+const volleyballShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Volleyball',footballUrl,now);
+assert.ok(volleyballShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
 const arizona=schools.find(s=>s.id==='arizona');
 assert.ok(worker.parseHtml(fixture('football-schedule.html.gz'),arizona,'Football','https://arizonawildcats.com/sports/football/schedule',now).some(e=>e.opponent==='vs.'),'other schools are unchanged');
 const handlers=createArizonaStateHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,scheduleYearForDate:()=>2026,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
 
-console.log('Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, Football cards (3 finals W/L with exact recaps, 10 upcoming with published times on the right day), Football-only scope.');
+// Soccer: same cards. Card years come from the page's JSON-LD start times.
+const soccer=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer','https://thesundevils.com/sports/soccer/schedule',now);
+assert.equal(soccer.length,20,'one event per official card');
+const soccerFinals=soccer.filter(e=>e.status==='Final');
+assert.equal(soccerFinals.length,11);
+assert.deepEqual(soccerFinals.slice(0,3).map(e=>[e.display_time,e.title,e.headline]),[['Aug 12','ASU at New Mexico St.','W, 3-1'],['Aug 20','ASU vs Texas','T, 1-1'],['Aug 23','ASU vs Buffalo','W, 5-0']]);
+assert.deepEqual(soccerFinals.slice(-2).map(e=>[e.display_time,e.title,e.headline]),[['Sep 24','ASU at Kansas','L, 0-2'],['Sep 27','ASU at Kansas St.','W, 2-0']]);
+assert.ok(soccerFinals.every(e=>e.results.length===1&&/^https:\/\/thesundevils\.com\/news\/2026\//.test(e.recap_url)),'every final has one Result row and its own recap');
+assert.equal(soccer.find(e=>e.display_time.startsWith('Nov 5')).title,'ASU at BYU','"#RV" rankings are dropped from the opponent');
+assert.deepEqual(soccer.filter(e=>e.status==='Upcoming').map(e=>e.display_time).slice(0,2),['Oct 2, 5:00 PM','Oct 8, 7:00 PM']);
+console.log('Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, Football cards (3 finals W/L with exact recaps, 10 upcoming with published times on the right day), Football-only scope, Soccer cards (11 finals, 9 upcoming, JSON-LD years).');
