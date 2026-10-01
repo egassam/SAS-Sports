@@ -15,6 +15,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/ok
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
+import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 // Count every visibleText call on a large input (a whole page, not a card).
@@ -24,7 +25,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
   .replace('function visibleText(raw){','function visibleText(raw){if(typeof raw==="string"&&raw.length>'+LARGE+')__largeRead();');
 assert.ok(source.includes('__largeRead()'),'visibleText instrumentation must apply');
 const fetch=async url=>{throw Error(`Unexpected network request: ${url}`);};
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,__largeRead:()=>{largeReads++;}};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,__largeRead:()=>{largeReads++;}};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml};')(...Object.values(deps));
 
 // Official pages by the site they come from. Roster pages are never parsed

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAS Sports fetcher</title>
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f8fafc;background:#07111f}
+body{margin:0;background:#07111f}main{max-width:720px;margin:0 auto;padding:32px 16px 48px;line-height:1.55}
+h1{font-size:1.6rem;margin:0 0 12px}h2{font-size:1.1rem;margin:28px 0 8px}code{background:#11243a;padding:1px 5px;border-radius:4px}
+li{margin:4px 0}a{color:#9fd0ff}
+</style>
+</head>
+<body>
+<main>
+<h1>About the SAS Sports fetcher</h1>
+<p>SAS Sports is a fan app that shows schedules and results for college teams. It reads the public schedule, roster and recap pages that schools publish on their official athletics sites, and links back to them.</p>
+<h2>How it identifies itself</h2>
+<p>Every request carries the user agent <code>Mozilla/5.0 (compatible; SAS-Sports/&lt;version&gt;; +https://sas-sports.lovetogivepain.workers.dev/bot)</code>. It never presents itself as a browser.</p>
+<h2>How often it visits</h2>
+<ul>
+<li>Each page is downloaded once and reused: schedule pages for 2 minutes, news listings and rosters for 10 minutes, articles for 30 minutes, documents for 6 hours.</li>
+<li>Expired copies are checked with <code>If-None-Match</code> / <code>If-Modified-Since</code>, so an unchanged page costs a 304.</li>
+<li>A <code>429</code> or <code>503</code> stops requests to that page until its <code>Retry-After</code> ends, with at least a minute's pause. Any other refusal pauses them for 15 seconds.</li>
+<li>Visitors to SAS Sports are served from these saved copies. They never cause extra requests to your site.</li>
+</ul>
+<h2>robots.txt</h2>
+<p>The fetcher obeys <code>robots.txt</code>. Rules for <code>User-agent: SAS-Sports</code> take priority over the rules for <code>*</code>. To keep it off some or all of your site, add a group for <code>SAS-Sports</code>; it is re-read daily.</p>
+</main>
+</body>
+</html>
