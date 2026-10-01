@@ -49,3 +49,5 @@ User request during the K-State vs BYU match: live results on the K-State Volley
 - **Final.** A final from the scoreboard reads like K-State's results: `W, 3-1` with one Result row. The volleyball rule is gated to Volleyball, so Football and Basketball output is unchanged.
 
 Fixture: `tests/fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz`, the K-State vs BYU event as ESPN served it at 23:35 UTC (in progress, 1st set 2-1). The final case changes only its status and set totals.
+
+**Scoreboard user agent.** On the preview, no live card appeared. ESPN's edge (Akamai) returns 403 to any user agent carrying a web address. That includes the app's identity since PR #85 (`…; +https://…/bot`), and the same string with an `/about` link. As a result, K-State's Football and Basketball live scores had also been failing silently since PR #85. With the user's approval ("Do one", October 1), ESPN scoreboard requests now send `Mozilla/5.0 (compatible; SAS-Sports/<version>)`: the same product name, no link, not a browser identity. School-site downloads keep the full identity with the `/bot` link. `tests/regression.mjs` checks both.

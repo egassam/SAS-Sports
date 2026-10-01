@@ -21,6 +21,11 @@ const HEADERS={
   'Accept':'text/html,application/xhtml+xml',
   'Accept-Language':'en-US,en;q=0.9'
 };
+// ESPN's scoreboard API refuses any user agent carrying a web address (403
+// from its edge for "+https://.../bot" and "+https://.../about"). Scoreboard
+// requests use the same product name without the link (user-approved,
+// October 1, 2026); school sites keep the full identity above.
+const SCOREBOARD_USER_AGENT=`Mozilla/5.0 (compatible; SAS-Sports/${VERSION})`;
 // Every official-site download is cached per Cloudflare location (see
 // source-fetch.mjs); the Cache API key uses this Worker's own origin.
 let sourceCacheOrigin=null;
@@ -1593,7 +1598,7 @@ async function fetchLiveScoreboards(school,sport,now){
   for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
     const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?limit=1000&dates=${date}`;
     try{
-      const response=await fetch(url,{headers:{'User-Agent':HEADERS['User-Agent'],'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
+      const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
       if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));
     }catch{}
   }
