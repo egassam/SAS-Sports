@@ -75,6 +75,10 @@ Fix to the season filter: it kept January–June events of the season's *first* 
 
 Production showed spring 2026 games as current results (`ASU at at`, `L, 11-12`). Lacrosse joins `cardSports`, and its route is only the official `lacrosse` page. The page still shows the spring 2026 season (18 cards), so the feed is an empty schedule (200 `[]` with the app's note) until the next season is published.
 
+## Water Polo (`4.32.10-arizona-state-water-polo`)
+
+Production showed spring 2026 matches as current results (`ASU vs vs.`, `W, 16-7`). Water Polo joins `cardSports`, and its route is only the official `water-polo` page. The page still shows the spring 2026 season (32 cards), so the feed is an empty schedule (200 `[]` with the app's note) until the next season is published.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
