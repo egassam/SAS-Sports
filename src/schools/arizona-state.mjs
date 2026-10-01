@@ -7,10 +7,10 @@ export const arizonaStateSchool={
   id:'arizona-state',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball','Lacrosse','Water Polo','Gymnastics','Track & Field','Cross Country','Golf']),
-  // Basketball, Golf and Swimming & Diving publish separate men's and women's
-  // pages; both teams are shown, labeled by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball','Lacrosse','Water Polo','Gymnastics','Track & Field','Cross Country','Golf','Tennis']),
+  // Basketball, Golf, Swimming & Diving and Tennis publish separate men's and
+  // women's pages; both teams are shown, labeled by team.
+  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
   scheduleUrls:{
     'arizona-state|Baseball':['https://thesundevils.com/sports/baseball/schedule','https://thesundevils.com/'],
     'arizona-state|Basketball':['https://thesundevils.com/sports/mens-basketball/schedule','https://thesundevils.com/sports/womens-basketball/schedule'],
@@ -24,7 +24,7 @@ export const arizonaStateSchool={
     'arizona-state|Soccer':'https://thesundevils.com/sports/soccer/schedule',
     'arizona-state|Softball':['https://thesundevils.com/sports/softball/schedule','https://thesundevils.com/'],
     'arizona-state|Swimming & Diving':['https://thesundevils.com/sports/mens/swimming-diving/schedule','https://thesundevils.com/sports/womens/swimming-diving/schedule'],
-    'arizona-state|Tennis':['https://thesundevils.com/sports/womens-tennis/schedule','https://thesundevils.com/sports/mens-tennis/schedule','https://thesundevils.com/sports/tennis/schedule','https://thesundevils.com/'],
+    'arizona-state|Tennis':['https://thesundevils.com/sports/mens-tennis/schedule','https://thesundevils.com/sports/womens-tennis/schedule'],
     'arizona-state|Track & Field':'https://thesundevils.com/sports/track-field/schedule',
     'arizona-state|Volleyball':'https://thesundevils.com/sports/volleyball/schedule',
     'arizona-state|Water Polo':'https://thesundevils.com/sports/water-polo/schedule',
