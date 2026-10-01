@@ -1,10 +1,21 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 1, 2026, America/Chicago (polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 1, 2026, America/Chicago (scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Scheduled feed refresh (item 3) was tried and reverted; production is `4.34.0-polite-source-fetch` with no Cron Trigger (20:13 UTC, October 1).**
+- #87 (`c9c0c65`, `4.35.0-scheduled-feeds`): stored feeds in Workers KV (namespace `sas-sports-feeds`, id `44e354a55a1c43ce8013e40eb2cc9a75`, created this session), plus an every-minute Cron Trigger.
+  - The visitor side worked in production: copies built at one location were served at others (`x-sas-cache: stored`).
+  - The Cron Trigger started about 6 minutes after deploy, and every scheduled rebuild failed, including feeds visitors built fine. By 19:50 each run was `due 20, built 0, failed 20`. The cause was not established.
+  - Leading hypothesis: Cloudflare runs Cron Triggers "on underutilized machines", whose outbound addresses school bot protection may refuse.
+- #88 (`47aedb0`): records failure reasons in `/api/feed-store` and pauses a failing feed for 10 min. Merged, CI green, but **Cloudflare never deployed this merge commit**; production stayed on 4.35.0. Why is unknown; check the Workers Builds history for `47aedb0`.
+- #89 (`68c3673`, user-approved): reverts #87 and #88. The tree equals `d0c56fc`. Production was back on 4.34.0 at 20:07:17 UTC; `/api/feed-store` 404; XC 18/20 and 26/21; live health 48/48.
+- #90 (`091b15e`, user-approved): `"triggers": {"crons": []}` in `wrangler.jsonc`. Omitting `triggers` leaves a deployed Cron Trigger in place. The Worker updated at 20:13:31 UTC; production checks unchanged.
+- The `sas-sports-feeds` KV namespace still exists and holds the leftover `prod`/`preview` keys from 4.35.0. It is unused and the keys expire within 7 days; delete the namespace if item 3 is abandoned.
+- Item 1 (calendar feeds) was skipped by the user. The four SIDEARM schools block the sandbox, and calendar feeds likely lack scores and recap links.
 
 **Polite source fetching (shared, all schools); production is `4.34.0-polite-source-fetch` (14:16 UTC, October 1).** User asked how to avoid triggering schools' bot defense, chose items 2 (cache school downloads) and 4 (honest identity, robots.txt, Retry-After, conditional requests), and approved the cross-school change. They then said: "Merge it with the 15-second backoff and watch production". PR #85 merged as `4ac60ad`.
 - **`src/source-fetch.mjs`** handles every official-site download (schedules, recaps, news listings, rosters, profiles, PDFs, TFRRS, module recap fetches):
@@ -244,6 +255,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
 - **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
 - **Arizona State is complete** (see "Current state"). Next: the next Big 12 school the user names. Most Big 12 sites returned 403 to the sandbox on October 1; ucfknights.com, byucougars.com (custom platform) and gobearcats.com (custom) returned 200.
 - **Utah is complete except for source-blocked items:** Baseball and Women's Basketball start times, once utahutes.com allows the page downloads (fixture-verified, one sport per PR). Earlier list, for reference:
@@ -936,4 +948,23 @@ PR #85, https://github.com/egassam/SAS-Sports/pull/85:
     - 1 diagnostic call returned no readable body (round 4).
     - No 403/429 refusals, no backoff, no robots block. Every forced feed returned 200; K-State XC 18/20 and KU XC 26/21 every round.
   - The one-off 520s come from the school servers, and the old code would also have failed those downloads; it is not known whether they were as frequent before #85. If they grow, consider one immediate retry on 5xx (not 403/429).
+
+### October 1, 2026 — Calendar feeds skipped; scheduled feed refresh tried and reverted (shared)
+
+User: "Start on item 1, the calendar feeds". The agent found that K-State, KU, Oklahoma State and Utah (SIDEARM) block the sandbox, even `robots.txt`. Oklahoma State's saved page has an "Add to Calendar" subscribe button whose URL is built client-side from about 40 script files. Arizona State (WMT) shows no calendar (`calendar_code` empty), and its API sitemap lists only articles. The agent asked the user for one subscribe link; the user replied "skip, start item 3".
+
+Item 3, PR #87:
+- KV-stored feeds and an every-minute Cron Trigger.
+- Before merge: `npm run test:release` and `npm test` passed, including a new `tests/feed-store.mjs` (8 mutations caught). CI was green.
+- Preview: first view built at EWR, later views at ATL got `stored` with no rebuild; XC 18/20 and 26/21; 144/144 forced refreshes 200; 8 feeds identical.
+- Previews do not run Cron Triggers, so the scheduled side was untested before production. The user said "Yes, merge it and watch production".
+
+Production:
+- `c9c0c65` was live at 19:28:41 UTC; the first Cron Trigger run was ~19:34.
+- Every run failed every due feed (2, then 20 per run), with no reason recorded.
+- The agent merged #88 (failure reasons, 10-minute pause) as part of watching; its preview gate passed (108/108, XC intact, 8 feeds identical), but it never deployed.
+- The agent opened revert #89 for approval and told the user. The user asked it to "Check the merge", then chose option 2 (check the build). The agent could see only that the newest uploaded Worker code was the revert's preview, not the build history, and asked the user to look.
+- The user said "Merge the revert"; then "Yes, merge #90" for the empty-trigger fix.
+
+Final state: production `4.34.0-polite-source-fetch`, no Cron Trigger, `/api/feed-store` 404, K-State XC 18/20, KU XC 26/21, live health 48/48 (after #89). After #90: XC unchanged and the sample feeds 200.
 
