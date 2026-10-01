@@ -115,3 +115,5 @@ Production read only the first route (the women's page). Tennis now routes to bo
 - **Finished tournaments** are final with `Completed`: individual tournaments publish no team result.
 
 Result: men's 4 completed and 4 upcoming; women's USTA SoCal Championships completed (its recap is dated Sep 28, after the Sep 27 finish) and 6 upcoming.
+
+**Multi-day recap dates.** The shared matcher allows a match's recap up to one day after its start. For a BYU event with `end_time`, `matchesRecap` checks against the last day instead, as Kansas does. The women's USTA SoCal recap (dated Sep 28, for Sep 24–27) now opens in the expanded view. Golf's final-recap rules are unchanged.

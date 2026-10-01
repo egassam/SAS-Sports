@@ -240,6 +240,7 @@ assert.deepEqual(tennis.mens.map(e=>`${e.status} ${e.display_time} ${e.title} ${
 assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events stay separate');
 assert.equal(tennis.womens.length,7);
 assert.deepEqual([tennis.womens[0].title,tennis.womens[0].headline,tennis.womens[0].end_time,tennis.womens[0].recap_url],["Women's · BYU vs USTA SoCal Championships",'Completed','2026-09-27T23:59:59Z','https://byucougars.com/news/2026/09/28/cougars-make-strong-showing-at-usta-socal-championships']);
+assert.equal(worker.byuHandlers.matchesRecap(fixture('tennis-recap-2026-09-28-usta-socal.html.gz'),tennis.womens[0],tennis.womens[0].recap_url),true,'a recap the day after a multi-day tournament ends belongs to it');
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']);

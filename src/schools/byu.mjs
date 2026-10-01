@@ -210,7 +210,10 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       if(place&&!(new RegExp(`\\b(?:${words[place]||'-'}|${ordinal(place)})\\b`,'i').test(title)||place===1&&/\bwins?\b|\bchampions?\b/i.test(title)))return false;
     }
     const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
-    return recapMatchesEvent(raw,cardBound?{...event,sport:''}:event,url);
+    // Multi-day events are checked against their last day, as Kansas's are:
+    // the USTA SoCal recap is dated Sep 28 for a Sep 24-27 tournament.
+    const identity=event.end_time?{...event,start_time:event.end_time}:event;
+    return recapMatchesEvent(raw,cardBound?{...identity,sport:''}:identity,url);
   }
   const isByuCrossCountry=event=>event?.school_id==='byu'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   // Feed and expanded view both call this; the second call is a no-op. Race
