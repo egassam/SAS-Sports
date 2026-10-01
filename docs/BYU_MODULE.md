@@ -67,3 +67,5 @@ Production listed every game twice, like Volleyball. Soccer joins `cardSports`. 
 - **Recap dates.** A card's recap must be dated, in its URL, between the day before the event and three days after it ends. The official Sep 3 Colorado State card links the Aug 28 Minnesota recap; that link is refused, so the feed shows no recap for that game rather than the wrong one. Football's and Volleyball's recaps are unchanged.
 
 The Aug 1 intrasquad ("vs. BYU", `BLU, 1-0`) is skipped as internal. Result: 11 finals (two `T, 1-1` ties) with 10 recaps, and 9 upcoming with published times.
+
+**A recap must name BYU.** On the preview, the Sep 3 Colorado State expanded view fell through to the shared opponent-site fallback. That fallback took "Colorado State" for Colorado and accepted a cubuffs.com story about Colorado vs New Mexico. `byuHandlers.matchesRecap` now refuses any article whose title and text never say "BYU" or "Brigham Young", whatever site it comes from.

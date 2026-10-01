@@ -134,6 +134,13 @@ assert.equal(soccerFinals.filter(e=>e.recap_url).length,10);
 assert.equal(soccerFinals.find(e=>e.opponent==='Minnesota').recap_url,'https://byucougars.com/news/2026/08/28/cougs-capitalize-on-own-goal-defeat-minnesota-1-0');
 assert.deepEqual(soccer.at(-1)&&[soccer.at(-1).title,soccer.at(-1).display_time],['BYU vs Big 12 Soccer Tournament','Nov 9'],'a TBA opponent takes its tournament heading');
 {const [g]=worker.groupEvents(soccer,now);assert.deepEqual([g.results.length,g.upcoming.length],[11,9]);}
+// A recap must name BYU. Production's opponent-site fallback matched a
+// cubuffs.com story (Colorado vs New Mexico) to the Sep 3 Colorado State game.
+// cubuffs.com refuses the sandbox, so this is a minimal stand-in page with the
+// same title, not the official article.
+const otherTeamsStory='<meta property="og:title" content="Soccer: Early Goals Power Buffs Past New Mexico"><script type="application/ld+json">{"articleBody":"BOULDER, Colo. - Colorado State transfer Ruby Hayward scored in the 7th minute on September 3, 2026 as the Buffs beat New Mexico in soccer."}</script>';
+assert.equal(worker.byuHandlers.matchesRecap(otherTeamsStory,{...colorado,start_time:'2026-09-03T12:00:00.000Z'},'https://cubuffs.com/news/2026/9/3/soccer-early-goals-power-buffs-past-new-mexico'),false,'a story that never names BYU is not a BYU recap');
+assert.ok(finals.every((event,i)=>worker.byuHandlers.matchesRecap(recaps[i],event,event.recap_url)),'BYU\'s own recaps still match');
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer']);

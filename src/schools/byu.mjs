@@ -76,7 +76,7 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // link. The shared parsers read both these cards and the page's schema data,
 // so every upcoming game appeared twice and a phantom Nov 28 final reused the
 // Sep 5 score and recap.
-export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,eventType}){
+export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
   const isSchoolItself=(name,school)=>[school.short_name,school.name].some(value=>value&&value.toLowerCase()===name.toLowerCase());
   // The card's own Recap link: "<span>Recap</span>" (Football) or a plain
@@ -132,8 +132,14 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
   // Season with 63-7 Win over Utah Tech"), so the shared matcher rejects every
   // one. A Recap link from the sport's own schedule card is already bound to
   // that sport; the article must still name the opponent and match the date.
+  //
+  // Any recap for a BYU event must name BYU in its own title or article. The
+  // shared opponent-site fallback otherwise accepted a cubuffs.com story about
+  // Colorado vs New Mexico for BYU's Sep 3 soccer game with Colorado State.
   function matchesRecap(raw,event,url){
     if(event?.school_id!=='byu')return false;
+    const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
+    if(!/\b(?:BYU|Brigham Young)\b/i.test(`${title} ${recapArticleText(raw)}`))return false;
     let parsed;try{parsed=new URL(url);}catch{return false;}
     const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
     return recapMatchesEvent(raw,cardBound?{...event,sport:''}:event,url);
