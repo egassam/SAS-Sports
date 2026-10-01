@@ -69,6 +69,18 @@
       "url": "https://thesundevils.com/sports/track-field/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official Arizona State Track & Field schedule, unmodified. 15 cards, all from the 2025-26 season (Jan 9 - Jun 10, 2026); nothing from the 2026-27 season is published."
+    },
+    "cross-country-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/cross-country/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026 Cross Country schedule, unmodified (served gzip-compressed). 6 cards: Dave Murray Invitational (Sep 4, final, recap + Wingfoot results link), Meadows Challenge (Sep 26, final, no recap; its Live Results link is the preview article), 4 upcoming."
+    }
+  },
+  "recaps": {
+    "xc-recap-dave-murray-invitational.html.gz": {
+      "url": "https://thesundevils.com/news/2026/09/4/gaffney-leads-the-way-as-cross-country-begins-2026-season",
+      "retrieved": "2026-10-01T02:15Z",
+      "note": "Official Dave Murray Invitational recap, unmodified. Women's 4K Run: 12 Sun Devils (Kelli Gaffney 1st, 13:47.3); Men's 6K Run: 6 (Tyler Daillak 11th, 18:19.2; Ryan Lish's time is printed 19.22.9). No team scores."
     }
   }
 }
