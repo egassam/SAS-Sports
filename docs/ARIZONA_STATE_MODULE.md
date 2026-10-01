@@ -101,6 +101,12 @@ Production showed the women's page only (it was the first route candidate and Go
 - Men's: 3 finals, 11 upcoming; women's: 1 final, 11 upcoming.
 - Tournament and meet cards without a vs./at divider read `ASU at …`, as K-State's do (`MEET_SPORTS`: Golf, Cross Country, Track & Field, Gymnastics). Cross Country, Football and Wrestling output is unchanged.
 
+## Tennis (`4.33.2-arizona-state-tennis`)
+
+Production showed the women's page only (first route candidate), with a placeholder `ASU at at` result. Tennis is now a combined sport with only the two official pages (`mens-tennis`, `womens-tennis`), labeled by team, and joins `cardSports`:
+- The men's page still shows the 2025-26 season (28 duals, Jan 11 - May 1, 2026), so it contributes nothing until the 2027 schedule is published.
+- Women's: 12 fall 2026 individual tournaments; the 2 completed ones (ITA All-American, USTA SoCal) read `Completed`, since individual events publish no team result. The USTA SoCal card links its recap.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |

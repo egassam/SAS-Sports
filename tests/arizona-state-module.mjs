@@ -38,7 +38,7 @@ for(const sport of sports){
 }
 assert.ok(!/'arizona-state\|/.test(read('../src/index.js')),'Arizona State configuration must live in its module, not shared code');
 // Program combinations are unchanged from the shared policy.
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Swimming & Diving']);
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Swimming & Diving','Tennis']);
 assert.equal(worker.teamLabelForSource(school,'Swimming & Diving','https://thesundevils.com/sports/womens/swimming-diving/schedule'),"Women's");
 // The neighbouring Arizona school keeps its own routes in shared code.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='arizona'),'Football')[0],'https://arizonawildcats.com/sports/football/schedule');
@@ -67,7 +67,7 @@ const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,10]);
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
-const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now);
+const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Swimming & Diving',footballUrl,now);
 assert.ok(otherShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
 const arizona=schools.find(s=>s.id==='arizona');
 assert.ok(worker.parseHtml(fixture('football-schedule.html.gz'),arizona,'Football','https://arizonawildcats.com/sports/football/schedule',now).some(e=>e.opponent==='vs.'),'other schools are unchanged');
@@ -183,4 +183,15 @@ assert.deepEqual(womensGolf.filter(e=>e.status==='Final').map(e=>[e.display_time
 assert.deepEqual([mensGolf.length,womensGolf.length],[14,12]);
 assert.ok(womensGolf.every(e=>e.title.startsWith('ASU at ')),'tournament cards without a divider read "ASU at", as K-State\'s do');
 assert.equal(mensGolf.find(e=>/Augusta/.test(e.opponent)).title,'ASU vs Augusta/Haskins Invitational','a published "vs." is kept');
+// Tennis: both official pages, labeled by team. The men's page still shows
+// the 2025-26 season (an empty schedule); the women's page has the fall 2026
+// individual tournaments, which publish no team result.
+assert.deepEqual(arizonaStateSchool.scheduleUrls['arizona-state|Tennis'],['https://thesundevils.com/sports/mens-tennis/schedule','https://thesundevils.com/sports/womens-tennis/schedule']);
+assert.ok(worker.schoolCombinedSports(school).has('Tennis'));
+const mensTennis=worker.parseHtml(fixture('mens-tennis-schedule.html.gz'),school,'Tennis','https://thesundevils.com/sports/mens-tennis/schedule',now);
+assert.deepEqual(mensTennis,[]);assert.ok(worker.arizonaStateHandlers.isEmptySchedule(mensTennis));
+const womensTennis=worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis','https://thesundevils.com/sports/womens-tennis/schedule',now);
+assert.equal(womensTennis.length,12);
+assert.deepEqual(womensTennis.filter(e=>e.status==='Final').map(e=>[e.display_time,e.title,e.headline]),[['Sep 19','ASU at ITA All-American Championships','Completed'],['Sep 24','ASU at USTA SoCal Championships','Completed']]);
+assert.equal(womensTennis.filter(e=>e.display_time==='Oct 26').length,2,'two tournaments in the same week stay separate');
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);

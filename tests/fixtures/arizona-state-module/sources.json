@@ -84,6 +84,16 @@
       "url": "https://thesundevils.com/sports/womens-golf/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official 2026-27 Women's Golf schedule, unmodified. 12 cards: final Mason Rudolph Championship (T2, -1 (851); recap); 11 upcoming. Cards have no vs./at divider."
+    },
+    "womens-tennis-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026-27 Women's Tennis schedule, unmodified. 12 cards of individual tournaments: 2 completed (ITA All-American Championships Sep 19-27; USTA SoCal Championships Sep 24-27, recap), 10 upcoming."
+    },
+    "mens-tennis-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/mens-tennis/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official Men's Tennis schedule, unmodified, still titled 2025-26: 28 completed duals (Jan 11 - May 1, 2026). Nothing from 2026-27 is published."
     }
   },
   "recaps": {
