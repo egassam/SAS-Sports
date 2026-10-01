@@ -6,6 +6,14 @@
   "ai": {
     "binding": "AI"
   },
+  // Stored feeds shared by every Cloudflare location (src/feed-store.mjs).
+  "kv_namespaces": [
+    { "binding": "FEEDS", "id": "44e354a55a1c43ce8013e40eb2cc9a75" }
+  ],
+  // Every minute, rebuild the viewed feeds whose stored copy is due.
+  "triggers": {
+    "crons": ["* * * * *"]
+  },
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS",
