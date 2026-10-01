@@ -64,6 +64,11 @@
       "url": "https://thesundevils.com/sports/gymnastics/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official Arizona State Gymnastics schedule, unmodified. 23 cards, all from the 2026 season (Jan 4 - Apr 2, 2026); nothing from the 2026-27 season is published."
+    },
+    "track-field-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/track-field/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official Arizona State Track & Field schedule, unmodified. 15 cards, all from the 2025-26 season (Jan 9 - Jun 10, 2026); nothing from the 2026-27 season is published."
     }
   }
 }

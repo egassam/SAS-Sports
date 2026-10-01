@@ -136,4 +136,10 @@ assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Gymnastics'],'https:
 const gymnasticsPast=worker.parseHtml(fixture('gymnastics-schedule.html.gz'),school,'Gymnastics','https://thesundevils.com/sports/gymnastics/schedule',now);
 assert.deepEqual(gymnasticsPast,[]);
 assert.ok(worker.arizonaStateHandlers.isEmptySchedule(gymnasticsPast));
+// Track & Field: the official track-field page still shows the 2025-26 season (Jan 9 - Jun 10, 2026), the previous academic
+// year; it is an empty schedule until the next season is published.
+assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Track & Field'],'https://thesundevils.com/sports/track-field/schedule');
+const trackFieldPast=worker.parseHtml(fixture('track-field-schedule.html.gz'),school,'Track & Field','https://thesundevils.com/sports/track-field/schedule',now);
+assert.deepEqual(trackFieldPast,[]);
+assert.ok(worker.arizonaStateHandlers.isEmptySchedule(trackFieldPast));
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);
