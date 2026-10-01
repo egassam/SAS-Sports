@@ -14,6 +14,11 @@
       "url": "https://thesundevils.com/sports/volleyball/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official 2026 Arizona State Volleyball schedule, unmodified. 29 cards: 13 finals (Aug 22 W 3-1 vs #2 Texas through Sep 27 W 3-1 at Cincinnati), each with its own Recap link; 16 upcoming with published times."
+    },
+    "baseball-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/baseball/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official Arizona State Baseball schedule (titled 2027), unmodified. 35 cards: final Sep 27, 2026 exhibition W 10-0 vs Naranjeros de Hermosillo (no recap link); 4 fall 2026 exhibitions with times; 30 spring 2027 games, times TBA. JSON-LD lists every start time."
     }
   }
 }
