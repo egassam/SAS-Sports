@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball']),
+  cardSports:new Set(['Football','Volleyball','Soccer']),
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
@@ -52,9 +52,19 @@ function cardBlocks(raw){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=open.index+open[0].length;
     let depth=1,end=-1,tag;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tags.lastIndex;
-    if(end>0)blocks.push(raw.slice(open.index,end));
+    if(end>0)blocks.push({block:raw.slice(open.index,end),index:open.index});
   }
   return blocks;
+}
+
+// Cards are grouped under tournament headings ("Exhibition", "Big 12 Soccer
+// Tournament Presented by Allstate"). A card whose opponent is still "TBA"
+// is named after its tournament.
+function tournamentTitle(raw,index,visibleText){
+  const start=raw.lastIndexOf('class="schedule-events-by-tournament"',index);
+  if(start<0)return'';
+  const title=raw.slice(start,index).match(/schedule-events-by-tournament__title[^>]*>([\s\S]*?)<\//i);
+  return visibleText(title?.[1]||'').replace(/\s+Presented by\b.*$/i,'').trim();
 }
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -71,11 +81,19 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
   const isSchoolItself=(name,school)=>[school.short_name,school.name].some(value=>value&&value.toLowerCase()===name.toLowerCase());
   // The card's own Recap link: "<span>Recap</span>" (Football) or a plain
   // relative "/news/..." link reading "Recap" (Volleyball). Preview links never count.
-  function cardRecap(block,sourceUrl){
+  // A recap is dated in its URL (/news/2026/9/5/...). The page sometimes
+  // links another game's recap (the Sep 3 soccer card links the Aug 28
+  // Minnesota recap), so the date must fall between the day before the event
+  // and three days after it ends.
+  function cardRecap(block,sourceUrl,firstDay,lastDay){
     for(const link of block.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*)<\/a>/gi)){
       if(!/^Recap\b/i.test(visibleText(link[2])))continue;
       const url=absoluteUrl(link[1],sourceUrl);
-      try{const parsed=new URL(url);if(parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/'))return url;}catch{}
+      let parsed;try{parsed=new URL(url);}catch{continue;}
+      const dated=parsed.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
+      if(parsed.protocol!=='https:'||parsed.hostname!=='byucougars.com'||!dated)continue;
+      const day=Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3]));
+      if(day>=firstDay-86400000&&day<=lastDay+3*86400000)return url;
     }
     return null;
   }
@@ -83,14 +101,15 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     if(school?.id!=='byu'||!byuSchool.cardSports.has(sport))return null;
     raw=String(raw||'');
     const events=[];
-    for(const block of cardBlocks(raw)){
+    for(const {block,index} of cardBlocks(raw)){
       // The datetime attribute is local wall clock; its date is the published day.
       const start=(block.match(/<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       if(start.length!==3)continue;
       const [year,month,day]=start;
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#11 Utah", "No. 2 Pittsburgh") describe the week, not the opponent.
-      const opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:(?:#|No\.\s*)(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
+      let opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:(?:#|No\.\s*)(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
+      if(/^TBA$/i.test(opponent))opponent=tournamentTitle(raw,index,visibleText);
       if(!opponent)continue;
       // Internal games (the volleyball Blue-White Scrimmage, soccer's "vs. BYU"
       // intrasquad) have no opponent divider or list BYU against itself.
@@ -101,7 +120,9 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
         // K-State's results show the date only; upcoming games show the published time.
         time:result||!/\d/.test(clock)?null:clock,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
-      const recapUrl=cardRecap(block,sourceUrl);
+      const last=(block.match(/schedule-event-date__wrapper--end[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
+      const firstDay=Date.UTC(year,month-1,day),lastDay=last.length===3?Date.UTC(last[0],last[1]-1,last[2]):firstDay;
+      const recapUrl=cardRecap(block,sourceUrl,firstDay,lastDay);
       if(recapUrl)event.recap_url=recapUrl;
       events.push(event);
     }

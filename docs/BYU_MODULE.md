@@ -59,3 +59,11 @@ Production listed every match twice, once as `Oct 1` and once as `Wed. Oct. 1, 2
 - **Internal games.** In game sports, a card with no `vs.`/`at` divider (the Aug 15 Blue-White Scrimmage), or one listing BYU against itself, is skipped.
 
 Result: 11 finals (`W, 3-0` Utah Tech … `W, 3-2` Baylor), each with its own recap, and 17 matches with published times.
+
+## Soccer (`4.36.2-byu-soccer`)
+
+Production listed every game twice, like Volleyball. Soccer joins `cardSports`. Two more reader parts:
+- **Tournament cards.** The Nov 9–14 card's opponent is `TBA`. It takes its group heading, minus the sponsor: `BYU vs Big 12 Soccer Tournament`.
+- **Recap dates.** A card's recap must be dated, in its URL, between the day before the event and three days after it ends. The official Sep 3 Colorado State card links the Aug 28 Minnesota recap; that link is refused, so the feed shows no recap for that game rather than the wrong one. Football's and Volleyball's recaps are unchanged.
+
+The Aug 1 intrasquad ("vs. BYU", `BLU, 1-0`) is skipped as internal. Result: 11 finals (two `T, 1-1` ties) with 10 recaps, and 9 upcoming with published times.
