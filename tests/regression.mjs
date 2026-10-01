@@ -6,7 +6,8 @@ const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.
 const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
 const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
 const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule};
+const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 

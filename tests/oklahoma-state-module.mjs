@@ -1,4 +1,5 @@
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
@@ -16,7 +17,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 // Unlisted URLs are refused; tests can never silently contact okstate.com.
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));return responses.has(String(url))?new Response(responses.get(String(url))):new Response('not found',{status:404});};
-const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,freshGroupedFeed,groupEvents,makeEvent,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,schoolCombinedSports,teamLabelForSource};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official routes.
