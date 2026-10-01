@@ -130,4 +130,10 @@ assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Water Polo'],'https:
 const waterPoloPast=worker.parseHtml(fixture('water-polo-schedule.html.gz'),school,'Water Polo','https://thesundevils.com/sports/water-polo/schedule',now);
 assert.deepEqual(waterPoloPast,[]);
 assert.ok(worker.arizonaStateHandlers.isEmptySchedule(waterPoloPast));
+// Gymnastics: the official gymnastics page still shows the 2026 season (Jan 4 - Apr 2, 2026), the previous academic
+// year; it is an empty schedule until the next season is published.
+assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Gymnastics'],'https://thesundevils.com/sports/gymnastics/schedule');
+const gymnasticsPast=worker.parseHtml(fixture('gymnastics-schedule.html.gz'),school,'Gymnastics','https://thesundevils.com/sports/gymnastics/schedule',now);
+assert.deepEqual(gymnasticsPast,[]);
+assert.ok(worker.arizonaStateHandlers.isEmptySchedule(gymnasticsPast));
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);
