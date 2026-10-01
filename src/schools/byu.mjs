@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football']),
+  cardSports:new Set(['Football','Volleyball']),
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
@@ -66,8 +66,19 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // link. The shared parsers read both these cards and the page's schema data,
 // so every upcoming game appeared twice and a phantom Nov 28 final reused the
 // Sep 5 score and recap.
-export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent}){
+export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,eventType}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
+  const isSchoolItself=(name,school)=>[school.short_name,school.name].some(value=>value&&value.toLowerCase()===name.toLowerCase());
+  // The card's own Recap link: "<span>Recap</span>" (Football) or a plain
+  // relative "/news/..." link reading "Recap" (Volleyball). Preview links never count.
+  function cardRecap(block,sourceUrl){
+    for(const link of block.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*)<\/a>/gi)){
+      if(!/^Recap\b/i.test(visibleText(link[2])))continue;
+      const url=absoluteUrl(link[1],sourceUrl);
+      try{const parsed=new URL(url);if(parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/'))return url;}catch{}
+    }
+    return null;
+  }
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='byu'||!byuSchool.cardSports.has(sport))return null;
     raw=String(raw||'');
@@ -78,18 +89,20 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       if(start.length!==3)continue;
       const [year,month,day]=start;
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
-      // Rankings ("#11 Utah") describe the week, not the opponent.
-      const opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:#(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
+      // Rankings ("#11 Utah", "No. 2 Pittsburgh") describe the week, not the opponent.
+      const opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:(?:#|No\.\s*)(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
       if(!opponent)continue;
+      // Internal games (the volleyball Blue-White Scrimmage, soccer's "vs. BYU"
+      // intrasquad) have no opponent divider or list BYU against itself.
+      if(eventType(sport)==='GAME'&&(!divider||isSchoolItself(opponent,school)))continue;
       const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       const event=makeEvent({school,sport,status:result?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||!/\d/.test(clock)?null:clock,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
-      const recap=(block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>\s*<span\b[^>]*schedule-event-item-links__title[^>]*>\s*Recap\s*<\/span>/i)||[])[1];
-      const recapUrl=recap?absoluteUrl(recap,sourceUrl):null;
-      if(recapUrl&&new URL(recapUrl).hostname==='byucougars.com'&&new URL(recapUrl).pathname.startsWith('/news/'))event.recap_url=recapUrl;
+      const recapUrl=cardRecap(block,sourceUrl);
+      if(recapUrl)event.recap_url=recapUrl;
       events.push(event);
     }
     return events.length?events:null;

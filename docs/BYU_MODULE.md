@@ -50,3 +50,12 @@ Fixtures: the three recaps (see `sources.json`). Tests:
 - each recap matches only its own game;
 - each final keeps its own recap, and the stub AI is given that game's article;
 - a wrong card recap leaves the game at `recap_not_found`, with no recap link and no highlights.
+
+## Volleyball (`4.36.1-byu-volleyball`)
+
+Production listed every match twice, once as `Oct 1` and once as `Wed. Oct. 1, 2026`: 12 results and 30 upcoming. Volleyball joins `cardSports`. The reader gains three parts that later sports use:
+- **Rankings.** `No. 2 Pittsburgh` is read as Pittsburgh, as `#11 Utah` already was.
+- **Plain Recap links.** Volleyball's Recap is a relative `/news/...` link reading "Recap", not Football's `<span>`. Either form counts, and Preview links never do.
+- **Internal games.** In game sports, a card with no `vs.`/`at` divider (the Aug 15 Blue-White Scrimmage), or one listing BYU against itself, is skipped.
+
+Result: 11 finals (`W, 3-0` Utah Tech … `W, 3-2` Baylor), each with its own recap, and 17 matches with published times.
