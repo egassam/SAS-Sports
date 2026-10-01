@@ -61,6 +61,10 @@ Production showed men's games a day late (New Mexico `Oct 26` instead of Oct 25)
 
 Production showed 35 games, with evening games on the next UTC day (Lindenwood `Oct 3` for the Oct 2, 5:00 p.m. game, merging the two games of the series). Hockey joins `cardSports`, and its route is now only the official `ice-hockey` page (the `mens-ice-hockey`, `womens-ice-hockey`, `hockey` and homepage candidates are removed). All 36 games show on their published day and time.
 
+## Wrestling (`4.32.7-arizona-state-wrestling`)
+
+Production showed the Oklahoma State dual on `November 21` (UTC) instead of Nov 20, 6:00 p.m. Wrestling joins `cardSports`; its route is now only the official page (homepage fallback removed). Two events: Oklahoma St. (Nov 20, 6:00 PM) and the National Duals Invitational (Dec 12, all day).
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
