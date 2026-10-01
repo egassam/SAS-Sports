@@ -160,6 +160,9 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over||!/\d/.test(clock)?null:clock,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
+      // Multi-day meets (golf, swimming invitationals) end later; the recap
+      // that reports the result is published on or after the last day.
+      if(meet&&lastDay>firstDay)event.end_time=new Date(lastDay).toISOString().slice(0,10)+'T23:59:59Z';
       const recapUrl=cardRecap(block,sourceUrl,firstDay,lastDay);
       // Separate men's and women's pages can list the same meet on the same
       // day; the team keeps their event ids apart.
@@ -186,6 +189,23 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
     if(!/\b(?:BYU|Brigham Young)\b/i.test(`${title} ${recapArticleText(raw)}`))return false;
     let parsed;try{parsed=new URL(url);}catch{return false;}
+    // A story from the middle of a multi-day meet ("BYU in fourth after day
+    // one") is not its result: the recap must be dated on or after the last day.
+    if(event.end_time){
+      const dated=parsed.pathname.match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
+      if(!dated||Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3]))<Date.parse(event.end_time.slice(0,10)+'T00:00:00Z'))return false;
+    }
+    // Golf posts in-progress stories under the same date ("Walker, BYU in
+    // second after day one of Red Raider Invitational"). The result recap is
+    // the one whose title states the final team place ("Cougars finish ninth",
+    // "Men's golf takes third", "wins" for first).
+    if(event.sport==='Golf'&&event.status==='Final'){
+      const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
+      if(/\b(?:day|round) (?:one|two|three|1|2|3)\b|\bsuspend/i.test(title))return false;
+      const place=Number((String(event.headline||'').match(/\d+/)||[])[0]);
+      const words=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth','twentieth'];
+      if(place&&!(new RegExp(`\\b(?:${words[place]||'-'}|${ordinal(place)})\\b`,'i').test(title)||place===1&&/\bwins?\b|\bchampions?\b/i.test(title)))return false;
+    }
     const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
     return recapMatchesEvent(raw,cardBound?{...event,sport:''}:event,url);
   }

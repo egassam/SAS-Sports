@@ -211,6 +211,20 @@ for(const team of ['mens','womens']){
 assert.deepEqual([golf.mens.length,golf.womens.length],[14,13]);
 assert.deepEqual([...golf.mens,...golf.womens].filter(e=>e.status==='Final').map(e=>`${e.display_time} ${e.title} ${e.headline}`),["Sep 14 Men's · BYU at Vuori Invitational 4th","Sep 25 Men's · BYU at William H. Tucker Invitational 3rd","Sep 8 Women's · BYU at The Bruzzy 9th","Sep 22 Women's · BYU at Red Raider Invitational 1st"]);
 assert.equal(worker.mergeEvents([golf.mens,golf.womens]).length,27);
+// Golf recaps: in-progress stories share the final day's date ("Walker, BYU
+// in second after day one"). Only the recap stating the final team place
+// counts, so the expanded view cannot contradict the result.
+const tucker=golf.mens.find(e=>/Tucker/.test(e.title)),redRaider=golf.womens.find(e=>/Red Raider/.test(e.title));
+assert.deepEqual([tucker.end_time,redRaider.end_time],['2026-09-26T23:59:59Z','2026-09-23T23:59:59Z'],'multi-day meets carry their last day');
+const golfNews='https://byucougars.com/news/2026/09/';
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-26-tucker-final.html.gz'),tucker,golfNews+'26/mens-golf-takes-third-at-william-h-tucker-invitational-behind-akinas-fourth-place-finish'),true);
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-story-2026-09-26-tucker-suspended.html.gz'),tucker,golfNews+'26/akina-sixth-byu-fourth-as-weather-suspends-play-at-william-h-tucker-invitational'),false,'a suspended-play story is not the result');
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-23-red-raider-final.html.gz'),redRaider,golfNews+'23/womens-golf-wins-red-raider-invitational-behind-walkers-second-place-finish'),true,'"wins" states first place');
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-story-2026-09-23-red-raider-day-one.html.gz'),redRaider,golfNews+'23/walker-byu-in-second-after-day-one-of-red-raider-invitational'),false,'a day-one story is not the result');
+const vuori=golf.mens.find(e=>/Vuori/.test(e.title));
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-story-2026-09-15-vuori-day-one.html.gz'),vuori,golfNews+'15/akina-cougars-in-fourth-as-darkness-suspends-day-one-of-vuori-invitational'),false,'a day-one story naming the same place ("in fourth") is still not the result');
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-16-vuori-final.html.gz'),vuori,golfNews+'16/akina-takes-second-cougars-finish-fourth-at-vuori-invitational'),true);
+assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-26-tucker-final.html.gz'),{...tucker,headline:'5th'},golfNews+'26/mens-golf-takes-third-at-william-h-tucker-invitational-behind-akinas-fourth-place-finish'),false,'a recap stating another place belongs to another result');
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']);

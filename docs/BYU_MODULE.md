@@ -101,3 +101,9 @@ Production read only the first route (the women's page) and showed no placings. 
 - joins `cardSports`, reading the card's team place as the result. For example, `9th (María José "MJ" Barragán - T-6th)` gives `9th`, and `T-` becomes `T`.
 
 K-State reads `1st of 12 (864)`, but BYU's cards publish neither the field size nor the score. Result: men's 4th and 3rd, women's 9th and 1st, and 23 upcoming tournaments through May 2027 with published start times. The cards link no recaps; the expanded view uses the shared news-archive search with the BYU recap check.
+
+**Golf recaps.** On the preview, every expanded view used an in-progress story ("Akina, Cougars in fourth as darkness suspends day one"). Its date matched the tournament's first day, and its text could contradict the final place. Now:
+- Multi-day meets carry `end_time` (the last day, as Kansas does).
+- The shared recap search uses the last day for BYU meets: one school-gated line beside Kansas's in `attachOfficialHighlights`.
+- `byuHandlers.matchesRecap` requires a multi-day meet's recap to be dated on or after the last day.
+- For Golf, the title must state the final team place ("finish fourth", "takes third", "wins" for first), and a title with "day one", "round one" or "suspends" is refused. In-progress stories are often published on the same last day, and a day-one title can even name the final place (Vuori: "in fourth" after day one; final 4th).
