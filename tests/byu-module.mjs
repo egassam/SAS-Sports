@@ -22,7 +22,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit byucougars.com routes.
 const sports=sponsoredSports.byu;
@@ -39,7 +39,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(byuSchool.rosterUrls[`byu|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'byu\|/.test(read('../src/index.js')),'BYU configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Swimming & Diving'],'program combinations are unchanged');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Swimming & Diving'],'both teams are shown for these sports');
 for(const [key,url] of Object.entries(byuSchool.verifiedInstagrams))assert.equal(worker.VERIFIED_TEAM_TAG_INSTAGRAM.get(key),url,'verified Instagram tags are still used');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='ucf'),'Football')[0],'https://ucfknights.com/sports/football/schedule');
@@ -141,9 +141,40 @@ assert.deepEqual(soccer.at(-1)&&[soccer.at(-1).title,soccer.at(-1).display_time]
 const otherTeamsStory='<meta property="og:title" content="Soccer: Early Goals Power Buffs Past New Mexico"><script type="application/ld+json">{"articleBody":"BOULDER, Colo. - Colorado State transfer Ruby Hayward scored in the 7th minute on September 3, 2026 as the Buffs beat New Mexico in soccer."}</script>';
 assert.equal(worker.byuHandlers.matchesRecap(otherTeamsStory,{...colorado,start_time:'2026-09-03T12:00:00.000Z'},'https://cubuffs.com/news/2026/9/3/soccer-early-goals-power-buffs-past-new-mexico'),false,'a story that never names BYU is not a BYU recap');
 assert.ok(finals.every((event,i)=>worker.byuHandlers.matchesRecap(recaps[i],event,event.recap_url)),'BYU\'s own recaps still match');
+// Cross Country: production read only the women's page and showed meets as
+// "Completed". Both teams' pages are read (labeled, separate ids); the card
+// gives the team finish; race rows come from the meet's own recap tables.
+const xc={};
+for(const team of ['womens','mens']){
+  const url=`https://byucougars.com/sports/${team}-cross-country/schedule`;
+  xc[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-cross-country-schedule.html.gz`),school,'Cross Country',url,now),school,'Cross Country',url);
+}
+const xcEvents=worker.mergeEvents([xc.womens,xc.mens]);
+assert.equal(xcEvents.length,12,'six meets per team; the shared Big 12 and NCAA meets stay separate per team');
+assert.deepEqual(xcEvents.filter(e=>e.status==='Final').map(e=>[e.display_time,e.title,e.headline]),[
+  ['Sep 4',"Women's · BYU at UVU Invitational","Women's team: 1st · 19 pts"],['Sep 26',"Women's · BYU at Cowboy Jamboree","Women's team: 1st · 32 pts"],
+  ['Sep 4',"Men's · BYU at Utah Valley Invitational","Men's team: 1st · 17 pts"],['Sep 19',"Men's · BYU at John McNichols Invitational","Men's team: 1st · 71 pts"]
+]);
+assert.deepEqual(xcEvents.filter(e=>e.status!=='Final').map(e=>`${e.title} ${e.display_time}`).slice(0,2),["Women's · BYU at Pre-Nationals Oct 16, 8:00 AM","Women's · BYU at Big 12 Championships Oct 31"]);
+const xcRecaps={
+  'https://byucougars.com/news/2026/09/4/no-4-byu-dominates-uvu-invitational-hedengren-takes-first':'xc-recap-2026-09-04-uvu-invitational-women.html.gz',
+  'https://byucougars.com/news/2026/09/26/no-3-byu-secures-second-win-of-the-season-at-cowboy-jamboree-taking-down-no-2-new-mexico':'xc-recap-2026-09-26-cowboy-jamboree-women.html.gz',
+  'https://byucougars.com/news/2026/09/4/no-9-byu-dominate-utah-valley-invitational-open-season-with-a-win':'xc-recap-2026-09-04-utah-valley-invitational-men.html.gz',
+  'https://byucougars.com/news/2026/09/19/kitchen-leads-byu-to-win-in-john-mcnichols-invitational':'xc-recap-2026-09-19-john-mcnichols-men.html.gz'
+};
+for(const [url,name] of Object.entries(xcRecaps))recapFixtures.set(url,fixture(name));
+const xcFinals=xcEvents.filter(e=>e.status==='Final');
+for(const event of xcFinals)await worker.attachOfficialMeetResults(event);
+const rowsOf=event=>event.results.map(r=>`${r.group} | ${r.participant} | ${r.result}`);
+assert.deepEqual(rowsOf(xcFinals[0]),["Women's race | BYU team | 1st · 19 pts","Women's race | Jane Hedengren | 1st · 15:08.62","Women's race | Jenna Hutchins | 3rd · 15:44.65","Women's race | Taylor Lovell | 4th · 16:04.57","Women's race | Lexi Goff-Thompson | 5th · 16:10.28","Women's race | Nelah Roberts | 6th · 16:13.16","Women's race | Zariel Macchia | 7th · 16:19.61","Women's race | Karrie Baloga | 8th · 16:20.65"],'only BYU runners from the top-10 table; other schools are left out');
+assert.deepEqual(rowsOf(xcFinals[1]).slice(0,3),["Women's race | BYU team | 1st · 32 pts","Women's race | Jane Hedengren | 3rd · 19:32.5","Women's race | Jenna Hutchins | 5th · 19:56.9"],'the team-score table is skipped; no distance is claimed from recap prose');
+assert.ok(rowsOf(xcFinals[2]).slice(1).every(row=>/\| \d{1,2}:\d{2}\.\d$/.test(row)),'a table without a place column gives times only, never guessed places');
+assert.deepEqual(rowsOf(xcFinals[3]).slice(0,3),["Men's race | BYU team | 1st · 71 pts","Men's race | Tayvon Kitchen | 3rd · 23:23.1","Men's race | Noah Jenkins | 14th · 24:01.5"]);
+assert.deepEqual(xcFinals.map(e=>e.highlights[0]),["Jane Hedengren led BYU in the women's race, finishing 1st in 15:08.62.","Jane Hedengren led BYU in the women's race, finishing 3rd in 19:32.5.","Tayvon Kitchen led BYU in the men's race, finishing in 13:21.4.","Tayvon Kitchen led BYU in the men's race, finishing 3rd in 23:23.1."]);
+assert.ok(xcFinals.every(e=>e.meet_results_verified&&e.highlight_state==='official_recap_results'&&e.recap_result_count===e.results.length));
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');

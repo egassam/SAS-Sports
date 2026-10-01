@@ -7,8 +7,10 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer']),
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  // Men's and women's teams publish separate pages; both are shown, labeled
+  // by team. Cross Country's teams mostly run different meets.
+  combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
     'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
@@ -17,7 +19,7 @@ export const byuSchool={
   scheduleUrls:{
     'byu|Baseball':['https://byucougars.com/sports/baseball/schedule','https://byucougars.com/'],
     'byu|Basketball':['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule','https://byucougars.com/sports/basketball/schedule','https://byucougars.com/'],
-    'byu|Cross Country':'https://byucougars.com/sports/womens-cross-country/schedule',
+    'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
     'byu|Football':'https://byucougars.com/sports/football/schedule',
     'byu|Golf':['https://byucougars.com/sports/womens-golf/schedule','https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/golf/schedule','https://byucougars.com/'],
     'byu|Gymnastics':['https://byucougars.com/sports/womens-gymnastics/schedule','https://byucougars.com/sports/mens-gymnastics/schedule','https://byucougars.com/sports/gymnastics/schedule','https://byucougars.com/'],
@@ -67,6 +69,30 @@ function tournamentTitle(raw,index,visibleText){
   return visibleText(title?.[1]||'').replace(/\s+Presented by\b.*$/i,'').trim();
 }
 
+// Cross Country recaps carry their results as tables in four layouts:
+// PLACE/ATHLETE/SCHOOL/TIME (top 10 overall), PLACE/TEAM/SCORE (skipped),
+// RUNNER/SCHOOL/TIME (no place column) and Name/Time/Finish (BYU only).
+// Only BYU runners are kept; a time without a published place stays a time.
+export function parseByuRecapResults(raw,{decodeHtml,ordinal,group}){
+  const text=value=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const rows=[],seen=new Set();
+  for(const table of String(raw||'').matchAll(/<table\b[\s\S]*?<\/table>/gi)){
+    const cells=[...table[0].matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>[...tr[0].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>text(cell[1])));
+    if(!cells.length)continue;
+    const head=cells[0].map(value=>value.toLowerCase()),column=names=>head.findIndex(value=>names.includes(value));
+    const name=column(['athlete','runner','name']),time=column(['time']),place=column(['place','finish']),team=column(['school']);
+    if(name<0||time<0)continue;
+    for(const row of cells.slice(1)){
+      if(team>=0&&!/^BYU$/i.test(row[team]||''))continue;
+      const participant=row[name],clock=(row[time]||'').match(/^\d{1,2}:\d{2}(?:\.\d+)?$/);
+      if(!participant||!clock||seen.has(participant))continue;
+      const finish=place>=0?(row[place]||'').match(/^(\d{1,3})(?:st|nd|rd|th)?$/i):null;
+      seen.add(participant);rows.push({group,participant,result:finish?`${ordinal(finish[1])} \u00b7 ${clock[0]}`:clock[0]});
+    }
+  }
+  return rows;
+}
+
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // byucougars.com renders each event as a schedule-event-item card: the start
@@ -76,8 +102,10 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // link. The shared parsers read both these cards and the page's schema data,
 // so every upcoming game appeared twice and a phantom Nov 28 final reused the
 // Sep 5 score and recap.
-export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType}){
+export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch,headers}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
+  // Today in Mountain time (BYU's cards are Mountain wall clock).
+  const mountainToday=now=>{const local=new Date(now.getTime()-7*3600000);return Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());};
   const isSchoolItself=(name,school)=>[school.short_name,school.name].some(value=>value&&value.toLowerCase()===name.toLowerCase());
   // The card's own Recap link: "<span>Recap</span>" (Football) or a plain
   // relative "/news/..." link reading "Recap" (Volleyball). Preview links never count.
@@ -116,13 +144,24 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       if(eventType(sport)==='GAME'&&(!divider||isSchoolItself(opponent,school)))continue;
       const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
-      const event=makeEvent({school,sport,status:result?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
-        // K-State's results show the date only; upcoming games show the published time.
-        time:result||!/\d/.test(clock)?null:clock,
-        schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
+      // Meets publish a team finish as text ("1st - 19 points").
+      const meet=eventType(sport)!=='GAME';
+      const placing=meet?field(block,/class=["']schedule-event-item-result__text["'][^>]*>([\s\S]*?)<\//i).match(/^(\d{1,3})(?:st|nd|rd|th)?\s*-\s*(\d+)\s*points?$/i):null;
       const last=(block.match(/schedule-event-date__wrapper--end[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       const firstDay=Date.UTC(year,month-1,day),lastDay=last.length===3?Date.UTC(last[0],last[1]-1,last[2]):firstDay;
+      // A meet whose last day has passed is over, published result or not.
+      const over=meet&&(placing||lastDay<mountainToday(now));
+      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||meet&&!divider?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
+        // K-State's results show the date only; upcoming games show the published time.
+        time:result||over||!/\d/.test(clock)?null:clock,
+        schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
       const recapUrl=cardRecap(block,sourceUrl,firstDay,lastDay);
+      // Separate men's and women's pages can list the same meet on the same
+      // day; the team keeps their event ids apart.
+      const team=byuSchool.combinedSports.has(sport)?(String(sourceUrl).match(/\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(team)event.id=`${event.id}-${team}`;
+      if(placing){const value=`${ordinal(placing[1])} \u00b7 ${placing[2]} pts`;event.headline=`${team==='mens'?"Men's":team==='womens'?"Women's":'BYU'} team: ${value}`;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(event.status==='Final'&&meet&&!event.headline){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       if(recapUrl)event.recap_url=recapUrl;
       events.push(event);
     }
@@ -144,5 +183,41 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
     return recapMatchesEvent(raw,cardBound?{...event,sport:''}:event,url);
   }
-  return{parseSchedule,matchesRecap};
+  const isByuCrossCountry=event=>event?.school_id==='byu'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
+  // Feed and expanded view both call this; the second call is a no-op. Race
+  // rows come from the meet's own card-bound recap.
+  async function attachMeetResults(event){
+    if(!isByuCrossCountry(event))return event;
+    if(event.meet_results_verified)return event;
+    const unavailable=status=>{
+      event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
+      event.highlight_state='official_results_partial';event.highlight_status=status;
+      return event;
+    };
+    const failed='Official race results could not be loaded. Open the official recap.';
+    if(!event.recap_url)return unavailable('No official recap is published for this meet on byucougars.com.');
+    let raw;
+    try{
+      const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});
+      if(!response.ok)return unavailable(failed);raw=await response.text();
+    }catch{return unavailable(failed);}
+    if(!matchesRecap(raw,event,event.recap_url))return unavailable(failed);
+    const team=/-mens$/.test(event.id)?"Men's":/-womens$/.test(event.id)?"Women's":'BYU';
+    // Recaps mention splits and other races ("the first 5,000-meters", an
+    // 8,000-meter race elsewhere), so no distance is claimed: "Women's race".
+    const group=`${team} race`;
+    const runners=parseByuRecapResults(raw,{decodeHtml,ordinal,group});
+    if(!runners.length)return unavailable(failed);
+    const teamResult=String(event.headline||'').match(/team: (.+)$/);
+    const rows=[...(teamResult?[{group,participant:'BYU team',result:teamResult[1]}]:[]),...runners];
+    event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;
+    event.recap_result_count=rows.length;
+    event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
+    const leader=runners[0];
+    event.highlights=[`${leader.participant} led BYU in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.includes(' \u00b7 ')?leader.result.replace(' \u00b7 ',' in '):`in ${leader.result}`}.`];
+    event.highlights_verified=true;event.meet_results_verified=true;
+    event.highlight_state='official_recap_results';event.highlight_status=null;
+    return event;
+  }
+  return{parseSchedule,matchesRecap,isByuCrossCountry,attachMeetResults};
 }
