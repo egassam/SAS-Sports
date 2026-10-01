@@ -1,10 +1,16 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: September 30, 2026, evening, America/Chicago (Utah finish: PRs #59–#62).
+Last updated: October 1, 2026, America/Chicago (Arizona State module + Football: PR #66).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Arizona State: module started, Football fixed; production is `4.32.0-arizona-state-football` (October 1 UTC).** User: "Start next school. Stay in the Big 12." The agent picked Arizona State: Arizona (next in catalog order) and Baylor, Colorado, Houston, Iowa State, TCU, Texas Tech and West Virginia all returned HTTP 403 to the sandbox, while thesundevils.com downloads normally. PR #66 (merge `3a691d1`) was merged by the agent under `AGENTS.md` item 6 and verified in production. Details are in `docs/ARIZONA_STATE_MODULE.md`.
+- **Setup (`84ceaea`):** routes moved to `src/schools/arizona-state.mjs`; 219/219 routes identical; preview matched production for all 17 sports.
+- **Football (`e5cdadd`):** production showed `ASU vs vs.`/`ASU at at` with `Sep, 2026, 5` dates, a phantom Dec 4 `W, 70-7`, no Sep 19 London game, and evening games a day late. The shared WMT card reader reads the nested `vs.`/`at` divider as the opponent on thesundevils.com cards. The module now reads Football's cards itself (`cardSports`, `createArizonaStateHandlers().parseSchedule`; returns `null` without cards, so shared parsers still run).
+- **Production after merge:** `W, 24-17` at Kansas, `L, 20-48` at Texas A&M, `W, 70-7` Morgan State, each 1 Result row + its own recap; expanded views 4 recap highlights each; 10 upcoming, Baylor `Oct 3, 7:30 PM`. K-State XC 18/20, KU XC 26/21.
+- **Still open for Arizona State (one sport per PR):** the same card defect affects every other sport (Soccer, Volleyball, Baseball, Lacrosse, Beach Volleyball, Water Polo show `vs.`/`at` opponents); past spring seasons shown as current (Gymnastics, Track & Field, Water Polo, Lacrosse, Beach Volleyball; Baseball shows a `Sep, 2027` result); Swimming & Diving 502 (`/sports/mens/swimming-diving/` routes); Cross Country has no race rows; Golf/Tennis `Completed` only. The baseline table is in `docs/ARIZONA_STATE_MODULE.md`.
 
 **Reliability (September 30, user-approved, all merged and verified in production).** The user's screenshot showed Utah Basketball "LIVE SOURCE UNAVAILABLE".
 - **#53 (`f5833e4`) fixed the cause.** Cloudflare 1102 (Worker CPU limit): `scheduleYearForDate` converted the whole page to text once per game card, costing 177–417 ms of CPU per ~900 KB SIDEARM page. It now reads the page once (32–48 ms), with byte-identical output. Production went from 8/36 forced-refresh failures to 36/36 successes.
@@ -217,6 +223,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Arizona State is in progress.** Continue one sport per PR, adding each to `arizonaStateSchool.cardSports` only after checking its official page as a fixture. Suggested order: Soccer and Volleyball (in season, same card defect), then Cross Country (race rows from official results), Swimming & Diving (502 routes), then the spring/out-of-season sports (past-season filter as Utah's `filterEvents`). Do not change the shared WMT card reader without the user's approval; other schools (for example Cincinnati) use it.
 - **Utah is complete except for source-blocked items:** Baseball and Women's Basketball start times, once utahutes.com allows the page downloads (fixture-verified, one sport per PR). Earlier list, for reference:
   - Volleyball athlete certification: get the official `womens-volleyball` roster (403 on September 30). If it publishes no personal links for most players, add Volleyball to Utah's `athlete_profile_fallback_sports` in `tests/certified-schools.json`, as done for Oklahoma State.
   - Golf placings, if a verifiable official source exists.
@@ -830,3 +837,17 @@ After each merge, production feed and expanded view were checked.
 **#62 (Softball doubleheaders)** passed the same gate but touches one shared line, so it waits for the user.
 
 **Not done:** utahutes.com returned 403 for the Baseball and Women's Basketball pages on every spaced attempt; not circumvented. The container restarted once mid-session (a background download and one gate run were re-run).
+
+### October 1, 2026 — Arizona State module and Football
+
+User: "Start next school. Stay in the Big 12." The handoff was read from main (`fa32b07`).
+
+**School choice:** Arizona is next in catalog order, but arizonawildcats.com returned HTTP 403, as did baylorbears.com, cubuffs.com, uhcougars.com, cyclones.com, gofrogs.com, texastech.com and wvusports.com (Football schedule page, one request each). thesundevils.com, ucfknights.com, byucougars.com and gobearcats.com returned 200. Arizona State (SIDEARM, next in order among reachable schools) was chosen to avoid the 403 stalls that blocked Utah work.
+
+**PR #66** (setup + Football, one PR because the setup changes no output):
+- Setup: 219/219 routes identical; the preview at `84ceaea` matched production for all 17 Arizona State sports (forced refresh, timestamps excluded); 36/36 forced refreshes.
+- Football: fixture `tests/fixtures/arizona-state-module/football-schedule.html.gz` (unmodified official page). Tests: `npm run test:release` and `npm test` pass on `e5cdadd`; mutations (route back in the Worker, module hook removed) fail the new test; parse budget 165 parses, slowest 49 ms.
+- Gate on the preview (`4.32.0`): Football in K-State format (3 finals with recaps, expanded views with 4 recap highlights each), K-State XC 18/20, KU XC 26/21, 36/36 forced Football refreshes, CI green (guardrails, certification-matrix, Workers Builds), no conflict.
+- Merged by the agent (`3a691d1`); production reported `4.32.0-arizona-state-football` at 01:38 UTC. Production Football feed and expanded views matched the preview; K-State XC 18/20, KU XC 26/21.
+
+**Not done:** the other 16 Arizona State sports (see "Current state").

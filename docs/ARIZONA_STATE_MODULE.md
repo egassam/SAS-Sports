@@ -19,7 +19,7 @@ A before/after dump of all 219 catalog school/sport schedule and roster routes (
 - no `'arizona-state|` configuration remains in `src/index.js`;
 - the program combinations are unchanged.
 
-## Football (production target `4.32.0-arizona-state-football`)
+## Football (production `4.32.0-arizona-state-football`, PR #66, October 1)
 
 thesundevils.com renders each event as a `schedule-event-item` card; its `__NUXT_DATA__` carries no game objects. The shared WMT card reader read the nested `vs.`/`at` divider as the opponent and split `<time>Sep</time><time>5</time>` into date `Sep` and time `5`. Every home card therefore became `ASU vs vs.` with no date and they merged into one event (likewise `ASU at at`); Schema.org data supplied the upcoming games, at UTC midnight, so 7:30 p.m. games showed a day late (Baylor `Oct 4` instead of Oct 3). The Sep 19 game at Kansas (London) was missing, and a phantom `Big 12 Championship` result reused the Sep 5 score and recap.
 
