@@ -4,13 +4,13 @@
 // small, steady trickle:
 // - one copy of each page per Cloudflare location per freshness window;
 // - expired copies are revalidated with If-None-Match / If-Modified-Since;
-// - 429/503 Retry-After and other refusals start a backoff with no new
-//   requests to that page until it ends;
+// - 429/503 Retry-After (at least 60 s) and other refusals (15 s) start a
+//   backoff with no new requests to that page until it ends;
 // - robots.txt rules for "SAS-Sports" (or "*") are obeyed.
 // Without a Cache API (Node tests) it is a plain fetch.
 
 export const SOURCE_TTL={schedule:120,listing:600,article:1800,document:6*3600};
-const KEEP_SECONDS=24*3600,ROBOTS_TTL=24*3600,DEFAULT_BACKOFF=60,MAX_BACKOFF=3600;
+const KEEP_SECONDS=24*3600,ROBOTS_TTL=24*3600,OVERLOAD_BACKOFF=60,REFUSAL_BACKOFF=15,MAX_BACKOFF=3600;
 const CACHE_VERSION='1';
 
 // robots.txt: the group naming our product token wins over "*"; within the
@@ -40,9 +40,9 @@ export function robotsAllows(rules,url){
 }
 
 function retryAfterSeconds(response){
-  const value=response.headers.get('retry-after');if(!value)return DEFAULT_BACKOFF;
+  const value=response.headers.get('retry-after');if(!value)return OVERLOAD_BACKOFF;
   const seconds=/^\d+$/.test(value.trim())?Number(value):Math.ceil((Date.parse(value)-Date.now())/1000);
-  return Math.min(MAX_BACKOFF,Math.max(DEFAULT_BACKOFF,Number.isFinite(seconds)?seconds:DEFAULT_BACKOFF));
+  return Math.min(MAX_BACKOFF,Math.max(OVERLOAD_BACKOFF,Number.isFinite(seconds)?seconds:OVERLOAD_BACKOFF));
 }
 function withUrl(response,url){Object.defineProperty(response,'url',{value:url});return response}
 function synthetic(status,url,reason,upstream=''){const h={'x-sas-source':reason};if(upstream)h['x-sas-upstream-status']=upstream;return withUrl(new Response('',{status,headers:h}),url)}
@@ -104,9 +104,10 @@ export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.c
     }
     if(!response.ok&&!cacheErrors){
       // A refusal or overload starts a backoff: no new request to this page
-      // until it ends, honouring Retry-After when the site sends one. A saved
+      // until it ends. 429/503 honour Retry-After (at least a minute); any
+      // other refusal pauses 15 s, so a one-off block clears quickly. A saved
       // copy is kept for articles and documents.
-      const until=fetchedAt+([429,503].includes(response.status)?retryAfterSeconds(response):DEFAULT_BACKOFF)*1000;
+      const until=fetchedAt+([429,503].includes(response.status)?retryAfterSeconds(response):REFUSAL_BACKOFF)*1000;
       if(body)await save(store,key,{body,status:Number(entry.headers.get('x-sas-status'))||200,finalUrl:entry.headers.get('x-sas-final-url')||url,from:entry,fetchedAt:Date.parse(entry.headers.get('x-sas-fetched-at')),backoffUntil:until});
       else await save(store,key,{body:'',status:response.status,finalUrl:response.url||url,fetchedAt,backoffUntil:until,placeholder:true});
       return stale()||withUrl(response,response.url||url);

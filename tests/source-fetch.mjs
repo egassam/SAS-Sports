@@ -79,6 +79,16 @@ const PAGE='https://school.test/sports/football/schedule';
   assert.equal(article.status,200);assert.equal(await article.text(),'<html>recap</html>');assert.equal(article.headers.get('x-sas-source'),'stale-on-error');
   assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,403,'live schedules are never served stale');
 }
+// A plain refusal (403) pauses 15 s, then the page is requested again.
+{
+  let refuse=true;
+  const {sourceFetch,pageCalls,clock}=setup({'/sports/football/schedule':()=>refuse?new Response('blocked',{status:403}):'<html>ok</html>'});
+  assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,403);
+  clock.t+=14*1000;assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,503);
+  assert.equal(pageCalls('/sports/football/schedule'),1);
+  refuse=false;clock.t+=2*1000;assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,200);
+  assert.equal(pageCalls('/sports/football/schedule'),2);
+}
 
 // 5. robots.txt rules are obeyed without requesting the page.
 {
@@ -126,4 +136,4 @@ const PAGE='https://school.test/sports/football/schedule';
   ops=0;await sourceFetch('https://school.test/sports/soccer/schedule');assert.ok(ops<=2,`refusal used ${ops} cache calls`);
   ops=0;assert.equal((await sourceFetch('https://school.test/sports/soccer/schedule')).status,503);assert.equal(ops,1,'backoff costs one match');
 }
-console.log('source-fetch: 8 groups passed');
+console.log('source-fetch: 9 groups passed');
