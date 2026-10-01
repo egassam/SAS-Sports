@@ -7,13 +7,13 @@ export const arizonaStateSchool={
   id:'arizona-state',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling']),
+  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball']),
   // Basketball and Swimming & Diving publish separate men's and women's pages.
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
     'arizona-state|Baseball':['https://thesundevils.com/sports/baseball/schedule','https://thesundevils.com/'],
     'arizona-state|Basketball':['https://thesundevils.com/sports/mens-basketball/schedule','https://thesundevils.com/sports/womens-basketball/schedule'],
-    'arizona-state|Beach Volleyball':['https://thesundevils.com/sports/beach-volleyball/schedule','https://thesundevils.com/'],
+    'arizona-state|Beach Volleyball':'https://thesundevils.com/sports/beach-volleyball/schedule',
     'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
     'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
     'arizona-state|Golf':['https://thesundevils.com/sports/womens-golf/schedule','https://thesundevils.com/sports/mens-golf/schedule','https://thesundevils.com/sports/golf/schedule','https://thesundevils.com/'],
@@ -103,7 +103,7 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
     const events=[],days=publishedDays(raw),season=academicYear(now);let pastSeason=0;
     const yearFor=(month,day)=>{
       const index=MONTHS.indexOf(month.slice(0,3).toLowerCase()),key=`${String(index+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const years=[season,season+1].filter(year=>days.has(`${year}-${key}`));
+      const years=[season-1,season,season+1].filter(year=>days.has(`${year}-${key}`));
       return years.length===1?years[0]:scheduleYearForDate(raw,month,now);
     };
     for(const {opening,block} of cards){
@@ -113,14 +113,17 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       // The name holds the divider as a nested <strong>, so skip past it first.
       const nameHtml=(block.match(/<strong\b[^>]*class=["']schedule-default-event__name["'][^>]*>((?:<strong\b[^>]*>[\s\S]*?<\/strong>)?[\s\S]*?)<\/strong>/i)||[])[1]||'';
       const divider=field(nameHtml,/schedule-default-event__divider[^>]*>([\s\S]*?)<\/strong>/i);
-      // Rankings ("#10/#9 Texas A&M") describe the week, not the opponent.
-      const opponent=visibleText(nameHtml.replace(/<strong\b[^>]*schedule-default-event__divider[\s\S]*?<\/strong>/i,'')).replace(/^(?:#(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
+      // Rankings ("#10/#9 Texas A&M") and seeds ("#6 seed Arizona") describe the
+      // week, not the opponent.
+      const opponent=visibleText(nameHtml.replace(/<strong\b[^>]*schedule-default-event__divider[\s\S]*?<\/strong>/i,'')).replace(/^(?:#(?:\d+|RV)\s*(?:seed\s+)?\/?\s*)+/i,'').trim();
       if(!opponent)continue;
       const completed=/schedule-event-item--completed/i.test(opening);
       const result=field(block,/schedule-event-grid-result__label[^>]*>([\s\S]*?)<\/strong>\s*<!---->/i).match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const timeText=field(block,/schedule-event-grid-date__time[^>]*>([\s\S]*?)<\/strong>/i).replace(/\s*\([A-Z]{2,4}\)\s*$/,'');
       const year=yearFor(month,day);
-      if(year!==season&&!(year===season+1&&MONTHS.indexOf(month.slice(0,3).toLowerCase())<6)){pastSeason++;continue;}
+      // July-December belong to the season's first year, January-June to its second.
+      const firstHalf=MONTHS.indexOf(month.slice(0,3).toLowerCase())>=6;
+      if(year!==(firstHalf?season:season+1)){pastSeason++;continue;}
       const date=`${month} ${day}, ${year}`;
       const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date,
         // K-State's results show the date only; upcoming games show the published time.

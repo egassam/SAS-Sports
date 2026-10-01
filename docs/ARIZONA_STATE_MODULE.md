@@ -65,6 +65,12 @@ Production showed 35 games, with evening games on the next UTC day (Lindenwood `
 
 Production showed the Oklahoma State dual on `November 21` (UTC) instead of Nov 20, 6:00 p.m. Wrestling joins `cardSports`; its route is now only the official page (homepage fallback removed). Two events: Oklahoma St. (Nov 20, 6:00 PM) and the National Duals Invitational (Dec 12, all day).
 
+## Beach Volleyball (`4.32.8-arizona-state-beach-volleyball`)
+
+Production showed spring 2026 matches as current results (`ASU at at`, `W, 5-0`). Beach Volleyball joins `cardSports`, and its route is only the official page. The page still shows the spring 2026 season, so the feed is an empty schedule (200 `[]` with the app's note) until the 2027 schedule is published.
+
+Fix to the season filter: it kept January–June events of the season's *first* year (Feb 2026 in the 2026–27 season). January–June now belong to the season's second year only. Output for the nine sports already merged is byte-identical.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
