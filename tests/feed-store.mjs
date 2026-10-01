@@ -52,9 +52,6 @@ const MIN=60*1000;
   clock.t+=FEED_STORE.coolEveryMs;
   assert.deepEqual((await store.due()).map(f=>`${f.school}|${f.hot}`),['d|false','a|true']);
   assert.ok(!(await store.due()).some(f=>f.school==='c'),'feeds nobody viewed are never refreshed');
-  await store.noteFailure('d','Missing');
-  assert.deepEqual((await store.due()).map(f=>f.school),['a','b'],'a feed whose rebuild failed is paused');
-  kv.entries.delete('fail|prod|v1|d|Missing');
   clock.t+=FEED_STORE.wantedForMs;
   assert.deepEqual(await store.due(),[],'refreshing stops 6 h after the last view');
   await store.noteRun({due:0,built:0,failed:0});
@@ -129,24 +126,12 @@ before=upstreamRequests;
 await handler.scheduled({},env,ctx);
 assert.equal(upstreamRequests,before,'a fresh copy is not rebuilt');
 const runKey=`cron|prod|${VERSION}`;
-assert.deepEqual({...kv.entries.get(runKey).metadata,t:0,ms:0},{due:0,built:0,failed:0,t:0,ms:0,errors:[]});
+assert.deepEqual({...kv.entries.get(runKey).metadata,t:0,ms:0},{due:0,built:0,failed:0,t:0,ms:0});
 const entry=kv.entries.get(feedKey);entry.metadata={...entry.metadata,b:Date.now()-FEED_STORE.coolEveryMs-MIN};
 await handler.scheduled({},env,ctx);
 assert.ok(upstreamRequests>before,'an overdue copy is rebuilt from the school');
 assert.ok(Date.now()-kv.entries.get(feedKey).metadata.b<MIN,'and stored again');
 assert.equal(kv.entries.get(runKey).metadata.built,1);
-// A failed rebuild is recorded with the school's answer, and the stored copy is kept.
-upstreamUp=false;kv.entries.get(feedKey).metadata.b=Date.now()-FEED_STORE.coolEveryMs-MIN;const keptBody=kv.entries.get(feedKey).value;
-await handler.scheduled({},env,ctx);
-const failedRun=kv.entries.get(runKey).metadata;
-assert.equal(failedRun.failed,1);assert.match(failedRun.errors[0],/^utah\|Football: .*upstream down/);
-assert.ok(JSON.stringify(failedRun).length<1024,'run metadata fits KV\'s 1 KB limit');
-assert.equal(kv.entries.get(feedKey).value,keptBody);
-assert.ok(kv.entries.has(`fail|prod|${VERSION}|utah|Football`),'the failed feed is paused');
-before=upstreamRequests;await handler.scheduled({},env,ctx);
-assert.equal(upstreamRequests,before,'a paused feed is not retried by the next run');
-kv.entries.delete(`fail|prod|${VERSION}|utah|Football`);
-upstreamUp=true;
 
 // A copy the Cron Trigger let go stale is not served; the visitor rebuilds as before.
 kv.entries.get(feedKey).metadata.b=Date.now()-FEED_STORE.coolServeMs-MIN;cache.clearFeeds();
@@ -173,7 +158,7 @@ assert.equal(untimed(await plain.text()),untimed(body),'same feed apart from bui
 
 // Status endpoint.
 const status=await (await handler.fetch(new Request(`${PROD}/api/feed-store`),env,ctx)).json();
-assert.equal(status.enabled,true);assert.equal(status.scope,'prod');assert.deepEqual([status.last_run.due,status.last_run.failed],[0,0],'the last run found only the paused feed, so nothing was due');
+assert.equal(status.enabled,true);assert.equal(status.scope,'prod');assert.equal(status.last_run.built,1);
 
 // Configuration: the binding and the every-minute trigger are deployed.
 const wrangler=read('../wrangler.jsonc');

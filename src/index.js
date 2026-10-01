@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createFeedStore} from './feed-store.mjs';
 
-const VERSION='4.35.1-scheduled-feed-errors';
+const VERSION='4.35.0-scheduled-feeds';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -1652,9 +1652,9 @@ function cacheResponse(response,state){const copy=new Response(response.body,res
 function feedStoreFor(env,origin){
   return createFeedStore({kv:env?.FEEDS,version:VERSION,scope:origin===PRODUCTION_ORIGIN?'prod':'preview',cacheOrigin:()=>origin});
 }
-async function buildFeed(school,sport,env,store,failures=null){
+async function buildFeed(school,sport,env,store){
   const result=await fetchLive(school,sport,env);
-  if(!result.events.length&&!result.live_source_used){failures?.push(result.error);return null}
+  if(!result.events.length&&!result.live_source_used)return null;
   const groups=groupEvents(result.events),body=JSON.stringify(groups);
   await store?.write(school,sport,body,groups);
   return{body,fetched_at:result.fetched_at};
@@ -1681,15 +1681,11 @@ export default{
   async scheduled(event,env,ctx){
     sourceCacheOrigin=PRODUCTION_ORIGIN;
     const store=feedStoreFor(env,PRODUCTION_ORIGIN),started=Date.now(),due=await store.due();
-    let built=0;const failures=[];
+    let built=0,failed=0;
     for(const feed of due){
-      const reasons=[];
-      try{if(await buildFeed(feed.school,feed.sport,env,store,reasons)){built++;continue}}catch(error){reasons.push(error?.message||String(error))}
-      failures.push(`${feed.school}|${feed.sport}: ${reasons.join('; ')||'unknown'}`);
-      await store.noteFailure(feed.school,feed.sport);
+      try{(await buildFeed(feed.school,feed.sport,env,store))?built++:failed++}catch{failed++}
     }
-    // KV metadata is limited to 1 KB: keep the first few reasons, shortened.
-    await store.noteRun({due:due.length,built,failed:failures.length,ms:Date.now()-started,errors:failures.slice(0,3).map(e=>e.slice(0,200))});
+    await store.noteRun({due:due.length,built,failed,ms:Date.now()-started});
   },
   async fetch(request,env,ctx){
     const url=new URL(request.url);sourceCacheOrigin=url.origin;
