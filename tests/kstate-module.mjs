@@ -147,6 +147,7 @@ assert.equal(vbLive.length,1);
 assert.deepEqual([vbLive[0].status,vbLive[0].title,vbLive[0].school_score,vbLive[0].opponent_score,vbLive[0].headline,vbLive[0].start_time],['Live','K-State vs BYU','0','0','1st Set \u00b7 2-1','2026-10-01T18:30:00.000Z'],'sets won, plus the current set\'s points, at Central wall clock');
 const vbOfficial=worker.makeEvent({school,sport:'Volleyball',status:'Upcoming',relation:'vs',opponent:'#18 BYU',date:'October 1, 2026',time:'6:30 PM',schoolScore:null,oppScore:null,resultText:null,sourceUrl:'https://www.kstatesports.com/sports/volleyball/schedule',now:vbNow});
 const vbReconciled=worker.reconcileScoreboardEvents([vbOfficial],vbLive);
+assert.equal(vbReconciled[0].recency_label,'1st Set \u00b7 2-1','the live card\'s status line shows the current set\'s points (users saw only "1st Set" and 0-0)');
 assert.deepEqual([vbReconciled.length,vbReconciled[0].title,vbReconciled[0].status,vbReconciled[0].headline,vbReconciled[0].verification_state],[1,'K-State vs #18 BYU','Live','1st Set \u00b7 2-1','official_schedule+live_scoreboard'],'the official card goes live; no second card');
 {const g=worker.groupEvents(vbReconciled,vbNow)[0];assert.deepEqual([g.live.length,g.upcoming.length],[1,0]);}
 // A finished match reads like K-State's official results.

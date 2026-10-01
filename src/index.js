@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.2-kstate-volleyball-live';
+const VERSION='4.37.3-kstate-volleyball-set-points';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -1586,7 +1586,8 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     if(sport==='Volleyball'){
       const points=team=>(team?.linescores||[]).map(line=>Number(line?.value)).filter(Number.isFinite);
       const ourSets=points(ours),theirSets=points(opponent);
-      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length)event.headline=`${detail} \u00b7 ${ourSets.at(-1)}-${theirSets.at(-1)}`;
+      // The live card shows recency_label beside the sets won, so both carry it.
+      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length)event.headline=event.recency_label=`${detail} \u00b7 ${ourSets.at(-1)}-${theirSets.at(-1)}`;
       const won=Number(ours.score),lost=Number(opponent.score);
       if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
     }
