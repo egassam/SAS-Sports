@@ -1,13 +1,13 @@
 {
   "name": "sas-sports-cloudflare",
-  "version": "4.33.3",
+  "version": "4.34.0",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "check": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs",
-    "test": "node tests/regression.mjs && node tests/roster-socials.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs && node tests/arizona-state-module.mjs && node tests/parse-budget.mjs && node tests/last-good-feed.mjs",
-    "test:release": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs && node tests/isolation-local.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs && node tests/arizona-state-module.mjs && node tests/parse-budget.mjs && node tests/last-good-feed.mjs",
+    "test": "node tests/regression.mjs && node tests/roster-socials.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs && node tests/arizona-state-module.mjs && node tests/parse-budget.mjs && node tests/last-good-feed.mjs && node tests/source-fetch.mjs",
+    "test:release": "node --check src/index.js && node --check scripts/onboard-school.mjs && node tests/onboarding.mjs && node tests/regression.mjs && node tests/protect-certified.mjs && node tests/isolation-local.mjs && node tests/kansas-cross-country.mjs && node tests/kstate-cross-country.mjs && node tests/kstate-module.mjs && node tests/kansas-module.mjs && node tests/oklahoma-state-module.mjs && node tests/oklahoma-state-cross-country.mjs && node tests/utah-module.mjs && node tests/arizona-state-module.mjs && node tests/parse-budget.mjs && node tests/last-good-feed.mjs && node tests/source-fetch.mjs",
     "test:live-health": "node tests/live-health.mjs",
     "test:certified": "node tests/validate-schools.mjs",
     "test:isolation": "node tests/isolation.mjs --mode=smoke",

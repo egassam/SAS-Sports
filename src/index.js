@@ -7,15 +7,23 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
+import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.33.3-arizona-state-swimming-diving';
+const VERSION='4.34.0-polite-source-fetch';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
+// One honest identity for every download, with a page explaining what we
+// fetch and how often, so a school can recognise and allowlist us.
+const BOT_INFO_URL='https://sas-sports.lovetogivepain.workers.dev/bot';
 const HEADERS={
-  'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; Cloudflare-Worker)`,
+  'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; +${BOT_INFO_URL})`,
   'Accept':'text/html,application/xhtml+xml',
   'Accept-Language':'en-US,en;q=0.9'
 };
+// Every official-site download is cached per Cloudflare location (see
+// source-fetch.mjs); the Cache API key uses this Worker's own origin.
+let sourceCacheOrigin=null;
+const sourceFetch=createSourceFetch({fetch:(...args)=>fetch(...args),headers:HEADERS,cacheOrigin:()=>sourceCacheOrigin});
 
 // Accounts verified through direct tags from an official school/team social
 // account. These are explicit identity matches, not name-based guesses.
@@ -201,11 +209,11 @@ function localWallClock(value,timeZone){const parts=Object.fromEntries(new Intl.
 function schoolNow(now,school){return localWallClock(now,schoolTimeZone(school));}
 function schoolToday(now,school){const local=schoolNow(now,school);return Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());}
 // The school owns its policies and result handlers; shared utilities stay here.
-const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
+const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
-const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
-const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>fetch(...args),headers:HEADERS});
-const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>fetch(...args),headers:HEADERS});
+const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -413,7 +421,7 @@ async function instagramProfileImage(instagramUrl){
   if(!instagramUrl)return null;
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),2500);
   try{
-    const r=await fetch(instagramUrl,{headers:{...HEADERS,'User-Agent':'Mozilla/5.0 (Linux; Android 16) AppleWebKit/537.36 Chrome/140 Mobile Safari/537.36'},redirect:'follow',signal:controller.signal});
+    const r=await fetch(instagramUrl,{headers:HEADERS,redirect:'follow',signal:controller.signal});
     if(!r.ok)return null;
     const html=await r.text();
     const meta=html.match(/<meta\b[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)|<meta\b[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
@@ -427,7 +435,7 @@ async function featuredAthletes(schoolId,sport){
   let profiles=[];
   for(const rosterUrl of rosterUrls(school,sport)){
     try{
-      const r=await fetch(rosterUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;
+      const r=await sourceFetch(rosterUrl,{},{ttl:SOURCE_TTL.listing});if(!r.ok)continue;
       const discovered=rosterProfiles(await r.text(),r.url||rosterUrl);
       profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
       if(profiles.length&&!schoolCombinedSports(school).has(sport))break;
@@ -461,7 +469,7 @@ async function featuredAthletes(schoolId,sport){
     const selected=tagged.filter(athlete=>athlete.instagram_url).slice(0,3);
     await Promise.all(selected.map(async athlete=>{
       if(athlete.image_url)return;
-      try{const r=await fetch(athlete.profile_url,{headers:HEADERS,redirect:'follow'});if(r.ok)athlete.image_url=officialProfileImage(await r.text(),r.url||athlete.profile_url)}catch{}
+      try{const r=await sourceFetch(athlete.profile_url);if(r.ok)athlete.image_url=officialProfileImage(await r.text(),r.url||athlete.profile_url)}catch{}
     }));
     return selected;
   }
@@ -472,7 +480,7 @@ async function featuredAthletes(schoolId,sport){
   for(let start=0;start<Math.min(profiles.length,18)&&found.filter(a=>a.instagram_url).length<3;start+=3){
     await Promise.all(profiles.slice(start,start+3).map(async profile=>{
       try{
-        const r=await fetch(profile.url,{headers:HEADERS,redirect:'follow'});if(!r.ok)return;
+        const r=await sourceFetch(profile.url);if(!r.ok)return;
         const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
         found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:officialProfileImage(html,r.url||profile.url)||athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
       }catch{}
@@ -767,7 +775,7 @@ function parseCrossCountryFlatPdfResults(text,school){
   return rows;
 }
 async function fetchOfficialPdfText(resultUrl){
-  let response=await fetch(resultUrl,{headers:HEADERS,redirect:'follow'});if(!response.ok)return null;
+  let response=await sourceFetch(resultUrl,{},{ttl:SOURCE_TTL.document});if(!response.ok)return null;
   let type=response.headers.get('content-type')||'',bytes;
   if(/application\/pdf/i.test(type))bytes=new Uint8Array(await response.arrayBuffer());
   else{
@@ -775,7 +783,7 @@ async function fetchOfficialPdfText(resultUrl){
     const urls=[...decoded.matchAll(/https?:\/\/[^"'<> ]+\.pdf(?:\?[^"'<> ]*)?/gi)].map(x=>x[0]);
     const asset=urls.find(x=>{try{return new URL(x).hostname!==new URL(resultUrl).hostname}catch{return false}})||urls.at(-1);
     if(!asset)return null;
-    response=await fetch(asset,{headers:HEADERS,redirect:'follow'});if(!response.ok||!/application\/pdf/i.test(response.headers.get('content-type')||''))return null;
+    response=await sourceFetch(asset,{},{ttl:SOURCE_TTL.document});if(!response.ok||!/application\/pdf/i.test(response.headers.get('content-type')||''))return null;
     bytes=new Uint8Array(await response.arrayBuffer());
   }
   if(!bytes||bytes.byteLength>12*1024*1024)return null;
@@ -799,7 +807,7 @@ async function attachOfficialMeetResults(event){
     const url=new URL(event.result_url);
     const school=schools.find(x=>x.id===event.school_id);let rows=[];
     if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
-      const response=await fetch(url,{headers:HEADERS,redirect:'follow'});if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
+      const response=await sourceFetch(url);if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
     }else{
       // SIDEARM commonly exposes official documents through a landing URL such
       // as /documents/YYYY/M/D/file.pdf. The response itself can be HTML before
@@ -1398,7 +1406,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   const tryCandidates=async urls=>{
     for(const candidate of urls){
       try{
-        const r=await fetch(candidate,{headers:HEADERS,redirect:'follow'});
+        const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
         if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
@@ -1419,7 +1427,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
       const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,'/news');
       if(newsPath!==newsUrl.pathname){
         newsUrl.pathname=newsPath;newsUrl.search='';
-        const r=await fetch(newsUrl,{headers:HEADERS,redirect:'follow'});
+        const r=await sourceFetch(newsUrl,{},{ttl:SOURCE_TTL.listing});
         if(r.ok){
           const html=await r.text(),links=[];let m;
           const linkHtml=html.replace(/\\u002F/gi,'/').replace(/\\\//g,'/');
@@ -1446,7 +1454,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
     if(opponentSchool){
       for(const opponentScheduleUrl of candidateUrls(opponentSchool,sport).slice(0,4)){
         try{
-          const r=await fetch(opponentScheduleUrl,{headers:HEADERS,redirect:'follow'});if(!r.ok)continue;
+          const r=await sourceFetch(opponentScheduleUrl,{},{ttl:SOURCE_TTL.listing});if(!r.ok)continue;
           const html=await r.text(),index=recapUrlsByEvent(html,opponentSchool,sport,r.url||opponentScheduleUrl,now);
           const mirror={...target,school_id:opponentSchool.id,school:opponentSchool.short_name||opponentSchool.name,opponent:school.short_name||school.name};
           const directOpponent=index.map.get(eventMergeKey(mirror));
@@ -1509,7 +1517,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   return events;
 }
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
-  const r=await fetch(url,{headers:HEADERS,redirect:'follow'}),html=await r.text(),finalUrl=r.url||url;
+  const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule}),html=await r.text(),finalUrl=r.url||url;
   const parseable=compactScheduleHtml(html,finalUrl),labels=school.id==='kansas'?[]:extractEventLabels(parseable);
   let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),school,sport,finalUrl):[];
   if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);
@@ -1651,7 +1659,7 @@ async function verification(schoolId,sport){const result=await fetchLive(schoolI
 
 export default{
   async fetch(request,env,ctx){
-    const url=new URL(request.url);
+    const url=new URL(request.url);sourceCacheOrigin=url.origin;
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,sponsored_sports:sponsoredSports[s.id]||null})));}
