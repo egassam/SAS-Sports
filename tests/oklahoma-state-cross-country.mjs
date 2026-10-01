@@ -8,6 +8,7 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers,parseOklahomaStateMeetResults} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
+import {createFeedStore} from '../src/feed-store.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const pdf=name=>readFileSync(new URL('./fixtures/oklahoma-state-module/'+name,import.meta.url));
@@ -47,7 +48,7 @@ const reset=()=>{
   }
 };
 const fetch=async url=>{requests.push(String(url));const make=responses.get(String(url));return make?make():new Response('not found',{status:404});};
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
+const deps={createSourceFetch,SOURCE_TTL,createFeedStore,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
 const worker=Function(...Object.keys(deps),source+';return {attachOfficialMeetResults,attachOfficialHighlights,ordinal};')(...Object.values(deps));
 
 // The event as production's official schedule card presents it today.
