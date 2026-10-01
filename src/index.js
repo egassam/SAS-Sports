@@ -8,15 +8,13 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahom
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
-import {createFeedStore} from './feed-store.mjs';
 
-const VERSION='4.35.1-scheduled-feed-errors';
+const VERSION='4.34.0-polite-source-fetch';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
 // fetch and how often, so a school can recognise and allowlist us.
-const PRODUCTION_ORIGIN='https://sas-sports.lovetogivepain.workers.dev';
-const BOT_INFO_URL=`${PRODUCTION_ORIGIN}/bot`;
+const BOT_INFO_URL='https://sas-sports.lovetogivepain.workers.dev/bot';
 const HEADERS={
   'User-Agent':`Mozilla/5.0 (compatible; SAS-Sports/${VERSION}; +${BOT_INFO_URL})`,
   'Accept':'text/html,application/xhtml+xml',
@@ -1647,29 +1645,12 @@ function lastGoodFeedKey(url,school,sport){const key=new URL('/__sas_cache/feed-
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
-// Stored feeds (feed-store.mjs) are shared by every Cloudflare location and
-// refreshed by the Cron Trigger. Branch previews keep their own copies.
-function feedStoreFor(env,origin){
-  return createFeedStore({kv:env?.FEEDS,version:VERSION,scope:origin===PRODUCTION_ORIGIN?'prod':'preview',cacheOrigin:()=>origin});
-}
-async function buildFeed(school,sport,env,store,failures=null){
-  const result=await fetchLive(school,sport,env);
-  if(!result.events.length&&!result.live_source_used){failures?.push(result.error);return null}
-  const groups=groupEvents(result.events),body=JSON.stringify(groups);
-  await store?.write(school,sport,body,groups);
-  return{body,fetched_at:result.fetched_at};
-}
-function storedFeedResponse(entry){
-  const response=json(null),stored=new Response(entry.body,response);
-  stored.headers.set('x-sas-fetched-at',new Date(entry.builtAt).toISOString());
-  return stored;
-}
 async function freshGroupedFeed(url,school,sport,env,cache,key){
-  const built=await buildFeed(school,sport,env,feedStoreFor(env,url.origin));
-  if(!built)return null;
-  const response=json(null),stored=new Response(built.body,response);
+  const result=await fetchLive(school,sport,env);
+  if(!result.events.length&&!result.live_source_used)return null;
+  const response=json(groupEvents(result.events)),stored=new Response(response.body,response);
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
-  stored.headers.set('x-sas-fetched-at',built.fetched_at);
+  stored.headers.set('x-sas-fetched-at',result.fetched_at);
   const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
   await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood)]);return stored;
 }
@@ -1677,24 +1658,9 @@ async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===sc
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
 export default{
-  // Every minute: rebuild the viewed feeds whose stored copy is due.
-  async scheduled(event,env,ctx){
-    sourceCacheOrigin=PRODUCTION_ORIGIN;
-    const store=feedStoreFor(env,PRODUCTION_ORIGIN),started=Date.now(),due=await store.due();
-    let built=0;const failures=[];
-    for(const feed of due){
-      const reasons=[];
-      try{if(await buildFeed(feed.school,feed.sport,env,store,reasons)){built++;continue}}catch(error){reasons.push(error?.message||String(error))}
-      failures.push(`${feed.school}|${feed.sport}: ${reasons.join('; ')||'unknown'}`);
-      await store.noteFailure(feed.school,feed.sport);
-    }
-    // KV metadata is limited to 1 KB: keep the first few reasons, shortened.
-    await store.noteRun({due:due.length,built,failed:failures.length,ms:Date.now()-started,errors:failures.slice(0,3).map(e=>e.slice(0,200))});
-  },
   async fetch(request,env,ctx){
     const url=new URL(request.url);sourceCacheOrigin=url.origin;
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
-    if(url.pathname==='/api/feed-store')return json(await feedStoreFor(env,url.origin).status());
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,sponsored_sports:sponsoredSports[s.id]||null})));}
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
@@ -1734,16 +1700,9 @@ export default{
         if(saved&&cachedAge(saved)<=LAST_GOOD_MS)return cacheResponse(saved,'saved');
         return json({detail:{message:'No saved schedule is available',school,sport}},404);
       }
-      if(cached&&!force&&cachedAge(cached)<=FEED_FRESH_MS)return cacheResponse(cached,'fresh');
-      // The stored copy kept fresh by the Cron Trigger: serving it causes no
-      // download from the school.
-      if(!force){
-        const store=feedStoreFor(env,url.origin),entry=await store.read(school,sport);
-        ctx?.waitUntil(store.noteView(school,sport).catch(()=>null));
-        if(store.servable(entry))return cacheResponse(storedFeedResponse(entry),'stored');
-      }
       if(cached&&!force){
         const age=cachedAge(cached);
+        if(age<=FEED_FRESH_MS)return cacheResponse(cached,'fresh');
         if(age<=FEED_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
       }
       const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);
