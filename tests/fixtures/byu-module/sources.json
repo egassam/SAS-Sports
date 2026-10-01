@@ -4,6 +4,11 @@
       "url": "https://byucougars.com/sports/football/schedule",
       "retrieved": "2026-10-01T20:53Z",
       "note": "Official 2026 BYU Football schedule, unmodified. 12 schedule-event-item cards: finals W 63-7 Utah Tech (Sep 5), W 28-17 Arizona (Sep 12), W 41-23 at Colorado State (Sep 19), each with its own Recap link; 9 upcoming, two with published times (at TCU Oct 3, 5:00 PM MDT; Iowa State Fri Oct 9, 8:15 PM MDT), the rest TBA. Each card's <time datetime> carries the local start with its offset."
+    },
+    "womens-volleyball-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/womens-volleyball/schedule",
+      "retrieved": "2026-10-01T22:20Z",
+      "note": "Official 2026 BYU Volleyball schedule, unmodified. 29 cards: the Aug 15 Blue-White Scrimmage (internal, no divider), 11 finals (Aug 22 W 3-0 Utah Tech ... Sep 25 W 3-2 No. 17 Baylor), each with a plain relative Recap link, and 17 matches from Oct 1 at Kansas State with published times."
     }
   },
   "recaps": {

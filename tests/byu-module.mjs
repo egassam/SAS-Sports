@@ -103,9 +103,25 @@ for(const [i,expected] of [[0,'Utah Tech'],[1,'Arizona'],[2,'Colorado State']]){
   assert.ok(!target.recap_url&&!target.highlights.length);
   recapFixtures.set(target.recap_url||finals[0].recap_url,recaps[0]);
 }
-// Scope: only Football uses the module reader; other sports and schools keep
+// Volleyball: production listed every match twice (Oct 1 and "Wed. Oct. 1,
+// 2026"). Rankings read "No. 2 Pittsburgh"; Recap links are plain relative
+// "/news/..." links; the Aug 15 Blue-White Scrimmage is internal.
+const volleyballUrl='https://byucougars.com/sports/womens-volleyball/schedule';
+const volleyball=worker.parseHtml(fixture('womens-volleyball-schedule.html.gz'),school,'Volleyball',volleyballUrl,now);
+assert.equal(volleyball.length,28,'28 matches; the Blue-White Scrimmage is skipped');
+assert.equal(new Set(volleyball.map(e=>e.id)).size,28,'no duplicate matches');
+const volleyballFinals=volleyball.filter(e=>e.status==='Final');
+assert.equal(volleyballFinals.length,11);
+assert.deepEqual(volleyballFinals.slice(3,5).map(e=>[e.display_time,e.title,e.headline]),[['Sep 3','BYU vs Eastern Illinois','W, 3-0'],['Sep 4','BYU vs Pittsburgh','L, 1-3']],'"No. 2" rankings are dropped');
+assert.ok(volleyballFinals.every(e=>/^https:\/\/byucougars\.com\/news\/2026\//.test(e.recap_url)),'every final links its own official recap');
+assert.equal(volleyballFinals[0].recap_url,'https://byucougars.com/news/2026/08/22/no-24-cougars-sweep-trailblazers-in-exhibition-match');
+assert.ok(!volleyball.some(e=>/scrimmage/i.test(e.title)));
+assert.deepEqual(volleyball.filter(e=>e.status!=='Final').slice(0,2).map(e=>`${e.status} ${e.title} ${e.display_time}`),['Today BYU at Kansas State Oct 1, 5:30 PM','Upcoming BYU at Kansas Oct 2, 5:00 PM']);
+assert.equal(volleyball.at(-1).start_time,'2026-11-27T18:30:00.000Z','November times are Mountain Standard wall clock');
+{const [g]=worker.groupEvents(volleyball,now);assert.deepEqual([g.results.length,g.upcoming.length],[11,17]);}
+// Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
