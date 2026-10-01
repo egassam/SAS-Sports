@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country']),
@@ -17,7 +17,7 @@ export const byuSchool={
     'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
   },
   scheduleUrls:{
-    'byu|Baseball':['https://byucougars.com/sports/baseball/schedule','https://byucougars.com/'],
+    'byu|Baseball':'https://byucougars.com/sports/baseball/schedule',
     'byu|Basketball':['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule'],
     'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
     'byu|Football':'https://byucougars.com/sports/football/schedule',

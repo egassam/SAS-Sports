@@ -85,3 +85,7 @@ Shared test change: the regression route check now also accepts a route written 
 ## Basketball (`4.36.4-byu-basketball`)
 
 Production showed 128 upcoming games: the inherited generic routes plus card/schema duplicates. Basketball now routes only to the two official pages and joins `cardSports`; both teams are labeled, with separate ids. A bracket game listed as `TBD` (Nov 25) takes its tournament heading (`BYU vs Southwest Maui Invitational`), as `TBA` already did. Result: 34 men's and 33 women's games. Most men's times are still TBA on the official page. No game has been played yet.
+
+## Baseball (`4.36.5-byu-baseball`)
+
+Production showed 10 fall games, with duplicates in two date formats. Baseball routes only to its official page (the homepage fallback is gone) and joins `cardSports`. The "Fall 2026" page lists 5 cards: the Oct 30 "vs. BYU" intrasquad is skipped, leaving 4 games (Utah Oct 2, 4:00 PM; SLCC Oct 7, 5:30 PM; at Air Force; at UNLV). Spring 2027 games will appear when byucougars.com publishes them.

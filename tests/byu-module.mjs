@@ -186,9 +186,14 @@ assert.equal(hoopsEvents.length,67,'no duplicate games; the teams keep separate 
 assert.ok(hoops.mens.every(e=>e.id.endsWith('-mens')&&e.title.startsWith("Men's · "))&&hoops.womens.every(e=>e.id.endsWith('-womens')&&e.title.startsWith("Women's · ")));
 assert.deepEqual(hoops.mens.slice(7,10).map(e=>`${e.title} ${e.display_time}`),["Men's · BYU vs Washington Nov 23, 3:00 PM","Men's · BYU vs Clemson/Ole Miss Nov 24","Men's · BYU vs Southwest Maui Invitational Nov 25"],'a "TBD" bracket game takes its tournament heading');
 assert.deepEqual(hoops.womens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),["Women's · BYU vs Western Colorado Oct 27, 7:00 PM","Women's · BYU vs Idaho State Nov 3, 7:00 PM"]);
+// Baseball: the "Fall 2026" page lists five fall games; production showed
+// ten (duplicates). The Oct 30 "vs. BYU" intrasquad is internal.
+assert.equal(byuSchool.scheduleUrls['byu|Baseball'],'https://byucougars.com/sports/baseball/schedule','the homepage fallback is gone');
+const baseball=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball','https://byucougars.com/sports/baseball/schedule',now);
+assert.deepEqual(baseball.map(e=>`${e.status} ${e.title} ${e.display_time}`),['Upcoming BYU vs Utah Oct 2, 4:00 PM','Upcoming BYU vs SLCC Oct 7, 5:30 PM','Upcoming BYU at Air Force Oct 24','Upcoming BYU at UNLV Nov 7']);
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
