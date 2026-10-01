@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.0-byu-gymnastics';
+const VERSION='4.37.1-byu-track-field';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -1516,7 +1516,10 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
 async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule}),html=await r.text(),finalUrl=r.url||url;
   const parseable=compactScheduleHtml(html,finalUrl),labels=school.id==='kansas'?[]:extractEventLabels(parseable);
-  let events=r.ok?labelTeamEvents(parseHtml(parseable,school,sport,finalUrl,now),school,sport,finalUrl):[];
+  // Kept before team labeling, which returns a new array: BYU recognizes its
+  // own past-season result by identity.
+  const parsed=r.ok?parseHtml(parseable,school,sport,finalUrl,now):[];
+  let events=r.ok?labelTeamEvents(parsed,school,sport,finalUrl):[];
   if(events.length&&aiTargetId)events=await attachOfficialHighlights(events,html,school,sport,finalUrl,now,env,aiTargetId);
   if(school.id==='kansas'&&sport==='Cross Country'&&!aiTargetId){
     // Future KU races use the same official two-document path in the feed and
@@ -1528,7 +1531,7 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   }
   // Oklahoma State's shared program page can hold no meets for this sport;
   // a Utah spring page can hold only a past season.
-  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events)||school.id==='arizona-state'&&arizonaStateHandlers.isEmptySchedule(events)||school.id==='byu'&&byuHandlers.isEmptySchedule(events));
+  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events)||school.id==='arizona-state'&&arizonaStateHandlers.isEmptySchedule(events)||school.id==='byu'&&byuHandlers.isEmptySchedule(parsed));
   return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,source_cache:r.headers.get('x-sas-source')||null,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,content_length:html.length,label_count:labels.length,event_count:events.length,empty_schedule,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
 }
 

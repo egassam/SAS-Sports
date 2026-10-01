@@ -22,7 +22,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults,fetchUrl,fetchLive};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit byucougars.com routes.
 const sports=sponsoredSports.byu;
@@ -39,7 +39,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(byuSchool.rosterUrls[`byu|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'byu\|/.test(read('../src/index.js')),'BYU configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Golf','Swimming & Diving','Tennis'],'both teams are shown for these sports');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Golf','Swimming & Diving','Tennis','Track & Field'],'both teams are shown for these sports');
 for(const [key,url] of Object.entries(byuSchool.verifiedInstagrams))assert.equal(worker.VERIFIED_TEAM_TAG_INSTAGRAM.get(key),url,'verified Instagram tags are still used');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='ucf'),'Football')[0],'https://ucfknights.com/sports/football/schedule');
@@ -268,12 +268,33 @@ assert.equal(gymInSeason[0].recap_url,'https://byucougars.com/news/2026/01/10/by
 // The season filter leaves current-season sports untouched (volleyball above
 // is unchanged) and spring events of the same academic year stay (golf in May).
 assert.ok(golf.mens.some(e=>e.start_time.startsWith('2027-05-28')));
+// Track & Field: production returned 502 (the inherited track-and-field and
+// track-field routes do not exist). Both official pages, labeled; they still
+// show the 2025-26 season, so today it is an empty schedule.
+assert.deepEqual(byuSchool.scheduleUrls['byu|Track & Field'],['https://byucougars.com/sports/mens-track-and-field/schedule','https://byucougars.com/sports/womens-track-and-field/schedule']);
+assert.deepEqual(byuSchool.rosterUrls['byu|Track & Field'],['https://byucougars.com/sports/mens-track-and-field/roster','https://byucougars.com/sports/womens-track-and-field/roster']);
+for(const team of ['mens','womens']){
+  const events=worker.parseHtml(fixture(`${team}-track-and-field-schedule.html.gz`),school,'Track & Field',`https://byucougars.com/sports/${team}-track-and-field/schedule`,now);
+  assert.deepEqual(events,[]);assert.ok(worker.byuHandlers.isEmptySchedule(events));
+}
+// Through the Worker's own fetch path (team labeling included), both
+// past-season pages are flagged as empty schedules and the feed is a valid
+// empty result, not a 502. Preview showed 502 before this.
+for(const team of ['mens','womens'])recapFixtures.set(`https://byucougars.com/sports/${team}-track-and-field/schedule`,fixture(`${team}-track-and-field-schedule.html.gz`));
+{
+  const item=await worker.fetchUrl('https://byucougars.com/sports/mens-track-and-field/schedule',school,'Track & Field',now);
+  assert.equal(item.empty_schedule,true,'a labeled two-team past-season page is still an empty schedule');
+  const live=await worker.fetchLive('byu','Track & Field');
+  assert.deepEqual([live.events.length,live.live_source_used,live.error],[0,true,null]);
+}
+const trackInSeason=worker.parseHtml(fixture('womens-track-and-field-schedule.html.gz'),school,'Track & Field','https://byucougars.com/sports/womens-track-and-field/schedule',new Date('2026-05-01T16:00:00Z'));
+assert.deepEqual(trackInSeason.filter(e=>/team:/.test(e.headline)).map(e=>`${e.display_time} ${e.title} ${e.headline}`),["Feb 27 BYU at Big 12 Championships Women's team: 2nd · 110 pts","Mar 13 BYU at NCAA Championships Women's team: 5th · 27 pts","May 14 BYU at Big 12 Championships Women's team: 2nd · 108 pts"],'in season, team finishes read like Cross Country');
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.deepEqual([...byuSchool.cardSports].sort(),[...sports].sort(),'every sponsored BYU sport reads the official cards');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);

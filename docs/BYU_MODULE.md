@@ -133,3 +133,15 @@ Production showed the 2025-26 season (13 results from January 2026) as current. 
 - **Decimal scores.** `W 195.675-194.525` reads as `W, 195.675-194.525`. A fixture test dated April 2026 shows the page in K-State's format with its recaps.
 
 The 2026-27 meets will appear when byucougars.com publishes them; no code change is needed.
+
+## Track & Field (`4.37.1-byu-track-field`)
+
+Production returned 502: the inherited `track-and-field` and `track-field` routes do not exist on byucougars.com (the roster route returns 404). Track & Field now:
+- routes to `mens-track-and-field` and `womens-track-and-field` (schedule and roster);
+- is added to `combinedSports` and joins `cardSports`.
+
+Both pages still show the 2025-26 season, so today Track & Field is a 200 empty schedule. A fixture test dated May 2026 shows those pages in K-State's format, with team finishes such as `Women's team: 2nd · 110 pts`.
+
+**All 12 BYU sports now read the official cards through the module.**
+
+**Two-team empty schedules.** The first preview of this PR returned 502. For combined sports, the shared `labelTeamEvents` returns a new array, so the module's identity check no longer recognized its own past-season result. Gymnastics, with one page, was unaffected. `fetchUrl` now keeps the parse result before labeling, and BYU's empty-schedule clause checks that. The other schools' clauses are unchanged. A test runs both pages through `fetchUrl` and `fetchLive`.

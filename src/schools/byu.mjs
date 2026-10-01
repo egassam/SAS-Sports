@@ -7,10 +7,10 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis']),
+  combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis','Track & Field']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
     'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
@@ -27,7 +27,7 @@ export const byuSchool={
     'byu|Softball':'https://byucougars.com/sports/softball/schedule',
     'byu|Swimming & Diving':['https://byucougars.com/sports/mens-swimming-and-diving/schedule','https://byucougars.com/sports/womens-swimming-and-diving/schedule'],
     'byu|Tennis':['https://byucougars.com/sports/mens-tennis/schedule','https://byucougars.com/sports/womens-tennis/schedule'],
-    'byu|Track & Field':['https://byucougars.com/sports/track-and-field/schedule','https://byucougars.com/sports/track-field/schedule','https://byucougars.com/'],
+    'byu|Track & Field':['https://byucougars.com/sports/mens-track-and-field/schedule','https://byucougars.com/sports/womens-track-and-field/schedule'],
     'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -41,7 +41,7 @@ export const byuSchool={
     'byu|Softball':'https://byucougars.com/sports/softball/roster',
     'byu|Swimming & Diving':['https://byucougars.com/sports/womens-swimming-and-diving/roster','https://byucougars.com/sports/mens-swimming-and-diving/roster','https://byucougars.com/sports/womens-swimming-diving/roster','https://byucougars.com/sports/mens-swimming-diving/roster','https://byucougars.com/sports/swimming-and-diving/roster','https://byucougars.com/sports/swimming-diving/roster','https://byucougars.com/sports/swimming/roster'],
     'byu|Tennis':['https://byucougars.com/sports/womens-tennis/roster','https://byucougars.com/sports/mens-tennis/roster','https://byucougars.com/sports/tennis/roster'],
-    'byu|Track & Field':['https://byucougars.com/sports/track-and-field/roster','https://byucougars.com/sports/track-field/roster'],
+    'byu|Track & Field':['https://byucougars.com/sports/mens-track-and-field/roster','https://byucougars.com/sports/womens-track-and-field/roster'],
     'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/roster'
   }
 };
