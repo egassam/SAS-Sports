@@ -6,6 +6,11 @@
   "ai": {
     "binding": "AI"
   },
+  // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
+  // deployed Cron Trigger in place (the reverted #87 added one).
+  "triggers": {
+    "crons": []
+  },
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS",
