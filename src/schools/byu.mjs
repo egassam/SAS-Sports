@@ -214,7 +214,7 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     event.recap_result_count=rows.length;
     event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
     const leader=runners[0];
-    event.highlights=[`${leader.participant} led BYU in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.replace(' \u00b7 ',' in ')}.`];
+    event.highlights=[`${leader.participant} led BYU in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.includes(' \u00b7 ')?leader.result.replace(' \u00b7 ',' in '):`in ${leader.result}`}.`];
     event.highlights_verified=true;event.meet_results_verified=true;
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;

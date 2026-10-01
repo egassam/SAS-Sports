@@ -170,6 +170,7 @@ assert.deepEqual(rowsOf(xcFinals[0]),["Women's race | BYU team | 1st · 19 pts",
 assert.deepEqual(rowsOf(xcFinals[1]).slice(0,3),["Women's race | BYU team | 1st · 32 pts","Women's race | Jane Hedengren | 3rd · 19:32.5","Women's race | Jenna Hutchins | 5th · 19:56.9"],'the team-score table is skipped; no distance is claimed from recap prose');
 assert.ok(rowsOf(xcFinals[2]).slice(1).every(row=>/\| \d{1,2}:\d{2}\.\d$/.test(row)),'a table without a place column gives times only, never guessed places');
 assert.deepEqual(rowsOf(xcFinals[3]).slice(0,3),["Men's race | BYU team | 1st · 71 pts","Men's race | Tayvon Kitchen | 3rd · 23:23.1","Men's race | Noah Jenkins | 14th · 24:01.5"]);
+assert.deepEqual(xcFinals.map(e=>e.highlights[0]),["Jane Hedengren led BYU in the women's race, finishing 1st in 15:08.62.","Jane Hedengren led BYU in the women's race, finishing 3rd in 19:32.5.","Tayvon Kitchen led BYU in the men's race, finishing in 13:21.4.","Tayvon Kitchen led BYU in the men's race, finishing 3rd in 23:23.1."]);
 assert.ok(xcFinals.every(e=>e.meet_results_verified&&e.highlight_state==='official_recap_results'&&e.recap_result_count===e.results.length));
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
