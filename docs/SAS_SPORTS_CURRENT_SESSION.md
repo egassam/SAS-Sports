@@ -1,10 +1,18 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 1, 2026, America/Chicago (BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 1, 2026, America/Chicago (K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**K-State Volleyball live scores; ESPN scoreboards working again; production is `4.37.2-kstate-volleyball-live` (23:48 UTC, October 1).** User, during the K-State vs BYU match: "Can we find a live feed and have live results on the KSTATE volleyball page?" PR #109 (`9606651`):
+- **Volleyball scoreboard.** ESPN's women's college volleyball scoreboard is added to `kstateSchool.liveScoreboards`. Today's official card goes Live with sets won and the current set's points (`1st Set · 14-15` in production); a final reads `W, 3-1`.
+- **Scoreboard user agent (shared, user-approved, "Do one").** ESPN's edge returns 403 to any user agent carrying a web address, so **every ESPN live score had failed since #85**. Scoreboard requests now send `Mozilla/5.0 (compatible; SAS-Sports/<version>)`; school sites keep the `/bot` identity.
+- **Nickname-only matches refused (shared).** Once ESPN answered, New Hampshire Wildcats matched K-State's "Wildcats" alias (a phantom Sep 30 final). Matching now uses ESPN's location, full or short name, or abbreviation only.
+- **Gate:** `npm run test:release` and `npm test` passed. CI green. Preview: one live card, no phantom final, XC 18/20 and 26/21, 36/36 forced refreshes.
+- **Production:** live card shown, no phantom final, XC 18/20 and 26/21; K-State, Arizona and BYU Football feeds unchanged.
+- **Limitation:** ESPN's volleyball feed updates slowly (it stayed at 6-9 for over five minutes). The final's `W, 3-1` format is fixture-tested; tonight's real final was not observed in this session.
 
 **BYU: all 12 sports converted; production is `4.37.1-byu-track-field` (23:10 UTC, October 1).** User: "Finish BYU, do all the sports". The agent opened and merged PRs #97–#107 one sport at a time under `AGENTS.md` item 6 (#94 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/BYU_MODULE.md`.
 - Reader features added along the way:
@@ -1117,4 +1125,16 @@ User: "Finish BYU, do all the sports". All 17 official schedule pages downloaded
 - A Cross Country highlight read "finishing 13:21.4".
 
 **Not done:** BYU athlete certification review. Recap coverage is limited where BYU publishes none (see `docs/BYU_MODULE.md`).
+
+### October 1, 2026 — K-State Volleyball live scores (PR #109)
+
+User: "KSTATE volleyball had a match right now. Can we find a live feed and have live results on the KSTATE volleyball page?" ESPN's women's college volleyball scoreboard listed BYU at Kansas State (7:30 PM EDT). The agent:
+- added it to K-State's live scoreboards;
+- captured the real in-progress event (23:35 UTC, 1st set 2-1) as a fixture.
+
+**Found on the preview:**
+1. **No live card.** ESPN returned 403 to the app's user agent (any `+https://…` link, `/bot` or `/about`), so all ESPN scores had failed since #85. The agent asked the user. User: "Do one" (drop the link for ESPN only).
+2. **Phantom New Hampshire final.** Once ESPN answered, New Hampshire Wildcats matched K-State's "Wildcats" alias. Fixed with a second real fixture (the Sep 30 New Hampshire vs Stonehill event).
+
+**Merged** under the gate after both fixes, and verified in production (above).
 
