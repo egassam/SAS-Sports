@@ -5,5 +5,22 @@
       "retrieved": "2026-10-01T20:53Z",
       "note": "Official 2026 BYU Football schedule, unmodified. 12 schedule-event-item cards: finals W 63-7 Utah Tech (Sep 5), W 28-17 Arizona (Sep 12), W 41-23 at Colorado State (Sep 19), each with its own Recap link; 9 upcoming, two with published times (at TCU Oct 3, 5:00 PM MDT; Iowa State Fri Oct 9, 8:15 PM MDT), the rest TBA. Each card's <time datetime> carries the local start with its offset."
     }
+  },
+  "recaps": {
+    "recap-2026-09-05-utah-tech.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/05/byu-utah-tech",
+      "retrieved": "2026-10-01T21:20Z",
+      "note": "Official recap linked from the Sep 5 Utah Tech card, unmodified. Title \"No. 14 BYU Opens Season with 63-7 Win over Utah Tech\"; neither the title, URL nor article says \"football\"."
+    },
+    "recap-2026-09-12-arizona.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/12/byu-arizona",
+      "retrieved": "2026-10-01T21:20Z",
+      "note": "Official recap linked from the Sep 12 Arizona card, unmodified. Title \"No. 15 Cougars Ride Second-Half Shutout to 28-17 Win Over Arizona\"."
+    },
+    "recap-2026-09-19-colorado-state.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/19/no-11-byu-overpowers-colorado-state-41-23",
+      "retrieved": "2026-10-01T21:20Z",
+      "note": "Official recap linked from the Sep 19 at Colorado State card, unmodified. Title \"No. 11 BYU Overpowers Colorado State 41-23\"."
+    }
   }
 }

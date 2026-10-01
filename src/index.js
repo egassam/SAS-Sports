@@ -205,7 +205,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
-const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl});
+const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1405,7 +1405,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;

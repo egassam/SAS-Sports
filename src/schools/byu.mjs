@@ -66,7 +66,7 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // link. The shared parsers read both these cards and the page's schema data,
 // so every upcoming game appeared twice and a phantom Nov 28 final reused the
 // Sep 5 score and recap.
-export function createByuHandlers({makeEvent,visibleText,absoluteUrl}){
+export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='byu'||!byuSchool.cardSports.has(sport))return null;
@@ -94,5 +94,15 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl}){
     }
     return events.length?events:null;
   }
-  return{parseSchedule};
+  // BYU recaps rarely name the sport ("byu-utah-tech", "No. 14 BYU Opens
+  // Season with 63-7 Win over Utah Tech"), so the shared matcher rejects every
+  // one. A Recap link from the sport's own schedule card is already bound to
+  // that sport; the article must still name the opponent and match the date.
+  function matchesRecap(raw,event,url){
+    if(event?.school_id!=='byu')return false;
+    let parsed;try{parsed=new URL(url);}catch{return false;}
+    const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
+    return recapMatchesEvent(raw,cardBound?{...event,sport:''}:event,url);
+  }
+  return{parseSchedule,matchesRecap};
 }

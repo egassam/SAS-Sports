@@ -41,3 +41,12 @@ Production (`4.34.0`) ran the shared parsers, which read both these cards and th
 - finals show the date only, as K-State does. Upcoming games show the published time (`Oct 3, 5:00 PM`), stored as Mountain wall clock. `TBA` shows the date only.
 
 A page without cards returns `null`, so the shared parsers still run. Fixture: `tests/fixtures/byu-module/football-schedule.html.gz` (unmodified; see `sources.json`). Expected: 3 finals (`W, 63-7` Utah Tech, `W, 28-17` Arizona, `W, 41-23` at Colorado State) with their recaps, and 9 upcoming.
+
+**Expanded view.** BYU recaps rarely name the sport. For example, the title is "No. 14 BYU Opens Season with 63-7 Win over Utah Tech" and the URL is `/news/2026/09/05/byu-utah-tech`. The shared `recapMatchesEvent` therefore rejected every card recap. Production then fell back to other sources and showed highlights from other teams' games: Arizona vs Northern Arizona on Sep 12, and a Colorado game on Sep 19.
+
+`createByuHandlers().matchesRecap` (hook in `attachOfficialHighlights`) drops only the sport-word requirement, and only for the Recap link of a card in a module card sport (an https byucougars.com `/news/` URL). The article must still name the opponent and match the game date. Every other candidate gets the full shared check.
+
+Fixtures: the three recaps (see `sources.json`). Tests:
+- each recap matches only its own game;
+- each final keeps its own recap, and the stub AI is given that game's article;
+- a wrong card recap leaves the game at `recap_not_found`, with no recap link and no highlights.

@@ -13,9 +13,16 @@ const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const school=schools.find(s=>s.id==='byu');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const fetch=async url=>{throw Error(`Unexpected network request: ${url}`);};
+// Official recaps served from fixtures; any other request fails.
+const recapFixtures=new Map(),requests=[];
+const fetch=async url=>{
+  requests.push(String(url));
+  const body=recapFixtures.get(String(url));
+  if(body==null)throw Error(`Unexpected network request: ${url}`);
+  return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
+};
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit byucougars.com routes.
 const sports=sponsoredSports.byu;
@@ -65,6 +72,37 @@ assert.ok(upcoming.every(e=>!e.recap_url&&!e.headline&&!e.school_score),'no upco
 const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,9]);
 assert.deepEqual(group.results.map(e=>e.display_time),['Sep 19','Sep 12','Sep 5'],'results newest first, as K-State');
+// Expanded view: BYU recaps rarely say "football" (title "No. 14 BYU Opens
+// Season with 63-7 Win over Utah Tech", URL /news/2026/09/05/byu-utah-tech), so
+// the shared matcher rejected every card recap and production built
+// highlights from other teams' games. The card-bound recap now matches its own
+// game only, and the highlights are written from that article.
+const recaps=['recap-2026-09-05-utah-tech.html.gz','recap-2026-09-12-arizona.html.gz','recap-2026-09-19-colorado-state.html.gz'].map(fixture);
+finals.forEach((event,i)=>recapFixtures.set(event.recap_url,recaps[i]));
+finals.forEach((event,i)=>recaps.forEach((raw,j)=>assert.equal(worker.byuHandlers.matchesRecap(raw,event,finals[j].recap_url),i===j,`${event.opponent} must match only its own recap`)));
+assert.equal(worker.byuHandlers.matchesRecap(recaps[0],finals[0],'https://byucougars.com/news/2026/09/05/another-story'),false,'a link that is not the card recap still needs the sport named');
+for(const [i,expected] of [[0,'Utah Tech'],[1,'Arizona'],[2,'Colorado State']]){
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['BYU scored on its first drive of the game against the visitors.','The Cougar defense forced two turnovers in the first half of play.','BYU added two more touchdowns in the third quarter to pull away.','The Cougars closed out the win with a long drive in the fourth quarter.'])};}}};
+  const events=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now);
+  const target=events.filter(e=>e.status==='Final')[i];
+  await worker.attachOfficialHighlights(events,fixture('football-schedule.html.gz'),school,'Football',footballUrl,now,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated',`${expected}: highlights come from the official recap`);
+  assert.equal(target.recap_url,finals[i].recap_url,`${expected}: the card's own recap is kept`);
+  assert.equal(target.highlights.length,4);
+  assert.equal(prompts.length,1);
+  assert.ok(prompts[0].includes(expected)&&prompts[0].includes(target.headline.slice(3)),`${expected}: the AI is given that game's article`);
+}
+// A card recap for a different game is rejected; nothing else is invented.
+{
+  const events=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now);
+  const target=events.find(e=>e.status==='Final');
+  recapFixtures.set(target.recap_url,recaps[1]);
+  await worker.attachOfficialHighlights(events,fixture('football-schedule.html.gz'),school,'Football',footballUrl,now,{AI:{run:async()=>{throw Error('AI must not run');}}},target.id);
+  assert.equal(target.highlight_state,'recap_not_found');
+  assert.ok(!target.recap_url&&!target.highlights.length);
+  recapFixtures.set(target.recap_url||finals[0].recap_url,recaps[0]);
+}
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football']);
