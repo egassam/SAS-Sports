@@ -8,7 +8,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahom
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
 
-const VERSION='4.33.2-arizona-state-tennis';
+const VERSION='4.33.3-arizona-state-swimming-diving';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 const HEADERS={
