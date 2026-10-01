@@ -81,3 +81,7 @@ Production read only the women's page and showed both meets as `Completed`, with
 Limitation: the tables list the top 10 overall or BYU's scorers, so not every BYU runner appears. The card's Results link (sporttrax.com, live.reddirtrunning.com, mwt.live) is a third-party timing site and is not read.
 
 Shared test change: the regression route check now also accepts a route written as a list (`'byu|Cross Country':['https://byucougars.com/...`).
+
+## Basketball (`4.36.4-byu-basketball`)
+
+Production showed 128 upcoming games: the inherited generic routes plus card/schema duplicates. Basketball now routes only to the two official pages and joins `cardSports`; both teams are labeled, with separate ids. A bracket game listed as `TBD` (Nov 25) takes its tournament heading (`BYU vs Southwest Maui Invitational`), as `TBA` already did. Result: 34 men's and 33 women's games. Most men's times are still TBA on the official page. No game has been played yet.
