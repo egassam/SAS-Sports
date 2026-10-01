@@ -968,3 +968,13 @@ Production:
 
 Final state: production `4.34.0-polite-source-fetch`, no Cron Trigger, `/api/feed-store` 404, K-State XC 18/20, KU XC 26/21, live health 48/48 (after #89). After #90: XC unchanged and the sample feeds 200.
 
+Session close (about 20:20 UTC): the user asked "Are we cleaned up on the schools bot defense now?" The agent answered:
+- Production is in place and verified (#85: per-page caching, robots.txt, Retry-After and refusal backoff, honest user agent with `/bot`).
+- Items 1 and 3 are not in use (skipped and reverted).
+- The sandbox remains blocked by four of the five converted schools. When fixtures are needed, ask the user to save pages from their browser.
+- Not done: allowlisting requests to schools, and a contact address on `/bot` (needs the user's go-ahead).
+- Housekeeping: confirm the Cron Trigger list is empty in the dashboard; the unused `sas-sports-feeds` KV namespace awaits the user's decision.
+- Unexplained, not recurring: the IAD preview failure; the #88 merge never deploying.
+
+User: "Then let's move on. End session". Next: the next school the user names, per the instructions above.
+
