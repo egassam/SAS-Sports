@@ -191,9 +191,17 @@ assert.deepEqual(hoops.womens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),
 assert.equal(byuSchool.scheduleUrls['byu|Baseball'],'https://byucougars.com/sports/baseball/schedule','the homepage fallback is gone');
 const baseball=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball','https://byucougars.com/sports/baseball/schedule',now);
 assert.deepEqual(baseball.map(e=>`${e.status} ${e.title} ${e.display_time}`),['Upcoming BYU vs Utah Oct 2, 4:00 PM','Upcoming BYU vs SLCC Oct 7, 5:30 PM','Upcoming BYU at Air Force Oct 24','Upcoming BYU at UNLV Nov 7']);
+// Softball: the "2026 (Fall)" page; production showed 17 games (duplicates).
+// The Oct 10 noon card names no opponent and is skipped; the Sep 30 Weber
+// State game publishes no result, so it is not shown as a final.
+assert.equal(byuSchool.scheduleUrls['byu|Softball'],'https://byucougars.com/sports/softball/schedule');
+const softball=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Softball','https://byucougars.com/sports/softball/schedule',now);
+assert.equal(softball.length,8);
+assert.ok(!softball.some(e=>e.status==='Final'),'no result is invented for an unreported game');
+{const [g]=worker.groupEvents(softball,now);assert.deepEqual(g.upcoming.map(e=>`${e.title} ${e.display_time}`).slice(0,3),['BYU vs Idaho State Oct 2, 6:00 PM','BYU vs SLCC Oct 8, 6:00 PM','BYU vs Utah Tech Oct 10, 3:00 PM']);assert.equal(g.upcoming.length,7);}
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');

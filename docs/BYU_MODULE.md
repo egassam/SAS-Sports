@@ -89,3 +89,7 @@ Production showed 128 upcoming games: the inherited generic routes plus card/sch
 ## Baseball (`4.36.5-byu-baseball`)
 
 Production showed 10 fall games, with duplicates in two date formats. Baseball routes only to its official page (the homepage fallback is gone) and joins `cardSports`. The "Fall 2026" page lists 5 cards: the Oct 30 "vs. BYU" intrasquad is skipped, leaving 4 games (Utah Oct 2, 4:00 PM; SLCC Oct 7, 5:30 PM; at Air Force; at UNLV). Spring 2027 games will appear when byucougars.com publishes them.
+
+## Softball (`4.36.6-byu-softball`)
+
+Production showed 17 fall games, with duplicates. Softball routes only to its official page and joins `cardSports`. Of the 9 cards on the "Softball 2026 (Fall)" page, the Oct 10 noon card names no opponent and is skipped. The Sep 30 Weber State game publishes no result, so it is neither shown as a final nor kept as upcoming. Result: 7 upcoming games with published times. Spring 2027 games will appear when byucougars.com publishes them.
