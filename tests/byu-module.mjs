@@ -241,9 +241,22 @@ assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events 
 assert.equal(tennis.womens.length,7);
 assert.deepEqual([tennis.womens[0].title,tennis.womens[0].headline,tennis.womens[0].end_time,tennis.womens[0].recap_url],["Women's · BYU vs USTA SoCal Championships",'Completed','2026-09-27T23:59:59Z','https://byucougars.com/news/2026/09/28/cougars-make-strong-showing-at-usta-socal-championships']);
 assert.equal(worker.byuHandlers.matchesRecap(fixture('tennis-recap-2026-09-28-usta-socal.html.gz'),tennis.womens[0],tennis.womens[0].recap_url),true,'a recap the day after a multi-day tournament ends belongs to it');
+// Swimming & Diving: production read inherited generic routes (54 upcoming,
+// 23 duplicated). Both official pages, labeled. Internal meets ("Navy vs.
+// Royal", "Alumni Meet", "Intersquad Meet") and undated NCAA cards are left out.
+assert.deepEqual(byuSchool.scheduleUrls['byu|Swimming & Diving'],['https://byucougars.com/sports/mens-swimming-and-diving/schedule','https://byucougars.com/sports/womens-swimming-and-diving/schedule']);
+const swim={};
+for(const team of ['mens','womens']){
+  const url=`https://byucougars.com/sports/${team}-swimming-and-diving/schedule`;
+  swim[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-swimming-and-diving-schedule.html.gz`),school,'Swimming & Diving',url,now),school,'Swimming & Diving',url);
+}
+assert.deepEqual([swim.mens.length,swim.womens.length],[9,10]);
+assert.ok(![...swim.mens,...swim.womens].some(e=>/Navy|Royal|Alumni|squad/i.test(e.title)),'internal meets are left out');
+assert.equal(worker.mergeEvents([swim.mens,swim.womens]).length,19,'the same meet on both pages keeps separate team events');
+assert.deepEqual(swim.womens.slice(0,4).map(e=>`${e.title} ${e.display_time}`),["Women's · BYU at CMU Shootout Oct 2, 4:00 PM","Women's · BYU at UC Santa Barbara Invite (Swimming) Oct 16","Women's · BYU at MPSF Open Water Championships Oct 17","Women's · BYU vs Utah Tech Sprint Dual Nov 6, 4:00 PM"]);
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
