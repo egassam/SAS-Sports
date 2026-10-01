@@ -172,12 +172,26 @@ assert.ok(rowsOf(xcFinals[2]).slice(1).every(row=>/\| \d{1,2}:\d{2}\.\d$/.test(r
 assert.deepEqual(rowsOf(xcFinals[3]).slice(0,3),["Men's race | BYU team | 1st · 71 pts","Men's race | Tayvon Kitchen | 3rd · 23:23.1","Men's race | Noah Jenkins | 14th · 24:01.5"]);
 assert.deepEqual(xcFinals.map(e=>e.highlights[0]),["Jane Hedengren led BYU in the women's race, finishing 1st in 15:08.62.","Jane Hedengren led BYU in the women's race, finishing 3rd in 19:32.5.","Tayvon Kitchen led BYU in the men's race, finishing in 13:21.4.","Tayvon Kitchen led BYU in the men's race, finishing 3rd in 23:23.1."]);
 assert.ok(xcFinals.every(e=>e.meet_results_verified&&e.highlight_state==='official_recap_results'&&e.recap_result_count===e.results.length));
+// Basketball: production listed 128 upcoming games (duplicates) from
+// inherited generic routes. Both official pages only, labeled by team.
+assert.deepEqual(byuSchool.scheduleUrls['byu|Basketball'],['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule']);
+const hoops={};
+for(const team of ['mens','womens']){
+  const url=`https://byucougars.com/sports/${team}-basketball/schedule`;
+  hoops[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-basketball-schedule.html.gz`),school,'Basketball',url,now),school,'Basketball',url);
+}
+assert.deepEqual([hoops.mens.length,hoops.womens.length],[34,33]);
+const hoopsEvents=worker.mergeEvents([hoops.mens,hoops.womens]);
+assert.equal(hoopsEvents.length,67,'no duplicate games; the teams keep separate ids');
+assert.ok(hoops.mens.every(e=>e.id.endsWith('-mens')&&e.title.startsWith("Men's · "))&&hoops.womens.every(e=>e.id.endsWith('-womens')&&e.title.startsWith("Women's · ")));
+assert.deepEqual(hoops.mens.slice(7,10).map(e=>`${e.title} ${e.display_time}`),["Men's · BYU vs Washington Nov 23, 3:00 PM","Men's · BYU vs Clemson/Ole Miss Nov 24","Men's · BYU vs Southwest Maui Invitational Nov 25"],'a "TBD" bracket game takes its tournament heading');
+assert.deepEqual(hoops.womens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),["Women's · BYU vs Western Colorado Oct 27, 7:00 PM","Women's · BYU vs Idaho State Nov 3, 7:00 PM"]);
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Basketball',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Golf',footballUrl,now),null,'other BYU sports keep the shared parsers');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);

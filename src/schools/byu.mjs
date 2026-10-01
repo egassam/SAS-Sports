@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country']),
@@ -18,7 +18,7 @@ export const byuSchool={
   },
   scheduleUrls:{
     'byu|Baseball':['https://byucougars.com/sports/baseball/schedule','https://byucougars.com/'],
-    'byu|Basketball':['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule','https://byucougars.com/sports/basketball/schedule','https://byucougars.com/'],
+    'byu|Basketball':['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule'],
     'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
     'byu|Football':'https://byucougars.com/sports/football/schedule',
     'byu|Golf':['https://byucougars.com/sports/womens-golf/schedule','https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/golf/schedule','https://byucougars.com/'],
@@ -137,7 +137,7 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#11 Utah", "No. 2 Pittsburgh") describe the week, not the opponent.
       let opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:(?:#|No\.\s*)(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
-      if(/^TBA$/i.test(opponent))opponent=tournamentTitle(raw,index,visibleText);
+      if(/^TB[AD]$/i.test(opponent))opponent=tournamentTitle(raw,index,visibleText);
       if(!opponent)continue;
       // Internal games (the volleyball Blue-White Scrimmage, soccer's "vs. BYU"
       // intrasquad) have no opponent divider or list BYU against itself.
