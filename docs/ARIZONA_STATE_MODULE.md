@@ -41,6 +41,10 @@ Production showed 3 results with `vs.`/`at` placeholder opponents (`ASU at at`, 
 
 Football's output is byte-identical. Soccer: 11 finals (`W, 3-1` at New Mexico St. … `W, 2-0` at Kansas St.) with their recaps, 9 upcoming with published times; `#RV` rankings are dropped like `#9`.
 
+## Volleyball (`4.32.2-arizona-state-volleyball`)
+
+Production showed 2 results (`ASU vs vs.`, `ASU at at`), the same card defect. Volleyball joins `cardSports`: 13 finals (`W, 3-1` vs Texas … `W, 3-1` at Cincinnati) with their recaps, 16 upcoming with published times.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |

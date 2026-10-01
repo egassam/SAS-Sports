@@ -9,6 +9,11 @@
       "url": "https://thesundevils.com/sports/soccer/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official 2026 Arizona State Soccer schedule, unmodified. 20 cards: 11 finals (Aug 12 W 3-1 at New Mexico St. through Sep 27 W 2-0 at Kansas St.), each with its own Recap link; 9 upcoming, 8 with published times. JSON-LD lists every event's start time."
+    },
+    "volleyball-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/volleyball/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026 Arizona State Volleyball schedule, unmodified. 29 cards: 13 finals (Aug 22 W 3-1 vs #2 Texas through Sep 27 W 3-1 at Cincinnati), each with its own Recap link; 16 upcoming with published times."
     }
   }
 }
