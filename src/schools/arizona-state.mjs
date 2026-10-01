@@ -7,12 +7,12 @@ export const arizonaStateSchool={
   id:'arizona-state',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball']),
+  cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball']),
   // Basketball and Swimming & Diving publish separate men's and women's pages.
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
     'arizona-state|Baseball':['https://thesundevils.com/sports/baseball/schedule','https://thesundevils.com/'],
-    'arizona-state|Basketball':['https://thesundevils.com/sports/mens-basketball/schedule','https://thesundevils.com/sports/womens-basketball/schedule','https://thesundevils.com/sports/basketball/schedule','https://thesundevils.com/'],
+    'arizona-state|Basketball':['https://thesundevils.com/sports/mens-basketball/schedule','https://thesundevils.com/sports/womens-basketball/schedule'],
     'arizona-state|Beach Volleyball':['https://thesundevils.com/sports/beach-volleyball/schedule','https://thesundevils.com/'],
     'arizona-state|Cross Country':'https://thesundevils.com/sports/cross-country/schedule',
     'arizona-state|Football':'https://thesundevils.com/sports/football/schedule',
