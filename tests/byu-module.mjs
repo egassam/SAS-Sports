@@ -119,12 +119,34 @@ assert.ok(!volleyball.some(e=>/scrimmage/i.test(e.title)));
 assert.deepEqual(volleyball.filter(e=>e.status!=='Final').slice(0,2).map(e=>`${e.status} ${e.title} ${e.display_time}`),['Today BYU at Kansas State Oct 1, 5:30 PM','Upcoming BYU at Kansas Oct 2, 5:00 PM']);
 assert.equal(volleyball.at(-1).start_time,'2026-11-27T18:30:00.000Z','November times are Mountain Standard wall clock');
 {const [g]=worker.groupEvents(volleyball,now);assert.deepEqual([g.results.length,g.upcoming.length],[11,17]);}
+// Soccer: same duplication in production. The Aug 1 intrasquad lists BYU
+// against itself; the Big 12 tournament card's opponent is "TBA"; the Sep 3
+// Colorado State card links the Aug 28 Minnesota recap, which is refused.
+const soccer=worker.parseHtml(fixture('womens-soccer-schedule.html.gz'),school,'Soccer','https://byucougars.com/sports/womens-soccer/schedule',now);
+assert.equal(soccer.length,20,'the intrasquad is skipped');
+assert.ok(!soccer.some(e=>e.opponent==='BYU'));
+const soccerFinals=soccer.filter(e=>e.status==='Final');
+assert.equal(soccerFinals.length,11);
+assert.deepEqual(soccerFinals.filter(e=>/^T/.test(e.headline)).map(e=>`${e.display_time} ${e.title} ${e.headline}`),['Sep 5 BYU vs Oklahoma T, 1-1','Sep 18 BYU at Arizona T, 1-1'],'ties keep K-State\'s format');
+const colorado=soccerFinals.find(e=>e.opponent==='Colorado State');
+assert.equal(colorado.recap_url,undefined,'a recap dated before the game belongs to another game');
+assert.equal(soccerFinals.filter(e=>e.recap_url).length,10);
+assert.equal(soccerFinals.find(e=>e.opponent==='Minnesota').recap_url,'https://byucougars.com/news/2026/08/28/cougs-capitalize-on-own-goal-defeat-minnesota-1-0');
+assert.deepEqual(soccer.at(-1)&&[soccer.at(-1).title,soccer.at(-1).display_time],['BYU vs Big 12 Soccer Tournament','Nov 9'],'a TBA opponent takes its tournament heading');
+{const [g]=worker.groupEvents(soccer,now);assert.deepEqual([g.results.length,g.upcoming.length],[11,9]);}
+// A recap must name BYU. Production's opponent-site fallback matched a
+// cubuffs.com story (Colorado vs New Mexico) to the Sep 3 Colorado State game.
+// cubuffs.com refuses the sandbox, so this is a minimal stand-in page with the
+// same title, not the official article.
+const otherTeamsStory='<meta property="og:title" content="Soccer: Early Goals Power Buffs Past New Mexico"><script type="application/ld+json">{"articleBody":"BOULDER, Colo. - Colorado State transfer Ruby Hayward scored in the 7th minute on September 3, 2026 as the Buffs beat New Mexico in soccer."}</script>';
+assert.equal(worker.byuHandlers.matchesRecap(otherTeamsStory,{...colorado,start_time:'2026-09-03T12:00:00.000Z'},'https://cubuffs.com/news/2026/9/3/soccer-early-goals-power-buffs-past-new-mexico'),false,'a story that never names BYU is not a BYU recap');
+assert.ok(finals.every((event,i)=>worker.byuHandlers.matchesRecap(recaps[i],event,event.recap_url)),'BYU\'s own recaps still match');
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Soccer',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Basketball',footballUrl,now),null,'other BYU sports keep the shared parsers');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);
