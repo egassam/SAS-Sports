@@ -60,7 +60,7 @@ const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,10]);
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
-const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Water Polo',footballUrl,now);
+const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now);
 assert.ok(otherShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
 const arizona=schools.find(s=>s.id==='arizona');
 assert.ok(worker.parseHtml(fixture('football-schedule.html.gz'),arizona,'Football','https://arizonawildcats.com/sports/football/schedule',now).some(e=>e.opponent==='vs.'),'other schools are unchanged');
@@ -124,4 +124,10 @@ assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Lacrosse'],'https://
 const lacrossePast=worker.parseHtml(fixture('lacrosse-schedule.html.gz'),school,'Lacrosse','https://thesundevils.com/sports/lacrosse/schedule',now);
 assert.deepEqual(lacrossePast,[]);
 assert.ok(worker.arizonaStateHandlers.isEmptySchedule(lacrossePast));
+// Water Polo: the official water-polo page still shows the spring 2026 season, the previous academic
+// year; it is an empty schedule until the next season is published.
+assert.equal(arizonaStateSchool.scheduleUrls['arizona-state|Water Polo'],'https://thesundevils.com/sports/water-polo/schedule');
+const waterPoloPast=worker.parseHtml(fixture('water-polo-schedule.html.gz'),school,'Water Polo','https://thesundevils.com/sports/water-polo/schedule',now);
+assert.deepEqual(waterPoloPast,[]);
+assert.ok(worker.arizonaStateHandlers.isEmptySchedule(waterPoloPast));
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);
