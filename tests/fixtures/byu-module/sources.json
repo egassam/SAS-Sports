@@ -44,6 +44,16 @@
       "url": "https://byucougars.com/sports/softball/schedule",
       "retrieved": "2026-10-01T22:00Z",
       "note": "Official BYU \"Softball 2026 (Fall)\" schedule, unmodified. 9 cards: Weber State (Sep 30, no result published), Idaho State (Oct 2), SLCC (Oct 8), an Oct 10 noon card with no opponent, Utah Tech (Oct 10, 3:00 PM), Utah Valley, Southern Idaho, Snow College and Southern Utah."
+    },
+    "mens-golf-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/mens-golf/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026-27 BYU Men's Golf schedule, unmodified. 14 tournaments: Vuori Invitational ('4th (Kihei Akina - 2nd)') and William H. Tucker Invitational ('3rd (Kihei Akina - T-4th)') completed, 12 upcoming through the NCAA Championship."
+    },
+    "womens-golf-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/womens-golf/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026-27 BYU Women's Golf schedule, unmodified. 13 tournaments: The Bruzzy ('9th (Mar\u00eda Jos\u00e9 \"MJ\" Barrag\u00e1n - T-6th)') and Red Raider Invitational ('1st (Kate Walker - 2nd)') completed, 11 upcoming."
     }
   },
   "recaps": {
@@ -81,6 +91,36 @@
       "url": "https://byucougars.com/news/2026/09/19/kitchen-leads-byu-to-win-in-john-mcnichols-invitational",
       "retrieved": "2026-10-01T22:25Z",
       "note": "Official recap, unmodified. A BYU-only Name/Time/Finish table (9 runners)."
+    },
+    "golf-recap-2026-09-26-tucker-final.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/26/mens-golf-takes-third-at-william-h-tucker-invitational-behind-akinas-fourth-place-finish",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official final recap, unmodified: \"Men\u2019s golf takes third at William H. Tucker Invitational behind Akina\u2019s fourth-place finish\"."
+    },
+    "golf-story-2026-09-26-tucker-suspended.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/26/akina-sixth-byu-fourth-as-weather-suspends-play-at-william-h-tucker-invitational",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official in-progress story, unmodified, same date: \"Akina sixth, BYU fourth as weather suspends play at William H. Tucker Invitational\"."
+    },
+    "golf-recap-2026-09-23-red-raider-final.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/23/womens-golf-wins-red-raider-invitational-behind-walkers-second-place-finish",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official final recap, unmodified: \"Women\u2019s golf wins Red Raider Invitational behind Walker\u2019s second-place finish\"."
+    },
+    "golf-story-2026-09-23-red-raider-day-one.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/23/walker-byu-in-second-after-day-one-of-red-raider-invitational",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official in-progress story, unmodified, same date: \"Walker, BYU in second after day one of Red Raider Invitational\"."
+    },
+    "golf-recap-2026-09-16-vuori-final.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/16/akina-takes-second-cougars-finish-fourth-at-vuori-invitational",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official final recap, unmodified: \"Akina takes second; Cougars finish fourth at Vuori Invitational\"."
+    },
+    "golf-story-2026-09-15-vuori-day-one.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/15/akina-cougars-in-fourth-as-darkness-suspends-day-one-of-vuori-invitational",
+      "retrieved": "2026-10-01T22:40Z",
+      "note": "Official in-progress story, unmodified, dated the last day (Sep 15): \"Akina, Cougars in fourth as darkness suspends day one of Vuori Invitational\". Same place as the final result."
     }
   }
 }

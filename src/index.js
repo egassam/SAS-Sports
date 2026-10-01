@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.36.6-byu-softball';
+const VERSION='4.36.7-byu-golf';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -1395,7 +1395,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // very large schedule document when this direct identity is available.
   const recapIndex=target.recap_url?{map:new Map(),candidates:[]}:recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const direct=target.recap_url||recapIndex.map.get(eventMergeKey(target));
-  const day=(target.school_id==='kansas'&&target.event_type==='MEET'?target.end_time||target.start_time:target.start_time)?.slice(0,10)||'';
+  const day=((target.school_id==='kansas'||target.school_id==='byu')&&target.event_type==='MEET'?target.end_time||target.start_time:target.start_time)?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
   const candidates=[...new Set(ordered)].slice(0,8);
