@@ -4,6 +4,11 @@
       "url": "https://thesundevils.com/sports/football/schedule",
       "retrieved": "2026-10-01T01:35Z",
       "note": "Official 2026 Arizona State Football schedule, unmodified. 13 schedule-event-item cards: finals W 70-7 Morgan State (Sep 5), L 20-48 at Texas A&M (Sep 12), W 24-17 at Kansas in London (Sep 19), each with its own Recap link; 10 upcoming, two with published times (Baylor Oct 3 and Hawaii Oct 10, 7:30 p.m. MST). Its __NUXT_DATA__ carries no game objects."
+    },
+    "soccer-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/soccer/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026 Arizona State Soccer schedule, unmodified. 20 cards: 11 finals (Aug 12 W 3-1 at New Mexico St. through Sep 27 W 2-0 at Kansas St.), each with its own Recap link; 9 upcoming, 8 with published times. JSON-LD lists every event's start time."
     }
   }
 }

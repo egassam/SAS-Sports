@@ -32,6 +32,15 @@ thesundevils.com renders each event as a `schedule-event-item` card; its `__NUXT
 
 A page without cards returns `null`, so the shared parsers still run. Fixture: `tests/fixtures/arizona-state-module/football-schedule.html.gz` (unmodified; see `sources.json`). Expected: 3 finals (`W, 70-7` Morgan State, `L, 20-48` at Texas A&M, `W, 24-17` at Kansas) with their recaps, 10 upcoming.
 
+## Soccer (`4.32.1-arizona-state-soccer`)
+
+Production showed 3 results with `vs.`/`at` placeholder opponents (`ASU at at`, `W, 3-1`) and a phantom Nov 9 Big 12 Tournament final. Soccer joins `cardSports`. The reader also gains three parts every card sport uses:
+- **Years from JSON-LD.** Cards show only month and day; the page's JSON-LD lists every event's start time (UTC; Arizona is UTC-7 all year). A card's year is the one year in the current academic season with a published event that day; otherwise the page heading decides, as before.
+- **Current season only.** Events outside the current academic year (July–June) are dropped, as for Utah.
+- **Empty schedule.** A page whose events are all from a past season returns `[]`, flagged as an empty schedule (200 `[]`, with the app's note) rather than a failed source. A page whose cards cannot be read still falls back to the shared parsers.
+
+Football's output is byte-identical. Soccer: 11 finals (`W, 3-1` at New Mexico St. … `W, 2-0` at Kansas St.) with their recaps, 9 upcoming with published times; `#RV` rankings are dropped like `#9`.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |

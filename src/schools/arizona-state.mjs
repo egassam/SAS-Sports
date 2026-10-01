@@ -7,7 +7,7 @@ export const arizonaStateSchool={
   id:'arizona-state',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football']),
+  cardSports:new Set(['Football','Soccer']),
   // Basketball and Swimming & Diving publish separate men's and women's pages.
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
@@ -63,6 +63,29 @@ function cardBlocks(raw){
   return blocks;
 }
 
+const MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+// The page's JSON-LD lists every event with its full start time (UTC). Cards
+// show only month and day, and a page titled "2027 Baseball Schedule" also
+// holds fall 2026 games, so each card's year comes from these dates.
+// Arizona keeps Mountain Standard Time all year (UTC-7).
+function publishedDays(raw){
+  const days=new Set();
+  for(const script of raw.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){
+    let data;try{data=JSON.parse(script[1]);}catch{continue;}
+    for(const item of [].concat(data?.['@graph']||data)){
+      const value=String(item?.startDate||'');
+      if(/^\d{4}-\d{2}-\d{2}$/.test(value)){days.add(value);continue;}
+      const time=Date.parse(value);
+      if(Number.isFinite(time))days.add(new Date(time-7*3600000).toISOString().slice(0,10));
+    }
+  }
+  return days;
+}
+// Spring pages keep showing last season until the next one is published. Only
+// the current academic year (July-June, Arizona time) is current; a page with
+// none is a valid empty schedule, not a failed source.
+function academicYear(now){const local=new Date(now.getTime()-7*3600000);return local.getUTCMonth()>=6?local.getUTCFullYear():local.getUTCFullYear()-1;}
+
 // thesundevils.com renders each event as a schedule-event-item card: the date
 // as <time>Sep</time><time>5</time>, the local time ("7:00 p.m. (MST)" or
 // "TBA"), a "vs."/"at" divider inside the opponent name, the published result
@@ -71,11 +94,18 @@ function cardBlocks(raw){
 // into one "ASU vs vs." event and evening games move to the next UTC day.
 export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]);
+  const emptiedBySeason=new WeakSet();
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='arizona-state'||!arizonaStateSchool.cardSports.has(sport))return null;
-    const cards=cardBlocks(String(raw||''));
+    raw=String(raw||'');
+    const cards=cardBlocks(raw);
     if(!cards.length)return null;
-    const events=[];
+    const events=[],days=publishedDays(raw),season=academicYear(now);let pastSeason=0;
+    const yearFor=(month,day)=>{
+      const index=MONTHS.indexOf(month.slice(0,3).toLowerCase()),key=`${String(index+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const years=[season,season+1].filter(year=>days.has(`${year}-${key}`));
+      return years.length===1?years[0]:scheduleYearForDate(raw,month,now);
+    };
     for(const {opening,block} of cards){
       const dateBox=(block.match(/schedule-event-grid-date-mobile__box[^>]*>([\s\S]*?)<\/strong>/i)||[])[1]||'';
       const [month,day]=[...dateBox.matchAll(/<time\b[^>]*>([\s\S]*?)<\/time>/gi)].map(x=>visibleText(x[1]));
@@ -84,12 +114,14 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       const nameHtml=(block.match(/<strong\b[^>]*class=["']schedule-default-event__name["'][^>]*>((?:<strong\b[^>]*>[\s\S]*?<\/strong>)?[\s\S]*?)<\/strong>/i)||[])[1]||'';
       const divider=field(nameHtml,/schedule-default-event__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#10/#9 Texas A&M") describe the week, not the opponent.
-      const opponent=visibleText(nameHtml.replace(/<strong\b[^>]*schedule-default-event__divider[\s\S]*?<\/strong>/i,'')).replace(/^(?:#\d+\s*\/?\s*)+/,'').trim();
+      const opponent=visibleText(nameHtml.replace(/<strong\b[^>]*schedule-default-event__divider[\s\S]*?<\/strong>/i,'')).replace(/^(?:#(?:\d+|RV)\s*\/?\s*)+/i,'').trim();
       if(!opponent)continue;
       const completed=/schedule-event-item--completed/i.test(opening);
       const result=field(block,/schedule-event-grid-result__label[^>]*>([\s\S]*?)<\/strong>\s*<!---->/i).match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const timeText=field(block,/schedule-event-grid-date__time[^>]*>([\s\S]*?)<\/strong>/i).replace(/\s*\([A-Z]{2,4}\)\s*$/,'');
-      const date=`${month} ${day}, ${scheduleYearForDate(raw,month,now)}`;
+      const year=yearFor(month,day);
+      if(year!==season&&!(year===season+1&&MONTHS.indexOf(month.slice(0,3).toLowerCase())<6)){pastSeason++;continue;}
+      const date=`${month} ${day}, ${year}`;
       const event=makeEvent({school,sport,status:completed?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date,
         // K-State's results show the date only; upcoming games show the published time.
         time:completed||!/\d/.test(timeText)?null:timeText,
@@ -99,7 +131,9 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       if(recapUrl&&new URL(recapUrl).hostname==='thesundevils.com'&&new URL(recapUrl).pathname.startsWith('/news/'))event.recap_url=recapUrl;
       events.push(event);
     }
-    return events.length?events:null;
+    if(!events.length){if(!pastSeason)return null;emptiedBySeason.add(events);}
+    return events;
   }
-  return{parseSchedule};
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
+  return{parseSchedule,isEmptySchedule};
 }
