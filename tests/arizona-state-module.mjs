@@ -67,8 +67,6 @@ const [group]=worker.groupEvents(football,now);
 assert.deepEqual([group.results.length,group.upcoming.length],[3,10]);
 // Scope: only Football uses the module reader; other sports and schools keep
 // the shared parsers on the same page.
-const otherShared=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Swimming & Diving',footballUrl,now);
-assert.ok(otherShared.some(e=>e.opponent==='vs.'),'other Arizona State sports are unchanged until their own fix');
 const arizona=schools.find(s=>s.id==='arizona');
 assert.ok(worker.parseHtml(fixture('football-schedule.html.gz'),arizona,'Football','https://arizonawildcats.com/sports/football/schedule',now).some(e=>e.opponent==='vs.'),'other schools are unchanged');
 const handlers=createArizonaStateHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,scheduleYearForDate:()=>2026,absoluteUrl:x=>x});
@@ -194,4 +192,17 @@ const womensTennis=worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),sc
 assert.equal(womensTennis.length,12);
 assert.deepEqual(womensTennis.filter(e=>e.status==='Final').map(e=>[e.display_time,e.title,e.headline]),[['Sep 19','ASU at ITA All-American Championships','Completed'],['Sep 24','ASU at USTA SoCal Championships','Completed']]);
 assert.equal(womensTennis.filter(e=>e.display_time==='Oct 26').length,2,'two tournaments in the same week stay separate');
+// Swimming & Diving: the inherited routes (/sports/mens/swimming-diving/)
+// do not exist (production 502). Both official pages, labeled by team.
+assert.deepEqual(arizonaStateSchool.scheduleUrls['arizona-state|Swimming & Diving'],['https://thesundevils.com/sports/mens-swimming-diving/schedule','https://thesundevils.com/sports/womens-swimming-diving/schedule']);
+assert.equal(worker.teamLabelForSource(school,'Swimming & Diving','https://thesundevils.com/sports/mens-swimming-diving/schedule'),"Men's");
+const mensSwim=worker.parseHtml(fixture('mens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving','https://thesundevils.com/sports/mens-swimming-diving/schedule',now);
+const womensSwim=worker.parseHtml(fixture('womens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving','https://thesundevils.com/sports/womens-swimming-diving/schedule',now);
+assert.deepEqual([mensSwim.length,womensSwim.length],[16,17]);
+assert.deepEqual(womensSwim.slice(0,4).map(e=>`${e.status} ${e.display_time} ${e.title}`),['Final Sep 25 ASU vs Intrasquad Scrimmage','Upcoming Oct 2, 6:00 PM ASU vs UNLV','Upcoming Oct 9 ASU at SMU Classic','Upcoming Oct 9, 3:30 PM ASU at Northern Arizona']);
+assert.equal(mensSwim.at(-1).start_time.slice(0,10),'2027-03-24');
+assert.notEqual(mensSwim[0].id,womensSwim[0].id,'the same meet on both teams\' pages keeps separate event ids');
+assert.ok(mensSwim[0].id.endsWith('-mens')&&womensSwim[0].id.endsWith('-womens'));
+// Every sponsored sport reads the official cards through the module.
+assert.deepEqual([...arizonaStateSchool.cardSports].sort(),[...sports].sort());
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);

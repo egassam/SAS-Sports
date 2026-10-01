@@ -107,6 +107,10 @@ Production showed the women's page only (first route candidate), with a placehol
 - The men's page still shows the 2025-26 season (28 duals, Jan 11 - May 1, 2026), so it contributes nothing until the 2027 schedule is published.
 - Women's: 12 fall 2026 individual tournaments; the 2 completed ones (ITA All-American, USTA SoCal) read `Completed`, since individual events publish no team result. The USTA SoCal card links its recap.
 
+## Swimming & Diving (`4.33.3-arizona-state-swimming-diving`)
+
+Production returned 502: the inherited routes (`/sports/mens/swimming-diving/`, `/sports/womens/swimming-diving/`) do not exist. The routes are now the official `mens-swimming-diving` and `womens-swimming-diving` pages (labeled by team), and the sport joins `cardSports`. Men's: 16 events, women's: 17 (women's also swim at Northern Arizona on Oct 9); the Sep 25 intrasquad scrimmage reads `Completed`.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
