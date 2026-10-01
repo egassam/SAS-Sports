@@ -8,7 +8,6 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers,oklahomaStateMeetSport,oklahomaStateScheduleGames,oklahomaStatePlacing,oklahomaStateStartTime} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
-import {createFeedStore} from '../src/feed-store.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=path=>gunzipSync(readFileSync(new URL('./fixtures/oklahoma-state-module/'+path,import.meta.url))).toString('utf8');
 const sources=JSON.parse(read('./fixtures/oklahoma-state-module/sources.json'));
@@ -19,7 +18,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 // Unlisted URLs are refused; tests can never silently contact okstate.com.
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));return responses.has(String(url))?new Response(responses.get(String(url))):new Response('not found',{status:404});};
-const deps={createSourceFetch,SOURCE_TTL,createFeedStore,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,freshGroupedFeed,groupEvents,makeEvent,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,schoolCombinedSports,teamLabelForSource};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official routes.
