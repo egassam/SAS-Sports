@@ -4,6 +4,33 @@
 
 BYU was chosen as the next Big 12 school on October 1, 2026 (user: "Let's add the next big 12 school"). It is the first unconverted Big 12 school in catalog order whose official site the development sandbox can download. arizonawildcats.com and baylorbears.com still returned HTTP 403; byucougars.com returned 200.
 
+## Status (production `4.37.1-byu-track-field`, October 1, ~23:10 UTC)
+
+All 12 sponsored sports read byucougars.com's official cards through the module (`cardSports`). Every route is an official sport page. All forced production feeds returned 200.
+
+| Sport | PR | Production |
+| --- | --- | --- |
+| Football | #94 | 3 finals `W, 63-7`-style with recaps; 9 upcoming |
+| Volleyball | #97 | 11 finals with recaps; 17 upcoming |
+| Soccer | #98 | 11 finals (10 recaps; the official Sep 3 card links another game's recap); 9 upcoming |
+| Cross Country | #99 | Both teams; 4 meets with `Women's team: 1st · 19 pts` and race rows from the recaps |
+| Basketball | #100 | Men's 34 + women's 33, labeled |
+| Baseball | #101 | 4 fall games |
+| Softball | #102 | 7 fall games |
+| Golf | #103 | Both teams; `4th`, `3rd`, `9th`, `1st`, each from the final recap; 23 upcoming |
+| Tennis | #104 | Both teams; 5 completed tournaments (named by their headings); 10 upcoming |
+| Swimming & Diving | #105 | Men's 9 + women's 10 meets |
+| Gymnastics | #106 | Empty schedule (the page shows only 2025-26) |
+| Track & Field | #107 | Was 502; empty schedule (both pages show only 2025-26) |
+
+**Limitations:**
+- Golf placings lack the field size and score, which the cards do not publish.
+- Cross Country rows come from the recap tables: the top 10 overall, or BYU's scorers, so not every runner appears. The Utah Valley men's table has no place column, so it shows times only. No race distance is claimed.
+- Men's tennis has no per-tournament recaps. The one Sep 28 story covers two tournaments and is not matched.
+- Soccer Sep 3 (Colorado State) has no matched recap. The official card links the Minnesota recap, and an opponent-site story was refused.
+- Cards with no date yet (NCAA swimming) and a softball card with no opponent are left out. Games that publish no result, such as softball Sep 30, are not shown as finals.
+- Athlete certification for BYU was not reviewed.
+
 ## Setup (route parity)
 
 The module starts as a pure move. Each of BYU's 12 sponsored sports gets exactly the schedule and roster candidates production used before the module existed:
