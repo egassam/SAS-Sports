@@ -7,9 +7,10 @@ import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKans
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
+import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.34.0-polite-source-fetch';
+const VERSION='4.36.0-byu-football';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -34,10 +35,8 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
-  'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
-  'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
-  'byu|Soccer|Brynnli Tolbert':'https://www.instagram.com/brynnb09/'
-  ,'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
+  ...byuSchool.verifiedInstagrams,
+  'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
   ,'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
   ,'houston|Tennis|Petja Drame':'https://www.instagram.com/petja.drame/'
   ,'houston|Tennis|Valeriia Krokhotina':'https://www.instagram.com/leriiakrokhotina/'
@@ -64,15 +63,12 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...oklahomaStateSchool.rosterUrls,
   ...utahSchool.rosterUrls,
   ...arizonaStateSchool.rosterUrls,
+  ...byuSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
-  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster',
-  'byu|Cross Country':['https://byucougars.com/sports/mens-cross-country/roster','https://byucougars.com/sports/womens-cross-country/roster'],
-  'byu|Soccer':'https://byucougars.com/sports/womens-soccer/roster',
-  'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/roster',
-  'byu|Football':'https://byucougars.com/sports/football/roster'
+  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
   ,'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/roster'
   ,'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/roster'
   ,'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/roster'
@@ -103,6 +99,7 @@ function schoolCombinedSports(school){
   if(school?.id==='oklahoma-state')return oklahomaStateSchool.combinedSports;
   if(school?.id==='utah')return utahSchool.combinedSports;
   if(school?.id==='arizona-state')return arizonaStateSchool.combinedSports;
+  if(school?.id==='byu')return byuSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -123,6 +120,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...oklahomaStateSchool.scheduleUrls,
   ...utahSchool.scheduleUrls,
   ...arizonaStateSchool.scheduleUrls,
+  ...byuSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -148,10 +146,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
   'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule',
   'baylor|Football':'https://baylorbears.com/sports/football/schedule',
-  'byu|Cross Country':'https://byucougars.com/sports/womens-cross-country/schedule',
-  'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
-  'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule',
-  'byu|Football':'https://byucougars.com/sports/football/schedule',
   'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
   'ucf|Soccer':'https://ucfknights.com/sports/womens-soccer/schedule',
   'ucf|Volleyball':'https://ucfknights.com/sports/volleyball/schedule',
@@ -211,6 +205,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 // The school owns its policies and result handlers; shared utilities stay here.
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
+const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1067,6 +1062,7 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   if(school.id==='kansas'){const events=kansasHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='arizona-state'){const events=arizonaStateHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
+  if(school.id==='byu'){const events=byuHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
@@ -1409,7 +1405,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;

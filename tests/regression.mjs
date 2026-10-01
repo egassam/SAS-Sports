@@ -7,7 +7,8 @@ const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.
 const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
 const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
 const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule};
+const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -208,7 +209,7 @@ contains(page,/social\?'Instagram':'Official profile'/,'Athlete cards must label
 contains(worker,/personInstagram/,'Identity-bound Schema.org Person social links must be supported');
 contains(worker,/value\['@type'\].*person/i,'Only official Person identity records may supply embedded athlete Instagram links');
 contains(worker,/ttumensgolf/,'Texas Tech golf team Instagram must never be used as an athlete account');
-for(const verified of ['Chelsea Peterson','Mia Goettsche','Brynnli Tolbert'])contains(worker,new RegExp(`'byu\\|Soccer\\|${verified}'`),`Missing officially verified BYU Soccer Instagram for ${verified}`);
+for(const verified of ['Chelsea Peterson','Mia Goettsche','Brynnli Tolbert'])contains(byuModule,new RegExp(`'byu\\|Soccer\\|${verified}'`),`Missing officially verified BYU Soccer Instagram for ${verified}`);
 for(const verified of ['Petja Drame','Valeriia Krokhotina','Iva Sepa'])contains(worker,new RegExp(`'houston\\|Tennis\\|${verified}'`),`Missing officially verified Houston Tennis Instagram for ${verified}`);
 contains(worker,/texastechwgolf/,'Texas Tech women’s golf Instagram must never be used as an athlete account');
 contains(worker,/BLOCKED_INSTAGRAM_HANDLES/,'Known school and team Instagram accounts must be rejected');
