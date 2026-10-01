@@ -1,10 +1,23 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 1, 2026, America/Chicago (Arizona State complete: PRs #66–#83).
+Last updated: October 1, 2026, America/Chicago (polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Polite source fetching (shared, all schools); production is `4.34.0-polite-source-fetch` (14:16 UTC, October 1).** User asked how to avoid triggering schools' bot defense, chose items 2 (cache school downloads) and 4 (honest identity, robots.txt, Retry-After, conditional requests), and approved the cross-school change. They then said: "Merge it with the 15-second backoff and watch production". PR #85 merged as `4ac60ad`.
+- **`src/source-fetch.mjs`** handles every official-site download (schedules, recaps, news listings, rosters, profiles, PDFs, TFRRS, module recap fetches):
+  - one copy per Cloudflare location: schedules 2 min, listings/rosters 10 min, articles 30 min, documents 6 h. `refresh=1` rebuilds the feed from the saved page; there is deliberately no way to force a school re-download.
+  - expired copies revalidate with `If-None-Match` / `If-Modified-Since`.
+  - 429/503 honour `Retry-After` (at least 60 s); any other refusal pauses that page 15 s. Articles and documents keep serving their last good copy; schedules never do.
+  - `robots.txt` is obeyed (a `SAS-Sports` group wins over `*`) and kept for a day.
+  - at most one Cache API `match` and one `put` per download (the paid plan allows 1,000 Cache API calls per request, shared with fetches).
+- **Identity:** user agent `Mozilla/5.0 (compatible; SAS-Sports/<version>; +https://sas-sports.lovetogivepain.workers.dev/bot)`. `public/bot.html` describes the fetcher. The Instagram portrait fetch no longer sends a fake Chrome UA; preview and production portraits were unchanged.
+- **`/api/diagnostic`** rows now include `source_cache` (`network`, `fresh`, `revalidated`, `stale-on-error`, `backoff`, `robots-disallowed`) and `upstream_status` during a backoff.
+- **robots.txt survey (sandbox):** 28 of 68 school sites served it; 40 returned Imperva/Incapsula 403. None of the 28 disallow schedule, roster or news paths. mgoblue.com, texaslonghorns.com and texastech.com disallow `/documents/`, so their PDF results will be skipped when those schools are converted.
+- **Unexplained preview event:** on the first preview commit (60 s backoff), K-State XC failed at IAD for at least 90 s (refused, then held in backoff) while production at IAD fetched fine. Not reproduced; the backoff was shortened to 15 s, and the final gate passed 14/14 at IAD. If refusals appear only on 4.34.x, suspect the new user agent first.
+- **Test harnesses** that `eval` `src/index.js` must inject `createSourceFetch` and `SOURCE_TTL` (done in all ten).
 
 **Arizona State: all 17 sports converted; production is `4.33.3-arizona-state-swimming-diving` (October 1 UTC).** User: "Start next school. Stay in the Big 12." (Arizona State chosen: Arizona and 7 other Big 12 sites return 403 to the sandbox), then "Do all the sports. Do not ask me unless it's necessary". The agent opened and merged PRs #66 and #68–#83 one sport at a time under `AGENTS.md` item 6. Each passed the preview gate: K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green. Each was verified in production. The status table and limitations are in `docs/ARIZONA_STATE_MODULE.md`.
 - **Cause:** thesundevils.com's `schedule-event-item` cards defeat the shared WMT card reader: it takes the nested `vs.`/`at` divider for the opponent and splits `<time>Sep</time><time>5</time>`. The result was `ASU vs vs.` events merged together, evening games a UTC day late, phantom finals, and past seasons shown as current.
@@ -231,6 +244,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
 - **Arizona State is complete** (see "Current state"). Next: the next Big 12 school the user names. Most Big 12 sites returned 403 to the sandbox on October 1; ucfknights.com, byucougars.com (custom platform) and gobearcats.com (custom) returned 200.
 - **Utah is complete except for source-blocked items:** Baseball and Women's Basketball start times, once utahutes.com allows the page downloads (fixture-verified, one sport per PR). Earlier list, for reference:
   - Volleyball athlete certification: get the official `womens-volleyball` roster (403 on September 30). If it publishes no personal links for most players, add Volleyball to Utah's `athlete_profile_fallback_sports` in `tests/certified-schools.json`, as done for Oklahoma State.
@@ -899,3 +913,27 @@ Each production check after merge matched the preview.
 - All 17 sports return 200: 12 with events, 5 empty schedules.
 - No placeholder opponents or broken dates.
 - K-State XC 18/20, KU XC 26/21.
+
+### October 1, 2026 — Polite source fetching (shared)
+
+User: "Is there a better way to communicate with these schools so you don't trigger their bot defense?" The agent found that most 403s hit the sandbox, not production. It also found that each `refresh=1` re-downloaded the school's pages uncached, so the 36-refresh merge gate sent bursts to one school. The 25 s feed freshness also made every later visit re-download in the background. It proposed six options; the user chose: "Yes, start on 2 and 4. I also approve the change to agents". The agent took that as approval to merge this cross-school change, since the standing merge rule covers one school and sport, and did not edit `AGENTS.md`.
+
+PR #85, https://github.com/egassam/SAS-Sports/pull/85:
+- `830806b`: the fetcher, honest user agent, `/bot` page, tests. `cbfe837`: diagnostic fields.
+- The agent first stopped before merging because of the unexplained IAD failure above, and offered: merge with a shorter backoff, split out the user-agent change, or wait. User: "Merge it with the 15-second backoff and watch production". `af397f9`: 15 s refusal backoff, with a test.
+- Before merge, on `af397f9`:
+  - `npm run test:release` and `npm test` passed. `tests/source-fetch.mjs` has 9 groups; mutations removing caching, backoff, robots, the robots memo or revalidation each fail it.
+  - CI was green (guardrails, certification-matrix, Workers Builds), with no conflict.
+  - Preview: K-State XC 18/20 and KU XC 26/21. 36/36 forced refreshes returned 200 for each of K-State XC, KU XC, Arizona State Soccer and Utah Football (ATL/DFW/EWR/IAD/MIA/YYZ). 8 feeds, 4 expanded views and 3 athlete sets were identical to production apart from timestamps.
+- Merged as `4ac60ad`; production reported `4.34.0-polite-source-fetch` at 14:16:42 UTC.
+- Production after merge (45 s wait):
+  - K-State XC 18/20, KU XC 26/21; Gans Creek expanded views 18 and 26 rows with 4 highlights each; `/bot` 200.
+  - `npm run test:live-health`: 48 feeds, 0 failing, first-attempt 1102 0/48.
+  - Survey of every sponsored sport of the five converted schools: 94 of 95 school downloads returned 200. The exception, a single 520 on kstatesports.com Track & Field, was 200 at EWR, IAD and ATL within a minute; its feed stayed 200.
+  - Hour-long watch, 14:24–15:30 UTC: six surveys, 10 min apart, each covering every sponsored sport of the five converted schools, plus forced XC reads. Totals:
+    - 567 school downloads returned 200: network, fresh, and 4 `revalidated` (a 304 that reused the saved copy, rounds 2–5).
+    - 2 single 520s from the school servers: kuathletics.com Track & Field (round 1) and kstatesports.com Cross Country (round 6). A rerun right after round 1 returned 200 at ATL, IAD and EWR.
+    - 1 diagnostic call returned no readable body (round 4).
+    - No 403/429 refusals, no backoff, no robots block. Every forced feed returned 200; K-State XC 18/20 and KU XC 26/21 every round.
+  - The one-off 520s come from the school servers, and the old code would also have failed those downloads; it is not known whether they were as frequent before #85. If they grow, consider one immediate retry on 5xx (not 403/429).
+
