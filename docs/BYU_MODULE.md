@@ -93,3 +93,11 @@ Production showed 10 fall games, with duplicates in two date formats. Baseball r
 ## Softball (`4.36.6-byu-softball`)
 
 Production showed 17 fall games, with duplicates. Softball routes only to its official page and joins `cardSports`. Of the 9 cards on the "Softball 2026 (Fall)" page, the Oct 10 noon card names no opponent and is skipped. The Sep 30 Weber State game publishes no result, so it is neither shown as a final nor kept as upcoming. Result: 7 upcoming games with published times. Spring 2027 games will appear when byucougars.com publishes them.
+
+## Golf (`4.36.7-byu-golf`)
+
+Production read only the first route (the women's page) and showed no placings. Golf now:
+- routes to both official pages and is added to `combinedSports`, with teams labeled and separate ids;
+- joins `cardSports`, reading the card's team place as the result. For example, `9th (María José "MJ" Barragán - T-6th)` gives `9th`, and `T-` becomes `T`.
+
+K-State reads `1st of 12 (864)`, but BYU's cards publish neither the field size nor the score. Result: men's 4th and 3rd, women's 9th and 1st, and 23 upcoming tournaments through May 2027 with published start times. The cards link no recaps; the expanded view uses the shared news-archive search with the BYU recap check.

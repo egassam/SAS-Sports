@@ -39,7 +39,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(byuSchool.rosterUrls[`byu|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'byu\|/.test(read('../src/index.js')),'BYU configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Swimming & Diving'],'both teams are shown for these sports');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Golf','Swimming & Diving'],'both teams are shown for these sports');
 for(const [key,url] of Object.entries(byuSchool.verifiedInstagrams))assert.equal(worker.VERIFIED_TEAM_TAG_INSTAGRAM.get(key),url,'verified Instagram tags are still used');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='ucf'),'Football')[0],'https://ucfknights.com/sports/football/schedule');
@@ -199,12 +199,24 @@ const softball=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Sof
 assert.equal(softball.length,8);
 assert.ok(!softball.some(e=>e.status==='Final'),'no result is invented for an unreported game');
 {const [g]=worker.groupEvents(softball,now);assert.deepEqual(g.upcoming.map(e=>`${e.title} ${e.display_time}`).slice(0,3),['BYU vs Idaho State Oct 2, 6:00 PM','BYU vs SLCC Oct 8, 6:00 PM','BYU vs Utah Tech Oct 10, 3:00 PM']);assert.equal(g.upcoming.length,7);}
+// Golf: production showed only the women's page (first route) with no
+// placings. Both teams, labeled; the card's team place ("9th (María José ...
+// - T-6th)") is the result. Field size and score are not published.
+assert.deepEqual(byuSchool.scheduleUrls['byu|Golf'],['https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/womens-golf/schedule']);
+const golf={};
+for(const team of ['mens','womens']){
+  const url=`https://byucougars.com/sports/${team}-golf/schedule`;
+  golf[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-golf-schedule.html.gz`),school,'Golf',url,now),school,'Golf',url);
+}
+assert.deepEqual([golf.mens.length,golf.womens.length],[14,13]);
+assert.deepEqual([...golf.mens,...golf.womens].filter(e=>e.status==='Final').map(e=>`${e.display_time} ${e.title} ${e.headline}`),["Sep 14 Men's · BYU at Vuori Invitational 4th","Sep 25 Men's · BYU at William H. Tucker Invitational 3rd","Sep 8 Women's · BYU at The Bruzzy 9th","Sep 22 Women's · BYU at Red Raider Invitational 1st"]);
+assert.equal(worker.mergeEvents([golf.mens,golf.womens]).length,27);
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Golf',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now),null,'other BYU sports keep the shared parsers');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);

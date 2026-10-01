@@ -7,10 +7,10 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country']),
+  combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
     'byu|Soccer|Mia Goettsche':'https://www.instagram.com/mia.goettsche/',
@@ -21,7 +21,7 @@ export const byuSchool={
     'byu|Basketball':['https://byucougars.com/sports/mens-basketball/schedule','https://byucougars.com/sports/womens-basketball/schedule'],
     'byu|Cross Country':['https://byucougars.com/sports/womens-cross-country/schedule','https://byucougars.com/sports/mens-cross-country/schedule'],
     'byu|Football':'https://byucougars.com/sports/football/schedule',
-    'byu|Golf':['https://byucougars.com/sports/womens-golf/schedule','https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/golf/schedule','https://byucougars.com/'],
+    'byu|Golf':['https://byucougars.com/sports/mens-golf/schedule','https://byucougars.com/sports/womens-golf/schedule'],
     'byu|Gymnastics':['https://byucougars.com/sports/womens-gymnastics/schedule','https://byucougars.com/sports/mens-gymnastics/schedule','https://byucougars.com/sports/gymnastics/schedule','https://byucougars.com/'],
     'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
     'byu|Softball':'https://byucougars.com/sports/softball/schedule',
@@ -146,11 +146,16 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       // Meets publish a team finish as text ("1st - 19 points").
       const meet=eventType(sport)!=='GAME';
-      const placing=meet?field(block,/class=["']schedule-event-item-result__text["'][^>]*>([\s\S]*?)<\//i).match(/^(\d{1,3})(?:st|nd|rd|th)?\s*-\s*(\d+)\s*points?$/i):null;
+      const resultText=meet?field(block,/class=["']schedule-event-item-result__text["'][^>]*>([\s\S]*?)<\//i):'';
+      const placing=resultText.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*-\s*(\d+)\s*points?$/i);
+      // Golf: "9th (María José Barragán - T-6th)", the team place then the best
+      // individual. K-State reads "1st of 12 (864)"; the field and score are
+      // not published here, so the team place is shown alone.
+      const golfPlace=sport==='Golf'?resultText.match(/^(T-?)?(\d{1,3})(?:st|nd|rd|th)?\b/i):null;
       const last=(block.match(/schedule-event-date__wrapper--end[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       const firstDay=Date.UTC(year,month-1,day),lastDay=last.length===3?Date.UTC(last[0],last[1]-1,last[2]):firstDay;
       // A meet whose last day has passed is over, published result or not.
-      const over=meet&&(placing||lastDay<mountainToday(now));
+      const over=meet&&(placing||golfPlace||lastDay<mountainToday(now));
       const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||meet&&!divider?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over||!/\d/.test(clock)?null:clock,
@@ -161,6 +166,7 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const team=byuSchool.combinedSports.has(sport)?(String(sourceUrl).match(/\/sports\/(mens|womens)-/)||[])[1]:null;
       if(team)event.id=`${event.id}-${team}`;
       if(placing){const value=`${ordinal(placing[1])} \u00b7 ${placing[2]} pts`;event.headline=`${team==='mens'?"Men's":team==='womens'?"Women's":'BYU'} team: ${value}`;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(golfPlace){const value=`${golfPlace[1]?'T':''}${ordinal(golfPlace[2])}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
       else if(event.status==='Final'&&meet&&!event.headline){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       if(recapUrl)event.recap_url=recapUrl;
       events.push(event);

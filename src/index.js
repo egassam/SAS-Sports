@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.36.6-byu-softball';
+const VERSION='4.36.7-byu-golf';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
