@@ -69,3 +69,15 @@ Production listed every game twice, like Volleyball. Soccer joins `cardSports`. 
 The Aug 1 intrasquad ("vs. BYU", `BLU, 1-0`) is skipped as internal. Result: 11 finals (two `T, 1-1` ties) with 10 recaps, and 9 upcoming with published times.
 
 **A recap must name BYU.** On the preview, the Sep 3 Colorado State expanded view fell through to the shared opponent-site fallback. That fallback took "Colorado State" for Colorado and accepted a cubuffs.com story about Colorado vs New Mexico. `byuHandlers.matchesRecap` now refuses any article whose title and text never say "BYU" or "Brigham Young", whatever site it comes from.
+
+## Cross Country (`4.36.3-byu-cross-country`)
+
+Production read only the women's page and showed both meets as `Completed`, with no race rows. Changes:
+- **Both teams.** Cross Country routes to `womens-cross-country` and `mens-cross-country` and is added to `combinedSports`. BYU's teams mostly run different meets, so each meet is labeled by team (`Women's · BYU at Cowboy Jamboree`), with `-womens`/`-mens` event ids. K-State shows both teams in one meet because they run the same meets.
+- **Team result.** The card's `1st - 19 points` becomes `Women's team: 1st · 19 pts`. A meet whose last day has passed is final, showing the date only.
+- **Race rows.** `byuHandlers.attachMeetResults` (the same three hooks as Utah and Arizona State) reads the meet's card-bound recap, using the BYU recap check. It puts the team row first (`BYU team | 1st · 19 pts`), then BYU's runners from the recap's results tables. The recaps use four table layouts. Other schools' runners are left out. Where a table has no place column (Utah Valley men), the time is shown alone rather than a place guessed from row order.
+- **No distance claimed.** Groups read `Women's race` / `Men's race`. The recaps mention splits and other races ("the first 5,000-meters"; an "8,000-meters" that was not that day's race), so a distance read from the prose could be wrong.
+
+Limitation: the tables list the top 10 overall or BYU's scorers, so not every BYU runner appears. The card's Results link (sporttrax.com, live.reddirtrunning.com, mwt.live) is a third-party timing site and is not read.
+
+Shared test change: the regression route check now also accepts a route written as a list (`'byu|Cross Country':['https://byucougars.com/...`).

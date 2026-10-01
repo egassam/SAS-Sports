@@ -70,7 +70,7 @@ assert.deepEqual(Object.keys(rolloutSchools).slice(0,9),['kstate','kansas','flor
 for(const [school,definition] of Object.entries(rolloutSchools)){
   for(const sport of definition.critical_sports){
     assert.ok(
-      definition.official_hosts.some(domain=>(schoolModuleSource[school]||worker).includes(`'${school}|${sport}':'https://${domain}/`)||(schoolModuleSource[school]||worker).includes(`'${school}|${sport}':'https://www.${domain}/`)),
+      definition.official_hosts.some(domain=>[`'${school}|${sport}':'https://${domain}/`,`'${school}|${sport}':'https://www.${domain}/`,`'${school}|${sport}':['https://${domain}/`,`'${school}|${sport}':['https://www.${domain}/`].some(route=>(schoolModuleSource[school]||worker).includes(route))),
       `Missing official ${school} ${sport} source`
     );
   }

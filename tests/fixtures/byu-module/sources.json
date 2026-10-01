@@ -14,6 +14,16 @@
       "url": "https://byucougars.com/sports/womens-soccer/schedule",
       "retrieved": "2026-10-01T22:20Z",
       "note": "Official 2026 BYU Soccer schedule, unmodified. 21 cards: the Aug 1 intrasquad listed as \"vs. BYU\" (result \"BLU, 1-0\"), 11 finals with Recap links (the Sep 3 Colorado State card links the Aug 28 Minnesota recap), 8 regular-season games with times and the Nov 9-14 Big 12 tournament card whose opponent is \"TBA\" under the heading \"Big 12 Soccer Tournament Presented by Allstate\"."
+    },
+    "womens-cross-country-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/womens-cross-country/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026 BYU Women's Cross Country schedule, unmodified. 6 cards: UVU Invitational (Sep 4, '1st - 19 points') and Cowboy Jamboree (Sep 26, '1st - 32 points') with Recap links, then Pre-Nationals, Big 12, NCAA Mountain Regionals and NCAA Championships."
+    },
+    "mens-cross-country-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/mens-cross-country/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026 BYU Men's Cross Country schedule, unmodified. 6 cards: Utah Valley Invitational (Sep 4, '1st - 17 points') and John McNichols Invitational (Sep 19, '1st - 71 points') with Recap links, then Nuttycombe, Big 12, NCAA Mountain Regionals and NCAA Championships."
     }
   },
   "recaps": {
@@ -31,6 +41,26 @@
       "url": "https://byucougars.com/news/2026/09/19/no-11-byu-overpowers-colorado-state-41-23",
       "retrieved": "2026-10-01T21:20Z",
       "note": "Official recap linked from the Sep 19 at Colorado State card, unmodified. Title \"No. 11 BYU Overpowers Colorado State 41-23\"."
+    },
+    "xc-recap-2026-09-04-uvu-invitational-women.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/4/no-4-byu-dominates-uvu-invitational-hedengren-takes-first",
+      "retrieved": "2026-10-01T22:25Z",
+      "note": "Official recap, unmodified. One PLACE/ATHLETE/SCHOOL/TIME table of the top 10 overall (7 BYU)."
+    },
+    "xc-recap-2026-09-26-cowboy-jamboree-women.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/26/no-3-byu-secures-second-win-of-the-season-at-cowboy-jamboree-taking-down-no-2-new-mexico",
+      "retrieved": "2026-10-01T22:25Z",
+      "note": "Official recap, unmodified. A PLACE/TEAM/SCORE table, then a PLACE/ATHLETE/SCHOOL/TIME top-10 table (6 BYU)."
+    },
+    "xc-recap-2026-09-04-utah-valley-invitational-men.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/4/no-9-byu-dominate-utah-valley-invitational-open-season-with-a-win",
+      "retrieved": "2026-10-01T22:25Z",
+      "note": "Official recap, unmodified. A RUNNER/SCHOOL/TIME table with no place column."
+    },
+    "xc-recap-2026-09-19-john-mcnichols-men.html.gz": {
+      "url": "https://byucougars.com/news/2026/09/19/kitchen-leads-byu-to-win-in-john-mcnichols-invitational",
+      "retrieved": "2026-10-01T22:25Z",
+      "note": "Official recap, unmodified. A BYU-only Name/Time/Finish table (9 runners)."
     }
   }
 }
