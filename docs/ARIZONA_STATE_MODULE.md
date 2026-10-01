@@ -53,6 +53,10 @@ Production showed one result dated `Sep, 2027, 27` titled `ASU vs vs.`: the page
 
 Production showed 9 upcoming games, with evening games on the next UTC day duplicating the card dates. Softball joins `cardSports`: the 7 fall 2026 games, each on its published day and time.
 
+## Basketball (`4.32.5-arizona-state-basketball`)
+
+Production showed men's games a day late (New Mexico `Oct 26` instead of Oct 25). Basketball joins `cardSports`, and its routes are now only the two official pages (`mens-basketball`, `womens-basketball`); the generic `basketball` and homepage fallbacks are removed. Men's: 34 games; women's: 33 games with published times. Two women's cards are neutral-site games between other teams (Wake Forest vs Quinnipiac) and are skipped.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
