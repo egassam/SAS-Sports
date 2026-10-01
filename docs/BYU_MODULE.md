@@ -117,3 +117,11 @@ Production read only the first route (the women's page). Tennis now routes to bo
 Result: men's 4 completed and 4 upcoming; women's USTA SoCal Championships completed (its recap is dated Sep 28, after the Sep 27 finish) and 6 upcoming.
 
 **Multi-day recap dates.** The shared matcher allows a match's recap up to one day after its start. For a BYU event with `end_time`, `matchesRecap` checks against the last day instead, as Kansas does. The women's USTA SoCal recap (dated Sep 28, for Sep 24–27) now opens in the expanded view. Golf's final-recap rules are unchanged.
+
+## Swimming & Diving (`4.36.9-byu-swimming-diving`)
+
+Production read the inherited generic routes and showed 54 upcoming meets, 23 of them duplicated. Swimming & Diving now routes only to the men's and women's official pages and joins `cardSports` (teams labeled, separate ids; it was already combined).
+- **Internal meets.** In meet sports, cards for BYU's own squads ("Navy vs. Royal", result "Navy 261 - Royal 235"), the "Alumni Meet" and the "Intersquad Meet" are skipped.
+- **Undated cards.** The two NCAA cards with no date yet are left out until they are dated.
+
+Result: 9 men's and 10 women's meets, from the CMU Shootout (Oct 2–3) to the Big 12 Championships (Feb 23–27).

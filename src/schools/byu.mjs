@@ -7,7 +7,7 @@ export const byuSchool={
   id:'byu',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis']),
@@ -25,7 +25,7 @@ export const byuSchool={
     'byu|Gymnastics':['https://byucougars.com/sports/womens-gymnastics/schedule','https://byucougars.com/sports/mens-gymnastics/schedule','https://byucougars.com/sports/gymnastics/schedule','https://byucougars.com/'],
     'byu|Soccer':'https://byucougars.com/sports/womens-soccer/schedule',
     'byu|Softball':'https://byucougars.com/sports/softball/schedule',
-    'byu|Swimming & Diving':['https://byucougars.com/sports/womens-swimming-and-diving/schedule','https://byucougars.com/sports/mens-swimming-and-diving/schedule','https://byucougars.com/sports/womens-swimming-diving/schedule','https://byucougars.com/sports/mens-swimming-diving/schedule','https://byucougars.com/sports/swimming-and-diving/schedule','https://byucougars.com/sports/swimming-diving/schedule','https://byucougars.com/sports/swimming/schedule','https://byucougars.com/'],
+    'byu|Swimming & Diving':['https://byucougars.com/sports/mens-swimming-and-diving/schedule','https://byucougars.com/sports/womens-swimming-and-diving/schedule'],
     'byu|Tennis':['https://byucougars.com/sports/mens-tennis/schedule','https://byucougars.com/sports/womens-tennis/schedule'],
     'byu|Track & Field':['https://byucougars.com/sports/track-and-field/schedule','https://byucougars.com/sports/track-field/schedule','https://byucougars.com/'],
     'byu|Volleyball':'https://byucougars.com/sports/womens-volleyball/schedule'
@@ -145,6 +145,9 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       // Internal games (the volleyball Blue-White Scrimmage, soccer's "vs. BYU"
       // intrasquad) have no opponent divider or list BYU against itself.
       if(eventType(sport)==='GAME'&&(!divider||isSchoolItself(opponent,school)))continue;
+      // Internal meets: "Navy vs. Royal" (BYU's own squads), "Intersquad Meet",
+      // "Alumni Meet".
+      if(eventType(sport)!=='GAME'&&(/\b(?:intra|inter)squad\b|\bscrimmage\b|\balumni\b/i.test(opponent)||/\svs\.?\s/i.test(opponent)))continue;
       const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       // Meets publish a team finish as text ("1st - 19 points").
