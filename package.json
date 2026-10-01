@@ -1,6 +1,6 @@
 {
   "name": "sas-sports-cloudflare",
-  "version": "4.31.9",
+  "version": "4.32.0",
   "private": true,
   "scripts": {
     "dev": "wrangler dev",

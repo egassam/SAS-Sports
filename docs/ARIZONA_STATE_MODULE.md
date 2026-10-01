@@ -19,6 +19,19 @@ A before/after dump of all 219 catalog school/sport schedule and roster routes (
 - no `'arizona-state|` configuration remains in `src/index.js`;
 - the program combinations are unchanged.
 
+## Football (production target `4.32.0-arizona-state-football`)
+
+thesundevils.com renders each event as a `schedule-event-item` card; its `__NUXT_DATA__` carries no game objects. The shared WMT card reader read the nested `vs.`/`at` divider as the opponent and split `<time>Sep</time><time>5</time>` into date `Sep` and time `5`. Every home card therefore became `ASU vs vs.` with no date and they merged into one event (likewise `ASU at at`); Schema.org data supplied the upcoming games, at UTC midnight, so 7:30 p.m. games showed a day late (Baylor `Oct 4` instead of Oct 3). The Sep 19 game at Kansas (London) was missing, and a phantom `Big 12 Championship` result reused the Sep 5 score and recap.
+
+`createArizonaStateHandlers().parseSchedule` reads the cards itself for the sports in `arizonaStateSchool.cardSports` (Football only, for now):
+- each card is cut at its matching `</div>`, so the last card cannot run into the table view below;
+- opponent from the name with the divider removed and rankings (`#10/#9`) dropped; relation from the divider;
+- `W Win 70-7` becomes K-State's `W, 70-7` with one Result row; the card's own Recap link (thesundevils.com `/news/`) becomes `recap_url`;
+- finals show the date only, as K-State does; upcoming games show the published time (`Oct 3, 7:30 PM`), stored as Arizona wall clock; `TBA` shows the date only;
+- the season year comes from the page heading (`2026 Football Schedule`).
+
+A page without cards returns `null`, so the shared parsers still run. Fixture: `tests/fixtures/arizona-state-module/football-schedule.html.gz` (unmodified; see `sources.json`). Expected: 3 finals (`W, 70-7` Morgan State, `L, 20-48` at Texas A&M, `W, 24-17` at Kansas) with their recaps, 10 upcoming.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
