@@ -41,3 +41,11 @@ Existing `tests/kstate-cross-country.mjs` still verifies Gans Creek's 18 rows, P
 During extraction, a before/after comparison also checked 218 catalog school/sport schedule and roster route combinations and all existing source, social and saved-game maps. Saved official K-State HTML was replayed through `fetchLive` and expanded-result enrichment with equal output apart from execution timestamps. This verifies refactor parity, not live correctness for every sport or future publisher layout.
 
 The September 28 releases passed `npm run test:release`, `npm test`, `git diff --check`, a Wrangler deployment dry-run, the 18-school protected guard, and all 71 critical cache-identity checks. Production verified both Golf divisions and healthy Football/Basketball feeds on `4.28.0-kstate-live-scores`. No K-State game was live during the final check, so the actual in-game transition remains covered by deterministic historical scoreboard fixtures rather than a same-session live contest.
+
+## Volleyball live scores (`4.37.2-kstate-volleyball-live`, October 1, 2026)
+
+User request during the K-State vs BYU match: live results on the K-State Volleyball page. K-State Volleyball now has an independent live scoreboard, ESPN's `volleyball/womens-college-volleyball`, in `kstateSchool.liveScoreboards`. It uses the same path as Football and Basketball. The official kstatesports.com schedule stays the schedule and results source of record; the scoreboard only makes today's card Live (`official_schedule+live_scoreboard`).
+- **Score.** The score is sets won. While live, the headline adds the current set's points: `1st Set · 2-1`.
+- **Final.** A final from the scoreboard reads like K-State's results: `W, 3-1` with one Result row. The volleyball rule is gated to Volleyball, so Football and Basketball output is unchanged.
+
+Fixture: `tests/fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz`, the K-State vs BYU event as ESPN served it at 23:35 UTC (in progress, 1st set 2-1). The final case changes only its status and set totals.

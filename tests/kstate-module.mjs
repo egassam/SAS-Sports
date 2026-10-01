@@ -136,4 +136,26 @@ assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-14T12:00:0
 assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-28T12:00:00.000Z',{opponent:'Powercat Classic'}),schoonerUrl),false,'the next tournament (Powercat, Sep 28), which this article previews, does not take its recap');
 assert.equal(worker.recapMatchesEvent(schoonerRecap,golfMeet('2026-09-19T12:00:00.000Z',{event_type:'GAME'}),schoonerUrl),false,'games keep the one-day window');
 
-console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, multi-day golf recap matching, school/event isolation, and independent result snapshots passed.');
+// Volleyball live score: ESPN's college volleyball scoreboard, the same
+// independent path as Football and Basketball. Fixture: the K-State vs BYU
+// event as ESPN served it at 23:35 UTC on Oct 1, 2026 (1st set, 2-1).
+assert.deepEqual(kstateSchool.liveScoreboards.Volleyball.map(p=>p.path),['volleyball/womens-college-volleyball']);
+const vbPayload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz',import.meta.url))).toString('utf8'));
+const vbUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261001',vbNow=new Date('2026-10-01T23:36:00Z');
+const vbLive=worker.parseScoreboardPayload(vbPayload,school,'Volleyball',kstateSchool.liveScoreboards.Volleyball[0],vbUrl,vbNow);
+assert.equal(vbLive.length,1);
+assert.deepEqual([vbLive[0].status,vbLive[0].title,vbLive[0].school_score,vbLive[0].opponent_score,vbLive[0].headline,vbLive[0].start_time],['Live','K-State vs BYU','0','0','1st Set \u00b7 2-1','2026-10-01T18:30:00.000Z'],'sets won, plus the current set\'s points, at Central wall clock');
+const vbOfficial=worker.makeEvent({school,sport:'Volleyball',status:'Upcoming',relation:'vs',opponent:'#18 BYU',date:'October 1, 2026',time:'6:30 PM',schoolScore:null,oppScore:null,resultText:null,sourceUrl:'https://www.kstatesports.com/sports/volleyball/schedule',now:vbNow});
+const vbReconciled=worker.reconcileScoreboardEvents([vbOfficial],vbLive);
+assert.deepEqual([vbReconciled.length,vbReconciled[0].title,vbReconciled[0].status,vbReconciled[0].headline,vbReconciled[0].verification_state],[1,'K-State vs #18 BYU','Live','1st Set \u00b7 2-1','official_schedule+live_scoreboard'],'the official card goes live; no second card');
+{const g=worker.groupEvents(vbReconciled,vbNow)[0];assert.deepEqual([g.live.length,g.upcoming.length],[1,0]);}
+// A finished match reads like K-State's official results.
+const vbFinalPayload=JSON.parse(JSON.stringify(vbPayload)),vbComp=vbFinalPayload.events[0].competitions[0];
+vbComp.status.type={...vbComp.status.type,state:'post',completed:true,shortDetail:'Final',detail:'Final'};
+for(const team of vbComp.competitors)team.score=team.team.abbreviation==='KSU'?'3':'1';
+const vbFinal=worker.parseScoreboardPayload(vbFinalPayload,school,'Volleyball',kstateSchool.liveScoreboards.Volleyball[0],vbUrl,new Date('2026-10-02T02:00:00Z'));
+assert.deepEqual([vbFinal[0].status,vbFinal[0].headline,vbFinal[0].results],['Final','W, 3-1',[{label:'Result',value:'W, 3-1'}]]);
+// Other sports keep their scoreboard output unchanged (no volleyball rule).
+assert.equal(liveMen[0].headline,'2nd Half - 4:12');
+
+console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball/volleyball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, multi-day golf recap matching, school/event isolation, and independent result snapshots passed.');

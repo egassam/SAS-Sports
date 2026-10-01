@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.1-byu-track-field';
+const VERSION='4.37.2-kstate-volleyball-live';
 const FEED_FRESH_MS=25*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
@@ -1571,6 +1571,16 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     if(status==='Live'){
       event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
     }else event.recency_label='Final';
+    // Volleyball scores are sets won (0-0 during the first set). The live
+    // headline adds the current set's points; a final reads like K-State's
+    // official results ("W, 3-1").
+    if(sport==='Volleyball'){
+      const points=team=>(team?.linescores||[]).map(line=>Number(line?.value)).filter(Number.isFinite);
+      const ourSets=points(ours),theirSets=points(opponent);
+      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length)event.headline=`${detail} \u00b7 ${ourSets.at(-1)}-${theirSets.at(-1)}`;
+      const won=Number(ours.score),lost=Number(opponent.score);
+      if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+    }
     if(provider.team_label){event.team_label=provider.team_label;event.title=`${provider.team_label} · ${event.title}`;}
     event.source={name:provider.sourceName||'Live game scoreboard',url,updated_at:now.toISOString()};
     event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;

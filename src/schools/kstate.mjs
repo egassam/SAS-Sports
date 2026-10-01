@@ -13,7 +13,9 @@ export const kstateSchool={
     Basketball:[
       {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
       {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
-    ]
+    ],
+    // Volleyball scores are sets won; the live detail names the current set.
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
   },
   scheduleUrls:{
     'kstate|Basketball':[
