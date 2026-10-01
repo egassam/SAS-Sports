@@ -155,6 +155,12 @@ vbComp.status.type={...vbComp.status.type,state:'post',completed:true,shortDetai
 for(const team of vbComp.competitors)team.score=team.team.abbreviation==='KSU'?'3':'1';
 const vbFinal=worker.parseScoreboardPayload(vbFinalPayload,school,'Volleyball',kstateSchool.liveScoreboards.Volleyball[0],vbUrl,new Date('2026-10-02T02:00:00Z'));
 assert.deepEqual([vbFinal[0].status,vbFinal[0].headline,vbFinal[0].results],['Final','W, 3-1',[{label:'Result',value:'W, 3-1'}]]);
+// A shared nickname is not K-State: ESPN's New Hampshire Wildcats (Sep 30,
+// vs Stonehill) matched K-State's "Wildcats" alias on the first preview.
+const unhPayload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-new-hampshire-wildcats-2026-09-30.json.gz',import.meta.url))).toString('utf8'));
+assert.equal(unhPayload.events[0].competitions[0].competitors.some(c=>c.team.name==='Wildcats'),true);
+assert.deepEqual(worker.parseScoreboardPayload(unhPayload,school,'Volleyball',kstateSchool.liveScoreboards.Volleyball[0],vbUrl,vbNow),[],'another school\'s Wildcats are not K-State');
+assert.equal(worker.parseScoreboardPayload(unhPayload,schools.find(s=>s.id==='arizona'),'Football',{path:'football/college-football'},vbUrl,vbNow).length,0,'nor Arizona');
 // Other sports keep their scoreboard output unchanged (no volleyball rule).
 assert.equal(liveMen[0].headline,'2nd Half - 4:12');
 

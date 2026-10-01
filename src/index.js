@@ -1543,8 +1543,12 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
   const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
-  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation,team?.name].map(normalizedTeamName).filter(Boolean);
-  if(wanted.some(x=>exact.includes(x)))return true;
+  // A nickname alone ("Wildcats", team.name) is shared by many schools: ESPN's
+  // New Hampshire Wildcats matched K-State's "Wildcats" alias. Match on the
+  // school's location, full or short name, or abbreviation only.
+  const nicknames=new Set([team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
+  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation].map(normalizedTeamName).filter(Boolean);
+  if(wanted.some(x=>!nicknames.has(x)&&exact.includes(x)))return true;
   const full=normalizedTeamName(team?.displayName);
   return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
 }
