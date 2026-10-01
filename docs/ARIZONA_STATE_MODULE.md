@@ -49,6 +49,10 @@ Production showed 2 results (`ASU vs vs.`, `ASU at at`), the same card defect. V
 
 Production showed one result dated `Sep, 2027, 27` titled `ASU vs vs.`: the page is titled "2027 Baseball Schedule" but opens with fall 2026 exhibitions, and the card defect hid the opponent. Baseball joins `cardSports`: the Sep 27, 2026 exhibition `W, 10-0` vs Naranjeros de Hermosillo (no recap is linked), 4 fall exhibitions with times and 30 spring 2027 games (times TBA).
 
+## Softball (`4.32.4-arizona-state-softball`)
+
+Production showed 9 upcoming games, with evening games on the next UTC day duplicating the card dates. Softball joins `cardSports`: the 7 fall 2026 games, each on its published day and time.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |

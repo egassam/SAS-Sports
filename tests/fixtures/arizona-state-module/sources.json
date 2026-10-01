@@ -19,6 +19,11 @@
       "url": "https://thesundevils.com/sports/baseball/schedule",
       "retrieved": "2026-10-01T01:45Z",
       "note": "Official Arizona State Baseball schedule (titled 2027), unmodified. 35 cards: final Sep 27, 2026 exhibition W 10-0 vs Naranjeros de Hermosillo (no recap link); 4 fall 2026 exhibitions with times; 30 spring 2027 games, times TBA. JSON-LD lists every start time."
+    },
+    "softball-schedule.html.gz": {
+      "url": "https://thesundevils.com/sports/softball/schedule",
+      "retrieved": "2026-10-01T01:45Z",
+      "note": "Official 2026 Fall Softball schedule, unmodified. 7 upcoming cards (Oct 21 Pima CC through Nov 8 Long Beach State), all with published times; two games each on Nov 7 and Nov 8."
     }
   }
 }
