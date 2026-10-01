@@ -201,6 +201,8 @@ const womensSwim=worker.parseHtml(fixture('womens-swimming-diving-schedule.html.
 assert.deepEqual([mensSwim.length,womensSwim.length],[16,17]);
 assert.deepEqual(womensSwim.slice(0,4).map(e=>`${e.status} ${e.display_time} ${e.title}`),['Final Sep 25 ASU vs Intrasquad Scrimmage','Upcoming Oct 2, 6:00 PM ASU vs UNLV','Upcoming Oct 9 ASU at SMU Classic','Upcoming Oct 9, 3:30 PM ASU at Northern Arizona']);
 assert.equal(mensSwim.at(-1).start_time.slice(0,10),'2027-03-24');
+assert.notEqual(mensSwim[0].id,womensSwim[0].id,'the same meet on both teams\' pages keeps separate event ids');
+assert.ok(mensSwim[0].id.endsWith('-mens')&&womensSwim[0].id.endsWith('-womens'));
 // Every sponsored sport reads the official cards through the module.
 assert.deepEqual([...arizonaStateSchool.cardSports].sort(),[...sports].sort());
 console.log(`Arizona State module checks passed: 17 sports route to thesundevils.com through the module, no Arizona State configuration in shared code, program combinations, official cards for ${[...arizonaStateSchool.cardSports].join(', ')} (K-State results, recaps, published times, JSON-LD years, current season), other sports and schools unchanged.`);

@@ -155,6 +155,10 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
         // K-State's results show the date only; upcoming games show the published time.
         time:completed||!/\d/.test(timeText)?null:timeText,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
+      // Men's and women's pages can list the same meet on the same day (the
+      // Sep 25 swimming intrasquad); the team keeps their event ids apart.
+      const team=arizonaStateSchool.combinedSports.has(sport)?(String(sourceUrl).match(/\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(team)event.id=`${event.id}-${team}`;
       const recap=(block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*schedule-event-recap-link/i)||[])[1];
       const recapUrl=recap?absoluteUrl(recap,sourceUrl):null;
       if(recapUrl&&new URL(recapUrl).hostname==='thesundevils.com'&&new URL(recapUrl).pathname.startsWith('/news/'))event.recap_url=recapUrl;
