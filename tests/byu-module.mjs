@@ -39,7 +39,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(byuSchool.rosterUrls[`byu|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'byu\|/.test(read('../src/index.js')),'BYU configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Golf','Swimming & Diving'],'both teams are shown for these sports');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Cross Country','Golf','Swimming & Diving','Tennis'],'both teams are shown for these sports');
 for(const [key,url] of Object.entries(byuSchool.verifiedInstagrams))assert.equal(worker.VERIFIED_TEAM_TAG_INSTAGRAM.get(key),url,'verified Instagram tags are still used');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='ucf'),'Football')[0],'https://ucfknights.com/sports/football/schedule');
@@ -225,12 +225,27 @@ const vuori=golf.mens.find(e=>/Vuori/.test(e.title));
 assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-story-2026-09-15-vuori-day-one.html.gz'),vuori,golfNews+'15/akina-cougars-in-fourth-as-darkness-suspends-day-one-of-vuori-invitational'),false,'a day-one story naming the same place ("in fourth") is still not the result');
 assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-16-vuori-final.html.gz'),vuori,golfNews+'16/akina-takes-second-cougars-finish-fourth-at-vuori-invitational'),true);
 assert.equal(worker.byuHandlers.matchesRecap(fixture('golf-recap-2026-09-26-tucker-final.html.gz'),{...tucker,headline:'5th'},golfNews+'26/mens-golf-takes-third-at-william-h-tucker-invitational-behind-akinas-fourth-place-finish'),false,'a recap stating another place belongs to another result');
+// Tennis: production read only the women's page. Both teams, labeled. Men's
+// cards name only the host ("at SMU", "at ITA" twice on Nov 5); the
+// tournament heading names the event. Finished tournaments read Completed.
+const tennis={};
+for(const team of ['mens','womens']){
+  const url=`https://byucougars.com/sports/${team}-tennis/schedule`;
+  tennis[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-tennis-schedule.html.gz`),school,'Tennis',url,now),school,'Tennis',url);
+}
+assert.deepEqual(tennis.mens.map(e=>`${e.status} ${e.display_time} ${e.title} ${e.headline||''}`.trim()),[
+  "Final Sep 11 Men's · BYU at Milwaukee Invitational Completed","Final Sep 19 Men's · BYU at ITA All-American Completed","Final Sep 25 Men's · BYU at Sherwood Invitational Completed","Final Sep 25 Men's · BYU at Boise St. Invitational Completed",
+  "Upcoming Oct 6 Men's · BYU vs ITA Regional Championships","Upcoming Oct 29, 10:00 AM Men's · BYU at SMU Invitational","Upcoming Nov 5 Men's · BYU at ITA Masters","Upcoming Nov 5 Men's · BYU at ITA Sectional Championships"
+]);
+assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events stay separate');
+assert.equal(tennis.womens.length,7);
+assert.deepEqual([tennis.womens[0].title,tennis.womens[0].headline,tennis.womens[0].end_time,tennis.womens[0].recap_url],["Women's · BYU vs USTA SoCal Championships",'Completed','2026-09-27T23:59:59Z','https://byucougars.com/news/2026/09/28/cougars-make-strong-showing-at-usta-socal-championships']);
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
-assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']);
+assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']);
 const utah=schools.find(s=>s.id==='utah');
 const handlers=createByuHandlers({makeEvent:()=>{throw Error('unexpected');},visibleText:x=>x,absoluteUrl:x=>x});
 assert.equal(handlers.parseSchedule('<html>no cards</html>',school,'Football',footballUrl,now),null,'a page without cards falls back to the shared parsers');
-assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now),null,'other BYU sports keep the shared parsers');
+assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Gymnastics',footballUrl,now),null,'other BYU sports keep the shared parsers');
 assert.equal(handlers.parseSchedule(fixture('football-schedule.html.gz'),utah,'Football',footballUrl,now),null,'other schools keep the shared parsers');
 console.log(`BYU module checks passed: 12 sports route to byucougars.com through the module, no BYU configuration in shared code, program combinations and verified Instagram tags unchanged, official cards for ${[...byuSchool.cardSports].join(', ')} (K-State results, recaps, published times), other sports and schools unchanged.`);

@@ -54,6 +54,16 @@
       "url": "https://byucougars.com/sports/womens-golf/schedule",
       "retrieved": "2026-10-01T22:00Z",
       "note": "Official 2026-27 BYU Women's Golf schedule, unmodified. 13 tournaments: The Bruzzy ('9th (Mar\u00eda Jos\u00e9 \"MJ\" Barrag\u00e1n - T-6th)') and Red Raider Invitational ('1st (Kate Walker - 2nd)') completed, 11 upcoming."
+    },
+    "mens-tennis-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/mens-tennis/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026-27 BYU Men's Tennis schedule, unmodified. 8 cards naming only the host ('at Milwaukee', 'at ITA', 'at SMU', 'at Boise State'), each under a tournament heading (Milwaukee Invitational, ITA All-American, Sherwood Invitational, Boise St. Invitational, ITA Regional Championships, SMU Invitational, ITA Masters, ITA Sectional Championships)."
+    },
+    "womens-tennis-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-10-01T22:00Z",
+      "note": "Official 2026-27 BYU Women's Tennis schedule, unmodified. 7 tournaments; USTA SoCal Championships (Sep 24-27) completed with a Recap link dated Sep 28."
     }
   },
   "recaps": {
