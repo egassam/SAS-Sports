@@ -4,6 +4,33 @@
 
 Arizona State was chosen as the next Big 12 school on October 1, 2026 (user: "Start next school. Stay in the Big 12."). It was the first unconverted Big 12 school in catalog order whose official site the development sandbox can download: arizonawildcats.com, baylorbears.com, cubuffs.com, uhcougars.com, cyclones.com, gofrogs.com, texastech.com and wvusports.com all returned HTTP 403, as utahutes.com did through most of the Utah work.
 
+## Status (production `4.33.3-arizona-state-swimming-diving`, October 1, ~02:35 UTC)
+
+All 17 sponsored sports read thesundevils.com's official cards through the module (`cardSports`); every route is an official sport page. Forced production feeds all returned 200, with no placeholder opponents or `Mon, YYYY, D` dates.
+
+| Sport | PR | Production |
+| --- | --- | --- |
+| Football | #66 | 3 finals `W, 24-17`-style with recaps, 10 upcoming with published times |
+| Soccer | #68 | 11 finals with recaps, 9 upcoming |
+| Volleyball | #69 | 13 finals with recaps, 16 upcoming |
+| Baseball | #70 | Fall exhibition `W, 10-0`; 34 upcoming (fall 2026 + spring 2027) |
+| Softball | #71 | 7 fall games |
+| Basketball | #72 | Men's 34 + women's 33, labeled |
+| Hockey | #73 | 36 games (`ice-hockey`) |
+| Wrestling | #74 | 2 events |
+| Beach Volleyball, Lacrosse, Water Polo, Gymnastics, Track & Field | #75–#79 | Empty schedule (pages show only the past season) |
+| Cross Country | #80 | Dave Murray: `Women's 4K` 12 + `Men's 6K` 6 runners from the official recap; Meadows Challenge: no published results, says so |
+| Golf | #81 | Both teams; `1st (800)`, `T6th (896)`, `T2nd (851)` |
+| Tennis | #82 | Both teams; men's page is 2025-26 (empty); women's 12 fall tournaments |
+| Swimming & Diving | #83 | Was 502; both teams (16 + 17) |
+
+**Limitations:**
+- Golf placings lack the field size (`of 12`), which the cards do not publish.
+- Cross Country recaps give no team scores, so meets read `Completed`. Meadows Challenge has no official recap or results.
+- The USTA SoCal tennis recap (an individual-titles story) is not accepted by the shared recap matcher, so its expanded view says no exact recap matched.
+- Individual tennis tournaments and the swimming intrasquad publish no team result (`Completed`).
+- Neutral-site cards between two other teams (women's basketball, Nov 28–29) are skipped.
+
 ## Setup (route parity)
 
 The module starts as a pure move. Each of Arizona State's 17 sponsored sports gets exactly the schedule and roster candidates production used before the module existed:
