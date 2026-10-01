@@ -22,7 +22,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults,fetchUrl,fetchLive};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit byucougars.com routes.
 const sports=sponsoredSports.byu;
@@ -276,6 +276,16 @@ assert.deepEqual(byuSchool.rosterUrls['byu|Track & Field'],['https://byucougars.
 for(const team of ['mens','womens']){
   const events=worker.parseHtml(fixture(`${team}-track-and-field-schedule.html.gz`),school,'Track & Field',`https://byucougars.com/sports/${team}-track-and-field/schedule`,now);
   assert.deepEqual(events,[]);assert.ok(worker.byuHandlers.isEmptySchedule(events));
+}
+// Through the Worker's own fetch path (team labeling included), both
+// past-season pages are flagged as empty schedules and the feed is a valid
+// empty result, not a 502. Preview showed 502 before this.
+for(const team of ['mens','womens'])recapFixtures.set(`https://byucougars.com/sports/${team}-track-and-field/schedule`,fixture(`${team}-track-and-field-schedule.html.gz`));
+{
+  const item=await worker.fetchUrl('https://byucougars.com/sports/mens-track-and-field/schedule',school,'Track & Field',now);
+  assert.equal(item.empty_schedule,true,'a labeled two-team past-season page is still an empty schedule');
+  const live=await worker.fetchLive('byu','Track & Field');
+  assert.deepEqual([live.events.length,live.live_source_used,live.error],[0,true,null]);
 }
 const trackInSeason=worker.parseHtml(fixture('womens-track-and-field-schedule.html.gz'),school,'Track & Field','https://byucougars.com/sports/womens-track-and-field/schedule',new Date('2026-05-01T16:00:00Z'));
 assert.deepEqual(trackInSeason.filter(e=>/team:/.test(e.headline)).map(e=>`${e.display_time} ${e.title} ${e.headline}`),["Feb 27 BYU at Big 12 Championships Women's team: 2nd · 110 pts","Mar 13 BYU at NCAA Championships Women's team: 5th · 27 pts","May 14 BYU at Big 12 Championships Women's team: 2nd · 108 pts"],'in season, team finishes read like Cross Country');

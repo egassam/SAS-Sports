@@ -143,3 +143,5 @@ Production returned 502: the inherited `track-and-field` and `track-field` route
 Both pages still show the 2025-26 season, so today Track & Field is a 200 empty schedule. A fixture test dated May 2026 shows those pages in K-State's format, with team finishes such as `Women's team: 2nd · 110 pts`.
 
 **All 12 BYU sports now read the official cards through the module.**
+
+**Two-team empty schedules.** The first preview of this PR returned 502. For combined sports, the shared `labelTeamEvents` returns a new array, so the module's identity check no longer recognized its own past-season result. Gymnastics, with one page, was unaffected. `fetchUrl` now keeps the parse result before labeling, and BYU's empty-schedule clause checks that. The other schools' clauses are unchanged. A test runs both pages through `fetchUrl` and `fetchLive`.
