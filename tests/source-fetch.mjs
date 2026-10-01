@@ -60,6 +60,7 @@ const PAGE='https://school.test/sports/football/schedule';
   const {sourceFetch,pageCalls,clock}=setup({'/sports/football/schedule':()=>busy?new Response('slow down',{status:429,headers:{'retry-after':'300'}}):'<html>ok</html>'});
   assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,429);
   for(let i=0;i<10;i++)assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).status,503);
+  assert.equal((await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule})).headers.get('x-sas-upstream-status'),'429','a backoff reports what the school returned');
   assert.equal(pageCalls('/sports/football/schedule'),1,'backoff must not touch the school');
   busy=false;clock.t+=299*1000;await sourceFetch(PAGE,{},{ttl:SOURCE_TTL.schedule});
   assert.equal(pageCalls('/sports/football/schedule'),1,'Retry-After is honoured in full');

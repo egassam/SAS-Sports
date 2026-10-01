@@ -45,7 +45,7 @@ function retryAfterSeconds(response){
   return Math.min(MAX_BACKOFF,Math.max(DEFAULT_BACKOFF,Number.isFinite(seconds)?seconds:DEFAULT_BACKOFF));
 }
 function withUrl(response,url){Object.defineProperty(response,'url',{value:url});return response}
-function synthetic(status,url,reason){return withUrl(new Response('',{status,headers:{'x-sas-source':reason}}),url)}
+function synthetic(status,url,reason,upstream=''){const h={'x-sas-source':reason};if(upstream)h['x-sas-upstream-status']=upstream;return withUrl(new Response('',{status,headers:h}),url)}
 
 export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.caches?.default,cacheOrigin=()=>null,now=()=>Date.now()}){
   // One cache entry per page holds its body and any backoff, so a download
@@ -90,7 +90,7 @@ export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.c
     if(body&&age<=ttl)return fromCache(entry,body,'fresh');
     const stale=()=>body&&staleOnError?fromCache(entry,body,'stale-on-error'):null;
     const backoffUntil=Number(entry?.headers.get('x-sas-backoff-until')||0);
-    if(backoffUntil>now())return stale()||synthetic(503,url,'backoff');
+    if(backoffUntil>now())return stale()||synthetic(503,url,'backoff',entry.headers.get('x-sas-status')||'');
     if(robots&&!robotsAllows(await robotsRules(url),url))return synthetic(403,url,'robots-disallowed');
     const conditional={};
     if(body){const etag=entry.headers.get('x-sas-etag'),modified=entry.headers.get('x-sas-last-modified');if(etag)conditional['If-None-Match']=etag;if(modified)conditional['If-Modified-Since']=modified}
