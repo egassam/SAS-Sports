@@ -71,6 +71,10 @@ Production showed spring 2026 matches as current results (`ASU at at`, `W, 5-0`)
 
 Fix to the season filter: it kept January–June events of the season's *first* year (Feb 2026 in the 2026–27 season). January–June now belong to the season's second year only. Output for the nine sports already merged is byte-identical.
 
+## Lacrosse (`4.32.9-arizona-state-lacrosse`)
+
+Production showed spring 2026 games as current results (`ASU at at`, `L, 11-12`). Lacrosse joins `cardSports`, and its route is only the official `lacrosse` page. The page still shows the spring 2026 season (18 cards), so the feed is an empty schedule (200 `[]` with the app's note) until the next season is published.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
