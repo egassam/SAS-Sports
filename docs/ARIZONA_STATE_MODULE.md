@@ -57,6 +57,10 @@ Production showed 9 upcoming games, with evening games on the next UTC day dupli
 
 Production showed men's games a day late (New Mexico `Oct 26` instead of Oct 25). Basketball joins `cardSports`, and its routes are now only the two official pages (`mens-basketball`, `womens-basketball`); the generic `basketball` and homepage fallbacks are removed. Men's: 34 games; women's: 33 games with published times. Two women's cards are neutral-site games between other teams (Wake Forest vs Quinnipiac) and are skipped.
 
+## Hockey (`4.32.6-arizona-state-hockey`)
+
+Production showed 35 games, with evening games on the next UTC day (Lindenwood `Oct 3` for the Oct 2, 5:00 p.m. game, merging the two games of the series). Hockey joins `cardSports`, and its route is now only the official `ice-hockey` page (the `mens-ice-hockey`, `womens-ice-hockey`, `hockey` and homepage candidates are removed). All 36 games show on their published day and time.
+
 ## Baseline vs K-State (production `4.31.9`, October 1, forced refresh)
 
 | Sport | Now | Gap vs K-State |
