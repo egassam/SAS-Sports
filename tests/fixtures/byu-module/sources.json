@@ -1,0 +1,9 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://byucougars.com/sports/football/schedule",
+      "retrieved": "2026-10-01T20:53Z",
+      "note": "Official 2026 BYU Football schedule, unmodified. 12 schedule-event-item cards: finals W 63-7 Utah Tech (Sep 5), W 28-17 Arizona (Sep 12), W 41-23 at Colorado State (Sep 19), each with its own Recap link; 9 upcoming, two with published times (at TCU Oct 3, 5:00 PM MDT; Iowa State Fri Oct 9, 8:15 PM MDT), the rest TBA. Each card's <time datetime> carries the local start with its offset."
+    }
+  }
+}
