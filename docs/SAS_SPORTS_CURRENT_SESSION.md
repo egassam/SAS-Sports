@@ -978,3 +978,7 @@ Session close (about 20:20 UTC): the user asked "Are we cleaned up on the school
 
 User: "Then let's move on. End session". Next: the next school the user names, per the instructions above.
 
+After close, the user said: "Delete the KV namespace. Don't put any contact yet. I don't want them to know what I'm building yet."
+- `sas-sports-feeds` (`44e354a55a1c43ce8013e40eb2cc9a75`) was deleted after confirming nothing on `main` binds it. The account has no KV namespaces.
+- **No contact address on `/bot`, and do not contact schools about allowlisting, until the user says otherwise.** The user agent stays honest (`SAS-Sports/<version>; +…/bot`). Hiding the identity or presenting as a browser would be evasion and is out of bounds. `public/bot.html` still describes the app in one sentence; trimming that wording is the user's call.
+
