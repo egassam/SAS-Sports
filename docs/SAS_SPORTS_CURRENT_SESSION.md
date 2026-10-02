@@ -318,6 +318,11 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Live scores (ESPN), open checks:**
+  - Watch a real volleyball final reach the card as `W, 3-1` (fixture-tested only).
+  - Watch a K-State or BYU basketball game go live (season from Oct 16).
+  - Consider giving football/basketball finals K-State's `W, 71-68` wording: today a scoreboard final overwrites the official headline with `71–68`.
+  - ESPN lags, especially between sets. StatBroadcast is behind a bot challenge; do not work around it.
 - **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
 - **BYU is complete** (#94, #97–#107). Gymnastics and Track & Field become non-empty when byucougars.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/BYU_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 1, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox; ucfknights.com (SIDEARM) returned 200.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
@@ -1154,4 +1159,6 @@ User: "KSTATE volleyball had a match right now. Can we find a live feed and have
 2. **Phantom New Hampshire final.** Once ESPN answered, New Hampshire Wildcats matched K-State's "Wildcats" alias. Fixed with a second real fixture (the Sep 30 New Hampshire vs Stonehill event).
 
 **Merged** under the gate after both fixes, and verified in production (above).
+
+Session close (about 00:40 UTC, October 2): User: "End session". Production `4.37.7-byu-basketball-live`. All work is merged (#94, #97–#119); no open PRs from this session.
 
