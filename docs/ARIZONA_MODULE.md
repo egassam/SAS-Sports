@@ -19,7 +19,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
 | Gymnastics | #157 | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
 | Swimming & Diving | #158 | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
-| Tennis | (this PR) | Both teams (10 + 10 fall tournaments), tournaments in progress kept as today's, past ones `Completed`, Arizona's story as the recap where one exists |
+| Tennis | #159 | Both teams (10 + 10 fall tournaments), tournaments in progress kept as today's, past ones `Completed`, Arizona's story as the recap where one exists |
+| Track & Field | (this PR) | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, recaps dated with their meet |
 
 ## Setup (route parity)
 
@@ -159,10 +160,20 @@ In season, a dual with a published score reads as K-State's games do (`W, 160-14
 Production loaded the first tennis page that answered (women's) and read 8 tournaments as `Arizona vs W35 Las Vegas`. Tennis now loads both teams' official pages only, labeled (`combinedSports`), 10 men's and 10 women's fall tournaments:
 - tournaments read as meets (`Arizona at ITA All Americans`) and end on their last day (`enddate`);
 - **a multi-day event in progress stays on the schedule** as today's (`In progress`): on Oct 2 the men's University of Arkansas M15 Open (Sep 28 - Oct 4) and Battle of the Bay (Oct 1-4). Before, an upcoming event whose first day had passed fell off the schedule (every Arizona page-data sport now keeps it);
-- fall tournaments publish no team result, so a past one reads `Completed`. The schedule links no stories; Arizona's story about a tournament, found in the team's tennis archive, dated within the tournament or the day after, and naming it in its own text, becomes its recap (feed hook beside golf's): the men's Kinlen & Vivian Gee Wildcat Invite (Sep 11-13) has "Wildcats Close Out a Successful Weekend at Home" (Sep 14). That story also mentions the ITA All American Tournament, which is outside its dates. The men's ITA All Americans and the women's ITA All-Americans and W50 Berkeley have no Arizona story (the women's archive has only the Sep 2 schedule announcement);
+- fall tournaments publish no team result, so a past one reads `Completed`. The schedule links no stories; Arizona's story about a tournament, found in the team's tennis archive, dated within the tournament or the day after, and naming it in its own text, becomes its recap (feed hook beside golf's; the expanded view attaches it first, because it runs before the feed hook: the preview showed `recap_not_found` until then): the men's Kinlen & Vivian Gee Wildcat Invite (Sep 11-13) has "Wildcats Close Out a Successful Weekend at Home" (Sep 14). That story also mentions the ITA All American Tournament, which is outside its dates. The men's ITA All Americans and the women's ITA All-Americans and W50 Berkeley have no Arizona story (the women's archive has only the Sep 2 schedule announcement);
 - recaps of multi-day events are checked against their last day.
 
 K-State's tennis feed lists only upcoming tournaments; Arizona's keeps its completed fall tournaments, as UCF's does. ESPN publishes no tennis scoreboard.
+
+## Track & Field (`4.43.12-arizona-track-field`)
+
+The page still shows "2025-26 Track and Field Schedule" (Dec 6, 2025 - Jun 14, 2026), so Track & Field is a valid empty schedule (the current-season filter, `empty_schedule`) until Arizona publishes 2026-27. Production also tried `track-field` and the homepage; schedule and roster now route to `track-and-field` only.
+
+Fixture-tested in season (the same page read as of Apr 10, 2026): 21 meets (the canceled Willie Williams Classic and Jim Click Invitational left out), multi-day meets ending on their last day, past meets `Completed` (the page publishes no team finishes for track).
+
+**Recap date window (every Arizona sport).** The indoor Big 12 Championships (Feb 27-28) link the May 14 outdoor championships story. A page-data recap link must now be dated from the event's first day to three days after its last (the Axe'em Open's story is dated the day after the meet and stays).
+
+ESPN publishes no track scoreboard.
 
 ## Seen outside Arizona (not changed)
 

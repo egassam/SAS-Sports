@@ -573,4 +573,26 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.ok(prompts[0].includes('Kinlen'));
 }
 
+// Track & Field: the page still shows "2025-26 Track and Field Schedule"
+// (Dec 6, 2025 - Jun 14, 2026). Production also tried track-field and the
+// homepage.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Track & Field'),['https://arizonawildcats.com/sports/track-and-field/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Track & Field'),['https://arizonawildcats.com/sports/track-and-field/roster']);
+  const url='https://arizonawildcats.com/sports/track-and-field/schedule';
+  const current=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',url,now);
+  assert.deepEqual(current,[]);
+  assert.equal(worker.arizonaHandlers.isEmptySchedule(current),true,'a valid empty schedule until 2026-27 is published');
+  // In season (read as of Apr 10, 2026): one event per meet, the two canceled
+  // home meets left out, recaps dated with their meet.
+  const season=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',url,new Date('2026-04-10T19:00:00Z'));
+  assert.equal(season.length,21,'23 meets less the canceled Willie Williams Classic and Jim Click Invitational');
+  assert.ok(!season.some(e=>/Willie Williams|Jim Click/.test(e.opponent)));
+  const indoor=season.find(e=>e.opponent==='Big 12 Championships');
+  assert.deepEqual([indoor.title,indoor.end_time,indoor.recap_url??null],['Arizona at Big 12 Championships','2026-02-28T23:59:59Z',null],'the indoor championships do not take the May outdoor story');
+  assert.equal(season.find(e=>e.opponent==="Axe'em Open").recap_url,'https://arizonawildcats.com/news/2026/1/10/track-and-field-wildcats-win-four-events-in-indoor-season-opener','a story dated the day after its meet is kept');
+  assert.ok(season.filter(e=>e.recap_url).every(e=>{const [,y,m,d]=e.recap_url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\//);const day=Date.UTC(y,m-1,d);return day>=Date.parse(e.start_time.slice(0,10))&&day<=Date.parse((e.end_time||e.start_time).slice(0,10))+3*86400000;}));
+  assert.deepEqual(season.filter(e=>e.status!=='Final').slice(0,2).map(e=>e.opponent),['Dual In the Desert (Arizona vs Arizona State)','Bryan Clay Invitational']);
+}
+
 console.log('Arizona module checks passed');

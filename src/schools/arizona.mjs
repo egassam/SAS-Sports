@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics','Swimming & Diving','Tennis']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics','Swimming & Diving','Tennis','Track & Field']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -56,7 +56,9 @@ export const arizonaSchool={
     // Both teams (production showed the women's page only, the first that
     // loaded).
     'arizona|Tennis':['https://arizonawildcats.com/sports/mens-tennis/schedule','https://arizonawildcats.com/sports/womens-tennis/schedule'],
-    'arizona|Track & Field':['https://arizonawildcats.com/sports/track-and-field/schedule','https://arizonawildcats.com/sports/track-field/schedule','https://arizonawildcats.com/'],
+    // The official page only: the other slug and the homepage are not track
+    // schedules.
+    'arizona|Track & Field':'https://arizonawildcats.com/sports/track-and-field/schedule',
     'arizona|Volleyball':'https://arizonawildcats.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -71,7 +73,7 @@ export const arizonaSchool={
     'arizona|Softball':'https://arizonawildcats.com/sports/softball/roster',
     'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/womens-swimming-and-diving/roster','https://arizonawildcats.com/sports/mens-swimming-and-diving/roster','https://arizonawildcats.com/sports/womens-swimming-diving/roster','https://arizonawildcats.com/sports/mens-swimming-diving/roster','https://arizonawildcats.com/sports/swimming-and-diving/roster','https://arizonawildcats.com/sports/swimming-diving/roster','https://arizonawildcats.com/sports/swimming/roster'],
     'arizona|Tennis':['https://arizonawildcats.com/sports/womens-tennis/roster','https://arizonawildcats.com/sports/mens-tennis/roster','https://arizonawildcats.com/sports/tennis/roster'],
-    'arizona|Track & Field':['https://arizonawildcats.com/sports/track-and-field/roster','https://arizonawildcats.com/sports/track-field/roster'],
+    'arizona|Track & Field':'https://arizonawildcats.com/sports/track-and-field/roster',
     'arizona|Volleyball':['https://arizonawildcats.com/sports/womens-volleyball/roster','https://arizonawildcats.com/sports/wvball/roster','https://arizonawildcats.com/sports/volleyball/roster']
   }
 };
@@ -278,7 +280,14 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(final){
         const recap=result?.recap?.url;
         if(typeof recap==='string'){
-          try{const link=new URL(recap,sourceUrl);if(link.hostname===HOST&&link.pathname.startsWith('/news/'))event.recap_url=link.href;}catch{}
+          // The link must be dated from the event's first day to three days
+          // after its last: track's indoor Big 12 Championships (Feb 27-28)
+          // links the May 14 outdoor championships story.
+          try{
+            const link=new URL(recap,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
+            const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
+            if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000)event.recap_url=link.href;
+          }catch{}
         }
       }
       // The opponent's full name, from its logo ("Northern Arizona University
