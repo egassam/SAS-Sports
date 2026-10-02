@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Rowing']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Rowing','Track & Field']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -31,7 +31,7 @@ export const ucfSchool={
     'ucf|Soccer':['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule'],
     'ucf|Softball':'https://ucfknights.com/sports/softball/schedule',
     'ucf|Tennis':['https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/womens-tennis/schedule'],
-    'ucf|Track & Field':['https://ucfknights.com/sports/track-and-field/schedule','https://ucfknights.com/sports/track-field/schedule','https://ucfknights.com/'],
+    'ucf|Track & Field':'https://ucfknights.com/sports/track-and-field/schedule',
     'ucf|Volleyball':'https://ucfknights.com/sports/volleyball/schedule'
   },
   rosterUrls:{
@@ -213,7 +213,9 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       // Internal events: baseball's "Black & Gold World Series", softball's
       // "Open Scrimmage" and "Knights vs. 'Nauts" (two squads; BYU's "Navy vs.
       // Royal" is read the same way).
-      if(/\bscrimmage\b|\bintrasquad\b|\bblack (?:&|and) gold\b|\svs\.?\s/i.test(opponent))continue;
+      // "Black & Gold" is internal only for games: track's "Black and Gold
+      // Challenge" is a meet UCF hosts.
+      if(/\bscrimmage\b|\bintrasquad\b|\svs\.?\s/i.test(opponent)||eventType(sport)==='GAME'&&/\bblack (?:&|and) gold\b/i.test(opponent))continue;
       const slot=field(block,/class=["']schedule-event-item-result["'][^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i)||field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/(?:strong|div)>/i);
       const result=slot.match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=result?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
@@ -221,7 +223,9 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       // postponed game has no result or new date; neither is a K-State-style
       // final or an upcoming game.
       // Meets publish the team finish in the result slot ("1st", "6th").
-      const meet=eventType(sport)!=='GAME',placing=meet?slot.match(/^(\d{1,3})(?:st|nd|rd|th)$/i):null;
+      // Meets publish the team finish in the result slot: "1st" (cross
+      // country) or "15th - 14 Pts." (track).
+      const meet=eventType(sport)!=='GAME',placing=meet?slot.match(/^(\d{1,3})(?:st|nd|rd|th)(?:\s*-\s*(\d+(?:\.\d+)?)\s*pts?\.?)?$/i):null;
       // Golf rounds: "T4, 852 (-12)" or "11th, 867" is the team place and total
       // after that round; "568 (-8)" (no place) is a round in progress.
       const golf=sport==='Golf'?slot.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)?,\s*(\d{3,4})\b/i):null;
@@ -243,7 +247,7 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       // UCF runs only a women's cross country team; the page says so.
       const squad=/<title>[^<]*Women(?:&#x27;|')s\b/i.test(raw)?"Women's":'UCF';
       if(golf){const value=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
-      else if(placing){const value=ordinal(placing[1]);event.headline=`${squad} team: ${value}`;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(placing){const value=`${ordinal(placing[1])}${placing[2]?` \u00b7 ${placing[2]} pts`:''}`;event.headline=`${squad} team: ${value}`;event.results=[{label:'Result',value}];event.result_count=1;}
       else if(over&&!event.headline){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       if(recapUrl)event.recap_url=recapUrl;
       // Separate men's and women's pages can list the same opponent on the same

@@ -18,7 +18,7 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Golf | #131 | Both teams, one event per tournament: men's `T4th (852)`, `12th (860)`, `5th (858)`; women's `11th (867)`, `8th (843)`, each with its recap; UCF recap matcher |
 | Tennis | #132 | Both teams: the men's page is 2025-26, so it is an empty schedule; women's 2 completed fall tournaments with recaps and 4 upcoming |
 | Rowing | #133 | Empty schedule (the page shows 2025-26); in season, one event per regatta |
-| Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Track & Field | #134 | Empty schedule (the page shows Jan-Jun 2026); in season, team finishes `UCF team: 15th · 14 pts` |
 
 ## Setup (route parity)
 
@@ -111,6 +111,10 @@ Both teams' official pages only, labeled (production also loaded the homepage an
 ## Rowing (`4.38.9-ucf-rowing`)
 
 Production tried `/sports/womens-rowing/schedule` (404) and fell back to the homepage, whose ticker gave 10 "upcoming" events from other sports. Rowing now routes to the official `/sports/rowing/schedule` only. That page still shows "Rowing 2025-26", so today it is an empty schedule. Fixture-tested in season (the same page read as of April and June 2026): regatta days merge into one event as golf rounds do, the last day's recap is kept (a day-one story is not the result), and the Miami and Iowa scrimmages are left out.
+
+## Track & Field (`4.39.0-ucf-track-field`)
+
+Production tried `/sports/track-field/schedule` (404) and the homepage, and showed the 2025-26 season as current: 18 `Completed` meets with last season's recaps. Track & Field now routes to the official page only. That page still shows "Track and Field 2026" (Jan-Jun 2026), so today it is an empty schedule. Fixture-tested in season (the same page read as of June 2026): one event per meet, multi-day meets ending on their last day, and team finishes reading `UCF team: 15th · 14 pts` (the result slot's "15th - 14 Pts."). The UCF-hosted "Black and Gold Challenge" stays: the "Black & Gold" internal rule applies to games only (baseball's intrasquad World Series).
 
 ## Limitations
 
