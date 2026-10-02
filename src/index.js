@@ -11,7 +11,7 @@ import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.38.2-ucf-soccer';
+const VERSION='4.38.3-ucf-cross-country';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -221,7 +221,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl});
+const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -811,6 +811,7 @@ async function attachOfficialMeetResults(event){
   if(utahHandlers.isUtahCrossCountry(event))return utahHandlers.attachMeetResults(event);
   if(arizonaStateHandlers.isArizonaStateCrossCountry(event))return arizonaStateHandlers.attachMeetResults(event);
   if(byuHandlers.isByuCrossCountry(event))return byuHandlers.attachMeetResults(event);
+  if(ucfHandlers.isUcfCrossCountry(event))return ucfHandlers.attachMeetResults(event);
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   // Exact rows parsed from the event's official recap are already tied to this
   // meet. Never replace them with a season/cumulative PDF linked from it.
@@ -1400,7 +1401,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.
-  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)||arizonaStateHandlers.isArizonaStateCrossCountry(target)||byuHandlers.isByuCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
+  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)||arizonaStateHandlers.isArizonaStateCrossCountry(target)||byuHandlers.isByuCrossCountry(target)||ucfHandlers.isUcfCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
   if(target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
@@ -1665,7 +1666,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
     events=reconcileScoreboardEvents(events,scoreboard);
