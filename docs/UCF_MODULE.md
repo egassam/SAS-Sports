@@ -14,7 +14,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Cross Country | #127 | Women's team: `1st · 43 pts`, `6th · 199 pts`; race rows from the recap prose (deterministic); 3 upcoming |
 | Basketball | #128 | Men's 35 + women's 34 upcoming, labeled; ESPN live scores for both teams |
 | Baseball | #129 | 38 games (fall exhibitions from Oct 17, spring 2027); official page only |
-| Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Softball | #130 | 33 games (fall exhibitions from Oct 16, spring 2027); official page only |
+| Golf, Rowing, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -83,6 +84,10 @@ Production loaded the men's and women's pages plus the generic `/sports/basketba
 ## Baseball (`4.38.5-ucf-baseball`)
 
 The page is "Baseball 2027": fall exhibitions from Oct 17, then the spring season. Production also read the homepage and showed 59 upcoming. Baseball now routes to the official page only and reads its cards: 38 games, with spring dates in 2027 (from the schema dates). The intrasquad "Black & Gold World Series" (Nov 13-15) is left out. The reader skips internal events by name for every sport (`scrimmage`, `intrasquad`, `Black & Gold`, or two squads joined by "vs.").
+
+## Softball (`4.38.6-ucf-softball`)
+
+"Softball 2026-27": fall exhibitions from Oct 16, then the spring season. Production also read the homepage and showed 57 upcoming. Softball now routes to the official page only: 33 games. The two "Open Scrimmage" cards and the three "Knights vs. 'Nauts" cards (two squads, read as internal like BYU's "Navy vs. Royal"; the card gives no opponent) are left out.
 
 ## Limitations
 

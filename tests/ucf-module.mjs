@@ -265,6 +265,20 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(games.at(-1).title,'UCF vs Big 12 Baseball Tournament','the TBD tournament card takes its heading');
 }
 
+// Softball ("Softball 2026-27"): fall exhibitions, then the spring season.
+// The official page only; production also read the homepage. Internal events
+// ("Open Scrimmage", "Knights vs. 'Nauts") are left out.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Softball'),['https://ucfknights.com/sports/softball/schedule']);
+  const games=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Softball','https://ucfknights.com/sports/softball/schedule',now);
+  assert.equal(games.length,33,'38 cards less two open scrimmages and three Knights vs. \'Nauts days');
+  assert.equal(new Set(games.map(e=>e.id)).size,33,'series games on consecutive days stay apart');
+  assert.ok(!games.some(e=>/scrimmage|'nauts/i.test(e.opponent)));
+  assert.deepEqual(games.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['UCF vs Eastern Florida State Oct 16, 5:30 PM','UCF vs Stetson Oct 17, 5:00 PM']);
+  assert.deepEqual(games.filter(e=>e.opponent==='Houston').map(e=>e.display_time),['Mar 19, 6:00 PM','Mar 20, 4:00 PM','Mar 21, 12:00 PM']);
+  assert.equal(games.at(-1).title,'UCF vs Big 12 Softball Tournament');
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Softball',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Golf',footballUrl,now),null);
 console.log('UCF module checks passed');
