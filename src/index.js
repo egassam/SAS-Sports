@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.43.1-arizona-volleyball';
+const VERSION='4.43.2-arizona-soccer';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1440,7 +1440,8 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!recapUrl){
     try{
       const newsUrl=new URL(sourceUrl);
-      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,'/news');
+      // arizonawildcats.com keeps a sport's stories at /archives (/news is a 404).
+      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,school.id==='arizona'?'/archives':'/news');
       if(newsPath!==newsUrl.pathname){
         newsUrl.pathname=newsPath;newsUrl.search='';
         const r=await sourceFetch(newsUrl,{},{ttl:SOURCE_TTL.listing});
@@ -1556,6 +1557,10 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
 
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
+  // ESPN lists Arizona by its location, "Arizona", in every sport (soccer's
+  // team name is "Arizona" too, which the nickname rule below discarded). The
+  // prefix fallback took "Arizona State Sun Devils" for Arizona.
+  if(school.id==='arizona')return normalizedTeamName(team?.location)==='arizona'||normalizedTeamName(team?.displayName)==='arizona wildcats';
   const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
   // A nickname alone ("Wildcats", team.name) is shared by many schools: ESPN's
   // New Hampshire Wildcats matched K-State's "Wildcats" alias. Match on the
@@ -1563,9 +1568,6 @@ function scoreboardTeamMatchesSchool(team,school){
   const nicknames=new Set([team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
   const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation].map(normalizedTeamName).filter(Boolean);
   if(wanted.some(x=>!nicknames.has(x)&&exact.includes(x)))return true;
-  // ESPN lists Arizona by its exact location ("Arizona"); the prefix fallback
-  // below took "Arizona State Sun Devils" for Arizona.
-  if(school.id==='arizona')return false;
   const full=normalizedTeamName(team?.displayName);
   return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
 }
