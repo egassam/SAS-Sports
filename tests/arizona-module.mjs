@@ -561,6 +561,18 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
     ['Kinlen & Vivian Gee Wildcat Invite','https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home'],
     ['ITA All Americans',null],['ITA All-Americans',null],['W50 Berkeley',null]
   ],'only the Kinlen Invite has a story; the Sep 16 preview is not a recap');
+  // The feed keeps only the past tournaments with a story (K-State lists no
+  // past tournament without a team result).
+  const asked=[];
+  const feedFetch=async url=>{asked.push(String(url));const body=String(url).endsWith('/mens-tennis/schedule')?fixture('mens-tennis-schedule.html.gz'):String(url).endsWith('/womens-tennis/schedule')?fixture('womens-tennis-schedule.html.gz'):recapFixtures.get(String(url));if(body==null)return new Response('missing',{status:404});return new Response(body,{status:200,headers:{'content-type':'text/html'}});};
+  const live=Function(...Object.keys(deps),source+';return fetchLive;')(...Object.values({...deps,fetch:feedFetch}));
+  const feed=await live('arizona','Tennis');
+  // (fetchLive reads the real clock: tournaments now in progress may have ended.)
+  const kept=feed.events.filter(e=>e.status==='Final');
+  assert.ok(kept.some(e=>e.opponent==='Kinlen & Vivian Gee Wildcat Invite'&&e.recap_url==='https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home'));
+  assert.ok(!kept.some(e=>['ITA All Americans','ITA All-Americans','W50 Berkeley'].includes(e.opponent)),'past tournaments without a story are not listed');
+  assert.ok(kept.every(e=>e.recap_url));
+  assert.ok(feed.events.some(e=>e.opponent==='NCAA National Championship'),'upcoming tournaments stay');
   // Expanded view: highlights from that story.
   const prompts=[];
   const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Arizona earned six wins in singles and doubles on the opening day.','Stelse, Sekachov, Berard and Sivertsen each won again in singles on day two.','Stelse, Sekachov and Sivertsen each won their singles brackets on Sunday.','Sekachov and Stelse closed the tournament with a doubles victory.'])};}}};

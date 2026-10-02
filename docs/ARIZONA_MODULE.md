@@ -19,8 +19,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
 | Gymnastics | #157 | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
 | Swimming & Diving | #158 | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
-| Tennis | #159 | Both teams (10 + 10 fall tournaments), tournaments in progress kept as today's, past ones `Completed`, Arizona's story as the recap where one exists |
-| Track & Field | (this PR) | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, recaps dated with their meet |
+| Tennis | #159, (this PR) | Both teams, tournaments in progress kept as today's; a past tournament (no team result) is listed only with Arizona's story about it (the Kinlen Invite) |
+| Track & Field | #160 | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, recaps dated with their meet |
 
 ## Setup (route parity)
 
@@ -163,7 +163,7 @@ Production loaded the first tennis page that answered (women's) and read 8 tourn
 - fall tournaments publish no team result, so a past one reads `Completed`. The schedule links no stories; Arizona's story about a tournament, found in the team's tennis archive, dated within the tournament or the day after, and naming it in its own text, becomes its recap (feed hook beside golf's; the expanded view attaches it first, because it runs before the feed hook: the preview showed `recap_not_found` until then): the men's Kinlen & Vivian Gee Wildcat Invite (Sep 11-13) has "Wildcats Close Out a Successful Weekend at Home" (Sep 14). That story also mentions the ITA All American Tournament, which is outside its dates. The men's ITA All Americans and the women's ITA All-Americans and W50 Berkeley have no Arizona story (the women's archive has only the Sep 2 schedule announcement);
 - recaps of multi-day events are checked against their last day.
 
-K-State's tennis feed lists only upcoming tournaments; Arizona's keeps its completed fall tournaments, as UCF's does. ESPN publishes no tennis scoreboard.
+**Past tournaments without a story (`4.43.13-arizona-tennis-stories`).** Production certification (`validate-schools.mjs --deep`) failed Tennis: the women's W50 Berkeley, ITA All-Americans and the men's ITA All Americans have no Arizona story, so their expanded views had no verified highlights. As K-State's feed lists no past tournament without a team result, Arizona's lists a past tournament only when Arizona published a story about it (today the Kinlen Invite); in-progress and upcoming tournaments stay. ESPN publishes no tennis scoreboard.
 
 ## Track & Field (`4.43.12-arizona-track-field`)
 
