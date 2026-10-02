@@ -11,7 +11,7 @@ import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.41.0-stored-highlights';
+const VERSION='4.42.0-private-source-fetch';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1712,6 +1712,41 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed,source_cache:r.source_cache,upstream_status:r.upstream_status,empty_schedule:Boolean(r.empty_schedule)});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
+// Private source fetch for development (user-approved, October 2). The
+// development sandbox's network is refused by some schools' bot defense; the
+// live app is not. This returns the raw official page exactly as the app
+// downloads it (same identity, robots.txt rules, caching and backoff), only:
+//   - with the Worker secret SOURCE_FETCH_KEY as a bearer token (no secret
+//     set: the route does not exist);
+//   - for https pages on a catalog school's official athletics site or TFRRS,
+//     which the app already reads, including after redirects.
+const SOURCE_EXTRA_HOSTS=['tfrrs.org'];
+function sourceHostAllowed(hostname){
+  const host=String(hostname||'').toLowerCase().replace(/^www\./,'');
+  return schools.some(s=>{try{return new URL(s.athletics_url).hostname.toLowerCase().replace(/^www\./,'')===host}catch{return false}})||SOURCE_EXTRA_HOSTS.includes(host);
+}
+async function sameSecret(given,expected){
+  // Compare digests so the check takes the same time for any wrong key.
+  const digest=async value=>new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(value))));
+  const [a,b]=await Promise.all([digest(given),digest(expected)]);
+  let diff=0;for(let i=0;i<a.length;i++)diff|=a[i]^b[i];
+  return diff===0;
+}
+async function privateSource(request,env){
+  const secret=env?.SOURCE_FETCH_KEY;
+  if(!secret)return json({detail:'Not found'},404);
+  const given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
+  if(!given||!(await sameSecret(given,secret)))return json({detail:'Unauthorized'},401);
+  let target;try{target=new URL(new URL(request.url).searchParams.get('url')||'');}catch{return json({detail:'url is required'},400);}
+  if(target.protocol!=='https:'||!sourceHostAllowed(target.hostname))return json({detail:'Only official athletics pages the app reads are allowed'},400);
+  const response=await sourceFetch(target.href);
+  const finalUrl=response.url||target.href;
+  try{if(!sourceHostAllowed(new URL(finalUrl).hostname))return json({detail:'The page redirected outside the official athletics sites'},502);}catch{}
+  const headers=new Headers({'cache-control':'no-store','x-robots-tag':'noindex','x-sas-final-url':finalUrl,'x-sas-upstream-status':String(response.status)});
+  for(const name of['content-type','x-sas-source'])if(response.headers.get(name))headers.set(name,response.headers.get(name));
+  return new Response(await response.arrayBuffer(),{status:response.status,headers});
+}
+
 // Verified finished events are kept for 30 days in Workers KV (one copy for
 // every Cloudflare location), so each final's highlights are written by the AI
 // once, not on every open. Finals do not change; the copy expires so
@@ -1736,6 +1771,7 @@ export default{
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,sponsored_sports:sponsoredSports[s.id]||null})));}
+    if(url.pathname==='/api/source')return privateSource(request,env);
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
     if(url.pathname==='/live/athletes'){
