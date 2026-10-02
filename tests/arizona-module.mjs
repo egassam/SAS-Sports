@@ -213,6 +213,25 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   // Kansas (Sep 27) and Kansas State (Sep 24): each recap matches its own game only.
   const pairs=[['recap-soccer-2026-09-27-kansas.html.gz','Kansas'],['recap-soccer-2026-09-24-kansas-state.html.gz','Kansas State'],['recap-soccer-2026-08-05-uc-irvine.html.gz','UC Irvine (Exhibition)']].map(([name,opponent])=>[fixture(name),played.find(e=>e.opponent===opponent)]);
   for(const [raw,event] of pairs)for(const [,other] of pairs)assert.equal(worker.arizonaHandlers.matchesRecap(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  // NAU (Sep 10) and Pepperdine (Sep 13) have no recap link on the schedule.
+  // Arizona's stories are in the sport's archive (/news is a 404 there); the
+  // NAU story names "Northern Arizona", the full name from the page data.
+  const archive='https://arizonawildcats.com/sports/womens-soccer/archives';
+  recapFixtures.set(archive,fixture('soccer-archives.html.gz'));
+  recapFixtures.set('https://arizonawildcats.com/news/2026/9/10/soccer-arizona-blanks-northern-arizona-3-0',fixture('recap-soccer-2026-09-10-nau.html.gz'));
+  recapFixtures.set('https://arizonawildcats.com/news/2026/9/13/soccer-arizona-falls-at-pepperdine-2-0',fixture('recap-soccer-2026-09-13-pepperdine.html.gz'));
+  for(const [opponent,expected] of [['NAU','https://arizonawildcats.com/news/2026/9/10/soccer-arizona-blanks-northern-arizona-3-0'],['Pepperdine','https://arizonawildcats.com/news/2026/9/13/soccer-arizona-falls-at-pepperdine-2-0']]){
+    const prompts=[];
+    const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Arizona controlled possession for most of the first half of the match.','The Wildcats generated several chances in the second half of play.','The goalkeeper made key saves to keep the match within reach late.','Arizona finished the nonconference schedule with the result on the road.'])};}}};
+    const events=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',url,now);
+    const target=events.find(e=>e.opponent===opponent);
+    const before=requests.length;
+    await worker.attachOfficialHighlights(events,fixture('soccer-schedule.html.gz'),school,'Soccer',url,now,env,target.id);
+    assert.equal(target.highlight_state,'recap_generated',`${opponent}: highlights from Arizona's own story`);
+    assert.equal(target.recap_url,expected);
+    assert.ok(requests.slice(before).includes(archive),`${opponent}: the archive is read`);
+    assert.ok(!requests.slice(before).some(url=>/\/news\/2026\/9\/(?:9|12)\//.test(url)&&url.includes('arizonawildcats')),'previews dated the day before are never candidates');
+  }
   // Live: ESPN's women's college soccer scoreboard. On Sep 27 it lists
   // "Arizona at Kansas" and "Arizona State at Kansas State"; only the first is Arizona's.
   assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);

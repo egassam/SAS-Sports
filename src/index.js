@@ -1440,7 +1440,8 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!recapUrl){
     try{
       const newsUrl=new URL(sourceUrl);
-      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,'/news');
+      // arizonawildcats.com keeps a sport's stories at /archives (/news is a 404).
+      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,school.id==='arizona'?'/archives':'/news');
       if(newsPath!==newsUrl.pathname){
         newsUrl.pathname=newsPath;newsUrl.search='';
         const r=await sourceFetch(newsUrl,{},{ttl:SOURCE_TTL.listing});

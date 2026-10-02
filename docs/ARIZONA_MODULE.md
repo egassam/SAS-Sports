@@ -54,7 +54,9 @@ Production showed rankings in opponent names (`Arizona at #21 Colorado`, `#16 US
 
 Arizona sponsors women's soccer only (the route was already the women's page). Production showed rankings (`No. 23 BYU`, `No. 9 UNC`, `No. 17 Colorado`), dates without times, and the Big 12 tournament game as `Arizona vs TBA`. The reader now gives 12 finals (ties `T, 1-1`), 9 upcoming games with published times, and names an unknown bracket opponent after its tournament (`Big 12 Soccer Championship`). The Aug 5 exhibition was played with a score (`T, 0-0`) and a recap, so it stays, labeled `UC Irvine (Exhibition)`.
 
-Three finals (LSU Aug 30, NAU Sep 10, Pepperdine Sep 13) have no recap link on the official page; none is invented.
+Three finals (LSU Aug 30, NAU Sep 10, Pepperdine Sep 13) have no recap link on the schedule. The preview's expanded views showed:
+- **LSU:** LSU's own official recap of this match ("LSU Soccer Battles Arizona to 1-1 Draw", lsusports.net), found by the shared opponent-site fallback; it names Arizona, the date and the score. Kept.
+- **NAU, Pepperdine:** "no exact recap", although Arizona published both ("Arizona Blanks Northern Arizona 3-0", "Arizona Falls at Pepperdine 2-0"). The shared news fallback reads `/sports/<sport>/news`, a 404 on arizonawildcats.com, whose stories are listed at `/sports/<sport>/archives`; Arizona now reads that (one school-gated branch). The NAU story never says "NAU": a story found this way may also name the opponent by its full name from the page data's logo title ("Northern Arizona University Logo"). Sport word and date are still required, and only same-day stories are candidates (the previews are dated the day before).
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`, 108 matches on Sep 27). K-State has no soccer scoreboard; the user asked for live scores for Arizona's sports. ESPN's soccer team name is the school name ("Arizona"), which the shared nickname rule discarded, so Arizona's scoreboard match is now exact: ESPN location `Arizona` (or `Arizona Wildcats`) only, in every sport.
 

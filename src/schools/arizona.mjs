@@ -75,6 +75,7 @@ const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bred\s*(?:-|vs\.?|&|and)\s*blue\b/
 // recap link. The shared parsers read only the rendered cards, which omit the
 // start time, so every upcoming game showed its date alone.
 export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
+  const fullNames=new Map();
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='arizona'||!arizonaSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
@@ -114,6 +115,10 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
           try{const link=new URL(recap,sourceUrl);if(link.hostname===HOST&&link.pathname.startsWith('/news/'))event.recap_url=link.href;}catch{}
         }
       }
+      // The opponent's full name, from its logo ("Northern Arizona University
+      // Logo" for "NAU"); stories may use either.
+      const full=String(game.opponent?.image?.title||game.opponent?.image?.alt||'').replace(/\s+Logo$/i,'').trim();
+      if(full&&full!==opponent){fullNames.set(event.id,full);if(fullNames.size>2000)fullNames.delete(fullNames.keys().next().value);}
       events.push(event);
     }
     return events;
@@ -128,7 +133,14 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
   // count as the opponent's name too.
   function matchesRecap(raw,event,url){
     if(event?.school_id!=='arizona')return false;
-    if(!url||url!==event.recap_url)return recapMatchesEvent(raw,event,url);
+    if(!url||url!==event.recap_url){
+      if(recapMatchesEvent(raw,event,url))return true;
+      // A story found in the sport's news archive (no recap is linked to the
+      // game) may name the opponent in full: "Arizona Blanks Northern Arizona
+      // 3-0" for NAU. Sport and date are still required.
+      const full=fullNames.get(event.id);
+      return Boolean(full)&&[full,full.replace(/^University of\s+|\s+University$/gi,'')].some(name=>recapMatchesEvent(raw,{...event,opponent:name},url));
+    }
     const own={...event,sport:''};
     if(recapMatchesEvent(raw,own,url))return true;
     const words=String(event.opponent||'').replace(/\(.*?\)/g,' ').split(/[\s-]+/).filter(Boolean);
