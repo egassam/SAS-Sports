@@ -16,7 +16,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Baseball | #129 | 38 games (fall exhibitions from Oct 17, spring 2027); official page only |
 | Softball | #130 | 33 games (fall exhibitions from Oct 16, spring 2027); official page only |
 | Golf | #131 | Both teams, one event per tournament: men's `T4th (852)`, `12th (860)`, `5th (858)`; women's `11th (867)`, `8th (843)`, each with its recap; UCF recap matcher |
-| Rowing, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Tennis | #132 | Both teams: the men's page is 2025-26, so it is an empty schedule; women's 2 completed fall tournaments with recaps and 4 upcoming |
+| Rowing, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -99,6 +100,12 @@ ucfknights.com publishes one card per round ("T7, 573 (-3)" after round two, "5t
 - a men's or women's event refuses the other team's story (title or URL);
 - multi-day events are checked against their last day;
 - the shared opponent, sport and date checks still apply.
+
+## Tennis (`4.38.8-ucf-tennis`)
+
+Both teams' official pages only, labeled (production also loaded the homepage and generic pages; 10 upcoming, of which several were duplicates).
+- **Current-season filter (all UCF sports):** a card whose schema date lies outside the current academic year (July-June, Eastern) is left out, and a page with none left is a valid empty schedule (`isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU). The men's page still shows the 2025-26 season, so it is empty until UCF publishes 2026-27.
+- **Multi-day tournaments:** the women's fall cards span several days (`Sat, Sep 19 - Sun, Sep 27`). They end on the last day (`end_time`); one is over, and reads `Completed` as BYU's do, only after that day. The recap may be dated from the first day to three days after the last (the ITA All-American story is dated Sep 26, before the Sep 27 finish).
 
 ## Limitations
 
