@@ -13,7 +13,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Soccer | #126 | Both teams (women's Big 12, men's Sun Belt), labeled: 9 + 9 finals with recaps; exhibitions and the postponed FIU game left out |
 | Cross Country | #127 | Women's team: `1st · 43 pts`, `6th · 199 pts`; race rows from the recap prose (deterministic); 3 upcoming |
 | Basketball | #128 | Men's 35 + women's 34 upcoming, labeled; ESPN live scores for both teams |
-| Baseball, Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Baseball | #129 | 38 games (fall exhibitions from Oct 17, spring 2027); official page only |
+| Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -78,6 +79,10 @@ Groups read `Women's race`: the recaps never state the race distance, so none is
 Production loaded the men's and women's pages plus the generic `/sports/basketball/` page and the homepage, and showed 132 upcoming games for 69 cards. Basketball now routes to the two official pages only and reads their cards: men's 35 and women's 34, labeled. The season starts Oct 14.
 - The men's Big 12 tournament card names its opponent "Big 12 Conference" under a heading with a stale year ("2025 Phillips 66 Big 12 Men's Basketball Championship" on the 2026-27 page). Multi-day conference cards are named after the heading without the year.
 - Live scores: ESPN's men's and women's college basketball scoreboards (`ucfSchool.liveScoreboards.Basketball`), labeled as BYU's are. Tested on real finals: Oklahoma State at UCF (men, Mar 3, 2026, 104-111, with Army Black Knights playing the same night) and UCF at Houston (women, Mar 1, 72-62).
+
+## Baseball (`4.38.5-ucf-baseball`)
+
+The page is "Baseball 2027": fall exhibitions from Oct 17, then the spring season. Production also read the homepage and showed 59 upcoming. Baseball now routes to the official page only and reads its cards: 38 games, with spring dates in 2027 (from the schema dates). The intrasquad "Black & Gold World Series" (Nov 13-15) is left out. The reader skips internal events by name for every sport (`scrimmage`, `intrasquad`, `Black & Gold`, or two squads joined by "vs.").
 
 ## Limitations
 
