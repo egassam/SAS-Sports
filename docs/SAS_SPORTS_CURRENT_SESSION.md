@@ -1,10 +1,31 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 2, 2026, America/Chicago (UCF module and Football: PR #123; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 2, 2026, America/Chicago (UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**UCF: all 11 sports converted; production is `4.39.0-ucf-track-field` (13:33 UTC, October 2).** User: "Finish UCF, do all the sports". The agent opened and merged PRs #125–#134 one sport at a time under `AGENTS.md` item 6 (#123 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/UCF_MODULE.md`.
+
+| PR | Sport | Production |
+| --- | --- | --- |
+| #125 | Volleyball | 12 finals with recaps, 16 upcoming; ESPN live score |
+| #126 | Soccer | Women's (Big 12) and men's (Sun Belt), labeled; 18 finals with recaps |
+| #127 | Cross Country | `Women's team: 6th · 199 pts`; runner rows read deterministically from recap prose (was AI, with a wrong `1st`) |
+| #128 | Basketball | Two official pages only (was 132 upcoming); ESPN live scores for both teams |
+| #129 | Baseball | Official page only; intrasquad series left out |
+| #130 | Softball | Official page only; scrimmages and "Knights vs. 'Nauts" left out |
+| #131 | Golf | One event per tournament (`5th (858)`); UCF recap matcher |
+| #132 | Tennis | Season filter (men's page is 2025-26: empty); women's multi-day tournaments |
+| #133 | Rowing | Official page (was a 404 route plus the homepage ticker); empty, 2025-26 |
+| #134 | Track & Field | Official page (was a 404 route; last season shown as current); empty |
+
+- **Reader features** (all in `src/schools/ucf.mjs`): year from JSON-LD; rankings in every form dropped; bracket and conference cards named after their tournament heading; exhibitions without a score, postponed games and internal events left out; multi-day events end on their last day; golf rounds and rowing days merged; team finishes for meets; current-season filter with empty schedules.
+- **Shared-code touches, all school-gated (one `school.id==='ucf'` branch each):** `liveScoreboardProviders`; the three XC meet-result hooks; `attachOfficialHighlights`' recap matcher; the `empty_schedule` hook. BYU's test now uses Cincinnati as its "no scoreboard" school.
+- **UCF recap matcher:** the shared matcher keeps only an opponent's words of four letters or more ("FAU Invitational" became "invitational") and accepted the women's Schooner Classic story for the men's FAU Invitational. UCF now requires the full event name for any link other than the card's own Recap, and refuses the other team's story.
+- **Transients seen (not changed):** right after two merges (#128, #133), one read came from the old version during rollout (Basketball 132; preview Rowing 10 old events); every following read was correct. One #130 preview pass had three failed K-State XC reads and one curl `000` within seconds; the immediate full rerun was clean (18/20, 26/21, 36/36). One production K-State XC read failed once ("All official source candidates failed"), then 18/20. Expanded views show `ai_failed` on roughly 1 in 15 opens (Workers AI 8 s timeout after the recap matched); three later passes were clean.
+- **Not done:** UCF athlete certification; XC rows are the runners each recap names, not the full field; golf placings have no field size.
 
 **UCF module set up and Football converted; production is `4.38.0-ucf-football` (12:13 UTC, October 2).** User: "Add the Next big 12 school". arizonawildcats.com and baylorbears.com still return 403 to the sandbox, and ucfknights.com returns 200, so UCF is next in catalog order. PR #123 (merge `f230c79`) was merged by the agent under `AGENTS.md` item 6. Details are in `docs/UCF_MODULE.md`.
 - **Setup:** `src/schools/ucf.mjs` holds routes for all 11 sports. 438/438 catalog routes are identical before and after. All eleven Worker-evaluating harnesses inject `ucfSchool`/`createUcfHandlers`; `regression.mjs`, `protect-certified.mjs` and `parse-budget.mjs` read the module.
@@ -331,7 +352,8 @@ The September 26 “Do the first one” applied to baseline preservation. The se
   - Consider giving football/basketball finals K-State's `W, 71-68` wording: today a scoreboard final overwrites the official headline with `71–68`.
   - ESPN lags, especially between sets. StatBroadcast is behind a bot challenge; do not work around it.
 - **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
-- **UCF is in progress** (Football done, #123). Next: the other 10 UCF sports, one per PR (Volleyball, Soccer, Cross Country first: they are in season). Each needs its own card check; add it to `ucfSchool.cardSports` with fixture tests, and a past-season filter for spring sports as BYU had.
+- **UCF is complete** (#123, #125–#134). Rowing, Track & Field and men's Tennis become non-empty when ucfknights.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/UCF_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 2, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox. Remaining unconverted Big 12 schools: Arizona, Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
+- **Expanded-view AI timeouts:** about 1 in 15 opens shows `ai_failed` (8 s Workers AI timeout) although the recap matched; a retry succeeds. Shared code; consider caching generated highlights per recap URL, with the user's approval.
 - **BYU is complete** (#94, #97–#107). Gymnastics and Track & Field become non-empty when byucougars.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/BYU_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 1, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox; ucfknights.com (SIDEARM) returned 200.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
 - **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
@@ -1192,4 +1214,37 @@ User: "Add the Next big 12 school". The handoff was read from main (`e2f9575`).
 - **Merged** as `f230c79`. Production reported `4.38.0-ucf-football` at 12:13 UTC and matched the preview; XC 18/20 and 26/21.
 
 **Not done:** the other 10 UCF sports; UCF athlete certification.
+
+### October 2, 2026 — Finish UCF (all sports)
+
+User: "Finish UCF, do all the sports". All 15 official schedule pages downloaded (200); ucfknights.com also has a men's soccer page that production never loaded. One sport per PR, each merged by the agent under `AGENTS.md` item 6:
+
+| PR | Sport | Head | Merge |
+| --- | --- | --- | --- |
+| #125 | Volleyball | `920697f` | `e5e2d44` |
+| #126 | Soccer | `a31f24a` | `dd43add` |
+| #127 | Cross Country | `55fe968` | `2ff59af` |
+| #128 | Basketball | `51cfdd3` | `3281995` |
+| #129 | Baseball | `a738803` | `a0dccbb` |
+| #130 | Softball | `0a00697` | `2aded7a` |
+| #131 | Golf | `6c33d59` | `4a70371` |
+| #132 | Tennis | `efd0ab3` | `3c25c80` |
+| #133 | Rowing | `78706c7` | `85b82cf` |
+| #134 | Track & Field | `380580d` | `4cb5e6b` |
+
+**Before every merge:**
+- `npm run test:release` and `npm test` passed on the final commit, and named mutations failed `tests/ucf-module.mjs`. Two mutations are recorded as passing and explained: XC's expanded-view hook (the generic path reaches the same module meet results), and, before a dedicated case was added, the earlier-mark rule.
+- CI was green (guardrails, certification-matrix, Workers Builds), with no conflict.
+- Preview: the sport's feed in K-State format, every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes (empty-schedule sports: 36/36 `[]` with 200). After #131 and #132, all converted UCF sports were recounted on the preview.
+
+**After each merge:** a production check (version, feed, expanded views, XC). Final survey at 13:33 UTC: all 11 UCF sports correct (Track & Field and Rowing `[]` 200), XC 18/20 and 26/21.
+
+**Found by the gates and fixed before merge:**
+- The shared matcher accepted the women's Schooner Classic recap for the men's FAU Invitational (#131).
+- Cross Country: "personal-best 17:32.8" was first skipped as an earlier mark; only "best of" constructions are skipped now. The Southern Showcase recap mentions the Florida Intercollegiate, so the recap title must name the meet.
+- Track & Field: the "Black & Gold" internal rule from #129 dropped the UCF-hosted Black and Gold Challenge; it now applies to games only.
+
+**Judgment calls to review:** the three softball "Knights vs. 'Nauts" cards are read as an internal squad series (no opponent named) and left out; Soccer and Golf show men's and women's teams as Basketball does; preseason soccer exhibitions published as "Completed" without a score are left out.
+
+**Not done:** UCF athlete certification review.
 
