@@ -17,6 +17,30 @@ body{transition:background .35s ease}
 .hero,.sport,.modal,.live-refresh-loader{transition:background .35s ease,border-color .35s ease}
 .mark,button:not(.ghost),.tab.active,.recap-button,.highlight-loader-mark{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#fff);border:2px solid var(--team-secondary,var(--accent))}
 button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 6px var(--team-primary,var(--accent2))}
+.live-card-board{position:relative;padding:0!important;overflow:hidden;border:1.5px solid color-mix(in srgb,var(--team-primary,var(--accent2)) 75%,#ffffff 10%)!important;background:radial-gradient(130% 150% at 0% 0%,color-mix(in srgb,var(--team-primary,var(--accent2)) 26%,transparent),transparent 62%),linear-gradient(160deg,#10243a,#07121e)!important;box-shadow:0 12px 34px rgba(0,0,0,.45),0 0 26px color-mix(in srgb,var(--team-primary,var(--accent2)) 32%,transparent)!important}
+.live-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 14px;background:rgba(0,0,0,.28);border-bottom:1px solid rgba(255,255,255,.07)}
+.live-pill{display:inline-flex;align-items:center;gap:7px;flex:0 0 auto;padding:4px 10px 4px 9px;border-radius:999px;background:#d7263d;color:#fff;font-size:11px;font-weight:950;letter-spacing:.14em;box-shadow:0 0 16px rgba(215,38,61,.55)}
+.live-pill i{width:8px;height:8px;border-radius:50%;background:#fff;animation:sasLive 1.2s ease-in-out infinite}
+.live-clock{min-width:0;text-align:right;font-size:13px;font-weight:850;color:#eef5fc;font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-board{padding:6px 14px 8px}
+.live-team{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:11px;padding:8px 0}
+.live-team+.live-team{border-top:1px solid rgba(255,255,255,.08)}
+.live-mono{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:12px;font-weight:950;letter-spacing:-.02em}
+.live-team.ours .live-mono{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#07111f);border:2px solid var(--team-secondary,var(--accent))}
+.live-team.them .live-mono{background:#1a2d44;color:#d3e2f1;border:1px solid #31506f}
+.live-name{min-width:0;font-size:17px;font-weight:900;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-name small{display:block;margin-top:2px;color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
+.live-pts{font-size:36px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;color:#fff;padding:2px 6px;border-radius:8px}
+.live-team.trailing .live-name,.live-team.trailing .live-pts{opacity:.58}
+.live-pts.scored{animation:sasScored 2.4s ease-out 1}
+.live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
+.live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
+.stat.has-live{border-color:#d7263d;background:linear-gradient(145deg,rgba(215,38,61,.22),#091726)}.stat.has-live b{color:#ff8f9a}
+@keyframes sasLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+@keyframes sasScored{0%{background:color-mix(in srgb,var(--team-primary,var(--accent2)) 70%,transparent);transform:scale(1.12)}100%{background:transparent;transform:scale(1)}}
+@media(max-width:560px){.live-name{font-size:15px}.live-pts{font-size:30px}.live-mono{width:34px;height:34px}}
+@media(prefers-reduced-motion:reduce){.live-pill i,.section-label.live::before,.live-pts.scored{animation:none}}
+@media(forced-colors:active){.live-pill{border:2px solid CanvasText}}
 .status-badge.live::before{content:'● ';font-size:.8em}.status-badge.final::before{content:'✓ ';font-size:.9em}
 .result-row{min-width:0}.result-row span,.result-row strong{min-width:0;overflow-wrap:anywhere;word-break:break-word}.modal{overflow-x:hidden}
 @media(prefers-contrast:more){.hero,.sport,.card,.modal,select,input,.ghost{border-width:2px}.muted{color:#d7e2ee}}
@@ -177,7 +201,28 @@ function applyCurrentSchoolTheme(){
 function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
 function badge(e){const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
-function card(e,kind){const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(e.recency_label||'')}${(e.display_time||e.start_time)?' · '+esc(eventTime(e)):''}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
+// Live games: a scoreboard card that stands out (red LIVE pill and clock,
+// one row per team with its score, the trailing side dimmed). The side that
+// scored since the last refresh flashes once.
+const lastLiveScores=new Map();
+function liveSides(e){
+  const title=String(e.title||'').replace(/^DEMO · /,'').replace(/^(?:Men's|Women's) · /,'');
+  const m=title.match(/^(.*?)\s+(vs|at)\s+(.*)$/);
+  return{ours:m?m[1]:(e.school||''),theirs:e.opponent||(m?m[3]:''),away:m?.[2]==='at'};
+}
+function monogram(name){const words=String(name).replace(/[()]/g,' ').split(/[\s-]+/).filter(Boolean);if(words.length===1)return /^[A-Z&]{2,4}$/.test(words[0])?words[0]:words[0].slice(0,3).toUpperCase();return words.slice(0,3).map(w=>w[0]).join('').toUpperCase();}
+function liveCard(e){
+  const {ours,theirs,away}=liveSides(e),a=e.school_score??'',b=e.opponent_score??'';
+  const na=Number(a),nb=Number(b),scored=a!==''&&b!=='';
+  const previous=lastLiveScores.get(e.id);lastLiveScores.set(e.id,[String(a),String(b)]);
+  const flash=i=>previous&&previous[i]!==String([a,b][i])?' scored':'';
+  const lead=i=>!scored||na===nb?'':(i===0?na>nb:nb>na)?' leading':' trailing';
+  const clock=e.recency_label&&!/^live( now)?$/i.test(e.recency_label)?e.recency_label:'In progress';
+  const team=(cls,name,note,score,i)=>`<div class="live-team ${cls}${lead(i)}"><span class="live-mono" aria-hidden="true">${esc(monogram(name))}</span><span class="live-name">${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts${flash(i)}">${esc(score)}</span></div>`;
+  const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div><div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
+}
+function card(e,kind){if(kind==='live')return liveCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(e.recency_label||'')}${(e.display_time||e.start_time)?' · '+esc(eventTime(e)):''}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
 // A reached official schedule with nothing current is not a failed source.
 const eventTotal=g=>g.live.length+g.results.length+g.upcoming.length+g.other.length;
@@ -224,7 +269,7 @@ function render(groups){
 }
 function updateCounts(){
   const groups=displayedGroups(),live=groups.reduce((n,g)=>n+g.live.length,0), results=groups.reduce((n,g)=>n+g.results.length,0), upcoming=groups.reduce((n,g)=>n+g.upcoming.length,0);
-  $('#liveCount').textContent=live; $('#resultCount').textContent=results; $('#upcomingCount').textContent=upcoming; $('#sportCount').textContent=groups.length;
+  $('#liveCount').textContent=live;$('#liveCount').parentElement.classList.toggle('has-live',live>0); $('#resultCount').textContent=results; $('#upcomingCount').textContent=upcoming; $('#sportCount').textContent=groups.length;
 }
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
