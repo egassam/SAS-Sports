@@ -10,8 +10,12 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.3-kstate-volleyball-set-points';
+const VERSION='4.37.4-live-refresh-15s';
 const FEED_FRESH_MS=25*1000;
+// A feed with a game in progress is rebuilt sooner: the page re-fetches it
+// every 15 s. School pages stay cached (source-fetch), so this does not add
+// school downloads; the scoreboard itself is cached 15 s.
+const LIVE_FEED_FRESH_MS=10*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
 // fetch and how often, so a school can recognise and allowlist us.
@@ -1587,7 +1591,13 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       const points=team=>(team?.linescores||[]).map(line=>Number(line?.value)).filter(Number.isFinite);
       const ourSets=points(ours),theirSets=points(opponent);
       // The live card shows recency_label beside the sets won, so both carry it.
-      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length)event.headline=event.recency_label=`${detail} \u00b7 ${ourSets.at(-1)}-${theirSets.at(-1)}`;
+      // While live, the big score shows the current set's points (sets won read
+      // 0-0 for the whole first set and looked like no score); the status line
+      // carries the sets: "1st Set · Sets 0-0". Finals keep sets won.
+      if(status==='Live'&&ourSets.length&&ourSets.length===theirSets.length){
+        event.headline=event.recency_label=`${detail} \u00b7 Sets ${ours.score??0}-${opponent.score??0}`;
+        event.school_score=String(ourSets.at(-1));event.opponent_score=String(theirSets.at(-1));
+      }
       const won=Number(ours.score),lost=Number(opponent.score);
       if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
     }
@@ -1668,7 +1678,8 @@ function cacheResponse(response,state){const copy=new Response(response.body,res
 async function freshGroupedFeed(url,school,sport,env,cache,key){
   const result=await fetchLive(school,sport,env);
   if(!result.events.length&&!result.live_source_used)return null;
-  const response=json(groupEvents(result.events)),stored=new Response(response.body,response);
+  const groups=groupEvents(result.events),response=json(groups),stored=new Response(response.body,response);
+  if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
   stored.headers.set('x-sas-fetched-at',result.fetched_at);
   const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
@@ -1722,7 +1733,7 @@ export default{
       }
       if(cached&&!force){
         const age=cachedAge(cached);
-        if(age<=FEED_FRESH_MS)return cacheResponse(cached,'fresh');
+        if(age<=(cached.headers.get('x-sas-live')==='1'?LIVE_FEED_FRESH_MS:FEED_FRESH_MS))return cacheResponse(cached,'fresh');
         if(age<=FEED_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
       }
       const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);

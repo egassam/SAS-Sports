@@ -93,7 +93,7 @@ function updateDemo(){
   if(!panel.hidden){const e=demoEvent();$('#demoStep').textContent=['Upcoming sample','Live sample','Final sample'][demoStage]+(demoStage?` · ${e.school_score}–${e.opponent_score}${demoStage===1?' · '+e.recency_label:''}`:'');$('#demoAdvance').textContent=['Show Live','Show Final','Show Upcoming'][demoStage]}
   updateCounts();render(displayedGroups());
 }
-const LIVE_REFRESH_MS=30*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
+const LIVE_REFRESH_MS=15*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 const TEAM_THEMES={
   sas:{primary:'#7cf7c4',secondary:'#42d3ff',panel:'#11243a',panelDark:'#081524',line:'#29435f',onAccent:'#07111f'},
   kstate:{primary:'#512888',secondary:'#A7A9AC',panel:'#241936',panelDark:'#120d1d',line:'#7556a0',onAccent:'#ffffff'},

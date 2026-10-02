@@ -339,7 +339,9 @@ contains(worker,/kstateSchool\.liveScoreboards\?\.\[sport\]/,'K-State scoreboard
 
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and
 // bypass the worker cache so upcoming events can become live and finals can land.
-contains(page,/const LIVE_REFRESH_MS=30\*1000/,'Live events must refresh every 30 seconds');
+contains(page,/const LIVE_REFRESH_MS=15\*1000/,'Live events must refresh every 15 seconds (user, October 1, 2026)');
+contains(worker,/const LIVE_FEED_FRESH_MS=10\*1000;/,'A feed with a live game must be rebuilt within 10 seconds');
+contains(worker,/cached\.headers\.get\('x-sas-live'\)==='1'\?LIVE_FEED_FRESH_MS:FEED_FRESH_MS/,'Live feeds use the shorter freshness window');
 contains(page,/IDLE_REFRESH_MS=5\*60\*1000/,'Upcoming events must be checked periodically for live transitions');
 contains(page,/hasLiveEvents\(\)\?LIVE_REFRESH_MS:IDLE_REFRESH_MS/,'Refresh cadence must accelerate whenever an event is live');
 contains(page,/loadFeed\(false,\{automatic:true\}\)/,'Automatic refresh must reuse the shared verified feed cache');
