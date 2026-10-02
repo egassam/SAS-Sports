@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -26,11 +26,13 @@ export const arizonaSchool={
     Basketball:[
       {path:'basketball/mens-college-basketball',query:'groups=50&limit=300',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
       {path:'basketball/womens-college-basketball',query:'groups=50&limit=300',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
-    ]
+    ],
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
-    'arizona|Baseball':['https://arizonawildcats.com/sports/baseball/schedule','https://arizonawildcats.com/'],
+    // The official page only: the homepage added other sports' ticker events.
+    'arizona|Baseball':'https://arizonawildcats.com/sports/baseball/schedule',
     // The two official pages only: the generic page and the homepage added
     // nothing but other sports' ticker events.
     'arizona|Basketball':['https://arizonawildcats.com/sports/mens-basketball/schedule','https://arizonawildcats.com/sports/womens-basketball/schedule'],
@@ -117,11 +119,14 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
     if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
     const games=sidearmScheduleGames(raw);
     if(!games.length)return null;
-    const events=[];
+    const events=[],played=new Map();
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
       let opponent=arizonaOpponent(game.opponent?.title);
+      // Baseball and softball fall games ("Fall Schedule", type S) are
+      // exhibitions; they are labeled as the other exhibitions are.
+      if((sport==='Baseball'||sport==='Softball')&&game.type==='S'&&!/\(Exhibition\)$/.test(opponent))opponent=`${opponent} (Exhibition)`;
       // A bracket game whose opponent is not yet known ("TBA") is named after
       // its tournament ("Big 12 Soccer Championship").
       const tournament=String(game.tournament?.title||'').replace(/\s+Presented by\b.*$/i,'').trim();
@@ -155,6 +160,10 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // their last day.
       const last=String(game.enddate||'').match(/^(\d{4}-\d{2}-\d{2})T/);
       if(last&&last[1]>game.date.slice(0,10))event.end_time=`${last[1]}T23:59:59Z`;
+      // A doubleheader lists the same opponent twice on one day: Game 1 and
+      // Game 2 stay two games.
+      const pair=`${game.date.slice(0,10)}|${opponent}`,sameDay=games.filter(other=>other.date.slice(0,10)===game.date.slice(0,10)&&arizonaOpponent(other.opponent?.title)===arizonaOpponent(game.opponent?.title)).length;
+      if(sameDay>1){const number=(played.get(pair)||0)+1;played.set(pair,number);event.game_number=number;event.id=`${event.id}-game-${number}`;event.title=`${event.title} (Game ${number})`;}
       // Separate men's and women's pages can list the same opponent on the
       // same day; the team keeps their event ids apart.
       const squad=arizonaSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;

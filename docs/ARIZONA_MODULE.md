@@ -12,7 +12,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Volleyball | #149 | 12 finals with recaps (one names the opponent only as "UCSB"), 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
 | Soccer | #150 | 12 finals (`T, 1-1`) with recaps where published, 9 upcoming with times; the Big 12 tournament game named; ESPN live score |
 | Cross Country | #151 | Race rows from the official recaps: `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, `Women's 6K` then `Men's 8K`, every Arizona runner listed |
-| Basketball | (this PR) | Men's 39 (3 summer-tour finals with recaps) + women's 33, labeled, published times, exhibitions labeled; ESPN live scores for both teams (Division I group) |
+| Basketball | #152 | Men's 39 (3 summer-tour finals with recaps) + women's 33, labeled, published times, exhibitions labeled; ESPN live scores for both teams (Division I group) |
+| Baseball | (this PR) | 59 games: 4 fall exhibitions from Oct 9 (labeled), then spring 2027; published times; doubleheaders kept as Game 1 / Game 2; ESPN live score |
 
 ## Setup (route parity)
 
@@ -98,6 +99,15 @@ The Maui Invitational's later rounds keep their published opponents (`VCU or Pro
 **Recap matcher, day rule.** The shared matcher accepts a story dated a day before or after the game; the Aug 19 story ("Arizona Opens Lithuania Tour with 99-88 Loss") names the next opponent, Ukraine, and was accepted for the Aug 20 game. For Arizona, a story other than the game's own recap link must be dated on the game day (through the last day of a multi-day event).
 
 **Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages. Without the Division I group ESPN lists only featured games (men's: 2 of 23 on Mar 1, 2026), so Arizona's providers ask for `groups=50&limit=300`. Tested on Feb 14, 2026: men's Texas Tech at Arizona (`L, 75-78`) among ten other "Wildcats" games and Northern Arizona; women's Arizona State at Arizona (`L, 69-75`, Arizona the school, not Arizona State).
+
+## Baseball (`4.43.5-arizona-baseball`)
+
+"2027 Baseball Schedule": fall games ("Fall Schedule", type `S`) from Oct 1, then the spring season from Feb 19, 2027. Production also loaded the homepage and showed only the 55 spring games, dates alone. Baseball now routes to the official page only and reads 59 games:
+- the fall games read `Pima Community College (Exhibition)` (baseball and softball fall games are exhibitions); the Oct 1 game vs Naranjeros de Hermosillo was played without a published score and is left out;
+- published times (`Feb 19, 10:00 AM`), the date alone for `TBA`;
+- a doubleheader (the same opponent twice on one day) stays two games, `Game 1` and `Game 2` (`game_number`, as Utah's); the 2027 page has none yet (fixture-tested by moving a game).
+
+**Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`; the default request lists every game ESPN carries: 78 on Apr 10, 2026, including Arizona at TCU, `W, 4-3`, and Utah at Arizona State).
 
 ## Seen outside Arizona (not changed)
 
