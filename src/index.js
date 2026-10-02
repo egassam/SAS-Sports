@@ -11,7 +11,7 @@ import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.40.1-verified-empty-schedules';
+const VERSION='4.41.0-stored-highlights';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1712,6 +1712,24 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
 async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed,source_cache:r.source_cache,upstream_status:r.upstream_status,empty_schedule:Boolean(r.empty_schedule)});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
+// Verified finished events are kept for 30 days in Workers KV (one copy for
+// every Cloudflare location), so each final's highlights are written by the AI
+// once, not on every open. Finals do not change; the copy expires so
+// corrections still arrive. Unverified answers (an AI timeout) are never kept.
+const HIGHLIGHT_STORE_TTL=30*24*60*60;
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}`;
+function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
+async function storedHighlights(env,key){
+  if(!env?.HIGHLIGHTS)return null;
+  try{const event=await env.HIGHLIGHTS.get(key,'json');return isVerifiedFinal(event)?event:null;}catch{return null}
+}
+function storeHighlights(env,ctx,key,event){
+  if(!env?.HIGHLIGHTS||!isVerifiedFinal(event))return false;
+  const write=env.HIGHLIGHTS.put(key,JSON.stringify(event),{expirationTtl:HIGHLIGHT_STORE_TTL}).catch(()=>{});
+  ctx?.waitUntil?ctx.waitUntil(write):write;
+  return true;
+}
+
 export default{
   async fetch(request,env,ctx){
     const url=new URL(request.url);sourceCacheOrigin=url.origin;
@@ -1736,11 +1754,15 @@ export default{
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport'),eventId=url.searchParams.get('event_id');
       if(!school||!sport||!eventId)return json({detail:'school, sport and event_id are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
+      const key=highlightStoreKey(school,sport,eventId),kept=await storedHighlights(env,key);
+      if(kept&&kept.id===eventId){const response=json(kept),stored=new Response(response.body,response);stored.headers.set('cache-control','no-store, no-cache, must-revalidate');stored.headers.set('x-sas-highlights','stored');return stored;}
       const result=await fetchLive(school,sport,env,eventId),event=result.events.find(e=>e.id===eventId);
       if(!event)return json({detail:'Event not found'},404);
+      storeHighlights(env,ctx,key,event);
       const response=json(event),stored=new Response(response.body,response);
-      // Highlights are event-specific and must be revalidated against the current
-      // official recap every time the expanded card opens.
+      stored.headers.set('x-sas-highlights','live');
+      // Highlights are event-specific; browsers must not keep them (the app's
+      // own device cache and the store above handle reuse).
       stored.headers.set('cache-control','no-store, no-cache, must-revalidate');
       return stored;
     }

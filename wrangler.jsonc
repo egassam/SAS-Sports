@@ -6,6 +6,10 @@
   "ai": {
     "binding": "AI"
   },
+  // Verified finished events' highlights, 30 days (see /live/highlights).
+  "kv_namespaces": [
+    { "binding": "HIGHLIGHTS", "id": "38280ef8508844459bbe14735e825d7a" }
+  ],
   // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
   // deployed Cron Trigger in place (the reverted #87 added one).
   "triggers": {
