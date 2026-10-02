@@ -11,6 +11,7 @@ import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
+import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -30,7 +31,7 @@ const fetch=async url=>{
 class MemoryCache{constructor(){this.store=new Map();}async match(r){const hit=this.store.get(String(r.url??r));return hit?hit.clone():undefined;}async put(r,res){this.store.set(String(r.url??r),res.clone());}}
 const caches={default:new MemoryCache()};
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,caches};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,caches};
 const {handler,highlightStoreKey,HIGHLIGHT_STORE_TTL}=Function(...Object.keys(deps),source+';return {handler,highlightStoreKey,HIGHLIGHT_STORE_TTL};')(...Object.values(deps));
 
 class MemoryKV{

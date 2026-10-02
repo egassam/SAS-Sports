@@ -9,9 +9,10 @@ import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
+import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.42.0-private-source-fetch';
+const VERSION='4.43.0-arizona-football';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -81,6 +82,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...arizonaStateSchool.rosterUrls,
   ...byuSchool.rosterUrls,
   ...ucfSchool.rosterUrls,
+  ...arizonaSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -118,6 +120,7 @@ function schoolCombinedSports(school){
   if(school?.id==='arizona-state')return arizonaStateSchool.combinedSports;
   if(school?.id==='byu')return byuSchool.combinedSports;
   if(school?.id==='ucf')return ucfSchool.combinedSports;
+  if(school?.id==='arizona')return arizonaSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -140,6 +143,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...arizonaStateSchool.scheduleUrls,
   ...byuSchool.scheduleUrls,
   ...ucfSchool.scheduleUrls,
+  ...arizonaSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -151,11 +155,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
   'florida|Football':'https://floridagators.com/sports/football/schedule',
   'florida|Swimming & Diving':'https://floridagators.com/sports/swimming-and-diving/schedule',
-  'arizona|Volleyball':'https://arizonawildcats.com/sports/womens-volleyball/schedule',
-  'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
-  'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
-  'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
-  'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule','https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule'],
   'texas-tech|Volleyball':'https://texastech.com/sports/womens-volleyball/schedule',
   'texas-tech|Soccer':'https://texastech.com/sports/womens-soccer/schedule',
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
@@ -222,6 +221,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const arizonaHandlers=createArizonaHandlers({makeEvent});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1082,6 +1082,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   if(school.id==='arizona-state'){const events=arizonaStateHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='byu'){const events=byuHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='ucf'){const events=ucfHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
+  if(school.id==='arizona'){const events=arizonaHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
@@ -1570,7 +1571,7 @@ function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
 }
 function liveScoreboardProviders(school,sport){
-  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:null;
+  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:school?.id==='arizona'?arizonaSchool.liveScoreboards?.[sport]:null;
   if(configured?.length)return configured;
   return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
 }
@@ -1610,6 +1611,12 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       const won=Number(ours.score),lost=Number(opponent.score);
       if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
     }
+    // Arizona's scoreboard finals read like its official results ("W, 34-24"),
+    // so a final never replaces the official headline with a bare score.
+    if(school.id==='arizona'&&status==='Final'&&sport!=='Volleyball'){
+      const ourScore=Number(ours.score),theirScore=Number(opponent.score);
+      if(Number.isFinite(ourScore)&&Number.isFinite(theirScore)){const value=`${ourScore>theirScore?'W':ourScore<theirScore?'L':'T'}, ${ourScore}-${theirScore}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+    }
     if(provider.team_label){event.team_label=provider.team_label;event.title=`${provider.team_label} · ${event.title}`;}
     event.source={name:provider.sourceName||'Live game scoreboard',url,updated_at:now.toISOString()};
     event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
@@ -1620,7 +1627,9 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
 async function fetchLiveScoreboards(school,sport,now){
   const found=[];
   for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
-    const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?limit=1000&dates=${date}`;
+    // A provider may name its own query: ESPN's college football and basketball
+    // scoreboards list only featured games unless a division group is asked for.
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?${provider.query||'limit=1000'}&dates=${date}`;
     try{
       const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
       if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));
