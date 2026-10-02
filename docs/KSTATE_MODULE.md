@@ -57,3 +57,10 @@ Fixture: `tests/fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz`,
 **Set points on the live card (`4.37.3`).** The user's screenshot showed only "LIVE · 1st Set" and `0–0`. The live card displays `recency_label` and sets won, and never `headline`. The current set's points now go in `recency_label` too, so the card reads `LIVE · 1st Set · 14-15`. During a live game the page re-fetches every 30 seconds (`LIVE_REFRESH_MS`).
 
 **Live card and refresh (`4.37.4-live-refresh-15s`).** The user still saw `0–0`: sets won stay 0–0 for the whole first set. While live, the big score now shows the current set's points (`18–21`), and the status line carries sets won (`1st Set · Sets 0-0`). Finals keep sets won (`W, 3-1`). At the user's request the page re-fetches live games every 15 s (was 30 s). A feed with a live game now counts as fresh for 10 s instead of 25 s (`x-sas-live` on the stored feed), so the server does not hold a score longer than the page polls. School pages stay cached by `source-fetch`, so this adds no school downloads.
+
+**Live score over the saved schedule (`4.37.6-live-over-saved-schedule`).** After #115, one forced K-State Volleyball refresh returned 0 results and 0 upcoming: only the ESPN game. A one-off kstatesports.com failure had left the scoreboard as the only source, and that one-game feed was saved over the full schedule. Before ESPN worked again, such a failure returned an error and the app showed the saved copy. Now, when every official page fails:
+- the live score is laid over the last good full feed (reconciled by date, as usual);
+- that partial feed is never saved as the last good copy;
+- with no saved copy, the request is unavailable rather than a one-game feed.
+
+This is shared code; `tests/last-good-feed.mjs` drives the real feed route.

@@ -24,7 +24,9 @@ class MemoryCache{
 }
 const cache=new MemoryCache();
 let upstreamUp=true,upstreamRequests=0;
+let scoreboard=null;
 const fetch=async url=>{
+  if(String(url).startsWith('https://site.api.espn.com/'))return scoreboard?new Response(JSON.stringify(scoreboard),{status:200,headers:{'content-type':'application/json'}}):new Response('{"events":[]}',{status:200});
   upstreamRequests++;
   if(!upstreamUp)throw Error('upstream down');
   if(String(url)==='https://utahutes.com/sports/football/schedule')return new Response(footballPage,{status:200,headers:{'content-type':'text/html'}});
@@ -76,9 +78,33 @@ before=upstreamRequests;
 assert.equal((await handler.fetch(new Request('https://sas-sports.example/live/feed/grouped?school=utah&sport=Soccer&cached=1'),{},{waitUntil(){}})).status,404);
 assert.equal(upstreamRequests,before,'a missing copy is not rebuilt either');
 
-// 5. The app labels saved copies and keeps one per sport on the device.
+// 5. The official page fails while a live scoreboard answers (seen for
+//    K-State Volleyball, Oct 1): the live game is laid over the last good full
+//    schedule, never replacing it, and that partial feed is not saved as the
+//    last good copy.
+cache.store.set(lastGoodKey,old);
+const liveCount=g=>[g.live.length,g.results.length,g.upcoming.length];
+const savedGroups=liveBody[0];
+scoreboard={events:[{date:new Date().toISOString(),competitions:[{date:new Date().toISOString(),status:{type:{state:'in',completed:false,shortDetail:'2nd - 5:00'}},competitors:[
+  {homeAway:'home',score:'14',team:{location:'Utah',displayName:'Utah Utes',shortDisplayName:'Utah',abbreviation:'UTAH',name:'Utes'}},
+  {homeAway:'away',score:'7',team:{location:'Test State',displayName:'Test State Testers',shortDisplayName:'Test State',abbreviation:'TST',name:'Testers'}}]}]}]};
+const partial=await call('&refresh=1');
+assert.equal(partial.status,200);
+const partialBody=await partial.json();
+assert.equal(partialBody[0].live.length,1,'the live game is shown');
+assert.equal(partialBody[0].live[0].school_score,'14');
+assert.equal(partialBody[0].results.length,savedGroups.results.length,'the saved results stay');
+assert.ok(partialBody[0].upcoming.length+partialBody[0].live.length>=savedGroups.upcoming.length,'the saved schedule stays');
+assert.equal(await cache.store.get(lastGoodKey).clone().text(),await old.clone().text(),'the partial feed is not saved as the last good copy');
+// With no saved schedule, a scoreboard game alone is not served as the feed.
+cache.store.delete(lastGoodKey);
+for(const k of [...cache.store.keys()])if(k.includes('/__sas_cache/feed?'))cache.store.delete(k);
+assert.equal((await call('&refresh=1')).status,502,'no saved schedule: unavailable, not a one-game feed');
+scoreboard=null;
+
+// 6. The app labels saved copies and keeps one per sport on the device.
 const app=read('../public/index.html');
 assert.match(app,/&cached=1/,'the app asks for the saved copy after a failed load');
 assert.match(app,/Saved schedule · updated/,'saved copies are labeled with their age');
 assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the device keeps its own last good copy');
-console.log('Last good feed checks passed: live builds are saved, cached=1 never rebuilds, failed rebuilds fall back to a labeled copy up to a week old, and nothing older or missing is invented.');
+console.log('Last good feed checks passed: live builds are saved, cached=1 never rebuilds, failed rebuilds fall back to a labeled copy up to a week old, a live score is laid over the saved schedule when the official page fails, and nothing older or missing is invented.');
