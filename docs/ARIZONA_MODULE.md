@@ -8,7 +8,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | (this PR) | Page-data reader: 4 finals `W, 35-7` with their own recaps; 9 upcoming with published Arizona times; ESPN live score (FBS group) |
+| Football | #148 | Page-data reader: 4 finals `W, 35-7` with their own recaps; 9 upcoming with published Arizona times; ESPN live score (FBS group) |
+| Volleyball | (this PR) | 12 finals with recaps (one names the opponent only as "UCSB"), 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
 
 ## Setup (route parity)
 
@@ -37,9 +38,21 @@ Arizona recaps name the sport ("Football: Noah Fifita throws for 2 TDs ..."), so
 
 `npm run test:arizona-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article, the scoreboard request and the ESPN match (Kansas State and Kentucky, also "Wildcats", are not Arizona). Removing the parse hook fails it.
 
+## Volleyball (`4.43.1-arizona-volleyball`)
+
+Production showed rankings in opponent names (`Arizona at #21 Colorado`, `#16 USC`, `#10 Creighton`) and dates without times. The page-data reader now gives 12 finals in K-State's wording with their own recaps and 17 upcoming matches with published times (`Oct 2, 6:00 PM`). Rules added for every page-data sport:
+- rankings (`#21`, `No. 23`) dropped; exhibitions read `Grand Canyon (Exhibition)` (from `(Exh.)`, `(Exhib.)`, `Exhibition ...`);
+- internal events left out (`Red-Blue Scrimmage`, `Red vs. Blue Intrasquad`, `Red-Blue Showcase`), as are canceled or postponed games;
+- a game day that has passed with no published score is neither a result nor upcoming (the Grand Canyon and New Mexico exhibitions, played "best two of three" without a score).
+
+**Recap matcher (`matchesRecap`, all Arizona sports).** "Wildcats Back in the Win Column with Four-Set Victory Over Oregon State" never says "volleyball", so the shared matcher refused that game's own recap. As for BYU, Arizona's matcher drops the sport-word check only for the recap the page data links to that game; opponent and date are still required, and other candidates are checked as before.
+
+**Live score.** ESPN's women's college volleyball scoreboard, as K-State's (`limit=1000` lists every match: 45 on Sep 27). That payload showed a second bug: the shared name match's prefix fallback took "Arizona State Sun Devils" (at Cincinnati) for Arizona. For Arizona only the exact ESPN location, name or abbreviation counts now; Kentucky, Kansas State, New Hampshire and Bethune-Cookman Wildcats are not matched either.
+
 ## Seen outside Arizona (not changed)
 
 - The same ESPN limitation affects every other school's football (K-State at Cincinnati was missing on Sep 26) and basketball (the default men's scoreboard listed 12 of 53 games on Mar 3, 2026; `groups=50` lists all Division I games). Fixing it for K-State, BYU and UCF is a shared change that needs the user's approval.
+- The same prefix fallback would take `Kansas State Wildcats` for Kansas (KU) on a football scoreboard. Not changed; shared.
 
 ## Limitations
 

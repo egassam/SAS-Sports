@@ -8,13 +8,15 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football']),
+  pageDataSports:new Set(['Football','Volleyball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
   // at Washington State was missing on Sep 26); the FBS group (80) lists all.
   liveScoreboards:{
-    Football:[{path:'football/college-football',query:'groups=80&limit=300',sourceName:'Live college football scoreboard'}]
+    Football:[{path:'football/college-football',query:'groups=80&limit=300',sourceName:'Live college football scoreboard'}],
+    // Volleyball scores are sets won; the live detail names the current set.
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
@@ -52,14 +54,24 @@ export const arizonaSchool={
 const HOST='arizonawildcats.com';
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Rankings describe the week, not the opponent: "#21 Colorado", "No. 23 BYU".
-export const arizonaOpponent=title=>String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\d+|No\.\s*\d+|RV)\s+/i,'');
+// Exhibitions are written "Grand Canyon (Exh.)", "San Francisco (Exhib.)" or
+// "Exhibition Embry-Riddle (Ariz.)"; they read "Grand Canyon (Exhibition)".
+export function arizonaOpponent(title){
+  let name=String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\d+|No\.\s*\d+|RV)\s+/i,'');
+  const exhibition=/^Exhibition\s+|\s*\((?:Exh|Exhib|Exhibition)\.?\)$/i;
+  if(exhibition.test(name))name=`${name.replace(exhibition,'').trim()} (Exhibition)`;
+  return name;
+}
+// Internal events: "Red-Blue Scrimmage", "Red vs. Blue Intrasquad",
+// "Red-Blue Showcase".
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bred\s*(?:-|vs\.?|&|and)\s*blue\b/i;
 
 // arizonawildcats.com is a SIDEARM (Nuxt) site. Its schedule pages embed every
 // game as page data: the local start ("2026-09-05T18:30:00", "6:30 PM MST"),
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
 // recap link. The shared parsers read only the rendered cards, which omit the
 // start time, so every upcoming game showed its date alone.
-export function createArizonaHandlers({makeEvent}){
+export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='arizona'||!arizonaSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
@@ -71,10 +83,16 @@ export function createArizonaHandlers({makeEvent}){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
       const opponent=arizonaOpponent(game.opponent?.title);
-      if(!opponent)continue;
+      if(!opponent||INTERNAL.test(opponent))continue;
+      // Canceled and postponed games are not on K-State's schedule.
+      if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       const final=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
+      // A game day that has passed with no published score (an exhibition
+      // played as "best two of three") is neither a result nor upcoming.
+      const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
+      if(!final&&game.date.slice(0,10)<today)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at.
       const relation=game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
@@ -93,5 +111,22 @@ export function createArizonaHandlers({makeEvent}){
     }
     return events;
   }
-  return{parseSchedule};
+  // Some recaps never name the sport ("Wildcats Back in the Win Column with
+  // Four-Set Victory Over Oregon State"), so the shared matcher refused the
+  // game's own recap. The sport-word check is dropped only for the recap the
+  // page data links to that game; opponent and date are still required, and
+  // any other candidate is checked as before.
+  // The same recap may name the opponent by its initials only ("Arizona Falls
+  // to UCSB in Three Sets" for UC Santa Barbara); for that link the initials
+  // count as the opponent's name too.
+  function matchesRecap(raw,event,url){
+    if(event?.school_id!=='arizona')return false;
+    if(!url||url!==event.recap_url)return recapMatchesEvent(raw,event,url);
+    const own={...event,sport:''};
+    if(recapMatchesEvent(raw,own,url))return true;
+    const words=String(event.opponent||'').replace(/\(.*?\)/g,' ').split(/[\s-]+/).filter(Boolean);
+    const initials=words.map(word=>/^[A-Z]{2,}$/.test(word)?word:word[0]).join('').toUpperCase();
+    return words.length>1&&initials.length>=3&&recapMatchesEvent(raw,{...own,opponent:initials},url);
+  }
+  return{parseSchedule,matchesRecap};
 }
