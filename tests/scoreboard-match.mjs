@@ -22,7 +22,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {scoreboardTeamMatchesSchool,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {parseScoreboardPayload,scoreboardTeamMatchesSchool,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
 
 
 
@@ -43,4 +43,18 @@ for(const pair of ['kansas => Kansas State Wildcats','arizona => Arizona State S
 // Each ESPN team belongs to at most one catalog school.
 const owners=new Map();for(const pair of pairs){const [id,team]=pair.split(' => ');owners.set(team,[...(owners.get(team)||[]),id]);}
 for(const [team,ids] of owners)assert.equal(ids.length,1,`${team} matched ${ids.join(', ')}`);
-console.log(`Scoreboard team match checks passed (${pairs.size} school-team pairs, each team one school)`);
+
+// Scoreboard finals read like the official results for every school ("L,
+// 26-31"), never a bare "26–31" that would replace the official headline.
+{
+  const kstate=schools.find(s=>s.id==='kstate'),football={path:'football/college-football',sourceName:'Live college football scoreboard'};
+  const [game]=worker.parseScoreboardPayload(load('football-espn-2026-09-26.json.gz'),kstate,'Football',football,'https://site.api.espn.com/x',new Date('2026-09-27T12:00:00Z'));
+  assert.deepEqual([game.title,game.status,game.headline,game.results],['K-State at Cincinnati','Final','L, 26-31',[{label:'Result',value:'L, 26-31'}]]);
+  const houston=schools.find(s=>s.id==='houston'),men={path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:'x'};
+  const [hoops]=worker.parseScoreboardPayload(load('basketball-espn-mens-2026-02-14.json.gz'),houston,'Basketball',men,'https://site.api.espn.com/x',new Date('2026-02-15T12:00:00Z'));
+  assert.deepEqual([hoops.title,hoops.headline],["Men's · Houston vs Kansas St",'W, 78-64']);
+  const kansas=schools.find(s=>s.id==='kansas'),soccer={path:'soccer/usa.ncaa.w.1',sourceName:'x'};
+  const [match]=worker.parseScoreboardPayload(load('soccer-espn-2026-09-27.json.gz'),kansas,'Soccer',soccer,'https://site.api.espn.com/x',new Date('2026-09-28T12:00:00Z'));
+  assert.deepEqual([match.title,match.headline],['KU vs Arizona','W, 2-0']);
+}
+console.log(`Scoreboard team match checks passed (${pairs.size} school-team pairs, each team one school; finals in the official wording)`);

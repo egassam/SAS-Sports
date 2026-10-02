@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.44.0-espn-all-games-exact-teams';
+const VERSION='4.44.1-scoreboard-final-wording';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1630,9 +1630,9 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       const won=Number(ours.score),lost=Number(opponent.score);
       if(status==='Final'&&Number.isFinite(won)&&Number.isFinite(lost)&&won!==lost){const value=`${won>lost?'W':'L'}, ${won}-${lost}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
     }
-    // Arizona's scoreboard finals read like its official results ("W, 34-24"),
-    // so a final never replaces the official headline with a bare score.
-    if(school.id==='arizona'&&status==='Final'&&sport!=='Volleyball'){
+    // Scoreboard finals read like the official results, K-State's "W, 71-68",
+    // so a final never replaces the official headline with a bare "71–68".
+    if(status==='Final'&&sport!=='Volleyball'){
       const ourScore=Number(ours.score),theirScore=Number(opponent.score);
       if(Number.isFinite(ourScore)&&Number.isFinite(theirScore)){const value=`${ourScore>theirScore?'W':ourScore<theirScore?'L':'T'}, ${ourScore}-${theirScore}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
     }
