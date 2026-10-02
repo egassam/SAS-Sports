@@ -64,3 +64,5 @@ Fixture: `tests/fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz`,
 - with no saved copy, the request is unavailable rather than a one-game feed.
 
 This is shared code; `tests/last-good-feed.mjs` drives the real feed route.
+
+**No old feed copies after a game (`4.37.8-no-old-feed-copies`).** After the match ended, the user saw the K-State card still reading "Today", with no score, from a copy verified at 16:16. The first request after a quiet spell was answered with the saved feed, up to 24 h old, while the rebuild ran in the background. A copy with no live game also makes the page wait 5 minutes before asking again. A saved feed is now answered at once only while it is under 2 minutes old. An older copy is rebuilt before answering (about 1 s) and is served only if that rebuild fails (`stale-fallback`). Production showed the final correctly after rebuilding: K-State `L, 1-3`, BYU `W, 3-1`.

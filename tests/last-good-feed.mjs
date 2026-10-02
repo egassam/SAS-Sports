@@ -48,6 +48,25 @@ assert.equal(liveBody[0].sport,'Football');
 const keys=[...cache.store.keys()];
 assert.ok(keys.some(k=>k.includes('/__sas_cache/feed?'))&&keys.some(k=>k.includes('/__sas_cache/feed-last-good?')),'both copies are saved');
 
+// 1b. A recent copy is answered at once (rebuilt in the background); an older
+//     one is rebuilt before answering, so a finished game is not shown as
+//     Today or Live (K-State vs BYU, Oct 1: a 16:16 copy served at 02:41).
+{
+  const feedKey=[...cache.store.keys()].find(k=>k.includes('/__sas_cache/feed?'));
+  const original=new Map([...cache.store].filter(([k])=>k.includes('/__sas_cache/feed')).map(([k,v])=>[k,v.clone()]));
+  const age=ms=>{const entry=cache.store.get(feedKey),copy=new Response(entry.clone().body,entry);copy.headers.set('x-sas-fetched-at',new Date(Date.now()-ms).toISOString());cache.store.set(feedKey,copy);};
+  age(60*1000);
+  assert.equal((await call()).headers.get('x-sas-cache'),'stale-refreshing','a one-minute-old copy is answered at once');
+  age(10*60*1000);
+  const rebuilt=await call();
+  assert.equal(rebuilt.headers.get('x-sas-cache'),'live','a ten-minute-old copy is rebuilt before answering');
+  age(10*60*1000);upstreamUp=false;
+  for(const k of [...cache.store.keys()])if(k.includes('/__sas_cache/source'))cache.store.delete(k);
+  assert.equal((await call()).headers.get('x-sas-cache'),'stale-fallback','if that rebuild fails, the older copy is still served');
+  upstreamUp=true;
+  for(const [k,v] of original)cache.store.set(k,v);
+}
+
 // 2. cached=1 answers from the saved copy and never rebuilds.
 let before=upstreamRequests;
 const saved=await call('&cached=1');
