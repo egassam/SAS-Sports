@@ -10,6 +10,11 @@ export const byuSchool={
   cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']),
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team. Cross Country's teams mostly run different meets.
+  // Live game state comes from an independent scoreboard, as for K-State;
+  // the official cards stay the schedule and results source of record.
+  liveScoreboards:{
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+  },
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis','Track & Field']),
   verifiedInstagrams:{
     'byu|Soccer|Chelsea Peterson':'https://www.instagram.com/chelseapeterson__/',
