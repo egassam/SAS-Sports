@@ -10,12 +10,18 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.7-byu-basketball-live';
+const VERSION='4.37.8-no-old-feed-copies';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
 // school downloads; the scoreboard itself is cached 15 s.
 const LIVE_FEED_FRESH_MS=10*1000;
+// A saved feed is answered at once (and rebuilt in the background) only while
+// it is recent. An older copy can show a finished game as Today or Live (seen
+// after K-State vs BYU, Oct 1: a 16:16 copy served at 02:41), and the page
+// then waits 5 minutes before asking again; it is rebuilt before answering,
+// and served only if that rebuild fails.
+const FEED_SERVE_STALE_MS=2*60*1000;
 const FEED_STALE_MS=24*60*60*1000;
 // One honest identity for every download, with a page explaining what we
 // fetch and how often, so a school can recognise and allowlist us.
@@ -1749,7 +1755,7 @@ export default{
       if(cached&&!force){
         const age=cachedAge(cached);
         if(age<=(cached.headers.get('x-sas-live')==='1'?LIVE_FEED_FRESH_MS:FEED_FRESH_MS))return cacheResponse(cached,'fresh');
-        if(age<=FEED_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
+        if(age<=FEED_SERVE_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
       }
       const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);
       if(fresh)return cacheResponse(fresh,'live');
