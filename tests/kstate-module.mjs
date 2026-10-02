@@ -144,11 +144,11 @@ const vbPayload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-mo
 const vbUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261001',vbNow=new Date('2026-10-01T23:36:00Z');
 const vbLive=worker.parseScoreboardPayload(vbPayload,school,'Volleyball',kstateSchool.liveScoreboards.Volleyball[0],vbUrl,vbNow);
 assert.equal(vbLive.length,1);
-assert.deepEqual([vbLive[0].status,vbLive[0].title,vbLive[0].school_score,vbLive[0].opponent_score,vbLive[0].headline,vbLive[0].start_time],['Live','K-State vs BYU','0','0','1st Set \u00b7 2-1','2026-10-01T18:30:00.000Z'],'sets won, plus the current set\'s points, at Central wall clock');
+assert.deepEqual([vbLive[0].status,vbLive[0].title,vbLive[0].school_score,vbLive[0].opponent_score,vbLive[0].headline,vbLive[0].start_time],['Live','K-State vs BYU','2','1','1st Set \u00b7 Sets 0-0','2026-10-01T18:30:00.000Z'],'the big score is the current set\'s points; the status line carries sets won; Central wall clock');
 const vbOfficial=worker.makeEvent({school,sport:'Volleyball',status:'Upcoming',relation:'vs',opponent:'#18 BYU',date:'October 1, 2026',time:'6:30 PM',schoolScore:null,oppScore:null,resultText:null,sourceUrl:'https://www.kstatesports.com/sports/volleyball/schedule',now:vbNow});
 const vbReconciled=worker.reconcileScoreboardEvents([vbOfficial],vbLive);
-assert.equal(vbReconciled[0].recency_label,'1st Set \u00b7 2-1','the live card\'s status line shows the current set\'s points (users saw only "1st Set" and 0-0)');
-assert.deepEqual([vbReconciled.length,vbReconciled[0].title,vbReconciled[0].status,vbReconciled[0].headline,vbReconciled[0].verification_state],[1,'K-State vs #18 BYU','Live','1st Set \u00b7 2-1','official_schedule+live_scoreboard'],'the official card goes live; no second card');
+assert.deepEqual([vbReconciled[0].school_score,vbReconciled[0].opponent_score,vbReconciled[0].recency_label],['2','1','1st Set \u00b7 Sets 0-0'],'the live card shows 2-1 with "1st Set · Sets 0-0" (users saw only 0-0)');
+assert.deepEqual([vbReconciled.length,vbReconciled[0].title,vbReconciled[0].status,vbReconciled[0].headline,vbReconciled[0].verification_state],[1,'K-State vs #18 BYU','Live','1st Set \u00b7 Sets 0-0','official_schedule+live_scoreboard'],'the official card goes live; no second card');
 {const g=worker.groupEvents(vbReconciled,vbNow)[0];assert.deepEqual([g.live.length,g.upcoming.length],[1,0]);}
 // A finished match reads like K-State's official results.
 const vbFinalPayload=JSON.parse(JSON.stringify(vbPayload)),vbComp=vbFinalPayload.events[0].competitions[0];
