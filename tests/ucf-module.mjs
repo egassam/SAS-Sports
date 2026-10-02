@@ -7,7 +7,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/ok
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
+import {ucfSchool,createUcfHandlers,parseUcfRecapResults} from '../src/schools/ucf.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -23,7 +23,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit ucfknights.com routes,
 // exactly the candidates production used before the module (route parity).
@@ -170,6 +170,52 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(worker.recapMatchesEvent(kentuckyRecap,kentucky,kentucky.recap_url),true);
   assert.equal(worker.recapMatchesEvent(kentuckyRecap,utah,kentucky.recap_url),false,'the men\'s same-day recap is not the women\'s');
   assert.equal(worker.recapMatchesEvent(utahRecap,kentucky,utah.recap_url),false,'the women\'s same-day recap is not the men\'s');
+}
+
+// Cross Country (women only): the card gives the team place ("1st", "6th");
+// the recap is prose, with each runner's name linked to the roster. Production
+// read the prose with the AI and showed Southern Showcase as "1st · 199 pts"
+// (the card says 6th). Rows now come only from the recap text, deterministically.
+{
+  const url='https://ucfknights.com/sports/cross-country/schedule';
+  const meets=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  assert.deepEqual(meets.map(e=>`${e.status} ${e.display_time} ${e.title} ${e.headline||''}`.trim()),[
+    "Final Sep 4 UCF at Florida Intercollegiate Women's team: 1st","Final Sep 18 UCF at Southern Showcase Women's team: 6th",
+    'Upcoming Oct 16, 10:15 AM UCF at Arturo Barrios Invite','Upcoming Oct 31 UCF at Big 12 Championship','Upcoming Nov 13 UCF at NCAA South Regional Championship'
+  ],'one event per card, meets read "UCF at ...", team place from the card');
+  const [florida,showcase]=meets;
+  assert.ok(florida.recap_url.endsWith('/news/2026/09/4/raquet-leads-knights-to-florida-intercollegiate-crown-in-season-opener'),'a Recap link with "Opens in a new window" still counts');
+  recapFixtures.set(florida.recap_url,fixture('recap-cross-country-2026-09-04-florida-intercollegiate.html.gz'));
+  recapFixtures.set(showcase.recap_url,fixture('recap-cross-country-2026-09-18-southern-showcase.html.gz'));
+  await worker.attachOfficialMeetResults(florida);await worker.attachOfficialMeetResults(showcase);
+  const rows=event=>event.results.map(row=>`${row.participant} ${row.result}`);
+  assert.equal(florida.headline,"Women's team: 1st · 43 pts");
+  assert.deepEqual(rows(florida),['UCF team 1st · 43 pts','Alexandra Raquet 1st · 16:52.88','Caroline Moon 6th · 17:58.09','Madison Patchan 7th · 17:59.24','Bella Brick 12th · 18:13.17','Daisy Ross 13th · 18:13.84','Emily Wheldon 19th · 18:21.70','Bailey McLain 20th · 18:22.46','Sarah Rose 29th · 18:36.02'],
+    'the 2013 record holder named in the story (16:50.19) is not a row');
+  assert.equal(showcase.headline,"Women's team: 6th · 199 pts",'the place stays the card\'s 6th');
+  assert.deepEqual(rows(showcase),['UCF team 6th · 199 pts','Alexandra Raquet 12th · 16:54.2','Caroline Moon 30th · 17:32.8','Emily Wheldon 51st · 17:52.0','Madison Patchan 53rd · 17:54.3','Bailey McLain 56th · 17:56.6','Daisy Ross 79th · 18:13.5','Bella Brick 81st · 18:14.4','Sarah Rose 104th · 18:30.0','Yvone Sandui 19:36.8'],
+    '"personal-best 17:32.8" is the race time; "previous best of 17:58.09" is not');
+  assert.ok([florida,showcase].every(e=>e.results.every(row=>row.group==="Women's race")&&e.recap_result_count===e.results.length&&e.meet_results_verified&&e.highlight_state==='official_recap_results'));
+  assert.deepEqual(showcase.highlights,['UCF placed 6th with 199 points at Southern Showcase.','Alexandra Raquet led UCF in the women\'s race, finishing 12th in 16:54.2.']);
+  // The expanded view uses the same rows and never asks the AI.
+  const events=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  let aiCalls=0;
+  await worker.attachOfficialHighlights(events,fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now,{AI:{run:async()=>{aiCalls++;throw Error('AI must not run');}}},events[1].id);
+  const listingRequests=requests.filter(u=>!recapFixtures.has(u)).length;
+  assert.equal(aiCalls,0,'the AI never reads cross country recaps');
+  assert.deepEqual(rows(events[1]),rows(showcase));
+  assert.equal(events[1].highlight_state,'official_recap_results','the expanded view keeps the recap rows and highlights');
+  // An earlier mark beside a place ("12th ... with a best of 17:19.0") is not
+  // the race time.
+  const ord=n=>`${n}${['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th'}`;
+  const sample='<div class="embed-html"><p><a href="/sports/cross-country/roster/player/a-b">Ann Bee</a>, 12th at the opener with a best of 17:19.0, finished 20th in 17:10.1.</p></div>';
+  assert.deepEqual(parseUcfRecapResults(sample,{decodeHtml:x=>x,ordinal:ord,group:'g'}),[{group:'g',participant:'Ann Bee',result:'20th \u00b7 17:10.1'}]);
+  // A recap for the other meet is refused, not read.
+  const wrong=meets.map(e=>({...e,meet_results_verified:false}))[0];
+  recapFixtures.set(wrong.recap_url,fixture('recap-cross-country-2026-09-18-southern-showcase.html.gz'));
+  await worker.attachOfficialMeetResults(wrong);
+  assert.equal(wrong.highlight_state,'official_results_partial','another meet\'s recap is refused');
+  recapFixtures.set(florida.recap_url,fixture('recap-cross-country-2026-09-04-florida-intercollegiate.html.gz'));
 }
 
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.

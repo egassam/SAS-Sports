@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -86,6 +86,41 @@ function publishedDays(raw){
   return days;
 }
 
+// Cross Country recaps are prose. Each runner's name links to the roster
+// ("<a href=.../roster/player/caroline-moon>Caroline Moon</a> ... finishing
+// sixth in 17:58.09"); the text up to the next linked name holds that runner's
+// place and time. Times that are not this race's ("program record of
+// 16:50.19", "previous best of 17:58.09", "debut time of 18:36.02") are
+// skipped, so a record holder named in the story never becomes a row.
+const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth'];
+const PLACE=`(\\d{1,3})(?:st|nd|rd|th)\\b|\\b(${PLACE_WORDS.join('|')})\\b`;
+export function parseUcfRecapResults(raw,{decodeHtml,ordinal,group}){
+  const article=[...String(raw||'').matchAll(/<div\b[^>]*class=["'][^"']*\bembed-html\b[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi)].map(m=>m[1]).join(' ');
+  const text=value=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const links=[...article.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/player\/[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)];
+  const rows=[],seen=new Set();
+  links.forEach((link,i)=>{
+    const participant=text(link[1]);
+    if(!participant||seen.has(participant))return;
+    const segment=text(article.slice(link.index+link[0].length,i+1<links.length?links[i+1].index:article.length));
+    for(const time of segment.matchAll(/\b\d{1,2}:\d{2}\.\d{1,2}\b/g)){
+      const before=segment.slice(0,time.index),after=segment.slice(time.index+time[0].length,time.index+time[0].length+25);
+      // Earlier marks are written "best of", "record of", "debut time of".
+      if(/\b(?:record|best|mark|average(?: time)?|debut time)\s+of\s*$/i.test(before))continue;
+      const near=before.slice(-45),places=[...near.matchAll(new RegExp(PLACE,'gi'))],last=places.at(-1);
+      const following=after.match(new RegExp(`^\\s*to finish\\s+(?:${PLACE})`,'i'));
+      const place=last?(last[1]||PLACE_WORDS.indexOf(last[2].toLowerCase())+1):following?(following[1]||PLACE_WORDS.indexOf(following[2].toLowerCase())+1):null;
+      // A time with no place counts only as "with a time of ..." (the
+      // runner's own finish); anything else is someone else's mark.
+      if(!place&&!/\bwith a time of\s*$/i.test(before))continue;
+      seen.add(participant);
+      rows.push({group,participant,result:place?`${ordinal(place)} \u00b7 ${time[0]}`:time[0],place:place?Number(place):Infinity});
+      break;
+    }
+  });
+  return rows.sort((a,b)=>a.place-b.place).map(({place,...row})=>row);
+}
+
 // ucfknights.com renders each event as a schedule-event-item card: the date
 // as "Thu, Sep" / "3" (no year), a "vs."/"at" divider, the opponent name, and
 // one result slot holding either the result ("W Win 73-6") or the published
@@ -93,13 +128,13 @@ function publishedDays(raw){
 // shared parsers read both these cards and the page's schema data, so every
 // upcoming game appeared twice and a phantom Nov 28 final reused the Sep 3
 // score and recap.
-export function createUcfHandlers({makeEvent,visibleText,absoluteUrl}){
+export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,fetch,headers}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
   // The card's own Recap link. A recap is dated in its URL (/news/2026/09/4/...);
   // it must fall between the event day and three days after it.
   function cardRecap(block,sourceUrl,day){
     for(const link of block.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*)<\/a>/gi)){
-      if(!/^Recap$/i.test(visibleText(link[2])))continue;
+      if(!/^Recap\b/i.test(visibleText(link[2])))continue;
       const url=absoluteUrl(link[1],sourceUrl);
       let parsed;try{parsed=new URL(url);}catch{continue;}
       const dated=parsed.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
@@ -142,12 +177,21 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl}){
       // Preseason exhibitions publish "Completed" with no score, and a
       // postponed game has no result or new date; neither is a K-State-style
       // final or an upcoming game.
-      if(!result&&/^(?:Completed|Postponed|Canceled|Cancelled)\b/i.test(slot))continue;
-      const event=makeEvent({school,sport,status:result?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[index]} ${day}, ${year}`,
+      // Meets publish the team finish in the result slot ("1st", "6th").
+      const meet=eventType(sport)!=='GAME',placing=meet?slot.match(/^(\d{1,3})(?:st|nd|rd|th)$/i):null;
+      // A meet whose day has passed is over, published result or not.
+      const over=meet&&(placing||Date.UTC(year,index,day)<Date.parse(easternDay(now.getTime())+'T00:00:00Z'));
+      if(!meet&&!result&&/^(?:Completed|Postponed|Canceled|Cancelled)\b/i.test(slot))continue;
+      // Meets read "UCF at Florida Intercollegiate", as K-State's do.
+      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:meet||/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[index]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
-        time:clock||null,
+        time:over?null:clock||null,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
-      const recapUrl=result?cardRecap(block,sourceUrl,Date.UTC(year,index,day)):null;
+      const recapUrl=result||over?cardRecap(block,sourceUrl,Date.UTC(year,index,day)):null;
+      // UCF runs only a women's cross country team; the page says so.
+      const squad=/<title>[^<]*Women(?:&#x27;|')s\b/i.test(raw)?"Women's":'UCF';
+      if(placing){const value=ordinal(placing[1]);event.headline=`${squad} team: ${value}`;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(over&&!event.headline){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       if(recapUrl)event.recap_url=recapUrl;
       // Separate men's and women's pages can list the same opponent on the same
       // day; the team keeps their event ids apart.
@@ -157,5 +201,54 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl}){
     }
     return events.length?events:null;
   }
-  return{parseSchedule};
+  const isUcfCrossCountry=event=>event?.school_id==='ucf'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
+  // Feed and expanded view both call this; the second call is a no-op. Race
+  // rows come from the meet's own card-bound recap.
+  async function attachMeetResults(event){
+    if(!isUcfCrossCountry(event))return event;
+    if(event.meet_results_verified)return event;
+    const unavailable=status=>{
+      event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
+      event.highlight_state='official_results_partial';event.highlight_status=status;
+      return event;
+    };
+    const failed='Official race results could not be loaded. Open the official recap.';
+    if(!event.recap_url)return unavailable('No official recap is published for this meet on ucfknights.com.');
+    let raw;
+    try{
+      const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});
+      if(!response.ok)return unavailable(failed);raw=await response.text();
+    }catch{return unavailable(failed);}
+    if(!recapMatchesEvent(raw,event,event.recap_url))return unavailable(failed);
+    // Recaps mention earlier meets ("its 17:51 average at the season-opening
+    // Florida Intercollegiate"); the story's own title must name this meet.
+    const key=value=>decodeHtml(String(value)).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+    const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
+    if(!key(title).includes(key(event.opponent)))return unavailable(failed);
+    const squad=String(event.headline||'').match(/^(.+?) team: /)?.[1]||'UCF';
+    // The recaps never state the distance of the race, so none is claimed.
+    const group=`${squad} race`;
+    const runners=parseUcfRecapResults(raw,{decodeHtml,ordinal,group});
+    if(!runners.length)return unavailable(failed);
+    // The team score is the first "N points" in a sentence about UCF ("The
+    // Knights finished with 43 points"); the place stays the card's.
+    const place=String(event.headline||'').match(/team: (\d+\w\w)/)?.[1];
+    const article=decodeHtml(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+    const points=place?(article.split(/(?<=[.!?])\s+/).find(sentence=>/\b(?:UCF|Knights)\b/.test(sentence)&&/\b\d{1,3} points\b/.test(sentence))||'').match(/\b(\d{1,3}) points\b/)?.[1]:null;
+    const teamResult=place?`${place}${points?` \u00b7 ${points} pts`:''}`:null;
+    if(teamResult){event.headline=`${squad} team: ${teamResult}`;}
+    const rows=[...(teamResult?[{group,participant:'UCF team',result:teamResult}]:[]),...runners];
+    event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;
+    event.recap_result_count=rows.length;
+    event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
+    const leader=runners[0];
+    event.highlights=[
+      ...(teamResult?[`UCF placed ${place}${points?` with ${points} points`:''} at ${event.opponent}.`]:[]),
+      `${leader.participant} led UCF in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.includes(' \u00b7 ')?leader.result.replace(' \u00b7 ',' in '):`in ${leader.result}`}.`
+    ];
+    event.highlights_verified=true;event.meet_results_verified=true;
+    event.highlight_state='official_recap_results';event.highlight_status=null;
+    return event;
+  }
+  return{parseSchedule,isUcfCrossCountry,attachMeetResults};
 }

@@ -11,7 +11,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Football | #123 | Module card reader: 4 finals `W, 73-6`-style with their own recaps; 8 upcoming with published times |
 | Volleyball | #125 | 12 finals with recaps; 16 upcoming with times; ESPN live score (as K-State and BYU) |
 | Soccer | #126 | Both teams (women's Big 12, men's Sun Belt), labeled: 9 + 9 finals with recaps; exhibitions and the postponed FIU game left out |
-| Baseball, Basketball, Cross Country, Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Cross Country | #127 | Women's team: `1st · 43 pts`, `6th · 199 pts`; race rows from the recap prose (deterministic); 3 upcoming |
+| Baseball, Basketball, Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -57,6 +58,19 @@ UCF has a women's (Big 12) and a men's (Sun Belt) team. Production loaded only t
 - Bracket cards are named after their tournament heading: `Big 12 Soccer Tournament · Quarterfinal Round`; the men's `TBD` card is `2026 Sun Belt Conference Men's Soccer Championship`.
 - Rankings in every form are dropped (`#17/17 Colorado`, `-/#21 LSU`). Ties read `T, 1-1`.
 - On Sep 27 both teams played (women at Utah, men vs Kentucky); the shared matcher keeps each recap to its own game (tested).
+
+## Cross Country (`4.38.3-ucf-cross-country`)
+
+UCF runs a women's team only. Cards give the team place (`1st`, `6th`); recaps are prose, with no results tables. Production read the prose with the AI in the expanded view and showed Southern Showcase as `1st · 199 pts` (UCF was 6th of 31); the feed showed `Completed` and duplicate upcoming meets.
+
+The module now:
+- reads the meet cards (`UCF at Florida Intercollegiate`, as K-State's meets read), the team place from the card, and the published start time for upcoming meets;
+- reads the team points from the recap sentence about UCF ("The Knights finished with 43 points");
+- reads runner rows deterministically (`parseUcfRecapResults`): each runner's name links to the roster, and the text up to the next linked name holds the place and time ("finishing sixth in 17:58.09", "in 13th at 18:13.84", "a 29th-place finish in 18:36.02", "crossed in 18:30.0 to finish 104th"). A time with no place counts only as "with a time of …". Earlier marks ("best of", "record of", "debut time of") are skipped, so the 2013 program-record holder named in the story is never a row;
+- requires the recap's own title to name the meet (the Southern Showcase story mentions the Florida Intercollegiate);
+- uses the same rows in the feed and the expanded view (the same three school-gated hooks as BYU); the AI never reads these recaps.
+
+Groups read `Women's race`: the recaps never state the race distance, so none is claimed (as for BYU). Rows are the runners the recap names (8 and 9), not the full field.
 
 ## Limitations
 
