@@ -196,7 +196,8 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.deepEqual(rows(showcase),['UCF team 6th · 199 pts','Alexandra Raquet 12th · 16:54.2','Caroline Moon 30th · 17:32.8','Emily Wheldon 51st · 17:52.0','Madison Patchan 53rd · 17:54.3','Bailey McLain 56th · 17:56.6','Daisy Ross 79th · 18:13.5','Bella Brick 81st · 18:14.4','Sarah Rose 104th · 18:30.0','Yvone Sandui 19:36.8'],
     '"personal-best 17:32.8" is the race time; "previous best of 17:58.09" is not');
   assert.ok([florida,showcase].every(e=>e.results.every(row=>row.group==="Women's race")&&e.recap_result_count===e.results.length&&e.meet_results_verified&&e.highlight_state==='official_recap_results'));
-  assert.deepEqual(showcase.highlights,['UCF placed 6th with 199 points at Southern Showcase.','Alexandra Raquet led UCF in the women\'s race, finishing 12th in 16:54.2.']);
+  assert.deepEqual(showcase.highlights,['UCF placed 6th with 199 points at Southern Showcase.','Alexandra Raquet led UCF in the women\'s race, finishing 12th in 16:54.2.','Caroline Moon finished 30th in 17:32.8.','Emily Wheldon finished 51st in 17:52.0.'],'certification needs three or more highlights, all from verified rows');
+  assert.equal(florida.highlights.length,4);
   // The expanded view uses the same rows and never asks the AI.
   const events=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
   let aiCalls=0;
