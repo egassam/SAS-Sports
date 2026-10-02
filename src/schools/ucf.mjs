@@ -126,6 +126,56 @@ export function parseUcfRecapResults(raw,{decodeHtml,ordinal,group}){
   return rows.sort((a,b)=>a.place-b.place).map(({place,...row})=>row);
 }
 
+// TFRRS (the collegiate results database) publishes each meet's complete
+// scored results as plain tables: "Women's 5000 Meters Team Results (5k)"
+// with PL/Team/Score, then "... Individual Results (5k)" with
+// PL/NAME/YEAR/TEAM/TIME. UCF's team page lists every meet with its date.
+export const UCF_TFRRS_TEAM='https://www.tfrrs.org/teams/xc/FL_college_f_Central_Florida.html';
+const cellsOf=(tr,text)=>[...tr.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>text(cell[1]));
+export function findUcfTfrrsMeet(raw,{decodeHtml,date,name}){
+  const text=value=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const words=value=>text(value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4);
+  const wanted=words(name);
+  for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
+    const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
+    if(!link)continue;
+    const [day,meet]=cellsOf(tr[0],text);
+    if(Date.parse(`${day} 12:00 UTC`)!==Date.parse(`${date} 12:00 UTC`))continue;
+    // The meet name must hold every long word of the card's name ("Southern
+    // Showcase" in "Southern Showcase (University/College)").
+    const have=new Set(words(meet));
+    if(wanted.length&&wanted.every(word=>have.has(word)))return new URL(link[1],'https://www.tfrrs.org').href;
+  }
+  return null;
+}
+export function parseUcfTfrrsResults(raw,{decodeHtml,ordinal,squad}){
+  const text=value=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const sections=String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1);
+  let team=null,group=null,runners=[];
+  for(const section of sections){
+    const title=text((section.match(/^[^>]*>([\s\S]*?)<\/div>/)||[])[1]||'');
+    const race=title.match(/^(Women|Men)(?:['’]s)?\b.*\((\d+(?:\.\d+)?)k\)/i);
+    if(!race||!new RegExp(`^${squad==="Men's"?'Men':'Women'}`,'i').test(race[1]))continue;
+    const label=`${race[1][0].toUpperCase()}${race[1].slice(1).toLowerCase()}'s ${race[2]}K`;
+    const rows=[...section.matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>cellsOf(tr[0],text));
+    const head=(rows[0]||[]).map(value=>value.toUpperCase());
+    const ucf=rows.slice(1).filter(cells=>cells.some(value=>/^(?:UCF|Central Florida)$/i.test(value)));
+    if(!ucf.length)continue;
+    if(/team results/i.test(title)&&head.includes('SCORE')){
+      const row=ucf[0];team={group:label,place:Number(row[head.indexOf('PL')]),score:row[head.indexOf('SCORE')]};
+    }else if(/individual results/i.test(title)&&head.includes('NAME')&&head.includes('TIME')){
+      if(group&&group!==label)continue;
+      group=label;
+      runners=ucf.map(row=>{
+        const place=row[head.indexOf('PL')],time=row[head.indexOf('TIME')];
+        return{group:label,participant:row[head.indexOf('NAME')],result:/^\d+$/.test(place)?`${ordinal(place)} \u00b7 ${time}`:`${place} \u00b7 ${time}`};
+      }).filter(row=>row.participant&&/\d:\d{2}/.test(row.result)||/^(?:DNF|DNS)\b/i.test(row.result));
+    }
+  }
+  if(!runners.length)return null;
+  return{group,team:team&&team.group===group?team:null,runners};
+}
+
 // ucfknights.com renders each event as a schedule-event-item card: the date
 // as "Thu, Sep" / "3" (no year), a "vs."/"at" divider, the opponent name, and
 // one result slot holding either the result ("W Win 73-6") or the published
@@ -287,33 +337,56 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
     if(!key(title).includes(key(event.opponent)))return unavailable(failed);
     const squad=String(event.headline||'').match(/^(.+?) team: /)?.[1]||'UCF';
+    const place=String(event.headline||'').match(/team: (\d+\w\w)/)?.[1];
+    // Complete results from TFRRS: every UCF runner, the race distance and
+    // the scored team result. They are used only when TFRRS's team place
+    // matches the official card's; otherwise the recap is read.
+    const official=await tfrrsResults(event,squad,place);
+    if(official){
+      const {group,team,runners}=official,teamResult=`${ordinal(team.place)} \u00b7 ${team.score} pts`;
+      event.headline=`${squad} team: ${teamResult}`;
+      return publish(event,group,[{group,participant:'UCF team',result:teamResult},...runners],runners,`UCF placed ${ordinal(team.place)} with ${team.score} points at ${event.opponent}.`,'Official meet results (TFRRS) and recap',official.url);
+    }
     // The recaps never state the distance of the race, so none is claimed.
     const group=`${squad} race`;
     const runners=parseUcfRecapResults(raw,{decodeHtml,ordinal,group});
     if(!runners.length)return unavailable(failed);
     // The team score is the first "N points" in a sentence about UCF ("The
     // Knights finished with 43 points"); the place stays the card's.
-    const place=String(event.headline||'').match(/team: (\d+\w\w)/)?.[1];
     const article=decodeHtml(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
     const points=place?(article.split(/(?<=[.!?])\s+/).find(sentence=>/\b(?:UCF|Knights)\b/.test(sentence)&&/\b\d{1,3} points\b/.test(sentence))||'').match(/\b(\d{1,3}) points\b/)?.[1]:null;
     const teamResult=place?`${place}${points?` \u00b7 ${points} pts`:''}`:null;
     if(teamResult){event.headline=`${squad} team: ${teamResult}`;}
     const rows=[...(teamResult?[{group,participant:'UCF team',result:teamResult}]:[]),...runners];
+    return publish(event,group,rows,runners,teamResult?`UCF placed ${place}${points?` with ${points} points`:''} at ${event.opponent}.`:null,'Official athletics meet recap',event.recap_url);
+  }
+  // Highlights are written only from the verified rows: the team finish, the
+  // leader, then the next finishers (certification asks for three).
+  function publish(event,group,rows,runners,teamLine,sourceName,sourceUrl){
     event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;
     event.recap_result_count=rows.length;
-    event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
-    // Highlights are written only from these verified rows: the team finish,
-    // the leader, then the next finishers (certification asks for three).
+    event.source={...event.source,name:sourceName,url:sourceUrl};
     const finish=row=>row.result.includes(' \u00b7 ')?row.result.replace(' \u00b7 ',' in '):`in ${row.result}`;
-    const [leader,...others]=runners;
+    const [leader,...others]=runners.filter(row=>/\d:\d{2}/.test(row.result));
     event.highlights=[
-      ...(teamResult?[`UCF placed ${place}${points?` with ${points} points`:''} at ${event.opponent}.`]:[]),
+      ...(teamLine?[teamLine]:[]),
       `${leader.participant} led UCF in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${finish(leader)}.`,
       ...others.map(row=>`${row.participant} finished ${finish(row)}.`)
     ].slice(0,4);
     event.highlights_verified=true;event.meet_results_verified=true;
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
+  }
+  async function tfrrsResults(event,squad,place){
+    if(!place)return null;
+    const download=async url=>{try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():null;}catch{return null;}};
+    const listing=await download(UCF_TFRRS_TEAM);if(!listing)return null;
+    const date=new Date(event.start_time).toISOString().slice(0,10);
+    const url=findUcfTfrrsMeet(listing,{decodeHtml,date,name:event.opponent});if(!url)return null;
+    const page=await download(url);if(!page)return null;
+    const parsed=parseUcfTfrrsResults(page,{decodeHtml,ordinal,squad});
+    if(!parsed?.team||ordinal(parsed.team.place)!==place)return null;
+    return{...parsed,url};
   }
   // The shared matcher keeps only an opponent's words of four letters or more,
   // so "FAU Invitational" became "invitational" and the women's Schooner
