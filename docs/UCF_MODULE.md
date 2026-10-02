@@ -17,7 +17,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Softball | #130 | 33 games (fall exhibitions from Oct 16, spring 2027); official page only |
 | Golf | #131 | Both teams, one event per tournament: men's `T4th (852)`, `12th (860)`, `5th (858)`; women's `11th (867)`, `8th (843)`, each with its recap; UCF recap matcher |
 | Tennis | #132 | Both teams: the men's page is 2025-26, so it is an empty schedule; women's 2 completed fall tournaments with recaps and 4 upcoming |
-| Rowing, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Rowing | #133 | Empty schedule (the page shows 2025-26); in season, one event per regatta |
+| Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -106,6 +107,10 @@ ucfknights.com publishes one card per round ("T7, 573 (-3)" after round two, "5t
 Both teams' official pages only, labeled (production also loaded the homepage and generic pages; 10 upcoming, of which several were duplicates).
 - **Current-season filter (all UCF sports):** a card whose schema date lies outside the current academic year (July-June, Eastern) is left out, and a page with none left is a valid empty schedule (`isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU). The men's page still shows the 2025-26 season, so it is empty until UCF publishes 2026-27.
 - **Multi-day tournaments:** the women's fall cards span several days (`Sat, Sep 19 - Sun, Sep 27`). They end on the last day (`end_time`); one is over, and reads `Completed` as BYU's do, only after that day. The recap may be dated from the first day to three days after the last (the ITA All-American story is dated Sep 26, before the Sep 27 finish).
+
+## Rowing (`4.38.9-ucf-rowing`)
+
+Production tried `/sports/womens-rowing/schedule` (404) and fell back to the homepage, whose ticker gave 10 "upcoming" events from other sports. Rowing now routes to the official `/sports/rowing/schedule` only. That page still shows "Rowing 2025-26", so today it is an empty schedule. Fixture-tested in season (the same page read as of April and June 2026): regatta days merge into one event as golf rounds do, the last day's recap is kept (a day-one story is not the result), and the Miami and Iowa scrimmages are left out.
 
 ## Limitations
 
