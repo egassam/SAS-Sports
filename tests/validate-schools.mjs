@@ -73,6 +73,15 @@ function validateAthlete(athlete,protectedSchool,sport,officialHosts){
 async function validateSport(school,sport){
   const encoded=`school=${encodeURIComponent(school.id)}&sport=${encodeURIComponent(sport)}`;
   const groups=await getJson(`/live/feed/grouped?${encoded}`);
+  // A sport whose new season is not published yet is a valid empty schedule,
+  // but only when it is verified: every official page loaded (HTTP 200) and
+  // the school module marked it as holding only past seasons. Any other empty
+  // feed still fails.
+  if(Array.isArray(groups)&&!groups.length){
+    const check=await getJson(`/api/diagnostic?${encoded}`),sources=check.sources||[];
+    assert.ok(sources.length&&sources.every(source=>source.ok&&source.http_status===200&&source.empty_schedule),`empty feed is not a verified empty schedule (${sources.map(source=>`${source.http_status||source.error}${source.empty_schedule?' empty':''}`).join(', ')||'no sources'})`);
+    return{events:0,results:0,upcoming:0,athletes:await validateAthletes(school,sport),highlight:'EMPTY:season not published'};
+  }
   assert.ok(Array.isArray(groups)&&groups.length===1,'feed did not return one sport group');
   const group=groups[0],events=['live','results','upcoming','other'].flatMap(key=>group[key]||[]);
   assert.ok(events.length>0,'official feed returned no events');
