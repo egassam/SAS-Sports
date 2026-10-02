@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.43.12-arizona-track-field';
+const VERSION='4.43.13-arizona-tennis-stories';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1686,7 +1686,12 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // grouped feed is cached, so the summary count and cards match the modal.
   // Arizona golf results come from each tournament's own story.
   if(school.id==='arizona'&&sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
-  if(school.id==='arizona'&&sport==='Tennis')await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
+  if(school.id==='arizona'&&sport==='Tennis'){
+    await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
+    // As K-State's, a past tournament with no team result is listed only
+    // when Arizona published a story about it.
+    events=events.filter(event=>!arizonaHandlers.isArizonaTennisTournament(event));
+  }
   if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event)||arizonaHandlers.isArizonaCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
