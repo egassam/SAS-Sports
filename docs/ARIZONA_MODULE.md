@@ -16,7 +16,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Baseball | #153 | 59 games: 4 fall exhibitions from Oct 9 (labeled), then spring 2027; published times; doubleheaders kept as Game 1 / Game 2; ESPN live score |
 | Softball | #154 | 35 games: 7 fall exhibitions from Oct 17 (the UTEP doubleheader as two games), then spring 2027; postseason events end on their last day; ESPN live score |
 | Beach Volleyball | #155 | Was 502: routes fixed to `womens-beach-volleyball`; 5 fall events, tournaments named, multi-day events end on their last day |
-| Golf | (this PR) | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
+| Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
+| Gymnastics | (this PR) | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
 
 ## Setup (route parity)
 
@@ -136,6 +137,14 @@ Production loaded the first golf page that answered (women's) and showed every r
 - the story's place and total must agree with the schedule's when the schedule publishes them; otherwise the schedule's stay.
 
 ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
+
+## Gymnastics (`4.43.9-arizona-gymnastics`)
+
+Arizona sponsors women's gymnastics. The inherited routes also tried `mens-gymnastics` and `gymnastics` (both the empty "@season @sport" template) and the homepage; schedule and roster now route to `womens-gymnastics` only. That page still shows "2025-26 Gymnastics Schedule" (Dec 13, 2025 - Apr 1, 2026).
+- **Current-season filter (every Arizona page-data sport):** only the current academic year (July-June, Arizona time) is current. A page with no current events is a valid empty schedule (`arizonaHandlers.isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU and UCF): the app shows its empty-schedule note, not a failed source. It fills in when Arizona publishes 2026-27, with no code change.
+- **In season** (the same page read as of Mar 15, 2026): meets read `Arizona at Washington` with `W · 195.425` (a dual) or `3rd · 193.350` (a multi-team meet), each with its recap; the canceled Iowa State meet is left out; the opening GymCat Showcase (an exhibition with no score) reads `Completed`.
+
+ESPN publishes no college gymnastics scoreboard, so there is no live score.
 
 ## Seen outside Arizona (not changed)
 
