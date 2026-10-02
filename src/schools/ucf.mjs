@@ -345,7 +345,11 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     if(official){
       const {group,team,runners}=official,teamResult=`${ordinal(team.place)} \u00b7 ${team.score} pts`;
       event.headline=`${squad} team: ${teamResult}`;
-      return publish(event,group,[{group,participant:'UCF team',result:teamResult},...runners],runners,`UCF placed ${ordinal(team.place)} with ${team.score} points at ${event.opponent}.`,'Official meet results (TFRRS) and recap',official.url);
+      // The source link stays the official recap (the feed's contract keeps
+      // sources on the school's site); the TFRRS page is kept beside it. Not
+      // result_url: that would start the shared generic TFRRS enrichment.
+      event.results_source_url=official.url;
+      return publish(event,group,[{group,participant:'UCF team',result:teamResult},...runners],runners,`UCF placed ${ordinal(team.place)} with ${team.score} points at ${event.opponent}.`,'Official athletics meet recap; results from TFRRS',event.recap_url);
     }
     // The recaps never state the distance of the race, so none is claimed.
     const group=`${squad} race`;

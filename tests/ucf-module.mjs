@@ -243,7 +243,7 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.deepEqual(showcase.results.slice(-2).map(row=>`${row.participant} ${row.result}`),['Sarah Rose 105th · 18:30.0','Yvone Sandui 209th · 19:36.8']);
   assert.ok(showcase.results.every(row=>row.group==="Women's 5K"),'the Invite race only, not the Open race');
   for(const [event,tf] of [[florida,floridaTf],[showcase,showcaseTf]]){
-    assert.equal(event.source.url,tf);assert.match(event.source.name,/recap/i);
+    assert.equal(event.source.url,event.recap_url,'the source link stays on ucfknights.com');assert.equal(event.results_source_url,tf);assert.match(event.source.name,/recap.*TFRRS/i);assert.ok(!event.result_url,'no shared TFRRS enrichment');
     assert.equal(event.highlight_state,'official_recap_results');assert.ok(event.highlights.length>=3&&event.meet_results_verified);
   }
   assert.equal(showcase.highlights[0],'UCF placed 6th with 199 points at Southern Showcase.');
