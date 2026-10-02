@@ -24,6 +24,7 @@ Last updated: October 1, 2026, America/Chicago (K-State Volleyball live scores a
   - When every official page fails, the live score is now laid over the last good full feed, which is never overwritten by that partial feed. With no saved copy, the request is unavailable.
   - Preview: 36/36 forced refreshes each for K-State and BYU returned the full schedule plus the live card.
   - Production at 00:25 UTC: BYU `20–16 · 2nd Set · Sets 1-0` (11 results, 16 upcoming); K-State `16–20 · Sets 0-1` (12 results, 15 upcoming); XC 18/20 and 26/21.
+- **BYU Basketball live, #118 (`b8de8a4`, `4.37.7-byu-basketball-live`, user: "Add live scores for BYU basketball too").** Men's and women's ESPN scoreboards, labeled to match the official cards. Tests use real Houston–BYU events (both Cougars). Production: Basketball unchanged (67 upcoming, no live game until the Oct 16 exhibition); Volleyball still live; XC 18/20 and 26/21.
 - **No faster source available.**
   - ESPN sat on "End of 1st" for about 8 min (00:03–00:11 UTC).
   - StatBroadcast (the official live stats) sits behind a Cloudflare bot challenge (403); getting past it would be evasion, so it is not used.
