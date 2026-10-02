@@ -9,7 +9,7 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Sport | PR | State |
 | --- | --- | --- |
 | Football | #148 | Page-data reader: 4 finals `W, 35-7` with their own recaps; 9 upcoming with published Arizona times; ESPN live score (FBS group) |
-| Volleyball | (this PR) | 12 finals with recaps, 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
+| Volleyball | (this PR) | 12 finals with recaps (one names the opponent only as "UCSB"), 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
 
 ## Setup (route parity)
 

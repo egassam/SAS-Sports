@@ -116,9 +116,17 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
   // game's own recap. The sport-word check is dropped only for the recap the
   // page data links to that game; opponent and date are still required, and
   // any other candidate is checked as before.
+  // The same recap may name the opponent by its initials only ("Arizona Falls
+  // to UCSB in Three Sets" for UC Santa Barbara); for that link the initials
+  // count as the opponent's name too.
   function matchesRecap(raw,event,url){
     if(event?.school_id!=='arizona')return false;
-    return recapMatchesEvent(raw,url&&url===event.recap_url?{...event,sport:''}:event,url);
+    if(!url||url!==event.recap_url)return recapMatchesEvent(raw,event,url);
+    const own={...event,sport:''};
+    if(recapMatchesEvent(raw,own,url))return true;
+    const words=String(event.opponent||'').replace(/\(.*?\)/g,' ').split(/[\s-]+/).filter(Boolean);
+    const initials=words.map(word=>/^[A-Z]{2,}$/.test(word)?word:word[0]).join('').toUpperCase();
+    return words.length>1&&initials.length>=3&&recapMatchesEvent(raw,{...own,opponent:initials},url);
   }
   return{parseSchedule,matchesRecap};
 }

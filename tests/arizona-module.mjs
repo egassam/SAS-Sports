@@ -152,6 +152,13 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   // does not say "volleyball").
   const pairs=[['recap-volleyball-2026-09-27-colorado.html.gz','Colorado'],['recap-volleyball-2026-09-22-utep.html.gz','UTEP'],['recap-volleyball-2026-09-12-oregon-state.html.gz','Oregon State']].map(([name,opponent])=>[fixture(name),played.find(e=>e.opponent===opponent)]);
   for(const [raw,event] of pairs)for(const [,other] of pairs)assert.equal(worker.arizonaHandlers.matchesRecap(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  // "Arizona Falls to UCSB in Three Sets": the opponent's initials count for
+  // the game's own recap only.
+  const ucsb=fixture('recap-volleyball-2026-08-30-uc-santa-barbara.html.gz'),ucsbEvent=played.find(e=>e.opponent==='UC Santa Barbara');
+  assert.equal(worker.recapMatchesEvent(ucsb,ucsbEvent,ucsbEvent.recap_url),false);
+  assert.equal(worker.arizonaHandlers.matchesRecap(ucsb,ucsbEvent,ucsbEvent.recap_url),true);
+  assert.equal(worker.arizonaHandlers.matchesRecap(ucsb,ucsbEvent,'https://arizonawildcats.com/news/2026/8/30/other'),false);
+  for(const other of played.filter(e=>e!==ucsbEvent))assert.equal(worker.arizonaHandlers.matchesRecap(ucsb,other,ucsbEvent.recap_url),false,`${other.opponent} must not take the UCSB recap`);
   const [oregon,oregonEvent]=pairs[2];
   assert.equal(worker.recapMatchesEvent(oregon,oregonEvent,oregonEvent.recap_url),false,'the shared matcher needs the sport word');
   assert.equal(worker.arizonaHandlers.matchesRecap(oregon,oregonEvent,'https://arizonawildcats.com/news/2026/9/12/other'),false,'only the game\'s own recap skips the sport word');
