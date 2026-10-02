@@ -18,6 +18,16 @@ Last updated: October 1, 2026, America/Chicago (K-State Volleyball live scores a
   - Feeds with a live game (`x-sas-live`) are fresh for 10 s instead of 25 s; school pages stay cached.
   - While live, volleyball's big score is the current set's points, and the status line carries sets won.
   - Production at 00:03 UTC on Oct 2: `25–27 · End of 1st · Sets 0-1`; XC 18/20 and 26/21.
+- **BYU Volleyball live, #115 (`4b794ea`, `4.37.5`, user: "Let's update this to byu").** BYU Volleyball uses the same ESPN scoreboard (`byuSchool.liveScoreboards`).
+- **Live score over the saved schedule, #116 (`5e140d1`, `4.37.6`, shared).**
+  - After #115, one K-State refresh returned only the ESPN game (0 results, 0 upcoming): a one-off kstatesports.com failure, saved over the full schedule.
+  - When every official page fails, the live score is now laid over the last good full feed, which is never overwritten by that partial feed. With no saved copy, the request is unavailable.
+  - Preview: 36/36 forced refreshes each for K-State and BYU returned the full schedule plus the live card.
+  - Production at 00:25 UTC: BYU `20–16 · 2nd Set · Sets 1-0` (11 results, 16 upcoming); K-State `16–20 · Sets 0-1` (12 results, 15 upcoming); XC 18/20 and 26/21.
+- **No faster source available.**
+  - ESPN sat on "End of 1st" for about 8 min (00:03–00:11 UTC).
+  - StatBroadcast (the official live stats) sits behind a Cloudflare bot challenge (403); getting past it would be evasion, so it is not used.
+  - ESPN's per-game summary lags the same way, and NCAA.com had no scoreboard file.
 - **Limitation:** ESPN's volleyball feed updates slowly (it stayed at 6-9 for over five minutes). The final's `W, 3-1` format is fixture-tested; tonight's real final was not observed in this session.
 
 **BYU: all 12 sports converted; production is `4.37.1-byu-track-field` (23:10 UTC, October 1).** User: "Finish BYU, do all the sports". The agent opened and merged PRs #97–#107 one sport at a time under `AGENTS.md` item 6 (#94 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/BYU_MODULE.md`.
