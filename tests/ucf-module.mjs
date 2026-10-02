@@ -355,6 +355,29 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.deepEqual([live.events.length,live.error],[6,null]);
 }
 
+// Rowing: production tried /sports/womens-rowing/ (404) and fell back to the
+// homepage ticker (10 upcoming events from other sports). The official page
+// is /sports/rowing/ and still shows "Rowing 2025-26", so today it is an
+// empty schedule. In season, regatta days merge as golf rounds do and
+// scrimmages are left out.
+{
+  const url='https://ucfknights.com/sports/rowing/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Rowing'),[url]);
+  const today=worker.parseHtml(fixture('rowing-schedule.html.gz'),school,'Rowing',url,now);
+  assert.deepEqual(today,[]);assert.ok(worker.ucfHandlers.isEmptySchedule(today));
+  const spring=worker.parseHtml(fixture('rowing-schedule.html.gz'),school,'Rowing',url,new Date('2026-04-01T12:00:00Z'));
+  assert.deepEqual(spring.map(e=>`${e.status} ${e.display_time} ${e.opponent}`),[
+    'Final Oct 11 First Coast Head Race','Final Mar 13 Jacksonville Duel','Final Mar 27 Sarasota 2k','Upcoming Apr 3 Ohio St. Invite',
+    'Upcoming Apr 17 Orlando Invite','Upcoming May 2 Princeton & Penn','Upcoming May 17 Big 12 Championship','Upcoming May 29 NCAA Championships'
+  ],'one event per regatta; the Miami and Iowa scrimmages are left out');
+  const sarasota=spring.find(e=>e.opponent==='Sarasota 2k');
+  assert.equal(sarasota.end_time.slice(0,10),'2026-03-28');
+  assert.ok(!sarasota.recap_url,'the day-one story is not the regatta\'s result');
+  const june=worker.parseHtml(fixture('rowing-schedule.html.gz'),school,'Rowing',url,new Date('2026-06-10T12:00:00Z'));
+  assert.ok(june.find(e=>e.opponent==='Ohio St. Invite').recap_url.endsWith('-completes-sweep-of-all-races-at-ohio-state-invite'),'the last day\'s recap is kept');
+  assert.equal(june.find(e=>e.opponent==='NCAA Championships').end_time.slice(0,10),'2026-05-31');
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Rowing',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field',footballUrl,now),null);
 console.log('UCF module checks passed');

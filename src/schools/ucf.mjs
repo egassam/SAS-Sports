@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Rowing']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -27,7 +27,7 @@ export const ucfSchool={
     'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
     'ucf|Football':'https://ucfknights.com/sports/football/schedule',
     'ucf|Golf':['https://ucfknights.com/sports/mens-golf/schedule','https://ucfknights.com/sports/womens-golf/schedule'],
-    'ucf|Rowing':['https://ucfknights.com/sports/womens-rowing/schedule','https://ucfknights.com/sports/rowing/schedule','https://ucfknights.com/'],
+    'ucf|Rowing':'https://ucfknights.com/sports/rowing/schedule',
     'ucf|Soccer':['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule'],
     'ucf|Softball':'https://ucfknights.com/sports/softball/schedule',
     'ucf|Tennis':['https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/womens-tennis/schedule'],
@@ -150,9 +150,10 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     return null;
   }
   // Golf publishes one card per round ("Mon, Sep 21 FAU Invitational T7, 573
-  // (-3)", "Tue, Sep 22 FAU Invitational 5th, 858 (-6)"). Consecutive rounds
-  // of the same tournament become one event from its first to its last day;
-  // the last round's card carries the final place and total.
+  // (-3)", "Tue, Sep 22 FAU Invitational 5th, 858 (-6)"), rowing one per
+  // regatta day. Consecutive days of the same event become one event from its
+  // first to its last day; the last day's card carries the final result and
+  // recap (a day-one story is not the result).
   function mergeRounds(events){
     const merged=[];
     for(const event of events){
@@ -252,7 +253,8 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       events.push(event);
     }
     if(!events.length){if(!pastSeason)return null;emptiedBySeason.add(events);return events;}
-    return sport==='Golf'?mergeRounds(events):events;
+    // Golf rounds and rowing regatta days each have their own card.
+    return sport==='Golf'||sport==='Rowing'?mergeRounds(events):events;
   }
   const emptiedBySeason=new WeakSet();
   const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
