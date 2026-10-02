@@ -1,0 +1,34 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://arizonawildcats.com/sports/football/schedule",
+      "retrieved": "2026-10-02T18:58Z",
+      "note": "Official '2026 Football Schedule', unmodified, downloaded through the app's private source route (arizonawildcats.com refuses the sandbox). SIDEARM page data (__NUXT_DATA__) lists 13 games: W 35-7 Northern Arizona (Sep 5), L 17-28 at BYU (Sep 12), W 42-17 Northern Illinois (Sep 19), W 34-24 at Washington State (Sep 26), each with its /news/ recap; 9 upcoming with local times (Cincinnati Oct 3 8:00 PM MST, at West Virginia Oct 10 9:00 AM MST, TCU Nov 6 8:15 PM MST) or TBA, and the Dec 4 Big 12 Football Championship."
+    }
+  },
+  "recaps": {
+    "recap-football-2026-09-05-northern-arizona.html.gz": {
+      "url": "https://arizonawildcats.com/news/2026/9/5/football-noah-fifita-throws-for-2-tds-arizona-opens-season-with-35-7-blowout-of-northern-arizona",
+      "retrieved": "2026-10-02T18:59Z"
+    },
+    "recap-football-2026-09-12-byu.html.gz": {
+      "url": "https://arizonawildcats.com/news/2026/9/12/football-arizona-drops-road-battle-at-no-15-byu-28-17",
+      "retrieved": "2026-10-02T18:59Z"
+    },
+    "recap-football-2026-09-19-northern-illinois.html.gz": {
+      "url": "https://arizonawildcats.com/news/2026/9/19/football-noah-fifita-breaks-arizonas-all-time-passing-mark-as-wildcats-roll-over-northern-illinois-42-17",
+      "retrieved": "2026-10-02T18:59Z"
+    },
+    "recap-football-2026-09-26-washington-state.html.gz": {
+      "url": "https://arizonawildcats.com/news/2026/9/26/football-fifita-throws-4-touchdown-passes-in-arizonas-34-24-win-over-washington-state",
+      "retrieved": "2026-10-02T18:59Z"
+    }
+  },
+  "scoreboards": {
+    "football-espn-2026-09-26.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=300&dates=20260926",
+      "retrieved": "2026-10-02T19:01Z",
+      "note": "65 FBS games including Arizona Wildcats at Washington State Cougars (34-24), Kansas State Wildcats at Cincinnati Bearcats and South Alabama at Kentucky Wildcats. The same request with limit=1000 (the default) returned only 25 featured games, without Arizona's."
+    }
+  }
+}

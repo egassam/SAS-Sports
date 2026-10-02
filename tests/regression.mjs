@@ -9,7 +9,8 @@ const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url)
 const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs',import.meta.url),'utf8');
 const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'utf8');
 const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule};
+const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -158,7 +159,7 @@ contains(worker,/function parseSidearmGameCenterCards\(/,'Next-generation SIDEAR
 contains(worker,/Legacy\/standard SIDEARM pages already have a cheaper exact parser/,'Next-generation card scanning must not duplicate standard SIDEARM work');
 contains(worker,/Game-center cards display the opponent score before/,'Game-center score order must be normalized to the selected school');
 contains(oklahomaStateModule,/'oklahoma-state\|Cross Country':\['https:\/\/okstate\.com\/sports\/mxct\/schedule',/,'Oklahoma State cross country must use its official MXCT schedule first');
-contains(worker,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
+contains(arizonaModule,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
 contains(oklahomaStateModule,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
 contains(ucfModule,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
 contains(worker,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-soccer\/schedule'/,'Colorado Soccer must use its populated women’s schedule');
@@ -331,7 +332,7 @@ contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1
 // School schedule pages do not consistently publish live state. Reconcile the
 // official schedule with short-cache football and basketball scoreboards.
 contains(worker,/function fetchLiveScoreboards\(/,'Independent live scoreboard retrieval must exist');
-contains(worker,/provider\.path\}\/scoreboard\?limit=1000/,'Live reconciliation must use the configured sport scoreboard');
+contains(worker,/provider\.path\}\/scoreboard\?\$\{provider\.query\|\|'limit=1000'\}/,'Live reconciliation must use the configured sport scoreboard');
 contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress games must become Live');
 contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
 contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');
