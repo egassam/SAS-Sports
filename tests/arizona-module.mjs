@@ -8,7 +8,7 @@ import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults} from '../src/schools/arizona.mjs';
+import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults,parseArizonaGolfRecap} from '../src/schools/arizona.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -24,7 +24,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
 
 
 // Module ownership: every sponsored sport has explicit arizonawildcats.com
@@ -424,6 +424,60 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.ok(beach.every(e=>e.status==='Upcoming'));
   const [group]=worker.groupEvents(beach,now);
   assert.equal(group.upcoming.length,5);
+}
+
+// Golf: both teams' pages (production showed the women's only, one event per
+// round: "7th; 284 (-4)", "6th; 563 (-13)", "7th; 844 (-20)"). One event per
+// tournament; the tournament's own story gives K-State's "12th of 12 (909)"
+// and Arizona's individual scores.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Golf'),['https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/womens-golf/schedule']);
+  assert.ok(worker.schoolCombinedSports(school).has('Golf'));
+  const menUrl='https://arizonawildcats.com/sports/mens-golf/schedule',womenUrl='https://arizonawildcats.com/sports/womens-golf/schedule';
+  const parse=()=>[...worker.labelTeamEvents(worker.parseHtml(fixture('mens-golf-schedule.html.gz'),school,'Golf',menUrl,now),school,'Golf',menUrl),...worker.labelTeamEvents(worker.parseHtml(fixture('womens-golf-schedule.html.gz'),school,'Golf',womenUrl,now),school,'Golf',womenUrl)];
+  const golf=parse();
+  assert.equal(golf.length,27,'15 men\'s and 12 women\'s tournaments (35 and 30 round entries)');
+  assert.equal(new Set(golf.map(e=>e.id)).size,27);
+  const finals=golf.filter(e=>e.status==='Final');
+  assert.deepEqual(finals.map(e=>[e.title,e.display_time,e.end_time,e.headline,Boolean(e.recap_url)]),[
+    ["Men's · Arizona at Sahalee Players Championship",'Sep 12','2026-09-13T23:59:59Z','12th (909)',true],
+    ["Men's · Arizona at The Tucker Intercollegiate",'Sep 25','2026-09-26T23:59:59Z','Completed',false],
+    ["Women's · Arizona at Folds of Honor Collegiate",'Sep 7','2026-09-09T23:59:59Z','4th (866)',true],
+    ["Women's · Arizona at Golfweek Red Sky Classic",'Sep 21','2026-09-23T23:59:59Z','7th (844)',true]
+  ],'one event per tournament with the last round\'s place, total and recap');
+  assert.ok(finals.every(e=>!/after-day-1|first-round|round-two/.test(e.recap_url||'')),'a day-one story is not the result');
+  const upcoming=golf.filter(e=>e.status!=='Final');
+  assert.deepEqual(upcoming.slice(0,2).map(e=>[e.title,e.display_time,e.end_time]),[["Men's · Arizona at Big 12 Match Play",'Oct 12','2026-10-14T23:59:59Z'],["Men's · Arizona at Abilene Christian Intercollegiate",'Oct 19','2026-10-21T23:59:59Z']]);
+  assert.deepEqual(golf.filter(e=>/NCAA Regional/.test(e.opponent)).map(e=>[e.team_label,e.end_time]),[["Men's",'2027-05-19T23:59:59Z'],["Women's",'2027-05-12T23:59:59Z']],'NCAA rounds publish their last day in the time field');
+  // A tournament in progress shows its next round.
+  const during=worker.parseHtml(fixture('womens-golf-schedule.html.gz'),school,'Golf',womenUrl,new Date('2026-10-06T15:00:00Z')).find(e=>e.opponent==='Windy City Classic');
+  assert.deepEqual([during.status,during.display_time,during.end_time??null],['Today','Oct 6',null]);
+  // Stories: Sahalee, Folds of Honor and Red Sky are linked from the last
+  // round; the Tucker story is in the men's golf archive, dated on the last day.
+  const stories={
+    'https://arizonawildcats.com/news/2026/9/13/mens-golf-arizona-closes-sahalee-players-championship-in-12th':'recap-mens-golf-2026-09-13-sahalee.html.gz',
+    'https://arizonawildcats.com/news/2026/9/26/mens-golf-arizona-finishes-ninth-at-william-h-tucker-intercollegiate':'recap-mens-golf-2026-09-26-tucker.html.gz',
+    'https://arizonawildcats.com/news/2026/9/9/womens-golf-trio-of-wildcats-finish-inside-the-top-six-at-folds-of-honor-collegiate':'recap-womens-golf-2026-09-09-folds-of-honor.html.gz',
+    'https://arizonawildcats.com/news/2026/9/23/womens-golf-wildcats-finish-seventh-at-golfweek-red-sky-classic-behind-charlotte-backs-bogey-free-66':'recap-womens-golf-2026-09-23-red-sky.html.gz'
+  };
+  for(const [url,name] of Object.entries(stories))recapFixtures.set(url,fixture(name));
+  recapFixtures.set('https://arizonawildcats.com/sports/mens-golf/archives',fixture('mens-golf-archives.html.gz'));
+  const parsed=parseArizonaGolfRecap(fixture('recap-womens-golf-2026-09-09-folds-of-honor.html.gz'),{decodeHtml:worker.decodeHtml});
+  assert.deepEqual(parsed.team,{place:'4',total:'866',field:12});
+  assert.deepEqual(parsed.players.map(p=>`${p.place} ${p.participant} ${p.total} ${p.par}`),['5 Olivia Hung 213 -3','T6 Charlotte Back 214 -2','T6 Nagore Martinez 214 -2','T38 Cloe Amion Villarino 225 +9','T47 Kinsley Ni 233 +17']);
+  const fed=parse().filter(e=>e.status==='Final');
+  await Promise.all(fed.map(e=>worker.attachOfficialMeetResults(e)));
+  assert.deepEqual(fed.map(e=>[e.opponent,e.headline]),[
+    ['Sahalee Players Championship','12th of 12 (909)'],['The Tucker Intercollegiate','9th of 15 (857)'],
+    ['Folds of Honor Collegiate','4th of 12 (866)'],['Golfweek Red Sky Classic','7th (844)']
+  ],'K-State\'s "Nth of N (total)"; the Red Sky story lists only the top 10, so no field size is claimed');
+  const tucker=fed[1];
+  assert.equal(tucker.recap_url,'https://arizonawildcats.com/news/2026/9/26/mens-golf-arizona-finishes-ninth-at-william-h-tucker-intercollegiate','the story from the archive');
+  assert.deepEqual(tucker.results.slice(0,3),[{label:'Result',value:'9th of 15 (857)'},{group:"Men's Individual Results",participant:'Tianyi Xiong',result:'T11th · 210 (-6)'},{group:"Men's Individual Results",participant:'Jorge Sampedro',result:'T20th · 213 (-3)'}]);
+  assert.equal(tucker.highlights[0],'Arizona finished 9th of 15 at the Tucker Intercollegiate with a team total of 857.');
+  assert.ok(fed.every(e=>e.meet_results_verified&&e.highlights_verified));
+  // Arizona, not Arizona State (6th at Sahalee), is the team row.
+  assert.ok(/Arizona State/.test(fixture('recap-mens-golf-2026-09-13-sahalee.html.gz')));
 }
 
 console.log('Arizona module checks passed');
