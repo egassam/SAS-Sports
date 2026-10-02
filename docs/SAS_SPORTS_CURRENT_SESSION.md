@@ -319,7 +319,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 ## Instructions for the next session
 
 - **Live scores (ESPN), open checks:**
-  - Watch a real volleyball final reach the card as `W, 3-1` (fixture-tested only).
+  - Observed: the K-State vs BYU final reached both cards (K-State `L, 1-3`, BYU `W, 3-1`) after #121.
   - Watch a K-State or BYU basketball game go live (season from Oct 16).
   - Consider giving football/basketball finals K-State's `W, 71-68` wording: today a scoreboard final overwrites the official headline with `71–68`.
   - ESPN lags, especially between sets. StatBroadcast is behind a bot challenge; do not work around it.
@@ -1161,4 +1161,13 @@ User: "KSTATE volleyball had a match right now. Can we find a live feed and have
 **Merged** under the gate after both fixes, and verified in production (above).
 
 Session close (about 00:40 UTC, October 2): User: "End session". Production `4.37.7-byu-basketball-live`. All work is merged (#94, #97–#119); no open PRs from this session.
+
+After close (02:41 UTC, October 2), the user reported, with a screenshot: "After the game completed it didn't move to completed section". The card read "Today", verified at 16:16.
+- **Cause:**
+  - The first request after a quiet spell was answered with a saved feed up to 24 h old, while the rebuild ran in the background.
+  - A copy with no live game also makes the page wait 5 min before asking again.
+  - BYU's feed was similarly served from 00:40 (still "Live, 3rd set") at 02:42.
+- **#121 (`97f50f8`, `4.37.8-no-old-feed-copies`, shared):** a saved feed is answered at once only while under 2 min old; older copies are rebuilt first (`stale-fallback` only if that fails).
+- **Gate:** `tests/last-good-feed.mjs` covers the three cases; both suites passed; CI green; preview 36/36, XC 18/20 and 26/21; a 130 s-old copy came back rebuilt.
+- **Production after merge:** K-State `Oct 1 · K-State vs #18 BYU · L, 1-3` in Results; BYU `BYU at Kansas State · W, 3-1`; both `x-sas-cache: live`; XC unchanged.
 
