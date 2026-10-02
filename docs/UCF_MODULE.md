@@ -10,7 +10,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | --- | --- | --- |
 | Football | #123 | Module card reader: 4 finals `W, 73-6`-style with their own recaps; 8 upcoming with published times |
 | Volleyball | #125 | 12 finals with recaps; 16 upcoming with times; ESPN live score (as K-State and BYU) |
-| Baseball, Basketball, Cross Country, Golf, Rowing, Soccer, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Soccer | #126 | Both teams (women's Big 12, men's Sun Belt), labeled: 9 + 9 finals with recaps; exhibitions and the postponed FIU game left out |
+| Baseball, Basketball, Cross Country, Golf, Rowing, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -48,6 +49,14 @@ UCF recaps name the sport ("Football Falls in Pittsburgh 12-7"), so the shared r
 Same card layout as Football. Production showed 13 results and 27 upcoming (duplicates) for 12 played and 16 scheduled matches. The module reader gives one event per card, rankings dropped (`#10 Purdue`), K-State's `L, 2-3` wording and each match's own recap.
 
 Live scores use ESPN's women's college volleyball scoreboard (`ucfSchool.liveScoreboards`; the shared `liveScoreboardProviders` looks it up for UCF as for K-State and BYU). The Oct 2 scoreboard fixture holds three other "Knights" teams (Army Black Knights, Fairleigh Dickinson, Bellarmine); only UCF at Baylor matches.
+
+## Soccer (`4.38.2-ucf-soccer`)
+
+UCF has a women's (Big 12) and a men's (Sun Belt) team. Production loaded only the women's page and showed duplicates (10 results, 24 upcoming). Both pages now load through the module, labeled `Women's`/`Men's` (`combinedSports`), women first, with `-womens`/`-mens` event ids.
+- Preseason exhibitions publish `Completed` with no score, and the Sep 3 FIU game reads `Postponed` with no new date; they are left out (not a K-State-style final, not upcoming).
+- Bracket cards are named after their tournament heading: `Big 12 Soccer Tournament · Quarterfinal Round`; the men's `TBD` card is `2026 Sun Belt Conference Men's Soccer Championship`.
+- Rankings in every form are dropped (`#17/17 Colorado`, `-/#21 LSU`). Ties read `T, 1-1`.
+- On Sep 27 both teams played (women at Utah, men vs Kentucky); the shared matcher keeps each recap to its own game (tested).
 
 ## Limitations
 
