@@ -1401,6 +1401,8 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
+  // Arizona tennis tournaments take their story from the team's archive.
+  if(arizonaHandlers.isArizonaTennisTournament(target))await arizonaHandlers.attachTennisStory(target);
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.

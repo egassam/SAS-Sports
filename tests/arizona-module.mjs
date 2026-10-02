@@ -566,8 +566,9 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Arizona earned six wins in singles and doubles on the opening day.','Stelse, Sekachov, Berard and Sivertsen each won again in singles on day two.','Stelse, Sekachov and Sivertsen each won their singles brackets on Sunday.','Sekachov and Stelse closed the tournament with a doubles victory.'])};}}};
   const events=parse();
   const target=events.find(e=>e.opponent==='Kinlen & Vivian Gee Wildcat Invite');
-  await worker.arizonaHandlers.attachTennisStory(target);
+  assert.equal(target.recap_url,undefined,'the expanded view finds the story itself (it runs before the feed hook)');
   await worker.attachOfficialHighlights(events,fixture('mens-tennis-schedule.html.gz'),school,'Tennis',menUrl,now,env,target.id);
+  assert.equal(target.recap_url,'https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home');
   assert.equal(target.highlight_state,'recap_generated');
   assert.ok(prompts[0].includes('Kinlen'));
 }
