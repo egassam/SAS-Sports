@@ -175,10 +175,10 @@ Fixture-tested in season (the same page read as of Apr 10, 2026): 21 meets (the 
 
 ESPN publishes no track scoreboard.
 
-## Seen outside Arizona (not changed)
+## Shared fixes found here (`4.44.0-espn-all-games-exact-teams`, user: "Yes. Fix all")
 
-- The same ESPN limitation affects every other school's football (K-State at Cincinnati was missing on Sep 26) and basketball (the default men's scoreboard listed 12 of 53 games on Mar 3, 2026; `groups=50` lists all Division I games). Fixing it for K-State, BYU and UCF is a shared change that needs the user's approval.
-- The same prefix fallback would take `Kansas State Wildcats` for Kansas (KU) on a football scoreboard. Not changed; shared.
+- **Every school's ESPN request** (`scoreboardQuery`): college football asks for the FBS group (`groups=80&limit=300`), men's and women's college basketball for Division I (`groups=50&limit=300`); other sports keep `limit=1000`. Every catalog school is FBS (Big 12, Big Ten, ACC, SEC). Arizona's per-provider queries were removed (the shared request is the same).
+- **Every school's ESPN team match** (`scoreboardTeamMatchesSchool`): full names only (school name, short name or a multi-letter alias equal to ESPN's location, display or short display name). On real payloads (FBS football Sep 5-26, Division I basketball Feb 14-Mar 3, volleyball Sep 27 and Oct 1) the old matcher made 59 wrong school-team matches: the name prefix (KU took Kansas State; Texas took Texas Tech, Texas A&M and Texas State; Florida took Florida State, FIU, FAU and FGCU; Iowa, Oklahoma, Oregon, Utah, Washington, Georgia, Michigan and others took their neighbours) and abbreviation aliases (Oklahoma State's "OSU" took Ohio State, Mississippi State's "MSU" took Michigan State, Nebraska's "NU" took Northwestern). The new matcher removes all 59, adds none, and all 68 schools still match their own teams. Arizona's special case is replaced by this rule. `tests/scoreboard-match.mjs` checks it on the committed payloads (each ESPN team belongs to at most one school); the old matcher fails it.
 
 ## Certification
 

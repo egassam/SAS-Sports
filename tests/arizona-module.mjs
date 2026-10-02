@@ -100,11 +100,11 @@ for(const [i,expected] of [[0,'Northern Arizona'],[1,'BYU'],[2,'Northern Illinoi
 assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game recaps are downloaded');
 
 // Live scores: ESPN's college football scoreboard lists only ~25 featured
-// games for "limit=1000"; Arizona's provider asks for the FBS group. The Sep 26
+// games for "limit=1000"; the shared request asks for the FBS group. The Sep 26
 // payload also holds Kansas State and Kentucky (both "Wildcats") and Arizona
 // State; only Arizona at Washington State is Arizona's.
 {
-  assert.deepEqual(worker.liveScoreboardProviders(school,'Football').map(p=>[p.path,p.query]),[['football/college-football','groups=80&limit=300']]);
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Football').map(p=>p.path),['football/college-football']);
   const payload=JSON.parse(fixture('football-espn-2026-09-26.json.gz'));
   const names=payload.events.map(e=>e.name);
   assert.ok(names.includes('Kansas State Wildcats at Cincinnati Bearcats')&&names.includes('South Alabama Jaguars at Kentucky Wildcats'));
@@ -114,14 +114,17 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   const reconciled=worker.reconcileScoreboardEvents(football,scored);
   assert.equal(reconciled.length,football.length,'the scoreboard joins the official game; no second card');
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Washington State','W, 34-24']]);
-  // The provider's own query is what is requested.
+  // The FBS group is what is requested.
   const asked=[];
   const scoreboardFetch=Function(...Object.keys(deps),source+';return fetchLiveScoreboards;')(...Object.values({...deps,fetch:async url=>{asked.push(String(url));return{ok:true,json:async()=>payload};}}));
   const live=await scoreboardFetch(school,'Football',new Date('2026-09-26T23:00:00Z'));
   assert.deepEqual(asked,['20260925','20260926','20260927'].map(day=>`https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=300&dates=${day}`));
   assert.equal(live.length,1);
-  // Other schools keep the default request.
-  assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Football').map(p=>p.query),[undefined]);
+  // Every school's football scoreboard asks for the FBS group (K-State at
+  // Cincinnati was missing from the default request too).
+  asked.length=0;
+  await scoreboardFetch(schools.find(s=>s.id==='kstate'),'Football',new Date('2026-09-26T23:00:00Z'));
+  assert.ok(asked.length===3&&asked.every(url=>url.includes('/football/college-football/scoreboard?groups=80&limit=300&dates=')));
 }
 
 // Volleyball: the same page data. Production showed rankings in opponent
@@ -338,9 +341,13 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   // Live: ESPN's men's and women's scoreboards, Division I group. Feb 14,
   // 2026: men's Texas Tech at Arizona among ten "Wildcats" games and Northern
   // Arizona; women's Arizona State at Arizona.
-  assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(p=>[p.path,p.query,p.team_label]),[
-    ['basketball/mens-college-basketball','groups=50&limit=300',"Men's"],['basketball/womens-college-basketball','groups=50&limit=300',"Women's"]
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(p=>[p.path,p.team_label]),[
+    ['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]
   ]);
+  const basketballUrls=[];
+  const basketballFetch=Function(...Object.keys(deps),source+';return fetchLiveScoreboards;')(...Object.values({...deps,fetch:async url=>{basketballUrls.push(String(url));return{ok:true,json:async()=>({events:[]})};}}));
+  await basketballFetch(schools.find(s=>s.id==='byu'),'Basketball',new Date('2026-02-14T23:00:00Z'));
+  assert.ok(basketballUrls.length===6&&basketballUrls.every(url=>/basketball\/(?:mens|womens)-college-basketball\/scoreboard\?groups=50&limit=300&dates=/.test(url)),'Division I group for every school');
   const [menProvider,womenProvider]=arizonaSchool.liveScoreboards.Basketball;
   const mensScores=worker.parseScoreboardPayload(JSON.parse(fixture('basketball-espn-mens-2026-02-14.json.gz')),school,'Basketball',menProvider,'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=50&limit=300&dates=20260214',new Date('2026-02-15T12:00:00Z'));
   assert.deepEqual(mensScores.map(e=>[e.title,e.headline,e.team_label]),[["Men's · Arizona vs Texas Tech",'L, 75-78',"Men's"]]);

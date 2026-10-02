@@ -10,22 +10,19 @@ export const arizonaSchool={
   // data (see parseSchedule). Every other sport keeps the shared parsers.
   pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics','Swimming & Diving','Tennis','Track & Field']),
   // Live game state comes from an independent scoreboard, as for K-State;
-  // the official schedule stays the results source of record. ESPN's college
-  // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
-  // at Washington State was missing on Sep 26); the FBS group (80) lists all.
+  // the official schedule stays the results source of record (the shared
+  // scoreboard request asks ESPN for every FBS / Division I game).
   liveScoreboards:{
-    Football:[{path:'football/college-football',query:'groups=80&limit=300',sourceName:'Live college football scoreboard'}],
+    Football:[{path:'football/college-football',sourceName:'Live college football scoreboard'}],
     // Volleyball scores are sets won; the live detail names the current set.
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
     // ESPN's women's college soccer scoreboard (Arizona sponsors women's
     // soccer only); it lists every Division I match.
     Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
     // Both teams, labeled to match the official men's and women's pages.
-    // Without the Division I group (50) ESPN lists only featured games (2 of
-    // 23 men's games on Mar 1, 2026).
     Basketball:[
-      {path:'basketball/mens-college-basketball',query:'groups=50&limit=300',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
-      {path:'basketball/womens-college-basketball',query:'groups=50&limit=300',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
     ],
     Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
     Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]

@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.43.13-arizona-tennis-stories';
+const VERSION='4.44.0-espn-all-games-exact-teams';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1561,23 +1561,33 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
 
 function normalizedTeamName(value){return slug(value||'').replace(/-/g,' ')}
 function scoreboardTeamMatchesSchool(team,school){
-  // ESPN lists Arizona by its location, "Arizona", in every sport (soccer's
-  // team name is "Arizona" too, which the nickname rule below discarded). The
-  // prefix fallback took "Arizona State Sun Devils" for Arizona.
-  if(school.id==='arizona')return normalizedTeamName(team?.location)==='arizona'||normalizedTeamName(team?.displayName)==='arizona wildcats';
-  const wanted=[school.id,school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(x=>x.length>=2);
-  // A nickname alone ("Wildcats", team.name) is shared by many schools: ESPN's
-  // New Hampshire Wildcats matched K-State's "Wildcats" alias. Match on the
-  // school's location, full or short name, or abbreviation only.
-  const nicknames=new Set([team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
-  const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation].map(normalizedTeamName).filter(Boolean);
-  if(wanted.some(x=>!nicknames.has(x)&&exact.includes(x)))return true;
-  const full=normalizedTeamName(team?.displayName);
-  return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
+  // Full names only: the school's name, short name or a multi-letter alias
+  // must equal ESPN's location, display name or short display name.
+  // - No name prefix: "kansas" + anything took "Kansas State Wildcats" for KU,
+  //   and Florida, Georgia, Iowa, Oklahoma, Oregon, Texas, Utah, Washington and
+  //   others took their "State" neighbours.
+  // - No abbreviations: ESPN's "OSU" is Ohio State and "MSU" Michigan State, so
+  //   Oklahoma State's and Mississippi State's aliases matched them.
+  // - No nickname alone ("Wildcats" is K-State, Kentucky, Arizona and more). A
+  //   team whose ESPN name is its school (soccer's "Arizona") still matches.
+  const nicknames=new Set([team?.name===team?.location?null:team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
+  const wanted=[school.name,school.short_name,...(school.aliases||[])].filter(name=>!/^[A-Z&]{2,5}$/.test(String(name||''))||name===school.short_name).map(normalizedTeamName).filter(x=>x.length>=2&&!nicknames.has(x));
+  const names=[team?.location,team?.displayName,team?.shortDisplayName].map(normalizedTeamName).filter(Boolean);
+  return wanted.some(x=>names.includes(x));
 }
 function scoreboardDateKey(value){const n=Date.parse(value||'');return Number.isFinite(n)?new Date(n).toISOString().slice(0,10):''}
 function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
+}
+// ESPN's college football and basketball scoreboards list only ~25 featured
+// games for "limit=1000" (K-State at Cincinnati and Arizona at Washington State
+// were missing on Sep 26; 12 of 53 men's basketball games on Mar 3, 2026).
+// Every catalog school is FBS and Division I: ask for those groups.
+function scoreboardQuery(provider){
+  if(provider.query)return provider.query;
+  if(provider.path==='football/college-football')return'groups=80&limit=300';
+  if(/^basketball\/(?:mens|womens)-college-basketball$/.test(provider.path))return'groups=50&limit=300';
+  return'limit=1000';
 }
 function liveScoreboardProviders(school,sport){
   const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:school?.id==='arizona'?arizonaSchool.liveScoreboards?.[sport]:null;
@@ -1636,9 +1646,7 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
 async function fetchLiveScoreboards(school,sport,now){
   const found=[];
   for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
-    // A provider may name its own query: ESPN's college football and basketball
-    // scoreboards list only featured games unless a division group is asked for.
-    const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?${provider.query||'limit=1000'}&dates=${date}`;
+    const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?${scoreboardQuery(provider)}&dates=${date}`;
     try{
       const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
       if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));

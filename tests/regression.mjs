@@ -332,7 +332,7 @@ contains(page,/setTimeout\(resolve,1500\)/,'SAS loader must remain visible for 1
 // School schedule pages do not consistently publish live state. Reconcile the
 // official schedule with short-cache football and basketball scoreboards.
 contains(worker,/function fetchLiveScoreboards\(/,'Independent live scoreboard retrieval must exist');
-contains(worker,/provider\.path\}\/scoreboard\?\$\{provider\.query\|\|'limit=1000'\}/,'Live reconciliation must use the configured sport scoreboard');
+contains(worker,/provider\.path\}\/scoreboard\?\$\{scoreboardQuery\(provider\)\}/,'Live reconciliation must use the configured sport scoreboard');
 contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress games must become Live');
 contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
 contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');

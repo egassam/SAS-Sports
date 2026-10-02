@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
+import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
+import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
+import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
+import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
+import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults,parseArizonaGolfRecap} from '../src/schools/arizona.mjs';
+import {rosterSocialInstagrams} from '../src/roster-socials.js';
+import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
+const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
+const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
+const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
+const recapFixtures=new Map(),requests=[];
+const fetch=async url=>{
+  requests.push(String(url));
+  const body=recapFixtures.get(String(url));
+  if(body==null)throw Error(`Unexpected network request: ${url}`);
+  return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
+};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const worker=Function(...Object.keys(deps),source+';return {scoreboardTeamMatchesSchool,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+
+
+
+// ESPN scoreboard team matching for every catalog school, on real payloads
+// (Arizona fixtures: FBS football Sep 26, 2026; women's volleyball Sep 27;
+// Division I basketball Feb 14, 2026). Before October 2 the matcher also took
+// a name prefix ("kansas" + anything) and abbreviations, so KU took Kansas
+// State, Texas took Texas Tech, Iowa took Iowa State, Oklahoma State took
+// Ohio State ("OSU") and Mississippi State took Michigan State ("MSU").
+const load=name=>JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/arizona-module/'+name,import.meta.url))).toString('utf8'));
+const pairs=new Set();
+for(const name of ['football-espn-2026-09-26.json.gz','volleyball-espn-2026-09-27.json.gz','basketball-espn-mens-2026-02-14.json.gz','basketball-espn-womens-2026-02-14.json.gz','soccer-espn-2026-09-27.json.gz'])
+  for(const event of load(name).events)for(const competitor of event.competitions[0].competitors)
+    for(const school of schools)if(worker.scoreboardTeamMatchesSchool(competitor.team,school))pairs.add(`${school.id} => ${competitor.team.displayName}`);
+const has=pair=>pairs.has(pair);
+for(const pair of ['kansas => Kansas Jayhawks','kstate => Kansas State Wildcats','arizona => Arizona Wildcats','iowa-state => Iowa State Cyclones','texas-tech => Texas Tech Red Raiders','ohio-state => Ohio State Buckeyes','utah => Utah Utes','arizona-state => Arizona State Sun Devils'])assert.ok(has(pair),`${pair} must match`);
+for(const pair of ['kansas => Kansas State Wildcats','arizona => Arizona State Sun Devils','iowa => Iowa State Cyclones','texas => Texas Tech Red Raiders','oklahoma-state => Ohio State Buckeyes','kstate => Kentucky Wildcats','kstate => New Hampshire Wildcats','arizona => Northern Arizona Lumberjacks'])assert.ok(!has(pair),`${pair} must not match`);
+// Each ESPN team belongs to at most one catalog school.
+const owners=new Map();for(const pair of pairs){const [id,team]=pair.split(' => ');owners.set(team,[...(owners.get(team)||[]),id]);}
+for(const [team,ids] of owners)assert.equal(ids.length,1,`${team} matched ${ids.join(', ')}`);
+console.log(`Scoreboard team match checks passed (${pairs.size} school-team pairs, each team one school)`);
