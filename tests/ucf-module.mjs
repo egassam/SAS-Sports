@@ -23,7 +23,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,ucfHandlers,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,ucfHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit ucfknights.com routes,
 // exactly the candidates production used before the module (route parity).
@@ -41,7 +41,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(ucfSchool.rosterUrls[`ucf|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'ucf\|/.test(read('../src/index.js')),'UCF configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Soccer','Swimming & Diving'],'both teams are shown for these sports');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Soccer','Swimming & Diving','Tennis'],'both teams are shown for these sports');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='cincinnati'),'Football')[0],'https://gobearcats.com/sports/football/schedule');
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='byu'),'Football')[0],'https://byucougars.com/sports/football/schedule');
@@ -321,6 +321,40 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(matches(schoonerRecap,{...fau,opponent:'Schooner Classic'},schooner.recap_url),false,'a men\'s event refuses a women\'s story');
 }
 
+// Tennis: both teams' official pages. The men's page still shows the
+// 2025-26 season (Jan-May 2026 duals), so it is an empty schedule; production
+// showed none of it as current but also loaded the homepage and generic
+// pages. The women's fall tournaments are multi-day cards: finished ones read
+// "Completed" with their recap (as BYU's do), upcoming ones show their dates.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Tennis'),['https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/womens-tennis/schedule']);
+  const mensUrl='https://ucfknights.com/sports/mens-tennis/schedule',womensUrl='https://ucfknights.com/sports/womens-tennis/schedule';
+  const men=worker.parseHtml(fixture('mens-tennis-schedule.html.gz'),school,'Tennis',mensUrl,now);
+  assert.deepEqual(men,[]);assert.ok(worker.ucfHandlers.isEmptySchedule(men),'a past-season page is an empty schedule, not a failed source');
+  const women=worker.labelTeamEvents(worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis',womensUrl,now),school,'Tennis',womensUrl);
+  assert.deepEqual(women.map(e=>`${e.status} ${e.title} ${e.display_time} ${e.headline||''} ${e.end_time?.slice(0,10)||''}`.replace(/\s+/g,' ').trim()),[
+    "Final Women's · UCF at ITA All-American Championships Sep 19 Completed 2026-09-27","Final Women's · UCF at Bedford Cup Sep 25 Completed 2026-09-27",
+    "Upcoming Women's · UCF at ITA Southeast Regional Championships Oct 7 2026-10-13","Upcoming Women's · UCF at Rome Tennis Center Collegiate Invite Oct 23 2026-10-25",
+    "Upcoming Women's · UCF at ITA Sectional Championships Nov 5 2026-11-08","Upcoming Women's · UCF at UNF Fall Invite Nov 6 2026-11-08"
+  ]);
+  const [ita,bedford]=women;
+  assert.ok(ita.recap_url.endsWith('/news/2026/09/26/knights-wrap-up-competition-at-ita-all-american-championships')&&bedford.recap_url.endsWith('/news/2026/09/27/andreevskaya-leads-knights-with-runner-up-finish-at-bedford-cup'),'recaps published before the last day still count');
+  const itaRecap=fixture('recap-womens-tennis-2026-09-26-ita-all-american.html.gz'),bedfordRecap=fixture('recap-womens-tennis-2026-09-27-bedford-cup.html.gz');
+  const matches=worker.ucfHandlers.matchesRecap;
+  assert.equal(matches(itaRecap,ita,ita.recap_url),true);assert.equal(matches(bedfordRecap,bedford,bedford.recap_url),true);
+  assert.equal(matches(itaRecap,bedford,'https://ucfknights.com/news/2026/09/27/x'),false);assert.equal(matches(bedfordRecap,ita,'https://ucfknights.com/news/2026/09/26/x'),false);
+  // A tournament in progress is not over until its last day.
+  const midway=worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis',womensUrl,new Date('2026-10-09T12:00:00Z'));
+  assert.equal(midway.find(e=>e.opponent==='ITA Southeast Regional Championships').status,'Upcoming');
+  // Through the Worker's fetch path, the men's page is flagged empty and the
+  // feed still holds the women's events.
+  recapFixtures.set(mensUrl,fixture('mens-tennis-schedule.html.gz'));recapFixtures.set(womensUrl,fixture('womens-tennis-schedule.html.gz'));
+  const item=await worker.fetchUrl(mensUrl,school,'Tennis',now);
+  assert.equal(item.empty_schedule,true);
+  const live=await worker.fetchLive('ucf','Tennis');
+  assert.deepEqual([live.events.length,live.error],[6,null]);
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Rowing',footballUrl,now),null);
 console.log('UCF module checks passed');

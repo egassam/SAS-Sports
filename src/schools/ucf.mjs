@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -20,7 +20,7 @@ export const ucfSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Soccer','Golf']),
+  combinedSports:new Set(['Basketball','Swimming & Diving','Soccer','Golf','Tennis']),
   scheduleUrls:{
     'ucf|Baseball':'https://ucfknights.com/sports/baseball/schedule',
     'ucf|Basketball':['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule'],
@@ -30,7 +30,7 @@ export const ucfSchool={
     'ucf|Rowing':['https://ucfknights.com/sports/womens-rowing/schedule','https://ucfknights.com/sports/rowing/schedule','https://ucfknights.com/'],
     'ucf|Soccer':['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule'],
     'ucf|Softball':'https://ucfknights.com/sports/softball/schedule',
-    'ucf|Tennis':['https://ucfknights.com/sports/womens-tennis/schedule','https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/tennis/schedule','https://ucfknights.com/'],
+    'ucf|Tennis':['https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/womens-tennis/schedule'],
     'ucf|Track & Field':['https://ucfknights.com/sports/track-and-field/schedule','https://ucfknights.com/sports/track-field/schedule','https://ucfknights.com/'],
     'ucf|Volleyball':'https://ucfknights.com/sports/volleyball/schedule'
   },
@@ -137,7 +137,7 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
   // The card's own Recap link. A recap is dated in its URL (/news/2026/09/4/...);
   // it must fall between the event day and three days after it.
-  function cardRecap(block,sourceUrl,day){
+  function cardRecap(block,sourceUrl,day,lastDay=day){
     for(const link of block.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>((?:(?!<\/a>)[\s\S])*)<\/a>/gi)){
       if(!/^Recap\b/i.test(visibleText(link[2])))continue;
       const url=absoluteUrl(link[1],sourceUrl);
@@ -145,7 +145,7 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       const dated=parsed.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
       if(parsed.protocol!=='https:'||parsed.hostname!=='ucfknights.com'||!dated)continue;
       const published=Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3]));
-      if(published>=day&&published<=day+3*86400000)return url;
+      if(published>=day&&published<=lastDay+3*86400000)return url;
     }
     return null;
   }
@@ -176,7 +176,7 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     if(!cards.length)return null;
     const days=publishedDays(raw);
     const local=easternDay(now.getTime()),season=Number(local.slice(5,7))>=7?Number(local.slice(0,4)):Number(local.slice(0,4))-1;
-    const events=[];
+    const events=[];let pastSeason=0;
     for(const {block,index:at} of cards){
       const start=(block.match(/schedule-event-date__wrapper--start[\s\S]*?<\/time>/i)||[])[0]||'';
       const month=field(start,/schedule-event-date__month[^>]*>([\s\S]*?)<\/span>/i).split(/[\s,]+/).pop()||'';
@@ -187,6 +187,11 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       const years=[season,season+1].filter(year=>days.has(`${year}-${key}`));
       // Without a schema date, July-December belong to the season's first year.
       const year=years.length===1?years[0]:index>=6?season:season+1;
+      // Spring pages keep showing last season until the next is published
+      // (men's tennis "2025-26"). Only the current academic year (July-June,
+      // Eastern) is current; a page with none is a valid empty schedule.
+      const known=[season-1,season,season+1].filter(value=>days.has(`${value}-${key}`));
+      if(known.length===1&&(index>=6?known[0]:known[0]-1)!==season){pastSeason++;continue;}
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#20/20 Houston", "#19/- Oklahoma St.", "-/#21 LSU") describe
       // the week, not the opponent.
@@ -220,14 +225,20 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       // after that round; "568 (-8)" (no place) is a round in progress.
       const golf=sport==='Golf'?slot.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)?,\s*(\d{3,4})\b/i):null;
       // A meet whose day has passed is over, published result or not.
-      const over=meet&&(placing||golf||Date.UTC(year,index,day)<Date.parse(easternDay(now.getTime())+'T00:00:00Z'));
+      // Multi-day events (tennis tournaments) end on the card's last day.
+      const endBox=(block.match(/schedule-event-date__wrapper--end[\s\S]*?<\/time>/i)||[])[0]||'';
+      const endMonth=MONTHS.findIndex(name=>name.toLowerCase()===(field(endBox,/schedule-event-date__month[^>]*>([\s\S]*?)<\/span>/i).split(/[\s,]+/).pop()||'').slice(0,3).toLowerCase());
+      const endDay=Number(field(endBox,/schedule-event-date__day[^>]*>([\s\S]*?)<\/span>/i));
+      const firstDay=Date.UTC(year,index,day),lastDay=endMonth>=0&&endDay?Date.UTC(endMonth<index?year+1:year,endMonth,endDay):firstDay;
+      const over=meet&&!result&&(placing||golf||lastDay<Date.parse(easternDay(now.getTime())+'T00:00:00Z'));
       if(!meet&&!result&&/^(?:Completed|Postponed|Canceled|Cancelled)\b/i.test(slot))continue;
       // Meets read "UCF at Florida Intercollegiate", as K-State's do.
       const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:meet||/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[index]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:over?null:clock||null,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
-      const recapUrl=result||over?cardRecap(block,sourceUrl,Date.UTC(year,index,day)):null;
+      if(lastDay>firstDay)event.end_time=new Date(lastDay).toISOString().slice(0,10)+'T23:59:59Z';
+      const recapUrl=result||over?cardRecap(block,sourceUrl,firstDay,lastDay):null;
       // UCF runs only a women's cross country team; the page says so.
       const squad=/<title>[^<]*Women(?:&#x27;|')s\b/i.test(raw)?"Women's":'UCF';
       if(golf){const value=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
@@ -240,8 +251,11 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       if(team)event.id=`${event.id}-${team}`;
       events.push(event);
     }
-    return events.length?(sport==='Golf'?mergeRounds(events):events):null;
+    if(!events.length){if(!pastSeason)return null;emptiedBySeason.add(events);return events;}
+    return sport==='Golf'?mergeRounds(events):events;
   }
+  const emptiedBySeason=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   const isUcfCrossCountry=event=>event?.school_id==='ucf'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   // Feed and expanded view both call this; the second call is a no-op. Race
   // rows come from the meet's own card-bound recap.
@@ -312,5 +326,5 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     const identity=event.end_time?{...event,start_time:event.end_time}:event;
     return recapMatchesEvent(raw,identity,url);
   }
-  return{parseSchedule,isUcfCrossCountry,attachMeetResults,matchesRecap};
+  return{parseSchedule,isEmptySchedule,isUcfCrossCountry,attachMeetResults,matchesRecap};
 }
