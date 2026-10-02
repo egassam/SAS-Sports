@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -16,7 +16,10 @@ export const arizonaSchool={
   liveScoreboards:{
     Football:[{path:'football/college-football',query:'groups=80&limit=300',sourceName:'Live college football scoreboard'}],
     // Volleyball scores are sets won; the live detail names the current set.
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // ESPN's women's college soccer scoreboard (Arizona sponsors women's
+    // soccer only); it lists every Division I match.
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
@@ -82,7 +85,11 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
-      const opponent=arizonaOpponent(game.opponent?.title);
+      let opponent=arizonaOpponent(game.opponent?.title);
+      // A bracket game whose opponent is not yet known ("TBA") is named after
+      // its tournament ("Big 12 Soccer Championship").
+      const tournament=String(game.tournament?.title||'').replace(/\s+Presented by\b.*$/i,'').trim();
+      if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
       if(!opponent||INTERNAL.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;

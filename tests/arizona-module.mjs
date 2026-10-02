@@ -187,4 +187,45 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Colorado','L, 2-3']]);
 }
 
+// Soccer: Arizona sponsors women's soccer only. Production showed rankings
+// ("No. 23 BYU", "No. 9 UNC") and dates without times, and the Big 12
+// tournament game as "Arizona vs TBA".
+{
+  const url='https://arizonawildcats.com/sports/womens-soccer/schedule';
+  const soccer=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',url,now);
+  assert.equal(soccer.length,21,'one event per official game');
+  assert.equal(new Set(soccer.map(e=>e.id)).size,21);
+  const played=soccer.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  assert.equal(played.length,12);
+  assert.deepEqual(played.map(e=>`${e.display_time} ${e.title} ${e.headline}`),[
+    'Aug 5 Arizona at UC Irvine (Exhibition) T, 0-0','Aug 12 Arizona at GCU L, 0-2','Aug 15 Arizona vs New Mexico State W, 2-0','Aug 20 Arizona at Gonzaga W, 2-1',
+    'Aug 30 Arizona vs LSU T, 1-1','Sep 3 Arizona vs UNC L, 1-2','Sep 6 Arizona vs Dartmouth L, 0-1','Sep 10 Arizona vs NAU W, 3-0',
+    'Sep 13 Arizona at Pepperdine L, 0-2','Sep 18 Arizona vs BYU T, 1-1','Sep 24 Arizona at Kansas State T, 1-1','Sep 27 Arizona at Kansas L, 0-2'
+  ],'rankings dropped; the scored exhibition is labeled; ties read T');
+  // Three finals have no recap on the page; none is invented.
+  assert.deepEqual(played.filter(e=>!e.recap_url).map(e=>e.opponent),['LSU','NAU','Pepperdine']);
+  const next=soccer.filter(e=>e.status!=='Final');
+  assert.deepEqual(next.map(e=>`${e.title} ${e.display_time}`),[
+    'Arizona at Oklahoma State Oct 2, 5:00 PM','Arizona vs Houston Oct 8, 7:00 PM','Arizona vs Iowa State Oct 11, 1:00 PM','Arizona at Utah Oct 16, 6:00 PM',
+    'Arizona vs Colorado Oct 22, 7:00 PM','Arizona vs Baylor Oct 25, 12:00 PM','Arizona at Arizona State Oct 30, 7:00 PM','Arizona at TCU Nov 5, 5:00 PM',
+    'Arizona vs Big 12 Soccer Championship Nov 9'
+  ],'published times; the unknown bracket opponent is named after its tournament');
+  // Kansas (Sep 27) and Kansas State (Sep 24): each recap matches its own game only.
+  const pairs=[['recap-soccer-2026-09-27-kansas.html.gz','Kansas'],['recap-soccer-2026-09-24-kansas-state.html.gz','Kansas State'],['recap-soccer-2026-08-05-uc-irvine.html.gz','UC Irvine (Exhibition)']].map(([name,opponent])=>[fixture(name),played.find(e=>e.opponent===opponent)]);
+  for(const [raw,event] of pairs)for(const [,other] of pairs)assert.equal(worker.arizonaHandlers.matchesRecap(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  // Live: ESPN's women's college soccer scoreboard. On Sep 27 it lists
+  // "Arizona at Kansas" and "Arizona State at Kansas State"; only the first is Arizona's.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);
+  const payload=JSON.parse(fixture('soccer-espn-2026-09-27.json.gz'));
+  assert.ok(payload.events.some(e=>e.name==='Arizona State at Kansas State'));
+  const scoreUrl='https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20260927';
+  const scored=worker.parseScoreboardPayload(payload,school,'Soccer',arizonaSchool.liveScoreboards.Soccer[0],scoreUrl,new Date('2026-09-28T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Arizona at Kansas','Final','L, 0-2']]);
+  const reconciled=worker.reconcileScoreboardEvents(soccer,scored);
+  assert.equal(reconciled.length,soccer.length);
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Kansas','L, 0-2']]);
+  // Other schools have no soccer scoreboard.
+  assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Soccer'),[]);
+}
+
 console.log('Arizona module checks passed');
