@@ -6,7 +6,11 @@ Last updated: October 2, 2026, America/Chicago (UCF complete: PRs #123, #125–#
 
 ## Current state
 
-**UCF: all 11 sports converted; production is `4.39.0-ucf-track-field` (13:33 UTC, October 2).** User: "Finish UCF, do all the sports". The agent opened and merged PRs #125–#134 one sport at a time under `AGENTS.md` item 6 (#123 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/UCF_MODULE.md`.
+**Rule (user, October 2): do not finish a school until everything within it is complete.** See `AGENTS.md` item 5a. A school is complete only when every sport is in K-State's format, athlete certification passes for every sport, and every module-doc limitation is fixed or proven unfixable from the official sources with evidence.
+
+**UCF is NOT complete yet.** Open: athlete certification (all sports, not reviewed); Cross Country rows limited to runners each recap names; Golf placings without field size; expanded-view AI timeouts. Work continues in this session.
+
+**UCF: all 11 sports' schedules converted; production is `4.39.0-ucf-track-field` (13:33 UTC, October 2).** User: "Finish UCF, do all the sports". The agent opened and merged PRs #125–#134 one sport at a time under `AGENTS.md` item 6 (#123 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/UCF_MODULE.md`.
 
 | PR | Sport | Production |
 | --- | --- | --- |
@@ -352,7 +356,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
   - Consider giving football/basketball finals K-State's `W, 71-68` wording: today a scoreboard final overwrites the official headline with `71–68`.
   - ESPN lags, especially between sets. StatBroadcast is behind a bot challenge; do not work around it.
 - **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
-- **UCF is complete** (#123, #125–#134). Rowing, Track & Field and men's Tennis become non-empty when ucfknights.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/UCF_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 2, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox. Remaining unconverted Big 12 schools: Arizona, Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
+- **UCF is not complete** (schedules done: #123, #125–#134; open items under "Current state"). Finish every open UCF item before starting another school (`AGENTS.md` item 5a). Rowing, Track & Field and men's Tennis become non-empty when ucfknights.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/UCF_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 2, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox. Remaining unconverted Big 12 schools: Arizona, Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
 - **Expanded-view AI timeouts:** about 1 in 15 opens shows `ai_failed` (8 s Workers AI timeout) although the recap matched; a retry succeeds. Shared code; consider caching generated highlights per recap URL, with the user's approval.
 - **BYU is complete** (#94, #97–#107). Gymnastics and Track & Field become non-empty when byucougars.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/BYU_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 1, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox; ucfknights.com (SIDEARM) returned 200.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
@@ -1247,4 +1251,8 @@ User: "Finish UCF, do all the sports". All 15 official schedule pages downloaded
 **Judgment calls to review:** the three softball "Knights vs. 'Nauts" cards are read as an internal squad series (no opponent named) and left out; Soccer and Golf show men's and women's teams as Basketball does; preseason soccer exhibitions published as "Completed" without a score are left out.
 
 **Not done:** UCF athlete certification review.
+
+### October 2, 2026 — Rule: finish the whole school
+
+User: "I don't understand why you are not finishing everything of a school. Before you stop? Please put in the writing to not finish a school until everything is complete within the school". The agent had reported UCF complete with athlete certification unreviewed and other limitations open. The rule is now `AGENTS.md` item 5a, and UCF is marked not complete above.
 

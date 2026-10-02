@@ -8,6 +8,14 @@ The user wants one school-module project per conversation.
 4. At the end of each school session, update the current-state and next-session sections of that same Markdown file and append the session's conversation/decision record. Preserve earlier records through append-only session history and Git version history.
 5. Record tests actually run, publication status, commit/PR identifiers, live verification, limitations, and remaining tasks accurately. A local fix is not a deployed fix.
 
+5a. **Finish the whole school before stopping (user, October 2, 2026: "do not finish a school until everything is complete within the school").** Do not report a school as complete, end the session, or move to the next school while any item for that school is still open. A school is complete only when every item below is done, verified on the preview and in production, and merged:
+   - every sponsored sport reads in K-State's results format: schedule, results, recaps, expanded views, and live scores where K-State has them;
+   - athlete certification for every sport is reviewed and passing (featured athletes, verified Instagram or official-profile fallback);
+   - every limitation in that school's module doc is fixed, or shown to be impossible to fix from the official sources, with the evidence written down (for example, the site has not published the season yet, or the source returns 403 after spaced retries);
+   - the module doc and this handoff are updated.
+
+   Keep working through the open items one sport at a time without stopping to ask. Stop early only for something only the user can decide or unblock, and then say exactly which items are still open and why. Never describe a school with open items as "complete".
+
 6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
    - **Code PRs:**
      - `npm run test:release` and `npm test` pass locally on the final commit.
