@@ -1,0 +1,15 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://ucfknights.com/sports/football/schedule",
+      "retrieved": "2026-10-02T12:02Z",
+      "note": "Official 2026 UCF Football schedule ('Football 2026'), unmodified. 12 schedule-event-item cards dated 'Thu, Sep' / '3' with no year; the JSON-LD lists all 12 starts in UTC. Finals: W 73-6 Bethune-Cookman (Sep 3), L 7-12 at Pittsburgh (Sep 12), W 44-30 Georgia State (Sep 19), W 21-13 TCU (Sep 26), each with a Recap link beside Photo Gallery and Postgame Presser links. 8 upcoming, with times in the result slot: at #20/20 Houston (Oct 3, 12:00 PM EDT), at #19/- Oklahoma St. (Oct 10, 12:00 PM EDT), #10/9 BYU (Oct 24, Time TBA), Baylor (Fri Oct 30, 7:30 PM EDT), at Kansas, Arizona St. (TBA), Iowa St. (Fri Nov 20, 6:00 PM EST), at Colorado (Nov 28, TBA)."
+    }
+  },
+  "recaps": {
+    "recap-2026-09-03-bethune-cookman.html.gz": {"url": "https://ucfknights.com/news/2026/09/4/football-opens-20th-season-of-bounce-house-with-73-6-victory", "retrieved": "2026-10-02T12:05Z", "note": "Unmodified official recap, 'Football Opens 20th Season of Bounce House with 73-6 Victory'."},
+    "recap-2026-09-12-pittsburgh.html.gz": {"url": "https://ucfknights.com/news/2026/09/13/football-falls-in-pittsburgh-12-7", "retrieved": "2026-10-02T12:05Z", "note": "Unmodified official recap, 'Football Falls in Pittsburgh 12-7'."},
+    "recap-2026-09-19-georgia-state.html.gz": {"url": "https://ucfknights.com/news/2026/09/20/watson-runs-wild-as-football-rallies-past-georgia-state-44-30", "retrieved": "2026-10-02T12:05Z", "note": "Unmodified official recap, 'Watson Runs Wild as Football Rallies Past Georgia State 44-30'."},
+    "recap-2026-09-26-tcu.html.gz": {"url": "https://ucfknights.com/news/2026/09/27/football-opens-big-12-play-with-21-13-win-over-tcu", "retrieved": "2026-10-02T12:05Z", "note": "Unmodified official recap, 'Football Opens Big 12 Play with 21-13 Win over TCU'."}
+  }
+}
