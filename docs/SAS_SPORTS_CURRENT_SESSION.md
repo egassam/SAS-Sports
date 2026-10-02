@@ -13,6 +13,11 @@ Last updated: October 1, 2026, America/Chicago (K-State Volleyball live scores a
 - **Gate:** `npm run test:release` and `npm test` passed. CI green. Preview: one live card, no phantom final, XC 18/20 and 26/21, 36/36 forced refreshes.
 - **Production:** live card shown, no phantom final, XC 18/20 and 26/21; K-State, Arizona and BYU Football feeds unchanged.
 - **Set points on the card, #111 (`caa77a2`, `4.37.3-kstate-volleyball-set-points`).** The user's screenshot showed only "LIVE · 1st Set" and `0–0`, because the live card shows `recency_label` and sets won, never `headline`. The set points now go in `recency_label` as well. Production at 23:56 UTC: `LIVE · 1st Set · 18-21`; XC 18/20 and 26/21. While a game is live the page re-fetches every 30 s.
+- **15 s refresh and set points as the big score, #113 (`e6763a4`, `4.37.4-live-refresh-15s`, user: "Make it 15 seconds refresh / Still showing 0-0").**
+  - The page re-fetches live games every 15 s.
+  - Feeds with a live game (`x-sas-live`) are fresh for 10 s instead of 25 s; school pages stay cached.
+  - While live, volleyball's big score is the current set's points, and the status line carries sets won.
+  - Production at 00:03 UTC on Oct 2: `25–27 · End of 1st · Sets 0-1`; XC 18/20 and 26/21.
 - **Limitation:** ESPN's volleyball feed updates slowly (it stayed at 6-9 for over five minutes). The final's `W, 3-1` format is fixture-tested; tonight's real final was not observed in this session.
 
 **BYU: all 12 sports converted; production is `4.37.1-byu-track-field` (23:10 UTC, October 1).** User: "Finish BYU, do all the sports". The agent opened and merged PRs #97–#107 one sport at a time under `AGENTS.md` item 6 (#94 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/BYU_MODULE.md`.
