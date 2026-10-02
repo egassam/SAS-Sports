@@ -307,6 +307,28 @@ assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='ucf'),'V
   const unh=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-new-hampshire-wildcats-2026-09-30.json.gz',import.meta.url))).toString('utf8'));
   assert.deepEqual(worker.parseScoreboardPayload(unh,school,'Volleyball',byuSchool.liveScoreboards.Volleyball[0],scoreUrl,liveNow),[]);
 }
+// Basketball live scores: both teams, same scoreboard path as K-State.
+// Fixtures: ESPN's real events Houston at BYU (men, Feb 7, 2026, 66-77) and
+// BYU at Houston (women, Jan 10, 2026, 79-64). Both teams are Cougars; the
+// matcher must take BYU's side, never Houston's, from the nickname.
+assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(p=>[p.path,p.team_label]),[['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]]);
+{
+  const load=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/byu-module/${name}`,import.meta.url))).toString('utf8'));
+  const [menProvider,womenProvider]=byuSchool.liveScoreboards.Basketball,scoreUrl='https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?limit=1000&dates=20260207';
+  const men=load('basketball-espn-mens-houston-20260207.json.gz'),women=load('basketball-espn-womens-houston-20260110.json.gz');
+  const menFinal=worker.parseScoreboardPayload(men,school,'Basketball',menProvider,scoreUrl,new Date('2026-02-08T12:00:00Z'));
+  assert.deepEqual(menFinal.map(e=>[e.status,e.title,e.team_label,e.school_score,e.opponent_score]),[['Final',"Men's · BYU vs Houston","Men's",'66','77']],'BYU\'s side of the men\'s game');
+  const womenFinal=worker.parseScoreboardPayload(women,school,'Basketball',womenProvider,scoreUrl,new Date('2026-01-11T12:00:00Z'));
+  assert.deepEqual(womenFinal.map(e=>[e.title,e.school_score,e.opponent_score]),[["Women's · BYU at Houston",'79','64']]);
+  const houston=schools.find(s=>s.id==='houston');
+  assert.deepEqual(worker.parseScoreboardPayload(men,houston,'Basketball',menProvider,scoreUrl,new Date('2026-02-08T12:00:00Z')).map(e=>[e.title,e.school_score]),[["Men's · Houston at BYU",'77']],'Houston still gets its own side');
+  // In progress (the same event with its status set to live): BYU's men's
+  // card goes Live with the clock.
+  const inProgress=JSON.parse(JSON.stringify(men)),comp=inProgress.events[0].competitions[0];
+  comp.status.type={...comp.status.type,state:'in',completed:false,shortDetail:'2nd Half - 4:12'};
+  const live=worker.parseScoreboardPayload(inProgress,school,'Basketball',menProvider,scoreUrl,new Date('2026-02-08T04:30:00Z'));
+  assert.deepEqual(live.map(e=>[e.status,e.title,e.school_score,e.opponent_score,e.recency_label]),[['Live',"Men's · BYU vs Houston",'66','77','2nd Half - 4:12']]);
+}
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']);
