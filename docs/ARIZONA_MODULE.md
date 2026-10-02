@@ -10,7 +10,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | --- | --- | --- |
 | Football | #148 | Page-data reader: 4 finals `W, 35-7` with their own recaps; 9 upcoming with published Arizona times; ESPN live score (FBS group) |
 | Volleyball | #149 | 12 finals with recaps (one names the opponent only as "UCSB"), 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
-| Soccer | (this PR) | 12 finals (`T, 1-1`) with recaps where published, 9 upcoming with times; the Big 12 tournament game named; ESPN live score |
+| Soccer | #150 | 12 finals (`T, 1-1`) with recaps where published, 9 upcoming with times; the Big 12 tournament game named; ESPN live score |
+| Cross Country | (this PR) | Race rows from the official recaps: `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, `Women's 6K` then `Men's 8K`, every Arizona runner listed |
 
 ## Setup (route parity)
 
@@ -59,6 +60,30 @@ Three finals (LSU Aug 30, NAU Sep 10, Pepperdine Sep 13) have no recap link on t
 - **NAU, Pepperdine:** "no exact recap", although Arizona published both ("Arizona Blanks Northern Arizona 3-0", "Arizona Falls at Pepperdine 2-0"). The shared news fallback reads `/sports/<sport>/news`, a 404 on arizonawildcats.com, whose stories are listed at `/sports/<sport>/archives`; Arizona now reads that (one school-gated branch). The NAU story never says "NAU": a story found this way may also name the opponent by its full name from the page data's logo title ("Northern Arizona University Logo"). Sport word and date are still required, and only same-day stories are candidates (the previews are dated the day before).
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`, 108 matches on Sep 27). K-State has no soccer scoreboard; the user asked for live scores for Arizona's sports. ESPN's soccer team name is the school name ("Arizona"), which the shared nickname rule discarded, so Arizona's scoreboard match is now exact: ESPN location `Arizona` (or `Arizona Wildcats`) only, in every sport.
+
+## Cross Country (`4.43.3-arizona-cross-country`)
+
+Arizona runs men's and women's teams. Production showed the page's raw team text as the headline (`Men: 1st Women: 12th`, men first) and no race rows. The page data gives each meet's team places (`prescore_info`/`postscore_info`); each recap ends with Arizona's own results per race:
+
+```
+Arizona Men's Results (8K)
+2. Evans Tanui - 22:41.54
+...
+Arizona Women's Results (6K)
+1. Mercy Chepkemoi - 19:02.52
+```
+
+and states the team points in prose ("The men earned 85 points (1st), while the women earned 280 points (12th)."; "... while the women earned 28.").
+
+The module now (`parseArizonaRecapResults`, `attachMeetResults`, the same three school-gated hooks as UCF and BYU):
+- reads the meets as `Arizona at Dave Murray Invitational` with the team places, women first;
+- builds K-State's race groups from the recap lists: `Women's 4K` / `Men's 6K` (Dave Murray, 18 rows) and `Women's 6K` / `Men's 8K` (Sean Earl, 20 rows), each with the team row first (`Arizona team: 12th · 280 pts`) and every Arizona runner listed (`1st · 19:02.52`);
+- writes the headline `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`; places come from the official schedule, points from the recap;
+- uses the results list, not the prose, where they differ (Michael Urbanski: 18:10.0 listed, 18:10.1 in the text);
+- writes highlights only from those rows (team finishes, then each race's leader); the AI never reads these recaps; feed and expanded view share the rows;
+- refuses a recap that is not this meet's (the official places stay).
+
+Rows are Arizona's runners as the recap lists them (the top finishers overall are not Arizona's and are not listed), as K-State's are.
 
 ## Seen outside Arizona (not changed)
 

@@ -8,7 +8,7 @@ import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
+import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults} from '../src/schools/arizona.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -245,6 +245,64 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Kansas','L, 0-2']]);
   // Other schools have no soccer scoreboard.
   assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Soccer'),[]);
+}
+
+// Cross Country: the page data gives each meet's team places ("Men: 1st
+// Women: 12th"); each recap ends with Arizona's results per race ("Arizona
+// Men's Results (8K)", "2. Evans Tanui - 22:41.54") and states the points in
+// prose. Production showed the raw "Men: 1st Women: 12th" with no race rows.
+{
+  const url='https://arizonawildcats.com/sports/cross-country/schedule';
+  const meets=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  assert.deepEqual(meets.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),[
+    "Final Sep 4 Arizona at Dave Murray Invitational | Women's team: 1st / Men's team: 1st",
+    "Final Sep 25 Arizona at Sean Earl Lakefront Invitational | Women's team: 12th / Men's team: 1st",
+    'Upcoming Oct 16 Arizona at Pre-National Invitational | ','Upcoming Oct 31 Arizona at Big 12 Championships | ',
+    'Upcoming Nov 13 Arizona at NCAA West Regional | ','Upcoming Nov 21 Arizona at NCAA Championships | '
+  ]);
+  const [murray,earl]=meets;
+  const dm=fixture('recap-cross-country-2026-09-04-dave-murray.html.gz'),se=fixture('recap-cross-country-2026-09-25-sean-earl.html.gz');
+  const parsed=parseArizonaRecapResults(se,{decodeHtml:value=>String(value).replace(/&#x27;/g,"'").replace(/&amp;/g,'&'),ordinal:n=>`${n}${['th','st','nd','rd'][n%100>10&&n%100<14?0:n%10]||'th'}`});
+  assert.deepEqual(parsed.map(r=>[r.group,r.points,r.rows.length]),[["Women's 6K",'280',8],["Men's 8K",'85',10]],'women first; points from the prose');
+  recapFixtures.set(murray.recap_url,dm);recapFixtures.set(earl.recap_url,se);
+  // Feed: the official race rows replace the raw team text.
+  const feed=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  await Promise.all(feed.filter(e=>e.status==='Final').map(e=>worker.attachOfficialMeetResults(e)));
+  const [a,b]=feed;
+  assert.equal(a.headline,"Women's team: 1st · 28 pts / Men's team: 1st · 15 pts");
+  assert.equal(b.headline,"Women's team: 12th · 280 pts / Men's team: 1st · 85 pts");
+  assert.equal(a.results.length,18,'2 team rows, 8 women, 8 men');
+  assert.equal(b.results.length,20,'2 team rows, 8 women, 10 men');
+  assert.deepEqual(b.results.slice(0,3),[
+    {group:"Women's 6K",participant:'Arizona team',result:'12th · 280 pts'},
+    {group:"Women's 6K",participant:'Mercy Chepkemoi',result:'1st · 19:02.52'},
+    {group:"Women's 6K",participant:'Praise Chepkemoi',result:'34th · 20:08.63'}
+  ]);
+  assert.deepEqual(b.results.slice(9,11),[
+    {group:"Men's 8K",participant:'Arizona team',result:'1st · 85 pts'},
+    {group:"Men's 8K",participant:'Evans Tanui',result:'2nd · 22:41.54'}
+  ]);
+  assert.deepEqual(b.results.at(-1),{group:"Men's 8K",participant:'Kai Espinosa Golinski',result:'115th · 24:25.02'});
+  // The results list is used, not the prose (Urbanski: 18:10.0 listed, 18:10.1 in the text).
+  assert.ok(a.results.some(r=>r.participant==='Michael Urbanski'&&r.result==='6th · 18:10.0'));
+  assert.deepEqual(a.results.filter(r=>r.group==="Women's 4K").map(r=>r.participant).slice(0,3),['Arizona team','Praise Chepkemboi','Laina Friedmann']);
+  assert.ok(a.meet_results_verified&&b.meet_results_verified&&a.highlights_verified);
+  assert.deepEqual(b.highlights,[
+    "Arizona's women placed 12th with 280 points.","Arizona's men placed 1st with 85 points.",
+    "Mercy Chepkemoi led Arizona in the women's 6K, finishing 1st in 19:02.52.","Evans Tanui led Arizona in the men's 8K, finishing 2nd in 22:41.54."
+  ]);
+  // Expanded view: the same rows, no AI.
+  const events=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  const target=events.find(e=>e.opponent==='Sean Earl Lakefront Invitational');
+  await worker.attachOfficialHighlights(events,fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now,{AI:{run:async()=>{throw Error('AI must not read these recaps');}}},target.id);
+  assert.deepEqual(target.results,b.results);
+  assert.equal(target.highlight_state,'official_recap_results');
+  // A recap that is not this meet's is refused.
+  const swapped=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now)[1];
+  swapped.recap_url=murray.recap_url;
+  await worker.attachOfficialMeetResults(swapped);
+  assert.equal(swapped.meet_results_verified,false);
+  assert.equal(swapped.headline,"Women's team: 12th / Men's team: 1st",'the official places stay');
 }
 
 console.log('Arizona module checks passed');
