@@ -7,7 +7,7 @@ import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/ok
 import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
 import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers,parseUcfRecapResults} from '../src/schools/ucf.mjs';
+import {ucfSchool,createUcfHandlers,parseUcfRecapResults,UCF_TFRRS_TEAM,findUcfTfrrsMeet,parseUcfTfrrsResults} from '../src/schools/ucf.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -217,6 +217,54 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   await worker.attachOfficialMeetResults(wrong);
   assert.equal(wrong.highlight_state,'official_results_partial','another meet\'s recap is refused');
   recapFixtures.set(florida.recap_url,fixture('recap-cross-country-2026-09-04-florida-intercollegiate.html.gz'));
+}
+
+// Cross Country, complete results: TFRRS publishes each meet's scored
+// results. With it available, every UCF runner appears (10 at Florida, where
+// the recap gave times for 8), the race reads "Women's 5K" as K-State's do,
+// and the team row carries TFRRS's official score. Where TFRRS and the recap
+// disagree, the scored results win: Florida 39 points (1+6+7+12+13; the
+// recap says 43), Sarah Rose 105th at Southern Showcase (the recap says 104th).
+{
+  const url='https://ucfknights.com/sports/cross-country/schedule';
+  const floridaTf='https://www.tfrrs.org/results/xc/27647/Florida_Intercollegiate_Cross_Country_Invitational',showcaseTf='https://www.tfrrs.org/results/xc/27306/Southern_Showcase_University_College_';
+  recapFixtures.set(UCF_TFRRS_TEAM,fixture('tfrrs-ucf-team.html.gz'));
+  recapFixtures.set(floridaTf,fixture('tfrrs-2026-09-04-florida-intercollegiate.html.gz'));
+  recapFixtures.set(showcaseTf,fixture('tfrrs-2026-09-18-southern-showcase.html.gz'));
+  const [florida,showcase]=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now);
+  recapFixtures.set(florida.recap_url,fixture('recap-cross-country-2026-09-04-florida-intercollegiate.html.gz'));
+  recapFixtures.set(showcase.recap_url,fixture('recap-cross-country-2026-09-18-southern-showcase.html.gz'));
+  await worker.attachOfficialMeetResults(florida);await worker.attachOfficialMeetResults(showcase);
+  const rows=event=>event.results.map(row=>`${row.group} | ${row.participant} ${row.result}`);
+  assert.equal(florida.headline,"Women's team: 1st · 39 pts");
+  assert.deepEqual(rows(florida),["Women's 5K | UCF team 1st · 39 pts","Women's 5K | Alexandra Raquet 1st · 16:52.9","Women's 5K | Caroline Moon 6th · 17:58.1","Women's 5K | Madison Patchan 7th · 17:59.3","Women's 5K | Bella Brick 12th · 18:13.2","Women's 5K | Daisy Ross 13th · 18:13.9","Women's 5K | Emily Wheldon 19th · 18:21.7","Women's 5K | Bailey McLain 20th · 18:22.5","Women's 5K | Sarah Rose 29th · 18:36.1","Women's 5K | Dunja Sikima 88th · 20:11.0","Women's 5K | Raquel Edwards 132nd · 22:22.7"]);
+  assert.equal(showcase.headline,"Women's team: 6th · 199 pts");
+  assert.equal(showcase.results.length,10);
+  assert.deepEqual(showcase.results.slice(-2).map(row=>`${row.participant} ${row.result}`),['Sarah Rose 105th · 18:30.0','Yvone Sandui 209th · 19:36.8']);
+  assert.ok(showcase.results.every(row=>row.group==="Women's 5K"),'the Invite race only, not the Open race');
+  for(const [event,tf] of [[florida,floridaTf],[showcase,showcaseTf]]){
+    assert.equal(event.source.url,event.recap_url,'the source link stays on ucfknights.com');assert.equal(event.results_source_url,tf);assert.match(event.source.name,/recap.*TFRRS/i);assert.ok(!event.result_url,'no shared TFRRS enrichment');
+    assert.equal(event.highlight_state,'official_recap_results');assert.ok(event.highlights.length>=3&&event.meet_results_verified);
+  }
+  assert.equal(showcase.highlights[0],'UCF placed 6th with 199 points at Southern Showcase.');
+  // TFRRS is used only when its team place matches the official card's.
+  const mismatch=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',url,now)[1];
+  mismatch.headline="Women's team: 5th";
+  await worker.attachOfficialMeetResults(mismatch);
+  assert.ok(mismatch.results.every(row=>row.group==="Women's race"),'a place that disagrees with the card falls back to the recap');
+  for(const key of [UCF_TFRRS_TEAM,floridaTf,showcaseTf])recapFixtures.delete(key);
+  // The meet is found by its date and name: the 2025 Southern Showcase is a
+  // different meet, and a name on the wrong day finds nothing.
+  const listing=fixture('tfrrs-ucf-team.html.gz'),decode=value=>value.replace(/&#39;/g,"'").replace(/&amp;/g,'&');
+  assert.equal(findUcfTfrrsMeet(listing,{decodeHtml:decode,date:'2025-09-12',name:'Southern Showcase'}),'https://www.tfrrs.org/results/xc/25342/Southern_Showcase_University_College_');
+  assert.equal(findUcfTfrrsMeet(listing,{decodeHtml:decode,date:'2026-09-18',name:'Florida Intercollegiate'}),null);
+  assert.equal(findUcfTfrrsMeet(listing,{decodeHtml:decode,date:'2026-09-17',name:'Southern Showcase'}),null);
+  // When UCF runs two women's races at one meet, only the scored race's rows
+  // are kept, never a mix.
+  const table=(title,head,rows)=>`<div class="custom-table-title">${title}</div><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+  const twoRaces=table("Women's 5000 Meters Team Results (5k)",['PL','Team','Score'],[['2','UCF','50']])+table("Women's 5000 Meters Individual Results (5k)",['PL','NAME','TEAM','TIME'],[['3','Ann Bee','UCF','17:01.0']])+table("Women's 6000 Meters Individual Results (6k)",['PL','NAME','TEAM','TIME'],[['9','Cat Dee','UCF','21:30.0']]);
+  const two=parseUcfTfrrsResults(twoRaces,{decodeHtml:decode,ordinal:n=>`${n}th`,squad:"Women's"});
+  assert.deepEqual([two.group,two.team.score,two.runners.map(r=>r.participant)],["Women's 5K",'50',['Ann Bee']]);
 }
 
 // Basketball: both official pages only. Production also loaded the generic

@@ -11,7 +11,7 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Football | #123 | Module card reader: 4 finals `W, 73-6`-style with their own recaps; 8 upcoming with published times |
 | Volleyball | #125 | 12 finals with recaps; 16 upcoming with times; ESPN live score (as K-State and BYU) |
 | Soccer | #126 | Both teams (women's Big 12, men's Sun Belt), labeled: 9 + 9 finals with recaps; exhibitions and the postponed FIU game left out |
-| Cross Country | #127 | Women's team: `1st · 43 pts`, `6th · 199 pts`; race rows from the recap prose (deterministic); 3 upcoming |
+| Cross Country | #127, #137, #138 | Complete TFRRS results: `Women's 5K`, every UCF runner, `Women's team: 1st · 39 pts`, `6th · 199 pts`; recap prose as fallback |
 | Basketball | #128 | Men's 35 + women's 34 upcoming, labeled; ESPN live scores for both teams |
 | Baseball | #129 | 38 games (fall exhibitions from Oct 17, spring 2027); official page only |
 | Softball | #130 | 33 games (fall exhibitions from Oct 16, spring 2027); official page only |
@@ -122,7 +122,23 @@ Production tried `/sports/track-field/schedule` (404) and the homepage, and show
 - Cross Country highlights are now the team finish, the leader and the next finishers, all from the verified recap rows (up to 4).
 - `tests/certified-schools.json`: UCF athlete coverage extended from 4 to all 11 sports (minimum 3 each), reviewed October 2.
 
+## Cross Country, complete results (`4.39.2-ucf-xc-tfrrs`)
+
+The recaps name only some runners (Florida: 8 with times, 2 without; Southern Showcase: 9). The official cards' "Results" links go to MileSplit and AthleticLIVE (XpressTiming), which return JavaScript shells with no results in the page. TFRRS, the collegiate results database the Worker already reads for other schools, publishes both meets as plain tables. UCF's TFRRS team page lists each meet with its date.
+
+The module now reads TFRRS first (`findUcfTfrrsMeet`, `parseUcfTfrrsResults`):
+- the meet is found by the card's date and name (the 2025 Southern Showcase is a different meet);
+- rows come from UCF's women's race: the team row with the scored result, then every UCF runner, grouped `Women's 5K` as K-State's are;
+- only when TFRRS's team place matches the official card; otherwise the recap prose is read as before.
+
+Where TFRRS and the recap disagree, the scored results are shown: Florida Intercollegiate 39 points (1+6+7+12+13; the recap says 43); Sarah Rose 105th at Southern Showcase (the recap says 104th). Times are TFRRS's tenths (16:52.9; the recap gives 16:52.88).
+
 ## Limitations
 
-- Athlete certification for UCF was not reviewed.
-- No past-season filter yet: Football's page shows only 2026. Spring sports will need one, as BYU and Arizona State did.
+Each item below is either still open (and listed as such in the handoff) or shown to be impossible to fix from the official sources, with the evidence.
+
+- **Athlete certification:** passed for all 11 sports on October 2 (3 verified athletes each), now covered in `tests/certified-schools.json`.
+- **Golf field size: not published.** The cards give only the place and total ("5th, 858 (-6)"); the recaps and the 2026-27 statistics PDF (Sep 23) give no field size. Golf therefore reads `5th (858)` (as Arizona State's), not K-State's `5th of 15 (858)`. Conflict noted: the statistics PDF lists the Cougar Classic total as 857, while the card and the recap both say 867 (+15); 867 is shown.
+- **Rowing, Track & Field, men's Tennis: no 2026-27 schedule yet.** The pages show "Rowing 2025-26", "Track and Field 2026" (Jan-Jun 2026) and "Men's Tennis 2025-26"; they are empty schedules until UCF publishes the new season, with no code change needed (fixture-tested in season).
+- **Open: the validator and empty schedules.** `tests/validate-schools.mjs` expects one sport group, but every school's empty schedule returns `[]` (BYU Gymnastics too), so Rowing and Track & Field fail it while the app shows the empty-schedule note. Changing the validator is a shared change and needs the user's decision.
+- **Open: expanded-view AI timeouts.** About 1 in 15 opens shows `ai_failed` (the 8 s Workers AI limit) although the recap matched; a retry works. Shared code; needs the user's decision.
