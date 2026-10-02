@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -74,7 +74,33 @@ const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bred\s*(?:-|vs\.?|&|and)\s*blue\b/
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
 // recap link. The shared parsers read only the rendered cards, which omit the
 // start time, so every upcoming game showed its date alone.
-export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
+// Cross country recaps end with Arizona's own results, one list per race:
+// "Arizona Men's Results (6K)" then "1. Vincent Gwachi - 17:32.6" lines, and
+// state the team points in prose ("The men earned 85 points (1st), while the
+// women earned 280 points (12th)." or "... while the women earned 28.").
+// Women's race first, as K-State's.
+export function parseArizonaRecapResults(raw,{decodeHtml,ordinal}){
+  const html=String(raw||''),races=new Map();
+  const heading=/Arizona\s+(Men|Women)(?:'|&#x27;|&#39;|\u2019|&rsquo;)s\s+Results\s*\((\d+(?:\.\d+)?)\s*K\)\s*<\/strong>/gi;
+  for(const m of html.matchAll(heading)){
+    const team=m[1][0].toUpperCase()+m[1].slice(1).toLowerCase();
+    if(races.has(team))continue;
+    const rest=html.slice(m.index+m[0].length),stop=rest.search(/<strong\b|<\/p>|<\/div>/i);
+    const runners=[];
+    for(const line of (stop<0?rest:rest.slice(0,stop)).split(/<br\b[^>]*>/i)){
+      const text=decodeHtml(line.replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+      const row=text.match(/^(\d{1,3})\.\s*(.+?)\s+[-\u2013\u2014]\s+(\d{1,2}:\d{2}(?:\.\d{1,2})?)$/);
+      if(row)runners.push({participant:row[2],place:Number(row[1]),time:row[3]});
+    }
+    if(runners.length)races.set(team,{group:`${team}'s ${m[2]}K`,runners});
+  }
+  const article=decodeHtml(html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+  const points={};
+  for(const m of article.matchAll(/\b(men|women)\s+(?:earned|scored|finished with)\s+(\d{1,4})(?=\s*(?:points?\b|\(|[.,;]))/gi)){const team=m[1][0].toUpperCase()+m[1].slice(1).toLowerCase();points[team]??=m[2];}
+  return['Women','Men'].filter(team=>races.has(team)).map(team=>({team,...races.get(team),points:points[team]||null,rows:races.get(team).runners.map(r=>({group:races.get(team).group,participant:r.participant,result:`${ordinal(r.place)} \u00b7 ${r.time}`}))}));
+}
+
+export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
   const fullNames=new Map();
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='arizona'||!arizonaSchool.pageDataSports.has(sport))return null;
@@ -96,21 +122,33 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      const final=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
+      const meet=eventType(sport)!=='GAME';
+      // Meets publish the team finishes as text: "Men: 1st Women: 12th".
+      const placing=meet?String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim():'';
+      const final=meet?Boolean(placing)||game.date.slice(0,10)<new Date(now.getTime()-7*3600000).toISOString().slice(0,10):['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
       // A game day that has passed with no published score (an exhibition
       // played as "best two of three") is neither a result nor upcoming.
       const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
       if(!final&&game.date.slice(0,10)<today)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at.
-      const relation=game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
+      // Meets read "Arizona at Dave Murray Invitational", as K-State's do.
+      const relation=meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
       // published local time ("TBA" shows the date alone).
       const start=final?null:sidearmStartTime(game.date,game.time);
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
-        schoolScore:final?team:null,oppScore:final?other:null,resultText:final?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+        schoolScore:final&&!meet?team:null,oppScore:final&&!meet?other:null,resultText:final&&!meet?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+      if(meet&&final){
+        // Women first, as K-State's: "Women's team: 12th / Men's team: 1st".
+        const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
+        const teams=['Women','Men'].filter(name=>places[name]);
+        event.headline=teams.length?teams.map(name=>`${name}'s team: ${places[name]}`).join(' / '):'Completed';
+        event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Arizona team',result:places[name]})):[{label:'Result',value:'Completed'}];
+        event.result_count=event.results.length;
+      }
       if(final){
-        const recap=result.recap?.url;
+        const recap=result?.recap?.url;
         if(typeof recap==='string'){
           try{const link=new URL(recap,sourceUrl);if(link.hostname===HOST&&link.pathname.startsWith('/news/'))event.recap_url=link.href;}catch{}
         }
@@ -147,5 +185,49 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent}){
     const initials=words.map(word=>/^[A-Z]{2,}$/.test(word)?word:word[0]).join('').toUpperCase();
     return words.length>1&&initials.length>=3&&recapMatchesEvent(raw,{...own,opponent:initials},url);
   }
-  return{parseSchedule,matchesRecap};
+  const isArizonaCrossCountry=event=>event?.school_id==='arizona'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
+  // Feed and expanded view both call this; the second call is a no-op. Race
+  // rows come from the meet's own recap (linked in the page data).
+  async function attachMeetResults(event){
+    if(!isArizonaCrossCountry(event)||event.meet_results_verified)return event;
+    const unavailable=status=>{
+      event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
+      event.highlight_state='official_results_partial';event.highlight_status=status;
+      return event;
+    };
+    const failed='Official race results could not be loaded. Open the official recap.';
+    if(!event.recap_url)return unavailable('No official recap is published for this meet on arizonawildcats.com.');
+    let raw;
+    try{
+      const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});
+      if(!response.ok)return unavailable(failed);raw=await response.text();
+    }catch{return unavailable(failed);}
+    if(!recapMatchesEvent(raw,event,event.recap_url))return unavailable(failed);
+    const races=parseArizonaRecapResults(raw,{decodeHtml,ordinal});
+    if(!races.length)return unavailable(failed);
+    // Places come from the official schedule, points from the recap.
+    const places=Object.fromEntries([...String(event.headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+\w\w)/g)].map(m=>[m[1],m[2]]));
+    const rows=[],lines=[],headline=[];
+    for(const race of races){
+      const place=places[race.team],result=place?`${place}${race.points?` \u00b7 ${race.points} pts`:''}`:race.points?`${race.points} pts`:null;
+      if(result){rows.push({group:race.group,participant:'Arizona team',result});headline.push(`${race.team}'s team: ${result}`);}
+      rows.push(...race.rows);
+    }
+    if(headline.length)event.headline=headline.join(' / ');
+    event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.recap_result_count=rows.length;
+    event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
+    // Highlights only from the verified rows: each team finish, then each
+    // race's leader.
+    const finish=row=>row.result.replace(' \u00b7 ',' in ');
+    for(const race of races){
+      const place=places[race.team];
+      if(place)lines.push(`Arizona's ${race.team.toLowerCase()} placed ${place}${race.points?` with ${race.points} points`:''}.`);
+    }
+    for(const race of races){const [leader]=race.rows;lines.push(`${leader.participant} led Arizona in the ${race.group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${finish(leader)}.`);}
+    event.highlights=lines.slice(0,4);
+    event.highlights_verified=true;event.meet_results_verified=true;
+    event.highlight_state='official_recap_results';event.highlight_status=null;
+    return event;
+  }
+  return{parseSchedule,matchesRecap,isArizonaCrossCountry,attachMeetResults};
 }
