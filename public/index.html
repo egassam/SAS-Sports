@@ -432,6 +432,36 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     if(queued)queueMicrotask(()=>loadFeed(queued.forceRefresh,{automatic:queued.automatic}));else scheduleLiveRefresh();
   }
 }
+// FINAL-CACHE:BEGIN
+// Finished events do not change, so a verified expanded view (score, recap
+// and highlights) is kept on this device and shown at once on the next open,
+// without waiting on the network or the AI. Unverified answers (an AI timeout)
+// are never kept, so they are asked again. Everything kept is cleared once a
+// month, so corrections still arrive.
+const FINAL_CACHE_PREFIX='sas-final:v1:',FINAL_CACHE_CLEARED='sas-final:cleared-at',FINAL_CACHE_MS=30*24*60*60*1000;
+function finalCacheKey(e){return`${FINAL_CACHE_PREFIX}${e.school_id}|${e.sport}|${e.id}`}
+function sweepFinalCache(store=localStorage,now=Date.now()){
+  try{
+    const cleared=Number(store.getItem(FINAL_CACHE_CLEARED)||0);
+    if(cleared&&now-cleared<FINAL_CACHE_MS)return false;
+    const keys=[];for(let i=0;i<store.length;i++){const key=store.key(i);if(key&&key.startsWith(FINAL_CACHE_PREFIX))keys.push(key)}
+    keys.forEach(key=>store.removeItem(key));
+    store.setItem(FINAL_CACHE_CLEARED,String(now));
+    return true;
+  }catch{return false}
+}
+function cachedFinal(e,store=localStorage){
+  try{
+    const saved=JSON.parse(store.getItem(finalCacheKey(e))||'null');
+    return saved&&saved.event&&saved.event.id===e.id&&saved.event.status==='Final'?saved.event:null;
+  }catch{return null}
+}
+function keepFinal(event,store=localStorage){
+  const verified=event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length;
+  if(!verified)return false;
+  try{store.setItem(finalCacheKey(event),JSON.stringify({saved_at:Date.now(),event}));return true}catch{return false}
+}
+// FINAL-CACHE:END
 async function openEvent(id){
   modalWrap.classList.add('open'); modalWrap.setAttribute('aria-hidden','false');
   let e=null;
@@ -440,7 +470,9 @@ async function openEvent(id){
     try{const r=await apiFetch(`/events/${encodeURIComponent(id)}`);e=await r.json()}catch{}
   }
   if(!e){$('#modalTitle').textContent='Event unavailable';$('#modalBody').innerHTML='<div class="empty">Could not load event details.</div>';return}
-  if(e.status==='Final'&&!e.demo&&e.school_id&&e.sport){
+  const kept=e.status==='Final'&&!e.demo&&e.school_id&&e.sport?cachedFinal(e):null;
+  if(kept)e={...e,...kept};
+  else if(e.status==='Final'&&!e.demo&&e.school_id&&e.sport){
     $('#modalTitle').textContent=e.title;
     $('#modalSub').textContent=`${e.school} · ${e.sport}`;
     $('#modalBody').innerHTML='<div class="highlight-loader" role="status" aria-live="polite"><div class="highlight-loader-mark" aria-hidden="true">SAS</div><div class="highlight-loader-text">Fetching SAS verified highlights…</div></div>';
@@ -451,7 +483,7 @@ async function openEvent(id){
       await new Promise(resolve=>setTimeout(resolve,1500));
       const r=await highlightRequest;
       const enriched=await r.json();
-      if(enriched&&enriched.id)Object.assign(e,enriched);
+      if(enriched&&enriched.id){Object.assign(e,enriched);keepFinal(e)}
     }catch{}
   }
   $('#modalTitle').textContent=e.title; $('#modalSub').textContent=`${e.school} · ${e.sport}`;
@@ -490,6 +522,7 @@ $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListene
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});
 populateSportFilter();
 $('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;currentView=['upcoming','live','results'][demoStage];tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));updateDemo()});
+sweepFinalCache();
 (async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Football';currentView='live';tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='live'))}await loadFeed()}catch(e){status.textContent=e.message}})();
 </script>
 </body>
