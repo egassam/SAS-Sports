@@ -379,4 +379,29 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(scored[0].headline,'W, 4-3','finals read as K-State\'s');
 }
 
+// Softball: "2027 Softball Schedule". Production also loaded the homepage and
+// showed only the 28 spring games, dates alone.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Softball'),['https://arizonawildcats.com/sports/softball/schedule']);
+  const url='https://arizonawildcats.com/sports/softball/schedule';
+  const softball=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Softball',url,now);
+  assert.equal(softball.length,35,'37 page games less the two Red vs. Blue scrimmages');
+  assert.equal(new Set(softball.map(e=>e.id)).size,35);
+  assert.deepEqual(softball.slice(0,4).map(e=>`${e.title} ${e.display_time}`),[
+    'Arizona vs UTEP (Exhibition) (Game 1) Oct 17, 2:00 PM','Arizona vs UTEP (Exhibition) (Game 2) Oct 17, 4:00 PM',
+    'Arizona vs Phoenix College (Exhibition) Oct 23, 5:30 PM','Arizona vs Pima (Exhibition) Oct 23, 7:30 PM'
+  ],'the fall doubleheader stays two games; fall games are exhibitions');
+  assert.deepEqual(softball.slice(-4).map(e=>[e.opponent,e.start_time.slice(0,10),e.end_time]),[
+    ['Big 12 Softball Tournament','2027-05-13','2027-05-15T23:59:59Z'],['NCAA Regionals','2027-05-21','2027-05-23T23:59:59Z'],
+    ['NCAA Super Regionals','2027-05-28','2027-05-30T23:59:59Z'],["Women's College World Series",'2027-06-03','2027-06-11T23:59:59Z']
+  ],'postseason events end on their last day');
+  // Live: ESPN's college softball scoreboard. Apr 10, 2026: Arizona at LSU
+  // (L, 1-4) and UCF at Arizona State the same day.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Softball').map(p=>p.path),['baseball/college-softball']);
+  const payload=JSON.parse(fixture('softball-espn-2026-04-10.json.gz'));
+  assert.ok(payload.events.some(e=>e.name==='UCF Knights at Arizona State Sun Devils'));
+  const scored=worker.parseScoreboardPayload(payload,school,'Softball',arizonaSchool.liveScoreboards.Softball[0],'https://site.api.espn.com/apis/site/v2/sports/baseball/college-softball/scoreboard?limit=1000&dates=20260410',new Date('2026-04-11T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Arizona at LSU','Final','L, 1-4']]);
+}
+
 console.log('Arizona module checks passed');
