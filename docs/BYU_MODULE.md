@@ -172,3 +172,7 @@ Both pages still show the 2025-26 season, so today Track & Field is a 200 empty 
 **All 12 BYU sports now read the official cards through the module.**
 
 **Two-team empty schedules.** The first preview of this PR returned 502. For combined sports, the shared `labelTeamEvents` returns a new array, so the module's identity check no longer recognized its own past-season result. Gymnastics, with one page, was unaffected. `fetchUrl` now keeps the parse result before labeling, and BYU's empty-schedule clause checks that. The other schools' clauses are unchanged. A test runs both pages through `fetchUrl` and `fetchLive`.
+
+## Volleyball live scores (`4.37.5-byu-volleyball-live`)
+
+User, during BYU at Kansas State on Oct 1: "Let's update this to byu". BYU Volleyball now uses the same ESPN college volleyball scoreboard as K-State (`byuSchool.liveScoreboards`, looked up beside K-State's in `liveScoreboardProviders`). Today's official card goes Live from BYU's side: the big score is BYU's points in the current set, and the status line reads `1st Set · Sets 0-0`. A final reads `W, 3-1` / `L, 1-3`. Matching ignores nicknames (Houston and Washington State are also Cougars). ESPN's feed can lag several minutes, especially between sets. Football already used ESPN by default; Basketball is not configured for BYU.

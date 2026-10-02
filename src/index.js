@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.4-live-refresh-15s';
+const VERSION='4.37.5-byu-volleyball-live';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1561,7 +1561,7 @@ function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
 }
 function liveScoreboardProviders(school,sport){
-  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:null;
+  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:null;
   if(configured?.length)return configured;
   return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
 }

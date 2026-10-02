@@ -22,7 +22,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults,fetchUrl,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,VERIFIED_TEAM_TAG_INSTAGRAM,attachOfficialHighlights,byuHandlers,labelTeamEvents,mergeEvents,attachOfficialMeetResults,fetchUrl,fetchLive,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit byucougars.com routes.
 const sports=sponsoredSports.byu;
@@ -289,6 +289,24 @@ for(const team of ['mens','womens'])recapFixtures.set(`https://byucougars.com/sp
 }
 const trackInSeason=worker.parseHtml(fixture('womens-track-and-field-schedule.html.gz'),school,'Track & Field','https://byucougars.com/sports/womens-track-and-field/schedule',new Date('2026-05-01T16:00:00Z'));
 assert.deepEqual(trackInSeason.filter(e=>/team:/.test(e.headline)).map(e=>`${e.display_time} ${e.title} ${e.headline}`),["Feb 27 BYU at Big 12 Championships Women's team: 2nd · 110 pts","Mar 13 BYU at NCAA Championships Women's team: 5th · 27 pts","May 14 BYU at Big 12 Championships Women's team: 2nd · 108 pts"],'in season, team finishes read like Cross Country');
+// Volleyball live score: the same ESPN scoreboard as K-State. Fixture: the
+// BYU at Kansas State event as ESPN served it on Oct 1 (1st set, KSU 2-1).
+assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='ucf'),'Volleyball'),[],'other schools are unchanged');
+{
+  const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz',import.meta.url))).toString('utf8'));
+  const liveNow=new Date('2026-10-01T23:36:00Z'),scoreUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261001';
+  const live=worker.parseScoreboardPayload(payload,school,'Volleyball',byuSchool.liveScoreboards.Volleyball[0],scoreUrl,liveNow);
+  assert.deepEqual(live.map(e=>[e.status,e.title,e.school_score,e.opponent_score,e.recency_label,e.start_time]),[['Live','BYU at Kansas St','1','2','1st Set \u00b7 Sets 0-0','2026-10-01T17:30:00.000Z']],'BYU\'s side of the score, at Mountain wall clock');
+  const official=worker.parseHtml(fixture('womens-volleyball-schedule.html.gz'),school,'Volleyball',volleyballUrl,liveNow);
+  const reconciled=worker.reconcileScoreboardEvents(official,live);
+  assert.equal(reconciled.length,official.length,'the official card goes live; no second card');
+  const card=reconciled.find(e=>e.status==='Live');
+  assert.deepEqual([card.title,card.school_score,card.opponent_score,card.verification_state],['BYU at Kansas State','1','2','official_schedule+live_scoreboard']);
+  // The Sep 30 New Hampshire vs Stonehill event (Wildcats, not Cougars) is not BYU.
+  const unh=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-new-hampshire-wildcats-2026-09-30.json.gz',import.meta.url))).toString('utf8'));
+  assert.deepEqual(worker.parseScoreboardPayload(unh,school,'Volleyball',byuSchool.liveScoreboards.Volleyball[0],scoreUrl,liveNow),[]);
+}
 // Scope: only the card sports use the module reader; other sports and schools keep
 // the shared parsers on the same page.
 assert.deepEqual([...byuSchool.cardSports],['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']);
