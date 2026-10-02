@@ -23,7 +23,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,ucfHandlers,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit ucfknights.com routes,
 // exactly the candidates production used before the module (route parity).
@@ -41,7 +41,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(ucfSchool.rosterUrls[`ucf|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'ucf\|/.test(read('../src/index.js')),'UCF configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Soccer','Swimming & Diving'],'both teams are shown for these sports');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Golf','Soccer','Swimming & Diving'],'both teams are shown for these sports');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='cincinnati'),'Football')[0],'https://gobearcats.com/sports/football/schedule');
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='byu'),'Football')[0],'https://byucougars.com/sports/football/schedule');
@@ -279,6 +279,48 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(games.at(-1).title,'UCF vs Big 12 Softball Tournament');
 }
 
+// Golf: both teams' official pages. Each round has its own card ("T7, 573
+// (-3)" after round two, "5th, 858 (-6)" after the last); production showed
+// every round as its own event (10 results, 27 upcoming). Rounds of one
+// tournament are now one event from its first to its last day, with the final
+// place and total as Arizona State's read ("5th (858)"), and the recap from
+// the last round's card.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Golf'),['https://ucfknights.com/sports/mens-golf/schedule','https://ucfknights.com/sports/womens-golf/schedule']);
+  const golf={};
+  for(const team of ['mens','womens']){
+    const url=`https://ucfknights.com/sports/${team}-golf/schedule`;
+    golf[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-golf-schedule.html.gz`),school,'Golf',url,now),school,'Golf',url);
+  }
+  assert.deepEqual([golf.mens.length,golf.womens.length],[12,12],'one event per tournament (29 and 30 round cards)');
+  const all=[...golf.mens,...golf.womens];
+  assert.equal(new Set(all.map(e=>e.id)).size,24);
+  const finals=all.filter(e=>e.status==='Final').map(e=>`${e.title} ${e.display_time} ${e.headline} ${e.end_time.slice(0,10)}`);
+  assert.deepEqual(finals,[
+    "Men's · UCF at Island Resort Intercollegiate Sep 6 T4th (852) 2026-09-07","Men's · UCF at Bearcat Invitational Sep 14 12th (860) 2026-09-15","Men's · UCF at FAU Invitational Sep 21 5th (858) 2026-09-22",
+    "Women's · UCF at Cougar Classic Sep 7 11th (867) 2026-09-08","Women's · UCF at Schooner Classic Sep 19 8th (843) 2026-09-21"
+  ],'the last round gives the final place and total, never a round score');
+  assert.ok(all.filter(e=>e.status==='Final').every(e=>e.recap_url&&e.results.length===1),'each finished tournament has its recap and one Result row');
+  assert.deepEqual(golf.mens.find(e=>e.status==='Upcoming').display_time,'Oct 5, 8:30 AM','the next tournament keeps its first round\'s tee time');
+  assert.ok(all.filter(e=>e.status==='Upcoming').every(e=>!e.headline&&!e.recap_url));
+  // Recaps: each finished tournament's own story, dated on its last day or after.
+  const fau=golf.mens.find(e=>e.opponent==='FAU Invitational'),schooner=golf.womens.find(e=>e.opponent==='Schooner Classic');
+  const fauRecap=fixture('recap-mens-golf-2026-09-22-fau-invitational.html.gz'),schoonerRecap=fixture('recap-womens-golf-2026-09-21-schooner-classic.html.gz');
+  const matches=worker.ucfHandlers.matchesRecap;
+  assert.equal(matches(fauRecap,fau,fau.recap_url),true);
+  assert.equal(matches(schoonerRecap,schooner,schooner.recap_url),true);
+  // The shared matcher keeps only "invitational" of "FAU Invitational", so it
+  // took the women's Schooner Classic story for the men's FAU Invitational.
+  assert.equal(worker.recapMatchesEvent(schoonerRecap,fau,schooner.recap_url),true,'the shared matcher alone is fooled');
+  assert.equal(matches(schoonerRecap,fau,schooner.recap_url),false,'UCF requires the event named in full');
+  assert.equal(matches(fauRecap,schooner,fau.recap_url),false);
+  // Same team and dates, a link that is not the card's: only the full name counts.
+  const lookalike={...schooner,opponent:'Schooner Invitational',recap_url:null},otherUrl='https://ucfknights.com/news/2026/09/21/another-story';
+  assert.equal(worker.recapMatchesEvent(schoonerRecap,lookalike,otherUrl),true,'the shared matcher keeps only "invitational"');
+  assert.equal(matches(schoonerRecap,lookalike,otherUrl),false,'UCF needs "Schooner Invitational" in full');
+  assert.equal(matches(schoonerRecap,{...fau,opponent:'Schooner Classic'},schooner.recap_url),false,'a men\'s event refuses a women\'s story');
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Golf',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Tennis',footballUrl,now),null);
 console.log('UCF module checks passed');

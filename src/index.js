@@ -11,7 +11,7 @@ import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.38.6-ucf-softball';
+const VERSION='4.38.7-ucf-golf';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -221,7 +221,7 @@ function schoolToday(now,school){const local=schoolNow(now,school);return Date.U
 const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStateRecapTable,attachKStateRecapResults}=createKStateHandlers({clean,slug,ordinal,recapArticleText,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1424,7 +1424,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;

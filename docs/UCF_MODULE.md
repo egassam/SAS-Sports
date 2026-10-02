@@ -15,7 +15,8 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 | Basketball | #128 | Men's 35 + women's 34 upcoming, labeled; ESPN live scores for both teams |
 | Baseball | #129 | 38 games (fall exhibitions from Oct 17, spring 2027); official page only |
 | Softball | #130 | 33 games (fall exhibitions from Oct 16, spring 2027); official page only |
-| Golf, Rowing, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
+| Golf | #131 | Both teams, one event per tournament: men's `T4th (852)`, `12th (860)`, `5th (858)`; women's `11th (867)`, `8th (843)`, each with its recap; UCF recap matcher |
+| Rowing, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -88,6 +89,16 @@ The page is "Baseball 2027": fall exhibitions from Oct 17, then the spring seaso
 ## Softball (`4.38.6-ucf-softball`)
 
 "Softball 2026-27": fall exhibitions from Oct 16, then the spring season. Production also read the homepage and showed 57 upcoming. Softball now routes to the official page only: 33 games. The two "Open Scrimmage" cards and the three "Knights vs. 'Nauts" cards (two squads, read as internal like BYU's "Navy vs. Royal"; the card gives no opponent) are left out.
+
+## Golf (`4.38.7-ucf-golf`)
+
+ucfknights.com publishes one card per round ("T7, 573 (-3)" after round two, "5th, 858 (-6)" after the last). Production showed every round as its own event (10 results, 27 upcoming) and loaded the homepage too. Golf now loads the men's and women's pages only, labeled (`combinedSports`), and the module merges a tournament's consecutive round cards into one event from its first to its last day (`end_time`). The last round gives the final place and total, written as Arizona State's are (`5th (858)`; the field size is not published), and the recap from the last round's card. Upcoming tournaments keep their first round's tee time.
+
+**UCF recap matcher (`matchesRecap`, all UCF sports).** The shared matcher keeps only an opponent's words of four letters or more, so "FAU Invitational" became "invitational": it accepted the women's Schooner Classic story for the men's FAU Invitational. In the expanded view's recap search, UCF now uses its own matcher (one school-gated branch beside BYU's):
+- a link other than the card's own Recap must name the event in full (`Kansas St.` may read `Kansas State`);
+- a men's or women's event refuses the other team's story (title or URL);
+- multi-day events are checked against their last day;
+- the shared opponent, sport and date checks still apply.
 
 ## Limitations
 
