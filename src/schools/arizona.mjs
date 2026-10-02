@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics','Swimming & Diving']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -125,7 +125,9 @@ export function parseArizonaRecapResults(raw,{decodeHtml,ordinal}){
 // the same tournament become one event from its first to its last day. The
 // last round's entry carries the final place, total and recap (a day-one
 // story is not the result); an unfinished tournament shows its next round.
-const ROUND_SPORTS=new Set(['Golf']);
+// Swimming & diving lists each meet day the same way (SMU Classic, Oct 9
+// and 10).
+const ROUND_SPORTS=new Set(['Golf','Swimming & Diving']);
 function mergeRounds(games,today){
   const groups=[];
   for(const game of games){
@@ -259,8 +261,9 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
         // Women first, as K-State's: "Women's team: 12th / Men's team: 1st".
         const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
         const teams=['Women','Men'].filter(name=>places[name]);
-        event.headline=teams.length?teams.map(name=>`${name}'s team: ${places[name]}`).join(' / '):'Completed';
-        event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Arizona team',result:places[name]})):[{label:'Result',value:'Completed'}];
+        // A published finish in another form is shown as published.
+        event.headline=teams.length?teams.map(name=>`${name}'s team: ${places[name]}`).join(' / '):placing||'Completed';
+        event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Arizona team',result:places[name]})):[{label:'Result',value:placing||'Completed'}];
         event.result_count=event.results.length;
       }
       if(final){
