@@ -378,6 +378,27 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(june.find(e=>e.opponent==='NCAA Championships').end_time.slice(0,10),'2026-05-31');
 }
 
-// Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field',footballUrl,now),null);
+// Track & Field: production tried a track-field route that does not exist
+// (404) and the homepage, and showed the 2025-26 season as current (18
+// "Completed" meets with last season's recaps). The official page still shows
+// "Track and Field 2026" (Jan-Jun 2026), so today it is an empty schedule. In
+// season, multi-day meets end on their last day, team finishes read "UCF
+// team: 15th · 14 pts", and the "Black and Gold Challenge" (a meet UCF hosts)
+// stays.
+{
+  const url='https://ucfknights.com/sports/track-and-field/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Track & Field'),[url]);
+  const today=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',url,now);
+  assert.deepEqual(today,[]);assert.ok(worker.ucfHandlers.isEmptySchedule(today));
+  const spring=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',url,new Date('2026-06-20T12:00:00Z'));
+  assert.equal(spring.length,18,'one event per meet');
+  assert.ok(spring.every(e=>e.status==='Final'&&e.title.startsWith('UCF ')));
+  assert.deepEqual(spring.filter(e=>/team:/.test(e.headline)).map(e=>`${e.display_time} ${e.opponent} ${e.headline}`),['Feb 27 Big 12 Indoor Championship UCF team: 15th · 14 pts','May 14 Big 12 Outdoor Championships UCF team: 10th · 41 pts']);
+  assert.ok(spring.some(e=>e.opponent==='Black and Gold Challenge'),'a hosted meet is not an internal event');
+  assert.equal(spring.find(e=>e.opponent==='Big 12 Outdoor Championships').end_time.slice(0,10),'2026-05-16');
+}
+
+// Every sponsored sport now reads UCF's cards; other schools never do.
+assert.deepEqual([...ucfSchool.cardSports].sort(),[...sponsoredSports.ucf].sort());
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='byu'),'Football',footballUrl,now),null);
 console.log('UCF module checks passed');
