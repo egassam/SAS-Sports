@@ -7,7 +7,12 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football']),
+  cardSports:new Set(['Football','Volleyball']),
+  // Live game state comes from an independent scoreboard, as for K-State;
+  // the official cards stay the schedule and results source of record.
+  liveScoreboards:{
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+  },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
     'ucf|Baseball':['https://ucfknights.com/sports/baseball/schedule','https://ucfknights.com/'],

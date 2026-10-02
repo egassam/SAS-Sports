@@ -23,7 +23,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit ucfknights.com routes,
 // exactly the candidates production used before the module (route parity).
@@ -97,6 +97,44 @@ for(const [i,expected] of [[0,'Bethune-Cookman'],[1,'Pitt'],[2,'Georgia State'],
   assert.ok(prompts[0].includes(expected),`${expected}: the AI is given that game's article`);
 }
 assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card recaps are downloaded');
+
+// Volleyball: the same card layout. Production (shared parsers) showed 13
+// results and 27 upcoming for 12 played and 16 scheduled matches.
+{
+  const url='https://ucfknights.com/sports/volleyball/schedule';
+  const volleyball=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',url,now);
+  assert.equal(volleyball.length,28,'one event per official card');
+  assert.equal(new Set(volleyball.map(e=>e.id)).size,28,'no duplicate events');
+  const played=volleyball.filter(e=>e.status==='Final');
+  assert.equal(played.length,12);
+  assert.deepEqual(played.slice(-3).map(e=>[e.display_time,e.title,e.headline]),[
+    ['Sep 19','UCF at Purdue','L, 0-3'],['Sep 24','UCF vs Kansas St.','L, 2-3'],['Sep 27','UCF at Iowa St.','L, 2-3']
+  ],'rankings ("#10 Purdue") are dropped; results read as K-State\'s');
+  assert.ok(played.every(e=>/^https:\/\/ucfknights\.com\/news\/2026\/\d+\/\d+\/[\w-]*volleyball[\w-]*$/.test(e.recap_url)),'every final links its own volleyball recap');
+  const next=volleyball.filter(e=>e.status!=='Final');
+  assert.equal(next.length,16);
+  assert.deepEqual(next.slice(0,3).map(e=>`${e.title} ${e.display_time}`),['UCF at Baylor Oct 2, 8:00 PM','UCF at TCU Oct 4, 3:00 PM','UCF vs Cincinnati Oct 9, 6:00 PM']);
+  assert.ok(next.every(e=>!e.recap_url&&!e.headline),'no upcoming match inherits a result');
+  // Each recap matches its own match only.
+  const recaps=[['recap-volleyball-2026-09-24-kansas-state.html.gz','Kansas St.'],['recap-volleyball-2026-09-27-iowa-state.html.gz','Iowa St.']].map(([name,opponent])=>[fixture(name),played.find(e=>e.opponent===opponent)]);
+  for(const [raw,event] of recaps)for(const [,other] of recaps)assert.equal(worker.recapMatchesEvent(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  // Live score: ESPN's Oct 2 scoreboard, UCF at Baylor (8:00 PM EDT). Three
+  // other Knights (Army Black Knights, Fairleigh Dickinson, Bellarmine) play
+  // the same day and must not match on the nickname.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Football').map(p=>p.path),['football/college-football'],'Football keeps the shared scoreboard');
+  const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/ucf-module/volleyball-espn-2026-10-02.json.gz',import.meta.url))).toString('utf8'));
+  const scoreUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261002';
+  // Scheduled matches are skipped until they start, so every event is set in
+  // progress here; only UCF's goes Live.
+  assert.deepEqual(worker.parseScoreboardPayload(payload,school,'Volleyball',ucfSchool.liveScoreboards.Volleyball[0],scoreUrl,now),[],'nothing before the first serve');
+  for(const item of payload.events)item.competitions[0].status.type={...item.competitions[0].status.type,state:'in',completed:false,shortDetail:'1st Set'};
+  const scored=worker.parseScoreboardPayload(payload,school,'Volleyball',ucfSchool.liveScoreboards.Volleyball[0],scoreUrl,new Date('2026-10-03T00:20:00Z'));
+  assert.deepEqual(scored.map(e=>[e.status,e.title,e.start_time]),[['Live','UCF at Baylor','2026-10-02T20:00:00.000Z']],'only UCF\'s own match, at Eastern wall clock');
+  const reconciled=worker.reconcileScoreboardEvents(volleyball,scored);
+  assert.equal(reconciled.length,volleyball.length,'the scoreboard joins the official card; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.status==='Live').map(e=>[e.title,e.verification_state]),[['UCF at Baylor','official_schedule+live_scoreboard']]);
+}
 
 // Only Football reads the cards so far; every other sport keeps the shared parsers.
 assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Soccer',footballUrl,now),null);

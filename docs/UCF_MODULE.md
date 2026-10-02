@@ -8,8 +8,9 @@ UCF was chosen as the next Big 12 school on October 2, 2026 (user: "Add the Next
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | this PR | Module card reader: 4 finals `W, 73-6`-style with their own recaps; 8 upcoming with published times |
-| Baseball, Basketball, Cross Country, Golf, Rowing, Soccer, Softball, Tennis, Track & Field, Volleyball | — | Still on the shared parsers; to be checked one sport at a time |
+| Football | #123 | Module card reader: 4 finals `W, 73-6`-style with their own recaps; 8 upcoming with published times |
+| Volleyball | #125 | 12 finals with recaps; 16 upcoming with times; ESPN live score (as K-State and BYU) |
+| Baseball, Basketball, Cross Country, Golf, Rowing, Soccer, Softball, Tennis, Track & Field | — | Still on the shared parsers; to be checked one sport at a time |
 
 ## Setup (route parity)
 
@@ -41,6 +42,12 @@ The module reader (`createUcfHandlers().parseSchedule`, Football only via `cardS
 UCF recaps name the sport ("Football Falls in Pittsburgh 12-7"), so the shared recap matcher already matches each final to its own recap only; no module matcher is needed.
 
 `npm run test:ucf-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football cards from the unmodified fixture, recap matching across all four recaps, and highlight generation from each game's own article. Mutations fail it: removing the parse hook, or keeping rankings.
+
+## Volleyball (`4.38.1-ucf-volleyball`)
+
+Same card layout as Football. Production showed 13 results and 27 upcoming (duplicates) for 12 played and 16 scheduled matches. The module reader gives one event per card, rankings dropped (`#10 Purdue`), K-State's `L, 2-3` wording and each match's own recap.
+
+Live scores use ESPN's women's college volleyball scoreboard (`ucfSchool.liveScoreboards`; the shared `liveScoreboardProviders` looks it up for UCF as for K-State and BYU). The Oct 2 scoreboard fixture holds three other "Knights" teams (Army Black Knights, Fairleigh Dickinson, Bellarmine); only UCF at Baylor matches.
 
 ## Limitations
 
