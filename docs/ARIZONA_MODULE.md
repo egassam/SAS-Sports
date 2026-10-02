@@ -19,7 +19,7 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
 | Gymnastics | #157 | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
 | Swimming & Diving | #158 | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
-| Tennis | #159, (this PR) | Both teams, tournaments in progress kept as today's; a past tournament (no team result) is listed only with Arizona's story about it (the Kinlen Invite) |
+| Tennis | #159, #161 | Both teams, tournaments in progress kept as today's; a past tournament (no team result) is listed only with Arizona's story about it (the Kinlen Invite) |
 | Track & Field | #160 | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, recaps dated with their meet |
 
 ## Setup (route parity)
@@ -180,6 +180,20 @@ ESPN publishes no track scoreboard.
 - The same ESPN limitation affects every other school's football (K-State at Cincinnati was missing on Sep 26) and basketball (the default men's scoreboard listed 12 of 53 games on Mar 3, 2026; `groups=50` lists all Division I games). Fixing it for K-State, BYU and UCF is a shared change that needs the user's approval.
 - The same prefix fallback would take `Kansas State Wildcats` for Kansas (KU) on a football scoreboard. Not changed; shared.
 
+## Certification
+
+`tests/validate-schools.mjs --deep` against production on October 2 (all 13 sports): 11/13 on the first run. Football failed once with "fetch failed" (a network error; the immediate rerun passed 4/4), and Tennis failed (three past tournaments without an Arizona story, fixed in #161; the preview then passed 1/1). Every other sport passed with each final's expanded view verified: Volleyball 12/12, Soccer 12/12, Cross Country 2/2, Basketball 3/3, Golf 4/4; Gymnastics and Track & Field are verified empty schedules.
+
+Athletes (`--athletes-only`): 12 sports pass with 3 verified athletes each (official roster profiles with personal Instagram links, each from that sport's own roster). `tests/certified-schools.json` now protects those 12 sports (minimum 3, reviewed October 2).
+
 ## Limitations
 
-To be completed as each sport is converted.
+Each item is either fixed or shown to be impossible to fix from the official sources, with the evidence.
+
+- **Baseball athletes: the roster is not published.** `/sports/baseball/roster` is the "2027 Baseball Roster" with no players (the page data's `rosterPlayers` is empty; the 2026 roster is a separate season page). Featuring last season's roster would show players who have left, so Baseball has no featured athletes and is not in the protected athlete list until Arizona publishes the 2027 roster (no code change needed).
+- **Gymnastics, Track & Field: no 2026-27 schedule yet.** The pages show "2025-26 Gymnastics Schedule" and "2025-26 Track and Field Schedule"; both are verified empty schedules until the new seasons are published (fixture-tested in season).
+- **Red Sky Classic field size: not published.** Its story lists "Team Standings (Top 10)" only, so it reads `7th (844)`; the other three tournaments read `Nth of N`.
+- **Tennis past tournaments without a story** (men's ITA All Americans, women's ITA All-Americans and W50 Berkeley): Arizona's archives hold no story about them (men's: only the Sep 16 preview; women's: only the Sep 2 schedule announcement) and the schedule publishes no result, so they are not listed (as K-State lists none).
+- **Track & Field team finishes:** the page publishes none (the result slots are empty for every 2025-26 meet), so past meets read `Completed` with their recap.
+- **Soccer:** LSU's expanded view uses LSU's own official recap of the match (Arizona published none; the shared opponent-site fallback).
+- **Live scores:** Football, Volleyball, Soccer, Basketball (both teams), Baseball and Softball use ESPN scoreboards, tested on real past games. ESPN publishes none for cross country, golf, tennis, swimming, gymnastics, beach volleyball or track. A real Arizona game going live was not observed during the session's first part (see the handoff for the evening check).
