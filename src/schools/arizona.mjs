@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -27,7 +27,8 @@ export const arizonaSchool={
       {path:'basketball/mens-college-basketball',query:'groups=50&limit=300',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
       {path:'basketball/womens-college-basketball',query:'groups=50&limit=300',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
     ],
-    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}]
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
+    Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
@@ -42,7 +43,7 @@ export const arizonaSchool={
     'arizona|Golf':['https://arizonawildcats.com/sports/womens-golf/schedule','https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/golf/schedule','https://arizonawildcats.com/'],
     'arizona|Gymnastics':['https://arizonawildcats.com/sports/womens-gymnastics/schedule','https://arizonawildcats.com/sports/mens-gymnastics/schedule','https://arizonawildcats.com/sports/gymnastics/schedule','https://arizonawildcats.com/'],
     'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
-    'arizona|Softball':['https://arizonawildcats.com/sports/softball/schedule','https://arizonawildcats.com/'],
+    'arizona|Softball':'https://arizonawildcats.com/sports/softball/schedule',
     'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule','https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule'],
     'arizona|Tennis':['https://arizonawildcats.com/sports/womens-tennis/schedule','https://arizonawildcats.com/sports/mens-tennis/schedule','https://arizonawildcats.com/sports/tennis/schedule','https://arizonawildcats.com/'],
     'arizona|Track & Field':['https://arizonawildcats.com/sports/track-and-field/schedule','https://arizonawildcats.com/sports/track-field/schedule','https://arizonawildcats.com/'],

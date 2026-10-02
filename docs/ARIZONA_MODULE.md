@@ -13,7 +13,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Soccer | #150 | 12 finals (`T, 1-1`) with recaps where published, 9 upcoming with times; the Big 12 tournament game named; ESPN live score |
 | Cross Country | #151 | Race rows from the official recaps: `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, `Women's 6K` then `Men's 8K`, every Arizona runner listed |
 | Basketball | #152 | Men's 39 (3 summer-tour finals with recaps) + women's 33, labeled, published times, exhibitions labeled; ESPN live scores for both teams (Division I group) |
-| Baseball | (this PR) | 59 games: 4 fall exhibitions from Oct 9 (labeled), then spring 2027; published times; doubleheaders kept as Game 1 / Game 2; ESPN live score |
+| Baseball | #153 | 59 games: 4 fall exhibitions from Oct 9 (labeled), then spring 2027; published times; doubleheaders kept as Game 1 / Game 2; ESPN live score |
+| Softball | (this PR) | 35 games: 7 fall exhibitions from Oct 17 (the UTEP doubleheader as two games), then spring 2027; postseason events end on their last day; ESPN live score |
 
 ## Setup (route parity)
 
@@ -108,6 +109,12 @@ The Maui Invitational's later rounds keep their published opponents (`VCU or Pro
 - a doubleheader (the same opponent twice on one day) stays two games, `Game 1` and `Game 2` (`game_number`, as Utah's); the 2027 page has none yet (fixture-tested by moving a game).
 
 **Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`; the default request lists every game ESPN carries: 78 on Apr 10, 2026, including Arizona at TCU, `W, 4-3`, and Utah at Arizona State).
+
+## Softball (`4.43.6-arizona-softball`)
+
+"2027 Softball Schedule": fall games from Oct 9, then the spring season from Mar 12, 2027. Production also loaded the homepage and showed only the 28 spring games, dates alone. Softball now routes to the official page only: 35 games, the two Red vs. Blue scrimmages left out; fall games labeled exhibitions; the Oct 17 UTEP doubleheader as `Game 1` (2:00 PM) and `Game 2` (4:00 PM); the Big 12 tournament and NCAA rounds end on their last day.
+
+**Live score.** ESPN's college softball scoreboard (`baseball/college-softball`, 53 games on Apr 10, 2026, including Arizona at LSU `L, 1-4` and UCF at Arizona State).
 
 ## Seen outside Arizona (not changed)
 
