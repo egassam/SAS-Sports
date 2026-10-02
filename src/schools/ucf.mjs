@@ -7,13 +7,15 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball']),
+  cardSports:new Set(['Football','Volleyball','Soccer']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
   },
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  // Men's and women's teams publish separate pages; both are shown, labeled
+  // by team.
+  combinedSports:new Set(['Basketball','Swimming & Diving','Soccer']),
   scheduleUrls:{
     'ucf|Baseball':['https://ucfknights.com/sports/baseball/schedule','https://ucfknights.com/'],
     'ucf|Basketball':['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule','https://ucfknights.com/sports/basketball/schedule','https://ucfknights.com/'],
@@ -21,7 +23,7 @@ export const ucfSchool={
     'ucf|Football':'https://ucfknights.com/sports/football/schedule',
     'ucf|Golf':['https://ucfknights.com/sports/womens-golf/schedule','https://ucfknights.com/sports/mens-golf/schedule','https://ucfknights.com/sports/golf/schedule','https://ucfknights.com/'],
     'ucf|Rowing':['https://ucfknights.com/sports/womens-rowing/schedule','https://ucfknights.com/sports/rowing/schedule','https://ucfknights.com/'],
-    'ucf|Soccer':'https://ucfknights.com/sports/womens-soccer/schedule',
+    'ucf|Soccer':['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule'],
     'ucf|Softball':['https://ucfknights.com/sports/softball/schedule','https://ucfknights.com/'],
     'ucf|Tennis':['https://ucfknights.com/sports/womens-tennis/schedule','https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/tennis/schedule','https://ucfknights.com/'],
     'ucf|Track & Field':['https://ucfknights.com/sports/track-and-field/schedule','https://ucfknights.com/sports/track-field/schedule','https://ucfknights.com/'],
@@ -50,10 +52,21 @@ function cardBlocks(raw){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=open.index+open[0].length;
     let depth=1,end=-1,tag;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tags.lastIndex;
-    if(end>0)blocks.push(raw.slice(open.index,end));
+    if(end>0)blocks.push({block:raw.slice(open.index,end),index:open.index});
   }
   return blocks;
 }
+
+// Cards are grouped under tournament headings ("Big 12 Soccer Tournament
+// Presented by Allstate"). Bracket cards whose opponent is not yet known
+// ("TBD", "Quarterfinal Round") are named after their tournament.
+function tournamentTitle(raw,index,visibleText){
+  const start=raw.lastIndexOf('class="schedule-events-by-tournament"',index);
+  if(start<0)return'';
+  const title=raw.slice(start,index).match(/schedule-events-by-tournament__title[^>]*>([\s\S]*?)<\//i);
+  return visibleText(title?.[1]||'').replace(/\s+Presented by\b.*$/i,'').trim();
+}
+const PLACEHOLDER=/^(?:TB[AD]|(?:First|Second|Third|Quarterfinal|Semifinal|Championship|Final)s?\b.*\b(?:Round|Match|Game))$/i;
 
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const TIME_ZONE='America/New_York';
@@ -104,7 +117,7 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl}){
     const days=publishedDays(raw);
     const local=easternDay(now.getTime()),season=Number(local.slice(5,7))>=7?Number(local.slice(0,4)):Number(local.slice(0,4))-1;
     const events=[];
-    for(const block of cards){
+    for(const {block,index:at} of cards){
       const start=(block.match(/schedule-event-date__wrapper--start[\s\S]*?<\/time>/i)||[])[0]||'';
       const month=field(start,/schedule-event-date__month[^>]*>([\s\S]*?)<\/span>/i).split(/[\s,]+/).pop()||'';
       const day=Number(field(start,/schedule-event-date__day[^>]*>([\s\S]*?)<\/span>/i));
@@ -115,19 +128,31 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl}){
       // Without a schema date, July-December belong to the season's first year.
       const year=years.length===1?years[0]:index>=6?season:season+1;
       const divider=field(block,/schedule-event-item__divider[^>]*>([\s\S]*?)<\/strong>/i);
-      // Rankings ("#20/20 Houston", "#19/- Oklahoma St.") describe the week,
-      // not the opponent.
-      const opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:#(?:\d+|RV|-)(?:\s*\/\s*(?:#?\d+|RV|-))*\s*)+/i,'').trim();
+      // Rankings ("#20/20 Houston", "#19/- Oklahoma St.", "-/#21 LSU") describe
+      // the week, not the opponent.
+      let opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?=\S*#)[#\dRV\/-]+\s+/i,'').trim();
+      if(PLACEHOLDER.test(opponent)){
+        const heading=tournamentTitle(raw,at,visibleText);
+        if(heading)opponent=/^TB[AD]$/i.test(opponent)?heading:`${heading} \u00b7 ${opponent}`;
+      }
       if(!opponent||!divider)continue;
       const slot=field(block,/class=["']schedule-event-item-result["'][^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i)||field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/(?:strong|div)>/i);
       const result=slot.match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=result?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
+      // Preseason exhibitions publish "Completed" with no score, and a
+      // postponed game has no result or new date; neither is a K-State-style
+      // final or an upcoming game.
+      if(!result&&/^(?:Completed|Postponed|Canceled|Cancelled)\b/i.test(slot))continue;
       const event=makeEvent({school,sport,status:result?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[index]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:clock||null,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
       const recapUrl=result?cardRecap(block,sourceUrl,Date.UTC(year,index,day)):null;
       if(recapUrl)event.recap_url=recapUrl;
+      // Separate men's and women's pages can list the same opponent on the same
+      // day; the team keeps their event ids apart.
+      const team=ucfSchool.combinedSports.has(sport)?(String(sourceUrl).match(/\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(team)event.id=`${event.id}-${team}`;
       events.push(event);
     }
     return events.length?events:null;

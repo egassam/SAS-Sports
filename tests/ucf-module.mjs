@@ -23,7 +23,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit ucfknights.com routes,
 // exactly the candidates production used before the module (route parity).
@@ -41,7 +41,7 @@ for(const sport of sports){
   assert.deepEqual(worker.rosterUrls(school,sport),[].concat(ucfSchool.rosterUrls[`ucf|${sport}`]),`${sport} roster must come from the module`);
 }
 assert.ok(!/'ucf\|/.test(read('../src/index.js')),'UCF configuration must live in its module, not shared code');
-assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Swimming & Diving'],'the shared program combinations are unchanged');
+assert.deepEqual([...worker.schoolCombinedSports(school)].sort(),['Basketball','Soccer','Swimming & Diving'],'both teams are shown for these sports');
 // The neighbouring schools keep their own routes.
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='cincinnati'),'Football')[0],'https://gobearcats.com/sports/football/schedule');
 assert.equal(worker.candidateUrls(schools.find(s=>s.id==='byu'),'Football')[0],'https://byucougars.com/sports/football/schedule');
@@ -136,6 +136,42 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.deepEqual(reconciled.filter(e=>e.status==='Live').map(e=>[e.title,e.verification_state]),[['UCF at Baylor','official_schedule+live_scoreboard']]);
 }
 
-// Only Football reads the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Soccer',footballUrl,now),null);
+// Soccer: UCF has a women's (Big 12) and a men's (Sun Belt) team; production
+// loaded only the women's page and showed duplicates. Both pages now load,
+// labeled by team. Preseason exhibitions ("Completed", no score) and the
+// postponed Sep 3 FIU game are left out; bracket cards are named after their
+// tournament.
+{
+  const soccer={};
+  for(const team of ['womens','mens']){
+    const url=`https://ucfknights.com/sports/${team}-soccer/schedule`;
+    soccer[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-soccer-schedule.html.gz`),school,'Soccer',url,now),school,'Soccer',url);
+  }
+  assert.deepEqual(worker.candidateUrls(school,'Soccer'),['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule']);
+  assert.deepEqual([soccer.womens.length,soccer.mens.length],[20,17],'one event per card with a result or a date to come');
+  const all=[...soccer.womens,...soccer.mens];
+  assert.equal(new Set(all.map(e=>e.id)).size,all.length,'no duplicate events across the two teams');
+  assert.ok(soccer.womens.every(e=>e.team_label==="Women's"&&e.id.endsWith('-womens'))&&soccer.mens.every(e=>e.team_label==="Men's"&&e.id.endsWith('-mens')),'every event is labeled by team');
+  assert.ok(!all.some(e=>['Jacksonville','FGCU','FIU','Daytona State','North Florida'].includes(e.opponent)&&!e.headline&&e.status!=='Upcoming'),'no result-less exhibition or postponed game');
+  assert.ok(!all.some(e=>e.opponent==='FIU'),'the postponed FIU game is left out');
+  const finals=team=>soccer[team].filter(e=>e.status==='Final').map(e=>`${e.display_time} ${e.opponent} ${e.headline}`);
+  assert.deepEqual(finals('womens'),['Aug 13 Florida W, 4-3','Aug 20 LSU W, 2-1','Aug 23 South Florida W, 2-0','Aug 27 UAB W, 3-1','Sep 6 Brown L, 0-7','Sep 10 North Florida W, 1-0','Sep 17 Texas Tech T, 2-2','Sep 24 BYU L, 1-3','Sep 27 Utah L, 0-2'],'rankings ("-/#21 LSU") dropped; ties read "T, 2-2"');
+  assert.deepEqual(finals('mens'),['Aug 20 Boston U. W, 1-0','Aug 23 Florida Atlantic T, 0-0','Aug 28 South Florida W, 2-0','Sep 1 Clemson L, 1-4','Sep 6 Florida Polytechnic W, 6-0','Sep 11 VCU W, 2-0','Sep 18 James Madison L, 0-1','Sep 22 Stetson T, 1-1','Sep 27 Kentucky T, 1-1']);
+  assert.ok(all.filter(e=>e.status==='Final').every(e=>e.recap_url&&e.recap_url.includes(e.team_label==="Men's"?'/mens-soccer':'womens-soccer')),'every final links its own team\'s recap');
+  assert.deepEqual(soccer.womens.slice(-3).map(e=>`${e.title} ${e.display_time}`),[
+    "Women's · UCF vs Big 12 Soccer Tournament · Quarterfinal Round Nov 9","Women's · UCF vs Big 12 Soccer Tournament · Semifinal Round Nov 11","Women's · UCF vs Big 12 Soccer Tournament · Championship Match Nov 14"
+  ]);
+  assert.equal(soccer.mens.at(-1).opponent,"2026 Sun Belt Conference Men's Soccer Championship",'a TBD bracket card takes its tournament name');
+  assert.equal(soccer.womens.find(e=>e.opponent==='Colorado').display_time,'Oct 2, 7:00 PM','"#17/17 Colorado" keeps its published time');
+  // Sep 27: the women at Utah and the men vs Kentucky; each recap matches its own game only.
+  const utah=soccer.womens.find(e=>e.opponent==='Utah'),kentucky=soccer.mens.find(e=>e.opponent==='Kentucky');
+  const utahRecap=fixture('recap-womens-soccer-2026-09-27-utah.html.gz'),kentuckyRecap=fixture('recap-mens-soccer-2026-09-27-kentucky.html.gz');
+  assert.equal(worker.recapMatchesEvent(utahRecap,utah,utah.recap_url),true);
+  assert.equal(worker.recapMatchesEvent(kentuckyRecap,kentucky,kentucky.recap_url),true);
+  assert.equal(worker.recapMatchesEvent(kentuckyRecap,utah,kentucky.recap_url),false,'the men\'s same-day recap is not the women\'s');
+  assert.equal(worker.recapMatchesEvent(utahRecap,kentucky,utah.recap_url),false,'the women\'s same-day recap is not the men\'s');
+}
+
+// Only the converted sports read the cards so far; every other sport keeps the shared parsers.
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Basketball',footballUrl,now),null);
 console.log('UCF module checks passed');
