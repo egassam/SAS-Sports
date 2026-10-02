@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -29,7 +29,7 @@ export const ucfSchool={
     'ucf|Golf':['https://ucfknights.com/sports/womens-golf/schedule','https://ucfknights.com/sports/mens-golf/schedule','https://ucfknights.com/sports/golf/schedule','https://ucfknights.com/'],
     'ucf|Rowing':['https://ucfknights.com/sports/womens-rowing/schedule','https://ucfknights.com/sports/rowing/schedule','https://ucfknights.com/'],
     'ucf|Soccer':['https://ucfknights.com/sports/womens-soccer/schedule','https://ucfknights.com/sports/mens-soccer/schedule'],
-    'ucf|Softball':['https://ucfknights.com/sports/softball/schedule','https://ucfknights.com/'],
+    'ucf|Softball':'https://ucfknights.com/sports/softball/schedule',
     'ucf|Tennis':['https://ucfknights.com/sports/womens-tennis/schedule','https://ucfknights.com/sports/mens-tennis/schedule','https://ucfknights.com/sports/tennis/schedule','https://ucfknights.com/'],
     'ucf|Track & Field':['https://ucfknights.com/sports/track-and-field/schedule','https://ucfknights.com/sports/track-field/schedule','https://ucfknights.com/'],
     'ucf|Volleyball':'https://ucfknights.com/sports/volleyball/schedule'
