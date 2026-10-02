@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -37,7 +37,10 @@ export const arizonaSchool={
     // The two official pages only: the generic page and the homepage added
     // nothing but other sports' ticker events.
     'arizona|Basketball':['https://arizonawildcats.com/sports/mens-basketball/schedule','https://arizonawildcats.com/sports/womens-basketball/schedule'],
-    'arizona|Beach Volleyball':['https://arizonawildcats.com/sports/beach-volleyball/schedule','https://arizonawildcats.com/'],
+    // /sports/beach-volleyball/ renders SIDEARM's empty "@season @sport"
+    // template (production answered 502); the sport's page is
+    // womens-beach-volleyball.
+    'arizona|Beach Volleyball':'https://arizonawildcats.com/sports/womens-beach-volleyball/schedule',
     'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
     'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
     'arizona|Golf':['https://arizonawildcats.com/sports/womens-golf/schedule','https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/golf/schedule','https://arizonawildcats.com/'],
@@ -52,7 +55,7 @@ export const arizonaSchool={
   rosterUrls:{
     'arizona|Baseball':'https://arizonawildcats.com/sports/baseball/roster',
     'arizona|Basketball':['https://arizonawildcats.com/sports/mens-basketball/roster','https://arizonawildcats.com/sports/womens-basketball/roster','https://arizonawildcats.com/sports/basketball/roster'],
-    'arizona|Beach Volleyball':'https://arizonawildcats.com/sports/beach-volleyball/roster',
+    'arizona|Beach Volleyball':'https://arizonawildcats.com/sports/womens-beach-volleyball/roster',
     'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/roster',
     'arizona|Football':'https://arizonawildcats.com/sports/football/roster',
     'arizona|Golf':['https://arizonawildcats.com/sports/womens-golf/roster','https://arizonawildcats.com/sports/mens-golf/roster','https://arizonawildcats.com/sports/golf/roster'],
@@ -140,23 +143,30 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      const meet=eventType(sport)!=='GAME';
+      const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
+      // Meets (cross country, golf) and duals without a score (tennis
+      // tournaments, beach volleyball events) read as meets; a dual with a
+      // score reads as a game.
+      const meet=eventType(sport)!=='GAME'&&!scored;
       // Meets publish the team finishes as text: "Men: 1st Women: 12th".
       const placing=meet?String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim():'';
-      const final=meet?Boolean(placing)||game.date.slice(0,10)<new Date(now.getTime()-7*3600000).toISOString().slice(0,10):['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
+      // Arizona time (no daylight saving). A multi-day event is over only
+      // after its last day.
+      const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
+      const lastDay=String(game.enddate||'').slice(0,10)>game.date.slice(0,10)?String(game.enddate).slice(0,10):game.date.slice(0,10);
+      const final=scored||meet&&(Boolean(placing)||lastDay<today);
       // A game day that has passed with no published score (an exhibition
       // played as "best two of three") is neither a result nor upcoming.
-      const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
-      if(!final&&game.date.slice(0,10)<today)continue;
+      if(!final&&lastDay<today)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at.
       // Meets read "Arizona at Dave Murray Invitational", as K-State's do.
-      const relation=meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
+      const relation=eventType(sport)==='MEET'?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
       // published local time ("TBA" shows the date alone).
       const start=final?null:sidearmStartTime(game.date,game.time);
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
-        schoolScore:final&&!meet?team:null,oppScore:final&&!meet?other:null,resultText:final&&!meet?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+        schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
       // Multi-day events (conference tournaments, tennis tournaments) end on
       // their last day.
       const last=String(game.enddate||'').match(/^(\d{4}-\d{2}-\d{2})T/);
