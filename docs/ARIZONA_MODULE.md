@@ -18,7 +18,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Beach Volleyball | #155 | Was 502: routes fixed to `womens-beach-volleyball`; 5 fall events, tournaments named, multi-day events end on their last day |
 | Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
 | Gymnastics | #157 | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
-| Swimming & Diving | (this PR) | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
+| Swimming & Diving | #158 | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
+| Tennis | (this PR) | Both teams (10 + 10 fall tournaments), tournaments in progress kept as today's, past ones `Completed`, Arizona's story as the recap where one exists |
 
 ## Setup (route parity)
 
@@ -152,6 +153,16 @@ ESPN publishes no college gymnastics scoreboard, so there is no live score.
 Production showed 81 "upcoming" rows: one per meet day for each team (USA Diving Nationals alone was 14 rows) and the Red vs. Blue Intrasquad. The page data lists every meet day as its own entry, so Swimming & Diving joins golf's merge: consecutive days of the same meet become one event ending on its last day (`SMU Classic`, Oct 9-10; `USA Diving Nationals`, Dec 9-15). The men's page reads 13 meets, the women's 14 (they also host Northern Arizona), labeled, with published times where the page's time agrees with its date (the women's Nov 6 entry publishes "1:00 PM ... / 6:00 PM" for a 6 PM start, so it shows the date only).
 
 In season, a dual with a published score reads as K-State's games do (`W, 160-140`); a meet whose last day has passed with no published result reads `Completed` (as UCF's), and a published finish in another form is shown as published. Neither page has a 2026-27 result yet. ESPN publishes no swimming scoreboard.
+
+## Tennis (`4.43.11-arizona-tennis`)
+
+Production loaded the first tennis page that answered (women's) and read 8 tournaments as `Arizona vs W35 Las Vegas`. Tennis now loads both teams' official pages only, labeled (`combinedSports`), 10 men's and 10 women's fall tournaments:
+- tournaments read as meets (`Arizona at ITA All Americans`) and end on their last day (`enddate`);
+- **a multi-day event in progress stays on the schedule** as today's (`In progress`): on Oct 2 the men's University of Arkansas M15 Open (Sep 28 - Oct 4) and Battle of the Bay (Oct 1-4). Before, an upcoming event whose first day had passed fell off the schedule (every Arizona page-data sport now keeps it);
+- fall tournaments publish no team result, so a past one reads `Completed`. The schedule links no stories; Arizona's story about a tournament, found in the team's tennis archive, dated within the tournament or the day after, and naming it in its own text, becomes its recap (feed hook beside golf's): the men's Kinlen & Vivian Gee Wildcat Invite (Sep 11-13) has "Wildcats Close Out a Successful Weekend at Home" (Sep 14). That story also mentions the ITA All American Tournament, which is outside its dates. The men's ITA All Americans and the women's ITA All-Americans and W50 Berkeley have no Arizona story (the women's archive has only the Sep 2 schedule announcement);
+- recaps of multi-day events are checked against their last day.
+
+K-State's tennis feed lists only upcoming tournaments; Arizona's keeps its completed fall tournaments, as UCF's does. ESPN publishes no tennis scoreboard.
 
 ## Seen outside Arizona (not changed)
 

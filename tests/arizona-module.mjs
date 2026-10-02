@@ -529,4 +529,48 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual([smuDual.status,smuDual.headline],['Final','Completed'],'a past meet with no published score reads Completed, as UCF\'s');
 }
 
+// Tennis: both teams' pages (production showed the women's page only, every
+// tournament as "Arizona vs ..."). Fall tennis is individual tournaments: no
+// team score. Past ones read Completed; the ones in progress stay on today's
+// schedule; Arizona's story about a tournament becomes its recap.
+{
+  const menUrl='https://arizonawildcats.com/sports/mens-tennis/schedule',womenUrl='https://arizonawildcats.com/sports/womens-tennis/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Tennis'),[menUrl,womenUrl]);
+  const parse=()=>[...worker.labelTeamEvents(worker.parseHtml(fixture('mens-tennis-schedule.html.gz'),school,'Tennis',menUrl,now),school,'Tennis',menUrl),...worker.labelTeamEvents(worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis',womenUrl,now),school,'Tennis',womenUrl)];
+  const tennis=parse();
+  assert.equal(tennis.length,20);
+  assert.equal(new Set(tennis.map(e=>e.id)).size,20);
+  assert.deepEqual(tennis.slice(0,4).map(e=>[e.title,e.status,e.headline||null,e.display_time,e.end_time]),[
+    ["Men's · Arizona at Kinlen & Vivian Gee Wildcat Invite",'Final','Completed','Sep 11','2026-09-13T23:59:59Z'],
+    ["Men's · Arizona at ITA All Americans",'Final','Completed','Sep 19','2026-09-27T23:59:59Z'],
+    ["Men's · Arizona at University of Arkansas M15 Open",'Today',null,'Sep 28','2026-10-04T23:59:59Z'],
+    ["Men's · Arizona at Battle of the Bay",'Today',null,'Oct 1','2026-10-04T23:59:59Z']
+  ],'tournaments in progress (Sep 28 - Oct 4, Oct 1 - 4) stay on the schedule as today\'s');
+  const [group]=worker.groupEvents(tennis,now);
+  assert.deepEqual(group.upcoming.slice(0,2).map(e=>e.opponent),['University of Arkansas M15 Open','Battle of the Bay']);
+  assert.equal(group.results.length,4);
+  // The Kinlen story (Sep 14, the day after) names the tournament; it also
+  // mentions the ITA All American Tournament, which is outside its dates.
+  recapFixtures.set('https://arizonawildcats.com/sports/mens-tennis/archives',fixture('mens-tennis-archives.html.gz'));
+  recapFixtures.set('https://arizonawildcats.com/sports/womens-tennis/archives',fixture('womens-tennis-archives.html.gz'));
+  for(const path of ['/news/2026/9/10/arizona-mens-tennis-kicks-off-fall-season-at-home','/news/2026/9/16/mens-tennis-the-wildcats-send-eight-players-to-compete-in-the-ita-all-american-championships'])recapFixtures.set(`https://arizonawildcats.com${path}`,'<html><meta property="og:title" content="Preview"><div id="story-x">A preview.</div></html>');
+  recapFixtures.set('https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home',fixture('recap-mens-tennis-2026-09-14-kinlen.html.gz'));
+  const fed=parse().filter(e=>e.status==='Final');
+  await Promise.all(fed.map(e=>worker.arizonaHandlers.attachTennisStory(e)));
+  assert.deepEqual(fed.map(e=>[e.opponent,e.recap_url||null]),[
+    ['Kinlen & Vivian Gee Wildcat Invite','https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home'],
+    ['ITA All Americans',null],['ITA All-Americans',null],['W50 Berkeley',null]
+  ],'only the Kinlen Invite has a story; the Sep 16 preview is not a recap');
+  // Expanded view: highlights from that story.
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Arizona earned six wins in singles and doubles on the opening day.','Stelse, Sekachov, Berard and Sivertsen each won again in singles on day two.','Stelse, Sekachov and Sivertsen each won their singles brackets on Sunday.','Sekachov and Stelse closed the tournament with a doubles victory.'])};}}};
+  const events=parse();
+  const target=events.find(e=>e.opponent==='Kinlen & Vivian Gee Wildcat Invite');
+  assert.equal(target.recap_url,undefined,'the expanded view finds the story itself (it runs before the feed hook)');
+  await worker.attachOfficialHighlights(events,fixture('mens-tennis-schedule.html.gz'),school,'Tennis',menUrl,now,env,target.id);
+  assert.equal(target.recap_url,'https://arizonawildcats.com/news/2026/9/14/mens-tennis-wildcats-close-out-a-successful-weekend-at-home');
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.ok(prompts[0].includes('Kinlen'));
+}
+
 console.log('Arizona module checks passed');

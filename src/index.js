@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.43.10-arizona-swimming-diving';
+const VERSION='4.43.11-arizona-tennis';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1401,6 +1401,8 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
+  // Arizona tennis tournaments take their story from the team's archive.
+  if(arizonaHandlers.isArizonaTennisTournament(target))await arizonaHandlers.attachTennisStory(target);
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.
@@ -1684,6 +1686,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // grouped feed is cached, so the summary count and cards match the modal.
   // Arizona golf results come from each tournament's own story.
   if(school.id==='arizona'&&sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
+  if(school.id==='arizona'&&sport==='Tennis')await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
   if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event)||arizonaHandlers.isArizonaCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
