@@ -124,4 +124,60 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Football').map(p=>p.query),[undefined]);
 }
 
+// Volleyball: the same page data. Production showed rankings in opponent
+// names ("Arizona at #21 Colorado") and dates without times. The Red-Blue
+// scrimmage and the two exhibitions played without a published score are
+// left out.
+{
+  const url='https://arizonawildcats.com/sports/womens-volleyball/schedule';
+  const volleyball=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',url,now);
+  assert.equal(volleyball.length,29,'32 page games less the scrimmage and two unscored exhibitions');
+  assert.equal(new Set(volleyball.map(e=>e.id)).size,29,'no duplicate events');
+  assert.ok(!volleyball.some(e=>/Scrimmage|Exhibition|\(Exh/i.test(e.opponent)));
+  const played=volleyball.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  assert.equal(played.length,12);
+  assert.deepEqual(played.slice(-4).map(e=>[e.display_time,e.title,e.headline]),[
+    ['Sep 17','Arizona at San Diego','L, 0-3'],['Sep 18','Arizona at San Diego State','W, 3-2'],['Sep 22','Arizona at UTEP','W, 3-1'],['Sep 27','Arizona at Colorado','L, 2-3']
+  ],'rankings ("#21 Colorado") are dropped; results read as K-State\'s');
+  assert.deepEqual(played.filter(e=>/USC|Creighton/.test(e.opponent)).map(e=>e.title),['Arizona at Creighton','Arizona at USC']);
+  // Neutral-site tournament games read as the page's own vs./at.
+  assert.deepEqual(played.filter(e=>['Tulsa','Pepperdine','Oregon State'].includes(e.opponent)).map(e=>e.title),['Arizona vs Tulsa','Arizona vs Pepperdine','Arizona vs Oregon State']);
+  assert.ok(played.every(e=>/^https:\/\/arizonawildcats\.com\/news\/2026\/\d+\/\d+\/[\w-]+$/.test(e.recap_url)),'every final links its own recap');
+  const next=volleyball.filter(e=>e.status!=='Final');
+  assert.equal(next.length,17);
+  assert.deepEqual(next.slice(0,4).map(e=>`${e.title} ${e.display_time}`),['Arizona vs Iowa State Oct 2, 6:00 PM','Arizona vs Texas Tech Oct 4, 12:00 PM','Arizona at TCU Oct 9, 4:30 PM','Arizona at Baylor Oct 11, 12:00 PM']);
+  assert.equal(next[0].status,'Today');
+  assert.ok(next.every(e=>!e.recap_url&&!e.headline),'no upcoming match inherits a result');
+  // Each recap matches its own match only (the Oregon State story's address
+  // does not say "volleyball").
+  const pairs=[['recap-volleyball-2026-09-27-colorado.html.gz','Colorado'],['recap-volleyball-2026-09-22-utep.html.gz','UTEP'],['recap-volleyball-2026-09-12-oregon-state.html.gz','Oregon State']].map(([name,opponent])=>[fixture(name),played.find(e=>e.opponent===opponent)]);
+  for(const [raw,event] of pairs)for(const [,other] of pairs)assert.equal(worker.arizonaHandlers.matchesRecap(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  const [oregon,oregonEvent]=pairs[2];
+  assert.equal(worker.recapMatchesEvent(oregon,oregonEvent,oregonEvent.recap_url),false,'the shared matcher needs the sport word');
+  assert.equal(worker.arizonaHandlers.matchesRecap(oregon,oregonEvent,'https://arizonawildcats.com/news/2026/9/12/other'),false,'only the game\'s own recap skips the sport word');
+  // The expanded view keeps the game's own recap and writes from it.
+  recapFixtures.set(oregonEvent.recap_url,oregon);
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Arizona beat Oregon State in four sets at the USC Tournament.','The Wildcats hit well in the second and third sets of the match.','Arizona closed out the fourth set to earn the victory over the Beavers.','The win snapped a losing streak for the Wildcats on the weekend.'])};}}};
+  const events=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',url,now);
+  const target=events.find(e=>e.opponent==='Oregon State');
+  await worker.attachOfficialHighlights(events,fixture('volleyball-schedule.html.gz'),school,'Volleyball',url,now,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.equal(target.recap_url,oregonEvent.recap_url);
+  assert.ok(prompts[0].includes('Oregon State'));
+  // Live: ESPN's volleyball scoreboard (as K-State's). The Sep 27 payload
+  // holds five other "Wildcats" (Kentucky, Kansas State, New Hampshire,
+  // Bethune-Cookman, and Arizona State's opponent); only Arizona at Colorado
+  // is Arizona's.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+  const payload=JSON.parse(fixture('volleyball-espn-2026-09-27.json.gz'));
+  assert.ok(payload.events.some(e=>e.name==='Arizona State Sun Devils at Cincinnati Bearcats'),'Arizona State played the same day: it must not be taken for Arizona');
+  const scoreUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20260927';
+  const scored=worker.parseScoreboardPayload(payload,school,'Volleyball',arizonaSchool.liveScoreboards.Volleyball[0],scoreUrl,new Date('2026-09-28T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Arizona at Colorado','Final','L, 2-3']]);
+  const reconciled=worker.reconcileScoreboardEvents(volleyball,scored);
+  assert.equal(reconciled.length,volleyball.length,'the scoreboard joins the official match; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Colorado','L, 2-3']]);
+}
+
 console.log('Arizona module checks passed');

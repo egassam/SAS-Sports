@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.43.0-arizona-football';
+const VERSION='4.43.1-arizona-volleyball';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -221,7 +221,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const arizonaHandlers=createArizonaHandlers({makeEvent});
+const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1425,7 +1425,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):target.school_id==='arizona'?arizonaHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;
@@ -1563,6 +1563,9 @@ function scoreboardTeamMatchesSchool(team,school){
   const nicknames=new Set([team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
   const exact=[team?.location,team?.displayName,team?.shortDisplayName,team?.abbreviation].map(normalizedTeamName).filter(Boolean);
   if(wanted.some(x=>!nicknames.has(x)&&exact.includes(x)))return true;
+  // ESPN lists Arizona by its exact location ("Arizona"); the prefix fallback
+  // below took "Arizona State Sun Devils" for Arizona.
+  if(school.id==='arizona')return false;
   const full=normalizedTeamName(team?.displayName);
   return wanted.filter(x=>x.length>=4&&!['wildcats','cougars','bears','tigers'].includes(x)).some(x=>full===x||full.startsWith(x+' '));
 }
