@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -30,7 +30,8 @@ export const arizonaSchool={
     Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
     Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]
   },
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  // Both teams' pages are shown, labeled by team.
+  combinedSports:new Set(['Basketball','Swimming & Diving','Golf']),
   scheduleUrls:{
     // The official page only: the homepage added other sports' ticker events.
     'arizona|Baseball':'https://arizonawildcats.com/sports/baseball/schedule',
@@ -43,7 +44,9 @@ export const arizonaSchool={
     'arizona|Beach Volleyball':'https://arizonawildcats.com/sports/womens-beach-volleyball/schedule',
     'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
     'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
-    'arizona|Golf':['https://arizonawildcats.com/sports/womens-golf/schedule','https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/golf/schedule','https://arizonawildcats.com/'],
+    // Both teams (production showed the women's page only, the first that
+    // loaded); /sports/golf/ and the homepage are not golf schedules.
+    'arizona|Golf':['https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/womens-golf/schedule'],
     'arizona|Gymnastics':['https://arizonawildcats.com/sports/womens-gymnastics/schedule','https://arizonawildcats.com/sports/mens-gymnastics/schedule','https://arizonawildcats.com/sports/gymnastics/schedule','https://arizonawildcats.com/'],
     'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
     'arizona|Softball':'https://arizonawildcats.com/sports/softball/schedule',
@@ -115,14 +118,68 @@ export function parseArizonaRecapResults(raw,{decodeHtml,ordinal}){
   return['Women','Men'].filter(team=>races.has(team)).map(team=>({team,...races.get(team),points:points[team]||null,rows:races.get(team).runners.map(r=>({group:races.get(team).group,participant:r.participant,result:`${ordinal(r.place)} \u00b7 ${r.time}`}))}));
 }
 
+// Golf publishes one entry per round ("Sahalee Players Championship" on Sep
+// 12 and Sep 13). K-State shows one event per tournament: consecutive days of
+// the same tournament become one event from its first to its last day. The
+// last round's entry carries the final place, total and recap (a day-one
+// story is not the result); an unfinished tournament shows its next round.
+const ROUND_SPORTS=new Set(['Golf']);
+function mergeRounds(games,today){
+  const groups=[];
+  for(const game of games){
+    const key=String(game.tournament?.title||game.opponent?.title||'').trim().toLowerCase(),previous=groups.at(-1);
+    const gap=previous?(Date.parse(game.date.slice(0,10))-Date.parse(previous.at(-1).date.slice(0,10)))/86400000:Infinity;
+    if(previous&&key&&String(previous[0].tournament?.title||previous[0].opponent?.title||'').trim().toLowerCase()===key&&gap>=0&&gap<=2){previous.push(game);continue;}
+    groups.push([game]);
+  }
+  return groups.map(rounds=>{
+    if(rounds.length===1)return rounds[0];
+    const first=rounds[0],last=rounds.at(-1),next=rounds.find(round=>round.date.slice(0,10)>=today);
+    const shown=next&&first.date.slice(0,10)<today?next:first;
+    return{...shown,first_date:first.date,enddate:last.enddate||last.date,result:last.result||null};
+  });
+}
+
+// Golf recaps end with Arizona's individual scores and the team standings,
+// both as tables: "Place | Team (Nat'l Rank) | Score | To Par" rows such as
+// "12 | Arizona | 301+307+301=909 | +45". A "Team Standings (Top 10)" table
+// does not give the field size.
+export function parseArizonaGolfRecap(raw,{decodeHtml}){
+  const html=String(raw||'');
+  const text=value=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const tableAfter=label=>{
+    const at=html.search(label);if(at<0)return null;
+    const heading=text(html.slice(at,html.indexOf('<table',at)));
+    const table=(html.slice(at).match(/<table\b[\s\S]*?<\/table>/i)||[])[0];
+    return table?{heading,rows:[...table.matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>[...tr[0].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>text(cell[1].replace(/<\/?(?:span|dfn|a|strong|b|em|i)\b[^>]*>/gi,''))))}:null;
+  };
+  const standings=tableAfter(/Team Standings/i),individuals=tableAfter(/Individual Scores/i);
+  let team=null;
+  if(standings&&/^place/i.test(standings.rows[0]?.[0]||'')){
+    const rows=standings.rows.slice(1).filter(cells=>/^T?\d+$/i.test(cells[0]||''));
+    // Arizona, not Arizona State ("Arizona", "Arizona, U. of", "#29 Arizona").
+    const ours=rows.find(cells=>/^(?:#\d+\s+)?Arizona(?:,\s*U\.?\s*of)?(?:\s*\(\d+\))?$/i.test(cells[1]||''));
+    const total=ours&&String(ours[2]||'').match(/=\s*(\d{3,4})\s*$/);
+    if(ours&&total)team={place:ours[0].toUpperCase(),total:total[1],field:/\(Top \d+\)/i.test(standings.heading)?null:rows.length};
+  }
+  const players=[];
+  if(individuals&&/^place/i.test(individuals.rows[0]?.[0]||''))for(const cells of individuals.rows.slice(1)){
+    const [place,name,score,par]=cells,total=String(score||'').match(/=\s*(\d{2,3})\s*$/);
+    if(name&&/^(?:T-?)?\d+$/i.test(place||'')&&total)players.push({participant:name,place:place.toUpperCase().replace('-',''),total:total[1],par:String(par||'').replace(/\s+/g,'')});
+  }
+  return{team,players};
+}
+
 export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
   const fullNames=new Map();
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='arizona'||!arizonaSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
     if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const games=sidearmScheduleGames(raw);
-    if(!games.length)return null;
+    const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
+    const pageGames=sidearmScheduleGames(raw);
+    if(!pageGames.length)return null;
+    const games=ROUND_SPORTS.has(sport)?mergeRounds(pageGames,today):pageGames;
     const events=[],played=new Map();
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
@@ -135,6 +192,9 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // its tournament ("Big 12 Soccer Championship").
       const tournament=String(game.tournament?.title||'').replace(/\s+Presented by\b.*$/i,'').trim();
       if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
+      // Golf cards shorten the tournament ("Folds of Honor" for "Folds of
+      // Honor Collegiate"); the recaps use its full name.
+      else if(sport==='Golf'&&tournament&&tournament.toLowerCase().startsWith(opponent.toLowerCase().replace(/\.$/,'')))opponent=tournament.replace(/\.$/,'').length>=opponent.length?tournament:opponent;
       // A multi-day conference tournament names the conference ("Big 12
       // Conference"); its tournament names the event.
       else if(/\bConference$/i.test(opponent)&&game.enddate&&tournament)opponent=tournament;
@@ -151,9 +211,11 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // Meets publish the team finishes as text: "Men: 1st Women: 12th".
       const placing=meet?String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim():'';
       // Arizona time (no daylight saving). A multi-day event is over only
-      // after its last day.
-      const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
-      const lastDay=String(game.enddate||'').slice(0,10)>game.date.slice(0,10)?String(game.enddate).slice(0,10):game.date.slice(0,10);
+      // after its last day; NCAA golf rounds publish the last day in the time
+      // field ("05/19/2027").
+      const endText=String(game.time||'').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/),enddate=game.enddate||(endText?`${endText[3]}-${endText[1]}-${endText[2]}T00:00:00`:'');
+      const firstDay=(game.first_date||game.date).slice(0,10);
+      const lastDay=String(enddate).slice(0,10)>firstDay?String(enddate).slice(0,10):game.date.slice(0,10)>firstDay?game.date.slice(0,10):firstDay;
       const final=scored||meet&&(Boolean(placing)||lastDay<today);
       // A game day that has passed with no published score (an exhibition
       // played as "best two of three") is neither a result nor upcoming.
@@ -169,8 +231,7 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
       // Multi-day events (conference tournaments, tennis tournaments) end on
       // their last day.
-      const last=String(game.enddate||'').match(/^(\d{4}-\d{2}-\d{2})T/);
-      if(last&&last[1]>game.date.slice(0,10))event.end_time=`${last[1]}T23:59:59Z`;
+      if(lastDay>game.date.slice(0,10))event.end_time=`${lastDay}T23:59:59Z`;
       // A doubleheader lists the same opponent twice on one day: Game 1 and
       // Game 2 stay two games.
       const pair=`${game.date.slice(0,10)}|${opponent}`,sameDay=games.filter(other=>other.date.slice(0,10)===game.date.slice(0,10)&&arizonaOpponent(other.opponent?.title)===arizonaOpponent(game.opponent?.title)).length;
@@ -179,7 +240,10 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // same day; the team keeps their event ids apart.
       const squad=arizonaSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
       if(squad)event.id=`${event.id}-${squad}`;
-      if(meet&&final){
+      // Golf: "7th; 844 (-20)" or "T4th; 292 (+4)" after the last round.
+      const golf=sport==='Golf'?placing.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)?\s*[;,]\s*(\d{3,4})\b/i):null;
+      if(golf&&final){const value=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(meet&&final){
         // Women first, as K-State's: "Women's team: 12th / Men's team: 1st".
         const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
         const teams=['Women','Men'].filter(name=>places[name]);
@@ -275,5 +339,49 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,matchesRecap,isArizonaCrossCountry,attachMeetResults};
+  const isArizonaGolf=event=>event?.school_id==='arizona'&&event.sport==='Golf'&&event.event_type==='MEET'&&event.status==='Final';
+  const download=async url=>{try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():null;}catch{return null;}};
+  // The tournament's story: the last round's recap link, or, when the schedule
+  // links none (the Tucker Intercollegiate), a story in the team's golf
+  // archive dated on the last day that names the tournament.
+  async function golfStory(event){
+    const lastDay=String(event.end_time||event.start_time).slice(0,10);
+    const final=(raw,url)=>raw&&recapMatchesEvent(raw,{...event,start_time:`${lastDay}T12:00:00.000Z`},url);
+    if(event.recap_url){const raw=await download(event.recap_url);return final(raw,event.recap_url)?{url:event.recap_url,raw}:null;}
+    const team=event.team_label==="Men's"?'mens':event.team_label==="Women's"?'womens':null;if(!team)return null;
+    const listing=await download(`https://${HOST}/sports/${team}-golf/archives`);if(!listing)return null;
+    const [year,month,day]=lastDay.split('-').map(Number);
+    const dated=new RegExp(`/news/${year}/0?${month}/0?${day}/[a-z0-9-]*golf[a-z0-9-]*`,'gi');
+    const words=String(event.opponent).toLowerCase().replace(/^the\s+/,'').split(/[^a-z0-9]+/).filter(word=>word.length>=4);
+    for(const path of [...new Set(listing.replace(/\\u002F/gi,'/').match(dated)||[])].slice(0,4)){
+      if(!words.every(word=>path.includes(word)))continue;
+      const url=`https://${HOST}${path}`,raw=await download(url);
+      if(final(raw,url))return{url,raw};
+    }
+    return null;
+  }
+  // Golf results from the tournament's own story: Arizona's place in the team
+  // standings with the field size and total (K-State's "12th of 12 (909)"),
+  // and Arizona's individual scores. Feed and expanded view share them.
+  async function attachGolfResults(event){
+    if(!isArizonaGolf(event)||event.meet_results_verified)return event;
+    const story=await golfStory(event);if(!story)return event;
+    const {team,players}=parseArizonaGolfRecap(story.raw,{decodeHtml});
+    // The schedule's own place (when published) must agree with the story's.
+    const published=String(event.headline||'').match(/^(T?\d+)\w\w \((\d+)\)$/);
+    if(!team||published&&(published[1].replace(/^T/,'')!==team.place.replace(/^T/,'')||published[2]!==team.total))return event;
+    const place=`${team.place.startsWith('T')?'T':''}${ordinal(team.place.replace(/^T/,''))}`;
+    const value=`${place}${team.field?` of ${team.field}`:''} (${team.total})`;
+    const group=`${event.team_label||''} Individual Results`.trim();
+    event.headline=value;event.recap_url=story.url;
+    event.results=[{label:'Result',value},...players.map(player=>({group,participant:player.participant,result:`${player.place.startsWith('T')?'T':''}${ordinal(player.place.replace(/^T/,''))} \u00b7 ${player.total}${player.par?` (${player.par})`:''}`}))];
+    event.result_count=event.results.length;event.has_more_results=event.results.length>3;
+    const lines=[`Arizona finished ${value.replace(/ \((\d+)\)$/,'')} at the ${event.opponent.replace(/^The\s+/,'')} with a team total of ${team.total}.`];
+    for(const player of players.slice(0,3))lines.push(`${player.participant} placed ${player.place.startsWith('T')?'T':''}${ordinal(player.place.replace(/^T/,''))} with ${player.total}${player.par?` (${player.par})`:''}.`);
+    event.highlights=lines;event.highlights_verified=true;event.meet_results_verified=true;
+    event.highlight_state='official_recap_results';event.highlight_status=null;
+    event.source={...event.source,name:'Official athletics tournament recap',url:story.url};
+    return event;
+  }
+  return{parseSchedule,matchesRecap,isArizonaCrossCountry,attachMeetResults,isArizonaGolf,attachGolfResults};
 }

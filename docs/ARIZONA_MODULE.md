@@ -15,7 +15,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Basketball | #152 | Men's 39 (3 summer-tour finals with recaps) + women's 33, labeled, published times, exhibitions labeled; ESPN live scores for both teams (Division I group) |
 | Baseball | #153 | 59 games: 4 fall exhibitions from Oct 9 (labeled), then spring 2027; published times; doubleheaders kept as Game 1 / Game 2; ESPN live score |
 | Softball | #154 | 35 games: 7 fall exhibitions from Oct 17 (the UTEP doubleheader as two games), then spring 2027; postseason events end on their last day; ESPN live score |
-| Beach Volleyball | (this PR) | Was 502: routes fixed to `womens-beach-volleyball`; 5 fall events, tournaments named, multi-day events end on their last day |
+| Beach Volleyball | #155 | Was 502: routes fixed to `womens-beach-volleyball`; 5 fall events, tournaments named, multi-day events end on their last day |
+| Golf | (this PR) | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
 
 ## Setup (route parity)
 
@@ -124,6 +125,17 @@ Production answered 502 ("All official source candidates failed"): the inherited
 **Reader change for every dual sport (beach volleyball, tennis, swimming):** a dual with a published score reads as a game (`W, 3-2`); without one it reads as a meet, final only after its last day.
 
 ESPN publishes no beach volleyball scoreboard, so there is no live score (K-State has none either).
+
+## Golf (`4.43.8-arizona-golf`)
+
+Production loaded the first golf page that answered (women's) and showed every round as its own event (`7th; 284 (-4)`, `6th; 563 (-13)`, `7th; 844 (-20)`), 24 upcoming round entries, and nothing for the men. Golf now loads both teams' official pages only, labeled (`combinedSports`), and:
+- merges a tournament's consecutive round entries into one event from its first to its last day (`end_time`); the last round's entry gives the place, total and recap (a day-one story is not the result); a tournament in progress shows its next round; NCAA rounds publish their last day in the time field (`05/19/2027`);
+- uses the tournament's full name (`Folds of Honor Collegiate`, from the page's tournament title, for the card's "Folds of Honor");
+- reads each tournament's own story (`parseArizonaGolfRecap`, `attachGolfResults`; feed and expanded view share it). Arizona's golf stories end with two tables, "Arizona Individual Scores" and "Team Standings". The headline becomes K-State's `12th of 12 (909)`: Arizona's place and total from the standings (Arizona, not Arizona State, which is also listed), the field size from the number of teams. The Red Sky story lists only "Team Standings (Top 10)", so it reads `7th (844)` and no field size is claimed. Arizona's golfers follow as `Men's Individual Results` rows (`T11th · 210 (-6)`), and the highlights are written from these rows only;
+- the schedule never published the men's Tucker Intercollegiate result (Sep 25-26: no place, no recap). Its story ("Arizona Finishes Ninth at William H. Tucker Intercollegiate") is in the men's golf archive, dated the last day; the module finds it there (the story's address must name the tournament and golf), and the event reads `9th of 15 (857)`.
+- the story's place and total must agree with the schedule's when the schedule publishes them; otherwise the schedule's stay.
+
+ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
 
 ## Seen outside Arizona (not changed)
 
