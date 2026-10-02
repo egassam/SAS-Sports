@@ -10,7 +10,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.37.5-byu-volleyball-live';
+const VERSION='4.37.6-live-over-saved-schedule';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1650,6 +1650,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
       errors.push(`${item.url}: HTTP ${item.http_status}, labels ${item.label_count}, events ${item.event_count}`);
     }catch(error){errors.push(`${url}: ${error?.message||error?.name||'FetchError'}`)}
   }
+  // When every official page failed, a scoreboard game alone is not a full
+  // feed (see freshGroupedFeed).
+  const officialFailed=!successful.length&&!emptySchedule;
   let events=mergeEvents(successful.map(x=>x.events));
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
@@ -1660,7 +1663,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
     events=reconcileScoreboardEvents(events,scoreboard);
     if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
   }
-  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null};
+  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null,official_failed:officialFailed};
   // The official page was read and publishes no events for this sport yet.
   if(emptySchedule)return{events:[],source_url:emptySchedule.url,source_urls:[emptySchedule.url],fetched_at:now.toISOString(),live_source_used:true,error:null};
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
@@ -1678,10 +1681,22 @@ function cacheResponse(response,state){const copy=new Response(response.body,res
 async function freshGroupedFeed(url,school,sport,env,cache,key){
   const result=await fetchLive(school,sport,env);
   if(!result.events.length&&!result.live_source_used)return null;
-  const groups=groupEvents(result.events),response=json(groups),stored=new Response(response.body,response);
+  let events=result.events;
+  // The official page failed but a live scoreboard answered (a one-off
+  // kstatesports.com failure during K-State vs BYU, Oct 1): lay the live score
+  // over the last good full feed instead of replacing the whole schedule with
+  // one game, and never save that partial feed as the last good copy.
+  if(result.official_failed){
+    const saved=await cache.match(lastGoodFeedKey(url,school,sport));
+    if(!saved||cachedAge(saved)>LAST_GOOD_MS)return null;
+    const previous=(await saved.json()).flatMap(group=>[...(group.live||[]),...(group.results||[]),...(group.upcoming||[]),...(group.other||[])]);
+    events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
+  }
+  const groups=groupEvents(events),response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
   stored.headers.set('x-sas-fetched-at',result.fetched_at);
+  if(result.official_failed){await cache.put(key,stored.clone());return stored;}
   const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
   await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood)]);return stored;
 }
