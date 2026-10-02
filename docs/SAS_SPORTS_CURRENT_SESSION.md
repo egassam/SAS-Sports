@@ -1,10 +1,17 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 1, 2026, America/Chicago (K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 2, 2026, America/Chicago (UCF module and Football: PR #123; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**UCF module set up and Football converted; production is `4.38.0-ucf-football` (12:13 UTC, October 2).** User: "Add the Next big 12 school". arizonawildcats.com and baylorbears.com still return 403 to the sandbox, and ucfknights.com returns 200, so UCF is next in catalog order. PR #123 (merge `f230c79`) was merged by the agent under `AGENTS.md` item 6. Details are in `docs/UCF_MODULE.md`.
+- **Setup:** `src/schools/ucf.mjs` holds routes for all 11 sports. 438/438 catalog routes are identical before and after. All eleven Worker-evaluating harnesses inject `ucfSchool`/`createUcfHandlers`; `regression.mjs`, `protect-certified.mjs` and `parse-budget.mjs` read the module.
+- **Football:** ucfknights.com is a third WMT card variant (`Thu, Sep` / `3`, no year; the result slot holds either `W Win 73-6` or `12:00 PM EDT`). Production had shown every upcoming game twice, and a phantom `Nov 28 at Colorado W, 73-6` final with a Colorado story as its expanded view. The module reader gives 4 finals with their own recaps and 8 upcoming games; the year comes from the JSON-LD, and rankings are dropped. The shared recap matcher works for UCF (recaps name "Football").
+- **Gate:** both suites passed; CI green; preview: 4 finals each `recap_generated` with 4 highlights, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes. One first K-State XC call on the preview returned a non-feed body; the next three were 18/20.
+- **Production (12:13 UTC):** identical to the preview; XC 18/20 and 26/21.
+- **Not done:** the other 10 UCF sports (still on shared parsers) and UCF athlete certification.
 
 **K-State Volleyball live scores; ESPN scoreboards working again; production is `4.37.2-kstate-volleyball-live` (23:48 UTC, October 1).** User, during the K-State vs BYU match: "Can we find a live feed and have live results on the KSTATE volleyball page?" PR #109 (`9606651`):
 - **Volleyball scoreboard.** ESPN's women's college volleyball scoreboard is added to `kstateSchool.liveScoreboards`. Today's official card goes Live with sets won and the current set's points (`1st Set · 14-15` in production); a final reads `W, 3-1`.
@@ -324,6 +331,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
   - Consider giving football/basketball finals K-State's `W, 71-68` wording: today a scoreboard final overwrites the official headline with `71–68`.
   - ESPN lags, especially between sets. StatBroadcast is behind a bot challenge; do not work around it.
 - **Global source cache (paused by the user, October 1):** one copy of each school page for all Cloudflare locations, via one Durable Object per school site. The plan is in the session record below. Do not start it until the user switches the Worker to Cloudflare "Worker Previews" (dashboard; irreversible). The current Builds preview model (Version URLs) generates no preview URLs for Workers with a Durable Object, which would break the merge gate.
+- **UCF is in progress** (Football done, #123). Next: the other 10 UCF sports, one per PR (Volleyball, Soccer, Cross Country first: they are in season). Each needs its own card check; add it to `ucfSchool.cardSports` with fixture tests, and a past-season filter for spring sports as BYU had.
 - **BYU is complete** (#94, #97–#107). Gymnastics and Track & Field become non-empty when byucougars.com publishes 2026-27 schedules; no code change is needed. Open items are under Limitations in `docs/BYU_MODULE.md` (athlete certification not reviewed). Next: the next Big 12 school the user names. On October 1, arizonawildcats.com and baylorbears.com still returned 403 to the sandbox; ucfknights.com (SIDEARM) returned 200.
 - **Scheduled feed refresh (item 3), if retried:** start from the #87/#88 code (`git show c9c0c65`, `47aedb0`). First deploy only the failure reporting with the Cron Trigger rebuilding one feed, read `/api/feed-store` `last_run.errors`, and confirm the deploy actually landed (the version flips on `/api/status`) before enabling more. If schools refuse Cron-Trigger traffic, the scheduled approach does not work on Workers. An alternative is Cloudflare Queues or a Durable Object alarm, which may run on different machines; that is unverified.
 - **Source fetching (PR #85):** use `/api/diagnostic`'s `source_cache`/`upstream_status` to tell a school refusal from a parser fault. Still open from the bot-defense discussion: (1) per school, prefer SIDEARM calendar (.ics)/RSS feeds over full HTML pages, one sport per PR, during that school's session; (3) a scheduled Cron prefetch so visitors never trigger downloads; (5) when a site blocks the sandbox, ask the user to save the page from their browser as a fixture; (6) ask schools/SIDEARM for allowlisting or a feed. The user has not said whether `/bot` should list a contact address; do not add their email without being asked.
@@ -1170,4 +1178,18 @@ After close (02:41 UTC, October 2), the user reported, with a screenshot: "After
 - **#121 (`97f50f8`, `4.37.8-no-old-feed-copies`, shared):** a saved feed is answered at once only while under 2 min old; older copies are rebuilt first (`stale-fallback` only if that fails).
 - **Gate:** `tests/last-good-feed.mjs` covers the three cases; both suites passed; CI green; preview 36/36, XC 18/20 and 26/21; a 130 s-old copy came back rebuilt.
 - **Production after merge:** K-State `Oct 1 · K-State vs #18 BYU · L, 1-3` in Results; BYU `BYU at Kansas State · W, 3-1`; both `x-sas-cache: live`; XC unchanged.
+
+### October 2, 2026 — UCF module and Football (PR #123)
+
+User: "Add the Next big 12 school". The handoff was read from main (`e2f9575`).
+
+**School choice:** one Football schedule request each. arizonawildcats.com and baylorbears.com returned 403; ucfknights.com returned 200. UCF is next in catalog order.
+
+**PR #123** (setup + Football, one PR as for BYU #94 and Arizona State #66), head `b279d9a`:
+- module, route parity (438/438 identical), card reader, 5 unmodified fixtures (schedule + 4 recaps), `tests/ucf-module.mjs`;
+- mutations fail the test: removing the parse hook, or keeping rankings.
+- **Before merge:** `npm run test:release` and `npm test` passed; CI green (guardrails, certification-matrix, Workers Builds); no conflict. Preview `4.38.0-ucf-football`: Football in K-State format, 4/4 expanded views `recap_generated`, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes 200.
+- **Merged** as `f230c79`. Production reported `4.38.0-ucf-football` at 12:13 UTC and matched the preview; XC 18/20 and 26/21.
+
+**Not done:** the other 10 UCF sports; UCF athlete certification.
 
