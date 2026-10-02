@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Beach Volleyball','Golf','Gymnastics']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -47,7 +47,9 @@ export const arizonaSchool={
     // Both teams (production showed the women's page only, the first that
     // loaded); /sports/golf/ and the homepage are not golf schedules.
     'arizona|Golf':['https://arizonawildcats.com/sports/mens-golf/schedule','https://arizonawildcats.com/sports/womens-golf/schedule'],
-    'arizona|Gymnastics':['https://arizonawildcats.com/sports/womens-gymnastics/schedule','https://arizonawildcats.com/sports/mens-gymnastics/schedule','https://arizonawildcats.com/sports/gymnastics/schedule','https://arizonawildcats.com/'],
+    // Arizona sponsors women's gymnastics only; the other slugs render the
+    // empty "@season @sport" template.
+    'arizona|Gymnastics':'https://arizonawildcats.com/sports/womens-gymnastics/schedule',
     'arizona|Soccer':'https://arizonawildcats.com/sports/womens-soccer/schedule',
     'arizona|Softball':'https://arizonawildcats.com/sports/softball/schedule',
     'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule','https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule'],
@@ -62,7 +64,7 @@ export const arizonaSchool={
     'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/roster',
     'arizona|Football':'https://arizonawildcats.com/sports/football/roster',
     'arizona|Golf':['https://arizonawildcats.com/sports/womens-golf/roster','https://arizonawildcats.com/sports/mens-golf/roster','https://arizonawildcats.com/sports/golf/roster'],
-    'arizona|Gymnastics':['https://arizonawildcats.com/sports/womens-gymnastics/roster','https://arizonawildcats.com/sports/mens-gymnastics/roster','https://arizonawildcats.com/sports/gymnastics/roster'],
+    'arizona|Gymnastics':'https://arizonawildcats.com/sports/womens-gymnastics/roster',
     'arizona|Soccer':['https://arizonawildcats.com/sports/womens-soccer/roster','https://arizonawildcats.com/sports/wsoc/roster','https://arizonawildcats.com/sports/soccer/roster','https://arizonawildcats.com/sports/mens-soccer/roster'],
     'arizona|Softball':'https://arizonawildcats.com/sports/softball/roster',
     'arizona|Swimming & Diving':['https://arizonawildcats.com/sports/womens-swimming-and-diving/roster','https://arizonawildcats.com/sports/mens-swimming-and-diving/roster','https://arizonawildcats.com/sports/womens-swimming-diving/roster','https://arizonawildcats.com/sports/mens-swimming-diving/roster','https://arizonawildcats.com/sports/swimming-and-diving/roster','https://arizonawildcats.com/sports/swimming-diving/roster','https://arizonawildcats.com/sports/swimming/roster'],
@@ -181,9 +183,16 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
     if(!pageGames.length)return null;
     const games=ROUND_SPORTS.has(sport)?mergeRounds(pageGames,today):pageGames;
     const events=[],played=new Map();
+    // Spring pages keep showing last season until the next is published
+    // ("2025-26 Gymnastics Schedule"). Only the current academic year
+    // (July-June, Arizona time) is current; a page with none is a valid
+    // empty schedule.
+    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
+    let pastSeason=0;
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
+      if(String(game.first_date||game.date).slice(0,10)<seasonStart){pastSeason++;continue;}
       let opponent=arizonaOpponent(game.opponent?.title);
       // Baseball and softball fall games ("Fall Schedule", type S) are
       // exhibitions; they are labeled as the other exhibitions are.
@@ -242,7 +251,10 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(squad)event.id=`${event.id}-${squad}`;
       // Golf: "7th; 844 (-20)" or "T4th; 292 (+4)" after the last round.
       const golf=sport==='Golf'?placing.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)?\s*[;,]\s*(\d{3,4})\b/i):null;
-      if(golf&&final){const value=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+      // Gymnastics: "W; 195.425" (a dual) or "3rd; 193.350".
+      const gym=sport==='Gymnastics'?placing.match(/^(W|L|T|T?\d{1,2}(?:st|nd|rd|th))\s*[;,]\s*(\d{3}\.\d{1,3})$/i):null;
+      if(gym&&final){const value=`${gym[1].toUpperCase().replace(/(\d)(ST|ND|RD|TH)$/,(m,d,s)=>d+s.toLowerCase())} \u00b7 ${gym[2]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
+      else if(golf&&final){const value=`${golf[1]?'T':''}${ordinal(golf[2])} (${golf[3]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;}
       else if(meet&&final){
         // Women first, as K-State's: "Women's team: 12th / Men's team: 1st".
         const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
@@ -263,8 +275,11 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(full&&full!==opponent){fullNames.set(event.id,full);if(fullNames.size>2000)fullNames.delete(fullNames.keys().next().value);}
       events.push(event);
     }
+    if(!events.length&&pastSeason)emptiedBySeason.add(events);
     return events;
   }
+  const emptiedBySeason=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   // Some recaps never name the sport ("Wildcats Back in the Win Column with
   // Four-Set Victory Over Oregon State"), so the shared matcher refused the
   // game's own recap. The sport-word check is dropped only for the recap the
@@ -383,5 +398,5 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
     event.source={...event.source,name:'Official athletics tournament recap',url:story.url};
     return event;
   }
-  return{parseSchedule,matchesRecap,isArizonaCrossCountry,attachMeetResults,isArizonaGolf,attachGolfResults};
+  return{parseSchedule,isEmptySchedule,matchesRecap,isArizonaCrossCountry,attachMeetResults,isArizonaGolf,attachGolfResults};
 }

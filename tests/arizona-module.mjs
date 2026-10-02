@@ -480,4 +480,30 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.ok(/Arizona State/.test(fixture('recap-mens-golf-2026-09-13-sahalee.html.gz')));
 }
 
+// Gymnastics: the page still shows the 2025-26 season ("2025-26 Gymnastics
+// Schedule", Dec 13, 2025 - Apr 1, 2026). Production's routes included the
+// empty "@season @sport" template (mens-gymnastics, gymnastics) and the
+// homepage.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Gymnastics'),['https://arizonawildcats.com/sports/womens-gymnastics/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Gymnastics'),['https://arizonawildcats.com/sports/womens-gymnastics/roster']);
+  const url='https://arizonawildcats.com/sports/womens-gymnastics/schedule';
+  const current=worker.parseHtml(fixture('gymnastics-schedule.html.gz'),school,'Gymnastics',url,now);
+  assert.deepEqual(current,[],'only a past season: an empty schedule');
+  assert.equal(worker.arizonaHandlers.isEmptySchedule(current),true,'flagged as a valid empty schedule, not a failed source');
+  assert.equal(worker.arizonaHandlers.isEmptySchedule([]),false);
+  // The same page in season (read as of Mar 15, 2026): K-State-style results.
+  const season=worker.parseHtml(fixture('gymnastics-schedule.html.gz'),school,'Gymnastics',url,new Date('2026-03-15T19:00:00Z'));
+  const finals=season.filter(e=>e.status==='Final');
+  assert.deepEqual(finals.slice(0,4).map(e=>`${e.display_time} ${e.title} | ${e.headline}`),[
+    'Dec 13 Arizona at GymCat Showcase | Completed','Jan 9 Arizona at Washington | W · 195.425','Jan 16 Arizona at TWU with Denver | 3rd · 193.350','Jan 23 Arizona at Towson | W · 196.800'
+  ]);
+  assert.ok(!season.some(e=>e.opponent==='Iowa State'),'the canceled Feb 27 meet is left out');
+  assert.ok(finals.filter(e=>e.headline!=='Completed').every(e=>/\/news\/20(25|26)\//.test(e.recap_url)),'every scored meet links its recap');
+  assert.equal(finals.length,14,'15 meets less the canceled one; every one carries its published score');
+  assert.deepEqual(finals.slice(-2).map(e=>e.headline),['4th \u00b7 194.725','L \u00b7 194.900']);
+  // Other Arizona sports are not affected by the season filter.
+  assert.equal(worker.arizonaHandlers.isEmptySchedule(worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now)),false);
+}
+
 console.log('Arizona module checks passed');
