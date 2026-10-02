@@ -7,18 +7,23 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // Both teams, labeled to match the official men's and women's cards.
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Swimming & Diving','Soccer']),
   scheduleUrls:{
     'ucf|Baseball':['https://ucfknights.com/sports/baseball/schedule','https://ucfknights.com/'],
-    'ucf|Basketball':['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule','https://ucfknights.com/sports/basketball/schedule','https://ucfknights.com/'],
+    'ucf|Basketball':['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule'],
     'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
     'ucf|Football':'https://ucfknights.com/sports/football/schedule',
     'ucf|Golf':['https://ucfknights.com/sports/womens-golf/schedule','https://ucfknights.com/sports/mens-golf/schedule','https://ucfknights.com/sports/golf/schedule','https://ucfknights.com/'],
@@ -166,7 +171,15 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       // Rankings ("#20/20 Houston", "#19/- Oklahoma St.", "-/#21 LSU") describe
       // the week, not the opponent.
       let opponent=field(block,/schedule-event-item__opponent-name[^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?=\S*#)[#\dRV\/-]+\s+/i,'').trim();
-      if(PLACEHOLDER.test(opponent)){
+      // A multi-day conference tournament card names the conference ("Big 12
+      // Conference"); its heading names the event, with a stale year ("2025
+      // Phillips 66 Big 12 Men's Basketball Championship" on the 2026-27 page).
+      const multiDay=/schedule-event-date__wrapper--end/i.test(block);
+      if(multiDay&&/\bConference$/i.test(opponent)){
+        const heading=tournamentTitle(raw,at,visibleText).replace(/^\d{4}\s+/,'');
+        if(heading)opponent=heading;
+      }
+      else if(PLACEHOLDER.test(opponent)){
         const heading=tournamentTitle(raw,at,visibleText);
         if(heading)opponent=/^TB[AD]$/i.test(opponent)?heading:`${heading} \u00b7 ${opponent}`;
       }

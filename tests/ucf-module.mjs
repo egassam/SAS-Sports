@@ -218,6 +218,37 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   recapFixtures.set(florida.recap_url,fixture('recap-cross-country-2026-09-04-florida-intercollegiate.html.gz'));
 }
 
+// Basketball: both official pages only. Production also loaded the generic
+// /sports/basketball/ page and the homepage, and showed 132 upcoming games for
+// 35 men's and 34 women's cards.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Basketball'),['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule']);
+  const hoops={};
+  for(const team of ['mens','womens']){
+    const url=`https://ucfknights.com/sports/${team}-basketball/schedule`;
+    hoops[team]=worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-basketball-schedule.html.gz`),school,'Basketball',url,now),school,'Basketball',url);
+  }
+  assert.deepEqual([hoops.mens.length,hoops.womens.length],[35,34],'one event per official card');
+  const all=[...hoops.mens,...hoops.womens];
+  assert.equal(new Set(all.map(e=>e.id)).size,69,'no duplicates across the two teams');
+  assert.ok(all.every(e=>e.status==='Upcoming'&&!e.headline&&!e.recap_url),'the season has not started');
+  assert.deepEqual(hoops.mens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),["Men's · UCF at LSU Oct 14, 8:00 PM","Men's · UCF at Kentucky Oct 28"]);
+  assert.deepEqual(hoops.womens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),["Women's · UCF vs Auburn Oct 14, 1:00 PM","Women's · UCF vs St. Leo Oct 25"]);
+  assert.equal(hoops.mens.at(-1).title,"Men's · UCF vs Phillips 66 Big 12 Men's Basketball Championship",'the tournament card is named after its heading, without the stale "2025"');
+  assert.equal(hoops.mens.at(-1).start_time.slice(0,10),'2027-03-09','spring games take the next year from the schema dates');
+  // Live scores: ESPN's men's and women's scoreboards, labeled to match the
+  // official cards. Fixtures: Oklahoma State at UCF (men, Mar 3, 2026, 104-111,
+  // with Army Black Knights at Bucknell the same night) and UCF at Houston
+  // (women, Mar 1, 2026, 72-62).
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(p=>[p.path,p.team_label]),[['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]]);
+  const load=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/ucf-module/${name}`,import.meta.url))).toString('utf8'));
+  const [menProvider,womenProvider]=ucfSchool.liveScoreboards.Basketball,scoreUrl='https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?limit=1000&dates=20260303';
+  const men=worker.parseScoreboardPayload(load('basketball-espn-mens-20260303.json.gz'),school,'Basketball',menProvider,scoreUrl,new Date('2026-03-04T12:00:00Z'));
+  assert.deepEqual(men.map(e=>[e.status,e.title,e.team_label,e.school_score,e.opponent_score]),[['Final',"Men's · UCF vs Oklahoma St","Men's",'104','111']],'UCF\'s side only; Army Black Knights do not match');
+  const women=worker.parseScoreboardPayload(load('basketball-espn-womens-20260301.json.gz'),school,'Basketball',womenProvider,scoreUrl,new Date('2026-03-02T12:00:00Z'));
+  assert.deepEqual(women.map(e=>[e.title,e.school_score,e.opponent_score]),[["Women's · UCF at Houston",'72','62']]);
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Basketball',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Baseball',footballUrl,now),null);
 console.log('UCF module checks passed');
