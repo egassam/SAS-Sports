@@ -404,4 +404,26 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Arizona at LSU','Final','L, 1-4']]);
 }
 
+// Beach Volleyball: production returned 502. Its routes were
+// /sports/beach-volleyball/, SIDEARM's empty "@season @sport" template (the
+// saved page has no games); the sport's pages are womens-beach-volleyball.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Beach Volleyball'),['https://arizonawildcats.com/sports/womens-beach-volleyball/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Beach Volleyball'),['https://arizonawildcats.com/sports/womens-beach-volleyball/roster']);
+  assert.match(fixture('beach-volleyball-empty-template.html.gz'),/<title>@season @sport Schedule/);
+  assert.deepEqual(worker.parseHtml(fixture('beach-volleyball-empty-template.html.gz'),school,'Beach Volleyball','https://arizonawildcats.com/sports/beach-volleyball/schedule',now),[]);
+  const url='https://arizonawildcats.com/sports/womens-beach-volleyball/schedule';
+  const beach=worker.parseHtml(fixture('beach-volleyball-schedule.html.gz'),school,'Beach Volleyball',url,now);
+  assert.deepEqual(beach.map(e=>[e.title,e.display_time,e.end_time||null]),[
+    ['Arizona vs Sand Court Experts Collegiate Beach Fall Classic','Oct 9','2026-10-11T23:59:59Z'],
+    ['Arizona vs AVCA Collegiate Beach West Bid Tournament','Oct 17','2026-10-18T23:59:59Z'],
+    ['Arizona at Arizona State','Oct 30',null],
+    ['Arizona vs Pairs Championship','Nov 6','2026-11-08T23:59:59Z'],
+    ['Arizona at Grand Canyon','Nov 7','2026-11-08T23:59:59Z']
+  ],'fall 2026 events; "TBD" opponents named after their tournament; multi-day events end on their last day');
+  assert.ok(beach.every(e=>e.status==='Upcoming'));
+  const [group]=worker.groupEvents(beach,now);
+  assert.equal(group.upcoming.length,5);
+}
+
 console.log('Arizona module checks passed');
