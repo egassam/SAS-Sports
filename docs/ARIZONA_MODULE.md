@@ -11,7 +11,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Football | #148 | Page-data reader: 4 finals `W, 35-7` with their own recaps; 9 upcoming with published Arizona times; ESPN live score (FBS group) |
 | Volleyball | #149 | 12 finals with recaps (one names the opponent only as "UCSB"), 17 upcoming with times; rankings dropped; scrimmage and unscored exhibitions left out; ESPN live score |
 | Soccer | #150 | 12 finals (`T, 1-1`) with recaps where published, 9 upcoming with times; the Big 12 tournament game named; ESPN live score |
-| Cross Country | (this PR) | Race rows from the official recaps: `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, `Women's 6K` then `Men's 8K`, every Arizona runner listed |
+| Cross Country | #151 | Race rows from the official recaps: `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, `Women's 6K` then `Men's 8K`, every Arizona runner listed |
+| Basketball | (this PR) | Men's 39 (3 summer-tour finals with recaps) + women's 33, labeled, published times, exhibitions labeled; ESPN live scores for both teams (Division I group) |
 
 ## Setup (route parity)
 
@@ -84,6 +85,19 @@ The module now (`parseArizonaRecapResults`, `attachMeetResults`, the same three 
 - refuses a recap that is not this meet's (the official places stay).
 
 Rows are Arizona's runners as the recap lists them (the top finishers overall are not Arizona's and are not listed), as K-State's are.
+
+## Basketball (`4.43.4-arizona-basketball`)
+
+Production loaded the men's and women's pages plus the generic `/sports/basketball/` page and the homepage. Basketball now routes to the two official pages only, both labeled (`combinedSports`), with `-mens`/`-womens` event ids (both teams play at Kansas State on Jan 9). The reader gives:
+- men's 39 games (40 less the Red-Blue Showcase): the three August summer-tour games in Lithuania, played with scores and recaps, are finals (`L, 88-99`); exhibitions read `San Francisco (Exhibition)`; published times (`Nov 2, 8:00 PM`);
+- women's 33 games, exhibitions `Embry-Riddle (Ariz.) (Exhibition)` (published "Exhibition Embry-Riddle (Ariz.)");
+- conference tournaments named after the event and ending on their last day: `Big 12 Tournament` (Mar 9-13), `Phillips 66 Big 12 Women's Basketball Tournament` (published opponent "Big 12 Conference", Mar 3-8).
+
+The Maui Invitational's later rounds keep their published opponents (`VCU or Providence`, `BYU/Clemson/Ole Miss/Washington`).
+
+**Recap matcher, day rule.** The shared matcher accepts a story dated a day before or after the game; the Aug 19 story ("Arizona Opens Lithuania Tour with 99-88 Loss") names the next opponent, Ukraine, and was accepted for the Aug 20 game. For Arizona, a story other than the game's own recap link must be dated on the game day (through the last day of a multi-day event).
+
+**Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages. Without the Division I group ESPN lists only featured games (men's: 2 of 23 on Mar 1, 2026), so Arizona's providers ask for `groups=50&limit=300`. Tested on Feb 14, 2026: men's Texas Tech at Arizona (`L, 75-78`) among ten other "Wildcats" games and Northern Arizona; women's Arizona State at Arizona (`L, 69-75`, Arizona the school, not Arizona State).
 
 ## Seen outside Arizona (not changed)
 

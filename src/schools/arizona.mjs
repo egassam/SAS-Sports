@@ -8,7 +8,7 @@ export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official schedule stays the results source of record. ESPN's college
   // football scoreboard lists only ~25 featured games for "limit=1000" (Arizona
@@ -19,12 +19,21 @@ export const arizonaSchool={
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
     // ESPN's women's college soccer scoreboard (Arizona sponsors women's
     // soccer only); it lists every Division I match.
-    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    // Both teams, labeled to match the official men's and women's pages.
+    // Without the Division I group (50) ESPN lists only featured games (2 of
+    // 23 men's games on Mar 1, 2026).
+    Basketball:[
+      {path:'basketball/mens-college-basketball',query:'groups=50&limit=300',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',query:'groups=50&limit=300',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   scheduleUrls:{
     'arizona|Baseball':['https://arizonawildcats.com/sports/baseball/schedule','https://arizonawildcats.com/'],
-    'arizona|Basketball':['https://arizonawildcats.com/sports/mens-basketball/schedule','https://arizonawildcats.com/sports/womens-basketball/schedule','https://arizonawildcats.com/sports/basketball/schedule','https://arizonawildcats.com/'],
+    // The two official pages only: the generic page and the homepage added
+    // nothing but other sports' ticker events.
+    'arizona|Basketball':['https://arizonawildcats.com/sports/mens-basketball/schedule','https://arizonawildcats.com/sports/womens-basketball/schedule'],
     'arizona|Beach Volleyball':['https://arizonawildcats.com/sports/beach-volleyball/schedule','https://arizonawildcats.com/'],
     'arizona|Cross Country':'https://arizonawildcats.com/sports/cross-country/schedule',
     'arizona|Football':'https://arizonawildcats.com/sports/football/schedule',
@@ -117,6 +126,9 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // its tournament ("Big 12 Soccer Championship").
       const tournament=String(game.tournament?.title||'').replace(/\s+Presented by\b.*$/i,'').trim();
       if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
+      // A multi-day conference tournament names the conference ("Big 12
+      // Conference"); its tournament names the event.
+      else if(/\bConference$/i.test(opponent)&&game.enddate&&tournament)opponent=tournament;
       if(!opponent||INTERNAL.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
@@ -139,6 +151,14 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
         schoolScore:final&&!meet?team:null,oppScore:final&&!meet?other:null,resultText:final&&!meet?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+      // Multi-day events (conference tournaments, tennis tournaments) end on
+      // their last day.
+      const last=String(game.enddate||'').match(/^(\d{4}-\d{2}-\d{2})T/);
+      if(last&&last[1]>game.date.slice(0,10))event.end_time=`${last[1]}T23:59:59Z`;
+      // Separate men's and women's pages can list the same opponent on the
+      // same day; the team keeps their event ids apart.
+      const squad=arizonaSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(squad)event.id=`${event.id}-${squad}`;
       if(meet&&final){
         // Women first, as K-State's: "Women's team: 12th / Men's team: 1st".
         const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
@@ -172,6 +192,12 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
   function matchesRecap(raw,event,url){
     if(event?.school_id!=='arizona')return false;
     if(!url||url!==event.recap_url){
+      // Arizona dates its stories on the game day; the shared matcher's
+      // one-day window accepted the day-before story that previews the next
+      // game ("Arizona Opens Lithuania Tour ..." names Ukraine).
+      const dated=String(url||'').match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
+      const day=dated?`${dated[1]}-${dated[2].padStart(2,'0')}-${dated[3].padStart(2,'0')}`:'';
+      if(!day||day<String(event.start_time).slice(0,10)||day>String(event.end_time||event.start_time).slice(0,10))return false;
       if(recapMatchesEvent(raw,event,url))return true;
       // A story found in the sport's news archive (no recap is linked to the
       // game) may name the opponent in full: "Arizona Blanks Northern Arizona

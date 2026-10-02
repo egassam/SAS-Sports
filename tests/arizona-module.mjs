@@ -305,4 +305,47 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(swapped.headline,"Women's team: 12th / Men's team: 1st",'the official places stay');
 }
 
+// Basketball: the men's and women's pages only (production also loaded the
+// generic page and the homepage), both labeled. Production showed
+// "(Exhib.)"/"Exhibition ..." names and dates without times.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Basketball'),['https://arizonawildcats.com/sports/mens-basketball/schedule','https://arizonawildcats.com/sports/womens-basketball/schedule']);
+  const menUrl='https://arizonawildcats.com/sports/mens-basketball/schedule',womenUrl='https://arizonawildcats.com/sports/womens-basketball/schedule';
+  const men=worker.labelTeamEvents(worker.parseHtml(fixture('mens-basketball-schedule.html.gz'),school,'Basketball',menUrl,now),school,'Basketball',menUrl);
+  const women=worker.labelTeamEvents(worker.parseHtml(fixture('womens-basketball-schedule.html.gz'),school,'Basketball',womenUrl,now),school,'Basketball',womenUrl);
+  assert.equal(men.length,39,'40 games less the Red-Blue Showcase');
+  assert.equal(women.length,33);
+  const all=[...men,...women];
+  assert.equal(new Set(all.map(e=>e.id)).size,72,'both teams play at Kansas State on Jan 9: ids stay apart');
+  assert.ok(!all.some(e=>/Red-Blue|Exhib\.|^Exhibition/i.test(e.opponent)));
+  assert.deepEqual(men.filter(e=>e.status==='Final').map(e=>`${e.title} ${e.headline}`),[
+    'Men\'s · Arizona at Lithuania "B" Team L, 88-99','Men\'s · Arizona vs Ukraine Senior National Team W, 107-85','Men\'s · Arizona at Lithuania Senior National Team W, 88-74'
+  ],'the summer tour was played with scores and recaps');
+  assert.deepEqual(men.slice(3,8).map(e=>`${e.title} ${e.display_time}`),[
+    "Men's · Arizona vs San Francisco (Exhibition) Oct 13, 7:00 PM","Men's · Arizona vs San Diego State (Exhibition) Oct 16, 7:00 PM","Men's · Arizona vs Eastern Washington (Exhibition) Oct 23, 7:00 PM",
+    "Men's · Arizona vs UCLA Nov 2, 8:00 PM","Men's · Arizona vs Cal Poly Nov 5"
+  ]);
+  assert.deepEqual(women.slice(0,3).map(e=>`${e.title} ${e.display_time}`),[
+    "Women's · Arizona vs Embry-Riddle (Ariz.) (Exhibition) Oct 22, 6:00 PM","Women's · Arizona vs Cal State Monterey Bay (Exhibition) Oct 27, 6:00 PM","Women's · Arizona vs Stanford Nov 2, 10:30 AM"
+  ]);
+  // Conference tournaments: named after the event, ending on their last day.
+  assert.deepEqual([men.at(-1),women.at(-1)].map(e=>[e.opponent,e.start_time.slice(0,10),e.end_time]),[
+    ['Big 12 Tournament','2027-03-09','2027-03-13T23:59:59Z'],["Phillips 66 Big 12 Women's Basketball Tournament",'2027-03-03','2027-03-08T23:59:59Z']
+  ]);
+  const finals=men.filter(e=>e.status==='Final');
+  const pairs=[['recap-mens-basketball-2026-08-19-lithuania-b.html.gz',0],['recap-mens-basketball-2026-08-20-ukraine.html.gz',1],['recap-mens-basketball-2026-08-22-lithuania.html.gz',2]].map(([name,i])=>[fixture(name),finals[i]]);
+  for(const [raw,event] of pairs)for(const [,other] of pairs)assert.equal(worker.arizonaHandlers.matchesRecap(raw,other,event.recap_url),event===other,`${other.opponent} must match only its own recap`);
+  // Live: ESPN's men's and women's scoreboards, Division I group. Feb 14,
+  // 2026: men's Texas Tech at Arizona among ten "Wildcats" games and Northern
+  // Arizona; women's Arizona State at Arizona.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Basketball').map(p=>[p.path,p.query,p.team_label]),[
+    ['basketball/mens-college-basketball','groups=50&limit=300',"Men's"],['basketball/womens-college-basketball','groups=50&limit=300',"Women's"]
+  ]);
+  const [menProvider,womenProvider]=arizonaSchool.liveScoreboards.Basketball;
+  const mensScores=worker.parseScoreboardPayload(JSON.parse(fixture('basketball-espn-mens-2026-02-14.json.gz')),school,'Basketball',menProvider,'https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=50&limit=300&dates=20260214',new Date('2026-02-15T12:00:00Z'));
+  assert.deepEqual(mensScores.map(e=>[e.title,e.headline,e.team_label]),[["Men's · Arizona vs Texas Tech",'L, 75-78',"Men's"]]);
+  const womensScores=worker.parseScoreboardPayload(JSON.parse(fixture('basketball-espn-womens-2026-02-14.json.gz')),school,'Basketball',womenProvider,'https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard?groups=50&limit=300&dates=20260214',new Date('2026-02-15T12:00:00Z'));
+  assert.deepEqual(womensScores.map(e=>[e.title,e.headline,e.school_score,e.opponent_score]),[["Women's · Arizona vs Arizona St",'L, 69-75','69','75']],'Arizona, not Arizona State, is the school');
+}
+
 console.log('Arizona module checks passed');
