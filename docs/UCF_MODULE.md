@@ -116,6 +116,12 @@ Production tried `/sports/womens-rowing/schedule` (404) and fell back to the hom
 
 Production tried `/sports/track-field/schedule` (404) and the homepage, and showed the 2025-26 season as current: 18 `Completed` meets with last season's recaps. Track & Field now routes to the official page only. That page still shows "Track and Field 2026" (Jan-Jun 2026), so today it is an empty schedule. Fixture-tested in season (the same page read as of June 2026): one event per meet, multi-day meets ending on their last day, and team finishes reading `UCF team: 15th · 14 pts` (the result slot's "15th - 14 Pts."). The UCF-hosted "Black and Gold Challenge" stays: the "Black & Gold" internal rule applies to games only (baseball's intrasquad World Series).
 
+## Certification (`4.39.1-ucf-xc-highlights`)
+
+`tests/validate-schools.mjs --deep` against production on October 2 (all 11 sports): Football, Volleyball, Soccer, Basketball, Baseball, Softball and Golf passed; Cross Country failed (2 highlights per meet, certification needs 3); Tennis failed once on an AI timeout; Rowing and Track & Field return `[]` (empty schedule) where the validator expects one sport group. Athlete checks (`--athletes-only`) passed 11/11 with 3 verified athletes each.
+- Cross Country highlights are now the team finish, the leader and the next finishers, all from the verified recap rows (up to 4).
+- `tests/certified-schools.json`: UCF athlete coverage extended from 4 to all 11 sports (minimum 3 each), reviewed October 2.
+
 ## Limitations
 
 - Athlete certification for UCF was not reviewed.

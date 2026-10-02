@@ -302,11 +302,15 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
     event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;
     event.recap_result_count=rows.length;
     event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
-    const leader=runners[0];
+    // Highlights are written only from these verified rows: the team finish,
+    // the leader, then the next finishers (certification asks for three).
+    const finish=row=>row.result.includes(' \u00b7 ')?row.result.replace(' \u00b7 ',' in '):`in ${row.result}`;
+    const [leader,...others]=runners;
     event.highlights=[
       ...(teamResult?[`UCF placed ${place}${points?` with ${points} points`:''} at ${event.opponent}.`]:[]),
-      `${leader.participant} led UCF in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.includes(' \u00b7 ')?leader.result.replace(' \u00b7 ',' in '):`in ${leader.result}`}.`
-    ];
+      `${leader.participant} led UCF in the ${group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${finish(leader)}.`,
+      ...others.map(row=>`${row.participant} finished ${finish(row)}.`)
+    ].slice(0,4);
     event.highlights_verified=true;event.meet_results_verified=true;
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
