@@ -8,7 +8,8 @@ const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mj
 const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
 const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs',import.meta.url),'utf8');
 const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule};
+const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -159,7 +160,7 @@ contains(worker,/Game-center cards display the opponent score before/,'Game-cent
 contains(oklahomaStateModule,/'oklahoma-state\|Cross Country':\['https:\/\/okstate\.com\/sports\/mxct\/schedule',/,'Oklahoma State cross country must use its official MXCT schedule first');
 contains(worker,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
 contains(oklahomaStateModule,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
-contains(worker,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
+contains(ucfModule,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
 contains(worker,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-soccer\/schedule'/,'Colorado Soccer must use its populated women’s schedule');
 contains(worker,/'colorado\|Volleyball':'https:\/\/cubuffs\.com\/sports\/womens-volleyball\/schedule'/,'Colorado Volleyball must use its populated women’s schedule');
 contains(worker,/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soccer\/schedule'/,'Houston Soccer must use its official women’s schedule');
