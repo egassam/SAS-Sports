@@ -1,10 +1,34 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 2, 2026, America/Chicago (UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 2, 2026, America/Chicago (Arizona: all 13 sports converted and certified, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Arizona: all 13 sports converted, certified 13/13 in production; production is `4.43.13-arizona-tennis-stories` (October 2).** User: "Let's do Arizona next. All sports and live." The agent opened and merged PRs #148-#162 one sport at a time under `AGENTS.md` item 6; every page used for fixtures came through the private source route. Each passed the gate (both suites, CI green, sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and was verified in production. Details, evidence and limitations: `docs/ARIZONA_MODULE.md`.
+
+| PR | Sport | Production |
+| --- | --- | --- |
+| #148 | Setup + Football | 219/219 routes identical; page-data reader (SIDEARM `__NUXT_DATA__`); `W, 35-7` with recaps, published Arizona times; ESPN live (FBS group) |
+| #149 | Volleyball | rankings dropped, scrimmage/unscored exhibitions out; Arizona recap matcher (own link: no sport word; opponent initials `UCSB`); ESPN live |
+| #150 | Soccer | `T, 1-1`, Big 12 tournament named; recaps from `/archives` (Arizona's `/news` is a 404) and the opponent's full name (`Northern Arizona` for NAU); ESPN soccer live |
+| #151 | Cross Country | `Women's team: 12th · 280 pts / Men's team: 1st · 85 pts`, race rows from the recap lists (18 and 20 rows) |
+| #152 | Basketball | two pages only, labeled; exhibitions; tournaments; ESPN men's/women's live (Division I group) |
+| #153 | Baseball | official page only; fall exhibitions; doubleheaders Game 1/2; ESPN live |
+| #154 | Softball | official page only; fall UTEP doubleheader; ESPN live |
+| #155 | Beach Volleyball | was 502 (empty template route); `womens-beach-volleyball` |
+| #156 | Golf | both teams, one event per tournament, `12th of 12 (909)` from each story's standings; Tucker story found in the archive (`9th of 15 (857)`) |
+| #157 | Gymnastics | `womens-gymnastics`; current-season filter; verified empty schedule |
+| #158 | Swimming & Diving | one event per meet (was 81 per-day rows) |
+| #159, #161 | Tennis | both teams; tournaments in progress stay; past ones only with Arizona's story |
+| #160 | Track & Field | official route; verified empty schedule; recap date window (indoor Big 12 linked the May story) |
+| #162 | Certification | athletes protected for 12 sports (3 each) |
+
+- **Certification (production, `validate-schools.mjs --deep`, all 13 sports):** 13/13 on the final runs (Volleyball 12/12, Soccer 12/12, Football 4/4, Golf 4/4, Basketball 3/3, Cross Country 2/2, Tennis 1/1; Gymnastics and Track & Field verified empty). Three other passes had client-side "fetch failed" errors in the sandbox (Football; Cross Country; then Football and Volleyball together at ~20:47 UTC), each passing on rerun; meanwhile curl got HTTP 200 for both feeds in under 0.5 s, so these are the sandbox's network, not the app. Athletes 12/12.
+- **Open, not fixable from official sources today (evidence in the module doc):** Baseball athletes (the 2027 roster page lists no players); Gymnastics and Track & Field 2026-27 schedules unpublished; Red Sky golf field size (top-10 table only).
+- **Shared-code touches, all Arizona-gated:** scoreboard provider `query` (others send the identical request), Arizona-only exact ESPN team match, Arizona scoreboard finals as `W, 34-24`, Arizona branches in the recap search (matcher, `/archives`), the three XC hooks, golf/tennis feed hooks, the `empty_schedule` hook, and one tennis line at the top of `attachOfficialHighlights`.
+- **Found outside Arizona, not changed (needs the user):** ESPN's college football and basketball scoreboards return only featured games for `limit=1000` (K-State at Cincinnati was missing on Sep 26; 12 of 53 men's basketball games on Mar 3), so K-State/BYU/UCF football and basketball live scores, and every school's default football scoreboard, can miss games; the fix is `groups=80` / `groups=50` per provider. The shared ESPN name match's prefix fallback can take `Kansas State Wildcats` for KU and `Arizona State` for Arizona.
 
 **Blocked school sites: private source route, #145 (`4.42.0-private-source-fetch`, user: "Let's do option 1").** Schools such as Arizona and Baylor refuse the development sandbox's network (403, even for calendar files) but serve the live app (production diagnostics Oct 2: Arizona, Baylor, Texas Tech, West Virginia Football all HTTP 200, 12-16 events). `GET /api/source?url=…` returns the raw official page exactly as the app downloads it (honest identity, robots.txt, caching, backoff), only with the Worker secret `SOURCE_FETCH_KEY` as a bearer token, and only for https pages on a catalog school's official athletics site or TFRRS (an off-site redirect is refused). No secret: 404 (production at merge: 404).
 - **Set up and working (verified October 2, ~16:35 UTC).** The user set the Worker secret `SOURCE_FETCH_KEY` and the sandbox variable `SAS_SOURCE_KEY`. Through the route: Arizona Football schedule HTTP 200 (941,639 bytes, real 2026 page), Baylor Football schedule HTTP 200 (841,725 bytes). Without the key the route now answers 401 (it answered 404 before the secret existed). Never paste the key into chat.
@@ -359,6 +383,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Arizona is complete except for source-blocked items** (see `docs/ARIZONA_MODULE.md`, Limitations): when arizonawildcats.com publishes the 2027 baseball roster, add Baseball to Arizona's `athlete_sports` (verify 3 athletes first); Gymnastics and Track & Field fill in without code changes when 2026-27 is published. Ask the user whether to apply the ESPN `groups` fix and the exact-team match to K-State, BYU, UCF and the default football scoreboard (shared change). Remaining unconverted Big 12 schools: Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
 - **Live scores (ESPN), open checks:**
   - Observed: the K-State vs BYU final reached both cards (K-State `L, 1-3`, BYU `W, 3-1`) after #121.
   - Watch a K-State or BYU basketball game go live (season from Oct 16).
@@ -1278,3 +1303,15 @@ User: "What can we do to reach the schools that are blocking you?" The agent sho
 ### October 2, 2026 — Private source route verified
 
 User: "Try now" (after adding the key). The first attempt failed before reaching the route: the environment's network policy refused `sas-sports.lovetogivepain.workers.dev`, kstatesports.com and byucougars.com (proxy 403 on connect). The agent asked the user to restore Network access. User: "Try now". curl with the key: Arizona Football schedule 200 (941,639 bytes); `scripts/fetch-official.mjs` failed until run with `NODE_USE_ENV_PROXY=1`, then Arizona 200 and Baylor 200 (841,725 bytes); no key: 401. The agent offered to start the Arizona module with Football. User: "End session". No code changed; this record is the only change (docs-only PR).
+
+### October 2, 2026 — Arizona, all sports and live
+
+User: "Let's do Arizona next. All sports and live." The handoff was read from main (`3b70f1d`). arizonawildcats.com refuses the sandbox; all 20 schedule pages, recaps, archives and rosters came through `scripts/fetch-official.mjs` (HTTP 200). ESPN scoreboards were read directly.
+
+**Approach:** one page-data reader (`createArizonaHandlers().parseSchedule`, SIDEARM `__NUXT_DATA__`) enabled sport by sport, one PR each, merged by the agent under `AGENTS.md` item 6 after the full gate and verified in production: #148 Football, #149 Volleyball, #150 Soccer, #151 Cross Country, #152 Basketball, #153 Baseball, #154 Softball, #155 Beach Volleyball, #156 Golf, #157 Gymnastics, #158 Swimming & Diving, #159 Tennis, #160 Track & Field, #161 Tennis follow-up, #162 athlete certification.
+
+**Found by the gates and fixed before merge:** ESPN football `limit=1000` missing Arizona's game; "Arizona State Sun Devils" matched as Arizona (prefix fallback); ESPN soccer team name "Arizona" discarded as a nickname; UCSB-only recap; NAU/Pepperdine recaps only in `/archives`; a day-before story naming the next opponent; Kinlen tennis story not reaching the expanded view (the test had attached it by hand; it now runs end to end); the indoor Big 12 track meet linking the May outdoor story.
+
+**Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/arizona-module.mjs` (parse hook, Arizona State guard, `/archives`, full-name match).
+
+**Not done / needs the user:** the shared ESPN `groups` fix and exact-team match for other schools; a real Arizona game observed live (scheduled check at 00:25 UTC, Oct 3).

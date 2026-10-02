@@ -182,7 +182,7 @@ ESPN publishes no track scoreboard.
 
 ## Certification
 
-`tests/validate-schools.mjs --deep` against production on October 2 (all 13 sports): 11/13 on the first run. Football failed once with "fetch failed" (a network error; the immediate rerun passed 4/4), and Tennis failed (three past tournaments without an Arizona story, fixed in #161; the preview then passed 1/1). Every other sport passed with each final's expanded view verified: Volleyball 12/12, Soccer 12/12, Cross Country 2/2, Basketball 3/3, Golf 4/4; Gymnastics and Track & Field are verified empty schedules.
+`tests/validate-schools.mjs --deep` against production on October 2 (all 13 sports): 11/13 on the first run. Football failed once with "fetch failed" (a network error; the immediate rerun passed 4/4), and Tennis failed (three past tournaments without an Arizona story, fixed in #161; the preview then passed 1/1). After #161 and #162 the full set passed 13/13 (later passes again showed occasional client-side "fetch failed" errors in the sandbox, each passing on rerun). Every other sport passed with each final's expanded view verified: Volleyball 12/12, Soccer 12/12, Cross Country 2/2, Basketball 3/3, Golf 4/4; Gymnastics and Track & Field are verified empty schedules.
 
 Athletes (`--athletes-only`): 12 sports pass with 3 verified athletes each (official roster profiles with personal Instagram links, each from that sport's own roster). `tests/certified-schools.json` now protects those 12 sports (minimum 3, reviewed October 2).
 
