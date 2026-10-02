@@ -249,6 +249,22 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.deepEqual(women.map(e=>[e.title,e.school_score,e.opponent_score]),[["Women's · UCF at Houston",'72','62']]);
 }
 
+// Baseball ("Baseball 2027": fall exhibitions, then the spring season). The
+// official page only; production also read the homepage. The intrasquad
+// "Black & Gold World Series" (Nov 13-15) is not a game.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Baseball'),['https://ucfknights.com/sports/baseball/schedule']);
+  const url='https://ucfknights.com/sports/baseball/schedule';
+  const games=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',url,now);
+  assert.equal(games.length,38,'41 cards less the three intrasquad days');
+  assert.equal(new Set(games.map(e=>e.id)).size,38);
+  assert.ok(!games.some(e=>/black & gold/i.test(e.opponent)),'no intrasquad event');
+  assert.ok(games.every(e=>e.status==='Upcoming'&&!e.headline));
+  assert.deepEqual(games.slice(0,5).map(e=>`${e.title} ${e.display_time}`),['UCF vs FIU Oct 17, 7:00 PM','UCF at Rollins Oct 31, 12:00 PM','UCF at Stetson Nov 6, 6:30 PM','UCF at Florida Southern Nov 7, 1:00 PM','UCF vs Pitt Feb 26, 7:00 PM']);
+  assert.equal(games[4].start_time,'2027-02-26T19:00:00.000Z','spring games are 2027');
+  assert.equal(games.at(-1).title,'UCF vs Big 12 Baseball Tournament','the TBD tournament card takes its heading');
+}
+
 // Only the converted sports read the cards so far; every other sport keeps the shared parsers.
-assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Baseball',footballUrl,now),null);
+assert.equal(createUcfHandlers({makeEvent:()=>{throw Error('unused');},visibleText:x=>x,absoluteUrl:x=>x}).parseSchedule(fixture('football-schedule.html.gz'),school,'Softball',footballUrl,now),null);
 console.log('UCF module checks passed');

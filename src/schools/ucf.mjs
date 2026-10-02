@@ -7,7 +7,7 @@ export const ucfSchool={
   id:'ucf',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -22,7 +22,7 @@ export const ucfSchool={
   // by team.
   combinedSports:new Set(['Basketball','Swimming & Diving','Soccer']),
   scheduleUrls:{
-    'ucf|Baseball':['https://ucfknights.com/sports/baseball/schedule','https://ucfknights.com/'],
+    'ucf|Baseball':'https://ucfknights.com/sports/baseball/schedule',
     'ucf|Basketball':['https://ucfknights.com/sports/mens-basketball/schedule','https://ucfknights.com/sports/womens-basketball/schedule'],
     'ucf|Cross Country':'https://ucfknights.com/sports/cross-country/schedule',
     'ucf|Football':'https://ucfknights.com/sports/football/schedule',
@@ -184,6 +184,10 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
         if(heading)opponent=/^TB[AD]$/i.test(opponent)?heading:`${heading} \u00b7 ${opponent}`;
       }
       if(!opponent||!divider)continue;
+      // Internal events: baseball's "Black & Gold World Series", softball's
+      // "Open Scrimmage" and "Knights vs. 'Nauts" (two squads; BYU's "Navy vs.
+      // Royal" is read the same way).
+      if(/\bscrimmage\b|\bintrasquad\b|\bblack (?:&|and) gold\b|\svs\.?\s/i.test(opponent))continue;
       const slot=field(block,/class=["']schedule-event-item-result["'][^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i)||field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/(?:strong|div)>/i);
       const result=slot.match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const clock=result?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
