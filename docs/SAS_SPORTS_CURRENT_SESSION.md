@@ -8,7 +8,12 @@ Last updated: October 2, 2026, America/Chicago (UCF complete: PRs #123, #125–#
 
 **Rule (user, October 2): do not finish a school until everything within it is complete.** See `AGENTS.md` item 5a. A school is complete only when every sport is in K-State's format, athlete certification passes for every sport, and every module-doc limitation is fixed or proven unfixable from the official sources with evidence.
 
-**UCF is NOT complete yet.** Open: athlete certification (all sports, not reviewed); Cross Country rows limited to runners each recap names; Golf placings without field size; expanded-view AI timeouts. Work continues in this session.
+**UCF is NOT complete yet: two open items need the user's decision (both are shared code).** Production `4.39.3-ucf-xc-tfrrs`.
+- **Done since the rule:** XC highlights for certification (#137); athlete certification extended to and passing for all 11 sports (#137); complete XC results from TFRRS (`Women's 5K`, every runner, scored team result; #138).
+- **Proven unfixable from official sources (evidence in `docs/UCF_MODULE.md`):** golf field size (not on cards, recaps or the statistics PDF); Rowing, Track & Field and men's Tennis have no 2026-27 schedule published yet.
+- **Open 1: expanded-view AI timeouts.** Each deep certification run fails 1-3 random UCF finals with `ai_failed` (8 s Workers AI limit after the recap matched): Oct 2 runs failed Tennis ITA once, then Football TCU, Soccer Utah and Golf FAU, all of which passed on other runs. The fix (retry once, a longer limit, or caching generated highlights per recap URL) is in shared code and affects every school.
+- **Open 2: validator and empty schedules.** `tests/validate-schools.mjs` requires one sport group; every school's empty schedule returns `[]` (BYU Gymnastics too), so UCF Rowing and Track & Field fail certification while the app shows the empty-schedule note. Fixing it changes the shared validator.
+- **Seen outside UCF (not changed):** production Utah Lacrosse returned "All official source candidates failed" at 13:52 UTC.
 
 **UCF: all 11 sports' schedules converted; production is `4.39.0-ucf-track-field` (13:33 UTC, October 2).** User: "Finish UCF, do all the sports". The agent opened and merged PRs #125–#134 one sport at a time under `AGENTS.md` item 6 (#123 was Football). Each passed the preview gate (K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes, CI green) and was verified in production. The status table and limitations are in `docs/UCF_MODULE.md`.
 
@@ -1255,4 +1260,6 @@ User: "Finish UCF, do all the sports". All 15 official schedule pages downloaded
 ### October 2, 2026 — Rule: finish the whole school
 
 User: "I don't understand why you are not finishing everything of a school. Before you stop? Please put in the writing to not finish a school until everything is complete within the school". The agent had reported UCF complete with athlete certification unreviewed and other limitations open. The rule is now `AGENTS.md` item 5a, and UCF is marked not complete above.
+
+Same day, continued: after the rule the agent certified UCF against production (`validate-schools.mjs --deep`, all 11 sports) and fixed what was UCF's alone: #137 (XC highlights; athlete coverage for all 11 sports, 11/11 passing), #138 (complete XC results from TFRRS; source link kept on ucfknights.com because certification requires it). Both passed the full gate and were verified in production. The two open items above are shared changes, so they were taken to the user.
 
