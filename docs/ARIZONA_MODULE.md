@@ -17,7 +17,8 @@ Arizona was chosen on October 2, 2026 (user: "Let's do Arizona next. All sports 
 | Softball | #154 | 35 games: 7 fall exhibitions from Oct 17 (the UTEP doubleheader as two games), then spring 2027; postseason events end on their last day; ESPN live score |
 | Beach Volleyball | #155 | Was 502: routes fixed to `womens-beach-volleyball`; 5 fall events, tournaments named, multi-day events end on their last day |
 | Golf | #156 | Both teams, one event per tournament: `12th of 12 (909)`, `9th of 15 (857)`, `4th of 12 (866)`, `7th (844)`, with Arizona's individual scores from each tournament's story |
-| Gymnastics | (this PR) | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
+| Gymnastics | #157 | Empty schedule (the page still shows 2025-26); routes fixed to `womens-gymnastics`; in season `W · 195.425`, `3rd · 193.350` with recaps |
+| Swimming & Diving | (this PR) | Both teams, one event per meet (13 men's, 14 women's; was 81 per-day rows); intrasquad left out; published times |
 
 ## Setup (route parity)
 
@@ -145,6 +146,12 @@ Arizona sponsors women's gymnastics. The inherited routes also tried `mens-gymna
 - **In season** (the same page read as of Mar 15, 2026): meets read `Arizona at Washington` with `W · 195.425` (a dual) or `3rd · 193.350` (a multi-team meet), each with its recap; the canceled Iowa State meet is left out; the opening GymCat Showcase (an exhibition with no score) reads `Completed`.
 
 ESPN publishes no college gymnastics scoreboard, so there is no live score.
+
+## Swimming & Diving (`4.43.10-arizona-swimming-diving`)
+
+Production showed 81 "upcoming" rows: one per meet day for each team (USA Diving Nationals alone was 14 rows) and the Red vs. Blue Intrasquad. The page data lists every meet day as its own entry, so Swimming & Diving joins golf's merge: consecutive days of the same meet become one event ending on its last day (`SMU Classic`, Oct 9-10; `USA Diving Nationals`, Dec 9-15). The men's page reads 13 meets, the women's 14 (they also host Northern Arizona), labeled, with published times where the page's time agrees with its date (the women's Nov 6 entry publishes "1:00 PM ... / 6:00 PM" for a 6 PM start, so it shows the date only).
+
+In season, a dual with a published score reads as K-State's games do (`W, 160-140`); a meet whose last day has passed with no published result reads `Completed` (as UCF's), and a published finish in another form is shown as published. Neither page has a 2026-27 result yet. ESPN publishes no swimming scoreboard.
 
 ## Seen outside Arizona (not changed)
 

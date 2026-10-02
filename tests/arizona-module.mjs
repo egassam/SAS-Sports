@@ -506,4 +506,27 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(worker.arizonaHandlers.isEmptySchedule(worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now)),false);
 }
 
+// Swimming & Diving: production showed 81 "upcoming" entries: one per meet
+// day, both teams, and the Red vs. Blue Intrasquad. One event per meet now.
+{
+  const menUrl='https://arizonawildcats.com/sports/mens-swimming-and-diving/schedule',womenUrl='https://arizonawildcats.com/sports/womens-swimming-and-diving/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Swimming & Diving'),[menUrl,womenUrl]);
+  const men=worker.labelTeamEvents(worker.parseHtml(fixture('mens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving',menUrl,now),school,'Swimming & Diving',menUrl);
+  const women=worker.labelTeamEvents(worker.parseHtml(fixture('womens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving',womenUrl,now),school,'Swimming & Diving',womenUrl);
+  assert.equal(men.length,13,'40 day entries: 13 meets less the intrasquad');
+  assert.equal(women.length,14,'the women also host Northern Arizona');
+  assert.equal(new Set([...men,...women].map(e=>e.id)).size,27);
+  assert.ok(![...men,...women].some(e=>/Intrasquad/i.test(e.opponent)));
+  assert.deepEqual(men.slice(0,3).map(e=>[e.title,e.display_time,e.end_time??null]),[
+    ["Men's · Arizona at SMU Classic",'Oct 9, 5:00 PM','2026-10-10T23:59:59Z'],
+    ["Men's · Arizona vs Southern Methodist University",'Oct 23, 12:30 PM',null],
+    ["Men's · Arizona vs USC, UCLA, Arizona State",'Nov 6, 1:00 PM','2026-11-07T23:59:59Z']
+  ]);
+  assert.deepEqual(men.find(e=>/USA Diving/.test(e.opponent)).end_time,'2026-12-15T23:59:59Z','a seven-day meet is one event');
+  // A published dual score reads as a game; an unscored meet as a meet.
+  const scoredRaw=fixture('mens-swimming-diving-schedule.html.gz');
+  const smuDual=worker.parseHtml(scoredRaw,school,'Swimming & Diving',menUrl,new Date('2026-10-24T19:00:00Z')).find(e=>e.opponent==='Southern Methodist University');
+  assert.deepEqual([smuDual.status,smuDual.headline],['Final','Completed'],'a past meet with no published score reads Completed, as UCF\'s');
+}
+
 console.log('Arizona module checks passed');
