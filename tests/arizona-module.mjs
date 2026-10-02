@@ -348,4 +348,35 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(womensScores.map(e=>[e.title,e.headline,e.school_score,e.opponent_score]),[["Women's · Arizona vs Arizona St",'L, 69-75','69','75']],'Arizona, not Arizona State, is the school');
 }
 
+// Baseball: "2027 Baseball Schedule". Production read only the spring games
+// (55) with dates alone; the fall exhibitions were missing.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Baseball'),['https://arizonawildcats.com/sports/baseball/schedule']);
+  const url='https://arizonawildcats.com/sports/baseball/schedule';
+  const baseball=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',url,now);
+  assert.equal(baseball.length,59,'60 page games less the Oct 1 exhibition played without a published score');
+  assert.equal(new Set(baseball.map(e=>e.id)).size,59);
+  assert.ok(baseball.every(e=>e.status!=='Final'));
+  assert.deepEqual(baseball.slice(0,6).map(e=>`${e.title} ${e.display_time}`),[
+    'Arizona vs Naranjeros de Hermosillo (Exhibition) Oct 9, 6:00 PM','Arizona vs Pima Community College (Exhibition) Oct 17, 1:00 PM',
+    'Arizona vs Central Arizona College (Exhibition) Oct 23, 6:00 PM','Arizona vs Vanderbilt (Exhibition) Nov 1, 11:00 AM',
+    'Arizona vs Oklahoma Feb 19, 10:00 AM','Arizona vs Virginia Feb 20, 10:00 AM'
+  ],'fall games are labeled exhibitions; published times');
+  assert.equal(baseball.find(e=>e.opponent==='Oklahoma').start_time,'2027-02-19T10:00:00.000Z','spring games are in 2027');
+  assert.deepEqual(baseball.filter(e=>e.opponent==='UCLA').map(e=>e.display_time),['Feb 26','Feb 27','Feb 28'],'a three-game series is three games');
+  // A doubleheader (same opponent twice on one day) stays two games.
+  const raw=fixture('baseball-schedule.html.gz').replace('"2027-02-27T00:00:00"','"2027-02-26T00:00:00"');
+  const doubled=worker.parseHtml(raw,school,'Baseball',url,now).filter(e=>e.opponent==='UCLA');
+  assert.deepEqual(doubled.map(e=>[e.display_time,e.game_number??null,e.title]),[['Feb 26',1,'Arizona at UCLA (Game 1)'],['Feb 26',2,'Arizona at UCLA (Game 2)'],['Feb 28',null,'Arizona at UCLA']]);
+  assert.equal(new Set(doubled.map(e=>e.id)).size,3);
+  // Live: ESPN's college baseball scoreboard. Apr 10, 2026: Arizona at TCU
+  // (W, 4-3) and Utah at Arizona State the same day.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Baseball').map(p=>p.path),['baseball/college-baseball']);
+  const payload=JSON.parse(fixture('baseball-espn-2026-04-10.json.gz'));
+  assert.ok(payload.events.some(e=>e.name==='Utah Utes at Arizona State Sun Devils'));
+  const scored=worker.parseScoreboardPayload(payload,school,'Baseball',arizonaSchool.liveScoreboards.Baseball[0],'https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard?limit=1000&dates=20260410',new Date('2026-04-11T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status]),[['Arizona at TCU','Final']]);
+  assert.equal(scored[0].headline,'W, 4-3','finals read as K-State\'s');
+}
+
 console.log('Arizona module checks passed');
