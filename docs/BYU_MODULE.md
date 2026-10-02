@@ -176,3 +176,7 @@ Both pages still show the 2025-26 season, so today Track & Field is a 200 empty 
 ## Volleyball live scores (`4.37.5-byu-volleyball-live`)
 
 User, during BYU at Kansas State on Oct 1: "Let's update this to byu". BYU Volleyball now uses the same ESPN college volleyball scoreboard as K-State (`byuSchool.liveScoreboards`, looked up beside K-State's in `liveScoreboardProviders`). Today's official card goes Live from BYU's side: the big score is BYU's points in the current set, and the status line reads `1st Set · Sets 0-0`. A final reads `W, 3-1` / `L, 1-3`. Matching ignores nicknames (Houston and Washington State are also Cougars). ESPN's feed can lag several minutes, especially between sets. Football already used ESPN by default; Basketball is not configured for BYU.
+
+## Basketball live scores (`4.37.7-byu-basketball-live`)
+
+User: "Add live scores for BYU basketball too". `byuSchool.liveScoreboards.Basketball` adds ESPN's men's and women's college basketball scoreboards, labeled `Men's`/`Women's` to match the official cards, as K-State's are. A live game shows the clock (`2nd Half - 4:12`) and BYU's score. Fixtures: ESPN's real Houston at BYU (men, Feb 7, 2026) and BYU at Houston (women, Jan 10, 2026) events. Both teams are Cougars, so the test checks that BYU gets BYU's side and Houston gets its own. The season starts Oct 16 (men's exhibition vs Nebraska), so a real live game has not been observed yet.

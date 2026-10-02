@@ -13,7 +13,12 @@ export const byuSchool={
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // Both teams, labeled to match the official men's and women's cards.
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving','Cross Country','Golf','Tennis','Track & Field']),
   verifiedInstagrams:{

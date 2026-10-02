@@ -162,5 +162,17 @@
       "retrieved": "2026-10-01T22:50Z",
       "note": "Official recap linked from the women's USTA SoCal Championships card (Sep 24-27), unmodified; dated Sep 28."
     }
+  },
+  "scoreboards": {
+    "basketball-espn-mens-houston-20260207.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?limit=1000&dates=20260207&groups=50",
+      "retrieved": "2026-10-02T00:29Z",
+      "note": "The Houston at BYU event (final, 77-66) from ESPN's scoreboard, unmodified; other events removed."
+    },
+    "basketball-espn-womens-houston-20260110.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard?limit=1000&dates=20260110&groups=50",
+      "retrieved": "2026-10-02T00:29Z",
+      "note": "The BYU at Houston event (final, 79-64) from ESPN's scoreboard, unmodified; other events removed."
+    }
   }
 }
