@@ -583,6 +583,17 @@ function keepFinal(event,store=localStorage){
   if(!verified)return false;
   try{store.setItem(finalCacheKey(event),JSON.stringify({saved_at:Date.now(),event}));return true}catch{return false}
 }
+// The AI behind an expanded view sometimes times out on the first open of a
+// final; ask once more before showing the event without highlights.
+async function fetchHighlights(path,fetcher=apiFetch,attempts=2){
+  let enriched=null;
+  for(let i=0;i<attempts;i++){
+    const r=await fetcher(path,1);
+    enriched=await r.json();
+    if(enriched?.highlight_state!=='ai_failed')break;
+  }
+  return enriched;
+}
 // FINAL-CACHE:END
 async function openEvent(id){
   modalWrap.classList.add('open'); modalWrap.setAttribute('aria-hidden','false');
@@ -601,10 +612,9 @@ async function openEvent(id){
     try{
       // Start the request immediately, but keep the branded loader visible long
       // enough to be perceived even when Cloudflare returns a cached response.
-      const highlightRequest=apiFetch(`/live/highlights?school=${encodeURIComponent(e.school_id)}&sport=${encodeURIComponent(e.sport)}&event_id=${encodeURIComponent(e.id)}`,1);
+      const highlightRequest=fetchHighlights(`/live/highlights?school=${encodeURIComponent(e.school_id)}&sport=${encodeURIComponent(e.sport)}&event_id=${encodeURIComponent(e.id)}`);
       await new Promise(resolve=>setTimeout(resolve,1500));
-      const r=await highlightRequest;
-      const enriched=await r.json();
+      const enriched=await highlightRequest;
       if(enriched&&enriched.id){Object.assign(e,enriched);keepFinal(e)}
     }catch{}
   }
