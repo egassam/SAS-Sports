@@ -13,7 +13,7 @@ import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.47.6-baylor-softball';
+const VERSION='4.47.7-baylor-golf';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1406,6 +1406,9 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!target)return events;
   // Arizona tennis tournaments take their story from the team's archive.
   if(arizonaHandlers.isArizonaTennisTournament(target))await arizonaHandlers.attachTennisStory(target);
+  // Baylor golf finals the schedule links no story for take theirs from the
+  // team's archive.
+  if(baylorHandlers.isBaylorGolfWithoutStory(target))await baylorHandlers.attachGolfStory(target);
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.
@@ -1707,6 +1710,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // grouped feed is cached, so the summary count and cards match the modal.
   // Arizona golf results come from each tournament's own story.
   if(school.id==='arizona'&&sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
+  if(school.id==='baylor'&&sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));
   if(school.id==='arizona'&&sport==='Tennis'){
     await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
     // As K-State's, a past tournament with no team result is listed only

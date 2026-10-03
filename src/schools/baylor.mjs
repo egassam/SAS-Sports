@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -31,7 +31,7 @@ export const baylorSchool={
   // Stored expanded views (/live/highlights) are kept 30 days; raise this
   // when a change rewrites already-stored Baylor finals.
   highlightRevision:2,
-  combinedSports:new Set(['Basketball']),
+  combinedSports:new Set(['Basketball','Golf']),
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
     // The official page only: the homepage adds other sports' ticker events.
@@ -42,7 +42,9 @@ export const baylorSchool={
     'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
     'baylor|Equestrian':['https://baylorbears.com/sports/equestrian/schedule','https://baylorbears.com/'],
     'baylor|Football':'https://baylorbears.com/sports/football/schedule',
-    'baylor|Golf':['https://baylorbears.com/sports/womens-golf/schedule','https://baylorbears.com/sports/mens-golf/schedule','https://baylorbears.com/sports/golf/schedule','https://baylorbears.com/'],
+    // Both teams (production showed the women's page only, the first that
+    // loaded); /sports/golf/ and the homepage are not golf schedules.
+    'baylor|Golf':['https://baylorbears.com/sports/womens-golf/schedule','https://baylorbears.com/sports/mens-golf/schedule'],
     'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
     // The official page only: the homepage adds other sports' ticker events.
     'baylor|Softball':'https://baylorbears.com/sports/softball/schedule',
@@ -148,14 +150,44 @@ export function parseBaylorTfrrsResults(raw,{decodeHtml,ordinal}){
   return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
 }
 
+// Golf publishes one entry per round ("Schooner Fall Classic" on Sep 19, 20
+// and 21). K-State shows one event per tournament: consecutive days of the
+// same tournament become one event from its first to its last day. The last
+// round with a result carries the final place, total and recap (a day-one
+// line such as "15th (+7, 287)" is not the result); an unfinished tournament
+// shows its next round.
+function mergeRounds(games,today){
+  const groups=[];
+  for(const game of games){
+    const key=String(game.opponent?.title||'').trim().toLowerCase(),previous=groups.at(-1);
+    const gap=previous?(Date.parse(game.date.slice(0,10))-Date.parse(previous.at(-1).date.slice(0,10)))/86400000:Infinity;
+    if(previous&&key&&String(previous[0].opponent?.title||'').trim().toLowerCase()===key&&gap>=0&&gap<=2){previous.push(game);continue;}
+    groups.push([game]);
+  }
+  return groups.map(rounds=>{
+    if(rounds.length===1)return rounds[0];
+    const first=rounds[0],last=rounds.at(-1),next=rounds.find(round=>round.date.slice(0,10)>=today);
+    const shown=next&&first.date.slice(0,10)<today?next:first;
+    const scored=[...rounds].reverse().find(round=>round.result?.postscore_info||round.result?.prescore_info||round.result?.recap?.url);
+    return{...shown,date:first.date,enddate:last.date,result:scored?.result||null};
+  });
+}
+// "9th (+4, 844)", "T7th (-32, 832)", "3rd (-5, 845)": place, score to par
+// and total.
+export function baylorGolfPlacing(value){
+  const m=String(value||'').trim().match(/^(T)?(\d{1,3})(?:st|nd|rd|th)\s*\(\s*([+-]\d+|E|Even)\s*,\s*(\d{3,4})\s*\)$/i);
+  return m?{tied:Boolean(m[1]),place:Number(m[2]),par:/^e/i.test(m[3])?0:Number(m[3]),total:m[4]}:null;
+}
+
 export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='baylor'||!baylorSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
     if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const games=sidearmScheduleGames(raw);
-    if(!games.length)return null;
+    const pageGames=sidearmScheduleGames(raw);
+    if(!pageGames.length)return null;
     const today=baylorToday(now),events=[];
+    const games=sport==='Golf'?mergeRounds(pageGames,today):pageGames;
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
@@ -195,7 +227,12 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
         event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
         event.start_time=`${today}T12:00:00.000Z`;
       }
-      if(meet&&final){
+      const golf=sport==='Golf'?baylorGolfPlacing(placing):null;
+      if(golf&&final){
+        const value=`${golf.tied?'T':''}${ordinal(golf.place)} (${golf.total})`;
+        event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
+        event.golf_par=golf.par;
+      }else if(meet&&final&&sport!=='Golf'){
         // Women first, as K-State's: "Women's team: 3rd / Men's team: 4th".
         // TFRRS adds the points and races (attachMeetResults).
         const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:?\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
@@ -235,11 +272,38 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
   // their dateline ("HONOLULU, Hawaii"), so on a tournament day the shared
   // matcher took each Aug 30 story for the other match.
   function matchesRecap(raw,event,url){
-    if(event?.school_id!=='baylor'||!recapMatchesEvent(raw,event,url))return false;
+    if(event?.school_id!=='baylor')return false;
+    // A golf story already verified against the schedule's place, score to
+    // par and last day (attachGolfStory); it may name the event differently.
+    if(url&&url===event.golf_story_verified&&url===event.recap_url)return true;
+    if(!recapMatchesEvent(raw,event,url))return false;
     if(url&&url===event.recap_url)return true;
     const key=value=>` ${String(value).toLowerCase().replace(/&amp;|&#38;/g,'&').replace(/&#x27;|&#39;|\u2019/g,"'").replace(/[^a-z0-9&']+/g,' ').trim()} `;
     const opponent=key(String(event.opponent||'').replace(/\(.*?\)/g,' ')).trim();
     return opponent.length>=2&&key(baylorStoryHeadline(raw)).includes(` ${opponent} `);
+  }
+  // A golf final whose schedule links no story (the women's Charleston
+  // Intercollegiate) takes Baylor's story from the team's golf archive: dated
+  // on the last day, about golf, and stating the schedule's own place and
+  // score to par ("a third-place finish ... at 5-under" for "3rd (-5, 845)").
+  // The story may name the event differently ("Cougar Classic").
+  const isBaylorGolfWithoutStory=event=>event?.school_id==='baylor'&&event.sport==='Golf'&&event.status==='Final'&&!event.recap_url&&Number.isFinite(event.golf_par);
+  async function attachGolfStory(event){
+    if(!isBaylorGolfWithoutStory(event))return event;
+    const team=event.team_label==="Men's"?'mens':event.team_label==="Women's"?'womens':(String(event.source?.url||'').match(/\/sports\/(mens|womens)-golf\//)||[])[1];if(!team)return event;
+    const listing=await download(`https://${HOST}/sports/${team}-golf/archives`);if(!listing)return event;
+    const [year,month,day]=String(event.end_time||event.start_time).slice(0,10).split('-').map(Number);
+    const dated=new RegExp(`/news/${year}/0?${month}/0?${day}/[a-z0-9-]*golf[a-z0-9-]*`,'gi');
+    const place=Number(String(event.headline).match(/^T?(\d+)/)?.[1]);
+    const words=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','13th','14th','15th','16th','17th','18th','19th','20th'];
+    const par=event.golf_par===0?/\beven[- ]par\b/i:new RegExp(`\\b${Math.abs(event.golf_par)}-${event.golf_par<0?'under':'over'}\\b`,'i');
+    for(const path of [...new Set(listing.replace(/\\u002F/gi,'/').match(dated)||[])].slice(0,4)){
+      const url=`https://${HOST}${path}`,raw=await download(url);if(!raw)continue;
+      const story=decodeHtml((raw.match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+      const placed=new RegExp(`\\b(?:${ordinal(place)}|${words[place]||ordinal(place)})(?:[- ]place)?\\b`,'i');
+      if(/\bfinish/i.test(story)&&placed.test(story)&&par.test(story)){event.recap_url=url;event.golf_story_verified=url;return event;}
+    }
+    return event;
   }
   const isBaylorCrossCountry=event=>event?.school_id==='baylor'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   const download=async url=>{try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():null;}catch{return null;}};
@@ -307,5 +371,5 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,matchesRecap,isBaylorCrossCountry,attachMeetResults};
+  return{parseSchedule,matchesRecap,isBaylorCrossCountry,attachMeetResults,isBaylorGolfWithoutStory,attachGolfStory};
 }

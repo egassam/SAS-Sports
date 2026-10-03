@@ -329,4 +329,44 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.ok(scored.length>=1&&scored.every(e=>e.title==='Baylor at Kansas'),'only Baylor\'s game among the other "Bears"');
 }
 
+// Golf: both teams' official pages (production showed the women's page only),
+// labeled; one event per tournament (production showed every round); K-State's
+// "9th (844)" from the schedule's "9th (+4, 844)".
+{
+  assert.deepEqual(worker.candidateUrls(school,'Golf'),['https://baylorbears.com/sports/womens-golf/schedule','https://baylorbears.com/sports/mens-golf/schedule']);
+  const golfFiles={'cougar-classic':'recap-golf-2026-9-8-cougar-classic.html.gz','schooner':'recap-golf-2026-9-21-schooner.html.gz','first-event-in-arizona':'recap-golf-2026-9-8-bomb-darts.html.gz','fighting-illini':'recap-golf-2026-9-19-fighting-illini.html.gz'};
+  recapFixtures.set('https://baylorbears.com/sports/womens-golf/archives',fixture('golf-womens-archives.html.gz'));
+  const read=team=>{const url=`https://baylorbears.com/sports/${team}-golf/schedule`;return worker.labelTeamEvents(worker.parseHtml(fixture(`golf-${team}-schedule.html.gz`),school,'Golf',url,now),school,'Golf',url);};
+  const womens=read('womens'),mens=read('mens');
+  assert.deepEqual([womens.length,mens.length],[13,12],'34 and 33 round entries become 13 and 12 tournaments');
+  assert.deepEqual(womens.filter(e=>e.status==='Final').map(e=>[e.title,e.headline,e.end_time]),[["Women's · Baylor at Charleston Intercollegiate",'3rd (845)','2026-09-08T23:59:59Z'],["Women's · Baylor at Schooner Fall Classic",'9th (844)','2026-09-21T23:59:59Z']]);
+  // The Fighting Illini's first entry ("15th (+7, 287)") was a day's
+  // standing; the last round's is the result.
+  assert.deepEqual(mens.filter(e=>e.status==='Final').map(e=>[e.title,e.headline]),[["Men's · Baylor at Bomb Darts Birds Collegiate",'T7th (832)'],["Men's · Baylor at Fighting Illini Invitational",'15th (851)']]);
+  assert.deepEqual([womens[2].title,womens[2].status,womens[2].end_time],["Women's · Baylor at Tennessee Intercollegiate",'Upcoming','2026-10-05T23:59:59Z']);
+  assert.equal(new Set([...womens,...mens].map(e=>e.id)).size,25);
+  // The Charleston Intercollegiate links no story; Baylor's is in the archive
+  // as "Cougar Classic", dated on the last day, with the schedule's own place
+  // and score to par ("third-place finish", "5-under").
+  const charleston=womens[0];
+  assert.equal(worker.baylorHandlers.isBaylorGolfWithoutStory(charleston),true);
+  recapFixtures.set('https://baylorbears.com/news/2026/9/8/womens-golf-baylor-wgolf-finishes-in-3rd-at-cougar-classic',fixture(golfFiles['cougar-classic']));
+  await worker.baylorHandlers.attachGolfStory(charleston);
+  assert.equal(charleston.recap_url,'https://baylorbears.com/news/2026/9/8/womens-golf-baylor-wgolf-finishes-in-3rd-at-cougar-classic');
+  // A different place is not this story.
+  const other=read('womens')[0];other.headline='4th (845)';
+  await worker.baylorHandlers.attachGolfStory(other);
+  assert.equal(other.recap_url,undefined);
+  // Expanded view: every final's highlights come from its own story.
+  for(const [team,index,key] of [['womens',0,'cougar-classic'],['womens',1,'schooner'],['mens',0,'first-event-in-arizona'],['mens',1,'fighting-illini']]){
+    const url=`https://baylorbears.com/sports/${team}-golf/schedule`,events=read(team),target=events.filter(e=>e.status==='Final')[index];
+    if(target.recap_url)recapFixtures.set(target.recap_url,fixture(golfFiles[key]));
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Baylor opened the tournament with a strong first round of play.','The Bears moved up the leaderboard during the second round today.','A Baylor golfer posted the low round for the team this week.','Baylor closed the event with a steady final round on the course.'])};}}};
+    await worker.attachOfficialHighlights(events,fixture(`golf-${team}-schedule.html.gz`),school,'Golf',url,now,env,target.id);
+    assert.equal(target.highlight_state,'recap_generated',`${target.title}: highlights from its own story`);
+    assert.ok(target.recap_url.includes(key));
+    assert.equal(prompts.length,1);
+  }
+}
+
 console.log('Baylor module checks passed');
