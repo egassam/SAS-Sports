@@ -114,4 +114,61 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Baylor vs Colorado','W, 23-13']]);
 }
 
+// Volleyball: page-data reader. Production showed rankings in the opponents
+// ("#17 Florida", "RV Georgia Tech", "#1 Nebraska") and dates without times.
+{
+  const vbUrl='https://baylorbears.com/sports/womens-volleyball/schedule';
+  const vb=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now);
+  assert.equal(vb.length,28);
+  assert.equal(new Set(vb.map(e=>e.id)).size,28,'the two Aug 30 matches stay two events');
+  const vbFinals=vb.filter(e=>e.status==='Final');
+  assert.equal(vbFinals.length,13);
+  assert.ok(vbFinals.every(e=>/^[WL], [0-3]-[0-3]$/.test(e.headline)&&e.recap_url?.startsWith('https://baylorbears.com/news/2026/')),'every final in K-State wording with its own recap');
+  assert.deepEqual(vbFinals.filter(e=>['Sep 5','Sep 10','Sep 11','Sep 25'].includes(e.display_time)).map(e=>`${e.title} ${e.headline}`),['Baylor vs Florida L, 0-3','Baylor vs Georgia Tech W, 3-0','Baylor at Nebraska L, 0-3','Baylor at BYU L, 2-3'],'rankings dropped');
+  assert.ok(vb.every(e=>!/#\d|\bRV\b|No\. \d/.test(e.title)));
+  // The Sep 25 match at BYU (9 p.m.) is recapped the next day.
+  assert.equal(vbFinals.find(e=>e.display_time==='Sep 25').recap_url,'https://baylorbears.com/news/2026/9/26/volleyball-no-17-vb-drops-heartbreaker-at-no-22-byu');
+  const vbUpcoming=vb.filter(e=>e.status!=='Final');
+  assert.equal(vbUpcoming.length,15);
+  assert.ok(vbUpcoming.every(e=>/, \d{1,2}:\d{2} [AP]M$/.test(e.display_time)),'every upcoming match shows its published time ("2 p.m.", "7 pm", "9:00 PM")');
+  assert.deepEqual(vbUpcoming.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['Baylor vs Colorado Oct 4, 2:00 PM','Baylor at Texas Tech Oct 8, 6:00 PM']);
+  // Expanded view: each recap matches only its own match (two on Aug 30).
+  const own=[['Sep 25','recap-volleyball-2026-9-26-byu.html.gz'],['Aug 30|Hawaii','recap-volleyball-2026-8-30-hawaii.html.gz'],['Aug 30|Georgia Southern','recap-volleyball-2026-8-30-georgia-southern.html.gz']];
+  const pick=key=>{const [day,opp]=key.split('|');return vbFinals.find(e=>e.display_time===day&&(!opp||e.opponent===opp));};
+  for(const [key,file] of own)for(const [other] of own){
+    const event=pick(other),raw=fixture(file),url=pick(key).recap_url;
+    assert.equal(worker.baylorHandlers.matchesRecap(raw,event,url),key===other,`${other} vs recap of ${key}`);
+  }
+  // The shared matcher alone took each Aug 30 story for the other match: the
+  // Hawaii story's "WHAT'S NEXT" names Georgia Southern, and the Georgia
+  // Southern story's dateline is "HONOLULU, Hawaii".
+  assert.equal(worker.recapMatchesEvent(fixture('recap-volleyball-2026-8-30-hawaii.html.gz'),pick('Aug 30|Georgia Southern'),pick('Aug 30|Hawaii').recap_url),true);
+  assert.equal(worker.recapMatchesEvent(fixture('recap-volleyball-2026-8-30-georgia-southern.html.gz'),pick('Aug 30|Hawaii'),pick('Aug 30|Georgia Southern').recap_url),true);
+  // The card's own link needs no headline: the PVAMU football story's
+  // headline names no opponent.
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-football-2026-9-12-pvamu.html.gz'),finals[1],finals[1].recap_url),true);
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-football-2026-9-12-pvamu.html.gz'),{...finals[1],recap_url:null},finals[1].recap_url),false,'another candidate must name the opponent in its headline');
+  // End to end: each Aug 30 match's expanded view uses its own story.
+  for(const [key,file,expected] of [['Aug 30|Hawaii','recap-volleyball-2026-8-30-hawaii.html.gz','Hawaii'],['Aug 30|Georgia Southern','recap-volleyball-2026-8-30-georgia-southern.html.gz','Georgia Southern']]){
+    recapFixtures.set(pick(key).recap_url,fixture(file));
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Baylor won the opening set behind a strong serving run.','The Bears blocked well at the net throughout the match.','Baylor closed out the deciding set with a late run.','The Bears finished the tournament with a win on the day.'])};}}};
+    const events=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now);
+    const target=events.find(e=>e.id===pick(key).id);
+    await worker.attachOfficialHighlights(events,fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now,env,target.id);
+    assert.equal(target.highlight_state,'recap_generated',`${expected}: highlights from the official recap`);
+    assert.equal(target.recap_url,pick(key).recap_url);
+    assert.ok(prompts[0].includes(file.includes("hawaii")?"five-set":"3-1 win over Georgia Southern")&&!prompts[0].includes(file.includes("hawaii")?"3-1 win over Georgia Southern":"five-set"),`${expected}: the AI is given that match's story`);
+  }
+  // Live: ESPN's women's college volleyball scoreboard. The Sep 25 payload
+  // also holds California Golden Bears, Morgan State, Mercer and Missouri
+  // State Bears; only Baylor at BYU is Baylor's.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+  const payload=JSON.parse(fixture('volleyball-espn-2026-09-25.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Volleyball');
+  const scored=worker.parseScoreboardPayload(payload,school,'Volleyball',provider,'https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20260925',new Date('2026-09-26T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Baylor at BYU','Final','L, 2-3']]);
+  const reconciled=worker.reconcileScoreboardEvents(vb,scored);
+  assert.equal(reconciled.length,vb.length,'the scoreboard joins the official match; no second card');
+}
+
 console.log('Baylor module checks passed');

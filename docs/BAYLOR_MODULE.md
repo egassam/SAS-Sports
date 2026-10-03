@@ -8,7 +8,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | (this PR) | Page-data reader: 4 finals `W, 23-13` with their own recaps; 9 upcoming with published Baylor times; ESPN live score (shared FBS-group request) |
+| Football | #178 | Page-data reader: 4 finals `W, 23-13` with their own recaps; 9 upcoming with published Baylor times; ESPN live score (shared FBS-group request) |
+| Volleyball | (this PR) | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -41,6 +42,14 @@ The shared recap matcher matches each final to its own recap only (each names th
 **Live score.** ESPN's college football scoreboard through the shared FBS-group request (#164). The Sep 26 payload has two other "Bears" (Missouri State, Central Arkansas); only Colorado at Baylor matches, joined to the official card (`W, 23-13`, no second card).
 
 `npm run test:baylor-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article and the ESPN match. Removing the parse hook fails it.
+
+## Volleyball (`4.47.1-baylor-volleyball`)
+
+Production showed rankings in the opponents (`#17 Florida`, `RV Georgia Tech`, `#1 Nebraska`, `#22 BYU`) and dates without times. The page-data reader now gives 13 finals in K-State's wording, each with its own recap (the Sep 25 night match at BYU is recapped Sep 26, inside the three-day window), and 15 upcoming matches with Baylor's published times, written three ways on the page (`2 p.m.`, `7 pm`, `9:00 PM`).
+
+**Recap matcher (`matchesRecap`, all Baylor sports).** Two Aug 30 matches at the Wahine Classic (Hawaii, Georgia Southern) each have a same-day story. The shared matcher accepted each story for the other match: the Hawaii story ends "WHAT'S NEXT ... against Georgia Southern", and the Georgia Southern story's dateline is "HONOLULU, Hawaii". The card's own recap link is still checked by the shared matcher alone (Baylor's football headlines do not always name the opponent: "Defense Dominates in Home-Opening Rout"); any other candidate must also name the opponent in its headline (`og:title`). Production was not affected (each card's own link is tried first), but a failed download would have fallen back to the wrong story.
+
+**Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Sep 25 payload (110 matches) also holds California Golden Bears, Morgan State, Mercer and Missouri State Bears; only Baylor at BYU (`L, 2-3`) matches and joins the official card.
 
 ## Limitations
 

@@ -8,11 +8,15 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football']),
+  pageDataSports:new Set(['Football','Volleyball']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
-  liveScoreboards:{},
+  liveScoreboards:{
+    Football:[{path:'football/college-football',sourceName:'Live college football scoreboard'}],
+    // Volleyball scores are sets won; the live detail names the current set.
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+  },
   combinedSports:new Set(['Basketball']),
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
@@ -59,7 +63,13 @@ export function baylorOpponent(title){
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
 // recap link. The shared parsers read only the rendered cards, which omit the
 // start time, so every upcoming game showed its date alone.
-export function createBaylorHandlers({makeEvent}){
+// A story's headline (og:title): "No. 21 VB Tops Hawaii in Five-Set Thriller".
+export function baylorStoryHeadline(raw){
+  const m=String(raw||'').match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']*)["']/i)||String(raw||'').match(/<meta\b[^>]*content=["']([^"']*)["'][^>]*property=["']og:title["']/i);
+  return m?m[1]:'';
+}
+
+export function createBaylorHandlers({makeEvent,recapMatchesEvent}){
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='baylor'||!baylorSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
@@ -102,5 +112,17 @@ export function createBaylorHandlers({makeEvent}){
     }
     return events;
   }
-  return{parseSchedule};
+  // The card's own recap link is checked by the shared matcher. Any other
+  // candidate must also name the opponent in its headline: Baylor's stories
+  // name the next opponent ("WHAT'S NEXT ... against Georgia Southern") and
+  // their dateline ("HONOLULU, Hawaii"), so on a tournament day the shared
+  // matcher took each Aug 30 story for the other match.
+  function matchesRecap(raw,event,url){
+    if(event?.school_id!=='baylor'||!recapMatchesEvent(raw,event,url))return false;
+    if(url&&url===event.recap_url)return true;
+    const key=value=>` ${String(value).toLowerCase().replace(/&amp;|&#38;/g,'&').replace(/&#x27;|&#39;|\u2019/g,"'").replace(/[^a-z0-9&']+/g,' ').trim()} `;
+    const opponent=key(String(event.opponent||'').replace(/\(.*?\)/g,' ')).trim();
+    return opponent.length>=2&&key(baylorStoryHeadline(raw)).includes(` ${opponent} `);
+  }
+  return{parseSchedule,matchesRecap};
 }
