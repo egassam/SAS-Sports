@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Equestrian']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -40,7 +40,8 @@ export const baylorSchool={
     // basketball schedules.
     'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/schedule','https://baylorbears.com/sports/womens-basketball/schedule'],
     'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
-    'baylor|Equestrian':['https://baylorbears.com/sports/equestrian/schedule','https://baylorbears.com/'],
+    // The official page only: the homepage adds other sports' ticker events.
+    'baylor|Equestrian':'https://baylorbears.com/sports/equestrian/schedule',
     'baylor|Football':'https://baylorbears.com/sports/football/schedule',
     // Both teams (production showed the women's page only, the first that
     // loaded); /sports/golf/ and the homepage are not golf schedules.
@@ -200,6 +201,9 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       // after its tournament ("Getterman Classic").
       const tournament=String(game.tournament?.title||'').replace(/\s+presented by\b.*$/i,'').trim();
       if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
+      // A championship listed by its conference or body ("Big 12", "NCEA")
+      // is named after the event ("Big 12 Equestrian Championship").
+      else if(game.type==='P'&&tournament&&tournament.toLowerCase().startsWith(`${opponent.toLowerCase()} `))opponent=tournament;
       if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
