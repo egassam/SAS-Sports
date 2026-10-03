@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,8 @@ export const baylorSchool={
     Basketball:[
       {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
       {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
-    ]
+    ],
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}]
   },
   // Stored expanded views (/live/highlights) are kept 30 days; raise this
   // when a change rewrites already-stored Baylor finals.
@@ -32,7 +33,8 @@ export const baylorSchool={
   combinedSports:new Set(['Basketball']),
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
-    'baylor|Baseball':['https://baylorbears.com/sports/baseball/schedule','https://baylorbears.com/'],
+    // The official page only: the homepage adds other sports' ticker events.
+    'baylor|Baseball':'https://baylorbears.com/sports/baseball/schedule',
     // The two official pages only: the generic page and the homepage are not
     // basketball schedules.
     'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/schedule','https://baylorbears.com/sports/womens-basketball/schedule'],
@@ -209,6 +211,10 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
           }catch{}
         }
       }
+      // A doubleheader lists the same opponent twice on one day: Game 1 and
+      // Game 2 stay two games.
+      const sameDay=games.filter(other=>other.date.slice(0,10)===firstDay&&baylorOpponent(other.opponent?.title)===baylorOpponent(game.opponent?.title));
+      if(sameDay.length>1){const number=sameDay.indexOf(game)+1;event.game_number=number;event.id=`${event.id}-game-${number}`;event.title=`${event.title} (Game ${number})`;}
       // Separate men's and women's pages can list the same opponent on the
       // same day; the team keeps their event ids apart.
       const squad=baylorSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;

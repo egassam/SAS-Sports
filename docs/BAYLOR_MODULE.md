@@ -12,7 +12,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Volleyball | #179 | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
 | Soccer | #180 | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
 | Cross Country | #181 | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
-| Basketball | (this PR) | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
+| Basketball | #182 | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
+| Baseball | (this PR) | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -88,7 +89,14 @@ Production loaded the men's and women's pages plus the generic `/sports/basketba
 
 **Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Arizona State at Baylor (`W, 73-68`) and women's Arizona at Baylor (`W, 74-60`), each among eight other "Bears" games.
 
+## Baseball (`4.47.5-baylor-baseball`)
+
+The page publishes the 2027 spring season only (59 games from Feb 19; no fall games are listed). Production also loaded the homepage and showed dates alone. Baseball now routes to the official page only, and the reader gives published times (`4 PM`; the date alone for `TBA`), postseason ranges ending on their last day (`NCAA Men's College World Series`, Jun 18-28), and doubleheaders (the same opponent twice on one day) as `Game 1` / `Game 2` (the 2027 page has none yet; fixture-tested by moving a game).
+
+**Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`). Tested on Apr 10, 2026: Baylor at Cincinnati among four "Bears" games.
+
 ## Limitations
 
 - The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.
+- **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games (checked while preparing Softball). The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
