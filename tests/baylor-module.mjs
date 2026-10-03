@@ -413,4 +413,22 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(eq.slice(-2).map(e=>[e.opponent,e.end_time]),[['Big 12 Equestrian Championship','2027-03-27T23:59:59Z'],['NCEA National Championship','2027-04-17T23:59:59Z']]);
 }
 
+// Acrobatics & Tumbling: the sport's page only (acrobatics-and-tumbling is
+// SIDEARM's empty template); the page still shows the 2026 season, so the
+// current season (July-June) is empty: a valid empty schedule, not a failed
+// source. In season the scores read "W, 277.415-256.590".
+{
+  const atUrl='https://baylorbears.com/sports/acrobatics-tumbling/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Acrobatics & Tumbling'),[atUrl]);
+  const raw=fixture('acrobatics-tumbling-schedule.html.gz');
+  const empty=worker.baylorHandlers.parseSchedule(raw,school,'Acrobatics & Tumbling',atUrl,now);
+  assert.deepEqual([empty.length,worker.baylorHandlers.isEmptySchedule(empty)],[0,true]);
+  // A page that answers with no games at all is not "verified empty".
+  assert.equal(worker.baylorHandlers.isEmptySchedule([]),false);
+  const inSeason=worker.parseHtml(raw,school,'Acrobatics & Tumbling',atUrl,new Date('2026-04-26T17:00:00Z'));
+  assert.equal(inSeason.length,12);
+  assert.deepEqual(inSeason.slice(0,2).map(e=>`${e.title} ${e.headline}`),['Baylor at Saint Leo W, 277.415-256.590','Baylor at Azusa Pacific W, 283.375-260.500'],'decimal scores; rankings dropped');
+  assert.ok(inSeason.every(e=>e.recap_url?.startsWith('https://baylorbears.com/news/2026/')));
+}
+
 console.log('Baylor module checks passed');

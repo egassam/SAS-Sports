@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Equestrian']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Equestrian','Acrobatics & Tumbling']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -33,7 +33,10 @@ export const baylorSchool={
   highlightRevision:2,
   combinedSports:new Set(['Basketball','Golf','Tennis']),
   scheduleUrls:{
-    'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
+    // The sport's page is acrobatics-tumbling; acrobatics-and-tumbling renders
+    // SIDEARM's empty "@season @sport" template and the homepage is not a
+    // schedule.
+    'baylor|Acrobatics & Tumbling':'https://baylorbears.com/sports/acrobatics-tumbling/schedule',
     // The official page only: the homepage adds other sports' ticker events.
     'baylor|Baseball':'https://baylorbears.com/sports/baseball/schedule',
     // The two official pages only: the generic page and the homepage are not
@@ -56,7 +59,7 @@ export const baylorSchool={
     'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
-    'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/roster','https://baylorbears.com/sports/acrobatics-and-tumbling/roster'],
+    'baylor|Acrobatics & Tumbling':'https://baylorbears.com/sports/acrobatics-tumbling/roster',
     'baylor|Baseball':'https://baylorbears.com/sports/baseball/roster',
     'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/roster','https://baylorbears.com/sports/womens-basketball/roster','https://baylorbears.com/sports/basketball/roster'],
     'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/roster',
@@ -192,10 +195,17 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     const pageGames=sidearmScheduleGames(raw);
     if(!pageGames.length)return null;
     const today=baylorToday(now),events=[];
+    // Spring pages keep showing last season until the next is published
+    // ("2026 Acrobatics & Tumbling Schedule"). Only the current academic year
+    // (July-June, Baylor time) is current; a page with none is a valid empty
+    // schedule.
+    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
+    let pastSeason=0;
     const games=sport==='Golf'?mergeRounds(pageGames,today):pageGames;
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
+      if(game.date.slice(0,10)<seasonStart){pastSeason++;continue;}
       let opponent=baylorOpponent(game.opponent?.title);
       // A tournament game whose opponent is not yet known ("TBD") is named
       // after its tournament ("Getterman Classic").
@@ -209,7 +219,8 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
+      // Acrobatics & tumbling scores have decimals ("277.415-256.590").
+      const scored=['W','L','T'].includes(outcome)&&/^\d+(?:\.\d+)?$/.test(team)&&/^\d+(?:\.\d+)?$/.test(other);
       // Meets (cross country) read as meets: final once their last day has
       // passed. Their team places are published as text ("Women 3rd, Men 4th").
       const meet=eventType(sport)!=='GAME'&&!scored;
@@ -275,8 +286,11 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       if(squad)event.id=`${event.id}-${squad}`;
       events.push(event);
     }
+    if(!events.length&&pastSeason)emptiedBySeason.add(events);
     return events;
   }
+  const emptiedBySeason=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   // The card's own recap link is checked by the shared matcher. Any other
   // candidate must also name the opponent in its headline: Baylor's stories
   // name the next opponent ("WHAT'S NEXT ... against Georgia Southern") and
@@ -389,5 +403,5 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,matchesRecap,isBaylorCrossCountry,attachMeetResults,isBaylorGolfWithoutStory,attachGolfStory};
+  return{parseSchedule,isEmptySchedule,matchesRecap,isBaylorCrossCountry,attachMeetResults,isBaylorGolfWithoutStory,attachGolfStory};
 }
