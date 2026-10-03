@@ -11,7 +11,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Football | #178 | Page-data reader: 4 finals `W, 23-13` with their own recaps; 9 upcoming with published Baylor times; ESPN live score (shared FBS-group request) |
 | Volleyball | #179 | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
 | Soccer | #180 | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
-| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
+| Cross Country | #181 | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
+| Basketball | (this PR) | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -80,6 +81,12 @@ TFRRS agrees with the recaps where both give a figure (Ella Perry 9th in 11:13.2
 **Stored expanded views.** `/live/highlights` keeps verified finals for 30 days in the Workers KV store that preview and production share. The first preview of this PR wrote the Texas A&M Invitational with two highlights; the store would have kept serving that copy. Baylor's store keys now carry `baylorSchool.highlightRevision` (`v1:baylor|...|r2`; other schools' keys are unchanged). Raise it whenever a change rewrites already-stored Baylor finals.
 
 ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
+
+## Basketball (`4.47.4-baylor-basketball`)
+
+Production loaded the men's and women's pages plus the generic `/sports/basketball/` page and the homepage, and showed dates only, with exhibitions written two ways (`Florida (EXH)`, `West Texas A&M (Exhibition)`). Basketball now routes to the two official pages only, both labeled, with `-mens`/`-womens` event ids (both teams play Jan 2). The reader gives men's 36 and women's 33 games with published times (`1 pm`, `2 p.m. CT`; `4:30 or 7 p.m. CT` is not one time, so the date alone), exhibitions as `Florida (Exhibition)`, and the conference tournaments ending on their last day.
+
+**Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Arizona State at Baylor (`W, 73-68`) and women's Arizona at Baylor (`W, 74-60`), each among eight other "Bears" games.
 
 ## Limitations
 
