@@ -109,7 +109,6 @@ Production loaded the first golf page that answered (women's) and showed every r
 - merges a tournament's consecutive round entries into one event from its first to its last day; the last round with a result gives the place, total and recap (the Fighting Illini's first entry, `15th (+7, 287)`, was a day's standing; the result is `15th (+11, 851)`); a tournament in progress shows its next round;
 - writes K-State's headline from the schedule's `9th (+4, 844)`: `9th (844)`, `T7th (832)`. The schedule publishes no field size, and Baylor's stories are prose (no standings tables; full results are on Clippd), so none is claimed;
 - links each tournament's own story. The women's Charleston Intercollegiate links none; Baylor's story is in the women's golf archive as "Baylor WGolf Finishes in 3rd at Cougar Classic". A story is taken from the archive only when it is dated on the last day, about golf, and states the schedule's own place and score to par ("third-place finish", "5-under" for `3rd (-5, 845)`); it may name the event differently;
-- lets a multi-day event's story be dated on its last day (the Schooner story, Sep 21, two days after the first round).
 
 The expanded views write highlights from each tournament's story.
 

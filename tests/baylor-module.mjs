@@ -357,8 +357,7 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   const other=read('womens')[0];other.headline='4th (845)';
   await worker.baylorHandlers.attachGolfStory(other);
   assert.equal(other.recap_url,undefined);
-  // Expanded view: every final's highlights come from its own story (the
-  // Schooner story is dated on the last day, two days after the first).
+  // Expanded view: every final's highlights come from its own story.
   for(const [team,index,key] of [['womens',0,'cougar-classic'],['womens',1,'schooner'],['mens',0,'first-event-in-arizona'],['mens',1,'fighting-illini']]){
     const url=`https://baylorbears.com/sports/${team}-golf/schedule`,events=read(team),target=events.filter(e=>e.status==='Final')[index];
     if(target.recap_url)recapFixtures.set(target.recap_url,fixture(golfFiles[key]));

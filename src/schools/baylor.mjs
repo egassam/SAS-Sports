@@ -276,10 +276,7 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     // A golf story already verified against the schedule's place, score to
     // par and last day (attachGolfStory); it may name the event differently.
     if(url&&url===event.golf_story_verified&&url===event.recap_url)return true;
-    // A multi-day event (a golf tournament) may also be recapped on its last
-    // day ("Schooner Fall Classic", Sep 19-21, story dated Sep 21).
-    const last=event.end_time?{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')}:null;
-    if(!recapMatchesEvent(raw,event,url)&&!(last&&recapMatchesEvent(raw,last,url)))return false;
+    if(!recapMatchesEvent(raw,event,url))return false;
     if(url&&url===event.recap_url)return true;
     const key=value=>` ${String(value).toLowerCase().replace(/&amp;|&#38;/g,'&').replace(/&#x27;|&#39;|\u2019/g,"'").replace(/[^a-z0-9&']+/g,' ').trim()} `;
     const opponent=key(String(event.opponent||'').replace(/\(.*?\)/g,' ')).trim();
