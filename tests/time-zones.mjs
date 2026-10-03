@@ -49,4 +49,16 @@ assert.equal(make('America/Chicago')({school_id:'ucf',start_time:'2026-10-30T19:
 assert.equal(make('Europe/London')(az),'Oct 4, 4:00 AM GMT+1','the date moves with the zone');
 assert.equal(make('America/Chicago')({...az,start_time:'2026-10-24T12:00:00.000Z',display_time:'Oct 24'}),null,'date-only events keep their published date');
 assert.equal(make('America/Chicago')({...az,school_id:'unknown'}),null,'no school zone: shown as published');
-console.log('Time zone checks passed');
+
+// The text beside a card's status badge never repeats the badge.
+{
+  const at=page.indexOf('function statusDetails');const code=page.slice(at,page.indexOf('\n}\n',at)+2);
+  const details=Function('eventTime',`${code};return statusDetails;`)(e=>e.display_time);
+  assert.equal(details({status:'Upcoming',recency_label:'Upcoming',display_time:'Oct 24'}),'Oct 24');
+  assert.equal(details({status:'Final',recency_label:'Final',display_time:'Sep 26'}),'Sep 26');
+  assert.equal(details({status:'Today',recency_label:'Today',display_time:'Oct 3, 8:00 PM'}),'Oct 3, 8:00 PM');
+  assert.equal(details({status:'Live',recency_label:'Live now'}),'');
+  assert.equal(details({status:'Today',recency_label:'In progress',display_time:'Sep 28'}),'In progress · Sep 28','a label that adds something stays');
+  assert.equal(details({status:'Final',recency_label:'Saved schedule',display_time:'Sep 26'}),'Saved schedule · Sep 26');
+}
+console.log('Time zone and status text checks passed');
