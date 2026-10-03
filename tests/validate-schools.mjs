@@ -115,13 +115,22 @@ async function validateSport(school,sport){
 
   const finals=group.results||[];let highlight=deep?(finals.length?'PENDING':'PASS:0/0'):'NOT_RUN';
   if(deep&&finals.length){
-    let passed=0;
+    let passed=0,tfrrsOnly=0;
     for(const final of finals){
       const detail=await getJson(`/live/highlights?${encoded}&event_id=${encodeURIComponent(final.id)}`);
       assert.equal(detail.id,final.id,'highlight response belongs to a different event');
       assert.equal(detail.opponent,final.opponent,'highlight opponent does not match');
       assert.equal(detail.start_time?.slice(0,10),final.start_time?.slice(0,10),'highlight event date does not match');
       assert.ok(detail.highlights_verified&&detail.highlights?.length>=3,`${final.title} has no verified highlights (${detail.highlight_state||'no_verified_recap'})`);
+      // A meet the school published no story about is accepted when its
+      // complete results are verified from TFRRS (user, October 3: Baylor's
+      // Texas A&M Invitational; "Fix both"). The source link must stay on the
+      // official athletics site and the rows must be there.
+      if(!detail.recap_url&&detail.event_type==='MEET'&&detail.meet_results_verified===true&&/^https:\/\/www\.tfrrs\.org\/results\//.test(detail.results_source_url||'')&&/results from TFRRS/i.test(detail.source?.name||'')&&(detail.results||[]).length>0){
+        const sourceHost=new URL(detail.source.url).hostname.replace(/^www\./,'');
+        assert.ok(officialHosts.some(allowed=>sourceHost.endsWith(allowed)),`${final.title} TFRRS results are not tied to the official athletics site`);
+        tfrrsOnly++;passed++;continue;
+      }
       assert.ok(detail.recap_url?.startsWith('https://'),`${final.title} has no verified official recap URL`);
       const recap=new URL(detail.recap_url),host=recap.hostname.replace(/^www\./,'');
       const opponentName=String(final.opponent||'').replace(/^(?:#?T?\d+|RV)\s+/i,'').toLowerCase();
@@ -132,7 +141,7 @@ async function validateSport(school,sport){
       assert.ok(/recap/i.test(detail.source?.name||''),`${final.title} source was not promoted to a verified recap`);
       passed++;
     }
-    highlight=`PASS:${passed}/${finals.length}`;
+    highlight=`PASS:${passed}/${finals.length}${tfrrsOnly?` (${tfrrsOnly} TFRRS results, no story)`:''}`;
   }
   return{events:events.length,results:(group.results||[]).length,upcoming:(group.upcoming||[]).length,athletes:athletes.length,highlight};
 }
