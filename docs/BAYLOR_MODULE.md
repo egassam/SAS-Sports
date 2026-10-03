@@ -13,7 +13,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Soccer | #180 | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
 | Cross Country | #181 | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
 | Basketball | #182 | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
-| Baseball | (this PR) | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
+| Baseball | #183 | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
+| Softball | (this PR) | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -95,8 +96,14 @@ The page publishes the 2027 spring season only (59 games from Feb 19; no fall ga
 
 **Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`). Tested on Apr 10, 2026: Baylor at Cincinnati among four "Bears" games.
 
+## Softball (`4.47.6-baylor-softball`)
+
+The page publishes the 2027 spring season (54 games from Feb 11). Production also loaded the homepage and showed dates alone, with two `Baylor vs TBD` games. Softball now routes to the official page only, and the reader gives published times (`3:30 pm`, `5:30 p.m.`; the date alone for `TBD` or a blank time), tournament games with a `TBD` opponent named after the tournament (`Getterman Classic`, Feb 20 and 21), the Aggie Classic (Feb 25-28) and the postseason ending on their last day, and doubleheaders as `Game 1` / `Game 2` (none on the 2027 page yet).
+
+**Live score.** ESPN's college softball scoreboard (`baseball/college-softball`). Tested on Apr 10, 2026: Baylor at Kansas among other "Bears" games; that day was a doubleheader (see Limitations).
+
 ## Limitations
 
 - The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.
-- **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games (checked while preparing Softball). The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
+- **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games. The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
