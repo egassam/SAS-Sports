@@ -39,6 +39,16 @@
       "url": "https://baylorbears.com/sports/softball/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "2027 schedule: 54 games from Feb 11; 'TBD' opponents in the Getterman Classic; Aggie Classic Feb 25-28; postseason ranges."
+    },
+    "golf-womens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-golf/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "34 round entries (13 tournaments); Charleston Intercollegiate last round '3rd (-5, 845)' with no recap; Schooner Fall Classic '9th (+4, 844)' with recap."
+    },
+    "golf-mens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/mens-golf/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "33 round entries (12 tournaments); Bomb Darts Birds 'T7th (-32, 832)'; Fighting Illini Sep 18 '15th (+7, 287)' then Sep 20 '15th (+11, 851)'."
     }
   },
   "recaps": {
@@ -85,6 +95,22 @@
     "recap-xc-2026-9-18-southern-showcase.html.gz": {
       "url": "https://baylorbears.com/news/2026/9/18/cross-country-kimeli-records-top-10-finish-in-season-debut",
       "retrieved": "2026-10-03T17:30Z"
+    },
+    "recap-golf-2026-9-8-cougar-classic.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/8/womens-golf-baylor-wgolf-finishes-in-3rd-at-cougar-classic",
+      "retrieved": "2026-10-03T18:10Z"
+    },
+    "recap-golf-2026-9-21-schooner.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/21/baylor-womens-golf-finishes-schooner-fall-classic-with-five-under-final-round",
+      "retrieved": "2026-10-03T18:10Z"
+    },
+    "recap-golf-2026-9-8-bomb-darts.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/8/mens-golf-baylor-mgolf-finishes-first-event-in-arizona",
+      "retrieved": "2026-10-03T18:10Z"
+    },
+    "recap-golf-2026-9-19-fighting-illini.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/19/mens-golf-baylor-mens-golf-finishes-fighting-illini-invitational-at-olympia-fields",
+      "retrieved": "2026-10-03T18:10Z"
     }
   },
   "scoreboards": {
@@ -147,6 +173,12 @@
       "url": "https://www.tfrrs.org/results/xc/27306/Southern_Showcase_University_College_",
       "retrieved": "2026-10-03T17:35Z",
       "note": "Women 5k Invite: Baylor 12th, 348; men 2 runners; App State's Baylor Wolfe also listed."
+    }
+  },
+  "archives": {
+    "golf-womens-archives.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-golf/archives",
+      "retrieved": "2026-10-03T18:10Z"
     }
   }
 }

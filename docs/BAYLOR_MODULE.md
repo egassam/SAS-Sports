@@ -14,7 +14,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Cross Country | #181 | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
 | Basketball | #182 | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | #183 | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
-| Softball | (this PR) | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
+| Softball | #184 | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
+| Golf | (this PR) | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -102,8 +103,23 @@ The page publishes the 2027 spring season (54 games from Feb 11). Production als
 
 **Live score.** ESPN's college softball scoreboard (`baseball/college-softball`). Tested on Apr 10, 2026: Baylor at Kansas among other "Bears" games; that day was a doubleheader (see Limitations).
 
+## Golf (`4.47.7-baylor-golf`)
+
+Production loaded the first golf page that answered (women's) and showed every round as its own event (`Schooner Fall Classic` three times, the first two `Completed`), with nothing for the men. Golf now loads both teams' official pages only, labeled, and:
+- merges a tournament's consecutive round entries into one event from its first to its last day; the last round with a result gives the place, total and recap (the Fighting Illini's first entry, `15th (+7, 287)`, was a day's standing; the result is `15th (+11, 851)`); a tournament in progress shows its next round;
+- writes K-State's headline from the schedule's `9th (+4, 844)`: `9th (844)`, `T7th (832)`. The schedule publishes no field size, and Baylor's stories are prose (no standings tables; full results are on Clippd), so none is claimed;
+- links each tournament's own story. The women's Charleston Intercollegiate links none; Baylor's story is in the women's golf archive as "Baylor WGolf Finishes in 3rd at Cougar Classic". A story is taken from the archive only when it is dated on the last day, about golf, and states the schedule's own place and score to par ("third-place finish", "5-under" for `3rd (-5, 845)`); it may name the event differently;
+- lets a multi-day event's story be dated on its last day (the Schooner story, Sep 21, two days after the first round).
+
+The expanded views write highlights from each tournament's story.
+
+**Schedule and story disagree once:** the Schooner Fall Classic schedule reads `9th (+4, 844)`; Baylor's story says "tied for eighth in a 16-team field". The schedule is shown (it is the results source of record).
+
+ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
+
 ## Limitations
 
 - The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.
+- **Golf field size:** Baylor's schedule and stories publish none in a form that can be verified (full results are on Clippd, a JavaScript page), so headlines read `9th (844)`, not `9th of 16 (844)`.
 - **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games. The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
