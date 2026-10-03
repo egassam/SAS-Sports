@@ -1799,7 +1799,10 @@ async function privateSource(request,env){
 // once, not on every open. Finals do not change; the copy expires so
 // corrections still arrive. Unverified answers (an AI timeout) are never kept.
 const HIGHLIGHT_STORE_TTL=30*24*60*60;
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}`;
+// A school module may carry a highlight revision: raising it retires that
+// school's stored finals after a change to how they are written (Baylor's
+// cross country highlights went from two lines to four).
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${school==='baylor'&&baylorSchool.highlightRevision?`|r${baylorSchool.highlightRevision}`:''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

@@ -77,6 +77,8 @@ TFRRS, the collegiate results database (as for UCF), publishes every meet as pla
 
 TFRRS agrees with the recaps where both give a figure (Ella Perry 9th in 11:13.2; Ruth Kimeli 9th in 16:18.8; women 12th of 31).
 
+**Stored expanded views.** `/live/highlights` keeps verified finals for 30 days in the Workers KV store that preview and production share. The first preview of this PR wrote the Texas A&M Invitational with two highlights; the store would have kept serving that copy. Baylor's store keys now carry `baylorSchool.highlightRevision` (`v1:baylor|...|r2`; other schools' keys are unchanged). Raise it whenever a change rewrites already-stored Baylor finals.
+
 ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
 
 ## Limitations

@@ -249,4 +249,13 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual([feed[2].headline,feed[2].result_count],[showcase.headline,showcase.result_count]);
 }
 
+// Stored expanded views written before the cross country highlights grew to
+// four lines are not served again: Baylor's store keys carry its revision;
+// other schools' keys are unchanged.
+{
+  const {highlightStoreKey}=Function(...Object.keys(deps),source+';return {highlightStoreKey};')(...Object.values(deps));
+  assert.equal(highlightStoreKey('baylor','Cross Country','x'),'v1:baylor|Cross Country|x|r2');
+  assert.equal(highlightStoreKey('ucf','Football','x'),'v1:ucf|Football|x');
+}
+
 console.log('Baylor module checks passed');

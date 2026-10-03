@@ -20,6 +20,9 @@ export const baylorSchool={
     // only); it lists every Division I match.
     Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
   },
+  // Stored expanded views (/live/highlights) are kept 30 days; raise this
+  // when a change rewrites already-stored Baylor finals.
+  highlightRevision:2,
   combinedSports:new Set(['Basketball']),
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
