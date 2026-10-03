@@ -76,8 +76,8 @@ assert.deepEqual(group.results.map(e=>e.display_time),['Sep 26','Sep 19','Sep 12
 // schools never reach the Baylor reader.
 assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://baylorbears.com/',now),null);
 assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',footballUrl,now),null);
-// Sports not yet converted keep the shared parsers.
-assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field','https://baylorbears.com/sports/track-and-field/schedule',now),null);
+// Every sponsored sport is read by the module.
+assert.deepEqual([...baylorSchool.pageDataSports].sort(),[...sports].sort());
 
 // Expanded view: each final matches only its own recap, and its highlights
 // are written from that article.
@@ -429,6 +429,25 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(inSeason.length,12);
   assert.deepEqual(inSeason.slice(0,2).map(e=>`${e.title} ${e.headline}`),['Baylor at Saint Leo W, 277.415-256.590','Baylor at Azusa Pacific W, 283.375-260.500'],'decimal scores; rankings dropped');
   assert.ok(inSeason.every(e=>e.recap_url?.startsWith('https://baylorbears.com/news/2026/')));
+}
+
+// Track & Field: the official page only (production also tried another slug
+// and the homepage); the page still shows "2025-26 Track & Field Schedule",
+// so the current season is a verified empty schedule. In season, meets read
+// "Baylor at ..." with the team places written several ways.
+{
+  const tfUrl='https://baylorbears.com/sports/track-and-field/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Track & Field'),[tfUrl]);
+  const raw=fixture('track-field-schedule.html.gz');
+  const empty=worker.baylorHandlers.parseSchedule(raw,school,'Track & Field',tfUrl,now);
+  assert.deepEqual([empty.length,worker.baylorHandlers.isEmptySchedule(empty)],[0,true]);
+  const inSeason=worker.parseHtml(raw,school,'Track & Field',tfUrl,new Date('2026-06-20T17:00:00Z'));
+  assert.equal(inSeason.length,17);
+  const place=name=>inSeason.find(e=>e.opponent===name).headline;
+  assert.equal(place('Big 12 Indoor Championship'),"Women's team: T7th / Men's team: 11th",'"Women T7th (16); Men 11th (of 13)"');
+  assert.equal(place('NCAA Indoor Championships'),"Women's team: T21st · 11 pts / Men's team: T38th · 6 pts",'"Women T-21st (11 points); Men T-38th (6 points)"');
+  assert.equal(place('Big 12 Outdoor Championship'),"Women's team: 5th · 61 pts / Men's team: 10th · 37 pts",'"Women 5th of 16 (61 points); M 10th of 13 (37 points)"');
+  assert.equal(inSeason.find(e=>e.opponent==='Michael Johnson Invitational').recap_url,'https://baylorbears.com/news/2026/4/26/track-field-t-f-bears-close-michael-johnson-with-4x400-sweep','a story the day after the last day');
 }
 
 console.log('Baylor module checks passed');
