@@ -326,7 +326,20 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   const [provider]=worker.liveScoreboardProviders(school,'Softball');
   assert.equal(provider.path,'baseball/college-softball');
   const scored=worker.parseScoreboardPayload(JSON.parse(fixture('softball-espn-2026-04-10.json.gz')),school,'Softball',provider,'https://site.api.espn.com/',new Date('2026-04-11T12:00:00Z'));
-  assert.ok(scored.length>=1&&scored.every(e=>e.title==='Baylor at Kansas'),'only Baylor\'s game among the other "Bears"');
+  // That day was a doubleheader: ESPN lists both games. The shared parser gave
+  // them one id and kept one; they are Game 1 and Game 2 in start order (shared
+  // code, every school; user: "Fix both").
+  assert.deepEqual(scored.map(e=>[e.title,e.headline,e.game_number]),[['Baylor at Kansas (Game 1)','W, 8-7',1],['Baylor at Kansas (Game 2)','L, 0-1',2]]);
+  assert.equal(new Set(scored.map(e=>e.id)).size,2);
+  // Each joins its own official game (Game 1 / Game 2), not both the first.
+  const official=worker.parseHtml(fixture('baseball-schedule.html.gz').replace('"2027-02-20T15:00:00"','"2027-02-19T19:00:00"'),school,'Baseball','https://baylorbears.com/sports/baseball/schedule',now).filter(e=>e.opponent==='UIC'&&e.display_time.startsWith('Feb 19')).map(e=>({...e,sport:'Softball',opponent:'Kansas',start_time:e.start_time.replace('2027-02-19','2026-04-10')}));
+  const joined=worker.reconcileScoreboardEvents(official,scored);
+  assert.equal(joined.length,2,'no extra card');
+  assert.deepEqual(joined.map(e=>[e.game_number,e.headline,e.verification_state]),[[1,'W, 8-7','official_schedule+live_scoreboard'],[2,'L, 0-1','official_schedule+live_scoreboard']]);
+  // Two scores on one day never overwrite one official game: the second
+  // becomes its own card.
+  const single=worker.reconcileScoreboardEvents([official[0]].map(e=>({...e,game_number:undefined})),scored);
+  assert.deepEqual(single.map(e=>e.headline),['W, 8-7','L, 0-1']);
 }
 
 // Golf: both teams' official pages (production showed the women's page only),

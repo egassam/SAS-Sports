@@ -105,7 +105,9 @@ The page publishes the 2027 spring season only (59 games from Feb 19; no fall ga
 
 The page publishes the 2027 spring season (54 games from Feb 11). Production also loaded the homepage and showed dates alone, with two `Baylor vs TBD` games. Softball now routes to the official page only, and the reader gives published times (`3:30 pm`, `5:30 p.m.`; the date alone for `TBD` or a blank time), tournament games with a `TBD` opponent named after the tournament (`Getterman Classic`, Feb 20 and 21), the Aggie Classic (Feb 25-28) and the postseason ending on their last day, and doubleheaders as `Game 1` / `Game 2` (none on the 2027 page yet).
 
-**Live score.** ESPN's college softball scoreboard (`baseball/college-softball`). Tested on Apr 10, 2026: Baylor at Kansas among other "Bears" games; that day was a doubleheader (see Limitations).
+**Live score.** ESPN's college softball scoreboard (`baseball/college-softball`). Tested on Apr 10, 2026: Baylor at Kansas among other "Bears" games; that day was a doubleheader.
+
+**Live doubleheaders (shared code, every school; user, October 3: "Fix both").** ESPN listed that doubleheader as two games. The shared scoreboard parser gave both the same id, so one was lost, and the reconciliation joined every score to the first official game of the day. Now the parser numbers same-day games against one opponent `Game 1` / `Game 2` in start order (`W, 8-7`, then `L, 0-1`), each joins the official game with its number, and a second score on a day never overwrites an official game another score already took (it shows as its own card).
 
 ## Golf (`4.47.7-baylor-golf`)
 
@@ -168,4 +170,3 @@ The one failure was Cross Country's Texas A&M Invitational: certification requir
 - **Track & Field 2026-27 schedule:** not yet published (the page shows "2025-26 Track & Field Schedule", checked October 3). It fills in without a code change.
 - **Acrobatics & Tumbling 2027 schedule:** not yet published (the page shows "2026 Acrobatics & Tumbling Schedule", checked October 3). It fills in without a code change.
 - **Golf field size:** Baylor's schedule and stories publish none in a form that can be verified (full results are on Clippd, a JavaScript page), so headlines read `9th (844)`, not `9th of 16 (844)`.
-- **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games. The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
