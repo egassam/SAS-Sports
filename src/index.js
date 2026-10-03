@@ -12,7 +12,7 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.45.1-no-duplicate-status';
+const VERSION='4.46.0-live-possession';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1612,6 +1612,16 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     const event=makeEvent({school,sport,status,relation:ours.homeAway==='away'?'at':'vs',opponent:opponent.team?.shortDisplayName||opponent.team?.displayName||'Opponent',date:dateText,time:timeText,schoolScore:status==='Final'?ours.score:null,oppScore:status==='Final'?opponent.score:null,resultText:null,sourceUrl:url,now});
     if(status==='Live'){
       event.status='Live';event.priority_bucket='live';event.school_score=ours.score??null;event.opponent_score=opponent.score??null;event.headline=detail;event.recency_label=detail||'Live now';event.results=[];event.result_count=0;
+      // Who has the ball (football): ESPN names the team id in possession and
+      // the down and distance ("4th & 13 at KU 47"). Between a score and the
+      // kickoff, and at breaks, ESPN names no team, so nothing is shown.
+      const situation=competition?.situation,teamId=c=>String(c?.id??c?.team?.id??'');
+      const possession=situation?.possession!=null?String(situation.possession):'';
+      if(possession&&(possession===teamId(ours)||possession===teamId(opponent))){
+        event.possession=possession===teamId(ours)?'school':'opponent';
+        event.down_distance=clean(situation.downDistanceText||'')||null;
+        event.red_zone=situation.isRedZone===true;
+      }
     }else event.recency_label='Final';
     // Volleyball scores are sets won (0-0 during the first set). The live
     // headline adds the current set's points; a final reads like K-State's
@@ -1661,7 +1671,7 @@ function reconcileScoreboardEvents(scheduleEvents,scoreEvents){
     const index=events.findIndex(event=>event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===(score.team_label||null));
     if(index<0){events.push(score);continue}
     const official=events[index];
-    events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source};
+    events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source,possession:score.possession??null,down_distance:score.down_distance??null,red_zone:score.red_zone??null};
   }
   return events;
 }

@@ -33,6 +33,12 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .live-pts{font-size:36px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;color:#fff;padding:2px 6px;border-radius:8px}
 .live-team.trailing .live-name,.live-team.trailing .live-pts{opacity:.58}
 .live-pts.scored{animation:sasScored 2.4s ease-out 1}
+.live-ball{display:inline-block;vertical-align:-1px;margin-right:6px}
+.live-ball svg{display:block}
+.live-situation{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:7px 14px;font-size:12px;font-weight:850;color:#eef5fc;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.06);font-variant-numeric:tabular-nums}
+.live-situation span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:10px}
+.live-situation.red-zone{background:rgba(220,38,38,.14)}
+.live-rz{color:#fca5a5;text-transform:uppercase;letter-spacing:.08em;font-size:10px}
 .live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
 .live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
 .stat.has-live{border-color:#d7263d;background:linear-gradient(145deg,rgba(215,38,61,.22),#091726)}.stat.has-live b{color:#ff8f9a}
@@ -105,7 +111,7 @@ function demoActive(){return demoRequested&&school.value==='kstate'&&['Football'
 function demoEvent(){
   const state=['Upcoming','Live','Final'][demoStage];
   const basketball=sportFilter.value==='Basketball';
-  return {id:'sas-demo-'+sportFilter.value.toLowerCase(),school_id:'kstate',school:'Kansas State',sport:sportFilter.value,title:basketball?"DEMO · Men's · K-State vs Sample Opponent":'DEMO · K-State vs Sample Opponent',opponent:'Sample Opponent',team_label:basketball?"Men's":null,status:state,recency_label:state==='Live'?(basketball?'2nd Half · 4:12':'3rd Quarter · 8:42'):state==='Final'?'Final':'Sample kickoff',school_score:demoStage?(basketball?71:28):null,opponent_score:demoStage?(basketball?68:21):null,results:[],demo:true};
+  return {id:'sas-demo-'+sportFilter.value.toLowerCase(),school_id:'kstate',school:'Kansas State',sport:sportFilter.value,title:basketball?"DEMO · Men's · K-State vs Sample Opponent":'DEMO · K-State vs Sample Opponent',opponent:'Sample Opponent',team_label:basketball?"Men's":null,status:state,recency_label:state==='Live'?(basketball?'2nd Half · 4:12':'3rd Quarter · 8:42'):state==='Final'?'Final':'Sample kickoff',school_score:demoStage?(basketball?71:28):null,opponent_score:demoStage?(basketball?68:21):null,possession:state==='Live'&&!basketball?'school':null,down_distance:state==='Live'&&!basketball?'2nd & 7 at OPP 34':null,results:[],demo:true};
 }
 function displayedGroups(){
   if(!demoActive())return currentGroups;
@@ -239,9 +245,15 @@ function liveCard(e){
   const flash=i=>previous&&previous[i]!==String([a,b][i])?' scored':'';
   const lead=i=>!scored||na===nb?'':(i===0?na>nb:nb>na)?' leading':' trailing';
   const clock=e.recency_label&&!/^live( now)?$/i.test(e.recency_label)?e.recency_label:'In progress';
-  const team=(cls,name,note,score,i)=>`<div class="live-team ${cls}${lead(i)}"><span class="live-mono" aria-hidden="true">${esc(monogram(name))}</span><span class="live-name">${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts${flash(i)}">${esc(score)}</span></div>`;
-  const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}`;
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div><div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
+  // Who has the ball: a football beside that team, and the down and distance
+  // under the board (both from the live scoreboard; absent between plays
+  // ESPN names no team for, such as after a score).
+  const ball=i=>e.possession===(i===0?'school':'opponent')?'<span class="live-ball" title="Has the ball" aria-hidden="true"><svg viewBox="0 0 24 14" width="24" height="14"><ellipse cx="12" cy="7" rx="11" ry="6.2" fill="#c26a2b" stroke="#f3d2b3" stroke-width="1"/><path d="M7 7h10M9.5 5.4v3.2M12 5.4v3.2M14.5 5.4v3.2" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/></svg></span>':'';
+  const team=(cls,name,note,score,i)=>`<div class="live-team ${cls}${lead(i)}${ball(i)?' has-ball':''}"><span class="live-mono" aria-hidden="true">${esc(monogram(name))}</span><span class="live-name">${ball(i)}${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts${flash(i)}">${esc(score)}</span></div>`;
+  const holder=e.possession==='school'?ours:e.possession==='opponent'?theirs:'';
+  const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
+  const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
 }
 // The badge already names the status; the text beside it adds only what the
 // badge does not say ("Upcoming" beside an UPCOMING badge was shown twice).
