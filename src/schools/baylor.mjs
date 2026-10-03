@@ -268,8 +268,10 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     event.results_source_url=resultsUrl;
     event.source={...event.source,name:event.recap_url?'Official athletics meet recap; results from TFRRS':'Official athletics schedule; results from TFRRS',url:event.recap_url||event.source?.url};
     // Highlights only from the verified rows: each team finish, then each
-    // race's first Baylor finisher.
+    // race's first Baylor finisher, then the next finishers (certification
+    // asks for three).
     for(const race of races){const [leader]=race.runners;if(leader)lines.push(`${leader.participant} led Baylor in the ${race.group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.replace(' \u00b7 ',' in ')}.`);}
+    for(let i=1;lines.length<4&&races.some(race=>race.runners[i]);i++)for(const race of races){const runner=race.runners[i];if(runner&&lines.length<4)lines.push(`${runner.participant} finished ${runner.result.replace(' \u00b7 ',' in ')} in the ${race.group.replace(/^\w+/,word=>word.toLowerCase())}.`);}
     event.highlights=lines.slice(0,4);
     event.highlights_verified=true;event.meet_results_verified=true;
     event.highlight_state='official_recap_results';event.highlight_status=null;

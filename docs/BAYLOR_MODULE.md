@@ -73,7 +73,7 @@ TFRRS, the collegiate results database (as for UCF), publishes every meet as pla
 - writes K-State's headline, women first: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`; a team without a team score (too few runners: both teams at the Texas A&M Invitational, the men at the Southern Showcase) is named by its first finisher (`Men's: Jack Sterrett 76th`);
 - refuses TFRRS when a team place the schedule publishes disagrees (the schedule's stays);
 - keeps the source link on baylorbears.com (the recap, or the schedule when there is none), with the TFRRS page beside it (`results_source_url`);
-- writes highlights only from these rows (team finishes, then each race's first Baylor finisher); the AI never writes them.
+- writes highlights only from these rows (team finishes, each race's first Baylor finisher, then the next finishers: four lines, certification asks for three); the AI never writes them.
 
 TFRRS agrees with the recaps where both give a figure (Ella Perry 9th in 11:13.2; Ruth Kimeli 9th in 16:18.8; women 12th of 31).
 

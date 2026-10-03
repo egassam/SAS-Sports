@@ -230,12 +230,13 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(aggies.headline,"Women's: Lucy Benton 68th / Men's: Matthew King 36th");
   assert.deepEqual(aggies.results.map(r=>`${r.group} ${r.participant} ${r.result}`),["Women's 5K Lucy Benton 68th · 19:13.2","Women's 5K Jenna Jacobsen 82nd · 19:41.8","Men's 8K Matthew King 36th · 25:35.9","Men's 8K Caleb Larsen 61st · 26:14.1","Men's 8K Caden Biltz 80th · 26:50.0"]);
   assert.equal(aggies.source.url,xcUrl);
+  assert.deepEqual(aggies.highlights,["Lucy Benton led Baylor in the women's 5K, finishing 68th in 19:13.2.","Matthew King led Baylor in the men's 8K, finishing 36th in 25:35.9.","Jenna Jacobsen finished 82nd in 19:41.8 in the women's 5K.","Caleb Larsen finished 61st in 26:14.1 in the men's 8K."]);
   assert.equal(showcase.headline,"Women's team: 12th · 348 pts / Men's: Jack Sterrett 76th");
   assert.ok(!showcase.results.some(r=>r.participant==='Baylor Wolfe'),'App State\'s Baylor Wolfe is not a Baylor runner');
   assert.equal(showcase.results.find(r=>r.participant==='Ruth Kimeli').result,'9th · 16:18.8','the recap\'s "ninth in 16:18.8"');
   for(const event of [opener,aggies,showcase]){
     assert.equal(event.highlight_state,'official_recap_results');
-    assert.ok(event.highlights.length>=2&&event.highlights.every(line=>event.results.some(r=>line.includes(r.participant))||/^Baylor's (wo)?men placed/.test(line)),'highlights only from the verified rows');
+    assert.ok(event.highlights.length===4&&event.highlights.every(line=>event.results.some(r=>line.includes(r.participant))||/^Baylor's (wo)?men placed/.test(line)),'highlights only from the verified rows');
   }
   // A schedule place that disagrees with TFRRS is not overwritten.
   const wrong=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now)[0];
