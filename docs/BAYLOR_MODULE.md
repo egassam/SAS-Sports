@@ -15,7 +15,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Basketball | #182 | Men's 36 + women's 33, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | #183 | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
 | Softball | #184 | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
-| Golf | (this PR) | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
+| Golf | #185 | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
+| Tennis | (this PR) | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -115,6 +116,16 @@ The expanded views write highlights from each tournament's story.
 **Schedule and story disagree once:** the Schooner Fall Classic schedule reads `9th (+4, 844)`; Baylor's story says "tied for eighth in a 16-team field". The schedule is shown (it is the results source of record).
 
 ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
+
+## Tennis (`4.47.8-baylor-tennis`)
+
+Production loaded the first tennis page that answered (women's): tournaments as `Baylor vs ITA Texas Regional Championship`, and nothing for the men. Tennis now loads both teams' official pages only, labeled, with `-mens`/`-womens` event ids (both teams played the ITA All-American Championships), and:
+- reads tournaments as K-State reads meets: `Women's · Baylor at ITA All-American Championships`, ending on their last day (Sep 19-27); a tournament in progress is today's event (`Blue Gray Tennis Classic`, Oct 2-4, `In progress`);
+- leaves out the women's `Green & Gold Fall Scrimmage` (internal);
+- lists a past tournament (no team result) only with Baylor's story about it, as Arizona's (#161). The women's Rice Invitational (Sep 25-27) has no story on the schedule or in the women's tennis archive (checked October 3: the archive's 2026-27 stories are the two ITA All-American stories), so it is not listed;
+- links each team's own story, dated on the tournament's last day (Sep 27, eight days after the first). The recap matcher checks a multi-day event's own link against its last day, and refuses the other team's story (`/news/.../womens-tennis-...` for the men's event).
+
+The expanded views write highlights from each team's story. ESPN publishes no college tennis scoreboard, so there is no live score.
 
 ## Limitations
 
