@@ -10,7 +10,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | --- | --- | --- |
 | Football | #178 | Page-data reader: 4 finals `W, 23-13` with their own recaps; 9 upcoming with published Baylor times; ESPN live score (shared FBS-group request) |
 | Volleyball | #179 | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
-| Soccer | (this PR) | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
+| Soccer | #180 | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
+| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every Baylor runner per race (`Women's 2 Mile`, `Men's 5K`); meets without a team score name each first finisher |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -62,7 +63,25 @@ Baylor sponsors women's soccer only. Production showed rankings (`#10 Arkansas`,
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Kansas at Baylor (`W, 3-1`) joins the official card.
 
+## Cross Country (`4.47.3-baylor-cross-country`)
+
+Baylor runs men's and women's teams. Production read the rendered cards: `Women 3rd, Men 4th` (Aggie Opener) and `Completed` for the Texas A&M Invitational and the Southern Showcase, with no race rows. The page data gives each meet (`Baylor at Aggie Opener`), the published team places as text, and the recap as a schedule file titled "Recap" (`media.gamefiles`; not the result's recap). Baylor's recaps name only some runners and give no complete lists; the Texas A&M Invitational has no recap; the schedule's "Results" links go to Flash Results and XpressTiming.
+
+TFRRS, the collegiate results database (as for UCF), publishes every meet as plain tables, and Baylor's two TFRRS team pages list each meet with its date. The module (`findBaylorTfrrsMeet`, `parseBaylorTfrrsResults`, `attachMeetResults`; the same three school-gated hooks as Arizona and UCF):
+- finds the meet on each team's page by date and name ("Southern Showcase" in "Southern Showcase (University/College)");
+- reads Baylor's team result and every Baylor runner per race, by the TEAM column only (App State's Baylor Wolfe ran the Southern Showcase): `Women's 2 Mile` / `Men's 5K` at the Aggie Opener, `Women's 5K` / `Men's 8K` after;
+- writes K-State's headline, women first: `Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`; a team without a team score (too few runners: both teams at the Texas A&M Invitational, the men at the Southern Showcase) is named by its first finisher (`Men's: Jack Sterrett 76th`);
+- refuses TFRRS when a team place the schedule publishes disagrees (the schedule's stays);
+- keeps the source link on baylorbears.com (the recap, or the schedule when there is none), with the TFRRS page beside it (`results_source_url`);
+- writes highlights only from these rows (team finishes, each race's first Baylor finisher, then the next finishers: four lines, certification asks for three); the AI never writes them.
+
+TFRRS agrees with the recaps where both give a figure (Ella Perry 9th in 11:13.2; Ruth Kimeli 9th in 16:18.8; women 12th of 31).
+
+**Stored expanded views.** `/live/highlights` keeps verified finals for 30 days in the Workers KV store that preview and production share. The first preview of this PR wrote the Texas A&M Invitational with two highlights; the store would have kept serving that copy. Baylor's store keys now carry `baylorSchool.highlightRevision` (`v1:baylor|...|r2`; other schools' keys are unchanged). Raise it whenever a change rewrites already-stored Baylor finals.
+
+ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
+
 ## Limitations
 
-- The other 11 sports are still on the shared parsers (see the survey above); each is converted in its own PR.
+- The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.

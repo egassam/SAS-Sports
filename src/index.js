@@ -13,7 +13,7 @@ import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.47.2-baylor-soccer';
+const VERSION='4.47.3-baylor-cross-country';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -221,7 +221,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const baylorHandlers=createBaylorHandlers({makeEvent,recapMatchesEvent});
+const baylorHandlers=createBaylorHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -814,6 +814,7 @@ async function attachOfficialMeetResults(event){
   if(byuHandlers.isByuCrossCountry(event))return byuHandlers.attachMeetResults(event);
   if(ucfHandlers.isUcfCrossCountry(event))return ucfHandlers.attachMeetResults(event);
   if(arizonaHandlers.isArizonaCrossCountry(event))return arizonaHandlers.attachMeetResults(event);
+  if(baylorHandlers.isBaylorCrossCountry(event))return baylorHandlers.attachMeetResults(event);
   if(arizonaHandlers.isArizonaGolf(event))return arizonaHandlers.attachGolfResults(event);
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   // Exact rows parsed from the event's official recap are already tied to this
@@ -1408,7 +1409,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.
-  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)||arizonaStateHandlers.isArizonaStateCrossCountry(target)||byuHandlers.isByuCrossCountry(target)||ucfHandlers.isUcfCrossCountry(target)||arizonaHandlers.isArizonaCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
+  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)||arizonaStateHandlers.isArizonaStateCrossCountry(target)||byuHandlers.isByuCrossCountry(target)||ucfHandlers.isUcfCrossCountry(target)||arizonaHandlers.isArizonaCrossCountry(target)||baylorHandlers.isBaylorCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
   if(target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
@@ -1712,7 +1713,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
     // when Arizona published a story about it.
     events=events.filter(event=>!arizonaHandlers.isArizonaTennisTournament(event));
   }
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event)||arizonaHandlers.isArizonaCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event)||arizonaHandlers.isArizonaCrossCountry(event)||baylorHandlers.isBaylorCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
     events=reconcileScoreboardEvents(events,scoreboard);
@@ -1798,7 +1799,10 @@ async function privateSource(request,env){
 // once, not on every open. Finals do not change; the copy expires so
 // corrections still arrive. Unverified answers (an AI timeout) are never kept.
 const HIGHLIGHT_STORE_TTL=30*24*60*60;
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}`;
+// A school module may carry a highlight revision: raising it retires that
+// school's stored finals after a change to how they are written (Baylor's
+// cross country highlights went from two lines to four).
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${school==='baylor'&&baylorSchool.highlightRevision?`|r${baylorSchool.highlightRevision}`:''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

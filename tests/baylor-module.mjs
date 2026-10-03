@@ -207,4 +207,55 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Baylor vs Kansas','W, 3-1']]);
 }
 
+// Cross Country: page-data reader plus complete results from TFRRS. Production
+// read "Completed" for two of three meets, with no race rows; Baylor's recaps
+// name only some runners, the Texas A&M Invitational has none, and the
+// schedule's "Results" links go to Flash Results and XpressTiming.
+{
+  const xcUrl='https://baylorbears.com/sports/cross-country/schedule';
+  for(const [url,file] of [['https://www.tfrrs.org/teams/xc/TX_college_f_Baylor.html','tfrrs-team-women.html.gz'],['https://www.tfrrs.org/teams/xc/TX_college_m_Baylor.html','tfrrs-team-men.html.gz'],['https://www.tfrrs.org/results/xc/28140/Aggie_Opener','tfrrs-xc-28140.html.gz'],['https://www.tfrrs.org/results/xc/28142/Texas_AM_Invitational_College_Entries','tfrrs-xc-28142.html.gz'],['https://www.tfrrs.org/results/xc/27306/Southern_Showcase_University_College_','tfrrs-xc-27306.html.gz']])recapFixtures.set(url,fixture(file));
+  const xc=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
+  assert.deepEqual(xc.map(e=>`${e.status} ${e.title}`),['Final Baylor at Aggie Opener','Final Baylor at Texas A&M Invitational','Final Baylor at The Southern Showcase','Today Baylor at Chile Pepper Festival','Upcoming Baylor at Arturo Barrios Invitational','Upcoming Baylor at Big 12 Championship','Upcoming Baylor at NCAA South Central Regional','Upcoming Baylor at NCAA Championship'],'meets read "Baylor at ..." as K-State\'s');
+  const [opener,aggies,showcase]=xc;
+  assert.equal(opener.headline,"Women's team: 3rd / Men's team: 4th",'the schedule\'s "Women 3rd, Men 4th", women first');
+  // Recaps come from the schedule's "Recap" files (not the result's recap).
+  assert.deepEqual(xc.slice(0,3).map(e=>e.recap_url||null),['https://baylorbears.com/news/2026/9/4/cross-country-women-3rd-men-4th-at-aggie-opener',null,'https://baylorbears.com/news/2026/9/18/cross-country-kimeli-records-top-10-finish-in-season-debut']);
+  for(const event of [opener,aggies,showcase])await worker.attachOfficialMeetResults(event);
+  assert.equal(opener.headline,"Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts");
+  assert.deepEqual(opener.results.slice(0,3).map(r=>[r.group,r.participant,r.result]),[["Women's 2 Mile",'Baylor team','3rd · 88 pts'],["Women's 2 Mile",'Ella Perry','9th · 11:13.2'],["Women's 2 Mile",'Eva Jacobsen','12th · 11:17.7']]);
+  assert.deepEqual([opener.results.length,opener.results.filter(r=>r.group==="Men's 5K").length],[13,6],'every Baylor runner, both races');
+  assert.equal(opener.results_source_url,'https://www.tfrrs.org/results/xc/28140/Aggie_Opener');
+  assert.equal(opener.source.url,opener.recap_url,'the source link stays on baylorbears.com');
+  // No team score (too few runners): the headline names each first finisher.
+  assert.equal(aggies.headline,"Women's: Lucy Benton 68th / Men's: Matthew King 36th");
+  assert.deepEqual(aggies.results.map(r=>`${r.group} ${r.participant} ${r.result}`),["Women's 5K Lucy Benton 68th · 19:13.2","Women's 5K Jenna Jacobsen 82nd · 19:41.8","Men's 8K Matthew King 36th · 25:35.9","Men's 8K Caleb Larsen 61st · 26:14.1","Men's 8K Caden Biltz 80th · 26:50.0"]);
+  assert.equal(aggies.source.url,xcUrl);
+  assert.deepEqual(aggies.highlights,["Lucy Benton led Baylor in the women's 5K, finishing 68th in 19:13.2.","Matthew King led Baylor in the men's 8K, finishing 36th in 25:35.9.","Jenna Jacobsen finished 82nd in 19:41.8 in the women's 5K.","Caleb Larsen finished 61st in 26:14.1 in the men's 8K."]);
+  assert.equal(showcase.headline,"Women's team: 12th · 348 pts / Men's: Jack Sterrett 76th");
+  assert.ok(!showcase.results.some(r=>r.participant==='Baylor Wolfe'),'App State\'s Baylor Wolfe is not a Baylor runner');
+  assert.equal(showcase.results.find(r=>r.participant==='Ruth Kimeli').result,'9th · 16:18.8','the recap\'s "ninth in 16:18.8"');
+  for(const event of [opener,aggies,showcase]){
+    assert.equal(event.highlight_state,'official_recap_results');
+    assert.ok(event.highlights.length===4&&event.highlights.every(line=>event.results.some(r=>line.includes(r.participant))||/^Baylor's (wo)?men placed/.test(line)),'highlights only from the verified rows');
+  }
+  // A schedule place that disagrees with TFRRS is not overwritten.
+  const wrong=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now)[0];
+  wrong.headline="Women's team: 2nd / Men's team: 4th";
+  await worker.attachOfficialMeetResults(wrong);
+  assert.deepEqual([wrong.meet_results_verified,wrong.headline],[false,"Women's team: 2nd / Men's team: 4th"]);
+  // The feed attaches the same rows; the expanded view reuses them.
+  const feed=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
+  await worker.attachOfficialHighlights(feed,fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now,{AI:{run:async()=>{throw Error('the AI must not write meet highlights');}}},feed[2].id);
+  assert.deepEqual([feed[2].headline,feed[2].result_count],[showcase.headline,showcase.result_count]);
+}
+
+// Stored expanded views written before the cross country highlights grew to
+// four lines are not served again: Baylor's store keys carry its revision;
+// other schools' keys are unchanged.
+{
+  const {highlightStoreKey}=Function(...Object.keys(deps),source+';return {highlightStoreKey};')(...Object.values(deps));
+  assert.equal(highlightStoreKey('baylor','Cross Country','x'),'v1:baylor|Cross Country|x|r2');
+  assert.equal(highlightStoreKey('ucf','Football','x'),'v1:ucf|Football|x');
+}
+
 console.log('Baylor module checks passed');
