@@ -9,6 +9,11 @@
       "url": "https://baylorbears.com/sports/womens-volleyball/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "Official 2026 volleyball schedule, unmodified, through the private source route. 28 matches: 13 finals with /news/ recaps (two on Aug 30 at the Wahine Classic; the Sep 25 BYU match recapped Sep 26), 15 upcoming with times written '2 p.m.', '7 pm', '9:00 PM'; rankings in opponent titles ('#17 Florida', 'RV Georgia Tech')."
+    },
+    "soccer-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-soccer/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "Official 2026 women's soccer schedule, unmodified, through the private source route. 24 games: 12 finals with /news/ recaps (T 1-1 at #9 West Virginia), 7 regular-season games with times, 5 postseason events with enddate (Big 12 Tournament Nov 9-14, NCAA rounds)."
     }
   },
   "recaps": {
@@ -39,6 +44,14 @@
     "recap-volleyball-2026-8-30-georgia-southern.html.gz": {
       "url": "https://baylorbears.com/news/2026/8/30/no-21-vb-tops-georgia-southern-to-sweep-wahine-volleyball-classic",
       "retrieved": "2026-10-03T17:25Z"
+    },
+    "recap-soccer-2026-8-16-texas-am.html.gz": {
+      "url": "https://baylorbears.com/news/2026/8/16/soccer-whites-career-first-goal-delivers-game-winner-as-soc-tops-texas-am-2-1",
+      "retrieved": "2026-10-03T17:35Z"
+    },
+    "recap-soccer-2026-10-2-kansas.html.gz": {
+      "url": "https://baylorbears.com/news/2026/10/2/soccer-jimisons-brace-boosts-no-9-soc-past-kansas-3-1",
+      "retrieved": "2026-10-03T17:35Z"
     }
   },
   "scoreboards": {
@@ -51,6 +64,11 @@
       "url": "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20260925",
       "retrieved": "2026-10-03T17:20Z",
       "note": "110 matches: Baylor Bears at BYU Cougars (2-3) plus California Golden Bears, Morgan State, Mercer and Missouri State Bears."
+    },
+    "soccer-espn-2026-10-02.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002",
+      "retrieved": "2026-10-03T17:20Z",
+      "note": "31 matches, including Kansas at Baylor (3-1)."
     }
   }
 }

@@ -9,7 +9,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Sport | PR | State |
 | --- | --- | --- |
 | Football | #178 | Page-data reader: 4 finals `W, 23-13` with their own recaps; 9 upcoming with published Baylor times; ESPN live score (shared FBS-group request) |
-| Volleyball | (this PR) | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
+| Volleyball | #179 | 13 finals with their own recaps, 15 upcoming with published times; rankings dropped; recap matcher for tournament days; ESPN live score |
+| Soccer | (this PR) | 12 finals (`T, 1-1`) with their own recaps, 12 upcoming (7 with times; 5 postseason events ending on their last day); rankings dropped; ESPN live score |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -50,6 +51,16 @@ Production showed rankings in the opponents (`#17 Florida`, `RV Georgia Tech`, `
 **Recap matcher (`matchesRecap`, all Baylor sports).** Two Aug 30 matches at the Wahine Classic (Hawaii, Georgia Southern) each have a same-day story. The shared matcher accepted each story for the other match: the Hawaii story ends "WHAT'S NEXT ... against Georgia Southern", and the Georgia Southern story's dateline is "HONOLULU, Hawaii". The card's own recap link is still checked by the shared matcher alone (Baylor's football headlines do not always name the opponent: "Defense Dominates in Home-Opening Rout"); any other candidate must also name the opponent in its headline (`og:title`). Production was not affected (each card's own link is tried first), but a failed download would have fallen back to the wrong story.
 
 **Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Sep 25 payload (110 matches) also holds California Golden Bears, Morgan State, Mercer and Missouri State Bears; only Baylor at BYU (`L, 2-3`) matches and joins the official card.
+
+## Soccer (`4.47.2-baylor-soccer`)
+
+Baylor sponsors women's soccer only. Production showed rankings (`#10 Arkansas`, `#9 West Virginia`) and dates without times. The page-data reader now gives 12 finals in K-State's wording (the draw at West Virginia reads `T, 1-1`), each with its own recap, and 7 regular-season games with Baylor's published times (`Oct 11, 12:00 PM`).
+
+**Multi-day events (every Baylor page-data sport).** The five postseason entries carry an end date (Big 12 Tournament Nov 9-14; NCAA rounds). They end on their last day; while one is in progress it is today's event (`In progress`), not a passed date dropped from the schedule.
+
+**Headline reader fix.** The recap matcher's headline (`og:title`) stopped at the first apostrophe ("White's Career-First Goal ... Tops Texas A&M"); it now reads to the matching quote.
+
+**Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Kansas at Baylor (`W, 3-1`) joins the official card.
 
 ## Limitations
 

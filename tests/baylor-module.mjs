@@ -171,4 +171,40 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(reconciled.length,vb.length,'the scoreboard joins the official match; no second card');
 }
 
+// Soccer: page-data reader. Production showed dates without times and
+// rankings ("#9 West Virginia", "#10 Arkansas"); the postseason events run
+// several days.
+{
+  const socUrl='https://baylorbears.com/sports/womens-soccer/schedule';
+  const soc=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',socUrl,now);
+  assert.equal(soc.length,24);
+  const socFinals=soc.filter(e=>e.status==='Final');
+  assert.equal(socFinals.length,12);
+  assert.ok(socFinals.every(e=>/^[WLT], \d+-\d+$/.test(e.headline)&&e.recap_url?.startsWith('https://baylorbears.com/news/2026/')),'every final in K-State wording with its own recap');
+  assert.deepEqual(socFinals.filter(e=>['Aug 12','Sep 18'].includes(e.display_time)).map(e=>`${e.title} ${e.headline}`),['Baylor at Arkansas W, 4-1','Baylor at West Virginia T, 1-1'],'ties read "T, 1-1"; rankings dropped');
+  const socUpcoming=soc.filter(e=>e.status!=='Final');
+  assert.deepEqual(socUpcoming.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['Baylor at Colorado Oct 8, 8:00 PM','Baylor vs Kansas State Oct 11, 12:00 PM']);
+  assert.ok(socUpcoming.slice(0,7).every(e=>/, \d{1,2}:\d{2} [AP]M$/.test(e.display_time)),'regular-season games show their published times');
+  const big12=socUpcoming.find(e=>e.opponent==='Big 12 Tournament');
+  assert.deepEqual([big12.display_time,big12.end_time],['Nov 9','2026-11-14T23:59:59Z'],'postseason events end on their last day');
+  // During the tournament it is today's event, not a passed date.
+  const during=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',socUrl,new Date('2026-11-11T17:00:00Z')).find(e=>e.opponent==='Big 12 Tournament');
+  assert.deepEqual([during?.status,during?.recency_label],['Today','In progress']);
+  // Recaps: the card's own link, and the headline rule for any other
+  // candidate ("SOC Tops Texas A&M, 2-1").
+  const am=socFinals.find(e=>e.opponent==='Texas A&M'),ku=socFinals.find(e=>e.opponent==='Kansas');
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-soccer-2026-8-16-texas-am.html.gz'),{...am,recap_url:null},am.recap_url),true,'"Texas A&M" in the headline');
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-soccer-2026-10-2-kansas.html.gz'),ku,ku.recap_url),true);
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-soccer-2026-10-2-kansas.html.gz'),am,ku.recap_url),false);
+  // Live: ESPN's women's college soccer scoreboard; Kansas at Baylor (Oct 2).
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);
+  const payload=JSON.parse(fixture('soccer-espn-2026-10-02.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Soccer');
+  const scored=worker.parseScoreboardPayload(payload,school,'Soccer',provider,'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002',new Date('2026-10-03T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Baylor vs Kansas','Final','W, 3-1']]);
+  const reconciled=worker.reconcileScoreboardEvents(soc,scored);
+  assert.equal(reconciled.length,soc.length,'the scoreboard joins the official game; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Baylor vs Kansas','W, 3-1']]);
+}
+
 console.log('Baylor module checks passed');

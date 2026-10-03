@@ -8,14 +8,17 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
   liveScoreboards:{
     Football:[{path:'football/college-football',sourceName:'Live college football scoreboard'}],
     // Volleyball scores are sets won; the live detail names the current set.
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // ESPN's women's college soccer scoreboard (Baylor sponsors women's soccer
+    // only); it lists every Division I match.
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
   },
   combinedSports:new Set(['Basketball']),
   scheduleUrls:{
@@ -65,8 +68,8 @@ export function baylorOpponent(title){
 // start time, so every upcoming game showed its date alone.
 // A story's headline (og:title): "No. 21 VB Tops Hawaii in Five-Set Thriller".
 export function baylorStoryHeadline(raw){
-  const m=String(raw||'').match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']*)["']/i)||String(raw||'').match(/<meta\b[^>]*content=["']([^"']*)["'][^>]*property=["']og:title["']/i);
-  return m?m[1]:'';
+  const m=String(raw||'').match(/<meta\b[^>]*property=["']og:title["'][^>]*content=(["'])(.*?)\1/i)||String(raw||'').match(/<meta\b[^>]*content=(["'])(.*?)\1[^>]*property=["']og:title["']/i);
+  return m?m[2]:'';
 }
 
 export function createBaylorHandlers({makeEvent,recapMatchesEvent}){
@@ -88,8 +91,9 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent}){
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
       // A game day that has passed with no published score is neither a
-      // result nor upcoming.
-      if(!scored&&game.date.slice(0,10)<today)continue;
+      // result nor upcoming; a multi-day event counts until its last day.
+      const firstDay=game.date.slice(0,10),lastDay=String(game.enddate||'').slice(0,10)>firstDay?String(game.enddate).slice(0,10):firstDay;
+      if(!scored&&lastDay<today)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at.
       const relation=game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
@@ -98,6 +102,13 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent}){
       const event=makeEvent({school,sport,status:scored?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+      // Multi-day events (the Big 12 Tournament, Nov 9-14; NCAA rounds) end on
+      // their last day; while one is in progress it is today's event.
+      if(lastDay>firstDay)event.end_time=`${lastDay}T23:59:59Z`;
+      if(!scored&&firstDay<today&&lastDay>=today){
+        event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
+        event.start_time=`${today}T12:00:00.000Z`;
+      }
       if(scored){
         // The game's own /news/ recap, dated from the game day to three days
         // after (never the game-book PDF).
