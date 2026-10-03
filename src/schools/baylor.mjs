@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -25,7 +25,8 @@ export const baylorSchool={
       {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
       {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
     ],
-    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}]
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
+    Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]
   },
   // Stored expanded views (/live/highlights) are kept 30 days; raise this
   // when a change rewrites already-stored Baylor finals.
@@ -43,7 +44,8 @@ export const baylorSchool={
     'baylor|Football':'https://baylorbears.com/sports/football/schedule',
     'baylor|Golf':['https://baylorbears.com/sports/womens-golf/schedule','https://baylorbears.com/sports/mens-golf/schedule','https://baylorbears.com/sports/golf/schedule','https://baylorbears.com/'],
     'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
-    'baylor|Softball':['https://baylorbears.com/sports/softball/schedule','https://baylorbears.com/'],
+    // The official page only: the homepage adds other sports' ticker events.
+    'baylor|Softball':'https://baylorbears.com/sports/softball/schedule',
     'baylor|Tennis':['https://baylorbears.com/sports/womens-tennis/schedule','https://baylorbears.com/sports/mens-tennis/schedule','https://baylorbears.com/sports/tennis/schedule','https://baylorbears.com/'],
     'baylor|Track & Field':['https://baylorbears.com/sports/track-and-field/schedule','https://baylorbears.com/sports/track-field/schedule','https://baylorbears.com/'],
     'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule'
@@ -157,8 +159,12 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
-      const opponent=baylorOpponent(game.opponent?.title);
-      if(!opponent)continue;
+      let opponent=baylorOpponent(game.opponent?.title);
+      // A tournament game whose opponent is not yet known ("TBD") is named
+      // after its tournament ("Getterman Classic").
+      const tournament=String(game.tournament?.title||'').replace(/\s+presented by\b.*$/i,'').trim();
+      if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
+      if(!opponent||/^TB[AD]$/i.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();

@@ -34,6 +34,11 @@
       "url": "https://baylorbears.com/sports/baseball/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "2027 schedule: 59 games from Feb 19, times '4 PM'; four postseason ranges; no fall games listed."
+    },
+    "softball-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/softball/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "2027 schedule: 54 games from Feb 11; 'TBD' opponents in the Getterman Classic; Aggie Classic Feb 25-28; postseason ranges."
     }
   },
   "recaps": {
@@ -112,6 +117,11 @@
       "url": "https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard?limit=1000&dates=20260410",
       "retrieved": "2026-10-03T18:02Z",
       "note": "78 games; Baylor at Cincinnati; four 'Bears' games."
+    },
+    "softball-espn-2026-04-10.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/baseball/college-softball/scoreboard?limit=1000&dates=20260410",
+      "retrieved": "2026-10-03T18:02Z",
+      "note": "53 games; Baylor at Kansas twice (doubleheader); the shared parser keeps one (see BAYLOR_MODULE.md, Limitations)."
     }
   },
   "tfrrs": {

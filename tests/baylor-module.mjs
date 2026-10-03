@@ -308,4 +308,25 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(scored.map(e=>e.title),['Baylor at Cincinnati']);
 }
 
+// Softball: the official page only (production also tried the homepage);
+// spring 2027 with published times ("3:30 pm"); a tournament's "TBD" games
+// named after it; postseason ranges end on their last day.
+{
+  const softUrl='https://baylorbears.com/sports/softball/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Softball'),[softUrl]);
+  const softball=worker.parseHtml(fixture('softball-schedule.html.gz'),school,'Softball',softUrl,now);
+  assert.equal(softball.length,54);
+  assert.equal(new Set(softball.map(e=>e.id)).size,54);
+  assert.deepEqual(softball.filter(e=>/Getterman|TBD/.test(e.title)).map(e=>`${e.title} ${e.display_time}`),['Baylor vs Getterman Classic Feb 20','Baylor vs Getterman Classic Feb 21'],'"TBD" games named after their tournament');
+  assert.equal(softball[0].display_time,'Feb 11, 3:30 PM');
+  assert.deepEqual(softball.filter(e=>e.opponent==='Aggie Classic').map(e=>e.end_time),['2027-02-28T23:59:59Z']);
+  assert.deepEqual(softball.slice(-1).map(e=>[e.opponent,e.end_time]),[["Women's College World Series",'2027-06-11T23:59:59Z']]);
+  // Live: ESPN's college softball scoreboard (Apr 10, 2026: Baylor at Kansas,
+  // a doubleheader).
+  const [provider]=worker.liveScoreboardProviders(school,'Softball');
+  assert.equal(provider.path,'baseball/college-softball');
+  const scored=worker.parseScoreboardPayload(JSON.parse(fixture('softball-espn-2026-04-10.json.gz')),school,'Softball',provider,'https://site.api.espn.com/',new Date('2026-04-11T12:00:00Z'));
+  assert.ok(scored.length>=1&&scored.every(e=>e.title==='Baylor at Kansas'),'only Baylor\'s game among the other "Bears"');
+}
+
 console.log('Baylor module checks passed');
