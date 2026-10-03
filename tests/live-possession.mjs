@@ -70,7 +70,12 @@ assert.equal(live('byu'),undefined);
   const ours=liveCard({...base,id:'y',possession:'school',down_distance:'1st & Goal at MTSU 4',red_zone:true});
   assert.ok(ours.split('<div class="live-team ')[1].startsWith('ours')&&ours.split('<div class="live-team ')[1].includes('live-ball'));
   assert.match(ours,/live-situation red-zone[^]*Red zone/);
+  // The traveling glow: the card's delay follows the clock (the 15 s redraw
+  // does not restart it), and reduced motion stops it.
+  assert.match(theirs,/style="--sas-glow-delay:-\d+ms"/);
+  assert.match(page,/@property --sas-glow-angle/);
+  assert.match(page,/@media\(prefers-reduced-motion:reduce\)\{[^}]*\.live-card-board::before,\.live-card-board::after\{animation:none\}\}/);
   const none=liveCard({...base,id:'z'});
   assert.ok(!none.includes('live-ball')&&!none.includes('live-situation'),'no possession: nothing drawn');
 }
-console.log('Live possession checks passed (real Oct 3 scoreboard: KU and UCF games; page draws the ball and down & distance)');
+console.log('Live possession checks passed (real Oct 3 scoreboard: KU and UCF games; page draws the ball and down & distance; traveling glow)');
