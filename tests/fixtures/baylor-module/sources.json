@@ -14,6 +14,11 @@
       "url": "https://baylorbears.com/sports/womens-soccer/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "Official 2026 women's soccer schedule, unmodified, through the private source route. 24 games: 12 finals with /news/ recaps (T 1-1 at #9 West Virginia), 7 regular-season games with times, 5 postseason events with enddate (Big 12 Tournament Nov 9-14, NCAA rounds)."
+    },
+    "cross-country-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/cross-country/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "Official 2026 cross country schedule, unmodified, through the private source route. 8 meets; Aggie Opener prescore 'Women 3rd, Men 4th'; recaps as media.gamefiles titled 'Recap' (Aggie Opener, Southern Showcase); no recap for the Texas A&M Invitational."
     }
   },
   "recaps": {
@@ -52,6 +57,14 @@
     "recap-soccer-2026-10-2-kansas.html.gz": {
       "url": "https://baylorbears.com/news/2026/10/2/soccer-jimisons-brace-boosts-no-9-soc-past-kansas-3-1",
       "retrieved": "2026-10-03T17:35Z"
+    },
+    "recap-xc-2026-9-4-aggie-opener.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/4/cross-country-women-3rd-men-4th-at-aggie-opener",
+      "retrieved": "2026-10-03T17:30Z"
+    },
+    "recap-xc-2026-9-18-southern-showcase.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/18/cross-country-kimeli-records-top-10-finish-in-season-debut",
+      "retrieved": "2026-10-03T17:30Z"
     }
   },
   "scoreboards": {
@@ -69,6 +82,31 @@
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002",
       "retrieved": "2026-10-03T17:20Z",
       "note": "31 matches, including Kansas at Baylor (3-1)."
+    }
+  },
+  "tfrrs": {
+    "tfrrs-team-women.html.gz": {
+      "url": "https://www.tfrrs.org/teams/xc/TX_college_f_Baylor.html",
+      "retrieved": "2026-10-03T17:33Z"
+    },
+    "tfrrs-team-men.html.gz": {
+      "url": "https://www.tfrrs.org/teams/xc/TX_college_m_Baylor.html",
+      "retrieved": "2026-10-03T17:33Z"
+    },
+    "tfrrs-xc-28140.html.gz": {
+      "url": "https://www.tfrrs.org/results/xc/28140/Aggie_Opener",
+      "retrieved": "2026-10-03T17:35Z",
+      "note": "Women 2 Mile: Baylor 3rd, 88; Men 5k: Baylor 4th, 97."
+    },
+    "tfrrs-xc-28142.html.gz": {
+      "url": "https://www.tfrrs.org/results/xc/28142/Texas_AM_Invitational_College_Entries",
+      "retrieved": "2026-10-03T17:35Z",
+      "note": "Baylor 2 women, 3 men; no team score."
+    },
+    "tfrrs-xc-27306.html.gz": {
+      "url": "https://www.tfrrs.org/results/xc/27306/Southern_Showcase_University_College_",
+      "retrieved": "2026-10-03T17:35Z",
+      "note": "Women 5k Invite: Baylor 12th, 348; men 2 runners; App State's Baylor Wolfe also listed."
     }
   }
 }
