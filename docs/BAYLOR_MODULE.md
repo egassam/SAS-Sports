@@ -19,7 +19,7 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Tennis | #186 | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
 | Equestrian | #187 | Official page only; 3 finals (`W, 12-8`) with their stories, 11 upcoming with published times; rankings dropped; championships named |
 | Acrobatics & Tumbling | #188 | Empty schedule (the page still shows the 2026 season); route fixed to `acrobatics-tumbling`; in season `W, 277.415-256.590` with recaps |
-| Track & Field | (this PR) | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, team places as `Women's team: 5th · 61 pts / Men's team: 10th · 37 pts` |
+| Track & Field | #189 | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, team places as `Women's team: 5th · 61 pts / Men's team: 10th · 37 pts` |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -155,9 +155,17 @@ In season (the same page read as of Jun 20, 2026) every meet reads `Baylor at Bi
 
 ESPN publishes no track scoreboard, so there is no live score.
 
+## Certification (October 3)
+
+`tests/certified-schools.json` protects Baylor's featured athletes for all 12 sports (3 each, every one with a verified Instagram link from the official roster, reviewed against production on October 3).
+
+Production deep certification (`validate-schools.mjs --deep`, all 12 sports, `4.47.11`): **11/12**. Football 4/4, Volleyball 13/13, Soccer 12/12, Golf 4/4, Tennis 2/2, Equestrian 3/3 highlights; Basketball, Baseball and Softball have no finals yet; Track & Field and Acrobatics & Tumbling are verified empty schedules. On the preview, one Soccer pass failed on a Workers AI timeout (`ai_failed`, the known random one) and passed on the next run.
+
+The one failure is Cross Country's Texas A&M Invitational: certification requires an official recap for every final, and Baylor published none for that meet (see Limitations).
+
 ## Limitations
 
-- Athlete certification for Baylor has not been reviewed yet.
+- **Cross Country, Texas A&M Invitational (Sep 11): no Baylor recap, so certification fails (open, for the user).** The schedule links none, and the cross country archive (checked October 3) has none: its 2026 stories are the Aggie Opener preview and result, the Southern Showcase preview and result, the Nike XC Town Twilight preview, and "Change of Plans, XC Headed to Arkansas". The meet's complete results come from TFRRS and are shown with the schedule as the source. Options: keep it as is (certification fails on this meet), list it only with a story (as Arizona's tennis, #161; its results would disappear), or let certification accept a meet whose results are verified from TFRRS without a recap (a change to the shared validator, like #141's "Accept if verified").
 - **Track & Field 2026-27 schedule:** not yet published (the page shows "2025-26 Track & Field Schedule", checked October 3). It fills in without a code change.
 - **Acrobatics & Tumbling 2027 schedule:** not yet published (the page shows "2026 Acrobatics & Tumbling Schedule", checked October 3). It fills in without a code change.
 - **Golf field size:** Baylor's schedule and stories publish none in a form that can be verified (full results are on Clippd, a JavaScript page), so headlines read `9th (844)`, not `9th of 16 (844)`.
