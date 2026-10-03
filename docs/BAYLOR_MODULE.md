@@ -18,7 +18,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Golf | #185 | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
 | Tennis | #186 | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
 | Equestrian | #187 | Official page only; 3 finals (`W, 12-8`) with their stories, 11 upcoming with published times; rankings dropped; championships named |
-| Acrobatics & Tumbling | (this PR) | Empty schedule (the page still shows the 2026 season); route fixed to `acrobatics-tumbling`; in season `W, 277.415-256.590` with recaps |
+| Acrobatics & Tumbling | #188 | Empty schedule (the page still shows the 2026 season); route fixed to `acrobatics-tumbling`; in season `W, 277.415-256.590` with recaps |
+| Track & Field | (this PR) | Empty schedule (the page still shows 2025-26); official route only; in season one event per meet, team places as `Women's team: 5th · 61 pts / Men's team: 10th · 37 pts` |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -143,10 +144,21 @@ Production showed the 2026 spring season (Feb 6 - Apr 25, 2026) as current resul
 
 ESPN publishes no acrobatics & tumbling scoreboard, so there is no live score.
 
+## Track & Field (`4.47.11-baylor-track-field`)
+
+Production showed the 2025-26 season (17 meets, Jan 16 - Jun 13, 2026) as current: the page still reads "2025-26 Track & Field Schedule". Track & Field now routes to the official page only (the inherited `track-field` slug and the homepage are gone), and the current-season filter makes it a verified empty schedule until Baylor publishes 2026-27.
+
+In season (the same page read as of Jun 20, 2026) every meet reads `Baylor at Big 12 Outdoor Championship`, ending on its last day, with its story (dated through three days after the last day), and the team places the page writes three ways become K-State's headline:
+- `Women T7th (16); Men 11th (of 13)` → `Women's team: T7th / Men's team: 11th`;
+- `Women T-21st (11 points); Men T-38th (6 points)` → `Women's team: T21st · 11 pts / Men's team: T38th · 6 pts`;
+- `Women 5th of 16 (61 points); M 10th of 13 (37 points)` → `Women's team: 5th · 61 pts / Men's team: 10th · 37 pts`.
+
+ESPN publishes no track scoreboard, so there is no live score.
+
 ## Limitations
 
-- The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.
+- **Track & Field 2026-27 schedule:** not yet published (the page shows "2025-26 Track & Field Schedule", checked October 3). It fills in without a code change.
 - **Acrobatics & Tumbling 2027 schedule:** not yet published (the page shows "2026 Acrobatics & Tumbling Schedule", checked October 3). It fills in without a code change.
 - **Golf field size:** Baylor's schedule and stories publish none in a form that can be verified (full results are on Clippd, a JavaScript page), so headlines read `9th (844)`, not `9th of 16 (844)`.
 - **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games. The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.

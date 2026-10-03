@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Equestrian','Acrobatics & Tumbling']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Equestrian','Acrobatics & Tumbling','Track & Field']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -55,7 +55,9 @@ export const baylorSchool={
     // Both teams (production showed the women's page only, the first that
     // loaded); /sports/tennis/ and the homepage are not tennis schedules.
     'baylor|Tennis':['https://baylorbears.com/sports/womens-tennis/schedule','https://baylorbears.com/sports/mens-tennis/schedule'],
-    'baylor|Track & Field':['https://baylorbears.com/sports/track-and-field/schedule','https://baylorbears.com/sports/track-field/schedule','https://baylorbears.com/'],
+    // The official page only: the other slug and the homepage are not track
+    // schedules.
+    'baylor|Track & Field':'https://baylorbears.com/sports/track-and-field/schedule',
     'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -254,7 +256,13 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       }else if(meet&&final&&sport!=='Golf'){
         // Women first, as K-State's: "Women's team: 3rd / Men's team: 4th".
         // TFRRS adds the points and races (attachMeetResults).
-        const places=Object.fromEntries([...placing.matchAll(/\b(Men|Women)\s*:?\s*(T?\d{1,3}(?:st|nd|rd|th))/gi)].map(m=>[m[1][0].toUpperCase()+m[1].slice(1).toLowerCase(),m[2]]));
+        // Track writes them several ways: "Women T7th (16); Men 11th (of 13)",
+        // "Women T-21st (11 points)", "M 10th of 13 (37 points)".
+        const places={};
+        for(const m of placing.matchAll(/\b(Men|Women|M|W)\b\s*:?\s*(T-?)?(\d{1,3})(?:st|nd|rd|th)(?:\s+of\s+\d+)?(?:\s*\((?:of\s+\d+|(\d+(?:\.\d+)?)\s*points?|\d+)\))?/gi)){
+          const team=/^w/i.test(m[1])?'Women':'Men';
+          places[team]??=`${m[2]?'T':''}${ordinal(m[3])}${m[4]?` \u00b7 ${m[4]} pts`:''}`;
+        }
         const teams=['Women','Men'].filter(name=>places[name]);
         event.headline=teams.length?teams.map(name=>`${name}'s team: ${places[name]}`).join(' / '):'Completed';
         event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Baylor team',result:places[name]})):[{label:'Result',value:'Completed'}];
