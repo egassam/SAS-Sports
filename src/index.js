@@ -13,7 +13,7 @@ import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.47.12-no-summary-box';
+const VERSION='4.48.0-live-doubleheaders';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1657,6 +1657,13 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
     found.push(event);
   }
+  // A doubleheader is the same opponent twice on one day (ESPN listed Baylor
+  // at Kansas twice on Apr 10, 2026). Both games had one id, so the second was
+  // lost; they become Game 1 and Game 2 in start order, as the official
+  // schedules number them.
+  const sameDay=new Map();
+  for(const event of found){const key=`${event.team_label||''}|${slug(event.opponent||'')}|${scoreboardDateKey(event.start_time)}`;sameDay.set(key,[...(sameDay.get(key)||[]),event]);}
+  for(const games of sameDay.values())if(games.length>1)games.sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time))).forEach((event,i)=>{event.game_number=i+1;event.id=`${event.id}-game-${i+1}`;event.title=`${event.title} (Game ${i+1})`;});
   return mergeEvents([found]);
 }
 async function fetchLiveScoreboards(school,sport,now){
@@ -1671,11 +1678,16 @@ async function fetchLiveScoreboards(school,sport,now){
   return mergeEvents([found]);
 }
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents){
-  const events=scheduleEvents.slice();
+  const events=scheduleEvents.slice(),joined=new Set();
   for(const score of scoreEvents){
     const day=scoreboardDateKey(score.start_time);
-    const index=events.findIndex(event=>event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===(score.team_label||null));
+    const sameDay=index=>{const event=events[index];return index<scheduleEvents.length&&!joined.has(index)&&event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===(score.team_label||null);};
+    // A doubleheader game joins the official game with its number; any other
+    // score joins the first official game that day no other score has taken.
+    const indexes=events.map((event,index)=>index).filter(sameDay);
+    const index=score.game_number?(indexes.find(index=>events[index].game_number===score.game_number)??indexes.find(index=>!events[index].game_number)??-1):(indexes[0]??-1);
     if(index<0){events.push(score);continue}
+    joined.add(index);
     const official=events[index];
     events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source,possession:score.possession??null,down_distance:score.down_distance??null,red_zone:score.red_zone??null};
   }
