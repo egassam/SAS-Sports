@@ -283,4 +283,29 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(scored.map(e=>[e.title,e.headline]),[["Men's · Baylor vs Arizona St","W, 73-68"],["Women's · Baylor vs Arizona","W, 74-60"]]);
 }
 
+// Baseball: the official page only (production also tried the homepage);
+// spring 2027 with published times ("4 PM"); postseason ranges end on their
+// last day; doubleheaders kept as Game 1 / Game 2.
+{
+  const baseUrl='https://baylorbears.com/sports/baseball/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Baseball'),[baseUrl]);
+  const baseball=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',baseUrl,now);
+  assert.equal(baseball.length,59);
+  assert.equal(new Set(baseball.map(e=>e.id)).size,59);
+  assert.deepEqual(baseball.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['Baylor vs UIC Feb 19, 4:00 PM','Baylor vs UIC Feb 20, 3:00 PM']);
+  assert.deepEqual(baseball.slice(-1).map(e=>[e.opponent,e.end_time]),[["NCAA Men's College World Series",'2027-06-28T23:59:59Z']]);
+  // A doubleheader (moved here: the 2027 page has none yet): the second UIC
+  // game on Feb 19.
+  const doubled=fixture('baseball-schedule.html.gz').replace('"2027-02-20T15:00:00"','"2027-02-19T19:00:00"');
+  const pair=worker.parseHtml(doubled,school,'Baseball',baseUrl,now).filter(e=>e.opponent==='UIC'&&e.display_time.startsWith('Feb 19'));
+  assert.deepEqual(pair.map(e=>[e.title,e.game_number]),[['Baylor vs UIC (Game 1)',1],['Baylor vs UIC (Game 2)',2]]);
+  assert.equal(new Set(pair.map(e=>e.id)).size,2);
+  // Live: ESPN's college baseball scoreboard (Apr 10, 2026: Baylor at
+  // Cincinnati among four "Bears" games).
+  const [provider]=worker.liveScoreboardProviders(school,'Baseball');
+  assert.equal(provider.path,'baseball/college-baseball');
+  const scored=worker.parseScoreboardPayload(JSON.parse(fixture('baseball-espn-2026-04-10.json.gz')),school,'Baseball',provider,'https://site.api.espn.com/',new Date('2026-04-11T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>e.title),['Baylor at Cincinnati']);
+}
+
 console.log('Baylor module checks passed');
