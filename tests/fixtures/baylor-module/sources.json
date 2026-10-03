@@ -49,6 +49,16 @@
       "url": "https://baylorbears.com/sports/mens-golf/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "33 round entries (12 tournaments); Bomb Darts Birds 'T7th (-32, 832)'; Fighting Illini Sep 18 '15th (+7, 287)' then Sep 20 '15th (+11, 851)'."
+    },
+    "tennis-womens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "10 entries: Green & Gold Fall Scrimmage; ITA All-American Championships Sep 19-27 with recap; Rice Invitational Sep 25-27 without; Blue Gray Tennis Classic Oct 2-4; 6 upcoming."
+    },
+    "tennis-mens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/mens-tennis/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "11 tournaments: ITA All-American Championships Sep 19-27 with recap; 10 upcoming."
     }
   },
   "recaps": {
@@ -111,6 +121,14 @@
     "recap-golf-2026-9-19-fighting-illini.html.gz": {
       "url": "https://baylorbears.com/news/2026/9/19/mens-golf-baylor-mens-golf-finishes-fighting-illini-invitational-at-olympia-fields",
       "retrieved": "2026-10-03T18:10Z"
+    },
+    "recap-tennis-2026-9-27-womens-ita.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/27/womens-tennis-wts-kubacha-erickson-reach-doubles-quarterfinals-at-ita-all-american-championships",
+      "retrieved": "2026-10-03T18:30Z"
+    },
+    "recap-tennis-2026-9-27-mens-ita.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/27/mens-tennis-mts-van-schalkwyk-qualifies-for-ncaa-singles-championship-at-ita-all-american-championships",
+      "retrieved": "2026-10-03T18:30Z"
     }
   },
   "scoreboards": {

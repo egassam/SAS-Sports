@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -31,7 +31,7 @@ export const baylorSchool={
   // Stored expanded views (/live/highlights) are kept 30 days; raise this
   // when a change rewrites already-stored Baylor finals.
   highlightRevision:2,
-  combinedSports:new Set(['Basketball','Golf']),
+  combinedSports:new Set(['Basketball','Golf','Tennis']),
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
     // The official page only: the homepage adds other sports' ticker events.
@@ -48,7 +48,9 @@ export const baylorSchool={
     'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
     // The official page only: the homepage adds other sports' ticker events.
     'baylor|Softball':'https://baylorbears.com/sports/softball/schedule',
-    'baylor|Tennis':['https://baylorbears.com/sports/womens-tennis/schedule','https://baylorbears.com/sports/mens-tennis/schedule','https://baylorbears.com/sports/tennis/schedule','https://baylorbears.com/'],
+    // Both teams (production showed the women's page only, the first that
+    // loaded); /sports/tennis/ and the homepage are not tennis schedules.
+    'baylor|Tennis':['https://baylorbears.com/sports/womens-tennis/schedule','https://baylorbears.com/sports/mens-tennis/schedule'],
     'baylor|Track & Field':['https://baylorbears.com/sports/track-and-field/schedule','https://baylorbears.com/sports/track-field/schedule','https://baylorbears.com/'],
     'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule'
   },
@@ -69,6 +71,8 @@ export const baylorSchool={
 };
 
 const HOST='baylorbears.com';
+// Internal events: "Green & Gold Fall Scrimmage", intrasquads.
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bgreen\s*(?:&|and|vs\.?|-)\s*gold\b/i;
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Baylor's calendar day (Waco, America/Chicago).
 const baylorToday=now=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
@@ -196,7 +200,7 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       // after its tournament ("Getterman Classic").
       const tournament=String(game.tournament?.title||'').replace(/\s+presented by\b.*$/i,'').trim();
       if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
-      if(!opponent||/^TB[AD]$/i.test(opponent))continue;
+      if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
@@ -213,7 +217,7 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
       if(!final&&lastDay<today)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at. Meets
       // read "Baylor at Aggie Opener", as K-State's do.
-      const relation=eventType(sport)==='MEET'?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
+      const relation=eventType(sport)==='MEET'||sport==='Tennis'&&meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
       // published local time ("TBD" shows the date alone).
       const start=final?null:sidearmStartTime(game.date,game.time);
@@ -254,6 +258,9 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
           }catch{}
         }
       }
+      // As K-State's, a past tennis tournament (no team result) is listed only
+      // with Baylor's story about it (the women's Rice Invitational has none).
+      if(sport==='Tennis'&&meet&&final&&!event.recap_url)continue;
       // A doubleheader lists the same opponent twice on one day: Game 1 and
       // Game 2 stay two games.
       const sameDay=games.filter(other=>other.date.slice(0,10)===firstDay&&baylorOpponent(other.opponent?.title)===baylorOpponent(game.opponent?.title));
@@ -276,8 +283,15 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     // A golf story already verified against the schedule's place, score to
     // par and last day (attachGolfStory); it may name the event differently.
     if(url&&url===event.golf_story_verified&&url===event.recap_url)return true;
+    // The card's own recap link: a multi-day event (a tennis tournament, Sep
+    // 19-27) is recapped on its last day.
+    if(url&&url===event.recap_url&&event.end_time&&recapMatchesEvent(raw,{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')},url))return true;
     if(!recapMatchesEvent(raw,event,url))return false;
     if(url&&url===event.recap_url)return true;
+    // A men's or women's event refuses the other team's story
+    // ("/news/2026/9/27/womens-tennis-..." for the men's ITA All-Americans).
+    const slug=String(url||'').split('/').pop().toLowerCase();
+    if(event.team_label==="Men's"&&/^(?:womens|wgolf|wt|wbb)-/.test(slug)||event.team_label==="Women's"&&/^(?:mens|mgolf|mt|mbb)-/.test(slug))return false;
     const key=value=>` ${String(value).toLowerCase().replace(/&amp;|&#38;/g,'&').replace(/&#x27;|&#39;|\u2019/g,"'").replace(/[^a-z0-9&']+/g,' ').trim()} `;
     const opponent=key(String(event.opponent||'').replace(/\(.*?\)/g,' ')).trim();
     return opponent.length>=2&&key(baylorStoryHeadline(raw)).includes(` ${opponent} `);

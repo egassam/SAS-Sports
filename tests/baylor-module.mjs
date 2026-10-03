@@ -369,4 +369,32 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   }
 }
 
+// Tennis: both teams' official pages (production showed the women's page
+// only), labeled; tournaments read "Baylor at ..."; the fall scrimmage is
+// internal; a past tournament is listed only with Baylor's story (the women's
+// Rice Invitational has none, on the schedule or in the archive); a tournament
+// in progress is today's event.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Tennis'),['https://baylorbears.com/sports/womens-tennis/schedule','https://baylorbears.com/sports/mens-tennis/schedule']);
+  const read=team=>{const url=`https://baylorbears.com/sports/${team}-tennis/schedule`;return worker.labelTeamEvents(worker.parseHtml(fixture(`tennis-${team}-schedule.html.gz`),school,'Tennis',url,now),school,'Tennis',url);};
+  const womens=read('womens'),mens=read('mens');
+  assert.deepEqual([womens.length,mens.length],[8,11]);
+  assert.ok(!womens.some(e=>/Scrimmage|Rice Invitational/.test(e.title)));
+  assert.deepEqual(womens.slice(0,2).map(e=>[e.title,e.status,e.recency_label,e.end_time]),[["Women's · Baylor at ITA All-American Championships",'Final','Final','2026-09-27T23:59:59Z'],["Women's · Baylor at Blue Gray Tennis Classic",'Today','In progress','2026-10-04T23:59:59Z']]);
+  assert.equal(mens[0].title,"Men's · Baylor at ITA All-American Championships");
+  assert.equal(new Set([...womens,...mens].map(e=>e.id)).size,19,'both teams at the ITA All-Americans keep their own ids');
+  // Expanded view: each team's ITA story, dated on the last day (Sep 27, the
+  // tournament began Sep 19); neither team takes the other's.
+  for(const [team,events] of [['womens',womens],['mens',mens]]){
+    const target=events[0],url=`https://baylorbears.com/sports/${team}-tennis/schedule`;
+    recapFixtures.set(target.recap_url,fixture(`recap-tennis-2026-9-27-${team}-ita.html.gz`));
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Baylor reached the doubles quarterfinals at the tournament this week.','A Baylor player won two singles matches in the main draw this week.','The Bears earned a qualifying spot for the national championship.','Baylor closed the tournament with several strong performances overall.'])};}}};
+    await worker.attachOfficialHighlights(events,fixture(`tennis-${team}-schedule.html.gz`),school,'Tennis',url,now,env,target.id);
+    assert.equal(target.highlight_state,'recap_generated',`${team}: highlights from the team's own story`);
+    assert.equal(prompts.length,1);
+  }
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-tennis-2026-9-27-womens-ita.html.gz'),{...mens[0],recap_url:null,end_time:null,start_time:'2026-09-27T12:00:00.000Z'},womens[0].recap_url),false,"the men's event refuses the women's story");
+  assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-tennis-2026-9-27-mens-ita.html.gz'),{...mens[0],recap_url:null,end_time:null,start_time:'2026-09-27T12:00:00.000Z'},mens[0].recap_url),true,'its own team\'s story on that day matches');
+}
+
 console.log('Baylor module checks passed');
