@@ -4,6 +4,11 @@
       "url": "https://baylorbears.com/sports/football/schedule",
       "retrieved": "2026-10-03T16:55Z",
       "note": "Official '2026 Football Schedule', unmodified, downloaded through the app's private source route (baylorbears.com refuses the sandbox). SIDEARM page data (__NUXT_DATA__) lists 13 games: L 16-17 Auburn (Sep 5, neutral), W 44-3 Prairie View A&M, W 36-19 Louisiana Tech, W 23-13 Colorado, each with its /news/ recap; 9 upcoming with local times (at Arizona State Oct 3 9:30 p.m., at UCF Oct 30 6:30 p.m., Big 12 Championship Dec 4 7 p.m.) or TBD."
+    },
+    "volleyball-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-volleyball/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "Official 2026 volleyball schedule, unmodified, through the private source route. 28 matches: 13 finals with /news/ recaps (two on Aug 30 at the Wahine Classic; the Sep 25 BYU match recapped Sep 26), 15 upcoming with times written '2 p.m.', '7 pm', '9:00 PM'; rankings in opponent titles ('#17 Florida', 'RV Georgia Tech')."
     }
   },
   "recaps": {
@@ -22,6 +27,18 @@
     "recap-football-2026-9-26-colorado.html.gz": {
       "url": "https://baylorbears.com/news/2026/9/26/football-recap-vs-colorado",
       "retrieved": "2026-10-03T16:57Z"
+    },
+    "recap-volleyball-2026-9-26-byu.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/26/volleyball-no-17-vb-drops-heartbreaker-at-no-22-byu",
+      "retrieved": "2026-10-03T17:25Z"
+    },
+    "recap-volleyball-2026-8-30-hawaii.html.gz": {
+      "url": "https://baylorbears.com/news/2026/8/30/volleyball-no-21-vb-tops-hawaii-in-five-set-thriller",
+      "retrieved": "2026-10-03T17:25Z"
+    },
+    "recap-volleyball-2026-8-30-georgia-southern.html.gz": {
+      "url": "https://baylorbears.com/news/2026/8/30/no-21-vb-tops-georgia-southern-to-sweep-wahine-volleyball-classic",
+      "retrieved": "2026-10-03T17:25Z"
     }
   },
   "scoreboards": {
@@ -29,6 +46,11 @@
       "url": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=300&dates=20260926",
       "retrieved": "2026-10-03T17:00Z",
       "note": "65 FBS games, including Colorado at Baylor (23-13), Missouri State Bears at SMU and Central Arkansas Bears at Florida State."
+    },
+    "volleyball-espn-2026-09-25.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20260925",
+      "retrieved": "2026-10-03T17:20Z",
+      "note": "110 matches: Baylor Bears at BYU Cougars (2-3) plus California Golden Bears, Morgan State, Mercer and Missouri State Bears."
     }
   }
 }
