@@ -1,10 +1,34 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 3, 2026, America/Chicago (live testing: football possession on live cards, PR #175; traveling glow on live cards, PR #176; production `4.46.1-live-glow`. Earlier: Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 3, 2026, America/Chicago (Baylor all 12 sports, PRs #178-#190; production `4.47.11-baylor-track-field`. Earlier: live testing, football possession and traveling glow, PRs #175-#176; Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Baylor: all 12 sports converted; production `4.47.11-baylor-track-field` (October 3); NOT complete under `AGENTS.md` item 5a: two items wait on the user (below).** User: "Next school conversion" (Baylor is the next unconverted Big 12 school in catalog order). baylorbears.com refuses the sandbox; every page came through the private source route. The agent opened and merged PRs #178-#190 one sport at a time under `AGENTS.md` item 6; each passed the gate (both suites, CI green, the sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and was verified in production. Details: `docs/BAYLOR_MODULE.md`.
+
+| PR | Sport | Production |
+| --- | --- | --- |
+| #178 | Setup + Football | 219/219 routes identical; page-data reader (SIDEARM `__NUXT_DATA__`, `src/schools/baylor.mjs`); published times (`Oct 3, 9:30 PM`); ESPN live (shared FBS request) |
+| #179 | Volleyball | rankings dropped; Baylor recap matcher (Aug 30: each same-day Honolulu story matched the other match; another candidate must name the opponent in its `og:title`); ESPN live |
+| #180 | Soccer | `T, 1-1`; multi-day postseason ends on its last day, `In progress` while running; ESPN live |
+| #181 | Cross Country | complete results from TFRRS (`Women's team: 3rd · 88 pts / Men's team: 4th · 97 pts`, every runner; TEAM column only: App State's "Baylor Wolfe"); highlight-store revision `|r2` for Baylor keys |
+| #182 | Basketball | two pages, labeled; `(EXH)` → `(Exhibition)`; ESPN men's/women's live |
+| #183 | Baseball | official page; doubleheaders Game 1/2; ESPN live |
+| #184 | Softball | official page; tournament `TBD` named after it; ESPN live |
+| #185 | Golf | both teams; one event per tournament (`9th (844)`); Charleston story from the archive ("Cougar Classic") verified by place and score to par |
+| #186 | Tennis | both teams; tournaments `Baylor at ...`; past ones only with a story; other team's story refused |
+| #187 | Equestrian | rankings dropped; championships named |
+| #188 | Acrobatics & Tumbling | current-season filter; verified empty (page shows 2026); decimal scores in season |
+| #189 | Track & Field | verified empty (page shows 2025-26); team places in K-State's form in season |
+| #190 | Certification | athletes protected for all 12 sports (3 each), 12/12 |
+
+- **Production certification (`validate-schools.mjs --deep`, all 12 sports, `4.47.11`): 11/12.** The failure: Cross Country's **Texas A&M Invitational** (Sep 11) has no Baylor recap (none on the schedule or in the XC archive), and certification requires one. Its complete TFRRS results are shown. **For the user to decide:** keep as is, list it only with a story (results disappear, as Arizona tennis #161), or let certification accept TFRRS-verified meet results without a recap (shared validator change, like #141).
+- **Live doubleheaders (shared code, every school; for the user to approve).** ESPN listed Baylor's Apr 10, 2026 softball doubleheader at Kansas as two games; `parseScoreboardPayload` gives both the same id (one is lost) and `reconcileScoreboardEvents` joins by date only. The second game of any baseball/softball doubleheader would show no live score.
+- **Highlight store lesson (shared KV, 30 days, preview and production share it):** checking an expanded view on a preview stores it. When a change rewrites already-verified finals, raise the school's highlight revision (Baylor: `baylorSchool.highlightRevision`) or the old copy keeps being served.
+- **Not fixable from official sources today:** Track & Field 2026-27 and Acrobatics & Tumbling 2027 schedules unpublished (fill in without code changes); golf field size (no verifiable source; Clippd is a JavaScript page); the Schooner Fall Classic schedule says `9th`, Baylor's story "tied for eighth" (the schedule is shown; the AI highlights repeat the story).
+- **Tonight:** Baylor at Arizona State football, 9:30 PM CT (02:30 UTC Oct 4) is the first Baylor live game under the module; not observed in this session.
 
 **Live testing, October 3 (production `4.46.1-live-glow`).** User: "Live testing", then "Keep watching and fix anything that breaks". A poller compared production feeds with ESPN every 90 s for today's games in converted schools.
 - **First real football live cards observed:** UCF at Houston went live at 16:05 UTC (`official_schedule+live_scoreboard`, one card), and UCF's touchdown (7-0) appeared within one poll. KU vs Middle Tennessee went live at 16:11 (KU's published time is date-only; the card joined anyway). No score mismatch, missing live card or feed error was seen through 16:47 UTC, when the session ended at the end of the 1st quarter (KU 3-0, UCF 7-0). The finals were not observed.
@@ -394,6 +418,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Baylor (open, waiting on the user):** the Texas A&M Invitational certification decision and the shared live-doubleheader fix (see "Current state"). After the user decides, finish Baylor under `AGENTS.md` item 5a, then the next Big 12 school the user names. Remaining unconverted Big 12 schools: Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Baylor's first live football card (at Arizona State, 02:30 UTC Oct 4) and volleyball (vs Colorado, Oct 4 2:00 PM CT).
 - **Live cards (from the Oct 3 live test):** watch a football final arrive (`W, 31-20` wording) and a non-football live game with the glow (volleyball/soccer). Possession is football only; ESPN's basketball scoreboard carries no possession.
 - **Arizona is complete except for source-blocked items** (see `docs/ARIZONA_MODULE.md`, Limitations): when arizonawildcats.com publishes the 2027 baseball roster, add Baseball to Arizona's `athlete_sports` (verify 3 athletes first); Gymnastics and Track & Field fill in without code changes when 2026-27 is published. Soccer and volleyball live cards were observed working on Oct 3 UTC; watch the first football (Oct 3) and basketball (Oct 13) live games. Remaining unconverted Big 12 schools: Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
 - **Live scores (ESPN), open checks:** (#164 and #166 fixed the missing games, wrong-team matches and bare-score finals for every school; watch the first real games.)
@@ -1336,4 +1361,16 @@ User: "Live testing". The handoff was read from main (`a8f2357`). The agent list
 User: "Can we add a graphic that shows who had the ball?" → #175 (merged `d2bba93` by the agent under `AGENTS.md` item 6 after the full gate; production verified). User: "Looks good. Can we make the box around the live score have a glow that travels around the box?" → #176 (merged `98ba48e`; production verified). User: "It passes my visual". User: "Add the glow to all sports live cards" → already the case (one live card for every sport); no change. User: "End session". This record is a docs-only PR.
 
 **Tests run:** `npm run test:release` and `npm test` on both final commits; `tests/live-possession.mjs` mutation checks; Chromium screenshots at 390px (demo, preview, production).
+
+### October 3, 2026 — Baylor, all sports
+
+User: "Next school conversion". The handoff was read from main (`01845a3`). Baylor is the next unconverted Big 12 school in catalog order; baylorbears.com refuses the sandbox, so all schedule pages, recaps and archives came through `scripts/fetch-official.mjs` (HTTP 200); TFRRS and ESPN were read directly.
+
+**Approach:** one page-data reader (`createBaylorHandlers().parseSchedule`), enabled sport by sport, one PR each, merged by the agent under `AGENTS.md` item 6 after the full gate and verified in production: #178 Football (with setup), #179 Volleyball, #180 Soccer, #181 Cross Country, #182 Basketball, #183 Baseball, #184 Softball, #185 Golf, #186 Tennis, #187 Equestrian, #188 Acrobatics & Tumbling, #189 Track & Field, #190 athlete certification.
+
+**Found by the gates and fixed before merge:** the Aug 30 Honolulu stories matching each other's match ("WHAT'S NEXT", dateline); the `og:title` reader stopping at an apostrophe; multi-day events dropped once their first day passed; the cross country meet without a team score having two highlights (certification needs three), and the preview's stored two-line copy (highlight revision); Baseball and Softball first combined in one commit, split into #183 and #184 to keep one sport per PR; a golf last-day rule that a mutation showed was not needed (removed); the tennis stories dated eight days after the first day (own link checked against the last day) and the other team's story.
+
+**Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/baylor-module.mjs` (parse hook, headline rule, multi-day, TEAM column, attach hook, doubleheaders, TBD naming, verified golf story, other-team refusal, championship naming, season filter, M/W places). Preview gate per sport: XC 18/20 and 26/21, 36/36 refreshes. Production: deep certification 11/12, athletes 12/12.
+
+**Open for the user:** the Texas A&M Invitational certification decision; the shared live-doubleheader fix. Baylor is not complete until both are settled.
 
