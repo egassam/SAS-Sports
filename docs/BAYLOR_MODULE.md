@@ -16,7 +16,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Baseball | #183 | Official page only; spring 2027 with published times; postseason ranges; doubleheaders as Game 1 / Game 2; ESPN live score |
 | Softball | #184 | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
 | Golf | #185 | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
-| Tennis | (this PR) | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
+| Tennis | #186 | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
+| Equestrian | (this PR) | Official page only; 3 finals (`W, 12-8`) with their stories, 11 upcoming with published times; rankings dropped; championships named |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -126,6 +127,12 @@ Production loaded the first tennis page that answered (women's): tournaments as 
 - links each team's own story, dated on the tournament's last day (Sep 27, eight days after the first). The recap matcher checks a multi-day event's own link against its last day, and refuses the other team's story (`/news/.../womens-tennis-...` for the men's event).
 
 The expanded views write highlights from each team's story. ESPN publishes no college tennis scoreboard, so there is no live score.
+
+## Equestrian (`4.47.9-baylor-equestrian`)
+
+Production already showed the three finals with their stories, but with rankings (`#10 UT Martin`) and dates alone, and also loaded the homepage. Equestrian now routes to the official page only, and the reader gives `Baylor vs UT Martin W, 9-6`, published times (`Oct 9, 11:00 AM`), the Oct 2 doubleheader against two opponents as two meets that both link the one doubleheader story, and the championships named after the event (`Big 12` is the `Big 12 Equestrian Championship`, Mar 26-27; `NCEA` the `NCEA National Championship`).
+
+ESPN publishes no equestrian scoreboard, so there is no live score.
 
 ## Limitations
 

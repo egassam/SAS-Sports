@@ -77,7 +77,7 @@ assert.deepEqual(group.results.map(e=>e.display_time),['Sep 26','Sep 19','Sep 12
 assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://baylorbears.com/',now),null);
 assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',footballUrl,now),null);
 // Sports not yet converted keep the shared parsers.
-assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Equestrian','https://baylorbears.com/sports/equestrian/schedule',now),null);
+assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Track & Field','https://baylorbears.com/sports/track-and-field/schedule',now),null);
 
 // Expanded view: each final matches only its own recap, and its highlights
 // are written from that article.
@@ -395,6 +395,22 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   }
   assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-tennis-2026-9-27-womens-ita.html.gz'),{...mens[0],recap_url:null,end_time:null,start_time:'2026-09-27T12:00:00.000Z'},womens[0].recap_url),false,"the men's event refuses the women's story");
   assert.equal(worker.baylorHandlers.matchesRecap(fixture('recap-tennis-2026-9-27-mens-ita.html.gz'),{...mens[0],recap_url:null,end_time:null,start_time:'2026-09-27T12:00:00.000Z'},mens[0].recap_url),true,'its own team\'s story on that day matches');
+}
+
+// Equestrian: the official page only (production also tried the homepage);
+// rankings dropped ("#10 UT Martin"); published times ("11 AM"); the Oct 2
+// doubleheader against two opponents stays two meets with the one story; the
+// championships named after the event ("Big 12" is the Big 12 Equestrian
+// Championship).
+{
+  const eqUrl='https://baylorbears.com/sports/equestrian/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Equestrian'),[eqUrl]);
+  const eq=worker.parseHtml(fixture('equestrian-schedule.html.gz'),school,'Equestrian',eqUrl,now);
+  assert.equal(eq.length,14);
+  assert.deepEqual(eq.filter(e=>e.status==='Final').map(e=>`${e.display_time} ${e.title} ${e.headline}`),['Sep 17 Baylor vs South Dakota State L, 8-12','Oct 2 Baylor at Delaware State W, 12-8','Oct 2 Baylor vs UT Martin W, 9-6']);
+  assert.equal(new Set(eq.filter(e=>e.status==='Final').map(e=>e.recap_url)).size,2,'both Oct 2 meets link the one doubleheader story');
+  assert.equal(eq[3].display_time,'Oct 9, 11:00 AM');
+  assert.deepEqual(eq.slice(-2).map(e=>[e.opponent,e.end_time]),[['Big 12 Equestrian Championship','2027-03-27T23:59:59Z'],['NCEA National Championship','2027-04-17T23:59:59Z']]);
 }
 
 console.log('Baylor module checks passed');
