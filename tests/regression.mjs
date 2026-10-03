@@ -10,7 +10,8 @@ const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs'
 const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'utf8');
 const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'utf8');
 const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule};
+const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -65,7 +66,7 @@ contains(worker,/const SCOREBOARD_USER_AGENT=`Mozilla\/5\.0 \(compatible; SAS-Sp
 contains(worker,/'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application\/json'/,'ESPN scoreboards must use the scoreboard user agent');
 contains(worker,/'User-Agent':`Mozilla\/5\.0 \(compatible; SAS-Sports\/\$\{VERSION\}; \+\$\{BOT_INFO_URL\}\)`/,'School-site downloads keep the full identity with the info link');
 contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worker must use the authoritative sponsored-sports manifest');
-contains(worker,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
+contains(baylorModule,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
 assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),3,'Feed, athlete, and highlight endpoints must all reject unsupported school-sport requests');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 contains(worker,/eventDay>today[\s\S]*effective='Upcoming';schoolScore=null;oppScore=null;resultLabel=null/,'Future games must discard leaked scores and remain upcoming');

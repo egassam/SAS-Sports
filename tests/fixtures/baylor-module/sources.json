@@ -1,0 +1,34 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/football/schedule",
+      "retrieved": "2026-10-03T16:55Z",
+      "note": "Official '2026 Football Schedule', unmodified, downloaded through the app's private source route (baylorbears.com refuses the sandbox). SIDEARM page data (__NUXT_DATA__) lists 13 games: L 16-17 Auburn (Sep 5, neutral), W 44-3 Prairie View A&M, W 36-19 Louisiana Tech, W 23-13 Colorado, each with its /news/ recap; 9 upcoming with local times (at Arizona State Oct 3 9:30 p.m., at UCF Oct 30 6:30 p.m., Big 12 Championship Dec 4 7 p.m.) or TBD."
+    }
+  },
+  "recaps": {
+    "recap-football-2026-9-5-auburn.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/5/football-recap-vs-auburn",
+      "retrieved": "2026-10-03T16:57Z"
+    },
+    "recap-football-2026-9-12-pvamu.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/12/football-recap-vs-pvamu",
+      "retrieved": "2026-10-03T16:57Z"
+    },
+    "recap-football-2026-9-19-la-tech.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/19/football-recap-vs-la-tech",
+      "retrieved": "2026-10-03T16:57Z"
+    },
+    "recap-football-2026-9-26-colorado.html.gz": {
+      "url": "https://baylorbears.com/news/2026/9/26/football-recap-vs-colorado",
+      "retrieved": "2026-10-03T16:57Z"
+    }
+  },
+  "scoreboards": {
+    "football-espn-2026-09-26.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=300&dates=20260926",
+      "retrieved": "2026-10-03T17:00Z",
+      "note": "65 FBS games, including Colorado at Baylor (23-13), Missouri State Bears at SMU and Central Arkansas Bears at Florida State."
+    }
+  }
+}

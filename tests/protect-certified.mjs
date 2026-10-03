@@ -13,8 +13,9 @@ const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs'
 const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'utf8');
 const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'utf8');
 const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.meta.url),'utf8');
+const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.url),'utf8');
 // School modules own their routes; unconverted schools keep them in the Worker.
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule};
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];

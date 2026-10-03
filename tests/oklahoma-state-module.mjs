@@ -3,6 +3,7 @@ import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/ariz
 import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
+import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
@@ -21,7 +22,7 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 // Unlisted URLs are refused; tests can never silently contact okstate.com.
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));return responses.has(String(url))?new Response(responses.get(String(url))):new Response('not found',{status:404});};
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {parseHtml,fetchLive,freshGroupedFeed,groupEvents,makeEvent,candidateUrls,rosterUrls,featuredAthletes,VERIFIED_TEAM_TAG_INSTAGRAM,schoolCombinedSports,teamLabelForSource};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official routes.

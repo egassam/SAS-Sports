@@ -10,9 +10,10 @@ import {arizonaStateSchool,createArizonaStateHandlers} from './schools/arizona-s
 import {byuSchool,createByuHandlers} from './schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
+import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.46.1-live-glow';
+const VERSION='4.47.0-baylor-football';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -83,6 +84,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...byuSchool.rosterUrls,
   ...ucfSchool.rosterUrls,
   ...arizonaSchool.rosterUrls,
+  ...baylorSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -121,6 +123,7 @@ function schoolCombinedSports(school){
   if(school?.id==='byu')return byuSchool.combinedSports;
   if(school?.id==='ucf')return ucfSchool.combinedSports;
   if(school?.id==='arizona')return arizonaSchool.combinedSports;
+  if(school?.id==='baylor')return baylorSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -144,6 +147,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...byuSchool.scheduleUrls,
   ...ucfSchool.scheduleUrls,
   ...arizonaSchool.scheduleUrls,
+  ...baylorSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -160,10 +164,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
-  'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
-  'baylor|Soccer':'https://baylorbears.com/sports/womens-soccer/schedule',
-  'baylor|Volleyball':'https://baylorbears.com/sports/womens-volleyball/schedule',
-  'baylor|Football':'https://baylorbears.com/sports/football/schedule',
   'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
   'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
   'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule',
@@ -221,6 +221,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const baylorHandlers=createBaylorHandlers({makeEvent});
 const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,scheduleYearForDate,absoluteUrl,decodeHtml,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1085,6 +1086,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   if(school.id==='byu'){const events=byuHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='ucf'){const events=ucfHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='arizona'){const events=arizonaHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
+  if(school.id==='baylor'){const events=baylorHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
