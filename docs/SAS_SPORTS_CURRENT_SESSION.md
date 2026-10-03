@@ -6,6 +6,8 @@ Last updated: October 3, 2026, America/Chicago (Baylor all 12 sports, PRs #178-#
 
 ## Current state
 
+**Summary count box removed, #192 (`4.47.12-no-summary-box`, user: "I don't think the user needs to see the box that shows how many live, upcoming, complete, etc. can we hide that?").** The four tiles (Live, Recent results, Upcoming, Sports), their styles and `updateCounts` are gone from `public/index.html`; tabs and sections unchanged; every school. Gate: suites, CI, preview in Chromium at 390px (no `.summary`, 4 tabs), XC 18/20 and 26/21, 36/36 K-State Football refreshes. Production verified the same way.
+
 **Baylor: all 12 sports converted; production `4.47.11-baylor-track-field` (October 3); NOT complete under `AGENTS.md` item 5a: two items wait on the user (below).** User: "Next school conversion" (Baylor is the next unconverted Big 12 school in catalog order). baylorbears.com refuses the sandbox; every page came through the private source route. The agent opened and merged PRs #178-#190 one sport at a time under `AGENTS.md` item 6; each passed the gate (both suites, CI green, the sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and was verified in production. Details: `docs/BAYLOR_MODULE.md`.
 
 | PR | Sport | Production |
@@ -1374,3 +1376,4 @@ User: "Next school conversion". The handoff was read from main (`01845a3`). Bayl
 
 **Open for the user:** the Texas A&M Invitational certification decision; the shared live-doubleheader fix. Baylor is not complete until both are settled.
 
+User (same session): "I don't think the user needs to see the box that shows how many live, upcoming, complete, etc. can we hide that?" → #192 (merged `c59d3fe` under `AGENTS.md` item 6 after the full gate; production `4.47.12-no-summary-box` verified in Chromium).
