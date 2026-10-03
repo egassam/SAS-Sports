@@ -17,7 +17,8 @@ Baylor was chosen on October 3, 2026 (user: "Next school conversion"; Baylor is 
 | Softball | #184 | Official page only; spring 2027 with published times; tournament `TBD` games named after the tournament; ESPN live score |
 | Golf | #185 | Both teams, one event per tournament: `3rd (845)`, `9th (844)`, `T7th (832)`, `15th (851)`, each with Baylor's story; the Charleston story found in the archive |
 | Tennis | #186 | Both teams, labeled; tournaments `Baylor at ITA All-American Championships` with each team's story; in-progress tournaments today's event; past tournaments only with Baylor's story; scrimmage left out |
-| Equestrian | (this PR) | Official page only; 3 finals (`W, 12-8`) with their stories, 11 upcoming with published times; rankings dropped; championships named |
+| Equestrian | #187 | Official page only; 3 finals (`W, 12-8`) with their stories, 11 upcoming with published times; rankings dropped; championships named |
+| Acrobatics & Tumbling | (this PR) | Empty schedule (the page still shows the 2026 season); route fixed to `acrobatics-tumbling`; in season `W, 277.415-256.590` with recaps |
 
 Production survey before the module (October 3, ~16:55 UTC, `4.46.1`):
 - **Football, Volleyball, Soccer:** finals and recaps right; every upcoming game shows its date only.
@@ -134,9 +135,18 @@ Production already showed the three finals with their stories, but with rankings
 
 ESPN publishes no equestrian scoreboard, so there is no live score.
 
+## Acrobatics & Tumbling (`4.47.10-baylor-acrobatics-tumbling`)
+
+Production showed the 2026 spring season (Feb 6 - Apr 25, 2026) as current results, with rankings in the names (`#3 Quinnipiac`). The inherited routes also tried `acrobatics-and-tumbling` (SIDEARM's empty "@season @sport" template) and the homepage; schedule and roster now route to `acrobatics-tumbling` only.
+- **Current-season filter (every Baylor page-data sport):** only the current academic year (July-June, Baylor time) is current. A page with no current events is a valid empty schedule (`baylorHandlers.isEmptySchedule`, the same school-gated `empty_schedule` hook as Arizona, BYU and UCF): the app shows its empty-schedule note, not a failed source. It fills in when Baylor publishes 2027, with no code change.
+- **In season** (the same page read as of Apr 26, 2026): 12 meets, `Baylor at Saint Leo W, 277.415-256.590` (scores have decimals), rankings dropped, each with its recap.
+
+ESPN publishes no acrobatics & tumbling scoreboard, so there is no live score.
+
 ## Limitations
 
 - The sports not listed in the status table are still on the shared parsers (see the survey above); each is converted in its own PR.
 - Athlete certification for Baylor has not been reviewed yet.
+- **Acrobatics & Tumbling 2027 schedule:** not yet published (the page shows "2026 Acrobatics & Tumbling Schedule", checked October 3). It fills in without a code change.
 - **Golf field size:** Baylor's schedule and stories publish none in a form that can be verified (full results are on Clippd, a JavaScript page), so headlines read `9th (844)`, not `9th of 16 (844)`.
 - **Live doubleheaders (shared code, every school).** On Apr 10, 2026, ESPN listed Baylor's softball doubleheader at Kansas as two games. The shared scoreboard parser gives both the same event id, so one is lost, and the shared reconciliation joins a scoreboard game to the first official game of that day. During a doubleheader the second game's live score would not show. Fixing it changes shared code for every school; it is left for the user to approve.
