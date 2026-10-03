@@ -8,7 +8,7 @@ export const baylorSchool={
   id:'baylor',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -18,7 +18,13 @@ export const baylorSchool={
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
     // ESPN's women's college soccer scoreboard (Baylor sponsors women's soccer
     // only); it lists every Division I match.
-    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    // Both teams, labeled to match the official men's and women's pages (the
+    // shared request asks for every Division I game).
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   // Stored expanded views (/live/highlights) are kept 30 days; raise this
   // when a change rewrites already-stored Baylor finals.
@@ -27,7 +33,9 @@ export const baylorSchool={
   scheduleUrls:{
     'baylor|Acrobatics & Tumbling':['https://baylorbears.com/sports/acrobatics-tumbling/schedule','https://baylorbears.com/sports/acrobatics-and-tumbling/schedule','https://baylorbears.com/'],
     'baylor|Baseball':['https://baylorbears.com/sports/baseball/schedule','https://baylorbears.com/'],
-    'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/schedule','https://baylorbears.com/sports/womens-basketball/schedule','https://baylorbears.com/sports/basketball/schedule','https://baylorbears.com/'],
+    // The two official pages only: the generic page and the homepage are not
+    // basketball schedules.
+    'baylor|Basketball':['https://baylorbears.com/sports/mens-basketball/schedule','https://baylorbears.com/sports/womens-basketball/schedule'],
     'baylor|Cross Country':'https://baylorbears.com/sports/cross-country/schedule',
     'baylor|Equestrian':['https://baylorbears.com/sports/equestrian/schedule','https://baylorbears.com/'],
     'baylor|Football':'https://baylorbears.com/sports/football/schedule',
@@ -59,9 +67,12 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // Baylor's calendar day (Waco, America/Chicago).
 const baylorToday=now=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
 // Rankings describe the week, not the opponent: "#21 Colorado", "No. 23 BYU",
-// "RV Georgia Tech".
+// "RV Georgia Tech". Exhibitions are written "Florida (EXH)" or "West Texas
+// A&M (Exhibition)"; they read "Florida (Exhibition)".
 export function baylorOpponent(title){
-  return String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\d+|No\.\s*\d+|RV)\s+/i,'');
+  const name=String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\d+|No\.\s*\d+|RV)\s+/i,'');
+  const exhibition=/\s*\((?:EXH|Exh|Exhib|Exhibition)\.?\)$/i;
+  return exhibition.test(name)?`${name.replace(exhibition,'').trim()} (Exhibition)`:name;
 }
 
 // baylorbears.com is a SIDEARM (Nuxt) site. Its schedule pages embed every
@@ -198,6 +209,10 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
           }catch{}
         }
       }
+      // Separate men's and women's pages can list the same opponent on the
+      // same day; the team keeps their event ids apart.
+      const squad=baylorSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(squad)event.id=`${event.id}-${squad}`;
       events.push(event);
     }
     return events;

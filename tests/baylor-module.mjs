@@ -258,4 +258,29 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(highlightStoreKey('ucf','Football','x'),'v1:ucf|Football|x');
 }
 
+// Basketball: the two official pages only (production also tried the generic
+// page and the homepage), both labeled; exhibitions written "(EXH)" read
+// "(Exhibition)"; published times ("1 pm", "2 p.m. CT").
+{
+  assert.deepEqual(worker.candidateUrls(school,'Basketball'),['https://baylorbears.com/sports/mens-basketball/schedule','https://baylorbears.com/sports/womens-basketball/schedule']);
+  const mensUrl='https://baylorbears.com/sports/mens-basketball/schedule',womensUrl='https://baylorbears.com/sports/womens-basketball/schedule';
+  const mens=worker.labelTeamEvents(worker.parseHtml(fixture('basketball-mens-schedule.html.gz'),school,'Basketball',mensUrl,now),school,'Basketball',mensUrl);
+  const womens=worker.labelTeamEvents(worker.parseHtml(fixture('basketball-womens-schedule.html.gz'),school,'Basketball',womensUrl,now),school,'Basketball',womensUrl);
+  assert.deepEqual([mens.length,womens.length],[36,33]);
+  const all=[...mens,...womens];
+  assert.equal(new Set(all.map(e=>e.id)).size,69,'both teams play Jan 2; their ids stay apart');
+  assert.deepEqual(mens.slice(0,3).map(e=>`${e.title} ${e.display_time}`),["Men's · Baylor vs Florida (Exhibition) Oct 18, 1:00 PM","Men's · Baylor at Illinois (Exhibition) Oct 23","Men's · Baylor vs Northwestern State Nov 2, 8:30 PM"]);
+  assert.deepEqual(womens.slice(0,2).map(e=>`${e.title} ${e.display_time}`),["Women's · Baylor vs West Texas A&M (Exhibition) Oct 25, 2:00 PM","Women's · Baylor vs Fairleigh Dickinson Nov 2, 6:00 PM"]);
+  // "4:30 or 7 p.m. CT" is not a published time: the date alone.
+  assert.equal(womens.find(e=>e.opponent==='Seton Hall or South Florida').display_time,'Nov 28');
+  assert.deepEqual([mens.at(-1).opponent,mens.at(-1).end_time],['Big 12 Championship','2027-03-13T23:59:59Z']);
+  // Live: ESPN's men's and women's scoreboards, labeled. Feb 21, 2026: Arizona
+  // State at Baylor (men) and Arizona at Baylor (women), among eight other
+  // "Bears" games each.
+  const providers=worker.liveScoreboardProviders(school,'Basketball');
+  assert.deepEqual(providers.map(p=>[p.path,p.team_label]),[['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]]);
+  const scored=providers.flatMap((provider,i)=>worker.parseScoreboardPayload(JSON.parse(fixture(`basketball-${i?'womens':'mens'}-espn-2026-02-21.json.gz`)),school,'Basketball',provider,`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?groups=50&limit=300&dates=20260221`,new Date('2026-02-22T12:00:00Z')));
+  assert.deepEqual(scored.map(e=>[e.title,e.headline]),[["Men's · Baylor vs Arizona St","W, 73-68"],["Women's · Baylor vs Arizona","W, 74-60"]]);
+}
+
 console.log('Baylor module checks passed');

@@ -19,6 +19,16 @@
       "url": "https://baylorbears.com/sports/cross-country/schedule",
       "retrieved": "2026-10-03T17:08Z",
       "note": "Official 2026 cross country schedule, unmodified, through the private source route. 8 meets; Aggie Opener prescore 'Women 3rd, Men 4th'; recaps as media.gamefiles titled 'Recap' (Aggie Opener, Southern Showcase); no recap for the Texas A&M Invitational."
+    },
+    "basketball-mens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/mens-basketball/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "36 games; exhibitions '(EXH)'; times '1 pm', '8:30 pm' or TBD; Big 12 Championship Mar 9-13."
+    },
+    "basketball-womens-schedule.html.gz": {
+      "url": "https://baylorbears.com/sports/womens-basketball/schedule",
+      "retrieved": "2026-10-03T17:08Z",
+      "note": "33 games; '(Exhibition)'; times '2 p.m. CT', '4:30 or 7 p.m. CT', TBA; Big 12 Tournament Mar 3-7."
     }
   },
   "recaps": {
@@ -82,6 +92,16 @@
       "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002",
       "retrieved": "2026-10-03T17:20Z",
       "note": "31 matches, including Kansas at Baylor (3-1)."
+    },
+    "basketball-mens-espn-2026-02-21.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard?groups=50&limit=300&dates=20260221",
+      "retrieved": "2026-10-03T17:58Z",
+      "note": "148 games; Arizona State at Baylor 68-73; eight 'Bears' games."
+    },
+    "basketball-womens-espn-2026-02-21.json.gz": {
+      "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/womens-college-basketball/scoreboard?groups=50&limit=300&dates=20260221",
+      "retrieved": "2026-10-03T17:58Z",
+      "note": "130 games; Arizona at Baylor 60-74."
     }
   },
   "tfrrs": {
