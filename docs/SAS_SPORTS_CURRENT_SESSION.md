@@ -1,10 +1,17 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 2, 2026, America/Chicago (Arizona: all 13 sports converted and certified, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; global source cache planned and paused; scheduled feed refresh tried and reverted: PRs #87–#90; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 3, 2026, America/Chicago (live testing: football possession on live cards, PR #175; traveling glow on live cards, PR #176; production `4.46.1-live-glow`. Earlier: Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Live testing, October 3 (production `4.46.1-live-glow`).** User: "Live testing", then "Keep watching and fix anything that breaks". A poller compared production feeds with ESPN every 90 s for today's games in converted schools.
+- **First real football live cards observed:** UCF at Houston went live at 16:05 UTC (`official_schedule+live_scoreboard`, one card), and UCF's touchdown (7-0) appeared within one poll. KU vs Middle Tennessee went live at 16:11 (KU's published time is date-only; the card joined anyway). No score mismatch, missing live card or feed error was seen through 16:47 UTC, when the session ended at the end of the 1st quarter (KU 3-0, UCF 7-0). The finals were not observed.
+- **Who has the ball, #175 (`4.46.0-live-possession`, user: "Can we add a graphic that shows who had the ball?").** `parseScoreboardPayload` reads ESPN's `competition.situation.possession` (team id), `downDistanceText` and `isRedZone` for live games; `reconcileScoreboardEvents` carries `possession` (`school`/`opponent`), `down_distance` and `red_zone` onto the official card. `liveCard` draws a football beside that team and a strip under the board (`KU BALL · 3rd & 4 at MTSU 15 · RED ZONE`). Nothing is drawn when ESPN names no team (after a score, at breaks). Shared: every school's live football. Test: `tests/live-possession.mjs` on the real payload saved during the games (`tests/fixtures/live/football-espn-2026-10-03-live.json.gz`); mutations of either file fail it. Gate: suites, CI, preview checked against ESPN on both live games, XC 18/20 and 26/21, 36/36 refreshes for KU and UCF Football. Production verified on both live cards.
+- **Traveling glow, #176 (`4.46.1-live-glow`, user: "Can we make the box around the live score have a glow that travels around the box?").** `.live-card-board::before` (3px conic-gradient ring masked to the edge) and `::after` (blurred 14px band) turn once every 3.2 s via `@property --sas-glow-angle`; the card sets `--sas-glow-delay` from the clock so the 15 s redraw does not restart it; reduced motion stops it. Gate: suites, CI, preview on KU and UCF live cards, XC 18/20 and 26/21, 36/36 KU Football refreshes. Production verified; user: "It passes my visual".
+- **"Add the glow to all sports live cards":** no change needed: every Live-section event goes through `card(e,'live')` → `liveCard`, so all sports share the board and the glow. Not yet seen on a non-football live game in production (first chance: K-State vs Utah volleyball, 23:30 UTC Oct 3).
+- **Testing notes:** Playwright's Chromium in the sandbox rejects the proxy's certificate; launch with `channel:'chromium'` and `--ignore-certificate-errors-spki-list=<sha256 of /root/.ccr/agent-proxy-ca.crt public key>` (trusts only the proxy CA). Node fetch needs `NODE_USE_ENV_PROXY=1`.
 
 **Arizona: all 13 sports converted, certified 13/13 in production; production is `4.43.13-arizona-tennis-stories` (October 2).** User: "Let's do Arizona next. All sports and live." The agent opened and merged PRs #148-#162 one sport at a time under `AGENTS.md` item 6; every page used for fixtures came through the private source route. Each passed the gate (both suites, CI green, sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and was verified in production. Details, evidence and limitations: `docs/ARIZONA_MODULE.md`.
 
@@ -387,6 +394,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Live cards (from the Oct 3 live test):** watch a football final arrive (`W, 31-20` wording) and a non-football live game with the glow (volleyball/soccer). Possession is football only; ESPN's basketball scoreboard carries no possession.
 - **Arizona is complete except for source-blocked items** (see `docs/ARIZONA_MODULE.md`, Limitations): when arizonawildcats.com publishes the 2027 baseball roster, add Baseball to Arizona's `athlete_sports` (verify 3 athletes first); Gymnastics and Track & Field fill in without code changes when 2026-27 is published. Soccer and volleyball live cards were observed working on Oct 3 UTC; watch the first football (Oct 3) and basketball (Oct 13) live games. Remaining unconverted Big 12 schools: Baylor, Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia.
 - **Live scores (ESPN), open checks:** (#164 and #166 fixed the missing games, wrong-team matches and bare-score finals for every school; watch the first real games.)
   - Observed: the K-State vs BYU final reached both cards (K-State `L, 1-3`, BYU `W, 3-1`) after #121.
@@ -1320,3 +1328,12 @@ User: "Let's do Arizona next. All sports and live." The handoff was read from ma
 **Live checks (Oct 3 UTC):** Arizona soccer and volleyball observed live in production with correct ESPN scores (see Current state).
 
 User: "Yes. Fix all" (the two shared live-score fixes). #164 merged as `a85b2cd` after the full gate; production `4.44.0` verified.
+
+### October 3, 2026 — Live testing
+
+User: "Live testing". The handoff was read from main (`a8f2357`). The agent listed today's games in converted schools (KU and UCF football 16:00 UTC; BYU football and UCF men's soccer 23:00; K-State vs Utah volleyball 23:30; ASU 02:30; Arizona 03:00) and polled production against ESPN. User: "Keep watching and fix anything that breaks". UCF and KU football went live correctly; nothing broke.
+
+User: "Can we add a graphic that shows who had the ball?" → #175 (merged `d2bba93` by the agent under `AGENTS.md` item 6 after the full gate; production verified). User: "Looks good. Can we make the box around the live score have a glow that travels around the box?" → #176 (merged `98ba48e`; production verified). User: "It passes my visual". User: "Add the glow to all sports live cards" → already the case (one live card for every sport); no change. User: "End session". This record is a docs-only PR.
+
+**Tests run:** `npm run test:release` and `npm test` on both final commits; `tests/live-possession.mjs` mutation checks; Chromium screenshots at 390px (demo, preview, production).
+
