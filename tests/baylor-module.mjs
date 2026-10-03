@@ -1,0 +1,117 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
+import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
+import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
+import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
+import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
+import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
+import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
+import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults,parseArizonaGolfRecap} from '../src/schools/arizona.mjs';
+import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
+import {rosterSocialInstagrams} from '../src/roster-socials.js';
+import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
+const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
+const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
+const school=schools.find(s=>s.id==='baylor');
+const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
+// Official recaps served from fixtures; any other request fails.
+const recapFixtures=new Map(),requests=[];
+const fetch=async url=>{
+  requests.push(String(url));
+  const body=recapFixtures.get(String(url));
+  if(body==null)throw Error(`Unexpected network request: ${url}`);
+  return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
+};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,baylorHandlers,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+
+
+// Module ownership: every sponsored sport has explicit baylorbears.com routes,
+// exactly the candidates production used before the module (route parity,
+// 219/219 catalog routes identical).
+const sports=sponsoredSports.baylor;
+assert.equal(sports.length,12);
+for(const [name,map] of [['schedule',baylorSchool.scheduleUrls],['roster',baylorSchool.rosterUrls]]){
+  assert.deepEqual(Object.keys(map).map(key=>key.split('|')[1]).sort(),[...sports].sort(),`every sponsored sport needs a ${name} route`);
+  for(const [key,value] of Object.entries(map)){
+    assert.ok(key.startsWith('baylor|'),'module keys must carry the exact school identity');
+    for(const url of [].concat(value))assert.equal(new URL(url).hostname,'baylorbears.com',`${key} must stay on baylorbears.com`);
+  }
+}
+for(const sport of sports){
+  assert.deepEqual(worker.candidateUrls(school,sport),[].concat(baylorSchool.scheduleUrls[`baylor|${sport}`]),`${sport} schedule must come from the module`);
+  assert.deepEqual(worker.rosterUrls(school,sport),[].concat(baylorSchool.rosterUrls[`baylor|${sport}`]),`${sport} roster must come from the module`);
+}
+assert.ok(!/'baylor\|/.test(read('../src/index.js')),'Baylor configuration must live in its module, not shared code');
+
+// Football: baylorbears.com (SIDEARM) embeds every game as page data with its
+// local start ("9:30 p.m."), home/away, result and recap. The shared parsers
+// read only the rendered cards, which omit the start time.
+const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/baylor-module/'+name,import.meta.url))).toString('utf8');
+const footballUrl='https://baylorbears.com/sports/football/schedule',now=new Date('2026-10-03T17:00:00Z');
+const football=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now);
+assert.equal(football.length,13,'one event per official game');
+assert.equal(new Set(football.map(e=>e.id)).size,13,'no duplicate events');
+const finals=football.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+assert.deepEqual(finals.map(e=>[e.display_time,e.title,e.headline,e.school_score,e.opponent_score]),[
+  ['Sep 5','Baylor vs Auburn','L, 16-17','16','17'],['Sep 12','Baylor vs Prairie View A&M','W, 44-3','44','3'],
+  ['Sep 19','Baylor vs Louisiana Tech','W, 36-19','36','19'],['Sep 26','Baylor vs Colorado','W, 23-13','23','13']
+],'finals read as K-State\'s: W/L and the date only');
+assert.ok(finals.every(e=>e.results.length===1&&e.results[0].value===e.headline),'every final has one Result row');
+assert.deepEqual(finals.map(e=>e.recap_url),['2026/9/5/football-recap-vs-auburn','2026/9/12/football-recap-vs-pvamu','2026/9/19/football-recap-vs-la-tech','2026/9/26/football-recap-vs-colorado'].map(path=>`https://baylorbears.com/news/${path}`),'every final links its own official recap (not the game book PDF)');
+const upcoming=football.filter(e=>e.status!=='Final');
+assert.deepEqual(upcoming.map(e=>`${e.title} ${e.display_time}`),[
+  'Baylor at Arizona State Oct 3, 9:30 PM','Baylor vs TCU Oct 17','Baylor at Kansas Oct 24','Baylor at UCF Oct 30, 6:30 PM','Baylor vs Iowa State Nov 7',
+  'Baylor at BYU Nov 14','Baylor vs Texas Tech Nov 21','Baylor at Houston Nov 28','Baylor vs Big 12 Championship Dec 4, 7:00 PM'
+],'published Baylor (Central) start times, "9:30 p.m." and "7 p.m."; "TBD" shows the date only');
+assert.equal(upcoming[0].start_time,'2026-10-03T21:30:00.000Z','start times are Baylor wall clock');
+assert.equal(upcoming[0].status,'Today');
+assert.ok(upcoming.every(e=>!e.recap_url&&!e.headline&&!e.school_score),'no upcoming game inherits a result or recap');
+const [group]=worker.groupEvents(football,now);
+assert.deepEqual([group.results.length,group.upcoming.length],[4,9]);
+assert.deepEqual(group.results.map(e=>e.display_time),['Sep 26','Sep 19','Sep 12','Sep 5'],'results newest first, as K-State');
+// Pages from any other host or path are left to the shared parsers; other
+// schools never reach the Baylor reader.
+assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://baylorbears.com/',now),null);
+assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',footballUrl,now),null);
+// Sports not yet converted keep the shared parsers.
+assert.equal(worker.baylorHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Equestrian','https://baylorbears.com/sports/equestrian/schedule',now),null);
+
+// Expanded view: each final matches only its own recap, and its highlights
+// are written from that article.
+const recaps=['recap-football-2026-9-5-auburn.html.gz','recap-football-2026-9-12-pvamu.html.gz','recap-football-2026-9-19-la-tech.html.gz','recap-football-2026-9-26-colorado.html.gz'].map(fixture);
+finals.forEach((event,i)=>recapFixtures.set(event.recap_url,recaps[i]));
+finals.forEach((event,i)=>recaps.forEach((raw,j)=>assert.equal(worker.recapMatchesEvent(raw,event,finals[j].recap_url),i===j,`${event.opponent} must match only its own recap`)));
+for(const [i,expected] of [[0,'Auburn'],[1,'Prairie View'],[2,'Louisiana Tech'],[3,'Colorado']]){
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Baylor scored on its first drive of the game against the visitors.','The Bears defense forced two turnovers in the first half of play.','Baylor added two more touchdowns in the third quarter to pull away.','The Bears closed out the game with a long drive in the fourth quarter.'])};}}};
+  const events=worker.parseHtml(fixture('football-schedule.html.gz'),school,'Football',footballUrl,now);
+  const target=events.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time))[i];
+  await worker.attachOfficialHighlights(events,fixture('football-schedule.html.gz'),school,'Football',footballUrl,now,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated',`${expected}: highlights come from the official recap`);
+  assert.equal(target.recap_url,finals[i].recap_url,`${expected}: the game's own recap is kept`);
+  assert.equal(target.highlights.length,4);
+  assert.equal(prompts.length,1);
+  assert.ok(prompts[0].includes(expected),`${expected}: the AI is given that game's article`);
+}
+assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game recaps are downloaded');
+
+// Live score: ESPN's college football scoreboard (the shared FBS-group
+// request). The Sep 26 payload also holds Missouri State and Central Arkansas
+// (both "Bears"); only Colorado at Baylor is Baylor's.
+{
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Football').map(p=>p.path),['football/college-football']);
+  const payload=JSON.parse(fixture('football-espn-2026-09-26.json.gz'));
+  const names=payload.events.map(e=>e.name);
+  assert.ok(names.includes('Missouri State Bears at SMU Mustangs')&&names.includes('Central Arkansas Bears at Florida State Seminoles'));
+  const [provider]=worker.liveScoreboardProviders(school,'Football'),scoreUrl='https://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=80&limit=300&dates=20260926';
+  const scored=worker.parseScoreboardPayload(payload,school,'Football',provider,scoreUrl,new Date('2026-09-27T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.school_score,e.opponent_score,e.headline]),[['Baylor vs Colorado','Final','23','13','W, 23-13']]);
+  const reconciled=worker.reconcileScoreboardEvents(football,scored);
+  assert.equal(reconciled.length,football.length,'the scoreboard joins the official game; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Baylor vs Colorado','W, 23-13']]);
+}
+
+console.log('Baylor module checks passed');
