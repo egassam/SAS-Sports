@@ -2,7 +2,7 @@
 
 `src/schools/colorado.mjs` owns Colorado's cubuffs.com schedule and roster routes, its program combinations, its verified Instagram tags and its schedule reader. The Worker imports its configuration. The event/result contract, caching, display and generic parsing stay shared.
 
-Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are converted one per PR, each merged under `AGENTS.md` item 6 after the full gate and verified in production. cubuffs.com returns HTTP 403 to the development sandbox, so every official page used as a fixture came through the private source route (`scripts/fetch-official.mjs`), unmodified.
+Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). All 9 sports were converted one per PR (#214-#222), athletes certified in #223, each merged under `AGENTS.md` item 6 after the full gate and verified in production. **Colorado is complete (`AGENTS.md` item 5a); production `4.52.10-colorado-athletes`.** cubuffs.com returns HTTP 403 to the development sandbox, so every official page used as a fixture came through the private source route (`scripts/fetch-official.mjs`), unmodified.
 
 ## Status
 
@@ -144,6 +144,17 @@ ESPN publishes no track scoreboard, so there is no live score (K-State has none)
 
 **Skiing.** The official ski roster publishes personal Instagram links for two skiers only (Justin Bigatel, Cathinka Lunder). With two or more roster links the Worker takes its fast path, which returns only linked athletes. For Colorado's `profileFillSports` (Skiing only), the third slot now takes an official roster profile with its portrait, as the slower path already does for every school. Golf and Skiing are declared `athlete_profile_fallback_sports`.
 
+## Production certification
+
+`node tests/validate-schools.mjs colorado --deep` with all 9 sports against production `4.52.10` (October 4, ~06:20 UTC): **9/9**. Highlights Football 5/5, Volleyball 13/13, Soccer 13/13, Cross Country 2/2, Golf 6/6, Tennis 2/2; Basketball and Skiing have no finals yet (0/0); Track & Field is a verified empty schedule. Athletes 3 for every sport.
+
+Every PR's gate: both suites on the final commit, CI green, the sport in K-State's format on the branch preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes with HTTP 200; then production checked the same way. Two preview passes (#220, #221) had one K-State XC read without the two meets right after a deploy; the immediate full reruns were clean (18/20, 26/21, 36/36).
+
 ## Limitations
 
-- None for Football.
+Not fixable from the official sources today:
+- **Track & Field 2026-27 schedule unpublished.** cubuffs.com's page title is "2025-26 Track and Field Schedule" and every meet is before July 1, 2026 (fixture `track-and-field-schedule.html.gz`). The app shows the empty-schedule note; the season fills in without a code change when the page is updated.
+- **Skiing and Basketball have no finals yet** (2027 season from January; basketball from Oct 18). Both read results in K-State's format when published (skiing tested on the 2026 page).
+- **Golf team totals.** The schedule publishes only place and field (`13th/20`); a total appears only in story prose, so none is claimed (as for Cincinnati).
+- **Live scores** (football, volleyball, soccer, basketball) are tested on real ESPN payloads; no Colorado game has been observed live under the module yet. The first chances: volleyball at Baylor (Oct 4, 1:00 PM MT), soccer vs Baylor (Oct 8).
+- **Golf and Skiing athletes** use official roster profiles where the rosters publish no personal Instagram link (golf: none; skiing: two).
