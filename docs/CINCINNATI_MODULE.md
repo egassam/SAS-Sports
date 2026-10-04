@@ -12,8 +12,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Volleyball | #203 | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
 | Soccer | #204 | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
 | Cross Country | #205 | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
-| Basketball | (this PR) | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
-| Baseball | | shared parsers |
+| Basketball | #206 | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
+| Baseball | (this PR) | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
 | Golf | | shared parsers |
 | Lacrosse | | shared parsers |
 | Swimming & Diving | | shared parsers |
@@ -93,6 +93,16 @@ Production loaded the men's and women's pages plus the generic `/sports/basketba
 **Tournament headings.** Cards sit in titled wrappers (`Exhibition`, `Cancun Challenge`, `Crosstown Shootout`); a card's heading is the titled wrapper that encloses it. The women's first game sits under `Exhibition` and reads `Georgetown College (Exhibition)`, as K-State labels exhibitions; soccer's `(EXH)` reads the same way.
 
 **Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Cincinnati at Kansas and women's UCF at Cincinnati; Binghamton (also "Bearcats") plays in both payloads and is never taken for Cincinnati.
+
+## Baseball (`4.50.5-cincinnati-baseball`)
+
+The page publishes the 2027 spring season only (57 games from Feb 19). Production also loaded the homepage and showed dates alone. Baseball now routes to the official page only; the card reader gives each game once (weekend series games on consecutive days stay apart), published Eastern times (`Feb 26, 6:00 PM` vs Tennessee; `Mar 19, 8:00 PM` at Utah) or the date alone for `TBA`, and the Big 12 Tournament from May 25 to May 29. The 2027 page has no same-day doubleheaders.
+
+**Multi-day events (every Cincinnati game sport).** The two-day rule for past games without a result counts from an event's last day, so the Big 12 Tournament stays listed while it is played.
+
+**Empty schedules (every Cincinnati sport).** When nothing on a page with cards is current, the reader returns a valid empty schedule (`cincinnatiHandlers.isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU, UCF, Arizona and Baylor): the app shows its empty-schedule note. Before, the reader returned nothing and the shared parsers read the page again, making events out of its schema data.
+
+**Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`). Tested on Apr 10, 2026: Baylor at Cincinnati.
 
 ## Limitations
 

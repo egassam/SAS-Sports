@@ -285,4 +285,32 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.ok(payload.events.some(e=>/Binghamton Bearcats/.test(e.name)));
 }
 
+// Baseball: the official page only (production also loaded the homepage).
+// The page publishes the 2027 spring season.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Baseball'),['https://gobearcats.com/sports/baseball/schedule']);
+  const bsUrl='https://gobearcats.com/sports/baseball/schedule';
+  const bs=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',bsUrl,new Date('2026-10-04T02:00:00Z'));
+  assert.equal(bs.length,57,'one event per official game');
+  assert.equal(new Set(bs.map(e=>e.id)).size,57,'series games on consecutive days stay apart');
+  assert.ok(bs.every(e=>e.status==='Upcoming'&&!e.headline&&!e.recap_url));
+  assert.deepEqual(bs.filter(e=>/Utah|Tennessee/.test(e.opponent)).map(e=>`${e.title} ${e.display_time}`),['Cincinnati vs Tennessee Feb 26, 6:00 PM','Cincinnati at Utah Mar 19, 8:00 PM','Cincinnati at Utah Mar 20, 8:00 PM','Cincinnati at Utah Mar 21, 2:00 PM'],'published Eastern times');
+  assert.equal(bs[0].display_time,'Feb 19','"TBA" shows the date only');
+  // The Big 12 Tournament runs May 25-29 and stays listed while it is played.
+  const tournament=bs.find(e=>e.opponent==='Big 12 Tournament');
+  assert.equal(tournament.end_time,'2027-05-29T23:59:59Z');
+  assert.deepEqual(worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',bsUrl,new Date('2027-05-28T16:00:00Z')).map(e=>e.opponent),['Big 12 Tournament'],'a tournament in progress stays');
+  // After it, nothing on the page is current: a valid empty schedule, never
+  // handed to the shared parsers.
+  const after=worker.parseHtml(fixture('baseball-schedule.html.gz'),school,'Baseball',bsUrl,new Date('2027-06-15T16:00:00Z'));
+  assert.deepEqual(after,[]);
+  assert.ok(worker.cincinnatiHandlers.isEmptySchedule(worker.cincinnatiHandlers.parseSchedule(fixture('baseball-schedule.html.gz'),school,'Baseball',bsUrl,new Date('2027-06-15T16:00:00Z'))));
+  // Live score: ESPN's college baseball scoreboard. Apr 10, 2026: Baylor at
+  // Cincinnati.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Baseball').map(p=>p.path),['baseball/college-baseball']);
+  const [provider]=worker.liveScoreboardProviders(school,'Baseball');
+  const scored=worker.parseScoreboardPayload(JSON.parse(fixture('baseball-espn-2026-04-10.json.gz')),school,'Baseball',provider,'https://site.api.espn.com/apis/site/v2/sports/baseball/college-baseball/scoreboard?limit=1000&dates=20260410',new Date('2026-04-11T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.opponent,e.status,/^[WL], \d+-\d+$/.test(e.headline)]),[['Baylor','Final',true]]);
+}
+
 console.log('Cincinnati module checks passed');
