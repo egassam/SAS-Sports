@@ -54,7 +54,7 @@ The page data has 34 entries: the Black and Gold scrimmage, the other teams' mat
 
 **Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Oct 2 payload (120 matches) holds Colorado at TCU (`L, 1-3`), which joins the official card. BYU's test, which used Colorado as its "no volleyball scoreboard" school, now uses Houston.
 
-## Soccer (`4.52.2-colorado-soccer`)
+## Soccer (`4.52.3-colorado-soccer`)
 
 Colorado sponsors women's soccer only. Production's games and results were right; it showed the Aug 5 exhibition as a plain `Colorado vs Utah` final. The module reads 20 games, one each: 13 finals in K-State's wording, date only (`T, 0-0` at Western Michigan), 12 with the recap the schedule links (the Aug 12 night game's recap is dated Aug 13) and the Western Michigan tie with its story from the archive (below); 7 upcoming with published times.
 
