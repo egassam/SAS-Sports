@@ -377,4 +377,21 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(spring.filter(e=>/Louisville|Colorado|Florida/.test(e.opponent)).map(e=>`${e.title} ${e.headline}`),['Cincinnati vs Louisville L, 10-11','Cincinnati at Colorado L, 5-10','Cincinnati vs Florida L, 5-16'],'rankings dropped; overtime results read as K-State\'s');
 }
 
+// Swimming & Diving: one official page for both teams (production tried
+// seven men's/women's/generic routes and the homepage).
+{
+  assert.deepEqual(worker.candidateUrls(school,'Swimming & Diving'),['https://gobearcats.com/sports/swimming-and-diving/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Swimming & Diving'),['https://gobearcats.com/sports/swimming-and-diving/roster']);
+  assert.ok(!worker.schoolCombinedSports(school).has('Swimming & Diving'),'one page lists both teams');
+  const sw=worker.parseHtml(fixture('swimming-diving-schedule.html.gz'),school,'Swimming & Diving','https://gobearcats.com/sports/swimming-and-diving/schedule',new Date('2026-10-04T02:00:00Z'));
+  assert.deepEqual(sw.map(e=>`${e.title} ${e.display_time}${e.end_time?' - '+e.end_time.slice(5,10):''}`),[
+    'Cincinnati vs Northern Ky. Oct 10, 9:00 AM','Cincinnati at Miami (OH) Oct 16, 2:00 PM','Cincinnati at West Virginia and Delaware Oct 23, 5:00 PM - 10-24',
+    'Cincinnati at Ohio State Invitational Nov 17 - 11-20','Cincinnati at CSCAA Open Water Championships Dec 12, 8:00 AM','Cincinnati at Big 12 East Dual Meet Championships Jan 16 - 01-17',
+    'Cincinnati vs Xavier Jan 22, 12:00 PM','Cincinnati vs Kentucky Jan 29, 11:30 AM','Cincinnati at Louisville Jan 30, 12:00 PM',
+    'Cincinnati at Big 12 Championships Feb 23 - 02-27','Cincinnati at NCAA Zone Diving Championships Mar 8 - 03-10',"Cincinnati at Women's NCAA Championships Mar 17 - 03-20","Cincinnati at Men's NCAA Championships Mar 24 - 03-27"
+  ],'dual meets with their published times; invitationals named after their heading ("at Ohio St." is the Ohio State Invitational), ending on their last day');
+  assert.ok(sw.every(e=>e.status==='Upcoming'&&!e.headline));
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Swimming & Diving'),[]);
+}
+
 console.log('Cincinnati module checks passed');
