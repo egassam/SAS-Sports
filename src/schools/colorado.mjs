@@ -8,7 +8,7 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Skiing']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -40,7 +40,8 @@ export const coloradoSchool={
     // Both teams (production showed the women's page only, the first that
     // loaded); /sports/golf/ and the homepage are not golf schedules.
     'colorado|Golf':['https://cubuffs.com/sports/womens-golf/schedule','https://cubuffs.com/sports/mens-golf/schedule'],
-    'colorado|Skiing':['https://cubuffs.com/sports/skiing/schedule','https://cubuffs.com/'],
+    // The official page only: the homepage is not a ski schedule.
+    'colorado|Skiing':'https://cubuffs.com/sports/skiing/schedule',
     'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/schedule',
     'colorado|Tennis':['https://cubuffs.com/sports/womens-tennis/schedule','https://cubuffs.com/sports/mens-tennis/schedule','https://cubuffs.com/sports/tennis/schedule','https://cubuffs.com/'],
     'colorado|Track & Field':['https://cubuffs.com/sports/track-and-field/schedule','https://cubuffs.com/sports/track-field/schedule','https://cubuffs.com/'],
@@ -160,6 +161,41 @@ function mergeRounds(games){
   });
 }
 
+// Skiing publishes one entry per race day ("Slalom at Loveland Ski Area")
+// with its carnival beside it. A carnival's alpine and nordic races can be
+// weeks apart (the 2026 Denver Invitational: alpine Jan 12-14, nordic Feb
+// 7-8), and the place published with each day is the team's standing after
+// it: the last day's is the carnival's final place ("1st/9" on Feb 8, "Baangman's
+// Win Propels Buffs to DU Invitational Title"). Each run of race days (at
+// most seven days apart) is one event; a carnival in two runs names them by
+// discipline ("Denver Invitational (Alpine)", "(Nordic)"), and only its last
+// run carries the final place.
+const ALPINE=/\bslalom\b/i;
+function mergeSkiRaces(games){
+  const byName=new Map();
+  for(const game of games){
+    const name=String(game.tournament?.title||'').trim()||coloradoOpponent(game.opponent?.title);
+    if(!byName.has(name))byName.set(name,[]);
+    byName.get(name).push(game);
+  }
+  const events=[];
+  for(const [name,races] of byName){
+    races.sort((a,b)=>a.date.localeCompare(b.date));
+    const runs=[];
+    for(const race of races){
+      const run=runs.at(-1),gap=run?(Date.parse(race.date.slice(0,10))-Date.parse(run.at(-1).date.slice(0,10)))/86400000:Infinity;
+      if(run&&gap<=7)run.push(race);else runs.push([race]);
+    }
+    runs.forEach((run,i)=>{
+      const first=run[0],last=run.at(-1);
+      const discipline=run.every(race=>ALPINE.test(race.opponent?.title))?'Alpine':run.every(race=>!ALPINE.test(race.opponent?.title))?'Nordic':null;
+      events.push({...first,opponent:{...first.opponent,title:runs.length>1&&discipline?`${name} (${discipline})`:name},date:first.date,enddate:run.length>1?last.date:null,
+        result:[...run].reverse().find(race=>race.result)?.result||null,ski_final_run:i===runs.length-1});
+    });
+  }
+  return events.sort((a,b)=>a.date.localeCompare(b.date));
+}
+
 // cubuffs.com is a SIDEARM (Nuxt) site. Its schedule pages embed every game
 // as page data: the local start ("2026-11-13T20:15:00", "8:15 PM"),
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
@@ -172,7 +208,10 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
     const pageGames=sidearmScheduleGames(raw);
     if(!pageGames.length)return null;
-    const games=sport==='Golf'?mergeRounds(pageGames):pageGames;
+    // A "next event" widget repeats a game without its details (type
+    // "upcoming").
+    const listed=pageGames.filter(game=>game.type!=='upcoming');
+    const games=sport==='Golf'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):listed;
     const today=coloradoToday(now),events=[];
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
@@ -217,7 +256,15 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
         event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
         event.start_time=`${today}T12:00:00.000Z`;
       }
-      if(sport==='Golf'&&final){
+      if(sport==='Skiing'&&final){
+        // The final place only on a carnival's last run; an earlier run shows
+        // the published standing after it, labeled as such. "NTS" (a
+        // qualifier without team scoring) has no place.
+        const placing=sidearmPlacing(result.prescore_info)||sidearmPlacing(result.postscore_info);
+        if(placing&&game.ski_final_run){event.headline=placing;event.results=[{label:'Result',value:placing}];}
+        else{event.headline='Completed';event.results=placing?[{label:'Team standing after these races',value:placing}]:[{label:'Result',value:'Completed'}];}
+        event.result_count=event.results.length;
+      }else if(sport==='Golf'&&final){
         // The last round's place and field: "13th/20", "T-1st/18" -> "13th of
         // 20". The schedule publishes no team total, so none is claimed.
         const placing=sidearmPlacing(result.prescore_info)||sidearmPlacing(result.postscore_info);
@@ -244,7 +291,7 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
             // A golf tournament's final story, bound to its last round on the
             // schedule; it may name the event differently ("Red Sky" for the
             // "Golfweek Red Sky Challenge").
-            if(sport==='Golf')event.golf_final_story=link.href;
+            if(sport==='Golf')event.final_story=link.href;
           }
         }catch{}
       }
@@ -270,7 +317,7 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     // A multi-day event is checked against its last day: a golf tournament's
     // final story (Red Sky, Sep 21-23) is dated on its last day.
     const identity=event.end_time?{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')}:event;
-    if(own&&url===event.golf_final_story)return true;
+    if(own&&url===event.final_story)return true;
     if(own)return recapMatchesEvent(raw,{...identity,sport:''},url);
     // A game the schedule links its own recap for takes only that one: the
     // Sep 18 story at Colorado State names the same opponent the day after
