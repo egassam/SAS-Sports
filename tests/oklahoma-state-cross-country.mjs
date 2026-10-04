@@ -4,6 +4,7 @@ import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
 import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
+import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
@@ -51,7 +52,7 @@ const reset=()=>{
   }
 };
 const fetch=async url=>{requests.push(String(url));const make=responses.get(String(url));return make?make():new Response('not found',{status:404});};
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
 const worker=Function(...Object.keys(deps),source+';return {attachOfficialMeetResults,attachOfficialHighlights,ordinal};')(...Object.values(deps));
 
 // The event as production's official schedule card presents it today.
