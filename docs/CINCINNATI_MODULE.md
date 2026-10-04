@@ -15,9 +15,9 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Basketball | #206 | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | #207 | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
 | Golf | (this PR) | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
-| Lacrosse | (this PR) | Women's page only; empty schedule (the page still shows spring 2026); in season, finals `L, 10-11` with recaps |
-| Swimming & Diving | (this PR) | One official page for both teams; 13 meets with published times; invitationals named after their heading and ending on their last day |
-| Track & Field | | shared parsers |
+| Lacrosse | #209 | Women's page only; empty schedule (the page still shows spring 2026); in season, finals `L, 10-11` with recaps |
+| Swimming & Diving | #210 | One official page for both teams; 13 meets with published times; invitationals named after their heading and ending on their last day |
+| Track & Field | (this PR) | `track-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 7th / Men's team: 12th`, each with its story |
 
 Production survey before the module (October 4, ~01:30 UTC, `4.49.2`):
 - **Football:** finals and recaps right; the Oct 3 night game at Arizona listed twice (Oct 3 and Oct 4); a phantom Nov 28 game at BYU carrying the Sep 5 recap; no published times.
@@ -130,6 +130,14 @@ ESPN's scoreboards are not used for lacrosse (K-State sponsors none).
 gobearcats.com publishes one schedule page for both teams (`/sports/swimming-and-diving/`, "2026-27 Swim and Dive Schedule"); production tried seven men's, women's and generic routes and the homepage. Schedule and roster now route to that page only, and Swimming & Diving is no longer split by team. The card reader gives 13 meets: dual meets with their published Eastern times (`Oct 10, 9:00 AM` vs Northern Kentucky), multi-day meets ending on their last day (Big 12 Championships Feb 23-27), and invitationals named after their heading (the card's `at Ohio St.` is the `Ohio State Invitational`, Nov 17-20). Meets with a published time keep it (every Cincinnati meet sport; cross country and golf publish `All Day`).
 
 The page has no results yet (the season opens Oct 10). ESPN publishes no swimming scoreboard, so there is no live score.
+
+## Track & Field (`4.50.9-cincinnati-track-field`)
+
+The official page is `/sports/track-field/` ("2025-26 Track & Field Schedule" on October 4, 2026); production also tried `track-and-field` (a redirect) and the homepage. Schedule and roster now route to `track-field` only. Under the current-season filter, Track & Field is a valid empty schedule until Cincinnati publishes 2026-27; no code change is needed then.
+
+**In season** (the same page read as of Jun 15, 2026): 22 meets, one event each from its first to its last day (NCAA Outdoor Championships Jun 10-13), each with its story; the conference meets' team places in K-State's form (`Women's team: 7th / Men's team: 12th` at the Big 12 Outdoor Championship); meets with no published place read `Completed`.
+
+ESPN publishes no track scoreboard, so there is no live score.
 
 ## Limitations
 
