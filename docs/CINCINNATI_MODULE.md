@@ -15,7 +15,7 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Basketball | #206 | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | #207 | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
 | Golf | (this PR) | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
-| Lacrosse | | shared parsers |
+| Lacrosse | (this PR) | Women's page only; empty schedule (the page still shows spring 2026); in season, finals `L, 10-11` with recaps |
 | Swimming & Diving | | shared parsers |
 | Track & Field | | shared parsers |
 
@@ -114,6 +114,16 @@ Production loaded the first golf page that answered (women's) and showed one eve
 - reads every tournament as `Cincinnati at ...` (the women's cards say `vs.` for every tournament).
 
 ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
+
+## Lacrosse (`4.50.7-cincinnati-lacrosse`)
+
+Cincinnati sponsors women's lacrosse only. Production also tried men's and generic lacrosse pages and the homepage, and showed the spring 2026 season (Feb 6 - Apr 24, 2026) as current results. Schedule and roster now route to `womens-lacrosse` only.
+
+**Current-season filter (every Cincinnati sport).** Only the current academic year (July-June, Eastern) is current; spring pages keep showing last season until the next is published. Lacrosse is therefore a valid empty schedule (the app shows its empty-schedule note), and fills in when Cincinnati publishes 2027, with no code change.
+
+**In season** (the same page read as of Apr 25, 2026): 17 finals in K-State's wording, each with its recap; rankings dropped (`#15 Colorado`); the Louisville overtime loss reads `L, 10-11`.
+
+ESPN's scoreboards are not used for lacrosse (K-State sponsors none).
 
 ## Limitations
 

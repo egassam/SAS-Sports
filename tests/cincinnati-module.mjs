@@ -359,4 +359,22 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(worker.liveScoreboardProviders(school,'Golf'),[]);
 }
 
+// Lacrosse: the women's official page only (production also tried men's and
+// generic pages and the homepage). In October 2026 the page still shows the
+// spring 2026 season, which production showed as current results.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Lacrosse'),['https://gobearcats.com/sports/womens-lacrosse/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Lacrosse'),['https://gobearcats.com/sports/womens-lacrosse/roster']);
+  const laxUrl='https://gobearcats.com/sports/womens-lacrosse/schedule';
+  const now2026=worker.cincinnatiHandlers.parseSchedule(fixture('lacrosse-schedule.html.gz'),school,'Lacrosse',laxUrl,new Date('2026-10-04T02:00:00Z'));
+  assert.deepEqual(now2026,[],'only the current academic year (July-June) is current');
+  assert.ok(worker.cincinnatiHandlers.isEmptySchedule(now2026),'a valid empty schedule: the app shows its empty-schedule note');
+  // In season (the same page read on Apr 25, 2026): 17 finals in K-State's
+  // wording with their recaps.
+  const spring=worker.parseHtml(fixture('lacrosse-schedule.html.gz'),school,'Lacrosse',laxUrl,new Date('2026-04-25T16:00:00Z'));
+  assert.equal(spring.length,17);
+  assert.ok(spring.every(e=>e.status==='Final'&&/^[WL], \d+-\d+$/.test(e.headline)&&e.recap_url?.startsWith('https://gobearcats.com/news/2026/')));
+  assert.deepEqual(spring.filter(e=>/Louisville|Colorado|Florida/.test(e.opponent)).map(e=>`${e.title} ${e.headline}`),['Cincinnati vs Louisville L, 10-11','Cincinnati at Colorado L, 5-10','Cincinnati vs Florida L, 5-16'],'rankings dropped; overtime results read as K-State\'s');
+}
+
 console.log('Cincinnati module checks passed');
