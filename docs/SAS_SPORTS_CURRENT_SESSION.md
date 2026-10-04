@@ -1,10 +1,31 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 4, 2026, America/Chicago (Cincinnati all 11 sports, PRs #202-#212; production `4.51.0-cincinnati-tennis`. Earlier: Baylor all 12 sports, PRs #178-#190; live testing, football possession and traveling glow, PRs #175-#176; Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 4, 2026, America/Chicago (Colorado all 9 sports, PRs #214-#223; production `4.52.10-colorado-athletes`. Earlier: Cincinnati all 11 sports, PRs #202-#212; Baylor all 12 sports, PRs #178-#190; live testing, football possession and traveling glow, PRs #175-#176; Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Colorado is complete (`AGENTS.md` item 5a); production `4.52.10-colorado-athletes` (October 4, ~06:20 UTC).** User: "Convert Colorado". cubuffs.com (SIDEARM) returns 403 to the sandbox; every official page came through the private source route (`scripts/fetch-official.mjs`, HTTP 200), unmodified; TFRRS and ESPN were read directly. One page-data reader (`createColoradoHandlers().parseSchedule`, `src/schools/colorado.mjs`) enabled sport by sport, one PR each, each merged by the agent under `AGENTS.md` item 6 after the full gate (both suites, CI green, the sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and verified in production. Details, evidence and limitations: `docs/COLORADO_MODULE.md`.
+
+| PR | Sport | Production |
+| --- | --- | --- |
+| #214 | Setup + Football | 220/220 routes identical; published Mountain times (`Nov 13, 8:15 PM`); the shared `compactScheduleHtml` cut cubuffs.com football pages after the cards (page data lost; first preview had no times): Colorado pages now pass whole; ESPN live (shared FBS request) |
+| #215 | Volleyball | other teams' tournament matches (`Denver vs. Central Arkansas`) and the scrimmage left out; Colorado recap matcher (a game with its own schedule recap takes only that one: the Sep 18 Colorado State story had matched Sep 17; others must name the opponent in the headline); ESPN live |
+| #216 | Soccer | `Utah (Exhibition)` (type S); the page's time text wins over a disagreeing data clock (`Oct 16, 5:30 PM`); unlinked final's story from the sport archive (Western Michigan tie, "Ends In A Draw", verified by opponent and result); ESPN live |
+| #217 | Cross Country | TFRRS results (`Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every finisher); a team TFRRS lists with 0 points (`W-NTS`) has no team place; meets read `at` |
+| #218 | Basketball | two official pages only, labeled; exhibitions; Big 12 Championship Mar 9-13 one event; ESPN men's/women's live |
+| #219 | Golf | both teams; round entries become one event per tournament (`13th of 20`), last round only, its final story (bound even when the story names the event differently) |
+| #220 | Skiing | official page only; race days grouped into carnival runs (`Denver Invitational (Alpine)`/`(Nordic)`); the daily place is a cumulative standing, so only a carnival's last run carries the final place (tested on the 2026 page); 2027 all upcoming |
+| #221 | Tennis | women's only (men's URL is SIDEARM's empty template); fall tournaments one event each, listed only with a story; duals as games |
+| #222 | Track & Field | official page only; current-season filter (every Colorado sport); verified empty schedule (page shows 2025-26); one event per meet in season |
+| #223 | Athletes | 9/9 sports, 3 each; Skiing's third slot filled from an official roster profile (Colorado-gated line in `featuredAthletes`' fast path); Golf and Skiing official-profile fallback |
+
+- **Production deep certification (`validate-schools.mjs colorado --deep`, all 9 sports, `4.52.10`): 9/9**; highlights Football 5/5, Volleyball 13/13, Soccer 13/13, Cross Country 2/2, Golf 6/6, Tennis 2/2; athletes 3 each.
+- **Shared-code touches, all Colorado-gated or behavior-identical elsewhere:** `compactScheduleHtml` now compacts Houston only; recap-matcher dispatch, XC meet-result hooks, the `empty_schedule` hook, the archive-story hooks, scoreboard providers and the Skiing athlete fill each carry a `colorado` branch. BYU's test now uses Houston as its school without a volleyball scoreboard.
+- **Not fixable from official sources today (evidence in the module doc):** Track & Field 2026-27 unpublished (fills in without code changes); golf team totals only in story prose; Skiing and Basketball finals not yet played.
+- **Not yet observed live:** Colorado volleyball at Baylor (Oct 4, 1:00 PM MT) and soccer vs Baylor (Oct 8) are the first chances.
+- **Preview transients:** twice (#220, #221) the first K-State XC read after a deploy lacked the two meets; immediate full reruns were clean. Not seen in production.
 
 **Cincinnati is complete (`AGENTS.md` item 5a); production `4.51.0-cincinnati-tennis` (October 4, ~03:30 UTC).** User: "Convert Cincinnati". gobearcats.com (WMT) answers the sandbox directly; every fixture is an unmodified official page (or TFRRS/ESPN). One card reader (`createCincinnatiHandlers().parseSchedule`, `src/schools/cincinnati.mjs`) enabled sport by sport, one PR each, each merged by the agent under `AGENTS.md` item 6 after the full gate (both suites, CI green, the sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and verified in production. Details, evidence and limitations: `docs/CINCINNATI_MODULE.md`.
 
@@ -447,7 +468,8 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
-- **Cincinnati is complete** (#202-#212). Next: the next Big 12 school the user names. Remaining unconverted Big 12 schools: Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Cincinnati's first live volleyball (at UCF, Oct 9) and soccer (vs Utah, Oct 8) games; Lacrosse (2027) and Track & Field (2026-27) fill in when gobearcats.com publishes them.
+- **Colorado is complete** (#214-#223). Next: the next Big 12 school the user names. Remaining unconverted Big 12 schools: Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Colorado's first live volleyball (at Baylor, Oct 4) and soccer (vs Baylor, Oct 8) cards; Track & Field fills in when cubuffs.com publishes 2026-27. Houston's football page still goes through `compactScheduleHtml` (shared); when converting Houston, check whether its module needs the whole page as Colorado's did.
+- **Cincinnati is complete** (#202-#212). Next: the next Big 12 school the user names. Remaining then: Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Cincinnati's first live volleyball (at UCF, Oct 9) and soccer (vs Utah, Oct 8) games; Lacrosse (2027) and Track & Field (2026-27) fill in when gobearcats.com publishes them.
 - **Level order (user, October 3, for later):** when high school or pro teams are added, order the level switch High School, College, Pro (the `LEVELS` array in `public/index.html`). Not before.
 - **Baylor is complete** (#178-#195). Next: the next Big 12 school the user names. Remaining unconverted Big 12 schools: Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Baylor's first live football card (at Arizona State, 02:30 UTC Oct 4) and volleyball (vs Colorado, Oct 4 2:00 PM CT).
 - **Live cards (from the Oct 3 live test):** watch a football final arrive (`W, 31-20` wording) and a non-football live game with the glow (volleyball/soccer). Possession is football only; ESPN's basketball scoreboard carries no possession.
@@ -1434,3 +1456,16 @@ User: "Convert Cincinnati". The handoff was read from main (`f1e7fcd`). Cincinna
 **Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/cincinnati-module.mjs` (parse hook, matcher dispatch, XC attach hook, strict TFRRS name rule, place check, exhibition label, team ids, past-game rule, multi-day rule, empty-schedule flag, round merge, in-progress rule, golf "at", season filter, swim heading, meet times, tennis last-day check). Preview gate per sport: XC 18/20 and 26/21, 36/36 refreshes; after #207 and #209 (reader-wide changes) every converted Cincinnati sport was compared between preview and production (identical). Production: deep certification 11/11.
 
 **Open:** none for Cincinnati beyond the source-blocked items above. Tennis's addition to the catalog is flagged for the user.
+
+### October 4, 2026 — Colorado, all sports
+
+User: "Convert Colorado". The handoff was read from main (`f13cdc5`, after Cincinnati). cubuffs.com returned 403 to the sandbox, so every schedule, recap, archive and roster page came through `scripts/fetch-official.mjs` (HTTP 200); TFRRS and ESPN answered directly.
+
+**Approach:** one SIDEARM page-data reader (`createColoradoHandlers().parseSchedule`), enabled sport by sport, one PR each, merged by the agent under `AGENTS.md` item 6 after the full gate and verified in production: #214 Football (with setup), #215 Volleyball, #216 Soccer, #217 Cross Country, #218 Basketball, #219 Golf, #220 Skiing, #221 Tennis, #222 Track & Field, #223 athletes. A docs PR records the module doc and this handoff.
+
+**Found by the gates and tests and fixed before merge:** the first Football preview showed no start times (the shared `compactScheduleHtml` dropped the page data after the cards; the test now runs `fetchLive`); the shared matcher taking neighbouring days' stories (Aug 28 CSUN for Aug 29 Central Arkansas; Sep 18 Colorado State for Sep 17); a Soccer final with no linked story (Western Michigan; found in the archive); the Wyoming women's 0-point TFRRS team row (`W-NTS`); DNF/DNS rows; golf day-one standings; a Red Sky story naming the event differently; tennis duals read as tournaments (`at`); the Kit Mayer Classic's three-day gap; the Skiing fast path returning two athletes; a reformatting edit to `tests/certified-schools.json` (reverted before commit). Rules a mutation showed were not needed were removed (a golf last-day story rule; a Skiing story binding).
+
+**Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/colorado-module.mjs` (parse hook, past-game rule, compaction, own-recap-only, headline rule, other-teams filter, scoreboards, exhibition label, time text, archive hooks and score rule, TFRRS 0-point rule, meet `at`, place check, attach hook, last-day rule, in-progress, team ids, routes, round merge, last-round result, golf story binding, ski runs, final-run place, widget filter, discipline names, tennis rules, season filter, empty flag and hook, meet merge and gap, latest story, Skiing athlete fill). Preview gate per PR: XC 18/20 and 26/21, 36/36 refreshes, every expanded view checked. Production: deep certification 9/9, athletes 9/9.
+
+**Open:** none for Colorado beyond the source-blocked items above; first live Colorado cards not yet observed.
+
