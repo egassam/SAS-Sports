@@ -89,11 +89,15 @@ for(const sport of sports){
   report(ok===refreshes,`${school} ${sport}: ${ok}/${refreshes} forced refreshes HTTP 200${cpu?` · ${cpu}× 1102`:''}${s503?` · ${s503}× 503`:''}${other.length?` · other ${[...new Set(other)].join(',')}`:''} · ${events??'?'} events · slowest ${slowest} ms`);
 
   // K-State's form for results: every final has a status and a headline
-  // (`W, 31-17`, `Women's team: 1st · 15 pts`, `13th of 20`).
+  // (`W, 31-17`, `Women's team: 1st · 15 pts`, `13th of 20`). A meet with no
+  // team result (a tennis tournament, type DUAL) reads "Completed" with its own story,
+  // as K-State's do; without a story it is a gap.
   const feed=await get(feedPath(school,sport,false),{tries:3});
   const results=finals(feed.body);
-  const bare=results.filter(e=>!e.headline||/^(completed|final)$/i.test(String(e.headline).trim()));
-  report(feed.status===200&&!bare.length,`${school} ${sport}: ${results.length} results${bare.length?`, ${bare.length} without a result line (${bare.slice(0,3).map(e=>e.title).join('; ')})`:', each with a result line'}`);
+  const completed=e=>!e.headline||/^(completed|final)$/i.test(String(e.headline).trim());
+  const storyOnly=results.filter(e=>completed(e)&&e.event_type!=='GAME'&&e.recap_url);
+  const bare=results.filter(e=>completed(e)&&!storyOnly.includes(e));
+  report(feed.status===200&&!bare.length,`${school} ${sport}: ${results.length} results${bare.length?`, ${bare.length} without a result line or story (${bare.slice(0,3).map(e=>e.title).join('; ')})`:', each with a result line'}${storyOnly.length?` (${storyOnly.length} meet${storyOnly.length>1?'s':''} without a team result, with its story)`:''}`);
 
   if(flag('no-expanded'))continue;
   // Every final's expanded view answers 200 with its own event. AI timeouts
