@@ -11,7 +11,8 @@ const byuModule=readFileSync(new URL('../src/schools/byu.mjs',import.meta.url),'
 const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'utf8');
 const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.meta.url),'utf8');
 const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule};
+const cincinnatiModule=readFileSync(new URL('../src/schools/cincinnati.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule,cincinnati:cincinnatiModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 

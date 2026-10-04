@@ -1,0 +1,18 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/football/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "Official 2026 football schedule, unmodified, downloaded directly (gobearcats.com answers the sandbox). WMT schedule-event-item cards: 4 finals (W 34-15 Boston College, W 62-10 Western Carolina, W 35-31 Miami (OH), W 31-26 Kansas State), each with its /news/ Recap link; Oct 3 at Arizona 11:00 PM EDT (datetime 2026-10-03T23:00:00.000-04:00); 7 later games with the time-tba date class and an empty result slot."
+    }
+  },
+  "recaps": {
+    "recap-football-2026-9-5-boston-college.html.gz": "https://gobearcats.com/news/2026/09/5/cincinnati-extends-home-opener-win-streak-to-25-games-with-34-15-victory-over-boston-college",
+    "recap-football-2026-9-12-western-carolina.html.gz": "https://gobearcats.com/news/2026/09/13/bearcats-throttle-catamounts-in-62-10-victory",
+    "recap-football-2026-9-19-miami.html.gz": "https://gobearcats.com/news/2026/09/19/cincinnati-overcomes-21-point-deficit-claims-battle-for-the-victory-bell-with-35-31-win",
+    "recap-football-2026-9-26-kansas-state.html.gz": "https://gobearcats.com/news/2026/09/27/bearcats-win-big-12-opener-take-down-k-state-31-20-at-home"
+  },
+  "scoreboards": {
+    "football-espn-2026-09-26.json.gz": "ESPN college football scoreboard, groups=80&limit=300&dates=20260926 (copy of the Baylor module fixture); holds Kansas State Wildcats at Cincinnati Bearcats, final 31-26."
+  }
+}
