@@ -198,4 +198,43 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Colorado at TCU','L, 1-3']]);
 }
 
+// Soccer (women's only): 20 games. The Aug 5 exhibition against Utah reads
+// as K-State labels exhibitions; ties read "T, 0-0"; the Aug 12 night game's
+// recap is dated the next day. Upcoming games show the published time text
+// even where the page data's clock disagrees (Oct 16 at Kansas State:
+// "5:30 p.m.", 18:00 in the data).
+{
+  const scUrl='https://cubuffs.com/sports/womens-soccer/schedule';
+  const sc=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',scUrl,now);
+  assert.equal(sc.length,20);
+  assert.equal(new Set(sc.map(e=>e.id)).size,20);
+  const scFinals=sc.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  assert.deepEqual(scFinals.map(e=>`${e.display_time} ${e.title} ${e.headline}`),[
+    'Aug 5 Colorado vs Utah (Exhibition) W, 1-0','Aug 12 Colorado vs Colorado State W, 2-1','Aug 16 Colorado vs Army W, 6-0',
+    'Aug 20 Colorado vs Cal State Fullerton W, 3-2','Aug 27 Colorado at Western Michigan T, 0-0','Aug 30 Colorado at Michigan State L, 2-3',
+    'Sep 3 Colorado vs New Mexico W, 3-0','Sep 6 Colorado vs Utah State W, 2-0','Sep 11 Colorado vs Denver W, 6-0',
+    'Sep 17 Colorado at Iowa State W, 1-0','Sep 24 Colorado vs West Virginia W, 2-0','Sep 27 Colorado at Texas Tech L, 1-3','Oct 2 Colorado at UCF L, 0-2'
+  ]);
+  assert.equal(scFinals.filter(e=>e.recap_url).length,12,'every final but the Western Michigan tie links its recap');
+  assert.equal(scFinals[1].recap_url,'https://cubuffs.com/news/2026/8/13/soccer-zamoranos-first-collegiate-goal-being-the-game-winner');
+  assert.deepEqual(sc.filter(e=>e.status!=='Final').map(e=>`${e.title} ${e.display_time}`),[
+    'Colorado vs Baylor Oct 8, 7:00 PM','Colorado vs Kansas Oct 11, 1:00 PM','Colorado at Kansas State Oct 16, 5:30 PM','Colorado at Arizona Oct 22, 8:00 PM',
+    'Colorado at Arizona State Oct 25, 2:00 PM','Colorado vs Cincinnati Oct 30, 7:00 PM','Colorado vs Oklahoma State Nov 5, 7:00 PM'
+  ]);
+  assert.equal(sc.find(e=>e.opponent==='Kansas State').start_time,'2026-10-16T17:30:00.000Z','the published text sets the wall clock');
+  const linked=scFinals.filter(e=>e.recap_url);
+  const scRecaps=linked.map(e=>{const [,y,m,d]=e.recap_url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\//);return fixture(`recap-soccer-${y}-${m}-${d}.html.gz`);});
+  linked.forEach((event,i)=>scRecaps.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,linked[j].recap_url),i===j,`${event.display_time} ${event.opponent} must match only its own recap (checked against ${linked[j].display_time})`)));
+  // Live score: ESPN's women's college soccer scoreboard; Colorado at UCF
+  // (Oct 2) joins the official card.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);
+  const payload=JSON.parse(fixture('soccer-espn-2026-10-02.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Soccer');
+  const scored=worker.parseScoreboardPayload(payload,school,'Soccer',provider,'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002',new Date('2026-10-03T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Colorado at UCF','Final','L, 0-2']]);
+  const reconciled=worker.reconcileScoreboardEvents(sc,scored);
+  assert.equal(reconciled.length,sc.length);
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>e.title),['Colorado at UCF']);
+}
+
 console.log('Colorado module checks passed');

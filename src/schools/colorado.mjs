@@ -8,13 +8,16 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
   liveScoreboards:{
     // Volleyball scores are sets won; the live detail names the current set.
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // ESPN's women's college soccer scoreboard (Colorado sponsors women's
+    // soccer only); it lists every Division I match.
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   verifiedInstagrams:{
@@ -56,6 +59,18 @@ export function coloradoOpponent(title){
   return String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\d+|No\.\s*\d+|RV)\s+/i,'');
 }
 
+// The published start. The page shows the time text ("5:30 p.m."); the page
+// data's clock usually agrees, but not always (soccer at Kansas State, Oct 16:
+// "5:30 p.m." with 18:00 in the data). The text is what the page shows, so a
+// clock in it wins; "TBA" has none.
+export function coloradoStartTime(date,time){
+  const exact=sidearmStartTime(date,time);if(exact)return exact;
+  const d=String(date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/),t=String(time||'').match(/^\s*(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?(?=[\s(]|$)/i);
+  if(!d||!t||Number(t[1])<1||Number(t[1])>12)return null;
+  const hour=String(Number(t[1])%12+(t[3].toLowerCase()==='p'?12:0)).padStart(2,'0'),minute=t[2]||'00';
+  return sidearmStartTime(`${d[1]}-${d[2]}-${d[3]}T${hour}:${minute}:00`,time);
+}
+
 // cubuffs.com is a SIDEARM (Nuxt) site. Its schedule pages embed every game
 // as page data: the local start ("2026-11-13T20:15:00", "8:15 PM"),
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
@@ -72,13 +87,16 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml=v
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
-      const opponent=coloradoOpponent(game.opponent?.title);
+      let opponent=coloradoOpponent(game.opponent?.title);
       if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
       // Tournament pages also list the other teams' matches ("Denver vs.
       // Central Arkansas" at the Buffs Classic); they are not Colorado's.
       if(/\S\s+vs\.?\s+\S/i.test(opponent))continue;
       // Canceled and postponed games are not on K-State's schedule.
       if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
+      // An exhibition (page-data type "S" against another school) reads as
+      // K-State labels exhibitions: "Utah (Exhibition)".
+      if(game.type==='S')opponent=`${opponent} (Exhibition)`;
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
@@ -91,7 +109,7 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml=v
       const relation=game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
       // K-State's results show the date only; upcoming games show the
       // published local time ("TBA" shows the date alone).
-      const start=scored?null:sidearmStartTime(game.date,game.time);
+      const start=scored?null:coloradoStartTime(game.date,game.time);
       const event=makeEvent({school,sport,status:scored?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});

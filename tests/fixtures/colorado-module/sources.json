@@ -9,6 +9,11 @@
       "url": "https://cubuffs.com/sports/womens-volleyball/schedule",
       "retrieved": "2026-10-04T04:20Z",
       "note": "Official 2026 volleyball schedule, unmodified, via the private source route. 34 page-data entries: Black and Gold Scrimmage, 6 other-team tournament matches (A vs. B, no result), 13 finals with /news/ recaps, 15 upcoming with times."
+    },
+    "soccer-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/womens-soccer/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "Official 2026 women's soccer schedule, unmodified, via the private source route. 20 entries: Aug 5 Utah exhibition (type S, W 1-0), 12 more finals (Western Michigan T 0-0 without a recap), 7 upcoming; Oct 16 at Kansas State shows 5:30 p.m. with 18:00 in the data."
     }
   },
   "recaps": {
@@ -19,7 +24,9 @@
   },
   "scoreboards": {
     "football-espn-2026-09-26.json.gz": "Copy of tests/fixtures/baylor-module/football-espn-2026-09-26.json.gz (ESPN college football scoreboard, groups=80, Sep 26, 2026): Colorado at Baylor, final 13-23; Colorado State also plays.",
-    "volleyball-espn-2026-10-02.json.gz": "ESPN women's college volleyball scoreboard, limit=1000, Oct 2, 2026 (120 events), downloaded directly: Colorado at TCU, final 1-3."
+    "volleyball-espn-2026-10-02.json.gz": "ESPN women's college volleyball scoreboard, limit=1000, Oct 2, 2026 (120 events), downloaded directly: Colorado at TCU, final 1-3.",
+    "soccer-espn-2026-10-02.json.gz": "ESPN women's college soccer scoreboard, limit=1000, Oct 2, 2026 (31 events), downloaded directly: Colorado at UCF, final 0-2."
   },
-  "recaps_volleyball": "recap-volleyball-YYYY-M-D.html.gz: the /news/ recap each Colorado final links on the volleyball schedule page (13), unmodified, via the private source route."
+  "recaps_volleyball": "recap-volleyball-YYYY-M-D.html.gz: the /news/ recap each Colorado final links on the volleyball schedule page (13), unmodified, via the private source route.",
+  "recaps_soccer": "recap-soccer-YYYY-M-D.html.gz: the /news/ recap each Colorado soccer final links on the schedule page (12), unmodified, via the private source route."
 }
