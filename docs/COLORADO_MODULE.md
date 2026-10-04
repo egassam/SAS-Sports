@@ -15,8 +15,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Basketball | #218 | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
 | Golf | #219 | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
 | Skiing | #220 | Official page only; 2027 season (13 carnival events from 31 race days), all upcoming; in season the final place only on a carnival's last run (`2nd of 22`) |
-| Tennis | (this PR) | Women's page only; fall tournaments one event each (`Colorado at Milwaukee Classic`) with the last day's story, listed only with a story; spring duals as games (`W, 4-2`) |
-| Track & Field | | shared parsers |
+| Tennis | #221 | Women's page only; fall tournaments one event each (`Colorado at Milwaukee Classic`) with the last day's story, listed only with a story; spring duals as games (`W, 4-2`) |
+| Track & Field | (this PR) | `track-and-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 13th / Men's team: 12th` |
 
 Production survey before the module (October 4, ~03:45 UTC, `4.51.0`):
 - **Football:** finals and recaps right; no published times (Nov 13 8:15 PM, Dec 4 6:00 PM shown as dates).
@@ -124,6 +124,19 @@ Colorado sponsors women's tennis only; `/sports/mens-tennis/schedule` renders SI
 On the 2025-26 page, the Mar 6 Kansas State dual links a story headlined "Buffs Fall to Jayhawks"; the matcher needs the opponent in the linked story, so that expanded view would say no recap was found rather than show the wrong match.
 
 ESPN publishes no college tennis scoreboard, so there is no live score (K-State has none).
+
+## Track & Field (`4.52.9-colorado-track-field`)
+
+The page (`/sports/track-and-field/schedule`) still publishes the 2025-26 season ("2025-26 Track and Field Schedule", 46 meet days); `/sports/track-field/schedule` renders SIDEARM's empty template. Production loaded both and the homepage and returned 46 past events, which the page then showed as nothing (out of season, no note). Track & Field now routes to the official page only.
+
+**Current season (every Colorado sport).** Only the current academic year (July-June, Boulder time) is current; when nothing on the page is, the reader returns a valid empty schedule (`coloradoHandlers.isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU, UCF, Arizona, Baylor and Cincinnati), and the app shows its empty-schedule note. No other Colorado sport changes today (every other page publishes 2026-27).
+
+In season (tested on the same page as of June 20, 2026):
+- days of one meet at most three days apart are one event (`Colorado at Potts Invitational`, Jan 16-17; `Kit Mayer Classic`, Apr 8 and 11): 46 days become 24 meets;
+- team places, women first, from the last day (`M 12th, W 13th` at the Big 12 Indoor Championships: `Women's team: 13th / Men's team: 12th`); `NTS` and `N/A` read `Completed`;
+- the last day's story, or the latest one any day links (the NCAA Indoor Championships link one on their first day only).
+
+ESPN publishes no track scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 

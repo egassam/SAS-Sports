@@ -64,6 +64,16 @@
       "url": "https://cubuffs.com/sports/mens-tennis/schedule",
       "retrieved": "2026-10-04T04:20Z",
       "note": "SIDEARM's empty '@season @sport Schedule' template: Colorado has no men's tennis."
+    },
+    "track-and-field-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/track-and-field/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "Still the 2025-26 season: 46 meet days (indoor and outdoor), team places mostly NTS, Big 12 Indoor 'M 12th, W 13th', stories per day."
+    },
+    "track-field-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/track-field/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "SIDEARM's empty '@season @sport Schedule' template."
     }
   },
   "recaps": {
