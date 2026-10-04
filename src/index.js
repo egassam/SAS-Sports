@@ -15,7 +15,7 @@ import {cincinnatiSchool,createCincinnatiHandlers} from './schools/cincinnati.mj
 import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.52.9-colorado-track-field';
+const VERSION='4.52.10-colorado-athletes';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -481,6 +481,13 @@ async function featuredAthletes(schoolId,sport){
       if(athlete.image_url)return;
       try{const r=await sourceFetch(athlete.profile_url);if(r.ok)athlete.image_url=officialProfileImage(await r.text(),r.url||athlete.profile_url)}catch{}
     }));
+    // Colorado's ski roster publishes only two personal Instagram links; the
+    // third slot takes an official roster profile, as the slower path does.
+    if(schoolId==='colorado'&&coloradoSchool.profileFillSports.has(sport)&&selected.length<3){
+      const used=new Set(selected.map(athlete=>athlete.profile_url));
+      selected.push(...profiles.filter(profile=>!used.has(profile.url)&&profile.image_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3-selected.length)
+        .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url})));
+    }
     return selected;
   }
   const found=[];

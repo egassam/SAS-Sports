@@ -16,7 +16,7 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Golf | #219 | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
 | Skiing | #220 | Official page only; 2027 season (13 carnival events from 31 race days), all upcoming; in season the final place only on a carnival's last run (`2nd of 22`) |
 | Tennis | #221 | Women's page only; fall tournaments one event each (`Colorado at Milwaukee Classic`) with the last day's story, listed only with a story; spring duals as games (`W, 4-2`) |
-| Track & Field | (this PR) | `track-and-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 13th / Men's team: 12th` |
+| Track & Field | #222 | `track-and-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 13th / Men's team: 12th` |
 
 Production survey before the module (October 4, ~03:45 UTC, `4.51.0`):
 - **Football:** finals and recaps right; no published times (Nov 13 8:15 PM, Dec 4 6:00 PM shown as dates).
@@ -137,6 +137,12 @@ In season (tested on the same page as of June 20, 2026):
 - the last day's story, or the latest one any day links (the NCAA Indoor Championships link one on their first day only).
 
 ESPN publishes no track scoreboard, so there is no live score (K-State has none).
+
+## Athletes (`4.52.10-colorado-athletes`)
+
+`tests/certified-schools.json` now protects featured athletes for all 9 sports (3 each; reviewed October 4, from the official rosters). Production before this change: Football, Volleyball, Soccer, Cross Country, Basketball, Tennis and Track & Field each showed 3 athletes with Instagram links published on the official roster; Golf showed 3 official roster profiles (neither golf roster publishes a personal Instagram link); Skiing showed 2.
+
+**Skiing.** The official ski roster publishes personal Instagram links for two skiers only (Justin Bigatel, Cathinka Lunder). With two or more roster links the Worker takes its fast path, which returns only linked athletes. For Colorado's `profileFillSports` (Skiing only), the third slot now takes an official roster profile with its portrait, as the slower path already does for every school. Golf and Skiing are declared `athlete_profile_fallback_sports`.
 
 ## Limitations
 

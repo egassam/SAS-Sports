@@ -28,6 +28,10 @@ export const coloradoSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  // Featured athletes: sports whose official roster publishes fewer than
+  // three personal Instagram links fill the row with official roster
+  // profiles (Skiing: two of the skiers).
+  profileFillSports:new Set(['Skiing']),
   verifiedInstagrams:{
     'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
   },
