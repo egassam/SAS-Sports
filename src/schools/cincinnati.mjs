@@ -7,7 +7,7 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse','Swimming & Diving']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse','Swimming & Diving','Track & Field']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -35,7 +35,7 @@ export const cincinnatiSchool={
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/schedule',
     'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
     'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/schedule',
-    'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/schedule','https://gobearcats.com/sports/track-field/schedule','https://gobearcats.com/'],
+    'cincinnati|Track & Field':'https://gobearcats.com/sports/track-field/schedule',
     'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -47,7 +47,7 @@ export const cincinnatiSchool={
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/roster',
     'cincinnati|Soccer':['https://gobearcats.com/sports/womens-soccer/roster','https://gobearcats.com/sports/wsoc/roster','https://gobearcats.com/sports/soccer/roster','https://gobearcats.com/sports/mens-soccer/roster'],
     'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/roster',
-    'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/roster','https://gobearcats.com/sports/track-field/roster'],
+    'cincinnati|Track & Field':'https://gobearcats.com/sports/track-field/roster',
     'cincinnati|Volleyball':['https://gobearcats.com/sports/womens-volleyball/roster','https://gobearcats.com/sports/wvball/roster','https://gobearcats.com/sports/volleyball/roster']
   }
 };

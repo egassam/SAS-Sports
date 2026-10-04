@@ -394,4 +394,24 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(worker.liveScoreboardProviders(school,'Swimming & Diving'),[]);
 }
 
+// Track & Field: the official track-field page only (production also tried
+// track-and-field and the homepage). In October 2026 it still shows 2025-26.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Track & Field'),['https://gobearcats.com/sports/track-field/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Track & Field'),['https://gobearcats.com/sports/track-field/roster']);
+  const tfUrl='https://gobearcats.com/sports/track-field/schedule';
+  const current=worker.cincinnatiHandlers.parseSchedule(fixture('track-field-schedule.html.gz'),school,'Track & Field',tfUrl,new Date('2026-10-04T02:00:00Z'));
+  assert.deepEqual(current,[]);
+  assert.ok(worker.cincinnatiHandlers.isEmptySchedule(current),'a valid empty schedule until 2026-27 is published');
+  // In season (the same page read as of Jun 15, 2026): one event per meet,
+  // ending on its last day, each with its story; team places in K-State's form.
+  const season=worker.parseHtml(fixture('track-field-schedule.html.gz'),school,'Track & Field',tfUrl,new Date('2026-06-15T16:00:00Z'));
+  assert.equal(season.length,22);
+  assert.ok(season.every(e=>e.status==='Final'&&e.recap_url?.startsWith('https://gobearcats.com/news/')));
+  assert.deepEqual(season.filter(e=>/team/.test(e.headline)).map(e=>`${e.title} ${e.headline}`),["Cincinnati at Big 12 Indoor Championships Women's team: 10th / Men's team: 10th","Cincinnati at Big 12 Outdoor Championship Women's team: 7th / Men's team: 12th"]);
+  assert.equal(season.find(e=>e.opponent==='NCAA Outdoor Championships').end_time,'2026-06-13T23:59:59Z');
+  assert.ok(season.every(e=>e.headline),'meets without a published place read "Completed"');
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Track & Field'),[]);
+}
+
 console.log('Cincinnati module checks passed');
