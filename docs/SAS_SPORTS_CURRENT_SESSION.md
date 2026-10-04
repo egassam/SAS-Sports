@@ -32,7 +32,7 @@ Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-ath
 
 **Remaining unconverted Big 12 schools:** Houston, Iowa State, TCU, Texas Tech, West Virginia, all SIDEARM sites (`__NUXT_DATA__` on their football pages; Houston, Iowa State, TCU and Texas Tech return 403 to the sandbox and come through the private source route). Start the one the user names. Houston's football page still goes through the shared `compactScheduleHtml`; check whether its module needs the whole page, as Colorado's did.
 
-**PR #227 (registry + shared SIDEARM reader) waits on the user's merge approval** (user away until Wednesday, October 7). Until it is merged, `main` has neither; build the next school on #227's branch or after it merges.
+**PR #227 (registry + shared SIDEARM reader) is merged** (`1e6ba9d`, user: "Merge it") and verified in production; the next school starts from `main` with `npm run scaffold-school`.
 
 ## How to convert a school (fast path, October 4)
 
@@ -60,5 +60,5 @@ Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-ath
 Newest last. One short entry per session here; the full record goes at the end of `docs/SAS_SPORTS_HISTORY.md`.
 
 - **Oct 4 — Colorado, all sports** (#214–#224). Complete; production `4.52.10-colorado-athletes`, deep certification 9/9.
-- **Oct 4 — Registry and shared SIDEARM reader** (PR #227, open; user: "Do one and two", away until Wednesday). One `SCHOOL_MODULES` entry per school in `src/index.js`; Colorado, Baylor and Arizona on one reader (19,488 parses identical); preview: 133/133 converted feeds identical to production.
+- **Oct 4 — Registry and shared SIDEARM reader** (PR #227, merged `1e6ba9d` on the user's "Merge it"; production verified). One `SCHOOL_MODULES` entry per school in `src/index.js`; Colorado, Baylor and Arizona on one reader (19,488 parses identical); preview: 133/133 converted feeds identical to production.
 - **Oct 4 — Faster sessions and conversions** (PR #225, merged `abbccc0` on the user's "Merge"). Handoff split into this file + history; `AGENTS.md` updated for batched PRs and the shorter startup read; `scripts/verify-release.mjs` (`npm run verify:preview` / `verify:prod`); shared TFRRS reader `src/tfrrs-results.mjs`; `npm run scaffold-school`. Production verified with `verify:prod` (Colorado, Cincinnati, Baylor Cross Country; XC 18/20 and 26/21). The version was not bumped (no output change), so the new build cannot be told apart by `/api/status`. Baylor's Chile Pepper Festival has no result line yet: its TFRRS results are not published (same before and after).
