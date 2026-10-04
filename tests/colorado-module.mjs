@@ -27,7 +27,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,baylorHandlers,cincinnatiHandlers,coloradoHandlers,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,baylorHandlers,cincinnatiHandlers,coloradoHandlers,arizonaHandlers,fetchUrl,fetchLive,featuredAthletes,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
 
 
 // Module ownership: every sponsored sport has explicit cubuffs.com routes,
@@ -496,6 +496,22 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.equal(by('Potts Invitational').headline,'Completed');
   assert.match(by('Potts Invitational').recap_url,/soil-records-as-buffs-conclude-potts-invitational$/,'the last day\'s story');
   assert.match(by('NCAA Indoor Championships').recap_url,/ncaa-indoor-championships$/,'the latest story any day links');
+}
+
+// Featured athletes: the official ski roster publishes only two personal
+// Instagram links; the third slot takes an official roster profile with its
+// portrait (Golf rosters publish none and already fill all three).
+{
+  const rosterUrl='https://cubuffs.com/sports/skiing/roster';
+  recapFixtures.set(rosterUrl,fixture('skiing-roster.html.gz'));
+  const athletes=await worker.featuredAthletes('colorado','Skiing');
+  recapFixtures.delete(rosterUrl);
+  assert.equal(athletes.length,3);
+  assert.deepEqual(athletes.filter(a=>a.instagram_url).map(a=>a.name).sort(),['Cathinka Lunder','Justin Bigatel']);
+  const profileOnly=athletes.find(a=>!a.instagram_url);
+  assert.match(profileOnly.profile_url,/^https:\/\/cubuffs\.com\/sports\/skiing\/roster\//);
+  assert.ok(profileOnly.image_url,'an official portrait');
+  assert.ok(coloradoSchool.profileFillSports.has('Skiing')&&coloradoSchool.profileFillSports.size===1);
 }
 
 console.log('Colorado module checks passed');
