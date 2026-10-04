@@ -8,7 +8,7 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Skiing','Tennis']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Skiing','Tennis','Track & Field']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -47,7 +47,9 @@ export const coloradoSchool={
     // SIDEARM's empty "@season @sport" template, and the generic page and
     // the homepage are not tennis schedules.
     'colorado|Tennis':'https://cubuffs.com/sports/womens-tennis/schedule',
-    'colorado|Track & Field':['https://cubuffs.com/sports/track-and-field/schedule','https://cubuffs.com/sports/track-field/schedule','https://cubuffs.com/'],
+    // The official page only: /sports/track-field/ renders SIDEARM's empty
+    // "@season @sport" template and the homepage is not a track schedule.
+    'colorado|Track & Field':'https://cubuffs.com/sports/track-and-field/schedule',
     'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -170,6 +172,26 @@ function mergeRounds(games){
   });
 }
 
+// Track publishes one entry per meet day ("Potts Invitational" on Jan 16 and
+// 17; the Kit Mayer Classic on Apr 8 and 11): days of the same meet at most
+// three days apart become one event from its first to its last day.
+function mergeMeetDays(games){
+  const groups=[];
+  for(const game of games){
+    const name=coloradoOpponent(game.opponent?.title).toLowerCase(),previous=groups.at(-1);
+    const gap=previous?(Date.parse(game.date.slice(0,10))-Date.parse(previous.at(-1).date.slice(0,10)))/86400000:Infinity;
+    if(previous&&name&&previous.name===name&&gap>=0&&gap<=3){previous.push(game);continue;}
+    const group=[game];group.name=name;groups.push(group);
+  }
+  // The place is the last day's; the story the latest one a day links (the
+  // NCAA Indoor Championships link a story on their first day only).
+  return groups.map(days=>{
+    if(days.length===1)return days[0];
+    const result=days.at(-1).result||{},story=[...days].reverse().map(day=>day.result?.recap).find(recap=>recap?.url);
+    return{...days[0],enddate:days.at(-1).date,result:{...result,recap:result.recap?.url?result.recap:story||null}};
+  });
+}
+
 // Skiing publishes one entry per race day ("Slalom at Loveland Ski Area")
 // with its carnival beside it. A carnival's alpine and nordic races can be
 // weeks apart (the 2026 Denver Invitational: alpine Jan 12-14, nordic Feb
@@ -220,11 +242,17 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     // A "next event" widget repeats a game without its details (type
     // "upcoming").
     const listed=pageGames.filter(game=>game.type!=='upcoming');
-    const games=sport==='Golf'||sport==='Tennis'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):listed;
+    const games=sport==='Golf'||sport==='Tennis'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):sport==='Track & Field'?mergeMeetDays(listed):listed;
     const today=coloradoToday(now),events=[];
+    // Pages keep showing last season until the next is published ("2025-26
+    // Track and Field Schedule"). Only the current academic year (July-June,
+    // Boulder time) is current; a page with none is a valid empty schedule.
+    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
+    let pastSeason=0;
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
+      if(game.date.slice(0,10)<seasonStart){pastSeason++;continue;}
       let opponent=coloradoOpponent(game.opponent?.title);
       if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
       // Tournament pages also list the other teams' matches ("Denver vs.
@@ -315,8 +343,11 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
       if(squad)event.id=`${event.id}-${squad}`;
       events.push(event);
     }
+    if(!events.length&&pastSeason)emptiedBySeason.add(events);
     return events;
   }
+  const emptiedBySeason=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   // The card's own recap link is already bound to its game: it is checked
   // for opponent and date only (Colorado's stories need not name the sport).
   // Any other candidate must also name the opponent in its headline: a
@@ -434,5 +465,5 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,matchesRecap,isColoradoFinalWithoutStory,attachArchiveStory,isColoradoCrossCountry,attachMeetResults};
+  return{parseSchedule,isEmptySchedule,matchesRecap,isColoradoFinalWithoutStory,attachArchiveStory,isColoradoCrossCountry,attachMeetResults};
 }

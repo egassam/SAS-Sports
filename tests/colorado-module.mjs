@@ -469,4 +469,33 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.equal(spring.filter(e=>/^[WL], \d-\d$/.test(e.headline||'')).length,23);
 }
 
+// Track & Field: the official page only (track-field is SIDEARM's empty
+// template). The page still shows 2025-26: a valid empty schedule (every
+// Colorado sport keeps only the current July-June season). In season, one
+// event per meet ("Colorado at Potts Invitational", Jan 16-17), team places
+// women first ("M 12th, W 13th" -> "Women's team: 13th / Men's team: 12th"),
+// "Completed" without team scoring.
+{
+  const tfUrl='https://cubuffs.com/sports/track-and-field/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Track & Field'),[tfUrl]);
+  const empty=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',tfUrl,now);
+  assert.deepEqual(empty,[]);
+  assert.ok(worker.coloradoHandlers.isEmptySchedule(empty),'a verified empty schedule');
+  recapFixtures.set(tfUrl,fixture('track-and-field-schedule.html.gz'));
+  const live=await worker.fetchLive('colorado','Track & Field');
+  recapFixtures.delete(tfUrl);
+  assert.equal(live.events.length,0);
+  assert.equal(live.error,null,'empty, not unavailable');
+  const season=worker.parseHtml(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',tfUrl,new Date('2026-06-20T15:00:00Z'));
+  assert.equal(season.length,24,'46 meet days become 24 meets');
+  assert.ok(season.every(e=>e.status==='Final'&&e.title.startsWith('Colorado at ')));
+  const by=name=>season.find(e=>e.opponent===name);
+  assert.deepEqual([by('Potts Invitational').display_time,by('Potts Invitational').end_time.slice(0,10)],['Jan 16','2026-01-17']);
+  assert.deepEqual([by('Kit Mayer Classic').display_time,by('Kit Mayer Classic').end_time.slice(0,10)],['Apr 8','2026-04-11']);
+  assert.equal(by('Big 12 Indoor Championships').headline,'Women\'s team: 13th / Men\'s team: 12th');
+  assert.equal(by('Potts Invitational').headline,'Completed');
+  assert.match(by('Potts Invitational').recap_url,/soil-records-as-buffs-conclude-potts-invitational$/,'the last day\'s story');
+  assert.match(by('NCAA Indoor Championships').recap_url,/ncaa-indoor-championships$/,'the latest story any day links');
+}
+
 console.log('Colorado module checks passed');
