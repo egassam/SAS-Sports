@@ -11,7 +11,7 @@ import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers,parseArizonaRecapResults,parseArizonaGolfRecap} from '../src/schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
 import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
-import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
+import {coloradoSchool,createColoradoHandlers,findColoradoTfrrsMeet} from '../src/schools/colorado.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -267,6 +267,59 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   const reconciled=worker.reconcileScoreboardEvents(sc,scored);
   assert.equal(reconciled.length,sc.length);
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>e.title),['Colorado at UCF']);
+}
+
+// Cross Country: the cards publish team places only ("M-3rd/W-NTS",
+// "M-1st/W-1st"); TFRRS adds the points and every Colorado runner.
+{
+  const xcUrl='https://cubuffs.com/sports/cross-country/schedule';
+  const xc=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
+  assert.deepEqual(xc.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`).sort(),[
+    'Final Sep 19 Colorado at Roadrunners Invitational | Women\'s team: 1st / Men\'s team: 1st',
+    'Final Sep 4 Colorado at Wyoming Invitational | Men\'s team: 3rd',
+    'Upcoming Nov 13 Colorado at NCAA Mountain Region | ','Upcoming Nov 21 Colorado at NCAA Championships | ',
+    'Upcoming Oct 31 Colorado at Big 12 Championships | ','Upcoming Oct 9 Colorado at Nuttycombe Invitational | '
+  ].sort(),'meets read as K-State\'s: "at", team places women first, no team without a score');
+  assert.ok(xc.every(e=>e.event_type==='MEET'));
+  const tfrrs={
+    'https://www.tfrrs.org/teams/xc/CO_college_f_Colorado.html':fixture('tfrrs-team-women.html.gz'),
+    'https://www.tfrrs.org/teams/xc/CO_college_m_Colorado.html':fixture('tfrrs-team-men.html.gz'),
+    'https://www.tfrrs.org/results/xc/27698/2026_Roadrunners_Invitational':fixture('tfrrs-xc-roadrunners.html.gz'),
+    'https://www.tfrrs.org/results/xc/28504/Wyoming_Invitational':fixture('tfrrs-xc-wyoming.html.gz')
+  };
+  for(const [url,body] of Object.entries(tfrrs))recapFixtures.set(url,body);
+  // The meet is found by date and a shared distinctive word; another meet's
+  // name on the same day is not it.
+  assert.equal(findColoradoTfrrsMeet(fixture('tfrrs-team-women.html.gz'),{decodeHtml:worker.decodeHtml,date:'2026-09-19',name:'Roadrunners Invitational'}),'https://www.tfrrs.org/results/xc/27698/2026_Roadrunners_Invitational');
+  assert.equal(findColoradoTfrrsMeet(fixture('tfrrs-team-women.html.gz'),{decodeHtml:worker.decodeHtml,date:'2026-09-19',name:'Nuttycombe Invitational'}),null);
+  const [roadrunners,wyoming]=['Roadrunners Invitational','Wyoming Invitational'].map(name=>xc.find(e=>e.opponent===name));
+  await worker.attachOfficialMeetResults(roadrunners);
+  assert.equal(roadrunners.headline,'Women\'s team: 1st · 15 pts / Men\'s team: 1st · 15 pts');
+  assert.deepEqual([...new Set(roadrunners.results.map(r=>r.group))],['Women\'s 6K','Men\'s 8K']);
+  assert.equal(roadrunners.results.filter(r=>r.participant!=='Colorado team').length,15,'every Colorado finisher: 6 women, 9 men (DNF and DNS rows are not results)');
+  assert.ok(!roadrunners.results.some(r=>/^0th|DN[FS]/.test(r.result)));
+  assert.deepEqual(roadrunners.results.slice(0,2),[{group:'Women\'s 6K',participant:'Colorado team',result:'1st · 15 pts'},{group:'Women\'s 6K',participant:'Adrianna Buitelaar',result:'1st · 20:41.9'}]);
+  assert.equal(roadrunners.results_source_url,'https://www.tfrrs.org/results/xc/27698/2026_Roadrunners_Invitational');
+  assert.equal(roadrunners.source.url,roadrunners.recap_url,'the source link stays on the official recap');
+  assert.ok(roadrunners.highlights_verified&&roadrunners.highlights.length>=3);
+  // Wyoming: the women ran without a team score ("W-NTS"; TFRRS lists them
+  // 5th with 0 points): no team place, the first finisher instead.
+  await worker.attachOfficialMeetResults(wyoming);
+  assert.equal(wyoming.headline,'Women\'s: Ella Hagen 2nd / Men\'s team: 3rd · 57 pts');
+  assert.ok(!wyoming.results.some(r=>r.group==='Women\'s 5K'&&r.participant==='Colorado team'),'no women\'s team result');
+  assert.equal(wyoming.results.filter(r=>r.participant!=='Colorado team').length,9,'4 women, 5 men finished');
+  // A team place TFRRS contradicts is refused (the card's headline stays).
+  const wrong={...xc.find(e=>e.opponent==='Roadrunners Invitational'),meet_results_verified:false};
+  wrong.headline='Women\'s team: 2nd / Men\'s team: 1st';
+  await worker.attachOfficialMeetResults(wrong);
+  assert.equal(wrong.meet_results_verified,false);
+  assert.equal(wrong.headline,'Women\'s team: 2nd / Men\'s team: 1st');
+  // The feed attaches them too.
+  recapFixtures.set(xcUrl,fixture('cross-country-schedule.html.gz'));
+  const feed=await worker.fetchLive('colorado','Cross Country');
+  recapFixtures.delete(xcUrl);
+  assert.equal(feed.events.find(e=>e.opponent==='Roadrunners Invitational').results.length,17);
+  for(const url of Object.keys(tfrrs))recapFixtures.delete(url);
 }
 
 console.log('Colorado module checks passed');
