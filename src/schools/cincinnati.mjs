@@ -7,12 +7,13 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
     Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
     // Both teams, labeled to match the official men's and women's cards.
     Basketball:[
       {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
@@ -26,7 +27,7 @@ export const cincinnatiSchool={
     'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
   },
   scheduleUrls:{
-    'cincinnati|Baseball':['https://gobearcats.com/sports/baseball/schedule','https://gobearcats.com/'],
+    'cincinnati|Baseball':'https://gobearcats.com/sports/baseball/schedule',
     'cincinnati|Basketball':['https://gobearcats.com/sports/mens-basketball/schedule','https://gobearcats.com/sports/womens-basketball/schedule'],
     'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
     'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
@@ -210,8 +211,9 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       // A game two days past without a published result (the Aug 8 soccer
       // exhibition, "Evansville (EXH)") is neither a K-State-style final nor
       // upcoming. Yesterday's stays: a night game can run past midnight, and
-      // the result is posted after it ends.
-      if(!meet&&!result&&firstDay<today-86400000)continue;
+      // the result is posted after it ends. A multi-day event (the Big 12
+      // baseball tournament, May 25-29) counts from its last day.
+      if(!meet&&!result&&lastDay<today-86400000)continue;
       const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over?null:clock||null,
@@ -228,8 +230,14 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       if(team)event.id=`${event.id}-${team}`;
       events.push(event);
     }
-    return events.length?events:null;
+    // A page with cards but nothing current is a valid empty schedule, not a
+    // failed source: the shared parsers must not read it again (they made
+    // events out of the page's schema data).
+    if(!events.length){if(!cardBlocks(raw).length)return null;emptied.add(events);}
+    return events;
   }
+  const emptied=new WeakSet();
+  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptied.has(events);
   const isCincinnatiCrossCountry=event=>event?.school_id==='cincinnati'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   const download=async url=>{try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():null;}catch{return null;}};
   // Feed and expanded view both call this; the second call is a no-op. The
@@ -314,5 +322,5 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
     const opponent=headlineKey(event.opponent).trim();
     return opponent.length>=2&&headlineKey(title).includes(` ${opponent} `);
   }
-  return{parseSchedule,matchesRecap,isCincinnatiCrossCountry,attachMeetResults};
+  return{parseSchedule,isEmptySchedule,matchesRecap,isCincinnatiCrossCountry,attachMeetResults};
 }
