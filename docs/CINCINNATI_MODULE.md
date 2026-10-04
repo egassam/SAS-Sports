@@ -11,8 +11,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Football | #202 | Card reader: 4 finals `W, 31-26` with their own recaps; 8 upcoming, `Oct 3, 11:00 PM` at Arizona, the rest date only (unscheduled); ESPN live score (shared FBS-group request) |
 | Volleyball | #203 | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
 | Soccer | #204 | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
-| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
-| Basketball | | shared parsers |
+| Cross Country | #205 | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
+| Basketball | (this PR) | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | | shared parsers |
 | Golf | | shared parsers |
 | Lacrosse | | shared parsers |
@@ -85,6 +85,14 @@ Results: RedHawk Rumble 18 rows (`Women's 5K`, `Men's 6K`), All-Ohio 11 rows (wo
 **Where the recap and TFRRS differ (Gans Creek):** the recap gives the women 574 points and lists Deana Hudson as `173.`; TFRRS gives 575 and places her 192nd in 22:06.4. 173 is her team-scoring position (TFRRS's SCORE column), and the five scorers' positions sum to 575 (87+94+100+121+173). The TFRRS figures are shown.
 
 ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
+
+## Basketball (`4.50.4-cincinnati-basketball`)
+
+Production loaded the men's and women's pages plus the generic `/sports/basketball/` page and the homepage (79 upcoming). Basketball now routes to the two official pages only, both labeled, with `-mens`/`-womens` event ids (both teams play Nov 26-27). The card reader gives men's 37 and women's 32 games with published Eastern times (`Oct 7, 3:00 PM` vs Ohio State; `TBA` shows the date only). The men's two August games on the Bahamas tour (`W, 110-63` vs Victoria, `W, 107-66` vs Calgary, under the "Baha Mar Hoops Summer League" heading) are finals with their recaps, as published.
+
+**Tournament headings.** Cards sit in titled wrappers (`Exhibition`, `Cancun Challenge`, `Crosstown Shootout`); a card's heading is the titled wrapper that encloses it. The women's first game sits under `Exhibition` and reads `Georgetown College (Exhibition)`, as K-State labels exhibitions; soccer's `(EXH)` reads the same way.
+
+**Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Cincinnati at Kansas and women's UCF at Cincinnati; Binghamton (also "Bearcats") plays in both payloads and is never taken for Cincinnati.
 
 ## Limitations
 

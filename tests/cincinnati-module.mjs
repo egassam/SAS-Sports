@@ -257,4 +257,32 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(worker.liveScoreboardProviders(school,'Cross Country'),[]);
 }
 
+// Basketball: the two official pages only (production also loaded the
+// generic /sports/basketball/ page and the homepage), labeled by team.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Basketball'),['https://gobearcats.com/sports/mens-basketball/schedule','https://gobearcats.com/sports/womens-basketball/schedule']);
+  assert.ok(worker.schoolCombinedSports(school).has('Basketball'));
+  const bbNow=new Date('2026-10-04T02:00:00Z');
+  const men=worker.parseHtml(fixture('basketball-mens-schedule.html.gz'),school,'Basketball','https://gobearcats.com/sports/mens-basketball/schedule',bbNow);
+  const women=worker.parseHtml(fixture('basketball-womens-schedule.html.gz'),school,'Basketball','https://gobearcats.com/sports/womens-basketball/schedule',bbNow);
+  assert.deepEqual([men.length,women.length],[37,32],'one event per official game');
+  assert.ok(men.every(e=>e.id.endsWith('-mens'))&&women.every(e=>e.id.endsWith('-womens')),'team ids keep same-day games apart');
+  // The men's August Bahamas tour games are the only finals, with their recaps.
+  assert.deepEqual(men.filter(e=>e.status==='Final').map(e=>`${e.title} ${e.display_time} ${e.headline}`),['Cincinnati vs Victoria Aug 4 W, 110-63','Cincinnati vs Calgary Aug 5 W, 107-66']);
+  assert.ok(men.filter(e=>e.status==='Final').every(e=>e.recap_url?.startsWith('https://gobearcats.com/news/2026/08/')));
+  // Published Eastern times; "TBA" shows the date only.
+  assert.deepEqual(men.slice(2,6).map(e=>`${e.title} ${e.display_time}`),['Cincinnati vs Ohio State Oct 7, 3:00 PM','Cincinnati vs Illinois Oct 17, 7:00 PM','Cincinnati vs Oakland Oct 27, 7:00 PM','Cincinnati vs American Nov 2']);
+  // The women's page heads its first game "Exhibition".
+  assert.deepEqual(women.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['Cincinnati vs Georgetown College (Exhibition) Oct 28, 6:30 PM','Cincinnati vs East Texas A&M Nov 4, 6:30 PM']);
+  assert.equal(women.filter(e=>/Exhibition/.test(e.title)).length,1);
+  // Live scores: ESPN's men's and women's scoreboards, labeled to match the
+  // official cards. Binghamton (also "Bearcats") is never Cincinnati.
+  const providers=worker.liveScoreboardProviders(school,'Basketball');
+  assert.deepEqual(providers.map(p=>[p.path,p.team_label]),[['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]]);
+  const scored=[['basketball-mens-espn-2026-02-21.json.gz',providers[0]],['basketball-womens-espn-2026-02-21.json.gz',providers[1]]].flatMap(([file,provider])=>worker.parseScoreboardPayload(JSON.parse(fixture(file)),school,'Basketball',provider,`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?groups=50&limit=300&dates=20260221`,new Date('2026-02-22T12:00:00Z')));
+  assert.deepEqual(scored.map(e=>[e.team_label,e.opponent,e.status]),[["Men's",'Kansas','Final'],["Women's",'UCF','Final']]);
+  const payload=JSON.parse(fixture('basketball-mens-espn-2026-02-21.json.gz'));
+  assert.ok(payload.events.some(e=>/Binghamton Bearcats/.test(e.name)));
+}
+
 console.log('Cincinnati module checks passed');
