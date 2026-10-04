@@ -46,18 +46,77 @@ const SCOREBOARD_USER_AGENT=`Mozilla/5.0 (compatible; SAS-Sports/${VERSION})`;
 let sourceCacheOrigin=null;
 const sourceFetch=createSourceFetch({fetch:(...args)=>fetch(...args),headers:HEADERS,cacheOrigin:()=>sourceCacheOrigin});
 
+// School modules. Shared code asks this list instead of naming schools; each
+// entry carries the module's school data (routes, Instagram tags, combined
+// sports, scoreboards) and only the hooks that school uses. A new module needs
+// its import, its handlers (below) and one entry here
+// (scripts/scaffold-school.mjs adds all three). Hooks, all optional:
+//   parseSchedule(raw,school,sport,url,now)  events, or null for the shared parsers
+//   scheduleEvents(merged,raw,school,sport,url,now)  filter/enrich the merged events
+//   isEmptySchedule(events,parsed)  the page is a verified empty schedule
+//   matchesRecap(html,event,url)  this story is the event's recap
+//   crossCountry {matches(event),attach(event)}  official meet results
+//   results [{matches,attach}]  other official results, after cross country
+//   beforeHighlights(event)  attach a story before the expanded view reads it
+//   feed(events,sport)  events, after the feed's pages are merged
+//   meetDayIsLast  a multi-day meet's recap is dated its last day
+//   newsPath  where the sport's stories are listed (default /news)
+// Hooks run only for their own school (each checks the event's school).
+const SCHOOL_MODULES=[
+  {school:kstateSchool},
+  {school:kansasSchool,parseSchedule:(...args)=>kansasHandlers.parseSchedule(...args),matchesRecap:(...args)=>kansasHandlers.matchesRecap(...args),meetDayIsLast:true},
+  {school:oklahomaStateSchool,
+    scheduleEvents:(merged,raw,school,sport,url)=>oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,url),raw,school,sport,url),
+    isEmptySchedule:events=>oklahomaStateHandlers.isEmptyProgramSchedule(events),
+    crossCountry:{matches:event=>oklahomaStateHandlers.isOklahomaStateCrossCountry(event),attach:event=>oklahomaStateHandlers.attachMeetResults(event)}},
+  {school:utahSchool,
+    scheduleEvents:(merged,raw,school,sport,url,now)=>utahHandlers.enrichScheduleEvents(utahHandlers.filterEvents(merged,raw,school,sport,url,now),raw,school,sport,url),
+    isEmptySchedule:events=>utahHandlers.isEmptySchedule(events),
+    crossCountry:{matches:event=>utahHandlers.isUtahCrossCountry(event),attach:event=>utahHandlers.attachMeetResults(event)}},
+  {school:arizonaStateSchool,parseSchedule:(...args)=>arizonaStateHandlers.parseSchedule(...args),isEmptySchedule:events=>arizonaStateHandlers.isEmptySchedule(events),crossCountry:{matches:event=>arizonaStateHandlers.isArizonaStateCrossCountry(event),attach:event=>arizonaStateHandlers.attachMeetResults(event)}},
+  {school:byuSchool,parseSchedule:(...args)=>byuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>byuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>byuHandlers.matchesRecap(...args),crossCountry:{matches:event=>byuHandlers.isByuCrossCountry(event),attach:event=>byuHandlers.attachMeetResults(event)},meetDayIsLast:true},
+  {school:ucfSchool,parseSchedule:(...args)=>ucfHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ucfHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ucfHandlers.matchesRecap(...args),crossCountry:{matches:event=>ucfHandlers.isUcfCrossCountry(event),attach:event=>ucfHandlers.attachMeetResults(event)}},
+  {school:arizonaSchool,parseSchedule:(...args)=>arizonaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>arizonaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>arizonaHandlers.matchesRecap(...args),crossCountry:{matches:event=>arizonaHandlers.isArizonaCrossCountry(event),attach:event=>arizonaHandlers.attachMeetResults(event)},
+    // Golf results come from each tournament's own story.
+    results:[{matches:event=>arizonaHandlers.isArizonaGolf(event),attach:event=>arizonaHandlers.attachGolfResults(event)}],
+    // Tennis tournaments take their story from the team's archive.
+    beforeHighlights:async event=>{if(arizonaHandlers.isArizonaTennisTournament(event))await arizonaHandlers.attachTennisStory(event);},
+    feed:async(events,sport)=>{
+      if(sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
+      if(sport==='Tennis'){
+        await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
+        // As K-State's, a past tournament with no team result is listed only
+        // when Arizona published a story about it.
+        events=events.filter(event=>!arizonaHandlers.isArizonaTennisTournament(event));
+      }
+      return events;
+    },
+    // arizonawildcats.com keeps a sport's stories at /archives (/news is a 404).
+    newsPath:'/archives'},
+  {school:baylorSchool,parseSchedule:(...args)=>baylorHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>baylorHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>baylorHandlers.matchesRecap(...args),crossCountry:{matches:event=>baylorHandlers.isBaylorCrossCountry(event),attach:event=>baylorHandlers.attachMeetResults(event)},
+    // Golf finals the schedule links no story for take theirs from the team's
+    // archive.
+    beforeHighlights:async event=>{if(baylorHandlers.isBaylorGolfWithoutStory(event))await baylorHandlers.attachGolfStory(event);},
+    feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));return events;}},
+  {school:cincinnatiSchool,parseSchedule:(...args)=>cincinnatiHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>cincinnatiHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>cincinnatiHandlers.matchesRecap(...args),crossCountry:{matches:event=>cincinnatiHandlers.isCincinnatiCrossCountry(event),attach:event=>cincinnatiHandlers.attachMeetResults(event)}},
+  {school:coloradoSchool,parseSchedule:(...args)=>coloradoHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>coloradoHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>coloradoHandlers.matchesRecap(...args),crossCountry:{matches:event=>coloradoHandlers.isColoradoCrossCountry(event),attach:event=>coloradoHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(coloradoHandlers.isColoradoFinalWithoutStory(event))await coloradoHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(coloradoHandlers.isColoradoFinalWithoutStory).map(event=>coloradoHandlers.attachArchiveStory(event)));return events;}}
+];
+const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
+// One map of a school-data field across every module (keys are 'school|Sport').
+const moduleEntries=field=>Object.assign({},...SCHOOL_MODULES.map(entry=>entry.school[field]||{}));
+const moduleCrossCountry=event=>SCHOOL_MODULES.find(entry=>entry.crossCountry?.matches(event))?.crossCountry||null;
+
 // Accounts verified through direct tags from an official school/team social
 // account. These are explicit identity matches, not name-based guesses.
 const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
-  ...kstateSchool.verifiedInstagrams,
-  ...kansasSchool.verifiedInstagrams,
-  ...oklahomaStateSchool.verifiedInstagrams,
+  ...moduleEntries('verifiedInstagrams'),
   'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
   'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
-  ...byuSchool.verifiedInstagrams,
-  ...cincinnatiSchool.verifiedInstagrams,
-  ...coloradoSchool.verifiedInstagrams,
   'houston|Tennis|Petja Drame':'https://www.instagram.com/petja.drame/'
   ,'houston|Tennis|Valeriia Krokhotina':'https://www.instagram.com/leriiakrokhotina/'
   ,'houston|Tennis|Iva Sepa':'https://www.instagram.com/sepa_iva/'
@@ -80,15 +139,7 @@ const SPORT_PATHS={
 };
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
-  ...oklahomaStateSchool.rosterUrls,
-  ...utahSchool.rosterUrls,
-  ...arizonaStateSchool.rosterUrls,
-  ...byuSchool.rosterUrls,
-  ...ucfSchool.rosterUrls,
-  ...arizonaSchool.rosterUrls,
-  ...baylorSchool.rosterUrls,
-  ...cincinnatiSchool.rosterUrls,
-  ...coloradoSchool.rosterUrls,
+  ...moduleEntries('rosterUrls'),
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
@@ -115,18 +166,7 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ,'west-virginia|Football':'https://wvusports.com/sports/football/roster'
 }));
 function schoolCombinedSports(school){
-  if(school?.id==='kansas')return kansasSchool.combinedSports;
-  if(school?.id==='kstate')return kstateSchool.combinedSports;
-  if(school?.id==='oklahoma-state')return oklahomaStateSchool.combinedSports;
-  if(school?.id==='utah')return utahSchool.combinedSports;
-  if(school?.id==='arizona-state')return arizonaStateSchool.combinedSports;
-  if(school?.id==='byu')return byuSchool.combinedSports;
-  if(school?.id==='ucf')return ucfSchool.combinedSports;
-  if(school?.id==='arizona')return arizonaSchool.combinedSports;
-  if(school?.id==='baylor')return baylorSchool.combinedSports;
-  if(school?.id==='cincinnati')return cincinnatiSchool.combinedSports;
-  if(school?.id==='colorado')return coloradoSchool.combinedSports;
-  return COMBINED_TEAM_SPORTS;
+  return schoolModule(school?.id)?.school.combinedSports||COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
   if(!schoolCombinedSports(school).has(sport))return null;
@@ -141,17 +181,7 @@ function labelTeamEvents(events,school,sport,url){
 }
 
 const KNOWN_URLS=new Map(Object.entries({
-  ...kstateSchool.scheduleUrls,
-  ...kansasSchool.scheduleUrls,
-  ...oklahomaStateSchool.scheduleUrls,
-  ...utahSchool.scheduleUrls,
-  ...arizonaStateSchool.scheduleUrls,
-  ...byuSchool.scheduleUrls,
-  ...ucfSchool.scheduleUrls,
-  ...arizonaSchool.scheduleUrls,
-  ...baylorSchool.scheduleUrls,
-  ...cincinnatiSchool.scheduleUrls,
-  ...coloradoSchool.scheduleUrls,
+  ...moduleEntries('scheduleUrls'),
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -483,7 +513,7 @@ async function featuredAthletes(schoolId,sport){
     }));
     // Colorado's ski roster publishes only two personal Instagram links; the
     // third slot takes an official roster profile, as the slower path does.
-    if(schoolId==='colorado'&&coloradoSchool.profileFillSports.has(sport)&&selected.length<3){
+    if(schoolModule(schoolId)?.school.profileFillSports?.has(sport)&&selected.length<3){
       const used=new Set(selected.map(athlete=>athlete.profile_url));
       selected.push(...profiles.filter(profile=>!used.has(profile.url)&&profile.image_url).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name)).slice(0,3-selected.length)
         .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url})));
@@ -811,18 +841,10 @@ async function attachOfficialMeetResults(event){
   // K-State's recap contains both divisions. A single linked PDF can contain
   // only women and must never replace the event's complete recap table.
   if(isKStateCrossCountry(event))return attachKStateRecapResults(event);
-  // Oklahoma State's results document holds both collegiate races.
-  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(event))return oklahomaStateHandlers.attachMeetResults(event);
-  // Utah publishes its race results as tables in the official meet recap.
-  if(utahHandlers.isUtahCrossCountry(event))return utahHandlers.attachMeetResults(event);
-  if(arizonaStateHandlers.isArizonaStateCrossCountry(event))return arizonaStateHandlers.attachMeetResults(event);
-  if(byuHandlers.isByuCrossCountry(event))return byuHandlers.attachMeetResults(event);
-  if(ucfHandlers.isUcfCrossCountry(event))return ucfHandlers.attachMeetResults(event);
-  if(arizonaHandlers.isArizonaCrossCountry(event))return arizonaHandlers.attachMeetResults(event);
-  if(baylorHandlers.isBaylorCrossCountry(event))return baylorHandlers.attachMeetResults(event);
-  if(cincinnatiHandlers.isCincinnatiCrossCountry(event))return cincinnatiHandlers.attachMeetResults(event);
-  if(coloradoHandlers.isColoradoCrossCountry(event))return coloradoHandlers.attachMeetResults(event);
-  if(arizonaHandlers.isArizonaGolf(event))return arizonaHandlers.attachGolfResults(event);
+  // School modules with their own official results path (Oklahoma State's
+  // results document, Utah's recap tables, TFRRS, ...).
+  const crossCountry=moduleCrossCountry(event);if(crossCountry)return crossCountry.attach(event);
+  const own=SCHOOL_MODULES.flatMap(entry=>entry.results||[]).find(hook=>hook.matches(event));if(own)return own.attach(event);
   if(event?.event_type!=='MEET'||event.status!=='Final'||!event.result_url)return event;
   // Exact rows parsed from the event's official recap are already tied to this
   // meet. Never replace them with a season/cumulative PDF linked from it.
@@ -1089,14 +1111,8 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
   return events;
 }
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
-  if(school.id==='kansas'){const events=kansasHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='arizona-state'){const events=arizonaStateHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='byu'){const events=byuHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='ucf'){const events=ucfHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='arizona'){const events=arizonaHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='baylor'){const events=baylorHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='cincinnati'){const events=cincinnatiHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
-  if(school.id==='colorado'){const events=coloradoHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
+  const ownReader=schoolModule(school.id)?.parseSchedule;
+  if(ownReader){const events=ownReader(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
@@ -1111,7 +1127,8 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   ];
   for(const adapter of sourceAdapters)eventLists.push(adapter.parse(raw,school,sport,sourceUrl,now));
   const merged=mergeEvents(eventLists);
-  const events=school.id==='oklahoma-state'?oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,sourceUrl),raw,school,sport,sourceUrl):school.id==='utah'?utahHandlers.enrichScheduleEvents(utahHandlers.filterEvents(merged,raw,school,sport,sourceUrl,now),raw,school,sport,sourceUrl):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
+  const scheduleEvents=schoolModule(school.id)?.scheduleEvents;
+  const events=scheduleEvents?scheduleEvents(merged,raw,school,sport,sourceUrl,now):merged,rank={Live:0,Today:1,Upcoming:2,Final:3,Unknown:4};
   return events.sort((a,b)=>{const r=(rank[a.status]??4)-(rank[b.status]??4);if(r)return r;const ta=a.start_time?Date.parse(a.start_time):0,tb=b.start_time?Date.parse(b.start_time):0;return a.status==='Final'?tb-ta:ta-tb;});
 }
 function compactScheduleHtml(raw,sourceUrl){
@@ -1414,18 +1431,12 @@ ${article.slice(0,10000)}`;
 async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,env=null,aiTargetId=null){
   const target=events.find(e=>e.status==='Final'&&e.id===aiTargetId);
   if(!target)return events;
-  // Arizona tennis tournaments take their story from the team's archive.
-  if(arizonaHandlers.isArizonaTennisTournament(target))await arizonaHandlers.attachTennisStory(target);
-  // Baylor golf finals the schedule links no story for take theirs from the
-  // team's archive.
-  if(baylorHandlers.isBaylorGolfWithoutStory(target))await baylorHandlers.attachGolfStory(target);
-  // Colorado finals the schedule links no story for take theirs from the
-  // sport's archive.
-  if(coloradoHandlers.isColoradoFinalWithoutStory(target))await coloradoHandlers.attachArchiveStory(target);
-  // Oklahoma State and Utah meets use the same official results path as the
-  // feed, with the card's own links; recap prose and AI extraction must not
+  // A school module can attach a story the schedule does not link.
+  await schoolModule(target.school_id)?.beforeHighlights?.(target);
+  // Meets with a school module's official results path use it, as the feed
+  // does, with the card's own links; recap prose and AI extraction must not
   // replace it.
-  if(oklahomaStateHandlers.isOklahomaStateCrossCountry(target)||utahHandlers.isUtahCrossCountry(target)||arizonaStateHandlers.isArizonaStateCrossCountry(target)||byuHandlers.isByuCrossCountry(target)||ucfHandlers.isUcfCrossCountry(target)||arizonaHandlers.isArizonaCrossCountry(target)||baylorHandlers.isBaylorCrossCountry(target)||cincinnatiHandlers.isCincinnatiCrossCountry(target)||coloradoHandlers.isColoradoCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
+  if(moduleCrossCountry(target)){await attachOfficialMeetResults(target);return events;}
   // KU publishes separate race PDFs; the generic first-link resolver selects
   // its cumulative season PDF and must not overwrite verified race rows.
   if(target.school_id!=='kansas'&&!isKStateCrossCountry(target)){
@@ -1437,7 +1448,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // very large schedule document when this direct identity is available.
   const recapIndex=target.recap_url?{map:new Map(),candidates:[]}:recapUrlsByEvent(raw,school,sport,sourceUrl,now);
   const direct=target.recap_url||recapIndex.map.get(eventMergeKey(target));
-  const day=((target.school_id==='kansas'||target.school_id==='byu')&&target.event_type==='MEET'?target.end_time||target.start_time:target.start_time)?.slice(0,10)||'';
+  const day=(schoolModule(target.school_id)?.meetDayIsLast&&target.event_type==='MEET'?target.end_time||target.start_time:target.start_time)?.slice(0,10)||'';
   const datePath=day?new RegExp(`/news/${day.slice(0,4)}/0?${Number(day.slice(5,7))}/0?${Number(day.slice(8,10))}/`):null;
   const ordered=[direct,...recapIndex.candidates.filter(url=>datePath?.test(url)),...recapIndex.candidates].filter(Boolean);
   const candidates=[...new Set(ordered)].slice(0,8);
@@ -1448,7 +1459,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):target.school_id==='arizona'?arizonaHandlers.matchesRecap(html,target,candidate):target.school_id==='baylor'?baylorHandlers.matchesRecap(html,target,candidate):target.school_id==='cincinnati'?cincinnatiHandlers.matchesRecap(html,target,candidate):target.school_id==='colorado'?coloradoHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if((schoolModule(target.school_id)?.matchesRecap||recapMatchesEvent)(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;
@@ -1463,8 +1474,8 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   if(!recapUrl){
     try{
       const newsUrl=new URL(sourceUrl);
-      // arizonawildcats.com keeps a sport's stories at /archives (/news is a 404).
-      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,school.id==='arizona'?'/archives':'/news');
+      // Most sites list a sport's stories at /news (see SCHOOL_MODULES.newsPath).
+      const newsPath=newsUrl.pathname.replace(/\/schedule(?:\/.*)?$/i,schoolModule(school.id)?.newsPath||'/news');
       if(newsPath!==newsUrl.pathname){
         newsUrl.pathname=newsPath;newsUrl.search='';
         const r=await sourceFetch(newsUrl,{},{ttl:SOURCE_TTL.listing});
@@ -1574,7 +1585,7 @@ async function fetchUrl(url,school,sport,now,env=null,aiTargetId=null){
   }
   // Oklahoma State's shared program page can hold no meets for this sport;
   // a Utah spring page can hold only a past season.
-  const empty_schedule=r.ok&&(school.id==='oklahoma-state'&&oklahomaStateHandlers.isEmptyProgramSchedule(events)||school.id==='utah'&&utahHandlers.isEmptySchedule(events)||school.id==='arizona-state'&&arizonaStateHandlers.isEmptySchedule(events)||school.id==='byu'&&byuHandlers.isEmptySchedule(parsed)||school.id==='ucf'&&ucfHandlers.isEmptySchedule(parsed)||school.id==='arizona'&&arizonaHandlers.isEmptySchedule(parsed)||school.id==='baylor'&&baylorHandlers.isEmptySchedule(parsed)||school.id==='cincinnati'&&cincinnatiHandlers.isEmptySchedule(parsed)||school.id==='colorado'&&coloradoHandlers.isEmptySchedule(parsed));
+  const empty_schedule=r.ok&&!!schoolModule(school.id)?.isEmptySchedule?.(events,parsed);
   return{requested_url:url,url:finalUrl,http_status:r.status,ok:r.ok,source_cache:r.headers.get('x-sas-source')||null,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,content_length:html.length,label_count:labels.length,event_count:events.length,empty_schedule,has_upcoming:/Upcoming Event:/i.test(parseable),has_completed:/Completed Event:/i.test(parseable),events};
 }
 
@@ -1609,7 +1620,7 @@ function scoreboardQuery(provider){
   return'limit=1000';
 }
 function liveScoreboardProviders(school,sport){
-  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:school?.id==='arizona'?arizonaSchool.liveScoreboards?.[sport]:school?.id==='baylor'?baylorSchool.liveScoreboards?.[sport]:school?.id==='cincinnati'?cincinnatiSchool.liveScoreboards?.[sport]:school?.id==='colorado'?coloradoSchool.liveScoreboards?.[sport]:null;
+  const configured=schoolModule(school?.id)?.school.liveScoreboards?.[sport];
   if(configured?.length)return configured;
   return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
 }
@@ -1730,20 +1741,13 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // feed (see freshGroupedFeed).
   const officialFailed=!successful.length&&!emptySchedule;
   let events=mergeEvents(successful.map(x=>x.events));
+  // School modules finish their own sports (golf and tennis stories, archive
+  // stories).
+  const feedHook=schoolModule(school.id)?.feed;if(feedHook)events=await feedHook(events,sport);
   // Cross-country cards must use one global results contract. Enrich every
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
-  // Arizona golf results come from each tournament's own story.
-  if(school.id==='arizona'&&sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
-  if(school.id==='baylor'&&sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));
-  if(school.id==='colorado')await Promise.all(events.filter(coloradoHandlers.isColoradoFinalWithoutStory).map(event=>coloradoHandlers.attachArchiveStory(event)));
-  if(school.id==='arizona'&&sport==='Tennis'){
-    await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
-    // As K-State's, a past tournament with no team result is listed only
-    // when Arizona published a story about it.
-    events=events.filter(event=>!arizonaHandlers.isArizonaTennisTournament(event));
-  }
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||oklahomaStateHandlers.isOklahomaStateCrossCountry(event)||utahHandlers.isUtahCrossCountry(event)||arizonaStateHandlers.isArizonaStateCrossCountry(event)||byuHandlers.isByuCrossCountry(event)||ucfHandlers.isUcfCrossCountry(event)||arizonaHandlers.isArizonaCrossCountry(event)||baylorHandlers.isBaylorCrossCountry(event)||cincinnatiHandlers.isCincinnatiCrossCountry(event)||coloradoHandlers.isColoradoCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||moduleCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
     events=reconcileScoreboardEvents(events,scoreboard);
@@ -1832,7 +1836,7 @@ const HIGHLIGHT_STORE_TTL=30*24*60*60;
 // A school module may carry a highlight revision: raising it retires that
 // school's stored finals after a change to how they are written (Baylor's
 // cross country highlights went from two lines to four).
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${school==='baylor'&&baylorSchool.highlightRevision?`|r${baylorSchool.highlightRevision}`:''}`;
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

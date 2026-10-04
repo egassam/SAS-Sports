@@ -4,8 +4,7 @@
 //     combinations and verified Instagram tags production uses today, and a
 //     schedule reader that defers to the shared parsers (returns null);
 //   - the school's entries moved out of src/index.js and the module wired in
-//     (import, the three route/tag maps, combined sports, handlers, the
-//     parseSchedule hook);
+//     (import, handlers, one SCHOOL_MODULES entry);
 //   - tests/<id>-module.mjs checking route parity and module ownership, added
 //     to `npm test` and `npm run test:release`.
 // Output is unchanged for every school: the new module only restates
@@ -113,11 +112,10 @@ const insertAfterLast=(text,pattern,line,label)=>{
   return text.slice(0,at)+'\n'+line+text.slice(at);
 };
 next=insertAfterLast(next,/^import \{[^}]*\} from '\.\/schools\/[^']+';$/gm,`import {${schoolVar},${factory}} from './schools/${id}.mjs';`,'the import');
-for(const field of ['verifiedInstagrams','rosterUrls','scheduleUrls'])
-  next=insertAfterLast(next,new RegExp(`^  \\.\\.\\.\\w+School\\.${field},$`,'gm'),`  ...${schoolVar}.${field},`,field);
-next=insertAfterLast(next,/^  if\(school\?\.id==='[^']+'\)return \w+School\.combinedSports;$/gm,`  if(school?.id===${quote(id)})return ${schoolVar}.combinedSports;`,'combined sports');
 next=insertAfterLast(next,/^const \w+Handlers=create\w+Handlers\([^\n]*\);$/gm,`const ${handlersVar}=${factory}({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});`,'the handlers');
-next=insertAfterLast(next,/^  if\(school\.id==='[^']+'\)\{const events=\w+Handlers\.parseSchedule\(raw,school,sport,sourceUrl,now\);if\(events!==null\)return events;\}$/gm,`  if(school.id===${quote(id)}){const events=${handlersVar}.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}`,'the parseSchedule hook');
+// One SCHOOL_MODULES entry: its routes, tags and combined sports come from the
+// module's school data; the schedule reader is the only hook to start with.
+next=insertAfterLast(next,/^  \{school:\w+School[\s\S]*?\}(?=\n\];\nconst schoolModule=)/gm,`  ,{school:${schoolVar},parseSchedule:(...args)=>${handlersVar}.parseSchedule(...args)}`,'the SCHOOL_MODULES entry');
 
 const testText=`import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -192,9 +190,4 @@ const diff=sports.filter(sport=>JSON.stringify(after[sport])!==JSON.stringify(to
 if(diff.length){console.error(`Route parity FAILED for ${diff.join(', ')}; check src/index.js and the module`);process.exit(1)}
 console.log(`\nWrote src/schools/${id}.mjs, tests/${id}-module.mjs; wired src/index.js and package.json. Route parity: ${sports.length}/${sports.length} sports identical.`);
 console.log(`Next: node tests/${id}-module.mjs, then npm run test:release.`);
-console.log(`Shared hooks other schools use, for the sports that need them (grep src/index.js for "coloradoHandlers" or "cincinnatiHandlers"):
-  - Cross Country: attachMeetResults (TFRRS: src/tfrrs-results.mjs) in attachOfficialMeetResults and the XC filter in fetchLive
-  - recap matcher dispatch in attachOfficialHighlights
-  - empty_schedule (isEmptySchedule) in fetchLive
-  - liveScoreboards in liveScoreboardProviders
-  - archive stories, profile fill: only if the school needs them`);
+console.log(`Hooks for the sports that need them go in the school's SCHOOL_MODULES entry in src/index.js (listed above it): crossCountry (TFRRS: src/tfrrs-results.mjs), matchesRecap, isEmptySchedule, beforeHighlights/feed (archive stories), results; scoreboards go in the module's liveScoreboards.`);
