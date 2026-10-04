@@ -345,7 +345,9 @@ contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress ga
 contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
 contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');
 contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
-contains(worker,/kstateSchool\.liveScoreboards\?\.\[sport\]/,'K-State scoreboards must be explicitly configured per sport');
+contains(worker,/schoolModule\(school\?\.id\)\?\.school\.liveScoreboards\?\.\[sport\]/,'School scoreboards must be explicitly configured per sport, in the school module');
+contains(worker,/\{school:kstateSchool\}/,'K-State must be registered in SCHOOL_MODULES (its scoreboards live in its module)');
+for(const school of ['kansas','byu'])contains(worker,new RegExp(`\\{school:${school}School,[^\\n]*meetDayIsLast:true`),`${school} meet recaps are searched from the meet's last day`);
 
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and
 // bypass the worker cache so upcoming events can become live and finals can land.

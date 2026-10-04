@@ -1,18 +1,20 @@
 // Sets up a school module for an unconverted catalog school, the step every
 // conversion started with by hand ("Setup", route parity):
 //   - src/schools/<id>.mjs with the exact schedule and roster routes, program
-//     combinations and verified Instagram tags production uses today, and a
-//     schedule reader that defers to the shared parsers (returns null);
+//     combinations and verified Instagram tags production uses today, and
+//     the shared SIDEARM schedule reader (src/sidearm-schedule-reader.mjs)
+//     with no sports enabled yet, so the shared parsers still read every page;
 //   - the school's entries moved out of src/index.js and the module wired in
-//     (import, the three route/tag maps, combined sports, handlers, the
-//     parseSchedule hook);
+//     (import, handlers, one SCHOOL_MODULES entry);
 //   - tests/<id>-module.mjs checking route parity and module ownership, added
 //     to `npm test` and `npm run test:release`.
 // Output is unchanged for every school: the new module only restates
-// today's routes. Then convert one sport at a time: add it to the reader
-// (start from the closest finished module: Colorado/Baylor for SIDEARM page
-// data, Cincinnati for WMT cards), with fixtures and tests. The script prints
-// the shared hooks other schools use, for the sports that need them.
+// today's routes. Then convert one sport at a time: add it to pageDataSports
+// with fixtures and tests, and change a reader setting only where the site
+// differs (Colorado, Baylor and Arizona show the settings in use). A site
+// that is not SIDEARM (WMT: Cincinnati, UCF) needs its own reader instead.
+// The script prints the hooks other schools use, for the sports that need
+// them.
 //
 //   node scripts/scaffold-school.mjs --school=houston            (dry run: prints the plan)
 //   node scripts/scaffold-school.mjs --school=houston --write
@@ -41,13 +43,14 @@ const quote=value=>`'${String(value).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}'
 function evaluate(indexSource){
   const source=indexSource.replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
   const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:()=>{throw Error('no network')}};
-  return Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,VERIFIED_TEAM_TAG_INSTAGRAM};')(...Object.values(deps));
+  return Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,VERIFIED_TEAM_TAG_INSTAGRAM,schoolTimeZone};')(...Object.values(deps));
 }
 const index=read('src/index.js'),before=evaluate(index);
 const routes=worker=>Object.fromEntries(sports.map(sport=>[sport,{schedule:worker.candidateUrls(school,sport),roster:worker.rosterUrls(school,sport),combined:worker.schoolCombinedSports(school).has(sport)}]));
 const today=routes(before);
 const tags=[...before.VERIFIED_TEAM_TAG_INSTAGRAM].filter(([key])=>key.startsWith(`${id}|`));
 const combined=[...before.schoolCombinedSports(school)].sort();
+const timeZone=before.schoolTimeZone(school),pageHost=new URL(today[sports.find(sport=>today[sport].schedule.length)].schedule[0]).hostname;
 const host=new URL(school.athletics_url||today[sports[0]].schedule[0]).hostname.replace(/^www\./,'');
 
 const routeMap=kind=>sports.filter(sport=>today[sport][kind].length).map(sport=>{
@@ -55,16 +58,18 @@ const routeMap=kind=>sports.filter(sport=>today[sport][kind].length).map(sport=>
   return`    ${quote(`${id}|${sport}`)}:${list.length===1?quote(list[0]):`[${list.map(quote).join(',')}]`}`;
 }).join(',\n');
 
-const moduleText=`// ${school.name} school module. Shared publisher utilities stay in the Worker;
+const moduleText=`import {createSidearmScheduleReader,sidearmToday,withoutRanking} from '../sidearm-schedule-reader.mjs';
+// ${school.name} school module. Shared publisher utilities stay in the Worker;
 // this file owns ${host} routes, ${school.name}'s program combinations, its
 // verified Instagram tags and its schedule reader. Routes start as the exact
 // candidates production used before the module existed (route parity,
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const ${schoolVar}={
   id:${quote(id)},
-  // Sports whose official schedule this module reads itself (see
-  // parseSchedule). Every other sport keeps the shared parsers.
-  moduleSports:new Set([]),
+  // Sports whose official schedule this module reads itself, from the
+  // SIDEARM page data (see the reader below). Every other sport keeps the
+  // shared parsers. Add a sport only with its fixture tests.
+  pageDataSports:new Set([]),
   // Live game state from an independent scoreboard, per sport. Football uses
   // the shared default (ESPN's FBS group).
   liveScoreboards:{},
@@ -80,17 +85,27 @@ ${routeMap('roster')}
   }
 };
 
-const HOST=${quote(host)};
+const HOST=${quote(pageHost)};
+// ${school.name}'s calendar day.
+const ${camel}Today=sidearmToday(${quote(timeZone)});
+// ${host} is a SIDEARM (Nuxt) site: the shared reader turns its schedule
+// page data into events in K-State's results format. Settings start at the
+// shared defaults; change one only for something this site does differently,
+// with a fixture test (see the Colorado, Baylor and Arizona modules).
 export function ${factory}({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
-  // null: the shared parsers read this page. A sport added to moduleSports
-  // returns its events here (an empty array is a verified empty schedule).
-  function parseSchedule(raw,school,sport,sourceUrl,now){
-    if(school?.id!==${quote(id)}||!${schoolVar}.moduleSports.has(sport))return null;
-    let url;try{url=new URL(sourceUrl);}catch{return null;}
-    if(url.hostname.replace(/^www\\./,'')!==HOST)return null;
-    return null;
-  }
-  return{parseSchedule};
+  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
+    id:${quote(id)},host:HOST,sports:${schoolVar}.pageDataSports,squadSports:${schoolVar}.combinedSports,
+    today:${camel}Today,
+    // The opponent as K-State shows it: no ranking; an unknown opponent
+    // ("TBA") is left out.
+    opponent(game){
+      const opponent=withoutRanking(game.opponent?.title);
+      return!opponent||/^TB[AD]$/i.test(opponent)?'':opponent;
+    },
+    // As K-State's, a past tennis tournament is listed only with a story.
+    tennisNeedsStory:true
+  },{makeEvent,eventType});
+  return{parseSchedule,isEmptySchedule};
 }
 `;
 
@@ -113,11 +128,11 @@ const insertAfterLast=(text,pattern,line,label)=>{
   return text.slice(0,at)+'\n'+line+text.slice(at);
 };
 next=insertAfterLast(next,/^import \{[^}]*\} from '\.\/schools\/[^']+';$/gm,`import {${schoolVar},${factory}} from './schools/${id}.mjs';`,'the import');
-for(const field of ['verifiedInstagrams','rosterUrls','scheduleUrls'])
-  next=insertAfterLast(next,new RegExp(`^  \\.\\.\\.\\w+School\\.${field},$`,'gm'),`  ...${schoolVar}.${field},`,field);
-next=insertAfterLast(next,/^  if\(school\?\.id==='[^']+'\)return \w+School\.combinedSports;$/gm,`  if(school?.id===${quote(id)})return ${schoolVar}.combinedSports;`,'combined sports');
 next=insertAfterLast(next,/^const \w+Handlers=create\w+Handlers\([^\n]*\);$/gm,`const ${handlersVar}=${factory}({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});`,'the handlers');
-next=insertAfterLast(next,/^  if\(school\.id==='[^']+'\)\{const events=\w+Handlers\.parseSchedule\(raw,school,sport,sourceUrl,now\);if\(events!==null\)return events;\}$/gm,`  if(school.id===${quote(id)}){const events=${handlersVar}.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}`,'the parseSchedule hook');
+// One SCHOOL_MODULES entry: its routes, tags and combined sports come from the
+// module's school data; the schedule reader and its empty-schedule check are
+// the hooks to start with.
+next=insertAfterLast(next,/^  \{school:\w+School[\s\S]*?\}(?=\n\];\nconst schoolModule=)/gm,`  ,{school:${schoolVar},parseSchedule:(...args)=>${handlersVar}.parseSchedule(...args),isEmptySchedule:(events,parsed)=>${handlersVar}.isEmptySchedule(parsed)}`,'the SCHOOL_MODULES entry');
 
 const testText=`import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -192,9 +207,4 @@ const diff=sports.filter(sport=>JSON.stringify(after[sport])!==JSON.stringify(to
 if(diff.length){console.error(`Route parity FAILED for ${diff.join(', ')}; check src/index.js and the module`);process.exit(1)}
 console.log(`\nWrote src/schools/${id}.mjs, tests/${id}-module.mjs; wired src/index.js and package.json. Route parity: ${sports.length}/${sports.length} sports identical.`);
 console.log(`Next: node tests/${id}-module.mjs, then npm run test:release.`);
-console.log(`Shared hooks other schools use, for the sports that need them (grep src/index.js for "coloradoHandlers" or "cincinnatiHandlers"):
-  - Cross Country: attachMeetResults (TFRRS: src/tfrrs-results.mjs) in attachOfficialMeetResults and the XC filter in fetchLive
-  - recap matcher dispatch in attachOfficialHighlights
-  - empty_schedule (isEmptySchedule) in fetchLive
-  - liveScoreboards in liveScoreboardProviders
-  - archive stories, profile fill: only if the school needs them`);
+console.log(`Hooks for the sports that need them go in the school's SCHOOL_MODULES entry in src/index.js (listed above it): crossCountry (TFRRS: src/tfrrs-results.mjs), matchesRecap, isEmptySchedule, beforeHighlights/feed (archive stories), results; scoreboards go in the module's liveScoreboards.`);

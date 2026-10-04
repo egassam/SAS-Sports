@@ -1,4 +1,4 @@
-import {sidearmScheduleGames,sidearmStartTime} from '../sidearm-schedule-data.mjs';
+import {createSidearmScheduleReader} from '../sidearm-schedule-reader.mjs';
 import {findTfrrsMeet,parseTfrrsResults} from '../tfrrs-results.mjs';
 // Baylor school module. Shared publisher utilities stay in the Worker; this
 // file owns baylorbears.com routes, Baylor's program combinations and its
@@ -80,7 +80,6 @@ export const baylorSchool={
 const HOST='baylorbears.com';
 // Internal events: "Green & Gold Fall Scrimmage", intrasquads.
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bgreen\s*(?:&|and|vs\.?|-)\s*gold\b/i;
-const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Baylor's calendar day (Waco, America/Chicago).
 const baylorToday=now=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
 // Rankings describe the week, not the opponent: "#21 Colorado", "No. 23 BYU",
@@ -146,64 +145,24 @@ export function baylorGolfPlacing(value){
 }
 
 export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
-  function parseSchedule(raw,school,sport,sourceUrl,now){
-    if(school?.id!=='baylor'||!baylorSchool.pageDataSports.has(sport))return null;
-    let url;try{url=new URL(sourceUrl);}catch{return null;}
-    if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const pageGames=sidearmScheduleGames(raw);
-    if(!pageGames.length)return null;
-    const today=baylorToday(now),events=[];
-    // Spring pages keep showing last season until the next is published
-    // ("2026 Acrobatics & Tumbling Schedule"). Only the current academic year
-    // (July-June, Baylor time) is current; a page with none is a valid empty
-    // schedule.
-    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
-    let pastSeason=0;
-    const games=sport==='Golf'?mergeRounds(pageGames,today):pageGames;
-    for(const game of games){
-      const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
-      if(!day)continue;
-      if(game.date.slice(0,10)<seasonStart){pastSeason++;continue;}
-      let opponent=baylorOpponent(game.opponent?.title);
+  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
+    id:'baylor',host:HOST,sports:baylorSchool.pageDataSports,squadSports:baylorSchool.combinedSports,
+    today:baylorToday,
+    merge:(sport,games,today)=>sport==='Golf'?mergeRounds(games,today):games,
+    opponent(game){
+      const opponent=baylorOpponent(game.opponent?.title);
       // A tournament game whose opponent is not yet known ("TBD") is named
       // after its tournament ("Getterman Classic").
       const tournament=String(game.tournament?.title||'').replace(/\s+presented by\b.*$/i,'').trim();
-      if(/^TB[AD]$/i.test(opponent)&&tournament)opponent=tournament;
-      // A championship listed by its conference or body ("Big 12", "NCEA")
-      // is named after the event ("Big 12 Equestrian Championship").
-      else if(game.type==='P'&&tournament&&tournament.toLowerCase().startsWith(`${opponent.toLowerCase()} `))opponent=tournament;
-      if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
-      // Canceled and postponed games are not on K-State's schedule.
-      if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
-      const result=game.result||{},outcome=String(result.status||'').toUpperCase();
-      const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      // Acrobatics & tumbling scores have decimals ("277.415-256.590").
-      const scored=['W','L','T'].includes(outcome)&&/^\d+(?:\.\d+)?$/.test(team)&&/^\d+(?:\.\d+)?$/.test(other);
-      // Meets (cross country) read as meets: final once their last day has
-      // passed. Their team places are published as text ("Women 3rd, Men 4th").
-      const meet=eventType(sport)!=='GAME'&&!scored;
-      const placing=meet?String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim():'';
-      // A game day that has passed with no published score is neither a
-      // result nor upcoming; a multi-day event counts until its last day.
-      const firstDay=game.date.slice(0,10),lastDay=String(game.enddate||'').slice(0,10)>firstDay?String(game.enddate).slice(0,10):firstDay;
-      const final=scored||meet&&lastDay<today;
-      if(!final&&lastDay<today)continue;
-      // H: home, A: away; a neutral site keeps the page's own vs./at. Meets
-      // read "Baylor at Aggie Opener", as K-State's do.
-      const relation=eventType(sport)==='MEET'||sport==='Tennis'&&meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
-      // K-State's results show the date only; upcoming games show the
-      // published local time ("TBD" shows the date alone).
-      const start=final?null:sidearmStartTime(game.date,game.time);
-      const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
-        date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
-        schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
-      // Multi-day events (the Big 12 Tournament, Nov 9-14; NCAA rounds) end on
-      // their last day; while one is in progress it is today's event.
-      if(lastDay>firstDay)event.end_time=`${lastDay}T23:59:59Z`;
-      if(!final&&firstDay<today&&lastDay>=today){
-        event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
-        event.start_time=`${today}T12:00:00.000Z`;
-      }
+      const named=/^TB[AD]$/i.test(opponent)&&tournament?tournament
+        // A championship listed by its conference or body ("Big 12", "NCEA")
+        // is named after the event ("Big 12 Equestrian Championship").
+        :game.type==='P'&&tournament&&tournament.toLowerCase().startsWith(`${opponent.toLowerCase()} `)?tournament:opponent;
+      return!named||/^TB[AD]$/i.test(named)||INTERNAL.test(named)?'':named;
+    },
+    // Acrobatics & tumbling scores have decimals ("277.415-256.590").
+    score:/^\d+(?:\.\d+)?$/,
+    result(event,{sport,meet,final,placing}){
       const golf=sport==='Golf'?baylorGolfPlacing(placing):null;
       if(golf&&final){
         const value=`${golf.tied?'T':''}${ordinal(golf.place)} (${golf.total})`;
@@ -224,37 +183,16 @@ export function createBaylorHandlers({makeEvent,recapMatchesEvent,eventType=()=>
         event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Baylor team',result:places[name]})):[{label:'Result',value:'Completed'}];
         event.result_count=event.results.length;
       }
-      if(final){
-        // The event's own /news/ recap (the result's recap, or a schedule file
-        // titled "Recap"), dated from its first day to three days after its
-        // last (never the game-book PDF).
-        const files=(game.media?.gamefiles||[]).filter(file=>/^recap$/i.test(String(file?.gamefileTitle||'').trim())).map(file=>file.gamefileLink);
-        for(const candidate of [result?.recap?.url,...files]){
-          try{
-            const link=new URL(candidate,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
-            const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-            if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000){event.recap_url=link.href;break;}
-          }catch{}
-        }
-      }
-      // As K-State's, a past tennis tournament (no team result) is listed only
-      // with Baylor's story about it (the women's Rice Invitational has none).
-      if(sport==='Tennis'&&meet&&final&&!event.recap_url)continue;
-      // A doubleheader lists the same opponent twice on one day: Game 1 and
-      // Game 2 stay two games.
+    },
+    // The result's recap, or a schedule file titled "Recap".
+    recapLinks:(game,result)=>[result?.recap?.url,...(game.media?.gamefiles||[]).filter(file=>/^recap$/i.test(String(file?.gamefileTitle||'').trim())).map(file=>file.gamefileLink)],
+    // The women's Rice Invitational has no story, so it is not listed.
+    tennisNeedsStory:true,
+    gameNumber(game,games,{firstDay}){
       const sameDay=games.filter(other=>other.date.slice(0,10)===firstDay&&baylorOpponent(other.opponent?.title)===baylorOpponent(game.opponent?.title));
-      if(sameDay.length>1){const number=sameDay.indexOf(game)+1;event.game_number=number;event.id=`${event.id}-game-${number}`;event.title=`${event.title} (Game ${number})`;}
-      // Separate men's and women's pages can list the same opponent on the
-      // same day; the team keeps their event ids apart.
-      const squad=baylorSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
-      if(squad)event.id=`${event.id}-${squad}`;
-      events.push(event);
+      return sameDay.length>1?sameDay.indexOf(game)+1:0;
     }
-    if(!events.length&&pastSeason)emptiedBySeason.add(events);
-    return events;
-  }
-  const emptiedBySeason=new WeakSet();
-  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
+  },{makeEvent,eventType});
   // The card's own recap link is checked by the shared matcher. Any other
   // candidate must also name the opponent in its headline: Baylor's stories
   // name the next opponent ("WHAT'S NEXT ... against Georgia Southern") and

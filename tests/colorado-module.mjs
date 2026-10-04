@@ -175,7 +175,7 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
     await worker.attachOfficialHighlights(vb,fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now,env,target.id);
     assert.equal(target.highlight_state,'recap_generated');
     assert.ok(prompts[0].includes('Central Arkansas'));
-    assert.ok(/coloradoHandlers\.matchesRecap\(html,target,candidate\)/.test(read('../src/index.js')),'Colorado finals use the Colorado matcher');
+    assert.ok(/\{school:coloradoSchool,[^\n]*matchesRecap:\(\.\.\.args\)=>coloradoHandlers\.matchesRecap\(\.\.\.args\)/.test(read('../src/index.js')),'Colorado finals use the Colorado matcher (SCHOOL_MODULES)');
   }
   // Live score: ESPN's women's college volleyball scoreboard. The Oct 2
   // payload (120 matches) holds Colorado at TCU; it joins the official card.
