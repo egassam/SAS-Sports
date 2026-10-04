@@ -357,4 +357,48 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.deepEqual(found.map(e=>[e.team_label,e.opponent,e.status]),[["Men's",'Oklahoma St','Final'],["Women's",'Texas Tech','Final']]);
 }
 
+// Golf: both teams' pages only, labeled; one event per tournament from its
+// rounds, named after it, "Colorado at ..."; the last round's place and
+// field ("13th of 20"); only the final story (never "after day one"); a
+// tournament under way is today's event, In progress, with no result.
+{
+  const urls={womens:'https://cubuffs.com/sports/womens-golf/schedule',mens:'https://cubuffs.com/sports/mens-golf/schedule'};
+  assert.deepEqual(worker.candidateUrls(school,'Golf'),[urls.womens,urls.mens]);
+  assert.ok(worker.schoolCombinedSports(school).has('Golf'));
+  const golfNow=new Date('2026-10-03T20:00:00Z');
+  const women=worker.parseHtml(fixture('womens-golf-schedule.html.gz'),school,'Golf',urls.womens,golfNow);
+  const men=worker.parseHtml(fixture('mens-golf-schedule.html.gz'),school,'Golf',urls.mens,golfNow);
+  assert.deepEqual([women.length,men.length],[14,13],'40 and 38 round entries become 14 and 13 tournaments');
+  const finals=[...women,...men].filter(e=>e.status==='Final');
+  assert.deepEqual(finals.map(e=>`${e.display_time} ${e.title} ${e.headline} ${e.end_time.slice(0,10)}`),[
+    'Sep 14 Colorado at Leadership and Golf Invitational 2nd of 17 2026-09-15','Sep 21 Colorado at Golfweek Red Sky Challenge 13th of 20 2026-09-23',
+    'Sep 14 Colorado at Vuori Invitational 2nd of 12 2026-09-15','Sep 19 Colorado at Gene Miranda Falcon Invitational 1st of 18 2026-09-21',
+    'Sep 25 Colorado at William H. Tucker Intercollegiate 7th of 15 2026-09-26','Sep 29 Colorado at Mark Simpson Colorado Invitational 3rd of 17 2026-09-30'
+  ]);
+  assert.deepEqual(finals.map(e=>e.recap_url.replace('https://cubuffs.com/news/','')),[
+    '2026/9/15/womens-golf-mcvey-buffs-log-second-place-finishes','2026/9/23/womens-golf-buffs-finish-13th-at-red-sky',
+    '2026/9/15/mens-golf-buffs-open-season-finishing-second-in-vuori-invitational','2026/9/21/mens-golf-men-golfers-claim-air-forces-miranda-invitational',
+    '2026/9/26/mens-golf-golfers-finish-seventh-in-unm-tucker','2026/9/30/mens-golf-golfers-take-third-in-mark-simpson-cu-invitational'
+  ],'each tournament links its final story');
+  const ronMoore=women.find(e=>e.opponent==='Ron Moore Intercollegiate');
+  assert.deepEqual([ronMoore.status,ronMoore.recency_label,ronMoore.headline??null,ronMoore.recap_url??null],['Today','In progress',null,null],'under way: no day-one place or story');
+  assert.ok(women.every(e=>e.id.endsWith('-womens'))&&men.every(e=>e.id.endsWith('-mens')));
+  // Two days after its last round, a finished tournament with no last-round
+  // place reads Completed, never the day-one standing.
+  const after=worker.parseHtml(fixture('womens-golf-schedule.html.gz'),school,'Golf',urls.womens,new Date('2026-10-06T20:00:00Z')).find(e=>e.opponent==='Ron Moore Intercollegiate');
+  assert.deepEqual([after.status,after.headline,after.recap_url??null],['Final','Completed',null]);
+  // Expanded view: each final matches its own story only.
+  const stories={'Leadership and Golf Invitational':'leadership','Golfweek Red Sky Challenge':'red-sky','Vuori Invitational':'vuori','Gene Miranda Falcon Invitational':'miranda','William H. Tucker Intercollegiate':'tucker','Mark Simpson Colorado Invitational':'simpson'};
+  const raws=finals.map(e=>fixture(`recap-golf-${e.recap_url.match(/\/news\/(\d+\/\d+\/\d+)\//)[1].replace(/\//g,'-')}-${stories[e.opponent]}.html.gz`));
+  {
+    const redSky=women.find(e=>e.opponent==='Golfweek Red Sky Challenge');
+    recapFixtures.set(redSky.recap_url,raws[1]);
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Colorado finished 13th at the Red Sky Classic.','The Buffs improved from 18th after the first round.','A Colorado golfer led the team in the final round.','Colorado moved up five spots over the last two rounds.'])};}}};
+    await worker.attachOfficialHighlights(women,fixture('womens-golf-schedule.html.gz'),school,'Golf',urls.womens,golfNow,env,redSky.id);
+    assert.equal(redSky.highlight_state,'recap_generated','Red Sky writes its highlights from its final story');
+    assert.ok(prompts[0].includes('13th'));
+  }
+  finals.forEach((event,i)=>raws.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,finals[j].recap_url),i===j,`${event.opponent} must match only its own story (checked against ${finals[j].opponent})`)));
+}
+
 console.log('Colorado module checks passed');

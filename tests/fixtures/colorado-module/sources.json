@@ -29,6 +29,16 @@
       "url": "https://cubuffs.com/sports/womens-basketball/schedule",
       "retrieved": "2026-10-04T04:20Z",
       "note": "31 games, Oct 27 Adams State exhibition (type S) first."
+    },
+    "womens-golf-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/womens-golf/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "40 round entries (14 tournaments): Leadership and Golf (2nd/17), Red Sky (13th/20) with final stories; Ron Moore Oct 2-4 with the day-one story only."
+    },
+    "mens-golf-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/mens-golf/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "38 round entries (13 tournaments): Vuori 2nd/12, Miranda 1st/18, Tucker 7th/15, Mark Simpson 3rd/17, each with its final story."
     }
   },
   "recaps": {
@@ -58,5 +68,6 @@
     "tfrrs-xc-roadrunners.html.gz": "https://www.tfrrs.org/results/xc/27698/2026_Roadrunners_Invitational",
     "tfrrs-xc-wyoming.html.gz": "https://www.tfrrs.org/results/xc/28504/Wyoming_Invitational",
     "note": "Downloaded directly 2026-10-04T04:43Z, unmodified."
-  }
+  },
+  "recaps_golf": "recap-golf-YYYY-M-D-<event>.html.gz: each tournament's final story as linked from its last round (6), plus the Ron Moore day-one story; unmodified, private source route."
 }
