@@ -59,6 +59,11 @@
       "url": "https://gobearcats.com/sports/track-field/schedule",
       "retrieved": "2026-10-04T01:32Z",
       "note": "Still \"2025-26 Track & Field Schedule\": 22 meets Dec 12, 2025 - Jun 13, 2026, each with a story link; Big 12 Indoor 10th (M), 10th (W); Big 12 Outdoor 12th (M), 7th (W)."
+    },
+    "tennis-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "\"2026-27 Women's Tennis Schedule\": 4 fall tournaments under their own headings; UC/Pam Whitehead Invitational Sep 18-19 with its story (Sep 20)."
     }
   },
   "recaps": {
@@ -77,7 +82,8 @@
     "recap-xc-2026-9-18-all-ohio.html.gz": "https://gobearcats.com/news/2026/09/18/christina-allen-wins-all-ohio-challenge-to-lead-womens-xc-to-team-title",
     "recap-xc-2026-9-25-gans-creek.html.gz": "https://gobearcats.com/news/2026/09/25/cincinnati-runners-battle-at-gans-creek-classic",
     "recap-golf-2026-9-10-folds-of-honor.html.gz": "https://gobearcats.com/news/2026/09/10/bearcats-finish-fourth-at-folds-of-honor-collegiate",
-    "recap-golf-2026-9-29-powercat.html.gz": "https://gobearcats.com/news/2026/09/29/cincinnati-earns-runner-up-finish-at-powercat-classic"
+    "recap-golf-2026-9-29-powercat.html.gz": "https://gobearcats.com/news/2026/09/29/cincinnati-earns-runner-up-finish-at-powercat-classic",
+    "recap-tennis-2026-9-20-pam-whitehead.html.gz": "https://gobearcats.com/news/2026/09/20/tennis-concludes-pam-whitehead-invitational-weekend"
   },
   "scoreboards": {
     "football-espn-2026-09-26.json.gz": "ESPN college football scoreboard, groups=80&limit=300&dates=20260926 (copy of the Baylor module fixture); holds Kansas State Wildcats at Cincinnati Bearcats, final 31-26.",

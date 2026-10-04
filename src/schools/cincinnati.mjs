@@ -7,7 +7,7 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse','Swimming & Diving','Track & Field']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse','Swimming & Diving','Tennis','Track & Field']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -35,6 +35,7 @@ export const cincinnatiSchool={
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/schedule',
     'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
     'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/schedule',
+    'cincinnati|Tennis':'https://gobearcats.com/sports/womens-tennis/schedule',
     'cincinnati|Track & Field':'https://gobearcats.com/sports/track-field/schedule',
     'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule'
   },
@@ -47,6 +48,7 @@ export const cincinnatiSchool={
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/roster',
     'cincinnati|Soccer':['https://gobearcats.com/sports/womens-soccer/roster','https://gobearcats.com/sports/wsoc/roster','https://gobearcats.com/sports/soccer/roster','https://gobearcats.com/sports/mens-soccer/roster'],
     'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/roster',
+    'cincinnati|Tennis':'https://gobearcats.com/sports/womens-tennis/roster',
     'cincinnati|Track & Field':'https://gobearcats.com/sports/track-field/roster',
     'cincinnati|Volleyball':['https://gobearcats.com/sports/womens-volleyball/roster','https://gobearcats.com/sports/wvball/roster','https://gobearcats.com/sports/volleyball/roster']
   }
@@ -251,8 +253,9 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       const today=Date.parse(easternDay(now.getTime())+'T00:00:00Z');
       // Meets publish each team's place: "2nd (M), 2nd (W)", "1st (W)".
       const places=meet?[...slot.matchAll(/\b(T?\d{1,3})(?:st|nd|rd|th)\s*\((M|W)\)/gi)].map(m=>({team:m[2].toUpperCase()==='W'?'Women':'Men',place:m[1]})):[];
-      // Golf tournaments read "Cincinnati at ...", as K-State's do (the women's
-      // cards say "vs." for every tournament).
+      // Golf and tennis tournaments read "Cincinnati at ...", as K-State's do
+      // (the women's golf cards say "vs." for every tournament; a tennis
+      // tournament sits under its own heading, a dual match does not).
       // Golf publishes the team's place after each round: "8th of 14",
       // "T4th of 15", "5th out of 13".
       const golf=sport==='Golf'?slot.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)\s+(?:of|out of)\s+(\d{1,3})$/i):null;
@@ -264,7 +267,7 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       // the result is posted after it ends. A multi-day event (the Big 12
       // baseball tournament, May 25-29) counts from its last day.
       if(!meet&&!result&&lastDay<today-86400000)continue;
-      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider||sport==='Golf'?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
+      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider||sport==='Golf'||sport==='Tennis'&&heading?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over?null:clock||null,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
@@ -373,7 +376,11 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
     if(event?.school_id!=='cincinnati')return false;
     let parsed;try{parsed=new URL(url);}catch{return false;}
     const own=url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='gobearcats.com'&&parsed.pathname.startsWith('/news/');
-    if(own)return recapMatchesEvent(raw,{...event,sport:''},url);
+    // A multi-day event is checked against its last day: the Sep 18-19 Pam
+    // Whitehead tennis invitational is recapped Sep 20, outside the one-day
+    // window a dual sport gets from its first day.
+    const identity=event.end_time?{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')}:event;
+    if(own)return recapMatchesEvent(raw,{...identity,sport:''},url);
     if(!recapMatchesEvent(raw,event,url))return false;
     const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
     const opponent=headlineKey(event.opponent).trim();

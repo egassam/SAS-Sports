@@ -14,10 +14,11 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Cross Country | #205 | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
 | Basketball | #206 | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
 | Baseball | #207 | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
-| Golf | (this PR) | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
+| Golf | #208 | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
 | Lacrosse | #209 | Women's page only; empty schedule (the page still shows spring 2026); in season, finals `L, 10-11` with recaps |
 | Swimming & Diving | #210 | One official page for both teams; 13 meets with published times; invitationals named after their heading and ending on their last day |
-| Track & Field | (this PR) | `track-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 7th / Men's team: 12th`, each with its story |
+| Tennis | (this PR) | Added to the catalog (the site publishes a 2026-27 women's tennis schedule); 4 tournaments `Cincinnati at ...`, ending on their last day; the Pam Whitehead Invitational with its story |
+| Track & Field | #211 | `track-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 7th / Men's team: 12th`, each with its story |
 
 Production survey before the module (October 4, ~01:30 UTC, `4.49.2`):
 - **Football:** finals and recaps right; the Oct 3 night game at Arizona listed twice (Oct 3 and Oct 4); a phantom Nov 28 game at BYU carrying the Sep 5 recap; no published times.
@@ -28,11 +29,11 @@ Production survey before the module (October 4, ~01:30 UTC, `4.49.2`):
 - **Golf:** 5 results and 23 upcoming: one event per round.
 - **Lacrosse:** the spring 2026 season shown as current (17 results).
 - **Baseball:** 57 upcoming, spring 2027. **Swimming & Diving:** 13 upcoming. **Track & Field:** empty.
-- The site also publishes a women's tennis schedule (`/sports/womens-tennis/schedule`); Tennis is not in `src/sponsored-sports.json` (see Limitations).
+- The site also publishes a women's tennis schedule (`/sports/womens-tennis/schedule`), which `src/sponsored-sports.json` did not list (added with Tennis below).
 
 ## Setup (route parity)
 
-The module starts as a pure move. Each of Cincinnati's 10 sponsored sports gets exactly the schedule and roster candidates production used before the module existed: the four inline routes (Cross Country, Soccer, Volleyball, Football) and the one verified Soccer Instagram tag moved out of `src/index.js`, and the other sports' generic fallbacks are written out explicitly. A before/after dump of all 219 catalog school/sport routes (schedule, roster, combination flag) was identical. Each sport's routes are corrected in its own PR.
+The module starts as a pure move. Each of Cincinnati's 10 sports then in the catalog gets exactly the schedule and roster candidates production used before the module existed: the four inline routes (Cross Country, Soccer, Volleyball, Football) and the one verified Soccer Instagram tag moved out of `src/index.js`, and the other sports' generic fallbacks are written out explicitly. A before/after dump of all 219 catalog school/sport routes (schedule, roster, combination flag) was identical. Each sport's routes are corrected in its own PR.
 
 ## Cards
 
@@ -139,6 +140,15 @@ The official page is `/sports/track-field/` ("2025-26 Track & Field Schedule" on
 
 ESPN publishes no track scoreboard, so there is no live score.
 
+## Tennis (`4.51.0-cincinnati-tennis`)
+
+Cincinnati sponsors women's tennis: gobearcats.com lists it among its sports and publishes a "2026-27 Women's Tennis Schedule", but `src/sponsored-sports.json` (and the page's fallback list in `public/index.html`) did not list it, so the app offered no Tennis page. Both now list Tennis for Cincinnati only; schedule and roster route to `womens-tennis`.
+
+The card reader gives the 4 fall tournaments (each card sits under its own heading) as K-State reads meets: `Cincinnati at UC/Pam Whitehead Invitational`, ending on their last day; `TBA` shows the date only. The Pam Whitehead Invitational (Sep 18-19, at home) is over: no team result is published for an individual tournament, so it reads `Completed`, with Cincinnati's story; the expanded view writes highlights from it. Spring dual matches will read `vs`/`at` as published.
+
+**Recap matcher.** A multi-day event's own story is checked against its last day: the Pam Whitehead story is dated Sep 20, outside the one-day window the shared matcher gives a dual sport from its first day.
+
+ESPN publishes no college tennis scoreboard, so there is no live score (K-State has none).
+
 ## Limitations
 
-- **Tennis:** gobearcats.com publishes a women's tennis schedule, but `src/sponsored-sports.json` does not list Tennis for Cincinnati, so the app offers no Tennis page. Adding it changes the shared catalog (decided separately).
