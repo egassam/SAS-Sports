@@ -28,5 +28,9 @@
     "soccer-espn-2026-10-02.json.gz": "ESPN women's college soccer scoreboard, limit=1000, Oct 2, 2026 (31 events), downloaded directly: Colorado at UCF, final 0-2."
   },
   "recaps_volleyball": "recap-volleyball-YYYY-M-D.html.gz: the /news/ recap each Colorado final links on the volleyball schedule page (13), unmodified, via the private source route.",
-  "recaps_soccer": "recap-soccer-YYYY-M-D.html.gz: the /news/ recap each Colorado soccer final links on the schedule page (12), unmodified, via the private source route."
+  "recaps_soccer": "recap-soccer-YYYY-M-D.html.gz: the /news/ recap each Colorado soccer final links on the schedule page (12), unmodified, via the private source route.",
+  "archives": {
+    "soccer-archives.html.gz": "https://cubuffs.com/sports/womens-soccer/archives (unmodified, private source route, 2026-10-04T04:45Z)",
+    "story-soccer-2026-8-27-western-michigan.html.gz": "https://cubuffs.com/news/2026/8/27/soccer-buffs-first-road-match-ends-in-a-draw (not linked on the schedule; unmodified)"
+  }
 }

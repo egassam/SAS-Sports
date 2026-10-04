@@ -76,7 +76,7 @@ export function coloradoStartTime(date,time){
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
 // recap link. Production read the rendered cards, which omit the start time,
 // so every upcoming game showed its date alone.
-export function createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml=value=>String(value||'')}){
+export function createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml=value=>String(value||''),fetch,headers}){
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='colorado'||!coloradoSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
@@ -147,5 +147,31 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml=v
     const opponent=headlineKey(event.opponent).trim();
     return opponent.length>=2&&headlineKey(title).includes(` ${opponent} `);
   }
-  return{parseSchedule,matchesRecap};
+  // A final the schedule links no story for (soccer at Western Michigan, Aug
+  // 27) takes Colorado's story from the sport's archive: dated on the game day
+  // or the day after, naming the opponent in the article and stating the
+  // result (the score either way round, never part of a record such as
+  // "3-0-1"; a tie may be told as a draw). The
+  // headline may name neither ("Buffs' First Road Match Ends In A Draw").
+  const download=async url=>{try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():null;}catch{return null;}};
+  const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+  const isColoradoFinalWithoutStory=event=>event?.school_id==='colorado'&&event.event_type==='GAME'&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
+  async function attachArchiveStory(event){
+    if(!isColoradoFinalWithoutStory(event))return event;
+    const slug=(String(event.source?.url||'').match(/^https:\/\/cubuffs\.com\/sports\/([a-z-]+)\/schedule/)||[])[1];if(!slug)return event;
+    const listing=await download(`https://${HOST}/sports/${slug}/archives`);if(!listing)return event;
+    const first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`);
+    const days=[0,1].map(offset=>new Date(first+offset*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
+    const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day)));
+    const a=String(event.school_score),b=String(event.opponent_score),opponent=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').trim();
+    const score=new RegExp(`(?<![\\d-])(?:${a}-${b}|${b}-${a})(?![\\d-])`),tie=a===b?/\b(?:draw|tie|tied|scoreless)\b/i:null;
+    for(const path of paths.slice(0,4)){
+      const url=`https://${HOST}${path}`,raw=await download(url);if(!raw)continue;
+      const text=storyText(raw);
+      if(!opponent||!text.toLowerCase().includes(opponent.toLowerCase()))continue;
+      if(score.test(text)||tie&&tie.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
+    }
+    return event;
+  }
+  return{parseSchedule,matchesRecap,isColoradoFinalWithoutStory,attachArchiveStory};
 }

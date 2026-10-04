@@ -10,7 +10,7 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | --- | --- | --- |
 | Football | #214 | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
 | Volleyball | #215 | 13 finals (`W, 3-0`) with their own recaps, 15 upcoming with published times; scrimmage and other teams' tournament matches left out; ESPN live score |
-| Soccer | (this PR) | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps, 7 upcoming with published times; ESPN live score |
+| Soccer | (this PR) | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
 | Cross Country | | shared parsers |
 | Basketball | | shared parsers |
 | Golf | | shared parsers |
@@ -56,11 +56,13 @@ The page data has 34 entries: the Black and Gold scrimmage, the other teams' mat
 
 ## Soccer (`4.52.2-colorado-soccer`)
 
-Colorado sponsors women's soccer only. Production's games and results were right; it showed the Aug 5 exhibition as a plain `Colorado vs Utah` final. The module reads 20 games, one each: 13 finals in K-State's wording, date only (`T, 0-0` at Western Michigan), 12 with their own recaps (the Western Michigan tie links none; the Aug 12 night game's recap is dated Aug 13); 7 upcoming with published times.
+Colorado sponsors women's soccer only. Production's games and results were right; it showed the Aug 5 exhibition as a plain `Colorado vs Utah` final. The module reads 20 games, one each: 13 finals in K-State's wording, date only (`T, 0-0` at Western Michigan), 12 with the recap the schedule links (the Aug 12 night game's recap is dated Aug 13) and the Western Michigan tie with its story from the archive (below); 7 upcoming with published times.
 
 **Exhibitions (every Colorado sport).** A page-data entry of type `S` against another school reads `Utah (Exhibition)`, as K-State labels exhibitions (the volleyball Black and Gold scrimmage, also type `S`, stays out as internal).
 
 **Published times (every Colorado sport).** The page shows the time text (`5:30 p.m.`); the page data's clock usually agrees, but at Kansas State (Oct 16) it holds 18:00. The text is what the page shows, so a clock in it wins (`Oct 16, 5:30 PM`, as production showed from the cards).
+
+**Stories the schedule does not link (every Colorado game sport).** The Aug 27 tie at Western Michigan links no recap, and the shared search found none (`recap_not_found` on the first preview). Colorado's story is in the soccer archive, headlined "Buffs' First Road Match Ends In A Draw". A final with no linked story now takes one from `/sports/<sport>/archives` when it is dated on the game day or the day after, names the opponent in the article and states the result: the score either way round (never part of a record such as `3-0-1`), or for a tie, a draw. Feed and expanded view both run it (`isColoradoFinalWithoutStory`/`attachArchiveStory`); a story with another result or another opponent is refused.
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Colorado at UCF (`L, 0-2`) joins the official card.
 

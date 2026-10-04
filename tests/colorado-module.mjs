@@ -225,6 +225,38 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   const linked=scFinals.filter(e=>e.recap_url);
   const scRecaps=linked.map(e=>{const [,y,m,d]=e.recap_url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\//);return fixture(`recap-soccer-${y}-${m}-${d}.html.gz`);});
   linked.forEach((event,i)=>scRecaps.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,linked[j].recap_url),i===j,`${event.display_time} ${event.opponent} must match only its own recap (checked against ${linked[j].display_time})`)));
+  // The Western Michigan tie (Aug 27) links no story; Colorado's story is in
+  // the soccer archive ("Buffs' First Road Match Ends In A Draw"): dated that
+  // day, naming Western Michigan, telling the scoreless draw. The feed and
+  // the expanded view both take it.
+  {
+    const wm=sc.find(e=>e.opponent==='Western Michigan');
+    const storyUrl='https://cubuffs.com/news/2026/8/27/soccer-buffs-first-road-match-ends-in-a-draw';
+    recapFixtures.set('https://cubuffs.com/sports/womens-soccer/archives',fixture('soccer-archives.html.gz'));
+    recapFixtures.set(storyUrl,fixture('story-soccer-2026-8-27-western-michigan.html.gz'));
+    assert.ok(worker.coloradoHandlers.isColoradoFinalWithoutStory(wm));
+    // A different result is refused: "3-0-1" (the record) is not a 0-1 score.
+    const wrong={...wm,school_score:'1',opponent_score:'0',headline:'W, 1-0'};
+    await worker.coloradoHandlers.attachArchiveStory(wrong);
+    assert.equal(wrong.recap_url,undefined,'a story with another result is not this game\'s');
+    // Another opponent on the same day is refused.
+    const other={...wm,opponent:'Western Illinois'};
+    await worker.coloradoHandlers.attachArchiveStory(other);
+    assert.equal(other.recap_url,undefined);
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Colorado played Western Michigan to a scoreless draw in Kalamazoo.','Colorado outshot the Broncos 12-8 with seven shots on goal.','Brooke Goerish made her first collegiate start and recorded two saves.','Jamie Campbell made the crucial save in the final seconds.'])};}}};
+    await worker.attachOfficialHighlights(sc,fixture('soccer-schedule.html.gz'),school,'Soccer',scUrl,now,env,wm.id);
+    assert.equal(wm.recap_url,storyUrl,'the archive story becomes the recap');
+    assert.equal(wm.highlight_state,'recap_generated');
+    assert.ok(prompts[0].includes('scoreless draw'));
+    // The feed takes it too.
+    recapFixtures.set(scUrl,fixture('soccer-schedule.html.gz'));
+    const feed=await worker.fetchLive('colorado','Soccer');
+    recapFixtures.delete(scUrl);
+    assert.equal(feed.events.find(e=>e.opponent==='Western Michigan').recap_url,storyUrl,'the feed links the archive story');
+    // Games with their own recap are never searched.
+    assert.ok(!worker.coloradoHandlers.isColoradoFinalWithoutStory(sc.find(e=>e.opponent==='Army')));
+    assert.ok(!worker.coloradoHandlers.isColoradoFinalWithoutStory({...wm,recap_url:undefined,school_id:'baylor'}));
+  }
   // Live score: ESPN's women's college soccer scoreboard; Colorado at UCF
   // (Oct 2) joins the official card.
   assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);

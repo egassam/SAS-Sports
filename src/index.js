@@ -217,7 +217,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const coloradoHandlers=createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml});
+const coloradoHandlers=createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const cincinnatiHandlers=createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const baylorHandlers=createBaylorHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1411,6 +1411,9 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // Baylor golf finals the schedule links no story for take theirs from the
   // team's archive.
   if(baylorHandlers.isBaylorGolfWithoutStory(target))await baylorHandlers.attachGolfStory(target);
+  // Colorado finals the schedule links no story for take theirs from the
+  // sport's archive.
+  if(coloradoHandlers.isColoradoFinalWithoutStory(target))await coloradoHandlers.attachArchiveStory(target);
   // Oklahoma State and Utah meets use the same official results path as the
   // feed, with the card's own links; recap prose and AI extraction must not
   // replace it.
@@ -1725,6 +1728,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Arizona golf results come from each tournament's own story.
   if(school.id==='arizona'&&sport==='Golf')await Promise.all(events.filter(arizonaHandlers.isArizonaGolf).map(event=>arizonaHandlers.attachGolfResults(event)));
   if(school.id==='baylor'&&sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));
+  if(school.id==='colorado')await Promise.all(events.filter(coloradoHandlers.isColoradoFinalWithoutStory).map(event=>coloradoHandlers.attachArchiveStory(event)));
   if(school.id==='arizona'&&sport==='Tennis'){
     await Promise.all(events.filter(arizonaHandlers.isArizonaTennisTournament).map(event=>arizonaHandlers.attachTennisStory(event)));
     // As K-State's, a past tournament with no team result is listed only
