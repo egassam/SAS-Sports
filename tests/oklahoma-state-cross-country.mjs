@@ -1,19 +1,10 @@
-import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
-import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
-import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
-import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
-import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
-import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
-import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/schools/kansas.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers,parseOklahomaStateMeetResults} from '../src/schools/oklahoma-state.mjs';
+import {createOklahomaStateHandlers,parseOklahomaStateMeetResults} from '../src/schools/oklahoma-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
+import {schoolModuleDeps} from './school-module-deps.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const pdf=name=>readFileSync(new URL('./fixtures/oklahoma-state-module/'+name,import.meta.url));
@@ -53,7 +44,7 @@ const reset=()=>{
   }
 };
 const fetch=async url=>{requests.push(String(url));const make=responses.get(String(url));return make?make():new Response('not found',{status:404});};
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
+const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText,fetch};
 const worker=Function(...Object.keys(deps),source+';return {attachOfficialMeetResults,attachOfficialHighlights,ordinal};')(...Object.values(deps));
 
 // The event as production's official schedule card presents it today.

@@ -2,10 +2,10 @@
 
 The user wants one school-module project per conversation.
 
-1. Before beginning SAS Sports work, read the **current repository version** of `docs/SAS_SPORTS_CURRENT_SESSION.md` in full. Fetch the current default branch first when possible; do not rely on an old local copy or conversation memory.
+1. Before beginning SAS Sports work, read the **current repository version** of `docs/SAS_SPORTS_CURRENT_SESSION.md` in full. Fetch the current default branch first when possible; do not rely on an old local copy or conversation memory. That file is kept short. Earlier records and evidence are in `docs/SAS_SPORTS_HISTORY.md` (append-only); search it when needed, but do not read it in full at startup (user, October 4, 2026).
 2. Use its latest handoff to identify the verified baseline, completed work, next school, and outstanding issues. Inspect current code and Git status before editing. If the repository has advanced, reconcile that change with the handoff.
-3. Work on one school module per session, and within that school on **one sport at a time**, unless the user changes the scope. Finish, verify and publish one sport before starting the next. Preserve the shared results contract and existing verified schools. K-State is the reference for how a sport's results section must look.
-4. At the end of each school session, update the current-state and next-session sections of that same Markdown file and append the session's conversation/decision record. Preserve earlier records through append-only session history and Git version history.
+3. Work on one school module per session, and within that school build and test **one sport at a time**, unless the user changes the scope. **Batched publishing (user, October 4, 2026):** a pull request may carry several finished sports of the same school, each built, tested and verified on its own. Every sport in the PR gets the full gate in item 6. Preserve the shared results contract and existing verified schools. K-State is the reference for how a sport's results section must look.
+4. At the end of each school session, update `docs/SAS_SPORTS_CURRENT_SESSION.md` (current state, open items, next session, a one-line session-log entry) and append the session's full conversation/decision record to the end of `docs/SAS_SPORTS_HISTORY.md`. Keep the current file short; move superseded detail to the history file. Preserve earlier records through the append-only history and Git version history.
 5. Record tests actually run, publication status, commit/PR identifiers, live verification, limitations, and remaining tasks accurately. A local fix is not a deployed fix.
 
 5a. **Finish the whole school before stopping (user, October 2, 2026: "do not finish a school until everything is complete within the school").** Do not report a school as complete, end the session, or move to the next school while any item for that school is still open. A school is complete only when every item below is done, verified on the preview and in production, and merged:
@@ -18,18 +18,19 @@ The user wants one school-module project per conversation.
 
 6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
    - **Code PRs:**
-     - `npm run test:release` and `npm test` pass locally on the final commit.
+     - `npm run test:release` passes locally on the final commit (it runs every test in `npm test`, plus the checks and isolation).
      - CI on the PR head is green, and the PR has no merge conflict.
-     - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows the changed sport in K-State's results format.
+     - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows every changed sport in K-State's results format.
      - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
-     - The change stays within the one school and sport in scope.
-     - On that preview, 36 forced refreshes (`refresh=1`) of the changed school and sport all return HTTP 200, with no Cloudflare 1102 or 503 errors.
+     - The change stays within the one school in scope (one or more of its sports).
+     - On that preview, 36 forced refreshes (`refresh=1`) of each changed sport all return HTTP 200, with no Cloudflare 1102 or 503 errors.
+     - `npm run verify:preview -- --branch=<branch> --school=<id> --sports="<changed sports>"` runs the XC, refresh, results-format and expanded-view checks above in one command; the page itself is still checked by eye.
    - **Docs-only PRs:** CI is green and the PR has no merge conflict.
 
    If any condition fails or is uncertain, stop and ask the user instead of merging.
 
    After merging a code PR:
-   - Verify production `/api/status` and the changed sport's feed and expanded view, plus K-State and KU XC.
+   - Verify production `/api/status` and each changed sport's feed and expanded views, plus K-State and KU XC (`npm run verify:prod -- --school=<id> --sports="<changed sports>" --version=<version>`).
    - Record the result in the handoff.
    - If production is wrong, tell the user immediately and open a revert PR for them to approve.
 

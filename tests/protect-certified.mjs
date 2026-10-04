@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 
 const readJson=path=>JSON.parse(readFileSync(new URL(path,import.meta.url),'utf8'));
 const manifest=readJson('./certified-schools.json');
@@ -17,7 +17,9 @@ const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.
 const cincinnatiModule=readFileSync(new URL('../src/schools/cincinnati.mjs',import.meta.url),'utf8');
 const coloradoModule=readFileSync(new URL('../src/schools/colorado.mjs',import.meta.url),'utf8');
 // School modules own their routes; unconverted schools keep them in the Worker.
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule,cincinnati:cincinnatiModule,colorado:coloradoModule};
+// Every school module by its file name (= school id), so a new module is
+// covered without editing this file.
+const schoolModuleSource=Object.fromEntries(readdirSync(new URL('../src/schools/',import.meta.url)).filter(file=>file.endsWith('.mjs')).map(file=>[file.slice(0,-4),readFileSync(new URL(`../src/schools/${file}`,import.meta.url),'utf8')]));
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];

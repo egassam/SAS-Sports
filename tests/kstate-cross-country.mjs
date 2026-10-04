@@ -1,18 +1,8 @@
-import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
-import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
-import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
-import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
-import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
-import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
-import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
-import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/kansas-cross-country.mjs';
+import {schoolModuleDeps} from './school-module-deps.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
@@ -22,7 +12,7 @@ const fixture=read('./fixtures/kstate-gans-2026-results.txt');
 const html=(text=fixture,title='Gans Creek Classic')=>`<title>Cross Country ${title}</title><article>${text}</article>`;
 const event=()=>({id:'gans',school_id:'kstate',school:'Kansas State',sport:'Cross Country',event_type:'MEET',status:'Final',start_time:'2026-09-25T12:00:00Z',opponent:'Gans Creek Classic',recap_url:gansUrl,result_url:'https://www.kstatesports.com/documents/2026/9/25/women.pdf',results:[]});
 let requests=[],responseHtml=html(),fail=false;
-const worker=Function('createSourceFetch','SOURCE_TTL','oklahomaStateSchool','createOklahomaStateHandlers','utahSchool','createUtahHandlers','arizonaStateSchool','createArizonaStateHandlers','byuSchool','createByuHandlers','ucfSchool','createUcfHandlers','arizonaSchool','createArizonaHandlers','baylorSchool','createBaylorHandlers','cincinnatiSchool','createCincinnatiHandlers','coloradoSchool','createColoradoHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialMeetResults,attachOfficialHighlights,parseKStateRecapTable,attachKStateRecapResults,groupEvents};`)(createSourceFetch,SOURCE_TTL,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('K-State must not take the first-PDF path');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{
+const worker=Function(...Object.keys(schoolModuleDeps),'createSourceFetch','SOURCE_TTL','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialMeetResults,attachOfficialHighlights,parseKStateRecapTable,attachKStateRecapResults,groupEvents};`)(...Object.values(schoolModuleDeps),createSourceFetch,SOURCE_TTL,schools,{},()=>[],()=>{throw Error('K-State must not take the first-PDF path');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{
   requests.push(String(url));if(fail)throw Error('unavailable');assert.equal(String(url),gansUrl);return new Response(responseHtml);
 });
 const rows=worker.parseKStateRecapTable(html(),event());

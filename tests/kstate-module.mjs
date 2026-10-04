@@ -1,20 +1,11 @@
-import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
-import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
-import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
-import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
-import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
-import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
-import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
+import {kstateSchool} from '../src/schools/kstate.mjs';
 import {isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from '../src/kansas-cross-country.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
+import {schoolModuleDeps} from './school-module-deps.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const baseline=JSON.parse(read('./fixtures/kstate-module-baseline.json'));
@@ -24,7 +15,7 @@ const school=schools.find(s=>s.id==='kstate');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected fetch ${url}`);return new Response(responses.get(String(url)));};
-const worker=Function('createSourceFetch','SOURCE_TTL','oklahomaStateSchool','createOklahomaStateHandlers','utahSchool','createUtahHandlers','arizonaStateSchool','createArizonaStateHandlers','byuSchool','createByuHandlers','ucfSchool','createUcfHandlers','arizonaSchool','createArizonaHandlers','baylorSchool','createBaylorHandlers','cincinnatiSchool','createCincinnatiHandlers','coloradoSchool','createColoradoHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {recapMatchesEvent,candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(createSourceFetch,SOURCE_TTL,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
+const worker=Function(...Object.keys(schoolModuleDeps),'createSourceFetch','SOURCE_TTL','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {recapMatchesEvent,candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(...Object.values(schoolModuleDeps),createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
 
 // Frozen from the pre-module application commit, never regenerated during tests.
 assert.equal(Object.keys(baseline.routes).length,10);

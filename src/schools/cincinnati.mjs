@@ -1,3 +1,4 @@
+import {findTfrrsMeet,parseTfrrsResults} from '../tfrrs-results.mjs';
 // Cincinnati school module. Shared publisher utilities stay in the Worker;
 // this file owns gobearcats.com routes, Cincinnati's program combinations, its
 // verified Instagram tags and its schedule-card reader. Routes started as the
@@ -74,56 +75,10 @@ function cardBlocks(raw){
 // at the RedHawk Rumble); its two TFRRS team pages list every meet with its
 // date.
 export const CINCINNATI_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/OH_college_f_Cincinnati.html',Men:'https://www.tfrrs.org/teams/xc/OH_college_m_Cincinnati.html'};
-const tfrrsText=(decodeHtml,value)=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
-const tfrrsCells=(decodeHtml,tr)=>[...tr.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>tfrrsText(decodeHtml,cell[1]));
-// The team page's row for this meet: the same date and at least one shared
-// distinctive word. Names differ between the two sites ("All-Ohio
-// Intercollegiate Classic" on the schedule, "All-Ohio InterCollegiate
-// Challenge" on TFRRS); a team runs one meet a day.
-const GENERIC=new Set(['classic','challenge','invitational','invite','championships','championship','meet','cross','country','open','college','university']);
-export function findCincinnatiTfrrsMeet(raw,{decodeHtml,date,name}){
-  const words=value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4&&!GENERIC.has(word)&&!/^\d+$/.test(word));
-  const wanted=new Set(words(name));
-  for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
-    const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
-    if(!link)continue;
-    const [day,meet]=tfrrsCells(decodeHtml,tr[0]);
-    if(Date.parse(`${day} 12:00 UTC`)!==Date.parse(`${date} 12:00 UTC`))continue;
-    if(words(meet).some(word=>wanted.has(word)))return new URL(link[1],'https://www.tfrrs.org').href;
-  }
-  return null;
-}
-// Cincinnati's races at one meet, women first: the team result (when
-// Cincinnati scored as a team) and every Cincinnati runner, by the TEAM
-// column. A race Cincinnati did not run (Gans Creek's Black Open) is left out.
-export function parseCincinnatiTfrrsResults(raw,{decodeHtml,ordinal}){
-  const races=new Map();
-  for(const section of String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1)){
-    const title=tfrrsText(decodeHtml,(section.match(/<h3\b[^>]*>([\s\S]*?)<span\b/i)||section.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)||section.match(/^[^>]*>([\s\S]*?)<\/div>/)||[])[1]||'');
-    const race=title.match(/\b(Women|Men)(?:['\u2019]?s)?\b(.*?)\b(Team|Individual) Results\s*\(([^)]+)\)/i);
-    if(!race)continue;
-    const team=race[1][0].toUpperCase()+race[1].slice(1).toLowerCase();
-    const distance=race[4].trim().replace(/^(\d+(?:\.\d+)?)\s*k$/i,'$1K');
-    const open=/\bOpen\b/i.test(race[2]);
-    const group=`${team}'s ${distance}${open?' Open':''}`;
-    const table=(section.match(/<table\b[\s\S]*?<\/table>/i)||[])[0]||'';
-    const rows=[...table.matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>tfrrsCells(decodeHtml,tr[0]));
-    const head=(rows[0]||[]).map(value=>value.toUpperCase());
-    const at=name=>head.indexOf(name);
-    const entry=races.get(group)||{team,group,result:null,runners:[]};
-    if(/team/i.test(race[3])&&at('SCORE')>=0){
-      const row=rows.slice(1).find(cells=>cells[at('TEAM')]==='Cincinnati');
-      if(row&&/^\d+$/.test(row[at('PL')])&&/^\d+$/.test(row[at('SCORE')]))entry.result={place:Number(row[at('PL')]),score:row[at('SCORE')]};
-    }else if(at('NAME')>=0&&at('TIME')>=0){
-      entry.runners=rows.slice(1).filter(cells=>cells[at('TEAM')]==='Cincinnati').map(cells=>{
-        const place=cells[at('PL')],time=cells[at('TIME')];
-        return{participant:cells[at('NAME')],place,result:/^\d+$/.test(place)?`${ordinal(place)} \u00b7 ${time}`:`${place} \u00b7 ${time}`};
-      }).filter(row=>row.participant&&(/\d:\d{2}/.test(row.result)||/^(?:DNF|DNS)\b/i.test(row.result)));
-    }
-    races.set(group,entry);
-  }
-  return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
-}
+// TFRRS meet finder and race reader are shared (`src/tfrrs-results.mjs`);
+// Cincinnati rows are Cincinnati's by the TFRRS TEAM column.
+export const findCincinnatiTfrrsMeet=(raw,options)=>findTfrrsMeet(raw,{...options});
+export const parseCincinnatiTfrrsResults=(raw,options)=>parseTfrrsResults(raw,{...options,team:'Cincinnati'});
 
 // Cards are grouped under titled tournament wrappers ("Exhibition", "Cancun
 // Challenge"); each card's heading is the titled wrapper that encloses it.

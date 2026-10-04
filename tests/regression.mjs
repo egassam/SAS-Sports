@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
@@ -13,7 +13,12 @@ const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.met
 const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.url),'utf8');
 const cincinnatiModule=readFileSync(new URL('../src/schools/cincinnati.mjs',import.meta.url),'utf8');
 const coloradoModule=readFileSync(new URL('../src/schools/colorado.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule,cincinnati:cincinnatiModule,colorado:coloradoModule};
+// Every school module by its file name (= school id), so a new module is
+// covered without editing this file.
+const schoolModuleSource=Object.fromEntries(readdirSync(new URL('../src/schools/',import.meta.url)).filter(file=>file.endsWith('.mjs')).map(file=>[file.slice(0,-4),readFileSync(new URL(`../src/schools/${file}`,import.meta.url),'utf8')]));
+// A school's routes and tags live in its module once it has one, otherwise in
+// the Worker.
+const ownerOf=id=>schoolModuleSource[id]||worker;
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -167,20 +172,20 @@ contains(oklahomaStateModule,/'oklahoma-state\|Track & Field':'https:\/\/okstate
 contains(ucfModule,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
 contains(coloradoModule,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-soccer\/schedule'/,'Colorado Soccer must use its populated women’s schedule');
 contains(coloradoModule,/'colorado\|Volleyball':'https:\/\/cubuffs\.com\/sports\/womens-volleyball\/schedule'/,'Colorado Volleyball must use its populated women’s schedule');
-contains(worker,/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soccer\/schedule'/,'Houston Soccer must use its official women’s schedule');
-contains(worker,/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens-volleyball\/schedule'/,'Houston Volleyball must use its official women’s schedule');
-contains(worker,/'iowa-state\|Soccer':'https:\/\/cyclones\.com\/sports\/womens-soccer\/schedule'/,'Iowa State Soccer must use its populated women’s schedule');
-contains(worker,/'iowa-state\|Volleyball':'https:\/\/cyclones\.com\/sports\/womens-volleyball\/schedule'/,'Iowa State Volleyball must use its populated women’s schedule');
-contains(worker,/'iowa-state\|Swimming & Diving':'https:\/\/cyclones\.com\/sports\/womens-swimming-and-diving\/roster'/,'Iowa State swimming must use its current official roster');
-contains(worker,/'iowa-state\|Tennis':'https:\/\/cyclones\.com\/sports\/womens-tennis\/roster'/,'Iowa State tennis must use its current official roster');
-contains(worker,/'tcu\|Cross Country':'https:\/\/gofrogs\.com\/sports\/cross-country\/schedule'/,'TCU Cross Country must use its official schedule');
-contains(worker,/'tcu\|Soccer':'https:\/\/gofrogs\.com\/sports\/womens-soccer\/schedule'/,'TCU Soccer must use its official women’s schedule');
-contains(worker,/'tcu\|Volleyball':'https:\/\/gofrogs\.com\/sports\/womens-volleyball\/schedule'/,'TCU Volleyball must use its official women’s schedule');
-contains(worker,/'tcu\|Football':'https:\/\/gofrogs\.com\/sports\/football\/schedule'/,'TCU Football must use its official schedule');
+contains(ownerOf('houston'),/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soccer\/schedule'/,'Houston Soccer must use its official women’s schedule');
+contains(ownerOf('houston'),/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens-volleyball\/schedule'/,'Houston Volleyball must use its official women’s schedule');
+contains(ownerOf('iowa-state'),/'iowa-state\|Soccer':'https:\/\/cyclones\.com\/sports\/womens-soccer\/schedule'/,'Iowa State Soccer must use its populated women’s schedule');
+contains(ownerOf('iowa-state'),/'iowa-state\|Volleyball':'https:\/\/cyclones\.com\/sports\/womens-volleyball\/schedule'/,'Iowa State Volleyball must use its populated women’s schedule');
+contains(ownerOf('iowa-state'),/'iowa-state\|Swimming & Diving':'https:\/\/cyclones\.com\/sports\/womens-swimming-and-diving\/roster'/,'Iowa State swimming must use its current official roster');
+contains(ownerOf('iowa-state'),/'iowa-state\|Tennis':'https:\/\/cyclones\.com\/sports\/womens-tennis\/roster'/,'Iowa State tennis must use its current official roster');
+contains(ownerOf('tcu'),/'tcu\|Cross Country':'https:\/\/gofrogs\.com\/sports\/cross-country\/schedule'/,'TCU Cross Country must use its official schedule');
+contains(ownerOf('tcu'),/'tcu\|Soccer':'https:\/\/gofrogs\.com\/sports\/womens-soccer\/schedule'/,'TCU Soccer must use its official women’s schedule');
+contains(ownerOf('tcu'),/'tcu\|Volleyball':'https:\/\/gofrogs\.com\/sports\/womens-volleyball\/schedule'/,'TCU Volleyball must use its official women’s schedule');
+contains(ownerOf('tcu'),/'tcu\|Football':'https:\/\/gofrogs\.com\/sports\/football\/schedule'/,'TCU Football must use its official schedule');
 contains(utahModule,/'utah\|Cross Country':'https:\/\/utahutes\.com\/sports\/cross-country\/schedule'/,'Utah Cross Country must use its official schedule');
 contains(utahModule,/'utah\|Soccer':'https:\/\/utahutes\.com\/sports\/womens-soccer\/schedule'/,'Utah Soccer must use its official schedule');
-contains(worker,/'west-virginia\|Cross Country':'https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule'/,'West Virginia Cross Country must use its populated women’s schedule');
-contains(worker,/'west-virginia\|Football':'https:\/\/wvusports\.com\/sports\/football\/schedule'/,'West Virginia Football must use its official schedule');
+contains(ownerOf('west-virginia'),/'west-virginia\|Cross Country':'https:\/\/wvusports\.com\/sports\/womens-cross-country\/schedule'/,'West Virginia Cross Country must use its populated women’s schedule');
+contains(ownerOf('west-virginia'),/'west-virginia\|Football':'https:\/\/wvusports\.com\/sports\/football\/schedule'/,'West Virginia Football must use its official schedule');
 contains(worker,/const sourceAdapters=\[/,'Publisher adapter registry must exist');
 contains(worker,/for\(const adapter of sourceAdapters\)eventLists\.push/,'Every matching source adapter must run instead of stopping on partial results');
 contains(worker,/mergeEvents\(eventLists\)/,'Multi-platform parser output must be normalized and merged');
@@ -220,7 +225,7 @@ contains(worker,/personInstagram/,'Identity-bound Schema.org Person social links
 contains(worker,/value\['@type'\].*person/i,'Only official Person identity records may supply embedded athlete Instagram links');
 contains(worker,/ttumensgolf/,'Texas Tech golf team Instagram must never be used as an athlete account');
 for(const verified of ['Chelsea Peterson','Mia Goettsche','Brynnli Tolbert'])contains(byuModule,new RegExp(`'byu\\|Soccer\\|${verified}'`),`Missing officially verified BYU Soccer Instagram for ${verified}`);
-for(const verified of ['Petja Drame','Valeriia Krokhotina','Iva Sepa'])contains(worker,new RegExp(`'houston\\|Tennis\\|${verified}'`),`Missing officially verified Houston Tennis Instagram for ${verified}`);
+for(const verified of ['Petja Drame','Valeriia Krokhotina','Iva Sepa'])contains(ownerOf('houston'),new RegExp(`'houston\\|Tennis\\|${verified}'`),`Missing officially verified Houston Tennis Instagram for ${verified}`);
 contains(worker,/texastechwgolf/,'Texas Tech women’s golf Instagram must never be used as an athlete account');
 contains(worker,/BLOCKED_INSTAGRAM_HANDLES/,'Known school and team Instagram accounts must be rejected');
 contains(worker,/sundevilathletics/,'Arizona State’s institutional Instagram must never be used as an athlete account');

@@ -1,18 +1,8 @@
-import {utahSchool,createUtahHandlers} from '../src/schools/utah.mjs';
-import {arizonaStateSchool,createArizonaStateHandlers} from '../src/schools/arizona-state.mjs';
-import {byuSchool,createByuHandlers} from '../src/schools/byu.mjs';
-import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
-import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
-import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
-import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
-import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
-import {oklahomaStateSchool,createOklahomaStateHandlers} from '../src/schools/oklahoma-state.mjs';
-import {kansasSchool,createKansasHandlers} from '../src/schools/kansas.mjs';
-import {kstateSchool,createKStateHandlers} from '../src/schools/kstate.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {applyVerifiedKansasMeet,applyKansasRows,isKansasCrossCountry,kansasRaceDocuments,parseKansasRacePdf,attachKansasRaceDocuments} from '../src/kansas-cross-country.mjs';
+import {schoolModuleDeps} from './school-module-deps.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const women=read('./fixtures/kansas-bob-timmons-2026-women.txt');
@@ -94,7 +84,7 @@ assert.deepEqual(gansLater.results,gans.rows,'later meets must parse without the
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const schools=JSON.parse(read('../src/schools.json'));
 let requests=[];
-const worker=Function('createSourceFetch','SOURCE_TTL','oklahomaStateSchool','createOklahomaStateHandlers','utahSchool','createUtahHandlers','arizonaStateSchool','createArizonaStateHandlers','byuSchool','createByuHandlers','ucfSchool','createUcfHandlers','arizonaSchool','createArizonaHandlers','baylorSchool','createBaylorHandlers','cincinnatiSchool','createCincinnatiHandlers','coloradoSchool','createColoradoHandlers','kansasSchool','createKansasHandlers','kstateSchool','createKStateHandlers','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialHighlights,fetchLive,parseHtml};`)(createSourceFetch,SOURCE_TTL,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,kansasSchool,createKansasHandlers,kstateSchool,createKStateHandlers,schools,{},()=>[],()=>{throw Error('unexpected PDF extraction');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{requests.push(String(url));throw Error('unexpected request');});
+const worker=Function(...Object.keys(schoolModuleDeps),'createSourceFetch','SOURCE_TTL','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {enrichMeetEvent,attachOfficialHighlights,fetchLive,parseHtml};`)(...Object.values(schoolModuleDeps),createSourceFetch,SOURCE_TTL,schools,{},()=>[],()=>{throw Error('unexpected PDF extraction');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,async url=>{requests.push(String(url));throw Error('unexpected request');});
 const current=event();worker.enrichMeetEvent(current);
 await worker.attachOfficialHighlights([current],'',schools.find(s=>s.id==='kansas'),'Cross Country','https://kuathletics.com/sports/cross-country/schedule',new Date('2026-09-25'),null,current.id);
 assert.deepEqual(requests,[],'verified KU modal must not fetch cumulative PDF or AI/prose results');
