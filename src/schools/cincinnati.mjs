@@ -7,12 +7,17 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
-    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    // Both teams, labeled to match the official men's and women's cards.
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
@@ -22,7 +27,7 @@ export const cincinnatiSchool={
   },
   scheduleUrls:{
     'cincinnati|Baseball':['https://gobearcats.com/sports/baseball/schedule','https://gobearcats.com/'],
-    'cincinnati|Basketball':['https://gobearcats.com/sports/mens-basketball/schedule','https://gobearcats.com/sports/womens-basketball/schedule','https://gobearcats.com/sports/basketball/schedule','https://gobearcats.com/'],
+    'cincinnati|Basketball':['https://gobearcats.com/sports/mens-basketball/schedule','https://gobearcats.com/sports/womens-basketball/schedule'],
     'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
     'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
     'cincinnati|Golf':['https://gobearcats.com/sports/womens-golf/schedule','https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/golf/schedule','https://gobearcats.com/'],
@@ -117,6 +122,20 @@ export function parseCincinnatiTfrrsResults(raw,{decodeHtml,ordinal}){
   return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
 }
 
+// Cards are grouped under titled tournament wrappers ("Exhibition", "Cancun
+// Challenge"); each card's heading is the titled wrapper that encloses it.
+function tournamentWrappers(raw,visibleText){
+  const wrappers=[];
+  for(const open of raw.matchAll(/<div\b[^>]*class=["'][^"']*schedule-events-by-tournament__wrapper--has-title[^"']*["'][^>]*>/gi)){
+    const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=open.index+open[0].length;
+    let depth=1,end=-1,tag;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tags.lastIndex;
+    const title=(raw.slice(open.index,end).match(/schedule-events-by-tournament__title[^>]*>([\s\S]*?)<\//i)||[])[1]||'';
+    if(end>0)wrappers.push({start:open.index,end,title:visibleText(title)});
+  }
+  return wrappers;
+}
+
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Today in Eastern time (Cincinnati's cards are Eastern wall clock).
 const easternDay=time=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(time));
@@ -152,8 +171,12 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
     let host;try{host=new URL(sourceUrl);}catch{return null;}
     if(host.hostname!=='gobearcats.com'||!/^\/sports\/[^/]+\/schedule\/?$/.test(host.pathname))return null;
     raw=String(raw||'');
-    const events=[];
-    for(const {block} of cardBlocks(raw)){
+    const events=[],wrappers=tournamentWrappers(raw,visibleText);
+    // Separate men's and women's pages can list the same opponent on the same
+    // day; the team keeps their event ids apart.
+    const team=cincinnatiSchool.combinedSports.has(sport)?(host.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
+    for(const {block,index} of cardBlocks(raw)){
+      const heading=wrappers.find(wrapper=>wrapper.start<index&&index<wrapper.end)?.title||'';
       // The datetime attribute is Eastern wall clock; its date is the published day.
       const start=(block.match(/schedule-event-date__wrapper--start[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       if(start.length!==3)continue;
@@ -163,7 +186,11 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       if(shown&&(MONTHS.indexOf(shown[1])!==month-1||Number(shown[2])!==day))continue;
       const divider=field(block,/schedule-default-event__divider[^>]*>([\s\S]*?)<\/strong>/i);
       // Rankings ("#11 TCU", "#RV Kansas State") describe the week, not the opponent.
-      const opponent=field(block,/class=["']schedule-default-event__name["'][^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:#(?:\d+|RV)\s+)+/i,'').trim();
+      let opponent=field(block,/class=["']schedule-default-event__name["'][^>]*>([\s\S]*?)<\/strong>/i).replace(/^(?:#(?:\d+|RV)\s+)+/i,'').trim();
+      // Exhibitions are labeled as K-State's are: "(EXH)" on soccer's card,
+      // the "Exhibition" heading on women's basketball.
+      if(/^Exhibitions?$/i.test(heading)&&!/\((?:EXH|Exhibition)\)/i.test(opponent))opponent=`${opponent} (Exhibition)`;
+      opponent=opponent.replace(/\(EXH\)/i,'(Exhibition)');
       const meet=eventType(sport)!=='GAME';
       // Golf cards have no divider; games always do.
       if(!opponent||!divider&&!meet)continue;
@@ -198,6 +225,7 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       }else if(over){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       const recapUrl=result||over?cardRecap(block,sourceUrl,firstDay,lastDay):null;
       if(recapUrl)event.recap_url=recapUrl;
+      if(team)event.id=`${event.id}-${team}`;
       events.push(event);
     }
     return events.length?events:null;
