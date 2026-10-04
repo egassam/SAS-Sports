@@ -7,7 +7,7 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -22,7 +22,7 @@ export const cincinnatiSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Swimming & Diving','Golf']),
   verifiedInstagrams:{
     'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
   },
@@ -31,7 +31,7 @@ export const cincinnatiSchool={
     'cincinnati|Basketball':['https://gobearcats.com/sports/mens-basketball/schedule','https://gobearcats.com/sports/womens-basketball/schedule'],
     'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
     'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
-    'cincinnati|Golf':['https://gobearcats.com/sports/womens-golf/schedule','https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/golf/schedule','https://gobearcats.com/'],
+    'cincinnati|Golf':['https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/womens-golf/schedule'],
     'cincinnati|Lacrosse':['https://gobearcats.com/sports/womens-lacrosse/schedule','https://gobearcats.com/sports/mens-lacrosse/schedule','https://gobearcats.com/sports/lacrosse/schedule','https://gobearcats.com/'],
     'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
     'cincinnati|Swimming & Diving':['https://gobearcats.com/sports/womens-swimming-and-diving/schedule','https://gobearcats.com/sports/mens-swimming-and-diving/schedule','https://gobearcats.com/sports/womens-swimming-diving/schedule','https://gobearcats.com/sports/mens-swimming-diving/schedule','https://gobearcats.com/sports/swimming-and-diving/schedule','https://gobearcats.com/sports/swimming-diving/schedule','https://gobearcats.com/sports/swimming/schedule','https://gobearcats.com/'],
@@ -167,6 +167,42 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
     }
     return null;
   }
+  // Consecutive round cards of one tournament (the same name, at most two
+  // days apart) become one event from its first to its last day. A finished
+  // tournament takes the last round's place and story (the earlier stories
+  // are "after 18 holes"); one in progress is shown on its current round,
+  // with no result yet.
+  function mergeRounds(events,today){
+    const groups=[];
+    for(const event of events){
+      const previous=groups.at(-1),last=previous?.at(-1);
+      const gap=last?(Date.parse(event.start_time.slice(0,10))-Date.parse(last.start_time.slice(0,10)))/86400000:Infinity;
+      if(last&&last.opponent===event.opponent&&gap>0&&gap<=2){previous.push(event);continue;}
+      groups.push([event]);
+    }
+    return groups.map(rounds=>{
+      const first=rounds[0],last=rounds.at(-1);
+      const end=String(last.end_time||last.start_time).slice(0,10);
+      const finished=last.status==='Final';
+      const current=finished?first:rounds.find(round=>Date.parse(round.start_time.slice(0,10))>=today)||last;
+      const event={...current};
+      if(rounds.length>1||event.end_time)event.end_time=`${end}T23:59:59Z`;
+      if(finished){
+        for(const key of ['status','headline','results','result_count','recency_label','priority_bucket'])event[key]=last[key];
+        if(last.recap_url)event.recap_url=last.recap_url;else delete event.recap_url;
+      }else{
+        for(const key of ['headline','results','result_count','recap_url'])delete event[key];
+        // Under way (the Blessings Collegiate, Oct 3-5, after its first
+        // round): today's event, not a final.
+        if(Date.parse(first.start_time.slice(0,10))<=today&&Date.parse(end)>=today){
+          event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
+          event.id=event.id.replace(/-(?:final|upcoming|today)(-(?:mens|womens))?$/,'-today$1');
+          event.start_time=`${new Date(today).toISOString().slice(0,10)}T12:00:00.000Z`;
+        }else{event.status='Upcoming';}
+      }
+      return event;
+    });
+  }
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!=='cincinnati'||!cincinnatiSchool.cardSports.has(sport))return null;
     let host;try{host=new URL(sourceUrl);}catch{return null;}
@@ -206,15 +242,20 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       const today=Date.parse(easternDay(now.getTime())+'T00:00:00Z');
       // Meets publish each team's place: "2nd (M), 2nd (W)", "1st (W)".
       const places=meet?[...slot.matchAll(/\b(T?\d{1,3})(?:st|nd|rd|th)\s*\((M|W)\)/gi)].map(m=>({team:m[2].toUpperCase()==='W'?'Women':'Men',place:m[1]})):[];
+      // Golf tournaments read "Cincinnati at ...", as K-State's do (the women's
+      // cards say "vs." for every tournament).
+      // Golf publishes the team's place after each round: "8th of 14",
+      // "T4th of 15", "5th out of 13".
+      const golf=sport==='Golf'?slot.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)\s+(?:of|out of)\s+(\d{1,3})$/i):null;
       // A meet whose last day has passed is over, published place or not.
-      const over=meet&&(places.length>0||lastDay<today);
+      const over=meet&&(places.length>0||Boolean(golf)||lastDay<today);
       // A game two days past without a published result (the Aug 8 soccer
       // exhibition, "Evansville (EXH)") is neither a K-State-style final nor
       // upcoming. Yesterday's stays: a night game can run past midnight, and
       // the result is posted after it ends. A multi-day event (the Big 12
       // baseball tournament, May 25-29) counts from its last day.
       if(!meet&&!result&&lastDay<today-86400000)continue;
-      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
+      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||!divider||sport==='Golf'?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over?null:clock||null,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
@@ -224,12 +265,19 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       if(places.length){
         const value=places.sort((x,y)=>(x.team==='Women'?0:1)-(y.team==='Women'?0:1)).map(({team,place})=>`${team}'s team: ${place.replace(/^(T?)(\d+)$/,(m,t,n)=>t+ordinal(n))}`).join(' / ');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
+      }else if(golf){
+        // K-State's golf headline: "4th of 14" (no team total is published).
+        const value=`${golf[1]?'T':''}${ordinal(golf[2])} of ${golf[3]}`;
+        event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
       }else if(over){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
       const recapUrl=result||over?cardRecap(block,sourceUrl,firstDay,lastDay):null;
       if(recapUrl)event.recap_url=recapUrl;
       if(team)event.id=`${event.id}-${team}`;
       events.push(event);
     }
+    // Golf publishes one card per round; K-State shows one event per
+    // tournament.
+    if(sport==='Golf'){const merged=mergeRounds(events,Date.parse(easternDay(now.getTime())+'T00:00:00Z'));events.length=0;events.push(...merged);}
     // A page with cards but nothing current is a valid empty schedule, not a
     // failed source: the shared parsers must not read it again (they made
     // events out of the page's schema data).

@@ -313,4 +313,50 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(scored.map(e=>[e.opponent,e.status,/^[WL], \d+-\d+$/.test(e.headline)]),[['Baylor','Final',true]]);
 }
 
+// Golf: both teams' official pages only (production loaded the women's page
+// alone and showed one event per round), labeled, one event per tournament.
+{
+  assert.deepEqual(worker.candidateUrls(school,'Golf'),['https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/womens-golf/schedule']);
+  assert.ok(worker.schoolCombinedSports(school).has('Golf'));
+  const gNow=new Date('2026-10-04T02:00:00Z'),menUrl='https://gobearcats.com/sports/mens-golf/schedule',womenUrl='https://gobearcats.com/sports/womens-golf/schedule';
+  const men=worker.parseHtml(fixture('golf-mens-schedule.html.gz'),school,'Golf',menUrl,gNow);
+  const women=worker.parseHtml(fixture('golf-womens-schedule.html.gz'),school,'Golf',womenUrl,gNow);
+  assert.deepEqual([men.length,women.length],[11,12],'25 and 28 round cards become one event per tournament');
+  assert.ok(men.every(e=>e.id.endsWith('-mens'))&&women.every(e=>e.id.endsWith('-womens')));
+  assert.ok([...men,...women].every(e=>/^Cincinnati at /.test(e.title)),'tournaments read "at" (the women\'s cards say "vs.")');
+  const finals=[...men,...women].filter(e=>e.status==='Final');
+  assert.deepEqual(finals.map(e=>`${e.opponent} ${e.display_time} ${e.headline} ${e.end_time.slice(0,10)}`),[
+    'Folds of Honor Collegiate Sep 7 4th of 14 2026-09-09','Bearcat Invitational Sep 14 3rd of 17 2026-09-15','Gopher Invitational Sep 20 4th of 15 2026-09-21',
+    'Bettie Lou Evans Invitational Sep 21 6th of 13 2026-09-22','Powercat Invitational Sep 28 2nd of 12 2026-09-29'
+  ],"the last round's place and field, K-State's \"1st of 12\" form (no team total is published)");
+  // Each tournament links its final story, not a day-one story ("Bearcats
+  // sit eighth after 18 holes").
+  assert.deepEqual(finals.map(e=>e.recap_url.replace('https://gobearcats.com/news/','')),[
+    '2026/09/10/bearcats-finish-fourth-at-folds-of-honor-collegiate','2026/09/15/cincinnati-climbs-to-third-to-conclude-bearcat-invitational','2026/09/21/cincinnati-finishes-fourth-at-gopher-invitational',
+    '2026/09/22/rymer-bearcats-finish-sixth-at-bettie-lou-evans-invitational','2026/09/29/cincinnati-earns-runner-up-finish-at-powercat-classic']);
+  // The Blessings Collegiate (Oct 3-5) is under way after one round: today's
+  // event, no result yet. Once over, it is a final.
+  const blessings=women.find(e=>e.opponent==='Blessings Collegiate Invitational');
+  assert.deepEqual([blessings.status,blessings.recency_label,blessings.headline,blessings.end_time],['Today','In progress',undefined,'2026-10-05T23:59:59Z']);
+  assert.ok(blessings.id.endsWith('-today-womens'));
+  assert.equal(worker.parseHtml(fixture('golf-womens-schedule.html.gz'),school,'Golf',womenUrl,new Date('2026-10-06T16:00:00Z')).find(e=>e.opponent==='Blessings Collegiate Invitational').status,'Final');
+  assert.deepEqual(men.filter(e=>e.status!=='Final').slice(0,2).map(e=>`${e.title} ${e.display_time} ${e.end_time.slice(0,10)}`),['Cincinnati at Cullan Brown Collegiate Oct 5 2026-10-06','Cincinnati at Big 12 Match Play Oct 12 2026-10-14'],'upcoming tournaments, dates only');
+  // Expanded view: the final story, checked against the last day (Sep 10
+  // for Sep 7-9).
+  const folds=finals[0],powercat=finals[4];
+  assert.ok(worker.cincinnatiHandlers.matchesRecap(fixture('recap-golf-2026-9-10-folds-of-honor.html.gz'),folds,folds.recap_url));
+  assert.ok(worker.cincinnatiHandlers.matchesRecap(fixture('recap-golf-2026-9-29-powercat.html.gz'),powercat,powercat.recap_url),'"Powercat Classic" in the story');
+  assert.ok(!worker.cincinnatiHandlers.matchesRecap(fixture('recap-golf-2026-9-29-powercat.html.gz'),folds,powercat.recap_url));
+  recapFixtures.set(folds.recap_url,fixture('recap-golf-2026-9-10-folds-of-honor.html.gz'));
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Cincinnati finished fourth in the 14-team field at the Folds of Honor Collegiate.','The Bearcats climbed from eighth after the first round to finish the event.','A Cincinnati golfer posted a top-10 individual finish for the tournament.','Cincinnati returns to action at its home event the following week.'])};}}};
+  const events=worker.parseHtml(fixture('golf-mens-schedule.html.gz'),school,'Golf',menUrl,gNow);
+  const target=events.find(e=>e.opponent==='Folds of Honor Collegiate');
+  await worker.attachOfficialHighlights(events,fixture('golf-mens-schedule.html.gz'),school,'Golf',menUrl,gNow,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.ok(prompts[0].includes('Folds of Honor'));
+  // ESPN publishes no college golf scoreboard (K-State has none).
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Golf'),[]);
+}
+
 console.log('Cincinnati module checks passed');
