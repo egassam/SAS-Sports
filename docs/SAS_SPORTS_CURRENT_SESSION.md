@@ -1468,4 +1468,3 @@ User: "Convert Colorado". The handoff was read from main (`f13cdc5`, after Cinci
 **Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/colorado-module.mjs` (parse hook, past-game rule, compaction, own-recap-only, headline rule, other-teams filter, scoreboards, exhibition label, time text, archive hooks and score rule, TFRRS 0-point rule, meet `at`, place check, attach hook, last-day rule, in-progress, team ids, routes, round merge, last-round result, golf story binding, ski runs, final-run place, widget filter, discipline names, tennis rules, season filter, empty flag and hook, meet merge and gap, latest story, Skiing athlete fill). Preview gate per PR: XC 18/20 and 26/21, 36/36 refreshes, every expanded view checked. Production: deep certification 9/9, athletes 9/9.
 
 **Open:** none for Colorado beyond the source-blocked items above; first live Colorado cards not yet observed.
-
