@@ -14,13 +14,20 @@
       "url": "https://cubuffs.com/sports/womens-soccer/schedule",
       "retrieved": "2026-10-04T04:20Z",
       "note": "Official 2026 women's soccer schedule, unmodified, via the private source route. 20 entries: Aug 5 Utah exhibition (type S, W 1-0), 12 more finals (Western Michigan T 0-0 without a recap), 7 upcoming; Oct 16 at Kansas State shows 5:30 p.m. with 18:00 in the data."
+    },
+    "cross-country-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/cross-country/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "6 meets: Wyoming Invitational (M-3rd/W-NTS) and Roadrunners Invitational (M-1st/W-1st) with recaps; Nuttycombe, Big 12, NCAA Mountain Region, NCAA Championships upcoming."
     }
   },
   "recaps": {
     "recap-football-2026-9-3-georgia-tech.html.gz": "https://cubuffs.com/news/2026/9/3/football-late-td-boo-block-gives-buffs-thrilling-win-at-georgia-tech",
     "recap-football-2026-9-12-weber-state.html.gz": "https://cubuffs.com/news/2026/9/12/football-offensive-outburst-guides-buffaloes-over-weber-state",
     "recap-football-2026-9-19-northwestern.html.gz": "https://cubuffs.com/news/2026/9/19/football-giveaways-costly-as-buffs-suffer-defeat-to-northwestern",
-    "recap-football-2026-9-26-baylor.html.gz": "https://cubuffs.com/news/2026/9/26/football-buffaloes-fall-in-waco-to-open-big-12-conference-play"
+    "recap-football-2026-9-26-baylor.html.gz": "https://cubuffs.com/news/2026/9/26/football-buffaloes-fall-in-waco-to-open-big-12-conference-play",
+    "recap-xc-2026-9-4-wyoming.html.gz": "https://cubuffs.com/news/2026/9/4/cross-country-opens-2026-season-in-wyoming",
+    "recap-xc-2026-9-19-roadrunners.html.gz": "https://cubuffs.com/news/2026/9/19/colorado-cross-country-wins-roadrunners-invitational"
   },
   "scoreboards": {
     "football-espn-2026-09-26.json.gz": "Copy of tests/fixtures/baylor-module/football-espn-2026-09-26.json.gz (ESPN college football scoreboard, groups=80, Sep 26, 2026): Colorado at Baylor, final 13-23; Colorado State also plays.",
@@ -32,5 +39,12 @@
   "archives": {
     "soccer-archives.html.gz": "https://cubuffs.com/sports/womens-soccer/archives (unmodified, private source route, 2026-10-04T04:45Z)",
     "story-soccer-2026-8-27-western-michigan.html.gz": "https://cubuffs.com/news/2026/8/27/soccer-buffs-first-road-match-ends-in-a-draw (not linked on the schedule; unmodified)"
+  },
+  "tfrrs": {
+    "tfrrs-team-women.html.gz": "https://www.tfrrs.org/teams/xc/CO_college_f_Colorado.html",
+    "tfrrs-team-men.html.gz": "https://www.tfrrs.org/teams/xc/CO_college_m_Colorado.html",
+    "tfrrs-xc-roadrunners.html.gz": "https://www.tfrrs.org/results/xc/27698/2026_Roadrunners_Invitational",
+    "tfrrs-xc-wyoming.html.gz": "https://www.tfrrs.org/results/xc/28504/Wyoming_Invitational",
+    "note": "Downloaded directly 2026-10-04T04:43Z, unmodified."
   }
 }

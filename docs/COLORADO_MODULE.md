@@ -10,8 +10,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | --- | --- | --- |
 | Football | #214 | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
 | Volleyball | #215 | 13 finals (`W, 3-0`) with their own recaps, 15 upcoming with published times; scrimmage and other teams' tournament matches left out; ESPN live score |
-| Soccer | (this PR) | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
-| Cross Country | | shared parsers |
+| Soccer | #216 | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
+| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
 | Basketball | | shared parsers |
 | Golf | | shared parsers |
 | Skiing | | shared parsers |
@@ -65,6 +65,22 @@ Colorado sponsors women's soccer only. Production's games and results were right
 **Stories the schedule does not link (every Colorado game sport).** The Aug 27 tie at Western Michigan links no recap, and the shared search found none (`recap_not_found` on the first preview). Colorado's story is in the soccer archive, headlined "Buffs' First Road Match Ends In A Draw". A final with no linked story now takes one from `/sports/<sport>/archives` when it is dated on the game day or the day after, names the opponent in the article and states the result: the score either way round (never part of a record such as `3-0-1`), or for a tie, a draw. Feed and expanded view both run it (`isColoradoFinalWithoutStory`/`attachArchiveStory`); a story with another result or another opponent is refused.
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Colorado at UCF (`L, 0-2`) joins the official card.
+
+## Cross Country (`4.52.4-colorado-cross-country`)
+
+Colorado runs men's and women's teams on one schedule page. Production showed the cards' text as the headline (`M-1st/W-1st`, `M-3rd/W-NTS`), no race rows, and postseason meets as `Colorado vs Big 12 Championships`. The reader writes K-State's headline from the published places, women first, dates only, every meet `Colorado at ...`; a team with no score (`W-NTS`) gets no place.
+
+TFRRS publishes every meet as plain tables, and Colorado's two TFRRS team pages list each meet with its date. The module (`findColoradoTfrrsMeet`, `parseColoradoTfrrsResults`, `attachMeetResults`; the same three school-gated hooks as Baylor and Cincinnati):
+- finds the meet on each team's page by date and a shared distinctive word (`Roadrunners Invitational` is TFRRS's `2026 Roadrunners Invitational`);
+- reads Colorado's team result and every Colorado finisher per race by the TEAM column (`Women's 6K`, `Men's 8K`); DNF and DNS rows are not results;
+- treats a team listed with 0 points as no team result: TFRRS lists Colorado's women 5th at Wyoming with 0 points, the meet the card marks `W-NTS`. The headline then names the team's first finisher (`Women's: Ella Hagen 2nd / Men's team: 3rd · 57 pts`);
+- refuses TFRRS when a team place the card publishes disagrees (the card's headline stays);
+- keeps the source link on the official recap, with the TFRRS page beside it (`results_source_url`);
+- writes highlights only from these rows.
+
+Results: Roadrunners Invitational 17 rows (2 team, 6 women, 9 men), Wyoming Invitational 10 rows.
+
+ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 
