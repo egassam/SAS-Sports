@@ -33,7 +33,7 @@ const worker=Function(...Object.keys(deps),source+';return {candidateUrls,roster
 // exactly the candidates production used before the module (route parity,
 // 219/219 catalog routes identical).
 const sports=sponsoredSports.cincinnati;
-assert.equal(sports.length,10);
+assert.equal(sports.length,11);
 for(const [name,map] of [['schedule',cincinnatiSchool.scheduleUrls],['roster',cincinnatiSchool.rosterUrls]]){
   assert.deepEqual(Object.keys(map).map(key=>key.split('|')[1]).sort(),[...sports].sort(),`every sponsored sport needs a ${name} route`);
   for(const [key,value] of Object.entries(map)){
@@ -412,6 +412,32 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(season.find(e=>e.opponent==='NCAA Outdoor Championships').end_time,'2026-06-13T23:59:59Z');
   assert.ok(season.every(e=>e.headline),'meets without a published place read "Completed"');
   assert.deepEqual(worker.liveScoreboardProviders(school,'Track & Field'),[]);
+}
+
+// Tennis: gobearcats.com publishes a 2026-27 women's tennis schedule, which
+// the catalog did not list. Tournaments read as K-State reads meets.
+{
+  assert.ok(sponsoredSports.cincinnati.includes('Tennis'));
+  assert.deepEqual(worker.candidateUrls(school,'Tennis'),['https://gobearcats.com/sports/womens-tennis/schedule']);
+  assert.deepEqual(worker.rosterUrls(school,'Tennis'),['https://gobearcats.com/sports/womens-tennis/roster']);
+  const tnUrl='https://gobearcats.com/sports/womens-tennis/schedule',tnNow=new Date('2026-10-04T02:00:00Z');
+  const tn=worker.parseHtml(fixture('tennis-schedule.html.gz'),school,'Tennis',tnUrl,tnNow);
+  assert.deepEqual(tn.map(e=>`${e.title} ${e.display_time} ${e.status} ${e.end_time.slice(5,10)}`),[
+    'Cincinnati at UC/Pam Whitehead Invitational Sep 18 Final 09-19','Cincinnati at ITA Fall Regional Championships Oct 8 Upcoming 10-13',
+    'Cincinnati at Middle Tennessee St. Invitational Oct 23 Upcoming 10-25','Cincinnati at Bonita Bay Collegiate Classic Nov 6 Upcoming 11-08'
+  ],'tournaments "at", ending on their last day; "TBA" shows the date only');
+  const pam=tn[0];
+  assert.equal(pam.headline,'Completed','no team result is published for an individual tournament');
+  assert.equal(pam.recap_url,'https://gobearcats.com/news/2026/09/20/tennis-concludes-pam-whitehead-invitational-weekend');
+  recapFixtures.set(pam.recap_url,fixture('recap-tennis-2026-9-20-pam-whitehead.html.gz'));
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Cincinnati hosted the UC/Pam Whitehead Invitational over the weekend.','The Bearcats won several singles matches across the two days of play.','Cincinnati paired up for doubles wins against visiting teams.','The Bearcats next compete at the ITA Fall Regional Championships.'])};}}};
+  const events=worker.parseHtml(fixture('tennis-schedule.html.gz'),school,'Tennis',tnUrl,tnNow);
+  const target=events.find(e=>e.status==='Final');
+  await worker.attachOfficialHighlights(events,fixture('tennis-schedule.html.gz'),school,'Tennis',tnUrl,tnNow,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.ok(prompts[0].includes('Pam Whitehead'));
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Tennis'),[]);
 }
 
 console.log('Cincinnati module checks passed');
