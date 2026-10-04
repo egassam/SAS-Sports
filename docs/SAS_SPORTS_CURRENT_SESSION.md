@@ -1434,4 +1434,3 @@ User: "Convert Cincinnati". The handoff was read from main (`f1e7fcd`). Cincinna
 **Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/cincinnati-module.mjs` (parse hook, matcher dispatch, XC attach hook, strict TFRRS name rule, place check, exhibition label, team ids, past-game rule, multi-day rule, empty-schedule flag, round merge, in-progress rule, golf "at", season filter, swim heading, meet times, tennis last-day check). Preview gate per sport: XC 18/20 and 26/21, 36/36 refreshes; after #207 and #209 (reader-wide changes) every converted Cincinnati sport was compared between preview and production (identical). Production: deep certification 11/11.
 
 **Open:** none for Cincinnati beyond the source-blocked items above. Tennis's addition to the catalog is flagged for the user.
-
