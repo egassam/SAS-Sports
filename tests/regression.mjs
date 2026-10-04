@@ -12,7 +12,8 @@ const ucfModule=readFileSync(new URL('../src/schools/ucf.mjs',import.meta.url),'
 const arizonaModule=readFileSync(new URL('../src/schools/arizona.mjs',import.meta.url),'utf8');
 const baylorModule=readFileSync(new URL('../src/schools/baylor.mjs',import.meta.url),'utf8');
 const cincinnatiModule=readFileSync(new URL('../src/schools/cincinnati.mjs',import.meta.url),'utf8');
-const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule,cincinnati:cincinnatiModule};
+const coloradoModule=readFileSync(new URL('../src/schools/colorado.mjs',import.meta.url),'utf8');
+const schoolModuleSource={kstate:kstateModule,kansas:kansasModule,'oklahoma-state':oklahomaStateModule,utah:utahModule,'arizona-state':arizonaStateModule,byu:byuModule,ucf:ucfModule,arizona:arizonaModule,baylor:baylorModule,cincinnati:cincinnatiModule,colorado:coloradoModule};
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const certification=JSON.parse(readFileSync(new URL('./certified-schools.json',import.meta.url),'utf8'));
 
@@ -164,8 +165,8 @@ contains(oklahomaStateModule,/'oklahoma-state\|Cross Country':\['https:\/\/oksta
 contains(arizonaModule,/'arizona\|Swimming & Diving':\['https:\/\/arizonawildcats\.com\/sports\/mens-swimming-and-diving\/schedule','https:\/\/arizonawildcats\.com\/sports\/womens-swimming-and-diving\/schedule'\]/,'Arizona swimming must load both current official schedules');
 contains(oklahomaStateModule,/'oklahoma-state\|Track & Field':'https:\/\/okstate\.com\/sports\/mxct\/schedule'/,'Oklahoma State track must use its official MXCT schedule');
 contains(ucfModule,/'ucf\|Volleyball':'https:\/\/ucfknights\.com\/sports\/volleyball\/schedule'/,'UCF Volleyball must use its current official schedule route');
-contains(worker,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-soccer\/schedule'/,'Colorado Soccer must use its populated women’s schedule');
-contains(worker,/'colorado\|Volleyball':'https:\/\/cubuffs\.com\/sports\/womens-volleyball\/schedule'/,'Colorado Volleyball must use its populated women’s schedule');
+contains(coloradoModule,/'colorado\|Soccer':'https:\/\/cubuffs\.com\/sports\/womens-soccer\/schedule'/,'Colorado Soccer must use its populated women’s schedule');
+contains(coloradoModule,/'colorado\|Volleyball':'https:\/\/cubuffs\.com\/sports\/womens-volleyball\/schedule'/,'Colorado Volleyball must use its populated women’s schedule');
 contains(worker,/'houston\|Soccer':'https:\/\/uhcougars\.com\/sports\/womens-soccer\/schedule'/,'Houston Soccer must use its official women’s schedule');
 contains(worker,/'houston\|Volleyball':'https:\/\/uhcougars\.com\/sports\/womens-volleyball\/schedule'/,'Houston Volleyball must use its official women’s schedule');
 contains(worker,/'iowa-state\|Soccer':'https:\/\/cyclones\.com\/sports\/womens-soccer\/schedule'/,'Iowa State Soccer must use its populated women’s schedule');
@@ -195,7 +196,7 @@ contains(worker,/PL NAME\|Cowboy Preview/,'Cross-country recap parsing must reje
 contains(worker,/function parseCrossCountryFlatPdfResults/,'Event-result PDFs must be parsed as race tables');
 contains(worker,/flat\.length>=2\?flat:parseCrossCountryPdfResults/,'Race-table PDF results must take priority over cumulative athlete blocks');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
-contains(worker,/host!=='uhcougars\.com'.*host==='cubuffs\.com'.*football/s,'Schedule compaction must remain isolated to Houston and Colorado Football');
+contains(worker,/if\(host!=='uhcougars\.com'\)return raw;/,'Schedule compaction must remain isolated to Houston (Colorado pages are read whole by its module)');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 contains(worker,/FEED_FRESH_MS=25\*1000/,'Shared live-feed cache must refresh within the 30-second polling window');

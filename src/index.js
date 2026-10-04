@@ -12,9 +12,10 @@ import {ucfSchool,createUcfHandlers} from './schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from './schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {cincinnatiSchool,createCincinnatiHandlers} from './schools/cincinnati.mjs';
+import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.51.0-cincinnati-tennis';
+const VERSION='4.52.0-colorado-football';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -56,8 +57,8 @@ const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
   ...byuSchool.verifiedInstagrams,
   ...cincinnatiSchool.verifiedInstagrams,
-  'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
-  ,'houston|Tennis|Petja Drame':'https://www.instagram.com/petja.drame/'
+  ...coloradoSchool.verifiedInstagrams,
+  'houston|Tennis|Petja Drame':'https://www.instagram.com/petja.drame/'
   ,'houston|Tennis|Valeriia Krokhotina':'https://www.instagram.com/leriiakrokhotina/'
   ,'houston|Tennis|Iva Sepa':'https://www.instagram.com/sepa_iva/'
 }));
@@ -87,15 +88,12 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...arizonaSchool.rosterUrls,
   ...baylorSchool.rosterUrls,
   ...cincinnatiSchool.rosterUrls,
+  ...coloradoSchool.rosterUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Football':'https://rolltide.com/sports/football/roster',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
-  ,'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/roster'
-  ,'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/roster'
-  ,'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/roster'
-  ,'colorado|Football':'https://cubuffs.com/sports/football/roster'
   ,'houston|Cross Country':'https://uhcougars.com/sports/cross-country/roster'
   ,'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/roster'
   ,'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/roster'
@@ -127,6 +125,7 @@ function schoolCombinedSports(school){
   if(school?.id==='arizona')return arizonaSchool.combinedSports;
   if(school?.id==='baylor')return baylorSchool.combinedSports;
   if(school?.id==='cincinnati')return cincinnatiSchool.combinedSports;
+  if(school?.id==='colorado')return coloradoSchool.combinedSports;
   return COMBINED_TEAM_SPORTS;
 }
 function teamLabelForSource(school,sport,url){
@@ -152,6 +151,7 @@ const KNOWN_URLS=new Map(Object.entries({
   ...arizonaSchool.scheduleUrls,
   ...baylorSchool.scheduleUrls,
   ...cincinnatiSchool.scheduleUrls,
+  ...coloradoSchool.scheduleUrls,
   'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
   'alabama|Football':'https://rolltide.com/sports/football/schedule',
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
@@ -168,10 +168,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
-  'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/schedule',
-  'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/schedule',
-  'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/schedule',
-  'colorado|Football':'https://cubuffs.com/sports/football/schedule',
   'houston|Cross Country':'https://uhcougars.com/sports/cross-country/schedule',
   'houston|Soccer':'https://uhcougars.com/sports/womens-soccer/schedule',
   'houston|Volleyball':'https://uhcougars.com/sports/womens-volleyball/schedule',
@@ -221,6 +217,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const coloradoHandlers=createColoradoHandlers({makeEvent});
 const cincinnatiHandlers=createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const baylorHandlers=createBaylorHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1091,6 +1088,7 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   if(school.id==='arizona'){const events=arizonaHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='baylor'){const events=baylorHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   if(school.id==='cincinnati'){const events=cincinnatiHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
+  if(school.id==='colorado'){const events=coloradoHandlers.parseSchedule(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
   // Run every platform adapter and merge normalized events; never stop after the
   // first parser returns a partial schedule.
@@ -1110,8 +1108,9 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
 }
 function compactScheduleHtml(raw,sourceUrl){
   let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'')}catch{return raw}
-  const path=(()=>{try{return new URL(sourceUrl).pathname}catch{return''}})();
-  if(host!=='uhcougars.com'&&!(host==='cubuffs.com'&&/\/football\//i.test(path)))return raw;
+  // Colorado's pages are read whole by its module (the page data sits after
+  // the cards).
+  if(host!=='uhcougars.com')return raw;
   const markers=['data-test-id="s-game-card-standard__root"',"data-test-id='s-game-card-standard__root'",'schedule-event-item'];
   const starts=markers.map(marker=>raw.indexOf(marker)).filter(index=>index>=0);
   if(!starts.length)return raw;
@@ -1599,7 +1598,7 @@ function scoreboardQuery(provider){
   return'limit=1000';
 }
 function liveScoreboardProviders(school,sport){
-  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:school?.id==='arizona'?arizonaSchool.liveScoreboards?.[sport]:school?.id==='baylor'?baylorSchool.liveScoreboards?.[sport]:school?.id==='cincinnati'?cincinnatiSchool.liveScoreboards?.[sport]:null;
+  const configured=school?.id==='kstate'?kstateSchool.liveScoreboards?.[sport]:school?.id==='byu'?byuSchool.liveScoreboards?.[sport]:school?.id==='ucf'?ucfSchool.liveScoreboards?.[sport]:school?.id==='arizona'?arizonaSchool.liveScoreboards?.[sport]:school?.id==='baylor'?baylorSchool.liveScoreboards?.[sport]:school?.id==='cincinnati'?cincinnatiSchool.liveScoreboards?.[sport]:school?.id==='colorado'?coloradoSchool.liveScoreboards?.[sport]:null;
   if(configured?.length)return configured;
   return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
 }
