@@ -7,7 +7,7 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse','Swimming & Diving']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -21,8 +21,8 @@ export const cincinnatiSchool={
     ]
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
-  // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Golf']),
+  // by team. Swimming & Diving publishes one page for both teams.
+  combinedSports:new Set(['Basketball','Golf']),
   verifiedInstagrams:{
     'cincinnati|Soccer|Tiana Campbell':'https://www.instagram.com/tianagcampbell/'
   },
@@ -34,7 +34,7 @@ export const cincinnatiSchool={
     'cincinnati|Golf':['https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/womens-golf/schedule'],
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/schedule',
     'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
-    'cincinnati|Swimming & Diving':['https://gobearcats.com/sports/womens-swimming-and-diving/schedule','https://gobearcats.com/sports/mens-swimming-and-diving/schedule','https://gobearcats.com/sports/womens-swimming-diving/schedule','https://gobearcats.com/sports/mens-swimming-diving/schedule','https://gobearcats.com/sports/swimming-and-diving/schedule','https://gobearcats.com/sports/swimming-diving/schedule','https://gobearcats.com/sports/swimming/schedule','https://gobearcats.com/'],
+    'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/schedule',
     'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/schedule','https://gobearcats.com/sports/track-field/schedule','https://gobearcats.com/'],
     'cincinnati|Volleyball':'https://gobearcats.com/sports/womens-volleyball/schedule'
   },
@@ -46,7 +46,7 @@ export const cincinnatiSchool={
     'cincinnati|Golf':['https://gobearcats.com/sports/womens-golf/roster','https://gobearcats.com/sports/mens-golf/roster','https://gobearcats.com/sports/golf/roster'],
     'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/roster',
     'cincinnati|Soccer':['https://gobearcats.com/sports/womens-soccer/roster','https://gobearcats.com/sports/wsoc/roster','https://gobearcats.com/sports/soccer/roster','https://gobearcats.com/sports/mens-soccer/roster'],
-    'cincinnati|Swimming & Diving':['https://gobearcats.com/sports/womens-swimming-and-diving/roster','https://gobearcats.com/sports/mens-swimming-and-diving/roster','https://gobearcats.com/sports/womens-swimming-diving/roster','https://gobearcats.com/sports/mens-swimming-diving/roster','https://gobearcats.com/sports/swimming-and-diving/roster','https://gobearcats.com/sports/swimming-diving/roster','https://gobearcats.com/sports/swimming/roster'],
+    'cincinnati|Swimming & Diving':'https://gobearcats.com/sports/swimming-and-diving/roster',
     'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/roster','https://gobearcats.com/sports/track-field/roster'],
     'cincinnati|Volleyball':['https://gobearcats.com/sports/womens-volleyball/roster','https://gobearcats.com/sports/wvball/roster','https://gobearcats.com/sports/volleyball/roster']
   }
@@ -233,14 +233,18 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       // the "Exhibition" heading on women's basketball.
       if(/^Exhibitions?$/i.test(heading)&&!/\((?:EXH|Exhibition)\)/i.test(opponent))opponent=`${opponent} (Exhibition)`;
       opponent=opponent.replace(/\(EXH\)/i,'(Exhibition)');
+      // A swimming invitational's card names the host ("at Ohio St."); its
+      // heading names the meet ("Ohio State Invitational").
+      if(sport==='Swimming & Diving'&&heading&&!/^Exhibitions?$/i.test(heading))opponent=heading;
       const meet=eventType(sport)!=='GAME';
       // Golf cards have no divider; games always do.
       if(!opponent||!divider&&!meet)continue;
       const slot=field(block,/schedule-event-item__result[^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i);
       const result=meet?null:slot.match(/^([WLT])\s+(?:Win|Loss|Tie)\s+(\d+)\s*-\s*(\d+)\b/i);
-      // "11:00 PM EDT": the published Eastern time; "TBA", "All Day" or an
-      // empty slot with the time-tba date class is the date alone.
-      const clock=result||meet||/schedule-event-date--time-tba/i.test(block)?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
+      // "11:00 PM EDT": the published Eastern time (games and swimming dual
+      // meets); "TBA", "All Day" or an empty slot with the time-tba date class
+      // is the date alone.
+      const clock=result||/schedule-event-date--time-tba/i.test(block)?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
       const firstDay=Date.UTC(year,month-1,day);
       const end=(block.match(/schedule-event-date__wrapper--end[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       const lastDay=end.length===3?Date.UTC(end[0],end[1]-1,end[2]):firstDay;
