@@ -12,8 +12,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Volleyball | #215 | 13 finals (`W, 3-0`) with their own recaps, 15 upcoming with published times; scrimmage and other teams' tournament matches left out; ESPN live score |
 | Soccer | #216 | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
 | Cross Country | #217 | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
-| Basketball | (this PR) | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
-| Golf | | shared parsers |
+| Basketball | #218 | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
+| Golf | (this PR) | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
 | Skiing | | shared parsers |
 | Tennis | | shared parsers |
 | Track & Field | | shared parsers |
@@ -89,6 +89,16 @@ Production loaded the men's and women's pages plus the generic `/sports/basketba
 **Multi-day events (every Colorado sport).** The men's Big 12 Championship (Mar 9-13) ends on its last day, is today's event `In progress` while played, and counts from its last day for the past-without-result rule; a recap may be dated up to three days after the last day.
 
 **Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Oklahoma State at Colorado and women's Texas Tech at Colorado; Colorado State and Northern Colorado play in both payloads and are never taken for Colorado.
+
+## Golf (`4.52.6-colorado-golf`)
+
+Production loaded the first golf page that answered (women's) and showed one event per round, named after the round (`Colorado vs Second Round`, a day-one `10th/15` as a result), with nothing for the men. Golf now loads both teams' official pages only, labeled, with `-mens`/`-womens` event ids, and:
+- merges a tournament's round entries (the same tournament name, at most two days apart) into one event named after the tournament, from its first to its last day: women's 40 entries become 14 tournaments, men's 38 become 13; every tournament reads `Colorado at ...`;
+- takes the final result from the last round only: its place and field (`13th/20`, `T-1st/18`) read `13th of 20`; the schedule publishes no team total, so none is claimed. A finished tournament whose last round has no place reads `Completed`, never a day-one standing;
+- links the last round's story, the tournament's final story (`Buffs Finish 13th At Red Sky`); the matcher accepts that bound story even when it names the event differently (`Red Sky` for the `Golfweek Red Sky Challenge`), checked against the last day; all six finals match only their own story;
+- shows a tournament under way as today's event, `In progress`, with no result (the women's Ron Moore Intercollegiate, Oct 2-4, with only the day-one story).
+
+ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 

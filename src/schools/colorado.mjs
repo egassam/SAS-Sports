@@ -1,4 +1,4 @@
-import {sidearmScheduleGames,sidearmStartTime} from '../sidearm-schedule-data.mjs';
+import {sidearmScheduleGames,sidearmStartTime,sidearmPlacing} from '../sidearm-schedule-data.mjs';
 // Colorado school module. Shared publisher utilities stay in the Worker; this
 // file owns cubuffs.com routes, Colorado's program combinations, its verified
 // Instagram tags and its schedule reader. Routes started as the exact
@@ -8,7 +8,7 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -25,7 +25,9 @@ export const coloradoSchool={
       {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
     ]
   },
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  // Men's and women's teams publish separate pages; both are shown, labeled
+  // by team.
+  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
   verifiedInstagrams:{
     'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
   },
@@ -35,7 +37,9 @@ export const coloradoSchool={
     'colorado|Basketball':['https://cubuffs.com/sports/mens-basketball/schedule','https://cubuffs.com/sports/womens-basketball/schedule'],
     'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/schedule',
     'colorado|Football':'https://cubuffs.com/sports/football/schedule',
-    'colorado|Golf':['https://cubuffs.com/sports/womens-golf/schedule','https://cubuffs.com/sports/mens-golf/schedule','https://cubuffs.com/sports/golf/schedule','https://cubuffs.com/'],
+    // Both teams (production showed the women's page only, the first that
+    // loaded); /sports/golf/ and the homepage are not golf schedules.
+    'colorado|Golf':['https://cubuffs.com/sports/womens-golf/schedule','https://cubuffs.com/sports/mens-golf/schedule'],
     'colorado|Skiing':['https://cubuffs.com/sports/skiing/schedule','https://cubuffs.com/'],
     'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/schedule',
     'colorado|Tennis':['https://cubuffs.com/sports/womens-tennis/schedule','https://cubuffs.com/sports/mens-tennis/schedule','https://cubuffs.com/sports/tennis/schedule','https://cubuffs.com/'],
@@ -136,6 +140,26 @@ export function parseColoradoTfrrsResults(raw,{decodeHtml,ordinal}){
   return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
 }
 
+// Golf publishes one entry per round, named after the round ("First Two
+// Rounds", "Third Round") with the tournament beside it. K-State shows one
+// event per tournament: a tournament's rounds (the same name, at most two
+// days apart) become one event, named after it, from its first to its last
+// day. Only the last round's place is the final result and only its story the
+// final story (the day-one "Buffs 10th After Day One" is not).
+function mergeRounds(games){
+  const groups=[];
+  for(const game of games){
+    const name=String(game.tournament?.title||'').trim(),previous=groups.at(-1);
+    const gap=previous?(Date.parse(game.date.slice(0,10))-Date.parse(previous.at(-1).date.slice(0,10)))/86400000:Infinity;
+    if(previous&&name&&previous.name===name&&gap>=0&&gap<=2){previous.push(game);continue;}
+    const group=[game];group.name=name;groups.push(group);
+  }
+  return groups.map(rounds=>{
+    const first=rounds[0],last=rounds.at(-1);
+    return{...first,opponent:{...first.opponent,title:rounds.name||first.opponent?.title},date:first.date,enddate:rounds.length>1?last.date:first.enddate,result:last.result||null,golf_final_round:true};
+  });
+}
+
 // cubuffs.com is a SIDEARM (Nuxt) site. Its schedule pages embed every game
 // as page data: the local start ("2026-11-13T20:15:00", "8:15 PM"),
 // home/away/neutral, the result (status W/L/T, both scores) and the game's own
@@ -146,8 +170,9 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     if(school?.id!=='colorado'||!coloradoSchool.pageDataSports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
     if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const games=sidearmScheduleGames(raw);
-    if(!games.length)return null;
+    const pageGames=sidearmScheduleGames(raw);
+    if(!pageGames.length)return null;
+    const games=sport==='Golf'?mergeRounds(pageGames):pageGames;
     const today=coloradoToday(now),events=[];
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
@@ -192,7 +217,12 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
         event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
         event.start_time=`${today}T12:00:00.000Z`;
       }
-      if(meet&&final){
+      if(sport==='Golf'&&final){
+        // The last round's place and field: "13th/20", "T-1st/18" -> "13th of
+        // 20". The schedule publishes no team total, so none is claimed.
+        const placing=sidearmPlacing(result.prescore_info)||sidearmPlacing(result.postscore_info);
+        event.headline=placing||'Completed';event.results=[{label:'Result',value:event.headline}];event.result_count=1;
+      }else if(meet&&final){
         // Women first, as K-State's: "Women's team: 1st / Men's team: 1st". A
         // team without a score ("W-NTS") has no place; TFRRS adds the points
         // and races (attachMeetResults).
@@ -209,7 +239,13 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
         try{
           const link=new URL(result.recap?.url,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
           const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-          if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000)event.recap_url=link.href;
+          if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000){
+            event.recap_url=link.href;
+            // A golf tournament's final story, bound to its last round on the
+            // schedule; it may name the event differently ("Red Sky" for the
+            // "Golfweek Red Sky Challenge").
+            if(sport==='Golf')event.golf_final_story=link.href;
+          }
         }catch{}
       }
       // Separate men's and women's pages can list the same opponent on the
@@ -231,7 +267,11 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     if(event?.school_id!=='colorado')return false;
     let parsed;try{parsed=new URL(url);}catch{return false;}
     const own=url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname===HOST&&parsed.pathname.startsWith('/news/');
-    if(own)return recapMatchesEvent(raw,{...event,sport:''},url);
+    // A multi-day event is checked against its last day: a golf tournament's
+    // final story (Red Sky, Sep 21-23) is dated on its last day.
+    const identity=event.end_time?{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')}:event;
+    if(own&&url===event.golf_final_story)return true;
+    if(own)return recapMatchesEvent(raw,{...identity,sport:''},url);
     // A game the schedule links its own recap for takes only that one: the
     // Sep 18 story at Colorado State names the same opponent the day after
     // the Sep 17 match.
