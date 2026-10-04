@@ -115,4 +115,52 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Cincinnati vs Kansas State','W, 31-26']]);
 }
 
+// Volleyball: the same card reader. Production showed rankings ("#11 TCU",
+// "#RV Kansas State"), listed every ranked upcoming match twice ("at #24
+// Colorado" Oct 29 and "at Colorado" Oct 30) and showed no times.
+{
+  const vbUrl='https://gobearcats.com/sports/womens-volleyball/schedule',vbNow=new Date('2026-10-04T01:00:00Z');
+  const vb=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,vbNow);
+  assert.equal(vb.length,28,'one event per official match');
+  assert.equal(new Set(vb.map(e=>e.start_time.slice(0,10)+e.opponent)).size,28,'no match listed twice');
+  assert.ok(vb.every(e=>!/#|\bRV\b/.test(e.title)),'rankings dropped');
+  const vbFinals=vb.filter(e=>e.status==='Final');
+  assert.equal(vbFinals.length,13);
+  assert.ok(vbFinals.every(e=>/^[WL], [0-3]-[0-3]$/.test(e.headline)&&e.display_time===e.display_time.replace(/,.*$/,'')&&e.recap_url?.startsWith('https://gobearcats.com/news/2026/')),"every final in K-State's wording, date only, with its own recap");
+  assert.deepEqual(vbFinals.filter(e=>['Sep 25','Oct 2'].includes(e.display_time)).map(e=>`${e.title} ${e.headline}`),['Cincinnati vs TCU L, 0-3','Cincinnati at Houston L, 1-3']);
+  const vbUpcoming=vb.filter(e=>e.status!=='Final');
+  assert.equal(vbUpcoming.length,15);
+  assert.ok(vbUpcoming.every(e=>/, \d{1,2}:\d{2} [AP]M$/.test(e.display_time)&&!e.recap_url&&!e.headline),'every upcoming match shows its published time, no result or recap');
+  assert.deepEqual(vbUpcoming.filter(e=>/Kansas State|Colorado/.test(e.opponent)).map(e=>`${e.title} ${e.display_time}`),['Cincinnati vs Kansas State Oct 22, 6:30 PM','Cincinnati at Colorado Oct 29, 9:00 PM','Cincinnati at Kansas State Nov 6, 6:00 PM']);
+  // Recaps: the card's own link is checked for opponent and date only (the
+  // Houston story never says "volleyball"); any other candidate must name the
+  // opponent in its headline (the shared matcher took the Sep 4 Valparaiso
+  // story for Michigan and Oakland, and the Sep 10 Morehead State story for
+  // Michigan State).
+  const names=[['Sep 4','recap-volleyball-2026-9-5-valparaiso.html.gz'],['Sep 5','recap-volleyball-2026-9-5-michigan.html.gz'],['Sep 6','recap-volleyball-2026-9-6-oakland.html.gz'],['Sep 10','recap-volleyball-2026-9-10-morehead-state.html.gz'],['Sep 11','recap-volleyball-2026-9-11-michigan-state.html.gz'],['Oct 2','recap-volleyball-2026-10-3-houston.html.gz']];
+  const picked=names.map(([day,file])=>({event:vbFinals.find(e=>e.display_time===day),raw:fixture(file)}));
+  picked.forEach(({event},i)=>picked.forEach(({event:other,raw},j)=>assert.equal(worker.cincinnatiHandlers.matchesRecap(raw,event,other.recap_url),i===j,`${event.opponent} must match only its own recap (${other.opponent})`)));
+  assert.equal(worker.recapMatchesEvent(picked[0].raw,picked[1].event,picked[0].event.recap_url),true,'the shared matcher alone takes the neighbouring story');
+  assert.equal(worker.recapMatchesEvent(picked[5].raw,picked[5].event,picked[5].event.recap_url),false,'the shared matcher alone refuses the Houston story');
+  // The expanded view writes highlights from the Houston story.
+  recapFixtures.set(picked[5].event.recap_url,picked[5].raw);
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Cincinnati won the second set after dropping the first set on the road.','The Bearcats were led in kills by their outside hitters in the match.','Houston took the third and fourth sets to close out the match at home.','Cincinnati continues Big 12 play on the road the following weekend.'])};}}};
+  const events=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,vbNow);
+  const target=events.find(e=>e.status==='Final'&&e.display_time==='Oct 2');
+  await worker.attachOfficialHighlights(events,fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,vbNow,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.equal(target.recap_url,picked[5].event.recap_url);
+  assert.ok(prompts[0].includes('Houston'));
+  // Live score: ESPN's women's college volleyball scoreboard, as K-State's.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+  const payload=JSON.parse(fixture('volleyball-espn-2026-10-02.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Volleyball');
+  const scored=worker.parseScoreboardPayload(payload,school,'Volleyball',provider,'https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261002',new Date('2026-10-03T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.opponent,e.status,e.headline]),[['Houston','Final','L, 1-3']]);
+  const reconciled=worker.reconcileScoreboardEvents(vb,scored);
+  assert.equal(reconciled.length,vb.length,'the scoreboard joins the official match; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Cincinnati at Houston','L, 1-3']]);
+}
+
 console.log('Cincinnati module checks passed');
