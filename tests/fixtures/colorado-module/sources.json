@@ -39,6 +39,16 @@
       "url": "https://cubuffs.com/sports/mens-golf/schedule",
       "retrieved": "2026-10-04T04:20Z",
       "note": "38 round entries (13 tournaments): Vuori 2nd/12, Miranda 1st/18, Tucker 7th/15, Mark Simpson 3rd/17, each with its final story."
+    },
+    "skiing-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/skiing/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "2027 Skiing Schedule: 31 race days, no results."
+    },
+    "skiing-schedule-2026.html.gz": {
+      "url": "https://cubuffs.com/sports/skiing/schedule/2026",
+      "retrieved": "2026-10-04T05:30Z",
+      "note": "2026 Skiing Schedule (last season), unmodified: race days with cumulative team standings (3rd/6, NTS, 1st/9, 2nd/22) and stories; one next-event widget copy (type upcoming)."
     }
   },
   "recaps": {
@@ -69,5 +79,10 @@
     "tfrrs-xc-wyoming.html.gz": "https://www.tfrrs.org/results/xc/28504/Wyoming_Invitational",
     "note": "Downloaded directly 2026-10-04T04:43Z, unmodified."
   },
-  "recaps_golf": "recap-golf-YYYY-M-D-<event>.html.gz: each tournament's final story as linked from its last round (6), plus the Ron Moore day-one story; unmodified, private source route."
+  "recaps_golf": "recap-golf-YYYY-M-D-<event>.html.gz: each tournament's final story as linked from its last round (6), plus the Ron Moore day-one story; unmodified, private source route.",
+  "recaps_skiing": {
+    "recap-ski-2026-1-14.html.gz": "https://cubuffs.com/news/2026/1/14/skiing-ski-buffs-stampede-into-lead-at-du-invitational",
+    "recap-ski-2026-2-8.html.gz": "Denver Invitational final story, 2026/2/8 (DU Invitational title)",
+    "recap-ski-2026-3-14.html.gz": "https://cubuffs.com/news/2026/3/14/skiing-buffs-finish-second-at-ncaa-ski-championships"
+  }
 }

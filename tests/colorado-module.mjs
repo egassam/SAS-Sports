@@ -100,8 +100,8 @@ assert.deepEqual(group.results.map(e=>e.display_time),['Oct 3','Sep 26','Sep 19'
 // schools never reach the Colorado reader.
 assert.equal(worker.coloradoHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://cubuffs.com/',now),null);
 assert.equal(worker.coloradoHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',footballUrl,now),null);
-// Sports not yet converted keep the shared parsers.
-assert.equal(worker.coloradoHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Skiing','https://cubuffs.com/sports/skiing/schedule',now),null);
+// Sports the module does not read keep the shared parsers.
+assert.equal(worker.coloradoHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Lacrosse','https://cubuffs.com/sports/lacrosse/schedule',now),null);
 
 // Expanded view: each final matches only its own recap, and its highlights
 // are written from that article.
@@ -399,6 +399,37 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
     assert.ok(prompts[0].includes('13th'));
   }
   finals.forEach((event,i)=>raws.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,finals[j].recap_url),i===j,`${event.opponent} must match only its own story (checked against ${finals[j].opponent})`)));
+}
+
+// Skiing: the official page only (production also loaded the homepage and
+// showed last season's race days as current results). One event per run of
+// race days, named after its carnival; a carnival whose alpine and nordic
+// races are weeks apart is two events named by discipline. The page's place
+// on each day is the standing after it: only a carnival's last run carries
+// the final place. The 2027 page has no results yet; the 2026 page (fixture)
+// shows a season in K-State's format.
+{
+  const skiUrl='https://cubuffs.com/sports/skiing/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Skiing'),[skiUrl]);
+  const upcoming=worker.parseHtml(fixture('skiing-schedule.html.gz'),school,'Skiing',skiUrl,now);
+  assert.equal(upcoming.length,13,'31 race days become 13 events');
+  assert.ok(upcoming.every(e=>e.status==='Upcoming'));
+  assert.deepEqual(upcoming.slice(0,3).map(e=>`${e.title} ${e.display_time} ${e.end_time.slice(0,10)}`),['Colorado at Utah Invitational (Nordic) Jan 2 2027-01-04','Colorado at RMISA Nordic Qualifier Jan 6 2027-01-07','Colorado at Denver Invitational (Alpine) Jan 15 2027-01-17']);
+  assert.ok(upcoming.some(e=>e.opponent==='Utah Invitational (Alpine)'));
+  const season=worker.parseHtml(fixture('skiing-schedule-2026.html.gz'),school,'Skiing',skiUrl,new Date('2026-03-20T12:00:00Z'));
+  assert.equal(season.length,13,'the next-event widget copy (type "upcoming") is left out');
+  const by=name=>season.find(e=>e.opponent===name);
+  assert.deepEqual(['Denver Invitational (Alpine)','Denver Invitational (Nordic)','RMISA Nordic Qualifier','NCAA Championships'].map(name=>[by(name).status,by(name).headline,by(name).results[0].label,by(name).results[0].value]),[
+    ['Final','Completed','Team standing after these races','1st of 8'],
+    ['Final','1st of 9','Result','1st of 9'],
+    ['Final','Completed','Result','Completed'],
+    ['Final','2nd of 22','Result','2nd of 22']
+  ],'the final place only on the carnival\'s last run; a qualifier without team scoring has none');
+  assert.equal(by('NCAA Championships').recap_url,'https://cubuffs.com/news/2026/3/14/skiing-buffs-finish-second-at-ncaa-ski-championships','each event links its last day\'s story');
+  // Each event's bound story matches it (the story says "DU Invitational").
+  const picked=['Denver Invitational (Alpine)','Denver Invitational (Nordic)','NCAA Championships'].map(by);
+  const raws=['recap-ski-2026-1-14.html.gz','recap-ski-2026-2-8.html.gz','recap-ski-2026-3-14.html.gz'].map(fixture);
+  picked.forEach((event,i)=>raws.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,picked[j].recap_url),i===j,`${event.opponent} must match only its own story`)));
 }
 
 console.log('Colorado module checks passed');

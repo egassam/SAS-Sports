@@ -13,8 +13,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Soccer | #216 | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
 | Cross Country | #217 | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
 | Basketball | #218 | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
-| Golf | (this PR) | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
-| Skiing | | shared parsers |
+| Golf | #219 | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
+| Skiing | (this PR) | Official page only; 2027 season (13 carnival events from 31 race days), all upcoming; in season the final place only on a carnival's last run (`2nd of 22`) |
 | Tennis | | shared parsers |
 | Track & Field | | shared parsers |
 
@@ -99,6 +99,20 @@ Production loaded the first golf page that answered (women's) and showed one eve
 - shows a tournament under way as today's event, `In progress`, with no result (the women's Ron Moore Intercollegiate, Oct 2-4, with only the day-one story).
 
 ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
+
+## Skiing (`4.52.7-colorado-skiing`)
+
+Production loaded the schedule page and the homepage and showed last season's race days as current results, one event per race (`Colorado vs 20K Freestyle (M) at Soldier Hollow`, `2nd/22 Mar 14 Final vs Skiing ...`), and 2027 race days as upcoming events. Skiing now routes to the official page only. The page publishes the 2027 season (31 race days, no results yet).
+
+The page lists one entry per race day with its carnival beside it, and the place published with each day is the team's standing after it: on the 2026 page the Denver Invitational reads `1st/8` after its alpine days (Jan 12-14, "Ski Buffs Stampede Into Lead at DU Invitational") and `1st/9` after its nordic days (Feb 7-8, "Baangman's Win Propels Buffs to DU Invitational Title"). The reader:
+- makes one event per run of race days (at most seven days apart), named after its carnival, from its first to its last day: 2027's 31 race days become 13 events;
+- names a carnival held in two runs by discipline (`Denver Invitational (Alpine)`, `Denver Invitational (Nordic)`; slalom and giant slalom are alpine);
+- gives the final place only to a carnival's last run (`1st of 9`; NCAA Championships `2nd of 22`); an earlier run reads `Completed` with the published standing labeled `Team standing after these races`; a qualifier without team scoring (`NTS`) reads `Completed`;
+- links each event's last-day story; leaves out the next-event widget's copy of a race (type `upcoming`).
+
+The 2026 page is kept as a fixture to test the season in K-State's format (13 finals with stories).
+
+ESPN publishes no skiing scoreboard, so there is no live score (K-State has no skiing).
 
 ## Limitations
 
