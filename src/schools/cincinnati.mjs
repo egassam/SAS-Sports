@@ -7,11 +7,12 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball']),
+  cardSports:new Set(['Football','Volleyball','Soccer']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
@@ -112,6 +113,11 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       // with the time-tba date class is the date alone.
       const clock=result||/schedule-event-date--time-tba/i.test(block)?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
       const firstDay=Date.UTC(year,month-1,day);
+      // A game two days past without a published result (the Aug 8 soccer
+      // exhibition, "Evansville (EXH)") is neither a K-State-style final nor
+      // upcoming. Yesterday's stays: a night game can run past midnight, and
+      // the result is posted after it ends.
+      if(!result&&firstDay<Date.parse(easternDay(now.getTime())+'T00:00:00Z')-86400000)continue;
       const event=makeEvent({school,sport,status:result?'Final':'Upcoming',relation:/^at\b/i.test(divider)?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result?null:clock||null,

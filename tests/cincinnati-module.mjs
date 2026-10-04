@@ -163,4 +163,48 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Cincinnati at Houston','L, 1-3']]);
 }
 
+// Soccer: the same card reader. Production listed ranked upcoming games twice
+// (Colorado Oct 30 and 31, West Virginia Nov 5 and 6), showed a phantom
+// recap on Nov 5 and no times.
+{
+  const socUrl='https://gobearcats.com/sports/womens-soccer/schedule',socNow=new Date('2026-10-04T02:00:00Z');
+  const soc=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',socUrl,socNow);
+  assert.equal(soc.length,18,'one event per official game; the unscored Aug 8 exhibition is left out');
+  assert.ok(!soc.some(e=>/EXH|Evansville/.test(e.title)));
+  assert.ok(soc.every(e=>!/#/.test(e.title)),'rankings dropped ("#25 Texas Tech", "#11 Baylor")');
+  const socFinals=soc.filter(e=>e.status==='Final');
+  assert.equal(socFinals.length,11);
+  assert.deepEqual(socFinals.map(e=>e.headline),['W, 3-0','L, 1-2','T, 0-0','L, 0-1','T, 1-1','W, 2-1','T, 0-0','T, 1-1','L, 0-2','L, 1-2','L, 0-2'],"K-State's wording, ties as T");
+  assert.ok(socFinals.every(e=>e.recap_url?.startsWith('https://gobearcats.com/news/2026/')&&!/,/.test(e.display_time)));
+  const socUpcoming=soc.filter(e=>e.status!=='Final');
+  assert.deepEqual(socUpcoming.map(e=>`${e.title} ${e.display_time}`),['Cincinnati vs Utah Oct 8, 7:00 PM','Cincinnati vs BYU Oct 12, 7:00 PM','Cincinnati vs Houston Oct 16, 7:00 PM','Cincinnati at UCF Oct 22, 7:00 PM','Cincinnati vs Kansas State Oct 25, 1:00 PM','Cincinnati at Colorado Oct 30, 9:00 PM','Cincinnati vs West Virginia Nov 5, 7:00 PM'],'published Eastern times, each game once');
+  assert.ok(socUpcoming.every(e=>!e.recap_url&&!e.headline));
+  // A game from yesterday without a result yet stays (a night game can run
+  // past midnight); two days past, it is left out.
+  const tcu=fixture('soccer-schedule.html.gz').replace(/(Oct 2<\/time>[\s\S]*?schedule-event-item__result[^>]*>)[\s\S]*?(<div class="schedule-event-item__dashboard-link)/,'$1$2');
+  assert.ok(worker.parseHtml(tcu,school,'Soccer',socUrl,new Date('2026-10-03T16:00:00Z')).some(e=>e.opponent==='TCU'&&e.status!=='Final'));
+  assert.ok(!worker.parseHtml(tcu,school,'Soccer',socUrl,new Date('2026-10-04T16:00:00Z')).some(e=>e.opponent==='TCU'));
+  // Expanded view: the TCU final writes highlights from its own recap.
+  const tcuFinal=socFinals.find(e=>e.opponent==='TCU');
+  assert.equal(tcuFinal.recap_url,'https://gobearcats.com/news/2026/10/3/cincinnati-falls-to-tcu-on-friday-night');
+  recapFixtures.set(tcuFinal.recap_url,fixture('recap-soccer-2026-10-3-tcu.html.gz'));
+  const prompts=[];
+  const env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['TCU scored once in each half to win the Big 12 match at home.','Cincinnati goalkeeper made several saves to keep the game close.','The Bearcats had their best chances early in the second half.','Cincinnati returns home to face Utah in its next match.'])};}}};
+  const events=worker.parseHtml(fixture('soccer-schedule.html.gz'),school,'Soccer',socUrl,socNow);
+  const target=events.find(e=>e.status==='Final'&&e.opponent==='TCU');
+  await worker.attachOfficialHighlights(events,fixture('soccer-schedule.html.gz'),school,'Soccer',socUrl,socNow,env,target.id);
+  assert.equal(target.highlight_state,'recap_generated');
+  assert.ok(prompts[0].includes('TCU'));
+  // Live score: ESPN's women's college soccer scoreboard; Cincinnati at TCU
+  // (Oct 2) joins the official card.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);
+  const payload=JSON.parse(fixture('soccer-espn-2026-10-02.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Soccer');
+  const scored=worker.parseScoreboardPayload(payload,school,'Soccer',provider,'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard?limit=1000&dates=20261002',new Date('2026-10-03T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.opponent,e.status,e.headline]),[['TCU','Final','L, 0-2']]);
+  const reconciled=worker.reconcileScoreboardEvents(soc,scored);
+  assert.equal(reconciled.length,soc.length,'the scoreboard joins the official game; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Cincinnati at TCU','L, 0-2']]);
+}
+
 console.log('Cincinnati module checks passed');

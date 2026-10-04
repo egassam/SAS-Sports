@@ -9,8 +9,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Sport | PR | State |
 | --- | --- | --- |
 | Football | #202 | Card reader: 4 finals `W, 31-26` with their own recaps; 8 upcoming, `Oct 3, 11:00 PM` at Arizona, the rest date only (unscheduled); ESPN live score (shared FBS-group request) |
-| Volleyball | (this PR) | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
-| Soccer | | shared parsers |
+| Volleyball | #203 | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
+| Soccer | (this PR) | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
 | Cross Country | | shared parsers |
 | Basketball | | shared parsers |
 | Baseball | | shared parsers |
@@ -59,6 +59,14 @@ Production read both the cards and the schema data: rankings in the names (`#11 
 **Recap matcher (`matchesRecap`, every Cincinnati sport).** The shared matcher refused the Oct 2 Houston story (its headline and article never say "volleyball": "Cincinnati Falls on Road Against Houston") and accepted neighboring days' stories for each other (the Sep 4 Valparaiso story for Michigan and Oakland; the Sep 10 Morehead State story for Michigan State). The card's own Recap link is now checked for opponent and date only (it is already bound to its match); any other candidate must also name the opponent in its headline (`og:title`; `St.` read as `State`). Across all 13 finals, each matches only its own recap. Football is unchanged (each final still matches only its own recap).
 
 **Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Oct 2 payload (120 matches) holds Cincinnati at Houston (`L, 1-3`), which joins the official card.
+
+## Soccer (`4.50.2-cincinnati-soccer`)
+
+Cincinnati sponsors women's soccer only. Production listed ranked upcoming games twice (Colorado Oct 30 and 31, West Virginia Nov 5 and 6), showed a phantom recap on Nov 5 and no times. The card reader gives 18 games, one each: 11 finals in K-State's wording (`T, 1-1` vs Kansas), date only, each matching only its own recap (all 11 checked), and 7 upcoming with published times (`Oct 25, 1:00 PM` vs Kansas State); rankings dropped (`#25 Texas Tech`).
+
+**Past games without a result (every Cincinnati game sport).** The Aug 8 exhibition (`Evansville (EXH)`) has no published score. A game two days past without a result is left out (neither a final nor upcoming); yesterday's stays, since a night game can run past midnight Eastern and its result is posted after it ends.
+
+**Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Cincinnati at TCU (`L, 0-2`) joins the official card.
 
 ## Limitations
 
