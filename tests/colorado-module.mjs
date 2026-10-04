@@ -322,4 +322,39 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   for(const url of Object.keys(tfrrs))recapFixtures.delete(url);
 }
 
+// Basketball: the two official pages only (production also loaded the
+// generic page and the homepage), labeled; exhibitions read "(Exhibition)";
+// published times; the Big 12 Championship runs Mar 9-13.
+{
+  const urls={mens:'https://cubuffs.com/sports/mens-basketball/schedule',womens:'https://cubuffs.com/sports/womens-basketball/schedule'};
+  assert.deepEqual(worker.candidateUrls(school,'Basketball'),[urls.mens,urls.womens]);
+  const men=worker.parseHtml(fixture('mens-basketball-schedule.html.gz'),school,'Basketball',urls.mens,now);
+  const women=worker.parseHtml(fixture('womens-basketball-schedule.html.gz'),school,'Basketball',urls.womens,now);
+  assert.deepEqual([men.length,women.length],[34,31]);
+  assert.ok([...men,...women].every(e=>e.status==='Upcoming'));
+  assert.ok(men.every(e=>e.id.endsWith('-mens'))&&women.every(e=>e.id.endsWith('-womens')),'team ids kept apart');
+  assert.deepEqual(men.slice(0,2).map(e=>`${e.title} ${e.display_time}`),['Colorado vs North Texas (Exhibition) Oct 18, 1:00 PM','Colorado vs Abilene Christian Nov 2']);
+  assert.equal(women[0].title,'Colorado vs Adams State (Exhibition)');
+  const big12=men.at(-1);
+  assert.deepEqual([big12.title,big12.display_time,big12.end_time],['Colorado vs Big 12 Championship','Mar 9','2027-03-13T23:59:59Z']);
+  // While the tournament is played it is today's event; two days after its
+  // last day without a result it is gone.
+  const during=worker.parseHtml(fixture('mens-basketball-schedule.html.gz'),school,'Basketball',urls.mens,new Date('2027-03-11T18:00:00Z')).find(e=>e.opponent==='Big 12 Championship');
+  assert.deepEqual([during.status,during.recency_label],['Today','In progress']);
+  assert.ok(!worker.parseHtml(fixture('mens-basketball-schedule.html.gz'),school,'Basketball',urls.mens,new Date('2027-03-15T18:00:00Z')).some(e=>e.opponent==='Big 12 Championship'));
+  // The feed labels both teams.
+  recapFixtures.set(urls.mens,fixture('mens-basketball-schedule.html.gz'));recapFixtures.set(urls.womens,fixture('womens-basketball-schedule.html.gz'));
+  const feed=await worker.fetchLive('colorado','Basketball');
+  recapFixtures.delete(urls.mens);recapFixtures.delete(urls.womens);
+  assert.equal(feed.events.length,65);
+  assert.deepEqual(feed.events.filter(e=>e.opponent==='Adams State (Exhibition)').map(e=>e.title),["Women's · Colorado vs Adams State (Exhibition)"]);
+  // Live scores: ESPN's men's and women's scoreboards, labeled. On Feb 21,
+  // 2026 both teams played at home; Colorado State and Northern Colorado are
+  // never taken for Colorado.
+  const providers=worker.liveScoreboardProviders(school,'Basketball');
+  assert.deepEqual(providers.map(p=>[p.path,p.team_label]),[['basketball/mens-college-basketball',"Men's"],['basketball/womens-college-basketball',"Women's"]]);
+  const found=providers.flatMap(provider=>worker.parseScoreboardPayload(JSON.parse(fixture(`basketball-${provider.team_label==="Men's"?'mens':'womens'}-espn-2026-02-21.json.gz`)),school,'Basketball',provider,`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?groups=50&limit=300&dates=20260221`,new Date('2026-02-22T12:00:00Z')));
+  assert.deepEqual(found.map(e=>[e.team_label,e.opponent,e.status]),[["Men's",'Oklahoma St','Final'],["Women's",'Texas Tech','Final']]);
+}
+
 console.log('Colorado module checks passed');

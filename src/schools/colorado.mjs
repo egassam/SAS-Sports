@@ -8,7 +8,7 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -17,14 +17,22 @@ export const coloradoSchool={
     Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
     // ESPN's women's college soccer scoreboard (Colorado sponsors women's
     // soccer only); it lists every Division I match.
-    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    // Both teams, labeled to match the official men's and women's pages (the
+    // shared request asks for every Division I game).
+    Basketball:[
+      {path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},
+      {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
+    ]
   },
   combinedSports:new Set(['Basketball','Swimming & Diving']),
   verifiedInstagrams:{
     'colorado|Football|Ben Finneseth':'https://www.instagram.com/ben.finneseth/'
   },
   scheduleUrls:{
-    'colorado|Basketball':['https://cubuffs.com/sports/mens-basketball/schedule','https://cubuffs.com/sports/womens-basketball/schedule','https://cubuffs.com/sports/basketball/schedule','https://cubuffs.com/'],
+    // The two official pages only: the generic page and the homepage are not
+    // basketball schedules.
+    'colorado|Basketball':['https://cubuffs.com/sports/mens-basketball/schedule','https://cubuffs.com/sports/womens-basketball/schedule'],
     'colorado|Cross Country':'https://cubuffs.com/sports/cross-country/schedule',
     'colorado|Football':'https://cubuffs.com/sports/football/schedule',
     'colorado|Golf':['https://cubuffs.com/sports/womens-golf/schedule','https://cubuffs.com/sports/mens-golf/schedule','https://cubuffs.com/sports/golf/schedule','https://cubuffs.com/'],
@@ -163,9 +171,11 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
       // A game day that has passed with no published score is neither a
       // result nor upcoming; yesterday's stays (a late game in another time
       // zone ends after midnight in Boulder and its score is posted after).
-      const firstDay=game.date.slice(0,10);
-      const final=scored||meet&&firstDay<today;
-      if(!final&&Date.parse(firstDay)<Date.parse(today)-86400000)continue;
+      // A multi-day event (the Big 12 Championship, Mar 9-13) counts until its
+      // last day.
+      const firstDay=game.date.slice(0,10),lastDay=String(game.enddate||'').slice(0,10)>firstDay?String(game.enddate).slice(0,10):firstDay;
+      const final=scored||meet&&lastDay<today;
+      if(!final&&Date.parse(lastDay)<Date.parse(today)-86400000)continue;
       // H: home, A: away; a neutral site keeps the page's own vs./at. Meets
       // read "Colorado at Big 12 Championships", as K-State's do.
       const relation=meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
@@ -175,6 +185,13 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+      // Multi-day events end on their last day; while one is in progress it
+      // is today's event.
+      if(lastDay>firstDay)event.end_time=`${lastDay}T23:59:59Z`;
+      if(!final&&firstDay<today&&lastDay>=today){
+        event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
+        event.start_time=`${today}T12:00:00.000Z`;
+      }
       if(meet&&final){
         // Women first, as K-State's: "Women's team: 1st / Men's team: 1st". A
         // team without a score ("W-NTS") has no place; TFRRS adds the points
@@ -187,14 +204,18 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
         event.result_count=event.results.length;
       }
       if(final){
-        // The game's own /news/ recap, dated from the game day to three days
-        // after (never the game-book PDF or the notes page).
+        // The game's own /news/ recap, dated from the first day to three days
+        // after the last (never the game-book PDF or the notes page).
         try{
           const link=new URL(result.recap?.url,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
           const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-          if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${firstDay}T00:00:00Z`)+3*86400000)event.recap_url=link.href;
+          if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000)event.recap_url=link.href;
         }catch{}
       }
+      // Separate men's and women's pages can list the same opponent on the
+      // same day; the team keeps their event ids apart.
+      const squad=coloradoSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
+      if(squad)event.id=`${event.id}-${squad}`;
       events.push(event);
     }
     return events;
