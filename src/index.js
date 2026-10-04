@@ -1108,8 +1108,9 @@ function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
 }
 function compactScheduleHtml(raw,sourceUrl){
   let host='';try{host=new URL(sourceUrl).hostname.replace(/^www\./,'')}catch{return raw}
-  const path=(()=>{try{return new URL(sourceUrl).pathname}catch{return''}})();
-  if(host!=='uhcougars.com'&&!(host==='cubuffs.com'&&/\/football\//i.test(path)))return raw;
+  // Colorado's pages are read whole by its module (the page data sits after
+  // the cards).
+  if(host!=='uhcougars.com')return raw;
   const markers=['data-test-id="s-game-card-standard__root"',"data-test-id='s-game-card-standard__root'",'schedule-event-item'];
   const starts=markers.map(marker=>raw.indexOf(marker)).filter(index=>index>=0);
   if(!starts.length)return raw;

@@ -8,7 +8,7 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | (this PR) | Page-data reader: 5 finals `W, 14-13` with their own recaps (Oct 3 Texas Tech has none published yet); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
+| Football | (this PR) | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
 | Volleyball | | shared parsers |
 | Soccer | | shared parsers |
 | Cross Country | | shared parsers |
@@ -42,8 +42,10 @@ The module reader (`createColoradoHandlers().parseSchedule`, Football only via `
 
 **Live score.** ESPN's college football scoreboard through the shared FBS-group request (#164). The Sep 26 payload's Colorado at Baylor (`L, 13-23`) joins the official card; Colorado State in the same payload is never taken for Colorado.
 
-`npm run test:colorado-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article and the ESPN match. Removing the parse hook or the past-game rule fails it.
+**Schedule compaction.** The shared `compactScheduleHtml` cut cubuffs.com football pages down to the cards (a CPU guard for the shared parsers), which dropped the page data after them: the first preview showed no times. Colorado pages are now passed whole (Houston keeps its compaction); the module returns before the shared parsers run. The test now also runs the whole download-and-parse pipeline (`fetchLive`).
+
+`npm run test:colorado-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article and the ESPN match. Removing the parse hook or the past-game rule, or restoring the Colorado compaction, fails it.
 
 ## Limitations
 
-- Oct 3 Texas Tech: no recap linked on the schedule yet; it appears when cubuffs.com links one.
+- None for Football.

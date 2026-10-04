@@ -86,6 +86,16 @@ assert.deepEqual(group.results.map(e=>e.display_time),['Oct 3','Sep 26','Sep 19'
   const nextDay=worker.parseHtml(unscored,school,'Football',footballUrl,new Date('2026-10-18T15:00:00Z'));
   assert.ok(nextDay.some(e=>e.opponent==='Utah'&&e.status!=='Final'),'the day after, it stays');
 }
+// The whole pipeline (download, compaction, parse) keeps the page data: the
+// shared schedule compaction once cut cubuffs.com football pages after the
+// cards, and the published times were lost.
+{
+  recapFixtures.set(footballUrl,fixture('football-schedule.html.gz'));
+  const {events}=await worker.fetchLive('colorado','Football');
+  recapFixtures.delete(footballUrl);requests.length=0;
+  assert.deepEqual(events.filter(e=>e.opponent==='Houston').map(e=>e.display_time),['Nov 13, 8:15 PM'],'the feed keeps the published start time');
+  assert.equal(events.length,13);
+}
 // Pages from any other host or path are left to the shared parsers; other
 // schools never reach the Colorado reader.
 assert.equal(worker.coloradoHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://cubuffs.com/',now),null);
