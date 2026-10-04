@@ -14,8 +14,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Cross Country | #217 | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
 | Basketball | #218 | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
 | Golf | #219 | Both teams, labeled, one event per tournament (`13th of 20`, `1st of 18`) with its final story; a tournament under way is `In progress` |
-| Skiing | (this PR) | Official page only; 2027 season (13 carnival events from 31 race days), all upcoming; in season the final place only on a carnival's last run (`2nd of 22`) |
-| Tennis | | shared parsers |
+| Skiing | #220 | Official page only; 2027 season (13 carnival events from 31 race days), all upcoming; in season the final place only on a carnival's last run (`2nd of 22`) |
+| Tennis | (this PR) | Women's page only; fall tournaments one event each (`Colorado at Milwaukee Classic`) with the last day's story, listed only with a story; spring duals as games (`W, 4-2`) |
 | Track & Field | | shared parsers |
 
 Production survey before the module (October 4, ~03:45 UTC, `4.51.0`):
@@ -113,6 +113,17 @@ The page lists one entry per race day with its carnival beside it, and the place
 The 2026 page is kept as a fixture to test the season in K-State's format (13 finals with stories).
 
 ESPN publishes no skiing scoreboard, so there is no live score (K-State has no skiing).
+
+## Tennis (`4.52.8-colorado-tennis`)
+
+Colorado sponsors women's tennis only; `/sports/mens-tennis/schedule` renders SIDEARM's empty `@season @sport` template. Production loaded the women's page and showed one event per tournament day (`Colorado vs Day 3`, `NTS`). Tennis (schedule and roster) now routes to the women's page only. The reader:
+- merges each fall tournament's day entries into one event, `Colorado at Milwaukee Classic`, from its first to its last day, with the last day's story (`Buffs Defeat Wisconsin to Conclude Milwaukee Tennis Classic`), never a day-one story; as K-State's, a past tournament (no team result, `NTS`) is listed only with Colorado's story; the Battle in the Bay Classic (Oct 1-4) is `In progress`;
+- keeps spring duals as games with home and away (`Colorado vs Portland State`, `Colorado at UNLV`); on the 2025-26 page (fixture) they read `W, 4-2` with their own stories (23 decided duals);
+- names a tournament played in separate stretches by its first round: `NCAA Team Championships (First & Second Rounds)`, `(Super Regionals)`, `(Round of 16)`; leaves out `TBD`.
+
+On the 2025-26 page, the Mar 6 Kansas State dual links a story headlined "Buffs Fall to Jayhawks"; the matcher needs the opponent in the linked story, so that expanded view would say no recap was found rather than show the wrong match.
+
+ESPN publishes no college tennis scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 
