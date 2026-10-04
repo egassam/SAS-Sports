@@ -1,10 +1,31 @@
 # SAS Sports — Current Session and School-Module Handoff
 
-Last updated: October 3, 2026, America/Chicago (Baylor all 12 sports, PRs #178-#190; production `4.47.11-baylor-track-field`. Earlier: live testing, football possession and traveling glow, PRs #175-#176; Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
+Last updated: October 4, 2026, America/Chicago (Cincinnati all 11 sports, PRs #202-#212; production `4.51.0-cincinnati-tennis`. Earlier: Baylor all 12 sports, PRs #178-#190; live testing, football possession and traveling glow, PRs #175-#176; Arizona all 13 sports, PRs #148-#162; UCF complete: PRs #123, #125–#134; K-State Volleyball live scores and ESPN scoreboard fix: PR #109; BYU complete: PRs #94, #97–#107; polite source fetching: PR #85; Arizona State complete: PRs #66–#83).
 
 **Read this current file at the beginning of every SAS Sports session.** This is the canonical working handoff. Update this same path at each session boundary and append the new session record below. Do not replace current facts with older conversation summaries.
 
 ## Current state
+
+**Cincinnati is complete (`AGENTS.md` item 5a); production `4.51.0-cincinnati-tennis` (October 4, ~03:30 UTC).** User: "Convert Cincinnati". gobearcats.com (WMT) answers the sandbox directly; every fixture is an unmodified official page (or TFRRS/ESPN). One card reader (`createCincinnatiHandlers().parseSchedule`, `src/schools/cincinnati.mjs`) enabled sport by sport, one PR each, each merged by the agent under `AGENTS.md` item 6 after the full gate (both suites, CI green, the sport in K-State's format on the preview with every expanded view checked, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes) and verified in production. Details, evidence and limitations: `docs/CINCINNATI_MODULE.md`.
+
+| PR | Sport | Production |
+| --- | --- | --- |
+| #202 | Setup + Football | 219/219 routes identical; the Oct 3 Arizona game was listed twice (UTC schema data) and a phantom Nov 28 game carried the Sep 5 recap: gone; published Eastern times; ESPN live (shared FBS request) |
+| #203 | Volleyball | rankings dropped, ranked matches no longer listed twice; Cincinnati recap matcher (own link: no sport word, "Falls on Road Against Houston"; other candidates must name the opponent in the headline); ESPN live |
+| #204 | Soccer | `T, 1-1`; a game two days past without a result (the unscored `Evansville (EXH)`) left out, yesterday's kept; ESPN live |
+| #205 | Cross Country | complete results from TFRRS (`Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every runner; the recaps list only top runners); meet found by date + a shared distinctive word ("All-Ohio Intercollegiate Classic" = TFRRS "...Challenge") |
+| #206 | Basketball | two official pages only, labeled; women's `(Exhibition)` from the tournament heading; ESPN men's/women's live (Binghamton "Bearcats" never matched) |
+| #207 | Baseball | official page only; Big 12 Tournament range kept while played; empty pages are verified empty schedules (no shared-parser fallback); ESPN live |
+| #208 | Golf | both teams; one event per tournament (`4th of 14`) with its final story; a tournament under way is `In progress` |
+| #209 | Lacrosse | current-season filter (every sport); empty schedule (page shows spring 2026) |
+| #210 | Swimming & Diving | one page for both teams; dual-meet times; invitationals named after their heading |
+| #211 | Track & Field | `track-field` only; empty schedule (page shows 2025-26) |
+| #212 | Tennis | **added to the catalog** (`src/sponsored-sports.json` and the page fallback, Cincinnati only): gobearcats.com sponsors and publishes women's tennis; tournaments read `Cincinnati at ...` |
+
+- **Production deep certification (`validate-schools.mjs --deep`, `4.51.0`): 11/11**; athletes 11/11 (3 each, verified Instagram + official profiles); highlights 31/31 for the four critical sports. `tests/certified-schools.json` now lists all 11 sports (docs/test PR after #212).
+- **Live football observed:** Cincinnati at Arizona (Oct 3, 11:00 PM EDT) went live as one card joined to the official game, score, clock and possession matching ESPN. Other Cincinnati scoreboards are payload-tested only.
+- **Not fixable from official sources today (evidence in the module doc):** Lacrosse and Track & Field seasons unpublished (fill in without code changes); golf team totals not published; Gans Creek recap vs TFRRS (TFRRS shown, difference explained).
+- **Catalog decision to note for the user:** Tennis was added to Cincinnati's sponsored sports (the first catalog addition since the manifest was created). If the user prefers the catalog unchanged, revert #212's two catalog lines.
 
 **Fixes session, October 3 (PR #200, merged `efa6f21` on the user's "Merge"; production `4.49.2-compact-finder` verified: page serves both changes, XC 18/20 and 26/21, K-State Cincinnati expanded view `recap_generated` with 4 highlights).** User: "Fixes" (no item chosen). (1) **Expanded-view AI timeouts:** the page now repeats `/live/highlights` once when the answer is `ai_failed` (`fetchHighlights` in the `FINAL-CACHE` block of `public/index.html`); other states and a second timeout are shown as they are; only verified finals are stored, as before. Every school. Gate on the preview: both suites, `tests/final-cache.mjs` (mutation `attempts=1` fails it), XC 18/20 and 26/21, 36/36 K-State Football refreshes, preview serves the new page, Cincinnati expanded view verified (4 highlights). Not done: a Chromium run on the preview (the sandbox refused the browser's proxy-certificate setting this session). (2) **K-State Football Sep 26 Cincinnati expanded view: already correct in production** (K-State's own recap `...comes-up-short-at-cincinnati-31-26`, `L, 26-31`, 4 verified highlights); closed. (4) **Compact finder (`4.49.2-compact-finder`, same PR; user: "Let's make the conference and school drop down menus smaller and put them side by side"):** Conference and School side by side at every width (Sport full width below them under 820px; all three in one row, max 760px, above), menus 34px tall (were ~47px), 14px text. Checked in local Chromium at 390px and 1100px (no page errors, no horizontal scroll). (3) **Utah Lacrosse:** production `/live/status` HTTP 200, no error, 0 events (season unpublished); the Oct 2 failure has cleared.
 
@@ -426,6 +447,7 @@ The September 26 “Do the first one” applied to baseline preservation. The se
 
 ## Instructions for the next session
 
+- **Cincinnati is complete** (#202-#212). Next: the next Big 12 school the user names. Remaining unconverted Big 12 schools: Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Cincinnati's first live volleyball (at UCF, Oct 9) and soccer (vs Utah, Oct 8) games; Lacrosse (2027) and Track & Field (2026-27) fill in when gobearcats.com publishes them.
 - **Level order (user, October 3, for later):** when high school or pro teams are added, order the level switch High School, College, Pro (the `LEVELS` array in `public/index.html`). Not before.
 - **Baylor is complete** (#178-#195). Next: the next Big 12 school the user names. Remaining unconverted Big 12 schools: Cincinnati, Colorado, Houston, Iowa State, TCU, Texas Tech, West Virginia. Watch Baylor's first live football card (at Arizona State, 02:30 UTC Oct 4) and volleyball (vs Colorado, Oct 4 2:00 PM CT).
 - **Live cards (from the Oct 3 live test):** watch a football final arrive (`W, 31-20` wording) and a non-football live game with the glow (volleyball/soccer). Possession is football only; ESPN's basketball scoreboard carries no possession.
@@ -1400,3 +1422,16 @@ User: "Fixes". The handoff was read from main (`e222060`). The agent offered the
 - AI highlight timeouts: PR #200 (`4.49.1-highlight-retry`), the page asks once more on `ai_failed`. Tests: `npm run test:release`, `npm test`, mutation check. Preview: XC 18/20 and 26/21, 36/36 K-State Football refreshes, page serves the change, Cincinnati expanded view verified. The Chromium check was refused by the sandbox's permission classifier (proxy-certificate flag) and was not run. Not merged: it is a shared change and `AGENTS.md` item 6 covers one school and sport; the user's approval is needed.
 
 User: "Let's make the conference and school drop down menus smaller and put them side by side", then "Stop" (the agent stopped and unsubscribed from #200), then "Do what I said for the fl drop down menus. In the future keep an eye for my text when you are working because I rule over you". The compact finder was added to #200 (`4.49.2-compact-finder`). User: "Merge". Gate: both suites, CI green, preview XC 18/20 and 26/21, 36/36 K-State Football refreshes on the final commit; merged `efa6f21`; production verified the same way. **Standing user preference:** watch for the user's messages while working and stop or change course at once when they write.
+
+### October 4, 2026 — Cincinnati, all sports
+
+User: "Convert Cincinnati". The handoff was read from main (`f1e7fcd`). Cincinnati is the next unconverted Big 12 school in catalog order; gobearcats.com answered the sandbox directly (HTTP 200 for all 13 schedule pages), so no private source route was needed.
+
+**Approach:** one WMT card reader (`createCincinnatiHandlers().parseSchedule`), enabled sport by sport, one PR each, merged by the agent under `AGENTS.md` item 6 after the full gate and verified in production: #202 Football (with setup), #203 Volleyball, #204 Soccer, #205 Cross Country, #206 Basketball, #207 Baseball, #208 Golf, #209 Lacrosse, #210 Swimming & Diving, #211 Track & Field, #212 Tennis (added to the catalog). A docs/test PR records athlete certification for all 11 sports and this handoff.
+
+**Found by the tests and gates and fixed before merge:** the shared matcher refusing the Houston volleyball story (no sport word) and taking neighbouring days' stories; the soccer exhibition with no score; a Soccer test clock that checked the wrong day; the reader returning nothing on an empty page, which let the shared parsers invent events from schema data (found by a mutation that unexpectedly passed); a multi-day rule counting from the first day; the TFRRS every-word name rule missing "All-Ohio ... Challenge"; the Pam Whitehead tennis story dated the day after the tournament; an edit that dropped the `MONTHS` declaration (caught by the trial run). A last-day recap check added for Golf changed no test outcome and was removed, then re-added with Tennis, where a real story needed it.
+
+**Tests run:** `npm run test:release` and `npm test` on every final commit; named mutations fail `tests/cincinnati-module.mjs` (parse hook, matcher dispatch, XC attach hook, strict TFRRS name rule, place check, exhibition label, team ids, past-game rule, multi-day rule, empty-schedule flag, round merge, in-progress rule, golf "at", season filter, swim heading, meet times, tennis last-day check). Preview gate per sport: XC 18/20 and 26/21, 36/36 refreshes; after #207 and #209 (reader-wide changes) every converted Cincinnati sport was compared between preview and production (identical). Production: deep certification 11/11.
+
+**Open:** none for Cincinnati beyond the source-blocked items above. Tennis's addition to the catalog is flagged for the user.
+

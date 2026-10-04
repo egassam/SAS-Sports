@@ -2,7 +2,7 @@
 
 `src/schools/cincinnati.mjs` owns Cincinnati's gobearcats.com schedule and roster routes, its program combinations, its verified Instagram tags and its schedule-card reader. The Worker imports its configuration. The event/result contract, caching, display and generic parsing stay shared.
 
-Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the next unconverted Big 12 school in catalog order). gobearcats.com answers the development sandbox directly (HTTP 200), so fixtures are downloaded as the app fetches them, with spacing between requests.
+Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the next unconverted Big 12 school in catalog order). All 11 sports were converted one per PR (#202-#212), each merged under `AGENTS.md` item 6 after the full gate and verified in production. gobearcats.com answers the development sandbox directly (HTTP 200), so fixtures are downloaded as the app fetches them, with spacing between requests.
 
 ## Status
 
@@ -17,7 +17,7 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Golf | #208 | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
 | Lacrosse | #209 | Women's page only; empty schedule (the page still shows spring 2026); in season, finals `L, 10-11` with recaps |
 | Swimming & Diving | #210 | One official page for both teams; 13 meets with published times; invitationals named after their heading and ending on their last day |
-| Tennis | (this PR) | Added to the catalog (the site publishes a 2026-27 women's tennis schedule); 4 tournaments `Cincinnati at ...`, ending on their last day; the Pam Whitehead Invitational with its story |
+| Tennis | #212 | Added to the catalog (the site publishes a 2026-27 women's tennis schedule); 4 tournaments `Cincinnati at ...`, ending on their last day; the Pam Whitehead Invitational with its story |
 | Track & Field | #211 | `track-field` page only; empty schedule (the page still shows 2025-26); in season one event per meet, team places `Women's team: 7th / Men's team: 12th`, each with its story |
 
 Production survey before the module (October 4, ~01:30 UTC, `4.49.2`):
@@ -150,5 +150,20 @@ The card reader gives the 4 fall tournaments (each card sits under its own headi
 
 ESPN publishes no college tennis scoreboard, so there is no live score (K-State has none).
 
+## Athlete certification
+
+`tests/certified-schools.json` now certifies Cincinnati's athletes for all 11 sports (3 each; official roster profiles with verified Instagram links). Production `/live/athletes` returned three named athletes with an official gobearcats.com profile, portrait and Instagram link for every sport (Tennis checked on its preview and in production after #212).
+
+## Live scores observed
+
+Cincinnati at Arizona football (Oct 3, 11:00 PM EDT; production `4.50.8` to `4.50.9`): from kickoff the official card went live (`official_schedule+live_scoreboard`, one card, 7 upcoming left), with the score (`0-7`), clock and possession (`4th & 13 at CIN 22`) matching ESPN. The volleyball, soccer, basketball and baseball scoreboards are tested on real payloads only; no live game in those sports has been observed yet (next: volleyball at UCF, Oct 9).
+
 ## Limitations
 
+None of these can be fixed from the official sources today; each fills in or is shown as published.
+- **Lacrosse and Track & Field schedules:** gobearcats.com still shows the 2026 and 2025-26 seasons (checked October 4). Both are verified empty schedules and fill in when 2027 / 2026-27 is published, with no code change.
+- **Swimming & Diving and Baseball:** no results yet (seasons open Oct 10 and Feb 19).
+- **Golf team totals:** the cards publish the place and field (`4th of 14`); the stories are prose and give no consistent team total, so none is shown (K-State's `1st of 12 (864)` adds one).
+- **Tennis results:** the fall tournaments are individual events with no team result, so a finished one reads `Completed` with Cincinnati's story (as Baylor's and Arizona's).
+- **Cross Country, Gans Creek:** the recap and TFRRS disagree (574 vs 575 points; Deana Hudson `173.` vs 192nd); TFRRS is shown, and the difference is explained under Cross Country.
+- **Men's basketball, Oct 7 (Ohio State) and Oct 17 (Illinois):** listed as ordinary games on the official page (no exhibition heading or marker), so they are shown as published.
