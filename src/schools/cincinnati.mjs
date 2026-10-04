@@ -7,7 +7,7 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf']),
+  cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Golf','Lacrosse']),
   // Live game state comes from an independent scoreboard, as for K-State;
   // the official cards stay the schedule and results source of record.
   liveScoreboards:{
@@ -32,7 +32,7 @@ export const cincinnatiSchool={
     'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/schedule',
     'cincinnati|Football':'https://gobearcats.com/sports/football/schedule',
     'cincinnati|Golf':['https://gobearcats.com/sports/mens-golf/schedule','https://gobearcats.com/sports/womens-golf/schedule'],
-    'cincinnati|Lacrosse':['https://gobearcats.com/sports/womens-lacrosse/schedule','https://gobearcats.com/sports/mens-lacrosse/schedule','https://gobearcats.com/sports/lacrosse/schedule','https://gobearcats.com/'],
+    'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/schedule',
     'cincinnati|Soccer':'https://gobearcats.com/sports/womens-soccer/schedule',
     'cincinnati|Swimming & Diving':['https://gobearcats.com/sports/womens-swimming-and-diving/schedule','https://gobearcats.com/sports/mens-swimming-and-diving/schedule','https://gobearcats.com/sports/womens-swimming-diving/schedule','https://gobearcats.com/sports/mens-swimming-diving/schedule','https://gobearcats.com/sports/swimming-and-diving/schedule','https://gobearcats.com/sports/swimming-diving/schedule','https://gobearcats.com/sports/swimming/schedule','https://gobearcats.com/'],
     'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/schedule','https://gobearcats.com/sports/track-field/schedule','https://gobearcats.com/'],
@@ -44,7 +44,7 @@ export const cincinnatiSchool={
     'cincinnati|Cross Country':'https://gobearcats.com/sports/cross-country/roster',
     'cincinnati|Football':'https://gobearcats.com/sports/football/roster',
     'cincinnati|Golf':['https://gobearcats.com/sports/womens-golf/roster','https://gobearcats.com/sports/mens-golf/roster','https://gobearcats.com/sports/golf/roster'],
-    'cincinnati|Lacrosse':['https://gobearcats.com/sports/womens-lacrosse/roster','https://gobearcats.com/sports/mens-lacrosse/roster','https://gobearcats.com/sports/lacrosse/roster'],
+    'cincinnati|Lacrosse':'https://gobearcats.com/sports/womens-lacrosse/roster',
     'cincinnati|Soccer':['https://gobearcats.com/sports/womens-soccer/roster','https://gobearcats.com/sports/wsoc/roster','https://gobearcats.com/sports/soccer/roster','https://gobearcats.com/sports/mens-soccer/roster'],
     'cincinnati|Swimming & Diving':['https://gobearcats.com/sports/womens-swimming-and-diving/roster','https://gobearcats.com/sports/mens-swimming-and-diving/roster','https://gobearcats.com/sports/womens-swimming-diving/roster','https://gobearcats.com/sports/mens-swimming-diving/roster','https://gobearcats.com/sports/swimming-and-diving/roster','https://gobearcats.com/sports/swimming-diving/roster','https://gobearcats.com/sports/swimming/roster'],
     'cincinnati|Track & Field':['https://gobearcats.com/sports/track-and-field/roster','https://gobearcats.com/sports/track-field/roster'],
@@ -212,12 +212,17 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
     // Separate men's and women's pages can list the same opponent on the same
     // day; the team keeps their event ids apart.
     const team=cincinnatiSchool.combinedSports.has(sport)?(host.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
+    const local=easternDay(now.getTime()),season=Number(local.slice(5,7))>=7?Number(local.slice(0,4)):Number(local.slice(0,4))-1;
     for(const {block,index} of cardBlocks(raw)){
       const heading=wrappers.find(wrapper=>wrapper.start<index&&index<wrapper.end)?.title||'';
       // The datetime attribute is Eastern wall clock; its date is the published day.
       const start=(block.match(/schedule-event-date__wrapper--start[\s\S]*?<time\b[^>]*datetime=["'](\d{4})-(\d{2})-(\d{2})T/i)||[]).slice(1).map(Number);
       if(start.length!==3)continue;
       const [year,month,day]=start;
+      // Spring pages keep showing last season until the next is published
+      // (lacrosse's 2026 season in October 2026). Only the current academic
+      // year (July-June, Eastern) is current.
+      if((month>=7?year:year-1)!==season)continue;
       // The visible day must agree with the datetime ("Oct 3").
       const shown=field(block,/schedule-event-date__day[^>]*>([\s\S]*?)<\/time>/i).match(/^([A-Za-z]{3})\w*\.?\s+(\d{1,2})$/);
       if(shown&&(MONTHS.indexOf(shown[1])!==month-1||Number(shown[2])!==day))continue;
