@@ -8,8 +8,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | (this PR) | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
-| Volleyball | | shared parsers |
+| Football | #214 | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
+| Volleyball | (this PR) | 13 finals (`W, 3-0`) with their own recaps, 15 upcoming with published times; scrimmage and other teams' tournament matches left out; ESPN live score |
 | Soccer | | shared parsers |
 | Cross Country | | shared parsers |
 | Basketball | | shared parsers |
@@ -45,6 +45,14 @@ The module reader (`createColoradoHandlers().parseSchedule`, Football only via `
 **Schedule compaction.** The shared `compactScheduleHtml` cut cubuffs.com football pages down to the cards (a CPU guard for the shared parsers), which dropped the page data after them: the first preview showed no times. Colorado pages are now passed whole (Houston keeps its compaction); the module returns before the shared parsers run. The test now also runs the whole download-and-parse pipeline (`fetchLive`).
 
 `npm run test:colorado-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article and the ESPN match. Removing the parse hook or the past-game rule, or restoring the Colorado compaction, fails it.
+
+## Volleyball (`4.52.1-colorado-volleyball`)
+
+The page data has 34 entries: the Black and Gold scrimmage, the other teams' matches at Colorado's two home tournaments (`Denver vs. Central Arkansas`, `Northern Colorado vs. Wichita State`, no result), 13 Colorado finals and 15 upcoming matches. Production happened to show the right matches (the other teams' entries have no score and had passed). The module reads 28 matches, one each: finals in K-State's wording, date only (`W, 3-2`), each with its own recap; upcoming with Colorado's published times (`Oct 9, 8:00 PM` at Arizona State). Names written `A vs. B` are other teams' matches and are left out even while upcoming; trailing spaces in names (`Kansas State `) are trimmed.
+
+**Recap matcher (`matchesRecap`, every Colorado sport).** The shared matcher accepted the Aug 28 CSUN story for the Aug 29 Central Arkansas match (the story previews the next day's opponent) and the Sep 18 story at Colorado State for the Sep 17 home match against the same team. A game whose schedule links its own recap now takes only that recap (checked for opponent and date, no sport word needed); any other candidate must also name the opponent in its headline (`og:title`). Across all 13 finals, each matches only its own recap.
+
+**Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Oct 2 payload (120 matches) holds Colorado at TCU (`L, 1-3`), which joins the official card. BYU's test, which used Colorado as its "no volleyball scoreboard" school, now uses Houston.
 
 ## Limitations
 
