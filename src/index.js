@@ -15,7 +15,7 @@ import {cincinnatiSchool,createCincinnatiHandlers} from './schools/cincinnati.mj
 import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.52.0-colorado-football';
+const VERSION='4.52.1-colorado-volleyball';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -217,7 +217,7 @@ const {applyVerifiedMeet:applyVerifiedKStateMeet,isKStateCrossCountry,parseKStat
 const kansasHandlers=createKansasHandlers({makeEvent,clean,sportMatches,recapMatchesEvent,recapArticleText,visibleText,ordinal,schoolNow});
 const byuHandlers=createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,recapArticleText,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ucfHandlers=createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,decodeHtml,ordinal,recapMatchesEvent,recapArticleText,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-const coloradoHandlers=createColoradoHandlers({makeEvent});
+const coloradoHandlers=createColoradoHandlers({makeEvent,recapMatchesEvent,decodeHtml});
 const cincinnatiHandlers=createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const baylorHandlers=createBaylorHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arizonaHandlers=createArizonaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
@@ -1437,7 +1437,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
         const r=await sourceFetch(candidate);
         if(!r.ok)continue;
         const html=await r.text();
-        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):target.school_id==='arizona'?arizonaHandlers.matchesRecap(html,target,candidate):target.school_id==='baylor'?baylorHandlers.matchesRecap(html,target,candidate):target.school_id==='cincinnati'?cincinnatiHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
+        if(target.school_id==='kansas'?kansasHandlers.matchesRecap(html,target,candidate):target.school_id==='byu'?byuHandlers.matchesRecap(html,target,candidate):target.school_id==='ucf'?ucfHandlers.matchesRecap(html,target,candidate):target.school_id==='arizona'?arizonaHandlers.matchesRecap(html,target,candidate):target.school_id==='baylor'?baylorHandlers.matchesRecap(html,target,candidate):target.school_id==='cincinnati'?cincinnatiHandlers.matchesRecap(html,target,candidate):target.school_id==='colorado'?coloradoHandlers.matchesRecap(html,target,candidate):recapMatchesEvent(html,target,candidate))return{url:candidate,html};
       }catch{}
     }
     return null;

@@ -138,4 +138,64 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Colorado at Baylor','L, 13-23']]);
 }
 
+// Volleyball: 34 page-data entries. The Black and Gold scrimmage and the
+// other teams' tournament matches ("Denver vs. Central Arkansas") are not
+// Colorado's; 13 finals as K-State's (date only, sets won), 15 upcoming with
+// published Mountain times.
+{
+  const vbUrl='https://cubuffs.com/sports/womens-volleyball/schedule';
+  const vb=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now);
+  assert.equal(vb.length,28,'one event per Colorado match');
+  assert.equal(new Set(vb.map(e=>e.id)).size,28);
+  assert.ok(!vb.some(e=>/ vs\.? |scrimmage/i.test(e.opponent)),'no scrimmage or other teams\' match');
+  const vbFinals=vb.filter(e=>e.status==='Final').sort((a,b)=>a.start_time.localeCompare(b.start_time));
+  assert.deepEqual(vbFinals.map(e=>`${e.display_time} ${e.title} ${e.headline}`),[
+    'Aug 28 Colorado vs CSUN W, 3-0','Aug 29 Colorado vs Central Arkansas W, 3-0','Aug 30 Colorado vs Denver W, 3-0',
+    'Sep 4 Colorado vs Wichita State W, 3-0','Sep 5 Colorado vs New Mexico W, 3-2','Sep 6 Colorado vs Northern Colorado W, 3-2',
+    'Sep 11 Colorado vs Oregon State W, 3-0','Sep 12 Colorado at USC W, 3-1','Sep 17 Colorado vs Colorado State W, 3-1',
+    'Sep 18 Colorado at Colorado State L, 0-3','Sep 25 Colorado vs Utah L, 0-3','Sep 27 Colorado vs Arizona W, 3-2','Oct 2 Colorado at TCU L, 1-3'
+  ]);
+  const vbUp=vb.filter(e=>e.status!=='Final');
+  assert.equal(vbUp.length,15);
+  assert.deepEqual(vbUp.slice(0,3).map(e=>`${e.title} ${e.display_time}`),['Colorado at Baylor Oct 4, 1:00 PM','Colorado at Arizona State Oct 9, 8:00 PM','Colorado vs Kansas State Oct 11, 1:00 PM'],'published times; trailing spaces in names trimmed');
+  assert.equal(vbUp[0].status,'Today');
+  // Before the Buffs Classic, the other teams' matches would be upcoming.
+  const early=worker.parseHtml(fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,new Date('2026-08-20T15:00:00Z'));
+  assert.ok(!early.some(e=>/ vs\.? /i.test(e.opponent)),'other teams\' upcoming matches are left out');
+  assert.equal(early.length,28);
+  // Each final matches only its own recap, including the two Colorado State
+  // matches on consecutive days.
+  const vbRecaps=vbFinals.map(e=>{const [,y,m,d]=e.recap_url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\//);return fixture(`recap-volleyball-${y}-${m}-${d}.html.gz`);});
+  vbFinals.forEach((event,i)=>vbRecaps.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,vbFinals[j].recap_url),i===j,`${event.display_time} ${event.opponent} must match only its own recap (checked against ${vbFinals[j].display_time})`)));
+  // Without its own link (a search candidate), a story must name the
+  // opponent in its headline: the Aug 28 CSUN story previews Central Arkansas.
+  const unlinked={...vbFinals[1],recap_url:undefined};
+  assert.equal(worker.coloradoHandlers.matchesRecap(vbRecaps[0],unlinked,vbFinals[0].recap_url),false,'the CSUN story is not the Central Arkansas recap');
+  assert.equal(worker.coloradoHandlers.matchesRecap(vbRecaps[1],unlinked,vbFinals[1].recap_url),true,'the Central Arkansas story names its opponent');
+  // Other schools never reach the Colorado matcher.
+  assert.equal(worker.coloradoHandlers.matchesRecap(vbRecaps[0],{...vbFinals[0],school_id:'baylor'},vbFinals[0].recap_url),false);
+  // Expanded view: Central Arkansas (Aug 29) writes its highlights from its
+  // own story, not the CSUN story the day before; the Worker dispatches
+  // Colorado finals to the Colorado matcher.
+  {
+    const target=vb.find(e=>e.opponent==='Central Arkansas');
+    recapFixtures.set(target.recap_url,vbRecaps[1]);
+    const prompts=[],env={AI:{run:async(model,input)=>{prompts.push(JSON.stringify(input));return{response:JSON.stringify(['Colorado won the first set behind a strong serving run.','The Buffaloes hit over .300 as a team in the match.','Colorado closed the third set with a block.','The Buffaloes improved to 2-0 at the Buffs Classic.'])};}}};
+    await worker.attachOfficialHighlights(vb,fixture('volleyball-schedule.html.gz'),school,'Volleyball',vbUrl,now,env,target.id);
+    assert.equal(target.highlight_state,'recap_generated');
+    assert.ok(prompts[0].includes('Central Arkansas'));
+    assert.ok(/coloradoHandlers\.matchesRecap\(html,target,candidate\)/.test(read('../src/index.js')),'Colorado finals use the Colorado matcher');
+  }
+  // Live score: ESPN's women's college volleyball scoreboard. The Oct 2
+  // payload (120 matches) holds Colorado at TCU; it joins the official card.
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
+  const payload=JSON.parse(fixture('volleyball-espn-2026-10-02.json.gz'));
+  const [provider]=worker.liveScoreboardProviders(school,'Volleyball');
+  const scored=worker.parseScoreboardPayload(payload,school,'Volleyball',provider,'https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261002',new Date('2026-10-03T12:00:00Z'));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),[['Colorado at TCU','Final','L, 1-3']]);
+  const reconciled=worker.reconcileScoreboardEvents(vb,scored);
+  assert.equal(reconciled.length,vb.length,'the scoreboard joins the official match; no second card');
+  assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Colorado at TCU','L, 1-3']]);
+}
+
 console.log('Colorado module checks passed');
