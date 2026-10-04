@@ -432,4 +432,41 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   picked.forEach((event,i)=>raws.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,picked[j].recap_url),i===j,`${event.opponent} must match only its own story`)));
 }
 
+// Tennis (women's only): the official page only. Fall tournaments (one
+// entry per day) are one event each, "Colorado at ...", with the last day's
+// story; a past tournament is listed only with Colorado's story; the one
+// under way is In progress; spring duals are games ("W, 4-2"); a tournament
+// played in stretches names each by its first round.
+{
+  const tnUrl='https://cubuffs.com/sports/womens-tennis/schedule';
+  assert.deepEqual(worker.candidateUrls(school,'Tennis'),[tnUrl]);
+  assert.deepEqual(worker.rosterUrls(school,'Tennis'),['https://cubuffs.com/sports/womens-tennis/roster']);
+  const tn=worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis',tnUrl,now);
+  assert.equal(tn.length,34,'72 entries: 9 fall tournaments, 21 duals, Big 12 and 3 NCAA stretches (TBD left out)');
+  const finals=tn.filter(e=>e.status==='Final');
+  assert.deepEqual(finals.map(e=>`${e.display_time} ${e.title} ${e.headline} ${e.end_time.slice(0,10)} ${e.recap_url.split('/').pop()}`),[
+    'Sep 11 Colorado at Milwaukee Classic Completed 2026-09-13 buffs-defeat-wisconsin-to-conclude-milwaukee-tennis-classic',
+    'Sep 25 Colorado at Bedford Cup Completed 2026-09-27 tennis-ikeko-gretsch-close-weekend-play-with-pair-of-wins'
+  ],'tournaments with their last day\'s story, never a day-one story');
+  const bay=tn.find(e=>e.opponent==='Battle in the Bay Classic');
+  assert.deepEqual([bay.status,bay.recency_label],['Today','In progress']);
+  assert.deepEqual(tn.filter(e=>/^NCAA Team/.test(e.opponent)).map(e=>e.opponent),['NCAA Team Championships (First & Second Rounds)','NCAA Team Championships (Super Regionals)','NCAA Team Championships (Round of 16)']);
+  assert.deepEqual(['Portland State','UNLV'].map(name=>tn.find(e=>e.opponent===name).title),['Colorado vs Portland State','Colorado at UNLV'],'duals keep home and away');
+  assert.ok(!tn.some(e=>/^TB[AD]$/.test(e.opponent)));
+  // A past tournament without a story is left out.
+  const storyless=fixture('womens-tennis-schedule.html.gz').replaceAll('\\u002Fnews\\u002F2026\\u002F9\\u002F27\\u002Ftennis-ikeko-gretsch-close-weekend-play-with-pair-of-wins','');
+  assert.notEqual(storyless,fixture('womens-tennis-schedule.html.gz'));
+  assert.ok(!worker.parseHtml(storyless,school,'Tennis',tnUrl,now).some(e=>e.opponent==='Bedford Cup'));
+  // Each tournament's story matches it only.
+  const raws=['recap-tennis-2026-9-13-milwaukee.html.gz','recap-tennis-2026-9-27-bedford.html.gz'].map(fixture);
+  finals.forEach((event,i)=>raws.forEach((raw,j)=>assert.equal(worker.coloradoHandlers.matchesRecap(raw,event,finals[j].recap_url),i===j,`${event.opponent} must match only its own story`)));
+  // Spring duals (the 2025-26 page): W/L finals in K-State's wording, each
+  // with its own story.
+  const spring=worker.parseHtml(fixture('womens-tennis-schedule-2025-26.html.gz'),school,'Tennis',tnUrl,new Date('2026-04-15T15:00:00Z')).filter(e=>e.start_time>='2026-01');
+  const osu=spring.find(e=>e.opponent==='Oklahoma State');
+  assert.deepEqual([osu.title,osu.headline,osu.display_time,osu.recap_url],['Colorado vs Oklahoma State','W, 4-2','Mar 8','https://cubuffs.com/news/2026/3/8/tennis-colorado-corrales-cowgirls']);
+  assert.ok(worker.coloradoHandlers.matchesRecap(fixture('recap-tennis-2026-3-8-oklahoma-state.html.gz'),osu,osu.recap_url));
+  assert.equal(spring.filter(e=>/^[WL], \d-\d$/.test(e.headline||'')).length,23);
+}
+
 console.log('Colorado module checks passed');

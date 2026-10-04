@@ -49,6 +49,21 @@
       "url": "https://cubuffs.com/sports/skiing/schedule/2026",
       "retrieved": "2026-10-04T05:30Z",
       "note": "2026 Skiing Schedule (last season), unmodified: race days with cumulative team standings (3rd/6, NTS, 1st/9, 2nd/22) and stories; one next-event widget copy (type upcoming)."
+    },
+    "womens-tennis-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/womens-tennis/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "2026-27: 72 entries: fall tournament days (Milwaukee, Bedford with stories; Battle in the Bay Oct 1-4), 22 spring duals incl. TBD, Big 12 and NCAA rounds."
+    },
+    "womens-tennis-schedule-2025-26.html.gz": {
+      "url": "https://cubuffs.com/sports/womens-tennis/schedule/2025-26",
+      "retrieved": "2026-10-04T05:45Z",
+      "note": "Last season, unmodified: spring duals with W/L scores and stories."
+    },
+    "mens-tennis-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/mens-tennis/schedule",
+      "retrieved": "2026-10-04T04:20Z",
+      "note": "SIDEARM's empty '@season @sport Schedule' template: Colorado has no men's tennis."
     }
   },
   "recaps": {
@@ -84,5 +99,10 @@
     "recap-ski-2026-1-14.html.gz": "https://cubuffs.com/news/2026/1/14/skiing-ski-buffs-stampede-into-lead-at-du-invitational",
     "recap-ski-2026-2-8.html.gz": "Denver Invitational final story, 2026/2/8 (DU Invitational title)",
     "recap-ski-2026-3-14.html.gz": "https://cubuffs.com/news/2026/3/14/skiing-buffs-finish-second-at-ncaa-ski-championships"
+  },
+  "recaps_tennis": {
+    "recap-tennis-2026-9-13-milwaukee.html.gz": "https://cubuffs.com/news/2026/9/13/buffs-defeat-wisconsin-to-conclude-milwaukee-tennis-classic",
+    "recap-tennis-2026-9-27-bedford.html.gz": "https://cubuffs.com/news/2026/9/27/tennis-ikeko-gretsch-close-weekend-play-with-pair-of-wins",
+    "recap-tennis-2026-3-8-oklahoma-state.html.gz": "https://cubuffs.com/news/2026/3/8/tennis-colorado-corrales-cowgirls"
   }
 }

@@ -8,7 +8,7 @@ export const coloradoSchool={
   id:'colorado',
   // Sports whose official schedule this module reads itself, from the page
   // data (see parseSchedule). Every other sport keeps the shared parsers.
-  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Skiing']),
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Skiing','Tennis']),
   // Live game state comes from an independent scoreboard; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -43,7 +43,10 @@ export const coloradoSchool={
     // The official page only: the homepage is not a ski schedule.
     'colorado|Skiing':'https://cubuffs.com/sports/skiing/schedule',
     'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/schedule',
-    'colorado|Tennis':['https://cubuffs.com/sports/womens-tennis/schedule','https://cubuffs.com/sports/mens-tennis/schedule','https://cubuffs.com/sports/tennis/schedule','https://cubuffs.com/'],
+    // Colorado sponsors women's tennis only: /sports/mens-tennis/ renders
+    // SIDEARM's empty "@season @sport" template, and the generic page and
+    // the homepage are not tennis schedules.
+    'colorado|Tennis':'https://cubuffs.com/sports/womens-tennis/schedule',
     'colorado|Track & Field':['https://cubuffs.com/sports/track-and-field/schedule','https://cubuffs.com/sports/track-field/schedule','https://cubuffs.com/'],
     'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/schedule'
   },
@@ -54,7 +57,7 @@ export const coloradoSchool={
     'colorado|Golf':['https://cubuffs.com/sports/womens-golf/roster','https://cubuffs.com/sports/mens-golf/roster','https://cubuffs.com/sports/golf/roster'],
     'colorado|Skiing':'https://cubuffs.com/sports/skiing/roster',
     'colorado|Soccer':'https://cubuffs.com/sports/womens-soccer/roster',
-    'colorado|Tennis':['https://cubuffs.com/sports/womens-tennis/roster','https://cubuffs.com/sports/mens-tennis/roster','https://cubuffs.com/sports/tennis/roster'],
+    'colorado|Tennis':'https://cubuffs.com/sports/womens-tennis/roster',
     'colorado|Track & Field':['https://cubuffs.com/sports/track-and-field/roster','https://cubuffs.com/sports/track-field/roster'],
     'colorado|Volleyball':'https://cubuffs.com/sports/womens-volleyball/roster'
   }
@@ -150,14 +153,20 @@ export function parseColoradoTfrrsResults(raw,{decodeHtml,ordinal}){
 function mergeRounds(games){
   const groups=[];
   for(const game of games){
+    // Tournament-less entries (tennis duals) stay single games.
     const name=String(game.tournament?.title||'').trim(),previous=groups.at(-1);
     const gap=previous?(Date.parse(game.date.slice(0,10))-Date.parse(previous.at(-1).date.slice(0,10)))/86400000:Infinity;
     if(previous&&name&&previous.name===name&&gap>=0&&gap<=2){previous.push(game);continue;}
     const group=[game];group.name=name;groups.push(group);
   }
+  // A tournament played in separate stretches (tennis's NCAA Team
+  // Championships: first rounds, super regionals, finals) names each by its
+  // first round: "NCAA Team Championships (Super Regionals)".
+  const runs=new Map();for(const group of groups)if(group.name)runs.set(group.name,(runs.get(group.name)||0)+1);
   return groups.map(rounds=>{
     const first=rounds[0],last=rounds.at(-1);
-    return{...first,opponent:{...first.opponent,title:rounds.name||first.opponent?.title},date:first.date,enddate:rounds.length>1?last.date:first.enddate,result:last.result||null,golf_final_round:true};
+    const title=rounds.name?runs.get(rounds.name)>1?`${rounds.name} (${String(first.opponent?.title||'').trim()})`:rounds.name:first.opponent?.title;
+    return{...first,opponent:{...first.opponent,title},date:first.date,enddate:rounds.length>1?last.date:first.enddate,result:last.result||null};
   });
 }
 
@@ -211,7 +220,7 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
     // A "next event" widget repeats a game without its details (type
     // "upcoming").
     const listed=pageGames.filter(game=>game.type!=='upcoming');
-    const games=sport==='Golf'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):listed;
+    const games=sport==='Golf'||sport==='Tennis'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):listed;
     const today=coloradoToday(now),events=[];
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
@@ -229,9 +238,11 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
-      // Meets (cross country) are final once their day has passed; their team
-      // places are published as text ("M-1st/W-1st", "M-3rd/W-NTS").
-      const meet=eventType(sport)!=='GAME'&&!scored;
+      // Meets (cross country, tennis tournaments) are final once their last
+      // day has passed; team places are published as text ("M-1st/W-1st",
+      // "M-3rd/W-NTS"). In dual sports (tennis) only tournaments read as
+      // meets; a dual match is a game.
+      const meet=!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&Boolean(String(game.tournament?.title||'').trim()));
       // A game day that has passed with no published score is neither a
       // result nor upcoming; yesterday's stays (a late game in another time
       // zone ends after midnight in Boulder and its score is posted after).
@@ -295,6 +306,9 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
           }
         }catch{}
       }
+      // As K-State's, a past tennis tournament (no team result) is listed only
+      // with Colorado's story about it.
+      if(sport==='Tennis'&&meet&&final&&!event.recap_url)continue;
       // Separate men's and women's pages can list the same opponent on the
       // same day; the team keeps their event ids apart.
       const squad=coloradoSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
