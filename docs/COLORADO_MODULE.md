@@ -11,8 +11,8 @@ Colorado was chosen on October 4, 2026 (user: "Convert Colorado"). Sports are co
 | Football | #214 | Page-data reader: 5 finals `W, 14-13` with their own recaps (the Oct 3 Texas Tech recap was linked after the fixture was taken; the preview shows it); 8 upcoming, `Nov 13, 8:15 PM` vs Houston and `Dec 4, 6:00 PM` Big 12 Championship Game, the rest date only (TBA); ESPN live score (shared FBS-group request) |
 | Volleyball | #215 | 13 finals (`W, 3-0`) with their own recaps, 15 upcoming with published times; scrimmage and other teams' tournament matches left out; ESPN live score |
 | Soccer | #216 | 13 finals (`T, 0-0`, `Utah (Exhibition)`) with their own recaps (Western Michigan's from the archive), 7 upcoming with published times; ESPN live score |
-| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
-| Basketball | | shared parsers |
+| Cross Country | #217 | Complete results from TFRRS: `Women's team: 1st · 15 pts / Men's team: 1st · 15 pts`, every Colorado finisher per race; a team without a score names its first finisher (`Women's: Ella Hagen 2nd`) |
+| Basketball | (this PR) | Men's 34 + women's 31, labeled, the two official pages only; exhibitions `(Exhibition)`; published times; Big 12 Championship Mar 9-13 as one event; ESPN live scores for both teams |
 | Golf | | shared parsers |
 | Skiing | | shared parsers |
 | Tennis | | shared parsers |
@@ -81,6 +81,14 @@ TFRRS publishes every meet as plain tables, and Colorado's two TFRRS team pages 
 Results: Roadrunners Invitational 17 rows (2 team, 6 women, 9 men), Wyoming Invitational 10 rows.
 
 ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
+
+## Basketball (`4.52.5-colorado-basketball`)
+
+Production loaded the men's and women's pages plus the generic `/sports/basketball/` page and the homepage (65 upcoming; the extra pages added nothing today). Basketball now routes to the two official pages only, both labeled, with `-mens`/`-womens` event ids. The reader gives men's 34 and women's 31 games with published times (`Nov 24, 10:00 PM` vs Stanford; `TBA` shows the date only); the two fall exhibitions (type `S`) read `North Texas (Exhibition)` and `Adams State (Exhibition)`.
+
+**Multi-day events (every Colorado sport).** The men's Big 12 Championship (Mar 9-13) ends on its last day, is today's event `In progress` while played, and counts from its last day for the past-without-result rule; a recap may be dated up to three days after the last day.
+
+**Live scores.** ESPN's men's and women's college basketball scoreboards, labeled to match the official pages, through the shared Division I request. Tested on Feb 21, 2026: men's Oklahoma State at Colorado and women's Texas Tech at Colorado; Colorado State and Northern Colorado play in both payloads and are never taken for Colorado.
 
 ## Limitations
 
