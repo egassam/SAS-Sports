@@ -11,6 +11,7 @@ import {ucfSchool,createUcfHandlers} from '../src/schools/ucf.mjs';
 import {arizonaSchool,createArizonaHandlers} from '../src/schools/arizona.mjs';
 import {baylorSchool,createBaylorHandlers} from '../src/schools/baylor.mjs';
 import {cincinnatiSchool,createCincinnatiHandlers} from '../src/schools/cincinnati.mjs';
+import {coloradoSchool,createColoradoHandlers} from '../src/schools/colorado.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -25,7 +26,7 @@ const fetch=async url=>{
   if(body==null)throw Error(`Unexpected network request: ${url}`);
   return{ok:true,status:200,headers:new Map([['content-type','text/html']]),text:async()=>body};
 };
-const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
+const deps={createSourceFetch,SOURCE_TTL,kstateSchool,createKStateHandlers,kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,oklahomaStateSchool,createOklahomaStateHandlers,utahSchool,createUtahHandlers,arizonaStateSchool,createArizonaStateHandlers,byuSchool,createByuHandlers,ucfSchool,createUcfHandlers,arizonaSchool,createArizonaHandlers,baylorSchool,createBaylorHandlers,cincinnatiSchool,createCincinnatiHandlers,coloradoSchool,createColoradoHandlers,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,teamLabelForSource,parseHtml,groupEvents,arizonaStateHandlers,attachOfficialMeetResults};')(...Object.values(deps));
 
 // Module ownership: every sponsored sport has explicit official thesundevils.com routes.

@@ -1,0 +1,18 @@
+{
+  "schedules": {
+    "football-schedule.html.gz": {
+      "url": "https://cubuffs.com/sports/football/schedule",
+      "retrieved": "2026-10-04T03:41Z",
+      "note": "Official 2026 football schedule, unmodified, through the private source route (cubuffs.com returns 403 to the sandbox). SIDEARM __NUXT_DATA__: 5 finals (W 14-13 at Georgia Tech, W 52-21 Weber State, L 7-41 at Northwestern, L 13-23 at Baylor, L 7-29 Texas Tech), the first four with /news/ recap links; 8 upcoming, Nov 13 Houston 8:15 PM and Dec 4 Big 12 Championship Game 6:00 PM, the rest TBA."
+    }
+  },
+  "recaps": {
+    "recap-football-2026-9-3-georgia-tech.html.gz": "https://cubuffs.com/news/2026/9/3/football-late-td-boo-block-gives-buffs-thrilling-win-at-georgia-tech",
+    "recap-football-2026-9-12-weber-state.html.gz": "https://cubuffs.com/news/2026/9/12/football-offensive-outburst-guides-buffaloes-over-weber-state",
+    "recap-football-2026-9-19-northwestern.html.gz": "https://cubuffs.com/news/2026/9/19/football-giveaways-costly-as-buffs-suffer-defeat-to-northwestern",
+    "recap-football-2026-9-26-baylor.html.gz": "https://cubuffs.com/news/2026/9/26/football-buffaloes-fall-in-waco-to-open-big-12-conference-play"
+  },
+  "scoreboards": {
+    "football-espn-2026-09-26.json.gz": "Copy of tests/fixtures/baylor-module/football-espn-2026-09-26.json.gz (ESPN college football scoreboard, groups=80, Sep 26, 2026): Colorado at Baylor, final 13-23; Colorado State also plays."
+  }
+}
