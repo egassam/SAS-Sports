@@ -7,7 +7,12 @@ export const cincinnatiSchool={
   id:'cincinnati',
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
-  cardSports:new Set(['Football']),
+  cardSports:new Set(['Football','Volleyball']),
+  // Live game state comes from an independent scoreboard, as for K-State;
+  // the official cards stay the schedule and results source of record.
+  liveScoreboards:{
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+  },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Swimming & Diving']),
@@ -66,7 +71,7 @@ const easternDay=time=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_Yo
 // cards and the page's schema data (UTC): the Oct 3 night game at Arizona
 // appeared on Oct 3 and Oct 4, and a phantom Nov 28 game at BYU reused the
 // Sep 5 recap.
-export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl}){
+export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml}){
   const field=(block,pattern)=>visibleText((block.match(pattern)||[])[1]||'');
   // The card's own Recap link. A recap is dated in its URL
   // (/news/2026/09/27/...); it must fall between the event day and three
@@ -117,5 +122,22 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl}){
     }
     return events.length?events:null;
   }
-  return{parseSchedule};
+  // The card's own Recap link is already bound to its game, and its story may
+  // never name the sport ("Cincinnati Falls on Road Against Houston"): it is
+  // checked for the opponent and date only. Any other candidate must also
+  // name the opponent in its headline: the shared matcher accepted stories of
+  // neighboring days for each other (the Sep 4 Valparaiso story for Michigan
+  // and Oakland, the Sep 10 Morehead State story for Michigan State).
+  const headlineKey=value=>` ${decodeHtml(String(value||'')).toLowerCase().replace(/\(.*?\)/g,' ').replace(/\bst\./g,'state').replace(/[^a-z0-9&]+/g,' ').trim()} `;
+  function matchesRecap(raw,event,url){
+    if(event?.school_id!=='cincinnati')return false;
+    let parsed;try{parsed=new URL(url);}catch{return false;}
+    const own=url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='gobearcats.com'&&parsed.pathname.startsWith('/news/');
+    if(own)return recapMatchesEvent(raw,{...event,sport:''},url);
+    if(!recapMatchesEvent(raw,event,url))return false;
+    const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';
+    const opponent=headlineKey(event.opponent).trim();
+    return opponent.length>=2&&headlineKey(title).includes(` ${opponent} `);
+  }
+  return{parseSchedule,matchesRecap};
 }

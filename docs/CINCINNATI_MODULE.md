@@ -8,8 +8,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 
 | Sport | PR | State |
 | --- | --- | --- |
-| Football | (this PR) | Card reader: 4 finals `W, 31-26` with their own recaps; 8 upcoming, `Oct 3, 11:00 PM` at Arizona, the rest date only (unscheduled); ESPN live score (shared FBS-group request) |
-| Volleyball | | shared parsers |
+| Football | #202 | Card reader: 4 finals `W, 31-26` with their own recaps; 8 upcoming, `Oct 3, 11:00 PM` at Arizona, the rest date only (unscheduled); ESPN live score (shared FBS-group request) |
+| Volleyball | (this PR) | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
 | Soccer | | shared parsers |
 | Cross Country | | shared parsers |
 | Basketball | | shared parsers |
@@ -51,6 +51,14 @@ The module reader (`createCincinnatiHandlers().parseSchedule`, Football only via
 **Live score.** ESPN's college football scoreboard through the shared FBS-group request (#164). The Sep 26 payload's Kansas State at Cincinnati (`W, 31-26`) joins the official card (no second card).
 
 `npm run test:cincinnati-module` (also in `npm test` and `npm run test:release`) checks route ownership and parity, the Football games from the unmodified fixture, recap matching across all four recaps, highlight generation from each game's own article and the ESPN match. Removing the parse hook fails it.
+
+## Volleyball (`4.50.1-cincinnati-volleyball`)
+
+Production read both the cards and the schema data: rankings in the names (`#11 TCU`, `#RV Kansas State`), every ranked upcoming match listed twice (`at #24 Colorado` Oct 29 and `at Colorado` Oct 30, the second a UTC day late), a phantom recap on Nov 27 and no times. The card reader gives 28 matches, one each: 13 finals in K-State's wording, date only, each with its own recap, and 15 upcoming with Cincinnati's published times (`Oct 22, 6:30 PM` vs Kansas State).
+
+**Recap matcher (`matchesRecap`, every Cincinnati sport).** The shared matcher refused the Oct 2 Houston story (its headline and article never say "volleyball": "Cincinnati Falls on Road Against Houston") and accepted neighboring days' stories for each other (the Sep 4 Valparaiso story for Michigan and Oakland; the Sep 10 Morehead State story for Michigan State). The card's own Recap link is now checked for opponent and date only (it is already bound to its match); any other candidate must also name the opponent in its headline (`og:title`; `St.` read as `State`). Across all 13 finals, each matches only its own recap. Football is unchanged (each final still matches only its own recap).
+
+**Live score.** ESPN's women's college volleyball scoreboard, as K-State's. The Oct 2 payload (120 matches) holds Cincinnati at Houston (`L, 1-3`), which joins the official card.
 
 ## Limitations
 
