@@ -34,6 +34,16 @@
       "url": "https://gobearcats.com/sports/baseball/schedule",
       "retrieved": "2026-10-04T01:32Z",
       "note": "57 games of spring 2027; Big 12 Tournament May 25-29 (end date)."
+    },
+    "golf-mens-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/mens-golf/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "25 round cards, 11 tournaments; places \"8th of 14\", \"T4th of 15\"; no divider."
+    },
+    "golf-womens-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/womens-golf/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "28 round cards, 12 tournaments; places \"5th out of 13\"; \"vs.\" divider on every card; Blessings Collegiate Oct 3-5 after round one (\"8th out of 9\")."
     }
   },
   "recaps": {
@@ -50,7 +60,9 @@
     "recap-soccer-2026-10-3-tcu.html.gz": "https://gobearcats.com/news/2026/10/3/cincinnati-falls-to-tcu-on-friday-night",
     "recap-xc-2026-9-4-redhawk-rumble.html.gz": "https://gobearcats.com/news/2026/09/4/lucas-towne-wins-redhawk-rumble-to-kick-off-2026-xc-season",
     "recap-xc-2026-9-18-all-ohio.html.gz": "https://gobearcats.com/news/2026/09/18/christina-allen-wins-all-ohio-challenge-to-lead-womens-xc-to-team-title",
-    "recap-xc-2026-9-25-gans-creek.html.gz": "https://gobearcats.com/news/2026/09/25/cincinnati-runners-battle-at-gans-creek-classic"
+    "recap-xc-2026-9-25-gans-creek.html.gz": "https://gobearcats.com/news/2026/09/25/cincinnati-runners-battle-at-gans-creek-classic",
+    "recap-golf-2026-9-10-folds-of-honor.html.gz": "https://gobearcats.com/news/2026/09/10/bearcats-finish-fourth-at-folds-of-honor-collegiate",
+    "recap-golf-2026-9-29-powercat.html.gz": "https://gobearcats.com/news/2026/09/29/cincinnati-earns-runner-up-finish-at-powercat-classic"
   },
   "scoreboards": {
     "football-espn-2026-09-26.json.gz": "ESPN college football scoreboard, groups=80&limit=300&dates=20260926 (copy of the Baylor module fixture); holds Kansas State Wildcats at Cincinnati Bearcats, final 31-26.",

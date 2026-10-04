@@ -13,8 +13,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | Soccer | #204 | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
 | Cross Country | #205 | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
 | Basketball | #206 | Men's 37 + women's 32, labeled, the two official pages only; women's exhibition `(Exhibition)`; published times; ESPN live scores for both teams |
-| Baseball | (this PR) | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
-| Golf | | shared parsers |
+| Baseball | #207 | Official page only; spring 2027 (57 games) with published times; Big 12 Tournament May 25-29 listed while it is played; ESPN live score |
+| Golf | (this PR) | Both teams, labeled, one event per tournament: `4th of 14`, `2nd of 12`, each with its final story; a tournament under way is today's event |
 | Lacrosse | | shared parsers |
 | Swimming & Diving | | shared parsers |
 | Track & Field | | shared parsers |
@@ -103,6 +103,17 @@ The page publishes the 2027 spring season only (57 games from Feb 19). Productio
 **Empty schedules (every Cincinnati sport).** When nothing on a page with cards is current, the reader returns a valid empty schedule (`cincinnatiHandlers.isEmptySchedule`, the same school-gated `empty_schedule` hook as BYU, UCF, Arizona and Baylor): the app shows its empty-schedule note. Before, the reader returned nothing and the shared parsers read the page again, making events out of its schema data.
 
 **Live score.** ESPN's college baseball scoreboard (`baseball/college-baseball`). Tested on Apr 10, 2026: Baylor at Cincinnati.
+
+## Golf (`4.50.6-cincinnati-golf`)
+
+Production loaded the first golf page that answered (women's) and showed one event per round (5 results, 23 upcoming), with nothing for the men. Golf now loads both teams' official pages only, labeled, with `-mens`/`-womens` event ids, and:
+- merges a tournament's round cards (the same name, at most two days apart) into one event from its first to its last day: men's 25 cards become 11 tournaments, women's 28 become 12;
+- writes K-State's headline from the last round's place and field, published as `4th of 14`, `T4th of 15` or `5th out of 13`: `4th of 14`. The cards and stories publish no consistent team total, so none is claimed;
+- links each tournament's final story (`Bearcats Finish Fourth at Folds of Honor Collegiate`), never a day-one story (`... Sit Eighth After 18 Holes`); all five finals match their own story (the Powercat story says "Powercat Classic", the card "Powercat Invitational");
+- shows a tournament under way as today's event, `In progress`, with no result (the women's Blessings Collegiate, Oct 3-5, after its first round); once its last day passes it is a final;
+- reads every tournament as `Cincinnati at ...` (the women's cards say `vs.` for every tournament).
+
+ESPN publishes no college golf scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 
