@@ -10,8 +10,8 @@ Cincinnati was chosen on October 4, 2026 (user: "Convert Cincinnati"; it is the 
 | --- | --- | --- |
 | Football | #202 | Card reader: 4 finals `W, 31-26` with their own recaps; 8 upcoming, `Oct 3, 11:00 PM` at Arizona, the rest date only (unscheduled); ESPN live score (shared FBS-group request) |
 | Volleyball | #203 | 13 finals (`L, 1-3`) with their own recaps, 15 upcoming with published times; rankings dropped, no match listed twice; ESPN live score |
-| Soccer | (this PR) | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
-| Cross Country | | shared parsers |
+| Soccer | #204 | 11 finals (`T, 1-1`) with their own recaps, 7 upcoming with published times; unscored exhibition left out; ESPN live score |
+| Cross Country | (this PR) | Complete results from TFRRS: `Women's team: 24th · 575 pts / Men's team: 15th · 396 pts`, every Cincinnati runner per race (`Women's 6K`, `Men's 8K`) |
 | Basketball | | shared parsers |
 | Baseball | | shared parsers |
 | Golf | | shared parsers |
@@ -67,6 +67,24 @@ Cincinnati sponsors women's soccer only. Production listed ranked upcoming games
 **Past games without a result (every Cincinnati game sport).** The Aug 8 exhibition (`Evansville (EXH)`) has no published score. A game two days past without a result is left out (neither a final nor upcoming); yesterday's stays, since a night game can run past midnight Eastern and its result is posted after it ends.
 
 **Live score.** ESPN's women's college soccer scoreboard (`soccer/usa.ncaa.w.1`); the Oct 2 payload's Cincinnati at TCU (`L, 0-2`) joins the official card.
+
+## Cross Country (`4.50.3-cincinnati-cross-country`)
+
+Cincinnati runs men's and women's teams on one schedule page. Production showed `Completed` for all three meets with no race rows. The cards publish each team's place in the result slot (`2nd (M), 2nd (W)`, `1st (W)`, `15th (M), 24th (W)`); the reader writes K-State's headline from them, women first (`Women's team: 24th / Men's team: 15th`), dates only; `All Day` meets have no time.
+
+The recaps end with a `// RESULTS` list of Cincinnati's top runners only (7 of the 8 women entered at Gans Creek; 10 of 12 women and 6 of 8 men at the RedHawk Rumble). TFRRS, the collegiate results database (as for UCF and Baylor), publishes every meet as plain tables, and Cincinnati's two TFRRS team pages list each meet with its date. The module (`findCincinnatiTfrrsMeet`, `parseCincinnatiTfrrsResults`, `attachMeetResults`; the same three school-gated hooks as Baylor):
+- finds the meet on each team's page by date and a shared distinctive word: the schedule's "All-Ohio Intercollegiate Classic" is TFRRS's "All-Ohio InterCollegiate Challenge" (generic words such as Classic, Challenge, Invitational are ignored; a team runs one meet a day). UCF's and Baylor's every-word rule would miss it;
+- reads Cincinnati's team result and every Cincinnati runner per race by the TEAM column, from TFRRS race titles in three forms (`Women's Gold Invite 6k`, `2026 Redhawk Rumble - Men's Race`, `Womens Championship 6K`); races Cincinnati did not run (Gans Creek's Black Open) are left out, and a DNS row is not a result;
+- refuses TFRRS when any team place the card publishes disagrees (the card's headline stays);
+- writes K-State's headline with the points: `Women's team: 2nd · 43 pts / Men's team: 2nd · 40 pts`;
+- keeps the source link on the official recap, with the TFRRS page beside it (`results_source_url`);
+- writes highlights only from these rows (team finishes, each race's first Cincinnati finisher, then the next finishers).
+
+Results: RedHawk Rumble 18 rows (`Women's 5K`, `Men's 6K`), All-Ohio 11 rows (women only; the men did not run), Gans Creek 15 rows.
+
+**Where the recap and TFRRS differ (Gans Creek):** the recap gives the women 574 points and lists Deana Hudson as `173.`; TFRRS gives 575 and places her 192nd in 22:06.4. 173 is her team-scoring position (TFRRS's SCORE column), and the five scorers' positions sum to 575 (87+94+100+121+173). The TFRRS figures are shown.
+
+ESPN publishes no cross country scoreboard, so there is no live score (K-State has none).
 
 ## Limitations
 

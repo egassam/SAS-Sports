@@ -4,15 +4,49 @@
       "url": "https://gobearcats.com/sports/football/schedule",
       "retrieved": "2026-10-04T01:32Z",
       "note": "Official 2026 football schedule, unmodified, downloaded directly (gobearcats.com answers the sandbox). WMT schedule-event-item cards: 4 finals (W 34-15 Boston College, W 62-10 Western Carolina, W 35-31 Miami (OH), W 31-26 Kansas State), each with its /news/ Recap link; Oct 3 at Arizona 11:00 PM EDT (datetime 2026-10-03T23:00:00.000-04:00); 7 later games with the time-tba date class and an empty result slot."
+    },
+    "volleyball-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/womens-volleyball/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "28 matches: 13 finals with /news/ Recap links, 15 upcoming with Eastern times; rankings in names (#11 TCU, #RV Kansas State)."
+    },
+    "soccer-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/womens-soccer/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "19 cards: Aug 8 Evansville (EXH) with no result, 11 finals (ties as T Tie 1-1) with recaps, 7 upcoming with times."
+    },
+    "cross-country-schedule.html.gz": {
+      "url": "https://gobearcats.com/sports/cross-country/schedule",
+      "retrieved": "2026-10-04T01:32Z",
+      "note": "7 meets: RedHawk Rumble 2nd (M), 2nd (W); All-Ohio Intercollegiate Classic 1st (W); Gans Creek Classic 15th (M), 24th (W); 4 upcoming All Day."
     }
   },
   "recaps": {
     "recap-football-2026-9-5-boston-college.html.gz": "https://gobearcats.com/news/2026/09/5/cincinnati-extends-home-opener-win-streak-to-25-games-with-34-15-victory-over-boston-college",
     "recap-football-2026-9-12-western-carolina.html.gz": "https://gobearcats.com/news/2026/09/13/bearcats-throttle-catamounts-in-62-10-victory",
     "recap-football-2026-9-19-miami.html.gz": "https://gobearcats.com/news/2026/09/19/cincinnati-overcomes-21-point-deficit-claims-battle-for-the-victory-bell-with-35-31-win",
-    "recap-football-2026-9-26-kansas-state.html.gz": "https://gobearcats.com/news/2026/09/27/bearcats-win-big-12-opener-take-down-k-state-31-20-at-home"
+    "recap-football-2026-9-26-kansas-state.html.gz": "https://gobearcats.com/news/2026/09/27/bearcats-win-big-12-opener-take-down-k-state-31-20-at-home",
+    "recap-volleyball-2026-9-5-valparaiso.html.gz": "https://gobearcats.com/news/2026/09/5/bearcats-sweep-valparaiso-to-kick-off-popcorn-classic",
+    "recap-volleyball-2026-9-5-michigan.html.gz": "https://gobearcats.com/news/2026/09/5/nolans-24-kills-not-enough-as-cincinnati-falls-to-michigan",
+    "recap-volleyball-2026-9-6-oakland.html.gz": "https://gobearcats.com/news/2026/09/6/cincinnati-takes-oakland-down-in-straight-sets",
+    "recap-volleyball-2026-9-10-morehead-state.html.gz": "https://gobearcats.com/news/2026/09/10/bearcats-sweep-morehead-state-behind-16-busignani-kills",
+    "recap-volleyball-2026-9-11-michigan-state.html.gz": "https://gobearcats.com/news/2026/09/11/cincinnati-drops-contest-against-michigan-state",
+    "recap-volleyball-2026-10-3-houston.html.gz": "https://gobearcats.com/news/2026/10/3/cincinnati-falls-on-road-against-houston",
+    "recap-soccer-2026-10-3-tcu.html.gz": "https://gobearcats.com/news/2026/10/3/cincinnati-falls-to-tcu-on-friday-night",
+    "recap-xc-2026-9-4-redhawk-rumble.html.gz": "https://gobearcats.com/news/2026/09/4/lucas-towne-wins-redhawk-rumble-to-kick-off-2026-xc-season",
+    "recap-xc-2026-9-18-all-ohio.html.gz": "https://gobearcats.com/news/2026/09/18/christina-allen-wins-all-ohio-challenge-to-lead-womens-xc-to-team-title",
+    "recap-xc-2026-9-25-gans-creek.html.gz": "https://gobearcats.com/news/2026/09/25/cincinnati-runners-battle-at-gans-creek-classic"
   },
   "scoreboards": {
-    "football-espn-2026-09-26.json.gz": "ESPN college football scoreboard, groups=80&limit=300&dates=20260926 (copy of the Baylor module fixture); holds Kansas State Wildcats at Cincinnati Bearcats, final 31-26."
+    "football-espn-2026-09-26.json.gz": "ESPN college football scoreboard, groups=80&limit=300&dates=20260926 (copy of the Baylor module fixture); holds Kansas State Wildcats at Cincinnati Bearcats, final 31-26.",
+    "volleyball-espn-2026-10-02.json.gz": "ESPN women's college volleyball scoreboard, limit=1000&dates=20261002 (120 matches); Cincinnati at Houston final 1-3.",
+    "soccer-espn-2026-10-02.json.gz": "ESPN women's college soccer scoreboard usa.ncaa.w.1, limit=1000&dates=20261002 (31 games); Cincinnati at TCU full time 0-2."
+  },
+  "tfrrs": {
+    "tfrrs-team-women.html.gz": "https://www.tfrrs.org/teams/xc/OH_college_f_Cincinnati.html",
+    "tfrrs-team-men.html.gz": "https://www.tfrrs.org/teams/xc/OH_college_m_Cincinnati.html",
+    "tfrrs-2026-gans-creek.html.gz": "https://www.tfrrs.org/results/xc/28714/Gans_Creek_Classic",
+    "tfrrs-2026-all-ohio.html.gz": "https://www.tfrrs.org/results/xc/28392/All-Ohio_InterCollegiate_Challenge",
+    "tfrrs-2026-redhawk-rumble.html.gz": "https://www.tfrrs.org/results/xc/27952/Redhawk_Rumble"
   }
 }

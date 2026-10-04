@@ -207,4 +207,54 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Cincinnati at TCU','L, 0-2']]);
 }
 
+// Cross Country: the cards publish each team's place ("2nd (M), 2nd (W)");
+// production showed "Completed" with no race rows. Complete results come
+// from TFRRS (every Cincinnati runner; the recaps list only the top ones).
+{
+  const tfrrs={'https://www.tfrrs.org/teams/xc/OH_college_f_Cincinnati.html':'tfrrs-team-women.html.gz','https://www.tfrrs.org/teams/xc/OH_college_m_Cincinnati.html':'tfrrs-team-men.html.gz',
+    'https://www.tfrrs.org/results/xc/28714/Gans_Creek_Classic':'tfrrs-2026-gans-creek.html.gz','https://www.tfrrs.org/results/xc/28392/All-Ohio_InterCollegiate_Challenge':'tfrrs-2026-all-ohio.html.gz','https://www.tfrrs.org/results/xc/27952/Redhawk_Rumble':'tfrrs-2026-redhawk-rumble.html.gz'};
+  for(const [url,file] of Object.entries(tfrrs))recapFixtures.set(url,fixture(file));
+  const xcUrl='https://gobearcats.com/sports/cross-country/schedule',xcNow=new Date('2026-10-04T02:00:00Z');
+  const xc=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,xcNow);
+  assert.deepEqual(xc.map(e=>`${e.title} ${e.display_time} ${e.status} ${e.headline}`),[
+    "Cincinnati at Redhawk Rumble Sep 4 Final Women's team: 2nd / Men's team: 2nd",
+    "Cincinnati at All-Ohio Intercollegiate Classic Sep 18 Final Women's team: 1st",
+    "Cincinnati at Gans Creek Classic Sep 25 Final Women's team: 24th / Men's team: 15th",
+    'Cincinnati at Bradley Pink Classic Oct 16 Upcoming null','Cincinnati vs Big 12 Championships Oct 31 Upcoming null',
+    'Cincinnati at NCAA Great Lakes Regional Nov 13 Upcoming null','Cincinnati at NCAA Championships Nov 21 Upcoming null'
+  ],"the cards' team places in K-State's headline, women first; dates only");
+  const finals=xc.filter(e=>e.status==='Final');
+  assert.ok(finals.every(e=>e.recap_url?.startsWith('https://gobearcats.com/news/2026/09/')));
+  for(const event of finals)await worker.attachOfficialMeetResults(event);
+  const [rumble,allOhio,gans]=finals;
+  assert.deepEqual(finals.map(e=>e.headline),["Women's team: 2nd · 43 pts / Men's team: 2nd · 40 pts","Women's team: 1st · 24 pts","Women's team: 24th · 575 pts / Men's team: 15th · 396 pts"],"K-State's headline with TFRRS points");
+  assert.deepEqual(finals.map(e=>e.results.length),[18,11,15],'every Cincinnati runner plus the team rows');
+  assert.deepEqual([...new Set(gans.results.map(r=>r.group))],["Women's 6K","Men's 8K"],'one group per race, women first; races Cincinnati did not run are left out');
+  assert.deepEqual([...new Set(rumble.results.map(r=>r.group))],["Women's 5K","Men's 6K"]);
+  assert.deepEqual(gans.results.slice(0,2),[{group:"Women's 6K",participant:'Cincinnati team',result:'24th · 575 pts'},{group:"Women's 6K",participant:'Eloane Le Corre',result:'88th · 21:09.5'}]);
+  // TFRRS places are overall ("Deana Hudson 192nd"; the recap listed her
+  // team-scoring position, 173); a DNS row is not a result.
+  assert.ok(gans.results.some(r=>r.participant==='Deana Hudson'&&r.result==='192nd · 22:06.4'));
+  assert.ok(!gans.results.some(r=>/Sarah Madix|DNS|0th/.test(r.participant+r.result)));
+  // "All-Ohio Intercollegiate Classic" on the schedule is "All-Ohio
+  // InterCollegiate Challenge" on TFRRS: same date, shared name.
+  assert.equal(allOhio.results_source_url,'https://www.tfrrs.org/results/xc/28392/All-Ohio_InterCollegiate_Challenge');
+  assert.ok(finals.every(e=>e.meet_results_verified&&e.highlights_verified&&e.highlights.length>=3&&e.recap_result_count===e.results.length));
+  assert.ok(finals.every(e=>e.source.url===e.recap_url&&/results from TFRRS/.test(e.source.name)),'the source link stays the official recap');
+  assert.deepEqual(rumble.highlights.slice(0,3),["Cincinnati's women placed 2nd with 43 points.","Cincinnati's men placed 2nd with 40 points.","Christina Allen led Cincinnati in the women's 5K, finishing 4th in 18:33.1."]);
+  // A place TFRRS disagrees with refuses its rows (the schedule's stays).
+  const wrong=worker.parseHtml(fixture('cross-country-schedule.html.gz').replace('15th (M), 24th (W)','14th (M), 24th (W)'),school,'Cross Country',xcUrl,xcNow).find(e=>e.opponent==='Gans Creek Classic');
+  await worker.attachOfficialMeetResults(wrong);
+  assert.equal(wrong.meet_results_verified,false);
+  assert.equal(wrong.headline,"Women's team: 24th / Men's team: 14th");
+  // The expanded view reaches the same rows.
+  const events=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,xcNow);
+  const target=events.find(e=>e.opponent==='Gans Creek Classic');
+  await worker.attachOfficialHighlights(events,fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,xcNow,{},target.id);
+  assert.deepEqual(target.results,gans.results);
+  assert.equal(target.highlight_state,'official_recap_results');
+  // ESPN publishes no cross country scoreboard (K-State has none).
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Cross Country'),[]);
+}
+
 console.log('Cincinnati module checks passed');
