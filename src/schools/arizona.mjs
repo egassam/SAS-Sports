@@ -1,4 +1,4 @@
-import {sidearmScheduleGames,sidearmStartTime} from '../sidearm-schedule-data.mjs';
+import {createSidearmScheduleReader} from '../sidearm-schedule-reader.mjs';
 // Arizona school module. Shared publisher utilities stay in the Worker; this
 // file owns arizonawildcats.com routes, Arizona's program combinations and its
 // schedule reader. Routes started as the exact candidates production used
@@ -76,7 +76,6 @@ export const arizonaSchool={
 };
 
 const HOST='arizonawildcats.com';
-const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Rankings describe the week, not the opponent: "#21 Colorado", "No. 23 BYU".
 // Exhibitions are written "Grand Canyon (Exh.)", "San Francisco (Exhib.)" or
 // "Exhibition Embry-Riddle (Ariz.)"; they read "Grand Canyon (Exhibition)".
@@ -177,25 +176,13 @@ export function parseArizonaGolfRecap(raw,{decodeHtml}){
 
 export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
   const fullNames=new Map();
-  function parseSchedule(raw,school,sport,sourceUrl,now){
-    if(school?.id!=='arizona'||!arizonaSchool.pageDataSports.has(sport))return null;
-    let url;try{url=new URL(sourceUrl);}catch{return null;}
-    if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const today=new Date(now.getTime()-7*3600000).toISOString().slice(0,10);
-    const pageGames=sidearmScheduleGames(raw);
-    if(!pageGames.length)return null;
-    const games=ROUND_SPORTS.has(sport)?mergeRounds(pageGames,today):pageGames;
-    const events=[],played=new Map();
-    // Spring pages keep showing last season until the next is published
-    // ("2025-26 Gymnastics Schedule"). Only the current academic year
-    // (July-June, Arizona time) is current; a page with none is a valid
-    // empty schedule.
-    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
-    let pastSeason=0;
-    for(const game of games){
-      const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
-      if(!day)continue;
-      if(String(game.first_date||game.date).slice(0,10)<seasonStart){pastSeason++;continue;}
+  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
+    id:'arizona',host:HOST,sports:arizonaSchool.pageDataSports,squadSports:arizonaSchool.combinedSports,
+    // Arizona time (no daylight saving).
+    today:now=>new Date(now.getTime()-7*3600000).toISOString().slice(0,10),
+    merge:(sport,games,today)=>ROUND_SPORTS.has(sport)?mergeRounds(games,today):games,
+    seasonDay:game=>String(game.first_date||game.date).slice(0,10),
+    opponent(game,sport){
       let opponent=arizonaOpponent(game.opponent?.title);
       // Baseball and softball fall games ("Fall Schedule", type S) are
       // exhibitions; they are labeled as the other exhibitions are.
@@ -210,55 +197,19 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
       // A multi-day conference tournament names the conference ("Big 12
       // Conference"); its tournament names the event.
       else if(/\bConference$/i.test(opponent)&&game.enddate&&tournament)opponent=tournament;
-      if(!opponent||INTERNAL.test(opponent))continue;
-      // Canceled and postponed games are not on K-State's schedule.
-      if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
-      const result=game.result||{},outcome=String(result.status||'').toUpperCase();
-      const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
-      // Meets (cross country, golf) and duals without a score (tennis
-      // tournaments, beach volleyball events) read as meets; a dual with a
-      // score reads as a game.
-      const meet=eventType(sport)!=='GAME'&&!scored;
-      // Meets publish the team finishes as text: "Men: 1st Women: 12th".
-      const placing=meet?String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim():'';
-      // Arizona time (no daylight saving). A multi-day event is over only
-      // after its last day; NCAA golf rounds publish the last day in the time
-      // field ("05/19/2027").
+      return!opponent||INTERNAL.test(opponent)?'':opponent;
+    },
+    // A multi-day event is over only after its last day; NCAA golf rounds
+    // publish the last day in the time field ("05/19/2027").
+    days(game){
       const endText=String(game.time||'').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/),enddate=game.enddate||(endText?`${endText[3]}-${endText[1]}-${endText[2]}T00:00:00`:'');
-      const firstDay=(game.first_date||game.date).slice(0,10);
-      const lastDay=String(enddate).slice(0,10)>firstDay?String(enddate).slice(0,10):game.date.slice(0,10)>firstDay?game.date.slice(0,10):firstDay;
-      const final=scored||meet&&(Boolean(placing)||lastDay<today);
-      // A game day that has passed with no published score (an exhibition
-      // played as "best two of three") is neither a result nor upcoming.
-      if(!final&&lastDay<today)continue;
-      // H: home, A: away; a neutral site keeps the page's own vs./at.
-      // Meets read "Arizona at Dave Murray Invitational", as K-State's do.
-      // Tennis tournaments (no team score) read as meets do.
-      const relation=eventType(sport)==='MEET'||sport==='Tennis'&&meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
-      // K-State's results show the date only; upcoming games show the
-      // published local time ("TBA" shows the date alone).
-      const start=final?null:sidearmStartTime(game.date,game.time);
-      const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
-        date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
-        schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
-      // Multi-day events (conference tournaments, tennis tournaments) end on
-      // their last day.
-      if(lastDay>game.date.slice(0,10))event.end_time=`${lastDay}T23:59:59Z`;
-      // A multi-day event in progress (a tennis tournament from Sep 28 to Oct
-      // 4) is today's event, not a past one that drops off the schedule.
-      if(!final&&game.date.slice(0,10)<today&&lastDay>=today){
-        event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
-        event.start_time=`${today}T12:00:00.000Z`;
-      }
-      // A doubleheader lists the same opponent twice on one day: Game 1 and
-      // Game 2 stay two games.
-      const pair=`${game.date.slice(0,10)}|${opponent}`,sameDay=games.filter(other=>other.date.slice(0,10)===game.date.slice(0,10)&&arizonaOpponent(other.opponent?.title)===arizonaOpponent(game.opponent?.title)).length;
-      if(sameDay>1){const number=(played.get(pair)||0)+1;played.set(pair,number);event.game_number=number;event.id=`${event.id}-game-${number}`;event.title=`${event.title} (Game ${number})`;}
-      // Separate men's and women's pages can list the same opponent on the
-      // same day; the team keeps their event ids apart.
-      const squad=arizonaSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
-      if(squad)event.id=`${event.id}-${squad}`;
+      const firstDay=(game.first_date||game.date).slice(0,10),listedDay=game.date.slice(0,10);
+      return{firstDay,listedDay,lastDay:String(enddate).slice(0,10)>firstDay?String(enddate).slice(0,10):listedDay>firstDay?listedDay:firstDay};
+    },
+    // Meets publish the team finishes as text ("Men: 1st Women: 12th"); a
+    // published finish is final.
+    final:ctx=>ctx.scored||ctx.meet&&(Boolean(ctx.placing)||ctx.lastDay<ctx.today),
+    result(event,{sport,meet,final,placing}){
       // Golf: "7th; 844 (-20)" or "T4th; 292 (+4)" after the last round.
       const golf=sport==='Golf'?placing.match(/^(T)?(\d{1,3})(?:st|nd|rd|th)?\s*[;,]\s*(\d{3,4})\b/i):null;
       // Gymnastics: "W; 195.425" (a dual) or "3rd; 193.350".
@@ -274,30 +225,23 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
         event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Arizona team',result:places[name]})):[{label:'Result',value:placing||'Completed'}];
         event.result_count=event.results.length;
       }
-      if(final){
-        const recap=result?.recap?.url;
-        if(typeof recap==='string'){
-          // The link must be dated from the event's first day to three days
-          // after its last: track's indoor Big 12 Championships (Feb 27-28)
-          // links the May 14 outdoor championships story.
-          try{
-            const link=new URL(recap,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
-            const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-            if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000)event.recap_url=link.href;
-          }catch{}
-        }
-      }
-      // The opponent's full name, from its logo ("Northern Arizona University
-      // Logo" for "NAU"); stories may use either.
+    },
+    // Track's indoor Big 12 Championships (Feb 27-28) link the May 14 outdoor
+    // championships story: the date window refuses it.
+    recapLinks:(game,result)=>typeof result?.recap?.url==='string'?[result.recap.url]:[],
+    gameNumber(game,games,{opponent,parse}){
+      const sameDay=games.filter(other=>other.date.slice(0,10)===game.date.slice(0,10)&&arizonaOpponent(other.opponent?.title)===arizonaOpponent(game.opponent?.title)).length;
+      if(sameDay<2)return 0;
+      const pair=`${game.date.slice(0,10)}|${opponent}`;parse.played??=new Map();
+      const number=(parse.played.get(pair)||0)+1;parse.played.set(pair,number);return number;
+    },
+    // The opponent's full name, from its logo ("Northern Arizona University
+    // Logo" for "NAU"); stories may use either.
+    afterEvent(event,{game,opponent}){
       const full=String(game.opponent?.image?.title||game.opponent?.image?.alt||'').replace(/\s+Logo$/i,'').trim();
       if(full&&full!==opponent){fullNames.set(event.id,full);if(fullNames.size>2000)fullNames.delete(fullNames.keys().next().value);}
-      events.push(event);
     }
-    if(!events.length&&pastSeason)emptiedBySeason.add(events);
-    return events;
-  }
-  const emptiedBySeason=new WeakSet();
-  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
+  },{makeEvent,eventType});
   // Some recaps never name the sport ("Wildcats Back in the Win Column with
   // Four-Set Victory Over Oregon State"), so the shared matcher refused the
   // game's own recap. The sport-word check is dropped only for the recap the

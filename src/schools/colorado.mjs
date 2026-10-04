@@ -1,4 +1,5 @@
-import {sidearmScheduleGames,sidearmStartTime,sidearmPlacing} from '../sidearm-schedule-data.mjs';
+import {sidearmStartTime,sidearmPlacing} from '../sidearm-schedule-data.mjs';
+import {createSidearmScheduleReader,sidearmRelation} from '../sidearm-schedule-reader.mjs';
 import {findTfrrsMeet,parseTfrrsResults} from '../tfrrs-results.mjs';
 // Colorado school module. Shared publisher utilities stay in the Worker; this
 // file owns cubuffs.com routes, Colorado's program combinations, its verified
@@ -73,7 +74,6 @@ export const coloradoSchool={
 const HOST='cubuffs.com';
 // Internal events: "Black & Gold Spring Game", scrimmages, intrasquads.
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bblack\s*(?:&|and|vs\.?|-)\s*gold\b/i;
-const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Colorado's calendar day (Boulder, America/Denver).
 const coloradoToday=now=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit'}).format(now);
 // Rankings describe the week, not the opponent: "#21 Baylor", "No. 23 BYU",
@@ -192,68 +192,35 @@ function mergeSkiRaces(games){
 // recap link. Production read the rendered cards, which omit the start time,
 // so every upcoming game showed its date alone.
 export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
-  function parseSchedule(raw,school,sport,sourceUrl,now){
-    if(school?.id!=='colorado'||!coloradoSchool.pageDataSports.has(sport))return null;
-    let url;try{url=new URL(sourceUrl);}catch{return null;}
-    if(url.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
-    const pageGames=sidearmScheduleGames(raw);
-    if(!pageGames.length)return null;
+  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
+    id:'colorado',host:HOST,sports:coloradoSchool.pageDataSports,squadSports:coloradoSchool.combinedSports,
+    today:coloradoToday,
     // A "next event" widget repeats a game without its details (type
     // "upcoming").
-    const listed=pageGames.filter(game=>game.type!=='upcoming');
-    const games=sport==='Golf'||sport==='Tennis'?mergeRounds(listed):sport==='Skiing'?mergeSkiRaces(listed):sport==='Track & Field'?mergeMeetDays(listed):listed;
-    const today=coloradoToday(now),events=[];
-    // Pages keep showing last season until the next is published ("2025-26
-    // Track and Field Schedule"). Only the current academic year (July-June,
-    // Boulder time) is current; a page with none is a valid empty schedule.
-    const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
-    let pastSeason=0;
-    for(const game of games){
-      const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
-      if(!day)continue;
-      if(game.date.slice(0,10)<seasonStart){pastSeason++;continue;}
-      let opponent=coloradoOpponent(game.opponent?.title);
-      if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))continue;
+    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    merge:(sport,games)=>sport==='Golf'||sport==='Tennis'?mergeRounds(games):sport==='Skiing'?mergeSkiRaces(games):sport==='Track & Field'?mergeMeetDays(games):games,
+    opponent(game){
+      const opponent=coloradoOpponent(game.opponent?.title);
+      if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))return'';
       // Tournament pages also list the other teams' matches ("Denver vs.
       // Central Arkansas" at the Buffs Classic); they are not Colorado's.
-      if(/\S\s+vs\.?\s+\S/i.test(opponent))continue;
-      // Canceled and postponed games are not on K-State's schedule.
-      if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
+      if(/\S\s+vs\.?\s+\S/i.test(opponent))return'';
       // An exhibition (page-data type "S" against another school) reads as
       // K-State labels exhibitions: "Utah (Exhibition)".
-      if(game.type==='S')opponent=`${opponent} (Exhibition)`;
-      const result=game.result||{},outcome=String(result.status||'').toUpperCase();
-      const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
-      const scored=['W','L','T'].includes(outcome)&&/^\d+$/.test(team)&&/^\d+$/.test(other);
-      // Meets (cross country, tennis tournaments) are final once their last
-      // day has passed; team places are published as text ("M-1st/W-1st",
-      // "M-3rd/W-NTS"). In dual sports (tennis) only tournaments read as
-      // meets; a dual match is a game.
-      const meet=!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&Boolean(String(game.tournament?.title||'').trim()));
-      // A game day that has passed with no published score is neither a
-      // result nor upcoming; yesterday's stays (a late game in another time
-      // zone ends after midnight in Boulder and its score is posted after).
-      // A multi-day event (the Big 12 Championship, Mar 9-13) counts until its
-      // last day.
-      const firstDay=game.date.slice(0,10),lastDay=String(game.enddate||'').slice(0,10)>firstDay?String(game.enddate).slice(0,10):firstDay;
-      const final=scored||meet&&lastDay<today;
-      if(!final&&Date.parse(lastDay)<Date.parse(today)-86400000)continue;
-      // H: home, A: away; a neutral site keeps the page's own vs./at. Meets
-      // read "Colorado at Big 12 Championships", as K-State's do.
-      const relation=meet?'at':game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';
-      // K-State's results show the date only; upcoming games show the
-      // published local time ("TBA" shows the date alone).
-      const start=final?null:coloradoStartTime(game.date,game.time);
-      const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,
-        date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
-        schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
-      // Multi-day events end on their last day; while one is in progress it
-      // is today's event.
-      if(lastDay>firstDay)event.end_time=`${lastDay}T23:59:59Z`;
-      if(!final&&firstDay<today&&lastDay>=today){
-        event.status='Today';event.priority_bucket='today';event.recency_label='In progress';
-        event.start_time=`${today}T12:00:00.000Z`;
-      }
+      return game.type==='S'?`${opponent} (Exhibition)`:opponent;
+    },
+    // Meets (cross country, tennis tournaments) are final once their last day
+    // has passed; team places are published as text ("M-1st/W-1st",
+    // "M-3rd/W-NTS"). In dual sports (tennis) only tournaments read as meets;
+    // a dual match is a game.
+    meet:(sport,game,scored)=>!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&Boolean(String(game.tournament?.title||'').trim())),
+    // Yesterday's game without a score stays: a late game in another time
+    // zone ends after midnight in Boulder and its score is posted after.
+    keep:ctx=>Date.parse(ctx.lastDay)>=Date.parse(ctx.today)-86400000,
+    // Meets read "Colorado at Big 12 Championships", as K-State's do.
+    relation:(sport,game,meet)=>meet?'at':sidearmRelation(game),
+    startTime:coloradoStartTime,
+    result(event,{sport,game,result,meet,final}){
       if(sport==='Skiing'&&final){
         // The final place only on a carnival's last run; an earlier run shows
         // the published standing after it, labeled as such. "NTS" (a
@@ -278,35 +245,13 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
         event.results=teams.length?teams.map(name=>({group:`${name}'s Team`,participant:'Colorado team',result:places[name]})):[{label:'Result',value:'Completed'}];
         event.result_count=event.results.length;
       }
-      if(final){
-        // The game's own /news/ recap, dated from the first day to three days
-        // after the last (never the game-book PDF or the notes page).
-        try{
-          const link=new URL(result.recap?.url,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
-          const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-          if(link.hostname===HOST&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000){
-            event.recap_url=link.href;
-            // A golf tournament's final story, bound to its last round on the
-            // schedule; it may name the event differently ("Red Sky" for the
-            // "Golfweek Red Sky Challenge").
-            if(sport==='Golf')event.final_story=link.href;
-          }
-        }catch{}
-      }
-      // As K-State's, a past tennis tournament (no team result) is listed only
-      // with Colorado's story about it.
-      if(sport==='Tennis'&&meet&&final&&!event.recap_url)continue;
-      // Separate men's and women's pages can list the same opponent on the
-      // same day; the team keeps their event ids apart.
-      const squad=coloradoSchool.combinedSports.has(sport)?(url.pathname.match(/^\/sports\/(mens|womens)-/)||[])[1]:null;
-      if(squad)event.id=`${event.id}-${squad}`;
-      events.push(event);
-    }
-    if(!events.length&&pastSeason)emptiedBySeason.add(events);
-    return events;
-  }
-  const emptiedBySeason=new WeakSet();
-  const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
+    },
+    // A golf tournament's final story, bound to its last round on the
+    // schedule; it may name the event differently ("Red Sky" for the
+    // "Golfweek Red Sky Challenge").
+    onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
+    tennisNeedsStory:true
+  },{makeEvent,eventType});
   // The card's own recap link is already bound to its game: it is checked
   // for opponent and date only (Colorado's stories need not name the sport).
   // Any other candidate must also name the opponent in its headline: a
