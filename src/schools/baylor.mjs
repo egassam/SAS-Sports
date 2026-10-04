@@ -1,4 +1,5 @@
 import {sidearmScheduleGames,sidearmStartTime} from '../sidearm-schedule-data.mjs';
+import {findTfrrsMeet,parseTfrrsResults} from '../tfrrs-results.mjs';
 // Baylor school module. Shared publisher utilities stay in the Worker; this
 // file owns baylorbears.com routes, Baylor's program combinations and its
 // schedule reader. Routes started as the exact candidates production used
@@ -110,55 +111,10 @@ export function baylorStoryHeadline(raw){
 // has none; the "Results" links on the schedule go to Flash Results and
 // XpressTiming pages.
 export const BAYLOR_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/TX_college_f_Baylor.html',Men:'https://www.tfrrs.org/teams/xc/TX_college_m_Baylor.html'};
-const tfrrsText=(decodeHtml,value)=>decodeHtml(String(value).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
-const tfrrsCells=(decodeHtml,tr)=>[...tr.matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>tfrrsText(decodeHtml,cell[1]));
-// The team page's row for this meet: same date, and every long word of the
-// card's name ("Southern Showcase" in "Southern Showcase (University/College)").
-export function findBaylorTfrrsMeet(raw,{decodeHtml,date,name}){
-  const words=value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/^the\s+/,'').replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4);
-  const wanted=words(name);
-  for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
-    const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
-    if(!link)continue;
-    const [day,meet]=tfrrsCells(decodeHtml,tr[0]);
-    if(Date.parse(`${day} 12:00 UTC`)!==Date.parse(`${date} 12:00 UTC`))continue;
-    const have=new Set(words(meet));
-    if(wanted.length&&wanted.every(word=>have.has(word)))return new URL(link[1],'https://www.tfrrs.org').href;
-  }
-  return null;
-}
-// Baylor's races at one meet, women first: the team result (when Baylor
-// scored as a team) and every Baylor runner. Rows are Baylor's by the TEAM
-// column only (App State's Baylor Wolfe ran the Southern Showcase).
-export function parseBaylorTfrrsResults(raw,{decodeHtml,ordinal}){
-  const races=new Map();
-  for(const section of String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1)){
-    const title=tfrrsText(decodeHtml,(section.match(/<h3\b[^>]*>([\s\S]*?)<span\b/i)||section.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)||[])[1]||'');
-    const race=title.match(/^(Women|Men)\b(.*?)\b(Team|Individual) Results\s*\(([^)]+)\)/i);
-    if(!race)continue;
-    const team=race[1][0].toUpperCase()+race[1].slice(1).toLowerCase();
-    const distance=race[4].trim().replace(/^(\d+(?:\.\d+)?)\s*k$/i,'$1K');
-    // A second race for the same team at one meet ("... CC Open") is labeled.
-    const open=/\bOpen\b/i.test(race[2]);
-    const group=`${team}'s ${distance}${open?' Open':''}`;
-    const table=(section.match(/<table\b[\s\S]*?<\/table>/i)||[])[0]||'';
-    const rows=[...table.matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>tfrrsCells(decodeHtml,tr[0]));
-    const head=(rows[0]||[]).map(value=>value.toUpperCase());
-    const at=name=>head.indexOf(name);
-    const entry=races.get(group)||{team,group,result:null,runners:[]};
-    if(/team/i.test(race[3])&&at('SCORE')>=0){
-      const row=rows.slice(1).find(cells=>cells[at('TEAM')]==='Baylor');
-      if(row&&/^\d+$/.test(row[at('PL')])&&/^\d+$/.test(row[at('SCORE')]))entry.result={place:Number(row[at('PL')]),score:row[at('SCORE')]};
-    }else if(at('NAME')>=0&&at('TIME')>=0){
-      entry.runners=rows.slice(1).filter(cells=>cells[at('TEAM')]==='Baylor').map(cells=>{
-        const place=cells[at('PL')],time=cells[at('TIME')];
-        return{participant:cells[at('NAME')],place,result:/^\d+$/.test(place)?`${ordinal(place)} \u00b7 ${time}`:`${place} \u00b7 ${time}`};
-      }).filter(row=>row.participant&&(/\d:\d{2}/.test(row.result)||/^(?:DNF|DNS)\b/i.test(row.result)));
-    }
-    races.set(group,entry);
-  }
-  return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
-}
+// TFRRS meet finder and race reader are shared (`src/tfrrs-results.mjs`);
+// Baylor rows are Baylor's by the TFRRS TEAM column.
+export const findBaylorTfrrsMeet=(raw,options)=>findTfrrsMeet(raw,{...options,match:'all'});
+export const parseBaylorTfrrsResults=(raw,options)=>parseTfrrsResults(raw,{...options,team:'Baylor'});
 
 // Golf publishes one entry per round ("Schooner Fall Classic" on Sep 19, 20
 // and 21). K-State shows one event per tournament: consecutive days of the
