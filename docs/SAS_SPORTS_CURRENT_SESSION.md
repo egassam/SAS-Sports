@@ -46,6 +46,10 @@ Iowa State took **29 minutes** from start to production verified for 12 sports (
 
 User: "I keep seeing only two athletes with Instagram accounts in different sports. I want three!" Rule recorded in `AGENTS.md` (item 5a). The app no longer stops at two roster-card links: it reads up to 24 athletes' profile pages for a third (`ATHLETE_PROFILE_BUDGET`, `src/index.js`; PR #232). Preview sweep (`4.54.1-three-athletes`, 109 certified school-sports) still short, because the official sites publish no further links: Alabama Soccer 0; Colorado Golf 0, Skiing 2; Iowa State Cross Country 2, Swimming & Diving 0, Tennis 0; Oklahoma State Cross Country 2, Equestrian 0, Tennis 1, Track & Field 0; Utah Volleyball 1. The remaining verified source is athletes tagged by the official team Instagram account (`verifiedInstagrams` in each module), and Instagram requires a login from the sandbox, so those need the user (handles from the team accounts) or a decision.
 
+## Season records (user request, October 7)
+
+User: "I think we should also put the sports overall win/loss record for every sport." Each sport's header shows its overall record this season (`Record 9-6`; `Men's 5-2-3 · Women's 6-3-1` for a combined sport), counted by the Worker (`seasonRecords` in `src/index.js`, field `records` of `/live/feed/grouped`) from the finals' W/L/T results. Exhibitions, scrimmages, summer tours (basketball outside Nov-Apr) and fall ball (baseball, softball outside Feb-Jun) are left out. Meets and tournaments (places) have no record. Checked against the official pages' own published records: Iowa State football 3-2, volleyball 9-6, soccer 4-5-3, swimming 0-1 (in the test); K-State volleyball 9-3 and soccer 5-3-4, Colorado soccer 8-3-1, Baylor soccer 10-1-1, Houston volleyball 10-5, Arizona football 4-1, Utah volleyball 11-4 (preview, all equal). Conference records are published too (SIDEARM page data) but not shown; ask the user before adding them.
+
 ## Working notes
 
 - **User preference:** watch for the user's messages while working; stop or change course at once when they write.
