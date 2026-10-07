@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-athletes`.
+Last updated: October 7, 2026, America/Chicago. Production `4.53.0-houston`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-ath
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.52.10-colorado-athletes`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.53.0-houston`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -29,20 +29,17 @@ Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-ath
 | Baylor | `baylor.mjs` | Complete | Track & Field, Acrobatics & Tumbling fill when published |
 | Cincinnati | `cincinnati.mjs` | Complete | Tennis was added to the catalog (#212): user may want it reverted |
 | Colorado | `colorado.mjs` | Complete | Track & Field fills when published; first live cards not yet observed |
+| Houston | `houston.mjs` | Complete (first school on the shared kit) | Track & Field fills when published; Rice Invite (tennis) has no story; first live cards not yet observed |
 
-**Remaining unconverted Big 12 schools:** Houston, Iowa State, TCU, Texas Tech, West Virginia, all SIDEARM sites (`__NUXT_DATA__` on their football pages; Houston, Iowa State, TCU and Texas Tech return 403 to the sandbox and come through the private source route). Start the one the user names. Houston's football page still goes through the shared `compactScheduleHtml`; check whether its module needs the whole page, as Colorado's did.
+**Remaining unconverted Big 12 schools:** Iowa State, TCU, Texas Tech, West Virginia, all SIDEARM sites (`__NUXT_DATA__`; Iowa State, TCU and Texas Tech return 403 to the sandbox and come through the private source route, which the fixture script uses on its own). Start the one the user names. Iowa State was tried in a scratch copy with the new scaffold: Football and Volleyball read in K-State's format with no setting changed; its men's golf schedule is `/sports/golf/` (`/sports/mens-golf/` is the empty template) and its Big 12 Football Championship (type P, no opponent) reads `vs Big 12 Football Championship` (fix in its session).
 
-**PR #227 (registry + shared SIDEARM reader) is merged** (`1e6ba9d`, user: "Merge it") and verified in production; the next school starts from `main` with `npm run scaffold-school`.
+## How to convert a school (fast path, October 7)
 
-## How to convert a school (fast path, October 4)
-
-1. **Setup in one command:** `npm run scaffold-school -- --school=<id>` (dry run), then add `--write`. It writes `src/schools/<id>.mjs` with today's exact routes, combined sports and Instagram tags (route parity, checked by the script) and the shared SIDEARM reader with no sports enabled, moves those lines out of `src/index.js`, wires the module in (import, handlers, one `SCHOOL_MODULES` entry; #227), and creates `tests/<id>-module.mjs` in both suites. Test harnesses pick up new modules from `src/index.js` automatically (`tests/school-module-deps.mjs`). Tried on all five remaining schools in scratch copies: route parity on every sport; full release suite passed for Houston and Texas Tech. Texas Tech keeps its multi-line saved results in `src/index.js` (the script lists them).
-2. Save the official pages as fixtures (`tests/fixtures/<id>-module/`). Sites that return 403 to the sandbox: `NODE_USE_ENV_PROXY=1 node scripts/fetch-official.mjs <url> tests/fixtures/<id>-module/<name>.html.gz --gzip`. **SIDEARM schools (all five remaining):** turn a sport on by adding it to the module's `pageDataSports`; the shared reader (`src/sidearm-schedule-reader.mjs`, #227) does the rest. Change a reader setting only where the site differs (opponent names, golf/meet results, merges, doubleheaders), copying from Colorado, Baylor or Arizona. Scratch test: Houston Football with no settings read the real page in K-State's format (5 finals with scores and recaps, 7 upcoming, published times). Other hooks (cross country, recap matcher, archive stories) go in the school's `SCHOOL_MODULES` entry; TFRRS: `src/tfrrs-results.mjs`. WMT sites (Cincinnati, UCF) have their own readers.
-3. Build and test **one sport at a time locally** (`node tests/<school>-module.mjs`, with mutations that fail it).
-4. **Publish in batches (user, October 4: "1 is a yes"):** a PR may carry several finished sports of the same school. Suggested: (a) setup + Football + the other live-score sports, (b) the remaining sports, (c) athlete certification + docs. Every sport in the PR gets the full gate.
-5. Gate in one command per PR: `npm run verify:preview -- --branch=<branch> --school=<id> --sports="A,B,C"` (status, XC 18/20 and 26/21, 36 forced refreshes per sport, every final in K-State's form, every expanded view). Then look at each sport on the preview page. After merging: `npm run verify:prod -- --school=<id> --sports=all --version=<v>`.
-6. Release suite: `npm run test:release` alone (since October 4 it runs everything `npm test` runs, plus `check` and isolation; about 2.5 minutes). While working, run only the school's module test.
-
+Houston took about 2 h 15 min from start to production for 11 sports (Colorado: about 2.5 h for 9). Most of the work is now in scripts:
+1. **Setup:** `npm run scaffold-school -- --school=<id> --write`. Writes the module with **Houston's settings and every hook wired** (shared kit `src/sidearm-school-kit.mjs`: published times incl. `Noon`, golf rounds and match play, meet days, bracket rounds, team places with points, recap matcher, archive stories, TFRRS cross country, doubleheaders), each hook applying only to sports in `pageDataSports`, so output is unchanged until a sport is turned on (route parity checked). Live scoreboards come as ready lines in a comment. The test file comes with Houston's helpers (`parse`, `line`, `ownRecapsOnly`, `live`).
+2. **Fixtures in one command:** `NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=<id> [--tfrrs-f=<url> --tfrrs-m=<url>]` saves every schedule candidate, every current-season final's story, `/archives` where a scored final has no story, ESPN payloads and TFRRS pages, and prints which routes are SIDEARM's empty template or the homepage (drop them). About 20 s per three sports.
+3. **Read it:** add the sports to `pageDataSports`, then `node scripts/survey-school.mjs --school=<id> [--sport=X] [--date=YYYY-MM-DD] [--raw]` prints each event in K-State's wording (`--raw` prints the page data). Fix only what differs; copy the test block from `tests/houston-module.mjs`; mutate each new rule.
+4. **Publish** (user, October 4: batched): one PR can carry all sports of the school plus athletes (`tests/certified-schools.json`, `node tests/validate-schools.mjs <id> --athletes-only --base=<preview> --sports=...`) and docs. Gate: `npm run test:release` (about 3.5 min), `npm run verify:preview -- --branch=<branch> --school=<id> --sports="..."` (about 6.5 min for 11 sports; run it in the background), the page by eye (Playwright screenshot of each sport), then `verify:prod`.
 ## Working notes
 
 - **User preference:** watch for the user's messages while working; stop or change course at once when they write.
@@ -53,7 +50,7 @@ Last updated: October 4, 2026, America/Chicago. Production `4.52.10-colorado-ath
 - **Paused by the user:** global source cache via Durable Objects (needs Cloudflare "Worker Previews" first); scheduled feed refresh (#87/#88, reverted). Plans are in the history file.
 - **Later, not now:** when high school or pro teams are added, order the level switch High School, College, Pro (`LEVELS` in `public/index.html`).
 - **Waiting on TFRRS:** Baylor's Chile Pepper Festival (Oct 3) shows "Completed" without a result line or story until TFRRS publishes it; recheck with `npm run verify:prod -- --school=baylor --sports="Cross Country"`.
-- **Live checks still to observe:** Colorado volleyball at Baylor (Oct 4) and soccer vs Baylor (Oct 8); Cincinnati volleyball at UCF (Oct 9) and soccer vs Utah (Oct 8); a basketball game going live (season from Oct 16).
+- **Live checks still to observe:** Colorado soccer vs Baylor (Oct 8); Cincinnati volleyball at UCF (Oct 9) and soccer vs Utah (Oct 8); Houston volleyball vs BYU (Oct 8) and football at Kansas State (Oct 10); a basketball game going live (season from Oct 15).
 
 ## Session log
 

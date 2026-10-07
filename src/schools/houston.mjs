@@ -1,5 +1,5 @@
 import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
-import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
+import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // Houston school module. Shared publisher utilities stay in the Worker;
 // this file owns uhcougars.com routes, Houston's program combinations, its
 // verified Instagram tags and its schedule reader. Routes start as the exact
@@ -127,11 +127,13 @@ export function createHoustonHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(!final||!meet)return;
       const text=String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim();
       if(sport==='Golf'){
-        // The last round's place and field ("t-10th of 12" -> "T10th of
-        // 12"); match play publishes the matches ("defeated New Mexico
-        // State, 3-2; lost to New Mexico, 3.5-1.5"); "No Team Score -
-        // Individuals Only" has no team place.
-        const value=golfPlacing(text)||(/^(?:defeated|lost|tied|halved|leads|trails)\b/i.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // Match play publishes the matches ("defeated New Mexico State, 3-2;
+        // lost to New Mexico, 3.5-1.5"): "Match play: 1-1", one row each.
+        const matchPlay=golfMatchPlay(text);
+        if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
+        // Otherwise the last round's place and field ("t-10th of 12" ->
+        // "T10th of 12"); "No Team Score - Individuals Only" has no team place.
+        const value=golfPlacing(text)||(/no team score/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }

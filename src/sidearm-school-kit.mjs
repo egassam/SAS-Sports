@@ -11,6 +11,7 @@
 //   meetTeamPlaces(text)              "M- 2nd, W- 2nd", "M- T-5th (57 points)" -> {Women,Men}
 //   writeMeetPlaces(event,{...})      the K-State meet headline and rows from those places
 //   golfPlacing(text)                 "t-10th of 12" -> "T10th of 12"
+//   golfMatchPlay(text)               "defeated X, 3-2; lost to Y, 3.5-1.5" -> "Match play: 1-1" and one row per match
 //   doubleheaderNumber()              gameNumber setting: Game 1 / Game 2
 //   createRecapMatcher({...})         own recap: opponent and date; others must name the opponent in the headline
 //   createArchiveStory({...})         a final with no linked story takes one from /sports/<slug>/archives
@@ -114,6 +115,21 @@ export function writeMeetPlaces(event,{text,schoolName,ordinal}){
 export function golfPlacing(text){
   const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i);
   return m?`${m[1]?'T':''}${m[2]}${m[3].toLowerCase()} of ${m[4]}`:null;
+}
+
+// Golf match play, as the card publishes it: "defeated New Mexico State, 3-2;
+// lost to New Mexico, 3.5-1.5" -> headline "Match play: 1-1", one row per
+// match ("vs New Mexico" / "L, 1.5-3.5", the school's points first). Null
+// when the text is not a list of finished matches.
+export function golfMatchPlay(text){
+  const matches=String(text||'').split(/\s*;\s*/).filter(Boolean).map(part=>part.match(/^(defeated|lost to|tied|halved with)\s+(.+?),\s*(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$/i));
+  if(!matches.length||matches.some(m=>!m))return null;
+  const rows=matches.map(([,verb,opponent,a,b])=>{
+    const outcome=/^defeated/i.test(verb)?'W':/^lost/i.test(verb)?'L':'T',[mine,theirs]=outcome==='L'?[Math.min(a,b),Math.max(a,b)]:[Math.max(a,b),Math.min(a,b)];
+    return{label:`vs ${opponent}`,value:`${outcome}, ${mine}-${theirs}`,outcome};
+  });
+  const count=letter=>rows.filter(row=>row.outcome===letter).length,ties=count('T');
+  return{headline:`Match play: ${count('W')}-${count('L')}${ties?`-${ties}`:''}`,results:rows.map(({label,value})=>({label,value}))};
 }
 
 // gameNumber setting: the same opponent twice on one day is Game 1 and Game 2.

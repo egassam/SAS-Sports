@@ -58,7 +58,17 @@ const routeMap=kind=>sports.filter(sport=>today[sport][kind].length).map(sport=>
   return`    ${quote(`${id}|${sport}`)}:${list.length===1?quote(list[0]):`[${list.map(quote).join(',')}]`}`;
 }).join(',\n');
 
-const moduleText=`import {createSidearmScheduleReader,sidearmToday,withoutRanking} from '../sidearm-schedule-reader.mjs';
+// ESPN scoreboards for the sponsored live sports (as Houston's).
+const LIVE={
+  Volleyball:[`{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}`],
+  Soccer:[`{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}`],
+  Basketball:[`{path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"}`,`{path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}`],
+  Baseball:[`{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}`],
+  Softball:[`{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}`]
+};
+const liveLines=Object.entries(LIVE).filter(([sport])=>sports.includes(sport)).map(([sport,list])=>`    ${quote(sport)}:[${list.join(',')}]`).join(',\n');
+const moduleText=`import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
+import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // ${school.name} school module. Shared publisher utilities stay in the Worker;
 // this file owns ${host} routes, ${school.name}'s program combinations, its
 // verified Instagram tags and its schedule reader. Routes start as the exact
@@ -70,9 +80,11 @@ export const ${schoolVar}={
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
   pageDataSports:new Set([]),
-  // Live game state from an independent scoreboard, per sport. Football uses
-  // the shared default (ESPN's FBS group).
-  liveScoreboards:{},
+  // Live game state from an independent scoreboard, per sport; the official
+  // schedule stays the results source of record. Football uses the shared
+  // default (ESPN's FBS group).
+  // Turn a sport's scoreboard on with the sport (lines ready below).
+  liveScoreboards:{${liveLines?'\n'+liveLines.replace(/^    /gm,'    // ')+'\n  ':''}},
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set([${combined.map(quote).join(',')}]),
@@ -85,29 +97,10 @@ ${routeMap('roster')}
   }
 };
 
-const HOST=${quote(pageHost)};
-// ${school.name}'s calendar day.
-const ${camel}Today=sidearmToday(${quote(timeZone)});
-// ${host} is a SIDEARM (Nuxt) site: the shared reader turns its schedule
-// page data into events in K-State's results format. Settings start at the
-// shared defaults; change one only for something this site does differently,
-// with a fixture test (see the Colorado, Baylor and Arizona modules).
-export function ${factory}({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
-  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
-    id:${quote(id)},host:HOST,sports:${schoolVar}.pageDataSports,squadSports:${schoolVar}.combinedSports,
-    today:${camel}Today,
-    // The opponent as K-State shows it: no ranking; an unknown opponent
-    // ("TBA") is left out.
-    opponent(game){
-      const opponent=withoutRanking(game.opponent?.title);
-      return!opponent||/^TB[AD]$/i.test(opponent)?'':opponent;
-    },
-    // As K-State's, a past tennis tournament is listed only with a story.
-    tennisNeedsStory:true
-  },{makeEvent,eventType});
-  return{parseSchedule,isEmptySchedule};
-}
-`;
+`+readFileSync(new URL('templates/sidearm-handlers.mjs.txt',import.meta.url),'utf8')
+  .replace(/__CONST__/g,camel.replace(/[A-Z]/g,c=>'_'+c).toUpperCase()).replace(/__CAMEL__/g,camel).replace(/__FACTORY__/g,factory).replace(/__SCHOOLVAR__/g,schoolVar)
+  .replace(/__ID__/g,quote(id)).replace(/__HOST__/g,quote(pageHost)).replace(/__HOSTNAME__/g,host).replace(/__TIMEZONE__/g,quote(timeZone)).replace(/__NAMEQ__/g,quote(school.name)).replace(/__NAME__/g,school.name);
+
 
 // src/index.js: move the school's entries out, wire the module in.
 let next=index;
@@ -132,7 +125,7 @@ next=insertAfterLast(next,/^const \w+Handlers=create\w+Handlers\([^\n]*\);$/gm,`
 // One SCHOOL_MODULES entry: its routes, tags and combined sports come from the
 // module's school data; the schedule reader and its empty-schedule check are
 // the hooks to start with.
-next=insertAfterLast(next,/^  \{school:\w+School[\s\S]*?\}(?=\n\];\nconst schoolModule=)/gm,`  ,{school:${schoolVar},parseSchedule:(...args)=>${handlersVar}.parseSchedule(...args),isEmptySchedule:(events,parsed)=>${handlersVar}.isEmptySchedule(parsed)}`,'the SCHOOL_MODULES entry');
+next=insertAfterLast(next,/^  \{school:\w+School[\s\S]*?\}(?=\n\];\nconst schoolModule=)/gm,`  ,{school:${schoolVar},parseSchedule:(...args)=>${handlersVar}.parseSchedule(...args),isEmptySchedule:(events,parsed)=>${handlersVar}.isEmptySchedule(parsed),matchesRecap:(...args)=>${handlersVar}.matchesRecap(...args),crossCountry:{matches:event=>${handlersVar}.isCrossCountry(event),attach:event=>${handlersVar}.attachMeetResults(event)},\n    // Finals the schedule links no story for take theirs from the sport's\n    // archive.\n    beforeHighlights:async event=>{if(${handlersVar}.isFinalWithoutStory(event))await ${handlersVar}.attachArchiveStory(event);},\n    feed:async events=>{await Promise.all(events.filter(${handlersVar}.isFinalWithoutStory).map(event=>${handlersVar}.attachArchiveStory(event)));return events;}}`,'the SCHOOL_MODULES entry');
 
 const testText=`import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -154,7 +147,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,${handlersVar},attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/${id}-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit ${host} routes, exactly
@@ -177,7 +170,31 @@ for(const sport of sports){
 for(const sport of sports)assert.ok(!read('../src/index.js').includes(${JSON.stringify("'"+id+'|')}+sport+"':"),\`\${sport} routes must live in the ${school.name} module, not shared code\`);
 
 // Sports converted to K-State's format follow, one block per sport, each with
-// fixtures from the official pages and a mutation that fails it.
+// fixtures from the official pages (scripts/fetch-school-fixtures.mjs) and a
+// mutation that fails it; read each sport first with
+// scripts/survey-school.mjs. The helpers below are Houston's
+// (tests/houston-module.mjs shows every sport's block).
+const now=new Date(${JSON.stringify(new Date().toISOString().slice(0,10)+'T15:00:00Z')});
+const page=slug=>\`https://${pageHost}/sports/\${slug}/schedule\`;
+const parse=(sport,slug,at=now)=>worker.labelTeamEvents(worker.parseHtml(fixture(\`\${slug}-schedule.html.gz\`),school,sport,page(slug),at),school,sport,page(slug));
+const line=e=>\`\${e.status} \${e.display_time} \${e.title} | \${e.headline||''}\`;
+const recapFile=url=>{const [,y,m,d,slug]=url.match(/\\/news\\/(\\d+)\\/(\\d+)\\/(\\d+)\\/([A-Za-z0-9-]+)/);return\`recap-\${y}-\${m}-\${d}-\${slug.slice(0,40)}.html.gz\`;};
+// Each final matches only its own recap (a shared story matches both of its games).
+function ownRecapsOnly(events,label){
+  const finals=events.filter(e=>e.recap_url),raws=finals.map(e=>fixture(recapFile(e.recap_url)));
+  finals.forEach(event=>finals.forEach((other,j)=>assert.equal(worker.${handlersVar}.matchesRecap(raws[j],event,other.recap_url),other.recap_url===event.recap_url,\`\${label}: \${event.display_time} \${event.opponent} against \${other.display_time} \${other.opponent}'s recap\`)));
+  return finals.length;
+}
+// An ESPN payload joins the official card for this school only.
+function live(sport,payloadFile,events,at,expected){
+  const payload=JSON.parse(fixture(payloadFile)),scored=[];
+  for(const provider of worker.liveScoreboardProviders(school,sport))scored.push(...worker.parseScoreboardPayload(payload,school,sport,provider,\`https://site.api.espn.com/apis/site/v2/sports/\${provider.path}/scoreboard\`,at));
+  assert.deepEqual(scored.map(e=>[e.title,e.status,e.headline]),expected);
+  const reconciled=worker.reconcileScoreboardEvents(events,scored);
+  assert.equal(reconciled.length,events.length,\`\${sport}: the scoreboard joins the official card; no second card\`);
+}
+void [parse,line,ownRecapsOnly,live];
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('${school.name} module checks passed');
 `;
@@ -206,5 +223,5 @@ const after=routes(evaluate(next));
 const diff=sports.filter(sport=>JSON.stringify(after[sport])!==JSON.stringify(today[sport]));
 if(diff.length){console.error(`Route parity FAILED for ${diff.join(', ')}; check src/index.js and the module`);process.exit(1)}
 console.log(`\nWrote src/schools/${id}.mjs, tests/${id}-module.mjs; wired src/index.js and package.json. Route parity: ${sports.length}/${sports.length} sports identical.`);
-console.log(`Next: node tests/${id}-module.mjs, then npm run test:release.`);
-console.log(`Hooks for the sports that need them go in the school's SCHOOL_MODULES entry in src/index.js (listed above it): crossCountry (TFRRS: src/tfrrs-results.mjs), matchesRecap, isEmptySchedule, beforeHighlights/feed (archive stories), results; scoreboards go in the module's liveScoreboards.`);
+console.log(`Next: NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=${id}; node scripts/survey-school.mjs --school=${id} --sport=<Sport>; add the sport to pageDataSports with its test block in tests/${id}-module.mjs; npm run test:release.`);
+console.log(`The module starts with Houston's settings and every hook wired (recap matcher, archive stories, TFRRS cross country), each applying only to the sports in pageDataSports; uncomment a sport's live scoreboard when it is turned on, and set the TFRRS team pages for cross country.`);
