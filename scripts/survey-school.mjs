@@ -27,8 +27,23 @@ const root=new URL('../',import.meta.url),read=path=>readFileSync(new URL(path,r
 const schools=JSON.parse(read('src/schools.json')),sponsored=JSON.parse(read('src/sponsored-sports.json'));
 const school=schools.find(s=>s.id===id);if(!school){console.error(`unknown school ${id}`);process.exit(2)}
 const source=read('src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:async()=>{throw Error('no network')}};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,parseHtml,labelTeamEvents};')(...Object.values(deps));
+// Saved pages only: a sport's /archives, its stories and TFRRS pages (named as
+// scripts/fetch-school-fixtures.mjs saves them); anything else is offline.
+const fixtureFile=url=>{
+  const {hostname,pathname}=new URL(url),news=pathname.match(/^\/news\/(\d+)\/(\d+)\/(\d+)\/([^/?#]+)/),archive=pathname.match(/^\/sports\/([^/]+)\/archives/),tfrrs=pathname.match(/^\/results\/xc\/(\d+)\//),team=pathname.match(/^\/teams\/xc\/[A-Z]{2}_college_([fm])_/);
+  if(news)return[`story-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`];
+  if(archive)return[`${archive[1]}-archives.html.gz`];
+  if(hostname.endsWith('tfrrs.org')&&tfrrs)return[`tfrrs-${tfrrs[1]}.html.gz`];
+  if(hostname.endsWith('tfrrs.org')&&team)return[`tfrrs-team-${team[1]}.html.gz`];
+  return[];
+};
+const fixtureFetch=async url=>{
+  for(const name of fixtureFile(String(url))){const file=new URL(`tests/fixtures/${id}-module/${name}`,root);if(existsSync(file)){const body=gunzipSync(readFileSync(file)).toString('utf8');return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};}}
+  throw Error('no network');
+};
+const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:fixtureFetch};
+const handlerName=`${id.replace(/-(\w)/g,(all,c)=>c.toUpperCase())}Handlers`;
+const worker=Function(...Object.keys(deps),source+`;return {candidateUrls,parseHtml,labelTeamEvents,attachOfficialMeetResults,handlers:typeof ${handlerName}==='undefined'?null:${handlerName}};`)(...Object.values(deps));
 const now=new Date(value('date')?`${value('date')}T15:00:00Z`:Date.now());
 const pad=(text,width)=>String(text).padEnd(width);
 // The gate's rule: a final needs a result line other than Completed, or a story.
@@ -47,9 +62,15 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
       continue;
     }
     const events=worker.labelTeamEvents(worker.parseHtml(raw,school,sport,url,now),school,sport,url);
+    // As the Worker does after parsing: a final without a story takes one from
+    // the saved archive, and cross country takes its TFRRS results.
+    for(const e of events.filter(e=>e.status==='Final')){
+      try{if(worker.handlers?.isFinalWithoutStory?.(e))await worker.handlers.attachArchiveStory(e);}catch{}
+      try{await worker.attachOfficialMeetResults(e);}catch{}
+    }
     if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
-    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${gateMiss(e)?'  << GATE: final without a result line or story (look in /archives: fetch-school-fixtures saves it only for scored finals)':''}`);
+    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':''}`);
     flagged+=events.filter(gateMiss).length;
   }
 }

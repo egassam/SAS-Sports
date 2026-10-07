@@ -288,7 +288,7 @@ assert.deepEqual(trackInSeason.filter(e=>/team:/.test(e.headline)).map(e=>`${e.d
 // Volleyball live score: the same ESPN scoreboard as K-State. Fixture: the
 // BYU at Kansas State event as ESPN served it on Oct 1 (1st set, KSU 2-1).
 assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>p.path),['volleyball/womens-college-volleyball']);
-assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='texas-tech'),'Volleyball'),[],'other schools are unchanged');
+assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='west-virginia'),'Volleyball'),[],'other schools are unchanged');
 {
   const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/kstate-module/volleyball-espn-live-2026-10-01.json.gz',import.meta.url))).toString('utf8'));
   const liveNow=new Date('2026-10-01T23:36:00Z'),scoreUrl='https://site.api.espn.com/apis/site/v2/sports/volleyball/womens-college-volleyball/scoreboard?limit=1000&dates=20261001';

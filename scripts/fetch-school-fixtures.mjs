@@ -112,7 +112,9 @@ for(const sport of sports){
         if(!teamUrl)continue;
         const listing=await download(teamUrl);if(!listing.body){summary.push(`  TFRRS ${team}: HTTP ${listing.status}`);continue}
         save(`tfrrs-team-${team}.html.gz`,listing.body);
-        for(const game of finals){
+        // Every past meet: one the schedule gives no result yet (Texas Tech's
+        // Nike XC Town Twilight) is final on TFRRS.
+        for(const game of current.filter(g=>String(g.date).slice(0,10)<today)){
           const meet=findTfrrsMeet(listing.body,{decodeHtml:s=>String(s).replace(/&amp;/g,'&'),date:String(game.date).slice(0,10),name:game.opponent?.title});
           const number=meet&&(meet.match(/\/results\/xc\/(\d+)/)||[])[1];
           if(number&&!have(`tfrrs-${number}.html.gz`)){const page=await download(meet);if(page.body){save(`tfrrs-${number}.html.gz`,page.body);summary.push(`  TFRRS ${game.opponent?.title}: ${meet}`)}}
