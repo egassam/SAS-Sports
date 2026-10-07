@@ -15,10 +15,11 @@ import {cincinnatiSchool,createCincinnatiHandlers} from './schools/cincinnati.mj
 import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
+import {tcuSchool,createTcuHandlers} from './schools/tcu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.56.1-conference-records';
+const VERSION='4.57.0-tcu';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -119,6 +120,11 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(iowaStateHandlers.isFinalWithoutStory(event))await iowaStateHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(iowaStateHandlers.isFinalWithoutStory).map(event=>iowaStateHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:tcuSchool,parseSchedule:(...args)=>tcuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>tcuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>tcuHandlers.matchesRecap(...args),crossCountry:{matches:event=>tcuHandlers.isCrossCountry(event),attach:event=>tcuHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(tcuHandlers.isFinalWithoutStory(event))await tcuHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(tcuHandlers.isFinalWithoutStory).map(event=>tcuHandlers.attachArchiveStory(event)));return events;}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -157,10 +163,6 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
-  ,'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/roster'
-  ,'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/roster'
-  ,'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/roster'
-  ,'tcu|Football':'https://gofrogs.com/sports/football/roster'
   ,'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/roster'
   ,'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/roster'
   ,'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/roster'
@@ -202,10 +204,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
-  'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/schedule',
-  'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/schedule',
-  'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/schedule',
-  'tcu|Football':'https://gofrogs.com/sports/football/schedule',
   'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/schedule',
   'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/schedule',
   'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/schedule',
@@ -252,6 +250,7 @@ const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const houstonHandlers=createHoustonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const iowaStateHandlers=createIowaStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const tcuHandlers=createTcuHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
