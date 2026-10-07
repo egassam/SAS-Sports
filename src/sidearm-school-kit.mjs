@@ -147,11 +147,13 @@ export const doubleheaderNumber=()=>(game,games,{parse})=>{
 // trustOwnLink: the schedule's own link is enough when dated from the event's
 // first day to the day after its last. Stories may name the opponent only by
 // its nickname ("Cougars Sweep Huskies" for Houston Christian).
-export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false}){
+// ownLinkDays: how many days after an event's last day the page's own story
+// link may be dated (a weekend tournament's story can come on Tuesday).
+export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false,ownLinkDays=1}){
   const ownLinkDated=(event,url)=>{
     const dated=String(url).match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);if(!dated)return false;
     const day=Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])),first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`),last=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
-    return day>=first&&day<=last+86400000;
+    return day>=first&&day<=last+ownLinkDays*86400000;
   };
   const headlineKey=value=>` ${decodeHtml(String(value||'')).toLowerCase().replace(/\(.*?\)/g,' ').replace(/\bst\./g,'state').replace(/[^a-z0-9&]+/g,' ').trim()} `;
   return function matchesRecap(raw,event,url){
@@ -179,7 +181,7 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // archive (a story dated from the meet's first day to the day after its last
 // that names the meet, the last day's first: Iowa State's cross country
 // schedule links none, and a golf tournament's story can be missing from it).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set()}){
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
@@ -209,11 +211,14 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
     }
     const a=String(event.school_score),b=String(event.opponent_score),opponent=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').trim();
     const score=new RegExp(`(?<![\\d-])(?:${a}-${b}|${b}-${a})(?![\\d-])`),tie=a===b?/\b(?:draw|tie|tied|scoreless)\b/i:null;
+    // volleyballSets: a match story may give only the number of sets ("in four
+    // sets" for 3-1, Texas Tech's Central Arkansas story).
+    const setCount={3:'three',4:'four',5:'five'}[Number(a)+Number(b)],sets=volleyballSets&&event.sport==='Volleyball'&&Math.max(Number(a),Number(b))===3&&setCount?new RegExp(`\\bin ${setCount} sets\\b${setCount==='three'?'|\\bsweep':''}`,'i'):null;
     for(const path of paths.slice(0,4)){
       const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
       const text=storyText(raw);
       if(!opponent||!text.toLowerCase().includes(opponent.toLowerCase()))continue;
-      if(score.test(text)||tie&&tie.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
+      if(score.test(text)||tie&&tie.test(text)||sets&&sets.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
     }
     return event;
   }
