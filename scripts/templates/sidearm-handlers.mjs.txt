@@ -1,0 +1,90 @@
+const HOST=__HOST__;
+// __NAME__'s calendar day.
+const __CAMEL__Today=sidearmToday(__TIMEZONE__);
+// Internal games: scrimmages, intrasquads.
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b/i;
+// __NAME__'s TFRRS cross country team pages; set them to read complete races
+// (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
+export const __CONST___TFRRS_TEAMS={Women:null,Men:null};
+// Words every meet name shares; they do not tell two meets apart.
+const MEET_WORDS=new Set(['the','invitational','invite','relays','classic','championship','championships','meet','open','indoor','outdoor','and']);
+// A multi-day conference tournament (type P, first to last day).
+const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tournament?.title||'').trim())&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10)&&/\b(?:tourn\w*|championship)\b/i.test(game.opponent?.title||'');
+// __HOSTNAME__ is a SIDEARM (Nuxt) site: the shared reader turns its schedule
+// page data into events in K-State's results format. These settings are
+// Houston's (src/schools/houston.mjs, built from the shared kit
+// src/sidearm-school-kit.mjs); change one only for something this site does
+// differently, with a fixture test. Every hook applies only to the sports in
+// pageDataSports, so the scaffold changes no output until a sport is turned
+// on.
+export function __FACTORY__({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
+  const converted=event=>__SCHOOLVAR__.pageDataSports.has(event?.sport);
+  // Tennis tournaments are listed with their last day; a dual is a game.
+  const isTournament=(sport,game)=>Boolean(String(game.tournament?.title||'').trim())||sport==='Tennis'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
+  const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
+    id:__ID__,host:HOST,sports:__SCHOOLVAR__.pageDataSports,squadSports:__SCHOOLVAR__.combinedSports,
+    today:__CAMEL__Today,
+    // A "next event" widget repeats a game without its details.
+    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    merge(sport,games){
+      if(sport==='Golf')return mergeTournamentRounds(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field')return mergeMeetDays(games);
+      // Bracket rounds with no opponent yet: one event per tournament.
+      if(sport==='Basketball')return mergeTbaBracket(games);
+      return games;
+    },
+    opponent(game){
+      let opponent=withoutRanking(game.opponent?.title);
+      if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))return'';
+      // Tournament pages also list the other teams' matches ("A vs B").
+      if(/\S\s+vs\.?\s+\S/i.test(opponent))return'';
+      // Exhibitions (page-data type "S") read as K-State labels them.
+      if(game.type==='S'&&!/\(Exhibition\)$/i.test(opponent))opponent=`${opponent} (Exhibition)`;
+      if(isConferenceTournament(game))opponent=String(game.tournament.title).replace(/’/g,"'").trim();
+      return opponent;
+    },
+    // Meets are final once their last day has passed; team places are
+    // published as text. A dual match is a game.
+    meet:(sport,game,scored)=>!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&isTournament(sport,game)),
+    // Yesterday's game without a score stays: a late game elsewhere ends
+    // after midnight locally and its score is posted after.
+    keep:ctx=>Date.parse(ctx.lastDay)>=Date.parse(ctx.today)-86400000,
+    relation:(sport,game,meet)=>meet||game.tbd_bracket||isConferenceTournament(game)?'at':sidearmRelation(game),
+    startTime:sidearmStartTimeText,
+    // Swimming dual scores may carry a half point.
+    score:/^\d+(?:\.\d+)?$/,
+    result(event,{sport,result,meet,final}){
+      if(!final||!meet)return;
+      const text=String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim();
+      if(sport==='Golf'){
+        const matchPlay=golfMatchPlay(text);
+        if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
+        const value=golfPlacing(text)||(/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
+        return;
+      }
+      writeMeetPlaces(event,{text,schoolName:__NAMEQ__,ordinal});
+      if(event.headline==='Completed'&&text&&!/did not score|^nts$/i.test(text)){const value=golfPlacing(text)||text;event.headline=value;event.results=[{label:'Result',value}];}
+    },
+    // A golf tournament's final story is bound to its last round.
+    onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
+    tennisNeedsStory:true,
+    // A meet keeps a story another meet also links only when the story names it.
+    afterEvent(event,{sport,game,games}){
+      if(eventType(sport)!=='MEET'||!event.recap_url)return;
+      const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
+      const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));
+      if(games.some(linked)&&!words.some(word=>path.includes(word))){delete event.recap_url;delete event.recap_title;}
+    },
+    gameNumber:doubleheaderNumber()
+  },{makeEvent,eventType});
+  const kitRecap=createRecapMatcher({id:__ID__,host:HOST,recapMatchesEvent,decodeHtml,trustOwnLink:true});
+  const archive=createArchiveStory({id:__ID__,host:HOST,decodeHtml,fetch,headers});
+  const crossCountry=createTfrrsMeetResults({id:__ID__,schoolName:__NAMEQ__,teams:__CONST___TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
+  return{parseSchedule,isEmptySchedule,
+    matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
+    isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),
+    attachArchiveStory:event=>converted(event)?archive.attachArchiveStory(event):event,
+    isCrossCountry:event=>converted(event)&&Boolean(__CONST___TFRRS_TEAMS.Women||__CONST___TFRRS_TEAMS.Men)&&crossCountry.matches(event),
+    attachMeetResults:crossCountry.attach};
+}
