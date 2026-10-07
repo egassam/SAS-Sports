@@ -18,10 +18,12 @@ import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs'
 import {tcuSchool,createTcuHandlers} from './schools/tcu.mjs';
 import {texasTechSchool,createTexasTechHandlers} from './schools/texas-tech.mjs';
 import {westVirginiaSchool,createWestVirginiaHandlers} from './schools/west-virginia.mjs';
+import {alabamaSchool,createAlabamaHandlers} from './schools/alabama.mjs';
+import {floridaSchool,createFloridaHandlers} from './schools/florida.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.59.0-west-virginia';
+const VERSION='4.60.0-alabama-florida';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -137,6 +139,16 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(westVirginiaHandlers.isFinalWithoutStory(event))await westVirginiaHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(westVirginiaHandlers.isFinalWithoutStory).map(event=>westVirginiaHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:alabamaSchool,parseSchedule:(...args)=>alabamaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>alabamaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>alabamaHandlers.matchesRecap(...args),crossCountry:{matches:event=>alabamaHandlers.isCrossCountry(event),attach:event=>alabamaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(alabamaHandlers.isFinalWithoutStory(event))await alabamaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(alabamaHandlers.isFinalWithoutStory).map(event=>alabamaHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:floridaSchool,parseSchedule:(...args)=>floridaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>floridaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>floridaHandlers.matchesRecap(...args),crossCountry:{matches:event=>floridaHandlers.isCrossCountry(event),attach:event=>floridaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(floridaHandlers.isFinalWithoutStory(event))await floridaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(floridaHandlers.isFinalWithoutStory).map(event=>floridaHandlers.attachArchiveStory(event)));return events.filter(event=>!floridaHandlers.isTennisWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -147,9 +159,6 @@ const moduleCrossCountry=event=>SCHOOL_MODULES.find(entry=>entry.crossCountry?.m
 // account. These are explicit identity matches, not name-based guesses.
 const VERIFIED_TEAM_TAG_INSTAGRAM=new Map(Object.entries({
   ...moduleEntries('verifiedInstagrams'),
-  'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
-  'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
-  'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
 }));
 
 const SPORT_PATHS={
@@ -170,11 +179,6 @@ const SPORT_PATHS={
 const COMBINED_TEAM_SPORTS=new Set(['Basketball','Swimming & Diving']);
 const KNOWN_ROSTER_URLS=new Map(Object.entries({
   ...moduleEntries('rosterUrls'),
-  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/roster',
-  'alabama|Football':'https://rolltide.com/sports/football/roster',
-  'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
-  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
-  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
 }));
 function schoolCombinedSports(school){
   return schoolModule(school?.id)?.school.combinedSports||COMBINED_TEAM_SPORTS;
@@ -196,17 +200,6 @@ function labelTeamEvents(events,school,sport,url){
 
 const KNOWN_URLS=new Map(Object.entries({
   ...moduleEntries('scheduleUrls'),
-  'alabama|Cross Country':'https://rolltide.com/sports/xctrack/schedule/text',
-  'alabama|Football':'https://rolltide.com/sports/football/schedule',
-  'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/schedule',
-  'alabama|Track & Field':'https://rolltide.com/sports/xctrack/schedule/text',
-  'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/schedule',
-  'florida|Volleyball':'https://floridagators.com/sports/womens-volleyball/schedule',
-  'florida|Soccer':'https://floridagators.com/sports/womens-soccer/schedule',
-  'florida|Cross Country':'https://floridagators.com/sports/cross-country/schedule',
-  'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
-  'florida|Football':'https://floridagators.com/sports/football/schedule',
-  'florida|Swimming & Diving':'https://floridagators.com/sports/swimming-and-diving/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
@@ -252,6 +245,8 @@ const iowaStateHandlers=createIowaStateHandlers({makeEvent,recapMatchesEvent,eve
 const tcuHandlers=createTcuHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const texasTechHandlers=createTexasTechHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const westVirginiaHandlers=createWestVirginiaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const alabamaHandlers=createAlabamaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const floridaHandlers=createFloridaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -648,23 +643,7 @@ const VERIFIED_GAME_DETAILS=new Map(Object.entries({
       {label:'Rushing yards',value:'Texas Tech 173 · ACU 75'},
       {label:'First downs',value:'Texas Tech 26 · ACU 15'}
     ]
-  },
-  'florida|Soccer|2026-08-23|t3-florida-state':{
-    source_url:'https://seminoles.com/news/2026/8/23/womens-soccer-florida-state-suffers-seasons-first-loss',
-    highlights:[
-      'Florida handed No. 3 Florida State its first loss of the season with a 3-1 home victory.',
-      'The Gators led at halftime and added two second-half goals while Florida State scored once after the break.',
-      'Florida put eight of its 14 shots on target and forced five saves from Seminoles goalkeeper Kate Ockene.',
-      'The victory ended Florida State’s nine-game winning streak and 13-game unbeaten run.'
-    ],
-    stats:[
-      {label:'Shots',value:'Florida 14 · Florida State 8'},
-      {label:'Shots on goal',value:'Florida 8 · Florida State 5'},
-      {label:'Corners',value:'Florida 5 · Florida State 6'},
-      {label:'Final',value:'Florida 3 · Florida State 1'}
-    ]
-  },
-
+  }
 }));
 function enrichGameEvent(event){
   if(event.event_type!=='GAME'||event.status!=='Final')return event;
