@@ -408,6 +408,31 @@ void [parse,line,ownRecapsOnly,live];
   assert.equal(gym.find(e=>e.opponent==='Missouri').headline,'L, 191.325-196.850');
 }
 
+// Records: each sport's overall record, counted from its finals, equals the
+// record the official page publishes in its page data ("3 - 2", "4 - 5 - 3").
+{
+  const published=slug=>{
+    const raw=fixture(`${slug}-schedule.html.gz`),data=JSON.parse(raw.match(/<script\b[^>]*id=["']__NUXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i)[1]);
+    const holder=data.find(value=>value&&!Array.isArray(value)&&typeof value==='object'&&'overall' in value&&'conference' in value);
+    return String(data[holder.overall]).replace(/<[^>]+>/g,'').replace(/\s+/g,'');
+  };
+  const record=(sport,slug)=>worker.groupEvents(parse(sport,slug),now)[0].records;
+  for(const [sport,slug,text] of [['Football','football','3-2'],['Volleyball','womens-volleyball','9-6'],['Soccer','womens-soccer','4-5-3'],['Swimming & Diving','womens-swimming-and-diving','0-1']]){
+    assert.equal(published(slug),text,`${sport}: the official page publishes ${text}`);
+    assert.deepEqual(record(sport,slug).map(r=>[r.team_label,r.text]),[[null,text]],`${sport}: the computed record is the official one`);
+  }
+  assert.deepEqual(record('Soccer','womens-soccer')[0],{team_label:null,wins:4,losses:5,ties:3,text:'4-5-3'});
+  // Meets and tournaments (places, not wins) have no record.
+  assert.deepEqual(record('Cross Country','cross-country'),[]);
+  assert.deepEqual(worker.groupEvents([...parse('Golf','golf'),...parse('Golf','womens-golf')],now)[0].records,[]);
+  assert.deepEqual(record('Tennis','womens-tennis'),[]);
+  // Exhibitions do not count; a combined sport keeps each team's record.
+  const base=parse('Football','football')[0];
+  const game=(over)=>({...base,id:Math.random().toString(36),...over});
+  const mixed=[game({team_label:"Men's",headline:'W, 70-60',opponent:'Drake'}),game({team_label:"Men's",headline:'W, 80-50',opponent:'Creighton (Exhibition)'}),game({team_label:"Women's",headline:'L, 60-70',opponent:'Iowa'}),game({team_label:"Women's",headline:'W, 90-40',opponent:'Upper Iowa (Exh.)'})];
+  assert.deepEqual(worker.groupEvents(mixed,now)[0].records.map(r=>[r.team_label,r.text]),[["Men's",'1-0'],["Women's",'0-1']]);
+}
+
 // Other schools and other hosts never reach the Iowa State reader.
 assert.equal(worker.iowaStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://cyclones.com/',now),null);
 assert.equal(worker.iowaStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',page('football'),now),null);
