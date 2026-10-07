@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026, America/Chicago. Production `4.57.0-tcu`.
+Last updated: October 7, 2026, America/Chicago. Production `4.58.0-texas-tech`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 7, 2026, America/Chicago. Production `4.57.0-tcu`.
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.57.0-tcu`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.58.0-texas-tech`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -31,16 +31,18 @@ Last updated: October 7, 2026, America/Chicago. Production `4.57.0-tcu`.
 | Colorado | `colorado.mjs` | Complete | Track & Field fills when published; first live cards not yet observed |
 | Houston | `houston.mjs` | Complete (first school on the shared kit) | Track & Field fills when published; Rice Invite (tennis) has no story; first live cards not yet observed |
 | Iowa State | `iowa-state.mjs` | Complete (12 sports) | Track & Field and Gymnastics fill when published; Cross Country, Tennis, Swimming use profile cards (no further Instagram published); first live cards not yet observed |
+| Texas Tech | `texas-tech.mjs` | Complete (10 sports) | Track & Field fills when texastech.com publishes 2026-27; first live cards not yet observed (soccer at Oklahoma State Oct 8, volleyball vs Baylor Oct 8) |
 | TCU | `tcu.mjs` | Complete (14 sports) | Triathlon's third athlete is a profile card (only 2 Instagram published); first live cards not yet observed (soccer vs UCF Oct 8, volleyball vs Arizona Oct 9) |
 
-**Remaining unconverted Big 12 schools:** Texas Tech, West Virginia, both SIDEARM sites (`__NUXT_DATA__`; Texas Tech returns 403 to the sandbox and comes through the private source route, which the fixture scripts use on their own). Start the one the user names. When scaffolding, switch the BYU "other schools are unchanged" test (now Texas Tech) to the next unconverted school.
+**Remaining unconverted Big 12 school:** West Virginia (SIDEARM, `__NUXT_DATA__`). It is the last one: the BYU "other schools are unchanged" test and Texas Tech's "other schools never reach the reader" test name it; when it is converted, point them at a school outside the Big 12 or drop the check.
 
 ## How to convert a school (fast path, October 7)
 
-Iowa State holds the record: **29 minutes** from start to production for 12 sports. TCU took 41 minutes for 14 (19:17-19:58 UTC, about 2.9 min per sport against Iowa State's 2.4); Houston took 49 for 11. TCU lost time to two rounds of preview fixes (Triathlon's doubled Instagram link, The Ally's cancelled round); run the athlete check and survey `--date=<tomorrow>` before the first push. Do the steps in this order; start each slow step in the background and work on while it runs:
+Texas Tech holds the record: **26 minutes** from start to production for 10 sports (20:08-20:34 UTC, 2.6 min per sport); Iowa State 29 for 12, TCU 41 for 14, Houston 49 for 11. What made Texas Tech fast: **start the module from the newest converted school's handlers (TCU's), not the scaffold template** (its rules are a superset; copy everything from `const HOST=` down and rename), and generate the test blocks from `survey --lines` with a script. One preview round was lost to a volleyball final whose page links a preview story (run `validate-schools --deep` on the preview as soon as it is up, in parallel with `verify:preview`). Do the steps in this order; start each slow step in the background and work on while it runs:
 1. **Setup (1 min):** `npm run scaffold-school -- --school=<id> --write`. Writes the module with Houston's and Iowa State's settings and every hook wired (shared kit `src/sidearm-school-kit.mjs`: published times, golf rounds and match play, meet days, bracket rounds, open championships, neutral multi-day events, conference tournaments, `(Ex.)` labels, team places with points, recap matcher, archive stories, TFRRS cross country, doubleheaders), each applying only to sports in `pageDataSports`. Adds the test file with helpers and `npm run test:<id>-module`. Then fix the BYU-style "other schools are unchanged" tests if they name this school (BYU's named Iowa State; now TCU).
 2. **Fixtures (1 min):** `NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=<id> --tfrrs-f=<url> --tfrrs-m=<url>` (TFRRS team pages are `https://www.tfrrs.org/teams/xc/<ST>_college_<f|m>_<Name>.html`; check with curl). Saves every schedule candidate, stories, `/archives` and the archive stories of past meets/tournaments the schedule links no story for, ESPN payloads, TFRRS pages. Drop the routes it flags (empty template, homepage); set `combinedSports` and `teamLabels` (a men's page with no `mens-` in its address).
 3. **Read it (10 min):** turn every sport on in `pageDataSports`, then `node scripts/survey-school.mjs --school=<id>`. It prints each event in K-State's wording and flags **GATE** on any final with neither result line nor story (the gate fails those; fix them first, usually with `meetSports` and the archive). `--raw` prints page data; `--lines` prints test-ready arrays. Write one test block per sport from `--lines` (see `tests/iowa-state-module.mjs`); mutate each new rule.
+   The survey now attaches the saved archive stories and TFRRS results as the Worker does, so a GATE is real. A home tournament named after the school, "Opponents TBD" bracket rounds, round-named postseason games, late tournament stories (`ownLinkDays`) and set-count volleyball stories (`volleyballSets`) are handled in Texas Tech's module; copy them forward.
 4. **Publish:** commit, push, open the PR; the preview is up within a minute. In parallel: `npm run test:release` (3 min), `npm run verify:preview -- --branch=<branch> --school=<id> --sports=all` (5-6.5 min, background), athletes **at once** (`node tests/validate-schools.mjs <id> --athletes-only --base=<preview>`: tennis/swimming rosters often publish no Instagram → `athlete_profile_fallback_sports`; cross country may have only 2 → minimum 2, as KU and Oklahoma State), and `npm run screenshot-school -- --school=<id> --branch=<branch>` (every sport's page, 390px, school time zone). Merge when all pass, then `verify:prod` and the athletes check on production.
 
 ## Three featured athletes per sport (user rules, October 7)
@@ -79,3 +81,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 7 — Three-Instagram rule, season and conference records** (PR #232 merged `478e8c9`, PR #233 merged `cfc62bd`, both on the user's "Merge it"; production `4.56.1-conference-records` verified 18:58 UTC). Rule open for 11 school-sports (see above).
 - **Oct 7 — Profile cards fill the third slot** (user: "Use official profile cards for those"). Certification for 11 school-sports; all minimums 3; Iowa State complete.
 - **Oct 7 — TCU, all 14 sports** (PR #236, merged `5f7f852`; production `4.57.0-tcu` verified 19:58 UTC, athletes 14/14). 41 minutes start to production (record still Iowa State's 29). New rules: `(Exh.)`, event-named opponents read `at`, suffixless golf places, cancelled golf rounds, swimming meets with archive stories.
+- **Oct 7 — Texas Tech, all 10 sports** (PR #238, merged `a2a79df`; production `4.58.0-texas-tech` verified 20:34 UTC, `verify:prod` all sports, athletes 10/10 with three Instagram each, deep 10/10 on the preview). **26 minutes** start to production (new record). Survey attaches archive/TFRRS; fixture script saves TFRRS for every past meet; screenshot waits for the default sport.
