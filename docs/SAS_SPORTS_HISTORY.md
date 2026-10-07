@@ -1624,3 +1624,43 @@ User: "Let's do Texas tech. Learn from it. We need more speed."
 
 **Open:** Alabama Rowing and Florida Lacrosse pages list last season; golf field size not published (Alabama); no live card observed yet for either school; `validate-schools --deep` was not run (verify:preview covered every expanded view).
 
+## October 7, 2026 — Georgia and LSU added, 13 sports each (PR #244)
+
+**Request:** "Add Georgia and LSU. Learn from it and optimize for the next two." The user set two schools as the scope; neither was in the app before.
+
+**Timeline (UTC):** start 22:24. Both schools added to `src/sponsored-sports.json` and the front end, then scaffolded. Georgia's fixtures (georgiadogs.com refuses the sandbox: 403, fetched through the private source) ran in the background while LSU's site was surveyed: its "CUSTOM" provider is WMT, with yearless cards. PR #244 pushed 22:39. First preview: XC baselines and the gates passed, but athletes were Georgia 6/13 and LSU 12/13, and Georgia football's expanded views read `recap_text_unavailable`. A container restart stopped the first run. Fixes pushed 22:46 (`1ef632d`) and 22:48 (`558e008`). Final gates passed 22:57.
+
+**Georgia (`docs/GEORGIA_MODULE.md`):** built from Alabama's handlers. Golf totals after `=`; league swimming places `4th, 207.5 pts.`; tennis tournaments as meets taking archive stories (the feed drops one without a story); `Preseason - X` exhibitions; the `SEC` entry reads as the `SEC Tournament`; `msd`/`wsd` team labels. Records equal the official ones: football 5-0 (3-0), volleyball 11-2 (3-0), soccer 4-3-5 (1-1-3).
+
+**LSU (`docs/LSU_MODULE.md`):** own WMT card reader.
+- Each card's year comes from the page title's season.
+- Golf and swimming day cards are merged, even with another tournament listed between the days.
+- Per-team cross country cards are merged; TFRRS gives the places.
+- Golf place comes from the final story's headline only when the team is its subject.
+- Cancelled cards and intrasquads are dropped.
+- The recap matcher rejects a longer school name.
+
+Records equal the official ones: football 4-1 (1-1), volleyball 7-6 (2-2), soccer 3-8-2 (1-3-1).
+
+**Shared fixes (found on the first preview):**
+1. WMT profile links under `/roster/season/2026-27/player/` were not accepted, so LSU basketball showed no athletes. `rosterProfiles` now accepts them; this only adds matches.
+2. Story bodies opening with nested markup were cut at the first nested `</div>`: Georgia football read 46 characters. When that read is under 80 characters, the whole body is read by matching its divs. Longer reads are unchanged.
+
+**Athletes:** LSU 13/13 with Instagram from roster cards. Georgia 13/13. Seven Georgia sports use profile cards: Baseball, Cross Country, Equestrian, Football, Swimming & Diving, Tennis, Track & Field. Every roster card and profile page of these sports was read (370 pages) and none publishes an athlete Instagram link; the same method found 17/17 on volleyball. Team-account tags could not be read: instagram.com answers with its login page (HTTP 429).
+
+**Optimizations for the next two:**
+- `scripts/generate-module-tests.mjs` writes the route table and every page block.
+- `scripts/athlete-evidence.mjs` produces the profile-card evidence in one command.
+- The fixture script retries dropped connections and reads non-SIDEARM pages through the module (stories, TFRRS, ESPN).
+- The scaffold writes live scoreboards on.
+- The handoff now explains how to add a school that is not yet in the app, and to check each site's platform first.
+
+**Tests run:**
+- Every new rule was mutated (15 mutations). Two survived: a dead golf rule, which was removed, and the cancelled-card rule, which got a test. All now fail the suites.
+- `npm run test:release` exit 0 on `558e008` (also on `5904009`).
+- `verify:preview --sports=all` for both schools on `558e008`: exit 0, 42 checks each, 36/36 refreshes for all 26 sports, XC 18/20 and 26/21. Expanded views all pass; Georgia football is now `recap_generated`.
+- Athletes on the preview: 13/13 for both.
+- Screenshots of all 26 sports taken; football, golf and volleyball were read by eye (LSU Golf's athlete row had not loaded at capture time).
+
+**Open:** LSU golf shows "Completed" when the story headline names a player rather than the team (cards publish no place). LSU men's golf RedHawk Intercollegiate (no story, no place) is not listed. Track & Field for both schools fills when published. No live card observed yet.
+

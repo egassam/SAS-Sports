@@ -1,0 +1,40 @@
+// Reads every roster card and athlete profile page of the named sports and
+// lists the athlete Instagram links they publish: the evidence a sport needs
+// before it joins `athlete_profile_fallback_sports` (AGENTS.md 5a). Handles
+// that appear on every page (the site's own accounts in its menus) are left
+// out. Pages come through the private source route (SAS_SOURCE_KEY), as the
+// app fetches them. Georgia's 370 pages took about two minutes.
+//
+//   SAS_SOURCE_KEY=... NODE_USE_ENV_PROXY=1 node scripts/athlete-evidence.mjs --school=georgia Football "Track & Field"
+//   (--check=Volleyball first: a sport that publishes links must show them)
+const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
+const id=value('school'),sports=[value('check'),...args.filter(a=>!a.startsWith('--'))].filter(Boolean);
+const key=process.env.SAS_SOURCE_KEY,base=(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
+if(!id||!sports.length||!key){console.error('usage: SAS_SOURCE_KEY=... node scripts/athlete-evidence.mjs --school=<id> [--check=<Sport>] <Sport> ...');process.exit(2)}
+const camel=id.replace(/-(\w)/g,(all,c)=>c.toUpperCase());
+const school=(await import(`../src/schools/${id}.mjs`))[`${camel}School`];
+const get=async url=>{
+  for(let attempt=1;attempt<=3;attempt++){
+    try{const r=await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)});if(r.ok)return r.text();if(r.status===404)return'';}catch{}
+    await new Promise(done=>setTimeout(done,2000*attempt));
+  }
+  return'';
+};
+const handles=raw=>new Set((String(raw).match(/instagram\.com\/[A-Za-z0-9._]+/gi)||[]).map(x=>x.toLowerCase().replace(/^instagram\.com\//,'')).filter(h=>!['p','reel','explore','accounts'].includes(h)));
+// The site's own accounts: on two different rosters' pages.
+const rosters=Object.values(school.rosterUrls).flat();
+const [a,b]=await Promise.all([get(rosters[0]),get(rosters.at(-1))]);
+const site=new Set([...handles(a)].filter(h=>handles(b).has(h)));
+for(const sport of sports){
+  const found=[];let read=0;
+  for(const url of [].concat(school.rosterUrls[`${id}|${sport}`]||[])){
+    const raw=await get(url),host=new URL(url).hostname,slug=new URL(url).pathname.split('/')[2];
+    // SIDEARM: /sports/<slug>/roster/<name>/<id>; WMT: /sports/<slug>/roster/[season/<s>/]player/<name>.
+    const links=[...new Set(raw.match(new RegExp(`/sports/${slug}/roster/(?:(?:season/[^/"']+/)?player/[a-z0-9-]+|[a-z0-9-]+/\\d+)`,'g'))||[])];
+    for(let i=0;i<links.length;i+=8)await Promise.all(links.slice(i,i+8).map(async path=>{
+      const own=[...handles(await get(`https://${host}${path}`))].filter(h=>!site.has(h));read++;
+      if(own.length)found.push(`${path.split('/').pop()}: ${own.join(',')}`);
+    }));
+  }
+  console.log(`${sport}: ${read} profile pages read; athlete Instagram on ${found.length}${found.length?`: ${found.join(' | ')}`:''}`);
+}
