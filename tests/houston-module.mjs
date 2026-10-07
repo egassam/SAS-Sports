@@ -189,6 +189,7 @@ const live=(sport,payloadFile,events,at,expected)=>{
   const men=parse('Golf','mens-golf'),women=parse('Golf','womens-golf');
   assert.equal(men.length,15);assert.equal(women.length,14);
   assert.deepEqual(men.filter(e=>e.status==='Final').map(line),["Final Sep 14 Men's · Houston at Jackson T. Stephens Cup | 6th of 6","Final Sep 21 Men's · Houston at Bayou City Collegiate Classic | No team score (individuals only)","Final Sep 29 Men's · Houston at NB3 Matchplay | Match play: 1-1"]);
+  assert.equal(worker.houstonHandlers&&(await import('../src/schools/houston.mjs')).houstonSchool.highlightRevision,1,'stored expanded views from before the match-play rows are not reused');
   assert.deepEqual(men.find(e=>e.opponent==='NB3 Matchplay').results,[{label:'vs New Mexico State',value:'W, 3-2'},{label:'vs New Mexico',value:'L, 1.5-3.5'}],'one row per match, Houston\'s points first');
   assert.deepEqual(women.filter(e=>e.status==='Final').map(line),["Final Sep 7 Women's · Houston at ANNIKA Intercollegiate | 10th of 12","Final Sep 19 Women's · Houston at Schooner Fall Classic | 11th of 16"]);
   assert.ok(women.filter(e=>e.status==='Final').every(e=>/closes-play|second-straight-day/.test(e.recap_url)),'the last round\'s story');

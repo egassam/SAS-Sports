@@ -37,6 +37,8 @@ Production loaded several candidate pages per sport, including the homepage and 
 - **Track stories two meets share:** the schedule links the Wake Forest Invitational story to the Mt. SAC Relays too (Apr 15-16). A meet keeps a story another meet also links only when the story's address names it. The Penn Relays and Michael Johnson Invitational share a story that names both, and both keep it.
 - **Cross country (`createTfrrsMeetResults`):** Houston's TFRRS team pages (`TX_college_f_Houston`, `TX_college_m_Houston`) list each meet. Results: Aggie Opener 22 rows (2 team, 13 women, 7 men), Texas A&M Invitational 20 rows. A place TFRRS contradicts is refused.
 
+**Stored expanded views.** The first preview gate stored the golf finals' expanded views (the highlight store is shared by preview and production) before match play was rewritten, and the page showed the stored wording. `highlightRevision:1` keys Houston's stored views anew.
+
 `npm run test:houston-module` (also in `npm test` and `npm run test:release`) covers all 11 sports from the unmodified fixtures. Each final matches only its own recap (36 stories). It also covers the archive story, TFRRS, ESPN payloads for football, volleyball and soccer (Houston Christian and Sam Houston are never taken for Houston), doubleheaders and the last-season track page. Each of the 15 rules above was mutated and every mutation fails the test.
 
 ## Limitations

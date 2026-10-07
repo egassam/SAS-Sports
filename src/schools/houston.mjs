@@ -25,6 +25,10 @@ export const houstonSchool={
     Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
     Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]
   },
+  // Stored expanded views (shared by preview and production) are keyed by
+  // this revision: golf match play was rewritten ("Match play: 1-1", one row
+  // per match) after the first preview stored the earlier wording.
+  highlightRevision:1,
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf']),
