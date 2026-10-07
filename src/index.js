@@ -17,7 +17,7 @@ import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.55.0-records';
+const VERSION='4.55.1-records';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1160,9 +1160,14 @@ function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return t
 // swimming scored against an opponent). Exhibitions do not count; meets and
 // tournaments published as places have none. Men's and women's teams of a
 // combined sport keep separate records.
+// Months whose games count toward the record: summer tours (basketball) and
+// fall ball (baseball, softball) are not part of the official record.
+const RECORD_MONTHS={Basketball:[11,12,1,2,3,4],Baseball:[2,3,4,5,6],Softball:[2,3,4,5,6]};
 function seasonRecords(results){
   const byTeam=new Map();
   for(const e of results){
+    const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
+    if(months&&!months.includes(month))continue;
     if(/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
     const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
     const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0};

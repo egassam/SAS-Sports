@@ -429,8 +429,12 @@ void [parse,line,ownRecapsOnly,live];
   // Exhibitions do not count; a combined sport keeps each team's record.
   const base=parse('Football','football')[0];
   const game=(over)=>({...base,id:Math.random().toString(36),...over});
-  const mixed=[game({team_label:"Men's",headline:'W, 70-60',opponent:'Drake'}),game({team_label:"Men's",headline:'W, 80-50',opponent:'Creighton (Exhibition)'}),game({team_label:"Women's",headline:'L, 60-70',opponent:'Iowa'}),game({team_label:"Women's",headline:'W, 90-40',opponent:'Upper Iowa (Exh.)'})];
-  assert.deepEqual(worker.groupEvents(mixed,now)[0].records.map(r=>[r.team_label,r.text]),[["Men's",'1-0'],["Women's",'0-1']]);
+  const mixed=[game({sport:'Basketball',start_time:'2026-11-12T01:00:00Z',team_label:"Men's",headline:'W, 70-60',opponent:'Drake'}),game({sport:'Basketball',start_time:'2026-11-12T01:00:00Z',team_label:"Men's",headline:'W, 80-50',opponent:'Creighton (Exhibition)'}),game({sport:'Basketball',start_time:'2026-11-12T01:00:00Z',team_label:"Women's",headline:'L, 60-70',opponent:'Iowa'}),game({sport:'Basketball',start_time:'2026-11-12T01:00:00Z',team_label:"Women's",headline:'W, 90-40',opponent:'Upper Iowa (Exh.)'})];
+  const hoops=over=>game({sport:'Basketball',team_label:"Men's",opponent:'Drake',headline:'W, 70-60',...over});
+  assert.deepEqual(worker.groupEvents([hoops({start_time:'2026-11-10T19:00:00Z'}),hoops({start_time:'2027-01-10T19:00:00Z',headline:'L, 60-70'}),hoops({start_time:'2026-08-20T19:00:00Z',opponent:'Ukraine Senior National Team'})],now)[0].records.map(r=>[r.team_label,r.text]),[["Men's",'1-1']],'a summer tour is not in the record');
+  const ball=over=>game({sport:'Softball',opponent:'Wichita State',headline:'L, 3-5',...over});
+  assert.deepEqual(worker.groupEvents([ball({start_time:'2026-10-04T19:00:00Z'})],now)[0]?.records||[],[],'fall ball is not in the record');
+  assert.deepEqual(worker.groupEvents([ball({start_time:'2027-03-04T19:00:00Z'})],new Date('2027-03-10T12:00:00Z'))[0].records.map(r=>r.text),['0-1']);
 }
 
 // Other schools and other hosts never reach the Iowa State reader.
