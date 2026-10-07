@@ -194,7 +194,8 @@ export function createWestVirginiaHandlers({makeEvent,recapMatchesEvent,eventTyp
     ownLinkDays:3});
   // A cross country meet's story can be missing from the schedule (Cowboy
   // Jamboree), and the swimming schedule links none; each is in the archive.
-  const archive=createArchiveStory({id:'west-virginia',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Swimming & Diving']),volleyballSets:true});
+  // So is rifle's Mount Aloysius story (Sep 26).
+  const archive=createArchiveStory({id:'west-virginia',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Swimming & Diving','Rifle']),volleyballSets:true});
   const crossCountry=createTfrrsMeetResults({id:'west-virginia',schoolName:'West Virginia',teams:WEST_VIRGINIA_TFRRS_TEAMS,
     // TFRRS names the "RMU Invitational" "RMU Colonial Cross Country Invitational".
     meetName:event=>String(event.opponent||'').replace(/^RMU\b(?! Colonial)/,'RMU Colonial'),decodeHtml,ordinal,fetch,headers});

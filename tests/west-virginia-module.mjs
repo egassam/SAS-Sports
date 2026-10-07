@@ -415,6 +415,19 @@ void [parse,line,ownRecapsOnly,live];
   recapFixtures.clear();
 }
 
+// Rifle: the schedule links no story for Mount Aloysius (Sep 26); it is in
+// the archive.
+{
+  const match=parse('Rifle','rifle').find(e=>e.opponent==='Mount Aloysius');
+  assert.equal(worker.westVirginiaHandlers.isFinalWithoutStory(match),true);
+  recapFixtures.set('https://wvusports.com/sports/rifle/archives',fixture('rifle-archives.html.gz'));
+  recapFixtures.set('https://wvusports.com/news/2026/9/26/rifle-mountaineers-win-big-in-season-opener',fixture('story-2026-9-26-rifle-mountaineers-win-big-in-season-opener.html.gz'));
+  recapFixtures.set('https://wvusports.com/news/2026/9/25/rifle-to-open-season-against-mount-aloysius','<html></html>');
+  await worker.westVirginiaHandlers.attachArchiveStory(match);
+  assert.equal(match.recap_url,'https://wvusports.com/news/2026/9/26/rifle-mountaineers-win-big-in-season-opener');
+  recapFixtures.clear();
+}
+
 // Live: ESPN joins the official card for West Virginia's game only.
 {
   live('Football','football-espn-2026-10-03.json.gz',parse('Football','football'),new Date('2026-10-04T12:00:00Z'),[['WVU at Iowa State','Final','L, 42-45']]);

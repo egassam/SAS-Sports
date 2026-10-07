@@ -17,7 +17,7 @@ West Virginia was converted on October 7, 2026 (user: "Finish big 12 with West V
 | Golf | `mens-golf` | Men only. One event per tournament with its last round's place (`8th`, `T6th`), each with its story |
 | Tennis | `womens-tennis` | Women only. The page lists a tournament once per day; one event per tournament (`UTR Charleston`, Sep 18-20), each with its story |
 | Swimming & Diving | `womens-swimming-and-diving`, `mens-swimming-and-diving` | Labeled; dual scores (`W, 214-61`), each with its story |
-| Rifle | `rifle` | Matches with aggregate scores (`W, 4737-4587`), stories where linked |
+| Rifle | `rifle` | 4 matches with aggregate scores (`W, 4737-4587`), each with its story (Mount Aloysius, Sep 26: the schedule links none; from the archive) |
 | Wrestling | `wrestling` | Duals and tournaments (multi-day tournaments one event); the intrasquad "Wrestle Off" is left out |
 | Gymnastics | `womens-gymnastics` | The page still lists the 2026 season: no current events (fills when published) |
 | Rowing | `womens-rowing` | The page still lists 2025-26: no current events (fills when published) |
@@ -28,6 +28,7 @@ West Virginia was converted on October 7, 2026 (user: "Finish big 12 with West V
 - Golf and cross country write the place alone, as "8th Place", "T-6th Place" or "First Place": golf reads `8th`/`T6th`; cross country and track (women only) read `Women's team: 1st`, which TFRRS then checks and completes with points.
 - Tennis and wrestling list a tournament once per day: one event from its first to its last day (`mergeMeetDays`).
 - The intrasquad "Wrestle Off" is internal.
+- A rifle match the schedule links no story for takes it from the archive (`meetSports` includes Rifle).
 - TFRRS meet names can differ from the schedule's: the kit's `createTfrrsMeetResults` takes a `meetName` option (default the opponent; other schools unchanged).
 
 Each rule was mutated and every mutation fails `npm run test:west-virginia-module`.
@@ -39,5 +40,6 @@ Certification is listed for all 14 sports (minimum 3) in `tests/certified-school
 ## Limitations
 
 - Golf: the schedule publishes the place without the field size ("8th Place"). The stories give it in prose for three of the four tournaments ("in the 16-team field") but not for the New York Harbor Cup, so the headline shows the place only.
+- Volleyball: the James Madison exhibition (Aug 22, `L, 2-3`) has a result line but no official story. The volleyball archive lists every story from August (Aug 13 scrimmage, Aug 19 promotions, then Aug 25 onward) and none covers it, so its expanded view shows no recap (`validate-schools --deep` reports it; 13/14 sports pass deep).
 - Gymnastics, Rowing, Track & Field: the schedule pages have not published the 2026-27 season.
 - No finals yet for Basketball, Baseball, Wrestling; live scores are tested on real ESPN payloads (football at Iowa State, volleyball vs Houston, soccer at Houston) but no West Virginia game has been observed live under the module yet.
