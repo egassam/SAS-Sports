@@ -17,7 +17,7 @@ import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.54.0-iowa-state';
+const VERSION='4.54.1-three-athletes';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -467,6 +467,9 @@ async function instagramProfileImage(instagramUrl){
     return imageUrl;
   }catch{return null}finally{clearTimeout(timer)}
 }
+// Profile pages read per sport when roster cards hold fewer than three
+// verified links.
+const ATHLETE_PROFILE_BUDGET=24;
 async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
   let profiles=[];
@@ -492,7 +495,9 @@ async function featuredAthletes(schoolId,sport){
     profile_url:profile.url,
     image_url:profile.image_url||null
   }));
-  if(tagged.length>=2){
+  // Three verified Instagram athletes per sport (user, October 7: "I want
+  // three"): roster cards with fewer send the search on to the profiles.
+  if(tagged.length>=3){
     // The fast path must enforce the same identity rules as biography-page
     // discovery. Some publishers reuse a generic roster image across cards.
     const imageOwners=new Map(),socialOwners=new Map();
@@ -517,12 +522,15 @@ async function featuredAthletes(schoolId,sport){
     }
     return selected;
   }
-  const found=[];
+  // Athletes whose roster card already carries a verified link are kept
+  // without refetching their pages.
+  const found=tagged.map(athlete=>({...athlete})),known=new Set(found.map(athlete=>athlete.profile_url));
+  const unread=profiles.filter(profile=>!known.has(profile.url));
   // Inspect deterministic roster batches until three verified athletes are
   // found. This avoids randomly skipping smaller teams while keeping large
   // football rosters within a safe official-site request budget.
-  for(let start=0;start<Math.min(profiles.length,18)&&found.filter(a=>a.instagram_url).length<3;start+=3){
-    await Promise.all(profiles.slice(start,start+3).map(async profile=>{
+  for(let start=0;start<Math.min(unread.length,ATHLETE_PROFILE_BUDGET)&&found.filter(a=>a.instagram_url).length<3;start+=3){
+    await Promise.all(unread.slice(start,start+3).map(async profile=>{
       try{
         const r=await sourceFetch(profile.url);if(!r.ok)return;
         const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
