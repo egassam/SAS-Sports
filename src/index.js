@@ -16,8 +16,9 @@ import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
+import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.55.1-records';
+const VERSION='4.56.1-conference-records';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1115,7 +1116,13 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
   }
   return events;
 }
+// Every schedule's events, each game marked as a conference game or not
+// (src/conference-games.mjs), for the sport's conference record.
+const {markConferenceGames}=createConferenceGames({schools});
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
+  return markConferenceGames(parseScheduleEvents(raw,school,sport,sourceUrl,now),raw,school);
+}
+function parseScheduleEvents(raw,school,sport,sourceUrl,now=new Date()){
   const ownReader=schoolModule(school.id)?.parseSchedule;
   if(ownReader){const events=ownReader(raw,school,sport,sourceUrl,now);if(events!==null)return events;}
   // Athletics sites routinely combine old and new widgets during redesigns.
@@ -1168,13 +1175,22 @@ function seasonRecords(results){
   for(const e of results){
     const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
     if(months&&!months.includes(month))continue;
-    if(/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
+    if(e.exhibition||/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
     const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
-    const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0};
-    if(outcome==='W')record.wins++;else if(outcome==='L')record.losses++;else record.ties++;
+    const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0,conference:{wins:0,losses:0,ties:0,games:0}};
+    const add=tally=>{if(outcome==='W')tally.wins++;else if(outcome==='L')tally.losses++;else tally.ties++;};
+    add(record);
+    // The conference record counts the games the school marks as conference
+    // games (or, without that mark, regular-season games against members).
+    if(e.conference_game===true){add(record.conference);record.conference.games++;}
     byTeam.set(team,record);
   }
-  return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>({...r,text:`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`}));
+  const text=r=>`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`;
+  const conference=schools.find(s=>s.id===results[0]?.school_id)?.conference||null;
+  return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>{
+    const {games,...tally}=r.conference;
+    return{...r,text:text(r),conference:games&&conference?{name:conference,...tally,text:text(tally)}:null};
+  });
 }
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,local=schoolNow(now,schools.find(s=>s.id===events[0].school_id));events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}

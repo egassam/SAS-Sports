@@ -414,14 +414,21 @@ void [parse,line,ownRecapsOnly,live];
   const published=slug=>{
     const raw=fixture(`${slug}-schedule.html.gz`),data=JSON.parse(raw.match(/<script\b[^>]*id=["']__NUXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i)[1]);
     const holder=data.find(value=>value&&!Array.isArray(value)&&typeof value==='object'&&'overall' in value&&'conference' in value);
-    return String(data[holder.overall]).replace(/<[^>]+>/g,'').replace(/\s+/g,'');
+    return[String(data[holder.overall]).replace(/<[^>]+>/g,'').replace(/\s+/g,''),String(data[holder.conference])];
   };
   const record=(sport,slug)=>worker.groupEvents(parse(sport,slug),now)[0].records;
-  for(const [sport,slug,text] of [['Football','football','3-2'],['Volleyball','womens-volleyball','9-6'],['Soccer','womens-soccer','4-5-3'],['Swimming & Diving','womens-swimming-and-diving','0-1']]){
-    assert.equal(published(slug),text,`${sport}: the official page publishes ${text}`);
-    assert.deepEqual(record(sport,slug).map(r=>[r.team_label,r.text]),[[null,text]],`${sport}: the computed record is the official one`);
+  // Overall and Big 12 records, as each page publishes them; the conference
+  // games are the ones the page marks (Iowa and the Big 12 Championship are
+  // not; Utah and West Virginia are).
+  for(const [sport,slug,overall,conference] of [['Football','football','3-2','1-1'],['Volleyball','womens-volleyball','9-6','3-1'],['Soccer','womens-soccer','4-5-3','0-3-1'],['Swimming & Diving','womens-swimming-and-diving','0-1','0-0']]){
+    assert.deepEqual(published(slug),[overall,conference],`${sport}: the official page publishes ${overall} (${conference} Big 12)`);
+    assert.deepEqual(record(sport,slug).map(r=>[r.team_label,r.text,r.conference?.text||'0-0',r.conference?.name||'Big 12']),[[null,overall,conference,'Big 12']],`${sport}: the computed records are the official ones`);
   }
-  assert.deepEqual(record('Soccer','womens-soccer')[0],{team_label:null,wins:4,losses:5,ties:3,text:'4-5-3'});
+  assert.deepEqual(record('Soccer','womens-soccer')[0],{team_label:null,wins:4,losses:5,ties:3,text:'4-5-3',conference:{name:'Big 12',wins:0,losses:3,ties:1,text:'0-3-1'}});
+  const fb=parse('Football','football');
+  assert.deepEqual(fb.filter(e=>e.conference_game).map(e=>e.opponent),['Utah','West Virginia','BYU','Arizona','Oklahoma State','Baylor','Cincinnati','UCF','Kansas State']);
+  assert.equal(fb.find(e=>e.opponent==='Iowa').conference_game,false,'Iowa (Big Ten) is not a conference game');
+  assert.equal(fb.at(-1).conference_game,false,'the Big 12 Championship is not in the conference record');
   // Meets and tournaments (places, not wins) have no record.
   assert.deepEqual(record('Cross Country','cross-country'),[]);
   assert.deepEqual(worker.groupEvents([...parse('Golf','golf'),...parse('Golf','womens-golf')],now)[0].records,[]);
