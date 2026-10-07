@@ -1,11 +1,72 @@
-const HOST=__HOST__;
-// __NAME__'s calendar day.
-const __CAMEL__Today=sidearmToday(__TIMEZONE__);
+import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
+import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
+// Iowa State school module. Shared publisher utilities stay in the Worker;
+// this file owns cyclones.com routes, Iowa State's program combinations, its
+// verified Instagram tags and its schedule reader. Routes start as the exact
+// candidates production used before the module existed (route parity,
+// scripts/scaffold-school.mjs); each sport is then corrected and verified.
+export const iowaStateSchool={
+  id:'iowa-state',
+  // Sports whose official schedule this module reads itself, from the
+  // SIDEARM page data (see the reader below). Every other sport keeps the
+  // shared parsers. Add a sport only with its fixture tests.
+  pageDataSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Golf','Gymnastics','Tennis','Swimming & Diving','Softball','Track & Field','Wrestling']),
+  // Live game state from an independent scoreboard, per sport; the official
+  // schedule stays the results source of record. Football uses the shared
+  // default (ESPN's FBS group).
+  // Turn a sport's scoreboard on with the sport (lines ready below).
+  liveScoreboards:{
+    'Volleyball':[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    'Soccer':[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    'Basketball':[{path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},{path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}],
+    'Softball':[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]
+  },
+  // Men's and women's teams publish separate pages; both are shown, labeled
+  // by team.
+  combinedSports:new Set(['Basketball','Golf']),
+  // The men's golf page's address names no team.
+  teamLabels:{'/sports/golf/schedule':"Men's"},
+  verifiedInstagrams:{},
+  scheduleUrls:{
+    'iowa-state|Basketball':['https://cyclones.com/sports/mens-basketball/schedule','https://cyclones.com/sports/womens-basketball/schedule'],
+    'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/schedule',
+    'iowa-state|Football':'https://cyclones.com/sports/football/schedule',
+    // The men's schedule is /sports/golf/; /sports/mens-golf/ is SIDEARM's
+    // empty template.
+    'iowa-state|Golf':['https://cyclones.com/sports/golf/schedule','https://cyclones.com/sports/womens-golf/schedule'],
+    'iowa-state|Gymnastics':'https://cyclones.com/sports/womens-gymnastics/schedule',
+    'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/schedule',
+    'iowa-state|Softball':'https://cyclones.com/sports/softball/schedule',
+    'iowa-state|Swimming & Diving':'https://cyclones.com/sports/womens-swimming-and-diving/schedule',
+    'iowa-state|Tennis':'https://cyclones.com/sports/womens-tennis/schedule',
+    'iowa-state|Track & Field':'https://cyclones.com/sports/track-and-field/schedule',
+    'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/schedule',
+    'iowa-state|Wrestling':'https://cyclones.com/sports/wrestling/schedule'
+  },
+  rosterUrls:{
+    'iowa-state|Basketball':['https://cyclones.com/sports/mens-basketball/roster','https://cyclones.com/sports/womens-basketball/roster','https://cyclones.com/sports/basketball/roster'],
+    'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/roster',
+    'iowa-state|Football':'https://cyclones.com/sports/football/roster',
+    'iowa-state|Golf':['https://cyclones.com/sports/womens-golf/roster','https://cyclones.com/sports/mens-golf/roster','https://cyclones.com/sports/golf/roster'],
+    'iowa-state|Gymnastics':['https://cyclones.com/sports/womens-gymnastics/roster','https://cyclones.com/sports/mens-gymnastics/roster','https://cyclones.com/sports/gymnastics/roster'],
+    'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/roster',
+    'iowa-state|Softball':'https://cyclones.com/sports/softball/roster',
+    'iowa-state|Swimming & Diving':'https://cyclones.com/sports/womens-swimming-and-diving/roster',
+    'iowa-state|Tennis':'https://cyclones.com/sports/womens-tennis/roster',
+    'iowa-state|Track & Field':['https://cyclones.com/sports/track-and-field/roster','https://cyclones.com/sports/track-field/roster'],
+    'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/roster',
+    'iowa-state|Wrestling':'https://cyclones.com/sports/wrestling/roster'
+  }
+};
+
+const HOST='cyclones.com';
+// Iowa State's calendar day.
+const iowaStateToday=sidearmToday('America/Chicago');
 // Internal games: scrimmages, intrasquads.
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b/i;
-// __NAME__'s TFRRS cross country team pages; set them to read complete races
+// Iowa State's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const __CONST___TFRRS_TEAMS={Women:null,Men:null};
+export const IOWA_STATE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/IA_college_f_Iowa_State.html',Men:'https://www.tfrrs.org/teams/xc/IA_college_m_Iowa_State.html'};
 // Words every meet name shares; they do not tell two meets apart.
 const MEET_WORDS=new Set(['the','invitational','invite','relays','classic','championship','championships','meet','open','indoor','outdoor','and']);
 // A multi-day conference tournament (type P, first to last day); the
@@ -22,20 +83,20 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 // Salute"): "<School> at ...".
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 const isOpenChampionship=game=>{const title=String(game.opponent?.title||'').trim();const tournament=String(game.tournament?.title||'').trim();return/\bchampionship\b/i.test(title)&&Boolean(tournament)&&title.startsWith(tournament);};
-// __HOSTNAME__ is a SIDEARM (Nuxt) site: the shared reader turns its schedule
+// cyclones.com is a SIDEARM (Nuxt) site: the shared reader turns its schedule
 // page data into events in K-State's results format. These settings are
 // Houston's (src/schools/houston.mjs, built from the shared kit
 // src/sidearm-school-kit.mjs); change one only for something this site does
 // differently, with a fixture test. Every hook applies only to the sports in
 // pageDataSports, so the scaffold changes no output until a sport is turned
 // on.
-export function __FACTORY__({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
-  const converted=event=>__SCHOOLVAR__.pageDataSports.has(event?.sport);
+export function createIowaStateHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GAME',decodeHtml=value=>String(value||''),ordinal=value=>String(value),fetch,headers}){
+  const converted=event=>iowaStateSchool.pageDataSports.has(event?.sport);
   // Tennis tournaments are listed with their last day; a dual is a game.
   const isTournament=(sport,game)=>Boolean(String(game.tournament?.title||'').trim())||sport==='Tennis'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
   const {parseSchedule,isEmptySchedule}=createSidearmScheduleReader({
-    id:__ID__,host:HOST,sports:__SCHOOLVAR__.pageDataSports,squadSports:__SCHOOLVAR__.combinedSports,
-    today:__CAMEL__Today,
+    id:'iowa-state',host:HOST,sports:iowaStateSchool.pageDataSports,squadSports:iowaStateSchool.combinedSports,
+    today:iowaStateToday,
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
@@ -77,7 +138,7 @@ export function __FACTORY__({makeEvent,recapMatchesEvent,eventType=()=>'GAME',de
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
-      writeMeetPlaces(event,{text,schoolName:__NAMEQ__,ordinal});
+      writeMeetPlaces(event,{text,schoolName:'Iowa State',ordinal});
       if(event.headline==='Completed'&&text&&!/did not score|^nts$/i.test(text)){const value=golfPlacing(text)||text;event.headline=value;event.results=[{label:'Result',value}];}
     },
     // A golf tournament's final story is bound to its last round.
@@ -92,15 +153,15 @@ export function __FACTORY__({makeEvent,recapMatchesEvent,eventType=()=>'GAME',de
     },
     gameNumber:doubleheaderNumber()
   },{makeEvent,eventType});
-  const kitRecap=createRecapMatcher({id:__ID__,host:HOST,recapMatchesEvent,decodeHtml,trustOwnLink:true});
-  // Add meetSports:new Set(['Cross Country']) when the schedule links no meet
-  // stories (Iowa State).
-  const archive=createArchiveStory({id:__ID__,host:HOST,decodeHtml,fetch,headers});
-  const crossCountry=createTfrrsMeetResults({id:__ID__,schoolName:__NAMEQ__,teams:__CONST___TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
+  const kitRecap=createRecapMatcher({id:'iowa-state',host:HOST,recapMatchesEvent,decodeHtml,trustOwnLink:true});
+  // The cross country schedule links no stories, and a golf tournament's can
+  // be missing; each is in the sport's archive.
+  const archive=createArchiveStory({id:'iowa-state',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf'])});
+  const crossCountry=createTfrrsMeetResults({id:'iowa-state',schoolName:'Iowa State',teams:IOWA_STATE_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
   return{parseSchedule,isEmptySchedule,
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),
     attachArchiveStory:event=>converted(event)?archive.attachArchiveStory(event):event,
-    isCrossCountry:event=>converted(event)&&Boolean(__CONST___TFRRS_TEAMS.Women||__CONST___TFRRS_TEAMS.Men)&&crossCountry.matches(event),
+    isCrossCountry:event=>converted(event)&&Boolean(IOWA_STATE_TFRRS_TEAMS.Women||IOWA_STATE_TFRRS_TEAMS.Men)&&crossCountry.matches(event),
     attachMeetResults:crossCountry.attach};
 }

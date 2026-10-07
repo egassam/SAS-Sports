@@ -214,6 +214,12 @@ for(const script of ['test','test:release']){
   const anchor=/node tests\/colorado-module\.mjs/;
   if(!pkg.scripts[script].includes(`tests/${id}-module.mjs`))pkg.scripts[script]=pkg.scripts[script].replace(anchor,match=>`${match} && node tests/${id}-module.mjs`);
 }
+// A named script per school (npm run test:<id>-module), after the last one.
+if(!pkg.scripts[`test:${id}-module`]){
+  const entries=Object.entries(pkg.scripts),last=entries.map(([name])=>name).filter(name=>/^test:[a-z-]+-module$/.test(name)).at(-1);
+  const at=entries.findIndex(([name])=>name===last)+1;
+  entries.splice(at,0,[`test:${id}-module`,`node tests/${id}-module.mjs`]);pkg.scripts=Object.fromEntries(entries);
+}
 writeFileSync(new URL('package.json',root),JSON.stringify(pkg,null,2)+'\n');
 
 // The module must restate today's routes exactly.
