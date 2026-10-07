@@ -430,6 +430,20 @@ void [parse,line,ownRecapsOnly,live];
   recapFixtures.clear();
 }
 
+// Volleyball: the schedule links Central Arkansas (Sep 18) to a preview; its
+// story is in the archive and gives the result only as "in four sets".
+{
+  const match=parse('Volleyball','womens-volleyball').find(e=>e.opponent==='Central Arkansas');
+  assert.equal(worker.texasTechHandlers.isFinalWithoutStory(match),true);
+  recapFixtures.set('https://texastech.com/sports/womens-volleyball/archives',fixture('womens-volleyball-archives.html.gz'));
+  recapFixtures.set('https://texastech.com/news/2026/9/18/womens-volleyball-tech-drops-match-to-west-florida',fixture('recap-2026-9-18-womens-volleyball-tech-drops-match-to-we.html.gz'));
+  recapFixtures.set('https://texastech.com/news/2026/9/18/womens-volleyball-tech-takes-opener-in-iowa',fixture('story-2026-9-18-womens-volleyball-tech-takes-opener-in-i.html.gz'));
+  recapFixtures.set('https://texastech.com/news/2026/9/19/womens-volleyball-tech-fall-to-iowa-in-kwik-star-klassic',fixture('recap-2026-9-19-womens-volleyball-tech-fall-to-iowa-in-k.html.gz'));
+  await worker.texasTechHandlers.attachArchiveStory(match);
+  assert.equal(match.recap_url,'https://texastech.com/news/2026/9/18/womens-volleyball-tech-takes-opener-in-iowa');
+  recapFixtures.clear();
+}
+
 // Live: ESPN joins the official card for Texas Tech's game only.
 {
   live('Football','football-espn-2026-10-03.json.gz',parse('Football','football'),new Date('2026-10-04T12:00:00Z'),[['Texas Tech at Colorado','Final','W, 29-7']]);

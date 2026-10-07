@@ -9,8 +9,8 @@ Texas Tech was chosen on October 7, 2026 (user: "Let's do Texas tech. Learn from
 | Sport | Page | State |
 | --- | --- | --- |
 | Football | `football` | 5 finals with their own recaps, 7 upcoming; record `5-0 · Big 12 2-0` (as published); ESPN live score |
-| Volleyball | `womens-volleyball` | 16 finals (15 with their own recaps; Central Arkansas has a result line and no story), 14 upcoming; `8-8 · Big 12 0-4` (as published); ESPN live score |
-| Soccer | `womens-soccer` | 12 finals (Arizona State, Oct 2, has its score and no story yet), 8 upcoming; the New Mexico exhibition reads `(Exhibition)` and stays out of the record; `7-0-4 · Big 12 3-0-1` (as published); ESPN live score |
+| Volleyball | `womens-volleyball` | 16 finals, each with its own recap (Central Arkansas, Sep 18: the schedule links a preview; the story comes from the archive), 14 upcoming; `8-8 · Big 12 0-4` (as published); ESPN live score |
+| Soccer | `womens-soccer` | 12 finals, each with its story (Arizona State, Oct 2: from the archive), 8 upcoming; the New Mexico exhibition reads `(Exhibition)` and stays out of the record; `7-0-4 · Big 12 3-0-1` (as published); ESPN live score |
 | Cross Country | `cross-country` | 4 finals with TFRRS team results (`TX_college_f_Texas_Tech`, `TX_college_m_Texas_Tech`); the Nike XC Town Twilight (Oct 2, no result or story on the schedule) takes its story from the archive |
 | Basketball | `mens-basketball`, `womens-basketball` | Labeled; exhibitions read `(Exhibition)`; bracket rounds with "Opponents TBD" read as their tournament; ESPN live scores |
 | Baseball | `baseball` | Fall exhibitions and 2027 spring games; ESPN live score |
@@ -24,6 +24,7 @@ Texas Tech was chosen on October 7, 2026 (user: "Let's do Texas tech. Learn from
 - A bracket round whose opponent is "Opponents TBD", or a home tournament whose opponent names the school ("Texas Tech University", the Lubbock 25K), reads as its tournament.
 - A neutral postseason game named after its round ("NCAA Championship Semifinals") reads `at`.
 - The page's own story link may be dated up to 3 days after an event's last day (`ownLinkDays`, new kit option; the ACU Invitational, Sep 18-20, posted Sep 22). Other schools keep 1.
+- A volleyball match story from the archive may give the result only as a set count ("in four sets" for 3-1; `volleyballSets`, new kit option, off for other schools).
 
 Each rule was mutated and every mutation fails `npm run test:texas-tech-module`.
 

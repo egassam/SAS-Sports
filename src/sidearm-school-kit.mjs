@@ -181,7 +181,7 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // archive (a story dated from the meet's first day to the day after its last
 // that names the meet, the last day's first: Iowa State's cross country
 // schedule links none, and a golf tournament's story can be missing from it).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set()}){
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
@@ -211,11 +211,14 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
     }
     const a=String(event.school_score),b=String(event.opponent_score),opponent=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').trim();
     const score=new RegExp(`(?<![\\d-])(?:${a}-${b}|${b}-${a})(?![\\d-])`),tie=a===b?/\b(?:draw|tie|tied|scoreless)\b/i:null;
+    // volleyballSets: a match story may give only the number of sets ("in four
+    // sets" for 3-1, Texas Tech's Central Arkansas story).
+    const setCount={3:'three',4:'four',5:'five'}[Number(a)+Number(b)],sets=volleyballSets&&event.sport==='Volleyball'&&Math.max(Number(a),Number(b))===3&&setCount?new RegExp(`\\bin ${setCount} sets\\b${setCount==='three'?'|\\bsweep':''}`,'i'):null;
     for(const path of paths.slice(0,4)){
       const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
       const text=storyText(raw);
       if(!opponent||!text.toLowerCase().includes(opponent.toLowerCase()))continue;
-      if(score.test(text)||tie&&tie.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
+      if(score.test(text)||tie&&tie.test(text)||sets&&sets.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
     }
     return event;
   }

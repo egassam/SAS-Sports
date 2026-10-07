@@ -35,6 +35,9 @@ for(const sport of sports){
   await page.selectOption('#sportFilter',sport).catch(()=>{});
   await page.waitForTimeout(2500);
   await page.waitForLoadState('networkidle',{timeout:60000}).catch(()=>{});
+  // The page's default sport is already selected (no change event): wait
+  // for its first load to finish.
+  await page.waitForFunction(()=>!/Loading the selected sport/.test(document.querySelector('#feed')?.innerText||''),null,{timeout:60000}).catch(()=>{});
   const file=`${out}/${id}-${sport.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
   await page.screenshot({path:file,fullPage:true});
   const text=(await page.locator('#feed').innerText().catch(()=>'')).split('\n').map(s=>s.trim()).filter(Boolean).slice(0,8).join(' | ');

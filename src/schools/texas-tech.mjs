@@ -177,7 +177,7 @@ export function createTexasTechHandlers({makeEvent,recapMatchesEvent,eventType=(
     ownLinkDays:3});
   // A cross country meet's story can be missing from the schedule (Cowboy
   // Jamboree), and the swimming schedule links none; each is in the archive.
-  const archive=createArchiveStory({id:'texas-tech',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Swimming & Diving'])});
+  const archive=createArchiveStory({id:'texas-tech',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Swimming & Diving']),volleyballSets:true});
   const crossCountry=createTfrrsMeetResults({id:'texas-tech',schoolName:'Texas Tech',teams:TEXAS_TECH_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
   return{parseSchedule,isEmptySchedule,
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
