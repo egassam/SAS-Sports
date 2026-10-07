@@ -9,6 +9,10 @@
 //
 //   node scripts/survey-school.mjs --school=houston [--sport="Track & Field"] [--date=2026-06-20]
 //   node scripts/survey-school.mjs --school=houston --raw --sport=Golf     (the page-data entries)
+//   node scripts/survey-school.mjs --school=houston --lines                (test-ready arrays of `line(e)`)
+// A final with neither a result line nor a story fails the release gate
+// (scripts/verify-release.mjs); the survey flags it (GATE) so it is fixed
+// before the first push. Exit code 1 when any is flagged.
 import {readFileSync,existsSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
@@ -27,6 +31,9 @@ const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSp
 const worker=Function(...Object.keys(deps),source+';return {candidateUrls,parseHtml,labelTeamEvents};')(...Object.values(deps));
 const now=new Date(value('date')?`${value('date')}T15:00:00Z`:Date.now());
 const pad=(text,width)=>String(text).padEnd(width);
+// The gate's rule: a final needs a result line other than Completed, or a story.
+const gateMiss=e=>e.status==='Final'&&!e.recap_url&&(!e.headline||e.headline==='Completed');
+let flagged=0;
 
 for(const sport of value('sport')?[value('sport')]:sponsored[id]){
   for(const url of worker.candidateUrls(school,sport)){
@@ -40,7 +47,10 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
       continue;
     }
     const events=worker.labelTeamEvents(worker.parseHtml(raw,school,sport,url,now),school,sport,url);
+    if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
-    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}`);
+    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${gateMiss(e)?'  << GATE: final without a result line or story (look in /archives: fetch-school-fixtures saves it only for scored finals)':''}`);
+    flagged+=events.filter(gateMiss).length;
   }
 }
+if(flagged){console.log(`\n${flagged} final(s) without a result line or story: the release gate fails them.`);process.exitCode=1;}

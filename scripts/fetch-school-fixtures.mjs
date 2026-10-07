@@ -5,7 +5,8 @@
 //     "@season @sport" template marked as such;
 //   - every current-season final's linked story (recap-<y>-<m>-<d>-<slug>.html.gz,
 //     the name tests/houston-module.mjs's recapFile() expects);
-//   - the sport's /archives page when a scored final links no story;
+//   - the sport's /archives page when a scored final links no story, and the
+//     archive stories dated within each past meet or tournament without one;
 //   - ESPN scoreboard payloads for the latest final of each live sport;
 //   - TFRRS team and meet pages for cross country (--tfrrs-f=, --tfrrs-m=
 //     team page URLs; the summary prints the likely ones).
@@ -14,7 +15,7 @@
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=iowa-state [--sports=Football,Soccer] [--tfrrs-f=... --tfrrs-m=...]
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
-import {gzipSync} from 'node:zlib';
+import {gzipSync,gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from '../tests/school-module-deps.mjs';
@@ -74,8 +75,28 @@ for(const sport of sports){
       const link=new URL(recap,url).href,file=recapFile(link);
       if(!have(file)){const story=await download(link);if(story.body){save(file,story.body);stories++}}else stories++;
     }
-    if(missing&&!have(`${slug}-archives.html.gz`)){const list=await download(`https://${new URL(url).hostname}/sports/${slug}/archives`);if(list.body)save(`${slug}-archives.html.gz`,list.body)}
-    summary.push(`${sport}: ${slug} — "${title.replace(/ - .*$/,'')}", ${games.length} entries, ${current.length} this season, ${finals.length} with a result, ${stories} stories saved${missing?`, ${missing} scored finals without a story (archives saved)`:''}`);
+    // Past meets and tournaments the schedule links no story for (Iowa State's
+    // cross country; a golf tournament with no result yet): the archive
+    // stories dated from their first day to the day after their last are
+    // saved too (story-<y>-<m>-<d>-<slug>.html.gz), for createArchiveStory's
+    // meetSports.
+    const lastDay=g=>String(g.enddate||g.date).slice(0,10);
+    const unlinked=current.filter(g=>lastDay(g)<today&&!g.noplay_text&&!(typeof g.result?.recap?.url==='string'&&/\/news\//.test(g.result.recap.url))&&!['W','L','T'].includes(String(g.result?.status||'').toUpperCase()));
+    if((missing||unlinked.length)&&!have(`${slug}-archives.html.gz`)){const list=await download(`https://${new URL(url).hostname}/sports/${slug}/archives`);if(list.body)save(`${slug}-archives.html.gz`,list.body)}
+    let meetStories=0;
+    if(unlinked.length&&have(`${slug}-archives.html.gz`)){
+      const listing=gunzipSync(readFileSync(new URL(`${slug}-archives.html.gz`,dir))).toString('utf8').replace(/\\u002F/gi,'/');
+      const paths=[...new Set(listing.match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])];
+      for(const game of unlinked){
+        const first=Date.parse(`${String(game.date).slice(0,10)}T00:00:00Z`),last=Date.parse(`${lastDay(game)}T00:00:00Z`)+86400000;
+        for(const path of paths){
+          const [y,m,d,name]=path.split('/').slice(2);const day=Date.UTC(+y,+m-1,+d);if(day<first||day>last)continue;
+          const file=`story-${y}-${m}-${d}-${name.slice(0,40)}.html.gz`;
+          if(!have(file)){const story=await download(`https://${new URL(url).hostname}${path}`);if(story.body){save(file,story.body);meetStories++}}else meetStories++;
+        }
+      }
+    }
+    summary.push(`${sport}: ${slug} — "${title.replace(/ - .*$/,'')}", ${games.length} entries, ${current.length} this season, ${finals.length} with a result, ${stories} stories saved${missing?`, ${missing} scored finals without a story (archives saved)`:''}${unlinked.length?`, ${unlinked.length} past meets/tournaments without a story (${meetStories} archive stories saved)`:''}`);
     // The latest final of a live sport: its ESPN scoreboard day.
     const last=finals.filter(g=>['W','L','T'].includes(String(g.result.status).toUpperCase())).at(-1);
     if(ESPN[sport]&&last){
