@@ -40,6 +40,10 @@ These four rules are also in the scaffold template (`scripts/templates/sidearm-h
 
 `npm run test:iowa-state-module` (also in `npm test` and `npm run test:release`) covers all 12 sports from the unmodified fixtures: each final matches only its own recap; ESPN payloads for football, volleyball and soccer; TFRRS and the archive stories; last season's track and gymnastics pages. Each new rule was mutated and every mutation fails the test (all except the multi-day span: no fixture has a meet whose only story is dated two or more days after its first day).
 
+## Athletes
+
+Three featured athletes per sport (`AGENTS.md` 5a). Cross Country: two roster cards carry Instagram (Nathan Pestka, Ryan Watts); no other card or profile page (24 read) publishes one, so an official roster-profile card fills the third slot. Tennis and Swimming & Diving: no roster card or profile page publishes Instagram; three official profile cards. `validate-schools --athletes-only` 12/12 in production (Oct 7).
+
 ## Limitations
 
 Not fixable from the official sources today:

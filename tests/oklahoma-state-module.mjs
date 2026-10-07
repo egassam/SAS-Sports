@@ -210,7 +210,7 @@ assert.deepEqual(golf.events.map(e=>e.team_label).sort(),["Men's","Women's"],'Go
 // Athletes from the official rosters. The validator's rule is reproduced
 // here: an Instagram destination, or an official profile where allowed.
 const osuCertification=certification.schools.find(s=>s.id==='oklahoma-state');
-assert.deepEqual(osuCertification.athlete_profile_fallback_sports,['Tennis','Equestrian','Track & Field']);
+assert.deepEqual(osuCertification.athlete_profile_fallback_sports,['Tennis','Equestrian','Track & Field','Cross Country']);
 const validAthlete=(athlete,sport)=>athlete.instagram_url?athlete.instagram_url.startsWith('https://www.instagram.com/'):osuCertification.athlete_profile_fallback_sports.includes(sport)&&new URL(athlete.profile_url).hostname==='okstate.com'&&/\/roster\//.test(athlete.profile_url);
 responses=new Map([[sources.rosters['mxct-roster.html.gz'],fixture('mxct-roster.html.gz')],[sources.rosters['wrestling-roster.html.gz'],fixture('wrestling-roster.html.gz')]]);
 requests=[];
@@ -221,7 +221,7 @@ const xcAthletes=await worker.featuredAthletes('oklahoma-state','Cross Country')
 assert.deepEqual(xcAthletes.filter(a=>a.instagram_url).map(a=>a.name).sort(),['Brian Musau','Denis Kipngetich'],'Cross Country uses the two team-tag verified identities');
 assert.equal(xcAthletes.length,3,'three athletes, the search for a third Instagram link done');
 assert.ok(requests.some(url=>/\/sports\/mxct\/roster\/.+\/\d+$/.test(url)&&!/denis-kipngetich|brian-musau/.test(url)),'other runners\' profile pages are read for a third verified link');
-assert.ok(xcAthletes.every(a=>a.profile_url.includes('/sports/mxct/roster/')&&(a.instagram_url?.startsWith('https://www.instagram.com/')||a.instagram_url===null)));
+assert.ok(xcAthletes.every(a=>validAthlete(a,'Cross Country')&&a.profile_url.includes('/sports/mxct/roster/')),'two verified runners and an official roster profile (user, October 7: "Use official profile cards for those")');
 requests=[];
 const tfAthletes=await worker.featuredAthletes('oklahoma-state','Track & Field');
 assert.equal(tfAthletes.length,3,'Track & Field shows three official roster profiles');
