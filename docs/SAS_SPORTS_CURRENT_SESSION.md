@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026, America/Chicago. Production `4.54.0-iowa-state`.
+Last updated: October 7, 2026, America/Chicago. Production `4.56.1-conference-records`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 7, 2026, America/Chicago. Production `4.54.0-iowa-state`.
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.54.0-iowa-state`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.56.1-conference-records`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -75,3 +75,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 4 — Faster sessions and conversions** (PR #225, merged `abbccc0` on the user's "Merge"). Handoff split into this file + history; `AGENTS.md` updated for batched PRs and the shorter startup read; `scripts/verify-release.mjs` (`npm run verify:preview` / `verify:prod`); shared TFRRS reader `src/tfrrs-results.mjs`; `npm run scaffold-school`. Production verified with `verify:prod` (Colorado, Cincinnati, Baylor Cross Country; XC 18/20 and 26/21). The version was not bumped (no output change), so the new build cannot be told apart by `/api/status`. Baylor's Chile Pepper Festival has no result line yet: its TFRRS results are not published (same before and after).
 - **Oct 7 — Houston, all 11 sports + faster conversions** (PR #229, merged `ecbaef3`; production `4.53.0-houston` verified, athletes 11/11). 49 minutes start to production. Shared kit `src/sidearm-school-kit.mjs`; `scripts/fetch-school-fixtures.mjs`, `scripts/survey-school.mjs`; scaffold writes Houston's settings with every hook wired.
 - **Oct 7 — Iowa State, all 12 sports + faster conversions** (PR #231, merged `f7e2c68`; production `4.54.0-iowa-state` verified, athletes 12/12 under the old rule; 3 sports short under the new three-Instagram rule). 29 minutes start to production. Kit: archive stories for meets (`meetSports`), `teamLabels`; scaffold template gained four rules; `screenshot-school`, survey GATE flag and `--lines`, fixture script saves meet stories.
+- **Oct 7 — Three-Instagram rule, season and conference records** (PR #232 merged `478e8c9`, PR #233 merged `cfc62bd`, both on the user's "Merge it"; production `4.56.1-conference-records` verified 18:58 UTC). Rule open for 11 school-sports (see above).
