@@ -84,7 +84,7 @@ export const ${schoolVar}={
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
   // Turn a sport's scoreboard on with the sport (lines ready below).
-  liveScoreboards:{${liveLines?'\n'+liveLines.replace(/^    /gm,'    // ')+'\n  ':''}},
+  liveScoreboards:{${liveLines?'\n'+liveLines+'\n  ':''}},
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set([${combined.map(quote).join(',')}]),
@@ -230,4 +230,4 @@ const diff=sports.filter(sport=>JSON.stringify(after[sport])!==JSON.stringify(to
 if(diff.length){console.error(`Route parity FAILED for ${diff.join(', ')}; check src/index.js and the module`);process.exit(1)}
 console.log(`\nWrote src/schools/${id}.mjs, tests/${id}-module.mjs; wired src/index.js and package.json. Route parity: ${sports.length}/${sports.length} sports identical.`);
 console.log(`Next: NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=${id}; node scripts/survey-school.mjs --school=${id} --sport=<Sport>; add the sport to pageDataSports with its test block in tests/${id}-module.mjs; npm run test:release.`);
-console.log(`The module starts with Houston's settings and every hook wired (recap matcher, archive stories, TFRRS cross country), each applying only to the sports in pageDataSports; uncomment a sport's live scoreboard when it is turned on, and set the TFRRS team pages for cross country.`);
+console.log(`The module starts with Houston's settings and every hook wired (recap matcher, archive stories, TFRRS cross country), each applying only to the sports in pageDataSports (live scoreboards are on for every sponsored live sport); set the TFRRS team pages for cross country.`);
