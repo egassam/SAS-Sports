@@ -4,6 +4,7 @@ import {readFileSync,readdirSync} from 'node:fs';
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 const kstateModule=readFileSync(new URL('../src/schools/kstate.mjs',import.meta.url),'utf8');
 const kansasModule=readFileSync(new URL('../src/schools/kansas.mjs',import.meta.url),'utf8');
+const floridaModule=readFileSync(new URL('../src/schools/florida.mjs',import.meta.url),'utf8');
 const oklahomaStateModule=readFileSync(new URL('../src/schools/oklahoma-state.mjs',import.meta.url),'utf8');
 const utahModule=readFileSync(new URL('../src/schools/utah.mjs',import.meta.url),'utf8');
 const arizonaStateModule=readFileSync(new URL('../src/schools/arizona-state.mjs',import.meta.url),'utf8');
@@ -33,7 +34,8 @@ function count(source,text){
 contains(worker,/function recapMatchesEvent\(/,'Exact recap matcher must exist');
 contains(worker,/football-texas-tech-tops-acu-in-season-opener-33-10/,'Texas Tech–ACU must retain its verified official recap');
 contains(worker,/womens-volleyball-tech-bounces-back-against-wolfpack/,'Texas Tech volleyball finals must retain verified official recaps');
-contains(worker,/florida-state-suffers-seasons-first-loss/,'Florida–Florida State must retain its verified opponent recap');
+// Florida–Florida State (Aug 23) now takes Florida's own story from the
+// converted schedule (tests/florida-module.mjs), not Florida State's.
 contains(worker,/eventDay>=today/,'Past-dated events must never remain in the upcoming schedule');
 contains(worker,/storyPageContentBody/,'Next-generation official recap bodies must be supported');
 contains(worker,/!text\.includes\(opponent\)&&!fuzzyOpponent/,'Opponent mismatch must reject a recap');
@@ -253,7 +255,7 @@ contains(worker,/Math\.min\(unread\.length,ATHLETE_PROFILE_BUDGET\)/,'Every team
 contains(worker,/found\.filter\(a=>a\.instagram_url\)\.length<3/,'Roster scanning must continue until three verified athletes are found');
 contains(worker,/Number\(Boolean\(overrideFor\(b\)\)\)-Number\(Boolean\(overrideFor\(a\)\)\)/,'Verified team-tag identities must be inspected first');
 for(const verified of ['Emmah Jemutai','Mia Murray','Sophie Dawe','Oussama Allaoui','Keeghan Edwards','Claire Stegall']){
-  assert.ok((worker+kansasModule).includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
+  assert.ok((worker+kansasModule+floridaModule).includes(`|${verified}'`),`Missing verified Instagram identity for ${verified}`);
 }
 for(const verified of ['Mallory Renfro','Maralgoo Chogsomjav','Varvara Bernovich']){
   assert.ok(kstateModule.includes(`'kstate|Tennis|${verified}'`),`Missing verified K-State Tennis Instagram for ${verified}`);
