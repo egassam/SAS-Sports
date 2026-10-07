@@ -1504,3 +1504,33 @@ User: "How much time did this save per school?" (estimate given: about 2.5 h to 
 **Preview gate on #227 (`99903f8`/`91fc8e5`):** `verify:preview` for every sponsored sport of the three schools on the shared reader: Colorado 9, Baylor 12, Arizona 13 sports, each 36/36 forced refreshes HTTP 200 (no 1102/503), K-State XC 18/20 and KU 26/21 on each run, every expanded view 200. The result-line check flagged five tennis tournaments that show "Completed" with their own story (type DUAL; correct, as K-State's, and identical in production); `verify-release.mjs` now accepts a non-game final that has its story and still fails one with neither. Still failing, correctly: Baylor's Chile Pepper Festival (Oct 3), whose TFRRS results are not published yet (production identical).
 
 **Publication:** user: "Merge it". PR #227 merged as `1e6ba9d` (head `b88e0c6`, CI green, no conflict). Production after deploy: `verify:prod` for every sport of Colorado, Baylor and Arizona (3 forced refreshes each, expanded views) passed except Baylor's Chile Pepper Festival (TFRRS unpublished, as before); K-State Football, Volleyball and Baseball passed; K-State XC 18/20, KU 26/21. Production vs the branch preview (same code): 133/133 feeds identical on the final run. The first run showed K-State Baseball missing 3 upcoming games on production, and the next run the same games missing on the preview instead; six further paired reads gave the same 8 games on both. This was a transient read of kstatesports.com, not a code difference (both sides ran the same build). `VERSION` was not bumped (no output change).
+
+### October 7, 2026 — Houston, all 11 sports, and faster conversions (PR #229)
+
+User: "What's the next school?" The handoff named none: the user picks from Houston, Iowa State, TCU, Texas Tech, West Virginia. The agent recommended Houston. User: "Start Houston. Complete it all then check how long it took and try to make it faster for the next school."
+
+**Timeline (UTC):** start 14:17; scaffold and all 21 schedule pages saved by 14:19; Houston reader and the 11-sport test passing by 14:31; release suite and push 14:33; first preview gate (`ad99f1c`, all pass, 6m24s) 14:34-14:41; the speed-up work alongside; final gate on `996f45d` 14:57-15:03; merged 15:04; production verified 15:06. **49 minutes total** (Colorado: about 2.5 h for 9 sports).
+
+**Houston (`src/schools/houston.mjs`, `docs/HOUSTON_MODULE.md`):** all 11 sports read from uhcougars.com page data with the shared reader and the new shared kit. Points that needed work:
+- Times: `Noon` and `Noon CT`.
+- Volleyball: the other teams' tournament matches; Kentucky's story from the archive; the Sep 4 recap names Houston Christian only as "the Huskies" (`trustOwnLink`: the schedule's own link counts when dated within the event).
+- Basketball: bracket rounds without an opponent (`TBA – First Round`, the NCAA rounds) become one event per tournament; the women's Big 12 tournament (`Tournment` typo) is named after its tournament.
+- Golf: rounds merged into tournaments; match play reads `Match play: 1-1` with one row per match. This was changed after the first gate had stored the old expanded views (the highlight store is shared by preview and production), so `highlightRevision:1` was set.
+- Tennis: tournaments listed with their last day.
+- Swimming: meet days merged.
+- Baseball and softball: fall exhibitions labeled; the Red-Black Series is internal.
+- Track: meet days merged, team places with points; a story two meets share (Wake Forest on the Mt. SAC Relays) stays only with the meet it names.
+- Routes: official pages only; Houston pages are no longer compacted (`COMPACTED_HOSTS` empty).
+- Athletes certified for all 11 sports (3 each).
+
+**Faster conversions:**
+- `src/sidearm-school-kit.mjs` makes the Colorado, Baylor and Arizona pieces generic: text times, tournament rounds, meet days, TBA brackets, meet places with points, golf placing and match play, doubleheaders, recap matcher, archive story, TFRRS meet results.
+- `scripts/fetch-school-fixtures.mjs` saves every schedule candidate, current-season story, `/archives` page, ESPN payload and TFRRS page, and flags empty-template and homepage routes. Tried on Iowa State: 20 s for three sports; it found that ISU's men's golf schedule is `/sports/golf/`.
+- `scripts/survey-school.mjs` prints the reader's output per sport (`--raw`, `--date`).
+- `scaffold-school` writes Houston's settings and every hook (gated by `pageDataSports`, so no output change; live scoreboards as a ready comment), and test helpers. Tried on Iowa State in a scratch copy: route parity 12/12; module, regression, protect-certified, Houston, Colorado and K-State tests pass. Football and Volleyball read correctly once turned on. Open for Iowa State: the Big 12 Football Championship (type P, no opponent) reads `vs Big 12 Football Championship`.
+
+**Tests run:** `npm run test:release` exit 0 on `ad99f1c`, `bfaf207` and `996f45d`. `tests/houston-module.mjs`: 15 mutations, each fails the test. Preview gate on `ad99f1c` and `996f45d`: all pass (XC 18/20, 26/21; 11 × 36/36; every expanded view). Page screenshots of every sport. Athletes 11/11 on preview and production. `verify:prod` all pass.
+
+**Publication:** PR #229 merged as `ecbaef3` under the standing permission (`AGENTS.md` item 6); CI green on `996f45d`, no conflict. Production `4.53.0-houston` verified 15:06 UTC.
+
+**Open:** none for Houston beyond the source limits (Track & Field 2026-27 unpublished; no Rice Invite tennis story; no finals yet for Basketball, Swimming, Baseball, Softball). First live Houston cards not yet observed (volleyball vs BYU Oct 8, football at Kansas State Oct 10). Next: the school the user names (Iowa State, TCU, Texas Tech, West Virginia).

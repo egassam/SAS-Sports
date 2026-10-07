@@ -41,6 +41,15 @@ Production loaded several candidate pages per sport, including the homepage and 
 
 `npm run test:houston-module` (also in `npm test` and `npm run test:release`) covers all 11 sports from the unmodified fixtures. Each final matches only its own recap (36 stories). It also covers the archive story, TFRRS, ESPN payloads for football, volleyball and soccer (Houston Christian and Sam Houston are never taken for Houston), doubleheaders and the last-season track page. Each of the 15 rules above was mutated and every mutation fails the test.
 
+## Gate and production
+
+- **Release suite:** `npm run test:release` exit 0 on the final commit (`996f45d`, 3m37s).
+- **CI:** green on `996f45d`; the PR had no merge conflict.
+- **Preview gate:** `npm run verify:preview` on `996f45d`, 6.5 min. Status `4.53.0-houston`. K-State XC 18/20, KU XC 26/21. All 11 sports 36/36 forced refreshes HTTP 200 (no 1102/503). Every final has a result line. Expanded views: Football 5/5 (one `ai_failed`, retried by the page), Volleyball 15/15, Soccer 12/12, Cross Country 2/2 (`official_recap_results`), Golf 5/5.
+- **Page check:** every sport was checked on the preview page by eye (Playwright screenshots).
+- **Athletes:** `validate-schools --athletes-only` 11/11 on the preview and in production.
+- **Merge and production:** merged as `ecbaef3` under `AGENTS.md` item 6. `npm run verify:prod -- --school=houston --sports=all --version=4.53.0-houston` (Oct 7, 15:05 UTC) passed every check: XC 18/20 and 26/21, 11 sports, every expanded view.
+
 ## Limitations
 
 Not fixable from the official sources today:
