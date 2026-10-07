@@ -23,7 +23,12 @@ export const tcuSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Tennis']),
-  verifiedInstagrams:{},
+  // Accounts the official roster card publishes in a form the shared reader
+  // rejects: Sara Gimena's card links
+  // "https://www.instagram.com/https://www.instagram.com/saragimena_02/".
+  verifiedInstagrams:{
+    'tcu|Triathlon|Sara Gimena':'https://www.instagram.com/saragimena_02/'
+  },
   // The official pages only: the generic basketball, golf and tennis pages,
   // the separate swimming pages and the homepage render SIDEARM's empty
   // "@season @sport" template; beach volleyball is /womens-beach-volleyball/.

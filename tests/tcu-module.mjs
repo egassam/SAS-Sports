@@ -489,6 +489,10 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(record('Cross Country','cross-country'),[]);
 }
 
+// Triathlon: the official card doubles Sara Gimena's Instagram link; the
+// account it names is listed.
+assert.equal(tcuSchool.verifiedInstagrams['tcu|Triathlon|Sara Gimena'],'https://www.instagram.com/saragimena_02/');
+
 // Other schools and other hosts never reach the TCU reader.
 assert.equal(worker.tcuHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://gofrogs.com/',now),null);
 assert.equal(worker.tcuHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='texas-tech'),'Football',page('football'),now),null);
