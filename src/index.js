@@ -18,7 +18,7 @@ import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.56.0-conference-records';
+const VERSION='4.56.1-conference-records';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1175,7 +1175,7 @@ function seasonRecords(results){
   for(const e of results){
     const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
     if(months&&!months.includes(month))continue;
-    if(/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
+    if(e.exhibition||/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
     const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
     const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0,conference:{wins:0,losses:0,ties:0,games:0}};
     const add=tally=>{if(outcome==='W')tally.wins++;else if(outcome==='L')tally.losses++;else tally.ties++;};

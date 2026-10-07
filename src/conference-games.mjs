@@ -6,7 +6,8 @@
 // Virginia true; Iowa, the Big 12 Championship false). Each event is matched
 // to its page-data game by day and opponent. A site without that flag (WMT,
 // custom sites) falls back to membership: a regular-season game against a
-// fellow member of the school's conference.
+// fellow member of the school's conference. The page data's exhibitions
+// (type "S") are marked too.
 import {sidearmScheduleGames} from './sidearm-schedule-data.mjs';
 
 const words=value=>String(value||'').toLowerCase()
@@ -39,11 +40,16 @@ export function createConferenceGames({schools}){
     if(!Array.isArray(events)||!events.length||!school?.conference)return events;
     const games=/__NUXT_DATA__/.test(String(raw||''))?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
     if(games.length){
+      // The same page data marks exhibitions (type "S"), which records leave
+      // out even when a card does not say so (Oklahoma State soccer at Tulsa,
+      // Aug 6: okstate.com publishes 5-4-3 without it).
       for(const event of events){
-        if(typeof event.conference_game==='boolean'||!event.start_time||!event.opponent)continue;
+        if(!event.start_time||!event.opponent)continue;
         const opponent=words(event.opponent),dates=new Set([day(event.start_time),shiftDay(day(event.start_time),-1)]);
         const found=games.filter(game=>dates.has(day(game.date))&&(()=>{const other=words(game.opponent?.title);return other&&(other===opponent||other.includes(opponent)||opponent.includes(other));})());
-        if(found.length&&found.every(game=>game.conference===found[0].conference))event.conference_game=found[0].conference;
+        if(!found.length||!found.every(game=>game.conference===found[0].conference&&game.type===found[0].type))continue;
+        if(typeof event.conference_game!=='boolean')event.conference_game=found[0].conference;
+        if(found[0].type==='S')event.exhibition=true;
       }
       return events;
     }
