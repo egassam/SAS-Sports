@@ -154,8 +154,9 @@ export function createIowaStateHandlers({makeEvent,recapMatchesEvent,eventType=(
     gameNumber:doubleheaderNumber()
   },{makeEvent,eventType});
   const kitRecap=createRecapMatcher({id:'iowa-state',host:HOST,recapMatchesEvent,decodeHtml,trustOwnLink:true});
-  // The cross country schedule links no stories; each meet's is in the archive.
-  const archive=createArchiveStory({id:'iowa-state',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country'])});
+  // The cross country schedule links no stories, and a golf tournament's can
+  // be missing; each is in the sport's archive.
+  const archive=createArchiveStory({id:'iowa-state',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf'])});
   const crossCountry=createTfrrsMeetResults({id:'iowa-state',schoolName:'Iowa State',teams:IOWA_STATE_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
   return{parseSchedule,isEmptySchedule,
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),

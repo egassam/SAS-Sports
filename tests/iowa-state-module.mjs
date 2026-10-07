@@ -266,6 +266,22 @@ void [parse,line,ownRecapsOnly,live];
   assert.equal(men[0].end_time.slice(0,10),'2026-09-15');
   assert.match(men[0].final_story,/bearcat-invitational/);
   assert.equal(ownRecapsOnly([...men,...women],'Golf'),5);
+  // Cullan Brown (Oct 5-6) links no story and publishes no place: its story
+  // comes from the golf archive, the last day's (not the day-one story).
+  const cullan=men.find(e=>e.opponent==='Cullan Brown Collegiate'),story='https://cyclones.com/news/2026/10/6/mens-golf-cyclones-place-11th-in-first-cullan-brown-collegiate';
+  recapFixtures.set('https://cyclones.com/sports/golf/archives',fixture('golf-archives.html.gz'));
+  recapFixtures.set(story,fixture('story-2026-10-6-mens-golf-cyclones-place-11th-in-first-c.html.gz'));
+  recapFixtures.set('https://cyclones.com/news/2026/10/5/mens-golf-ben-wheeler-in-top-10-after-day-one',fixture('story-2026-10-5-mens-golf-ben-wheeler-in-top-10-after-da.html.gz'));
+  assert.equal(worker.iowaStateHandlers.isFinalWithoutStory(cullan),true);
+  await worker.iowaStateHandlers.attachArchiveStory(cullan);
+  assert.equal(cullan.recap_url,story);
+  // Listed oldest first, the last day's story still wins.
+  recapFixtures.set('https://cyclones.com/sports/golf/archives','<a href="/news/2026/10/5/mens-golf-ben-wheeler-in-top-10-after-day-one">1</a><a href="/news/2026/10/6/mens-golf-cyclones-place-11th-in-first-cullan-brown-collegiate">2</a>');
+  const again={...men.find(e=>e.opponent==='Cullan Brown Collegiate')};await worker.iowaStateHandlers.attachArchiveStory(again);assert.equal(again.recap_url,story);
+  recapFixtures.set(page('golf'),fixture('golf-schedule.html.gz'));
+  const {events}=await worker.fetchLive('iowa-state','Golf');
+  assert.equal(events.find(e=>e.opponent==='Cullan Brown Collegiate').recap_url,story,'the feed takes the archive story');
+  recapFixtures.clear();
 }
 
 // Tennis: fall tournaments, one event each from first to last day, each past

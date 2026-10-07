@@ -177,7 +177,8 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // round, never part of a record such as "3-0-1"; a tie may be a draw).
 // meetSports: sports whose finished meets also take their story from the
 // archive (a story dated from the meet's first day to the day after its last
-// that names the meet: Iowa State's cross country schedule links none).
+// that names the meet, the last day's first: Iowa State's cross country
+// schedule links none, and a golf tournament's story can be missing from it).
 export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set()}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
@@ -197,7 +198,9 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       // Every word that tells the meet apart ("Roy Griak") is in the story.
       const words=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.test(word));
       if(!words.length)return event;
-      for(const path of paths.slice(0,4)){
+      // The last day's story first: a day-one story names the meet too.
+      const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
+      for(const path of [...paths].sort((x,y)=>day(y)-day(x)).slice(0,4)){
         const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
         const text=storyText(raw).toLowerCase();
         if(words.every(word=>text.includes(word))){event.recap_url=url;event.archive_story_verified=url;return event;}
