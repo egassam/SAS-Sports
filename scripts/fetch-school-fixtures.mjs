@@ -36,7 +36,7 @@ const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.s
 // Today's routes, exactly as the Worker computes them.
 const source=read('src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:()=>{throw Error('no network')}};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,parseHtml};')(...Object.values(deps));
 
 const key=process.env.SAS_SOURCE_KEY,base=(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
 const blocked=new Set();
@@ -47,8 +47,14 @@ async function download(url){
     blocked.add(host);
   }
   if(!key)return{status:403,body:null};
-  const r=await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)});
-  return{status:r.status,body:r.ok?await r.text():null};
+  // A dropped connection (ECONNRESET through the proxy) is retried; it must
+  // not end the whole run (Georgia's first run stopped after 56 pages).
+  for(let attempt=1;;attempt++){
+    try{
+      const r=await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)});
+      return{status:r.status,body:r.ok?await r.text():null};
+    }catch(error){if(attempt>=3)return{status:`failed (${error.cause?.code||error.name})`,body:null};await new Promise(done=>setTimeout(done,2000*attempt));}
+  }
 }
 const save=(name,body)=>writeFileSync(new URL(name,dir),gzipSync(Buffer.from(body),{level:9}));
 const have=name=>existsSync(new URL(name,dir));
@@ -65,7 +71,11 @@ for(const sport of sports){
     if(!page.body){summary.push(`${sport}: ${slug} HTTP ${page.status}`);continue}
     save(name,page.body);
     const title=(page.body.match(/<title>([^<]*)/)||[])[1]?.trim()||'';
-    const games=sidearmScheduleGames(page.body),current=games.filter(g=>String(g.date).slice(0,10)>=seasonStart);
+    let games=sidearmScheduleGames(page.body);
+    // A site without SIDEARM page data (WMT: LSU, Cincinnati) is read by the
+    // school's own module, offline; its events are mapped to the same shape.
+    if(!games.length){try{games=(worker.parseHtml(page.body,school,sport,url,new Date(`${today}T15:00:00Z`))||[]).map(e=>({date:String(e.start_time).slice(0,10),enddate:e.end_time?String(e.end_time).slice(0,10):null,opponent:{title:e.opponent},result:e.status==='Final'?{status:/^[WLT],/.test(e.headline||'')?e.headline[0]:'N',postscore_info:e.headline,recap:e.recap_url?{url:e.recap_url}:null}:null}));}catch{games=[]}}
+    const current=games.filter(g=>String(g.date).slice(0,10)>=seasonStart);
     if(/@season @sport/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);continue}
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;

@@ -115,6 +115,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "georgia": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "houston": [
     "Baseball",
     "Basketball",
@@ -164,6 +179,21 @@
     "Golf",
     "Rowing",
     "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "lsu": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"

@@ -20,10 +20,12 @@ import {texasTechSchool,createTexasTechHandlers} from './schools/texas-tech.mjs'
 import {westVirginiaSchool,createWestVirginiaHandlers} from './schools/west-virginia.mjs';
 import {alabamaSchool,createAlabamaHandlers} from './schools/alabama.mjs';
 import {floridaSchool,createFloridaHandlers} from './schools/florida.mjs';
+import {georgiaSchool,createGeorgiaHandlers} from './schools/georgia.mjs';
+import {lsuSchool,createLsuHandlers} from './schools/lsu.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.60.0-alabama-florida';
+const VERSION='4.61.0-georgia-lsu';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -149,6 +151,15 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(floridaHandlers.isFinalWithoutStory(event))await floridaHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(floridaHandlers.isFinalWithoutStory).map(event=>floridaHandlers.attachArchiveStory(event)));return events.filter(event=>!floridaHandlers.isTennisWithoutStory(event));}}
+  ,{school:georgiaSchool,parseSchedule:(...args)=>georgiaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>georgiaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>georgiaHandlers.matchesRecap(...args),crossCountry:{matches:event=>georgiaHandlers.isCrossCountry(event),attach:event=>georgiaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(georgiaHandlers.isFinalWithoutStory(event))await georgiaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(georgiaHandlers.isFinalWithoutStory).map(event=>georgiaHandlers.attachArchiveStory(event)));return events.filter(event=>!georgiaHandlers.isTennisWithoutStory(event));}}
+  ,{school:lsuSchool,parseSchedule:(...args)=>lsuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>lsuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>lsuHandlers.matchesRecap(...args),crossCountry:{matches:event=>lsuHandlers.isCrossCountry(event),attach:event=>lsuHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>lsuHandlers.isLsuGolf(event),attach:event=>lsuHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(lsuHandlers.isLsuGolf).map(event=>lsuHandlers.attachGolfPlace(event)));return events;}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -247,6 +258,8 @@ const texasTechHandlers=createTexasTechHandlers({makeEvent,recapMatchesEvent,eve
 const westVirginiaHandlers=createWestVirginiaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const alabamaHandlers=createAlabamaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const floridaHandlers=createFloridaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const georgiaHandlers=createGeorgiaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const lsuHandlers=createLsuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -299,7 +312,7 @@ function rosterProfiles(raw,base){
   // Bind fields inside the card so navigation/team accounts remain ineligible.
   const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card(?:-item)?(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
   for(const body of wmtCards){
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
@@ -316,7 +329,7 @@ function rosterProfiles(raw,base){
   // identity-bound inside one official roster row.
   const wmtListItems=String(raw||'').split(/<li\b[^>]*class=["'][^"']*\broster-list-item(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
   for(const body of wmtListItems){
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/(?:staff|coaches)\//i.test(path))continue;
@@ -333,7 +346,7 @@ function rosterProfiles(raw,base){
   const wmtRows=String(raw||'').split(/<tr\b[^>]*>/i).slice(1);
   for(const row of wmtRows){
     const body=row.split(/<\/tr\s*>/i)[0];
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),name=clean(visibleText(profileMatch[2]));
     if(!url||nameScore(name)<=0)continue;
@@ -348,7 +361,7 @@ function rosterProfiles(raw,base){
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
     if(/\/(?:staff|coaches)\//i.test(path))continue;
-    if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
+    if(!/\/roster\/(?:player\/[^/]+|season\/[^/]+\/player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
     // SIDEARM often publishes the portrait and the visible athlete name in two
@@ -1296,7 +1309,17 @@ function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
   const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
-  if(storyBody)return visibleText(storyBody).slice(0,14000);
+  if(storyBody){
+    const text=visibleText(storyBody);
+    // A story that opens with nested markup (Georgia football's video table)
+    // ends the short read early; read the whole body by matching its divs.
+    if(text.length>=80)return text.slice(0,14000);
+    const open=raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>/i),tags=/<div\b[^>]*>|<\/div>/gi;
+    tags.lastIndex=open.index+open[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    if(end>0)return visibleText(raw.slice(open.index+open[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')).slice(0,14000);
+    return text.slice(0,14000);
+  }
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
   if(article){const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);}
   // WMT stores article paragraphs in its embedded application payload instead
