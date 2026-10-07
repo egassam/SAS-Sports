@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026, America/Chicago. Production `4.59.0-west-virginia`.
+Last updated: October 7, 2026, America/Chicago. Production `4.60.0-alabama-florida`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 7, 2026, America/Chicago. Production `4.59.0-west-virginia
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.59.0-west-virginia`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.60.0-alabama-florida`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -34,10 +34,14 @@ Last updated: October 7, 2026, America/Chicago. Production `4.59.0-west-virginia
 | Texas Tech | `texas-tech.mjs` | Complete (10 sports) | Track & Field fills when texastech.com publishes 2026-27; first live cards not yet observed (soccer at Oklahoma State Oct 8, volleyball vs Baylor Oct 8) |
 | West Virginia | `west-virginia.mjs` | Complete (14 sports) except source-blocked | Volleyball's James Madison exhibition (Aug 22) has no official story (archive checked), so deep is 13/14; golf shows place without field size (schedule publishes "8th Place"); Gymnastics, Rowing, Track & Field fill when published; first live cards not yet observed (soccer vs BYU Oct 8, volleyball at Utah Oct 8) |
 | TCU | `tcu.mjs` | Complete (14 sports) | Triathlon's third athlete is a profile card (only 2 Instagram published); first live cards not yet observed (soccer vs UCF Oct 8, volleyball vs Arizona Oct 9) |
+| Alabama (SEC) | `alabama.mjs` | Complete (13 sports) | Rowing fills when published; golf shows place without field size (not published); 8 sports use profile cards (rosters publish too few Instagram, 262 profiles read); first live cards not yet observed (soccer at Florida Oct 8, volleyball vs South Carolina Oct 9) |
+| Florida (SEC) | `florida.mjs` | Complete (13 sports) | Lacrosse fills when published; first live cards not yet observed (soccer vs Alabama Oct 8) |
 
-**All 16 Big 12 schools are converted** (West Virginia last, October 7). The BYU, Texas Tech and West Virginia "other schools" tests now name Illinois. Next: the user picks the next conference or the open items above.
+**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC started:** Alabama and Florida converted together (October 7, PR #242). Next: the next SEC schools (two at a time worked), or the open items above. Unconverted SEC schools in the catalog: check `src/schools.json`.
 
 ## How to convert a school (fast path, October 7)
+
+**Two schools at once (Alabama + Florida, 36 minutes for 26 sports, 1.4 min per sport, the per-sport record):** scaffold both, run both fixture fetches in parallel, copy West Virginia's handlers into both with one script (rename ids, host, time zone, TFRRS teams; drop WV-only rules), survey both, generate the test blocks from `survey --lines` (watch: two sports on one page need distinct variable names), one PR, both `verify:preview` runs and both athlete checks in parallel. Lessons: a route ending `/schedule/text` is not read by the module (use `/schedule`); some pages answer the sandbox with a 307/"Loading" page, so fetch them with `scripts/fetch-official.mjs` (private source); run the athlete check before the first push from the roster pages (count `instagram.com` links per roster) so profile-card sports are known up front; the athlete check right after a push can read cached athletes from the previous build (re-run once).
 
 Texas Tech holds the total record: **26 minutes** from start to production for 10 sports (2.6 min per sport); West Virginia holds the per-sport record: **30 minutes** for 14 sports (20:44-21:14 UTC, 2.1 min per sport); Iowa State 29 for 12, TCU 41 for 14, Houston 49 for 11. What made Texas Tech fast: **start the module from the newest converted school's handlers (now West Virginia's), not the scaffold template** (its rules are a superset; copy everything from `const HOST=` down and rename), and generate the test blocks from `survey --lines` with a script. One preview round was lost to a volleyball final whose page links a preview story (run `validate-schools --deep` on the preview as soon as it is up, in parallel with `verify:preview`). Do the steps in this order; start each slow step in the background and work on while it runs:
 1. **Setup (1 min):** `npm run scaffold-school -- --school=<id> --write`. Writes the module with Houston's and Iowa State's settings and every hook wired (shared kit `src/sidearm-school-kit.mjs`: published times, golf rounds and match play, meet days, bracket rounds, open championships, neutral multi-day events, conference tournaments, `(Ex.)` labels, team places with points, recap matcher, archive stories, TFRRS cross country, doubleheaders), each applying only to sports in `pageDataSports`. Adds the test file with helpers and `npm run test:<id>-module`. Then fix the BYU-style "other schools are unchanged" tests if they name this school (BYU's named Iowa State; now TCU).
@@ -84,3 +88,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 7 — TCU, all 14 sports** (PR #236, merged `5f7f852`; production `4.57.0-tcu` verified 19:58 UTC, athletes 14/14). 41 minutes start to production (record still Iowa State's 29). New rules: `(Exh.)`, event-named opponents read `at`, suffixless golf places, cancelled golf rounds, swimming meets with archive stories.
 - **Oct 7 — Texas Tech, all 10 sports** (PR #238, merged `a2a79df`; production `4.58.0-texas-tech` verified 20:34 UTC, `verify:prod` all sports, athletes 10/10 with three Instagram each, deep 10/10 on the preview). **26 minutes** start to production (new record). Survey attaches archive/TFRRS; fixture script saves TFRRS for every past meet; screenshot waits for the default sport.
 - **Oct 7 — West Virginia, all 14 sports; Big 12 finished** (PR #240, merged `a5c1d26`; production `4.59.0-west-virginia` verified 21:14 UTC, `verify:prod` all sports, athletes 14/14 with three Instagram each, deep 13/14 on the preview). **30 minutes** start to production (2.1 min per sport, a per-sport record; Texas Tech's 26-minute total stands). New: kit `meetName` for TFRRS, places written alone, per-day tennis/wrestling tournaments merged, rifle archive stories.
+- **Oct 7 — Alabama and Florida, 13 sports each; SEC started** (PR #242, merged `3c2afc1`; production `4.60.0-alabama-florida` verified 22:10 UTC, `verify:prod` all sports for both, athletes 13/13 each). **36 minutes** start to production for 26 sports (1.4 min per sport, record), the first two-school session.
