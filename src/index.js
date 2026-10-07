@@ -17,7 +17,7 @@ import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.54.0-iowa-state';
+const VERSION='4.55.1-records';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -467,6 +467,9 @@ async function instagramProfileImage(instagramUrl){
     return imageUrl;
   }catch{return null}finally{clearTimeout(timer)}
 }
+// Profile pages read per sport when roster cards hold fewer than three
+// verified links.
+const ATHLETE_PROFILE_BUDGET=24;
 async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
   let profiles=[];
@@ -492,7 +495,9 @@ async function featuredAthletes(schoolId,sport){
     profile_url:profile.url,
     image_url:profile.image_url||null
   }));
-  if(tagged.length>=2){
+  // Three verified Instagram athletes per sport (user, October 7: "I want
+  // three"): roster cards with fewer send the search on to the profiles.
+  if(tagged.length>=3){
     // The fast path must enforce the same identity rules as biography-page
     // discovery. Some publishers reuse a generic roster image across cards.
     const imageOwners=new Map(),socialOwners=new Map();
@@ -517,12 +522,15 @@ async function featuredAthletes(schoolId,sport){
     }
     return selected;
   }
-  const found=[];
+  // Athletes whose roster card already carries a verified link are kept
+  // without refetching their pages.
+  const found=tagged.map(athlete=>({...athlete})),known=new Set(found.map(athlete=>athlete.profile_url));
+  const unread=profiles.filter(profile=>!known.has(profile.url));
   // Inspect deterministic roster batches until three verified athletes are
   // found. This avoids randomly skipping smaller teams while keeping large
   // football rosters within a safe official-site request budget.
-  for(let start=0;start<Math.min(profiles.length,18)&&found.filter(a=>a.instagram_url).length<3;start+=3){
-    await Promise.all(profiles.slice(start,start+3).map(async profile=>{
+  for(let start=0;start<Math.min(unread.length,ATHLETE_PROFILE_BUDGET)&&found.filter(a=>a.instagram_url).length<3;start+=3){
+    await Promise.all(unread.slice(start,start+3).map(async profile=>{
       try{
         const r=await sourceFetch(profile.url);if(!r.ok)return;
         const html=await r.text(),instagram_url=verifiedInstagram(html)||overrideFor(profile);
@@ -1146,7 +1154,29 @@ function compactScheduleHtml(raw,sourceUrl){
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}${e.school_id==='kansas'&&e.official_event_id?'|'+e.official_event_id:''}${e.game_number?'|game-'+e.game_number:''}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 function inSeason(sport,month){const windows=SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
-function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,local=schoolNow(now,schools.find(s=>s.id===events[0].school_id));events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+// A sport's overall record this season (user, October 7: "the sports overall
+// win/loss record for every sport"), counted from its finals' W/L/T results
+// as the official schedule publishes them (games, duals, and gymnastics or
+// swimming scored against an opponent). Exhibitions do not count; meets and
+// tournaments published as places have none. Men's and women's teams of a
+// combined sport keep separate records.
+// Months whose games count toward the record: summer tours (basketball) and
+// fall ball (baseball, softball) are not part of the official record.
+const RECORD_MONTHS={Basketball:[11,12,1,2,3,4],Baseball:[2,3,4,5,6],Softball:[2,3,4,5,6]};
+function seasonRecords(results){
+  const byTeam=new Map();
+  for(const e of results){
+    const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
+    if(months&&!months.includes(month))continue;
+    if(/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
+    const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
+    const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0};
+    if(outcome==='W')record.wins++;else if(outcome==='L')record.losses++;else record.ties++;
+    byTeam.set(team,record);
+  }
+  return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>({...r,text:`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`}));
+}
+function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,local=schoolNow(now,schools.find(s=>s.id===events[0].school_id));events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
