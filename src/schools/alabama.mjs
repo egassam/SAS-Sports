@@ -24,7 +24,12 @@ export const alabamaSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
-  verifiedInstagrams:{},
+  // Linked from the official roster card and profile page; the handles do
+  // not spell the names, so they are listed here.
+  verifiedInstagrams:{
+    'alabama|Basketball|Naomi Jones':'https://www.instagram.com/big1nom/',
+    'alabama|Swimming & Diving|Emily Jones':'https://www.instagram.com/em.jones03/'
+  },
   scheduleUrls:{
     'alabama|Baseball':'https://rolltide.com/sports/baseball/schedule',
     'alabama|Basketball':['https://rolltide.com/sports/mens-basketball/schedule','https://rolltide.com/sports/womens-basketball/schedule'],

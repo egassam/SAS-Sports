@@ -27,7 +27,11 @@ export const floridaSchool={
   verifiedInstagrams:{
     'florida|Cross Country|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
     'florida|Cross Country|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
-    'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/'
+    'florida|Cross Country|Claire Stegall':'https://www.instagram.com/stegall.claire/',
+    // The same runners are on the official track and field roster.
+    'florida|Track & Field|Oussama Allaoui':'https://www.instagram.com/oussama__allaoui/',
+    'florida|Track & Field|Keeghan Edwards':'https://www.instagram.com/keeghan.edwards/',
+    'florida|Track & Field|Claire Stegall':'https://www.instagram.com/stegall.claire/'
   },
   scheduleUrls:{
     'florida|Baseball':'https://floridagators.com/sports/baseball/schedule',
