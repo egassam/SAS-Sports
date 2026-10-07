@@ -201,7 +201,7 @@ contains(worker,/PL NAME\|Cowboy Preview/,'Cross-country recap parsing must reje
 contains(worker,/function parseCrossCountryFlatPdfResults/,'Event-result PDFs must be parsed as race tables');
 contains(worker,/flat\.length>=2\?flat:parseCrossCountryPdfResults/,'Race-table PDF results must take priority over cumulative athlete blocks');
 contains(worker,/function compactScheduleHtml\(/,'Large official schedule pages must have an isolated event-section compactor');
-contains(worker,/if\(host!=='uhcougars\.com'\)return raw;/,'Schedule compaction must remain isolated to Houston (Colorado pages are read whole by its module)');
+contains(worker,/const COMPACTED_HOSTS=new Set\(\);/,'No site is compacted: Colorado and Houston pages are read whole by their modules (the page data sits after the cards)');
 contains(worker,/parseable=compactScheduleHtml\(html,finalUrl\)/,'Live parsing must use the bounded official schedule section');
 contains(page,/no cached results are being shown as current/i,'UI must not substitute packaged results');
 contains(worker,/FEED_FRESH_MS=25\*1000/,'Shared live-feed cache must refresh within the 30-second polling window');
