@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,lsuHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,lsuHandlers,rosterProfiles,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/lsu-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit lsusports.net routes, exactly
@@ -568,6 +568,13 @@ void [parse,line,ownRecapsOnly,live];
     assert.deepEqual(record(sport,slug).map(r=>[r.text,r.conference?.text]),[[overall,conference]],`${sport}: the computed records are the official ones (${overall}, ${conference} SEC)`);
   }
   assert.deepEqual(['fb','vb','sc'].map(published),[['4-1','1-1'],['7-6','2-2'],['3-8-2','1-3-1']]);
+}
+
+// Roster: basketball links profiles under the season
+// (/roster/season/2026-27/player/...); each card's Instagram is read.
+{
+  const profiles=worker.rosterProfiles(fixture('mb-roster.html.gz'),'https://lsusports.net/sports/mb/roster');
+  assert.ok(profiles.length>=4&&profiles.every(p=>/\/roster\/season\/2026-27\/player\//.test(p.url)&&p.instagram_url),'every men\'s basketball card with its Instagram');
 }
 
 // Other schools and other hosts never reach the LSU reader.

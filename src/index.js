@@ -312,7 +312,7 @@ function rosterProfiles(raw,base){
   // Bind fields inside the card so navigation/team accounts remain ineligible.
   const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card(?:-item)?(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
   for(const body of wmtCards){
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
@@ -329,7 +329,7 @@ function rosterProfiles(raw,base){
   // identity-bound inside one official roster row.
   const wmtListItems=String(raw||'').split(/<li\b[^>]*class=["'][^"']*\broster-list-item(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
   for(const body of wmtListItems){
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/(?:staff|coaches)\//i.test(path))continue;
@@ -346,7 +346,7 @@ function rosterProfiles(raw,base){
   const wmtRows=String(raw||'').split(/<tr\b[^>]*>/i).slice(1);
   for(const row of wmtRows){
     const body=row.split(/<\/tr\s*>/i)[0];
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),name=clean(visibleText(profileMatch[2]));
     if(!url||nameScore(name)<=0)continue;
@@ -361,7 +361,7 @@ function rosterProfiles(raw,base){
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
     if(/\/(?:staff|coaches)\//i.test(path))continue;
-    if(!/\/roster\/(?:player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
+    if(!/\/roster\/(?:player\/[^/]+|season\/[^/]+\/player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(m[2],base,name,true)||previous?.image_url||null;
     // SIDEARM often publishes the portrait and the visible athlete name in two
