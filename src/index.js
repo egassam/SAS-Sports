@@ -1309,7 +1309,17 @@ function recapArticleText(raw){
   const bodyMatch=raw.match(/"articleBody"\s*:\s*("(?:\\.|[^"\\])*")/i);
   if(bodyMatch){try{return JSON.parse(bodyMatch[1]).slice(0,14000)}catch{}}
   const storyBody=(raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>([\s\S]*?)(?=<\/div>\s*<\/(?:div|section)>)/i)||[])[1];
-  if(storyBody)return visibleText(storyBody).slice(0,14000);
+  if(storyBody){
+    const text=visibleText(storyBody);
+    // A story that opens with nested markup (Georgia football's video table)
+    // ends the short read early; read the whole body by matching its divs.
+    if(text.length>=80)return text.slice(0,14000);
+    const open=raw.match(/<div\b[^>]*id=["']storyPageContentBody["'][^>]*>/i),tags=/<div\b[^>]*>|<\/div>/gi;
+    tags.lastIndex=open.index+open[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    if(end>0)return visibleText(raw.slice(open.index+open[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')).slice(0,14000);
+    return text.slice(0,14000);
+  }
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
   if(article){const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);}
   // WMT stores article paragraphs in its embedded application payload instead

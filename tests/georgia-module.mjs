@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,georgiaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,georgiaHandlers,attachOfficialMeetResults,decodeHtml,recapArticleText};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/georgia-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit georgiadogs.com routes, exactly
@@ -536,6 +536,11 @@ void [parse,line,ownRecapsOnly,live];
   }
   assert.deepEqual(['football','womens-volleyball','womens-soccer'].map(published),[['5-0','3-0'],['11-2','3-0'],['4-3-5','1-1-3']]);
 }
+
+// A football story opens with a video table; the expanded view still reads
+// its whole text.
+assert.match(worker.recapArticleText(fixture('recap-2026-10-3-football-passing-game-powers-bulldogs-pa.html.gz')),/Vanderbilt/);
+assert.ok(worker.recapArticleText(fixture('recap-2026-10-3-football-passing-game-powers-bulldogs-pa.html.gz')).length>500);
 
 // Other schools and other hosts never reach the Georgia reader.
 assert.equal(worker.georgiaHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://georgiadogs.com/',now),null);
