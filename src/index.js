@@ -14,9 +14,10 @@ import {baylorSchool,createBaylorHandlers} from './schools/baylor.mjs';
 import {cincinnatiSchool,createCincinnatiHandlers} from './schools/cincinnati.mjs';
 import {coloradoSchool,createColoradoHandlers} from './schools/colorado.mjs';
 import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
+import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 
-const VERSION='4.53.0-houston';
+const VERSION='4.54.0-iowa-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -62,6 +63,8 @@ const sourceFetch=createSourceFetch({fetch:(...args)=>fetch(...args),headers:HEA
 //   feed(events,sport)  events, after the feed's pages are merged
 //   meetDayIsLast  a multi-day meet's recap is dated its last day
 //   newsPath  where the sport's stories are listed (default /news)
+//   school.teamLabels {path: label}  the team of a combined sport's page whose
+//     address names none
 // Hooks run only for their own school (each checks the event's school).
 const SCHOOL_MODULES=[
   {school:kstateSchool},
@@ -110,6 +113,11 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(houstonHandlers.isHoustonFinalWithoutStory(event))await houstonHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(houstonHandlers.isHoustonFinalWithoutStory).map(event=>houstonHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:iowaStateSchool,parseSchedule:(...args)=>iowaStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>iowaStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>iowaStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>iowaStateHandlers.isCrossCountry(event),attach:event=>iowaStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(iowaStateHandlers.isFinalWithoutStory(event))await iowaStateHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(iowaStateHandlers.isFinalWithoutStory).map(event=>iowaStateHandlers.attachArchiveStory(event)));return events;}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -148,12 +156,6 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
-  ,'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/roster'
-  ,'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/roster'
-  ,'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/roster'
-  ,'iowa-state|Football':'https://cyclones.com/sports/football/roster'
-  ,'iowa-state|Swimming & Diving':'https://cyclones.com/sports/womens-swimming-and-diving/roster'
-  ,'iowa-state|Tennis':'https://cyclones.com/sports/womens-tennis/roster'
   ,'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/roster'
   ,'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/roster'
   ,'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/roster'
@@ -169,6 +171,9 @@ function schoolCombinedSports(school){
 function teamLabelForSource(school,sport,url){
   if(!schoolCombinedSports(school).has(sport))return null;
   const path=new URL(url).pathname;
+  // A module names the team of a page whose address does not
+  // (Iowa State's men's golf is /sports/golf/).
+  const named=schoolModule(school.id)?.school.teamLabels?.[path];if(named)return named;
   if(/\/(?:mens(?:-|\/)|men-|m-)/i.test(path))return"Men's";
   if(/\/(?:womens(?:-|\/)|women-|w-)/i.test(path))return"Women's";
   return null;
@@ -196,10 +201,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'texas-tech|Cross Country':'https://texastech.com/sports/cross-country/schedule',
   'texas-tech|Track & Field':'https://texastech.com/sports/track-and-field/schedule',
   'texas-tech|Football':'https://texastech.com/sports/football/schedule',
-  'iowa-state|Cross Country':'https://cyclones.com/sports/cross-country/schedule',
-  'iowa-state|Soccer':'https://cyclones.com/sports/womens-soccer/schedule',
-  'iowa-state|Volleyball':'https://cyclones.com/sports/womens-volleyball/schedule',
-  'iowa-state|Football':'https://cyclones.com/sports/football/schedule',
   'tcu|Cross Country':'https://gofrogs.com/sports/cross-country/schedule',
   'tcu|Soccer':'https://gofrogs.com/sports/womens-soccer/schedule',
   'tcu|Volleyball':'https://gofrogs.com/sports/womens-volleyball/schedule',
@@ -249,6 +250,7 @@ const arizonaStateHandlers=createArizonaStateHandlers({makeEvent,visibleText,sch
 const utahHandlers=createUtahHandlers({slug,ordinal,recapMatchesEvent,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaStateHandlers=createOklahomaStateHandlers({ordinal,slug,recapMatchesEvent,fetchPdfText:url=>fetchOfficialPdfText(url),fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const houstonHandlers=createHoustonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const iowaStateHandlers=createIowaStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}

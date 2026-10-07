@@ -175,18 +175,35 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // from the sport's archive: dated on the game day or the day after, naming
 // the opponent in the article and stating the result (the score either way
 // round, never part of a record such as "3-0-1"; a tie may be a draw).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers}){
+// meetSports: sports whose finished meets also take their story from the
+// archive (a story dated from the meet's first day to the day after its last
+// that names the meet: Iowa State's cross country schedule links none).
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set()}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
-  const needsStory=event=>event?.school_id===id&&event.event_type==='GAME'&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
+  const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
+  const needsStory=event=>isMeet(event)||event?.school_id===id&&event.event_type==='GAME'&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
+  const MEET_WORDS=/^(?:the|and|invitational|invite|meet|open|classic|championships?|teams?|only)$/i;
   const schedulePath=new RegExp(`^https://${host.replace(/\./g,'\\.')}/sports/([a-z-]+)/schedule`);
   async function attachArchiveStory(event){
     if(!needsStory(event))return event;
     const slug=(String(event.source?.url||'').match(schedulePath)||[])[1];if(!slug)return event;
     const listing=await download(`https://${host}/sports/${slug}/archives`);if(!listing)return event;
     const first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`);
-    const days=[0,1].map(offset=>new Date(first+offset*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
+    const span=isMeet(event)?Math.max(0,Math.round((Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`)-first)/86400000)):0;
+    const days=Array.from({length:span+2},(_,offset)=>new Date(first+offset*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
     const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day)));
+    if(isMeet(event)){
+      // Every word that tells the meet apart ("Roy Griak") is in the story.
+      const words=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.test(word));
+      if(!words.length)return event;
+      for(const path of paths.slice(0,4)){
+        const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
+        const text=storyText(raw).toLowerCase();
+        if(words.every(word=>text.includes(word))){event.recap_url=url;event.archive_story_verified=url;return event;}
+      }
+      return event;
+    }
     const a=String(event.school_score),b=String(event.opponent_score),opponent=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').trim();
     const score=new RegExp(`(?<![\\d-])(?:${a}-${b}|${b}-${a})(?![\\d-])`),tie=a===b?/\b(?:draw|tie|tied|scoreless)\b/i:null;
     for(const path of paths.slice(0,4)){
