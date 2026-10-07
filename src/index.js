@@ -17,10 +17,11 @@ import {houstonSchool,createHoustonHandlers} from './schools/houston.mjs';
 import {iowaStateSchool,createIowaStateHandlers} from './schools/iowa-state.mjs';
 import {tcuSchool,createTcuHandlers} from './schools/tcu.mjs';
 import {texasTechSchool,createTexasTechHandlers} from './schools/texas-tech.mjs';
+import {westVirginiaSchool,createWestVirginiaHandlers} from './schools/west-virginia.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.58.0-texas-tech';
+const VERSION='4.59.0-west-virginia';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -131,6 +132,11 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(texasTechHandlers.isFinalWithoutStory(event))await texasTechHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(texasTechHandlers.isFinalWithoutStory).map(event=>texasTechHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:westVirginiaSchool,parseSchedule:(...args)=>westVirginiaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>westVirginiaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>westVirginiaHandlers.matchesRecap(...args),crossCountry:{matches:event=>westVirginiaHandlers.isCrossCountry(event),attach:event=>westVirginiaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(westVirginiaHandlers.isFinalWithoutStory(event))await westVirginiaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(westVirginiaHandlers.isFinalWithoutStory).map(event=>westVirginiaHandlers.attachArchiveStory(event)));return events;}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -169,10 +175,6 @@ const KNOWN_ROSTER_URLS=new Map(Object.entries({
   'alabama|Soccer':'https://rolltide.com/sports/womens-soccer/roster',
   'alabama|Track & Field':'https://rolltide.com/sports/xctrack/roster',
   'alabama|Volleyball':'https://rolltide.com/sports/womens-volleyball/roster'
-  ,'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/roster'
-  ,'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/roster'
-  ,'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/roster'
-  ,'west-virginia|Football':'https://wvusports.com/sports/football/roster'
 }));
 function schoolCombinedSports(school){
   return schoolModule(school?.id)?.school.combinedSports||COMBINED_TEAM_SPORTS;
@@ -205,10 +207,6 @@ const KNOWN_URLS=new Map(Object.entries({
   'florida|Track & Field':'https://floridagators.com/sports/track-and-field/schedule',
   'florida|Football':'https://floridagators.com/sports/football/schedule',
   'florida|Swimming & Diving':'https://floridagators.com/sports/swimming-and-diving/schedule',
-  'west-virginia|Cross Country':'https://wvusports.com/sports/womens-cross-country/schedule',
-  'west-virginia|Soccer':'https://wvusports.com/sports/womens-soccer/schedule',
-  'west-virginia|Volleyball':'https://wvusports.com/sports/womens-volleyball/schedule',
-  'west-virginia|Football':'https://wvusports.com/sports/football/schedule',
   'nebraska|Volleyball':'https://huskers.com/sports/volleyball/schedule?view=list',
   'nebraska|Soccer':'https://huskers.com/sports/soccer/schedule',
   'nebraska|Cross Country':'https://huskers.com/sports/cross-country/schedule/season/2026',
@@ -253,6 +251,7 @@ const houstonHandlers=createHoustonHandlers({makeEvent,recapMatchesEvent,eventTy
 const iowaStateHandlers=createIowaStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const tcuHandlers=createTcuHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const texasTechHandlers=createTexasTechHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const westVirginiaHandlers=createWestVirginiaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}

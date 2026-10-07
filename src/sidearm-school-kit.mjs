@@ -229,7 +229,7 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
 // by date and name, the school's rows by the TEAM column. Every team place
 // the schedule publishes must agree, or the schedule's headline stays.
 // Feed and expanded view both call attach; the second call is a no-op.
-export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,decodeHtml,ordinal,fetch,headers}){
+export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,decodeHtml,ordinal,fetch,headers}){
   const download=downloader(fetch,headers);
   const matches=event=>event?.school_id===id&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   async function attach(event){
@@ -244,7 +244,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
     for(const team of ['Women','Men']){
       if(!teams[team])continue;
       const listing=await download(teams[team]);if(!listing)continue;
-      const url=findTfrrsMeet(listing,{decodeHtml,date,name:event.opponent});
+      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)});
       if(url)pages.add(url);
     }
     if(!pages.size)return unavailable('No results for this meet are published on TFRRS yet.');

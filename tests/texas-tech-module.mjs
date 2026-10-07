@@ -469,7 +469,7 @@ void [parse,line,ownRecapsOnly,live];
 
 // Other schools and other hosts never reach the Texas Tech reader.
 assert.equal(worker.texasTechHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://texastech.com/',now),null);
-assert.equal(worker.texasTechHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='west-virginia'),'Football',page('football'),now),null);
+assert.equal(worker.texasTechHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='illinois'),'Football',page('football'),now),null);
 requests.length=0;
 
 assert.equal(requests.length,0,'no unexpected network requests');
