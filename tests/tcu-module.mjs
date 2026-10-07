@@ -235,7 +235,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_womensgolf.map(line),[
  "Final Sep 2 Women's · TCU at Pan Pacific Super League | 2nd of 12",
  "Final Sep 19 Women's · TCU at Schooner Fall Classic | 5th of 16",
- "Today Oct 5, 9:15 AM Women's · TCU at The Ally | ",
+ "Final Oct 5 Women's · TCU at The Ally | 6th of 17",
  "Upcoming Oct 12 Women's · TCU at Illini Women's Invitational at Medinah | ",
  "Upcoming Oct 18 Women's · TCU at Jim West Challenge | ",
  "Upcoming Jan 29 Women's · TCU at Collegiate Invitational at Guadalajara Country Club | ",
@@ -428,8 +428,10 @@ void [parse,line,ownRecapsOnly,live];
   // Men's golf places carry no suffix ("3/14"): read as "3rd of 14".
   assert.deepEqual(v_mensgolf.filter(e=>e.status==='Final').map(e=>e.headline),['3rd of 14','2nd of 17','11th of 15']);
   // The Ally's final round was cancelled: the place after round two stands.
-  const ally=parse('Golf','womens-golf',new Date('2026-10-08T15:00:00Z')).find(e=>e.opponent==='The Ally');
-  assert.equal(line(ally),"Final Oct 5 Women's · TCU at The Ally | 6th of 17");
+  for(const at of [now,new Date('2026-10-08T15:00:00Z')]){
+    const ally=parse('Golf','womens-golf',at).find(e=>e.opponent==='The Ally');
+    assert.equal(line(ally),"Final Oct 5 Women's · TCU at The Ally | 6th of 17",'over on the day its last round is cancelled');
+  }
 }
 
 // Cross Country: the Cowboy Jamboree's story is in the archive (the schedule

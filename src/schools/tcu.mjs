@@ -108,10 +108,11 @@ export function createTcuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
-      // place after the round before it.
+      // place after the round before it, and a cancelled last round ends the
+      // tournament that day.
       if(sport==='Golf')return mergeTournamentRounds(games.map((game,i)=>{
         const previous=games[i-1],text=String(game.result?.postscore_info||game.result?.prescore_info||'');
-        return/^cancel+ed$/i.test(text.trim())&&previous?.tournament?.title===game.tournament?.title&&previous?.result?{...game,result:{...game.result,postscore_info:previous.result.postscore_info||previous.result.prescore_info||'',prescore_info:''}}:game;
+        return/^cancel+ed$/i.test(text.trim())&&previous?.tournament?.title===game.tournament?.title&&previous?.result?{...game,result:{...game.result,postscore_info:previous.result.postscore_info||previous.result.prescore_info||'',prescore_info:'',cancelledRound:true}}:game;
       }));
       if(sport==='Swimming & Diving'||sport==='Track & Field')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
@@ -140,7 +141,7 @@ export function createTcuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     // after midnight locally and its score is posted after.
     // A past swimming meet the schedule gives no score is final; its story
     // comes from the archive (below).
-    final:ctx=>ctx.scored||ctx.meet&&ctx.lastDay<ctx.today||ctx.sport==='Swimming & Diving'&&ctx.lastDay<ctx.today&&!ctx.game.noplay_text,
+    final:ctx=>ctx.scored||ctx.meet&&(ctx.lastDay<ctx.today||ctx.result?.cancelledRound&&ctx.lastDay<=ctx.today)||ctx.sport==='Swimming & Diving'&&ctx.lastDay<ctx.today&&!ctx.game.noplay_text,
     keep:ctx=>Date.parse(ctx.lastDay)>=Date.parse(ctx.today)-86400000,
     // An event, not a team, is "at" ("TCU Fall Invitational", "ITF Edmond
     // W100", "CSCAA Open Water Championship"), as is a double dual away.
