@@ -31,6 +31,7 @@
     "test:cincinnati-module": "node tests/cincinnati-module.mjs",
     "test:colorado-module": "node tests/colorado-module.mjs",
     "test:houston-module": "node tests/houston-module.mjs",
+    "test:iowa-state-module": "node tests/iowa-state-module.mjs",
     "verify:preview": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs",
     "verify:prod": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs --prod",
     "scaffold-school": "node scripts/scaffold-school.mjs",
