@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026, America/Chicago. Production `4.61.0-georgia-lsu` (after PR #244 merges; see the session log).
+Last updated: October 7, 2026, America/Chicago. Production `4.61.0-georgia-lsu`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -95,4 +95,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 7 — Texas Tech, all 10 sports** (PR #238, merged `a2a79df`; production `4.58.0-texas-tech` verified 20:34 UTC, `verify:prod` all sports, athletes 10/10 with three Instagram each, deep 10/10 on the preview). **26 minutes** start to production (new record). Survey attaches archive/TFRRS; fixture script saves TFRRS for every past meet; screenshot waits for the default sport.
 - **Oct 7 — West Virginia, all 14 sports; Big 12 finished** (PR #240, merged `a5c1d26`; production `4.59.0-west-virginia` verified 21:14 UTC, `verify:prod` all sports, athletes 14/14 with three Instagram each, deep 13/14 on the preview). **30 minutes** start to production (2.1 min per sport, a per-sport record; Texas Tech's 26-minute total stands). New: kit `meetName` for TFRRS, places written alone, per-day tennis/wrestling tournaments merged, rifle archive stories.
 - **Oct 7 — Alabama and Florida, 13 sports each; SEC started** (PR #242, merged `3c2afc1`; production `4.60.0-alabama-florida` verified 22:10 UTC, `verify:prod` all sports for both, athletes 13/13 each). **36 minutes** start to production for 26 sports (1.4 min per sport, record), the first two-school session.
-- **Oct 7 — Georgia and LSU added to the app, 13 sports each** (PR #244). LSU is WMT with its own card reader. Shared fixes: WMT season-scoped profile links, story bodies opening with nested markup. New tools: `generate-module-tests`, `athlete-evidence`. Preview: all gates and athletes 13/13 for both; production result in the history file.
+- **Oct 7 — Georgia and LSU added to the app, 13 sports each** (PR #244). LSU is WMT with its own card reader. Shared fixes: WMT season-scoped profile links, story bodies opening with nested markup. New tools: `generate-module-tests`, `athlete-evidence`. Merged `5779733`; production `4.61.0-georgia-lsu` verified 23:08 UTC (`verify:prod --sports=all` both, athletes 13/13 both). 41 minutes start to production for 26 sports, with a new WMT reader.

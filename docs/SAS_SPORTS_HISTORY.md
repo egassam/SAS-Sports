@@ -1664,3 +1664,9 @@ Records equal the official ones: football 4-1 (1-1), volleyball 7-6 (2-2), socce
 
 **Open:** LSU golf shows "Completed" when the story headline names a player rather than the team (cards publish no place). LSU men's golf RedHawk Intercollegiate (no story, no place) is not listed. Track & Field for both schools fills when published. No live card observed yet.
 
+**Merge and production (Georgia and LSU):** PR #244 merged at 23:03 UTC (`5779733`) on the standing permission. All conditions held for both schools, and the user set the two-school scope. Production reported `4.61.0-georgia-lsu` at 23:05.
+- Georgia: `verify:prod --sports=all` exit 0; athletes 13/13.
+- LSU: the first run reached an old instance during the rollout (`/api/status` 4.60.0, beach volleyball 502, basketball and volleyball without athletes). The re-run at 23:08 passed: exit 0, every sport 3/3 refreshes, XC 18/20 and 26/21, athletes 13/13.
+
+41 minutes from start to production for 26 sports, including a new WMT reader and two shared fixes.
+
