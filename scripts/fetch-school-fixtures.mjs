@@ -24,7 +24,7 @@ import {findTfrrsMeet} from '../src/tfrrs-results.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school');
-if(!id){console.error('usage: node scripts/fetch-school-fixtures.mjs --school=<id> [--sports=A,B] [--tfrrs-f=<url> --tfrrs-m=<url>] [--date=YYYY-MM-DD]');process.exit(2)}
+if(!id){console.error('usage: node scripts/fetch-school-fixtures.mjs --school=<id> [--sports=A,B] [--tfrrs-f=<url> --tfrrs-m=<url>] [--date=YYYY-MM-DD] [--prune]');process.exit(2)}
 const root=new URL('../',import.meta.url),read=path=>readFileSync(new URL(path,root),'utf8');
 const schools=JSON.parse(read('src/schools.json')),sponsored=JSON.parse(read('src/sponsored-sports.json'));
 const school=schools.find(s=>s.id===id);if(!school){console.error(`unknown school ${id}`);process.exit(2)}
@@ -61,11 +61,12 @@ const have=name=>existsSync(new URL(name,dir));
 export const recapFile=url=>{const [,y,m,d,slug]=url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+)/);return`recap-${y}-${m}-${d}-${slug.slice(0,40)}.html.gz`;};
 
 const ESPN={Football:'football/college-football/scoreboard?groups=80&limit=300',Volleyball:'volleyball/womens-college-volleyball/scoreboard?limit=1000',Soccer:'soccer/usa.ncaa.w.1/scoreboard?limit=1000',Basketball:'basketball/mens-college-basketball/scoreboard?groups=50&limit=400',Baseball:'baseball/college-baseball/scoreboard?limit=400',Softball:'baseball/college-softball/scoreboard?limit=400'};
-const summary=[];
+const summary=[],dropped=[];
 for(const sport of sports){
+  const titles=new Set();
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports\/([^/]+)\/schedule/)||[])[1];
-    if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);continue}
+    if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
     const name=`${slug}-schedule.html.gz`;
     const page=await download(url);
     if(!page.body){summary.push(`${sport}: ${slug} HTTP ${page.status}`);continue}
@@ -76,7 +77,11 @@ for(const sport of sports){
     // school's own module, offline; its events are mapped to the same shape.
     if(!games.length){try{games=(worker.parseHtml(page.body,school,sport,url,new Date(`${today}T15:00:00Z`))||[]).map(e=>({date:String(e.start_time).slice(0,10),enddate:e.end_time?String(e.end_time).slice(0,10):null,opponent:{title:e.opponent},result:e.status==='Final'?{status:/^[WLT],/.test(e.headline||'')?e.headline[0]:'N',postscore_info:e.headline,recap:e.recap_url?{url:e.recap_url}:null}:null}));}catch{games=[]}}
     const current=games.filter(g=>String(g.date).slice(0,10)>=seasonStart);
-    if(/@season @sport/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);continue}
+    // "@season @sport", or "@season Women's Swimming & Diving" (Tennessee).
+    if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);continue}
+    // A second address for the same page ("wsoc" for "womens-soccer").
+    if(titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
+    titles.add(title);
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;
     for(const game of finals){
@@ -132,5 +137,15 @@ for(const sport of sports){
       }
     }
   }
+}
+// --prune: the flagged routes (and their roster twins) leave the module.
+if(args.includes('--prune')&&dropped.length){
+  const moduleUrl=new URL(`src/schools/${id}.mjs`,root);let text=readFileSync(moduleUrl,'utf8');
+  const quoted=url=>`'${url.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}'`;
+  for(const url of dropped)for(const target of [url,url.replace(/\/schedule$/,'/roster')])text=text.replace(new RegExp(`,${quoted(target)}(?=[,\\]])|${quoted(target)},(?=')`,'g'),'');
+  // A one-route array reads as its route.
+  text=text.replace(/(\n\s*'[^'\n]+\|[^'\n]+':)\[('[^'\]]+')\]/g,'$1$2');
+  writeFileSync(moduleUrl,text);
+  summary.push(`--prune: ${dropped.length} routes removed from src/schools/${id}.mjs (check combinedSports when one team page is left)`);
 }
 console.log(`${school.name} fixtures in tests/fixtures/${id}-module/ (season from ${seasonStart}, today ${today}):\n  ${summary.join('\n  ')}`);

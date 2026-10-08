@@ -13,7 +13,7 @@ const SPORT_SLUGS={
   'Track & Field':['track-and-field','track-field'],'Baseball':['baseball'],
   'Softball':['softball'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
   'Field Hockey':['field-hockey'],'Hockey':['ice-hockey','hockey'],
-  'Gymnastics':['gymnastics'],'Beach Volleyball':['beach-volleyball'],
+  'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
   'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing'],
   'Triathlon':['triathlon'],'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],

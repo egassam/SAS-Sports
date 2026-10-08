@@ -9,7 +9,7 @@
 // stay outside it. Read the output before committing: it records what the
 // module reads today, right or wrong (scripts/survey-school.mjs flags GATE).
 //
-//   node scripts/generate-module-tests.mjs --school=lsu [--date=2026-10-07]
+//   node scripts/generate-module-tests.mjs --school=lsu [--date=2026-10-07]   (default: the test file's `now`)
 import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
@@ -28,7 +28,10 @@ const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSp
 const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,labelTeamEvents};')(...Object.values(deps));
 const dir=`tests/fixtures/${id}-module/`,has=name=>existsSync(new URL(dir+name,root));
 const fixture=name=>gunzipSync(readFileSync(new URL(dir+name,root))).toString('utf8');
-const now=new Date(`${value('date')||new Date().toISOString().slice(0,10)}T15:00:00Z`);
+// The test file's own clock (`const now=new Date("...")`) unless --date is
+// given: today's date breaks the generated blocks after midnight UTC.
+const fileNow=(read(testPath).match(/^const now=new Date\("(\d{4}-\d\d-\d\d)T/m)||[])[1];
+const now=new Date(`${value('date')||fileNow||new Date().toISOString().slice(0,10)}T15:00:00Z`);
 const recapFile=url=>{const [,y,m,d,slug]=url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+)/);return`recap-${y}-${m}-${d}-${slug.slice(0,40)}.html.gz`;};
 const line=e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`;
 const sports=sponsored[id];
