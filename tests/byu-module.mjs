@@ -152,6 +152,17 @@ assert.deepEqual(xcEvents.filter(e=>e.status==='Final').map(e=>[e.display_time,e
   ['Sep 4',"Men's · BYU at Utah Valley Invitational","Men's team: 1st · 17 pts"],['Sep 19',"Men's · BYU at John McNichols Invitational","Men's team: 1st · 71 pts"]
 ]);
 assert.deepEqual(xcEvents.filter(e=>e.status!=='Final').map(e=>`${e.title} ${e.display_time}`).slice(0,2),["Women's · BYU at Pre-Nationals Oct 16, 8:00 AM","Women's · BYU at Big 12 Championships Oct 31"]);
+// TFRRS first: every BYU runner and the team score, each team's event its
+// own race (the UVU meet is TFRRS's "2026 UVU Collegiate XC Invite").
+{
+  const fresh=worker.mergeEvents(['womens','mens'].map(team=>{const url=`https://byucougars.com/sports/${team}-cross-country/schedule`;return worker.labelTeamEvents(worker.parseHtml(fixture(`${team}-cross-country-schedule.html.gz`),school,'Cross Country',url,now),school,'Cross Country',url);})).filter(e=>e.status==='Final');
+  const tfrrs={'https://www.tfrrs.org/teams/xc/UT_college_f_BYU.html':'tfrrs-team-f.html.gz','https://www.tfrrs.org/teams/xc/UT_college_m_BYU.html':'tfrrs-team-m.html.gz','https://www.tfrrs.org/results/xc/28553/2026_Cowboy_Jamboree_':'tfrrs-28553.html.gz','https://www.tfrrs.org/results/xc/28042/2026_UVU_Collegiate_XC_Invite':'tfrrs-28042.html.gz','https://www.tfrrs.org/results/xc/27812/John_McNichols_Invitational':'tfrrs-27812.html.gz'};
+  for(const [url,file] of Object.entries(tfrrs))recapFixtures.set(url,fixture(file));
+  for(const meet of fresh)await worker.attachOfficialMeetResults(meet);
+  assert.deepEqual(fresh.map(e=>[e.title,e.headline,e.meet_results_verified,e.result_count,[...new Set(e.results.map(r=>r.group))].join(',')]),[["Women's · BYU at UVU Invitational","Women's team: 1st · 19 pts",true,12,"Women's 3 Mile"],["Women's · BYU at Cowboy Jamboree","Women's team: 1st · 32 pts",true,16,"Women's 6K"],["Men's · BYU at Utah Valley Invitational","Men's team: 1st · 17 pts",true,12,"Men's 3 Mile"],["Men's · BYU at John McNichols Invitational","Men's team: 1st · 71 pts",true,16,"Men's 8K,Men's 8K Open"]]);
+  for(const url of Object.keys(tfrrs))recapFixtures.delete(url);
+}
+// Without TFRRS results, the meet's own recap tables.
 const xcRecaps={
   'https://byucougars.com/news/2026/09/4/no-4-byu-dominates-uvu-invitational-hedengren-takes-first':'xc-recap-2026-09-04-uvu-invitational-women.html.gz',
   'https://byucougars.com/news/2026/09/26/no-3-byu-secures-second-win-of-the-season-at-cowboy-jamboree-taking-down-no-2-new-mexico':'xc-recap-2026-09-26-cowboy-jamboree-women.html.gz',

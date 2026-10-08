@@ -1,3 +1,4 @@
+import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // BYU school module. Shared publisher utilities stay in the Worker; this file
 // owns byucougars.com routes, BYU's program combinations, its verified
 // Instagram tags and its schedule-card reader. Routes started as the exact
@@ -5,6 +6,9 @@
 // sport is then corrected and verified one at a time.
 export const byuSchool={
   id:'byu',
+  // Stored expanded views (/live/highlights) are kept 30 days; raised when
+  // cross country moved to TFRRS's complete races (Oct 8).
+  highlightRevision:1,
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
   cardSports:new Set(['Football','Volleyball','Soccer','Cross Country','Basketball','Baseball','Softball','Golf','Tennis','Swimming & Diving','Gymnastics','Track & Field']),
@@ -78,6 +82,12 @@ function tournamentTitle(raw,index,visibleText){
   const title=raw.slice(start,index).match(/schedule-events-by-tournament__title[^>]*>([\s\S]*?)<\//i);
   return visibleText(title?.[1]||'').replace(/\s+Presented by\b.*$/i,'').trim();
 }
+
+// BYU's TFRRS cross country team pages: every runner and the team score.
+// The Utah Valley meet ("UVU Invitational" on the women's page, "Utah Valley
+// Invitational" on the men's) is TFRRS's "2026 UVU Collegiate XC Invite".
+export const BYU_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/UT_college_f_BYU.html',Men:'https://www.tfrrs.org/teams/xc/UT_college_m_BYU.html'};
+const byuTfrrsMeetName=event=>/\b(?:UVU|Utah Valley)\b/.test(event.opponent||'')?'UVU Collegiate':event.opponent;
 
 // Cross Country recaps carry their results as tables in four layouts:
 // PLACE/ATHLETE/SCHOOL/TIME (top 10 overall), PLACE/TEAM/SCORE (skipped),
@@ -237,11 +247,28 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     return recapMatchesEvent(raw,cardBound?{...identity,sport:''}:identity,url);
   }
   const isByuCrossCountry=event=>event?.school_id==='byu'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
+  // Each team's page is its own event: its own TFRRS team page and race.
+  const tfrrs=Object.fromEntries(['Women','Men'].map(team=>[team,createTfrrsMeetResults({id:'byu',schoolName:'BYU',teams:{[team]:BYU_TFRRS_TEAMS[team]},meetName:byuTfrrsMeetName,decodeHtml,ordinal,fetch,headers})]));
+  async function attachTfrrs(event){
+    const team=/^Men/.test(event.team_label||'')||/-mens$/.test(event.id)?'Men':'Women';
+    await tfrrs[team].attach(event);
+    if(!event.meet_results_verified)return false;
+    // The meet's TFRRS page holds both races: each team's event keeps its own.
+    const own=text=>new RegExp(`^${team}'s\\b`,'i').test(String(text||''));
+    const other=team==='Men'?/\bwomen(?:'s)?\b/i:/\b(?<!wo)men(?:'s)?\b/i;
+    event.results=event.results.filter(row=>own(row.group));event.result_count=event.results.length;event.has_more_results=event.results.length>3;event.recap_result_count=event.results.length;
+    event.headline=String(event.headline).split(' / ').filter(own).join(' / ')||event.headline;
+    event.highlights=event.highlights.filter(line=>!other.test(line));
+    return true;
+  }
   // Feed and expanded view both call this; the second call is a no-op. Race
-  // rows come from the meet's own card-bound recap.
+  // rows come from TFRRS (every runner), else from the meet's own card-bound
+  // recap.
   async function attachMeetResults(event){
     if(!isByuCrossCountry(event))return event;
     if(event.meet_results_verified)return event;
+    if(await attachTfrrs(event))return event;
+    for(const key of ['meet_results_verified','highlights_verified','highlight_state','highlight_status'])delete event[key];
     const unavailable=status=>{
       event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
       event.highlight_state='official_results_partial';event.highlight_status=status;
