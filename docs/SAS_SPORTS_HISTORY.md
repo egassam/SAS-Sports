@@ -1835,3 +1835,46 @@ Texas Tech holds the total record: **26 minutes** from start to production for 1
 **Tests:** Texas and Auburn roster fixtures (every card's group; Cross Country's three are distance runners), the bio rule; both mutations fail the tests. `npm run test:release` exit 0; CI green; preview `verify:preview --sports="Cross Country,Track & Field"` exit 0 for all four (XC 18/20 and 26/21); athletes 13/13, 13/13, 13/13, 11/11 on the preview. Merged 14:17 UTC (`7291356`); production `4.65.2-xc-distance-athletes` verified 14:18: `verify:prod` exit 0 for all four, athletes as on the preview. Cross Country on production: Texas McKale Lee, Colby Huntress, Grace Kowalski (profile cards); Auburn Evan Hill, Joshua Kosgei, Mary Katherine Malone (Instagram); Alabama Meriel Rowland, Lilly Walters (Instagram) + a profile card; Oklahoma State Denis Kipngetich, Brian Musau (Instagram) + a profile card.
 
 **Instagram login:** the user asked whether to create an environment with their Instagram login so team-account tags could be searched. Advised against it (automated logged-in access breaks Instagram's terms and risks the account; the project rule forbids routing around bot defense; the official API cannot list another account's tags). Offered instead to pin handles the user confirms, per athlete, in `verifiedInstagrams`.
+
+## October 8, 2026 — Oklahoma and Kentucky added (27 sports); ASU and BYU leftovers (PRs #259-#261)
+
+**Request:** "Let's add two more schools and finish what was left." Mid-session: "What's wrong with Cincinnati?" (answered: nothing; the open note was the #212 catalog choice), then "It's settled" (Cincinnati Tennis stays).
+
+**Choice of schools:** the remaining SEC sites were checked first. Kentucky, South Carolina and Vanderbilt are WMT; Oklahoma is SIDEARM. Oklahoma (SIDEARM) and Kentucky (WMT) were taken, one of each.
+
+**Oklahoma (`docs/OKLAHOMA_MODULE.md`, 13 sports):** the site refuses the sandbox, so it was read through the private source. Ported from Texas.
+- New rules: golf `1st/11 - 831 (-33)` places; NB3 match play read as its matches; `#-/22` rankings; `- EXH`; pro tennis events (`W75`, `Futures`) out; Fall World Series and Battle Series out.
+- Records equal the page's percentages: volleyball 9-4 (2-2), soccer 9-2-2 (3-2); football 2-2 (0-1).
+
+**Kentucky (`docs/KENTUCKY_MODULE.md`, 14 sports):** WMT's WordPress template, with its own reader.
+- Season years come from the heading.
+- Scores appear in either order.
+- Day cards (golf, track, rifle) are merged.
+- Team places are read for XC and track; swimming duals per team.
+- Last season's pages count as empty.
+- Archive stories come from `/wp-json/wp/v2/posts?search=`.
+- Story text: `section.article_text` / `section.article-text`.
+- Men's soccer gets a Sun Belt conference record (shared: `conference_name` on events names a record's conference).
+- Records equal the stories': women's soccer 6-5-1 (2-2-1), men's 1-6-3 (SBC 1-1-1).
+
+**PR #259:**
+- First preview: the gates passed, but 11 soccer and 1 swim expanded views had no text (the second story template). Fixed in `4a3a411` (`4.66.1`).
+- One parallel `verify:preview` run tripped the K-State XC first-read transient (0/0); the sequential re-runs passed.
+- All gates passed: `test:release` exit 0; `verify:preview --sports=all` exit 0 for both schools; athletes 13/13 and 14/14; screenshots checked; CI green; 28 rule mutations killed.
+- Merged 16:26 UTC (`c9418c9`). Production `4.66.1-oklahoma-kentucky`: `verify:prod --sports=all` exit 0 for both, athletes 13/13 and 14/14.
+
+**PR #260, Arizona State (merged `a560c85`, production `4.66.2-asu-cross-country`):**
+- XC from TFRRS: both meets show team scores, including the Meadows Challenge ("Princeton Meadows Classic"), which had no recap. `highlightRevision` 1.
+- Swimming intrasquad and beach volleyball scrimmage are left out.
+- 17 sports are now in the athlete certification: 17/17 with three Instagram athletes.
+- `verify:prod` on XC, Swimming and Beach Volleyball: exit 0.
+
+**PR #261, BYU:**
+- XC from TFRRS per team, with every runner (UVU named "UVU Collegiate").
+- All 12 sports are certified. Gymnastics uses profile cards: 19 profile pages, 0 Instagram.
+- After the push, Cloudflare reported no Workers build and the preview stayed on `4.66.2`. These handoff docs were pushed next as a real commit.
+
+**Still open:**
+- golf field sizes (ASU, Kentucky women's) and the 403 pages (Oklahoma State, Utah);
+- seasons not yet published;
+- first live cards for the new schools (Kentucky volleyball Oct 9; football Oct 10).
