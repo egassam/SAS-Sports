@@ -484,6 +484,9 @@ const records=(sport,slug)=>worker.groupEvents(parse(sport,slug),now)[0].records
   const months=sport=>parse(sport,'track-and-field').map(e=>e.start_time.slice(5,7));
   assert.ok(months('Cross Country').length&&months('Cross Country').every(m=>m>='08'&&m<='11'));
   assert.deepEqual(parse('Track & Field','track-and-field').map(e=>e.title),[]);
+  const track=worker.texasHandlers.parseSchedule(fixture('track-and-field-schedule.html.gz'),school,'Track & Field',page('track-and-field'),now);
+  assert.ok(worker.texasHandlers.isEmptySchedule(track),'an empty track season is a valid empty schedule');
+  assert.equal(worker.texasHandlers.isEmptySchedule(worker.texasHandlers.parseSchedule(fixture('track-and-field-schedule.html.gz'),school,'Cross Country',page('track-and-field'),now)),false);
 }
 
 // Golf: the place in the field, then the team score in brackets

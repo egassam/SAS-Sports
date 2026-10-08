@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,texasAmHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,texasAmHandlers,attachOfficialMeetResults,decodeHtml,rosterProfiles};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/texas-am-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit 12thman.com routes, exactly
@@ -499,6 +499,10 @@ void [parse,line,ownRecapsOnly,live];
   const record=(sport,slug)=>worker.groupEvents(parse(sport,slug),now)[0].records.map(r=>[r.text,r.conference?.text]);
   assert.deepEqual([['Football','football'],['Volleyball','volleyball'],['Soccer','soccer']].map(([sport,slug])=>{assert.deepEqual(record(sport,slug),[published(slug)],`${sport}: the computed records are the official ones`);return published(slug);}),[["3-2","1-2"],["10-6","3-1"],["4-8","0-5"]]);
 }
+
+// An empty roster page links the last season's roster ("Roster for
+// Baseball", /roster/season/2026): a page, not an athlete.
+assert.deepEqual(worker.rosterProfiles('<li class="sport-menu-link"><a href="/sports/baseball/roster/season/2026" class="ui-link sport-menu-link__link"><span>Roster <span class="sr-only">for Baseball</span></span></a></li><a href="/sports/baseball/roster/jane-doe/123">Jane Doe</a>','https://12thman.com/sports/track-and-field/roster').map(p=>p.name),['Jane Doe']);
 
 // Other schools and other hosts never reach the Texas A&M reader.
 assert.equal(worker.texasAmHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://12thman.com/',now),null);

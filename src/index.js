@@ -407,6 +407,9 @@ function rosterProfiles(raw,base){
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
     if(/\/(?:staff|coaches)\//i.test(path))continue;
+    // A season's roster page (/roster/season/2026, "Roster for Baseball" on
+    // Texas A&M's pages) has the /roster/<name>/<id> shape but is no athlete.
+    if(/\/roster\/season\/\d{4}\/?$/i.test(path))continue;
     if(!/\/roster\/(?:player\/[^/]+|season\/[^/]+\/player\/[^/]+|[^/]+\/\d+)\/?$/i.test(path))continue;
     const previous=byUrl.get(url);
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(m[2],base,name,true)||previous?.image_url||null;

@@ -278,7 +278,11 @@ export function createTexasHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
   const crossCountry=createTfrrsMeetResults({id:'texas',schoolName:'Texas',
     teams:TEXAS_TFRRS_TEAMS,
     decodeHtml,ordinal,fetch,headers});
-  return{parseSchedule,isEmptySchedule,
+  // Track & Field shares cross country's page: while that page lists only
+  // fall meets, track's schedule is validly empty (not a failed source).
+  const trackEmptied=new WeakSet();
+  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  return{parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),
     // A golf story from before the last round ("second entering final
