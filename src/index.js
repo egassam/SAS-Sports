@@ -1336,6 +1336,16 @@ function recapArticleText(raw){
   }
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
   if(article){const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);}
+  // SIDEARM "story blocks" (Mississippi State's football recaps) hold the
+  // story in a block wrapper instead of a story body: read the wrapper whole,
+  // matching its divs.
+  const blocks=raw.match(/<div\b[^>]*class=["']c-story-blocks__wrapper\b[^"']*["'][^>]*>/i);
+  if(blocks){
+    const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=blocks.index+blocks[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
+    if(text.length>=80)return text.slice(0,14000);
+  }
   // WMT stores article paragraphs in its embedded application payload instead
   // of articleBody or server-rendered <article> markup. Keep this last because
   // a page payload can include several unrelated stories and meet results.

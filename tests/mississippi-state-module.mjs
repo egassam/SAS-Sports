@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,mississippiStateHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,mississippiStateHandlers,attachOfficialMeetResults,decodeHtml,recapArticleText};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/mississippi-state-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit hailstate.com routes, exactly
@@ -412,6 +412,15 @@ assert.deepEqual(parse('Tennis','womens-tennis').filter(e=>e.status==='Final').m
 
 // Records equal the ones the official pages publish.
 assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer']].map(([sport,slug])=>records(sport,slug)),[["4-1","2-1"],["11-3","1-2"],["7-1-4","1-0-4"]]);
+
+// Football recaps are SIDEARM story blocks: the expanded view reads the
+// whole story, not the team stats after it.
+{
+  const text=worker.recapArticleText(fixture('recap-2026-10-3-football-game-day-state-vs-alabama.html.gz'));
+  assert.match(text,/^STARKVILLE — In a battle of undefeateds, No\. 7 Alabama topped No\. 16 Mississippi State by a final score of 56-23/);
+  assert.match(text,/FINAL SCORE - ALABAMA 56, MISSISSIPPI STATE 23/);
+  assert.doesNotMatch(text,/Total Yards/);
+}
 
 // Other schools and other hosts never reach the Mississippi State reader.
 assert.equal(worker.mississippiStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://hailstate.com/',now),null);
