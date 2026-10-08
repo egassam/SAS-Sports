@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,indianaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,indianaHandlers,attachOfficialMeetResults,decodeHtml,schoolModule};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/indiana-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit iuhoosiers.com routes, exactly
@@ -515,6 +515,17 @@ assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['S
 // Other schools and other hosts never reach the Indiana reader.
 assert.equal(worker.indianaHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://iuhoosiers.com/',now),null);
 assert.equal(worker.indianaHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='illinois'),'Football',page('football'),now),null);
+
+// A past tennis tournament without a story is not listed (K-State's rule,
+// applied by the feed): the women's ITA All-American has none published.
+{
+  // The archive and its saved stories (Furman Fall Classic, Hoosier Classic).
+  const archive=fixture('womens-tennis-archives.html.gz');recapFixtures.set('https://iuhoosiers.com/sports/womens-tennis/archives',archive);
+  for(const [,path,y,m,d,slug] of archive.matchAll(/href="(\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+))"/g))try{recapFixtures.set(`https://iuhoosiers.com${path}`,fixture(`story-${y}-${m}-${d}-${slug.slice(0,40)}.html.gz`));}catch{}
+  const events=parse('Tennis','womens-tennis'),listed=await worker.schoolModule('indiana').feed(events);
+  assert.deepEqual(listed.filter(e=>e.status==='Final').map(e=>e.opponent),["Debbie Southern Furman Fall classic","Hoosier Classic"]);
+  recapFixtures.clear();requests.length=0;
+}
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Indiana module checks passed');

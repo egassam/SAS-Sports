@@ -39,7 +39,7 @@ import {indianaSchool,createIndianaHandlers} from './schools/indiana.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.69.0-illinois-indiana';
+const VERSION='4.69.1-illinois-indiana';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -248,12 +248,12 @@ const SCHOOL_MODULES=[
     // Finals the schedule links no story for take theirs from the sport's
     // archive.
     beforeHighlights:async event=>{if(illinoisHandlers.isFinalWithoutStory(event))await illinoisHandlers.attachArchiveStory(event);},
-    feed:async events=>{await Promise.all(events.filter(illinoisHandlers.isFinalWithoutStory).map(event=>illinoisHandlers.attachArchiveStory(event)));return events;}}
+    feed:async events=>{await Promise.all(events.filter(illinoisHandlers.isFinalWithoutStory).map(event=>illinoisHandlers.attachArchiveStory(event)));return events.filter(event=>!illinoisHandlers.isTennisWithoutStory(event));}}
   ,{school:indianaSchool,parseSchedule:(...args)=>indianaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>indianaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>indianaHandlers.matchesRecap(...args),crossCountry:{matches:event=>indianaHandlers.isCrossCountry(event),attach:event=>indianaHandlers.attachMeetResults(event)},
     // Finals the schedule links no story for take theirs from the sport's
     // archive.
     beforeHighlights:async event=>{if(indianaHandlers.isFinalWithoutStory(event))await indianaHandlers.attachArchiveStory(event);},
-    feed:async events=>{await Promise.all(events.filter(indianaHandlers.isFinalWithoutStory).map(event=>indianaHandlers.attachArchiveStory(event)));return events;}}
+    feed:async events=>{await Promise.all(events.filter(indianaHandlers.isFinalWithoutStory).map(event=>indianaHandlers.attachArchiveStory(event)));return events.filter(event=>!indianaHandlers.isTennisWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').

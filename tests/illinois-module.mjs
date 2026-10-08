@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,illinoisHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,illinoisHandlers,attachOfficialMeetResults,decodeHtml,schoolModule};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/illinois-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit fightingillini.com routes, exactly
@@ -474,6 +474,20 @@ assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['S
 // Other schools and other hosts never reach the Illinois reader.
 assert.equal(worker.illinoisHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://fightingillini.com/',now),null);
 assert.equal(worker.illinoisHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='indiana'),'Football',page('football'),now),null);
+
+// A past tennis tournament without a story is not listed (K-State's rule,
+// applied by the feed).
+{
+  // A final whose story link is taken away, with no archive story for it,
+  // leaves the feed; the others stay.
+  recapFixtures.set('https://fightingillini.com/sports/womens-tennis/archives',fixture('womens-tennis-archives.html.gz'));
+  const events=parse('Tennis','womens-tennis'),itaFinal=events.find(e=>/All-American/.test(e.opponent));
+  delete itaFinal.recap_url;itaFinal.opponent='Storyless Invitational';
+  const listed=await worker.schoolModule('illinois').feed(events);
+  assert.equal(listed.length,events.length-1);
+  assert.ok(!listed.includes(itaFinal));
+  recapFixtures.clear();requests.length=0;
+}
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Illinois module checks passed');
