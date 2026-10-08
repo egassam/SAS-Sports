@@ -1670,3 +1670,30 @@ Records equal the official ones: football 4-1 (1-1), volleyball 7-6 (2-2), socce
 
 41 minutes from start to production for 26 sports, including a new WMT reader and two shared fixes.
 
+
+## October 7-8, 2026 — Ole Miss and Mississippi State added, 21 sports (PR #246)
+
+**Request:** "Let's do Mississippi and Mississippi State. Use what you have learned and optimize from what you learn this time." Scope: two schools (Ole Miss is the catalog's "Mississippi"). Neither was in the app.
+
+**Timeline (UTC):** start 23:24 Oct 7. Both sites checked first: SIDEARM, both answer the sandbox 403, so every page came through the private source. Sport lists read from each site's nav payload (Ole Miss 11 incl. Rifle; Mississippi State 10, no men's cross country). Both added to `src/sponsored-sports.json`, `SCHOOL_SPORTS`, `TEAM_THEMES` and `tests/certified-schools.json`, scaffolded, fixtures fetched in parallel, Georgia's handlers ported to both by script, and `athlete-evidence` started for all 21 sports in the background. A container restart (about 40 minutes lost) interrupted the work; the working tree survived. PR #246 pushed 00:46 Oct 8; first preview: gates passed, athletes 11/11 and 10/10, but Mississippi State football's expanded views were `recap_text_unavailable`. Fixes pushed (`220f27f` story blocks, `5d5ed5b` golf asterisk); final gates passed; merged 01:19 (`bd98783`); production verified 01:21. 117 minutes wall clock.
+
+**Ole Miss (`docs/OLE_MISS_MODULE.md`):** golf place-in-field with team score from two fields or one (`17th/18 --` + `901 (+49)`, `2nd/16--859 (-5)`); a cancelled last round given as the round's no-play note (The Ally) keeps the round before's place; golf finals take archive stories only when dated on or after the last round (the Boilermaker's last round links the Cougar Classic's story; The Ally waits for its own); rifle at `womens-rifle`; a leading `*` (individuals-only golf) dropped. Sparse athlete links pinned in `verifiedInstagrams` (Baseball 3 of 42 profiles, Track & Field 4 of 88, Volleyball 2, Softball 1). Records equal the official: football 3-1 (1-1), volleyball 8-6 (2-1), soccer 7-6 (0-5).
+
+**Mississippi State (`docs/MISSISSIPPI_STATE_MODULE.md`):** golf rounds name no tournament (merged by opponent); place is the standing after the final round (`t6th after final rd.`, `Team Champions` = 1st), and after "Final Round Canceled, Second Round Scores Become Final" the round before's; tennis result-field sentences are not results; TFRRS names the team "Miss State" (women only); volleyball archive stories by set scores (kit option `volleyballSetScores`, on for the two Mississippi schools only: the Texas A&M story gives 25-22, 25-20, 28-26 but never "3-0"). Football recaps live at "Game Day" addresses and are real recaps. Records equal the official: football 4-1 (2-1), volleyball 11-3 (1-2), soccer 7-1-4 (1-0-4).
+
+**Shared fix:** `recapArticleText` reads SIDEARM "story blocks" (`c-story-blocks__wrapper`, read whole by matching divs) when every earlier rule found nothing; before, such pages gave no text. Checked on all five Mississippi State football stories (each starts with its dateline).
+
+**Athletes:** `scripts/athlete-evidence.mjs` read every roster and profile page of both schools (800 pages) before the first push. Profile-card sports: Ole Miss Cross Country (0 links of 30), Softball (1 of 26), Volleyball (2 of 18); Mississippi State Baseball (0 of 41). Every other sport publishes 3 or more.
+
+**Tests run:**
+- 12 rule mutations (11 rules plus the asterisk); all fail the module suites.
+- `npm run test:release` exit 0 on `0360611`, `220f27f` and `5d5ed5b`.
+- `verify:preview --sports=all` both schools on `5d5ed5b`: exit 0, 36/36 refreshes for all 21 sports, XC 18/20 and 26/21; every expanded view passes, all with highlights except the Chile Pepper race (TFRRS not published) and two softball exhibitions without stories.
+- Athletes on the preview (first and final commit) and on production: 11/11 and 10/10.
+- `validate-schools --deep` on the first preview: Mississippi State 8/10 (Chile Pepper partial; football, since fixed); Ole Miss 9/11 with two "fetch failed" network errors (not re-run; `verify:preview` covered every expanded view).
+- Screenshots of all 21 sports; golf, tennis, football and cross country read by eye.
+- `verify:prod --sports=all --version=4.62.0-ole-miss-mississippi-state` for both: exit 0.
+
+**Merge note:** the standing permission names one school per PR; the user set this session's scope to two schools, and every other condition held for both.
+
+**Open:** The Ally (Ole Miss women's golf) final story; Chile Pepper TFRRS points; Track & Field pages still list 2025-26; no live card observed; season-badge contrast on dark primaries (shared UI, for the user to decide); `generate-module-tests` should default to the test file's date.

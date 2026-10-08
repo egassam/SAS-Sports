@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026, America/Chicago. Production `4.61.0-georgia-lsu`.
+Last updated: October 7, 2026 (evening), America/Chicago. Production `4.62.0-ole-miss-mississippi-state`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 7, 2026, America/Chicago. Production `4.61.0-georgia-lsu`.
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.61.0-georgia-lsu`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.62.0-ole-miss-mississippi-state`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -38,12 +38,16 @@ Last updated: October 7, 2026, America/Chicago. Production `4.61.0-georgia-lsu`.
 | Florida (SEC) | `florida.mjs` | Complete (13 sports) | Lacrosse fills when published; first live cards not yet observed (soccer vs Alabama Oct 8) |
 | Georgia (SEC) | `georgia.mjs` | Complete (13 sports) | Added to the app Oct 7. 7 sports use profile cards (370 profiles read, no athlete Instagram); Track & Field, Gymnastics fill when seasons start; first live cards not yet observed |
 | LSU (SEC) | `lsu.mjs` (own WMT card reader) | Complete (13 sports) | Added to the app Oct 7. Golf place only when the final story's headline gives it (cards publish none); Track & Field fills when published; first live cards not yet observed |
+| Ole Miss (SEC) | `ole-miss.mjs` | Complete (11 sports) | Added to the app Oct 7. The Ally (women's golf) waits for its final story; Track & Field, Baseball, Softball, Basketball fill as seasons start; profile cards for Cross Country, Softball, Volleyball; first live cards not yet observed |
+| Mississippi State (SEC) | `mississippi-state.mjs` | Complete (10 sports) | Added to the app Oct 7. Chile Pepper cross country points wait on TFRRS; Track & Field fills when published; Baseball uses profile cards; first live cards not yet observed (volleyball vs Georgia Oct 9) |
 
-**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244) converted. Next: two more SEC schools. SIDEARM (kit path): Ole Miss, Mississippi State, Missouri, Tennessee, Texas, Texas A&M. CUSTOM in the catalog (check each site first; LSU's "CUSTOM" was WMT): Arkansas, Auburn, Kentucky, Oklahoma, South Carolina, Vanderbilt.
+**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246) converted. Next: two more SEC schools. SIDEARM (kit path): Missouri, Tennessee, Texas, Texas A&M. CUSTOM in the catalog (check each site first; LSU's "CUSTOM" was WMT): Arkansas, Auburn, Kentucky, Oklahoma, South Carolina, Vanderbilt.
 
 ## How to convert a school (fast path, October 7)
 
 **Adding a school not yet in the app (Georgia, LSU):** add it to `src/sponsored-sports.json` (from the site's nav) and to `SCHOOL_SPORTS` and `TEAM_THEMES` in `public/index.html`, then scaffold. Add its `tests/certified-schools.json` entry (all sports, minimum 3).
+
+**Ole Miss + Mississippi State lessons (21 sports, both SIDEARM, both 403 to the sandbox):** port the newest SIDEARM school's handlers by script (copy from `const HOST=` down, rename) **before** the fixture fetch, so it fetches the module's routes and not the scaffold's candidates. Start `athlete-evidence` for every sport the moment the module exists (background, ~3 min for 800 pages): the profile-card list and any `verifiedInstagrams` pins for sports with few links were known before the first push, and athletes passed on the first preview. Run `generate-module-tests --date=<the test file's now>` (it defaults to today, which breaks the generated blocks after midnight UTC). Read every `expanded views` line of `verify:preview`, not only PASS: Mississippi State football's 5 stories were `recap_text_unavailable` (SIDEARM "story blocks" pages; the shared reader now reads them). Screenshots caught a leading `*` on individuals-only golf names. TFRRS can name a school differently ("Miss State").
 
 **Georgia + LSU lessons (one SIDEARM, one WMT; 26 sports):** check each site's platform first (`curl` the football schedule; `sidearm` vs `wmt` markers). The catalog's "CUSTOM" can be WMT. A WMT site whose cards have no `datetime` (LSU) needs its own reader: start from `src/schools/lsu.mjs` (year from the page title's season, day cards merged, per-team cross country merged, cancelled cards dropped). `scripts/generate-module-tests.mjs --school=<id>` now writes the route table and every page block (replaces the throwaway scripts); the fixture script retries dropped connections and reads WMT pages through the module, saving stories and TFRRS. Before the first push: count roster Instagram links, and for sports with none run `scripts/athlete-evidence.mjs --school=<id> --check=<a sport with links> <sports>` (every roster card and profile page through the private source; Georgia 370 pages in ~2 min) so the profile-card list and its evidence are known. The first preview found two shared-code gaps worth checking on every new site: WMT profile links under `/roster/season/<year>/player/` (now accepted), and story bodies that open with nested markup (expanded view read only 46 characters; now read whole). Run `verify:preview` and look for `recap_text_unavailable` in expanded views: it passes the gate but means no highlights.
 
@@ -78,6 +82,7 @@ User: "put the sports overall win/loss record for every sport", then "add the co
 - **Paused by the user:** global source cache via Durable Objects (needs Cloudflare "Worker Previews" first); scheduled feed refresh (#87/#88, reverted). Plans are in the history file.
 - **Later, not now:** when high school or pro teams are added, order the level switch High School, College, Pro (`LEVELS` in `public/index.html`).
 - **Waiting on TFRRS:** Baylor's Chile Pepper Festival (Oct 3) shows "Completed" without a result line or story until TFRRS publishes it; recheck with `npm run verify:prod -- --school=baylor --sports="Cross Country"`.
+- **Season badge contrast (for the user to decide):** `.season.active` in `public/index.html` draws near-black text (`#06151c`) on the school's primary color, so dark primaries (Mississippi State, LSU, Alabama) are hard to read. A one-line fix is `color:var(--theme-on-accent,#06151c)`; it changes every school's badge, so it was not made in a school PR.
 - **Live checks still to observe:** Iowa State soccer at Arizona State (Oct 8), football at BYU and volleyball vs Kansas State (Oct 9); Colorado soccer vs Baylor (Oct 8); Cincinnati volleyball at UCF (Oct 9) and soccer vs Utah (Oct 8); Houston volleyball vs BYU (Oct 8) and football at Kansas State (Oct 10); a basketball game going live (season from Oct 15).
 
 ## Session log
@@ -96,3 +101,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 7 — West Virginia, all 14 sports; Big 12 finished** (PR #240, merged `a5c1d26`; production `4.59.0-west-virginia` verified 21:14 UTC, `verify:prod` all sports, athletes 14/14 with three Instagram each, deep 13/14 on the preview). **30 minutes** start to production (2.1 min per sport, a per-sport record; Texas Tech's 26-minute total stands). New: kit `meetName` for TFRRS, places written alone, per-day tennis/wrestling tournaments merged, rifle archive stories.
 - **Oct 7 — Alabama and Florida, 13 sports each; SEC started** (PR #242, merged `3c2afc1`; production `4.60.0-alabama-florida` verified 22:10 UTC, `verify:prod` all sports for both, athletes 13/13 each). **36 minutes** start to production for 26 sports (1.4 min per sport, record), the first two-school session.
 - **Oct 7 — Georgia and LSU added to the app, 13 sports each** (PR #244). LSU is WMT with its own card reader. Shared fixes: WMT season-scoped profile links, story bodies opening with nested markup. New tools: `generate-module-tests`, `athlete-evidence`. Merged `5779733`; production `4.61.0-georgia-lsu` verified 23:08 UTC (`verify:prod --sports=all` both, athletes 13/13 both). 41 minutes start to production for 26 sports, with a new WMT reader.
+- **Oct 7 — Ole Miss and Mississippi State added to the app, 21 sports** (PR #246, merged `bd98783`; production `4.62.0-ole-miss-mississippi-state` verified 01:21 UTC Oct 8, `verify:prod --sports=all` both, athletes 11/11 and 10/10, athletes passed on the first preview). Shared: story-block recaps read; kit `volleyballSetScores`. 117 minutes wall clock, about 40 of them lost to a container restart.
