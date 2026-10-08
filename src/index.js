@@ -32,10 +32,12 @@ import {arkansasSchool,createArkansasHandlers} from './schools/arkansas.mjs';
 import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
 import {oklahomaSchool,createOklahomaHandlers} from './schools/oklahoma.mjs';
 import {kentuckySchool,createKentuckyHandlers} from './schools/kentucky.mjs';
+import {southCarolinaSchool,createSouthCarolinaHandlers} from './schools/south-carolina.mjs';
+import {vanderbiltSchool,createVanderbiltHandlers} from './schools/vanderbilt.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.66.3-byu-cross-country';
+const VERSION='4.67.0-south-carolina-vanderbilt';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -227,6 +229,19 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(kentuckyHandlers.isFinalWithoutStory(event))await kentuckyHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(kentuckyHandlers.isFinalWithoutStory).map(event=>kentuckyHandlers.attachArchiveStory(event)));return events.filter(event=>!kentuckyHandlers.isUnlisted(event));}}
+  ,{school:southCarolinaSchool,parseSchedule:(...args)=>southCarolinaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>southCarolinaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>southCarolinaHandlers.matchesRecap(...args),crossCountry:{matches:event=>southCarolinaHandlers.isCrossCountry(event),attach:event=>southCarolinaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(southCarolinaHandlers.isFinalWithoutStory(event))await southCarolinaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(southCarolinaHandlers.isFinalWithoutStory).map(event=>southCarolinaHandlers.attachArchiveStory(event)));return events.filter(event=>!southCarolinaHandlers.isUnlisted(event));}}
+  ,{school:vanderbiltSchool,parseSchedule:(...args)=>vanderbiltHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>vanderbiltHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>vanderbiltHandlers.matchesRecap(...args),crossCountry:{matches:event=>vanderbiltHandlers.isCrossCountry(event),attach:event=>vanderbiltHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>vanderbiltHandlers.isVanderbiltGolf(event),attach:event=>vanderbiltHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(vanderbiltHandlers.isFinalWithoutStory(event))await vanderbiltHandlers.attachArchiveStory(event);},
+    // A past golf tournament still without a story publishes no place: it is
+    // not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(vanderbiltHandlers.isFinalWithoutStory).map(event=>vanderbiltHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(vanderbiltHandlers.isVanderbiltGolf).map(event=>vanderbiltHandlers.attachGolfPlace(event)));return events.filter(event=>!vanderbiltHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -337,6 +352,8 @@ const arkansasHandlers=createArkansasHandlers({makeEvent,visibleText,absoluteUrl
 const auburnHandlers=createAuburnHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaHandlers=createOklahomaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kentuckyHandlers=createKentuckyHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const southCarolinaHandlers=createSouthCarolinaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const vanderbiltHandlers=createVanderbiltHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -519,7 +536,7 @@ function officialProfileImage(raw,profileUrl){
     return imageHost===profileHost&&!/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl))?imageUrl:null;
   }catch{return null}
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,...southCarolinaSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   // Some official athlete bios publish personal social links only inside a
   // Schema.org Person record. Accept those identity-bound links before scanning

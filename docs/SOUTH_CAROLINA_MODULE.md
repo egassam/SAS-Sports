@@ -1,0 +1,41 @@
+# South Carolina school module
+
+`src/schools/south-carolina.mjs` owns South Carolina's gamecocksonline.com schedule and roster routes, its program combinations, its verified Instagram pins, its blocked team accounts and its schedule-card reader. The Worker imports its configuration.
+
+South Carolina was added to the app and converted on October 8, 2026, together with Vanderbilt. All 13 sports were built and tested one at a time and published in one PR. gamecocksonline.com is WMT's WordPress template, but not Kentucky's: the module started from Kentucky's handlers (`scripts/port-handlers.mjs --from=kentucky`) and has its own card reader.
+
+## Status (`4.67.0-south-carolina-vanderbilt`)
+
+| Sport | Page | State |
+| --- | --- | --- |
+| Football | `football` | 5 finals, each with its story; 2-3 (SEC 0-3); ESPN live score |
+| Volleyball | `wvball` | 14 finals, each with its story; 8-6 (SEC 1-3), equal to the Oct 4 story's; ESPN live score |
+| Soccer | `msoc`, `wsoc` | Labeled; women 10-1-1 (SEC 4-0-1), men 7-1-2 (Sun Belt 1-0-2), equal to the latest stories'; every final with its story; ESPN live scores |
+| Cross Country | `wcross` | 3 finals with the women's place in the field ("1st of 13") and stories; TFRRS results (`SC_college_f_South_Carolina`) |
+| Golf | `mgolf`, `wgolf` | Labeled; round cards merged, placed by the last round with the team score; the Stephens Cup closes with its match-play final ("Won final vs. Wake Forest, 3-2") |
+| Equestrian | `equestrian` | 2 finals and 2 exhibitions, each with its story |
+| Swimming & Diving | `swimming` | One page for both teams; UNCW dual per team ("Women's team: W, 250-50 / Men's team: W, 165-135") |
+| Tennis | `mten`, `wten` | Labeled; Furman Fall Classic with its story; players' pro events (ITF) and past tournaments without a story left out |
+| Basketball, Baseball, Softball | | Exhibitions labeled (men's summer tour, women's Sep 27 exhibition, fall baseball and softball); ESPN live scores |
+| Track & Field, Beach Volleyball | `track`, `bvball` | Pages still show last season: empty until 2026-27 is published |
+
+## South Carolina rules
+
+- **Cards:** `div.event.schedule-table_row <venue>` with the start as a Unix time (`data-order`); the day and time are written out ("Sat Sep 5 12:45 pm", "Fri Oct 16 - Sat Oct 17", "TBA", "All Day"). A TBA start is midnight UTC, so the written day decides and the year is the one nearest `data-order`.
+- **Opponent:** the `<strong>` in `schedule-list__opponent`, after any promotion ("Salute the Troops"); its marks follow: "(EXH)" an exhibition, "(SEC)"/"(Sun Belt)" a conference game (a page with marks sets every game's `conference_game`).
+- **Results:** "W 57-0", South Carolina's score first; golf "t-4th, 551 (-17)"; cross country "1st/13"; track "M: 11th | W: 5th"; swimming "Women: W 250-50; Men: W 165-135"; "NTS" reads "Completed".
+- **Golf:** "R1 & R2", "R3", "Match Play" round cards are one tournament; a scored card right after one is its match-play final.
+- **Stories:** the `schedule-event-link--postgame` link or a link labeled "Recap"; a meet's "Day One Recap"/"Day Two Recap" takes the last.
+- **Athletes:** every profile page's menu lists 16 team accounts (`gamecockbaseball` ...) before the athlete's own link; they are blocked (`blockedInstagramHandles`), or every athlete would show the team account.
+
+Every rule was mutated; every mutation fails `npm run test:south-carolina-module` (a ranking rule whose mutation survived was removed: the strong never carries one).
+
+## Athletes
+
+Certification lists all 13 sports (minimum 3). __ATHLETES__
+
+## Limitations
+
+- Track & Field and Beach Volleyball fill when 2026-27 is published.
+- Golf places have no field size (the cards publish none).
+- Cross country's Adidas XC Challenge (Sep 18) is not on TFRRS; its card's place and story show.
