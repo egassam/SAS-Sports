@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.1-arkansas-auburn`.
+Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.2-xc-distance-athletes`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.1-a
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.65.1-arkansas-auburn`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.65.2-xc-distance-athletes`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -34,7 +34,7 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.1-a
 | Texas Tech | `texas-tech.mjs` | Complete (10 sports) | Track & Field fills when texastech.com publishes 2026-27; first live cards not yet observed (soccer at Oklahoma State Oct 8, volleyball vs Baylor Oct 8) |
 | West Virginia | `west-virginia.mjs` | Complete (14 sports) except source-blocked | Volleyball's James Madison exhibition (Aug 22) has no official story (archive checked), so deep is 13/14; golf shows place without field size (schedule publishes "8th Place"); Gymnastics, Rowing, Track & Field fill when published; first live cards not yet observed (soccer vs BYU Oct 8, volleyball at Utah Oct 8) |
 | TCU | `tcu.mjs` | Complete (14 sports) | Triathlon's third athlete is a profile card (only 2 Instagram published); first live cards not yet observed (soccer vs UCF Oct 8, volleyball vs Arizona Oct 9) |
-| Alabama (SEC) | `alabama.mjs` | Complete (13 sports) | Rowing fills when published; golf shows place without field size (not published); 8 sports use profile cards (rosters publish too few Instagram, 262 profiles read); first live cards not yet observed (soccer at Florida Oct 8, volleyball vs South Carolina Oct 9) |
+| Alabama (SEC) | `alabama.mjs` | Complete (13 sports) | Rowing fills when published; golf shows place without field size (not published); 9 sports use profile cards (Cross Country's third slot since Oct 8) (rosters publish too few Instagram, 262 profiles read); first live cards not yet observed (soccer at Florida Oct 8, volleyball vs South Carolina Oct 9) |
 | Florida (SEC) | `florida.mjs` | Complete (13 sports) | Lacrosse fills when published; first live cards not yet observed (soccer vs Alabama Oct 8) |
 | Georgia (SEC) | `georgia.mjs` | Complete (13 sports) | Added to the app Oct 7. 7 sports use profile cards (370 profiles read, no athlete Instagram); Track & Field, Gymnastics fill when seasons start; first live cards not yet observed |
 | LSU (SEC) | `lsu.mjs` (own WMT card reader) | Complete (13 sports) | Added to the app Oct 7. Golf place only when the final story's headline gives it (cards publish none); Track & Field fills when published; first live cards not yet observed |
@@ -114,3 +114,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 8 — Missouri and Tennessee added to the app, 25 sports** (user: "Add Missouri and Tennessee. Learn and optimize for faster onboarding"; PR #250, merged `a941a94`; production `4.63.0-missouri-tennessee` verified 11:13 UTC, `verify:prod --sports=all` both, athletes 13/13 and 12/12). **43 minutes** start to production. Missouri is WMT (LSU's reader). New tools: `add-school`, `port-handlers`, fixtures `--prune`, `fill-expected`, athlete-evidence `--pins`; athlete cache key carries pins.
 - **Oct 8 — Texas and Texas A&M added to the app, 25 sports** (user: "Onboarding of Texas and Texas A&M. Learn and optimize for increased speed"; PR #252). Texas SIDEARM (Tennessee's handlers), A&M WMT (Missouri's reader, newer cards). Shared fix: season-roster links are not athletes. Tools: port-handlers renames quoted ids/escaped hosts first; generate-module-tests handles two sports on one page. Merged `bf36ec7`; production verified 12:19 UTC (`verify:prod --sports=all` both, athletes 13/13 and 10/10). About 105 minutes start to production.
 - **Oct 8 — Arkansas and Auburn added to the app, 25 sports** (user: "Start Arkansas and Auburn. Learn and optimize for speed"; PR #254). Arkansas WordPress (own reader), Auburn WMT (A&M's reader). Shared: WordPress story text, roster-table athletes, WMT bio social list first, profile portraits for roster-only rows. Merged `91c8364`; production `4.65.1-arkansas-auburn` verified 13:23 UTC (`verify:prod --sports=all` both, athletes 12/12 and 13/13). **About 48 minutes** start (12:35) to production for 25 sports, with a new reader for Arkansas.
+- **Oct 8 — Cross Country athletes are distance runners** (user: "Texas is showing track athletes instead of cross country athletes", then "Merge it"; PR #256, merged `7291356`; production `4.65.2-xc-distance-athletes` verified 14:18 UTC). Texas, Auburn, Alabama and Oklahoma State share one XC/track roster; Cross Country now keeps the cards whose event group is distance. Alabama Cross Country's third slot is a profile card (2 distance runners of 84 profiles publish Instagram). Athletes 13/13, 13/13, 13/13, 11/11 on production. User asked about an Instagram-login environment: advised against (Instagram terms, project rule); offered to pin handles the user confirms.
