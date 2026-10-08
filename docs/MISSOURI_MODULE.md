@@ -10,7 +10,7 @@ Missouri was added to the app and converted on October 8, 2026, together with Te
 | --- | --- | --- |
 | Football | `football` | 5 finals, each with its story; record 4-1 (SEC 1-1) as published; ESPN live score |
 | Volleyball | `womens-volleyball` | 15 finals, each with its story; 8-7 (1-2) as published; ESPN live score |
-| Soccer | `womens-soccer` | 13 finals: the Aug 5 Lindenwood exhibition is labeled; 3-7-2 (0-4-1) as published. Arkansas (Oct 2) has no story on its card, so it shows the score without highlights |
+| Soccer | `womens-soccer` | 13 finals, each with its story except the Aug 5 Lindenwood exhibition (labeled; its card links only a gallery). Arkansas (Oct 2) takes its story from the archive. 3-7-2 (0-4-1) as published |
 | Cross Country | `cross-country` | 3 finals with both teams' places and points from TFRRS (`MO_college_f_Missouri`, `MO_college_m_Missouri`) |
 | Golf | `mens-golf`, `womens-golf` | Labeled. Place from the card (`5th of 13`; `1st` with team score `842`); the card's Final Recap |
 | Tennis | `womens-tennis` | Women's only. Husker Invitational day cards merged into one event; 49er Invite; each with its last story |
@@ -29,6 +29,7 @@ Missouri was added to the app and converted on October 8, 2026, together with Te
 - **Rankings:** two polls are written as `#24/#RV Mississippi State`.
 - **Exhibitions:** the card's `schedule-event-exhibition` marker adds "(Exhibition)". The official record leaves these games out, so soccer's computed record equals the published 3-7-2.
 - **Home meets:** a meet named after an event ("vs. Gans Creek Classic", "vs. Mizzou Invite") reads "at". A two-day swimming dual ("vs. Missouri State") stays "vs".
+- **Archive stories:** a scored final whose card links no story takes the sport's archive story dated the game day or the day after, when its headline or summary names the opponent and the score (a tie: the score or "draw"). Example: "Soccer Earns First SEC Point in 1-1 Draw at Arkansas". Exhibitions take none.
 - **Recap matcher:** a headline that names the opponent inside an event name ("Bowling Green/Toledo Invitational") is not that opponent's story.
 
 Each rule was mutated, and every mutation fails `npm run test:missouri-module`. Three rules were dropped because they were redundant: other rules already gave the same output (card datetime years, sorting recap labels, a fixed list of open-meet sports).
@@ -39,6 +40,6 @@ Certification lists all 13 sports (minimum 3). On October 8, every roster and pr
 
 ## Limitations
 
-- Soccer at Arkansas (Oct 2): the card links no story; the result line shows.
+- The Aug 5 soccer exhibition at Lindenwood has no story; its card links only a photo gallery, and the archive lists no story from that week.
 - Gymnastics and Track & Field fill when Missouri publishes them.
 - No live card observed yet.

@@ -331,8 +331,31 @@ export function createMissouriHandlers({makeEvent,visibleText,absoluteUrl,recapM
     const longer=new RegExp(` ${opponent.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')} (?:state|st|tech|a&m|southern|christian|international|invitational|invite|tournament|classic|challenge) `);
     return opponent.length>=2&&key.includes(` ${opponent} `)&&!longer.test(key);
   }
+  // A scored final whose card links no story (soccer at Arkansas, Oct 2)
+  // takes the sport's archive story dated the game day or the day after
+  // whose headline or summary names the opponent and the score (a tie: the
+  // score or "draw"): "Soccer Earns First SEC Point in 1-1 Draw at Arkansas".
+  const isFinalWithoutStory=event=>event?.school_id==='missouri'&&event.status==='Final'&&!event.recap_url&&!/\(Exhibition\)$/.test(event.opponent||'')&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
+  async function attachArchiveStory(event){
+    if(!isFinalWithoutStory(event))return event;
+    const slug=(String(event.source?.url||'').match(/^https:\/\/mutigers\.com\/sports\/([a-z-]+)\/schedule/)||[])[1];if(!slug)return event;
+    const listing=await download(`https://${HOST}/sports/${slug}/archives`);if(!listing)return event;
+    const first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`);
+    const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
+    const paths=[...new Set(String(listing).replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])]
+      .filter(path=>day(path)>=first&&day(path)<=first+86400000);
+    const [a,b]=[String(event.school_score),String(event.opponent_score)],opponent=headlineKey(event.opponent).trim();
+    const score=new RegExp(`(?<![\\d-])(?:${a}-${b}|${b}-${a})(?![\\d-])`);
+    for(const path of paths.slice(0,4)){
+      const url=`https://${HOST}${path}`,raw=await download(url);if(!raw)continue;
+      const meta=name=>decodeHtml((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=["']([^"']*)`,'i'))||[])[1]||'');
+      const text=`${meta('title')} ${meta('description')}`;
+      if(opponent.length>=2&&headlineKey(text).includes(` ${opponent} `)&&(score.test(text)||a===b&&/\b(?:draw|tie|tied|scoreless)\b/i.test(text))){event.recap_url=url;event.archive_story_verified=url;return event;}
+    }
+    return event;
+  }
   const crossCountry=createTfrrsMeetResults({id:'missouri',schoolName:'Missouri',teams:MISSOURI_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
-  return{parseSchedule,isEmptySchedule,matchesRecap,isMissouriGolf,attachGolfPlace,
+  return{parseSchedule,isEmptySchedule,matchesRecap,isMissouriGolf,attachGolfPlace,isFinalWithoutStory,attachArchiveStory,
     isCrossCountry:event=>event?.school_id==='missouri'&&crossCountry.matches(event),attachMeetResults:crossCountry.attach};
 }
 

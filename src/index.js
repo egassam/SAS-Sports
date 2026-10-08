@@ -182,7 +182,9 @@ const SCHOOL_MODULES=[
   ,{school:missouriSchool,parseSchedule:(...args)=>missouriHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>missouriHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>missouriHandlers.matchesRecap(...args),crossCountry:{matches:event=>missouriHandlers.isCrossCountry(event),attach:event=>missouriHandlers.attachMeetResults(event)},
     // Golf's team place comes from the final story's headline.
     results:[{matches:event=>missouriHandlers.isMissouriGolf(event),attach:event=>missouriHandlers.attachGolfPlace(event)}],
-    feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(missouriHandlers.isMissouriGolf).map(event=>missouriHandlers.attachGolfPlace(event)));return events;}}
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(missouriHandlers.isFinalWithoutStory(event))await missouriHandlers.attachArchiveStory(event);},
+    feed:async(events,sport)=>{await Promise.all(events.filter(missouriHandlers.isFinalWithoutStory).map(event=>missouriHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(missouriHandlers.isMissouriGolf).map(event=>missouriHandlers.attachGolfPlace(event)));return events;}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').

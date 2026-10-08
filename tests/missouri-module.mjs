@@ -443,6 +443,32 @@ assert.deepEqual(parse('Tennis','womens-tennis').filter(e=>e.status==='Final').m
   assert.deepEqual(parse('Swimming & Diving','swimming-and-diving').filter(e=>/Missouri State|Mizzou Invite/.test(e.opponent)).map(e=>e.title),["Missouri vs Missouri State","Missouri at Mizzou Invite"]);
 }
 
+// Soccer at Arkansas (Oct 2): the card links no story; the archive's story
+// that names Arkansas and the 1-1 draw is taken. The Oct 1 preview is dated
+// before the match, and the exhibition takes none.
+{
+  const soccer=parse('Soccer','womens-soccer').filter(e=>e.status==='Final'&&!e.recap_url);
+  assert.deepEqual(soccer.map(e=>[e.opponent,worker.missouriHandlers.isFinalWithoutStory(e)]),[['Lindenwood (Exhibition)',false],['Arkansas',true]]);
+  recapFixtures.set('https://mutigers.com/sports/womens-soccer/archives',fixture('womens-soccer-archives.html.gz'));
+  const story=fixture('recap-2026-10-3-soccer-earns-first-sec-point-in-1-1-draw-at-a.html.gz');
+  for(const path of ['/news/2026/10/3/soccer-earns-first-sec-point-in-1-1-draw-at-arkansas','/news/2026/10/03/soccer-earns-first-sec-point-in-1-1-draw-at-arkansas'])recapFixtures.set(`https://mutigers.com${path}`,story);
+  const arkansas=soccer[1];
+  await worker.missouriHandlers.attachArchiveStory(arkansas);
+  assert.match(arkansas.recap_url,/\/news\/2026\/10\/0?3\/soccer-earns-first-sec-point-in-1-1-draw-at-arkansas$/);
+  // A story with another score is not the match's.
+  const other={...soccer[1],recap_url:undefined,school_score:2,opponent_score:1};delete other.recap_url;delete other.archive_story_verified;
+  await worker.missouriHandlers.attachArchiveStory(other);
+  assert.equal(other.recap_url,undefined);
+  // Nor one that names another opponent; a final with its own story keeps it.
+  const kentucky={...soccer[1],opponent:'Kentucky'};delete kentucky.recap_url;delete kentucky.archive_story_verified;
+  await worker.missouriHandlers.attachArchiveStory(kentucky);
+  assert.equal(kentucky.recap_url,undefined);
+  const linked={...soccer[1],recap_url:'https://mutigers.com/news/2026/10/3/own-story'};
+  await worker.missouriHandlers.attachArchiveStory(linked);
+  assert.equal(linked.recap_url,'https://mutigers.com/news/2026/10/3/own-story');
+  recapFixtures.clear();requests.length=0;
+}
+
 // Cross Country: TFRRS gives both teams' places.
 {
   const xc=parse('Cross Country','cross-country').filter(e=>e.status==='Final');
