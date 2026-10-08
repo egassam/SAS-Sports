@@ -22,10 +22,12 @@ import {alabamaSchool,createAlabamaHandlers} from './schools/alabama.mjs';
 import {floridaSchool,createFloridaHandlers} from './schools/florida.mjs';
 import {georgiaSchool,createGeorgiaHandlers} from './schools/georgia.mjs';
 import {lsuSchool,createLsuHandlers} from './schools/lsu.mjs';
+import {oleMissSchool,createOleMissHandlers} from './schools/ole-miss.mjs';
+import {mississippiStateSchool,createMississippiStateHandlers} from './schools/mississippi-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.61.0-georgia-lsu';
+const VERSION='4.62.0-ole-miss-mississippi-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -160,6 +162,16 @@ const SCHOOL_MODULES=[
     // Golf's team place comes from the final story's headline.
     results:[{matches:event=>lsuHandlers.isLsuGolf(event),attach:event=>lsuHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(lsuHandlers.isLsuGolf).map(event=>lsuHandlers.attachGolfPlace(event)));return events;}}
+  ,{school:oleMissSchool,parseSchedule:(...args)=>oleMissHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>oleMissHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>oleMissHandlers.matchesRecap(...args),crossCountry:{matches:event=>oleMissHandlers.isCrossCountry(event),attach:event=>oleMissHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(oleMissHandlers.isFinalWithoutStory(event))await oleMissHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(oleMissHandlers.isFinalWithoutStory).map(event=>oleMissHandlers.attachArchiveStory(event)));return events.filter(event=>!oleMissHandlers.isTennisWithoutStory(event));}}
+  ,{school:mississippiStateSchool,parseSchedule:(...args)=>mississippiStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>mississippiStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>mississippiStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>mississippiStateHandlers.isCrossCountry(event),attach:event=>mississippiStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(mississippiStateHandlers.isFinalWithoutStory(event))await mississippiStateHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(mississippiStateHandlers.isFinalWithoutStory).map(event=>mississippiStateHandlers.attachArchiveStory(event)));return events.filter(event=>!mississippiStateHandlers.isTennisWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -260,6 +272,8 @@ const alabamaHandlers=createAlabamaHandlers({makeEvent,recapMatchesEvent,eventTy
 const floridaHandlers=createFloridaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const georgiaHandlers=createGeorgiaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const lsuHandlers=createLsuHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const oleMissHandlers=createOleMissHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const mississippiStateHandlers=createMississippiStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -1322,6 +1336,16 @@ function recapArticleText(raw){
   }
   const article=(raw.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)||[])[1];
   if(article){const text=visibleText(article),hit=text.search(/HOW IT HAPPENED/i);return text.slice(hit>=0?hit:0,hit>=0?hit+12000:14000);}
+  // SIDEARM "story blocks" (Mississippi State's football recaps) hold the
+  // story in a block wrapper instead of a story body: read the wrapper whole,
+  // matching its divs.
+  const blocks=raw.match(/<div\b[^>]*class=["']c-story-blocks__wrapper\b[^"']*["'][^>]*>/i);
+  if(blocks){
+    const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=blocks.index+blocks[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
+    if(text.length>=80)return text.slice(0,14000);
+  }
   // WMT stores article paragraphs in its embedded application payload instead
   // of articleBody or server-rendered <article> markup. Keep this last because
   // a page payload can include several unrelated stories and meet results.

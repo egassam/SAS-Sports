@@ -181,7 +181,7 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // archive (a story dated from the meet's first day to the day after its last
 // that names the meet, the last day's first: Iowa State's cross country
 // schedule links none, and a golf tournament's story can be missing from it).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false}){
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
@@ -218,7 +218,11 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
       const text=storyText(raw);
       if(!opponent||!text.toLowerCase().includes(opponent.toLowerCase()))continue;
-      if(score.test(text)||tie&&tie.test(text)||sets&&sets.test(text)){event.recap_url=url;event.archive_story_verified=url;return event;}
+      // volleyballSetScores: a story may give only each set's score ("25-22",
+      // "25-20", "28-26" for 0-3, Mississippi State at Texas A&M): as many set
+      // scores as the match had sets.
+      const setScores=volleyballSetScores&&sets?(text.match(/(?<![\d-]|\d\.)(?:2[5-9]|[3-9]\d|1[5-9])-\d{1,2}(?!\d|-|\.\d)/g)||[]).length:0;
+      if(score.test(text)||tie&&tie.test(text)||sets&&sets.test(text)||setScores&&setScores===Number(a)+Number(b)){event.recap_url=url;event.archive_story_verified=url;return event;}
     }
     return event;
   }
