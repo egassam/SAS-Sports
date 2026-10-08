@@ -7,7 +7,7 @@
 //
 //   SAS_SOURCE_KEY=... NODE_USE_ENV_PROXY=1 node scripts/athlete-evidence.mjs --school=georgia Football "Track & Field"
 //   (--check=Volleyball first: a sport that publishes links must show them;
-//   --pins prints verifiedInstagrams lines for sports with 8 links or fewer)
+//   --pins prints verifiedInstagrams lines for sports with 12 links or fewer)
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school'),sports=[value('check'),...args.filter(a=>!a.startsWith('--'))].filter(Boolean);
 const key=process.env.SAS_SOURCE_KEY,base=(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
@@ -36,7 +36,7 @@ for(const sport of sports){
       const page=await get(`https://${host}${path}`),own=[...handles(page)].filter(h=>!site.has(h));read++;
       // The athlete's name: the page title's first part ("Blake Grimmer -
       // Baseball - University of Tennessee Athletics").
-      const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&amp;/g,'&').trim();
+      const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
       if(own.length)found.push({path,name,handle:own[0],text:`${path.split('/').pop()}${name?` (${name})`:''}: ${own.join(',')}`});
     }));
   }
@@ -45,5 +45,5 @@ for(const sport of sports){
   // --pins: ready verifiedInstagrams lines for a sport with few links (the
   // app reads roster cards, then up to 24 profile pages; Ole Miss pinned
   // Baseball's 3 of 42).
-  if(args.includes('--pins')&&unique.length&&unique.length<=8)for(const f of unique.slice(0,3).filter(f=>f.name))console.log(`    '${id}|${sport}|${f.name.replace(/'/g,"\\'")}':'https://www.instagram.com/${f.handle}/',`);
+  if(args.includes('--pins')&&unique.length&&unique.length<=12)for(const f of unique.slice(0,3).filter(f=>f.name))console.log(`    '${id}|${sport}|${f.name.replace(/'/g,"\\'")}':'https://www.instagram.com/${f.handle}/',`);
 }

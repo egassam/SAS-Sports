@@ -23,7 +23,14 @@ export const missouriSchool={
   // by team. Swimming & Diving publishes one page for both teams.
   combinedSports:new Set(['Basketball','Golf']),
   teamLabels:{},
-  verifiedInstagrams:{},
+  // Gymnastics' roster cards gave the app fewer than three athlete links;
+  // the official profile pages publish them (scripts/athlete-evidence.mjs,
+  // Oct 8: 9 of 19 profiles).
+  verifiedInstagrams:{
+    'missouri|Gymnastics|Ayla Acevedo':'https://www.instagram.com/aylaacevedo_/',
+    'missouri|Gymnastics|Addison Anderson':'https://www.instagram.com/this.is.addie/',
+    'missouri|Gymnastics|Jennifer McMillan':'https://www.instagram.com/jenn.mcmillan_/'
+  },
   scheduleUrls:{
     'missouri|Baseball':'https://mutigers.com/sports/baseball/schedule',
     'missouri|Basketball':['https://mutigers.com/sports/mens-basketball/schedule','https://mutigers.com/sports/womens-basketball/schedule'],
