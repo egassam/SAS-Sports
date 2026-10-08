@@ -35,7 +35,7 @@ import {kentuckySchool,createKentuckyHandlers} from './schools/kentucky.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.66.0-oklahoma-kentucky';
+const VERSION='4.66.1-oklahoma-kentucky';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1464,9 +1464,10 @@ function recapArticleText(raw){
     const text=end>0?visibleText(raw.slice(paragraphs.index+paragraphs[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
-  // Kentucky's WordPress stories hold the text in section.article_text.
-  const section=(raw.match(/<section\b[^>]*class=["']article_text\b[^"']*["'][^>]*>([\s\S]*?)<\/section>/i)||[])[1];
-  if(section){const text=visibleText(section.replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' '));if(text.length>=80)return text.slice(0,14000);}
+  // Kentucky's WordPress stories hold the text in section.article_text or
+  // section.article-text (one section or several, between photos).
+  const sections=[...raw.matchAll(/<section\b[^>]*class=["']article[_-]text\b[^"']*["'][^>]*>([\s\S]*?)<\/section>/gi)].map(m=>visibleText(m[1].replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' '))).filter(Boolean);
+  if(sections.join(' ').length>=80)return sections.join(' ').slice(0,14000);
   // WMT stores article paragraphs in its embedded application payload instead
   // of articleBody or server-rendered <article> markup. Keep this last because
   // a page payload can include several unrelated stories and meet results.

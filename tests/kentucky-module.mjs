@@ -463,8 +463,11 @@ const rows=e=>e.results.map(r=>`${r.label||r.group}: ${r.value ?? r.result}`).jo
   recapFixtures.clear();requests.length=0;
 }
 
-// The story text is in div.article_text (WordPress).
+// The story text is in section.article_text or section.article-text
+// (WordPress; the second template on women's soccer and swimming stories).
 assert.match(worker.recapArticleText(fixture('recap-2026-09-05-kentucky-tops-youngstown-state-for-stein.html.gz')),/^Quarterback Kenny Minchey connected on 18 of 27/);
+assert.match(worker.recapArticleText(fixture('recap-2026-08-12-the-bell-rings-as-womens-soccer-take-sea.html.gz')),/^LEXINGTON, Ky\. – It was the ideal season opener/);
+assert.match(worker.recapArticleText(fixture('recap-2026-10-02-kentucky-swim-dive-fall-to-no-3-10-flor.html.gz')),/Florida/);
 
 // Internal events are not listed (the spring game, Big Blue Madness,
 // swimming's Blue vs. White); exhibitions read "(Exhibition)"; a page still
