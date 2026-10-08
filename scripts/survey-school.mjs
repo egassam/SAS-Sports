@@ -47,7 +47,7 @@ const fixtureFetch=async url=>{
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:fixtureFetch};
 const handlerName=`${id.replace(/-(\w)/g,(all,c)=>c.toUpperCase())}Handlers`;
-const worker=Function(...Object.keys(deps),source+`;return {candidateUrls,parseHtml,labelTeamEvents,attachOfficialMeetResults,handlers:typeof ${handlerName}==='undefined'?null:${handlerName}};`)(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+`;return {candidateUrls,parseHtml,labelTeamEvents,attachOfficialMeetResults,handlers:typeof ${handlerName}==='undefined'?null:${handlerName},schoolModule};`)(...Object.values(deps));
 const now=new Date(value('date')?`${value('date')}T15:00:00Z`:Date.now());
 const pad=(text,width)=>String(text).padEnd(width);
 // The gate's rule: a final needs a result line other than Completed, or a story.
@@ -72,10 +72,15 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
       try{if(worker.handlers?.isFinalWithoutStory?.(e))await worker.handlers.attachArchiveStory(e);}catch{}
       try{await worker.attachOfficialMeetResults(e);}catch{}
     }
+    // The module's feed hook, as the Worker runs it: an event it leaves out
+    // (a past tennis tournament without a story) is not listed and not gated.
+    let listed=new Set(events);
+    try{const feed=worker.schoolModule(id)?.feed;if(feed)listed=new Set(await feed([...events]));}catch{}
+    const unlisted=e=>!listed.has(e);
     if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
-    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':''}`);
-    flagged+=events.filter(gateMiss).length;
+    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${unlisted(e)?'  (not listed: the module leaves it out)':gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':''}`);
+    flagged+=events.filter(e=>!unlisted(e)&&gateMiss(e)).length;
   }
 }
 if(flagged){console.log(`\n${flagged} final(s) without a result line or story: the release gate fails them.`);process.exitCode=1;}

@@ -1947,3 +1947,19 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 **PR #267 merged** (`a4121b0`). Production `4.69.1-illinois-indiana` verified 21:49 UTC: `verify:prod --sports=all` both exit 0, XC 18/20 and 26/21; athletes 13/13 and 15/15 on production.
 
 **Open:** Illinois Gymnastics; Indiana Track & Field and Water Polo fill when published; Indiana golf field size not published; first live cards not yet observed.
+
+## October 8, 2026 — Faster onboarding after Illinois and Indiana
+
+**Request** (user): "I feel like you have slowed down a lot. Make sure you learn and optimize the next onboarding". Illinois + Indiana took about 2 h 20 min (Missouri + Tennessee: 43 min).
+
+**Where the time went (this session's timeline):** about 10 min idle on a wait loop (`until … pgrep -f fetch-school-fixtures`) that matched its own command line; about 10 min of sequential fixture downloads per school through the private source; about 25 min for a second preview round (the scaffold's feed hook lacked K-State's storyless-tennis rule, which the survey could not see); about 10 min redoing `fill-expected` placeholders (one name used eight times took one value); about 5 min listing sports by hand (`add-school` read only `/schedule` nav links); two sequential `verify:preview` runs repeating the XC checks.
+
+**Changes (tooling only; no Worker change):**
+- `scripts/start-schools.mjs` (`npm run start-schools`): add-school, scaffold and port per school (one after another: they write shared files), TFRRS team pages found by address (`<ST>_college_f_<Name>`, then `_<Name>_<ST>`), every sport on, then fixtures and athlete evidence side by side and the survey, for all schools at once; a summary of what to decide by eye. Tried in a throwaway worktree on Iowa and Maryland: Maryland setup to survey in 2 min 39 s (14 sports, TFRRS found, Cross Country profile cards, Baseball and Tennis to pin, one GATE: football at Navy); Iowa is WMT and stopped after scaffolding.
+- `fetch-school-fixtures`: six sports at a time, each sport's stories at once: Indiana cold in 9 s (the same files as before, apart from routes `--prune` had removed).
+- `add-school`/`onboard-school`: sports from nav home links (`/sports/womens-soccer`) and any `mens-`/`womens-` slug prefix: Illinois 13 and Indiana 15, as built by hand.
+- `survey-school`: runs the module's feed hook; events it leaves out read "not listed" and are not gated. With the old Indiana wiring the survey shows the GATE the preview found.
+- `fill-expected`: every placeholder occurrence is filled on its own (bare `__FILL__` allowed).
+- `verify-release`: `--school=a,b --sports=all` reads the XC baselines once and checks the schools at the same time (each site still one sport at a time): production Illinois + Indiana in 78 s, all passed.
+
+**Tests:** `npm run test:release` exit 0. PR #268 (handoff) merged `d0b022b` before this change.

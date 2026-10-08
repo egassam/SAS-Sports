@@ -38,6 +38,9 @@ const count=re=>(html.match(re)||[]).length,wmt=count(/wmt/gi),sidearm=count(/si
 const publisher=wmt>sidearm?'WMT':'SIDEARM';
 const found=new Set();
 for(const [,href] of html.matchAll(/href="([^"]*\/sports?\/[a-z-]+\/schedule)\/?"/g)){const sport=inferSport(href);if(sport)found.add(sport)}
+// Newer SIDEARM navs link each sport's home (`/sports/womens-soccer`), not its
+// schedule (Illinois and Indiana listed only Football): read those too.
+for(const [,href] of html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z-]+)\/?"/g)){const sport=inferSport(href);if(sport)found.add(sport)}
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);

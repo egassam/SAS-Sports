@@ -26,9 +26,16 @@ if(!base||!school||!sportsArg){
   console.error('usage: verify-release.mjs (--branch=<branch> | --prod | --base=<url>) --school=<id> --sports=<Sport,Sport|all> [--refreshes=36] [--version=<v>] [--no-expanded]');
   process.exit(2);
 }
-if(!sponsored[school]){console.error(`unknown school ${school}`);process.exit(2)}
-const sports=sportsArg==='all'?sponsored[school]:sportsArg.split(',').map(s=>s.trim()).filter(Boolean);
-for(const sport of sports)if(!sponsored[school].includes(sport)){console.error(`${school} does not sponsor ${sport}`);process.exit(2)}
+// Several schools (`--school=illinois,indiana`, with --sports=all) share one
+// run: the cross-country baselines are read once, then each school's sports
+// are checked at the same time as the other's. Each official site still sees
+// one sport's refreshes at a time (two separate runs at once tripped the
+// K-State XC first-read transient; one run reads it once).
+const schoolIds=school.split(',').map(s=>s.trim()).filter(Boolean);
+for(const id of schoolIds)if(!sponsored[id]){console.error(`unknown school ${id}`);process.exit(2)}
+if(schoolIds.length>1&&sportsArg!=='all'){console.error('several schools take --sports=all');process.exit(2)}
+const sportsOf=id=>sportsArg==='all'?sponsored[id]:sportsArg.split(',').map(s=>s.trim()).filter(Boolean);
+for(const id of schoolIds)for(const sport of sportsOf(id))if(!sponsored[id].includes(sport)){console.error(`${id} does not sponsor ${sport}`);process.exit(2)}
 
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const failures=[],lines=[];
@@ -51,7 +58,7 @@ const feedPath=(id,sport,refresh)=>`/live/feed/grouped?school=${encodeURICompone
 const finals=body=>(Array.isArray(body)?body:[]).flatMap(g=>g.results||[]);
 const count=body=>(Array.isArray(body)?body:[]).reduce((n,g)=>n+['live','results','upcoming','other'].reduce((m,k)=>m+(g[k]||[]).length,0),0);
 
-console.log(`Base: ${base}\nSchool: ${school}\nSports: ${sports.join(', ')}\n`);
+console.log(`Base: ${base}\n${schoolIds.map(id=>`School: ${id}\nSports: ${sportsOf(id).join(', ')}`).join('\n')}\n`);
 
 const status=await get('/api/status',{tries:3});
 const version=status.body?.version;
@@ -76,6 +83,7 @@ for(const xc of xcBaselines){
   report(text===want,`${xc.label} ${text} (want ${want})`);
 }
 
+async function verifySchool(school,sports){
 for(const sport of sports){
   // Forced refreshes: every one must be a 200 JSON array.
   let ok=0,cpu=0,s503=0,other=[],slowest=0,events=null;
@@ -112,6 +120,8 @@ for(const sport of sports){
   const summary=Object.entries(states).map(([k,v])=>`${k} ${v}`).join(', ')||'no finals';
   report(!bad.length,`${school} ${sport}: expanded views ${results.length-bad.length}/${results.length} (${summary})${bad.length?` · ${bad.slice(0,3).join('; ')}`:''}`);
 }
+}
+await Promise.all(schoolIds.map(id=>verifySchool(id,sportsOf(id))));
 
 console.log(`\n${failures.length?`${failures.length} check(s) failed`:'All checks passed'} on ${base}. Still check the sport's cards and expanded views on the page itself.`);
 process.exit(failures.length?1:0);

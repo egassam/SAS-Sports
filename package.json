@@ -56,6 +56,7 @@
     "verify:preview": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs",
     "verify:prod": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs --prod",
     "scaffold-school": "node scripts/scaffold-school.mjs",
+    "start-schools": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/start-schools.mjs",
     "fetch-school-fixtures": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/fetch-school-fixtures.mjs",
     "survey-school": "node scripts/survey-school.mjs",
     "screenshot-school": "node scripts/screenshot-school.mjs"

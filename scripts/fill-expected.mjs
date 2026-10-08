@@ -1,5 +1,5 @@
 // Fills the expected values of hand-written test checks: write
-// `assert.deepEqual(actual,__FILL_NAME__)` (or pass __FILL_NAME__ to a helper that
+// `assert.deepEqual(actual,__FILL__)` (or pass __FILL__ to a helper that
 // ends in assert.deepEqual), run this, and each placeholder is replaced by
 // the value the code gives today. Read every filled value against the
 // official page before committing: it records what the module reads, right
@@ -11,8 +11,11 @@ import {spawnSync} from 'node:child_process';
 
 const file=process.argv[2];
 if(!file){console.error('usage: node scripts/fill-expected.mjs <test file>');process.exit(2)}
-const text=readFileSync(file,'utf8'),names=[...new Set(text.match(/__FILL_[A-Z0-9_]+__/g)||[])];
-if(!names.length){console.log('no __FILL_NAME__ placeholders');process.exit(0)}
+// Every placeholder occurrence is its own value: a name used twice, or a bare
+// `__FILL__`, is numbered (Illinois's checks once all took the first value).
+let count=0;
+const text=readFileSync(file,'utf8').replace(/__FILL(?:_[A-Z0-9_]+?)?__/g,()=>`__FILL_AT${++count}__`),names=[...new Set(text.match(/__FILL_[A-Z0-9_]+__/g)||[])];
+if(!names.length){console.log('no __FILL__ placeholders');process.exit(0)}
 // A copy beside the original (its relative imports and fixtures resolve),
 // whose placeholders are markers that assert.deepEqual records instead of
 // comparing.
