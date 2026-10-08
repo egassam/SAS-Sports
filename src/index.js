@@ -35,7 +35,7 @@ import {kentuckySchool,createKentuckyHandlers} from './schools/kentucky.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.66.1-oklahoma-kentucky';
+const VERSION='4.66.2-asu-cross-country';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
