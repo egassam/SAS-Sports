@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,auburnHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,auburnHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/auburn-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit auburntigers.com routes, exactly
@@ -415,5 +415,29 @@ console.log('Auburn module checks passed');
   assert.equal(auburnGolfPlace('Holder, Gilbert lead No. 2 Tigers on day one of Inverness'),null);
   // Players' pro events on the tennis pages are not team events.
   assert.ok(!parse('Tennis','mens-tennis').some(e=>/Futures/.test(e.opponent)));
+}
+// Cross Country shares the track roster (user, October 8: "Texas is showing
+// track athletes instead of cross country athletes"): it features distance
+// runners only, by each card's event group; Track & Field keeps everyone.
+{
+  const raw=fixture('xctrack-roster.html.gz'),positions=worker.rosterPositions(raw,'https://auburntigers.com/sports/xctrack/roster');
+  const profiles=worker.rosterProfiles(raw,'https://auburntigers.com/sports/xctrack/roster');
+  assert.ok(profiles.length>40&&profiles.every(p=>positions.has(p.url)),'every athlete card has its event group');
+  recapFixtures.set('https://auburntigers.com/sports/xctrack/roster',raw);
+  const xc=await worker.featuredAthletes('auburn','Cross Country');
+  assert.equal(xc.length,3);
+  for(const athlete of xc)assert.match(positions.get(athlete.profile_url),/distance|\bxc\b|cross country/i,`${athlete.name} is a distance runner`);
+  const track=profiles.filter(p=>/sprint|throw|jump|hurdle/i.test(positions.get(p.url)));
+  assert.ok(track.length>10,'the roster also lists sprinters, throwers and jumpers');
+  recapFixtures.clear();requests.length=0;
+}
+// A profile's own social list (roster-bio-social-links) decides: the menu
+// before it lists the school's team accounts (auburnbaseball), which are never
+// the athlete's, even when the athlete's list has no Instagram.
+{
+  const menu='<nav><a href="https://www.instagram.com/auburnbaseball/?hl=en">Baseball</a></nav>';
+  const bio=links=>`${menu}<div class="roster-bio-social-links"><ul class="social-links"><li class="roster-bio-social-links__title">Follow</li>${links}</ul></div>`;
+  assert.equal(worker.verifiedInstagram(bio('<li class="social-item"><a href="https://www.instagram.com/malia11l" class="social-item__link">Instagram</a></li>')),'https://www.instagram.com/malia11l/');
+  assert.equal(worker.verifiedInstagram(bio('<li class="social-item"><a href="https://x.com/someone" class="social-item__link">X</a></li>')),null);
 }
 console.log('Auburn hand-written checks passed');
