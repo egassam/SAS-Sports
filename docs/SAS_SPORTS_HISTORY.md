@@ -1878,3 +1878,5 @@ Texas Tech holds the total record: **26 minutes** from start to production for 1
 - golf field sizes (ASU, Kentucky women's) and the 403 pages (Oklahoma State, Utah);
 - seasons not yet published;
 - first live cards for the new schools (Kentucky volleyball Oct 9; football Oct 10).
+
+**PR #261 merged** 17:23 UTC (`798d094`). Production `4.66.3-byu-cross-country` verified 17:24: `verify:prod --sports="Cross Country,Gymnastics"` exit 0 (XC 18/20 and 26/21); athletes 12/12. On the preview, the first run after the deploy read K-State XC 0/0 (the known transient); the re-run gave 18/20. BYU cross country now shows 12-16 TFRRS rows per meet.
