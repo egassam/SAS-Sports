@@ -6,6 +6,9 @@ import {createRecapMatcher,createTfrrsMeetResults} from '../sidearm-school-kit.m
 // site is WMT's WordPress template, not SIDEARM: see the reader below).
 export const southCarolinaSchool={
   id:'south-carolina',
+  // gamecocksonline.com refuses Cloudflare's Paris location (403, Oct 8): a
+  // location that cannot rebuild serves the feed another one built (KV).
+  globalSavedCopy:true,
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Beach Volleyball','Cross Country','Equestrian','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
