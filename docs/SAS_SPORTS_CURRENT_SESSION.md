@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 7, 2026 (evening), America/Chicago. Production `4.62.0-ole-miss-mississippi-state`.
+Last updated: October 7, 2026 (evening), America/Chicago. Production `4.62.1-season-glow`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 7, 2026 (evening), America/Chicago. Production `4.62.0-ole
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.62.0-ole-miss-mississippi-state`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.62.1-season-glow`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -82,7 +82,6 @@ User: "put the sports overall win/loss record for every sport", then "add the co
 - **Paused by the user:** global source cache via Durable Objects (needs Cloudflare "Worker Previews" first); scheduled feed refresh (#87/#88, reverted). Plans are in the history file.
 - **Later, not now:** when high school or pro teams are added, order the level switch High School, College, Pro (`LEVELS` in `public/index.html`).
 - **Waiting on TFRRS:** Baylor's Chile Pepper Festival (Oct 3) shows "Completed" without a result line or story until TFRRS publishes it; recheck with `npm run verify:prod -- --school=baylor --sports="Cross Country"`.
-- **Season badge contrast (for the user to decide):** `.season.active` in `public/index.html` draws near-black text (`#06151c`) on the school's primary color, so dark primaries (Mississippi State, LSU, Alabama) are hard to read. A one-line fix is `color:var(--theme-on-accent,#06151c)`; it changes every school's badge, so it was not made in a school PR.
 - **Live checks still to observe:** Iowa State soccer at Arizona State (Oct 8), football at BYU and volleyball vs Kansas State (Oct 9); Colorado soccer vs Baylor (Oct 8); Cincinnati volleyball at UCF (Oct 9) and soccer vs Utah (Oct 8); Houston volleyball vs BYU (Oct 8) and football at Kansas State (Oct 10); a basketball game going live (season from Oct 15).
 
 ## Session log
@@ -102,3 +101,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 7 — Alabama and Florida, 13 sports each; SEC started** (PR #242, merged `3c2afc1`; production `4.60.0-alabama-florida` verified 22:10 UTC, `verify:prod` all sports for both, athletes 13/13 each). **36 minutes** start to production for 26 sports (1.4 min per sport, record), the first two-school session.
 - **Oct 7 — Georgia and LSU added to the app, 13 sports each** (PR #244). LSU is WMT with its own card reader. Shared fixes: WMT season-scoped profile links, story bodies opening with nested markup. New tools: `generate-module-tests`, `athlete-evidence`. Merged `5779733`; production `4.61.0-georgia-lsu` verified 23:08 UTC (`verify:prod --sports=all` both, athletes 13/13 both). 41 minutes start to production for 26 sports, with a new WMT reader.
 - **Oct 7 — Ole Miss and Mississippi State added to the app, 21 sports** (PR #246, merged `bd98783`; production `4.62.0-ole-miss-mississippi-state` verified 01:21 UTC Oct 8, `verify:prod --sports=all` both, athletes 11/11 and 10/10, athletes passed on the first preview). Shared: story-block recaps read; kit `volleyballSetScores`. 117 minutes wall clock, about 40 of them lost to a container restart.
+- **Oct 8 — In-season badge glow, all schools** (user: "Can we add a glow to the in season", then "Go"; PR #248, merged `b0a7549`; production `4.62.1-season-glow` verified 01:40 UTC). The badge text uses each school's on-accent color, with a glow tinted toward white; readable on dark primaries (Mississippi State, LSU, West Virginia, K-State) and light ones (Oklahoma State, Colorado).
