@@ -140,7 +140,9 @@ export function createOleMissHandlers({makeEvent,recapMatchesEvent,eventType=()=
     },
     opponent(game){
       // A tied ranking ("#T3 Florida State") is a ranking too.
-      let opponent=withoutRanking(String(game.opponent?.title||'').replace(/^#T\d+\s+/,''));
+      // A leading "*" marks an individuals-only golf tournament ("*Thomas
+      // Sharkey Individual"); it is not part of the name.
+      let opponent=withoutRanking(String(game.opponent?.title||'').replace(/^#T\d+\s+/,'').replace(/^\*+\s*/,''));
       if(!opponent||/^TB[AD]$/i.test(opponent)||INTERNAL.test(opponent))return'';
       // A swimming double dual names both hosts: "at Arkansas, vs. Drury".
       const doubleDual=opponent.match(/^at\s+(.+?),\s*vs\.?\s+(.+)$/i);

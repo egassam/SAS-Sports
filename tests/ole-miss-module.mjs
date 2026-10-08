@@ -212,12 +212,12 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 28 Men's · Ole Miss at Bryan Bros Collegiate | 1st of 16",
  "Final Oct 5 Men's · Ole Miss at Hamptons Intercollegiate | 6th of 12",
  "Upcoming Oct 17 Men's · Ole Miss at Fallen Oak Collegiate Invitational | ",
- "Upcoming Jan 30 Men's · Ole Miss at *Thomas Sharkey Individual | ",
+ "Upcoming Jan 30 Men's · Ole Miss at Thomas Sharkey Individual | ",
  "Upcoming Feb 15 Men's · Ole Miss at Watersound Invitational | ",
  "Upcoming Feb 28 Men's · Ole Miss at Cabo Collegiate | ",
  "Upcoming Mar 15 Men's · Ole Miss at Black Desert Collegiate | ",
  "Upcoming Apr 2 Men's · Ole Miss at Mason Rudolph Championship | ",
- "Upcoming Apr 5 Men's · Ole Miss at *Memphis Intercollegiate | ",
+ "Upcoming Apr 5 Men's · Ole Miss at Memphis Intercollegiate | ",
  "Upcoming Apr 12 Men's · Ole Miss at Mossy Oak Collegiate | ",
  "Upcoming Apr 21 Men's · Ole Miss at SEC Championship | "
 ]);
@@ -432,6 +432,8 @@ const records=(sport,slug)=>{
   recapFixtures.clear();requests.length=0;
 }
 
+// A leading "*" (individuals-only golf) is not part of the name.
+assert.ok(parse('Golf','mens-golf').some(e=>e.title==="Men's · Ole Miss at Thomas Sharkey Individual"));
 // Rifle: each opponent of a tri-meet is its own match.
 assert.deepEqual(parse('Rifle','womens-rifle').filter(e=>e.status==='Final').map(e=>[e.title,e.headline]),[['Ole Miss vs UT Martin','W, 4711-4597'],['Ole Miss vs Ohio State','W, 4711-4651']]);
 
