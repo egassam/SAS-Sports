@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,texasHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,texasHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/texas-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit texaslonghorns.com routes, exactly
@@ -527,6 +527,22 @@ assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['S
 // Other schools and other hosts never reach the Texas reader.
 assert.equal(worker.texasHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://texaslonghorns.com/',now),null);
 assert.equal(worker.texasHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='illinois'),'Football',page('football'),now),null);
+
+// Cross Country shares the track roster (user, October 8: "Texas is showing
+// track athletes instead of cross country athletes"): it features distance
+// runners only, by each card's event group; Track & Field keeps everyone.
+{
+  const raw=fixture('track-and-field-roster.html.gz'),positions=worker.rosterPositions(raw,'https://texaslonghorns.com/sports/track-and-field/roster');
+  const profiles=worker.rosterProfiles(raw,'https://texaslonghorns.com/sports/track-and-field/roster');
+  assert.ok(profiles.length>40&&profiles.every(p=>positions.has(p.url)),'every athlete card has its event group');
+  recapFixtures.set('https://texaslonghorns.com/sports/track-and-field/roster',raw);
+  const xc=await worker.featuredAthletes('texas','Cross Country');
+  assert.equal(xc.length,3);
+  for(const athlete of xc)assert.match(positions.get(athlete.profile_url),/distance|\bxc\b|cross country/i,`${athlete.name} is a distance runner`);
+  const track=profiles.filter(p=>/sprint|throw|jump|hurdle/i.test(positions.get(p.url)));
+  assert.ok(track.length>10,'the roster also lists sprinters, throwers and jumpers');
+  recapFixtures.clear();requests.length=0;
+}
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Texas module checks passed');

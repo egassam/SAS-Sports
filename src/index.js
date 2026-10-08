@@ -33,7 +33,7 @@ import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.65.1-arkansas-auburn';
+const VERSION='4.65.2-xc-distance-athletes';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -526,7 +526,8 @@ function verifiedInstagram(raw){
   // A WMT bio's own social list (roster-bio-social-links) comes first: the
   // page menu lists the school's team accounts before it (Auburn).
   const bio=String(raw).match(/class=["'][^"']*\broster-bio-social-links\b[\s\S]*?<\/ul>/i);
-  if(bio&&bio[0]!==raw){const found=verifiedInstagram(bio[0]);if(found)return found;}
+  // When the bio has its own list, the menu's accounts are never the athlete's.
+  if(bio&&bio[0]!==raw)return verifiedInstagram(bio[0]);
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
     try{
@@ -553,13 +554,42 @@ async function instagramProfileImage(instagramUrl){
 // Profile pages read per sport when roster cards hold fewer than three
 // verified links.
 const ATHLETE_PROFILE_BUDGET=24;
+// Each roster card's event group ("Distance", "DISTANCE/XC", "Cross
+// Country/Distance", "Sprints"), by profile address: the text of the first
+// element named for a position between the card's profile link and the next
+// athlete's.
+function rosterPositions(raw,base){
+  const links=[...String(raw||'').matchAll(/href=["']([^"']*\/roster\/[^"'?#]+)["']/gi)].map(m=>({index:m.index,url:absoluteUrl(m[1],base)})).filter(link=>link.url);
+  const positions=new Map();
+  for(let i=0;i<links.length;i++){
+    const {url,index}=links[i];if(positions.has(url))continue;
+    let end=raw.length;for(let j=i+1;j<links.length;j++)if(links[j].url!==url){end=links[j].index;break;}
+    // SIDEARM names the field in data-test-id ("…person-position-short", its
+    // text after an sr-only "Position" label), WMT in its class
+    // ("roster-player-list-profile-field--position").
+    const card=raw.slice(index,end);
+    const field=card.match(/(?:class|data-test-id)=["'][^"']*\bposition\b(?!-(?:relative|absolute|fixed|static|sticky))[^"']*["'][^>]*>([\s\S]{0,240})/i)
+      ||card.match(/(?:class|data-test-id)=["'][^"']*position[^"']*["'][^>]*>([\s\S]{0,240})/i);
+    const text=field?clean(decodeHtml(field[1].replace(/<span\b[^>]*sr-only[^>]*>[\s\S]*?<\/span>/gi,'').replace(/<!--[\s\S]*?-->/g,'').replace(/^(?:\s*<(?!\/)[^>]*>)*/,'').split('<')[0])):'';
+    if(text)positions.set(url,text);
+  }
+  return positions;
+}
+// Cross Country and Track & Field publish one roster at Texas, Auburn,
+// Alabama and Oklahoma State (user, October 8: "Texas is showing track
+// athletes instead of cross country athletes"): Cross Country features its
+// distance runners only.
+const DISTANCE_GROUP=/\b(?:distance|cross[\s-]*country|xc)\b/i;
 async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
+  const sharedTrack=sport==='Cross Country'&&rosterUrls(school,sport).some(url=>rosterUrls(school,'Track & Field').includes(url));
   let profiles=[];
   for(const rosterUrl of rosterUrls(school,sport)){
     try{
       const r=await sourceFetch(rosterUrl,{},{ttl:SOURCE_TTL.listing});if(!r.ok)continue;
-      const discovered=rosterProfiles(await r.text(),r.url||rosterUrl);
+      const raw=await r.text();
+      let discovered=rosterProfiles(raw,r.url||rosterUrl);
+      if(sharedTrack){const positions=rosterPositions(raw,r.url||rosterUrl);if(positions.size)discovered=discovered.filter(profile=>DISTANCE_GROUP.test(positions.get(profile.url)||''));}
       profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
       if(profiles.length&&!schoolCombinedSports(school).has(sport))break;
       if(profiles.length>=18)break;
