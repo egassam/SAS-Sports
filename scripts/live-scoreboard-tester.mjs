@@ -5,6 +5,8 @@
 //   ON   a game of a sport still under test is in progress on ESPN (or has
 //        just ended and its final is being checked);
 //   OFF  idle: no game of a sport under test is in progress;
+//   FAIL a game sport the app reads no scoreboard for has a game live on
+//        ESPN (checked on ESPN's default board for the sport);
 //   DONE the sport passed: it is never tested again (until --reset).
 //
 // A sport passes when, for one game:
@@ -43,7 +45,16 @@ export const LIVE_POLLS=2,LIVE_SPACING_MS=60*1000,MAX_FEED_AGE_MS=90*1000,FINAL_
 const sportKey=(school,sport)=>`${school}|${sport}`;
 export const gameKey=game=>`${game.school_id}|${game.sport}|${game.team_label||''}|${worker.scoreboardDateKey(game.start_time)}|${game.game_number||1}`;
 
-// Every converted school-sport the Worker reads a live scoreboard for.
+export const ESPN_BOARDS={
+  Football:[{path:'football/college-football'}],
+  Basketball:[{path:'basketball/mens-college-basketball',team_label:"Men's"},{path:'basketball/womens-college-basketball',team_label:"Women's"}],
+  Volleyball:[{path:'volleyball/womens-college-volleyball'}],
+  Soccer:[{path:'soccer/usa.ncaa.w.1'},{path:'soccer/usa.ncaa.m.1',team_label:"Men's"}],
+  Baseball:[{path:'baseball/college-baseball'}],
+  Softball:[{path:'baseball/college-softball'}]
+};
+// Every converted school-sport with games: those the Worker reads a live
+// scoreboard for, and game sports it reads none for (`noScoreboard`).
 export function watchedSports({schoolIds=null,sports=null}={}){
   const out=[];
   for(const {school:{id}} of worker.SCHOOL_MODULES){
@@ -53,6 +64,10 @@ export function watchedSports({schoolIds=null,sports=null}={}){
       if(sports&&!sports.includes(sport))continue;
       const providers=worker.liveScoreboardProviders(school,sport);
       if(providers.length)out.push({school,sport,providers});
+      // A game sport the app reads no scoreboard for is watched on ESPN's
+      // default board: a live game there fails it (K-State soccer, Oct 8,
+      // stayed "Today" in upcoming while ESPN showed it live).
+      else if(ESPN_BOARDS[sport])out.push({school,sport,providers:ESPN_BOARDS[sport],noScoreboard:true});
     }
   }
   return out;
@@ -183,8 +198,8 @@ async function main(){
       if(rec.game?.key===game.key&&game.status!=='Live'&&!rec.game.final_due)rec.game.final_due=new Date(now.getTime()+FINAL_GRACE_MS).toISOString();
       const readings=[{at:now.getTime(),game}];
       const readEspn=async()=>{const at=Date.now(),g=scoreboardGames(mine,await readScoreboards(mine,new Date(at),fetchJson),new Date(at)).games.find(g=>g.key===game.key);if(g)readings.push({at,game:g})};
-      let result;
-      for(let attempt=1;attempt<=3;attempt++){
+      let result=mine[0]?.noScoreboard&&game.status==='Live'?{ok:false,lag:false,detail:`ESPN shows ${game.title} live (${game.headline}) but the app reads no ${game.sport} scoreboard for ${game.school_id} (add liveScoreboards.${game.sport} to its module)`}:null;
+      if(!result)for(let attempt=1;attempt<=3;attempt++){
         if(attempt>1)await readEspn();
         const readAt=Date.now(),feed=await readFeed(game.school_id,game.sport);
         await readEspn();
@@ -194,6 +209,7 @@ async function main(){
         if(attempt<3)await sleep(20000);
       }
       state.sports[key]=advance(rec,game,result,new Date());
+      if(mine[0]?.noScoreboard)state.sports[key].game=null;
       const after=state.sports[key],line=`${result.ok?'PASS':after.state==='failing'?'FAIL':'WAIT'} ${game.school_id} ${game.sport} · ${game.title} · ${result.detail} → ${after.state.toUpperCase()}${after.game?` (live polls ${after.game.live_passes.length}/${LIVE_POLLS})`:''}`;
       console.log(line);log.push(line);
       if(after.state==='failing'&&!result.ok)failures.push(line);

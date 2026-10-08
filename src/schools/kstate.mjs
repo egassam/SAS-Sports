@@ -15,7 +15,11 @@ export const kstateSchool={
       {path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}
     ],
     // Volleyball scores are sets won; the live detail names the current set.
-    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}]
+    Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+    // Soccer and Baseball had no scoreboard: Kansas at K-State (Oct 8) stayed
+    // "Today" in upcoming while ESPN showed it live.
+    Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}]
   },
   scheduleUrls:{
     'kstate|Basketball':[

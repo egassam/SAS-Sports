@@ -15,6 +15,11 @@ const has=(school,sport)=>all.some(w=>w.school.id===school&&w.sport===sport);
 assert.ok(has('kstate','Football')&&has('kstate','Volleyball')&&has('indiana','Volleyball')&&has('kansas','Football'));
 assert.ok(!has('kstate','Cross Country')&&!has('kstate','Golf'),'meets have no live scoreboard');
 assert.ok(all.every(w=>w.providers.length));
+// Game sports the app reads no scoreboard for are watched too (on ESPN's
+// default board, flagged noScoreboard); K-State Soccer reads one since 4.69.2.
+const ks=all.find(w=>w.school.id==='kstate'&&w.sport==='Soccer');
+assert.ok(ks&&!ks.noScoreboard);
+for(const w of all.filter(w=>w.noScoreboard))assert.ok(['Football','Basketball','Volleyball','Soccer','Baseball','Softball'].includes(w.sport));
 const ku=watchedSports({schoolIds:['kansas'],sports:['Football']});
 assert.equal(ku.length,1);
 

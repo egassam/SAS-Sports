@@ -51,3 +51,22 @@ for(const [team,ids] of owners)assert.equal(ids.length,1,`${team} matched ${ids.
   assert.deepEqual([match.title,match.headline],['KU vs Arizona','W, 2-0']);
 }
 console.log(`Scoreboard team match checks passed (${pairs.size} school-team pairs, each team one school; finals in the official wording)`);
+
+// K-State soccer reads ESPN's live scoreboard (real payload, Oct 8, 2026:
+// Kansas at K-State live in the 13th minute). Before 4.69.2 K-State had no
+// soccer scoreboard and the game stayed "Today" in upcoming. The live score
+// joins the official schedule's game that day (stored as K-State's wall
+// clock, 6:30 PM) instead of adding a second card.
+{
+  const kstate=schools.find(s=>s.id==='kstate'),[provider]=worker.liveScoreboardProviders(kstate,'Soccer');
+  assert.equal(provider.path,'soccer/usa.ncaa.w.1');
+  const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/live/soccer-espn-2026-10-08-live.json.gz',import.meta.url))).toString('utf8'));
+  const [game]=worker.parseScoreboardPayload(payload,kstate,'Soccer',provider,'https://site.api.espn.com/x',new Date('2026-10-08T23:47:00Z'));
+  assert.deepEqual([game.status,game.title,game.school_score,game.opponent_score,game.headline],['Live','K-State vs Kansas','0','0',"13'"]);
+  const official={id:'kstate-soccer-kansas',sport:'Soccer',status:'Today',title:'K-State vs Kansas',start_time:'2026-10-08T18:30:00.000Z'};
+  const joined=worker.reconcileScoreboardEvents([official],[game]);
+  assert.equal(joined.length,1);
+  assert.deepEqual([joined[0].id,joined[0].status,joined[0].verification_state],['kstate-soccer-kansas','Live','official_schedule+live_scoreboard']);
+  assert.ok(worker.liveScoreboardProviders(kstate,'Baseball').length,'K-State baseball reads a scoreboard too');
+}
+console.log('K-State soccer live scoreboard checks passed');
