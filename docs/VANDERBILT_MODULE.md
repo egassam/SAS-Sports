@@ -9,7 +9,7 @@ Vanderbilt was added to the app and converted on October 8, 2026, together with 
 | Sport | Page | State |
 | --- | --- | --- |
 | Football | `football` | 5 finals, each with its story; 3-2 (SEC 0-2), equal to the page's published record; ESPN live score |
-| Volleyball | `wvolley` | 13 finals (9 with their card's story, 4 from the archive); 11-2 (SEC 2-2), equal to the published record; ESPN live score |
+| Volleyball | `wvolley` | 13 finals (9 with their card's story, 3 from the sport's news list; Kentucky, Sep 23, has none published, only a preview); 11-2 (SEC 2-2), equal to the published record; ESPN live score |
 | Soccer | `wsoc` | 12 finals, each with its story; 11-0-1 (SEC 4-0-1), equal to the published record; ESPN live score |
 | Cross Country | `mcross`, `wcross` | Labeled by team; 2 finals each, each team's own place and points from TFRRS (`TN_college_f_Vanderbilt`, `TN_college_m_Vanderbilt`) |
 | Golf | `mgolf`, `wgolf` | Labeled; men's round cards merged into tournaments, placed by the last round ("T6th of 18"); 3 finals each with their stories |
@@ -25,6 +25,7 @@ Vanderbilt was added to the app and converted on October 8, 2026, together with 
 - **Golf:** round cards "Visit Knoxville Collegiate • Rounds 1 & 2", "• Round 3", "• Match Play • Semifinals" are one tournament; a tournament played by individuals only ("(Individuals)") is not listed. Every golf, cross country, track and bowling event reads "at".
 - **Last season's page** (title "2025-26") is empty, not last summer's meets.
 - **Swimming:** dual scores without decimals ("55.0" → 55); a multi-day meet's day cards are one event.
+- **Stories without a card link:** the sport's news list (`/sports/<slug>/news`, no `/archives` page); Vanderbilt's headlines rarely name the game ("Relentless Run"), so the story's opening must name the opponent and the result ("a 3-1 loss to Missouri"; a 3-0 "sweeping Lipscomb").
 - **Cross country:** each team's page is its own event and keeps its own TFRRS race (Arkansas's rule).
 
 Every rule was mutated; every mutation fails `npm run test:vanderbilt-module`.

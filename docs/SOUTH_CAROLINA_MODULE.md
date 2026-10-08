@@ -32,7 +32,7 @@ Every rule was mutated; every mutation fails `npm run test:south-carolina-module
 
 ## Athletes
 
-Certification lists all 13 sports (minimum 3). __ATHLETES__
+Certification lists all 13 sports (minimum 3). `scripts/athlete-evidence.mjs` (Oct 8) read every profile page; with the 16 team accounts left out, athlete Instagram is published on: Swimming & Diving 50/51, Golf 10/18, Tennis 9/20, Baseball 6/34, Volleyball 4/18, Basketball 3/15, Football 2/112, Cross Country 1/18; Beach Volleyball (15 profiles, checked by hand: only `GamecockBeachVB`), Equestrian (46), Soccer (27), Softball (23) and Track & Field (74) publish none. Every sport with 12 links or fewer pins them (35 pins), so the 24-page profile budget cannot miss them. Official profile cards fill the remaining slots in Beach Volleyball, Cross Country, Equestrian, Football, Soccer, Softball and Track & Field (`athlete_profile_fallback_sports`).
 
 ## Limitations
 

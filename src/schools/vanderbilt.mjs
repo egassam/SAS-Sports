@@ -394,7 +394,8 @@ export function createVanderbiltHandlers({makeEvent,visibleText,absoluteUrl,reca
   async function attachArchiveStory(event){
     if(!isFinalWithoutStory(event))return event;
     const slug=(String(event.source?.url||'').match(/^https:\/\/vucommodores\.com\/sports\/([a-z-]+)\/schedule/)||[])[1];if(!slug)return event;
-    const listing=await download(`https://${HOST}/sports/${slug}/archives`);if(!listing)return event;
+    // Vanderbilt lists a sport's stories at /sports/<slug>/news.
+    const listing=await download(`https://${HOST}/sports/${slug}/news`);if(!listing)return event;
     const golf=isGolfWithoutStory(event);
     const first=Date.parse(`${String(golf&&event.end_time?event.end_time:event.start_time).slice(0,10)}T00:00:00Z`);
     const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
@@ -408,6 +409,14 @@ export function createVanderbiltHandlers({makeEvent,visibleText,absoluteUrl,reca
       const text=`${meta('title')} ${meta('description')}`;
       if(golf){if(opponent.length>=4&&headlineKey(meta('title')).includes(` ${opponent} `)){event.recap_url=url;event.archive_story_verified=url;return event;}continue;}
       if(opponent.length>=2&&headlineKey(text).includes(` ${opponent} `)&&(score.test(text)||a===b&&/\b(?:draw|tie|tied|scoreless)\b/i.test(text))){event.recap_url=url;event.archive_story_verified=url;return event;}
+      // Vanderbilt's headlines rarely name the game ("Relentless Run") and its
+      // pages publish no description: the story's opening names the opponent
+      // and the result ("a 3-1 loss to Missouri"; a volleyball sweep "sweeping
+      // Lipscomb"). A preview ("SEC Startup") names no result.
+      const title=meta('title'),story=String(raw).split(/class=["']article-head__title["']/i)[1]||'';
+      const opening=visibleText(story.replace(/<script\b[\s\S]*?<\/script>/gi,' ')).slice(0,900);
+      const swept=Math.max(Number(a),Number(b))===3&&Math.min(Number(a),Number(b))===0&&/\bsweep(?:s|ing)?\b|\bswept\b/i.test(opening);
+      if(title&&opponent.length>=2&&headlineKey(opening).includes(` ${opponent} `)&&(score.test(opening)||swept)){event.recap_url=url;event.archive_story_verified=url;return event;}
     }
     return event;
   }

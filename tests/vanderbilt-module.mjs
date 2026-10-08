@@ -425,4 +425,17 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`),stat=label=
   }
   recapFixtures.clear();requests.length=0;
 }
+// A volleyball final whose card links no story takes the sport's news-list
+// story dated the game day or the next whose opening names the opponent and
+// the result; a preview ("SEC Startup", Kentucky) is not one.
+{
+  recapFixtures.set('https://vucommodores.com/sports/wvolley/news',fixture('wvolley-news.html.gz'));
+  for(const name of ['2026-09-17-dores-around-nashville','2026-09-18-dores-best-belmont','2026-09-19-relentless-run','2026-09-23-sec-startup','2026-09-27-commodores-on-the-hunt','2026-09-28-vb-recap-at-mizzou']){
+    const [y,m,d,...slug]=name.split('-');recapFixtures.set(`https://vucommodores.com/news/${y}/${m}/${d}/${slug.join('-')}`,fixture(`archive-${name}.html.gz`));
+  }
+  const missing=parse('Volleyball','wvolley').filter(e=>e.status==='Final'&&!e.recap_url);
+  for(const event of missing)await worker.vanderbiltHandlers.attachArchiveStory(event);
+  assert.deepEqual(missing.map(e=>[e.opponent,e.recap_url||null]),[["Belmont","https://vucommodores.com/news/2026/09/18/dores-best-belmont"],["Lipscomb","https://vucommodores.com/news/2026/09/19/relentless-run"],["Kentucky",null],["Missouri","https://vucommodores.com/news/2026/09/28/vb-recap-at-mizzou"]]);
+  recapFixtures.clear();requests.length=0;
+}
 console.log('Vanderbilt hand-written checks passed');

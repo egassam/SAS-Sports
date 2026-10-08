@@ -27,7 +27,46 @@ export const southCarolinaSchool={
   // Every profile page's menu lists the school's team accounts before the
   // athlete's own link: they are never an athlete's.
   blockedInstagramHandles:['gamecockbaseball','gamecockbeachvb','gamecockeq','gamecockfb','gamecockmbb','gamecockmgolf','gamecockmsoccer','gamecockmtennis','gamecocksoftball','gamecocksonline','gamecockswmdive','gamecocktrackxc','gamecockvb','gamecockwbb','gamecockwgolf','gamecockwsoccer','gamecockwtennis'],
-  verifiedInstagrams:{},
+  // Sports whose profile pages publish 12 athlete links or fewer: the links
+  // they publish (scripts/athlete-evidence.mjs, Oct 8, the team accounts
+  // left out), so the profile budget does not miss them.
+  verifiedInstagrams:{
+    'south-carolina|Baseball|Brandon Cromer':'https://www.instagram.com/brandon_cromer2/',
+    'south-carolina|Baseball|Patrick Evans':'https://www.instagram.com/patrick.evans3/',
+    'south-carolina|Baseball|Tyler Bak':'https://www.instagram.com/tylerbak_/',
+    'south-carolina|Baseball|Brandon Stone':'https://www.instagram.com/b_stone3204/',
+    'south-carolina|Baseball|Cooper Parks':'https://www.instagram.com/cooper.parks9/',
+    'south-carolina|Baseball|Parker Marlatt':'https://www.instagram.com/parker_marlatt2/',
+    'south-carolina|Basketball|Eli Sparkman':'https://www.instagram.com/elisparkmann/',
+    'south-carolina|Basketball|Grant Polk':'https://www.instagram.com/grantpolk_/',
+    'south-carolina|Basketball|Hayden Assemian':'https://www.instagram.com/ots_hayden/',
+    'south-carolina|Cross Country|Sofie Kurzawa':'https://www.instagram.com/runningwithsof/',
+    'south-carolina|Football|Peyton Williams':'https://www.instagram.com/peyton31williams/',
+    'south-carolina|Football|Maurice Brown II':'https://www.instagram.com/bigmoe.44/',
+    'south-carolina|Golf|Talan Harrison':'https://www.instagram.com/talanharrison5/',
+    'south-carolina|Golf|Ismael Encinas':'https://www.instagram.com/ismael_encinas/',
+    'south-carolina|Golf|August Petersson':'https://www.instagram.com/peterssonaugust/',
+    'south-carolina|Golf|Brock Blais':'https://www.instagram.com/blais.brock/',
+    'south-carolina|Golf|Bo Carpenter':'https://www.instagram.com/twocirclebo/',
+    'south-carolina|Golf|Eila Galitsky':'https://www.instagram.com/eilaaaa_galitsky/',
+    'south-carolina|Golf|Molly McLean':'https://www.instagram.com/molly.mclean_/',
+    'south-carolina|Golf|Maylis Lamoure':'https://www.instagram.com/maylis_lamoure/',
+    'south-carolina|Golf|Vairana Heck':'https://www.instagram.com/vai_hck/',
+    'south-carolina|Golf|Alicia Olsson':'https://www.instagram.com/aliciaolssonnn/',
+    'south-carolina|Tennis|Bella Bergqvist Larsson':'https://www.instagram.com/bellabergqvistlarsson/',
+    'south-carolina|Tennis|Sara Borkop':'https://www.instagram.com/sara.borkop/',
+    'south-carolina|Tennis|Mika Buchnik':'https://www.instagram.com/mika_buchnik/',
+    'south-carolina|Tennis|Kaitlyn Carnicella':'https://www.instagram.com/kaitlyncarnicella/',
+    'south-carolina|Tennis|Francie Pate':'https://www.instagram.com/francie.patee/',
+    'south-carolina|Tennis|Jane Dunyon':'https://www.instagram.com/jane_dunyon/',
+    'south-carolina|Tennis|Helena Buchwald':'https://www.instagram.com/helena.tcv/',
+    'south-carolina|Tennis|Daniela Piani':'https://www.instagram.com/daniela_piani1/',
+    'south-carolina|Tennis|Jana Stojanova':'https://www.instagram.com/jana_stojanova/',
+    'south-carolina|Volleyball|Ava Leahy':'https://www.instagram.com/ava.leahy23/',
+    'south-carolina|Volleyball|Sydney Floyd':'https://www.instagram.com/sydneyfloyd__/',
+    'south-carolina|Volleyball|Elise Marchal':'https://www.instagram.com/elisemarchal13/',
+    'south-carolina|Volleyball|Elizabeth McElveen':'https://www.instagram.com/elizabethmcelveen19/'
+  },
   scheduleUrls:{
     'south-carolina|Baseball':'https://gamecocksonline.com/sports/baseball/schedule/',
     'south-carolina|Basketball':['https://gamecocksonline.com/sports/mbball/schedule/','https://gamecocksonline.com/sports/wbball/schedule/'],
