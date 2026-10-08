@@ -4,7 +4,7 @@
 
 South Carolina was added to the app and converted on October 8, 2026, together with Vanderbilt. All 13 sports were built and tested one at a time and published in one PR. gamecocksonline.com is WMT's WordPress template, but not Kentucky's: the module started from Kentucky's handlers (`scripts/port-handlers.mjs --from=kentucky`) and has its own card reader.
 
-## Status (`4.67.0-south-carolina-vanderbilt`)
+## Status (`4.67.1-south-carolina-vanderbilt`)
 
 | Sport | Page | State |
 | --- | --- | --- |
