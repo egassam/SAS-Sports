@@ -1910,3 +1910,17 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 **PR #263 merged** 19:37 UTC (`b3d63c7`). Production `4.67.3-south-carolina-vanderbilt` verified 19:40: `verify:prod --sports=all` South Carolina all passed; Vanderbilt all passed except one volleyball refresh with status 0 (client network), re-run 3/3 passed; athletes 13/13 and 12/12.
 
 **Open:** Track & Field (both), Beach Volleyball, Lacrosse fill when published; Vanderbilt Bowling from Oct 16; the CDG block; first live cards (Oct 9 soccer and volleyball).
+
+## October 8, 2026 — Global saved copy for South Carolina's feeds (PR #265)
+
+**Request** (user): "Fix the Paris block with a global saved copy" (after PR #263 found gamecocksonline.com answering Cloudflare's Paris location, CDG, with 403 — robots.txt included — while US locations get 200).
+
+**Change** (`src/index.js`, `src/schools/south-carolina.mjs`): opt-in `globalSavedCopy` on a school module. After each successful (non-partial) build, the feed body is saved in KV (the existing `HIGHLIGHTS` namespace, key `feed:v1:<school>|<sport>|<version>`, metadata `fetched_at`, kept a week), at most once an hour per sport (a metadata read decides; KV writes are metered: about 13 writes an hour for South Carolina at most). When a rebuild fails and the location has no fresh, stale or last-good copy, the feed route (and `cached=1`) serves the KV copy, labeled `x-sas-cache: saved-global` with `x-sas-fetched-at`; a copy older than a week is not served. This is not the paused Durable Objects source cache: it stores finished feeds for one opted-in school only. Version 4.68.0.
+
+**Tests:** `tests/global-saved-copy.mjs` (in `npm test` and `test:release`): two Worker instances with their own location caches (Atlanta answered, Paris refused) share one in-memory KV; Paris fails before any copy, then serves Atlanta's copy for `refresh=1`, plain and `cached=1`; one write an hour; week limit; hour-old copy rewritten; Utah (not opted in) writes and reads nothing. Every rule mutated; each mutation fails the test. `npm run test:release` exit 0 on `8f9bb95`; CI green.
+
+**Preview:** `verify:preview --school=south-carolina --sports=all`: first run 1 failure (volleyball, one refresh with status 0 after 60 s — client side; the same status-0 failure happened on production Vanderbilt volleyball before this change); re-run of Volleyball/Football/Soccer and a second full run passed everything (slowest refresh 1.5 s), XC 18/20 and 26/21. No request could be routed through Paris from the sandbox (0 of 116 sampled), so the Paris path is verified by the two-location test only.
+
+**PR #265 merged** 20:22 UTC (`1747165`). Production `4.68.0-global-saved-copy` verified 20:27: `verify:prod --school=south-carolina --sports=all` all passed (XC 18/20, 26/21); Vanderbilt Football and Volleyball passed.
+
+**Open:** the first Paris visitor after a new version is deployed is served only once a US location has built that sport under the new version.

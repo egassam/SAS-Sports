@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.67.3-south-carolina-vanderbilt`.
+Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.68.0-global-saved-copy`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.67.3-s
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.67.3-south-carolina-vanderbilt`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.68.0-global-saved-copy`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -96,6 +96,7 @@ User: "put the sports overall win/loss record for every sport", then "add the co
 - **Private source route:** `/api/source` with `SOURCE_FETCH_KEY` / sandbox `SAS_SOURCE_KEY`. Never paste the key into chat. Never pose as a browser or route around bot defense otherwise.
 - **Highlight store** (KV `sas-sports-highlights`, shared by preview and production, 30 days): opening an expanded view on a preview stores it. When a change rewrites verified finals, raise the school's `highlightRevision`.
 - **Known transients:** the first K-State XC read right after a preview deploy has lacked its two meets (the verify script retries it three times); the first page load after a deploy can be the old page (edge cache); expanded views show `ai_failed` about 1 in 15 opens (the page asks once more).
+- **Global saved copy (KV):** a school module with `globalSavedCopy` (South Carolina only) saves each built feed in KV (hourly at most per sport, a week) and a location that cannot rebuild serves it as `saved-global` (user, Oct 8: "Fix the Paris block with a global saved copy"). Add the flag to a school only when its site refuses some locations (find them by `cf-ray` on failed refreshes).
 - **Paused by the user:** global source cache via Durable Objects (needs Cloudflare "Worker Previews" first); scheduled feed refresh (#87/#88, reverted). Plans are in the history file.
 - **Later, not now:** when high school or pro teams are added, order the level switch High School, College, Pro (`LEVELS` in `public/index.html`).
 - **Waiting on TFRRS:** Baylor's Chile Pepper Festival (Oct 3) shows "Completed" without a result line or story until TFRRS publishes it; recheck with `npm run verify:prod -- --school=baylor --sports="Cross Country"`.
@@ -125,3 +126,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 8 — Cross Country athletes are distance runners** (user: "Texas is showing track athletes instead of cross country athletes", then "Merge it"; PR #256, merged `7291356`; production `4.65.2-xc-distance-athletes` verified 14:18 UTC). Texas, Auburn, Alabama and Oklahoma State share one XC/track roster; Cross Country now keeps the cards whose event group is distance. Alabama Cross Country's third slot is a profile card (2 distance runners of 84 profiles publish Instagram). Athletes 13/13, 13/13, 13/13, 11/11 on production. User asked about an Instagram-login environment: advised against (Instagram terms, project rule); offered to pin handles the user confirms.
 - **Oct 8 — Oklahoma and Kentucky added, 27 sports; ASU and BYU leftovers** (user: "Let's add two more schools and finish what was left"; PR #259 merged `c9418c9`, production `4.66.1-oklahoma-kentucky` verified 16:27 UTC, athletes 13/13 and 14/14; PR #260 ASU XC from TFRRS, intrasquads out, athletes 17/17, merged `a560c85`, production `4.66.2` verified; PR #261 BYU XC from TFRRS and athletes 12/12, merged `798d094`, production `4.66.3` verified 17:24 UTC). Cincinnati Tennis kept (user: "It's settled").
 - **Oct 8 — South Carolina and Vanderbilt added, 25 sports; SEC finished** (user: "Add South Carolina and Vanderbilt"; PR #263, merged `b3d63c7`; production `4.67.3-south-carolina-vanderbilt` verified 19:40 UTC, `verify:prod --sports=all` both, athletes 13/13 and 12/12). Shared fixes: roster cards that wrap several players, broken Instagram handles, `article__paragraphs` story text, TFRRS races the school did not run.
+- **Oct 8 — Global saved copy for South Carolina** (user: "Fix the Paris block with a global saved copy"; PR #265, merged `1747165`; production `4.68.0-global-saved-copy` verified 20:27 UTC, `verify:prod --sports=all` South Carolina, Vanderbilt spot check). gamecocksonline.com refuses Cloudflare's Paris location; feeds now fall back to a KV copy built elsewhere.
