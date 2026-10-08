@@ -403,7 +403,7 @@ export function auburnGolfPlace(title){
   // Texas A&M: "Men's Golf Earns Runner-Up Finish at ...", "Schartz Leads
   // Aggies to Runner-Up Finish", "... Aggies Finish Second".
   const text=String(title||'').replace(/’/g,"'");
-  if(/\b(?:Golf|Tigers|Auburn)\b[^,]{0,25}\bRunner-Up\b/i.test(text))return '2';
+  if(/\b(?:Golf|Tigers)\b[^,]{0,25}\bRunner-Up\b/i.test(text))return '2';
   const aggies=text.match(/\b(?:Auburn|Tigers)\s+(?:Finish|Finishes|Place|Places|Take|Takes)\s+(?:(T-?\d+|\d+)(?:st|nd|rd|th)\b|(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth|Thirteenth|Fourteenth|Fifteenth)\b)/i);
   if(aggies)return aggies[1]?aggies[1].replace(/^T-?/i,'T'):String(['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth'].indexOf(aggies[2].toLowerCase())+1);
   const m=text.match(/\bGolf\s+(?:Finishes|Places|Takes|Ties for)\s+(T-?\d+|\d+)(?:st|nd|rd|th)?\b|\bGolf\s+(?:Finishes|Places|Takes)\s+(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth|Thirteenth|Fourteenth|Fifteenth)\b|\bGolf\s+(Wins)\b/i);

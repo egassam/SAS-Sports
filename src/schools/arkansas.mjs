@@ -24,6 +24,9 @@ export const arkansasSchool={
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Golf','Tennis','Track & Field']),
   teamLabels:{},
+  // The site's team accounts (each sport's pages link its own; athlete
+  // profiles for sports without personal links show only the team's).
+  blockedInstagramHandles:['arkrazorbacks','razorbackbsb','razorbackfb','razorbackgym','razorbackmbb','razorbackmtennis','razorbacksb','razorbacksoccer','razorbackswimdive','razorbackwten','razorbackxctf'],
   // Exhibitions the cards do not label. Soccer: the published record (4-4-3
   // after Oct 2, "Soccer Draws Missouri, 1-1") leaves out Kansas City (Aug 5,
   // "Hogs top Roos in exhibition opener"; box score "Soccer-Exhibition-vs.-

@@ -542,3 +542,14 @@ console.log('Arkansas module checks passed');
   assert.ok(!profiles.some(p=>/coache/.test(p.url)));
 }
 console.log('Arkansas hand-written checks passed');
+
+// Stories (WordPress) keep their text in div.article-paragraph: the card's
+// story for the Georgia match names the opponent only in its text ("Hogs
+// Fall to Dawgs, 3-1").
+{
+  const georgia=parse('Volleyball','w-volley').find(e=>e.opponent==='Georgia');
+  const story=fixture('story-hogs-fall-to-dawgs-3-1.html.gz');
+  assert.equal(georgia.recap_url,'https://arkansasrazorbacks.com/hogs-fall-to-dawgs-3-1/');
+  assert.ok(worker.arkansasHandlers.matchesRecap(story,georgia,georgia.recap_url));
+}
+console.log('Arkansas story checks passed');

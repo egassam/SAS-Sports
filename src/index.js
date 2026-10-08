@@ -33,7 +33,7 @@ import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.65.0-arkansas-auburn';
+const VERSION='4.65.1-arkansas-auburn';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -505,7 +505,7 @@ function officialProfileImage(raw,profileUrl){
     return imageHost===profileHost&&!/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl))?imageUrl:null;
   }catch{return null}
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   // Some official athlete bios publish personal social links only inside a
   // Schema.org Person record. Accept those identity-bound links before scanning
@@ -523,6 +523,10 @@ function verifiedInstagram(raw){
     return null;
   };
   while((schemaMatch=schemas.exec(raw))){try{const found=personInstagram(JSON.parse(decodeHtml(schemaMatch[1])));if(found)return found}catch{}}
+  // A WMT bio's own social list (roster-bio-social-links) comes first: the
+  // page menu lists the school's team accounts before it (Auburn).
+  const bio=String(raw).match(/class=["'][^"']*\broster-bio-social-links\b[\s\S]*?<\/ul>/i);
+  if(bio&&bio[0]!==raw){const found=verifiedInstagram(bio[0]);if(found)return found;}
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
     try{
@@ -638,7 +642,11 @@ async function featuredAthletes(schoolId,sport){
   // in that case by filling the remaining slots with official roster profiles.
   // Personal Instagram links are still shown only when identity verified.
   const used=new Set(selected.map(athlete=>athlete.profile_url));
+  // Profile pages read above lend their portrait to a roster row that has
+  // none (Arkansas's roster tables publish no images).
+  const portraits=new Map(found.filter(athlete=>athlete.image_url).map(athlete=>[athlete.profile_url,athlete.image_url]));
   const officialProfiles=profiles
+    .map(profile=>profile.image_url||!portraits.has(profile.url)?profile:{...profile,image_url:portraits.get(profile.url)})
     .filter(profile=>!used.has(profile.url)&&profile.image_url)
     .sort((a,b)=>dailyRank(a.name)-dailyRank(b.name))
     .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url}));
@@ -1400,6 +1408,14 @@ function recapArticleText(raw){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=blocks.index+blocks[0].length;let depth=1,tag,end=-1;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
     const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
+    if(text.length>=80)return text.slice(0,14000);
+  }
+  // WordPress stories (Arkansas's) hold the text in div.article-paragraph.
+  const paragraphs=raw.match(/<div\b[^>]*class=["']article-paragraph\b[^"']*["'][^>]*>/i);
+  if(paragraphs){
+    const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=paragraphs.index+paragraphs[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    const text=end>0?visibleText(raw.slice(paragraphs.index+paragraphs[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
   // WMT stores article paragraphs in its embedded application payload instead
