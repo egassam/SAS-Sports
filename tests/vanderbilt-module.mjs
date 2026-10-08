@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,vanderbiltHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {officialCardInstagram,verifiedInstagram,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,vanderbiltHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/vanderbilt-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit vucommodores.com routes, exactly
@@ -438,4 +438,10 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`),stat=label=
   assert.deepEqual(missing.map(e=>[e.opponent,e.recap_url||null]),[["Belmont","https://vucommodores.com/news/2026/09/18/dores-best-belmont"],["Lipscomb","https://vucommodores.com/news/2026/09/19/relentless-run"],["Kentucky",null],["Missouri","https://vucommodores.com/news/2026/09/28/vb-recap-at-mizzou"]]);
   recapFixtures.clear();requests.length=0;
 }
+// A broken athlete link (Merritt Zieminick's profile: "instagram.com/merritt%20_zieminick")
+// is no link: its prefix "merritt" is someone else's account. A doubled
+// address keeps its final handle (Bowling).
+assert.equal(worker.officialCardInstagram('https://www.instagram.com/merritt%20_zieminick'),null);
+assert.equal(worker.verifiedInstagram('<a href="https://www.instagram.com/merritt%20_zieminick">Instagram</a>'),null);
+assert.equal(worker.officialCardInstagram('https://www.instagram.com/https://www.instagram.com/lindsaygreim.bowling/'),'https://www.instagram.com/lindsaygreim.bowling/');
 console.log('Vanderbilt hand-written checks passed');

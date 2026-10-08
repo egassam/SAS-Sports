@@ -32,7 +32,9 @@ Every rule was mutated; every mutation fails `npm run test:south-carolina-module
 
 ## Athletes
 
-Certification lists all 13 sports (minimum 3). `scripts/athlete-evidence.mjs` (Oct 8) read every profile page; with the 16 team accounts left out, athlete Instagram is published on: Swimming & Diving 50/51, Golf 10/18, Tennis 9/20, Baseball 6/34, Volleyball 4/18, Basketball 3/15, Football 2/112, Cross Country 1/18; Beach Volleyball (15 profiles, checked by hand: only `GamecockBeachVB`), Equestrian (46), Soccer (27), Softball (23) and Track & Field (74) publish none. Every sport with 12 links or fewer pins them (35 pins), so the 24-page profile budget cannot miss them. Official profile cards fill the remaining slots in Beach Volleyball, Cross Country, Equestrian, Football, Soccer, Softball and Track & Field (`athlete_profile_fallback_sports`).
+Certification lists all 13 sports (minimum 3). The roster cards publish athlete Instagram (team accounts left out): Swimming & Diving 51/51, Beach Volleyball 15/15, Basketball 15/29, Tennis 11/20, Baseball 7/34, Golf 6/18, Volleyball 4/18, Football 2/111, Cross Country 1/18, Track & Field 1/74; Equestrian (46), Soccer (56) and Softball (23) publish none, and `scripts/athlete-evidence.mjs` (Oct 8) found the same on the profile pages. Sports with 12 links or fewer on the profile pages are pinned (35 pins). Official profile cards fill the remaining slots in Cross Country, Equestrian, Football, Soccer, Softball and Track & Field (`athlete_profile_fallback_sports`); all 13 sports show three athletes.
+
+Shared fix: South Carolina's roster is one `roster-card` element wrapping a schema.org athlete `<li>` per player. The reader treated the whole list as one card and gave Peyton Williams's account to the first player (Lex Cyrus); the duplicate-identity guard then rejected both, leaving Football with one athlete. A card linking several players is now skipped, and each `<li itemprop="athlete">` is read on its own.
 
 ## Limitations
 

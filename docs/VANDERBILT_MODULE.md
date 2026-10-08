@@ -32,7 +32,9 @@ Every rule was mutated; every mutation fails `npm run test:vanderbilt-module`.
 
 ## Athletes
 
-Certification lists all 12 sports (minimum 3). `scripts/athlete-evidence.mjs` (Oct 8) read every profile page: Baseball 39/40, Basketball 27/29, Swimming & Diving 29/30 and Volleyball 18/18 publish athlete Instagram. Football (118 profiles), Cross Country (20), Golf (19), Lacrosse (37), Soccer (27), Tennis (18) and Track & Field (48) publish none: official profile cards fill them (`athlete_profile_fallback_sports`). Bowling's profiles publish two accounts inside a doubled address (`instagram.com/https://www.instagram.com/lindsaygreim.bowling/`), which the reader rejects; both are pinned and a profile card fills the third slot.
+Certification lists all 12 sports (minimum 3). `scripts/athlete-evidence.mjs` (Oct 8) read every profile page: Baseball 39/40, Basketball 27/29, Swimming & Diving 29/30 and Volleyball 18/18 publish athlete Instagram. Football (118 profiles), Cross Country (20), Golf (19), Lacrosse (37), Soccer (27), Tennis (18) and Track & Field (48) publish none: official profile cards fill them (`athlete_profile_fallback_sports`). Bowling's profiles publish two accounts inside a doubled address (`instagram.com/https://www.instagram.com/lindsaygreim.bowling/`), which the roster-card reader recovers; both are also pinned and a profile card fills the third slot.
+
+Shared fix: Merritt Zieminick's profile links `instagram.com/merritt%20_zieminick` (a broken address). The card reader took its valid prefix, `merritt`, which is another person's account; a handle must now end the address, and profile pages accept only valid handles. Every sport shows three athletes (checked against the live site, Oct 8).
 
 ## Limitations
 

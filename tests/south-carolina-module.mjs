@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,southCarolinaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {rosterProfiles,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,southCarolinaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/south-carolina-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit gamecocksonline.com routes, exactly
@@ -433,4 +433,13 @@ const records=(sport,slug)=>worker.groupEvents(parse(sport,slug),now)[0].records
 // A profile page's menu lists the school's team accounts (gamecockbaseball)
 // before the athlete's own link: the athlete's is taken.
 assert.equal(worker.verifiedInstagram(fixture('profile-baseball-brandon-cromer.html.gz')),'https://www.instagram.com/brandon_cromer2/');
+// The roster is one roster-card holding a schema.org athlete item per player:
+// each item's own socials name its athlete (the whole card once gave Peyton
+// Williams's account to the first player, Lex Cyrus).
+{
+  const profiles=worker.rosterProfiles(fixture('football-roster.html.gz'),'https://gamecocksonline.com/sports/football/roster/');
+  assert.equal(profiles.length,111);
+  assert.ok(profiles.every(p=>p.image_url));
+  assert.deepEqual(profiles.filter(p=>p.instagram_url).map(p=>[p.name,p.instagram_url]),[["Peyton Williams","https://www.instagram.com/peyton31williams/"],["Maurice Brown II","https://www.instagram.com/bigmoe.44/"]]);
+}
 console.log('South Carolina hand-written checks passed');

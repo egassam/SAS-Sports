@@ -385,7 +385,9 @@ function officialCardInstagram(value){
   // Some WMT publishers accidentally prepend instagram.com twice. Because
   // this link is inside the named athlete's official roster card, recover the
   // final handle while still rejecting navigation/team destinations.
-  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)/gi)];
+  // The handle must end the path: "merritt%20_zieminick" (Vanderbilt) is a
+  // broken link, and its prefix "merritt" is someone else's account.
+  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)(?=$|[/?#"'\s])/gi)];
   const handle=matches.at(-1)?.[1]?.replace(/^@/,'').toLowerCase();
   return handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle)?`https://www.instagram.com/${handle}/`:null;
 }
@@ -405,7 +407,11 @@ function rosterProfiles(raw,base){
   // inside one roster card but does not publish SIDEARM's social aria-label.
   // Bind fields inside the card so navigation/team accounts remain ineligible.
   const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card(?:-item)?(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
+  // South Carolina's roster-card is the whole list (schema.org athlete items,
+  // read below): a "card" that links several players is no athlete's card.
+  const playerLinks=body=>new Set([...body.matchAll(/href=["']([^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#/]+)/gi)].map(x=>x[1].replace(/^https?:\/\/[^/]+/,''))).size;
   for(const body of wmtCards){
+    if(playerLinks(body)>1)continue;
     const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
@@ -434,6 +440,19 @@ function rosterProfiles(raw,base){
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(body,base,name,true)||null;
     byUrl.set(url,{name,url,image_url,instagram_url});
+  }
+  // South Carolina's WordPress roster: one schema.org athlete list item per
+  // player (<li itemprop="athlete">), its Instagram in the item's own socials.
+  const personItems=String(raw||'').split(/<li\b[^>]*itemprop=["']athlete["'][^>]*>/i).slice(1).map(item=>item.split(/<\/ul>\s*<\/div>\s*<\/li>/i)[0]);
+  for(const body of personItems){
+    if(playerLinks(body)!==1)continue;
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)?.map(tag=>tag.match(/href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i)).find(x=>visibleText(x[2]));
+    if(!profileMatch)continue;
+    const url=absoluteUrl(profileMatch[1],base);
+    const name=clean(visibleText(profileMatch[2]));if(!url||nameScore(name)<=0)continue;
+    const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
+    const image_url=athleteImage(body,base,name,true)||byUrl.get(url)?.image_url||null;
+    byUrl.set(url,{name,url,image_url,instagram_url:officialCardInstagram(instagram)});
   }
   // Other WMT sports use table rows instead of cards. Apply the same
   // same-container identity rule to those rows.
@@ -564,7 +583,8 @@ function verifiedInstagram(raw){
     try{
       const u=new URL(decodeHtml(m[1])),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
-      if(parts.length===1&&handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;
+      // Only a valid handle: "merritt%20_zieminick" is a broken link.
+      if(parts.length===1&&/^[a-z0-9._]{1,30}$/.test(handle)&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;
     }catch{}
   }
   return null;
