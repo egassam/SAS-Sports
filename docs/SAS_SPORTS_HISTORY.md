@@ -1704,3 +1704,80 @@ Records equal the official ones: football 4-1 (1-1), volleyball 7-6 (2-2), socce
 
 **Tests:** `npm run test:release` exit 0; preview screenshots of Mississippi State, LSU, West Virginia, K-State, Oklahoma State and Colorado read by eye; CI green. The change touches every school, outside the one-school standing permission, so the merge waited for the user ("Go"). Merged `b0a7549`; production `4.62.1-season-glow` at 01:40 UTC, served page carries the new rule, `verify:prod` (Mississippi State volleyball, XC 18/20 and 26/21) exit 0, production screenshot read.
 
+
+## October 8, 2026 — Missouri and Tennessee added, 25 sports (PR #250)
+
+**Request:** "Add Missouri and Tennessee. Learn and optimize for faster onboarding." The user set two schools as the scope; neither was in the app before.
+
+**Timeline (UTC):** start 10:30. Both sites checked first. Tennessee is SIDEARM; its pages send the sandbox into a redirect loop (307), so they were read through the private source. Missouri is WMT (Nuxt), although the catalog lists it as SIDEARM, and it answers directly.
+- Both schools added with the new `add-school` script, scaffolded, and ported (Tennessee from Mississippi State, Missouri from LSU).
+- Fixtures and the athlete evidence (1,087 pages) ran in parallel.
+- First push 10:43 (`0de4048`), PR #250.
+- The first preview found Missouri Gymnastics with too few athletes: the athlete list was cached per version, so the new pins could not show. Pins were added and the cache key was fixed.
+- `verify:preview` found Missouri soccer at Arkansas without highlights; the story was in the archive, so archive stories were added.
+- Final commit `860bbb4`; all gates passed; merged 11:12 (`a941a94`); production `4.63.0-missouri-tennessee` verified at 11:13. **43 minutes** from start to production for 25 sports.
+
+**Missouri (`docs/MISSOURI_MODULE.md`):** LSU's card reader with Missouri's markup:
+- `__day` date boxes;
+- recap links named by their labels ("Final Recap"; else the latest round's story);
+- golf places from `result__text` (`5th of 13`, `1st (842)`);
+- tennis "Day One" cards named by their heading and merged;
+- `#24/#RV` rankings;
+- the `schedule-event-exhibition` marker;
+- event-named home meets read "at";
+- event names in headlines do not match ("Bowling Green/Toledo Invitational");
+- archive stories for scored finals.
+
+Records equal the official ones: football 4-1 (1-1), volleyball 8-7 (1-2), soccer 3-7-2 (0-4-1). The soccer check first gave 4-7-2, which exposed the unlabeled Lindenwood exhibition. Three ported rules were redundant (their mutations survived) and were removed.
+
+**Tennessee (`docs/TENNESSEE_MODULE.md`):** Mississippi State's handlers, plus golf's score-then-place fields (`846 (-6)` and `2/18`). Combined sports are Basketball, Golf and Tennis; Swimming & Diving is one page. Records equal the official ones: football 4-1 (1-1), volleyball 10-3 (1-2), soccer 6-2-3 (1-2-2).
+
+**Athletes:**
+- Missouri 13/13: profile cards for Cross Country, Tennis and Track & Field (0 links in 104 profiles); Gymnastics pinned (the app found too few links on its roster cards).
+- Tennessee 12/12: Baseball pinned 2 plus a profile card; Softball and Volleyball pinned.
+
+**Shared fix:** the athlete cache key (`/live/athletes`, Cache API, 6 h, keyed by VERSION) now also carries a hash of the sport's `verifiedInstagrams` pins. Sports without pins keep their key. This explains the earlier note "the athlete check right after a push can read cached athletes from the previous build".
+
+**Faster onboarding (new and changed tools):**
+- `scripts/add-school.mjs`: publisher detection by marker count. Newer SIDEARM pages carry `__NUXT__` too, so `onboard-school`'s `detectPublisher` would call them WMT.
+- `scripts/port-handlers.mjs`: comments keep the source school's examples.
+- `fetch-school-fixtures --prune`: also flags duplicate addresses (`wsoc`, `wvball`) and `@season` templates.
+- `scripts/fill-expected.mjs`: `__FILL_NAME__` placeholders.
+- `athlete-evidence --pins`: athlete names from page titles.
+- `generate-module-tests`: defaults to the test file's date (closes the Oct 7 open item).
+- `scripts/dump-cards.mjs`: WMT card dumps.
+- `onboard-school`'s slug table now has `womens-gymnastics`.
+- `.gitignore` has `screenshots/`: one push carried 25 screenshots and was followed by a removal commit.
+
+**Tests run:**
+- 12 + 4 rule mutations, all killed after the redundant rules were removed.
+- `npm run test:release` exit 0 on `860bbb4` (and earlier commits).
+- `verify:preview --sports=all` for both schools on `860bbb4`: exit 0, 36/36 refreshes per sport, XC 18/20 and 26/21. Every expanded view passes; only Missouri's Aug 5 soccer exhibition has no story (none published).
+- Athletes on the preview and on production: 13/13 and 12/12.
+- Screenshots of all 25 sports; Missouri golf and Tennessee football read by eye.
+- CI green; PR clean.
+- `verify:prod --sports=all --version=4.63.0-missouri-tennessee` for both: exit 0.
+
+**Merge note:** the standing permission names one school per PR. The user set this session's scope to two schools, as in #244 and #246, and every other condition held for both. The shared athlete cache-key change only changes cache freshness for sports with pins; output is unchanged.
+
+**Open:** Missouri Gymnastics and Track & Field, and Tennessee Rowing, fill when published. Women's tennis at Tennessee shows no final yet (the ITA All-American has no story). No live card observed yet for either school.
+
+**Earlier fast-path notes (moved here from the current-session file, October 8):**
+
+### How to convert a school (fast path, October 7)
+
+**Adding a school not yet in the app (Georgia, LSU):** add it to `src/sponsored-sports.json` (from the site's nav) and to `SCHOOL_SPORTS` and `TEAM_THEMES` in `public/index.html`, then scaffold. Add its `tests/certified-schools.json` entry (all sports, minimum 3).
+
+**Ole Miss + Mississippi State lessons (21 sports, both SIDEARM, both 403 to the sandbox):** port the newest SIDEARM school's handlers by script (copy from `const HOST=` down, rename) **before** the fixture fetch, so it fetches the module's routes and not the scaffold's candidates. Start `athlete-evidence` for every sport the moment the module exists (background, ~3 min for 800 pages): the profile-card list and any `verifiedInstagrams` pins for sports with few links were known before the first push, and athletes passed on the first preview. Run `generate-module-tests --date=<the test file's now>` (it defaults to today, which breaks the generated blocks after midnight UTC). Read every `expanded views` line of `verify:preview`, not only PASS: Mississippi State football's 5 stories were `recap_text_unavailable` (SIDEARM "story blocks" pages; the shared reader now reads them). Screenshots caught a leading `*` on individuals-only golf names. TFRRS can name a school differently ("Miss State").
+
+**Georgia + LSU lessons (one SIDEARM, one WMT; 26 sports):** check each site's platform first (`curl` the football schedule; `sidearm` vs `wmt` markers). The catalog's "CUSTOM" can be WMT. A WMT site whose cards have no `datetime` (LSU) needs its own reader: start from `src/schools/lsu.mjs` (year from the page title's season, day cards merged, per-team cross country merged, cancelled cards dropped). `scripts/generate-module-tests.mjs --school=<id>` now writes the route table and every page block (replaces the throwaway scripts); the fixture script retries dropped connections and reads WMT pages through the module, saving stories and TFRRS. Before the first push: count roster Instagram links, and for sports with none run `scripts/athlete-evidence.mjs --school=<id> --check=<a sport with links> <sports>` (every roster card and profile page through the private source; Georgia 370 pages in ~2 min) so the profile-card list and its evidence are known. The first preview found two shared-code gaps worth checking on every new site: WMT profile links under `/roster/season/<year>/player/` (now accepted), and story bodies that open with nested markup (expanded view read only 46 characters; now read whole). Run `verify:preview` and look for `recap_text_unavailable` in expanded views: it passes the gate but means no highlights.
+
+**Two schools at once (Alabama + Florida, 36 minutes for 26 sports, 1.4 min per sport, the per-sport record):** scaffold both, run both fixture fetches in parallel, copy West Virginia's handlers into both with one script (rename ids, host, time zone, TFRRS teams; drop WV-only rules), survey both, generate the test blocks from `survey --lines` (watch: two sports on one page need distinct variable names), one PR, both `verify:preview` runs and both athlete checks in parallel. Lessons: a route ending `/schedule/text` is not read by the module (use `/schedule`); some pages answer the sandbox with a 307/"Loading" page, so fetch them with `scripts/fetch-official.mjs` (private source); run the athlete check before the first push from the roster pages (count `instagram.com` links per roster) so profile-card sports are known up front; the athlete check right after a push can read cached athletes from the previous build (re-run once).
+
+Texas Tech holds the total record: **26 minutes** from start to production for 10 sports (2.6 min per sport); West Virginia holds the per-sport record: **30 minutes** for 14 sports (20:44-21:14 UTC, 2.1 min per sport); Iowa State 29 for 12, TCU 41 for 14, Houston 49 for 11. What made Texas Tech fast: **start the module from the newest converted school's handlers (now West Virginia's), not the scaffold template** (its rules are a superset; copy everything from `const HOST=` down and rename), and generate the test blocks from `survey --lines` with a script. One preview round was lost to a volleyball final whose page links a preview story (run `validate-schools --deep` on the preview as soon as it is up, in parallel with `verify:preview`). Do the steps in this order; start each slow step in the background and work on while it runs:
+1. **Setup (1 min):** `npm run scaffold-school -- --school=<id> --write`. Writes the module with Houston's and Iowa State's settings and every hook wired (shared kit `src/sidearm-school-kit.mjs`: published times, golf rounds and match play, meet days, bracket rounds, open championships, neutral multi-day events, conference tournaments, `(Ex.)` labels, team places with points, recap matcher, archive stories, TFRRS cross country, doubleheaders), each applying only to sports in `pageDataSports`. Adds the test file with helpers and `npm run test:<id>-module`. Then fix the BYU-style "other schools are unchanged" tests if they name this school (BYU's named Iowa State; now TCU).
+2. **Fixtures (1 min):** `NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=<id> --tfrrs-f=<url> --tfrrs-m=<url>` (TFRRS team pages are `https://www.tfrrs.org/teams/xc/<ST>_college_<f|m>_<Name>.html`; check with curl). Saves every schedule candidate, stories, `/archives` and the archive stories of past meets/tournaments the schedule links no story for, ESPN payloads, TFRRS pages. Drop the routes it flags (empty template, homepage); set `combinedSports` and `teamLabels` (a men's page with no `mens-` in its address).
+3. **Read it (10 min):** turn every sport on in `pageDataSports`, then `node scripts/survey-school.mjs --school=<id>`. It prints each event in K-State's wording and flags **GATE** on any final with neither result line nor story (the gate fails those; fix them first, usually with `meetSports` and the archive). `--raw` prints page data; `--lines` prints test-ready arrays. Write one test block per sport from `--lines` (see `tests/iowa-state-module.mjs`); mutate each new rule.
+   The survey now attaches the saved archive stories and TFRRS results as the Worker does, so a GATE is real. A home tournament named after the school, "Opponents TBD" bracket rounds, round-named postseason games, late tournament stories (`ownLinkDays`) and set-count volleyball stories (`volleyballSets`) are handled in Texas Tech's module; copy them forward.
+4. **Publish:** commit, push, open the PR; the preview is up within a minute. In parallel: `npm run test:release` (3 min), `npm run verify:preview -- --branch=<branch> --school=<id> --sports=all` (5-6.5 min, background), athletes **at once** (`node tests/validate-schools.mjs <id> --athletes-only --base=<preview>`: tennis/swimming rosters often publish no Instagram → `athlete_profile_fallback_sports`; cross country may have only 2 → minimum 2, as KU and Oklahoma State), and `npm run screenshot-school -- --school=<id> --branch=<branch>` (every sport's page, 390px, school time zone). Merge when all pass, then `verify:prod` and the athletes check on production.
+
