@@ -10,6 +10,7 @@
 //   node scripts/survey-school.mjs --school=houston [--sport="Track & Field"] [--date=2026-06-20]
 //   node scripts/survey-school.mjs --school=houston --raw --sport=Golf     (the page-data entries)
 //   node scripts/survey-school.mjs --school=houston --lines                (test-ready arrays of `line(e)`)
+//   node scripts/survey-school.mjs --school=arkansas --live                (pages without a fixture from the network)
 // A final with neither a result line nor a story fails the release gate
 // (scripts/verify-release.mjs); the survey flags it (GATE) so it is fixed
 // before the first push. Exit code 1 when any is flagged.
@@ -39,6 +40,9 @@ const fixtureFile=url=>{
 };
 const fixtureFetch=async url=>{
   for(const name of fixtureFile(String(url))){const file=new URL(`tests/fixtures/${id}-module/${name}`,root);if(existsSync(file)){const body=gunzipSync(readFileSync(file)).toString('utf8');return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};}}
+  // --live reads what no fixture holds from the network (Arkansas's
+  // undated stories and WordPress archive), as the Worker would.
+  if(args.includes('--live')){const r=await fetch(String(url),{signal:AbortSignal.timeout(20000)});return r;}
   throw Error('no network');
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:fixtureFetch};
@@ -52,7 +56,7 @@ let flagged=0;
 
 for(const sport of value('sport')?[value('sport')]:sponsored[id]){
   for(const url of worker.candidateUrls(school,sport)){
-    const slug=(new URL(url).pathname.match(/^\/sports\/([^/]+)\/schedule/)||[])[1];
+    const slug=(new URL(url).pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
     const file=new URL(`tests/fixtures/${id}-module/${slug}-schedule.html.gz`,root);
     if(!slug||!existsSync(file)){console.log(`== ${sport} ${url}: no saved page (run scripts/fetch-school-fixtures.mjs)`);continue}
     const raw=gunzipSync(readFileSync(file)).toString('utf8');

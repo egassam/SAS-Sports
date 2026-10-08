@@ -31,11 +31,13 @@ async function page(url){
   return{html:await response.text(),via:'private source'};
 }
 
-const {html,via}=await page(`${base}/sports/football/schedule`);
+// Some sites (Arkansas, WordPress) have no /sports/football/schedule: read
+// the homepage, whose nav lists every sport.
+const {html,via}=await page(`${base}/sports/football/schedule`).catch(()=>page(`${base}/`));
 const count=re=>(html.match(re)||[]).length,wmt=count(/wmt/gi),sidearm=count(/sidearm/gi);
 const publisher=wmt>sidearm?'WMT':'SIDEARM';
 const found=new Set();
-for(const [,href] of html.matchAll(/href="([^"]*\/sports\/[a-z-]+\/schedule)\/?"/g)){const sport=inferSport(href);if(sport)found.add(sport)}
+for(const [,href] of html.matchAll(/href="([^"]*\/sports?\/[a-z-]+\/schedule)\/?"/g)){const sport=inferSport(href);if(sport)found.add(sport)}
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);

@@ -32,7 +32,8 @@ const fixture=name=>gunzipSync(readFileSync(new URL(dir+name,root))).toString('u
 // given: today's date breaks the generated blocks after midnight UTC.
 const fileNow=(read(testPath).match(/^const now=new Date\("(\d{4}-\d\d-\d\d)T/m)||[])[1];
 const now=new Date(`${value('date')||fileNow||new Date().toISOString().slice(0,10)}T15:00:00Z`);
-const recapFile=url=>{const [,y,m,d,slug]=url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+)/);return`recap-${y}-${m}-${d}-${slug.slice(0,40)}.html.gz`;};
+// Undated story addresses (Arkansas's /<slug>/) have no saved recap name.
+const recapFile=url=>{const m=url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+)/);if(!m)return null;const [,y,m2,d,slug]=m;return`recap-${y}-${m2}-${d}-${slug.slice(0,40)}.html.gz`;};
 const line=e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`;
 const sports=sponsored[id];
 
@@ -43,7 +44,7 @@ let test=read(testPath).replace(/^const parity=.*;$/m,()=>`const parity=${JSON.s
 // One block per schedule page.
 const blocks=[],recaps=[];let missing=0;
 for(const sport of sports)for(const url of worker.candidateUrls(school,sport)){
-  const slug=(new URL(url).pathname.match(/^\/sports\/([^/]+)\/schedule/)||[])[1];
+  const slug=(new URL(url).pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
   if(!slug||!has(`${slug}-schedule.html.gz`))continue;
   const events=worker.labelTeamEvents(worker.parseHtml(fixture(`${slug}-schedule.html.gz`),school,sport,url,now),school,sport,url);
   // One page can serve two sports (Texas's "Track & Field / Cross Country"):
@@ -51,7 +52,7 @@ for(const sport of sports)for(const url of worker.candidateUrls(school,sport)){
   let name=`v_${slug.replace(/\W+/g,'')}`;
   if(blocks.some(block=>block.startsWith(`  const ${name}=`)))name+=`_${sport.replace(/\W+/g,'').toLowerCase()}`;
   blocks.push(`  const ${name}=parse(${JSON.stringify(sport)},${JSON.stringify(slug)});\n  assert.deepEqual(${name}.map(line),${JSON.stringify(events.map(line),null,1).replace(/\n/g,'\n')});`);
-  const saved=events.filter(e=>e.recap_url).every(e=>has(recapFile(e.recap_url)));
+  const saved=events.filter(e=>e.recap_url).every(e=>recapFile(e.recap_url)&&has(recapFile(e.recap_url)));
   if(saved)recaps.push(`  ownRecapsOnly(${name},${JSON.stringify(`${sport} ${slug}`)});`);else missing++;
 }
 const generated=`// BEGIN generated (scripts/generate-module-tests.mjs --school=${id})\n// Every sport in K-State's results format, as the official pages publish it.\n{\n${blocks.join('\n')}\n${recaps.join('\n')}\n}\n// END generated\n`;
