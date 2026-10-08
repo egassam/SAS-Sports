@@ -28,10 +28,12 @@ import {tennesseeSchool,createTennesseeHandlers} from './schools/tennessee.mjs';
 import {missouriSchool,createMissouriHandlers} from './schools/missouri.mjs';
 import {texasSchool,createTexasHandlers} from './schools/texas.mjs';
 import {texasAmSchool,createTexasAmHandlers} from './schools/texas-am.mjs';
+import {arkansasSchool,createArkansasHandlers} from './schools/arkansas.mjs';
+import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.64.1-texas-texas-am';
+const VERSION='4.65.1-arkansas-auburn';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -200,6 +202,19 @@ const SCHOOL_MODULES=[
     // A past golf tournament still without a story publishes no place: it is
     // not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(texasAmHandlers.isFinalWithoutStory).map(event=>texasAmHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(texasAmHandlers.isTexasAmGolf).map(event=>texasAmHandlers.attachGolfPlace(event)));return events.filter(event=>!texasAmHandlers.isGolfWithoutStory(event));}}
+  ,{school:arkansasSchool,parseSchedule:(...args)=>arkansasHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>arkansasHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>arkansasHandlers.matchesRecap(...args),crossCountry:{matches:event=>arkansasHandlers.isCrossCountry(event),attach:event=>arkansasHandlers.attachMeetResults(event)},
+    // A final whose card links no story takes the team archive's.
+    beforeHighlights:async event=>{if(arkansasHandlers.isFinalWithoutStory(event))await arkansasHandlers.attachArchiveStory(event);},
+    // A past tournament still without a place or a story is not listed.
+    feed:async events=>{await Promise.all(events.filter(arkansasHandlers.isFinalWithoutStory).map(event=>arkansasHandlers.attachArchiveStory(event)));return events.filter(event=>!arkansasHandlers.isUnlisted(event));}}
+  ,{school:auburnSchool,parseSchedule:(...args)=>auburnHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>auburnHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>auburnHandlers.matchesRecap(...args),crossCountry:{matches:event=>auburnHandlers.isCrossCountry(event),attach:event=>auburnHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>auburnHandlers.isAuburnGolf(event),attach:event=>auburnHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(auburnHandlers.isFinalWithoutStory(event))await auburnHandlers.attachArchiveStory(event);},
+    // A past golf tournament still without a story publishes no place: it is
+    // not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(auburnHandlers.isFinalWithoutStory).map(event=>auburnHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(auburnHandlers.isAuburnGolf).map(event=>auburnHandlers.attachGolfPlace(event)));return events.filter(event=>!auburnHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -306,6 +321,8 @@ const tennesseeHandlers=createTennesseeHandlers({makeEvent,recapMatchesEvent,eve
 const missouriHandlers=createMissouriHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const texasHandlers=createTexasHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const texasAmHandlers=createTexasAmHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const arkansasHandlers=createArkansasHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const auburnHandlers=createAuburnHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -392,10 +409,14 @@ function rosterProfiles(raw,base){
   const wmtRows=String(raw||'').split(/<tr\b[^>]*>/i).slice(1);
   for(const row of wmtRows){
     const body=row.split(/<\/tr\s*>/i)[0];
-    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
+    // Arkansas's (WordPress) roster rows link /roster/<name>/ on the site's
+    // own host, with the athlete's Instagram in the same row.
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i)
+      ||body.match(/<a\b[^>]*href=["']((?:https?:\/\/[^/"']+)?\/roster\/[a-z0-9-]+\/?)["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),name=clean(visibleText(profileMatch[2]));
     if(!url||nameScore(name)<=0)continue;
+    if(!/\/sports\//.test(profileMatch[1])&&new URL(url).hostname!==new URL(base).hostname)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const previous=byUrl.get(url);
@@ -484,7 +505,7 @@ function officialProfileImage(raw,profileUrl){
     return imageHost===profileHost&&!/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl))?imageUrl:null;
   }catch{return null}
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   // Some official athlete bios publish personal social links only inside a
   // Schema.org Person record. Accept those identity-bound links before scanning
@@ -502,6 +523,10 @@ function verifiedInstagram(raw){
     return null;
   };
   while((schemaMatch=schemas.exec(raw))){try{const found=personInstagram(JSON.parse(decodeHtml(schemaMatch[1])));if(found)return found}catch{}}
+  // A WMT bio's own social list (roster-bio-social-links) comes first: the
+  // page menu lists the school's team accounts before it (Auburn).
+  const bio=String(raw).match(/class=["'][^"']*\broster-bio-social-links\b[\s\S]*?<\/ul>/i);
+  if(bio&&bio[0]!==raw){const found=verifiedInstagram(bio[0]);if(found)return found;}
   let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
   while((m=re.exec(raw))){
     try{
@@ -617,7 +642,11 @@ async function featuredAthletes(schoolId,sport){
   // in that case by filling the remaining slots with official roster profiles.
   // Personal Instagram links are still shown only when identity verified.
   const used=new Set(selected.map(athlete=>athlete.profile_url));
+  // Profile pages read above lend their portrait to a roster row that has
+  // none (Arkansas's roster tables publish no images).
+  const portraits=new Map(found.filter(athlete=>athlete.image_url).map(athlete=>[athlete.profile_url,athlete.image_url]));
   const officialProfiles=profiles
+    .map(profile=>profile.image_url||!portraits.has(profile.url)?profile:{...profile,image_url:portraits.get(profile.url)})
     .filter(profile=>!used.has(profile.url)&&profile.image_url)
     .sort((a,b)=>dailyRank(a.name)-dailyRank(b.name))
     .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url}));
@@ -1379,6 +1408,14 @@ function recapArticleText(raw){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=blocks.index+blocks[0].length;let depth=1,tag,end=-1;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
     const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
+    if(text.length>=80)return text.slice(0,14000);
+  }
+  // WordPress stories (Arkansas's) hold the text in div.article-paragraph.
+  const paragraphs=raw.match(/<div\b[^>]*class=["']article-paragraph\b[^"']*["'][^>]*>/i);
+  if(paragraphs){
+    const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=paragraphs.index+paragraphs[0].length;let depth=1,tag,end=-1;
+    while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
+    const text=end>0?visibleText(raw.slice(paragraphs.index+paragraphs[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
   // WMT stores article paragraphs in its embedded application payload instead

@@ -65,7 +65,7 @@ const summary=[],dropped=[];
 for(const sport of sports){
   const titles=new Set();
   for(const url of worker.candidateUrls(school,sport)){
-    const path=new URL(url).pathname,slug=(path.match(/^\/sports\/([^/]+)\/schedule/)||[])[1];
+    const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
     const name=`${slug}-schedule.html.gz`;
     const page=await download(url);

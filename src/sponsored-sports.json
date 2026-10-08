@@ -48,6 +48,35 @@
     "Water Polo",
     "Wrestling"
   ],
+  "arkansas": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "auburn": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "baylor": [
     "Acrobatics & Tumbling",
     "Baseball",

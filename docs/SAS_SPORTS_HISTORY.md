@@ -1803,3 +1803,21 @@ Texas Tech holds the total record: **26 minutes** from start to production for 1
 
 **Open:** A&M Baseball and Track & Field athletes and schedule when 2026-27 is published; Texas Rowing and Track & Field when published; two A&M golf finals "Completed"; no live card observed yet for either school.
 
+
+## October 8, 2026 — Arkansas and Auburn added, 25 sports (PR #254)
+
+**Request:** "Start Arkansas and Auburn. Learn and optimize for speed." The user set two schools as the scope; neither was in the app before.
+
+**Timeline (UTC):** start 12:35. Auburn: WMT (`add-school` direct; XC/Track on one `xctrack` page, added with `--sports=`). Arkansas: the football schedule address redirects in a loop; the site is WordPress ("bordeaux" template, `/sport/<code>/schedule/`), so `add-school` now falls back to the homepage nav and was given `--sports=`. Auburn ported from Texas A&M (`port-handlers`), adapted to its cards (0 cards read at first: `schedule-event-item__*`, `datetime` dates). Arkansas ported for its structure, then given its own reader. First push 13:06 (`PR #254`); first preview: gates passed but Arkansas expanded views had no highlights (story text in `div.article-paragraph`), athletes 10/12 (Swimming, Tennis) and Auburn 12/13 (Soccer). Fixed in `bb86e56` (version `4.65.1`); all gates passed on the second preview.
+
+**Arkansas (`docs/ARKANSAS_MODULE.md`):** own reader (season from the page heading, winner-first results, doubleheaders, meet places from the cards, multi-day spans, internal events out); undated stories checked by `article:published_time`; archive stories from the team's WordPress category; cross country per team page with its own TFRRS race; soccer's two August exhibitions from the published record (4-4-3, 2-1-2); players' pro tennis events out. Records: football 2-3 (0-2), volleyball 8-6 (0-3), soccer 4-4-3 (2-1-2, as published).
+
+**Auburn (`docs/AUBURN_MODULE.md`):** A&M's reader with Auburn's card names; one XC/Track page split by season; golf day cards merged by course with the last day's place. Records counted from the official results: football 3-2 (1-2), volleyball 11-4 (1-2), soccer 7-2-3 (3-2).
+
+**Shared changes:** story reader reads `div.article-paragraph`; roster table rows linking `/roster/<name>/` on the school's host are profiles; a WMT bio's own `roster-bio-social-links` is read before the page menu (Auburn's menu team accounts had become every soccer player's "Instagram", all rejected by the shared-handle guard); roster-only profiles take their portrait from the profile pages read; Arkansas's team accounts blocked. Scripts: `add-school` homepage fallback and `/sport/` links; `fetch-school-fixtures`, `survey-school` (`--live`), `generate-module-tests` read `/sport/<slug>/` pages and undated stories; `athlete-evidence` reads `/roster/<name>/` links.
+
+**Athletes:** Arkansas 12/12 (profile cards for Swimming & Diving and Tennis: 26 and 19 profile pages read, only team accounts); Auburn 13/13 (Volleyball pins 3; Soccer passed on a rerun after one empty cold read).
+
+**Tests run:** 15 rule mutations (14 killed; the surviving Auburn runner-up addition was removed) plus the story-text mutation (killed); `npm run test:release` exit 0 on `bb86e56`; `verify:preview --sports=all` both exit 0 on `4.65.1` (36/36 refreshes per sport, XC 18/20 and 26/21, every expanded view passing; Arkansas highlights now `recap_generated`); athletes 12/12 and 13/13 on the preview; screenshots of all 25 sports, Arkansas golf and cross country read by eye; CI green.
+
+**Open:** Arkansas men's tennis tournaments whose story names several events are not listed; Chile Pepper XC waits on TFRRS; baseball/softball fall games have no stories (none published); women's Track & Field (Arkansas) and Track & Field (Auburn) fill when published; no live card observed yet for either school.

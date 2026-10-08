@@ -32,6 +32,8 @@ for(const sport of sports){
     const raw=await get(url),host=new URL(url).hostname,slug=new URL(url).pathname.split('/')[2];
     // SIDEARM: /sports/<slug>/roster/<name>/<id>; WMT: /sports/<slug>/roster/[season/<s>/]player/<name>.
     const links=[...new Set(raw.match(new RegExp(`/sports/${slug}/roster/(?:(?:season/[^/"']+/)?player/[a-z0-9-]+|[a-z0-9-]+/\\d+)`,'g'))||[])];
+    // Arkansas (WordPress): /roster/<name>/ on the site's host.
+    if(!links.length)links.push(...new Set([...String(raw).matchAll(new RegExp(`https://${host.replace(/\./g,'\\.')}(/roster/[a-z0-9-]+/)`,'g'))].map(m=>m[1])));
     for(let i=0;i<links.length;i+=8)await Promise.all(links.slice(i,i+8).map(async path=>{
       const page=await get(`https://${host}${path}`),own=[...handles(page)].filter(h=>!site.has(h));read++;
       // The athlete's name: the page title's first part ("Blake Grimmer -
