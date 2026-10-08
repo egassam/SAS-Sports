@@ -39,6 +39,7 @@ Certification lists all 13 sports (minimum 3). Instagram is verified for Cross C
 - Basketball: one athlete link (Naomi Jones, `big1nom`, roster card and profile); the other link on the women's roster belongs to the head coach.
 - Swimming & Diving: one athlete link (Emily Jones, `em.jones03`).
 - The official team accounts' tags cannot be read (Instagram requires login), as for TCU Triathlon.
+- Cross Country (October 8): Cross Country and Track & Field share one roster, and Cross Country now features distance runners only (user: "Texas is showing track athletes instead of cross country athletes"). Of the 84 profile pages, three publish an athlete Instagram: Meriel Rowland and Lilly Walters (distance) and John Landers ("Multi", not a distance runner). The third Cross Country slot is an official profile card.
 
 ## Limitations
 
