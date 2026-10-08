@@ -38,7 +38,7 @@ for(const sport of sports){
       const page=await get(`https://${host}${path}`),own=[...handles(page)].filter(h=>!site.has(h));read++;
       // The athlete's name: the page title's first part ("Blake Grimmer -
       // Baseball - University of Tennessee Athletics").
-      const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
+      const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').replace(/&#8211;/g,'–').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
       if(own.length)found.push({path,name,handle:own[0],text:`${path.split('/').pop()}${name?` (${name})`:''}: ${own.join(',')}`});
     }));
   }

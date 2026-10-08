@@ -30,10 +30,12 @@ import {texasSchool,createTexasHandlers} from './schools/texas.mjs';
 import {texasAmSchool,createTexasAmHandlers} from './schools/texas-am.mjs';
 import {arkansasSchool,createArkansasHandlers} from './schools/arkansas.mjs';
 import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
+import {oklahomaSchool,createOklahomaHandlers} from './schools/oklahoma.mjs';
+import {kentuckySchool,createKentuckyHandlers} from './schools/kentucky.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.65.2-xc-distance-athletes';
+const VERSION='4.66.0-oklahoma-kentucky';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -215,6 +217,16 @@ const SCHOOL_MODULES=[
     // A past golf tournament still without a story publishes no place: it is
     // not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(auburnHandlers.isFinalWithoutStory).map(event=>auburnHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(auburnHandlers.isAuburnGolf).map(event=>auburnHandlers.attachGolfPlace(event)));return events.filter(event=>!auburnHandlers.isGolfWithoutStory(event));}}
+  ,{school:oklahomaSchool,parseSchedule:(...args)=>oklahomaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>oklahomaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>oklahomaHandlers.matchesRecap(...args),crossCountry:{matches:event=>oklahomaHandlers.isCrossCountry(event),attach:event=>oklahomaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(oklahomaHandlers.isFinalWithoutStory(event))await oklahomaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(oklahomaHandlers.isFinalWithoutStory).map(event=>oklahomaHandlers.attachArchiveStory(event)));return events;}}
+  ,{school:kentuckySchool,parseSchedule:(...args)=>kentuckyHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>kentuckyHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>kentuckyHandlers.matchesRecap(...args),crossCountry:{matches:event=>kentuckyHandlers.isCrossCountry(event),attach:event=>kentuckyHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(kentuckyHandlers.isFinalWithoutStory(event))await kentuckyHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(kentuckyHandlers.isFinalWithoutStory).map(event=>kentuckyHandlers.attachArchiveStory(event)));return events.filter(event=>!kentuckyHandlers.isUnlisted(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -323,6 +335,8 @@ const texasHandlers=createTexasHandlers({makeEvent,recapMatchesEvent,eventType,d
 const texasAmHandlers=createTexasAmHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const arkansasHandlers=createArkansasHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const auburnHandlers=createAuburnHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const oklahomaHandlers=createOklahomaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const kentuckyHandlers=createKentuckyHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -1282,14 +1296,16 @@ function seasonRecords(results){
     add(record);
     // The conference record counts the games the school marks as conference
     // games (or, without that mark, regular-season games against members).
-    if(e.conference_game===true){add(record.conference);record.conference.games++;}
+    // A team in another conference for its sport names it (Kentucky men's
+    // soccer: the Sun Belt).
+    if(e.conference_game===true){add(record.conference);record.conference.games++;if(e.conference_name)record.conference.name=e.conference_name;}
     byTeam.set(team,record);
   }
   const text=r=>`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`;
   const conference=schools.find(s=>s.id===results[0]?.school_id)?.conference||null;
   return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>{
-    const {games,...tally}=r.conference;
-    return{...r,text:text(r),conference:games&&conference?{name:conference,...tally,text:text(tally)}:null};
+    const {games,name,...tally}=r.conference;
+    return{...r,text:text(r),conference:games&&(name||conference)?{name:name||conference,...tally,text:text(tally)}:null};
   });
 }
 function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,local=schoolNow(now,schools.find(s=>s.id===events[0].school_id));events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
@@ -1448,6 +1464,9 @@ function recapArticleText(raw){
     const text=end>0?visibleText(raw.slice(paragraphs.index+paragraphs[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
+  // Kentucky's WordPress stories hold the text in section.article_text.
+  const section=(raw.match(/<section\b[^>]*class=["']article_text\b[^"']*["'][^>]*>([\s\S]*?)<\/section>/i)||[])[1];
+  if(section){const text=visibleText(section.replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' '));if(text.length>=80)return text.slice(0,14000);}
   // WMT stores article paragraphs in its embedded application payload instead
   // of articleBody or server-rendered <article> markup. Keep this last because
   // a page payload can include several unrelated stories and meet results.
