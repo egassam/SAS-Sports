@@ -37,7 +37,7 @@ import {vanderbiltSchool,createVanderbiltHandlers} from './schools/vanderbilt.mj
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.67.1-south-carolina-vanderbilt';
+const VERSION='4.67.2-south-carolina-vanderbilt';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1493,8 +1493,9 @@ function recapArticleText(raw){
     const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
-  // WordPress stories (Arkansas's) hold the text in div.article-paragraph.
-  const paragraphs=raw.match(/<div\b[^>]*class=["']article-paragraph\b[^"']*["'][^>]*>/i);
+  // WordPress stories (Arkansas's) hold the text in div.article-paragraph;
+  // South Carolina's second template in div.article__paragraphs.
+  const paragraphs=raw.match(/<div\b[^>]*class=["']article(?:-paragraph|__paragraphs)\b[^"']*["'][^>]*>/i);
   if(paragraphs){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=paragraphs.index+paragraphs[0].length;let depth=1,tag,end=-1;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;

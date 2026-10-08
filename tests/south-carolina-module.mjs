@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {rosterProfiles,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,southCarolinaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {recapArticleText,rosterProfiles,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,southCarolinaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/south-carolina-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit gamecocksonline.com routes, exactly
@@ -441,5 +441,11 @@ assert.equal(worker.verifiedInstagram(fixture('profile-baseball-brandon-cromer.h
   assert.equal(profiles.length,111);
   assert.ok(profiles.every(p=>p.image_url));
   assert.deepEqual(profiles.filter(p=>p.instagram_url).map(p=>[p.name,p.instagram_url]),[["Peyton Williams","https://www.instagram.com/peyton31williams/"],["Maurice Brown II","https://www.instagram.com/bigmoe.44/"]]);
+}
+// Stories come in two templates: section.article_text and div.article__paragraphs.
+{
+  const files=['recap-2026-10-03-football-falls-to-no-24-kentucky-in-over.html.gz','recap-2026-10-03-no-11-gamecocks-play-to-draw-at-no-16-we.html.gz'];
+  for(const file of files)assert.ok(worker.recapArticleText(fixture(file)).length>400,`${file}: story text`);
+  assert.match(worker.recapArticleText(fixture(files[1])),/^MORGANTOWN, W\. Va\. – The 11th ranked South Carolina men’s soccer team/);
 }
 console.log('South Carolina hand-written checks passed');

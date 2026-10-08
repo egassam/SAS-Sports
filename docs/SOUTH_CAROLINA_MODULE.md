@@ -4,7 +4,7 @@
 
 South Carolina was added to the app and converted on October 8, 2026, together with Vanderbilt. All 13 sports were built and tested one at a time and published in one PR. gamecocksonline.com is WMT's WordPress template, but not Kentucky's: the module started from Kentucky's handlers (`scripts/port-handlers.mjs --from=kentucky`) and has its own card reader.
 
-## Status (`4.67.1-south-carolina-vanderbilt`)
+## Status (`4.67.2-south-carolina-vanderbilt`)
 
 | Sport | Page | State |
 | --- | --- | --- |
@@ -26,6 +26,7 @@ South Carolina was added to the app and converted on October 8, 2026, together w
 - **Results:** "W 57-0", South Carolina's score first; golf "t-4th, 551 (-17)"; cross country "1st/13"; track "M: 11th | W: 5th"; swimming "Women: W 250-50; Men: W 165-135"; "NTS" reads "Completed".
 - **Golf:** "R1 & R2", "R3", "Match Play" round cards are one tournament; a scored card right after one is its match-play final.
 - **Stories:** the `schedule-event-link--postgame` link or a link labeled "Recap"; a meet's "Day One Recap"/"Day Two Recap" takes the last.
+- **Story text:** two templates, `section.article_text` and `div.article__paragraphs` (the second was unread: 15 expanded views on the first preview had no text).
 - **Athletes:** every profile page's menu lists 16 team accounts (`gamecockbaseball` ...) before the athlete's own link; they are blocked (`blockedInstagramHandles`), or every athlete would show the team account.
 
 Every rule was mutated; every mutation fails `npm run test:south-carolina-module` (a ranking rule whose mutation survived was removed: the strong never carries one).
