@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.2-xc-distance-athletes`.
+Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.66.2-asu-cross-country` (BYU `4.66.3` in PR #261).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.2-x
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.65.2-xc-distance-athletes`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.66.2-asu-cross-country`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -22,12 +22,12 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.2-x
 | KU | `src/schools/kansas.mjs` | Complete | Tennis/softball/track source limits (`KANSAS_MODULE.md`) |
 | Oklahoma State | `oklahoma-state.mjs` | Complete except source-blocked | Women's Basketball times (page 403); Tennis fills when okstate.com publishes |
 | Utah | `utah.mjs` | Complete except source-blocked | Baseball and Women's Basketball times (utahutes.com 403) |
-| Arizona State | `arizona-state.mjs` | All 17 sports converted | Athlete certification not reviewed (no `athlete_sports` in `tests/certified-schools.json`); golf field size; XC team scores |
-| BYU | `byu.mjs` | All 12 sports converted | Athlete certification only partly listed; Gymnastics and Track & Field fill when published |
+| Arizona State | `arizona-state.mjs` | Complete except source-blocked | Golf field size (cards publish none); USTA SoCal tennis story not matched (individual-titles story). XC from TFRRS and athletes 17/17 since Oct 8 (#260) |
+| BYU | `byu.mjs` | Complete once #261 merges | XC from TFRRS and athletes for all 12 (Gymnastics profile cards) in PR #261; Gymnastics and Track & Field fill when published; men's tennis Sep 28 story covers two tournaments |
 | UCF | `ucf.mjs` | Complete | Rowing, Track & Field, men's Tennis fill when published |
 | Arizona | `arizona.mjs` | Complete except source-blocked | Baseball athletes when the 2027 roster lists players |
 | Baylor | `baylor.mjs` | Complete | Track & Field, Acrobatics & Tumbling fill when published |
-| Cincinnati | `cincinnati.mjs` | Complete | Tennis was added to the catalog (#212): user may want it reverted |
+| Cincinnati | `cincinnati.mjs` | Complete | — (Tennis in the catalog since #212: user, Oct 8, "It's settled") |
 | Colorado | `colorado.mjs` | Complete | Track & Field fills when published; first live cards not yet observed |
 | Houston | `houston.mjs` | Complete (first school on the shared kit) | Track & Field fills when published; Rice Invite (tennis) has no story; first live cards not yet observed |
 | Iowa State | `iowa-state.mjs` | Complete (12 sports) | Track & Field and Gymnastics fill when published; Cross Country, Tennis, Swimming use profile cards (no further Instagram published); first live cards not yet observed |
@@ -45,11 +45,15 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.2-x
 | Texas (SEC) | `texas.mjs` | Complete (13 sports) | Added to the app Oct 8. One page for Track & Field and Cross Country (split by season); Rowing and Track & Field fill when published; profile cards for Cross Country, Golf, Rowing, Swimming & Diving, Tennis, Track & Field; first live cards not yet observed |
 | Texas A&M (SEC) | `texas-am.mjs` (WMT, Missouri's reader) | Complete (12 sports) except source-blocked | Added to the app Oct 8. Baseball and Track & Field athletes when the 2026-27 rosters list players (both empty); Track & Field schedule when published; two golf finals "Completed" (headlines give no place); first live cards not yet observed |
 | Arkansas (SEC) | `arkansas.mjs` (own WordPress reader) | Complete (12 sports) | Added to the app Oct 8. Swimming & Diving, Tennis use profile cards (rosters/profiles publish only team accounts); men's tennis tournaments whose story names several events are not listed; Chile Pepper XC waits on TFRRS; women's Track & Field fills when published; first live cards not yet observed (volleyball vs Texas Oct 9, soccer at LSU Oct 9) |
+| Oklahoma (SEC) | `oklahoma.mjs` (SIDEARM, Texas's handlers) | Complete (13 sports) | Added Oct 8 (#259). Gymnastics and Track & Field fill when published; Volleyball uses profile cards; first live cards not yet observed (football vs Texas Oct 10) |
+| Kentucky (SEC) | `kentucky.mjs` (own WMT-WordPress reader) | Complete (14 sports) | Added Oct 8 (#259). Track & Field, STUNT, men's tennis fill when published; women's golf has no field size; Baseball, Rifle, Swimming use profile cards; first live cards not yet observed (volleyball vs LSU Oct 9) |
 | Auburn (SEC) | `auburn.mjs` (WMT, A&M's reader) | Complete (13 sports) | Added to the app Oct 8. Track & Field fills when published; first live cards not yet observed (equestrian vs South Carolina Oct 9) |
 
-**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254) converted. Next: two more SEC schools. CUSTOM in the catalog (check each site first: Auburn was WMT, Arkansas a WordPress site with its own reader): Kentucky, Oklahoma, South Carolina, Vanderbilt.
+**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254), Oklahoma and Kentucky (PR #259) converted. Next: the last two SEC schools, South Carolina and Vanderbilt (both WMT; check whether their cards are Nuxt like Missouri's or WordPress like Kentucky's).
 
 ## How to add and convert a school (fast path, October 8)
+
+Oklahoma + Kentucky (Oct 8, 27 sports, about 115 minutes incl. a new reader; one preview round lost to Kentucky's second story template). Lessons: **WMT can be WordPress** (Kentucky: `div.schedule__item` cards, `/sports/<code>/schedule/`, the year only in the page heading; `scripts/fetch-school-fixtures.mjs` and `generate-module-tests` worked through the module unchanged); check **every** story template, not one (`section.article_text` and `section.article-text`); `verify:preview` runs for two schools in parallel can trip the K-State XC first-read transient: run them one after the other. TFRRS now also feeds ASU and BYU cross country (`createTfrrsMeetResults`, per-team filtering from Arkansas).
 
 Arkansas + Auburn (Oct 8, 25 sports, about 70 minutes, one PR; Arkansas needed a new reader). Lessons: **a "CUSTOM" site can be WordPress** (Arkansas: `/sport/m-footbl/schedule/`, `div.item` cards, stories at undated `/<slug>/`, archive through `/wp-json/wp/v2/posts?categories=`); `add-school` falls back to the homepage nav, `survey-school --live` reads stories/archives from the network when a site has no fixture names for them. Check each new site's **story text** (`verify:preview` expanded views all `recap_not_found`/`recap_text_unavailable` meant the shared reader could not find the body) and **athlete profile pages** (Auburn's menu lists team accounts before the athlete's; Arkansas's sport pages link the team account) on the first preview. A slow-path athlete sport (profile pages) can return empty on its first cold read: re-run the check once.
 
@@ -115,3 +119,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 8 — Texas and Texas A&M added to the app, 25 sports** (user: "Onboarding of Texas and Texas A&M. Learn and optimize for increased speed"; PR #252). Texas SIDEARM (Tennessee's handlers), A&M WMT (Missouri's reader, newer cards). Shared fix: season-roster links are not athletes. Tools: port-handlers renames quoted ids/escaped hosts first; generate-module-tests handles two sports on one page. Merged `bf36ec7`; production verified 12:19 UTC (`verify:prod --sports=all` both, athletes 13/13 and 10/10). About 105 minutes start to production.
 - **Oct 8 — Arkansas and Auburn added to the app, 25 sports** (user: "Start Arkansas and Auburn. Learn and optimize for speed"; PR #254). Arkansas WordPress (own reader), Auburn WMT (A&M's reader). Shared: WordPress story text, roster-table athletes, WMT bio social list first, profile portraits for roster-only rows. Merged `91c8364`; production `4.65.1-arkansas-auburn` verified 13:23 UTC (`verify:prod --sports=all` both, athletes 12/12 and 13/13). **About 48 minutes** start (12:35) to production for 25 sports, with a new reader for Arkansas.
 - **Oct 8 — Cross Country athletes are distance runners** (user: "Texas is showing track athletes instead of cross country athletes", then "Merge it"; PR #256, merged `7291356`; production `4.65.2-xc-distance-athletes` verified 14:18 UTC). Texas, Auburn, Alabama and Oklahoma State share one XC/track roster; Cross Country now keeps the cards whose event group is distance. Alabama Cross Country's third slot is a profile card (2 distance runners of 84 profiles publish Instagram). Athletes 13/13, 13/13, 13/13, 11/11 on production. User asked about an Instagram-login environment: advised against (Instagram terms, project rule); offered to pin handles the user confirms.
+- **Oct 8 — Oklahoma and Kentucky added, 27 sports; ASU and BYU leftovers** (user: "Let's add two more schools and finish what was left"; PR #259 merged `c9418c9`, production `4.66.1-oklahoma-kentucky` verified 16:27 UTC, athletes 13/13 and 14/14; PR #260 ASU XC from TFRRS, intrasquads out, athletes 17/17, merged `a560c85`, production `4.66.2` verified; PR #261 BYU XC from TFRRS and athlete certification). Cincinnati Tennis kept (user: "It's settled").

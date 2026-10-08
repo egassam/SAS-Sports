@@ -25,11 +25,9 @@ All 12 sponsored sports read byucougars.com's official cards through the module 
 
 **Limitations:**
 - Golf placings lack the field size and score, which the cards do not publish.
-- Cross Country rows come from the recap tables: the top 10 overall, or BYU's scorers, so not every runner appears. The Utah Valley men's table has no place column, so it shows times only. No race distance is claimed.
 - Men's tennis has no per-tournament recaps. The one Sep 28 story covers two tournaments and is not matched.
 - Soccer Sep 3 (Colorado State) has no matched recap. The official card links the Minnesota recap, and an opponent-site story was refused.
 - Cards with no date yet (NCAA swimming) and a softball card with no opponent are left out. Games that publish no result, such as softball Sep 30, are not shown as finals.
-- Athlete certification for BYU was not reviewed.
 
 ## Setup (route parity)
 
@@ -180,3 +178,16 @@ User, during BYU at Kansas State on Oct 1: "Let's update this to byu". BYU Volle
 ## Basketball live scores (`4.37.7-byu-basketball-live`)
 
 User: "Add live scores for BYU basketball too". `byuSchool.liveScoreboards.Basketball` adds ESPN's men's and women's college basketball scoreboards, labeled `Men's`/`Women's` to match the official cards, as K-State's are. A live game shows the clock (`2nd Half - 4:12`) and BYU's score. Fixtures: ESPN's real Houston at BYU (men, Feb 7, 2026) and BYU at Houston (women, Jan 10, 2026) events. Both teams are Cougars, so the test checks that BYU gets BYU's side and Houston gets its own. The season starts Oct 16 (men's exhibition vs Nebraska), so a real live game has not been observed yet.
+
+## October 8, 2026: cross country from TFRRS, athletes (`4.66.3-byu-cross-country`)
+
+- **Cross Country** reads TFRRS first (`UT_college_f_BYU`, `UT_college_m_BYU`): every BYU runner, places and times, and the team score.
+  - Each team's event keeps its own race.
+  - The Utah Valley meet ("UVU Invitational" / "Utah Valley Invitational") is TFRRS's "2026 UVU Collegiate XC Invite".
+  - Rows per meet: UVU 12 (`Women's 3 Mile`) and 12 (`Men's 3 Mile`); Cowboy Jamboree 16; John McNichols 16, including BYU's runners in the open race.
+  - The recap tables stay the fallback.
+  - This closes the "top 10 only" and "times only" limitations.
+  - `highlightRevision` 1.
+- **Athlete certification reviewed:** all 12 sports are listed in `tests/certified-schools.json`.
+  - 11 show three verified-Instagram athletes on production (Oct 8).
+  - **Gymnastics uses official profile cards** (`athlete_profile_fallback_sports`): `scripts/athlete-evidence.mjs` read all 19 profile pages, and none publishes an athlete Instagram link.
