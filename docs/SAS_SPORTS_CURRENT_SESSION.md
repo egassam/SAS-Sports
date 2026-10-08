@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 8, 2026 (midday), America/Chicago. Production `4.64.1-texas-texas-am`.
+Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.65.1-arkansas-auburn` (after PR #254 merges; see the session log).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 8, 2026 (midday), America/Chicago. Production `4.64.1-texa
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.64.1-texas-texas-am`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.65.1-arkansas-auburn`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -44,10 +44,14 @@ Last updated: October 8, 2026 (midday), America/Chicago. Production `4.64.1-texa
 | Tennessee (SEC) | `tennessee.mjs` | Complete (12 sports) | Added to the app Oct 8. Rowing fills when 2026-27 is published; Baseball's third athlete is a profile card (2 links of 37); first live cards not yet observed |
 | Texas (SEC) | `texas.mjs` | Complete (13 sports) | Added to the app Oct 8. One page for Track & Field and Cross Country (split by season); Rowing and Track & Field fill when published; profile cards for Cross Country, Golf, Rowing, Swimming & Diving, Tennis, Track & Field; first live cards not yet observed |
 | Texas A&M (SEC) | `texas-am.mjs` (WMT, Missouri's reader) | Complete (12 sports) except source-blocked | Added to the app Oct 8. Baseball and Track & Field athletes when the 2026-27 rosters list players (both empty); Track & Field schedule when published; two golf finals "Completed" (headlines give no place); first live cards not yet observed |
+| Arkansas (SEC) | `arkansas.mjs` (own WordPress reader) | Complete (12 sports) | Added to the app Oct 8. Swimming & Diving, Tennis use profile cards (rosters/profiles publish only team accounts); men's tennis tournaments whose story names several events are not listed; Chile Pepper XC waits on TFRRS; women's Track & Field fills when published; first live cards not yet observed (volleyball vs Texas Oct 9, soccer at LSU Oct 9) |
+| Auburn (SEC) | `auburn.mjs` (WMT, A&M's reader) | Complete (13 sports) | Added to the app Oct 8. Track & Field fills when published; first live cards not yet observed (equestrian vs South Carolina Oct 9) |
 
-**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252) converted. Next: two more SEC schools. CUSTOM in the catalog (check each site first; LSU's "CUSTOM" was WMT): Arkansas, Auburn, Kentucky, Oklahoma, South Carolina, Vanderbilt.
+**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254) converted. Next: two more SEC schools. CUSTOM in the catalog (check each site first: Auburn was WMT, Arkansas a WordPress site with its own reader): Kentucky, Oklahoma, South Carolina, Vanderbilt.
 
 ## How to add and convert a school (fast path, October 8)
+
+Arkansas + Auburn (Oct 8, 25 sports, about 70 minutes, one PR; Arkansas needed a new reader). Lessons: **a "CUSTOM" site can be WordPress** (Arkansas: `/sport/m-footbl/schedule/`, `div.item` cards, stories at undated `/<slug>/`, archive through `/wp-json/wp/v2/posts?categories=`); `add-school` falls back to the homepage nav, `survey-school --live` reads stories/archives from the network when a site has no fixture names for them. Check each new site's **story text** (`verify:preview` expanded views all `recap_not_found`/`recap_text_unavailable` meant the shared reader could not find the body) and **athlete profile pages** (Auburn's menu lists team accounts before the athlete's; Arkansas's sport pages link the team account) on the first preview. A slow-path athlete sport (profile pages) can return empty on its first cold read: re-run the check once.
 
 Texas + Texas A&M (Oct 8, 25 sports, about 75 minutes; one extra preview round for two bugs the screenshots found). Lessons: `add-school` finds no sports when the nav links lack `/schedule` (Texas): pass `--sports=`; WMT cards differ by site generation (A&M's `schedule-event-default__*`, venue in the date box) — dump one card before surveying; read every screenshot line for odd athlete names ("Roster for Baseball") and "did not return usable live data"; never `pkill`/`kill $(pgrep -f tests/)` from the shell that runs it.
 
@@ -109,3 +113,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 8 — In-season badge glow, all schools** (user: "Can we add a glow to the in season", then "Go"; PR #248, merged `b0a7549`; production `4.62.1-season-glow` verified 01:40 UTC). The badge text uses each school's on-accent color, with a glow tinted toward white; readable on dark primaries (Mississippi State, LSU, West Virginia, K-State) and light ones (Oklahoma State, Colorado).
 - **Oct 8 — Missouri and Tennessee added to the app, 25 sports** (user: "Add Missouri and Tennessee. Learn and optimize for faster onboarding"; PR #250, merged `a941a94`; production `4.63.0-missouri-tennessee` verified 11:13 UTC, `verify:prod --sports=all` both, athletes 13/13 and 12/12). **43 minutes** start to production. Missouri is WMT (LSU's reader). New tools: `add-school`, `port-handlers`, fixtures `--prune`, `fill-expected`, athlete-evidence `--pins`; athlete cache key carries pins.
 - **Oct 8 — Texas and Texas A&M added to the app, 25 sports** (user: "Onboarding of Texas and Texas A&M. Learn and optimize for increased speed"; PR #252). Texas SIDEARM (Tennessee's handlers), A&M WMT (Missouri's reader, newer cards). Shared fix: season-roster links are not athletes. Tools: port-handlers renames quoted ids/escaped hosts first; generate-module-tests handles two sports on one page. Merged `bf36ec7`; production verified 12:19 UTC (`verify:prod --sports=all` both, athletes 13/13 and 10/10). About 105 minutes start to production.
+- **Oct 8 — Arkansas and Auburn added to the app, 25 sports** (user: "Start Arkansas and Auburn. Learn and optimize for speed"; PR #254). Arkansas WordPress (own reader), Auburn WMT (A&M's reader). Shared: WordPress story text, roster-table athletes, WMT bio social list first, profile portraits for roster-only rows. Gates passed on the preview (`4.65.1`); merge and production verification recorded in the history file.
