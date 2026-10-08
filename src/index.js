@@ -31,7 +31,7 @@ import {texasAmSchool,createTexasAmHandlers} from './schools/texas-am.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.64.0-texas-texas-am';
+const VERSION='4.64.1-texas-texas-am';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
