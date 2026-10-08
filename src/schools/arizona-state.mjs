@@ -1,3 +1,4 @@
+import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // Arizona State school module. Shared publisher utilities stay in the Worker;
 // this file owns thesundevils.com routes, Arizona State's program combinations
 // and its schedule-card reader. Routes started as the exact candidates
@@ -5,6 +6,9 @@
 // corrected and verified one at a time.
 export const arizonaStateSchool={
   id:'arizona-state',
+  // Stored expanded views (/live/highlights) are kept 30 days; raised when
+  // cross country moved to TFRRS's races and team scores (Oct 8).
+  highlightRevision:1,
   // Sports whose official schedule cards this module reads itself (see
   // parseSchedule). Every other sport keeps the shared parsers.
   cardSports:new Set(['Football','Soccer','Volleyball','Baseball','Softball','Basketball','Hockey','Wrestling','Beach Volleyball','Lacrosse','Water Polo','Gymnastics','Track & Field','Cross Country','Golf','Tennis','Swimming & Diving']),
@@ -90,6 +94,11 @@ function publishedDays(raw){
 // none is a valid empty schedule, not a failed source.
 function academicYear(now){const local=new Date(now.getTime()-7*3600000);return local.getUTCMonth()>=6?local.getUTCFullYear():local.getUTCFullYear()-1;}
 
+// Arizona State's TFRRS cross country team pages: complete races and team
+// scores for every meet, including the Meadows Challenge (TFRRS's "Princeton
+// Meadows Classic"), which has no official recap.
+export const ARIZONA_STATE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/AZ_college_f_Arizona_State.html',Men:'https://www.tfrrs.org/teams/xc/AZ_college_m_Arizona_State.html'};
+
 // Cross Country recaps list each race as "Women's 4K Run" followed by
 // "1:" / "Kelli Gaffney" / "(13:47.3)" lines. Groups use K-State's labels
 // ("Women's 4K"), women first as published. Recaps give no team scores.
@@ -142,7 +151,9 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       // Rankings ("#10/#9 Texas A&M") and seeds ("#6 seed Arizona") describe the
       // week, not the opponent.
       const opponent=visibleText(nameHtml.replace(/<strong\b[^>]*schedule-default-event__divider[\s\S]*?<\/strong>/i,'')).replace(/^(?:#(?:\d+|RV)\s*(?:seed\s+)?\/?\s*)+/i,'').trim();
-      if(!opponent)continue;
+      // Internal events (swimming's Intrasquad Scrimmage, beach volleyball's
+      // Maroon and Gold Scrimmage) are not on K-State's schedule.
+      if(!opponent||/\bintrasquad\b|\bscrimmage\b/i.test(opponent))continue;
       const completed=/schedule-event-item--completed/i.test(opening);
       const result=field(block,/schedule-event-grid-result__label[^>]*>([\s\S]*?)<\/strong>\s*<!---->/i).match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
       const timeText=field(block,/schedule-event-grid-date__time[^>]*>([\s\S]*?)<\/strong>/i).replace(/\s*\([A-Z]{2,4}\)\s*$/,'');
@@ -156,7 +167,7 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
         time:completed||!/\d/.test(timeText)?null:timeText,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
       // Men's and women's pages can list the same meet on the same day (the
-      // Sep 25 swimming intrasquad); the team keeps their event ids apart.
+      // Oct 2 UNLV dual); the team keeps their event ids apart.
       const team=arizonaStateSchool.combinedSports.has(sport)?(String(sourceUrl).match(/\/sports\/(mens|womens)-/)||[])[1]:null;
       if(team)event.id=`${event.id}-${team}`;
       const recap=(block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*schedule-event-recap-link/i)||[])[1];
@@ -178,11 +189,15 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
   function isArizonaStateCrossCountry(event){
     return event?.school_id==='arizona-state'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   }
-  // Feed and expanded view both call this; the second call is a no-op. The
-  // recap comes from the meet's own schedule card.
+  const tfrrs=createTfrrsMeetResults({id:'arizona-state',schoolName:'Arizona State',teams:ARIZONA_STATE_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
+  // Feed and expanded view both call this; the second call is a no-op. TFRRS
+  // first (both races and the team scores); otherwise the meet's own recap,
+  // from its schedule card.
   async function attachMeetResults(event){
     if(!isArizonaStateCrossCountry(event))return event;
     if(event.recap_result_count&&event.meet_results_verified)return event;
+    await tfrrs.attach(event);
+    if(event.meet_results_verified)return event;
     const unavailable=status=>{
       event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
       event.highlight_state='official_results_partial';event.highlight_status=status;

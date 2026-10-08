@@ -26,9 +26,8 @@ All 17 sponsored sports read thesundevils.com's official cards through the modul
 
 **Limitations:**
 - Golf placings lack the field size (`of 12`), which the cards do not publish.
-- Cross Country recaps give no team scores, so meets read `Completed`. Meadows Challenge has no official recap or results.
 - The USTA SoCal tennis recap (an individual-titles story) is not accepted by the shared recap matcher, so its expanded view says no exact recap matched.
-- Individual tennis tournaments and the swimming intrasquad publish no team result (`Completed`).
+- Individual tennis tournaments publish no team result (`Completed`).
 - Neutral-site cards between two other teams (women's basketball, Nov 28–29) are skipped.
 
 ## Setup (route parity)
@@ -149,3 +148,15 @@ Production returned 502: the inherited routes (`/sports/mens/swimming-diving/`, 
 | Golf, Tennis | `Completed` | No placings; one team only |
 | Swimming & Diving | 502 | Routes `/sports/mens/swimming-diving/` do not resolve |
 | Basketball, Hockey, Softball, Wrestling | Upcoming only | Schedule and start-time check |
+
+## October 8, 2026: cross country from TFRRS, internal events, athletes (`4.66.2-asu-cross-country`)
+
+- **Cross Country** reads TFRRS first (`AZ_college_f_Arizona_State`, `AZ_college_m_Arizona_State`): both races and the team scores.
+  - Dave Murray Invitational: `Women's team: 2nd · 29 pts / Men's team: 2nd · 62 pts`, 18 rows.
+  - Meadows Challenge (TFRRS's "Princeton Meadows Classic", no official recap): `Women's team: 14th · 379 pts / Men's team: 12th · 340 pts`, 16 rows.
+  - The meet's own recap stays the fallback.
+  - This closes both cross country limitations.
+  - `highlightRevision` 1, so stored expanded views are rebuilt.
+- **Internal events** are not listed: the Sep 25 swimming Intrasquad Scrimmage, which production showed as a final for both teams, and beach volleyball's Maroon and Gold Scrimmage.
+- **Athlete certification reviewed:** all 17 sports are listed in `tests/certified-schools.json`. Production showed three verified-Instagram athletes in each (`validate-schools --athletes-only`: 17/17, Oct 8).
+- **Still open (source):** golf placings lack the field size, which the cards do not publish. The USTA SoCal tennis story is an individual-titles story that the shared matcher does not accept.

@@ -117,7 +117,7 @@ assert.deepEqual(beach,[]);
 assert.ok(worker.arizonaStateHandlers.isEmptySchedule(beach),'a past-season page is an empty schedule');
 assert.ok(!worker.arizonaStateHandlers.isEmptySchedule([]),'only the reader can flag an empty schedule');
 const beachInSeason=worker.parseHtml(fixture('beach-volleyball-schedule.html.gz'),school,'Beach Volleyball','https://thesundevils.com/sports/beach-volleyball/schedule',new Date('2026-04-30T16:00:00Z'));
-assert.equal(beachInSeason.filter(e=>e.status==='Final').length,34,'in its own season the same page shows every match');
+assert.equal(beachInSeason.filter(e=>e.status==='Final').length,33,'in its own season the same page shows every match (the Maroon and Gold Scrimmage is internal)');
 assert.ok(beachInSeason.some(e=>e.title==='ASU vs Arizona'),'tournament seeds are dropped from the opponent');
 // The season filter keeps July-December of the season's first year and
 // January-June of its second: every merged sport above is unaffected.
@@ -151,6 +151,17 @@ const xcUrl='https://thesundevils.com/sports/cross-country/schedule';
 const xc=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
 assert.deepEqual(xc.map(e=>`${e.status} ${e.display_time} ${e.title}`),['Final Sep 4 ASU at Dave Murray Invitational','Final Sep 26 ASU at Meadows Challenge','Upcoming Oct 16 ASU at Arturo Barrios Invitational','Upcoming Oct 31 ASU at Big 12 Championships','Upcoming Nov 13 ASU at NCAA West Regionals','Upcoming Nov 21 ASU at NCAA National Championships']);
 const [daveMurray,meadows]=xc;
+// TFRRS first: both races and the team scores, for the Meadows Challenge too
+// (TFRRS's "Princeton Meadows Classic"; it has no official recap).
+{
+  const [tfrrsDave,tfrrsMeadows]=worker.parseHtml(fixture('cross-country-schedule.html.gz'),school,'Cross Country',xcUrl,now);
+  const tfrrs={'https://www.tfrrs.org/teams/xc/AZ_college_f_Arizona_State.html':'tfrrs-team-f.html.gz','https://www.tfrrs.org/teams/xc/AZ_college_m_Arizona_State.html':'tfrrs-team-m.html.gz','https://www.tfrrs.org/results/xc/28023/Princeton_Meadows_Classic':'tfrrs-28023.html.gz','https://www.tfrrs.org/results/xc/28166/Dave_Murray_Invitational':'tfrrs-28166.html.gz'};
+  for(const [url,file] of Object.entries(tfrrs))recapFixtures.set(url,fixture(file));
+  for(const meet of [tfrrsDave,tfrrsMeadows])await worker.attachOfficialMeetResults(meet);
+  assert.deepEqual([tfrrsDave,tfrrsMeadows].map(e=>[e.opponent,e.headline,e.meet_results_verified,e.result_count]),[["Dave Murray Invitational","Women's team: 2nd · 29 pts / Men's team: 2nd · 62 pts",true,18],["Meadows Challenge","Women's team: 14th · 379 pts / Men's team: 12th · 340 pts",true,16]]);
+  for(const url of Object.keys(tfrrs))recapFixtures.delete(url);
+}
+// Without TFRRS results, the meet's own official recap.
 recapFixtures.set(daveMurray.recap_url,fixture('xc-recap-dave-murray-invitational.html.gz'));
 await worker.attachOfficialMeetResults(daveMurray);
 assert.equal(daveMurray.meet_results_verified,true);
@@ -196,8 +207,9 @@ assert.deepEqual(arizonaStateSchool.scheduleUrls['arizona-state|Swimming & Divin
 assert.equal(worker.teamLabelForSource(school,'Swimming & Diving','https://thesundevils.com/sports/mens-swimming-diving/schedule'),"Men's");
 const mensSwim=worker.parseHtml(fixture('mens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving','https://thesundevils.com/sports/mens-swimming-diving/schedule',now);
 const womensSwim=worker.parseHtml(fixture('womens-swimming-diving-schedule.html.gz'),school,'Swimming & Diving','https://thesundevils.com/sports/womens-swimming-diving/schedule',now);
-assert.deepEqual([mensSwim.length,womensSwim.length],[16,17]);
-assert.deepEqual(womensSwim.slice(0,4).map(e=>`${e.status} ${e.display_time} ${e.title}`),['Final Sep 25 ASU vs Intrasquad Scrimmage','Upcoming Oct 2, 6:00 PM ASU vs UNLV','Upcoming Oct 9 ASU at SMU Classic','Upcoming Oct 9, 3:30 PM ASU at Northern Arizona']);
+assert.deepEqual([mensSwim.length,womensSwim.length],[15,16]);
+// The Sep 25 intrasquad is an internal event, not listed.
+assert.deepEqual(womensSwim.slice(0,3).map(e=>`${e.status} ${e.display_time} ${e.title}`),['Upcoming Oct 2, 6:00 PM ASU vs UNLV','Upcoming Oct 9 ASU at SMU Classic','Upcoming Oct 9, 3:30 PM ASU at Northern Arizona']);
 assert.equal(mensSwim.at(-1).start_time.slice(0,10),'2027-03-24');
 assert.notEqual(mensSwim[0].id,womensSwim[0].id,'the same meet on both teams\' pages keeps separate event ids');
 assert.ok(mensSwim[0].id.endsWith('-mens')&&womensSwim[0].id.endsWith('-womens'));
