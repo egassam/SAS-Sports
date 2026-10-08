@@ -1697,3 +1697,10 @@ Records equal the official ones: football 4-1 (1-1), volleyball 7-6 (2-2), socce
 **Merge note:** the standing permission names one school per PR; the user set this session's scope to two schools, and every other condition held for both.
 
 **Open:** The Ally (Ole Miss women's golf) final story; Chile Pepper TFRRS points; Track & Field pages still list 2025-26; no live card observed; season-badge contrast on dark primaries (shared UI, for the user to decide); `generate-module-tests` should default to the test file's date.
+
+## October 8, 2026 — In-season badge glow (PR #248)
+
+**Request:** "Can we add a glow to the in season. That would fix it for all schools." The active badge drew `#06151c` text on each school's primary color, hard to read on dark primaries. A glow alone would not fix the text, so the rule also takes the theme's `--theme-on-accent` (already set per school), as the other team-colored controls do; the glow and border are the primary mixed toward white. Version `4.62.1-season-glow`.
+
+**Tests:** `npm run test:release` exit 0; preview screenshots of Mississippi State, LSU, West Virginia, K-State, Oklahoma State and Colorado read by eye; CI green. The change touches every school, outside the one-school standing permission, so the merge waited for the user ("Go"). Merged `b0a7549`; production `4.62.1-season-glow` at 01:40 UTC, served page carries the new rule, `verify:prod` (Mississippi State volleyball, XC 18/20 and 26/21) exit 0, production screenshot read.
+
