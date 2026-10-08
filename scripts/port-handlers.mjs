@@ -24,12 +24,20 @@ const [head,scaffolded]=cut(target),[,handlers]=cut(source);
 const line=(text,re)=>text.split('\n').find(l=>re.test(l));
 const host=line(scaffolded,/^const HOST=/),todayLine=line(scaffolded,/^const \w+Today=sidearmToday\(/),tfrrsLine=line(scaffolded,/^export const \w+_TFRRS_TEAMS=/);
 const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+// The quoted id and the school's name go first: an id without a hyphen
+// ('missouri') is also its camel name, which would otherwise become the
+// target's camel name ('texasAm') inside quotes.
 let out=handlers
-  .replace(new RegExp(escape(a.Pascal),'g'),b.Pascal)
-  .replace(new RegExp(`\\b${escape(a.camel)}`,'g'),b.camel)
-  .replace(new RegExp(`\\b${escape(a.CONST)}_`,'g'),`${b.CONST}_`)
   .replace(new RegExp(`'${escape(a.id)}'`,'g'),`'${b.id}'`)
+  .replace(new RegExp(`schoolName:'${escape(a.name)}'`,'g'),`schoolName:'${b.name}'`)
 ;
+// Identifiers are renamed in code; in comments only when the Pascal name is
+// not also the school's name ("Tennessee: the team score ..." cites
+// Tennessee's example and keeps it).
+out=out.split('\n').map(l=>{
+  if(!/^\s*\/\//.test(l)||a.Pascal!==a.name)l=l.replace(new RegExp(escape(a.Pascal),'g'),b.Pascal);
+  return l.replace(new RegExp(`\\b${escape(a.camel)}(?=[A-Z_(])`,'g'),b.camel).replace(new RegExp(`\\b${escape(a.CONST)}_`,'g'),`${b.CONST}_`);
+}).join('\n');
 // The school's name changes in code and in the module's own lines (its
 // calendar day, TFRRS pages, site); other comments cite the source school's
 // examples and keep its name.
@@ -38,6 +46,9 @@ const lines=out.split('\n');
 const swap=(re,replacement)=>{const i=lines.findIndex(l=>re.test(l));if(i>=0&&replacement)lines[i]=replacement};
 swap(/^const HOST=/,host);swap(/^const \w+Today=sidearmToday\(/,todayLine);swap(/^export const \w+_TFRRS_TEAMS=/,tfrrsLine);
 out=lines.join('\n');
+// The source's host written into a regular expression (`mutigers\.com`).
+const hostOf=id=>new URL(schools.find(s=>s.id===id).athletics_url).hostname.replace(/^www\./,'');
+out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'\\.'));
 const [oldNick,newNick]=(value('nickname')||':').split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');

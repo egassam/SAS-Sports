@@ -46,7 +46,10 @@ for(const sport of sports)for(const url of worker.candidateUrls(school,sport)){
   const slug=(new URL(url).pathname.match(/^\/sports\/([^/]+)\/schedule/)||[])[1];
   if(!slug||!has(`${slug}-schedule.html.gz`))continue;
   const events=worker.labelTeamEvents(worker.parseHtml(fixture(`${slug}-schedule.html.gz`),school,sport,url,now),school,sport,url);
-  const name=`v_${slug.replace(/\W+/g,'')}`;
+  // One page can serve two sports (Texas's "Track & Field / Cross Country"):
+  // the second takes its sport's name too.
+  let name=`v_${slug.replace(/\W+/g,'')}`;
+  if(blocks.some(block=>block.startsWith(`  const ${name}=`)))name+=`_${sport.replace(/\W+/g,'').toLowerCase()}`;
   blocks.push(`  const ${name}=parse(${JSON.stringify(sport)},${JSON.stringify(slug)});\n  assert.deepEqual(${name}.map(line),${JSON.stringify(events.map(line),null,1).replace(/\n/g,'\n')});`);
   const saved=events.filter(e=>e.recap_url).every(e=>has(recapFile(e.recap_url)));
   if(saved)recaps.push(`  ownRecapsOnly(${name},${JSON.stringify(`${sport} ${slug}`)});`);else missing++;
