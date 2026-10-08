@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.68.0-global-saved-copy`.
+Last updated: October 8, 2026 (evening), America/Chicago. Production `4.69.1-illinois-indiana`.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.68.0-g
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.68.0-global-saved-copy`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.69.1-illinois-indiana`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -50,10 +50,14 @@ Last updated: October 8, 2026 (afternoon), America/Chicago. Production `4.68.0-g
 | Auburn (SEC) | `auburn.mjs` (WMT, A&M's reader) | Complete (13 sports) | Added to the app Oct 8. Track & Field fills when published; first live cards not yet observed (equestrian vs South Carolina Oct 9) |
 | South Carolina (SEC) | `south-carolina.mjs` (own WMT-WordPress reader) | Complete (13 sports) except source-blocked | Added Oct 8 (#263). gamecocksonline.com refuses Cloudflare's Paris location (403): served from the global saved copy (KV, `globalSavedCopy`, #265); Track & Field and Beach Volleyball fill when published; Adidas XC Challenge not on TFRRS; golf places without field size; profile cards for Cross Country, Equestrian, Football, Soccer, Softball, Track & Field; first live cards not yet observed (soccer vs Tennessee Oct 9) |
 | Vanderbilt (SEC) | `vanderbilt.mjs` (WMT, Auburn's reader) | Complete (12 sports) | Added Oct 8 (#263). Lacrosse and Track & Field fill when published; Bowling starts Oct 16; volleyball vs Kentucky (Sep 23) has no published story; profile cards for Bowling, Cross Country, Football, Golf, Lacrosse, Soccer, Tennis, Track & Field; first live cards not yet observed (soccer at Missouri, volleyball vs Auburn Oct 9) |
+| Illinois (Big Ten) | `illinois.mjs` (SIDEARM, Oklahoma's handlers) | Complete (13 sports) | Added Oct 8 (#267). Gymnastics fills when 2027 is published; split XC pages, per-team TFRRS; Tennis pinned; first live cards not yet observed (football at Michigan State Oct 10) |
+| Indiana (Big Ten) | `indiana.mjs` (SIDEARM, Oklahoma's handlers) | Complete (15 sports) | Added Oct 8 (#267). Field Hockey new to the app; Track & Field and Water Polo fill when published; golf place without field size (not published); Football uses profile cards (0 of 106 profiles); first live cards not yet observed |
 
-**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254), Oklahoma and Kentucky (PR #259), South Carolina and Vanderbilt (PR #263) converted: **all 16 SEC schools are in the app.** Next: the user's choice (no school queued).
+**All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254), Oklahoma and Kentucky (PR #259), South Carolina and Vanderbilt (PR #263) converted: **all 16 SEC schools are in the app.** **Big Ten** (alphabetical): Illinois and Indiana (PR #267). Next: Iowa and Maryland (Iowa listed CUSTOM: check its platform first).
 
 ## How to add and convert a school (fast path, October 8)
+
+Illinois + Indiana (Oct 8, 28 sports, about 2 h 20 min incl. one preview round). Lessons: **the scaffold's feed hook did not apply `isTennisWithoutStory`** (Oklahoma's wiring has the same gap): a storyless past tennis tournament failed `verify:preview`; the scaffold now writes it. `fill-expected` placeholders need distinct names (`__FILL_E1__`, …). A wait loop like `until ! pgrep -f <script>` matches its own command line: wait on a log marker instead. Feed one ESPN payload only through its own team's provider in tests. Both sites refuse the sandbox; `add-school` nav read found only Football (pass `--sports=` from the nav's `/sports/<slug>` links).
 
 South Carolina + Vanderbilt (Oct 8, 25 sports, about 2 h incl. a new reader and five shared fixes found on the preview). Lessons: `add-school`'s nav read missed most sports on both (pass `--sports=` from the site's `/sports/<code>/schedule` links); **a third WMT WordPress template** (South Carolina: `div.event.schedule-table_row`, Unix start in `data-order`); **check the athlete reader on the real roster**, not only `athlete-evidence` (a `roster-card` wrapping the whole list misattributed links; a broken handle `merritt%20_zieminick` read as another person's `merritt`); per-team TFRRS for two XC pages (Arkansas's split); a site may block one Cloudflare location (read `cf-ray` on failed refreshes: all 502s were CDG); bump the version after an athlete fix (the athlete cache is per version for 6 h).
 
@@ -127,3 +131,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 8 — Oklahoma and Kentucky added, 27 sports; ASU and BYU leftovers** (user: "Let's add two more schools and finish what was left"; PR #259 merged `c9418c9`, production `4.66.1-oklahoma-kentucky` verified 16:27 UTC, athletes 13/13 and 14/14; PR #260 ASU XC from TFRRS, intrasquads out, athletes 17/17, merged `a560c85`, production `4.66.2` verified; PR #261 BYU XC from TFRRS and athletes 12/12, merged `798d094`, production `4.66.3` verified 17:24 UTC). Cincinnati Tennis kept (user: "It's settled").
 - **Oct 8 — South Carolina and Vanderbilt added, 25 sports; SEC finished** (user: "Add South Carolina and Vanderbilt"; PR #263, merged `b3d63c7`; production `4.67.3-south-carolina-vanderbilt` verified 19:40 UTC, `verify:prod --sports=all` both, athletes 13/13 and 12/12). Shared fixes: roster cards that wrap several players, broken Instagram handles, `article__paragraphs` story text, TFRRS races the school did not run.
 - **Oct 8 — Global saved copy for South Carolina** (user: "Fix the Paris block with a global saved copy"; PR #265, merged `1747165`; production `4.68.0-global-saved-copy` verified 20:27 UTC, `verify:prod --sports=all` South Carolina, Vanderbilt spot check). gamecocksonline.com refuses Cloudflare's Paris location; feeds now fall back to a KV copy built elsewhere.
+- **Oct 8 — Illinois and Indiana added, 28 sports; Big Ten started** (user: "Let's start big 10. Pick the first two schools"; PR #267, merged `a4121b0`; production `4.69.1-illinois-indiana` verified 21:49 UTC, `verify:prod --sports=all` both, athletes 13/13 and 15/15).

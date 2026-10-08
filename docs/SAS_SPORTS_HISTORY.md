@@ -1924,3 +1924,26 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 **PR #265 merged** 20:22 UTC (`1747165`). Production `4.68.0-global-saved-copy` verified 20:27: `verify:prod --school=south-carolina --sports=all` all passed (XC 18/20, 26/21); Vanderbilt Football and Volleyball passed.
 
 **Open:** the first Paris visitor after a new version is deployed is served only once a US location has built that sport under the new version.
+
+## October 8, 2026 — Illinois and Indiana added, 28 sports; Big Ten started (PR #267)
+
+**Request** (user): "Let's start big 10. Pick the first two schools". Picked alphabetically from the catalog's 18 Big Ten schools: Illinois and Indiana (both SIDEARM). Two schools in one PR (batched publishing), every sport built and read on its own.
+
+**Baseline:** `main` at `275cb71`, production `4.68.0-global-saved-copy`.
+
+**Built:**
+- `add-school` for both (both refuse the sandbox; read through the private source; nav read found only Football, so the lists were passed from the nav's `/sports/<slug>` links). Illinois 13 (Baseball, Basketball, Cross Country, Football, Golf, Gymnastics, Soccer, Softball, Swimming & Diving, Tennis, Track & Field, Volleyball, Wrestling), theme `#13294B/#FF5F05/#ffffff`. Indiana 15 (adds Field Hockey — new to the app — Rowing, Water Polo; no Gymnastics), theme `#990000/#EEEDEB/#ffffff`.
+- Both scaffolded and ported from Oklahoma (`port-handlers`); fixtures `--prune` (26 and 31 routes dropped); TFRRS `IL_college_[fm]_Illinois`, `IN_college_[fm]_Indiana_IN` (found through the Big Ten Championships page).
+- **Illinois:** men's golf `4th / 12 | 290-297-304--891 (+27)`; split men's/women's cross country pages with per-team TFRRS (Arkansas's split); combined Basketball, Cross Country, Golf, Gymnastics, Tennis, Track & Field (swimming is women only); Tennis pins (12 links in 18 profiles).
+- **Indiana:** golf `t-9th Place • 903 (+39)` (no field size published); `(RV)`/`(5)`/`(3) /` bracket rankings and seeds; swim league `1st place, 575.5 points`; intrasquad `Cream & Crimson (Exh.)` left out; one ESPN soccer scoreboard per team; Football profile cards (0 Instagram in 106 profiles).
+- Records equal hand counts and, for field hockey, the official story (8-3, Big Ten 4-0): Illinois football 2-3 (0-2), volleyball 11-4 (3-1), soccer 4-3-5 (1-3-2); Indiana football 5-0 (2-0), volleyball 10-3 (3-1), women's soccer 4-7-1 (1-5), men's soccer 10-0-2 (4-0-1).
+- Every new rule mutated; two first survived (per-team result rows, the men's soccer provider) and got checks; all killed after.
+- BYU's "other schools are unchanged" check named Illinois; it now picks a catalog school with no sponsored sports.
+
+**Found on the preview and fixed** (`af919ff`, version 4.69.1): `verify:preview` failed Indiana Tennis — the women's ITA All-American (no story published) was listed. The scaffold's feed hook never applied `isTennisWithoutStory` (K-State's rule); both schools' feeds now do, tests run the feed hook itself (mutations killed), and `scripts/scaffold-school.mjs` writes the filter. Oklahoma's feed has the same gap (not changed here: other school).
+
+**Tests run:** `npm run test:release` exit 0 on `0a30f12` and `af919ff`; CI green (guardrails, certification-matrix, Workers Builds); PR clean. Preview 4.69.1: `verify:preview --sports=all` both exit 0 (36/36 refreshes every sport, XC 18/20 and 26/21, every expanded view passes; `ai_failed` only as the known transient); athletes 13/13 and 15/15; screenshots of all 28 sports, Illinois golf and Indiana field hockey read by eye.
+
+**PR #267 merged** (`a4121b0`). Production `4.69.1-illinois-indiana` verified 21:49 UTC: `verify:prod --sports=all` both exit 0, XC 18/20 and 26/21; athletes 13/13 and 15/15 on production.
+
+**Open:** Illinois Gymnastics; Indiana Track & Field and Water Polo fill when published; Indiana golf field size not published; first live cards not yet observed.
