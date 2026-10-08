@@ -1880,3 +1880,33 @@ Texas Tech holds the total record: **26 minutes** from start to production for 1
 - first live cards for the new schools (Kentucky volleyball Oct 9; football Oct 10).
 
 **PR #261 merged** 17:23 UTC (`798d094`). Production `4.66.3-byu-cross-country` verified 17:24: `verify:prod --sports="Cross Country,Gymnastics"` exit 0 (XC 18/20 and 26/21); athletes 12/12. On the preview, the first run after the deploy read K-State XC 0/0 (the known transient); the re-run gave 18/20. BYU cross country now shows 12-16 TFRRS rows per meet.
+
+## October 8, 2026 — South Carolina and Vanderbilt added, 25 sports; SEC finished (PR #263)
+
+**Request** (user): "Add South Carolina and Vanderbilt". Two schools in one session and one PR (batched publishing, AGENTS.md item 3); every sport built, read and tested on its own.
+
+**Baseline:** `main` at `f223b4b`, production `4.66.3-byu-cross-country`.
+
+**Built:**
+- `add-school` for both (its nav read found 7 and 3 sports; the lists were passed by hand from the sites' `/sports/<code>/schedule` links): South Carolina 13 sports (Baseball, Basketball, Beach Volleyball, Cross Country, Equestrian, Football, Golf, Soccer, Softball, Swimming & Diving, Tennis, Track & Field, Volleyball), Vanderbilt 12 (Baseball, Basketball, Bowling, Cross Country, Football, Golf, Lacrosse, Soccer, Swimming & Diving, Tennis, Track & Field, Volleyball). Themes: South Carolina `#73000A/#000000/#ffffff`, Vanderbilt `#000000/#CFAE70/#ffffff`.
+- **Vanderbilt** (WMT Nuxt): `port-handlers --from=auburn`, adapted to `schedule-item-block` cards (ranking and "Exhibition" label spans, "2:30 p.m.", golf "• Round 3" cards, `(Individuals)` tournaments out, last-season pages empty, swimming decimals and multi-day meets); per-team TFRRS (Arkansas's split); stories without a card link from `/sports/<slug>/news` (no `/archives`), matched by the story's opening (headlines like "Relentless Run" name nothing). Records equal the pages' published stats (football 3-2/0-2, volleyball 11-2/2-2, soccer 11-0-1/4-0-1).
+- **South Carolina** (WMT WordPress, a third template): own reader from Kentucky's handlers (`div.event.schedule-table_row`, Unix start in `data-order`, "(EXH)"/"(SEC)"/"(Sun Belt)" marks after the opponent, golf round cards and the Stephens Cup match-play final, swimming duals per team, XC "1st/13", track "M: 11th | W: 5th", tennis pro events and storyless tournaments out). Records equal the latest stories (volleyball 8-6/1-3, women's soccer 10-1-1/4-0-1, men's soccer 7-1-2/Sun Belt 1-0-2, football 2-3/0-3).
+- Every new rule mutated; mutations that survived were removed (South Carolina ranking strip; Vanderbilt preview and recapMatchesEvent clauses; a TFRRS parentheses change).
+
+**Found on the preview and fixed (shared code):**
+1. South Carolina's profile pages list 16 team accounts (`gamecockbaseball` …) before the athlete's link: blocked (`blockedInstagramHandles`).
+2. South Carolina's `roster-card` wraps the whole roster: the reader gave Peyton Williams's account to Lex Cyrus, and the identity guard then rejected both (Football had one athlete). A card linking several players is skipped; each `<li itemprop="athlete">` is read on its own.
+3. Vanderbilt's `instagram.com/merritt%20_zieminick` read as `merritt` (another person): a handle must end the address; profile pages accept only valid handles.
+4. South Carolina's second story template `div.article__paragraphs` (15 expanded views had no text).
+5. TFRRS: the Joe Piane Invitational's Gold race (no South Carolina runners) emptied the shared "Women's 5K" group; a race the school did not run now leaves the runners.
+Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version).
+
+**Source block:** gamecocksonline.com returns 403 to Cloudflare's Paris location (CDG) — robots.txt included — and 200 to US locations. The first preview run (routed partly through CDG) failed 20 checks with 502; the final runs passed. Recorded as a limitation in `docs/SOUTH_CAROLINA_MODULE.md`; not fixable from the official sources (a global saved copy would touch the paused global-cache plan).
+
+**Athletes:** South Carolina 35 pins (sports with 12 links or fewer), profile cards for Cross Country, Equestrian, Football, Soccer, Softball, Track & Field; Vanderbilt Bowling pins (2 doubled addresses), profile cards for Bowling, Cross Country, Football, Golf, Lacrosse, Soccer, Tennis, Track & Field (official profiles publish none).
+
+**Tests run:** `npm run test:release` exit 0 on the final commit `d4e5217`; CI green (guardrails, certification-matrix, Workers Builds). Preview (4.67.3): `verify:preview --sports=all` all checks passed for both, XC 18/20 and 26/21, 36/36 refreshes every sport, every expanded view with its story (Vanderbilt volleyball vs Kentucky has none published); athletes 13/13 and 12/12; screenshots of all 25 sports read.
+
+**PR #263 merged** 19:37 UTC (`b3d63c7`). Production `4.67.3-south-carolina-vanderbilt` verified 19:40: `verify:prod --sports=all` South Carolina all passed; Vanderbilt all passed except one volleyball refresh with status 0 (client network), re-run 3/3 passed; athletes 13/13 and 12/12.
+
+**Open:** Track & Field (both), Beach Volleyball, Lacrosse fill when published; Vanderbilt Bowling from Oct 16; the CDG block; first live cards (Oct 9 soccer and volleyball).
