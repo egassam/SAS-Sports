@@ -4,7 +4,7 @@
 
 Vanderbilt was added to the app and converted on October 8, 2026, together with South Carolina. All 12 sports were built and tested one at a time and published in one PR. vucommodores.com is WMT (Nuxt); the module is Auburn's card reader (`scripts/port-handlers.mjs --from=auburn`), adapted to Vanderbilt's `schedule-item-block` cards.
 
-## Status (`4.67.2-south-carolina-vanderbilt`)
+## Status (`4.67.3-south-carolina-vanderbilt`)
 
 | Sport | Page | State |
 | --- | --- | --- |

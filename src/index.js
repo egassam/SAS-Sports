@@ -37,7 +37,7 @@ import {vanderbiltSchool,createVanderbiltHandlers} from './schools/vanderbilt.mj
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.67.2-south-carolina-vanderbilt';
+const VERSION='4.67.3-south-carolina-vanderbilt';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add

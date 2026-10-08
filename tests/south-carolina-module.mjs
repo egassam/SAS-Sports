@@ -448,4 +448,15 @@ assert.equal(worker.verifiedInstagram(fixture('profile-baseball-brandon-cromer.h
   for(const file of files)assert.ok(worker.recapArticleText(fixture(file)).length>400,`${file}: story text`);
   assert.match(worker.recapArticleText(fixture(files[1])),/^MORGANTOWN, W\. Va\. – The 11th ranked South Carolina men’s soccer team/);
 }
+// Cross country from TFRRS (women only). The Joe Piane Invitational titles its
+// races "Women's Blue 5k Team Results" (no distance in parentheses) and lists
+// a Gold race South Carolina did not run after the Blue one.
+{
+  recapFixtures.set('https://www.tfrrs.org/teams/xc/SC_college_f_South_Carolina.html',fixture('tfrrs-team-f.html.gz'));
+  for(const [id,url] of [['27329','https://www.tfrrs.org/results/xc/27329/Eye_Opener_XC_Meet_'],['28819','https://www.tfrrs.org/results/xc/28819/Joe_Piane_Notre_Dame_Invitational']])for(const u of [url,url+'/'])recapFixtures.set(u,fixture(`tfrrs-${id}.html.gz`));
+  const meets=parse('Cross Country','wcross').filter(e=>e.status==='Final'&&e.opponent!=='Adidas XC Challenge');
+  for(const meet of meets)await worker.southCarolinaHandlers.attachMeetResults(meet);
+  assert.deepEqual(meets.map(e=>[e.opponent,e.headline,e.meet_results_verified]),[["Eye Opener","Women's team: 1st · 26 pts",true],["Joe Piane XC Invite","Women's team: 3rd · 102 pts",true]]);
+  recapFixtures.clear();requests.length=0;
+}
 console.log('South Carolina hand-written checks passed');

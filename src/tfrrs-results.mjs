@@ -55,10 +55,13 @@ export function parseTfrrsResults(raw,{decodeHtml,ordinal,team:teamName}){
       const row=rows.slice(1).find(cells=>cells[at('TEAM')]===teamName);
       if(row&&/^\d+$/.test(row[at('PL')])&&/^[1-9]\d*$/.test(row[at('SCORE')]))entry.result={place:Number(row[at('PL')]),score:row[at('SCORE')]};
     }else if(at('NAME')>=0&&at('TIME')>=0){
-      entry.runners=rows.slice(1).filter(cells=>cells[at('TEAM')]===teamName).map(cells=>{
+      const runners=rows.slice(1).filter(cells=>cells[at('TEAM')]===teamName).map(cells=>{
         const place=cells[at('PL')],time=cells[at('TIME')];
         return{participant:cells[at('NAME')],place,result:/^\d+$/.test(place)?`${ordinal(place)} \u00b7 ${time}`:`${place} \u00b7 ${time}`};
       }).filter(row=>row.participant&&(/\d:\d{2}/.test(row.result)||/^(?:DNF|DNS)\b/i.test(row.result)));
+      // Races by color share a group (the Joe Piane Invitational's Blue and
+      // Gold): a race the school did not run leaves its runners as they are.
+      if(runners.length)entry.runners=runners;
     }
     races.set(group,entry);
   }

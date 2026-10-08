@@ -4,14 +4,14 @@
 
 South Carolina was added to the app and converted on October 8, 2026, together with Vanderbilt. All 13 sports were built and tested one at a time and published in one PR. gamecocksonline.com is WMT's WordPress template, but not Kentucky's: the module started from Kentucky's handlers (`scripts/port-handlers.mjs --from=kentucky`) and has its own card reader.
 
-## Status (`4.67.2-south-carolina-vanderbilt`)
+## Status (`4.67.3-south-carolina-vanderbilt`)
 
 | Sport | Page | State |
 | --- | --- | --- |
 | Football | `football` | 5 finals, each with its story; 2-3 (SEC 0-3); ESPN live score |
 | Volleyball | `wvball` | 14 finals, each with its story; 8-6 (SEC 1-3), equal to the Oct 4 story's; ESPN live score |
 | Soccer | `msoc`, `wsoc` | Labeled; women 10-1-1 (SEC 4-0-1), men 7-1-2 (Sun Belt 1-0-2), equal to the latest stories'; every final with its story; ESPN live scores |
-| Cross Country | `wcross` | 3 finals with the women's place in the field ("1st of 13") and stories; TFRRS results (`SC_college_f_South_Carolina`) |
+| Cross Country | `wcross` | 3 finals with the women's place in the field ("1st of 13") and stories; TFRRS results (`SC_college_f_South_Carolina`) for the Eye Opener (1st, 26 pts) and Joe Piane Invite (3rd, 102 pts) |
 | Golf | `mgolf`, `wgolf` | Labeled; round cards merged, placed by the last round with the team score; the Stephens Cup closes with its match-play final ("Won final vs. Wake Forest, 3-2") |
 | Equestrian | `equestrian` | 2 finals and 2 exhibitions, each with its story |
 | Swimming & Diving | `swimming` | One page for both teams; UNCW dual per team ("Women's team: W, 250-50 / Men's team: W, 165-135") |
@@ -42,3 +42,6 @@ Shared fix: South Carolina's roster is one `roster-card` element wrapping a sche
 - Track & Field and Beach Volleyball fill when 2026-27 is published.
 - Golf places have no field size (the cards publish none).
 - Cross country's Adidas XC Challenge (Sep 18) is not on TFRRS; its card's place and story show.
+- gamecocksonline.com refuses requests from Cloudflare's Paris location (HTTP 403 even for robots.txt; US locations get 200, checked Oct 8): a first preview run routed through Paris failed 20 checks with 502; the final run (US locations) passed 36/36 in every sport. A visitor served from a European location with no saved copy there would see the schedule unavailable.
+
+Shared TFRRS fix: the Joe Piane Invitational lists a Gold race after the Blue one, and both share the group "Women's 5K"; the Gold race (no South Carolina runners) emptied the group. A race the school did not run now leaves the group's runners as they are.
