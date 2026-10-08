@@ -62,7 +62,13 @@ export const recapFile=url=>{const [,y,m,d,slug]=url.match(/\/news\/(\d+)\/(\d+)
 
 const ESPN={Football:'football/college-football/scoreboard?groups=80&limit=300',Volleyball:'volleyball/womens-college-volleyball/scoreboard?limit=1000',Soccer:'soccer/usa.ncaa.w.1/scoreboard?limit=1000',Basketball:'basketball/mens-college-basketball/scoreboard?groups=50&limit=400',Baseball:'baseball/college-baseball/scoreboard?limit=400',Softball:'baseball/college-softball/scoreboard?limit=400'};
 const summary=[],dropped=[];
-for(const sport of sports){
+// Sports are fetched six at a time, and each sport's stories at once: the
+// private source answers in about a second, so one page after another took
+// ten minutes a school (Illinois, Indiana). Each sport keeps its own summary
+// lines, printed in the sports' order.
+async function mapLimit(items,limit,work){const out=new Array(items.length);let next=0;await Promise.all(Array.from({length:Math.min(limit,items.length)},async()=>{while(next<items.length){const i=next++;out[i]=await work(items[i]);}}));return out;}
+const perSport=await mapLimit(sports,6,async sport=>{
+  const summary=[];
   const titles=new Set();
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
@@ -84,12 +90,12 @@ for(const sport of sports){
     titles.add(title);
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;
-    for(const game of finals){
+    await Promise.all(finals.map(async game=>{
       const recap=game.result?.recap?.url;
-      if(typeof recap!=='string'||!/\/news\//.test(recap)){if(['W','L','T'].includes(String(game.result.status).toUpperCase()))missing++;continue}
+      if(typeof recap!=='string'||!/\/news\//.test(recap)){if(['W','L','T'].includes(String(game.result.status).toUpperCase()))missing++;return}
       const link=new URL(recap,url).href,file=recapFile(link);
       if(!have(file)){const story=await download(link);if(story.body){save(file,story.body);stories++}}else stories++;
-    }
+    }));
     // Past meets and tournaments the schedule links no story for (Iowa State's
     // cross country; a golf tournament with no result yet): the archive
     // stories dated from their first day to the day after their last are
@@ -137,7 +143,9 @@ for(const sport of sports){
       }
     }
   }
-}
+  return summary;
+});
+summary.push(...perSport.flat());
 // --prune: the flagged routes (and their roster twins) leave the module.
 if(args.includes('--prune')&&dropped.length){
   const moduleUrl=new URL(`src/schools/${id}.mjs`,root);let text=readFileSync(moduleUrl,'utf8');
