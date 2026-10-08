@@ -1781,3 +1781,25 @@ Texas Tech holds the total record: **26 minutes** from start to production for 1
    The survey now attaches the saved archive stories and TFRRS results as the Worker does, so a GATE is real. A home tournament named after the school, "Opponents TBD" bracket rounds, round-named postseason games, late tournament stories (`ownLinkDays`) and set-count volleyball stories (`volleyballSets`) are handled in Texas Tech's module; copy them forward.
 4. **Publish:** commit, push, open the PR; the preview is up within a minute. In parallel: `npm run test:release` (3 min), `npm run verify:preview -- --branch=<branch> --school=<id> --sports=all` (5-6.5 min, background), athletes **at once** (`node tests/validate-schools.mjs <id> --athletes-only --base=<preview>`: tennis/swimming rosters often publish no Instagram → `athlete_profile_fallback_sports`; cross country may have only 2 → minimum 2, as KU and Oklahoma State), and `npm run screenshot-school -- --school=<id> --branch=<branch>` (every sport's page, 390px, school time zone). Merge when all pass, then `verify:prod` and the athletes check on production.
 
+## October 8, 2026 — Texas and Texas A&M added, 25 sports (PR #252)
+
+**Request:** "Onboarding of Texas and Texas A&M. Learn and optimize for increased speed." The user set two schools as the scope; neither was in the app before.
+
+**Timeline (UTC):** start about 10:35. Texas is SIDEARM (read directly and through the private source); its nav links name sports without `/schedule`, so `add-school` found only Football and was given `--sports=`. Texas A&M is WMT. Both added, scaffolded and ported (Texas from Tennessee, A&M from Missouri); fixtures and athlete evidence in parallel. First push `cb7fe31`, PR #252 at 12:00. Screenshots on the first preview found two bugs (below); fixed in `ab33350`, version `4.64.1` so the preview's athlete cache was fresh. All gates passed on `3019a9c`; merged 12:17 (`bf36ec7`); production verified 12:19.
+
+**Texas (`docs/TEXAS_MODULE.md`):** one "Track & Field / Cross Country" page split by month (Aug-Nov cross country), track's empty season valid; golf `T-2nd of 14 (839)`; two-poll rankings; ITF pro events out. Records checked by hand (the pages publish none): football 4-0 (1-0), volleyball 7-5 (3-1), soccer 7-2-3 (2-1-2).
+
+**Texas A&M (`docs/TEXAS_AM_MODULE.md`):** Missouri's reader read 0 cards at first: A&M's cards are `schedule-event-default__*`, the date box is the card's top row, home/neutral cards have no divider (venue from the date box), `(#21)` rankings, `W, Win 3-1`. Golf: archive story for the Fighting Irish Classic, headline places ("Runner-Up Finish", "Aggies Finish Second"), slash-named tournaments matched by their last part. Records equal the published: football 3-2 (1-2), volleyball 10-6 (3-1), soccer 4-8 (0-5).
+
+**Shared fix:** `rosterProfiles` accepted `/roster/season/2026` (A&M's "Roster for Baseball" menu link on empty roster pages) as an athlete through the SIDEARM `/roster/<name>/<id>` shape; season pages are now skipped.
+
+**Athletes:** Texas 13/13 (profile cards for Cross Country, Golf, Rowing, Swimming & Diving, Tennis, Track & Field: 0 links on their profile pages; pins for Basketball, Softball, Volleyball). A&M 10/10; Baseball (2027) and Track & Field (2026-27) rosters list no players, so they stay out of the athlete list until published (Arizona's precedent).
+
+**Tools:** `port-handlers` renamed `'missouri'` to `'texasAm'` (an id without a hyphen is also its camel name) and kept `mutigers\.com` in a regex: quoted ids and escaped hosts are now renamed first, and comments citing the source school keep its name. `generate-module-tests` names a second sport on one page apart.
+
+**Tests run:** 15 rule mutations, all killed; `npm run test:release` exit 0 on `4.64.1`; `verify:preview --sports=all` both exit 0 (36/36 refreshes per sport, XC 18/20 and 26/21, every expanded view passing); athletes 13/13 and 10/10 on the preview and production; screenshots of all 25 sports; CI green; `verify:prod --sports=all --version=4.64.1-texas-texas-am` both exit 0.
+
+**Speed:** about 105 minutes, slower than Missouri/Tennessee's 43: A&M's new card generation needed a reader adaptation, and one preview round was lost to the two bugs. Lesson: dump one WMT card before surveying, and read the screenshot lines before the long gates.
+
+**Open:** A&M Baseball and Track & Field athletes and schedule when 2026-27 is published; Texas Rowing and Track & Field when published; two A&M golf finals "Completed"; no live card observed yet for either school.
+
