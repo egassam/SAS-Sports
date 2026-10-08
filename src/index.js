@@ -1946,7 +1946,11 @@ export default{
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');
       if(!school||!sport)return json({detail:'school and sport are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
-      const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('athlete_cache',VERSION);
+      // The key carries the sport's pinned athletes too: a build that adds a
+      // pin must not serve the list cached before it (same version, 6 h).
+      const pins=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${school}|${sport}|`)).sort().join(',');
+      let pinHash=0;for(const c of pins)pinHash=(pinHash*31+c.charCodeAt(0))>>>0;
+      const cache=caches.default,versionedUrl=new URL(url);versionedUrl.searchParams.set('athlete_cache',pins?`${VERSION}-${pinHash.toString(36)}`:VERSION);
       const cacheKey=new Request(versionedUrl.toString(),{method:'GET'});
       const cached=await cache.match(cacheKey);if(cached)return cached;
       const athletes=await featuredAthletes(school,sport),response=json(athletes),stored=new Response(response.body,response);
