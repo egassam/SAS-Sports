@@ -311,6 +311,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "south-carolina": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "tcu": [
     "Baseball",
     "Basketball",
@@ -407,6 +422,20 @@
     "Skiing",
     "Soccer",
     "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "vanderbilt": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
     "Swimming & Diving",
     "Tennis",
     "Track & Field",

@@ -32,10 +32,12 @@ import {arkansasSchool,createArkansasHandlers} from './schools/arkansas.mjs';
 import {auburnSchool,createAuburnHandlers} from './schools/auburn.mjs';
 import {oklahomaSchool,createOklahomaHandlers} from './schools/oklahoma.mjs';
 import {kentuckySchool,createKentuckyHandlers} from './schools/kentucky.mjs';
+import {southCarolinaSchool,createSouthCarolinaHandlers} from './schools/south-carolina.mjs';
+import {vanderbiltSchool,createVanderbiltHandlers} from './schools/vanderbilt.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.66.3-byu-cross-country';
+const VERSION='4.67.3-south-carolina-vanderbilt';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -227,6 +229,19 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(kentuckyHandlers.isFinalWithoutStory(event))await kentuckyHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(kentuckyHandlers.isFinalWithoutStory).map(event=>kentuckyHandlers.attachArchiveStory(event)));return events.filter(event=>!kentuckyHandlers.isUnlisted(event));}}
+  ,{school:southCarolinaSchool,parseSchedule:(...args)=>southCarolinaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>southCarolinaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>southCarolinaHandlers.matchesRecap(...args),crossCountry:{matches:event=>southCarolinaHandlers.isCrossCountry(event),attach:event=>southCarolinaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(southCarolinaHandlers.isFinalWithoutStory(event))await southCarolinaHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(southCarolinaHandlers.isFinalWithoutStory).map(event=>southCarolinaHandlers.attachArchiveStory(event)));return events.filter(event=>!southCarolinaHandlers.isUnlisted(event));}}
+  ,{school:vanderbiltSchool,parseSchedule:(...args)=>vanderbiltHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>vanderbiltHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>vanderbiltHandlers.matchesRecap(...args),crossCountry:{matches:event=>vanderbiltHandlers.isCrossCountry(event),attach:event=>vanderbiltHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>vanderbiltHandlers.isVanderbiltGolf(event),attach:event=>vanderbiltHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(vanderbiltHandlers.isFinalWithoutStory(event))await vanderbiltHandlers.attachArchiveStory(event);},
+    // A past golf tournament still without a story publishes no place: it is
+    // not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(vanderbiltHandlers.isFinalWithoutStory).map(event=>vanderbiltHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(vanderbiltHandlers.isVanderbiltGolf).map(event=>vanderbiltHandlers.attachGolfPlace(event)));return events.filter(event=>!vanderbiltHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -337,6 +352,8 @@ const arkansasHandlers=createArkansasHandlers({makeEvent,visibleText,absoluteUrl
 const auburnHandlers=createAuburnHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oklahomaHandlers=createOklahomaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const kentuckyHandlers=createKentuckyHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const southCarolinaHandlers=createSouthCarolinaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const vanderbiltHandlers=createVanderbiltHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -368,7 +385,9 @@ function officialCardInstagram(value){
   // Some WMT publishers accidentally prepend instagram.com twice. Because
   // this link is inside the named athlete's official roster card, recover the
   // final handle while still rejecting navigation/team destinations.
-  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)/gi)];
+  // The handle must end the path: "merritt%20_zieminick" (Vanderbilt) is a
+  // broken link, and its prefix "merritt" is someone else's account.
+  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)(?=$|[/?#"'\s])/gi)];
   const handle=matches.at(-1)?.[1]?.replace(/^@/,'').toLowerCase();
   return handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle)?`https://www.instagram.com/${handle}/`:null;
 }
@@ -388,7 +407,11 @@ function rosterProfiles(raw,base){
   // inside one roster card but does not publish SIDEARM's social aria-label.
   // Bind fields inside the card so navigation/team accounts remain ineligible.
   const wmtCards=String(raw||'').split(/<div\b[^>]*class=["'][^"']*\broster-card(?:-item)?(?=\s|["'])[^"']*["'][^>]*>/i).slice(1);
+  // South Carolina's roster-card is the whole list (schema.org athlete items,
+  // read below): a "card" that links several players is no athlete's card.
+  const playerLinks=body=>new Set([...body.matchAll(/href=["']([^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#/]+)/gi)].map(x=>x[1].replace(/^https?:\/\/[^/]+/,''))).size;
   for(const body of wmtCards){
+    if(playerLinks(body)>1)continue;
     const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/i);
     if(!profileMatch)continue;
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
@@ -417,6 +440,19 @@ function rosterProfiles(raw,base){
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
     const image_url=payloadImages.get(slug(name))||payloadImages.get(slug(imgTitle.replace(/\.[^.]+$/,'')))||athleteImage(body,base,name,true)||null;
     byUrl.set(url,{name,url,image_url,instagram_url});
+  }
+  // South Carolina's WordPress roster: one schema.org athlete list item per
+  // player (<li itemprop="athlete">), its Instagram in the item's own socials.
+  const personItems=String(raw||'').split(/<li\b[^>]*itemprop=["']athlete["'][^>]*>/i).slice(1).map(item=>item.split(/<\/ul>\s*<\/div>\s*<\/li>/i)[0]);
+  for(const body of personItems){
+    if(playerLinks(body)!==1)continue;
+    const profileMatch=body.match(/<a\b[^>]*href=["']([^"']*\/sports\/[^"']+\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+)[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)?.map(tag=>tag.match(/href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/i)).find(x=>visibleText(x[2]));
+    if(!profileMatch)continue;
+    const url=absoluteUrl(profileMatch[1],base);
+    const name=clean(visibleText(profileMatch[2]));if(!url||nameScore(name)<=0)continue;
+    const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
+    const image_url=athleteImage(body,base,name,true)||byUrl.get(url)?.image_url||null;
+    byUrl.set(url,{name,url,image_url,instagram_url:officialCardInstagram(instagram)});
   }
   // Other WMT sports use table rows instead of cards. Apply the same
   // same-container identity rule to those rows.
@@ -519,7 +555,7 @@ function officialProfileImage(raw,profileUrl){
     return imageHost===profileHost&&!/(?:logo|placeholder|default|favicon|icon|brand)/i.test(decodeURIComponentSafe(imageUrl))?imageUrl:null;
   }catch{return null}
 }
-const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
+const BLOCKED_INSTAGRAM_HANDLES=new Set([...kstateSchool.blockedInstagramHandles,...arkansasSchool.blockedInstagramHandles,...southCarolinaSchool.blockedInstagramHandles,'sundevilathletics','texastech_fb','texastech','ttumensgolf','texastechwgolf','explore','accounts','p','reel','reels']);
 function verifiedInstagram(raw){
   // Some official athlete bios publish personal social links only inside a
   // Schema.org Person record. Accept those identity-bound links before scanning
@@ -547,7 +583,8 @@ function verifiedInstagram(raw){
     try{
       const u=new URL(decodeHtml(m[1])),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
-      if(parts.length===1&&handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;
+      // Only a valid handle: "merritt%20_zieminick" is a broken link.
+      if(parts.length===1&&/^[a-z0-9._]{1,30}$/.test(handle)&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;
     }catch{}
   }
   return null;
@@ -1456,8 +1493,9 @@ function recapArticleText(raw){
     const text=end>0?visibleText(raw.slice(blocks.index+blocks[0].length,end).replace(/<iframe\b[\s\S]*?<\/iframe>/gi,' ')):'';
     if(text.length>=80)return text.slice(0,14000);
   }
-  // WordPress stories (Arkansas's) hold the text in div.article-paragraph.
-  const paragraphs=raw.match(/<div\b[^>]*class=["']article-paragraph\b[^"']*["'][^>]*>/i);
+  // WordPress stories (Arkansas's) hold the text in div.article-paragraph;
+  // South Carolina's second template in div.article__paragraphs.
+  const paragraphs=raw.match(/<div\b[^>]*class=["']article(?:-paragraph|__paragraphs)\b[^"']*["'][^>]*>/i);
   if(paragraphs){
     const tags=/<div\b[^>]*>|<\/div>/gi;tags.lastIndex=paragraphs.index+paragraphs[0].length;let depth=1,tag,end=-1;
     while(depth&&(tag=tags.exec(raw)))if((depth+=tag[0][1]==='/'?-1:1)===0)end=tag.index;
