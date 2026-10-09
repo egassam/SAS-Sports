@@ -38,10 +38,12 @@ import {illinoisSchool,createIllinoisHandlers} from './schools/illinois.mjs';
 import {indianaSchool,createIndianaHandlers} from './schools/indiana.mjs';
 import {iowaSchool,createIowaHandlers} from './schools/iowa.mjs';
 import {marylandSchool,createMarylandHandlers} from './schools/maryland.mjs';
+import {michiganSchool,createMichiganHandlers} from './schools/michigan.mjs';
+import {michiganStateSchool,createMichiganStateHandlers} from './schools/michigan-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.71.1-iowa-maryland';
+const VERSION='4.72.0-michigan-michigan-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -269,6 +271,16 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(marylandHandlers.isFinalWithoutStory(event))await marylandHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(marylandHandlers.isFinalWithoutStory).map(event=>marylandHandlers.attachArchiveStory(event)));return events.filter(event=>!marylandHandlers.isTennisWithoutStory(event)&&!marylandHandlers.isGolfWithoutStory(event));}}
+  ,{school:michiganSchool,parseSchedule:(...args)=>michiganHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>michiganHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>michiganHandlers.matchesRecap(...args),crossCountry:{matches:event=>michiganHandlers.isCrossCountry(event),attach:event=>michiganHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(michiganHandlers.isFinalWithoutStory(event))await michiganHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(michiganHandlers.isFinalWithoutStory).map(event=>michiganHandlers.attachArchiveStory(event)));return events.filter(event=>!michiganHandlers.isTennisWithoutStory(event)&&!michiganHandlers.isGolfWithoutStory(event));}}
+  ,{school:michiganStateSchool,parseSchedule:(...args)=>michiganStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>michiganStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>michiganStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>michiganStateHandlers.isCrossCountry(event),attach:event=>michiganStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(michiganStateHandlers.isFinalWithoutStory(event))await michiganStateHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(michiganStateHandlers.isFinalWithoutStory).map(event=>michiganStateHandlers.attachArchiveStory(event)));return events.filter(event=>!michiganStateHandlers.isTennisWithoutStory(event)&&!michiganStateHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -385,6 +397,8 @@ const illinoisHandlers=createIllinoisHandlers({makeEvent,recapMatchesEvent,event
 const indianaHandlers=createIndianaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const iowaHandlers=createIowaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const marylandHandlers=createMarylandHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const michiganHandlers=createMichiganHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const michiganStateHandlers=createMichiganStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -613,10 +627,18 @@ function verifiedInstagram(raw){
   const bio=String(raw).match(/class=["'][^"']*\broster-bio-social-links\b[\s\S]*?<\/ul>/i);
   // When the bio has its own list, the menu's accounts are never the athlete's.
   if(bio&&bio[0]!==raw)return verifiedInstagram(bio[0]);
-  let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["'][^>]*>/gi;
+  // The whole link is read: "instagram.com/Alex Gatto._" (Michigan) is a
+  // broken link, not the account "alex". A link written inside another
+  // ("instagram.com/https://www.instagram.com/wyattnovara", Michigan) is the
+  // inner one.
+  let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
   while((m=re.exec(raw))){
+    // The site's menu links the team's account (Michigan State's
+    // msu_baseball on every baseball profile): never the athlete's.
+    if(/\bdata-s-nav-link\b|\bc-navigation__url\b/.test(m[0]))continue;
     try{
-      const u=new URL(decodeHtml(m[1])),parts=u.pathname.split('/').filter(Boolean);
+      const href=decodeHtml(m[1]),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
+      const u=new URL(inner.replace(/ /g,'%20')),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
       // Only a valid handle: "merritt%20_zieminick" is a broken link.
       if(parts.length===1&&/^[a-z0-9._]{1,30}$/.test(handle)&&!BLOCKED_INSTAGRAM_HANDLES.has(handle))return`https://www.instagram.com/${handle}/`;

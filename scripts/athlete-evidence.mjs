@@ -21,7 +21,9 @@ const get=async url=>{
   }
   return'';
 };
-const handles=raw=>new Set((String(raw).match(/instagram\.com\/[A-Za-z0-9._]+/gi)||[]).map(x=>x.toLowerCase().replace(/^instagram\.com\//,'')).filter(h=>!['p','reel','explore','accounts'].includes(h)));
+// A handle ends the link ("instagram.com/Alex Gatto._" is broken, not "alex");
+// a link written inside another is the inner one (Michigan's profiles).
+const handles=raw=>new Set([...String(raw).matchAll(/instagram\.com\/(?:https?:\/\/(?:www\.)?instagram\.com\/)?@?([A-Za-z0-9._]+)(?=["'\/?#\\]|$)/gi)].map(x=>x[1].toLowerCase()).filter(h=>!['p','reel','explore','accounts','https:','http:'].includes(h)));
 // The site's own accounts: on two different rosters' pages.
 const rosters=Object.values(school.rosterUrls).flat();
 const [a,b]=await Promise.all([get(rosters[0]),get(rosters.at(-1))]);
@@ -39,10 +41,15 @@ for(const sport of sports){
       // The athlete's name: the page title's first part ("Blake Grimmer -
       // Baseball - University of Tennessee Athletics").
       const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').replace(/&#8211;/g,'–').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
-      if(own.length)found.push({path,name,handle:own[0],text:`${path.split('/').pop()}${name?` (${name})`:''}: ${own.join(',')}`});
+      if(own.length)found.push({path,name,own,label:`${path.split('/').pop()}${name?` (${name})`:''}`});
     }));
   }
-  const unique=[...new Map(found.map(f=>[f.path,f])).values()];
+  // A team's own account is on every athlete's page (Michigan State's menu
+  // links msu_baseball on each baseball profile): a handle on three or more
+  // athletes' pages is no athlete's.
+  const pages=[...new Map(found.map(f=>[f.path,f])).values()],shared=new Map();
+  for(const f of pages)for(const h of f.own)shared.set(h,(shared.get(h)||0)+1);
+  const unique=pages.map(f=>{const own=f.own.filter(h=>shared.get(h)<3);return own.length?{...f,handle:own[0],text:`${f.label}: ${own.join(',')}`}:null;}).filter(Boolean);
   console.log(`${sport}: ${read} profile pages read; athlete Instagram on ${unique.length}${unique.length?`: ${unique.map(f=>f.text).join(' | ')}`:''}`);
   // --pins: ready verifiedInstagrams lines for a sport with few links (the
   // app reads roster cards, then up to 24 profile pages; Ole Miss pinned
