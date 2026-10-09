@@ -3,17 +3,18 @@ import {existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 
+// WMT sites use short codes (Iowa: `/sports/mbball`, `wcross`, `fhockey`).
 const SPORT_SLUGS={
   'Football':['football'],'Volleyball':['womens-volleyball','volleyball','wvball'],
-  'Soccer':['womens-soccer','soccer','wsoc'],'Cross Country':['cross-country','xc'],
-  'Basketball':['mens-basketball','womens-basketball','basketball'],
-  'Swimming & Diving':['swimming-and-diving','swimming-diving','swimming'],
-  'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis'],
-  'Golf':['womens-golf','mens-golf','golf'],'Rowing':['womens-rowing','rowing'],
-  'Track & Field':['track-and-field','track-field'],'Baseball':['baseball'],
-  'Softball':['softball'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse'],
-  'Field Hockey':['field-hockey'],'Hockey':['ice-hockey','hockey'],
-  'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics'],'Beach Volleyball':['beach-volleyball'],
+  'Soccer':['womens-soccer','soccer','wsoc','msoc'],'Cross Country':['cross-country','xc','wcross','mcross'],
+  'Basketball':['mens-basketball','womens-basketball','basketball','mbball','wbball'],
+  'Swimming & Diving':['swimming-and-diving','swimming-diving','swimming','wswim','mswim'],
+  'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis','wten','mten'],
+  'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow'],
+  'Track & Field':['track-and-field','track-field','wtrack','mtrack'],'Baseball':['baseball'],
+  'Softball':['softball'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
+  'Field Hockey':['field-hockey','fhockey'],'Hockey':['ice-hockey','hockey'],
+  'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics','wgym','mgym'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
   'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing'],
   'Triathlon':['triathlon'],'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],

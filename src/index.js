@@ -36,10 +36,12 @@ import {southCarolinaSchool,createSouthCarolinaHandlers} from './schools/south-c
 import {vanderbiltSchool,createVanderbiltHandlers} from './schools/vanderbilt.mjs';
 import {illinoisSchool,createIllinoisHandlers} from './schools/illinois.mjs';
 import {indianaSchool,createIndianaHandlers} from './schools/indiana.mjs';
+import {iowaSchool,createIowaHandlers} from './schools/iowa.mjs';
+import {marylandSchool,createMarylandHandlers} from './schools/maryland.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.70.0-live-every-sport';
+const VERSION='4.71.1-iowa-maryland';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -254,6 +256,19 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(indianaHandlers.isFinalWithoutStory(event))await indianaHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(indianaHandlers.isFinalWithoutStory).map(event=>indianaHandlers.attachArchiveStory(event)));return events.filter(event=>!indianaHandlers.isTennisWithoutStory(event));}}
+  ,{school:iowaSchool,parseSchedule:(...args)=>iowaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>iowaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>iowaHandlers.matchesRecap(...args),crossCountry:{matches:event=>iowaHandlers.isCrossCountry(event),attach:event=>iowaHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>iowaHandlers.isIowaGolf(event),attach:event=>iowaHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(iowaHandlers.isFinalWithoutStory(event))await iowaHandlers.attachArchiveStory(event);},
+    // A past golf tournament still without a story publishes no place: it is
+    // not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(iowaHandlers.isFinalWithoutStory).map(event=>iowaHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(iowaHandlers.isIowaGolf).map(event=>iowaHandlers.attachGolfPlace(event)));return events.filter(event=>!iowaHandlers.isGolfWithoutStory(event));}}
+  ,{school:marylandSchool,parseSchedule:(...args)=>marylandHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>marylandHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>marylandHandlers.matchesRecap(...args),crossCountry:{matches:event=>marylandHandlers.isCrossCountry(event),attach:event=>marylandHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(marylandHandlers.isFinalWithoutStory(event))await marylandHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(marylandHandlers.isFinalWithoutStory).map(event=>marylandHandlers.attachArchiveStory(event)));return events.filter(event=>!marylandHandlers.isTennisWithoutStory(event)&&!marylandHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -368,6 +383,8 @@ const southCarolinaHandlers=createSouthCarolinaHandlers({makeEvent,visibleText,a
 const vanderbiltHandlers=createVanderbiltHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const illinoisHandlers=createIllinoisHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const indianaHandlers=createIndianaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const iowaHandlers=createIowaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const marylandHandlers=createMarylandHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -431,7 +448,9 @@ function rosterProfiles(raw,base){
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
-    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    // A link around the portrait only has no text: its alt names the
+    // athlete ("Hannah Whittingstall Headshot", Iowa).
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -448,7 +467,9 @@ function rosterProfiles(raw,base){
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/(?:staff|coaches)\//i.test(path))continue;
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
-    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    // A link around the portrait only has no text: its alt names the
+    // athlete ("Hannah Whittingstall Headshot", Iowa).
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');

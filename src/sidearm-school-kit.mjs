@@ -201,12 +201,24 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       const words=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.test(word));
       if(!words.length)return event;
       // The last day's story first: a day-one story names the meet too.
+      // A story from the last day on whose headline names the meet comes
+      // before one that names it only in its text (Maryland, Sep 9: "Terps
+      // Trio Named to Big Ten Golfers to Watch List" mentions the Nittany Lion
+      // Invitational; the Sep 8 "Terps Finish Second at Nittany Lion
+      // Invitational" is its story). An earlier preview's headline does not
+      // count (Mississippi State's Cullan Brown).
       const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
+      const lastDay=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
+      let named=null;
       for(const path of [...paths].sort((x,y)=>day(y)-day(x)).slice(0,4)){
         const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
         const text=storyText(raw).toLowerCase();
-        if(words.every(word=>text.includes(word))){event.recap_url=url;event.archive_story_verified=url;return event;}
+        if(!words.every(word=>text.includes(word)))continue;
+        const title=decodeHtml((String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=(["'])(.*?)\1/i)||[])[2]||(String(raw).match(/<title>([^<]*)/i)||[])[1]||'').toLowerCase();
+        if(day(path)>=lastDay&&words.every(word=>title.includes(word))){named=url;break;}
+        named??=url;
       }
+      if(named){event.recap_url=named;event.archive_story_verified=named;}
       return event;
     }
     const a=String(event.school_score),b=String(event.opponent_score),opponent=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').trim();
