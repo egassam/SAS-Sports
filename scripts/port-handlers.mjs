@@ -9,7 +9,7 @@
 // Run it before the fixture fetch, so the fetch reads the module's routes.
 //
 //   node scripts/port-handlers.mjs --from=mississippi-state --to=tennessee [--nickname=Bulldogs:Volunteers]
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,existsSync} from 'node:fs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const from=value('from'),to=value('to');
@@ -65,3 +65,9 @@ const sourceWords=[from,a.name,...(schools.find(s=>s.id===from)?.aliases||[]),ne
 // listed too.
 const left=out.split('\n').map((l,i)=>[i,l]).filter(([,l])=>sourceWords.some(w=>l.includes(w))||/\btfrrsTeam:|volleyballSetScores:true|_TFRRS_TEAMS=\{Women:null,Men:null\}/.test(l));
 console.log(left.length?`Lines still naming ${a.name} (decide each by eye):\n`+left.map(([i,l])=>`  ${l.trim().slice(0,160)}`).join('\n'):`No line still names ${a.name}.`);
+// Code (not comments) naming another converted school: a reader ported from a
+// port keeps its first school's words (Penn State's golf headlines read
+// "Iowa|Hawkeyes" through Nebraska's reader, Oct 9).
+const others=schools.filter(s=>s.id!==to&&s.id!==from&&existsSync(new URL(`src/schools/${s.id}.mjs`,root))).flatMap(s=>[s.name,...(s.aliases||[]).filter(w=>w.length>4&&/^[A-Z]/.test(w)&&!/\s(?:University|College)\b|^University\b/.test(w))]);
+const foreign=out.split('\n').map(l=>l.replace(/^\s*\/\/.*$/,'').replace(/\s\/\/ .*$/,'')).filter(l=>others.some(w=>new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`).test(l)));
+if(foreign.length)console.log(`Code naming another school (rename to ${b.name} or drop):\n`+foreign.map(l=>`  ${l.trim().slice(0,160)}`).join('\n'));
