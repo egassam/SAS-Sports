@@ -2196,3 +2196,11 @@ South Carolina + Vanderbilt (Oct 8, 25 sports, about 2 h incl. a new reader and 
 - Waiting on publication: Oregon Beach Volleyball, Acrobatics & Tumbling, Lacrosse, Track & Field; Penn State Gymnastics, Track & Field, men's Lacrosse, men's Volleyball.
 - Penn State men's tennis ITA All-American has no story (not listed).
 - First live cards are not yet observed.
+
+## October 9, 2026 — Back-burner idea: live high school results from meet timers (docs only)
+
+- User asked whether a program on a thumb drive, plugged into the timing computer at a track meet, could read results live as races finish.
+- Answer given: yes in principle. FinishLynx writes a `.lif` file per race and Hy-Tek Meet Manager can export real-time results to a folder, so a program can watch the folder and send new results on. Obstacles: the timing computer belongs to the timer or host school, outside software there risks stopping the meet, many school computers block USB programs, and results still need a way out. Safer options: a program on the user's own laptop takes the FinishLynx network output or a Meet Manager real-time folder or web publish the timer agrees to share, or reads already-published live results (Athletic.net, MileSplit, host pages).
+- User: "Put it on the back burner. This app's biggest draw in my opinion is going to be getting live results from highschool sports. Cross country and track are actually easier then the rest because I'm friends with lots of timers."
+- Agent noted that other high school sports lack a common timing source (scores come from apps such as GameChanger, MaxPreps or NFHS, or are not posted live), so XC and track are the natural start, and offered to record the idea. User: "Add it."
+- Recorded as a working note in `docs/SAS_SPORTS_CURRENT_SESSION.md`. No code changed; nothing started.
