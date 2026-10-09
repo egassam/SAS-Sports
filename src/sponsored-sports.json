@@ -204,6 +204,23 @@
     "Water Polo",
     "Wrestling"
   ],
+  "iowa": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "iowa-state": [
     "Basketball",
     "Cross Country",
@@ -274,6 +291,22 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "maryland": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "mississippi-state": [
     "Baseball",

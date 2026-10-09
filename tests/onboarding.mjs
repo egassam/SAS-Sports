@@ -28,6 +28,8 @@ assert.deepEqual(links.rosters,[
 ]);
 assert.equal(inferSport(links.schedules[0]),'Football');
 assert.equal(inferSport(links.schedules[1]),'Soccer');
+// WMT short codes (Iowa's nav).
+for(const [code,sport] of [['mbball','Basketball'],['wcross','Cross Country'],['fhockey','Field Hockey'],['wrow','Rowing'],['wswim','Swimming & Diving'],['wten','Tennis'],['mgolf','Golf'],['wtrack','Track & Field'],['wgym','Gymnastics'],['womens-wrestling','Wrestling'],['wsoc','Soccer']])assert.equal(inferSport(`https://hawkeyesports.com/sports/${code}/schedule`),sport,code);
 
 const sources=buildSources(links,['Football','Soccer']);
 assert.equal(sources.Football.schedule_urls.length,1);
