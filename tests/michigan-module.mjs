@@ -583,6 +583,8 @@ assert.deepEqual(finals('Golf','mens-golf'),[["Virtues Intercollegiate","1st of 
   const events=parse('Tennis','mens-tennis'),irish=events.find(e=>e.opponent==='Fighting Irish Invitational');
   await worker.michiganHandlers.attachArchiveStory(irish);
   assert.equal(irish.recap_url,'https://mgoblue.com/news/2026/9/24/mens-tennis-michigan-at-fighting-irish-mini-duals');
+  // The expanded view accepts it too (the matcher allows the day before).
+  assert.ok(worker.michiganHandlers.matchesRecap(fixture('story-2026-9-24-mens-tennis-michigan-at-fighting-irish-m.html.gz'),irish,irish.recap_url));
   const listed=await worker.schoolModule('michigan').feed(events,'Tennis');
   assert.deepEqual(listed.filter(e=>e.status==='Final').map(e=>e.opponent),["Fighting Irish Invitational","Hope College Invite"]);
   recapFixtures.clear();requests.length=0;

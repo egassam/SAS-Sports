@@ -302,7 +302,9 @@ export function createMichiganHandlers({makeEvent,recapMatchesEvent,eventType=()
   const kitRecap=createRecapMatcher({id:'michigan',host:HOST,recapMatchesEvent,decodeHtml,trustOwnLink:true,
     // Tennis posts a weekend tournament's story as late as Tuesday (the ACU
     // Invitational, Sep 18-20, on Sep 22).
-    ownLinkDays:3});
+    ownLinkDays:3,
+    // Men's tennis posts a tournament's page the day before it starts.
+    ownLinkDaysBefore:{Tennis:1}});
   // A cross country meet's story can be missing from the schedule (Cowboy
   // Jamboree), and the swimming schedule links none; each is in the archive.
   const archive=createArchiveStory({id:'michigan',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,

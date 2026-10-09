@@ -4,7 +4,7 @@
 
 Michigan was added to the app on October 9, 2026, with Michigan State. All 18 sports were built and tested one at a time and published in one PR. The site is SIDEARM (Nuxt page data), read through the private source. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.72.1-michigan-michigan-state`)
+## Status (`4.72.2-michigan-michigan-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Michigan was added to the app on October 9, 2026, with Michigan State. All 18 sp
 - **Cross country:** each team's event keeps its own TFRRS race (Illinois's split).
 - **Page marks:** a trailing `*` ("Mississippi Valley State*") and a stray `;` ("TEAM BE BETTER; Invitational") are not names.
 - **Internal games:** water polo's "Maize & Blue Exhibition" (Oct 18).
-- **Tennis stories:** men's tennis posts each tournament's page the day before play and fills it in afterward ("Michigan at Fighting Irish Mini Duals", Sep 24, for Sep 25-26): the archive is searched from one day before (kit `meetDaysBefore:{Tennis:1}`).
+- **Tennis stories:** men's tennis posts each tournament's page the day before play and fills it in afterward ("Michigan at Fighting Irish Mini Duals", Sep 24, for Sep 25-26): the archive is searched from one day before (kit `meetDaysBefore:{Tennis:1}`, and the recap matcher's `ownLinkDaysBefore:{Tennis:1}` so the expanded view accepts it).
 - **Athlete links:** profiles write some links inside another ("instagram.com/https://www.instagram.com/wyattnovara") or with a space ("instagram.com/Alex Gatto._"): the inner link is read, the broken one is no link (shared `verifiedInstagram`).
 - **Live:** soccer and lacrosse boards carry their team (`Men's`, `Women's`); field hockey's board is on.
 - **Athletes across team rosters (shared `featuredAthletes`):** the roster read goes on past 18 athletes while a pinned athlete is not found yet (Cross Country: 18+ women, pinned men's runner).

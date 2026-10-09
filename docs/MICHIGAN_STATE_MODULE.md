@@ -4,7 +4,7 @@
 
 Michigan State was added to the app on October 9, 2026, with Michigan. All 15 sports were built and tested one at a time and published in one PR. The site is SIDEARM (Nuxt page data), read through the private source. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.72.1-michigan-michigan-state`)
+## Status (`4.72.2-michigan-michigan-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

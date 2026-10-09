@@ -158,11 +158,14 @@ export const doubleheaderNumber=()=>(game,games,{parse})=>{
 // its nickname ("Cougars Sweep Huskies" for Houston Christian).
 // ownLinkDays: how many days after an event's last day the page's own story
 // link may be dated (a weekend tournament's story can come on Tuesday).
-export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false,ownLinkDays=1}){
+// ownLinkDaysBefore: per sport, how many days before the first day an own
+// story may be dated (Michigan's tennis tournament pages, as the archive's
+// meetDaysBefore).
+export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false,ownLinkDays=1,ownLinkDaysBefore={}}){
   const ownLinkDated=(event,url)=>{
     const dated=String(url).match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);if(!dated)return false;
     const day=Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])),first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`),last=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
-    return day>=first&&day<=last+ownLinkDays*86400000;
+    return day>=first-(ownLinkDaysBefore[event.sport]||0)*86400000&&day<=last+ownLinkDays*86400000;
   };
   const headlineKey=value=>` ${decodeHtml(String(value||'')).toLowerCase().replace(/\(.*?\)/g,' ').replace(/\bst\./g,'state').replace(/[^a-z0-9&]+/g,' ').trim()} `;
   return function matchesRecap(raw,event,url){
