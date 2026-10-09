@@ -565,6 +565,9 @@ export function createPennStateHandlers({makeEvent,visibleText,absoluteUrl,recap
   return{parseSchedule,isEmptySchedule,matchesRecap,isPennStateGolf,isTournamentWithoutStory,attachGolfPlace,isFinalWithoutStory,attachArchiveStory,
     isCrossCountry:event=>event?.school_id==='penn-state'&&tfrrs.Women.matches(event),attachMeetResults:async event=>{
       const team=tfrrsTeam(event);await tfrrs[team].attach(event);
+      // A race with a team score comes before an open race (the Paul Short
+      // Run, Oct 2: the men's Gold race, 2nd, before the 8K Open's runners).
+      if(event.meet_results_verified&&Array.isArray(event.results)){const scored=new Set(event.results.filter(row=>/ team$/.test(row.participant||'')).map(row=>row.group));event.results=[...event.results].sort((a,b)=>Number(scored.has(b.group))-Number(scored.has(a.group)));}
       // The meet's TFRRS page holds both races: each team's event keeps its own.
       if(event.meet_results_verified&&event.team_label){
         const own=text=>new RegExp(`^${team}'s\\b`,'i').test(String(text||''));

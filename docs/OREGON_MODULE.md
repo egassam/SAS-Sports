@@ -4,7 +4,7 @@
 
 Oregon was added to the app on October 9, 2026 (13 sports, one PR with Penn State). goducks.com is SIDEARM (Nuxt page data) behind bot defense: it refuses the development sandbox (403) and answers the Worker; fixtures and evidence are read through the private source route. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.76.1-oregon-penn-state`)
+## Status (`4.76.2-oregon-penn-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

@@ -4,7 +4,7 @@
 
 Penn State was added to the app on October 9, 2026 (17 sports, one PR with Oregon). The catalog listed SIDEARM: gopsusports.com is **WMT, a third card generation** (after Iowa/Vanderbilt's `schedule-item-team` and Nebraska's `schedule-event-item-default`): each card is `schedule-event` (`schedule-event item`), the opponent in `schedule-event-item-team__name`, the day in a `span.schedule-event-date__day`, an upcoming time in a `strong.schedule-event-item-result__label` ("5:00 PM EDT"). `scripts/port-wmt.mjs` ported Nebraska's reader; it read no card until these were added.
 
-## Status (`4.76.1-oregon-penn-state`)
+## Status (`4.76.2-oregon-penn-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -26,6 +26,7 @@ Penn State was added to the app on October 9, 2026 (17 sports, one PR with Orego
 - **Card generation:** the `schedule-event` root, `schedule-event-item-team__name`/`__divider`, span days, strong time slots (above).
 - **Season from the title:** field hockey is a fall sport ("2026 Field Hockey"); a title saying "Fall" ("2026 Fall Softball", "2026 Women's Lacrosse Fall Schedule") is this fall; "2026 Men's Volleyball Schedule" is last spring (men's volleyball is not a fall sport).
 - **Conference games from the card:** a conference game's card shows its league's logo (`schedule-event__conference`, "--empty" otherwise); women's hockey's is Atlantic Hockey America's (`conference_name`). Bracket games and exhibitions are out of the record.
+- **Cross country rows:** a race with a team score is listed before an open race (Paul Short: the men's Gold race, 2nd, before the 8K Open runners; seen on the first preview).
 - **Wrestling sessions:** "Session I", "Sessions III & IV" under "Big Ten Championships"/"NCAA Championships" are one event over its days.
 - **Fencing championships:** cards named after the host ("Duke University", "Durham, N.C.") take the page's JSON-LD event name ("2027 NCAA National Fencing Championships - Day 1" → one "NCAA National Fencing Championships" event).
 - **Brackets read "at":** "Big Ten Quarterfinals", "Semifinal", "Women's College Cup", "Atlantic Hockey America".

@@ -586,6 +586,8 @@ const fromTfrrs=teams=>{
   const xc=parse('Cross Country','cross-country').filter(e=>e.status==='Final');
   for(const meet of xc)await worker.attachOfficialMeetResults(meet);
   assert.deepEqual(xc.map(e=>[e.team_label||null,e.opponent,e.headline,Boolean(e.meet_results_verified)]),[[null,"Dolan Duals","Women's team: 1st · 15 pts / Men's team: 1st · 15 pts",true],[null,"Harry Groves Spiked Shoe Invitational","Women's team: 2nd · 36 pts / Men's team: 3rd · 94 pts",true],[null,"Princeton Fall Classic","Women's team: 7th · 222 pts",true],[null,"Paul Short Run","Men's team: 2nd · 129 pts",true]]);
+  // A race with a team score is listed first (Paul Short: the Gold race, not the 8K Open).
+  assert.deepEqual(xc.map(e=>e.results[0].participant+' '+e.results[0].result),["Penn State team 1st · 15 pts","Penn State team 2nd · 36 pts","Penn State team 7th · 222 pts","Penn State team 2nd · 129 pts"]);
   recapFixtures.clear();requests.length=0;
 }
 
