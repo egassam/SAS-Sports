@@ -258,6 +258,8 @@ assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events 
   const listed=men.filter(e=>!worker.byuHandlers.isTennisWithoutStory(e));
   assert.deepEqual(listed.filter(e=>e.status==='Final').map(e=>[e.opponent,e.recap_url]),[['Sherwood Invitational',story],['Boise St. Invitational',story]]);
   assert.equal(listed.length,6,'Milwaukee and the ITA All-American are not listed');
+  // The expanded view accepts the matched story (it names "Sherwood Collegiate Cup").
+  assert.equal(worker.byuHandlers.matchesRecap(fixture('tennis-story-2026-09-28-dual-tournaments.html.gz'),listed[0],story),true);
   // A story in the window that names no distinctive word of the event
   // ("Invitational" alone) is not its story.
   recapFixtures.set('https://byucougars.com/sports/mens-tennis/news','<a href="/news/2026/09/28/another-invitational">');
