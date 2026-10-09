@@ -2081,3 +2081,5 @@ South Carolina + Vanderbilt (Oct 8, 25 sports, about 2 h incl. a new reader and 
 
 **Found, open:** BYU's regional reads "vs" (should be "at"); LSU lists the pro event "ATP M15 Lexington". Both pre-existing module wording, visible before the events began too.
 
+**Nebraska timing (user asked "How long did Nebraska take?", then "Definitely put that in a handoff"):** about 40 minutes from start to production: 12:19 UTC start (handoff read, first huskers.com fetch), 12:20 `start-schools`, 12:33 all 16 sports built and tested plus the Miami port-wmt dry run, 12:34 PR #276, 12:46 rifle fix pushed (4.73.1), 12:57 merged, 12:59 production verified. About 15 minutes to the PR; most of the rest was gates (`test:release` about 10 minutes, `verify:preview` for 16 sports 8-10, run twice). The handoff first said "45 minutes to the PR, 75 to production" — an overestimate, corrected. Previous Big Ten pairs: about 2 h per two schools.
+
