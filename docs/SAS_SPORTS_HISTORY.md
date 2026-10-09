@@ -1963,3 +1963,45 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 - `verify-release`: `--school=a,b --sports=all` reads the XC baselines once and checks the schools at the same time (each site still one sport at a time): production Illinois + Indiana in 78 s, all passed.
 
 **Tests:** `npm run test:release` exit 0. PR #268 (handoff) merged `d0b022b` before this change.
+
+## October 8, 2026 (night) — Live scoreboard tester; live scores for every sport with a live feed
+
+**Requests (user):** "Can you create a live scoreboard tester that turns on and off when the criteria is met for it working properly?" Then, during the games: "KSTATE soccer is live right now and isn't showing in the app", "It should read any sport that has a live feed", and "Merge anything that's left".
+
+**Tester** (`scripts/live-scoreboard-tester.mjs`, `tests/live-scoreboard-tester.mjs`, `.github/workflows/live-scoreboard.yml`):
+- It reads each ESPN board once per pass and parses it with the Worker's own `parseScoreboardPayload`.
+- **ON** while a game of a sport under test is live. It reads `/live/feed/grouped` the way the app does (no refresh). **OFF** otherwise. **DONE** for good once one game passes.
+- A game passes when it is in `live` exactly once and joined to the schedule (no second card left in upcoming), with ESPN's score, a status line and, in football, possession. That must hold on two polls 60 s apart. After ESPN marks it final, the card must be in `results` with ESPN's final score.
+- Score lag: the feed cache (10 s) and scoreboard cache (15 s) put the card up to about 25 s behind ESPN, and volleyball points move faster than that. The first run failed Texas Tech volleyball on lag, so the card is compared with every ESPN reading from the 45 s before the feed read.
+- Game sports with no scoreboard are watched on ESPN's default board and fail as soon as a game is live. This rule was added after the K-State report.
+- The workflow runs every 10 minutes and keeps its state on the `live-scoreboard-state` branch (never main). The repo is public, so Actions minutes are free.
+- Production run, Oct 8 (local, 23:28 to 02:18 UTC): 12 DONE, 0 failing (see the handoff).
+
+**K-State soccer not live:** Kansas at K-State was live on ESPN (13') while the app showed "Today" in upcoming.
+- Cause: K-State's module named no Soccer or Baseball scoreboard. Only modules built on the shared kit name every board.
+- Audit: 25 game sports at KU, Oklahoma State, Utah, ASU, BYU and UCF had none either.
+- Fix 1 (4.69.2): K-State Soccer and Baseball.
+- Fix 2 (4.70.0, user: "It should read any sport that has a live feed"): `DEFAULT_SCOREBOARDS` in `src/index.js` covers basketball, volleyball, soccer (labeled men's and women's boards when Soccer is combined, UCF), baseball, softball, lacrosse, hockey, field hockey and water polo.
+- The defaults are join-only (`joinOnly` → `event.join_only`): an unjoined score adds no card, so a board for the other gender or a team the app does not carry is harmless.
+- `keepUnjoined` keeps the score when the official page failed, so it can be laid over the last good feed.
+- A single official team label (KU "Women's") is adopted.
+- ESPN has no wrestling or beach volleyball board (HTTP 400). Football keeps its old default, not join-only.
+
+**Tests:**
+- `npm run test:release` exit 0 on each commit.
+- New: K-State soccer from the real Oct 8 payload (`tests/fixtures/live/soccer-espn-2026-10-08-live.json.gz`) joins the official game; KU's side adopts "Women's"; unjoined defaults add no card.
+- Mutation checks: removing the K-State boards, the label adoption or the join-only drop each fails a test.
+- Updated assertions: Arizona's test said K-State has no soccer board, and BYU's said catalog schools get no volleyball board.
+
+**Preview** (`ccr-52d63dac-e5qi0l`, 4.70.0):
+- `verify:preview` soccer at K-State, KU, Oklahoma State, Utah, ASU, BYU and UCF: 36/36 forced refreshes each, results with result lines, expanded views. XC 18/20 and 26/21 every run.
+- Tester on the preview: K-State, KU, BYU, Utah and UCF soccer passed live polls.
+- The first preview run reported KU "no live card". That was a tester matching bug (an unlabeled ESPN game vs the "Women's" card), fixed in `8312a1f`.
+
+**Publication:**
+- PR #270 merged `74fdb10` on the user's "Merge anything that's left". It needed approval because it touches every school.
+- Production verification was not run: the auto-mode classifier refused reads of the production URL after the merge (treated as a production deploy). Open item in the handoff.
+
+**Other open PRs:**
+- #258 (docs, NIL note) conflicted with the handoff; its two additions are carried in this handoff.
+- #9 (draft, "not for deployment", ASU XC from Sept 17) and #2 (Alabama onboarding from Sept 16, superseded by #242) were not merged: both would regress production. Left for the user.
