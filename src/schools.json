@@ -1385,5 +1385,34 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "manhattan-ks",
+    "name": "Manhattan High School",
+    "short_name": "Manhattan",
+    "state": "Kansas",
+    "conference": "Centennial League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://mhs.usd383.org",
+    "aliases": [
+      "Manhattan High",
+      "MHS",
+      "Manhattan Indians",
+      "USD 383"
+    ],
+    "providers": [
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "128516",
+        "provider_school_id": null
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/manhattan/manhattan-indians",
+        "provider_school_id": "41006ce9-cfb3-492a-a951-d320637bc985"
+      }
+    ]
   }
 ]
