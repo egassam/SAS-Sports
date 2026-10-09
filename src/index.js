@@ -48,10 +48,11 @@ import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
+import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.77.0-high-school-manhattan';
+const VERSION='4.78.1-manhattan-middle-schools';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1183,7 +1184,7 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 // High schools (src/high-school.mjs): the school's calendar is the schedule
 // and MaxPreps the scores. Each high school's module names its calendar, its
 // MaxPreps team pages and the varsity teams of each sport.
-const HIGH_SCHOOL_MODULES=[manhattanKsSchool];
+const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
 const isHighSchool=school=>school?.level==='high-school';
 const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1200,23 +1201,33 @@ function matchContest(game,contests,used){
   const key=nameKey(game.name),words=new Set(key.split(' '));
   return day.find(c=>nameKey(c.opponent)===key)||day.find(c=>c.opponent&&nameKey(c.opponent).split(' ').every(w=>words.has(w)))||null;
 }
-function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,sourceUrl,now}){
-  const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`);
+// A past game or meet with no published result is not listed (K-State's
+// rule); it appears once MaxPreps, TennisReporting or a meet's results have it.
+function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,now}){
+  const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
   let status;
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
-  else if(day===today||endDate&&Date.parse(`${endDate}T00:00:00Z`)>=today)status='Today';
-  else status='Final';
-  const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:(status==='Final'&&!named?'Score not reported':null);
+  else if(lastDay>=today)status='Today';
+  else if(results?.rows?.length)status='Final';
+  else return null;
+  const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:(results?.headline||null);
   const dateText=highSchoolDateText(date),title=`${team?`${team} · `:''}${school.short_name} ${relation} ${opponent}`;
-  const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:named?'MEET':eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:headline&&scored?[{label:'Result',value:headline}]:[],result_count:scored?1:0,source:{name:'Official school calendar',url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest?2:1,conflicting_sources:false};
+  const rows=scored?[{label:'Result',value:headline}]:(results?.rows||[]);
+  const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:'Official school calendar',url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
   if(scored){
     event.score_source={name:'MaxPreps (score reported by the team)',url:contest.game_url||null};
     if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='View MaxPreps game page';}
     if(contest.conference!=null){event.conference_game=contest.conference;if(contest.conference)event.conference_name=school.conference;}
+    if(contest.tournament)event.tournament_game=true;
+  }
+  if(results){
+    event.recap_url=results.url;event.recap_label=results.label;
+    event.highlights=results.highlights;event.highlights_verified=true;event.highlight_status=results.note;
+    event.meet_results_verified=true;
   }
   if(contest?.stream_url)event.stream_url=contest.stream_url;
   if(contest)event.maxpreps_url=contest.game_url||null;
@@ -1224,22 +1235,31 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
 }
 // The expanded view of a high school final: plain facts from the score and
 // the MaxPreps box score, written from the school's side.
+// Period names as the box score heads them: football quarters (Q1),
+// soccer halves (1, 2, then overtime) and volleyball sets (S1).
+function periodName(sport,period){
+  if(/^S(\d+)$/i.test(period))return`Set ${period.slice(1)}`;
+  if(sport==='Soccer'&&/^\d+$/.test(period))return Number(period)===1?'1st half':Number(period)===2?'2nd half':`OT ${Number(period)-2}`;
+  return period;
+}
 function highSchoolHighlights(event,box){
   const name=event.school.replace(/ High School$/,''),us=Number(event.school_score),them=Number(event.opponent_score);
-  const verb=us>them?'beat':us<them?'lost to':'tied',where=/ at /.test(event.title)?' on the road':' at home';
-  const league=event.conference_game?` in a ${event.conference_name||'league'} game`:'';
+  const verb=us>them?'beat':us<them?'lost to':'tied',where=event.tournament_game?'':/ at /.test(event.title)?' on the road':' at home';
+  const league=event.conference_game?` in a ${event.conference_name||'league'} game`:event.tournament_game?' in a tournament match':'';
   const lines=[`${name} ${verb} ${event.opponent} ${Math.max(us,them)}-${Math.min(us,them)}${where}${league}.`];
   const stats=[];
   if(box){
     const ours=box.teams.find(t=>nameKey(t.name)===nameKey(name))||box.teams.find(t=>nameKey(name).includes(nameKey(t.name))),theirs=box.teams.find(t=>t!==ours);
     if(ours&&theirs){
-      const periods=box.periods.filter(p=>!/^(?:final|t|total)$/i.test(p));
-      periods.forEach((p,i)=>stats.push({label:p,value:`${name} ${ours.scores[i]} · ${event.opponent} ${theirs.scores[i]}`}));
-      const half=periods.length===4&&/^Q/i.test(periods[0])?2:null;
-      if(half){const a=ours.scores.slice(0,half).reduce((t,x)=>t+Number(x||0),0),b=theirs.scores.slice(0,half).reduce((t,x)=>t+Number(x||0),0);lines.push(a===b?`The teams were tied ${a}-${b} at halftime.`:`${a>b?name:event.opponent} led ${Math.max(a,b)}-${Math.min(a,b)} at halftime.`);}
-      const diffs=periods.map((p,i)=>({p,d:Number(ours.scores[i]||0)-Number(theirs.scores[i]||0),us:Number(ours.scores[i]||0),them:Number(theirs.scores[i]||0)}));
-      const best=diffs.reduce((a,b)=>b.d>a.d?b:a,diffs[0]);
-      if(best&&best.d>0)lines.push(`${name} won the ${/^Q/i.test(best.p)?best.p.replace(/^Q/i,'')+(['','st','nd','rd'][Number(best.p.slice(1))]||'th')+' quarter':best.p} ${best.us}-${best.them}.`);
+      const periods=box.periods.map((p,i)=>({p,i})).filter(({p})=>!/^(?:final|t|total|wins)$/i.test(p));
+      const score=(team,i)=>Number(team.scores[i]||0);
+      periods.forEach(({p,i})=>stats.push({label:periodName(event.sport,p),value:`${name} ${ours.scores[i]} · ${event.opponent} ${theirs.scores[i]}`}));
+      if(event.sport==='Volleyball'&&periods.length)lines.push(`Set scores: ${periods.map(({i})=>`${score(ours,i)}-${score(theirs,i)}`).join(', ')}.`);
+      const half=/^Q/i.test(periods[0]?.p||'')&&periods.length>=4?2:event.sport==='Soccer'&&periods.length>=2?1:null;
+      if(half){const a=periods.slice(0,half).reduce((t,{i})=>t+score(ours,i),0),b=periods.slice(0,half).reduce((t,{i})=>t+score(theirs,i),0);lines.push(a===b?`The teams were tied ${a}-${b} at halftime.`:`${a>b?name:event.opponent} led ${Math.max(a,b)}-${Math.min(a,b)} at halftime.`);}
+      const quarters=periods.filter(({p})=>/^Q\d$/i.test(p)).map(({p,i})=>({p,d:score(ours,i)-score(theirs,i),us:score(ours,i),them:score(theirs,i)}));
+      const best=quarters.reduce((a,b)=>!a||b.d>a.d?b:a,null);
+      if(best&&best.d>0)lines.push(`${name} won the ${best.p.slice(1)}${['','st','nd','rd'][Number(best.p.slice(1))]||'th'} quarter ${best.us}-${best.them}.`);
     }
   }
   return{lines,stats};
@@ -1253,6 +1273,44 @@ function contestRelation(contest,school){
   const ours=nameKey(m[1])===nameKey(school.short_name);
   return(m[2].toLowerCase()==='away')===ours?'at':'vs';
 }
+const ORDINAL=n=>`${n}${n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th'}`;
+// The school's results at a TennisReporting event on the calendar day: the
+// event and host site found by date and school, then both draws.
+async function tennisReportingResults(school,team,game){
+  const config=team.tennisReporting;if(!config)return null;
+  const post=(path,body)=>sourceFetch(TENNIS_REPORTING+path,{method:'POST',body:JSON.stringify(body),headers:{'content-type':'application/json','accept':'application/json'}},{ttl:SOURCE_TTL.schedule}).then(r=>r.ok?r.json():null).catch(()=>null);
+  const get=(path,ttl=SOURCE_TTL.listing)=>sourceFetch(TENNIS_REPORTING+path,{headers:{accept:'application/json'}},{ttl}).then(r=>r.ok?r.json():null).catch(()=>null);
+  const list=await sourceFetch(TENNIS_REPORTING+'events',{method:'POST',body:JSON.stringify({page:0,pageSize:200,sorted:[],filtered:{stateId:config.stateId}}),headers:{'content-type':'application/json','accept':'application/json'}},{ttl:SOURCE_TTL.listing}).then(r=>r.ok?r.json():null).catch(()=>null);
+  for(const candidate of tennisReportingEvents(list,{stateId:config.stateId,genderId:config.genderId,date:game.date})){
+    const event=await get(`event/${candidate.id}`);
+    for(const host of tennisHosts(event)){
+      const schools=await get(`event/${candidate.id}/host/${host.id}/schools`);
+      if(!(schools||[]).some(s=>clean(s.name)===config.school))continue;
+      const draws=await Promise.all(['Singles','Doubles'].map(async matchType=>{
+        const [bracket,seeds]=await Promise.all([post(`event/${candidate.id}/host/${host.id}/bracket/get`,{matchType,isConsolation:false}),post(`event/${candidate.id}/seed_list_by_params`,{host:host.id,matchType})]);
+        return{matchType,bracket,matches:tennisMatches({bracket,seeds,matchType,school:config.school})};
+      }));
+      const matches=draws.flatMap(d=>d.matches);
+      if(!matches.length)return null;
+      const name=school.short_name,rows=[],highlights=[];
+      const entries=new Map();for(const m of matches){const key=`${m.matchType}|${m.players.join('/')}`;if(!entries.has(key))entries.set(key,[]);entries.get(key).push(m);}
+      for(const [key,list] of entries){
+        const [matchType]=key.split('|'),players=list[0].players.join(' / '),group=`${matchType}: ${players}${list[0].seed?` (seed ${list[0].seed})`:''}`;
+        for(const m of list)rows.push({group,participant:m.round_name,result:m.won==null?`vs ${m.opponents.join(' / ')} (${m.opponent_school}) · not played yet`:`${m.won?'W':'L'} ${m.score} vs ${m.opponents.join(' / ')} (${m.opponent_school})`});
+        const last=list.at(-1),wins=list.filter(m=>m.won===true).length;
+        const placement=last.placement?`, finished ${ORDINAL(Number(last.placement))||last.placement}`:'';
+        highlights.push(`${players} (${matchType.toLowerCase()}) won ${wins} of ${list.filter(m=>m.won!=null).length} matches${last.won===false?`, out in the ${last.round_name.toLowerCase()}`:last.won&&last.round_name==='Final'?', won the final':''}${placement}${last.qualified?' and qualified for state':''}.`);
+      }
+      const standing=tennisTeamStanding(draws.flatMap(d=>d.bracket?.teamPoints||[]),config.school);
+      const scored=standing&&standing.points>0;
+      if(scored)rows.unshift({group:'Team',participant:`${name} team`,result:`${ORDINAL(standing.place)}${standing.tied?' (tie)':''} of ${standing.teams} · ${standing.points} pts`});
+      // A match between two of the school's own entries is not in its record.
+      const played=matches.filter(m=>m.won!=null&&m.opponent_school!==config.school),wins=played.filter(m=>m.won).length;
+      return{rows,headline:scored?`${ORDINAL(standing.place)} of ${standing.teams} · ${standing.points} pts`:`Matches ${wins}-${played.length-wins}`,highlights,url:`https://tennisreporting.com/event/brackets/${candidate.id}?host=${host.id}`,label:'View TennisReporting bracket',note:`${candidate.name}, ${host.name}: draws and scores as posted to TennisReporting.`};
+    }
+  }
+  return null;
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -1261,29 +1319,53 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
   if(!calendarResponse.ok)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: HTTP ${calendarResponse.status}`};
   let payload=null;try{payload=JSON.parse(await calendarResponse.text())}catch{}
   if(!payload)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: not a calendar`};
-  const sources=[calendarUrl],events=[];
+  const sourceUrl=calendarUrl.split('?')[0],sources=[calendarUrl],events=[],today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
   for(const team of teams){
-    const games=calendarEvents(payload,{prefix:module.calendar.prefix,team:team.calendar}).filter(game=>!module.skip?.test(game.name));
+    const games=calendarEvents(payload,{prefix:module.calendar.prefix,team:team.calendar,parse:module.calendar.parse}).filter(game=>!module.skip?.test(game.name));
     let contests=[];
     if(team.maxpreps){
       const url=`${module.maxpreps.base}${team.maxpreps}/schedule/`;
       try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}}catch{}
     }
-    const used=new Set();
+    const label=team.label||null,used=new Set();
+    // Volleyball: MaxPreps lists each match of a tournament or triangular;
+    // the calendar names only the day. Matches come from MaxPreps, coming
+    // days from the calendar.
+    if(team.matches){
+      for(const c of contests.filter(c=>c.result&&c.opponent&&c.score!=null&&c.opponent_score!=null)){
+        const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:false,contest:c,sourceUrl:c.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,now});
+        if(event)events.push(event);
+      }
+      for(const game of games.filter(g=>g.date>=today)){
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:game.site==='HOME'&&isNamedEvent(game.name)?'·':game.site==='AWAY'||isNamedEvent(game.name)?'at':'vs',named:true,sourceUrl,now});
+        if(event)events.push(event);
+      }
+      continue;
+    }
     for(const game of games){
-      const named=isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
+      const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);
-      events.push(highSchoolEvent({school,sport,team:team.label||null,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent:game.name,relation:named||game.site==='AWAY'?'at':'vs',named,contest,sourceUrl:calendarUrl.split('?')[0],now}));
+      // MaxPreps names the opponent when the calendar names the host of a
+      // tournament day ("Blue Valley West" for a game against Blue Valley
+      // Northwest there).
+      const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
+      // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
+      const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
+      const results=team.tennisReporting&&game.date<=today?await tennisReportingResults(school,team,game):null;
+      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,now});
+      if(event)events.push(event);
     }
     // A scored game the calendar does not list (a playoff game added after
     // the calendar was printed) is shown from MaxPreps alone.
-    for(const contest of contests.filter(c=>!used.has(c)&&c.result&&c.opponent))
-      events.push(highSchoolEvent({school,sport,team:team.label||null,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:false,contest,sourceUrl:contest.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,now}));
+    for(const contest of contests.filter(c=>!used.has(c)&&c.result&&c.opponent&&c.score!=null)){
+      const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:false,contest,sourceUrl:contest.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,now});
+      if(event)events.push(event);
+    }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target&&target.status==='Final'&&target.school_score!=null){
     let box=null;
-    if(target.recap_url){try{const r=await sourceFetch(target.recap_url,{},{ttl:SOURCE_TTL.article});if(r.ok)box=maxprepsBoxScore(await r.text());}catch{}}
+    if(target.maxpreps_url){try{const r=await sourceFetch(target.maxpreps_url,{},{ttl:SOURCE_TTL.article});if(r.ok)box=maxprepsBoxScore(await r.text());}catch{}}
     const {lines,stats}=highSchoolHighlights(target,box);
     target.highlights=lines;target.highlights_verified=true;
     if(stats.length)target.game_stats=stats;

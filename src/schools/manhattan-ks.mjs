@@ -15,8 +15,17 @@ export const manhattanKsSchool={
   // Each sport: its varsity teams. `calendar` matches the team words of a
   // calendar title; `maxpreps` is the team's MaxPreps path; `label` is the
   // team of a sport played by boys and girls.
+  // `meet` marks a sport whose calendar entries are all meets or tournaments
+  // (named for the host); `matches` reads each match from MaxPreps
+  // (volleyball triangulars and tournaments); `tennisReporting` finds the
+  // team's draws on TennisReporting by date.
   sports:{
-    Football:[{calendar:/^Varsity Football$/i,maxpreps:'football'}]
+    Football:[{calendar:/^Varsity Football$/i,maxpreps:'football'}],
+    Soccer:[{calendar:/^Varsity Boys Soccer$/i,maxpreps:'soccer',label:'Boys'},{calendar:/^Varsity Girls Soccer$/i,maxpreps:'soccer/girls',label:'Girls'}],
+    Volleyball:[{calendar:/^Varsity Volleyball$/i,maxpreps:'volleyball',matches:true}],
+    'Cross Country':[{calendar:/^Cross Country$/i,meet:true}],
+    Tennis:[{calendar:/^Varsity Girls Tennis$/i,meet:true,label:'Girls',tennisReporting:{stateId:23,genderId:2,school:'Manhattan HS'}},{calendar:/^Varsity Boys Tennis$/i,meet:true,label:'Boys',tennisReporting:{stateId:23,genderId:1,school:'Manhattan HS'}}],
+    Golf:[{calendar:/^Varsity Girls Golf$/i,meet:true,label:'Girls'},{calendar:/^Varsity Boys Golf$/i,meet:true,label:'Boys'}]
   },
   // Intrasquad scrimmages are practice, not games.
   skip:/\binter[- ]?squad\b|\bintra[- ]?squad\b/i

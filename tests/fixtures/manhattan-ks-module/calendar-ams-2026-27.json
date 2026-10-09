@@ -1,0 +1,1250 @@
+{
+"success": true,
+"data": {
+"events": [
+{
+"id": "83022367@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-08-19",
+"start_time": "18:30:00",
+"end_date": "2026-08-19",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83681926@parentsquare.com",
+"title": "VB Parent Meeting",
+"start_date": "2026-08-20",
+"start_time": "18:00:00",
+"end_date": "2026-08-20",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023009@parentsquare.com",
+"title": "8th VB @SH",
+"start_date": "2026-08-31",
+"start_time": "15:30:00",
+"end_date": "2026-08-31",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023006@parentsquare.com",
+"title": "7th VB vs SH/WRN",
+"start_date": "2026-08-31",
+"start_time": "16:15:00",
+"end_date": "2026-08-31",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023013@parentsquare.com",
+"title": "8th VB vs Wamego/EMS",
+"start_date": "2026-09-01",
+"start_time": "16:15:00",
+"end_date": "2026-09-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023010@parentsquare.com",
+"title": "7th VB @Wamego",
+"start_date": "2026-09-01",
+"start_time": "16:30:00",
+"end_date": "2026-09-01",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023007@parentsquare.com",
+"title": "7th VB @Seaman/WR",
+"start_date": "2026-09-02",
+"start_time": "15:30:00",
+"end_date": "2026-09-02",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023008@parentsquare.com",
+"title": "8th VB @Seaman/WR",
+"start_date": "2026-09-02",
+"start_time": "15:30:00",
+"end_date": "2026-09-02",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022369@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-09-02",
+"start_time": "18:20:00",
+"end_date": "2026-09-02",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112474@parentsquare.com",
+"title": "Booster Club Meeting",
+"start_date": "2026-09-03",
+"start_time": "12:00:00",
+"end_date": "2026-09-03",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022988@parentsquare.com",
+"title": "7th FB @Emporia",
+"start_date": "2026-09-03",
+"start_time": "15:45:00",
+"end_date": "2026-09-03",
+"end_time": "16:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022989@parentsquare.com",
+"title": "8th FB vs Emporia",
+"start_date": "2026-09-03",
+"start_time": "16:15:00",
+"end_date": "2026-09-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142425@parentsquare.com",
+"title": "Cross Country @ Wamego M.S.",
+"start_date": "2026-09-08",
+"start_time": "09:00:00",
+"end_date": "2026-09-08",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023012@parentsquare.com",
+"title": "7th VB vs Rock Creek/FR",
+"start_date": "2026-09-08",
+"start_time": "16:15:00",
+"end_date": "2026-09-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023011@parentsquare.com",
+"title": "8th VB @Rock Creek/FR",
+"start_date": "2026-09-08",
+"start_time": "16:30:00",
+"end_date": "2026-09-08",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86084689@parentsquare.com",
+"title": "SITE Council Meeting",
+"start_date": "2026-09-10",
+"start_time": "11:00:00",
+"end_date": "2026-09-10",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022990@parentsquare.com",
+"title": "8th FB @WR North",
+"start_date": "2026-09-10",
+"start_time": "15:30:00",
+"end_date": "2026-09-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022987@parentsquare.com",
+"title": "7th FB vs WR North",
+"start_date": "2026-09-10",
+"start_time": "16:15:00",
+"end_date": "2026-09-10",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142492@parentsquare.com",
+"title": "Cross Country @ Milford State Park",
+"start_date": "2026-09-10",
+"start_time": "16:30:00",
+"end_date": "2026-09-10",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023014@parentsquare.com",
+"title": "8th VB @SH Inv.",
+"start_date": "2026-09-12",
+"start_time": "08:30:00",
+"end_date": "2026-09-12",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023016@parentsquare.com",
+"title": "7th VB @EMS / JC",
+"start_date": "2026-09-14",
+"start_time": "15:30:00",
+"end_date": "2026-09-14",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023015@parentsquare.com",
+"title": "8th VB vs EMS / JC",
+"start_date": "2026-09-14",
+"start_time": "16:15:00",
+"end_date": "2026-09-14",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142517@parentsquare.com",
+"title": "Cross Country @ Clay Center",
+"start_date": "2026-09-15",
+"start_time": "16:00:00",
+"end_date": "2026-09-15",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023017@parentsquare.com",
+"title": "7th VB vs Clay Center / LWMS",
+"start_date": "2026-09-15",
+"start_time": "16:15:00",
+"end_date": "2026-09-15",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023018@parentsquare.com",
+"title": "8th VB vs Clay Center / LWMS",
+"start_date": "2026-09-15",
+"start_time": "16:15:00",
+"end_date": "2026-09-15",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022368@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-09-16",
+"start_time": "18:30:00",
+"end_date": "2026-09-16",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022992@parentsquare.com",
+"title": "7th FB @SHMS",
+"start_date": "2026-09-17",
+"start_time": "15:30:00",
+"end_date": "2026-09-17",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022993@parentsquare.com",
+"title": "8th FB vs SHMS",
+"start_date": "2026-09-17",
+"start_time": "16:15:00",
+"end_date": "2026-09-17",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142542@parentsquare.com",
+"title": "Cross Country @ Warner Park",
+"start_date": "2026-09-18",
+"start_time": "10:00:00",
+"end_date": "2026-09-18",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023019@parentsquare.com",
+"title": "7th VB @JC Tourney",
+"start_date": "2026-09-19",
+"start_time": "08:30:00",
+"end_date": "2026-09-19",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023020@parentsquare.com",
+"title": "8th VB @EMS / Emporia",
+"start_date": "2026-09-22",
+"start_time": "15:30:00",
+"end_date": "2026-09-22",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142555@parentsquare.com",
+"title": "Cross Country @ McPherson- Wall Park",
+"start_date": "2026-09-22",
+"start_time": "16:00:00",
+"end_date": "2026-09-22",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023021@parentsquare.com",
+"title": "7th VB vs EMS / Emporia",
+"start_date": "2026-09-22",
+"start_time": "16:15:00",
+"end_date": "2026-09-22",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022995@parentsquare.com",
+"title": "7th FB @WRMS",
+"start_date": "2026-09-24",
+"start_time": "15:30:00",
+"end_date": "2026-09-24",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022994@parentsquare.com",
+"title": "8th FB vs WRMS",
+"start_date": "2026-09-24",
+"start_time": "16:15:00",
+"end_date": "2026-09-24",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023023@parentsquare.com",
+"title": "7th VB B Tourney @WR North",
+"start_date": "2026-09-26",
+"start_time": "08:30:00",
+"end_date": "2026-09-26",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023022@parentsquare.com",
+"title": "8th VB B Tourney @Emporia MS",
+"start_date": "2026-09-26",
+"start_time": "08:30:00",
+"end_date": "2026-09-26",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023024@parentsquare.com",
+"title": "7th VB vs JC/EMS/Abilene",
+"start_date": "2026-09-28",
+"start_time": "16:15:00",
+"end_date": "2026-09-28",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142570@parentsquare.com",
+"title": "Cross Country @ Rock Creek H. S.",
+"start_date": "2026-09-29",
+"start_time": "16:00:00",
+"end_date": "2026-09-29",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023025@parentsquare.com",
+"title": "8th VB vs Emporia / Hays",
+"start_date": "2026-09-29",
+"start_time": "16:15:00",
+"end_date": "2026-09-29",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112477@parentsquare.com",
+"title": "Booster Club Meeting - Oct 01",
+"start_date": "2026-10-01",
+"start_time": "12:00:00",
+"end_date": "2026-10-01",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023026@parentsquare.com",
+"title": "7th VB @Emporia / JC",
+"start_date": "2026-10-01",
+"start_time": "15:30:00",
+"end_date": "2026-10-01",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022997@parentsquare.com",
+"title": "8th FB @EMS",
+"start_date": "2026-10-01",
+"start_time": "15:30:00",
+"end_date": "2026-10-01",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022996@parentsquare.com",
+"title": "7th FB vs EMS",
+"start_date": "2026-10-01",
+"start_time": "16:15:00",
+"end_date": "2026-10-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023027@parentsquare.com",
+"title": "8th VB vs Emporia / JC",
+"start_date": "2026-10-01",
+"start_time": "16:15:00",
+"end_date": "2026-10-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83142593@parentsquare.com",
+"title": "Cross Country @ Milford State Park",
+"start_date": "2026-10-02",
+"start_time": "14:00:00",
+"end_date": "2026-10-02",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023029@parentsquare.com",
+"title": "7th VB League @JC",
+"start_date": "2026-10-03",
+"start_time": "08:30:00",
+"end_date": "2026-10-03",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023028@parentsquare.com",
+"title": "8th VB League @Emporia",
+"start_date": "2026-10-03",
+"start_time": "08:30:00",
+"end_date": "2026-10-03",
+"end_time": "10:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022370@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-10-07",
+"start_time": "18:30:00",
+"end_date": "2026-10-07",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86085898@parentsquare.com",
+"title": "SITE Council Meeting",
+"start_date": "2026-10-08",
+"start_time": "11:00:00",
+"end_date": "2026-10-08",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022999@parentsquare.com",
+"title": "7th FB @Seaman",
+"start_date": "2026-10-08",
+"start_time": "16:15:00",
+"end_date": "2026-10-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022998@parentsquare.com",
+"title": "8th FB vs Seaman",
+"start_date": "2026-10-08",
+"start_time": "16:15:00",
+"end_date": "2026-10-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023000@parentsquare.com",
+"title": "7th FB vs JCMS",
+"start_date": "2026-10-13",
+"start_time": "16:15:00",
+"end_date": "2026-10-13",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83023003@parentsquare.com",
+"title": "8th FB @JCMS",
+"start_date": "2026-10-13",
+"start_time": "16:30:00",
+"end_date": "2026-10-13",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022371@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-10-21",
+"start_time": "18:30:00",
+"end_date": "2026-10-21",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86856869@parentsquare.com",
+"title": "Board of Education Special Meeting",
+"start_date": "2026-10-28",
+"start_time": "17:30:00",
+"end_date": "2026-10-28",
+"end_time": "20:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022372@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-11-04",
+"start_time": "18:30:00",
+"end_date": "2026-11-04",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112478@parentsquare.com",
+"title": "Booster Club Meeting - Nov 05",
+"start_date": "2026-11-05",
+"start_time": "12:00:00",
+"end_date": "2026-11-05",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84861671@parentsquare.com",
+"title": "7GBB@ WRNMS",
+"start_date": "2026-11-05",
+"start_time": "15:30:00",
+"end_date": "2026-11-05",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84879382@parentsquare.com",
+"title": "8GBB vs WRNMS",
+"start_date": "2026-11-05",
+"start_time": "16:15:00",
+"end_date": "2026-11-05",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84879855@parentsquare.com",
+"title": "7GBB vs WMS",
+"start_date": "2026-11-09",
+"start_time": "16:15:00",
+"end_date": "2026-11-09",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84880141@parentsquare.com",
+"title": "8GBB @ WMS",
+"start_date": "2026-11-09",
+"start_time": "16:15:00",
+"end_date": "2026-11-09",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86645395@parentsquare.com",
+"title": "8GBB @ Washburn Rural",
+"start_date": "2026-11-10",
+"start_time": "15:30:00",
+"end_date": "2026-11-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86644920@parentsquare.com",
+"title": "7GBB v Washburn Rural",
+"start_date": "2026-11-10",
+"start_time": "16:15:00",
+"end_date": "2026-11-10",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84882137@parentsquare.com",
+"title": "7GBB @CMS",
+"start_date": "2026-11-14",
+"start_time": "09:00:00",
+"end_date": "2026-11-14",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84882279@parentsquare.com",
+"title": "7GBB @ RCMS",
+"start_date": "2026-11-16",
+"start_time": "16:30:00",
+"end_date": "2026-11-16",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86645706@parentsquare.com",
+"title": "8GBB @ RCMS",
+"start_date": "2026-11-16",
+"start_time": "16:30:00",
+"end_date": "2026-11-16",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86645886@parentsquare.com",
+"title": "8GBB @ Emporia",
+"start_date": "2026-11-17",
+"start_time": "15:45:00",
+"end_date": "2026-11-17",
+"end_time": "17:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86646339@parentsquare.com",
+"title": "7GBB v Emporia",
+"start_date": "2026-11-17",
+"start_time": "16:15:00",
+"end_date": "2026-11-17",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87572597@parentsquare.com",
+"title": "Site Council Meeting at the Lincoln Education Center",
+"start_date": "2026-11-18",
+"start_time": "17:15:00",
+"end_date": "2026-11-18",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022373@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-11-18",
+"start_time": "18:30:00",
+"end_date": "2026-11-18",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86646704@parentsquare.com",
+"title": "7GBB v JC",
+"start_date": "2026-11-19",
+"start_time": "16:15:00",
+"end_date": "2026-11-19",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86646558@parentsquare.com",
+"title": "7GBB @ JC",
+"start_date": "2026-11-19",
+"start_time": "16:30:00",
+"end_date": "2026-11-19",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84882934@parentsquare.com",
+"title": "7GBB @ SMS",
+"start_date": "2026-12-01",
+"start_time": "15:30:00",
+"end_date": "2026-12-01",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84883130@parentsquare.com",
+"title": "8GBB vs SMS",
+"start_date": "2026-12-01",
+"start_time": "16:15:00",
+"end_date": "2026-12-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022374@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-12-02",
+"start_time": "18:30:00",
+"end_date": "2026-12-02",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112482@parentsquare.com",
+"title": "Booster Club Meeting - Dec 03",
+"start_date": "2026-12-03",
+"start_time": "12:00:00",
+"end_date": "2026-12-03",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84884150@parentsquare.com",
+"title": "7GBB vs EMS",
+"start_date": "2026-12-03",
+"start_time": "16:15:00",
+"end_date": "2026-12-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84884290@parentsquare.com",
+"title": "8GBB @ EMS",
+"start_date": "2026-12-03",
+"start_time": "16:15:00",
+"end_date": "2026-12-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84885133@parentsquare.com",
+"title": "7GBB vs LMS",
+"start_date": "2026-12-07",
+"start_time": "16:15:00",
+"end_date": "2026-12-07",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84885384@parentsquare.com",
+"title": "GBB vs CCCMS",
+"start_date": "2026-12-08",
+"start_time": "16:15:00",
+"end_date": "2026-12-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84885281@parentsquare.com",
+"title": "7GBB @ CCCMS",
+"start_date": "2026-12-08",
+"start_time": "16:30:00",
+"end_date": "2026-12-08",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84885729@parentsquare.com",
+"title": "7GBB @ TBD",
+"start_date": "2026-12-10",
+"start_time": "15:30:00",
+"end_date": "2026-12-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84885836@parentsquare.com",
+"title": "8GBB @ TBD",
+"start_date": "2026-12-10",
+"start_time": "15:30:00",
+"end_date": "2026-12-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84886148@parentsquare.com",
+"title": "7GBB LEAGUE @ AMS",
+"start_date": "2026-12-12",
+"start_time": "08:30:00",
+"end_date": "2026-12-12",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84886001@parentsquare.com",
+"title": "8GBB LEAGUE @ WRMS",
+"start_date": "2026-12-12",
+"start_time": "08:30:00",
+"end_date": "2026-12-12",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022375@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-12-16",
+"start_time": "18:30:00",
+"end_date": "2026-12-16",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022376@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2027-01-06",
+"start_time": "18:30:00",
+"end_date": "2027-01-06",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112484@parentsquare.com",
+"title": "Booster Club Meeting - Jan 07",
+"start_date": "2027-01-07",
+"start_time": "12:00:00",
+"end_date": "2027-01-07",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84890102@parentsquare.com",
+"title": "7BBB vs CMS",
+"start_date": "2027-01-07",
+"start_time": "16:15:00",
+"end_date": "2027-01-07",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84890238@parentsquare.com",
+"title": "8BBB @ CMS",
+"start_date": "2027-01-07",
+"start_time": "16:15:00",
+"end_date": "2027-01-07",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86086165@parentsquare.com",
+"title": "SITE Council Meeting",
+"start_date": "2027-01-14",
+"start_time": "11:00:00",
+"end_date": "2027-01-14",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84886766@parentsquare.com",
+"title": "7BBB @ WRMS",
+"start_date": "2027-01-14",
+"start_time": "15:30:00",
+"end_date": "2027-01-14",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84886941@parentsquare.com",
+"title": "8BBB vs WRMS",
+"start_date": "2027-01-14",
+"start_time": "16:15:00",
+"end_date": "2027-01-14",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84887659@parentsquare.com",
+"title": "8BBB vs JCMS",
+"start_date": "2027-01-19",
+"start_time": "16:15:00",
+"end_date": "2027-01-19",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84887817@parentsquare.com",
+"title": "7BBB @ JCMS",
+"start_date": "2027-01-19",
+"start_time": "16:30:00",
+"end_date": "2027-01-19",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022377@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2027-01-20",
+"start_time": "18:30:00",
+"end_date": "2027-01-20",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84888597@parentsquare.com",
+"title": "8BBB @ SHMS",
+"start_date": "2027-01-21",
+"start_time": "15:30:00",
+"end_date": "2027-01-21",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84888825@parentsquare.com",
+"title": "7BBB vs SHMS",
+"start_date": "2027-01-21",
+"start_time": "16:15:00",
+"end_date": "2027-01-21",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84889455@parentsquare.com",
+"title": "7BBB Tny @ CMS",
+"start_date": "2027-01-23",
+"start_time": "09:00:00",
+"end_date": "2027-01-23",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84891237@parentsquare.com",
+"title": "8BBB vs RCMS",
+"start_date": "2027-01-25",
+"start_time": "16:15:00",
+"end_date": "2027-01-25",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84891353@parentsquare.com",
+"title": "7BBB @ RCMS",
+"start_date": "2027-01-25",
+"start_time": "16:30:00",
+"end_date": "2027-01-25",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84891490@parentsquare.com",
+"title": "7BBB vs FRMS",
+"start_date": "2027-01-26",
+"start_time": "16:15:00",
+"end_date": "2027-01-26",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84891650@parentsquare.com",
+"title": "8BBB @ FRMS",
+"start_date": "2027-01-26",
+"start_time": "16:30:00",
+"end_date": "2027-01-26",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84891961@parentsquare.com",
+"title": "7BBB vs JCMS",
+"start_date": "2027-01-28",
+"start_time": "16:15:00",
+"end_date": "2027-01-28",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84892057@parentsquare.com",
+"title": "8BBB @ JCMS",
+"start_date": "2027-01-28",
+"start_time": "16:30:00",
+"end_date": "2027-01-28",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84892996@parentsquare.com",
+"title": "7BBB @ EmpMS",
+"start_date": "2027-02-02",
+"start_time": "15:45:00",
+"end_date": "2027-02-02",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84892897@parentsquare.com",
+"title": "8BBB vs EmpMS",
+"start_date": "2027-02-02",
+"start_time": "16:15:00",
+"end_date": "2027-02-02",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112486@parentsquare.com",
+"title": "Booster Club Meeting - Feb 04",
+"start_date": "2027-02-04",
+"start_time": "12:00:00",
+"end_date": "2027-02-04",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84893156@parentsquare.com",
+"title": "7BBB vs WRNMS",
+"start_date": "2027-02-04",
+"start_time": "15:30:00",
+"end_date": "2027-02-04",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84893263@parentsquare.com",
+"title": "8BBB @ WRNMS",
+"start_date": "2027-02-04",
+"start_time": "15:30:00",
+"end_date": "2027-02-04",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84894176@parentsquare.com",
+"title": "8BBB @ LWMS",
+"start_date": "2027-02-08",
+"start_time": "15:30:00",
+"end_date": "2027-02-08",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84895703@parentsquare.com",
+"title": "8BBB @ SMS",
+"start_date": "2027-02-09",
+"start_time": "15:30:00",
+"end_date": "2027-02-09",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84895824@parentsquare.com",
+"title": "7BBB vs SMS",
+"start_date": "2027-02-09",
+"start_time": "16:15:00",
+"end_date": "2027-02-09",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86086355@parentsquare.com",
+"title": "SITE Council Meeting",
+"start_date": "2027-02-11",
+"start_time": "11:00:00",
+"end_date": "2027-02-11",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84950681@parentsquare.com",
+"title": "7BBB @ EMS",
+"start_date": "2027-02-11",
+"start_time": "16:15:00",
+"end_date": "2027-02-11",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84950774@parentsquare.com",
+"title": "8BBB vs EMS",
+"start_date": "2027-02-11",
+"start_time": "16:15:00",
+"end_date": "2027-02-11",
+"end_time": "18:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84951184@parentsquare.com",
+"title": "7BBB Tny @ TBD",
+"start_date": "2027-02-18",
+"start_time": "15:30:00",
+"end_date": "2027-02-18",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84951247@parentsquare.com",
+"title": "8BBB Tny @ TBD",
+"start_date": "2027-02-18",
+"start_time": "15:30:00",
+"end_date": "2027-02-18",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84951499@parentsquare.com",
+"title": "7BBB LEAGUE @ EMS",
+"start_date": "2027-02-20",
+"start_time": "09:00:00",
+"end_date": "2027-02-20",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "84951374@parentsquare.com",
+"title": "8BBB LEAGUE @ WRNMS",
+"start_date": "2027-02-20",
+"start_time": "09:00:00",
+"end_date": "2027-02-20",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112488@parentsquare.com",
+"title": "Booster Club Meeting - Mar 04",
+"start_date": "2027-03-04",
+"start_time": "12:00:00",
+"end_date": "2027-03-04",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "85112489@parentsquare.com",
+"title": "Booster Club Meeting - Apr 01",
+"start_date": "2027-04-01",
+"start_time": "12:00:00",
+"end_date": "2027-04-01",
+"end_time": "13:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86086494@parentsquare.com",
+"title": "SITE Council Meeting",
+"start_date": "2027-04-08",
+"start_time": "11:00:00",
+"end_date": "2027-04-08",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+}
+],
+"site_timezone": "America/Chicago",
+"error": ""
+},
+"error": null
+}

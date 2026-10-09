@@ -3,7 +3,27 @@
 "data": {
 "events": [
 {
-"id": "2b35aa4c-a38a-4ef8-978f-de66818b1276",
+"id": "e1ffe442-b073-46bc-a952-032f3f9a5883",
+"title": "MHS Varsity Girls Golf - Blue Valley Southwest- AWAY",
+"start_date": "2026-08-24",
+"start_time": "13:00:00",
+"end_date": "2026-08-24",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Dub's Dread Golf Club (12601 Hollingsworth Rd, Kansas City, KS 66109, United States)"
+},
+{
+"id": "859190d8-bef9-4040-bc0f-0f799a42cdcc",
+"title": "MHS JV Girls Golf - Washburn Rural Invite - AWAY",
+"start_date": "2026-08-25",
+"start_time": "12:00:00",
+"end_date": "2026-08-25",
+"end_time": "19:00:00",
+"all_day": false,
+"address": "Lake Shawnee"
+},
+{
+"id": "df5097ce-136f-49dd-9837-7417eca26842",
 "title": "MHS Varsity Volleyball - Jamboree - Rock Creek",
 "start_date": "2026-08-25",
 "start_time": "16:00:00",
@@ -13,7 +33,7 @@
 "address": "Rock Creek High School"
 },
 {
-"id": "e1b77008-9e29-4b4f-8dad-0c15863bf0ba",
+"id": "ae0706d7-4c67-4dcb-b449-64a91febf787",
 "title": "MHS JV Girls Tennis - Emporia Invite - AWAY",
 "start_date": "2026-08-27",
 "start_time": "15:00:00",
@@ -23,7 +43,7 @@
 "address": "Emporia"
 },
 {
-"id": "6bf921d4-b441-492b-a0e2-91e53d120aee",
+"id": "2d920299-60ff-4d59-a85f-ec765979a1f7",
 "title": "MHS Varsity Football - Inter Squad Scrimmage - HOME",
 "start_date": "2026-08-27",
 "start_time": "19:00:00",
@@ -33,7 +53,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "8921289f-dbb2-4263-8863-09483833de4e",
+"id": "edf3e5f1-fa66-4f21-8bd5-3349a337f4c3",
 "title": "MHS JV Boys Soccer - Topeka High - AWAY",
 "start_date": "2026-08-28",
 "start_time": "16:30:00",
@@ -43,7 +63,7 @@
 "address": "Topeka High School"
 },
 {
-"id": "da91cb27-140e-44bf-8aaf-cc8a6cba3f36",
+"id": "899b093f-325e-4c36-a5f0-dd9173129ebf",
 "title": "MHS Varsity Boys Soccer - Topeka High - AWAY",
 "start_date": "2026-08-28",
 "start_time": "18:15:00",
@@ -53,7 +73,7 @@
 "address": "Topeka High School"
 },
 {
-"id": "52dee366-c6fa-4115-aa06-0e27d89bb8e5",
+"id": "2b00071c-5a28-4915-ad34-4d5ad90136ca",
 "title": "MHS Varsity Volleyball - Hays Tournament - AWAY",
 "start_date": "2026-08-29",
 "start_time": "00:00:00",
@@ -63,7 +83,7 @@
 "address": "Hays High School"
 },
 {
-"id": "4643f628-7ca1-4683-8a14-720f32a0ac75",
+"id": "63ae856a-368f-414c-ba11-d667e1cc9192",
 "title": "MHS Varsity Volleyball - MHS Quad - HOME",
 "start_date": "2026-08-31",
 "start_time": "17:00:00",
@@ -73,7 +93,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "a61ea298-4513-4603-ac11-f088592f17dc",
+"id": "53ca544e-4098-494d-8706-60b015f8ce47",
 "title": "MHS Varsity Boys Soccer - Blue Valley West - AWAY",
 "start_date": "2026-09-01",
 "start_time": "20:00:00",
@@ -83,7 +103,7 @@
 "address": "Blue Valley West High School"
 },
 {
-"id": "a6220cd6-324e-47d2-a203-c1f3d9229cbd",
+"id": "89705833-5250-4d19-a17a-0f60c11a0152",
 "title": "MHS JV Girls Tennis - Salina South Invite - AWAY",
 "start_date": "2026-09-03",
 "start_time": "09:00:00",
@@ -93,7 +113,7 @@
 "address": "Salina South"
 },
 {
-"id": "ce24ab7b-85c4-437c-aa7f-cb0a8cd22b4a",
+"id": "003035a4-f140-4100-b015-60c635968f77",
 "title": "MHS Varsity Girls Tennis - Junction City Quad - AWAY",
 "start_date": "2026-09-03",
 "start_time": "09:00:00",
@@ -103,7 +123,7 @@
 "address": "Junction City"
 },
 {
-"id": "a4188b61-c52c-435a-9036-cbe0330c1c30",
+"id": "09e0e9c8-c60a-4ff6-9be7-27e917021607",
 "title": "MHS 9th Grade Football - Hayden High School - AWAY",
 "start_date": "2026-09-03",
 "start_time": "16:30:00",
@@ -113,7 +133,7 @@
 "address": "Hayden High School"
 },
 {
-"id": "86fe5359-c1a9-4cf3-8cf0-5d30b98c6832",
+"id": "0231b050-b5e7-4d03-aab9-ea152f09606d",
 "title": "MHS 9th Volleyball - MHS Quad - HOME",
 "start_date": "2026-09-03",
 "start_time": "17:00:00",
@@ -123,7 +143,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "2fc1df29-7690-4293-a0ff-96c86d8d35cf",
+"id": "0d016a73-1d3a-48f7-b4be-b2766f770e24",
 "title": "MHS Varsity Boys Soccer - Blue Valley West - AWAY",
 "start_date": "2026-09-03",
 "start_time": "18:00:00",
@@ -133,7 +153,7 @@
 "address": "Blue Valley West High School"
 },
 {
-"id": "033d2de1-1be1-4ef3-82e8-e80d0da8b4c3",
+"id": "d19fbb7f-fc36-4c36-807d-26cbae9365ae",
 "title": "MHS Varsity Football - Rockhurst- HOME",
 "start_date": "2026-09-04",
 "start_time": "19:30:00",
@@ -143,7 +163,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "39bf422d-6736-4fa0-8f27-e5328a39015b",
+"id": "efb24f9a-07f5-47e6-b919-bab1b066b849",
 "title": "MHS Cross Country -Manhattan Invite - HOME",
 "start_date": "2026-09-05",
 "start_time": "08:15:00",
@@ -153,7 +173,7 @@
 "address": "Manhattan"
 },
 {
-"id": "eaf10f8d-0987-49ac-9375-1d9d523ca632",
+"id": "2272e013-7c70-441d-87fa-c3fd9d845405",
 "title": "MHS 9th Volleyball - Junction City Invite - AWAY",
 "start_date": "2026-09-05",
 "start_time": "09:00:00",
@@ -163,7 +183,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "972cec85-c27d-4c86-8f15-a82b37872bd9",
+"id": "aba42f62-756d-4d2a-96a2-3ac922d5a628",
 "title": "MHS Varsity Boys Soccer - Blue Valley West - AWAY",
 "start_date": "2026-09-05",
 "start_time": "09:00:00",
@@ -173,7 +193,7 @@
 "address": "Blue Valley West High School"
 },
 {
-"id": "91779650-2603-40de-8756-aa415749a1eb",
+"id": "19191444-f94a-47d0-89bf-89080ad66596",
 "title": "MHS JV Football - Rockhurst - AWAY",
 "start_date": "2026-09-07",
 "start_time": "18:00:00",
@@ -183,7 +203,17 @@
 "address": "Rockhurst High School"
 },
 {
-"id": "e7aad982-6bd0-432f-9b78-1908db61a9c6",
+"id": "9b603ffa-99eb-4f16-bc9f-dd151f39359c",
+"title": "POSTPONED -MHS Varsity Girls Golf - Salina Central Invite - AWAY",
+"start_date": "2026-09-08",
+"start_time": "14:00:00",
+"end_date": "2026-09-08",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Salina"
+},
+{
+"id": "a269f686-30b5-4b2e-b46c-988330a80264",
 "title": "MHS JV Girls Tennis - Manhattan Invite - HOME",
 "start_date": "2026-09-08",
 "start_time": "15:00:00",
@@ -193,7 +223,7 @@
 "address": "Manhattan"
 },
 {
-"id": "1f76c819-f736-459f-8b74-52be5fb843ad",
+"id": "cb6a378f-174e-428e-be1e-b50ac3569e8b",
 "title": "MHS JV Boys Soccer - Lawrence Free State - HOME",
 "start_date": "2026-09-08",
 "start_time": "16:30:00",
@@ -203,7 +233,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "4084e669-43bd-4481-af6b-c37228753620",
+"id": "1fb8171f-d2a2-4c74-b57b-e2d429c9f678",
 "title": "MHS 9th Volleyball - Junction City TRI - AWAY",
 "start_date": "2026-09-08",
 "start_time": "17:00:00",
@@ -213,7 +243,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "9cef3a08-3533-43e3-a1da-4c698522a5fd",
+"id": "7e3c67e9-f041-4717-a7c9-00b797065bc2",
 "title": "MHS JV Volleyball - Junction City TRI- AWAY",
 "start_date": "2026-09-08",
 "start_time": "17:00:00",
@@ -223,7 +253,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "dca3e09f-a1f5-4c13-9ac0-af6ba3a8f94b",
+"id": "26bc1e71-5452-427d-a969-4670afd36413",
 "title": "MHS Varsity Boys Soccer - Lawrence Free State",
 "start_date": "2026-09-08",
 "start_time": "18:15:00",
@@ -233,7 +263,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "722cf51f-0740-497b-9130-3a5a8edfc918",
+"id": "3ccd97f4-333f-4b4b-ab9a-2c989b0c525f",
 "title": "MHS Varsity Girls Tennis - Seaman Invite - AWAY",
 "start_date": "2026-09-09",
 "start_time": "15:00:00",
@@ -243,7 +273,7 @@
 "address": "Seaman"
 },
 {
-"id": "1ebe2430-626e-4201-b6e5-dbcb89ca2ee1",
+"id": "478987ea-bcb9-49a5-abe1-dda9e3daf4a8",
 "title": "MHS 9th Volleyball - Great Bend Dual - AWAY",
 "start_date": "2026-09-09",
 "start_time": "16:00:00",
@@ -253,7 +283,7 @@
 "address": "Great Bend High School"
 },
 {
-"id": "4785c4f4-231e-4e3e-aba4-8bef0fcb455b",
+"id": "6a516518-8ba0-4fd5-95a9-21ce4f49b413",
 "title": "MHS JV Volleyball - Great Bend Dual - AWAY",
 "start_date": "2026-09-09",
 "start_time": "16:00:00",
@@ -263,7 +293,7 @@
 "address": "Great Bend High School"
 },
 {
-"id": "8a3dbdd0-bf82-42a2-86ac-80c9af7a59be",
+"id": "90943684-6ecb-42e7-9f4c-db94ae781e93",
 "title": "MHS Varsity Volleyball - Great Bend Dual - AWAY",
 "start_date": "2026-09-09",
 "start_time": "16:00:00",
@@ -273,7 +303,17 @@
 "address": "Great Bend High School"
 },
 {
-"id": "ead21e37-78f6-4c35-814e-a4e0e043bf55",
+"id": "e7c4326f-7f2a-4a0e-a178-8151a0613b90",
+"title": "MHS JV Girls Golf - Topeka West Invite - AWAY",
+"start_date": "2026-09-10",
+"start_time": "15:00:00",
+"end_date": "2026-09-10",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Topeka"
+},
+{
+"id": "e5380d31-ba67-4a83-a143-79393b910668",
 "title": "MHS JV Girls Tennis - Topeka High Quad - AWAY",
 "start_date": "2026-09-10",
 "start_time": "15:00:00",
@@ -283,7 +323,7 @@
 "address": "Topeka High School"
 },
 {
-"id": "c8a26adc-1bc4-4739-a6cb-7b86d5161c03",
+"id": "6229533b-bc82-4e57-9722-8a841c5caa99",
 "title": "MHS JV Boys Soccer - Seaman - HOME",
 "start_date": "2026-09-10",
 "start_time": "16:30:00",
@@ -293,7 +333,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "e3fdb5e8-7bff-4004-968a-fd131d14dd4b",
+"id": "41ca74ad-43e3-4631-8d04-865397e9040c",
 "title": "MHS Varsity Volleyball - Manhattan Quad - HOME",
 "start_date": "2026-09-10",
 "start_time": "17:00:00",
@@ -303,7 +343,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "6c902ffc-b8ab-42f4-b706-bac01ec54a5d",
+"id": "060f7845-40e4-4758-80d2-1218469e80d6",
 "title": "MHS Varsity Boys Soccer - Seaman HS - HOME",
 "start_date": "2026-09-10",
 "start_time": "18:15:00",
@@ -313,7 +353,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "1a69ff5b-c4f8-46fe-84d2-2c8f4466b87c",
+"id": "2ac2b878-668a-4800-affa-ac54b74b006e",
 "title": "MHS Varsity Football - Mill Valley - AWAY",
 "start_date": "2026-09-11",
 "start_time": "19:00:00",
@@ -323,7 +363,7 @@
 "address": "Mill Valley High School"
 },
 {
-"id": "42e4817b-5409-4ac3-a9c4-07f9ee756075",
+"id": "0f6c61eb-d969-4947-a547-4590504b5782",
 "title": "MHS Cross Country -Emporia Invite - AWAY",
 "start_date": "2026-09-12",
 "start_time": "09:00:00",
@@ -333,7 +373,7 @@
 "address": "Emporia"
 },
 {
-"id": "4bf2e8d3-62f0-43bc-b0dc-58045fa49624",
+"id": "4cfad057-49a7-433e-b02d-3f14f011e292",
 "title": "MHS JV Girls Tennis - Emporia Invite - AWAY",
 "start_date": "2026-09-12",
 "start_time": "09:00:00",
@@ -343,7 +383,7 @@
 "address": "Emporia"
 },
 {
-"id": "33e7a7bf-e7e6-4763-a38a-1707e9a57fe7",
+"id": "cb56da02-917e-42ff-9a4c-1c2b59665930",
 "title": "MHS Varsity Girls Tennis - Emporia Invite - AWAY",
 "start_date": "2026-09-12",
 "start_time": "09:00:00",
@@ -353,7 +393,7 @@
 "address": "Emporia"
 },
 {
-"id": "38889dd5-2893-4329-afcc-dd829a5511f3",
+"id": "9506fdca-f04f-4d7d-a40c-b88c39a3ec21",
 "title": "MHS 9th Grade Football - Mill Valley- HOME",
 "start_date": "2026-09-14",
 "start_time": "16:00:00",
@@ -373,7 +413,7 @@
 "address": "Lawrence Free State High School (4700 Overland Dr, Lawrence, KS 66049, United States)"
 },
 {
-"id": "26ee0230-6e10-41d0-b58f-6f6104243fde",
+"id": "1af1c80c-f42a-44f9-a3b2-2891b87e4471",
 "title": "MHS JV Volleyball - Lawrence Free State - AWAY",
 "start_date": "2026-09-14",
 "start_time": "17:00:00",
@@ -383,7 +423,7 @@
 "address": "Lawrence Free State High School (4700 Overland Dr, Lawrence, KS 66049, United States)"
 },
 {
-"id": "13e173b0-3594-4da8-89f7-18bbbd1d38e2",
+"id": "8bbae365-6197-453e-aa38-66f1c0da53df",
 "title": "MHS Varsity Volleyball - Free State Tri - AWAY",
 "start_date": "2026-09-14",
 "start_time": "17:00:00",
@@ -393,7 +433,7 @@
 "address": "Lawrence Free State High School"
 },
 {
-"id": "1918893d-bfcc-4a04-8fd7-d02b131833d3",
+"id": "b29a0541-3546-4c7b-a095-3949fa9cf1c6",
 "title": "MHS JV Football - Mill Valley - HOME",
 "start_date": "2026-09-14",
 "start_time": "18:00:00",
@@ -403,7 +443,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "92b8ce45-71b7-4478-aeec-54b6034e0585",
+"id": "024f7c7c-1fb0-4696-9c7c-b4b13bd1b1b1",
 "title": "MHS 9th Volleyball - Emporia TRI - AWAY",
 "start_date": "2026-09-15",
 "start_time": "17:00:00",
@@ -413,7 +453,17 @@
 "address": "Emporia High School"
 },
 {
-"id": "94bc38bf-941d-4c8b-8d06-905ce9791b6c",
+"id": "c19cd253-06b0-4670-932a-f58879694b77",
+"title": "MHS Varsity Girls Golf - Washburn Rural Invite - AWAY",
+"start_date": "2026-09-16",
+"start_time": "11:00:00",
+"end_date": "2026-09-16",
+"end_time": "21:00:00",
+"all_day": false,
+"address": "Wamego Country Club"
+},
+{
+"id": "9e83cf1f-74b7-4375-85ac-7452aeb33bcf",
 "title": "MHS JV Girls Tennis - Junction City Dual - HOME",
 "start_date": "2026-09-16",
 "start_time": "15:30:00",
@@ -423,7 +473,17 @@
 "address": "Manhattan"
 },
 {
-"id": "3834d17f-9220-4f3c-95f3-8d17193f0aff",
+"id": "0b8bfd41-7d46-48c6-a035-5b07c52081d6",
+"title": "MHS JV Girls Golf - Salina South Invite - AWAY",
+"start_date": "2026-09-17",
+"start_time": "15:00:00",
+"end_date": "2026-09-17",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Salina"
+},
+{
+"id": "c9f1b63f-7e89-4ea3-be5d-f047752d8c49",
 "title": "MHS JV Girls Tennis - Topeka - AWAY",
 "start_date": "2026-09-17",
 "start_time": "16:00:00",
@@ -433,7 +493,7 @@
 "address": "Topeka"
 },
 {
-"id": "14148c8e-f6a5-4af3-aa51-3a3515e08a67",
+"id": "ab7afea9-cd88-42ff-9979-b8c1230d8cd3",
 "title": "MHS 9th Volleyball - Rock Creek TRI - AWAY",
 "start_date": "2026-09-17",
 "start_time": "17:00:00",
@@ -443,7 +503,7 @@
 "address": "Rock Creek High School"
 },
 {
-"id": "3c8ac78e-038a-4fcd-89ee-56c9ebfddb67",
+"id": "396c8421-8e83-4e03-93a7-3e27072dba75",
 "title": "MHS JV Volleyball - Olathe West High School - AWAY",
 "start_date": "2026-09-17",
 "start_time": "17:00:00",
@@ -463,7 +523,7 @@
 "address": "Olathe West High School (2200 W Santa Fe St, Olathe, KS 66061, United States)"
 },
 {
-"id": "fdf55cd3-f2da-4f0c-bc18-e27f908bb535",
+"id": "0d1e535f-8db3-4fe3-9021-793ee3c827f7",
 "title": "MHS Varsity Football - Dodge City - AWAY",
 "start_date": "2026-09-18",
 "start_time": "19:00:00",
@@ -473,7 +533,7 @@
 "address": "Dodge City High School"
 },
 {
-"id": "580ae88b-6f38-4b60-8f76-6af40dd2d910",
+"id": "1590c58a-9477-4295-b10d-fd231de55243",
 "title": "MHS Cross Country - Missouri Southern Stampede- AWAY",
 "start_date": "2026-09-19",
 "start_time": "00:00:00",
@@ -483,7 +543,7 @@
 "address": "Joplin, MO"
 },
 {
-"id": "e18d0635-1ce9-4d16-958a-72d1d9cf02bb",
+"id": "6d84f770-7ce0-4caf-b055-3694147c7694",
 "title": "MHS JV Volleyball - MHS JV Invite - HOME",
 "start_date": "2026-09-19",
 "start_time": "08:30:00",
@@ -493,7 +553,17 @@
 "address": "Manhattan High School"
 },
 {
-"id": "99f9d037-d6fe-4ea8-8a3d-6f5cc55fd2d9",
+"id": "1b2b55d1-b832-47b4-af06-461ac6c1994d",
+"title": "MHS JV Girls Golf - Salina South Invite - AWAY",
+"start_date": "2026-09-21",
+"start_time": "13:00:00",
+"end_date": "2026-09-21",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Salina"
+},
+{
+"id": "07005790-daa4-4fac-b162-02f4d478dbd7",
 "title": "MHS JV Girls Tennis - Wamego Dual - AWAY",
 "start_date": "2026-09-21",
 "start_time": "15:00:00",
@@ -503,7 +573,7 @@
 "address": "Wamego"
 },
 {
-"id": "7b2ff90a-786a-4471-a8b4-728871b7841a",
+"id": "8e9f1393-866d-46e7-8a5f-ec58c7c6a4e0",
 "title": "MHS Varsity Girls Tennis - Varsity Quad - AWAY",
 "start_date": "2026-09-21",
 "start_time": "15:00:00",
@@ -513,7 +583,7 @@
 "address": "TBD"
 },
 {
-"id": "4b6144a7-6641-45e1-a4a6-c501760852a4",
+"id": "62700b1f-09ba-4e53-a87f-5ed78ca8d7e8",
 "title": "MHS JV Football - Hays - HOME",
 "start_date": "2026-09-21",
 "start_time": "16:00:00",
@@ -523,7 +593,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "4a114385-1a1d-4d0e-a0a5-6454a33ff0e0",
+"id": "6242204a-edc3-4799-a681-fbf9b225ea75",
 "title": "MHS Varsity Volleyball - Tonganoxie - AWAY",
 "start_date": "2026-09-21",
 "start_time": "17:00:00",
@@ -543,7 +613,7 @@
 "address": ""
 },
 {
-"id": "f933b8e9-5c82-4d8f-95ba-67d07d701245",
+"id": "5ee5e05d-f565-40bd-9b66-5e8be32ac3cd",
 "title": "MHS Varsity Girls Tennis - Washburn Rural Invite - AWAY",
 "start_date": "2026-09-22",
 "start_time": "09:00:00",
@@ -553,7 +623,17 @@
 "address": "Washburn Rural"
 },
 {
-"id": "30191643-a040-4ac4-a2f2-a08c0bc9f529",
+"id": "040000008200E00074C5B7101A82E00800000000ECA00C466640DD0100000000000000001000000052D3EAA004D120488E29D59E04853DEB",
+"title": "MHS Varsity Girls Golf - BV Southwest - Sycamore Ridge",
+"start_date": "2026-09-22",
+"start_time": "11:00:00",
+"end_date": "2026-09-22",
+"end_time": "16:00:00",
+"all_day": false,
+"address": "Sycamore Ridge Golf Club (21731 Clubhouse Dr, Spring Hill, KS 66083, United States)"
+},
+{
+"id": "69f07c14-5f48-4983-b49b-3aa9ffae6763",
 "title": "MHS 9th Volleyball - MHS TRI - AWAY",
 "start_date": "2026-09-22",
 "start_time": "17:00:00",
@@ -563,7 +643,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "a4167588-7877-4aea-8963-3ac256c3c337",
+"id": "b737db79-9973-4d68-ae8e-8b3c249098e4",
 "title": "MHS JV Volleyball - Manhattan JV TRI - HOME",
 "start_date": "2026-09-22",
 "start_time": "17:00:00",
@@ -573,7 +653,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "19d05037-98b1-4a6c-b33a-da94e022501d",
+"id": "554f7b8b-29c4-4594-8422-a1184f6d6596",
 "title": "MHS JV Girls Tennis - Junction City Invite - AWAY",
 "start_date": "2026-09-23",
 "start_time": "15:00:00",
@@ -583,7 +663,7 @@
 "address": "Junction City"
 },
 {
-"id": "a97b28dd-0bee-4ad2-8f3c-611eee980e98",
+"id": "831813a3-df20-43cf-b03d-f8c0e9b76219",
 "title": "MHS Cross Country - Olathe North - AWAY",
 "start_date": "2026-09-23",
 "start_time": "17:45:00",
@@ -593,7 +673,17 @@
 "address": "Olathe North"
 },
 {
-"id": "20ad8161-9032-403e-9e2e-82d908d39252",
+"id": "040000008200E00074C5B7101A82E00800000000E47B60E46640DD01000000000000000010000000FC67591872C3FF428D1E39F47C47396F",
+"title": "MHS Varsity Girls Golf - Salina Central - AWAY",
+"start_date": "2026-09-24",
+"start_time": "13:00:00",
+"end_date": "2026-09-24",
+"end_time": "18:00:00",
+"all_day": false,
+"address": "Salina Municipal Golf Course (2500 E Crawford St, Salina, KS 67401, United States)"
+},
+{
+"id": "ad325ed6-a486-45d9-b812-4aa4742c7fa2",
 "title": "MHS JV Boys Soccer - Kapuan Mt. Carmel - AWAY",
 "start_date": "2026-09-24",
 "start_time": "16:30:00",
@@ -603,7 +693,7 @@
 "address": "Kapuan Mt. Carmel High School"
 },
 {
-"id": "c0edb219-0588-488e-a708-a3e6bb9b2934",
+"id": "035e7784-3693-4d35-97c8-f37c7a4e54d2",
 "title": "MHS JV Volleyball - Manhattan TRI -HOME",
 "start_date": "2026-09-24",
 "start_time": "17:00:00",
@@ -613,7 +703,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "a848755c-b0fa-44bb-aee2-82597aa0948a",
+"id": "65166c37-fde8-47bd-a26b-de4b861c599c",
 "title": "MHS Varsity Volleyball - MHS TRI - HOME",
 "start_date": "2026-09-24",
 "start_time": "17:00:00",
@@ -623,7 +713,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "b638181c-4861-4847-8826-db40ca394261",
+"id": "68a251a4-e2dc-4751-ae74-d24e302f63f1",
 "title": "MHS Varsity Boys Soccer - Kapuan Mt. Carmel - AWAY",
 "start_date": "2026-09-24",
 "start_time": "18:15:00",
@@ -633,7 +723,7 @@
 "address": "Kapuan Mt. Carmel High School"
 },
 {
-"id": "0338ab64-741d-4f0c-8f83-206a517d1529",
+"id": "61825db5-4c31-437a-b32a-7bc2ccc96ec4",
 "title": "MHS Varsity Football - Wichita North - HOME",
 "start_date": "2026-09-25",
 "start_time": "19:00:00",
@@ -643,7 +733,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "6b450ceb-ff26-45e9-8cdd-4115982d46e3",
+"id": "5a918273-7e63-44ad-8b39-b631ba0e53fa",
 "title": "MHS Cross Country - Rim Rock - AWAY",
 "start_date": "2026-09-26",
 "start_time": "08:15:00",
@@ -653,7 +743,17 @@
 "address": "Lawrence"
 },
 {
-"id": "a507ddca-b19b-48b8-a211-a4f6ac2b903e",
+"id": "b1d48cef-8991-4f8e-a384-a03686967850",
+"title": "MHS Varsity Girls Golf - Centennial League - AWAY",
+"start_date": "2026-09-28",
+"start_time": "13:00:00",
+"end_date": "2026-09-28",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Stagg Hill"
+},
+{
+"id": "5d55015a-864e-45cb-8dec-4a3f4d826b59",
 "title": "MHS Varsity Girls Tennis - Emporia Invite - AWAY",
 "start_date": "2026-09-28",
 "start_time": "13:30:00",
@@ -663,7 +763,17 @@
 "address": "Emporia"
 },
 {
-"id": "1d3adf90-cc1d-4f01-8e06-81173839c344",
+"id": "d244608f-5cdc-433d-b1cc-ba9c50f122e4",
+"title": "MHS JV Girls Golf - Clay Center Invite - AWAY",
+"start_date": "2026-09-28",
+"start_time": "14:00:00",
+"end_date": "2026-09-28",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Clay Center"
+},
+{
+"id": "a36c12c2-ac7d-48bb-b133-5c7df17706a4",
 "title": "MHS 9th Grade Football - OPEN Date",
 "start_date": "2026-09-28",
 "start_time": "16:30:00",
@@ -673,7 +783,7 @@
 "address": ""
 },
 {
-"id": "0dbeddad-851e-40d9-b86a-de292966fa6c",
+"id": "21c5d8cc-f828-4757-8d5d-1e368aa225bd",
 "title": "MHS JV Football  - Hayden - HOME",
 "start_date": "2026-09-28",
 "start_time": "16:30:00",
@@ -683,7 +793,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "84140aad-e40b-4225-8809-7548c3a030b8",
+"id": "0473f345-6ac0-4ca9-9629-98abc6ed883a",
 "title": "MHS JV Boys Soccer - Wichita South- AWAY",
 "start_date": "2026-09-28",
 "start_time": "17:00:00",
@@ -693,7 +803,7 @@
 "address": "Wichita South High School"
 },
 {
-"id": "02d287d0-0268-42b3-8e26-982b603b3aea",
+"id": "33fab6d5-5e37-4bd1-aa9c-d5942d37a858",
 "title": "MHS Varsity Boys Soccer - Wichita South - AWAY",
 "start_date": "2026-09-28",
 "start_time": "18:30:00",
@@ -703,7 +813,7 @@
 "address": "Wichita South High School"
 },
 {
-"id": "6763ce33-53fd-4736-96e4-009ee2a93374",
+"id": "efc720d8-a26e-41b6-a877-d96f2113ccc0",
 "title": "MHS Varsity Girls Tennis - Topeka West Invite - AWAY",
 "start_date": "2026-09-29",
 "start_time": "09:00:00",
@@ -713,7 +823,7 @@
 "address": "Kossover"
 },
 {
-"id": "51f4e5d9-ec6f-459b-baa1-68236cbd0bd9",
+"id": "ddaddd87-3532-4923-bcd3-11cd0dfa8cff",
 "title": "MHS JV Boys Soccer - Junction City - HOME",
 "start_date": "2026-09-29",
 "start_time": "16:30:00",
@@ -723,7 +833,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "15301a7f-8059-410d-9511-1aa5131e1798",
+"id": "5ccce9b5-be76-4b3f-ac05-1ba926548442",
 "title": "MHS Varsity Boys Soccer - Junction City - HOME",
 "start_date": "2026-09-29",
 "start_time": "18:15:00",
@@ -733,7 +843,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "17ee69dd-130f-489c-9b61-6eee8867f559",
+"id": "b2961e21-eb25-43ae-94f2-39626e50097b",
 "title": "MHS JV Girls Tennis - Washburn Rural Invite - AWAY",
 "start_date": "2026-09-30",
 "start_time": "09:00:00",
@@ -743,7 +853,37 @@
 "address": "Kossover"
 },
 {
-"id": "78714ed7-e54a-4020-8ade-1b6e400c626f",
+"id": "f4b1b4df-51de-4418-803e-007cc174ceda",
+"title": "MHS Varsity Girls Golf - Lawrence Invite - AWAY",
+"start_date": "2026-09-30",
+"start_time": "09:00:00",
+"end_date": "2026-09-30",
+"end_time": "16:00:00",
+"all_day": false,
+"address": "Eagle Bend"
+},
+{
+"id": "696061bc-9405-4c27-94cc-157a48a309dc",
+"title": "MHS Varsity Girls Golf - Blue Valley Northwest - AWAY",
+"start_date": "2026-10-01",
+"start_time": "13:00:00",
+"end_date": "2026-10-01",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Minor Park Golf Course (11215 Holmes Rd, Kansas City, MO 64131, United States)"
+},
+{
+"id": "040000008200E00074C5B7101A82E00800000000835A2DBD514CDD01000000000000000010000000B524D0BE05328942B1DB18695210A29B",
+"title": "MHS JV Girls Golf - Junction City Rolling Meadows - AWAY",
+"start_date": "2026-10-01",
+"start_time": "15:00:00",
+"end_date": "2026-10-01",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Rolling Meadows Golf Course (6514 Old Milford Rd, Milford, KS 66514, United States)"
+},
+{
+"id": "b8f8ebb3-56c1-4973-8faf-2b61272abf66",
 "title": "MHS Varsity Girls Tennis - Manhattan Quad - HOME",
 "start_date": "2026-10-01",
 "start_time": "15:00:00",
@@ -753,7 +893,7 @@
 "address": "Manhattan"
 },
 {
-"id": "e77b47d5-e8a3-4584-8f95-31993cbfa52c",
+"id": "95030427-d8ac-48ea-850a-3c664c7a8b3d",
 "title": "MHS JV Volleyball - MHS Dual - HOME",
 "start_date": "2026-10-01",
 "start_time": "17:00:00",
@@ -763,7 +903,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "e563a69f-193c-44ab-8f6c-62d90dd11b8d",
+"id": "ded77519-3a1c-4c90-9e98-acceb24d162b",
 "title": "MHS Varsity Volleyball - MHS Dual - HOME",
 "start_date": "2026-10-01",
 "start_time": "17:00:00",
@@ -773,7 +913,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "9cee74f4-2eda-4fb2-80b2-8e7b20c0e678",
+"id": "121667cf-97ef-456f-abfd-2061769f663d",
 "title": "MHS Varsity Football - Junction City - AWAY",
 "start_date": "2026-10-02",
 "start_time": "19:00:00",
@@ -783,7 +923,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "862c5966-4f34-4609-b77b-b61001df3505",
+"id": "9f3abf1e-0378-4d86-9fa1-40840fa4b354",
 "title": "MHS 9th Volleyball League Tourn. - HOME",
 "start_date": "2026-10-03",
 "start_time": "09:00:00",
@@ -793,7 +933,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "6c714369-cc8f-475d-9107-a12fcb41ce4b",
+"id": "88fcf2bf-2ace-45a3-9ee5-bb69e829fb0c",
 "title": "MHS Cross Country - Baldwin Invite - AWAY",
 "start_date": "2026-10-03",
 "start_time": "09:00:00",
@@ -803,7 +943,7 @@
 "address": "Baldwin"
 },
 {
-"id": "07e8f8a0-10fe-43a3-b6d6-a4bf386bf001",
+"id": "7b7c2ba0-e4ac-4bb5-81ed-b69218af90fe",
 "title": "MHS JV Volleyball - Emporia Invite - AWAY",
 "start_date": "2026-10-03",
 "start_time": "09:00:00",
@@ -813,7 +953,7 @@
 "address": "Emporia High School"
 },
 {
-"id": "f591dc59-819b-4e20-b4f4-94a3b3dbe7f1",
+"id": "ec17319c-085a-4a93-bce2-87aa2e0e7677",
 "title": "MHS Varsity Volleyball - League Tourn. - AWAY",
 "start_date": "2026-10-03",
 "start_time": "09:00:00",
@@ -823,7 +963,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "50678683-c460-4e10-b361-f2f2b308280c",
+"id": "a1ee06e4-5d89-4bbf-93af-27b3ecda9328",
 "title": "MHS Varsity Girls Tennis - Centennial League - AWAY",
 "start_date": "2026-10-05",
 "start_time": "09:00:00",
@@ -833,7 +973,17 @@
 "address": "Topeka High School"
 },
 {
-"id": "ad133605-e495-433e-8c74-97a21fb9eb09",
+"id": "285d20f6-4239-4001-933e-5a6db6f3273f",
+"title": "MHS Varsity Girls Golf - Manhattan Invite - HOME",
+"start_date": "2026-10-05",
+"start_time": "13:00:00",
+"end_date": "2026-10-05",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Stagg Hill"
+},
+{
+"id": "d47a438c-fbbc-4e49-a31e-575d4f17570d",
 "title": "MHS 9th Grade Football - Junction City - HOME",
 "start_date": "2026-10-05",
 "start_time": "16:30:00",
@@ -843,7 +993,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "7fcc3909-873c-49bd-a5c6-f17e62430691",
+"id": "d7669ee1-0846-4f22-a298-06988cf10b3d",
 "title": "MHS 9th Volleyball - Junction City TRI - AWAY",
 "start_date": "2026-10-05",
 "start_time": "17:00:00",
@@ -853,7 +1003,7 @@
 "address": "Junction City High School"
 },
 {
-"id": "80b8b254-4e82-4a42-a3cf-6e049668529e",
+"id": "7a8845e3-ad89-44fc-befa-768159294a6f",
 "title": "MHS JV Football - Junction City - HOME",
 "start_date": "2026-10-05",
 "start_time": "18:00:00",
@@ -863,7 +1013,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "9443f9fd-696f-4249-b8c2-b70fd4f12aec",
+"id": "ef5705eb-110b-49e6-a0b0-876f97a9fedb",
 "title": "MHS Varsity Boys Soccer - Hayden - HOME",
 "start_date": "2026-10-06",
 "start_time": "18:15:00",
@@ -873,7 +1023,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "8b3c9d2c-41c5-4adb-b215-1878b640b1b6",
+"id": "5ca4080d-8fed-42bb-85e1-6ba857d93435",
 "title": "MHS JV Girls Tennis - Centennial League - AWAY",
 "start_date": "2026-10-07",
 "start_time": "09:00:00",
@@ -883,7 +1033,17 @@
 "address": "Topeka High School"
 },
 {
-"id": "fae3e153-5bc1-42f8-9ba8-6e68366a0247",
+"id": "52b0bbc6-8dd0-4675-b056-f6f5f4f683ea",
+"title": "MHS JV Girls Golf - Manhattan JV Invite - HOME",
+"start_date": "2026-10-08",
+"start_time": "15:00:00",
+"end_date": "2026-10-08",
+"end_time": "20:00:00",
+"all_day": false,
+"address": "Stagg Hill"
+},
+{
+"id": "2f9ef13f-5799-4e16-b52a-ffb6aa668879",
 "title": "MHS JV Boys Soccer - Washburn Rural - AWAY",
 "start_date": "2026-10-08",
 "start_time": "16:30:00",
@@ -893,7 +1053,7 @@
 "address": "Washburn Rural High School"
 },
 {
-"id": "5bb5e82f-0bb3-4156-a999-5e185d58b9c0",
+"id": "58a65e01-7f93-4aab-ba17-3ff9567b71e5",
 "title": "MHS 9th Volleyball - Manhattan TRI - HOME",
 "start_date": "2026-10-08",
 "start_time": "17:00:00",
@@ -903,7 +1063,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "3b4d6890-13cd-465f-9298-3c28c11bc761",
+"id": "c938f187-5f29-4edc-8e2d-10fb5d0f395b",
 "title": "MHS JV Volleyball - MHS TRI - HOME",
 "start_date": "2026-10-08",
 "start_time": "17:00:00",
@@ -913,7 +1073,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "afdbfb93-f83d-40f9-a284-cc445c91f69e",
+"id": "b3f31168-4055-4d56-a5c8-50adc4914923",
 "title": "MHS Varsity Volleyball - MHS TRI - HOME",
 "start_date": "2026-10-08",
 "start_time": "17:00:00",
@@ -923,7 +1083,7 @@
 "address": "Manhattan High School"
 },
 {
-"id": "cc64dc0d-3c2d-42aa-859d-ea7dcd251741",
+"id": "b333fb77-1da1-4f2f-9227-2e3d76278ffd",
 "title": "MHS Varsity Boys Soccer - Washburn Rural - AWAY",
 "start_date": "2026-10-08",
 "start_time": "18:15:00",
@@ -933,7 +1093,7 @@
 "address": "Washburn Rural High School"
 },
 {
-"id": "8e320119-140e-4851-9503-a04064a5b80e",
+"id": "19d61fc9-0b29-4da9-b622-cdd0282a064e",
 "title": "MHS Varsity Girls Tennis - Regionals -AWAY",
 "start_date": "2026-10-09",
 "start_time": "08:00:00",
@@ -943,7 +1103,7 @@
 "address": "TBD"
 },
 {
-"id": "b96220dc-8728-4b60-b15d-ce390fcd8cd2",
+"id": "f20742b6-c61b-44fa-815c-9b933b941733",
 "title": "MHS Varsity Football - Emporia - HOME",
 "start_date": "2026-10-09",
 "start_time": "19:00:00",
@@ -953,7 +1113,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "b5e94273-6112-4037-9018-239750240087",
+"id": "8938ea1e-ef6d-48e8-aca2-d17b30659764",
 "title": "MHS Cross Country - Haskell Invite - AWAY",
 "start_date": "2026-10-10",
 "start_time": "00:00:00",
@@ -963,7 +1123,7 @@
 "address": "Lawrence"
 },
 {
-"id": "63b0238e-d0a5-4de0-8099-3929f4db388d",
+"id": "324f9d74-3233-4f43-ac2a-c5895c745aee",
 "title": "MHS JV Boys Soccer - Emporia JV Quad - AWAY",
 "start_date": "2026-10-10",
 "start_time": "09:00:00",
@@ -973,7 +1133,7 @@
 "address": "Emporia High School"
 },
 {
-"id": "47ccaa86-cfcb-4020-821b-b76e3ec57da7",
+"id": "49639f9f-07a8-40e3-b2d0-cc36e0bfc28e",
 "title": "MHS JV Volleyball - League Tourn. - AWAY",
 "start_date": "2026-10-10",
 "start_time": "09:00:00",
@@ -983,7 +1143,7 @@
 "address": "Topeka High School"
 },
 {
-"id": "32635c7b-b499-4ff7-b2e5-afcb2146946d",
+"id": "d8ff5866-abce-41d3-9df5-f61103f7a0e2",
 "title": "MHS Varsity Volleyball - Manhattan Invite - HOME",
 "start_date": "2026-10-10",
 "start_time": "09:00:00",
@@ -993,7 +1153,17 @@
 "address": "Manhattan High School"
 },
 {
-"id": "8d067826-d019-4e4d-8f4c-faba41cd0e33",
+"id": "1a2eb035-fff9-47ba-8cec-302d59e74e96",
+"title": "MHS Varsity Girls Golf - Regionals - AWAY",
+"start_date": "2026-10-12",
+"start_time": "00:00:00",
+"end_date": "2026-10-14",
+"end_time": "00:00:00",
+"all_day": true,
+"address": "Garden City, KS"
+},
+{
+"id": "2e121f2e-d98f-452a-8a6c-a9e5e6d2a222",
 "title": "MHS 9th Grade Football - Emporia - AWAY",
 "start_date": "2026-10-12",
 "start_time": "16:30:00",
@@ -1003,7 +1173,7 @@
 "address": "Emporia High School"
 },
 {
-"id": "9ed62766-622c-42b7-a5e7-fc1e41505242",
+"id": "e92523b8-45bf-4573-818f-327e58a4eda9",
 "title": "MHS 9th Volleyball - Highland Park Quad - AWAY",
 "start_date": "2026-10-12",
 "start_time": "17:00:00",
@@ -1013,7 +1183,7 @@
 "address": "Highland Park High School"
 },
 {
-"id": "7e6b77a4-df0a-4623-a94b-28af3f0c14dd",
+"id": "20506bb0-d986-46b1-a232-b995d8faed3f",
 "title": "MHS JV Boys Soccer -Wichita Northwest - AWAY",
 "start_date": "2026-10-13",
 "start_time": "16:30:00",
@@ -1023,7 +1193,7 @@
 "address": "Wichita Northwest High School"
 },
 {
-"id": "190e65f3-58d1-44c2-a750-cfdb79515e17",
+"id": "70e48e9e-18d1-46f3-9479-4f886868c404",
 "title": "MHS Varsity Boys Soccer - Wichita Northwest - AWAY",
 "start_date": "2026-10-13",
 "start_time": "18:15:00",
@@ -1033,7 +1203,7 @@
 "address": "Wichita Northwest High School"
 },
 {
-"id": "a45dc637-b20e-4075-8f79-5b8ac1430e3a",
+"id": "c5190872-f589-478f-89ac-7d6767931542",
 "title": "MHS 9th Volleyball - Washburn Rural TRI - AWAY",
 "start_date": "2026-10-14",
 "start_time": "17:00:00",
@@ -1043,7 +1213,7 @@
 "address": "Washburn Rural High School"
 },
 {
-"id": "db7f064d-e105-4db9-97be-c7ac05dcac0f",
+"id": "ea5d9816-6489-4df8-9fc5-362272679a79",
 "title": "MHS JV Boys Soccer -Emporia - AWAY",
 "start_date": "2026-10-15",
 "start_time": "16:30:00",
@@ -1053,7 +1223,7 @@
 "address": "Emporia High School"
 },
 {
-"id": "22ecc8bf-dc2c-484d-b35c-723dccf8bca5",
+"id": "23d73610-0df0-49a6-89f7-d2287fb29ef7",
 "title": "MHS JV Volleyball - Maize South TRI - AWAY",
 "start_date": "2026-10-15",
 "start_time": "17:00:00",
@@ -1063,7 +1233,7 @@
 "address": "Maize South High School"
 },
 {
-"id": "5a4ad319-3b6a-48c4-86d5-dfa35fea29bf",
+"id": "99776a95-5ae7-4b38-b68b-f5081a93395c",
 "title": "MHS Varsity Volleyball - Maize South TRI - AWAY",
 "start_date": "2026-10-15",
 "start_time": "17:00:00",
@@ -1073,7 +1243,7 @@
 "address": "Maize South High School"
 },
 {
-"id": "4fd38d61-9138-4dcf-bdd9-0b85c87f9f67",
+"id": "1d707e79-1902-4f8b-94e8-57f2cd496edd",
 "title": "MHS Varsity Boys Soccer - Emporia - AWAY",
 "start_date": "2026-10-15",
 "start_time": "18:15:00",
@@ -1083,7 +1253,7 @@
 "address": "Emporia High School"
 },
 {
-"id": "064151d1-a7e0-414b-81fd-a63597904f0b",
+"id": "5ab7ee15-99fa-4716-b0a2-713c2416724d",
 "title": "MHS Varsity Football - Topeka High - AWAY",
 "start_date": "2026-10-15",
 "start_time": "19:00:00",
@@ -1093,7 +1263,7 @@
 "address": "Topeka - Hummer Park"
 },
 {
-"id": "d2dfd7cf-c136-4f81-891c-4600c1e810f6",
+"id": "40ed6ff7-bdd3-4497-a017-17805029640c",
 "title": "MHS Varsity Girls Tennis - 6A State Tourn. - AWAY",
 "start_date": "2026-10-16",
 "start_time": "08:00:00",
@@ -1103,7 +1273,7 @@
 "address": "TBD"
 },
 {
-"id": "f6eccf91-539e-446e-a364-9df0fb3c6b7c",
+"id": "378d6510-f00d-4a28-bcc9-fd4f2457fcbe",
 "title": "MHS Cross Country- Centennial League JV/V - AWAY",
 "start_date": "2026-10-17",
 "start_time": "10:00:00",
@@ -1113,7 +1283,17 @@
 "address": "Hayden"
 },
 {
-"id": "df047b1a-a026-4556-8e43-3654bb37eca4",
+"id": "8d75483f-8be3-401a-856c-ac6bb821c569",
+"title": "MHS Varsity Girls Golf - State Golf - AWAY",
+"start_date": "2026-10-19",
+"start_time": "00:00:00",
+"end_date": "2026-10-20",
+"end_time": "12:00:00",
+"all_day": false,
+"address": "TBD"
+},
+{
+"id": "f28e6043-e859-4c4b-91e4-fe18ade0cb80",
 "title": "MHS 9th Grade Football - Topeka High - HOME",
 "start_date": "2026-10-19",
 "start_time": "16:30:00",
@@ -1123,7 +1303,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "70321c91-9482-4a8b-99ff-37050d05f497",
+"id": "62205946-fcf3-456c-b821-9738fa2b623f",
 "title": "MHS JV Football - Topeka High - HOME",
 "start_date": "2026-10-19",
 "start_time": "18:00:00",
@@ -1133,7 +1313,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "c6790935-7d42-4f33-a8cf-bf38e79c7c15",
+"id": "f116f215-a43f-4fb6-8526-f8d1a97b90ba",
 "title": "MHS JV Boys Soccer - Blue Valley West - HOME",
 "start_date": "2026-10-20",
 "start_time": "16:30:00",
@@ -1153,7 +1333,7 @@
 "address": "Saint Thomas Aquinas High School (Overland Park, Kansas, United States)"
 },
 {
-"id": "ce241782-d8ec-44f5-afbd-12a78f130724",
+"id": "014e1d30-4572-4316-abda-682103b4890a",
 "title": "MHS Varsity Boys Soccer - Blue Valley West - HOME",
 "start_date": "2026-10-20",
 "start_time": "18:15:00",
@@ -1163,7 +1343,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "8e55915a-0c0b-4d2d-82c0-bdf0d3e25fc8",
+"id": "e9a55a96-29d0-47b0-a9d2-1a72542d3dde",
 "title": "MHS JV Boys Soccer -Shawnee Heights - HOME",
 "start_date": "2026-10-22",
 "start_time": "16:30:00",
@@ -1173,7 +1353,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "7559e2a9-4b88-41d1-95e3-7ded204be49d",
+"id": "ac281155-11a6-4df2-9250-d78e7e332220",
 "title": "MHS Varsity Boys Soccer - Shawnee Heights - HOME",
 "start_date": "2026-10-22",
 "start_time": "18:15:00",
@@ -1183,7 +1363,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "e4729dc3-42c3-495f-a271-956f566fe997",
+"id": "87b6a8f7-2543-44ba-82da-b15652b2352d",
 "title": "MHS Varsity Football - Washburn Rural - HOME",
 "start_date": "2026-10-23",
 "start_time": "19:00:00",
@@ -1193,7 +1373,7 @@
 "address": "Bishop Stadium"
 },
 {
-"id": "b62c7826-357a-4346-a51d-ae9b126f8253",
+"id": "f2b8f475-28a1-47dd-bdef-bd5bb396af57",
 "title": "MHS Cross Country - Regional Meet - WARNER PARK",
 "start_date": "2026-10-24",
 "start_time": "00:00:00",
@@ -1203,7 +1383,7 @@
 "address": "Warner Memorial Park (401 Warner Park Rd, Manhattan, KS, United States)"
 },
 {
-"id": "8955e343-1fb1-4b80-ac5e-f56d4e25ca95",
+"id": "9a18768f-eb7c-4a9d-b0ab-4b61732d151f",
 "title": "MHS Varsity Volleyball - Sub State - AWAY",
 "start_date": "2026-10-24",
 "start_time": "00:00:00",
@@ -1213,7 +1393,7 @@
 "address": "TBD"
 },
 {
-"id": "873bbf9a-82f1-4e68-b308-51cefca3727c",
+"id": "f526efa9-2e08-414b-9ffc-5860bc7d2c28",
 "title": "MHS 9th Grade Football - Washburn Rural - AWAY",
 "start_date": "2026-10-26",
 "start_time": "16:30:00",
@@ -1223,7 +1403,7 @@
 "address": "Washburn Rural High School"
 },
 {
-"id": "180501ab-29df-4b21-97c5-63dc8bf333c0",
+"id": "a5f68c7a-af9d-4b0d-bcb6-581cca095305",
 "title": "MHS JV Football - Washburn Rural - AWAY",
 "start_date": "2026-10-26",
 "start_time": "18:00:00",
@@ -1233,7 +1413,7 @@
 "address": "Washburn Rural High School"
 },
 {
-"id": "250d6e3d-f59f-43b5-9e3a-e9e087648a43",
+"id": "5a5265cb-ec7c-4f41-8b17-cc39767e19d7",
 "title": "MHS Varsity Boys Soccer - Regionals - TBD",
 "start_date": "2026-10-27",
 "start_time": "00:00:00",
@@ -1243,7 +1423,7 @@
 "address": "TBD"
 },
 {
-"id": "c0f4fe05-7c69-4c53-a1be-6744ddbeaf3b",
+"id": "6545ade6-c8a6-4f40-a0a4-ff53fc7568df",
 "title": "MHS Varsity Volleyball - 6A State Tourn. - AWAY",
 "start_date": "2026-10-30",
 "start_time": "00:00:00",
@@ -1253,7 +1433,7 @@
 "address": "Salina"
 },
 {
-"id": "5248cfc5-cd51-465a-8c2d-8c060dd3e4cb",
+"id": "c99023a4-4b54-49b4-bea4-2066179f11d8",
 "title": "MHS Varsity Football - District - TBD",
 "start_date": "2026-10-30",
 "start_time": "19:00:00",
@@ -1263,7 +1443,7 @@
 "address": "TBD"
 },
 {
-"id": "c4062caf-12d1-42ad-9e4d-58b80c270811",
+"id": "ff0241ae-3e13-45c2-9521-0f4a5ea47a6e",
 "title": "MHS Cross Country - State Meet - AWAY",
 "start_date": "2026-10-31",
 "start_time": "09:30:00",
@@ -1273,7 +1453,7 @@
 "address": "Lawrence"
 },
 {
-"id": "9e8919e4-a847-4187-a8f7-dea6b5a3c4a6",
+"id": "818337db-9f20-45bb-a6a1-727a74c68b6a",
 "title": "MHS Varsity Boys Soccer - Quarter Finals - TBD",
 "start_date": "2026-11-03",
 "start_time": "00:00:00",
@@ -1283,7 +1463,7 @@
 "address": "TBD"
 },
 {
-"id": "70448962-a4f8-48aa-848c-f16fa415b4f4",
+"id": "c06ed2f5-069a-4956-981d-4018c0b32ff3",
 "title": "MHS Varsity Boys Soccer - State Championship - TBD",
 "start_date": "2026-11-06",
 "start_time": "00:00:00",
