@@ -44,10 +44,12 @@ import {nebraskaSchool,createNebraskaHandlers} from './schools/nebraska.mjs';
 import {minnesotaSchool,createMinnesotaHandlers} from './schools/minnesota.mjs';
 import {northwesternSchool,createNorthwesternHandlers} from './schools/northwestern.mjs';
 import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs';
+import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
+import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.75.4-ohio-state';
+const VERSION='4.76.2-oregon-penn-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -315,6 +317,19 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(ohioStateHandlers.isFinalWithoutStory(event))await ohioStateHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(ohioStateHandlers.isFinalWithoutStory).map(event=>ohioStateHandlers.attachArchiveStory(event)));return events.filter(event=>!ohioStateHandlers.isTennisWithoutStory(event)&&!ohioStateHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:oregonSchool,parseSchedule:(...args)=>oregonHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>oregonHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>oregonHandlers.matchesRecap(...args),crossCountry:{matches:event=>oregonHandlers.isCrossCountry(event),attach:event=>oregonHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(oregonHandlers.isFinalWithoutStory(event))await oregonHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(oregonHandlers.isFinalWithoutStory).map(event=>oregonHandlers.attachArchiveStory(event)));return events.filter(event=>!oregonHandlers.isTennisWithoutStory(event)&&!oregonHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:pennStateSchool,parseSchedule:(...args)=>pennStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>pennStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>pennStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>pennStateHandlers.isCrossCountry(event),attach:event=>pennStateHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>pennStateHandlers.isPennStateGolf(event),attach:event=>pennStateHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(pennStateHandlers.isFinalWithoutStory(event))await pennStateHandlers.attachArchiveStory(event);},
+    // A past golf or tennis tournament still without a story publishes no
+    // place: it is not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(pennStateHandlers.isFinalWithoutStory).map(event=>pennStateHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(pennStateHandlers.isPennStateGolf).map(event=>pennStateHandlers.attachGolfPlace(event)));return events.filter(event=>!pennStateHandlers.isTournamentWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -433,6 +448,8 @@ const nebraskaHandlers=createNebraskaHandlers({makeEvent,visibleText,absoluteUrl
 const minnesotaHandlers=createMinnesotaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const northwesternHandlers=createNorthwesternHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ohioStateHandlers=createOhioStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const oregonHandlers=createOregonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const pennStateHandlers=createPennStateHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}

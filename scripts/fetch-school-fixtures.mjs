@@ -70,6 +70,7 @@ async function mapLimit(items,limit,work){const out=new Array(items.length);let 
 const perSport=await mapLimit(sports,6,async sport=>{
   const summary=[];
   const titles=new Set();
+  let kept=false,template=null;
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
@@ -84,10 +85,10 @@ const perSport=await mapLimit(sports,6,async sport=>{
     if(!games.length){try{games=(worker.parseHtml(page.body,school,sport,url,new Date(`${today}T15:00:00Z`))||[]).map(e=>({date:String(e.start_time).slice(0,10),enddate:e.end_time?String(e.end_time).slice(0,10):null,opponent:{title:e.opponent},result:e.status==='Final'?{status:/^[WLT],/.test(e.headline||'')?e.headline[0]:'N',postscore_info:e.headline,recap:e.recap_url?{url:e.recap_url}:null}:null}));}catch{games=[]}}
     const current=games.filter(g=>String(g.date).slice(0,10)>=seasonStart);
     // "@season @sport", or "@season Women's Swimming & Diving" (Tennessee).
-    if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);continue}
+    if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);template??=url;continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
     if(titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
-    titles.add(title);
+    titles.add(title);kept=true;
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;
     await Promise.all(finals.map(async game=>{
@@ -145,6 +146,10 @@ const perSport=await mapLimit(sports,6,async sport=>{
       }
     }
   }
+  // Every candidate flagged (Oregon's Beach Volleyball, Oct 9: an unpublished
+  // season is SIDEARM's empty template): the sport keeps its template route,
+  // which fills when the season is published, not the homepage.
+  if(!kept&&template){dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
   return summary;
 });
 summary.push(...perSport.flat());
