@@ -102,7 +102,8 @@ export function scoreboardGames(watched,payloads,now){
   return {games:[...unique.values()],nextStart};
 }
 
-const sameGame=(card,game)=>(card.team_label||null)===(game.team_label||null)&&worker.scoreboardDateKey(card.start_time)===worker.scoreboardDateKey(game.start_time)&&(!game.game_number||card.game_number===game.game_number);
+// A default board carries no team: the card may carry the school's one label (KU's "Women's").
+const sameGame=(card,game)=>(!game.team_label||card.team_label===game.team_label)&&worker.scoreboardDateKey(card.start_time)===worker.scoreboardDateKey(game.start_time)&&(!game.game_number||card.game_number===game.game_number);
 const scoreOf=x=>`${x.school_score??''}-${x.opponent_score??''}`;
 
 // Checks one game against the app's group. `expected` holds one or two ESPN

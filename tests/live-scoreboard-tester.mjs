@@ -43,6 +43,8 @@ for(const [name,f] of [
   ['HTTP 503',{status:503,body:null}],
   ['no ball',feed({live:[{...card,possession:null}]})],
 ]){const r=checkCard(f,[game],now);assert.deepEqual([r.ok,r.lag],[false,true],name)}
+// An unlabeled ESPN game matches a card carrying the school's one label.
+assert.ok(checkCard(feed({live:[{...card,team_label:"Women's"}]}),[game],now).ok);
 // Matching the second ESPN reading (the score moved during the read) is current.
 assert.ok(checkCard(feed({live:[{...card,school_score:'3'}]}),[game,{...game,school_score:'3'}],now).ok);
 // Broken, not lag: a duplicate card, or the scoreboard not joined to the schedule.
