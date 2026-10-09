@@ -86,7 +86,16 @@ export function mergeTbaBracket(games){
     const event={...game,opponent:{...game.opponent,title:name},tournament:{...game.tournament,title:name},enddate:null,tbd_bracket:true};
     byName.set(name,event);out.push(event);
   }
-  return out;
+  // An event published once per day without a result ("Big Ten Tournament"
+  // Mar 3-7 at Michigan, "NCAA Final Four" Apr 3-5 at Michigan State) is one event from
+  // its first to its last day.
+  const day=game=>String(game.date||'').slice(0,10),next=date=>new Date(Date.parse(`${date}T00:00:00Z`)+86400000).toISOString().slice(0,10);
+  const named=game=>{const opponent=String(game.opponent?.title||'').trim();return!game.result?.status&&!game.tbd_bracket&&Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/\b(?:tournament|rounds?|regionals?|championships?)\b/i.test(opponent)||ROUND_WORDS.test(` ${opponent}`))&&/^(?:all day|tba)?$/i.test(String(game.time||'').trim());};
+  return out.reduce((kept,game)=>{
+    const last=kept[kept.length-1];
+    if(last&&named(game)&&named(last)&&last.opponent.title.trim()===String(game.opponent?.title||'').trim()&&next(String(last.enddate||last.date||'').slice(0,10))===day(game)){kept[kept.length-1]={...last,enddate:game.date};return kept;}
+    kept.push(game);return kept;
+  },[]);
 }
 
 // Team places a meet card publishes as text, either team first: "M- 2nd,
@@ -149,11 +158,14 @@ export const doubleheaderNumber=()=>(game,games,{parse})=>{
 // its nickname ("Cougars Sweep Huskies" for Houston Christian).
 // ownLinkDays: how many days after an event's last day the page's own story
 // link may be dated (a weekend tournament's story can come on Tuesday).
-export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false,ownLinkDays=1}){
+// ownLinkDaysBefore: per sport, how many days before the first day an own
+// story may be dated (Michigan's tennis tournament pages, as the archive's
+// meetDaysBefore).
+export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOwnLink=false,ownLinkDays=1,ownLinkDaysBefore={}}){
   const ownLinkDated=(event,url)=>{
     const dated=String(url).match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);if(!dated)return false;
     const day=Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])),first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`),last=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
-    return day>=first&&day<=last+ownLinkDays*86400000;
+    return day>=first-(ownLinkDaysBefore[event.sport]||0)*86400000&&day<=last+ownLinkDays*86400000;
   };
   const headlineKey=value=>` ${decodeHtml(String(value||'')).toLowerCase().replace(/\(.*?\)/g,' ').replace(/\bst\./g,'state').replace(/[^a-z0-9&]+/g,' ').trim()} `;
   return function matchesRecap(raw,event,url){
@@ -181,7 +193,13 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // archive (a story dated from the meet's first day to the day after its last
 // that names the meet, the last day's first: Iowa State's cross country
 // schedule links none, and a golf tournament's story can be missing from it).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false}){
+// meetDaysAfter: how many days after a meet's last day its story may be
+// dated (1 by default; Michigan State's men's tennis posted the ITA
+// All-American Championships, Sep 19-25, on Sep 28). meetDaysBefore: per
+// sport, how many days before a meet's first day (Michigan's men's tennis
+// posts each tournament's page the day before and fills it in afterward:
+// the Fighting Irish Invitational, Sep 25-26, on Sep 24).
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false,meetDaysAfter=1,meetDaysBefore={}}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
@@ -194,7 +212,8 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
     const listing=await download(`https://${host}/sports/${slug}/archives`);if(!listing)return event;
     const first=Date.parse(`${String(event.start_time).slice(0,10)}T00:00:00Z`);
     const span=isMeet(event)?Math.max(0,Math.round((Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`)-first)/86400000)):0;
-    const days=Array.from({length:span+2},(_,offset)=>new Date(first+offset*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
+    const before=isMeet(event)?meetDaysBefore[event.sport]||0:0;
+    const days=Array.from({length:before+span+1+(isMeet(event)?meetDaysAfter:1)},(_,offset)=>new Date(first+(offset-before)*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
     const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day)));
     if(isMeet(event)){
       // Every word that tells the meet apart ("Roy Griak") is in the story.
