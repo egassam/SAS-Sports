@@ -51,3 +51,51 @@ for(const [team,ids] of owners)assert.equal(ids.length,1,`${team} matched ${ids.
   assert.deepEqual([match.title,match.headline],['KU vs Arizona','W, 2-0']);
 }
 console.log(`Scoreboard team match checks passed (${pairs.size} school-team pairs, each team one school; finals in the official wording)`);
+
+// K-State soccer reads ESPN's live scoreboard (real payload, Oct 8, 2026:
+// Kansas at K-State live in the 13th minute). Before 4.69.2 K-State had no
+// soccer scoreboard and the game stayed "Today" in upcoming. The live score
+// joins the official schedule's game that day (stored as K-State's wall
+// clock, 6:30 PM) instead of adding a second card.
+{
+  const kstate=schools.find(s=>s.id==='kstate'),[provider]=worker.liveScoreboardProviders(kstate,'Soccer');
+  assert.equal(provider.path,'soccer/usa.ncaa.w.1');
+  const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/live/soccer-espn-2026-10-08-live.json.gz',import.meta.url))).toString('utf8'));
+  const [game]=worker.parseScoreboardPayload(payload,kstate,'Soccer',provider,'https://site.api.espn.com/x',new Date('2026-10-08T23:47:00Z'));
+  assert.deepEqual([game.status,game.title,game.school_score,game.opponent_score,game.headline],['Live','K-State vs Kansas','0','0',"13'"]);
+  const official={id:'kstate-soccer-kansas',sport:'Soccer',status:'Today',title:'K-State vs Kansas',start_time:'2026-10-08T18:30:00.000Z'};
+  const joined=worker.reconcileScoreboardEvents([official],[game]);
+  assert.equal(joined.length,1);
+  assert.deepEqual([joined[0].id,joined[0].status,joined[0].verification_state],['kstate-soccer-kansas','Live','official_schedule+live_scoreboard']);
+  assert.ok(worker.liveScoreboardProviders(kstate,'Baseball').length,'K-State baseball reads a scoreboard too');
+}
+console.log('K-State soccer live scoreboard checks passed');
+
+// Every sport with an ESPN live board reads it (user, Oct 8: "It should read
+// any sport that has a live feed"). Defaults are join-only: KU's side of the
+// same Oct 8 game joins KU's official "Women's" soccer game; with no official
+// game that day the score adds no card.
+{
+  const kansas=schools.find(s=>s.id==='kansas'),providers=worker.liveScoreboardProviders(kansas,'Soccer');
+  assert.deepEqual(providers.map(p=>[p.path,p.joinOnly]),[['soccer/usa.ncaa.w.1',true]]);
+  const payload=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/live/soccer-espn-2026-10-08-live.json.gz',import.meta.url))).toString('utf8'));
+  const [game]=worker.parseScoreboardPayload(payload,kansas,'Soccer',providers[0],'https://site.api.espn.com/x',new Date('2026-10-08T23:47:00Z'));
+  assert.deepEqual([game.title,game.status,game.join_only],['KU at Kansas St','Live',true]);
+  const official={id:'ku-soccer-kstate',sport:'Soccer',status:'Today',team_label:"Women's",title:"Women's · KU at K-State",start_time:'2026-10-08T18:30:00.000Z'};
+  const later={id:'ku-soccer-later',sport:'Soccer',status:'Upcoming',team_label:"Women's",start_time:'2026-10-11T18:00:00.000Z'};
+  const joined=worker.reconcileScoreboardEvents([official,later],[game]);
+  assert.deepEqual(joined.map(e=>[e.id,e.status]),[['ku-soccer-kstate','Live'],['ku-soccer-later','Upcoming']]);
+  assert.deepEqual(worker.reconcileScoreboardEvents([later],[game]).map(e=>e.id),['ku-soccer-later'],'no official game that day: no card');
+  assert.equal(worker.reconcileScoreboardEvents([],[game],{keepUnjoined:true}).length,1,'official page failed: the score is kept for the last good feed');
+  // A module's own board still adds a card when no official game joins (K-State).
+  const kstate=schools.find(s=>s.id==='kstate'),[ks]=worker.parseScoreboardPayload(payload,kstate,'Soccer',worker.liveScoreboardProviders(kstate,'Soccer')[0],'https://site.api.espn.com/x',new Date('2026-10-08T23:47:00Z'));
+  assert.equal(worker.reconcileScoreboardEvents([],[ks]).length,1);
+  // Every live-feed sport has a board for every school that plays it.
+  const ucf=schools.find(s=>s.id==='ucf'),asu=schools.find(s=>s.id==='arizona-state'),utah=schools.find(s=>s.id==='utah'),indiana=schools.find(s=>s.id==='indiana');
+  assert.deepEqual(worker.liveScoreboardProviders(ucf,'Soccer').map(p=>p.team_label),["Men's","Women's"],'UCF soccer: both teams labeled');
+  assert.deepEqual(worker.liveScoreboardProviders(asu,'Hockey').map(p=>p.path),['hockey/mens-college-hockey','hockey/womens-college-hockey']);
+  assert.ok(worker.liveScoreboardProviders(utah,'Lacrosse').length&&worker.liveScoreboardProviders(indiana,'Field Hockey').length&&worker.liveScoreboardProviders(indiana,'Water Polo').length);
+  for(const school of [kansas,utah,asu])for(const sport of ['Basketball','Volleyball','Baseball','Softball'])assert.ok(worker.liveScoreboardProviders(school,sport).length,`${school.id} ${sport}`);
+  assert.deepEqual(worker.liveScoreboardProviders(kansas,'Golf'),[]);
+}
+console.log('Default live scoreboards: every live-feed sport, join-only, single-team labels adopted');

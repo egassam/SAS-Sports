@@ -1,0 +1,63 @@
+name: SAS Sports live scoreboard tester
+
+# Watches every converted school-sport with a live scoreboard until one of
+# its games has been seen working in production (scripts/live-scoreboard-
+# tester.mjs). Each run reads ESPN once: with no game of a sport under test in
+# progress it ends in seconds (OFF); with one it follows the game for up to 9
+# minutes (ON). A sport that passes is DONE and never tested again. The state
+# lives on the `live-scoreboard-state` branch (never on main). A failed check
+# fails the run, which emails the repository owner.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+    inputs:
+      reset:
+        description: Test again, e.g. all, kstate, or kstate:Football
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-scoreboard
+  cancel-in-progress: false
+
+jobs:
+  live-scoreboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Restore state
+        run: |
+          git fetch --depth=1 origin live-scoreboard-state 2>/dev/null && git show FETCH_HEAD:live-scoreboard-state.json > live-scoreboard-state.json || echo 'First run: no state yet'
+      - name: Test live scoreboards
+        id: tester
+        continue-on-error: true
+        run: node scripts/live-scoreboard-tester.mjs --minutes=9 ${{ inputs.reset && format('--reset={0}', inputs.reset) || '' }}
+      - name: Save state
+        if: always()
+        run: |
+          [ -f live-scoreboard-state.json ] || exit 0
+          cp live-scoreboard-state.json "$RUNNER_TEMP/state.json"
+          node scripts/live-scoreboard-tester.mjs --status --state="$RUNNER_TEMP/state.json" > "$RUNNER_TEMP/STATUS.md"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git fetch --depth=1 origin live-scoreboard-state 2>/dev/null; then git checkout -B live-scoreboard-state FETCH_HEAD; else git checkout --orphan live-scoreboard-state && git rm -rfq .; fi
+          cp "$RUNNER_TEMP/state.json" live-scoreboard-state.json
+          cp "$RUNNER_TEMP/STATUS.md" STATUS.md
+          git add live-scoreboard-state.json STATUS.md
+          # Only a changed tester state is committed (not every idle run's timestamp).
+          if git diff --cached --quiet -- STATUS.md && git rev-parse -q --verify HEAD >/dev/null; then echo 'No change'; exit 0; fi
+          git commit -qm "Live scoreboard tester state $(date -u +%FT%TZ)"
+          git push -q origin live-scoreboard-state
+      - name: Report failure
+        if: steps.tester.outcome == 'failure'
+        run: |
+          echo 'A live card failed its check: see the tester step and the summary.'
+          exit 1

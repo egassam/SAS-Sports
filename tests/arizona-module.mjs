@@ -240,8 +240,9 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   const reconciled=worker.reconcileScoreboardEvents(soccer,scored);
   assert.equal(reconciled.length,soccer.length);
   assert.deepEqual(reconciled.filter(e=>e.verification_state==='official_schedule+live_scoreboard').map(e=>[e.title,e.headline]),[['Arizona at Kansas','L, 0-2']]);
-  // Other schools have no soccer scoreboard.
-  assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Soccer'),[]);
+  // Each school names its own soccer scoreboard (K-State's since 4.69.2,
+  // after its Oct 8 game against Kansas stayed "Today" while live).
+  assert.deepEqual(worker.liveScoreboardProviders(schools.find(s=>s.id==='kstate'),'Soccer').map(p=>p.path),['soccer/usa.ncaa.w.1']);
 }
 
 // Cross Country: the page data gives each meet's team places ("Men: 1st
