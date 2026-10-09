@@ -41,6 +41,9 @@ const sports=sponsored[to],schedule={},roster={},combined=[],labels={},notes=[];
 for(const sport of sports){
   const candidates=[].concat(object.scheduleUrls?.[`${to}|${sport}`]||[]).map(slugOf).filter(Boolean);
   let slugs=[...new Set(candidates)].filter(slug=>!nav.size||nav.has(slug));
+  // A one-team sport the menu links under its team prefix only
+  // (Northwestern's womens-cross-country, womens-fencing).
+  if(!slugs.length&&nav.size)slugs=[...new Set(candidates.flatMap(slug=>[`womens-${slug}`,`mens-${slug}`]))].filter(slug=>nav.has(slug)).slice(0,2);
   if(!slugs.length){slugs=candidates.slice(0,1);notes.push(`${sport}: no route in the site's menu; kept ${slugs[0]?`/sports/${slugs[0]}/schedule`:'nothing'} (check by eye)`)}
   // Two team pages: men's and women's (mens-golf/womens-golf, mbball/wbball).
   if(slugs.length>2)slugs=slugs.filter(s=>/^(?:mens|womens)-/.test(s)).slice(0,2);
@@ -88,7 +91,8 @@ const port=spawnSync(process.execPath,['scripts/port-handlers.mjs',`--from=${fro
 if(port.status){console.error(port.stderr||port.stdout);process.exit(1)}
 
 // 3. src/index.js: the source's entry and handlers line, renamed.
-const rename=text=>text.replace(new RegExp(`\\b${escape(a.camel)}(?=Handlers|School)`,'g'),b.camel).replace(new RegExp(`\\bis${escape(a.Pascal)}(?=[A-Z])`,'g'),`is${b.Pascal}`).replace(new RegExp(`'${escape(a.id)}'`,'g'),`'${b.id}'`);
+// create<Source>Handlers too (Northwestern's first port kept createNebraskaHandlers).
+const rename=text=>text.replace(new RegExp(`\\bcreate${escape(a.Pascal)}Handlers\\b`,'g'),`create${b.Pascal}Handlers`).replace(new RegExp(`\\b${escape(a.camel)}(?=Handlers|School)`,'g'),b.camel).replace(new RegExp(`\\bis${escape(a.Pascal)}(?=[A-Z])`,'g'),`is${b.Pascal}`).replace(new RegExp(`'${escape(a.id)}'`,'g'),`'${b.id}'`);
 let index=read('src/index.js');
 const entry=id=>{const n=names(id),start=index.indexOf(`  ,{school:${n.camel}School,`);if(start<0)return null;const rest=index.slice(start+3),end=rest.search(/\n  ,\{school:|\n\];\nconst schoolModule=/);return index.slice(start,start+3+end)};
 const sourceEntry=entry(from),targetEntry=entry(to);

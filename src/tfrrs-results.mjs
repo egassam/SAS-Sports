@@ -53,7 +53,14 @@ export function parseTfrrsResults(raw,{decodeHtml,ordinal,team:teamName}){
     const entry=races.get(group)||{team,group,result:null,runners:[]};
     if(/team/i.test(race[3])&&at('SCORE')>=0){
       const row=rows.slice(1).find(cells=>cells[at('TEAM')]===teamName);
-      if(row&&/^\d+$/.test(row[at('PL')])&&/^[1-9]\d*$/.test(row[at('SCORE')]))entry.result={place:Number(row[at('PL')]),score:row[at('SCORE')]};
+      if(row&&/^\d+$/.test(row[at('PL')])&&/^[1-9]\d*$/.test(row[at('SCORE')])){
+        // A table out of score order (the Roy Griak Invitational, Sep 18:
+        // host Minnesota listed 16th with 26 points, the lowest) places the
+        // team by its score among the scored teams.
+        const scored=rows.slice(1).filter(cells=>/^\d+$/.test(cells[at('PL')])&&/^[1-9]\d*$/.test(cells[at('SCORE')])).map(cells=>Number(cells[at('SCORE')]));
+        const sorted=scored.every((score,i)=>!i||score>=scored[i-1]);
+        entry.result={place:sorted?Number(row[at('PL')]):1+scored.filter(score=>score<Number(row[at('SCORE')])).length,score:row[at('SCORE')]};
+      }
     }else if(at('NAME')>=0&&at('TIME')>=0){
       const runners=rows.slice(1).filter(cells=>cells[at('TEAM')]===teamName).map(cells=>{
         const place=cells[at('PL')],time=cells[at('TIME')];

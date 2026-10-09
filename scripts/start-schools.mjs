@@ -92,7 +92,20 @@ await Promise.all(ready.map(async school=>{
   if(few.length)notes.push(`${id}: pin these (12 links or fewer; lines in ${athletes.log}): ${few.join(', ')}`);
   const pruned=fixtures.text.match(/--prune: .*/);if(pruned)notes.push(`${id}: ${pruned[0]}`);
   const survey=await run(id,'survey',['scripts/survey-school.mjs',`--school=${id}`]);
-  const gates=survey.text.split('\n').filter(l=>/GATE/.test(l));
+  const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME/.test(l));
   notes.push(`${id}: survey ${survey.log}${gates.length?` — ${gates.length} GATE:\n    ${gates.join('\n    ')}`:' — no GATE'}`);
 }));
+// Soccer with both team pages left after --prune reads one labeled ESPN board
+// per team (the scaffold's single women's board did not join Northwestern's
+// labeled cards: an unlabeled duplicate final, Oct 9).
+for(const school of ready){
+  const file=new URL(`src/schools/${school.id}.mjs`,root);let text=readFileSync(file,'utf8');
+  const unlabeled="'Soccer':[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]";
+  if(/\/sports\/mens-soccer\/schedule/.test(text)&&/\/sports\/womens-soccer\/schedule/.test(text)&&text.includes(unlabeled)){
+    text=text.replace(unlabeled,`'Soccer':[{path:'soccer/usa.ncaa.m.1',team_label:"Men's",sourceName:"Live men's college soccer scoreboard"},{path:'soccer/usa.ncaa.w.1',team_label:"Women's",sourceName:"Live women's college soccer scoreboard"}]`);
+    if(!/combinedSports:new Set\(\[[^\]]*'Soccer'/.test(text))notes.push(`${school.id}: two soccer pages: add Soccer to combinedSports`);
+    writeFileSync(file,text);notes.push(`${school.id}: soccer reads one labeled ESPN board per team`);
+  }
+}
+
 console.log(`[${clock()}] done\n${notes.map(n=>`- ${n}`).join('\n')}`);

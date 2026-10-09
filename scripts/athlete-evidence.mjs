@@ -41,7 +41,9 @@ for(const sport of sports){
       // The athlete's name: the page title's first part ("Blake Grimmer -
       // Baseball - University of Tennessee Athletics").
       const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').replace(/&#8211;/g,'–').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
-      if(own.length)found.push({path,name,own,label:`${path.split('/').pop()}${name?` (${name})`:''}`});
+      // A season roster page ("2027 Softball Roster", Northwestern) links every
+      // athlete: it is no athlete's page.
+      if(own.length&&!/\bRoster$/i.test(name))found.push({path,name,own,label:`${path.split('/').pop()}${name?` (${name})`:''}`});
     }));
   }
   // A team's own account is on every athlete's page (Michigan State's menu
