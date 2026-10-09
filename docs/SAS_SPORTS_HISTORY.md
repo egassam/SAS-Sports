@@ -2149,3 +2149,50 @@ South Carolina + Vanderbilt (Oct 8, 25 sports, about 2 h incl. a new reader and 
 - Ohio State rifle's Patriot Rifle Conference is not named (no record shown).
 - Pistol and Synchronized Swimming are not in the app catalog.
 - First live cards are not yet observed.
+
+## October 9, 2026 — Oregon and Penn State added (PR #284)
+
+**Request (user):** "Onboard Oregon and Penn State. Learn and optimize". The user named two schools, so this session covered both (AGENTS item 3 allows the user to change the scope).
+
+**Timeline (UTC):** 17:21 `start-schools` started (both schools; 17:23 done). Penn State's reader was adapted and both surveys were read and fixed. 17:37 PR #284 and `test:release` (pass). 17:38 preview 4.76.0: a per-sport HTTP sweep found Oregon Beach Volleyball returning 502. Fixed in 4.76.1, then `test:release` passed and `verify:preview --sports=all` passed for both schools (93/93; XC 18/20 and 26/21; 36/36 refreshes every sport). Screenshots showed Penn State's Paul Short card listing Open-race runners first. Fixed in 4.76.2, then `test:release` passed (fdbf35a) and `verify:preview` passed for Penn State Cross Country. CI green; merged `7b89984` at 18:09. `verify:prod --sports=all` for both schools passed 93/93 at 18:12 (4.76.2, XC 18/20 and 26/21). Production athletes: Oregon 11/11, Penn State 17/17, each sport with three.
+
+**Oregon** (13 sports): SIDEARM behind bot defense, read through the private source; Oklahoma's handlers.
+- Rules added:
+  - per-team cross country cards ("Cowboy Jamboree (m)"): labeled Men's/Women's, with TFRRS team places;
+  - a trailing "(RV)" ranking is dropped;
+  - fall baseball notes "(10 Inn.)" and "(DH)" are dropped;
+  - a "Big Ten" card in the Big Ten Tournament reads "at Big Ten Tournament";
+  - an `@season` empty template is a valid empty schedule.
+- Combined sports: Basketball, Golf, Tennis.
+- Athletes: Baseball (the 2027 roster lists staff only) and Beach Volleyball (not published) were removed from `athlete_sports`. Basketball is pinned.
+- Checks: published wins and percentages agree for football, soccer and volleyball.
+
+**Penn State** (17 sports): the catalog said SIDEARM; the site is WMT with a third card generation. Card root `schedule-event`; the opponent in `schedule-event-item-team__name`; days in `span.schedule-event-date__day`; the upcoming time in a `strong` result label. Nebraska's reader, ported by `port-wmt`, read no cards (the survey showed only upcoming events from the shared fallback) until these were added.
+- Rules added:
+  - conference games come from the card's league logo (`schedule-event__conference`), which gives Atlantic Hockey America for women's hockey;
+  - season from the page title: field hockey is a fall sport, "Fall" titles are this fall, and men's volleyball's "2026" page is last spring;
+  - men's volleyball was added (Volleyball is combined);
+  - swimming's "Blue & White" intrasquad is dropped;
+  - wrestling "Session" cards merge into one event;
+  - fencing host-named cards take their JSON-LD event names;
+  - bracket rounds (quarterfinals, semifinals, College Cup, AHA) read "at";
+  - cross country reads both teams' TFRRS pages from one card, and a race with a team score is listed before an Open race;
+  - a story whose opening names another weekday is not matched (women's hockey vs Ohio State, Sep 24 and 25, both 1-2);
+  - a tournament's own card story is accepted;
+  - golf story regexes renamed from Iowa's words.
+- Records: computed Overall and Conf. equal the published ones on six pages, and this is tested (football 3-2/0-2, volleyball 10-4/2-2, women's soccer 6-2-4/4-1-2, men's soccer 2-7/0-5, field hockey 6-4/1-1, women's hockey 2-2/2-0).
+- Athletes: profile cards for Fencing, Golf, Swimming & Diving (0 Instagram links on 39, 19 and 43 profiles). Pins for Gymnastics, Soccer, Volleyball.
+
+**Mutation:** every new rule was mutated and each mutation fails its module test. Two redundant additions (a venue class, a golf location) survived mutation and were removed.
+
+**Tools:**
+- `fetch-school-fixtures --prune` keeps a sport's template route when every candidate is flagged; it had left Oregon Beach Volleyball on the homepage.
+- `port-handlers` lists code that names another converted school.
+
+**Found, not fixed (other school):** `src/schools/nebraska.mjs` golf story-place regexes match "Iowa|Hawkeyes".
+
+**Open:**
+- Oregon Baseball athletes wait for the 2027 roster to list players.
+- Waiting on publication: Oregon Beach Volleyball, Acrobatics & Tumbling, Lacrosse, Track & Field; Penn State Gymnastics, Track & Field, men's Lacrosse, men's Volleyball.
+- Penn State men's tennis ITA All-American has no story (not listed).
+- First live cards are not yet observed.
