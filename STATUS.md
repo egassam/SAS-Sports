@@ -1,6 +1,5 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| ohio-state | Field Hockey | 🔴 on | live 0-0 · 4:52 - 1st · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Football | ⚪ off (waiting) |  |
@@ -91,7 +90,6 @@
 | indiana | Water Polo | ⚪ off (waiting) |  |
 | iowa | Baseball | ⚪ off (waiting) |  |
 | iowa | Basketball | ⚪ off (waiting) |  |
-| iowa | Field Hockey | ⚪ off (waiting) |  |
 | iowa | Football | ⚪ off (waiting) |  |
 | iowa | Soccer | ⚪ off (waiting) |  |
 | iowa | Softball | ⚪ off (waiting) |  |
@@ -177,7 +175,6 @@
 | nebraska | Volleyball | ⚪ off (waiting) |  |
 | northwestern | Baseball | ⚪ off (waiting) |  |
 | northwestern | Basketball | ⚪ off (waiting) |  |
-| northwestern | Field Hockey | ⚪ off (waiting) |  |
 | northwestern | Football | ⚪ off (waiting) |  |
 | northwestern | Lacrosse | ⚪ off (waiting) |  |
 | northwestern | Soccer | ⚪ off (waiting) |  |
@@ -208,6 +205,22 @@
 | ole-miss | Soccer | ⚪ off (waiting) |  |
 | ole-miss | Softball | ⚪ off (waiting) |  |
 | ole-miss | Volleyball | ⚪ off (waiting) |  |
+| oregon | Baseball | ⚪ off (waiting) |  |
+| oregon | Basketball | ⚪ off (waiting) |  |
+| oregon | Football | ⚪ off (waiting) |  |
+| oregon | Lacrosse | ⚪ off (waiting) |  |
+| oregon | Soccer | ⚪ off (waiting) |  |
+| oregon | Softball | ⚪ off (waiting) |  |
+| oregon | Volleyball | ⚪ off (waiting) |  |
+| penn-state | Baseball | ⚪ off (waiting) |  |
+| penn-state | Basketball | ⚪ off (waiting) |  |
+| penn-state | Field Hockey | ⚪ off (waiting) |  |
+| penn-state | Football | ⚪ off (waiting) |  |
+| penn-state | Hockey | ⚪ off (waiting) |  |
+| penn-state | Lacrosse | ⚪ off (waiting) |  |
+| penn-state | Soccer | ⚪ off (waiting) |  |
+| penn-state | Softball | ⚪ off (waiting) |  |
+| penn-state | Volleyball | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) |  |
@@ -267,5 +280,8 @@
 | west-virginia | Football | ⚪ off (waiting) |  |
 | west-virginia | Soccer | ⚪ off (waiting) |  |
 | west-virginia | Volleyball | ⚪ off (waiting) |  |
+| iowa | Field Hockey | ✅ off (passed) | Iowa at Northwestern · 2026-10-09T21:48:31.382Z |
+| northwestern | Field Hockey | ✅ off (passed) | Northwestern vs Iowa · 2026-10-09T21:48:31.249Z |
+| ohio-state | Field Hockey | ✅ off (passed) | Ohio State vs Rutgers · 2026-10-09T21:46:27.666Z |
 
-Done 0/267; on 1; off 266; failing 0.
+Done 3/283; on 0; off 280; failing 0.

@@ -619,7 +619,13 @@
    "state": "off"
   },
   "iowa|Field Hockey": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-10-09T21:48:31.382Z",
+   "last_detail": "final L, 1-2",
+   "game": null,
+   "verified_at": "2026-10-09T21:48:31.382Z",
+   "verified_game": "Iowa at Northwestern",
+   "verified_detail": "final L, 1-2"
   },
   "iowa|Football": {
    "state": "off"
@@ -757,7 +763,13 @@
    "state": "off"
   },
   "northwestern|Field Hockey": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-10-09T21:48:31.249Z",
+   "last_detail": "final W, 2-1",
+   "game": null,
+   "verified_at": "2026-10-09T21:48:31.249Z",
+   "verified_game": "Northwestern vs Iowa",
+   "verified_detail": "final W, 2-1"
   },
   "northwestern|Football": {
    "state": "off"
@@ -781,26 +793,13 @@
    "state": "off"
   },
   "ohio-state|Field Hockey": {
-   "state": "on",
-   "last_check": "2026-10-09T17:19:19.483Z",
-   "last_detail": "live 0-0 · 4:52 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "ohio-state|Field Hockey||2026-10-09|1",
-    "title": "Ohio State vs Rutgers",
-    "started_seen": "2026-10-09T17:11:10.350Z",
-    "live_passes": [
-     "2026-10-09T17:11:10.350Z",
-     "2026-10-09T17:12:11.560Z",
-     "2026-10-09T17:13:12.700Z",
-     "2026-10-09T17:14:13.734Z",
-     "2026-10-09T17:15:14.891Z",
-     "2026-10-09T17:16:15.950Z",
-     "2026-10-09T17:17:17.187Z",
-     "2026-10-09T17:18:18.150Z",
-     "2026-10-09T17:19:19.483Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-09T21:46:27.666Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-09T21:46:27.666Z",
+   "verified_game": "Ohio State vs Rutgers",
+   "verified_detail": "final L, 2-3"
   },
   "ohio-state|Football": {
    "state": "off"
@@ -819,9 +818,57 @@
   },
   "ohio-state|Volleyball": {
    "state": "off"
+  },
+  "oregon|Baseball": {
+   "state": "off"
+  },
+  "oregon|Basketball": {
+   "state": "off"
+  },
+  "oregon|Football": {
+   "state": "off"
+  },
+  "oregon|Lacrosse": {
+   "state": "off"
+  },
+  "oregon|Soccer": {
+   "state": "off"
+  },
+  "oregon|Softball": {
+   "state": "off"
+  },
+  "oregon|Volleyball": {
+   "state": "off"
+  },
+  "penn-state|Baseball": {
+   "state": "off"
+  },
+  "penn-state|Basketball": {
+   "state": "off"
+  },
+  "penn-state|Field Hockey": {
+   "state": "off"
+  },
+  "penn-state|Football": {
+   "state": "off"
+  },
+  "penn-state|Hockey": {
+   "state": "off"
+  },
+  "penn-state|Lacrosse": {
+   "state": "off"
+  },
+  "penn-state|Soccer": {
+   "state": "off"
+  },
+  "penn-state|Softball": {
+   "state": "off"
+  },
+  "penn-state|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.75.4-ohio-state",
- "updated_at": "2026-10-09T17:19:19.484Z",
+ "version": "4.77.0-high-school-manhattan",
+ "updated_at": "2026-10-09T21:48:31.404Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
