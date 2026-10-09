@@ -421,7 +421,7 @@ function levelSchools(){return allSchools.filter(s=>schoolLevel(s)===currentLeve
 function renderLevels(){
   const levelSwitch=$('#levelSwitch');
   levelSwitch.innerHTML=LEVELS.map(level=>{const ready=allSchools.some(s=>schoolLevel(s)===level.id);return`<button type="button" class="level ${level.id===currentLevel?'active':''}" data-level="${level.id}" aria-pressed="${level.id===currentLevel}" ${ready?'':'disabled title="Coming soon"'}>${esc(level.label)}${ready?'':'<span class="soon">Soon</span>'}</button>`}).join('');
-  levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.level===currentLevel)return;currentLevel=button.dataset.level;populateSchoolControls(levelSchools()[0]?.id);loadFeed(false)}));
+  levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.level===currentLevel)return;currentLevel=button.dataset.level;populateSchoolControls(levelSchools()[0]?.id);activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();loadFeed(false)}));
   const level=LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
   $('#groupLabel').textContent=level.group;$('#teamLabel').textContent=level.team;
   favorite.title=favorite.title.replace(/school|team/i,level.team.toLowerCase());
