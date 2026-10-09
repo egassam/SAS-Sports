@@ -242,11 +242,14 @@ for(const team of ['mens','womens']){
 }
 assert.deepEqual(tennis.mens.map(e=>`${e.status} ${e.display_time} ${e.title} ${e.headline||''}`.trim()),[
   "Final Sep 11 Men's · BYU at Milwaukee Invitational Completed","Final Sep 19 Men's · BYU at ITA All-American Completed","Final Sep 25 Men's · BYU at Sherwood Invitational Completed","Final Sep 25 Men's · BYU at Boise St. Invitational Completed",
-  "Upcoming Oct 6 Men's · BYU vs ITA Regional Championships","Upcoming Oct 29, 10:00 AM Men's · BYU at SMU Invitational","Upcoming Nov 5 Men's · BYU at ITA Masters","Upcoming Nov 5 Men's · BYU at ITA Sectional Championships"
+  "Upcoming Oct 6 Men's · BYU at ITA Regional Championships","Upcoming Oct 29, 10:00 AM Men's · BYU at SMU Invitational","Upcoming Nov 5 Men's · BYU at ITA Masters","Upcoming Nov 5 Men's · BYU at ITA Sectional Championships"
 ]);
 assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events stay separate');
 assert.equal(tennis.womens.length,7);
-assert.deepEqual([tennis.womens[0].title,tennis.womens[0].headline,tennis.womens[0].end_time,tennis.womens[0].recap_url],["Women's · BYU vs USTA SoCal Championships",'Completed','2026-09-27T23:59:59Z','https://byucougars.com/news/2026/09/28/cougars-make-strong-showing-at-usta-socal-championships']);
+// Tournaments read "at" even where the card's divider reads "vs." (BYU hosts
+// none of these; K-State's and TCU's tournaments read "at").
+assert.deepEqual(tennis.womens.map(e=>e.title),["Women's · BYU at USTA SoCal Championships","Women's · BYU at ITA Regionals","Women's · BYU at Battle For The Boot","Women's · BYU at Thunderbird Invitational","Women's · BYU at ITA Sectional Championships","Women's · BYU at San Diego State Invitational","Women's · BYU at NCAA Championship - Individual"]);
+assert.deepEqual([tennis.womens[0].title,tennis.womens[0].headline,tennis.womens[0].end_time,tennis.womens[0].recap_url],["Women's · BYU at USTA SoCal Championships",'Completed','2026-09-27T23:59:59Z','https://byucougars.com/news/2026/09/28/cougars-make-strong-showing-at-usta-socal-championships']);
 assert.equal(worker.byuHandlers.matchesRecap(fixture('tennis-recap-2026-09-28-usta-socal.html.gz'),tennis.womens[0],tennis.womens[0].recap_url),true,'a recap the day after a multi-day tournament ends belongs to it');
 // Swimming & Diving: production read inherited generic routes (54 upcoming,
 // 23 duplicated). Both official pages, labeled. Internal meets ("Navy vs.
