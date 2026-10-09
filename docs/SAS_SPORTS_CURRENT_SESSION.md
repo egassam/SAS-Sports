@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 9, 2026 (morning), America/Chicago. Production `4.73.1-nebraska` (verified).
+Last updated: October 9, 2026 (morning), America/Chicago. Production `4.73.2-multi-day-in-progress` (verified).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 9, 2026 (morning), America/Chicago. Production `4.73.1-neb
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.73.1-nebraska`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.73.2-multi-day-in-progress`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -56,7 +56,7 @@ Last updated: October 9, 2026 (morning), America/Chicago. Production `4.73.1-neb
 | Maryland (Big Ten) | `maryland.mjs` (SIDEARM, Oklahoma's handlers) | Complete (14 sports) | Added Oct 9 (#272). Gymnastics, Track & Field, men's Lacrosse fill when 2027 is published; women's golf at Navy (no place, no story) not listed; first live cards not yet observed |
 | Michigan (Big Ten) | `michigan.mjs` (SIDEARM, Oklahoma's handlers) | Complete (18 sports) | Added Oct 9. Gymnastics, Lacrosse, Rowing, Track & Field fill when 2026-27 is published; 7 sports use profile cards; first live cards not yet observed |
 | Michigan State (Big Ten) | `michigan-state.mjs` (SIDEARM, Oklahoma's handlers) | Complete (15 sports) | Added Oct 9. Gymnastics, Rowing, Track & Field fill when published; men's tennis Battle In The Bay and Hope RSM Invite have no story (not listed); 9 sports use profile cards (team accounts only); first live cards not yet observed |
-| Nebraska (Big Ten) | `nebraska.mjs` (WMT, newer card generation; Iowa's reader extended) | Complete (16 sports) | Added Oct 9 (#276). Track & Field, Gymnastics, Beach Volleyball fill when published; men's ITA All-American and Creighton Invite (tennis) have no team story (not listed); the men's ITA Regional under way is hidden by the shared grouping (see Working notes); no profile cards; first live cards not yet observed (volleyball vs Wisconsin, football vs Indiana Oct 10) |
+| Nebraska (Big Ten) | `nebraska.mjs` (WMT, newer card generation; Iowa's reader extended) | Complete (16 sports) | Added Oct 9 (#276). Track & Field, Gymnastics, Beach Volleyball fill when published; men's ITA All-American and Creighton Invite (tennis) have no team story (not listed); no profile cards; first live cards not yet observed (volleyball vs Wisconsin, football vs Indiana Oct 10) |
 
 **All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254), Oklahoma and Kentucky (PR #259), South Carolina and Vanderbilt (PR #263) converted: **all 16 SEC schools are in the app.** **Big Ten** (alphabetical): Illinois and Indiana (PR #267), Iowa and Maryland (PR #272), Michigan and Michigan State (PR #274), Nebraska (PR #276). Next: Minnesota and Northwestern (SIDEARM), then Ohio State (CUSTOM: check first). WMT sites with Nebraska's cards (checked Oct 9): Miami, Virginia (ACC).
 
@@ -112,7 +112,7 @@ User: "put the sports overall win/loss record for every sport", then "add the co
 - **Paused by the user:** global source cache via Durable Objects (needs Cloudflare "Worker Previews" first); scheduled feed refresh (#87/#88, reverted). Plans are in the history file.
 - **Later, not now:** when high school or pro teams are added, order the level switch High School, College, Pro (`LEVELS` in `public/index.html`).
 - **Waiting on TFRRS:** Baylor's Chile Pepper Festival (Oct 3) shows "Completed" without a result line or story until TFRRS publishes it; recheck with `npm run verify:prod -- --school=baylor --sports="Cross Country"`.
-- **Shared gap, decision for the user (Oct 9):** `groupEvents` in `src/index.js` drops a Today/Upcoming event whose first day has passed without reading its `end_time`, so a multi-day tournament under way disappears until it is final (Nebraska's men's ITA Regional, Oct 7-11, on one card; any school's merged multi-day events). The fix (keep it while `end_time` is today or later) is shared code: a separate PR on the user's word. The same membership-fallback conference problem may exist for other schools' non-conference sports (e.g. Kentucky rifle); not checked.
+- **Multi-day events under way are shown (Oct 9, #278, user: "Fix it", then "You can merge it if it passes all the test"):** `groupEvents` keeps a Today/Upcoming event while its `end_time` day is today or later. Preview vs production on all 500 school-sports: 10 differ, each one tennis regional under way added (Arkansas, Auburn, BYU, Cincinnati, LSU, Nebraska, South Carolina, Texas A&M, UCF, Vanderbilt), none removed. **Found by it, open in those schools' sessions:** BYU reads "BYU vs ITA Regional Championships" (should be "at"); LSU lists "ATP M15 Lexington" (a player's pro event, which other schools leave out). The membership-fallback conference problem may exist for other schools' non-conference sports (e.g. Kentucky rifle); not checked.
 - **Live checks still to observe:** Iowa State soccer at Arizona State (Oct 8), football at BYU and volleyball vs Kansas State (Oct 9); Colorado soccer vs Baylor (Oct 8); Cincinnati volleyball at UCF (Oct 9) and soccer vs Utah (Oct 8); Houston volleyball vs BYU (Oct 8) and football at Kansas State (Oct 10); a basketball game going live (season from Oct 15).
 
 ## Session log
@@ -147,3 +147,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 9 — Iowa and Maryland added, 29 sports** (user: "Onboard two more big ten schools"; PR #272, merged `ea917c7`; production `4.71.1-iowa-maryland` verified 04:25 UTC, `verify:prod --sports=all` both 90/90, athletes 15/15 and 14/14 with three Instagram each). Iowa WMT (Vanderbilt's reader), Maryland SIDEARM. Shared: archive meet stories prefer a headline from the last day on; WMT "Headshot" names.
 - **Oct 9 — Michigan and Michigan State added, 33 sports** (user: "Onboard Michigan and Michigan State. Learn and optimize for speed"; PR #274, merged `6e14e51`; production `4.72.2-michigan-michigan-state` verified 12:03 UTC, `verify:prod --sports=all` both, athletes 33/33). Shared: rankings "No. 6/7"/"[RV]"/"(RV)", once-a-day bracket events merged, profile Instagram links read whole and menu team accounts skipped, roster read continues for a missing pin; scaffold writes the storyless-golf rule.
 - **Oct 9 — Nebraska added, 16 sports; WMT onboarding automated** (user: "Onboard Nebraska because it's different. Learn and optimize"; PR #276, merged `c497c6c`; production `4.73.1-nebraska` verified 12:59 UTC, `verify:prod --sports=all` 51/51, athletes 16/16 with three Instagram each). huskers.com is WMT with a newer card generation (Miami, Virginia share it). New `scripts/port-wmt.mjs`, run by `start-schools`; fixtures/survey read WMT `/news` archives.
+- **Oct 9 — Multi-day events shown while they run** (user: "Fix it", "You can merge it if it passes all the test"; PR #278, merged `38bdd62`; production `4.73.2-multi-day-in-progress` verified 13:38 UTC, Nebraska men's ITA Regional "Today · In progress", XC 18/20 and 26/21).
