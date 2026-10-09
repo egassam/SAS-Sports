@@ -4,7 +4,7 @@
 
 Maryland was added to the app on October 9, 2026, with Iowa. All 14 sports were built and tested one at a time and published in one PR. The site is SIDEARM (Nuxt page data) and refuses the sandbox, so it is read through the private source. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.71.0-iowa-maryland`)
+## Status (`4.71.1-iowa-maryland`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

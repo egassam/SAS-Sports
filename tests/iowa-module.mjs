@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {officialCardInstagram,verifiedInstagram,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,iowaHandlers,attachOfficialMeetResults,decodeHtml,schoolModule};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {officialCardInstagram,verifiedInstagram,verifiedInstagram,featuredAthletes,rosterPositions,rosterProfiles,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,iowaHandlers,attachOfficialMeetResults,decodeHtml,schoolModule,rosterProfiles};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/iowa-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit hawkeyesports.com routes, exactly
@@ -575,6 +575,14 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`).replace(/ d
   live('Football','football-espn-2026-10-03.json.gz',parse('Football','football'),new Date('2026-10-04T12:00:00Z'),[["Iowa vs Ohio State","Final","L, 14-31"]]);
   live('Volleyball','volleyball-espn-2026-10-03.json.gz',parse('Volleyball','wvball'),new Date('2026-10-04T12:00:00Z'),[["Iowa at Penn State","Final","L, 1-3"]]);
   live('Soccer','soccer-espn-2026-10-04.json.gz',parse('Soccer','wsoc'),new Date('2026-10-05T12:00:00Z'),[["Iowa vs Rutgers","Final","W, 1-0"]]);
+}
+// Roster cards whose profile link wraps only the portrait are named by its
+// alt text without "Headshot" (Ksenija Tomic's card).
+{
+  const profiles=worker.rosterProfiles(fixture('wvball-roster.html.gz'),'https://hawkeyesports.com/sports/wvball/roster');
+  assert.ok(profiles.length>=15);
+  assert.ok(profiles.every(p=>!/headshot/i.test(p.name)),'no "Headshot" in a name');
+  assert.ok(profiles.some(p=>p.name==='Ksenija Tomic'));
 }
 // Other schools and other hosts never reach the Iowa reader.
 assert.equal(worker.iowaHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://hawkeyesports.com/',now),null);

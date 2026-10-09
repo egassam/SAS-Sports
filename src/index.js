@@ -41,7 +41,7 @@ import {marylandSchool,createMarylandHandlers} from './schools/maryland.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.71.0-iowa-maryland';
+const VERSION='4.71.1-iowa-maryland';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -448,7 +448,9 @@ function rosterProfiles(raw,base){
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/\/(?:staff|coaches)\//i.test(path))continue;
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
-    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    // A link around the portrait only has no text: its alt names the
+    // athlete ("Hannah Whittingstall Headshot", Iowa).
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -465,7 +467,9 @@ function rosterProfiles(raw,base){
     const url=absoluteUrl(profileMatch[1],base),path=url?new URL(url).pathname:'';
     if(!url||/(?:staff|coaches)\//i.test(path))continue;
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
-    const name=clean(visibleText(profileMatch[2])||imgAlt);if(nameScore(name)<=0)continue;
+    // A link around the portrait only has no text: its alt names the
+    // athlete ("Hannah Whittingstall Headshot", Iowa).
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo)$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');

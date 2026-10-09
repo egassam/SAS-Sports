@@ -4,7 +4,7 @@
 
 Iowa was added to the app on October 9, 2026, with Maryland. All 15 sports were built and tested one at a time and published in one PR. hawkeyesports.com is WMT (Nuxt, server-rendered cards); the module is Vanderbilt's card reader (`schedule-item-team` headings, the venue on the date box), adapted to Iowa's promotions, golf results and double duals. The site answers the sandbox directly.
 
-## Status (`4.71.0-iowa-maryland`)
+## Status (`4.71.1-iowa-maryland`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
