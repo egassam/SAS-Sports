@@ -1,0 +1,664 @@
+{
+ "sports": {
+  "kstate|Baseball": {
+   "state": "off"
+  },
+  "kstate|Basketball": {
+   "state": "off"
+  },
+  "kstate|Football": {
+   "state": "off"
+  },
+  "kstate|Soccer": {
+   "state": "off"
+  },
+  "kstate|Volleyball": {
+   "state": "off"
+  },
+  "kansas|Baseball": {
+   "state": "off"
+  },
+  "kansas|Basketball": {
+   "state": "off"
+  },
+  "kansas|Football": {
+   "state": "off"
+  },
+  "kansas|Soccer": {
+   "state": "off"
+  },
+  "kansas|Softball": {
+   "state": "off"
+  },
+  "kansas|Volleyball": {
+   "state": "off"
+  },
+  "oklahoma-state|Baseball": {
+   "state": "off"
+  },
+  "oklahoma-state|Basketball": {
+   "state": "off"
+  },
+  "oklahoma-state|Football": {
+   "state": "off"
+  },
+  "oklahoma-state|Soccer": {
+   "state": "off"
+  },
+  "oklahoma-state|Softball": {
+   "state": "off"
+  },
+  "utah|Baseball": {
+   "state": "off"
+  },
+  "utah|Basketball": {
+   "state": "off"
+  },
+  "utah|Football": {
+   "state": "off"
+  },
+  "utah|Lacrosse": {
+   "state": "off"
+  },
+  "utah|Soccer": {
+   "state": "off"
+  },
+  "utah|Softball": {
+   "state": "off"
+  },
+  "utah|Volleyball": {
+   "state": "off"
+  },
+  "arizona-state|Baseball": {
+   "state": "off"
+  },
+  "arizona-state|Basketball": {
+   "state": "off"
+  },
+  "arizona-state|Football": {
+   "state": "off"
+  },
+  "arizona-state|Hockey": {
+   "state": "off"
+  },
+  "arizona-state|Lacrosse": {
+   "state": "off"
+  },
+  "arizona-state|Soccer": {
+   "state": "off"
+  },
+  "arizona-state|Softball": {
+   "state": "off"
+  },
+  "arizona-state|Volleyball": {
+   "state": "off"
+  },
+  "arizona-state|Water Polo": {
+   "state": "off"
+  },
+  "byu|Baseball": {
+   "state": "off"
+  },
+  "byu|Basketball": {
+   "state": "off"
+  },
+  "byu|Football": {
+   "state": "off"
+  },
+  "byu|Soccer": {
+   "state": "off"
+  },
+  "byu|Softball": {
+   "state": "off"
+  },
+  "byu|Volleyball": {
+   "state": "off"
+  },
+  "ucf|Baseball": {
+   "state": "off"
+  },
+  "ucf|Basketball": {
+   "state": "off"
+  },
+  "ucf|Football": {
+   "state": "off"
+  },
+  "ucf|Soccer": {
+   "state": "off"
+  },
+  "ucf|Softball": {
+   "state": "off"
+  },
+  "ucf|Volleyball": {
+   "state": "off"
+  },
+  "arizona|Baseball": {
+   "state": "off"
+  },
+  "arizona|Basketball": {
+   "state": "off"
+  },
+  "arizona|Football": {
+   "state": "off"
+  },
+  "arizona|Soccer": {
+   "state": "off"
+  },
+  "arizona|Softball": {
+   "state": "off"
+  },
+  "arizona|Volleyball": {
+   "state": "off"
+  },
+  "baylor|Baseball": {
+   "state": "off"
+  },
+  "baylor|Basketball": {
+   "state": "off"
+  },
+  "baylor|Football": {
+   "state": "off"
+  },
+  "baylor|Soccer": {
+   "state": "off"
+  },
+  "baylor|Softball": {
+   "state": "off"
+  },
+  "baylor|Volleyball": {
+   "state": "off"
+  },
+  "cincinnati|Baseball": {
+   "state": "off"
+  },
+  "cincinnati|Basketball": {
+   "state": "off"
+  },
+  "cincinnati|Football": {
+   "state": "off"
+  },
+  "cincinnati|Lacrosse": {
+   "state": "off"
+  },
+  "cincinnati|Soccer": {
+   "state": "off"
+  },
+  "cincinnati|Volleyball": {
+   "state": "off"
+  },
+  "colorado|Basketball": {
+   "state": "off"
+  },
+  "colorado|Football": {
+   "state": "off"
+  },
+  "colorado|Soccer": {
+   "state": "off"
+  },
+  "colorado|Volleyball": {
+   "state": "off"
+  },
+  "houston|Baseball": {
+   "state": "off"
+  },
+  "houston|Basketball": {
+   "state": "off"
+  },
+  "houston|Football": {
+   "state": "off"
+  },
+  "houston|Soccer": {
+   "state": "off"
+  },
+  "houston|Softball": {
+   "state": "off"
+  },
+  "houston|Volleyball": {
+   "state": "off"
+  },
+  "iowa-state|Basketball": {
+   "state": "off"
+  },
+  "iowa-state|Football": {
+   "state": "off"
+  },
+  "iowa-state|Soccer": {
+   "state": "off"
+  },
+  "iowa-state|Softball": {
+   "state": "off"
+  },
+  "iowa-state|Volleyball": {
+   "state": "off"
+  },
+  "tcu|Baseball": {
+   "state": "off"
+  },
+  "tcu|Basketball": {
+   "state": "off"
+  },
+  "tcu|Football": {
+   "state": "off"
+  },
+  "tcu|Soccer": {
+   "state": "off"
+  },
+  "tcu|Volleyball": {
+   "state": "off"
+  },
+  "texas-tech|Baseball": {
+   "state": "off"
+  },
+  "texas-tech|Basketball": {
+   "state": "off"
+  },
+  "texas-tech|Football": {
+   "state": "off"
+  },
+  "texas-tech|Soccer": {
+   "state": "off"
+  },
+  "texas-tech|Softball": {
+   "state": "off"
+  },
+  "texas-tech|Volleyball": {
+   "state": "off"
+  },
+  "west-virginia|Baseball": {
+   "state": "off"
+  },
+  "west-virginia|Basketball": {
+   "state": "off"
+  },
+  "west-virginia|Football": {
+   "state": "off"
+  },
+  "west-virginia|Soccer": {
+   "state": "off"
+  },
+  "west-virginia|Volleyball": {
+   "state": "off"
+  },
+  "alabama|Baseball": {
+   "state": "off"
+  },
+  "alabama|Basketball": {
+   "state": "off"
+  },
+  "alabama|Football": {
+   "state": "off"
+  },
+  "alabama|Soccer": {
+   "state": "off"
+  },
+  "alabama|Softball": {
+   "state": "off"
+  },
+  "alabama|Volleyball": {
+   "state": "off"
+  },
+  "florida|Baseball": {
+   "state": "off"
+  },
+  "florida|Basketball": {
+   "state": "off"
+  },
+  "florida|Football": {
+   "state": "off"
+  },
+  "florida|Lacrosse": {
+   "state": "off"
+  },
+  "florida|Soccer": {
+   "state": "off"
+  },
+  "florida|Softball": {
+   "state": "off"
+  },
+  "florida|Volleyball": {
+   "state": "off"
+  },
+  "georgia|Baseball": {
+   "state": "off"
+  },
+  "georgia|Basketball": {
+   "state": "off"
+  },
+  "georgia|Football": {
+   "state": "off"
+  },
+  "georgia|Soccer": {
+   "state": "off"
+  },
+  "georgia|Softball": {
+   "state": "off"
+  },
+  "georgia|Volleyball": {
+   "state": "off"
+  },
+  "lsu|Baseball": {
+   "state": "off"
+  },
+  "lsu|Basketball": {
+   "state": "off"
+  },
+  "lsu|Football": {
+   "state": "off"
+  },
+  "lsu|Soccer": {
+   "state": "off"
+  },
+  "lsu|Softball": {
+   "state": "off"
+  },
+  "lsu|Volleyball": {
+   "state": "off"
+  },
+  "ole-miss|Baseball": {
+   "state": "off"
+  },
+  "ole-miss|Basketball": {
+   "state": "off"
+  },
+  "ole-miss|Football": {
+   "state": "off"
+  },
+  "ole-miss|Soccer": {
+   "state": "off"
+  },
+  "ole-miss|Softball": {
+   "state": "off"
+  },
+  "ole-miss|Volleyball": {
+   "state": "off"
+  },
+  "mississippi-state|Baseball": {
+   "state": "off"
+  },
+  "mississippi-state|Basketball": {
+   "state": "off"
+  },
+  "mississippi-state|Football": {
+   "state": "off"
+  },
+  "mississippi-state|Soccer": {
+   "state": "off"
+  },
+  "mississippi-state|Softball": {
+   "state": "off"
+  },
+  "mississippi-state|Volleyball": {
+   "state": "off"
+  },
+  "tennessee|Baseball": {
+   "state": "off"
+  },
+  "tennessee|Basketball": {
+   "state": "off"
+  },
+  "tennessee|Football": {
+   "state": "off"
+  },
+  "tennessee|Soccer": {
+   "state": "off"
+  },
+  "tennessee|Softball": {
+   "state": "off"
+  },
+  "tennessee|Volleyball": {
+   "state": "off"
+  },
+  "missouri|Baseball": {
+   "state": "off"
+  },
+  "missouri|Basketball": {
+   "state": "off"
+  },
+  "missouri|Football": {
+   "state": "off"
+  },
+  "missouri|Soccer": {
+   "state": "off"
+  },
+  "missouri|Softball": {
+   "state": "off"
+  },
+  "missouri|Volleyball": {
+   "state": "off"
+  },
+  "texas|Baseball": {
+   "state": "off"
+  },
+  "texas|Basketball": {
+   "state": "off"
+  },
+  "texas|Football": {
+   "state": "off"
+  },
+  "texas|Soccer": {
+   "state": "off"
+  },
+  "texas|Softball": {
+   "state": "off"
+  },
+  "texas|Volleyball": {
+   "state": "off"
+  },
+  "texas-am|Baseball": {
+   "state": "off"
+  },
+  "texas-am|Basketball": {
+   "state": "off"
+  },
+  "texas-am|Football": {
+   "state": "off"
+  },
+  "texas-am|Soccer": {
+   "state": "off"
+  },
+  "texas-am|Softball": {
+   "state": "off"
+  },
+  "texas-am|Volleyball": {
+   "state": "off"
+  },
+  "arkansas|Baseball": {
+   "state": "off"
+  },
+  "arkansas|Basketball": {
+   "state": "off"
+  },
+  "arkansas|Football": {
+   "state": "off"
+  },
+  "arkansas|Soccer": {
+   "state": "off"
+  },
+  "arkansas|Softball": {
+   "state": "off"
+  },
+  "arkansas|Volleyball": {
+   "state": "off"
+  },
+  "auburn|Baseball": {
+   "state": "off"
+  },
+  "auburn|Basketball": {
+   "state": "off"
+  },
+  "auburn|Football": {
+   "state": "off"
+  },
+  "auburn|Soccer": {
+   "state": "off"
+  },
+  "auburn|Softball": {
+   "state": "off"
+  },
+  "auburn|Volleyball": {
+   "state": "off"
+  },
+  "oklahoma|Baseball": {
+   "state": "off"
+  },
+  "oklahoma|Basketball": {
+   "state": "off"
+  },
+  "oklahoma|Football": {
+   "state": "off"
+  },
+  "oklahoma|Soccer": {
+   "state": "off"
+  },
+  "oklahoma|Softball": {
+   "state": "off"
+  },
+  "oklahoma|Volleyball": {
+   "state": "off"
+  },
+  "kentucky|Baseball": {
+   "state": "off"
+  },
+  "kentucky|Basketball": {
+   "state": "off"
+  },
+  "kentucky|Football": {
+   "state": "off"
+  },
+  "kentucky|Soccer": {
+   "state": "off"
+  },
+  "kentucky|Softball": {
+   "state": "off"
+  },
+  "kentucky|Volleyball": {
+   "state": "off"
+  },
+  "south-carolina|Baseball": {
+   "state": "off"
+  },
+  "south-carolina|Basketball": {
+   "state": "off"
+  },
+  "south-carolina|Football": {
+   "state": "off"
+  },
+  "south-carolina|Soccer": {
+   "state": "off"
+  },
+  "south-carolina|Softball": {
+   "state": "off"
+  },
+  "south-carolina|Volleyball": {
+   "state": "off"
+  },
+  "vanderbilt|Baseball": {
+   "state": "off"
+  },
+  "vanderbilt|Basketball": {
+   "state": "off"
+  },
+  "vanderbilt|Football": {
+   "state": "off"
+  },
+  "vanderbilt|Lacrosse": {
+   "state": "off"
+  },
+  "vanderbilt|Soccer": {
+   "state": "off"
+  },
+  "vanderbilt|Volleyball": {
+   "state": "off"
+  },
+  "illinois|Baseball": {
+   "state": "off"
+  },
+  "illinois|Basketball": {
+   "state": "off"
+  },
+  "illinois|Football": {
+   "state": "off"
+  },
+  "illinois|Soccer": {
+   "state": "off"
+  },
+  "illinois|Softball": {
+   "state": "off"
+  },
+  "illinois|Volleyball": {
+   "state": "off"
+  },
+  "indiana|Baseball": {
+   "state": "off"
+  },
+  "indiana|Basketball": {
+   "state": "off"
+  },
+  "indiana|Field Hockey": {
+   "state": "off"
+  },
+  "indiana|Football": {
+   "state": "off"
+  },
+  "indiana|Soccer": {
+   "state": "off"
+  },
+  "indiana|Softball": {
+   "state": "off"
+  },
+  "indiana|Volleyball": {
+   "state": "off"
+  },
+  "indiana|Water Polo": {
+   "state": "off"
+  },
+  "iowa|Baseball": {
+   "state": "off"
+  },
+  "iowa|Basketball": {
+   "state": "off"
+  },
+  "iowa|Field Hockey": {
+   "state": "off"
+  },
+  "iowa|Football": {
+   "state": "off"
+  },
+  "iowa|Soccer": {
+   "state": "off"
+  },
+  "iowa|Softball": {
+   "state": "off"
+  },
+  "iowa|Volleyball": {
+   "state": "off"
+  },
+  "maryland|Baseball": {
+   "state": "off"
+  },
+  "maryland|Basketball": {
+   "state": "off"
+  },
+  "maryland|Field Hockey": {
+   "state": "off"
+  },
+  "maryland|Football": {
+   "state": "off"
+  },
+  "maryland|Lacrosse": {
+   "state": "off"
+  },
+  "maryland|Soccer": {
+   "state": "off"
+  },
+  "maryland|Softball": {
+   "state": "off"
+  },
+  "maryland|Volleyball": {
+   "state": "off"
+  }
+ },
+ "version": "4.71.1-iowa-maryland",
+ "updated_at": "2026-10-09T10:33:00.171Z",
+ "base": "https://sas-sports.lovetogivepain.workers.dev"
+}
