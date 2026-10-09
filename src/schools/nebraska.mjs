@@ -100,6 +100,7 @@ const EVENT_NAME=/\b(?:invit\w*|invite|opener|challenge|classic|championships?|o
 const GAME_EVENT=/\b(?:tournament|championships?|final four|regionals?|rounds?)\b/i;
 // Not a competition: "NCAA Selection Show" (golf, basketball), swimming's
 // "Holiday Training Trip".
+const NO_CONFERENCE=new Set(['Rifle','Bowling','Beach Volleyball']);
 const NOT_EVENT=/\bselection show\b|\btraining trip\b/i;
 // Golf's card result: "5th of 13" (the place in the field) or "1st (842)"
 // (the place and team score).
@@ -392,6 +393,10 @@ export function createNebraskaHandlers({makeEvent,visibleText,absoluteUrl,recapM
       if((sport==='Swimming & Diving'||sport==='Wrestling')&&!result&&EVENT_NAME.test(opponent))event.round_of=`${opponent}|swim`;
       if(xc){event.round_of=`${xc.name}|xc`;event.merged_name=xc.name;event.card_name=opponent;event.xc_team=xc.team;}
       if(team)event.id=`${event.id}-${team}`;
+      // The Big Ten sponsors no rifle, bowling or beach volleyball: no game
+      // in them is a conference game (Ohio State is a rifle opponent, not a
+      // Big Ten one).
+      if(NO_CONFERENCE.has(sport))event.conference_game=false;
       // A past tennis tournament (no team result) is listed only with its
       // story, as K-State's (the men's page lists its players' pro events).
       // Nebraska's cards rarely link one: the feed looks for it in the

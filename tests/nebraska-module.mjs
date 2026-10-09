@@ -528,6 +528,8 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`),stat=label=
   assert.deepEqual(parse('Football','football').filter(e=>e.status==='Final').map(e=>[e.title,e.headline,e.recap_url]),[["Nebraska vs Ohio","W, 49-21","https://huskers.com/news/2026/09/5/huskers-roll-in-second-half-to-beat-bobcats"],["Nebraska vs Bowling Green","W, 56-7","https://huskers.com/news/2026/09/13/big-red-blasts-bowling-green"],["Nebraska vs North Dakota","W, 34-7","https://huskers.com/news/2026/09/20/huskers-fight-past-hawks"],["Nebraska at Michigan State","W, 31-13","https://huskers.com/news/2026/09/27/huskers-down-spartans-to-remain-undefeated"],["Nebraska vs Maryland","W, 48-23","https://huskers.com/news/2026/10/4/huskers-sprint-past-terps-in-second-half"]]);
   // The records the schedule pages publish (Overall, Conf.).
   for(const [sport,slug] of [['Football','football'],['Volleyball','volleyball'],['Soccer','soccer']])assert.deepEqual(records(sport,slug),published(slug),`${sport}: the computed records are the official ones`);
+  // Rifle is not a Big Ten sport: its record has no conference part.
+  assert.deepEqual(records('Rifle','rifle'),['2-0',undefined]);
   assert.deepEqual([['Football','football'],['Volleyball','volleyball'],['Soccer','soccer']].map(([,slug])=>published(slug)),[["5-0","2-0"],["16-0","5-0"],["3-3-7","1-2-4"]]);
   // Last season's pages (track, gymnastics "2025-26"; beach volleyball's
   // spring "2026") are empty until the new season is published.
