@@ -47,7 +47,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.75.2-ohio-state';
+const VERSION='4.75.3-ohio-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -108,7 +108,11 @@ const SCHOOL_MODULES=[
     isEmptySchedule:events=>utahHandlers.isEmptySchedule(events),
     crossCountry:{matches:event=>utahHandlers.isUtahCrossCountry(event),attach:event=>utahHandlers.attachMeetResults(event)}},
   {school:arizonaStateSchool,parseSchedule:(...args)=>arizonaStateHandlers.parseSchedule(...args),isEmptySchedule:events=>arizonaStateHandlers.isEmptySchedule(events),crossCountry:{matches:event=>arizonaStateHandlers.isArizonaStateCrossCountry(event),attach:event=>arizonaStateHandlers.attachMeetResults(event)}},
-  {school:byuSchool,parseSchedule:(...args)=>byuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>byuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>byuHandlers.matchesRecap(...args),crossCountry:{matches:event=>byuHandlers.isByuCrossCountry(event),attach:event=>byuHandlers.attachMeetResults(event)},meetDayIsLast:true},
+  {school:byuSchool,parseSchedule:(...args)=>byuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>byuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>byuHandlers.matchesRecap(...args),crossCountry:{matches:event=>byuHandlers.isByuCrossCountry(event),attach:event=>byuHandlers.attachMeetResults(event)},meetDayIsLast:true,
+    // A past tennis tournament without a card story takes its news story, or
+    // is not listed (K-State's rule).
+    beforeHighlights:async event=>{if(byuHandlers.isTennisWithoutStory(event))await byuHandlers.attachTennisStory(event);},
+    feed:async events=>{await Promise.all(events.filter(byuHandlers.isTennisWithoutStory).map(event=>byuHandlers.attachTennisStory(event)));return events.filter(event=>!byuHandlers.isTennisWithoutStory(event));}},
   {school:ucfSchool,parseSchedule:(...args)=>ucfHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ucfHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ucfHandlers.matchesRecap(...args),crossCountry:{matches:event=>ucfHandlers.isUcfCrossCountry(event),attach:event=>ucfHandlers.attachMeetResults(event)}},
   {school:arizonaSchool,parseSchedule:(...args)=>arizonaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>arizonaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>arizonaHandlers.matchesRecap(...args),crossCountry:{matches:event=>arizonaHandlers.isArizonaCrossCountry(event),attach:event=>arizonaHandlers.attachMeetResults(event)},
     // Golf results come from each tournament's own story.

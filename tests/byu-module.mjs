@@ -245,6 +245,27 @@ assert.deepEqual(tennis.mens.map(e=>`${e.status} ${e.display_time} ${e.title} ${
   "Upcoming Oct 6 Men's · BYU at ITA Regional Championships","Upcoming Oct 29, 10:00 AM Men's · BYU at SMU Invitational","Upcoming Nov 5 Men's · BYU at ITA Masters","Upcoming Nov 5 Men's · BYU at ITA Sectional Championships"
 ]);
 assert.equal(new Set(tennis.mens.map(e=>e.id)).size,8,'the two Nov 5 ITA events stay separate');
+// A past tournament is listed only with its story (K-State's rule). The men's
+// cards link none; the Sep 28 news story covers the Sherwood Collegiate Cup
+// and the Dar Walters Classic in Boise (the card's "Boise St. Invitational").
+// Milwaukee and the ITA All-American have none and are not listed.
+{
+  recapFixtures.set('https://byucougars.com/sports/mens-tennis/news',fixture('mens-tennis-news-2026-10-09.html.gz'));
+  const story='https://byucougars.com/news/2026/09/28/cougars-return-to-the-court-opening-the-fall-season-with-dual-tournaments';
+  recapFixtures.set(story,fixture('tennis-story-2026-09-28-dual-tournaments.html.gz'));
+  const men=tennis.mens.map(e=>({...e}));
+  await Promise.all(men.filter(worker.byuHandlers.isTennisWithoutStory).map(e=>worker.byuHandlers.attachTennisStory(e)));
+  const listed=men.filter(e=>!worker.byuHandlers.isTennisWithoutStory(e));
+  assert.deepEqual(listed.filter(e=>e.status==='Final').map(e=>[e.opponent,e.recap_url]),[['Sherwood Invitational',story],['Boise St. Invitational',story]]);
+  assert.equal(listed.length,6,'Milwaukee and the ITA All-American are not listed');
+  // A story in the window that names no distinctive word of the event
+  // ("Invitational" alone) is not its story.
+  recapFixtures.set('https://byucougars.com/sports/mens-tennis/news','<a href="/news/2026/09/28/another-invitational">');
+  recapFixtures.set('https://byucougars.com/news/2026/09/28/another-invitational','<script>{"articleBody":"BYU played the Pacific Invitational."}</script>');
+  const sherwood={...tennis.mens.find(e=>e.opponent==='Sherwood Invitational')};
+  await worker.byuHandlers.attachTennisStory(sherwood);
+  assert.equal(sherwood.recap_url,undefined);
+}
 assert.equal(tennis.womens.length,7);
 // Tournaments read "at" even where the card's divider reads "vs." (BYU hosts
 // none of these; K-State's and TCU's tournaments read "at").
