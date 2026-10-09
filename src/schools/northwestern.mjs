@@ -14,7 +14,9 @@ export const northwesternSchool={
   // default (ESPN's FBS group).
   liveScoreboards:{
     'Volleyball':[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
-    'Soccer':[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+    // Men's and women's soccer are shown together: each board carries its
+    // team (an unlabeled women's final did not join the labeled card).
+    'Soccer':[{path:'soccer/usa.ncaa.m.1',team_label:"Men's",sourceName:"Live men's college soccer scoreboard"},{path:'soccer/usa.ncaa.w.1',team_label:"Women's",sourceName:"Live women's college soccer scoreboard"}],
     'Basketball':[{path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},{path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}],
     'Baseball':[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
     'Softball':[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}]

@@ -460,5 +460,9 @@ assert.equal(northwesternGolfStoryPlace('The senior finished his week in a share
   recapFixtures.clear();requests.length=0;
 }
 
+// Soccer's ESPN boards carry their team: an unlabeled women's final (Oct 8
+// at Rutgers) did not join the labeled card and showed twice.
+assert.deepEqual(northwesternSchool.liveScoreboards.Soccer.map(b=>[b.path,b.team_label]),[["soccer/usa.ncaa.m.1","Men's"],["soccer/usa.ncaa.w.1","Women's"]]);
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Northwestern module checks passed');

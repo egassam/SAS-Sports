@@ -34,6 +34,9 @@ export const minnesotaSchool={
     'minnesota|Gymnastics|Isabella Nguyen':'https://www.instagram.com/isabellanguyen30/',
     'minnesota|Gymnastics|Leah Gonsiorowski':'https://www.instagram.com/leahg.23/',
     'minnesota|Gymnastics|McCauley Harrington':'https://www.instagram.com/mccauleyharrington_/',
+    'minnesota|Hockey|Sydney Bailey':'https://www.instagram.com/sydneybailey12/',
+    'minnesota|Hockey|Chloe Primerano':'https://www.instagram.com/_chloeprimerano/',
+    'minnesota|Hockey|Ava Lindsay':'https://www.instagram.com/avalinds/',
     'minnesota|Softball|Jessa Snippes':'https://www.instagram.com/jessasnippes/',
     'minnesota|Softball|Lucy Hooper':'https://www.instagram.com/lucyhooperrr/',
     'minnesota|Softball|Tara Wolocko':'https://www.instagram.com/tara_wolocko16/'
