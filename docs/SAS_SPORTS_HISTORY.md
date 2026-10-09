@@ -2027,3 +2027,20 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 **Publication:** PR #272 merged `ea917c7` under the standing permission (CI green, clean). Production `4.71.1-iowa-maryland`: `verify:prod --school=iowa,maryland --sports=all` 90/90 (04:25 UTC); athletes 15/15 and 14/14 with three Instagram each (curl sweep of `/live/athletes`).
 
 **Also:** the open 4.70.0 production check passed (KU soccer, XC baselines). A container restart killed the first athlete/screenshot run; re-run one at a time.
+
+
+## October 9, 2026 — Michigan and Michigan State added (PR #274)
+
+**User request:** "Onboard Michigan and Michigan State. Learn and optimize for speed."
+
+**Setup:** `start-schools --from=oklahoma michigan=#00274C,#FFCB05,#ffffff michigan-state=#18453B,#FFFFFF,#ffffff`: both SIDEARM, read through the private source; 18 and 15 sports from the nav; fixtures, athlete evidence and surveys in 178 s. One GATE (MSU men's golf, The Indy at Forest Hills).
+
+**Michigan (18 sports):** `combinedSports` widened to nine; the scaffold's `cross-country` and `track-field` routes were the site's event list / an empty template: replaced by `womens-`/`mens-cross-country` and `-track-and-field` with Illinois's per-team TFRRS. Page marks (`*`, `;`) and water polo's "Maize & Blue Exhibition" out. Men's tennis's Fighting Irish Invitational (Sep 25-26) takes its Sep 24 tournament page from the archive (`meetDaysBefore:{Tennis:1}`) and the recap matcher accepts it (`ownLinkDaysBefore:{Tennis:1}`, found by the preview's `recap_not_found`). Live boards per team for soccer and lacrosse; field hockey on. Pins: Baseball, Cross Country, Tennis, Track & Field; profile cards: Field Hockey, Football, Rowing, Soccer, Softball, Swimming & Diving, Wrestling.
+
+**Michigan State (15 sports):** golf "880 (7th of 12)"; storyless placeless golf not listed (Maryland's `isGolfWithoutStory`, now in the scaffold); men's tennis ITA All-American (Sep 19-25) from the Sep 28 archive story (`meetDaysAfter:3`); Battle In The Bay and Hope RSM Invite have no story (not listed). Combined Basketball, Golf, Soccer, Tennis. Women's soccer Big Ten 5-1 equals the page's published conference record (page data marks USC non-conference). Pins: Cross Country (1), Football, Rowing, Tennis (1), Track & Field, Volleyball; profile cards for nine sports whose profiles link only the team account.
+
+**Shared changes:** `withoutRanking` ("No. 6/7", "[RV]", "(RV)"); `mergeTbaBracket` merges an event published once per day without a result (Big Ten Tournament, NCAA Final Four); `verifiedInstagram` reads the whole link (nested URL unwrapped, space = broken: "Alex Gatto._" was read as "alex") and skips site-menu links (`data-s-nav-link`, `c-navigation__url`: MSU team accounts); `featuredAthletes` reads later team rosters while a pin is missing (Michigan XC showed 2 on the first preview); kit `createArchiveStory` `meetDaysAfter`/`meetDaysBefore`, `createRecapMatcher` `ownLinkDaysBefore`; `athlete-evidence` unwraps nested links and drops handles on 3+ athletes' pages; scaffold writes `isGolfWithoutStory`.
+
+**Tests:** `npm run test:release` passed on each of the three commits (b63de38, 4.72.0; 4.72.1 roster fix; a3cbcfb, 4.72.2). 15 rule mutations each fail their module test. Preview (4.72.2): `verify:preview --school=michigan,michigan-state --sports=all` all passed (36/36 refreshes per sport, expanded views, K-State XC 18/20, KU XC 26/21); athletes 33/33; screenshots of Football, Cross Country, Golf, Tennis, Soccer read by eye. CI green, no conflict; merged `6e14e51` under the standing permission. Production: `/api/status` 4.72.2 at 12:03 UTC, `verify:prod --sports=all --refreshes=3` all passed (XC 18/20, 26/21), athletes 33/33.
+
+**Open (source-blocked or waiting):** Michigan Gymnastics, Lacrosse, Rowing, Track & Field and MSU Gymnastics, Rowing, Track & Field fill when 2026-27 is published; MSU men's tennis Battle In The Bay / Hope RSM Invite wait on a story; first live cards not yet observed for either school.
