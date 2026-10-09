@@ -196,6 +196,10 @@ export function createLsuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       // Rankings ("#8 Ole Miss") describe the week, not the opponent.
       name=name.replace(/^(?:#(?:\d+|RV)\s+)+/i,'').trim();
       if(!name||INTERNAL.test(name))continue;
+      // The men's tennis page lists its players' pro events ("ATP M15
+      // Lexington", "ITF M25 Austin", "ATP Knoxville Challenger 75"): not the
+      // team's, as other schools leave them out.
+      if(sport==='Tennis'&&/^(?:ATP|ITF)\b/i.test(name))continue;
       const slot=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i);
       // A cancelled event ("Canceled (Weather)") is not listed.
       if(/^(?:cancel+ed|postponed)\b/i.test(slot))continue;

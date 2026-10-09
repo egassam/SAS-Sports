@@ -177,6 +177,10 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       // Meets publish a team finish as text ("1st - 19 points").
       const meet=eventType(sport)!=='GAME';
+      // A tournament is something BYU plays at, even when the card's divider
+      // reads "vs." (USTA SoCal Championships, ITA Regionals): K-State's and
+      // TCU's tournaments read "at".
+      const tournament=meet&&/\b(?:championships?|regionals?)\b/i.test(opponent);
       const resultText=meet?field(block,/class=["']schedule-event-item-result__text["'][^>]*>([\s\S]*?)<\//i):'';
       const placing=resultText.match(/^(\d{1,3})(?:st|nd|rd|th)?\s*-\s*(\d+)\s*points?$/i);
       // Golf: "9th (María José Barragán - T-6th)", the team place then the best
@@ -187,7 +191,7 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const firstDay=Date.UTC(year,month-1,day),lastDay=last.length===3?Date.UTC(last[0],last[1]-1,last[2]):firstDay;
       // A meet whose last day has passed is over, published result or not.
       const over=meet&&(placing||golfPlace||lastDay<mountainToday(now));
-      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||meet&&!divider?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
+      const event=makeEvent({school,sport,status:result||over?'Final':'Upcoming',relation:/^at\b/i.test(divider)||meet&&!divider||tournament?'at':'vs',opponent,date:`${MONTHS[month-1]} ${day}, ${year}`,
         // K-State's results show the date only; upcoming games show the published time.
         time:result||over||!/\d/.test(clock)?null:clock,
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
@@ -240,6 +244,10 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       const words=['','first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth','twentieth'];
       if(place&&!(new RegExp(`\\b(?:${words[place]||'-'}|${ordinal(place)})\\b`,'i').test(title)||place===1&&/\bwins?\b|\bchampions?\b/i.test(title)))return false;
     }
+    // A tennis story the news archive matched to the tournament by a
+    // distinctive word ("Sherwood Collegiate Cup" for the card's "Sherwood
+    // Invitational") is its story.
+    if(event.sport==='Tennis'&&url===event.archive_story_verified)return true;
     const cardBound=byuSchool.cardSports.has(event.sport)&&url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname==='byucougars.com'&&parsed.pathname.startsWith('/news/');
     // Multi-day events are checked against their last day, as Kansas's are:
     // the USTA SoCal recap is dated Sep 28 for a Sep 24-27 tournament.
@@ -299,5 +307,27 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
     event.highlight_state='official_recap_results';event.highlight_status=null;
     return event;
   }
-  return{parseSchedule,isEmptySchedule,matchesRecap,isByuCrossCountry,attachMeetResults};
+  // A past tennis tournament is listed only with its story (K-State's rule).
+  // A card linking none takes the team's news story dated its last day or
+  // the two after whose text names the event by a distinctive word: one
+  // story (Sep 28) covers the men's Sherwood Collegiate Cup and the "Dar
+  // Walters Classic in Boise" (the card's "Boise St. Invitational").
+  const isTennisWithoutStory=event=>event?.school_id==='byu'&&event.sport==='Tennis'&&event.status==='Final'&&!event.recap_url;
+  const COMMON=/^(?:invitational|invite|classic|collegiate|cup|championships?|tournament|open|st|state|ita|the|and|all|american|fall|spring)$/i;
+  async function download(url){try{const response=await fetch(url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});return response.ok?await response.text():'';}catch{return'';}}
+  async function attachTennisStory(event){
+    if(!isTennisWithoutStory(event))return event;
+    const slug=(String(event.source?.url||'').match(/^https:\/\/byucougars\.com\/sports\/([a-z-]+)\/schedule/)||[])[1];if(!slug)return event;
+    const words=String(event.opponent||'').split(/[^A-Za-z]+/).filter(word=>word&&!COMMON.test(word));if(!words.length)return event;
+    const listing=await download(`https://byucougars.com/sports/${slug}/news`);if(!listing)return event;
+    const last=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
+    const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
+    const paths=[...new Set(String(listing).match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[a-z0-9-]+/g)||[])].filter(path=>day(path)>=last&&day(path)<=last+2*86400000);
+    for(const path of paths.slice(0,4)){
+      const url=`https://byucougars.com${path}`,text=recapArticleText(await download(url));
+      if(words.some(word=>new RegExp(`\\b${word}\\b`,'i').test(text))){event.recap_url=url;event.archive_story_verified=url;return event;}
+    }
+    return event;
+  }
+  return{parseSchedule,isEmptySchedule,matchesRecap,isByuCrossCountry,attachMeetResults,isTennisWithoutStory,attachTennisStory};
 }

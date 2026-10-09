@@ -441,6 +441,8 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_womensgymnastics,"Gymnastics womens-gymnastics");
   ownRecapsOnly(v_mensicehockey,"Hockey mens-ice-hockey");
   ownRecapsOnly(v_womensicehockey,"Hockey womens-ice-hockey");
+  // Women's hockey plays in the WCHA: its league record is not the Big Ten's.
+  assert.ok(v_womensicehockey.every(e=>e.conference_name==='WCHA')&&v_mensicehockey.every(e=>e.conference_name===undefined));
   ownRecapsOnly(v_womensrowing,"Rowing womens-rowing");
   ownRecapsOnly(v_womenssoccer,"Soccer womens-soccer");
   ownRecapsOnly(v_softball,"Softball softball");

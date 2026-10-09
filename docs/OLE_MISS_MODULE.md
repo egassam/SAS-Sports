@@ -36,6 +36,8 @@ Three sports use official profile cards (`athlete_profile_fallback_sports`): Cro
 
 ## Limitations
 
+- **Rifle conference (fixed Oct 9, 4.75.1):** olemisssports.com marks the Sep 26 Ohio State dual `conference: true`; the app read "SEC 1-0". The SEC sponsors no rifle: no conference record (shared rule in `src/conference-games.mjs`).
+
 - The Ally (women's golf, Oct 5-7) has no final story yet; it shows `2nd of 17` and takes the story when Ole Miss publishes it.
 - Track & Field, Baseball, Softball and Basketball fill as their seasons start or are published.
 - No live card observed yet.

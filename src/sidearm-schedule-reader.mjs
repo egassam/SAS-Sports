@@ -18,7 +18,7 @@
 //   relation(sport,game,meet)         'vs' or 'at'
 //   startTime(date,time)              the published local start
 //   result(event,ctx)                 sport results: golf places, team finishes
-//   recapLinks(game,result)           candidate story links, first valid wins
+//   recapLinks(game,result,sport)     candidate story links, first valid wins
 //   onRecap(event,href,ctx)           after the story link is set
 //   tennisNeedsStory                  a past tennis tournament is listed only with a story
 //   gameNumber(game,games,ctx)        doubleheaders: Game 1 / Game 2 (0: not one)
@@ -109,7 +109,7 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       if(final){
         // The event's own /news/ story, dated from its first day to three
         // days after its last (never the game-book PDF or the notes page).
-        for(const candidate of recapLinks(game,result)){
+        for(const candidate of recapLinks(game,result,sport)){
           try{
             const link=new URL(candidate,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
             const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;

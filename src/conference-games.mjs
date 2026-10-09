@@ -22,6 +22,18 @@ const shiftDay=(date,days)=>new Date(Date.parse(`${date}T00:00:00Z`)+days*864000
 // "Kansas State" is "Kansas St." and "K-State"; "UCF" is "Central Florida".
 const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu:['brigham young'],tcu:['texas christian'],'west-virginia':['wvu','west virginia'],'arizona-state':['asu'],'oklahoma-state':['osu'],kansas:['ku']};
 
+// Sports a conference does not sponsor (2026-27). A team in one plays no
+// conference schedule or plays in another league (Ole Miss and West Virginia
+// rifle; Ole Miss's page marks its Ohio State dual a conference match, Sep 26),
+// so the membership conference never names its record. A module that knows
+// the league names it (event.conference_name: Kentucky's men's soccer in the
+// Sun Belt, Ohio State's women's hockey in the WCHA).
+const NOT_SPONSORED={
+  'Big 12':new Set(['Rifle','Bowling','Fencing','Field Hockey','Hockey','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  SEC:new Set(['Rifle','Bowling','Beach Volleyball','Fencing','Field Hockey','Hockey','Lacrosse','Rowing','Wrestling','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  'Big Ten':new Set(['Rifle','Bowling','Beach Volleyball','Fencing','Equestrian','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+};
+
 export function createConferenceGames({schools}){
   const memberNames=new Map();
   const namesOf=conference=>{
@@ -38,6 +50,12 @@ export function createConferenceGames({schools}){
 
   function markConferenceGames(events,raw,school){
     if(!Array.isArray(events)||!events.length||!school?.conference)return events;
+    markGames(events,raw,school);
+    const unsponsored=NOT_SPONSORED[school.conference];
+    if(unsponsored)for(const event of events)if(unsponsored.has(event.sport)&&!event.conference_name)event.conference_game=false;
+    return events;
+  }
+  function markGames(events,raw,school){
     const games=/__NUXT_DATA__/.test(String(raw||''))?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
     if(games.length){
       // The same page data marks exhibitions (type "S"), which records leave

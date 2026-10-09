@@ -37,5 +37,7 @@ Three per sport (`scripts/athlete-evidence.mjs`, Oct 9). **Pins:** Baseball (2 o
 
 ## Limitations
 
+- **Women's hockey conference (fixed Oct 9, 4.75.1):** the record read "Big Ten 2-0"; the Big Ten sponsors only men's hockey. Women's league games are named WCHA.
+
 - **Waiting on publication:** Gymnastics and Track & Field fill when gophersports.com publishes 2026-27.
 - **Live cards:** no live card observed yet (volleyball at Rutgers, women's hockey vs Maine, Oct 9).

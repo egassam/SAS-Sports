@@ -43,10 +43,11 @@ import {michiganStateSchool,createMichiganStateHandlers} from './schools/michiga
 import {nebraskaSchool,createNebraskaHandlers} from './schools/nebraska.mjs';
 import {minnesotaSchool,createMinnesotaHandlers} from './schools/minnesota.mjs';
 import {northwesternSchool,createNorthwesternHandlers} from './schools/northwestern.mjs';
+import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.74.2-minnesota-northwestern';
+const VERSION='4.75.4-ohio-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -107,7 +108,11 @@ const SCHOOL_MODULES=[
     isEmptySchedule:events=>utahHandlers.isEmptySchedule(events),
     crossCountry:{matches:event=>utahHandlers.isUtahCrossCountry(event),attach:event=>utahHandlers.attachMeetResults(event)}},
   {school:arizonaStateSchool,parseSchedule:(...args)=>arizonaStateHandlers.parseSchedule(...args),isEmptySchedule:events=>arizonaStateHandlers.isEmptySchedule(events),crossCountry:{matches:event=>arizonaStateHandlers.isArizonaStateCrossCountry(event),attach:event=>arizonaStateHandlers.attachMeetResults(event)}},
-  {school:byuSchool,parseSchedule:(...args)=>byuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>byuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>byuHandlers.matchesRecap(...args),crossCountry:{matches:event=>byuHandlers.isByuCrossCountry(event),attach:event=>byuHandlers.attachMeetResults(event)},meetDayIsLast:true},
+  {school:byuSchool,parseSchedule:(...args)=>byuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>byuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>byuHandlers.matchesRecap(...args),crossCountry:{matches:event=>byuHandlers.isByuCrossCountry(event),attach:event=>byuHandlers.attachMeetResults(event)},meetDayIsLast:true,
+    // A past tennis tournament without a card story takes its news story, or
+    // is not listed (K-State's rule).
+    beforeHighlights:async event=>{if(byuHandlers.isTennisWithoutStory(event))await byuHandlers.attachTennisStory(event);},
+    feed:async events=>{await Promise.all(events.filter(byuHandlers.isTennisWithoutStory).map(event=>byuHandlers.attachTennisStory(event)));return events.filter(event=>!byuHandlers.isTennisWithoutStory(event));}},
   {school:ucfSchool,parseSchedule:(...args)=>ucfHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ucfHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ucfHandlers.matchesRecap(...args),crossCountry:{matches:event=>ucfHandlers.isUcfCrossCountry(event),attach:event=>ucfHandlers.attachMeetResults(event)}},
   {school:arizonaSchool,parseSchedule:(...args)=>arizonaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>arizonaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>arizonaHandlers.matchesRecap(...args),crossCountry:{matches:event=>arizonaHandlers.isArizonaCrossCountry(event),attach:event=>arizonaHandlers.attachMeetResults(event)},
     // Golf results come from each tournament's own story.
@@ -305,6 +310,11 @@ const SCHOOL_MODULES=[
     // A past golf tournament still without a story publishes no place: it is
     // not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(northwesternHandlers.isFinalWithoutStory).map(event=>northwesternHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(northwesternHandlers.isNorthwesternGolf).map(event=>northwesternHandlers.attachGolfPlace(event)));return events.filter(event=>!northwesternHandlers.isGolfWithoutStory(event));}}
+  ,{school:ohioStateSchool,parseSchedule:(...args)=>ohioStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ohioStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ohioStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>ohioStateHandlers.isCrossCountry(event),attach:event=>ohioStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(ohioStateHandlers.isFinalWithoutStory(event))await ohioStateHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(ohioStateHandlers.isFinalWithoutStory).map(event=>ohioStateHandlers.attachArchiveStory(event)));return events.filter(event=>!ohioStateHandlers.isTennisWithoutStory(event)&&!ohioStateHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -422,6 +432,7 @@ const michiganStateHandlers=createMichiganStateHandlers({makeEvent,recapMatchesE
 const nebraskaHandlers=createNebraskaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const minnesotaHandlers=createMinnesotaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const northwesternHandlers=createNorthwesternHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const ohioStateHandlers=createOhioStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}

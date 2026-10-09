@@ -165,6 +165,18 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   assert.equal(worker.recapMatchesEvent(kentuckyRecap,kentucky,kentucky.recap_url),true);
   assert.equal(worker.recapMatchesEvent(kentuckyRecap,utah,kentucky.recap_url),false,'the men\'s same-day recap is not the women\'s');
   assert.equal(worker.recapMatchesEvent(utahRecap,kentucky,utah.recap_url),false,'the women\'s same-day recap is not the men\'s');
+  // Live scores: both teams are on one page, so each ESPN board carries its
+  // team (an unlabeled women's final would not join the labeled card and
+  // would show twice, as Northwestern's did). Fixtures: ESPN's Sep 27 boards
+  // cut to UCF's games (UCF at Utah, 0-2; Kentucky at UCF).
+  assert.deepEqual(worker.liveScoreboardProviders(school,'Soccer').map(p=>[p.path,p.team_label]),[['soccer/usa.ncaa.m.1',"Men's"],['soccer/usa.ncaa.w.1',"Women's"]]);
+  const espn=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/ucf-module/${name}`,import.meta.url))).toString('utf8'));
+  for(const [team,label,file] of [['womens',"Women's",'soccer-espn-w-20260927.json.gz'],['mens',"Men's",'soccer-espn-m-20260927.json.gz']]){
+    const provider=worker.liveScoreboardProviders(school,'Soccer').find(p=>p.team_label===label);
+    const scored=worker.parseScoreboardPayload(espn(file),school,'Soccer',provider,`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard`,new Date('2026-09-28T12:00:00Z'));
+    assert.equal(scored.length,1);assert.equal(scored[0].team_label,label);
+    assert.equal(worker.reconcileScoreboardEvents(soccer[team],scored).length,soccer[team].length,`${label} soccer: the scoreboard joins the official card; no second card`);
+  }
 }
 
 // Cross Country (women only): the card gives the team place ("1st", "6th");

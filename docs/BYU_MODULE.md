@@ -135,6 +135,9 @@ K-State reads `1st of 12 (864)`, but BYU's cards publish neither the field size 
 
 ## Tennis (`4.36.8-byu-tennis`)
 
+- **Past tournaments need a story (fixed Oct 9, 4.75.3):** `verify:preview` failed BYU Tennis on production too: the men's Milwaukee, ITA All-American, Sherwood and Boise St. tournaments read "Completed" with no story. As K-State's, a past tournament without a card story takes the team's `/news` story dated its last day or the two after whose article names a distinctive word of the event (the Sep 28 story covers the Sherwood Collegiate Cup and the Dar Walters Classic in Boise); one with no story is not listed (Milwaukee; the ITA All-American, whose only Sep 23 story is a preview).
+- **Tournaments read "at" (fixed Oct 9, 4.75.0):** the cards' divider reads "vs." at USTA SoCal, ITA Regionals, ITA Sectional and NCAA Individual events (BYU hosts none of them); a tennis or other meet event named a championship or regional now reads "BYU at …", as K-State's and TCU's do. Found by #278's sweep ("BYU vs ITA Regional Championships").
+
 Production read only the first route (the women's page). Tennis now routes to both official pages, is added to `combinedSports` (teams labeled, separate ids) and joins `cardSports`.
 - **Event names.** Men's cards name only the host ("at SMU", "at ITA" twice on Nov 5). For Tennis, the tournament heading (other than "Exhibition") names the event: `Sherwood Invitational`, `ITA Masters`, `ITA Sectional Championships`.
 - **Finished tournaments** are final with `Completed`: individual tournaments publish no team result.

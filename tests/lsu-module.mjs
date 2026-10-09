@@ -385,17 +385,8 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_mt=parse("Tennis","mt");
   assert.deepEqual(v_mt.map(line),[
- "Upcoming Oct 6 Men's · LSU at ATP M15 Lexington | ",
- "Upcoming Oct 12 Men's · LSU at ITF M25 Austin | ",
- "Upcoming Oct 26 Men's · LSU at ATP Challenger 100 MarketBeat Open | ",
- "Upcoming Oct 26 Men's · LSU at ITF M25 Las Vegas | ",
- "Upcoming Nov 2 Men's · LSU at ATP Jonathan Fried Men's Pro Challenger 75 | ",
  "Upcoming Nov 5 Men's · LSU at ITA South Sectional Championships | ",
- "Upcoming Nov 9 Men's · LSU at ATP Knoxville Challenger 75 | ",
- "Upcoming Nov 9 Men's · LSU at ITF M25 Columbus | ",
- "Upcoming Nov 9 Men's · LSU at ITF M15 Naples | ",
  "Upcoming Nov 17 Men's · LSU at NCAA Individual Championships | ",
- "Upcoming Jan 10 Men's · LSU at ATP Challenger 50 | ",
  "Upcoming Jan 18, 11:30 AM Men's · LSU vs Clemson | ",
  "Upcoming Jan 18, 4:00 PM Men's · LSU vs Alcorn State | ",
  "Upcoming Jan 22, 6:00 PM Men's · LSU vs Jacksonville State | ",

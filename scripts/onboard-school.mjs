@@ -8,7 +8,7 @@ const SPORT_SLUGS={
   'Football':['football'],'Volleyball':['womens-volleyball','volleyball','wvball'],
   'Soccer':['womens-soccer','soccer','wsoc','msoc'],'Cross Country':['cross-country','xc','wcross','mcross'],
   'Basketball':['mens-basketball','womens-basketball','basketball','mbball','wbball'],
-  'Swimming & Diving':['swimming-and-diving','swimming-diving','swimming','wswim','mswim'],
+  'Swimming & Diving':['swimming-and-diving','swimming-diving','swim-dive','swimming','wswim','mswim'],
   'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis','wten','mten'],
   'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow'],
   'Track & Field':['track-and-field','track-field','wtrack','mtrack'],'Baseball':['baseball'],

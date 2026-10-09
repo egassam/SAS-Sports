@@ -53,4 +53,18 @@ const records=(id,sport,file,url)=>{const raw=fixture(file);return{raw,events:wo
   const [record]=worker.groupEvents(events,now)[0].records;
   assert.deepEqual([record.text,record.conference.text],['4-2','2-2']);
 }
+// A sport the conference does not sponsor has no conference record under the
+// membership conference's name, even where the page data marks a game (Ole
+// Miss's page marks the Ohio State rifle dual, Sep 26, a conference match; the
+// SEC sponsors no rifle). A module naming the league keeps it.
+{
+  const {events}=records('ole-miss','Rifle','ole-miss-rifle-2026-10-09.html.gz','https://olemisssports.com/sports/womens-rifle/schedule');
+  const finals=events.filter(e=>e.status==='Final');
+  assert.deepEqual(finals.map(e=>[e.opponent,e.conference_game]),[['UT Martin',false],['Ohio State',false]]);
+  const [record]=worker.groupEvents(finals,new Date('2026-10-09T18:00:00Z'))[0].records;
+  assert.deepEqual([record.text,record.conference],['2-0',null]);
+  const hockey={id:'h',school_id:'ohio-state',school:'Ohio State',sport:'Hockey',event_type:'GAME',status:'Final',start_time:'2026-10-02T23:00:00Z',opponent:'Mercyhurst',headline:'W, 3-1'};
+  assert.equal(worker.markConferenceGames([{...hockey}],'<html>no page data</html>',school('ole-miss'))[0].conference_game,false,'SEC: no hockey');
+  assert.equal(worker.markConferenceGames([{...hockey,sport:'Lacrosse',conference_game:true,conference_name:'American'}],'',school('florida'))[0].conference_game,true,'a league the module names stays');
+}
 console.log('Season record checks passed: Oklahoma State soccer 5-4-3 (1-2-1, exhibition from page data), K-State volleyball 9-3 (1-3), membership fallback');
