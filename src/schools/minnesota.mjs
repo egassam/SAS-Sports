@@ -165,6 +165,8 @@ export function createMinnesotaHandlers({makeEvent,recapMatchesEvent,eventType=(
       let opponent=withoutRanking(String(game.opponent?.title||'').replace(/^#T\d+\s+/,'').replace(/^\*+\s*/,''));
       // Two polls: "#1/1 Ohio State", "#19/14 TCU"; unranked in one: "#-/22 Texas".
       opponent=opponent.replace(/^#(?:T?\d+|RV|-)\/(?:T?\d+|RV|-)\s+/i,'');
+      // A poll mark written out: "(Receiving Votes) Wisconsin" (soccer, Oct 18).
+      opponent=opponent.replace(/^\((?:Receiving Votes|RV)\)\s+/i,'');
       // The tennis pages list players' pro events ("W75 Templeton", "W15
       // Nashville", "Columbia Futures 15K", "ITF Berkley W50"): not the team's.
       if(/^ITF\b|^[WM]\d{2,3}\b|\bFutures\b/i.test(opponent))return'';

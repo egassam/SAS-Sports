@@ -79,7 +79,11 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
     const unlisted=e=>!listed.has(e);
     if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
-    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${unlisted(e)?'  (not listed: the module leaves it out)':gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':''}`);
+    // Names that are rarely an opponent or event: a leading mark ("(Receiving
+    // Votes) Wisconsin", Minnesota), a practice or training trip, a selection
+    // show (Northwestern, Nebraska). Read each by eye.
+    const odd=e=>/^[(\[#*]|\b(?:practice|training) trip\b|\bselection show\b|\bhead ?shot\b/i.test(String(e.opponent||''));
+    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${unlisted(e)?'  (not listed: the module leaves it out)':gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':odd(e)?'  << ODD NAME: check by eye':''}`);
     flagged+=events.filter(e=>!unlisted(e)&&gateMiss(e)).length;
   }
 }

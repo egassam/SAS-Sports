@@ -315,7 +315,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Oct 2 Minnesota vs Maryland | W, 4-0",
  "Final Oct 8 Minnesota at Michigan State | L, 0-4",
  "Upcoming Oct 11, 1:00 PM Minnesota vs Ohio State | ",
- "Upcoming Oct 18, 1:00 PM Minnesota at (Receiving Votes) Wisconsin | ",
+ "Upcoming Oct 18, 1:00 PM Minnesota at Wisconsin | ",
  "Upcoming Oct 22, 7:00 PM Minnesota vs Washington | ",
  "Upcoming Oct 25, 1:00 PM Minnesota vs Oregon | ",
  "Upcoming Oct 30, 7:00 PM Minnesota at Illinois | "
@@ -481,6 +481,9 @@ const fromTfrrs=teams=>{
 // Rowing: a regatta without a score is a meet, final with its story (Head of
 // the Mississippi, Oct 3); an exhibition at Wisconsin stays a dual.
 assert.deepEqual(parse('Rowing','womens-rowing').map(e=>[e.status,e.title,e.headline||'']),[["Final","Minnesota at Head of the Mississippi","Completed"],["Upcoming","Minnesota at Wisconsin (Exhibition)",""],["Upcoming","Minnesota at Rivanna Romp",""]]);
+
+// A written-out poll mark is not a name: "(Receiving Votes) Wisconsin" (soccer, Oct 18).
+assert.ok(parse('Soccer','womens-soccer').some(e=>e.opponent==='Wisconsin'));
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Minnesota module checks passed');

@@ -217,7 +217,6 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 18 Women's · Northwestern at Mason Rudolph Championship | Completed",
  "Final Oct 5 Women's · Northwestern at Windy City Collegiate Classic | Completed",
  "Upcoming Oct 16 Women's · Northwestern at Stanford Intercollegiate | ",
- "Upcoming Jan 16 Women's · Northwestern at MLK Practice Trip | ",
  "Upcoming Jan 31 Women's · Northwestern at Golf Reservations Center Domincan Republic Classic | ",
  "Upcoming Feb 22 Women's · Northwestern at Bruin-Wave Invitational | ",
  "Upcoming Mar 1 Women's · Northwestern at Darius Rucker Intercollegiate | ",
@@ -463,6 +462,9 @@ assert.equal(northwesternGolfStoryPlace('The senior finished his week in a share
 // Soccer's ESPN boards carry their team: an unlabeled women's final (Oct 8
 // at Rutgers) did not join the labeled card and showed twice.
 assert.deepEqual(northwesternSchool.liveScoreboards.Soccer.map(b=>[b.path,b.team_label]),[["soccer/usa.ncaa.m.1","Men's"],["soccer/usa.ncaa.w.1","Women's"]]);
+
+// Men's golf's "MLK Practice Trip" (Jan 16) is not listed.
+assert.ok(!parse('Golf','mens-golf').some(e=>/Practice Trip/.test(e.opponent)));
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Northwestern module checks passed');

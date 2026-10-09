@@ -4,7 +4,7 @@
 
 Minnesota was added to the app on October 9, 2026, with Northwestern. All 15 sports were built and tested one at a time and published in one PR (#280). The site is SIDEARM (Nuxt page data), read through the private source. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`), with Michigan's per-team cross country.
 
-## Status (`4.74.1-minnesota-northwestern`)
+## Status (`4.74.2-minnesota-northwestern`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -26,6 +26,7 @@ Minnesota was added to the app on October 9, 2026, with Northwestern. All 15 spo
 
 - **Routes:** cross country and track are one page per team; the scaffold's `cross-country` was the homepage and `track-field` an empty template. Minnesota has no men's tennis or men's soccer (template pages only). Basketball, Cross Country, Golf, Hockey, Swimming & Diving and Track & Field are combined and labeled.
 - **Cross country:** each team's event keeps its own TFRRS race (Illinois's split). TFRRS lists host Minnesota 16th at the Roy Griak Invitational with the lowest scores (26, 125): the shared reader now places a team by its score when a table is out of score order (`src/tfrrs-results.mjs`); the story confirms women 1st, men 4th.
+- **Poll marks:** "(Receiving Votes) Wisconsin" (soccer, Oct 18) reads "Wisconsin".
 - **Rowing:** a race without a score that is not an exhibition is a regatta (a meet, final with its story); "at Wisconsin (Exhibition)" stays a dual.
 
 Every rule was mutated, and every mutation fails `npm run test:minnesota-module`.

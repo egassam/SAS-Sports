@@ -4,7 +4,7 @@
 
 Northwestern was added to the app on October 9, 2026, with Minnesota. All 14 sports were built and tested one at a time and published in one PR (#280). The catalog lists nusports.com as SIDEARM; it is **WMT** (server-rendered cards `schedule-event-item__*`, the generation Auburn's and Texas A&M's reader reads). `start-schools` ported Nebraska's reader by default; it was re-ported from Auburn's (`scripts/port-wmt.mjs --from=auburn`).
 
-## Status (`4.74.1-minnesota-northwestern`)
+## Status (`4.74.2-minnesota-northwestern`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -28,6 +28,7 @@ Northwestern was added to the app on October 9, 2026, with Minnesota. All 14 spo
 - **Golf place:** the cards publish none; the final story's headline gives it ("Runner-Up Finish", "in Ninth", "Take Fourth Place"), or, when the headline names a player, the story's sentence whose subject is the team ("the 'Cats ... in 12th place", "the Northwestern women's golf team finished the event in ninth").
 - **Recaps:** a card's own story may be a roundup up to two days after the match ("Cats Split Matches in Allstate Big Ten/SEC Challenge", Sep 5, for Sep 3 and 4); a meet's story may drop its event word ("OFCC Fighting Illini Invitational" for the "Olympia Fields Fighting Illini Collegiate").
 - **"at":** fencing events and tennis events named "Sectional"/"Masters".
+- **Not events:** men's golf's "MLK Practice Trip" (Jan 16).
 - **Scores:** men's swimming writes "187.0-130.0": shown as "187-130".
 
 Every rule was mutated, and every mutation fails `npm run test:northwestern-module`.

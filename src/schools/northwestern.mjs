@@ -100,7 +100,8 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 const FALL_SPORTS=new Set(['Football','Soccer','Volleyball','Cross Country']);
 // Internal events: intrasquads, scrimmages, "Purple & Gold", softball's
 // "Purple/Gold World Series".
-const INTERNAL=/\bintrasquad\b|\bscrimmage\b|^purple\s*(?:&|and|-|\/|vs\.?)\s*(?:gold|white)\b/i;
+// Men's golf's "MLK Practice Trip" (Jan 16) is no competition.
+const INTERNAL=/\bintrasquad\b|\bscrimmage\b|\b(?:practice|training) trip\b|^purple\s*(?:&|and|-|\/|vs\.?)\s*(?:gold|white)\b/i;
 // Today in Central time (Texas A&M's cards are Central wall clock: "6:00 PM CT").
 const centralDay=time=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(time));
 
