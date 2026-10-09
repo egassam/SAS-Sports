@@ -2005,3 +2005,25 @@ Version bumped 4.67.0 → 4.67.3 across these (the athlete cache is per version)
 **Other open PRs:**
 - #258 (docs, NIL note) conflicted with the handoff; its two additions are carried in this handoff.
 - #9 (draft, "not for deployment", ASU XC from Sept 17) and #2 (Alabama onboarding from Sept 16, superseded by #242) were not merged: both would regress production. Left for the user.
+
+## October 9, 2026 (UTC; Oct 8 night Central) — Iowa and Maryland added, 29 sports (PR #272)
+
+**Request:** "Onboard two more big ten schools". The handoff named Iowa and Maryland next (alphabetical).
+
+**Setup:** `start-schools --from=oklahoma iowa=… maryland=…`. Maryland (SIDEARM, private source) ran to its survey in 152 s. Iowa is WMT: scaffolded only; the nav read found 6 of 15 sports because `inferSport` did not know WMT codes. Fixed in `scripts/onboard-school.mjs` (`mbball`, `wcross`, `fhockey`, `wrow`, …; test in `tests/onboarding.mjs`) and `add-school` re-run: 15 sports.
+
+**Iowa (hawkeyesports.com, WMT):** cards match Vanderbilt's (`schedule-item-team__heading`, venue on the date box); the module is `vanderbilt.mjs` below `const HOST=` renamed, with Iowa's school object (15 sports, 5 combined) and Vanderbilt's `SCHOOL_MODULES` wiring. New rules: promotions (`schedule-item-team__promo`, strong or link) and exhibition tags out of names; "Double Dual" opponents from the promotion; `salute|regionals` event words; golf card results "1st/14 teams", "t6th/18 teams", "4th / 878 Strokes"; team place from story text ("As a team, Iowa finished 14th … with an 888", Fighting Irish Classic, found on `/sports/mgolf/news`); own-card stories may name the opponent's first word (Miami (OH), Loyola); other stories' headline score must match (Indiana Sep 18/20 field hockey); field hockey's second game of a weekend pair is non-conference (Indiana's SIDEARM page data: Sep 18 true, Sep 20 false; Iowa's page Conf. 3-1). Published Conf. records: football "1-0" omits the Oct 3 Ohio State loss, volleyball "0-0" not filled; the app counts finals (1-1, 1-3). Bluejay Invitational: three individuals, no team place ("Completed" with story). Two rules found redundant by mutation (promo "Exhibition" label, sr-only stripping) were removed.
+
+**Maryland (umterps.com, SIDEARM):** cross country is `womens-cross-country` (route candidates had only `cross-country`, an empty template); TFRRS women only. combinedSports Basketball, Golf, Lacrosse, Soccer; soccer and lacrosse boards labeled per team. "Fall WS Game n" intrasquads out. Women's golf at Navy (Sep 26): no place, archive has no story Sep 26-Oct 7: not listed (`isGolfWithoutStory`). Volleyball's other-team tournament matches correctly dropped.
+
+**Shared fix (kit `createArchiveStory`):** the Nittany Lion final had taken the Sep 9 watch-list story (names the meet in its text). Now a story dated on/after the meet's last day whose headline names the meet wins; the first attempt (any headline) broke Mississippi State's Cullan Brown (a preview's headline), and `og:title` was cut at an apostrophe ("Men's", Iowa State's Cyclone Preview): both fixed and covered by the existing tests.
+
+**Shared fix (4.71.1):** WMT roster readers (`rosterProfiles`) fell back to portrait alt text "Hannah Whittingstall Headshot" (Iowa); the suffix is stripped as the SIDEARM reader already did. Test with Iowa's volleyball roster fixture.
+
+**Tests:** `npm run test:release` exit 0 on both commits. Generated per-page blocks plus hand checks (golf, TFRRS, live, records, archive stories, roster names); every new rule mutated and killed.
+
+**Preview** (`ccr-0d544a23-fhr69u`): `verify:preview --school=iowa,maryland --sports=all` 90/90 on 4.71.0 and again on 4.71.1 (36/36 refreshes per sport, XC 18/20 and 26/21). `validate-schools --athletes-only` 423/423. Screenshots read by eye (Iowa golf/soccer, Maryland golf).
+
+**Publication:** PR #272 merged `ea917c7` under the standing permission (CI green, clean). Production `4.71.1-iowa-maryland`: `verify:prod --school=iowa,maryland --sports=all` 90/90 (04:25 UTC); athletes 15/15 and 14/14 with three Instagram each (curl sweep of `/live/athletes`).
+
+**Also:** the open 4.70.0 production check passed (KU soccer, XC baselines). A container restart killed the first athlete/screenshot run; re-run one at a time.
