@@ -4,7 +4,7 @@
 
 Penn State was added to the app on October 9, 2026 (17 sports, one PR with Oregon). The catalog listed SIDEARM: gopsusports.com is **WMT, a third card generation** (after Iowa/Vanderbilt's `schedule-item-team` and Nebraska's `schedule-event-item-default`): each card is `schedule-event` (`schedule-event item`), the opponent in `schedule-event-item-team__name`, the day in a `span.schedule-event-date__day`, an upcoming time in a `strong.schedule-event-item-result__label` ("5:00 PM EDT"). `scripts/port-wmt.mjs` ported Nebraska's reader; it read no card until these were added.
 
-## Status (`4.76.0-oregon-penn-state`)
+## Status (`4.76.1-oregon-penn-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

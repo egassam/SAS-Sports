@@ -295,7 +295,10 @@ export function createOregonHandlers({makeEvent,recapMatchesEvent,eventType=()=>
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // A season not yet published is SIDEARM's empty template ("@season @sport
+  // Schedule": beach volleyball, Oct 9): a valid empty schedule.
+  const unpublished=(raw,school,sport,url)=>school?.id==='oregon'&&oregonSchool.pageDataSports.has(sport)&&/<title>\s*@season\b/i.test(String(raw||''))&&/^https:\/\/goducks\.com\/sports\/[^/]+\/schedule\/?$/.test(String(url||''));
+  const readSchedule=(...args)=>{if(unpublished(...args.slice(0,4))){const none=[];trackEmptied.add(none);return none;}const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   return{parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

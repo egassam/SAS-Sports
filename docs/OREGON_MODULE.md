@@ -4,7 +4,7 @@
 
 Oregon was added to the app on October 9, 2026 (13 sports, one PR with Penn State). goducks.com is SIDEARM (Nuxt page data) behind bot defense: it refuses the development sandbox (403) and answers the Worker; fixtures and evidence are read through the private source route. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.76.0-oregon-penn-state`)
+## Status (`4.76.1-oregon-penn-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -18,13 +18,14 @@ Oregon was added to the app on October 9, 2026 (13 sports, one PR with Penn Stat
 | Softball | `softball` | Fall games upcoming |
 | Baseball | `baseball` | 2027 page lists fall exhibitions |
 | Acrobatics & Tumbling, Lacrosse, Track & Field | `acrobatics-tumbling`, `womens-lacrosse`, `track-and-field` | Pages still show the 2025-26 season: valid empty schedules until 2026-27 is published |
-| Beach Volleyball | `beach-volleyball` | SIDEARM's empty template (season not published): fills when published |
+| Beach Volleyball | `beach-volleyball` | SIDEARM's empty template (season not published): a valid empty schedule until published |
 
 ## Oregon rules (beyond Oklahoma's)
 
 - **Cross country team cards:** "(m)"/"(w)" after a meet's name is its team: the event reads "Men's · Oregon at Cowboy Jamboree".
 - **Rankings after the name:** "Western Kentucky (RV)" reads "Western Kentucky".
 - **Fall baseball notes:** "(10 Inn.)", "(DH)" are not part of the opponent.
+- **Unpublished season:** SIDEARM's empty template ("@season @sport Schedule", beach volleyball) is a valid empty schedule, not a failed source (the first preview returned 502).
 - **Conference bracket named by the league:** soccer's "Big Ten" card in the "Big Ten Tournament" reads "Oregon at Big Ten Tournament".
 
 Every rule was mutated, and every mutation fails `node tests/oregon-module.mjs`.

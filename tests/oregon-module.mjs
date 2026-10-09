@@ -326,5 +326,13 @@ const fromTfrrs=teams=>{
   recapFixtures.clear();requests.length=0;
 }
 
+// Beach Volleyball's season is not published (SIDEARM's empty template,
+// "@season @sport Schedule"): a valid empty schedule, not a failed source.
+{
+  const events=worker.oregonHandlers.parseSchedule(fixture('beach-volleyball-schedule.html.gz'),school,'Beach Volleyball',page('beach-volleyball'),now);
+  assert.deepEqual(events,[]);
+  assert.equal(worker.oregonHandlers.isEmptySchedule(events),true);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Oregon module checks passed');

@@ -49,7 +49,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.76.0-oregon-penn-state';
+const VERSION='4.76.1-oregon-penn-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
