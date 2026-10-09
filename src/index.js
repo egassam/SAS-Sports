@@ -487,7 +487,7 @@ function rosterProfiles(raw,base){
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:head ?shot|photo)\.?$/i,''));if(nameScore(name)<=0)continue;
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo|head shot)\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -506,7 +506,7 @@ function rosterProfiles(raw,base){
     const imgAlt=decodeHtml((body.match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||'');
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:head ?shot|photo)\.?$/i,''));if(nameScore(name)<=0)continue;
+    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/\s+(?:headshot|photo|head shot)\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -545,7 +545,7 @@ function rosterProfiles(raw,base){
     byUrl.set(url,{name,url,image_url:previous?.image_url||null,instagram_url:instagram_url||previous?.instagram_url||null});
   }
   while((m=re.exec(raw))){
-    const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=clean((visibleText(m[2])||imgAlt).replace(/\s+(?:head ?shot|photo)\.?$/i,''));if(!url)continue;
+    const url=absoluteUrl(m[1],base),imgAlt=decodeHtml((m[2].match(/<img\b[^>]*alt=["']([^"']*)/i)||[])[1]||''),imgTitle=decodeHtml((m[2].match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||''),name=clean((visibleText(m[2])||imgAlt).replace(/\s+(?:headshot|photo|head shot)\.?$/i,''));if(!url)continue;
     const path=new URL(url).pathname;
     // Only real player profile shapes are eligible. This rejects seasonal
     // roster pages and staff/coach profiles even when their URLs are nested.
