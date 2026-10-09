@@ -621,6 +621,10 @@ void [parse,line,ownRecapsOnly,live];
   assert.equal(worker.ohioStateHandlers.isGolfWithoutStory(toledo),true);
   // Field hockey's NCAA Tournament is page-data type "S", not an exhibition.
   assert.equal(parse('Field Hockey','field-hockey').at(-1).opponent,'NCAA Tournament');
+  // Women's hockey's league games are WCHA games (the Big Ten sponsors only
+  // men's hockey); the men's are the Big Ten's.
+  assert.ok(parse('Hockey','womens-ice-hockey').every(e=>e.conference_name==='WCHA'));
+  assert.ok(parse('Hockey','mens-ice-hockey').every(e=>e.conference_name===undefined));
   // Men's and women's volleyball are shown together; each board carries its team.
   assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>[p.path,p.team_label]),[['volleyball/womens-college-volleyball',"Women's"],['volleyball/mens-college-volleyball',"Men's"]]);
 }

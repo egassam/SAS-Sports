@@ -108,6 +108,7 @@ export const ohioStateSchool={
 };
 
 const HOST='ohiostatebuckeyes.com';
+const OTHER_CONFERENCES={'womens-ice-hockey':'WCHA','mens-volleyball':'MIVA'};
 // Ohio State's calendar day.
 const ohioStateToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
@@ -336,7 +337,11 @@ export function createOhioStateHandlers({makeEvent,recapMatchesEvent,eventType=(
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
+    afterEvent(event,{sport,game,games,url}){
+      // Teams outside the Big Ten: women's hockey plays in the WCHA, men's
+      // volleyball in the MIVA (the page data marks their league games).
+      const league=OTHER_CONFERENCES[url?.pathname?.split('/')[2]];
+      if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       // Rifle's institution names: the story says "ole-miss", "tcu".

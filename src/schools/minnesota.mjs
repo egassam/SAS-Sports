@@ -282,7 +282,10 @@ export function createMinnesotaHandlers({makeEvent,recapMatchesEvent,eventType=(
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
+    afterEvent(event,{sport,game,games,url}){
+      // Women's hockey plays in the WCHA (the Big Ten sponsors only men's
+      // hockey); the page data marks its league games.
+      if(url?.pathname.startsWith('/sports/womens-ice-hockey/'))event.conference_name='WCHA';
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));

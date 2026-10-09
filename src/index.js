@@ -47,7 +47,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.75.0-ohio-state';
+const VERSION='4.75.1-ohio-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
