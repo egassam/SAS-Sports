@@ -39,7 +39,7 @@ import {indianaSchool,createIndianaHandlers} from './schools/indiana.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.69.2-kstate-live-soccer';
+const VERSION='4.70.0-live-every-sport';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1864,10 +1864,32 @@ function scoreboardQuery(provider){
   if(/^basketball\/(?:mens|womens)-college-basketball$/.test(provider.path))return'groups=50&limit=300';
   return'limit=1000';
 }
+// Every sport ESPN publishes a live college board for reads it (user, Oct 8:
+// "It should read any sport that has a live feed"; Kansas at K-State soccer
+// stayed "Today" while live because only newer modules named a scoreboard).
+// A school module's own list wins. These defaults are join-only: a score
+// shows only on a game the official schedule lists that day, so a board for
+// the other gender (lacrosse, hockey, water polo) or a team the app does not
+// carry never adds a card.
+const DEFAULT_SCOREBOARDS={
+  Basketball:[{path:'basketball/mens-college-basketball',team_label:"Men's",sourceName:"Live men's college basketball scoreboard"},{path:'basketball/womens-college-basketball',team_label:"Women's",sourceName:"Live women's college basketball scoreboard"}],
+  Volleyball:[{path:'volleyball/womens-college-volleyball',sourceName:'Live college volleyball scoreboard'}],
+  Soccer:[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}],
+  Baseball:[{path:'baseball/college-baseball',sourceName:'Live college baseball scoreboard'}],
+  Softball:[{path:'baseball/college-softball',sourceName:'Live college softball scoreboard'}],
+  Lacrosse:[{path:'lacrosse/mens-college-lacrosse',sourceName:"Live men's college lacrosse scoreboard"},{path:'lacrosse/womens-college-lacrosse',sourceName:"Live women's college lacrosse scoreboard"}],
+  Hockey:[{path:'hockey/mens-college-hockey',sourceName:"Live men's college hockey scoreboard"},{path:'hockey/womens-college-hockey',sourceName:"Live women's college hockey scoreboard"}],
+  'Field Hockey':[{path:'field-hockey/womens-college-field-hockey',sourceName:'Live college field hockey scoreboard'}],
+  'Water Polo':[{path:'water-polo/mens-college-water-polo',sourceName:"Live men's college water polo scoreboard"},{path:'water-polo/womens-college-water-polo',sourceName:"Live women's college water polo scoreboard"}]
+};
+// Two soccer teams on one page (UCF): each board carries its team.
+const COMBINED_SOCCER_SCOREBOARDS=[{path:'soccer/usa.ncaa.m.1',team_label:"Men's",sourceName:"Live men's college soccer scoreboard"},{path:'soccer/usa.ncaa.w.1',team_label:"Women's",sourceName:"Live women's college soccer scoreboard"}];
 function liveScoreboardProviders(school,sport){
   const configured=schoolModule(school?.id)?.school.liveScoreboards?.[sport];
   if(configured?.length)return configured;
-  return sport==='Football'?[{path:'football/college-football',sourceName:'Live college football scoreboard'}]:[];
+  if(sport==='Football')return[{path:'football/college-football',sourceName:'Live college football scoreboard'}];
+  const defaults=sport==='Soccer'&&schoolCombinedSports(school).has('Soccer')?COMBINED_SOCCER_SCOREBOARDS:DEFAULT_SCOREBOARDS[sport]||[];
+  return defaults.map(provider=>({...provider,joinOnly:true}));
 }
 function parseScoreboardPayload(payload,school,sport,provider,url,now){
   const found=[];
@@ -1924,6 +1946,7 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
     if(provider.team_label){event.team_label=provider.team_label;event.title=`${provider.team_label} · ${event.title}`;}
     event.source={name:provider.sourceName||'Live game scoreboard',url,updated_at:now.toISOString()};
     event.live_score_source=url;event.verification_state='live_scoreboard';event.source_count=1;
+    if(provider.joinOnly)event.join_only=true;
     found.push(event);
   }
   // A doubleheader is the same opponent twice on one day (ESPN listed Baylor
@@ -1946,16 +1969,22 @@ async function fetchLiveScoreboards(school,sport,now){
   }
   return mergeEvents([found]);
 }
-function reconcileScoreboardEvents(scheduleEvents,scoreEvents){
+function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
   const events=scheduleEvents.slice(),joined=new Set();
   for(const score of scoreEvents){
     const day=scoreboardDateKey(score.start_time);
-    const sameDay=index=>{const event=events[index];return index<scheduleEvents.length&&!joined.has(index)&&event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===(score.team_label||null);};
+    // A default board carries no team; a school that labels its one team
+    // (KU's soccer and volleyball read "Women's") takes that label.
+    const labels=new Set(scheduleEvents.filter(event=>event.sport===score.sport).map(event=>event.team_label||null));
+    const label=score.team_label||(score.join_only&&labels.size===1?[...labels][0]:null);
+    const sameDay=index=>{const event=events[index];return index<scheduleEvents.length&&!joined.has(index)&&event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===label;};
     // A doubleheader game joins the official game with its number; any other
     // score joins the first official game that day no other score has taken.
     const indexes=events.map((event,index)=>index).filter(sameDay);
     const index=score.game_number?(indexes.find(index=>events[index].game_number===score.game_number)??indexes.find(index=>!events[index].game_number)??-1):(indexes[0]??-1);
-    if(index<0){events.push(score);continue}
+    // A default board's score shows only on an official game (keepUnjoined:
+    // the official page failed and the score is laid over the last good feed).
+    if(index<0){if(!score.join_only||keepUnjoined)events.push(score);continue}
     joined.add(index);
     const official=events[index];
     events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source,possession:score.possession??null,down_distance:score.down_distance??null,red_zone:score.red_zone??null};
@@ -1995,7 +2024,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||moduleCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   const scoreboard=await scoreboardPromise;
   if(scoreboard.length){
-    events=reconcileScoreboardEvents(events,scoreboard);
+    events=reconcileScoreboardEvents(events,scoreboard,{keepUnjoined:officialFailed});
     if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
   }
   if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null,official_failed:officialFailed};
