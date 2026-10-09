@@ -14,7 +14,7 @@
 // (SAS_SOURCE_KEY, as scripts/fetch-official.mjs); others are fetched directly.
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=iowa-state [--sports=Football,Soccer] [--tfrrs-f=... --tfrrs-m=...]
-import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,existsSync,readdirSync,unlinkSync} from 'node:fs';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
@@ -157,5 +157,13 @@ if(args.includes('--prune')&&dropped.length){
   text=text.replace(/(\n\s*'[^'\n]+\|[^'\n]+':)\[('[^'\]]+')\]/g,'$1$2');
   writeFileSync(moduleUrl,text);
   summary.push(`--prune: ${dropped.length} routes removed from src/schools/${id}.mjs (check combinedSports when one team page is left)`);
+}
+// --prune: schedule pages no route uses any more (a candidate from an earlier
+// run, Minnesota's 22 template pages) leave the fixtures too.
+if(args.includes('--prune')){
+  const used=new Set([...readFileSync(new URL(`src/schools/${id}.mjs`,root),'utf8').matchAll(/\/sports\/([a-z0-9-]+)\/schedule\b/g)].map(m=>m[1]));
+  const dir=new URL(`tests/fixtures/${id}-module/`,root),stale=existsSync(dir)?readdirSync(dir).filter(name=>{const slug=(name.match(/^(.+)-schedule\.html\.gz$/)||[])[1];return slug&&!used.has(slug);}):[];
+  for(const name of stale)unlinkSync(new URL(name,dir));
+  if(stale.length)summary.push(`--prune: ${stale.length} schedule fixtures no route uses removed`);
 }
 console.log(`${school.name} fixtures in tests/fixtures/${id}-module/ (season from ${seasonStart}, today ${today}):\n  ${summary.join('\n  ')}`);
