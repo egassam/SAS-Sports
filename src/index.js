@@ -43,7 +43,7 @@ import {michiganStateSchool,createMichiganStateHandlers} from './schools/michiga
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 
-const VERSION='4.72.0-michigan-michigan-state';
+const VERSION='4.72.1-michigan-michigan-state';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -692,6 +692,7 @@ async function featuredAthletes(schoolId,sport){
   const school=schools.find(s=>s.id===schoolId);if(!school)return[];
   const sharedTrack=sport==='Cross Country'&&rosterUrls(school,sport).some(url=>rosterUrls(school,'Track & Field').includes(url));
   let profiles=[];
+  const pinned=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${schoolId}|${sport}|`)).map(key=>key.split('|').slice(2).join('|'));
   for(const rosterUrl of rosterUrls(school,sport)){
     try{
       const r=await sourceFetch(rosterUrl,{},{ttl:SOURCE_TTL.listing});if(!r.ok)continue;
@@ -700,7 +701,9 @@ async function featuredAthletes(schoolId,sport){
       if(sharedTrack){const positions=rosterPositions(raw,r.url||rosterUrl);if(positions.size)discovered=discovered.filter(profile=>DISTANCE_GROUP.test(positions.get(profile.url)||''));}
       profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
       if(profiles.length&&!schoolCombinedSports(school).has(sport))break;
-      if(profiles.length>=18)break;
+      // A pinned athlete on a later team's roster is read too (Michigan's
+      // men's cross country runner after 18 women).
+      if(profiles.length>=18&&pinned.every(name=>profiles.some(profile=>profile.name===name)))break;
     }catch{}
   }
   // Roster-card portraits are the most reliable source. Put those athletes

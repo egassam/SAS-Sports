@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,michiganHandlers,attachOfficialMeetResults,decodeHtml,schoolModule,verifiedInstagram};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,michiganHandlers,attachOfficialMeetResults,decodeHtml,schoolModule,verifiedInstagram,featuredAthletes};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/michigan-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit mgoblue.com routes, exactly
@@ -613,6 +613,17 @@ for(const sport of ['Basketball','Cross Country','Golf','Gymnastics','Lacrosse',
 assert.equal(worker.verifiedInstagram('<a target="_blank" href="https://www.instagram.com/https://www.instagram.com/wyattnovara" aria-label="Visit Wyatt Novara Instagram profile page">'),'https://www.instagram.com/wyattnovara/');
 assert.equal(worker.verifiedInstagram('<a target="_blank" href="https://www.instagram.com/Alex Gatto._" aria-label="Visit Alex Gatto Instagram profile page">'),null);
 assert.equal(worker.verifiedInstagram('<a href="https://www.instagram.com/msu_baseball/" rel="noopener noreferrer" target="_blank" data-s-nav-link class="c-navigation__url c-navigation__url--level-2 flex">'),null);
+
+// Cross Country: the women's roster lists 18 or more runners, two with
+// Instagram; the men's roster (pinned Peter Baracco) is read too while a pin
+// is missing.
+{
+  for(const team of ['womens','mens'])recapFixtures.set(`https://mgoblue.com/sports/${team}-cross-country/roster`,fixture(`${team}-cross-country-roster.html.gz`));
+  const xc=await worker.featuredAthletes('michigan','Cross Country');
+  assert.equal(xc.length,3);
+  assert.ok(xc.every(a=>/^https:\/\/www\.instagram\.com\/[a-z0-9._]+\/$/.test(a.instagram_url)),'three athletes with Instagram');
+  recapFixtures.clear();requests.length=0;
+}
 
 // Other schools and other hosts never reach the Michigan reader.
 assert.equal(worker.michiganHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://mgoblue.com/',now),null);

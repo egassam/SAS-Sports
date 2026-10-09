@@ -4,7 +4,7 @@
 
 Michigan was added to the app on October 9, 2026, with Michigan State. All 18 sports were built and tested one at a time and published in one PR. The site is SIDEARM (Nuxt page data), read through the private source. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`).
 
-## Status (`4.72.0-michigan-michigan-state`)
+## Status (`4.72.1-michigan-michigan-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -32,6 +32,7 @@ Michigan was added to the app on October 9, 2026, with Michigan State. All 18 sp
 - **Tennis stories:** men's tennis posts each tournament's page the day before play and fills it in afterward ("Michigan at Fighting Irish Mini Duals", Sep 24, for Sep 25-26): the archive is searched from one day before (kit `meetDaysBefore:{Tennis:1}`).
 - **Athlete links:** profiles write some links inside another ("instagram.com/https://www.instagram.com/wyattnovara") or with a space ("instagram.com/Alex Gatto._"): the inner link is read, the broken one is no link (shared `verifiedInstagram`).
 - **Live:** soccer and lacrosse boards carry their team (`Men's`, `Women's`); field hockey's board is on.
+- **Athletes across team rosters (shared `featuredAthletes`):** the roster read goes on past 18 athletes while a pinned athlete is not found yet (Cross Country: 18+ women, pinned men's runner).
 
 Every rule was mutated, and every mutation fails `npm run test:michigan-module`.
 
