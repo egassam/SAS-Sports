@@ -523,6 +523,11 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`),stat=label=
   // A tournament on one card under way is today's (men's ITA Regional, Oct
   // 7-11); wrestling's per-day invitational cards are one event.
   assert.deepEqual(parse('Tennis','mens-tennis').filter(e=>e.status==='Today').map(e=>[e.title,e.recency_label,e.end_time]),[["Men's · Nebraska at ITA Regional Tournament","In progress","2026-10-11T23:59:59Z"]]);
+  // The page groups keep it while it runs (its first day has passed; its
+  // last has not), and drop it once its last day has passed without a final.
+  const shown=at=>worker.groupEvents(parse('Tennis','mens-tennis',at),at)[0].upcoming.filter(e=>/ITA Regional/.test(e.opponent)).map(e=>[e.status,e.title]);
+  assert.deepEqual(shown(now),[["Today","Men's · Nebraska at ITA Regional Tournament"]]);
+  assert.deepEqual(shown(new Date('2026-10-12T15:00:00Z')),[]);
   assert.deepEqual(parse('Wrestling','wrestling').filter(e=>/Cliff Keen/.test(e.opponent)).map(e=>[e.title,e.start_time,e.end_time]),[["Nebraska at Cliff Keen Las Vegas Invitational","2026-12-04T11:00:00.000Z","2026-12-05T23:59:59Z"]]);
   // Each final's own recap link (schedule-event-bottom__link labeled "Recap").
   assert.deepEqual(parse('Football','football').filter(e=>e.status==='Final').map(e=>[e.title,e.headline,e.recap_url]),[["Nebraska vs Ohio","W, 49-21","https://huskers.com/news/2026/09/5/huskers-roll-in-second-half-to-beat-bobcats"],["Nebraska vs Bowling Green","W, 56-7","https://huskers.com/news/2026/09/13/big-red-blasts-bowling-green"],["Nebraska vs North Dakota","W, 34-7","https://huskers.com/news/2026/09/20/huskers-fight-past-hawks"],["Nebraska at Michigan State","W, 31-13","https://huskers.com/news/2026/09/27/huskers-down-spartans-to-remain-undefeated"],["Nebraska vs Maryland","W, 48-23","https://huskers.com/news/2026/10/4/huskers-sprint-past-terps-in-second-half"]]);
