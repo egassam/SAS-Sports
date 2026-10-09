@@ -354,6 +354,14 @@ function featuredAthletesRow(g){
   const initials=name=>String(name||'').split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase();
   return `<div class="featured"><div class="featured-label">Featured Athletes</div><div class="featured-row">${athletes.map(a=>{const social=Boolean(a.instagram_url),href=a.instagram_url||a.profile_url;return `<a class="athlete-card" href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(a.name)} ${social?'Instagram':'official profile'}"><div class="athlete-photo"><span>${esc(initials(a.name))}</span>${a.image_url?`<img src="${esc(a.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:''}</div><div class="athlete-shade"><div class="athlete-name">${esc(a.name)}</div><div class="athlete-instagram">${social?'Instagram':'Official profile'}</div></div></a>`}).join('')}</div></div>`;
 }
+// The homepage feed: Cross Country, or for a school without it (Manhattan
+// High School while its sports are built one at a time) its first sport in
+// the smaller-sports-first order.
+function homeSport(id){
+  const sports=SCHOOL_SPORTS[id];if(!sports||sports.includes('Cross Country'))return'Cross Country';
+  const rank=sport=>{const index=HOME_SPORT_PRIORITY.indexOf(sport);return index<0?Number.MAX_SAFE_INTEGER:index};
+  return sports.slice().sort((a,b)=>rank(a)-rank(b))[0]||'Cross Country';
+}
 function populateSportFilter(groups=[]){
   const selected=sportFilter.value;
   const sponsored=SCHOOL_SPORTS[school.value]||BOOTSTRAP_SPORTS;
@@ -361,7 +369,7 @@ function populateSportFilter(groups=[]){
   const active=new Set(automaticSports());
   const priority=sport=>{const index=HOME_SPORT_PRIORITY.indexOf(sport);return index<0?Number.MAX_SAFE_INTEGER:index};
   const ordered=[...new Set(sponsored)].sort((a,b)=>Number(active.has(b))-Number(active.has(a))||priority(a)-priority(b)||a.localeCompare(b));
-  sportFilter.innerHTML='<option value="">Cross Country · Home</option>'+ordered.map(s=>`<option value="${esc(s)}">${active.has(s)?'● In season · ':''}${esc(s)}${available.has(s)?' · loaded':''}</option>`).join('');
+  sportFilter.innerHTML=`<option value="">${esc(homeSport(school.value))} · Home</option>`+ordered.map(s=>`<option value="${esc(s)}">${active.has(s)?'● In season · ':''}${esc(s)}${available.has(s)?' · loaded':''}</option>`).join('');
   if(ordered.includes(selected))sportFilter.value=selected;
 }
 function visibleGroup(g,q){
@@ -551,6 +559,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     // Keep the homepage focused: Cross Country is the only automatic feed.
     // Every other sponsored sport remains one selection away in the dropdown.
     const requested=chosen?[chosen]:['Cross Country'].filter(sp=>!SCHOOL_SPORTS[id]||SCHOOL_SPORTS[id].includes(sp));
+    if(!chosen&&!requested.length&&SCHOOL_SPORTS[id]?.length)requested.push(homeSport(id));
     const previousAthletes=new Map(currentGroups.filter(g=>g.school_id===id).map(g=>[g.sport,g.featured_athletes]));
     const liveGroups=[],emptySports=new Set(),savedEmpty=new Map(); let liveOk=0,savedOk=0;
     await inBatches(requested,1,async sp=>{
