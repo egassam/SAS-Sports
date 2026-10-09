@@ -37,6 +37,19 @@ Rule for every sport (K-State's): a past game or meet with no published result i
 
 Winter (basketball, wrestling, boys swimming, bowling) and spring sports are added as their seasons are published.
 
+## Middle schools (USD 383)
+
+User, October 9: "My timer friend also does middle schools so let's add the Manhattan area middle schools as well". Listed under Kansas with a **Middle School** heading (user's choice), below 6A.
+
+| School | id | Calendar | Sports listed |
+| --- | --- | --- | --- |
+| Susan B. Anthony Middle School | `anthony-ms-ks` | `ams.usd383.org` calendar 128968 | Cross Country, Football, Volleyball (only fall is published so far; add basketball, wrestling and track when Anthony publishes them) |
+| Dwight D. Eisenhower Middle School | `eisenhower-ms-ks` | `ems.usd383.org` calendar 128776 | Basketball (7th/8th, girls and boys), Cross Country, Football, Track & Field, Volleyball, Wrestling (boys and girls) |
+
+- Titles are typed by hand ("7th VB @SH", "8h Girls BB @ Washburn Rural"); `parseMiddleSchoolTitle` in `src/high-school.mjs` reads them, and `USD383_ABBREVIATIONS` (`src/schools/manhattan-ks-middle.mjs`) expands the league short names (SH, WRN, JC, EMS, AMS, FR, LWMS...). B-team days, scrimmages, tryouts, practices and pictures are not games.
+- Teams are the grades (7th, 8th; 7th Girls, 8th Boys in basketball).
+- **No results source:** no site publishes middle school scores; past games and meets are not listed (K-State's rule), so each sport shows its coming schedule. Cross country and track results would come from the timer's public results link, as for the high school.
+
 ## Limitations
 
 - **No live scores.** No ESPN-style live feed exists for Kansas high schools; a game shows "Today" until MaxPreps has the final.

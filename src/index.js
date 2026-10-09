@@ -50,8 +50,9 @@ import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
+import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.78.0-manhattan-fall-sports';
+const VERSION='4.78.1-manhattan-middle-schools';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1183,7 +1184,7 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 // High schools (src/high-school.mjs): the school's calendar is the schedule
 // and MaxPreps the scores. Each high school's module names its calendar, its
 // MaxPreps team pages and the varsity teams of each sport.
-const HIGH_SCHOOL_MODULES=[manhattanKsSchool];
+const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
 const isHighSchool=school=>school?.level==='high-school';
 const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1336,7 +1337,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
         if(event)events.push(event);
       }
       for(const game of games.filter(g=>g.date>=today)){
-        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:game.site==='AWAY'||isNamedEvent(game.name)?'at':'vs',named:true,sourceUrl,now});
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:game.site==='HOME'&&isNamedEvent(game.name)?'·':game.site==='AWAY'||isNamedEvent(game.name)?'at':'vs',named:true,sourceUrl,now});
         if(event)events.push(event);
       }
       continue;
@@ -1348,7 +1349,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       // tournament day ("Blue Valley West" for a game against Blue Valley
       // Northwest there).
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
-      const relation=named?'at':game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
+      // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
+      const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=team.tennisReporting&&game.date<=today?await tennisReportingResults(school,team,game):null;
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,now});
       if(event)events.push(event);

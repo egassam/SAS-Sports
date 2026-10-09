@@ -36,11 +36,11 @@ export function parseCalendarTitle(title,prefix){
 }
 
 // Calendar events for one varsity team (team: a RegExp on the team words).
-export function calendarEvents(payload,{prefix,team}){
+export function calendarEvents(payload,{prefix,team,parse=null}){
   const events=(payload?.data?.events||payload?.events||[]);
   const out=[];
   for(const e of events){
-    const parsed=parseCalendarTitle(e.title,prefix);
+    const parsed=parse?parse(e.title):parseCalendarTitle(e.title,prefix);
     if(!parsed||!team.test(parsed.team))continue;
     const date=String(e.start_date||'').slice(0,10);if(!/^\d{4}-\d\d-\d\d$/.test(date))continue;
     // Midnight is the calendar's "no time set".
@@ -153,4 +153,41 @@ export function tennisTeamStanding(teamPoints,school){
   if(!teams.has(school))return null;
   const points=teams.get(school),ranked=[...teams.values()].sort((a,b)=>b-a);
   return{points,place:ranked.indexOf(points)+1,teams:teams.size,tied:ranked.filter(p=>p===points).length>1};
+}
+
+// Middle school calendars (user, October 9: "let's add the Manhattan area
+// middle schools as well") are typed by hand: "7th VB @SH", "8th Football vs.
+// Junction City", "7th Girls BB League Tournament 2nd Round @ AMS",
+// "Cross Country @ HOME", "Boys Wrestling @ Fort Riley". The team reads
+// "<grade> [Boys|Girls] <sport>" or "[Boys|Girls] <sport>"; B-team days,
+// scrimmages, tryouts, practices and pictures are not games.
+const MS_SPORTS={vb:'Volleyball',volleyball:'Volleyball',fb:'Football',football:'Football',bb:'Basketball',basketball:'Basketball','cross country':'Cross Country',wrestling:'Wrestling',track:'Track & Field'};
+export function expandAbbreviations(text,abbreviations={}){
+  return clean(text).replace(/\b[A-Z]{2,5}\b/g,word=>abbreviations[word]||word).replace(/\s*\/\s*/g,' / ');
+}
+export function parseMiddleSchoolTitle(title,{abbreviations={}}={}){
+  const s=clean(title);
+  if(/scrimmage|picture|tryout|practice|parent|\bbegin|\bJV\b|\bB[- ]?Team\b|\bB Tourn/i.test(s))return null;
+  let m=s.match(/^(7th|8th|8h)(?:\s+grade)?\s+(?:(Boys|Girls)\s+)?(VB|Volleyball|FB|Football|BB|Basketball)\b\s*(.*)$/i),grade=null,gender=null,sport,rest;
+  if(m){grade=m[1].toLowerCase()==='8h'?'8th':m[1].toLowerCase();gender=m[2]||null;sport=MS_SPORTS[m[3].toLowerCase()];rest=m[4];}
+  else{m=s.match(/^(?:(Boys|Girls)\s+)?(Cross Country|Wrestling|Track)\b\s*(.*)$/i);if(!m)return null;gender=m[1]||null;sport=MS_SPORTS[m[2].toLowerCase()];rest=m[3];}
+  gender=gender&&gender[0].toUpperCase()+gender.slice(1).toLowerCase();
+  const team=[grade,gender,sport].filter(Boolean).join(' ');
+  rest=rest.trim();if(!rest)return null;
+  let site=null,name;
+  const versus=rest.match(/^(?:vs\.?|versus)\s*(.+)$/i),away=rest.match(/^(?:@|at)\s*(.+)$/i);
+  if(versus){site='HOME';name=versus[1];}
+  else if(away){const place=away[1];if(/^home\b/i.test(place)){site='HOME';name=place.replace(/^home\s*/i,'')||'Home';}else{site='AWAY';name=place;}}
+  else{
+    // "League Tournament @ Junction City", "Home Triangular",
+    // "League Tournament 1st Round".
+    const at=rest.match(/^(.*?)\s*(?:@|\bat\b)\s*(.+)$/i);
+    if(at){site=/^home$/i.test(at[2])?'HOME':'AWAY';name=site==='HOME'?at[1]:`${expandAbbreviations(at[2],abbreviations)} ${at[1]}`;}
+    else{site=/^home\b/i.test(rest)?'HOME':null;name=rest.replace(/^home\s+/i,'');}
+  }
+  // A second "@" names the venue: "@ Washburn Rural @ Washburn Rural North".
+  name=expandAbbreviations(name.replace(/\s*@.*$/,''),abbreviations).replace(/\s+(?:inv\.?)$/i,' Invitational').trim();
+  // "Cross Country @ HOME": a home meet with no opponent named.
+  if(/^home$/i.test(name))name='Home event';
+  return name?{team,name,site}:null;
 }

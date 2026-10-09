@@ -8,7 +8,8 @@ import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
 import {manhattanKsSchool} from '../src/schools/manhattan-ks.mjs';
-import {parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
+import {USD383_ABBREVIATIONS} from '../src/schools/manhattan-ks-middle.mjs';
+import {parseMiddleSchoolTitle,parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>read('./fixtures/manhattan-ks-module/'+name);
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
@@ -45,6 +46,24 @@ assert.equal(tennisTeamStanding(points,'Hayden HS'),null);
 for(const [a,b] of [['Wichita North','North'],['Topeka High','Topeka'],['Seaman HS','Seaman']])assert.ok(namesCompatible(a,b),`${a} / ${b}`);
 for(const [a,b] of [['Blue Valley West','Blue Valley Northwest'],['Hays','Hayden']])assert.ok(!namesCompatible(a,b),`${a} / ${b}`);
 
+// Middle school calendar titles (typed by hand).
+const ms=title=>{const p=parseMiddleSchoolTitle(title,{abbreviations:USD383_ABBREVIATIONS});return p&&`${p.team} | ${p.name} | ${p.site}`;};
+assert.equal(ms('7th VB vs SH/WRN'),'7th Volleyball | Shawnee Heights / Washburn Rural North | HOME');
+assert.equal(ms('8th VB @SH Inv.'),'8th Volleyball | Shawnee Heights Invitational | AWAY');
+assert.equal(ms('8TH FB @ Emporia'),'8th Football | Emporia | AWAY');
+assert.equal(ms('8h Girls BB @ Washburn Rural'),'8th Girls Basketball | Washburn Rural | AWAY');
+assert.equal(ms('7th Football @ AMS'),'7th Football | Anthony | AWAY');
+assert.equal(ms('7th VB @ HOME Triangular'),'7th Volleyball | Triangular | HOME');
+assert.equal(ms('8th VB Home Triangular'),'8th Volleyball | Triangular | HOME');
+assert.equal(ms('Cross Country @ HOME'),'Cross Country | Home event | HOME');
+assert.equal(ms('7th Girls BB League Tournament 2nd Round @ AMS'),'7th Girls Basketball | Anthony League Tournament 2nd Round | AWAY');
+assert.equal(ms('7th Boys BB @ Washburn Rural @ Washburn Rural North'),'7th Boys Basketball | Washburn Rural | AWAY');
+assert.equal(ms('Boys Wrestling @ Fort Riley'),'Boys Wrestling | Fort Riley | AWAY');
+assert.equal(ms('Track @ McPherson'),'Track & Field | McPherson | AWAY');
+for(const title of ['7th VB B Tourney @WR North','8th VB B Team Tournament at Shawnee Heights','8th Grade Football Scrimmage @ Bishop Stadium','Volleyball Team Pictures','Girls Basketball Tryouts Begin','Boys Wrestling Practice Begins','JV Track @ Junction City','8th Girls BB','Board of Education Meeting'])assert.equal(ms(title),null,title);
+for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'high-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
+assert.deepEqual(sponsoredSports['eisenhower-ms-ks'],['Basketball','Cross Country','Football','Track & Field','Volleyball','Wrestling']);
+
 // Varsity only: JV and 9th grade football are not read.
 const calendar=JSON.parse(fixture('calendar-2026-27.json'));
 const football=calendarEvents(calendar,{prefix:'MHS',team:/^Varsity Football$/i});
@@ -71,6 +90,7 @@ assert.deepEqual(box,{periods:['Q1','Q2','Q3','Q4','Final'],teams:[{name:'Manhat
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const TR='https://api.tennisreporting.com/';
 const pages=new Map([[`${CALENDAR}?start_date=2026-07-01&end_date=2027-06-30`,fixture('calendar-2026-27.json')],[`${MAXPREPS}football/schedule/`,fixture('maxpreps-football-schedule.html')],[contests[2].game_url,fixture('maxpreps-football-game-2026-09-18.html')],
+  ['https://ams.usd383.org/api/calendars/128968/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ams-2026-27.json')],['https://ems.usd383.org/api/calendars/128776/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ems-2026-27.json')],
   [`${MAXPREPS}soccer/schedule/`,fixture('maxpreps-soccer-schedule.html')],['https://www.maxpreps.com/ks/soccer/match/manhattan-vs-topeka/8-28-2026/?c=fff1bf1a-f39c-46f0-ab4d-daa0f0f1758f',fixture('maxpreps-soccer-game.html')],['https://www.maxpreps.com/ks/volleyball/match/bishop-carroll-wichita-vs-manhattan/8-29-2026/?c=48cf0816-eb79-40be-bb0f-c7254c3b6392',fixture('maxpreps-volleyball-game.html')],[`${MAXPREPS}volleyball/schedule/`,fixture('maxpreps-volleyball-schedule.html')],
   [`${TR}events#${JSON.stringify({page:0,pageSize:200,sorted:[],filtered:{stateId:23}})}`,fixture('tennisreporting-events-ks.json')],[`${TR}event/975`,fixture('tennisreporting-event-975.json')],[`${TR}event/975/host/4139/schools`,fixture('tennisreporting-975-4139-schools.json')],
   ...['Singles','Doubles'].flatMap(t=>[[`${TR}event/975/host/4139/bracket/get#${JSON.stringify({matchType:t,isConsolation:false})}`,fixture(`tennisreporting-975-4139-${t}.json`)],[`${TR}event/975/seed_list_by_params#${JSON.stringify({host:4139,matchType:t})}`,fixture(`tennisreporting-975-seeds-${t}.json`)]])]);
@@ -165,7 +185,7 @@ try{
   assert.equal(vb.results.length,28);
   assert.deepEqual(vb.records,['21-7 · Centennial League 9-1']);
     assert.ok(!vb.results.some(x=>/T, 0-0/.test(x)),'pool placeholders are not results');
-  assert.deepEqual(vb.upcoming,['Upcoming Oct 10, 9:00 AM Manhattan at Manhattan Invite | ','Upcoming Oct 15, 5:00 PM Manhattan at Maize South TRI | ','Upcoming Oct 20, 5:00 PM Manhattan at St. Thomas Aquinas HS | ','Upcoming Oct 24 Manhattan at Sub State | ','Upcoming Oct 30 Manhattan at 6A State Tourn. | ']);
+  assert.deepEqual(vb.upcoming,['Upcoming Oct 10, 9:00 AM Manhattan · Manhattan Invite | ','Upcoming Oct 15, 5:00 PM Manhattan at Maize South TRI | ','Upcoming Oct 20, 5:00 PM Manhattan at St. Thomas Aquinas HS | ','Upcoming Oct 24 Manhattan at Sub State | ','Upcoming Oct 30 Manhattan at 6A State Tourn. | ']);
   // Expanded views: soccer halves, volleyball sets (a tournament match has
   // no home or road).
   const expand=async(sport,event)=>(await worker.fetchLive('manhattan-ks',sport,null,event.id)).events.find(e=>e.id===event.id);
@@ -198,5 +218,21 @@ try{
   assert.ok(!requests.some(r=>/event\/974\b/.test(r)&&/host/.test(r)),'the other Oct 9 event has no Manhattan host');
   // Past invitationals TennisReporting does not carry are not listed.
   assert.deepEqual(tennis.results,[]);
+
+  // Middle schools: schedules only (no source publishes their scores), so a
+  // past game is not listed; grades are the teams.
+  const msFeed=async(id,sport)=>{const r=await worker.fetchLive(id,sport);assert.equal(r.error,null,`${id} ${sport}`);return worker.groupEvents(r.events,at)[0]||null;};
+  assert.deepEqual((await msFeed('anthony-ms-ks','Football')).upcoming.map(line),['Upcoming Oct 13, 4:15 PM 7th · Anthony vs Junction City | ','Upcoming Oct 13, 4:30 PM 8th · Anthony at Junction City | ']);
+  assert.equal(await msFeed('anthony-ms-ks','Volleyball'),null,'the season is over and no scores were published');
+  const ike=await msFeed('eisenhower-ms-ks','Basketball');
+  assert.deepEqual(ike.upcoming.slice(0,3).map(line),['Upcoming Oct 29, 4:15 PM 7th Girls · Eisenhower vs Rock Creek | ','Upcoming Oct 29, 4:15 PM 8th Girls · Eisenhower vs Rock Creek | ','Upcoming Nov 3, 4:30 PM 7th Girls · Eisenhower at Wamego | ']);
+  assert.ok(ike.upcoming.some(e=>e.team_label==='7th Boys'&&/Wamego/.test(e.title)),'boys basketball is in the same sport');
+  const wrestling=await msFeed('eisenhower-ms-ks','Wrestling');
+  assert.equal(line(wrestling.upcoming[0]),'Upcoming Nov 10, 4:30 PM Boys · Eisenhower · Home event | ');
+  assert.equal(wrestling.upcoming[0].event_type,'DUAL');
+  assert.ok(wrestling.upcoming.some(e=>e.team_label==='Girls'));
+  assert.ok((await msFeed('eisenhower-ms-ks','Track & Field')).upcoming.every(e=>e.event_type==='MEET'));
+  const athletesMs=await worker.handler.fetch(new Request('https://x.test/live/athletes?school=eisenhower-ms-ks&sport=Football'),{},{});
+  assert.deepEqual(await athletesMs.json(),[]);
 }finally{globalThis.Date=RealDate;}
-console.log('Manhattan (KS) module: football, soccer, volleyball, tennis, cross country and golf verified (schedules, scores, records, TennisReporting draws, expanded views)');
+console.log('Manhattan (KS) module: high school football, soccer, volleyball, tennis, cross country, golf and both middle schools verified (schedules, scores, records, TennisReporting draws, expanded views)');

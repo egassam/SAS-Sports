@@ -1414,5 +1414,51 @@
         "provider_school_id": "41006ce9-cfb3-492a-a951-d320637bc985"
       }
     ]
+  },
+  {
+    "id": "anthony-ms-ks",
+    "name": "Susan B. Anthony Middle School",
+    "short_name": "Anthony",
+    "state": "Kansas",
+    "conference": "Centennial League",
+    "classification": "Middle School",
+    "level": "high-school",
+    "division": "Middle school (USD 383)",
+    "athletics_url": "https://ams.usd383.org",
+    "aliases": [
+      "Anthony Middle School",
+      "AMS",
+      "Susan B. Anthony"
+    ],
+    "providers": [
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "128968",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "eisenhower-ms-ks",
+    "name": "Dwight D. Eisenhower Middle School",
+    "short_name": "Eisenhower",
+    "state": "Kansas",
+    "conference": "Centennial League",
+    "classification": "Middle School",
+    "level": "high-school",
+    "division": "Middle school (USD 383)",
+    "athletics_url": "https://ems.usd383.org",
+    "aliases": [
+      "Eisenhower Middle School",
+      "EMS",
+      "Dwight D. Eisenhower"
+    ],
+    "providers": [
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "128776",
+        "provider_school_id": null
+      }
+    ]
   }
 ]

@@ -1,0 +1,1600 @@
+{
+"success": true,
+"data": {
+"events": [
+{
+"id": "83022367@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-08-19",
+"start_time": "18:30:00",
+"end_date": "2026-08-19",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022759@parentsquare.com",
+"title": "8th Grade Football Scrimmage @ Bishop Stadium",
+"start_date": "2026-08-22",
+"start_time": "08:00:00",
+"end_date": "2026-08-22",
+"end_time": "09:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87574328@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2026-08-24",
+"start_time": "18:00:00",
+"end_date": "2026-08-24",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022761@parentsquare.com",
+"title": "Football Soup Scrimmage",
+"start_date": "2026-08-27",
+"start_time": "16:15:00",
+"end_date": "2026-08-27",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022760@parentsquare.com",
+"title": "Volleyball Scrimmage",
+"start_date": "2026-08-27",
+"start_time": "16:15:00",
+"end_date": "2026-08-27",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022762@parentsquare.com",
+"title": "7th VB @ Junction City",
+"start_date": "2026-08-31",
+"start_time": "16:30:00",
+"end_date": "2026-08-31",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022763@parentsquare.com",
+"title": "8th VB @ HOME",
+"start_date": "2026-09-01",
+"start_time": "16:15:00",
+"end_date": "2026-09-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022771@parentsquare.com",
+"title": "Cross Country @ Wamego",
+"start_date": "2026-09-02",
+"start_time": "16:00:00",
+"end_date": "2026-09-02",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022764@parentsquare.com",
+"title": "Cross Country Team Pictures",
+"start_date": "2026-09-02",
+"start_time": "16:15:00",
+"end_date": "2026-09-02",
+"end_time": "16:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022369@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-09-02",
+"start_time": "18:20:00",
+"end_date": "2026-09-02",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022766@parentsquare.com",
+"title": "8th Football vs. Junction City",
+"start_date": "2026-09-03",
+"start_time": "16:15:00",
+"end_date": "2026-09-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022765@parentsquare.com",
+"title": "7th Football @ Junction City",
+"start_date": "2026-09-03",
+"start_time": "16:30:00",
+"end_date": "2026-09-03",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022767@parentsquare.com",
+"title": "Volleyball Team Pictures",
+"start_date": "2026-09-04",
+"start_time": "16:15:00",
+"end_date": "2026-09-04",
+"end_time": "16:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022769@parentsquare.com",
+"title": "7th VB @ HOME Triangular",
+"start_date": "2026-09-08",
+"start_time": "16:15:00",
+"end_date": "2026-09-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022770@parentsquare.com",
+"title": "8th VB @ Lakewood",
+"start_date": "2026-09-08",
+"start_time": "16:30:00",
+"end_date": "2026-09-08",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022773@parentsquare.com",
+"title": "8th FB @ Washburn Rural",
+"start_date": "2026-09-10",
+"start_time": "15:30:00",
+"end_date": "2026-09-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022772@parentsquare.com",
+"title": "7th FB vs. Washburn Rural",
+"start_date": "2026-09-10",
+"start_time": "16:15:00",
+"end_date": "2026-09-10",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022774@parentsquare.com",
+"title": "Cross Country @ Fort Riley",
+"start_date": "2026-09-10",
+"start_time": "16:30:00",
+"end_date": "2026-09-10",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022775@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2026-09-14",
+"start_time": "12:00:00",
+"end_date": "2026-09-14",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022777@parentsquare.com",
+"title": "7th VB @ HOME Triangular",
+"start_date": "2026-09-14",
+"start_time": "16:15:00",
+"end_date": "2026-09-14",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022778@parentsquare.com",
+"title": "8th VB @ AMS",
+"start_date": "2026-09-14",
+"start_time": "16:15:00",
+"end_date": "2026-09-14",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022780@parentsquare.com",
+"title": "Cross Country @ Clay Center",
+"start_date": "2026-09-15",
+"start_time": "16:00:00",
+"end_date": "2026-09-15",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022779@parentsquare.com",
+"title": "8th VB @ HOME Triangular",
+"start_date": "2026-09-15",
+"start_time": "16:15:00",
+"end_date": "2026-09-15",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022781@parentsquare.com",
+"title": "7th VB @ Washburn Rural North",
+"start_date": "2026-09-16",
+"start_time": "15:30:00",
+"end_date": "2026-09-16",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022782@parentsquare.com",
+"title": "8th VB @ Topeka Seaman",
+"start_date": "2026-09-16",
+"start_time": "15:30:00",
+"end_date": "2026-09-16",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022368@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-09-16",
+"start_time": "18:30:00",
+"end_date": "2026-09-16",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022784@parentsquare.com",
+"title": "8TH FB @ Emporia",
+"start_date": "2026-09-17",
+"start_time": "15:45:00",
+"end_date": "2026-09-17",
+"end_time": "17:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022783@parentsquare.com",
+"title": "7th FB vs Emporia",
+"start_date": "2026-09-17",
+"start_time": "16:15:00",
+"end_date": "2026-09-17",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022785@parentsquare.com",
+"title": "Cross Country @ HOME",
+"start_date": "2026-09-18",
+"start_time": "14:00:00",
+"end_date": "2026-09-18",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022786@parentsquare.com",
+"title": "7th VB Tournament @ Junction City",
+"start_date": "2026-09-19",
+"start_time": "08:30:00",
+"end_date": "2026-09-19",
+"end_time": "11:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87574515@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2026-09-21",
+"start_time": "18:00:00",
+"end_date": "2026-09-21",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022790@parentsquare.com",
+"title": "Cross Country @ Clay Center",
+"start_date": "2026-09-22",
+"start_time": "16:00:00",
+"end_date": "2026-09-22",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022788@parentsquare.com",
+"title": "7th VB @ AMS",
+"start_date": "2026-09-22",
+"start_time": "16:15:00",
+"end_date": "2026-09-22",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022789@parentsquare.com",
+"title": "8th VB Home Triangular",
+"start_date": "2026-09-22",
+"start_time": "16:15:00",
+"end_date": "2026-09-22",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022794@parentsquare.com",
+"title": "7th Football @ Shawnee Hts.",
+"start_date": "2026-09-24",
+"start_time": "15:30:00",
+"end_date": "2026-09-24",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022795@parentsquare.com",
+"title": "8th Football vs. Shawnee Hts.",
+"start_date": "2026-09-24",
+"start_time": "16:15:00",
+"end_date": "2026-09-24",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022797@parentsquare.com",
+"title": "7th VB B Team Tournaments @ Washburn Rural North",
+"start_date": "2026-09-26",
+"start_time": "08:30:00",
+"end_date": "2026-09-26",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022798@parentsquare.com",
+"title": "8th VB B Team Tournament at Shawnee Heights",
+"start_date": "2026-09-26",
+"start_time": "08:30:00",
+"end_date": "2026-09-26",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022799@parentsquare.com",
+"title": "7th VB @ AMS",
+"start_date": "2026-09-28",
+"start_time": "16:15:00",
+"end_date": "2026-09-28",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022800@parentsquare.com",
+"title": "8th VB @ Shawnee Heights",
+"start_date": "2026-09-29",
+"start_time": "15:30:00",
+"end_date": "2026-09-29",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022801@parentsquare.com",
+"title": "Cross Country @ Rock Creek",
+"start_date": "2026-09-29",
+"start_time": "16:00:00",
+"end_date": "2026-09-29",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022802@parentsquare.com",
+"title": "7th Football @ AMS",
+"start_date": "2026-10-01",
+"start_time": "16:15:00",
+"end_date": "2026-10-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022803@parentsquare.com",
+"title": "8th FB vs. AMS",
+"start_date": "2026-10-01",
+"start_time": "16:15:00",
+"end_date": "2026-10-01",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022804@parentsquare.com",
+"title": "Cross Country League Tournament @ Milford Stare Park",
+"start_date": "2026-10-02",
+"start_time": "14:00:00",
+"end_date": "2026-10-02",
+"end_time": "17:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022805@parentsquare.com",
+"title": "7th VB League Tournament @ Junction City",
+"start_date": "2026-10-03",
+"start_time": "08:30:00",
+"end_date": "2026-10-03",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022806@parentsquare.com",
+"title": "8th VB League Tournament @ Shawnee Heights",
+"start_date": "2026-10-03",
+"start_time": "08:30:00",
+"end_date": "2026-10-03",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022807@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2026-10-05",
+"start_time": "12:00:00",
+"end_date": "2026-10-05",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022370@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-10-07",
+"start_time": "18:30:00",
+"end_date": "2026-10-07",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "90832867@parentsquare.com",
+"title": "8th FB @ Washburn Rural Norht",
+"start_date": "2026-10-08",
+"start_time": "15:30:00",
+"end_date": "2026-10-08",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022808@parentsquare.com",
+"title": "7th FB vs. Washburn Rural North",
+"start_date": "2026-10-08",
+"start_time": "16:15:00",
+"end_date": "2026-10-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022812@parentsquare.com",
+"title": "8th FB @ Seaman",
+"start_date": "2026-10-13",
+"start_time": "15:30:00",
+"end_date": "2026-10-13",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022811@parentsquare.com",
+"title": "7th FB vs Seaman",
+"start_date": "2026-10-13",
+"start_time": "16:15:00",
+"end_date": "2026-10-13",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022813@parentsquare.com",
+"title": "Girls Basketball Tryouts Begin",
+"start_date": "2026-10-14",
+"start_time": "16:00:00",
+"end_date": "2026-10-14",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022816@parentsquare.com",
+"title": "Boys Wrestling Practice Begins",
+"start_date": "2026-10-19",
+"start_time": "16:00:00",
+"end_date": "2026-10-19",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87574661@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2026-10-19",
+"start_time": "18:00:00",
+"end_date": "2026-10-19",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022371@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-10-21",
+"start_time": "18:30:00",
+"end_date": "2026-10-21",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "86856869@parentsquare.com",
+"title": "Board of Education Special Meeting",
+"start_date": "2026-10-28",
+"start_time": "17:30:00",
+"end_date": "2026-10-28",
+"end_time": "20:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022818@parentsquare.com",
+"title": "7th Girls BB vs Rock Creek",
+"start_date": "2026-10-29",
+"start_time": "16:15:00",
+"end_date": "2026-10-29",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022819@parentsquare.com",
+"title": "8th Girls BB vs. Rock Creek",
+"start_date": "2026-10-29",
+"start_time": "16:15:00",
+"end_date": "2026-10-29",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022820@parentsquare.com",
+"title": "Boys Wrestling Scrimmage @ AMS",
+"start_date": "2026-11-02",
+"start_time": "16:15:00",
+"end_date": "2026-11-02",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022821@parentsquare.com",
+"title": "7th Girls BB @ Wamego",
+"start_date": "2026-11-03",
+"start_time": "16:30:00",
+"end_date": "2026-11-03",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022822@parentsquare.com",
+"title": "8th Girls BB @ Wamego",
+"start_date": "2026-11-03",
+"start_time": "16:30:00",
+"end_date": "2026-11-03",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022823@parentsquare.com",
+"title": "Boys Wrestling Team Pictures",
+"start_date": "2026-11-04",
+"start_time": "16:15:00",
+"end_date": "2026-11-04",
+"end_time": "16:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022372@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-11-04",
+"start_time": "18:30:00",
+"end_date": "2026-11-04",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022825@parentsquare.com",
+"title": "8th Girls BB vs Junction City",
+"start_date": "2026-11-05",
+"start_time": "16:15:00",
+"end_date": "2026-11-05",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022824@parentsquare.com",
+"title": "7th Girls BB @ Junction City",
+"start_date": "2026-11-05",
+"start_time": "16:30:00",
+"end_date": "2026-11-05",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022826@parentsquare.com",
+"title": "Girls BB Team Pictures",
+"start_date": "2026-11-06",
+"start_time": "16:15:00",
+"end_date": "2026-11-06",
+"end_time": "16:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022827@parentsquare.com",
+"title": "Little Apple Grapple Wrestling @ MHS",
+"start_date": "2026-11-07",
+"start_time": "09:00:00",
+"end_date": "2026-11-07",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022828@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2026-11-09",
+"start_time": "12:00:00",
+"end_date": "2026-11-09",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022829@parentsquare.com",
+"title": "7th Girls BB @ Fort Riley",
+"start_date": "2026-11-09",
+"start_time": "16:30:00",
+"end_date": "2026-11-09",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022830@parentsquare.com",
+"title": "8th Girls BB @ Fort Riley",
+"start_date": "2026-11-09",
+"start_time": "16:30:00",
+"end_date": "2026-11-09",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022831@parentsquare.com",
+"title": "Boys Wrestling @ HOME",
+"start_date": "2026-11-10",
+"start_time": "16:30:00",
+"end_date": "2026-11-10",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022833@parentsquare.com",
+"title": "8th Girls BB @ Seaman",
+"start_date": "2026-11-12",
+"start_time": "15:30:00",
+"end_date": "2026-11-12",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022832@parentsquare.com",
+"title": "7th Girls BB vs. Seaman",
+"start_date": "2026-11-12",
+"start_time": "16:15:00",
+"end_date": "2026-11-12",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022834@parentsquare.com",
+"title": "7th Girls BB @ Emporia",
+"start_date": "2026-11-16",
+"start_time": "15:45:00",
+"end_date": "2026-11-16",
+"end_time": "17:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022835@parentsquare.com",
+"title": "8th Girls BB",
+"start_date": "2026-11-16",
+"start_time": "16:15:00",
+"end_date": "2026-11-16",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022837@parentsquare.com",
+"title": "8h Girls BB @ Washburn Rural",
+"start_date": "2026-11-17",
+"start_time": "15:30:00",
+"end_date": "2026-11-17",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022836@parentsquare.com",
+"title": "7th Girls BB vs. Washburn Rural",
+"start_date": "2026-11-17",
+"start_time": "16:15:00",
+"end_date": "2026-11-17",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022838@parentsquare.com",
+"title": "Boys Wrestling @ Fort Riley",
+"start_date": "2026-11-17",
+"start_time": "16:30:00",
+"end_date": "2026-11-17",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87573699@parentsquare.com",
+"title": "Site Council Meeting at the Lincoln Education Center",
+"start_date": "2026-11-18",
+"start_time": "17:15:00",
+"end_date": "2026-11-18",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022373@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-11-18",
+"start_time": "18:30:00",
+"end_date": "2026-11-18",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022839@parentsquare.com",
+"title": "7th Girls BB @ Shawnee Heights",
+"start_date": "2026-11-19",
+"start_time": "15:30:00",
+"end_date": "2026-11-19",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022840@parentsquare.com",
+"title": "8th Girls BB vs Shawnee Heights",
+"start_date": "2026-11-19",
+"start_time": "16:15:00",
+"end_date": "2026-11-19",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022841@parentsquare.com",
+"title": "Boys Wrestling @ Seaman",
+"start_date": "2026-11-20",
+"start_time": "14:00:00",
+"end_date": "2026-11-20",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022844@parentsquare.com",
+"title": "8th Girls BB @ Washburn Rural North",
+"start_date": "2026-11-30",
+"start_time": "15:30:00",
+"end_date": "2026-11-30",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022843@parentsquare.com",
+"title": "7th Girls BB vs. Washburn Rural North",
+"start_date": "2026-11-30",
+"start_time": "16:15:00",
+"end_date": "2026-11-30",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022845@parentsquare.com",
+"title": "Boys Wrestling @ Shawnee Heights",
+"start_date": "2026-12-01",
+"start_time": "15:30:00",
+"end_date": "2026-12-01",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022374@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-12-02",
+"start_time": "18:30:00",
+"end_date": "2026-12-02",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022846@parentsquare.com",
+"title": "7th Girls BB @ AMS",
+"start_date": "2026-12-03",
+"start_time": "16:15:00",
+"end_date": "2026-12-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022847@parentsquare.com",
+"title": "8th Girls BB vs. AMS",
+"start_date": "2026-12-03",
+"start_time": "16:15:00",
+"end_date": "2026-12-03",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022848@parentsquare.com",
+"title": "Boys Wrestling @ Fort Riley",
+"start_date": "2026-12-05",
+"start_time": "09:00:00",
+"end_date": "2026-12-05",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87574800@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2026-12-07",
+"start_time": "18:00:00",
+"end_date": "2026-12-07",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022849@parentsquare.com",
+"title": "7th Girls BB vs. Abilene",
+"start_date": "2026-12-08",
+"start_time": "16:15:00",
+"end_date": "2026-12-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022850@parentsquare.com",
+"title": "8th Girls BB vs Abilene",
+"start_date": "2026-12-08",
+"start_time": "16:15:00",
+"end_date": "2026-12-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022852@parentsquare.com",
+"title": "Boys Wrestling @ Junction City",
+"start_date": "2026-12-09",
+"start_time": "16:30:00",
+"end_date": "2026-12-09",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022853@parentsquare.com",
+"title": "7th Girls BB League Tournament 1st Round",
+"start_date": "2026-12-10",
+"start_time": "15:30:00",
+"end_date": "2026-12-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022854@parentsquare.com",
+"title": "8th Girls BB League Tournament 1st Round",
+"start_date": "2026-12-10",
+"start_time": "15:30:00",
+"end_date": "2026-12-10",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022855@parentsquare.com",
+"title": "7th Girls BB League Tournament 2nd Round @ AMS",
+"start_date": "2026-12-12",
+"start_time": "09:00:00",
+"end_date": "2026-12-12",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022856@parentsquare.com",
+"title": "8th Girls BB League Tournament 2nd Round @ Washburn Rural",
+"start_date": "2026-12-12",
+"start_time": "09:00:00",
+"end_date": "2026-12-12",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022857@parentsquare.com",
+"title": "Boys Wrestling League Tournament @ Shawnee Heights",
+"start_date": "2026-12-12",
+"start_time": "09:00:00",
+"end_date": "2026-12-12",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022858@parentsquare.com",
+"title": "Boys BB Tryouts Begin",
+"start_date": "2026-12-14",
+"start_time": "16:00:00",
+"end_date": "2026-12-14",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022375@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2026-12-16",
+"start_time": "18:30:00",
+"end_date": "2026-12-16",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022376@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2027-01-06",
+"start_time": "18:30:00",
+"end_date": "2027-01-06",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022864@parentsquare.com",
+"title": "Boys BB Team Pictures",
+"start_date": "2027-01-07",
+"start_time": "16:00:00",
+"end_date": "2027-01-07",
+"end_time": "16:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87573883@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2027-01-11",
+"start_time": "12:00:00",
+"end_date": "2027-01-11",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022866@parentsquare.com",
+"title": "7th Boys BB vs Wamego",
+"start_date": "2027-01-11",
+"start_time": "16:15:00",
+"end_date": "2027-01-11",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022867@parentsquare.com",
+"title": "8th Boys BB vs Wamego",
+"start_date": "2027-01-11",
+"start_time": "16:15:00",
+"end_date": "2027-01-11",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87575131@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2027-01-12",
+"start_time": "18:00:00",
+"end_date": "2027-01-12",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022868@parentsquare.com",
+"title": "7th Boys BB @ Washburn Rural @ Washburn Rural North",
+"start_date": "2027-01-14",
+"start_time": "15:30:00",
+"end_date": "2027-01-14",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022869@parentsquare.com",
+"title": "8th Boys BB vs. Washburn Rural North",
+"start_date": "2027-01-14",
+"start_time": "16:15:00",
+"end_date": "2027-01-14",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022863@parentsquare.com",
+"title": "Girls Wrestling @ AMS",
+"start_date": "2027-01-15",
+"start_time": "16:00:00",
+"end_date": "2027-01-15",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022870@parentsquare.com",
+"title": "7th Boys BB @ Abilene",
+"start_date": "2027-01-19",
+"start_time": "16:30:00",
+"end_date": "2027-01-19",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022871@parentsquare.com",
+"title": "8th Boys BB @ Abilene",
+"start_date": "2027-01-19",
+"start_time": "16:30:00",
+"end_date": "2027-01-19",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022872@parentsquare.com",
+"title": "Girls Wrestling @ Washburn Rural",
+"start_date": "2027-01-20",
+"start_time": "16:00:00",
+"end_date": "2027-01-20",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022377@parentsquare.com",
+"title": "Board of Education Meeting",
+"start_date": "2027-01-20",
+"start_time": "18:30:00",
+"end_date": "2027-01-20",
+"end_time": "23:59:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022874@parentsquare.com",
+"title": "8th Boys BB @ Seaman",
+"start_date": "2027-01-21",
+"start_time": "15:30:00",
+"end_date": "2027-01-21",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022885@parentsquare.com",
+"title": "8th Boys BB @ Washburn Rural",
+"start_date": "2027-01-21",
+"start_time": "15:30:00",
+"end_date": "2027-01-21",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022873@parentsquare.com",
+"title": "7th Boys BB vs. Seaman",
+"start_date": "2027-01-21",
+"start_time": "16:15:00",
+"end_date": "2027-01-21",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022875@parentsquare.com",
+"title": "Girls Wrestling @ Abilene",
+"start_date": "2027-01-22",
+"start_time": "16:00:00",
+"end_date": "2027-01-22",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022876@parentsquare.com",
+"title": "Girls Wrestling Team Pictures",
+"start_date": "2027-01-25",
+"start_time": "16:15:00",
+"end_date": "2027-01-25",
+"end_time": "16:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022877@parentsquare.com",
+"title": "Girls Wrestling @ HOME",
+"start_date": "2027-01-26",
+"start_time": "16:30:00",
+"end_date": "2027-01-26",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022878@parentsquare.com",
+"title": "Girls Wrestling @ Washburn Rural North",
+"start_date": "2027-01-27",
+"start_time": "16:00:00",
+"end_date": "2027-01-27",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022881@parentsquare.com",
+"title": "8th Boys BB @ Shawnee Heights",
+"start_date": "2027-01-28",
+"start_time": "15:30:00",
+"end_date": "2027-01-28",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022880@parentsquare.com",
+"title": "7th Boys BB vs Shawnee Heights",
+"start_date": "2027-01-28",
+"start_time": "16:15:00",
+"end_date": "2027-01-28",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022884@parentsquare.com",
+"title": "7th Boys BB vs Washburn Rural",
+"start_date": "2027-02-02",
+"start_time": "16:15:00",
+"end_date": "2027-02-02",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022888@parentsquare.com",
+"title": "8th Boys BB vs Junction City",
+"start_date": "2027-02-04",
+"start_time": "16:15:00",
+"end_date": "2027-02-04",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022887@parentsquare.com",
+"title": "7th Boys BB @ Junction City",
+"start_date": "2027-02-04",
+"start_time": "16:30:00",
+"end_date": "2027-02-04",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022889@parentsquare.com",
+"title": "Girls Wrestling @ Junction City",
+"start_date": "2027-02-06",
+"start_time": "09:00:00",
+"end_date": "2027-02-06",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87573998@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2027-02-08",
+"start_time": "12:00:00",
+"end_date": "2027-02-08",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022890@parentsquare.com",
+"title": "7th Boys BB @ Emporia",
+"start_date": "2027-02-08",
+"start_time": "15:45:00",
+"end_date": "2027-02-08",
+"end_time": "17:45:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022891@parentsquare.com",
+"title": "8th Boys BB vs Emporia",
+"start_date": "2027-02-08",
+"start_time": "16:15:00",
+"end_date": "2027-02-08",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022894@parentsquare.com",
+"title": "7th Boys BB vs Fort Riley",
+"start_date": "2027-02-09",
+"start_time": "16:15:00",
+"end_date": "2027-02-09",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022893@parentsquare.com",
+"title": "8th Boys BB vs. Fort Riley",
+"start_date": "2027-02-09",
+"start_time": "16:15:00",
+"end_date": "2027-02-09",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022896@parentsquare.com",
+"title": "7th Boys BB vs AMS",
+"start_date": "2027-02-11",
+"start_time": "16:15:00",
+"end_date": "2027-02-11",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022895@parentsquare.com",
+"title": "8th Boys BB @ AMS",
+"start_date": "2027-02-11",
+"start_time": "16:15:00",
+"end_date": "2027-02-11",
+"end_time": "18:15:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022897@parentsquare.com",
+"title": "Girls Wrestling @ Fort Riley",
+"start_date": "2027-02-11",
+"start_time": "16:30:00",
+"end_date": "2027-02-11",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022900@parentsquare.com",
+"title": "Girls Wrestling @ Shawnee Heights",
+"start_date": "2027-02-16",
+"start_time": "15:30:00",
+"end_date": "2027-02-16",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022898@parentsquare.com",
+"title": "7th Boys BB @ Rock Creek",
+"start_date": "2027-02-16",
+"start_time": "16:30:00",
+"end_date": "2027-02-16",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022899@parentsquare.com",
+"title": "8th Boys BB @ Rock Creek",
+"start_date": "2027-02-16",
+"start_time": "16:30:00",
+"end_date": "2027-02-16",
+"end_time": "18:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022902@parentsquare.com",
+"title": "7th Boys BB League Tournament 1st Round",
+"start_date": "2027-02-18",
+"start_time": "15:30:00",
+"end_date": "2027-02-18",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022903@parentsquare.com",
+"title": "8th Boys BB League Tournament",
+"start_date": "2027-02-18",
+"start_time": "15:30:00",
+"end_date": "2027-02-18",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022904@parentsquare.com",
+"title": "7th Boys BB League Tournament 2nd Round @ HOME",
+"start_date": "2027-02-20",
+"start_time": "09:00:00",
+"end_date": "2027-02-20",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022905@parentsquare.com",
+"title": "8th Boys BB League Tournament @ Washburn Rural North",
+"start_date": "2027-02-20",
+"start_time": "09:00:00",
+"end_date": "2027-02-20",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022906@parentsquare.com",
+"title": "Girls Wrestling League Tournament @ Seaman",
+"start_date": "2027-02-20",
+"start_time": "09:00:00",
+"end_date": "2027-02-20",
+"end_time": "12:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87575308@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2027-02-22",
+"start_time": "18:00:00",
+"end_date": "2027-02-22",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022913@parentsquare.com",
+"title": "Track and Tennis Begin",
+"start_date": "2027-03-22",
+"start_time": "16:00:00",
+"end_date": "2027-03-22",
+"end_time": "18:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87575435@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2027-03-22",
+"start_time": "18:00:00",
+"end_date": "2027-03-22",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022914@parentsquare.com",
+"title": "Track @ Junction City",
+"start_date": "2027-03-31",
+"start_time": "13:00:00",
+"end_date": "2027-03-31",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022915@parentsquare.com",
+"title": "Track Team Pictures",
+"start_date": "2027-04-06",
+"start_time": "16:00:00",
+"end_date": "2027-04-06",
+"end_time": "16:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022920@parentsquare.com",
+"title": "Site Council Meeting",
+"start_date": "2027-04-12",
+"start_time": "12:00:00",
+"end_date": "2027-04-12",
+"end_time": "13:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87575548@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2027-04-12",
+"start_time": "18:00:00",
+"end_date": "2027-04-12",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022925@parentsquare.com",
+"title": "Track @ McPherson",
+"start_date": "2027-04-15",
+"start_time": "15:00:00",
+"end_date": "2027-04-15",
+"end_time": "17:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022928@parentsquare.com",
+"title": "Track @ Clay Center",
+"start_date": "2027-04-20",
+"start_time": "14:00:00",
+"end_date": "2027-04-20",
+"end_time": "16:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022929@parentsquare.com",
+"title": "Track @ Emporia",
+"start_date": "2027-04-27",
+"start_time": "09:00:00",
+"end_date": "2027-04-27",
+"end_time": "11:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022933@parentsquare.com",
+"title": "JV Track @ Junction City",
+"start_date": "2027-04-28",
+"start_time": "15:00:00",
+"end_date": "2027-04-28",
+"end_time": "17:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022934@parentsquare.com",
+"title": "Track @ Chapman",
+"start_date": "2027-04-29",
+"start_time": "15:00:00",
+"end_date": "2027-04-29",
+"end_time": "17:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022939@parentsquare.com",
+"title": "Track @ Washburn Rural",
+"start_date": "2027-05-03",
+"start_time": "15:30:00",
+"end_date": "2027-05-03",
+"end_time": "17:30:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "83022944@parentsquare.com",
+"title": "Track League Meet @ Bishop Stadium",
+"start_date": "2027-05-07",
+"start_time": "10:00:00",
+"end_date": "2027-05-07",
+"end_time": "15:00:00",
+"all_day": false,
+"address": ""
+},
+{
+"id": "87575669@parentsquare.com",
+"title": "PTO Meeting",
+"start_date": "2027-05-11",
+"start_time": "18:00:00",
+"end_date": "2027-05-11",
+"end_time": "19:00:00",
+"all_day": false,
+"address": ""
+}
+],
+"site_timezone": "America/Chicago",
+"error": ""
+},
+"error": null
+}
