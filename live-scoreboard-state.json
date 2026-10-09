@@ -656,9 +656,172 @@
   },
   "maryland|Volleyball": {
    "state": "off"
+  },
+  "michigan|Baseball": {
+   "state": "off"
+  },
+  "michigan|Basketball": {
+   "state": "off"
+  },
+  "michigan|Field Hockey": {
+   "state": "off"
+  },
+  "michigan|Football": {
+   "state": "off"
+  },
+  "michigan|Hockey": {
+   "state": "off"
+  },
+  "michigan|Lacrosse": {
+   "state": "off"
+  },
+  "michigan|Soccer": {
+   "state": "off"
+  },
+  "michigan|Softball": {
+   "state": "off"
+  },
+  "michigan|Volleyball": {
+   "state": "off"
+  },
+  "michigan|Water Polo": {
+   "state": "off"
+  },
+  "michigan-state|Baseball": {
+   "state": "off"
+  },
+  "michigan-state|Basketball": {
+   "state": "off"
+  },
+  "michigan-state|Field Hockey": {
+   "state": "off"
+  },
+  "michigan-state|Football": {
+   "state": "off"
+  },
+  "michigan-state|Hockey": {
+   "state": "off"
+  },
+  "michigan-state|Soccer": {
+   "state": "off"
+  },
+  "michigan-state|Softball": {
+   "state": "off"
+  },
+  "michigan-state|Volleyball": {
+   "state": "off"
+  },
+  "nebraska|Baseball": {
+   "state": "off"
+  },
+  "nebraska|Basketball": {
+   "state": "off"
+  },
+  "nebraska|Football": {
+   "state": "off"
+  },
+  "nebraska|Soccer": {
+   "state": "off"
+  },
+  "nebraska|Softball": {
+   "state": "off"
+  },
+  "nebraska|Volleyball": {
+   "state": "off"
+  },
+  "minnesota|Baseball": {
+   "state": "off"
+  },
+  "minnesota|Basketball": {
+   "state": "off"
+  },
+  "minnesota|Football": {
+   "state": "off"
+  },
+  "minnesota|Hockey": {
+   "state": "off"
+  },
+  "minnesota|Soccer": {
+   "state": "off"
+  },
+  "minnesota|Softball": {
+   "state": "off"
+  },
+  "minnesota|Volleyball": {
+   "state": "off"
+  },
+  "northwestern|Baseball": {
+   "state": "off"
+  },
+  "northwestern|Basketball": {
+   "state": "off"
+  },
+  "northwestern|Field Hockey": {
+   "state": "off"
+  },
+  "northwestern|Football": {
+   "state": "off"
+  },
+  "northwestern|Lacrosse": {
+   "state": "off"
+  },
+  "northwestern|Soccer": {
+   "state": "off"
+  },
+  "northwestern|Softball": {
+   "state": "off"
+  },
+  "northwestern|Volleyball": {
+   "state": "off"
+  },
+  "ohio-state|Baseball": {
+   "state": "off"
+  },
+  "ohio-state|Basketball": {
+   "state": "off"
+  },
+  "ohio-state|Field Hockey": {
+   "state": "on",
+   "last_check": "2026-10-09T17:19:19.483Z",
+   "last_detail": "live 0-0 · 4:52 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ohio-state|Field Hockey||2026-10-09|1",
+    "title": "Ohio State vs Rutgers",
+    "started_seen": "2026-10-09T17:11:10.350Z",
+    "live_passes": [
+     "2026-10-09T17:11:10.350Z",
+     "2026-10-09T17:12:11.560Z",
+     "2026-10-09T17:13:12.700Z",
+     "2026-10-09T17:14:13.734Z",
+     "2026-10-09T17:15:14.891Z",
+     "2026-10-09T17:16:15.950Z",
+     "2026-10-09T17:17:17.187Z",
+     "2026-10-09T17:18:18.150Z",
+     "2026-10-09T17:19:19.483Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "ohio-state|Football": {
+   "state": "off"
+  },
+  "ohio-state|Hockey": {
+   "state": "off"
+  },
+  "ohio-state|Lacrosse": {
+   "state": "off"
+  },
+  "ohio-state|Soccer": {
+   "state": "off"
+  },
+  "ohio-state|Softball": {
+   "state": "off"
+  },
+  "ohio-state|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.71.1-iowa-maryland",
- "updated_at": "2026-10-09T10:33:00.171Z",
+ "version": "4.75.4-ohio-state",
+ "updated_at": "2026-10-09T17:19:19.484Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

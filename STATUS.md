@@ -1,5 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| ohio-state | Field Hockey | 🔴 on | live 0-0 · 4:52 - 1st · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Football | ⚪ off (waiting) |  |
@@ -131,6 +132,31 @@
 | maryland | Soccer | ⚪ off (waiting) |  |
 | maryland | Softball | ⚪ off (waiting) |  |
 | maryland | Volleyball | ⚪ off (waiting) |  |
+| michigan | Baseball | ⚪ off (waiting) |  |
+| michigan | Basketball | ⚪ off (waiting) |  |
+| michigan | Field Hockey | ⚪ off (waiting) |  |
+| michigan | Football | ⚪ off (waiting) |  |
+| michigan | Hockey | ⚪ off (waiting) |  |
+| michigan | Lacrosse | ⚪ off (waiting) |  |
+| michigan | Soccer | ⚪ off (waiting) |  |
+| michigan | Softball | ⚪ off (waiting) |  |
+| michigan | Volleyball | ⚪ off (waiting) |  |
+| michigan | Water Polo | ⚪ off (waiting) |  |
+| michigan-state | Baseball | ⚪ off (waiting) |  |
+| michigan-state | Basketball | ⚪ off (waiting) |  |
+| michigan-state | Field Hockey | ⚪ off (waiting) |  |
+| michigan-state | Football | ⚪ off (waiting) |  |
+| michigan-state | Hockey | ⚪ off (waiting) |  |
+| michigan-state | Soccer | ⚪ off (waiting) |  |
+| michigan-state | Softball | ⚪ off (waiting) |  |
+| michigan-state | Volleyball | ⚪ off (waiting) |  |
+| minnesota | Baseball | ⚪ off (waiting) |  |
+| minnesota | Basketball | ⚪ off (waiting) |  |
+| minnesota | Football | ⚪ off (waiting) |  |
+| minnesota | Hockey | ⚪ off (waiting) |  |
+| minnesota | Soccer | ⚪ off (waiting) |  |
+| minnesota | Softball | ⚪ off (waiting) |  |
+| minnesota | Volleyball | ⚪ off (waiting) |  |
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
 | mississippi-state | Basketball | ⚪ off (waiting) |  |
 | mississippi-state | Football | ⚪ off (waiting) |  |
@@ -143,6 +169,28 @@
 | missouri | Soccer | ⚪ off (waiting) |  |
 | missouri | Softball | ⚪ off (waiting) |  |
 | missouri | Volleyball | ⚪ off (waiting) |  |
+| nebraska | Baseball | ⚪ off (waiting) |  |
+| nebraska | Basketball | ⚪ off (waiting) |  |
+| nebraska | Football | ⚪ off (waiting) |  |
+| nebraska | Soccer | ⚪ off (waiting) |  |
+| nebraska | Softball | ⚪ off (waiting) |  |
+| nebraska | Volleyball | ⚪ off (waiting) |  |
+| northwestern | Baseball | ⚪ off (waiting) |  |
+| northwestern | Basketball | ⚪ off (waiting) |  |
+| northwestern | Field Hockey | ⚪ off (waiting) |  |
+| northwestern | Football | ⚪ off (waiting) |  |
+| northwestern | Lacrosse | ⚪ off (waiting) |  |
+| northwestern | Soccer | ⚪ off (waiting) |  |
+| northwestern | Softball | ⚪ off (waiting) |  |
+| northwestern | Volleyball | ⚪ off (waiting) |  |
+| ohio-state | Baseball | ⚪ off (waiting) |  |
+| ohio-state | Basketball | ⚪ off (waiting) |  |
+| ohio-state | Football | ⚪ off (waiting) |  |
+| ohio-state | Hockey | ⚪ off (waiting) |  |
+| ohio-state | Lacrosse | ⚪ off (waiting) |  |
+| ohio-state | Soccer | ⚪ off (waiting) |  |
+| ohio-state | Softball | ⚪ off (waiting) |  |
+| ohio-state | Volleyball | ⚪ off (waiting) |  |
 | oklahoma | Baseball | ⚪ off (waiting) |  |
 | oklahoma | Basketball | ⚪ off (waiting) |  |
 | oklahoma | Football | ⚪ off (waiting) |  |
@@ -220,4 +268,4 @@
 | west-virginia | Soccer | ⚪ off (waiting) |  |
 | west-virginia | Volleyball | ⚪ off (waiting) |  |
 
-Done 0/219; on 0; off 219; failing 0.
+Done 0/267; on 1; off 266; failing 0.
