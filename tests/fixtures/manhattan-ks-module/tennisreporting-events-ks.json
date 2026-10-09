@@ -1,0 +1,303 @@
+{
+"rows": [
+{
+"id": 790,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-02T05:02:00.000Z",
+"name": "Ellsworth Varsity Invite #1",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 794,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-07T05:01:00.000Z",
+"name": "Smoky Valley Invite-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 795,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-10T05:01:00.000Z",
+"name": "Olathe South Statewide Invitational-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 798,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-09T05:01:00.000Z",
+"name": "JV-Ellsworth Invite #2",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 799,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-07T05:01:00.000Z",
+"name": "Ellsworth Varsity Invite #2",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 812,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-16T10:00:00.000Z",
+"name": "Ellsworth Varsity Invite #3",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 813,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-05T10:00:00.000Z",
+"name": "JV-Ellsworth Invite #3",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 817,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-21T10:00:00.000Z",
+"name": "Hillsboro Boys\u2019 Tennis - Trojan Invitational",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 819,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-05T10:00:00.000Z",
+"name": "UKC JV Invitational-2026",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 821,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-30T10:00:00.000Z",
+"name": "Pratt Invite-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 822,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-04-30T10:00:00.000Z",
+"name": "Smoky Invite #2-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 841,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-08T13:00:00.000Z",
+"name": "May 8th (6A Shawnee Mission East)  Regional Tennis Tournament-KSHSAA '26",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 842,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-09T12:00:00.000Z",
+"name": "May 9th Regional Tennis Tournament-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 843,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-08T14:00:00.000Z",
+"name": "May 8th Regional Tennis Tournament-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 844,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-15T13:00:00.000Z",
+"name": "Tennis State Championship-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": true
+},
+{
+"id": 862,
+"stateId": 23,
+"genderId": 1,
+"dateEventStart": "2026-05-04T13:10:01.000Z",
+"name": "Central Kansas League Conference Tournament-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 916,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-08-27T15:00:00.000Z",
+"name": "JV-Ellsworth Invite-2026",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 917,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-10T10:00:00.000Z",
+"name": "Smokey Valley Invite-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 918,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-01T15:00:00.000Z",
+"name": "Ellsworth Varsity Invite-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 920,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-03T05:05:00.000Z",
+"name": "JV-Ellsworth September Slam-206",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 921,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-03T05:05:00.000Z",
+"name": "Maize Invite-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 931,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-17T05:05:00.000Z",
+"name": "Ellsworth Varsity September Slam-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 939,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-21T14:15:45.000Z",
+"name": "Abilene JV Invite-2026",
+"isNotVarsity": true,
+"isStateTournament": false
+},
+{
+"id": 940,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-23T05:01:00.000Z",
+"name": "Olathe South Statewide Invitational-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 942,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-28T15:00:00.000Z",
+"name": "Smokey Valley Invite #2-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 948,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-24T15:26:11.000Z",
+"name": "Hillsboro Trojans Girls Tennis Invitational-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 968,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-09-26T14:00:00.000Z",
+"name": "Trego Invitational-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 970,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-03T12:45:28.000Z",
+"name": "Central Kansas League Tournament-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 974,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-09T13:00:00.000Z",
+"name": "Oct 9th (6A Hosted By: Shawnee Mission East OR Blue Valley North)  Regional Tennis Tournament-KSHSAA '26",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 975,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-09T14:00:00.000Z",
+"name": "October 9th Regional Tennis Tournament-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 976,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-10T13:00:00.000Z",
+"name": "October 10th Regional Tennis Tournament-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": false
+},
+{
+"id": 977,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-16T12:00:00.000Z",
+"name": "Tennis State Championship-KSHSAA 2026",
+"isNotVarsity": false,
+"isStateTournament": true
+},
+{
+"id": 979,
+"stateId": 23,
+"genderId": 2,
+"dateEventStart": "2026-10-06T05:01:00.000Z",
+"name": "Abilene invitational-2026",
+"isNotVarsity": false,
+"isStateTournament": false
+}
+],
+"count": 53,
+"pages": 1
+}

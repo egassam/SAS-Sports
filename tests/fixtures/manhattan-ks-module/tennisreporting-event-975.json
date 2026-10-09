@@ -1,0 +1,66 @@
+{
+"id": 975,
+"genderId": 2,
+"stateId": 23,
+"name": "October 9th Regional Tennis Tournament-KSHSAA 2026",
+"dateEventStart": "2026-10-09T14:00:00.000Z",
+"teamPoints": true,
+"isStateTournament": false,
+"isNotVarsity": false,
+"divisions": [
+{
+"id": 1532,
+"name": "6A",
+"hosts": [
+{
+"id": 4139,
+"name": "Washburn Rural Regional"
+}
+]
+},
+{
+"id": 1533,
+"name": "4A",
+"hosts": [
+{
+"id": 4140,
+"name": "Independence Regional"
+},
+{
+"id": 4141,
+"name": "Chanute Regional"
+},
+{
+"id": 4142,
+"name": "McPherson Regional"
+},
+{
+"id": 4143,
+"name": "Wichita Collegiate Regional"
+}
+]
+},
+{
+"id": 1534,
+"name": "3-1A",
+"hosts": [
+{
+"id": 4144,
+"name": "Ellsworth Regional"
+},
+{
+"id": 4145,
+"name": "Lyons Regional"
+},
+{
+"id": 4146,
+"name": "Conway Springs Regional"
+},
+{
+"id": 4147,
+"name": "Marysville Regional"
+}
+]
+}
+]
+}

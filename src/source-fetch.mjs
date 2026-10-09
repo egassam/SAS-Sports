@@ -81,7 +81,8 @@ export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.c
   async function sourceFetch(input,init={},{ttl=SOURCE_TTL.article,robots=true,staleOnError=ttl>=SOURCE_TTL.listing,cacheErrors=false}={}){
     const url=typeof input==='string'?input:input instanceof URL?input.href:input.url;
     const send=(extra={})=>rawFetch(url,{redirect:'follow',...init,headers:{...headers,...(init.headers||{}),...extra}});
-    const store=cache(),key=store&&keyFor(url);
+    // A read sent as a POST (TennisReporting brackets) is cached per body.
+    const store=cache(),key=store&&keyFor(init.body?`${url}#${init.body}`:url);
     if(!store||!key)return send();
     let entry=null;try{entry=await store.match(key)}catch{}
     const placeholder=entry?.headers.get('x-sas-placeholder')==='1';
