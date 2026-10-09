@@ -34,6 +34,8 @@ Each rule was mutated, and every mutation fails `npm run test:lsu-module`.
 
 ## Limitations
 
+- **Pro events (fixed Oct 9, 4.75.0):** the men's tennis page lists its players' ATP and ITF events ("ATP M15 Lexington", "ITF M25 Austin", "ATP Knoxville Challenger 75"); they are not listed, as other schools leave them out.
+
 - **Golf:** the cards publish no place. The place is shown only when the final story's headline gives the team's finish. Men's golf links a results PDF; women's golf links only live scoring (Clippd/Golfstat).
 - **Men's golf, RedHawk Intercollegiate (Sep 14):** no story and no place are published, so the tournament is not listed.
 - **Track & Field:** fills when lsusports.net publishes the 2027 season.

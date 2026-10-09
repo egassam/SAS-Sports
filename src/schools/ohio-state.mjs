@@ -119,7 +119,7 @@ const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world 
 // "DePaul University", "Texas Christian University"); the app writes the
 // short name, as the stories do. Miami University and Boston University keep
 // theirs (the short name is another school).
-const INSTITUTION_NAMES={'Texas Christian':'TCU','Mississippi':'Ole Miss'};
+const INSTITUTION_NAMES={'Texas Christian':'TCU','Mississippi':'Ole Miss','Texas at El Paso':'UTEP','Massachusetts Institute of Technology':'MIT'};
 export const ohioStateShortName=name=>{
   if(/^(?:Miami|Boston) University$/i.test(name))return name;
   const short=name.replace(/^University of\s+/i,'').replace(/\s+University$/i,'').trim();

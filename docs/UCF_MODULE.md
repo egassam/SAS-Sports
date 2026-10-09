@@ -135,6 +135,9 @@ Where TFRRS and the recap disagree, the scored results are shown: Florida Interc
 
 ## Limitations
 
+- **Soccer live scores (checked Oct 9):** both teams are on one page, so each ESPN board carries its team (`COMBINED_SOCCER_SCOREBOARDS`, since #270). The handoff's "one unlabeled women's board" was stale; a test now pins the labeled boards and joins ESPN's Sep 27 finals (UCF at Utah, Kentucky at UCF) to their official cards without a second card.
+- **Men's Tennis (Oct 9):** `/sports/mens-tennis/schedule` returns 404 (two spaced reads; `/schedule/2026-27` and `/2025-26` too) though the nav links it; Rowing ("Rowing 2025-26") and Track & Field ("Track and Field 2026") still show last season. All three fill when published.
+
 Each item below is either still open (and listed as such in the handoff) or shown to be impossible to fix from the official sources, with the evidence.
 
 - **Athlete certification:** passed for all 11 sports on October 2 (3 verified athletes each), now covered in `tests/certified-schools.json`.

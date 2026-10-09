@@ -39,6 +39,8 @@ Certification is listed for all 14 sports (minimum 3) in `tests/certified-school
 
 ## Limitations
 
+- **Rifle conference (fixed Oct 9, 4.75.1):** the record read "Big 12 1-0"; the Big 12 sponsors no rifle: no conference record (shared rule in `src/conference-games.mjs`).
+
 - Golf: the schedule publishes the place without the field size ("8th Place"). The stories give it in prose for three of the four tournaments ("in the 16-team field") but not for the New York Harbor Cup, so the headline shows the place only.
 - Volleyball: the James Madison exhibition (Aug 22, `L, 2-3`) has a result line but no official story. The volleyball archive lists every story from August (Aug 13 scrimmage, Aug 19 promotions, then Aug 25 onward) and none covers it, so its expanded view shows no recap (`validate-schools --deep` reports it; 13/14 sports pass deep).
 - Gymnastics, Rowing, Track & Field: the schedule pages have not published the 2026-27 season.

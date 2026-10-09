@@ -381,10 +381,10 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Oct 16 Ohio State at Alaska Fairbanks | ",
  "Upcoming Oct 17 Ohio State at Alaska Fairbanks | ",
  "Upcoming Oct 31 Ohio State at Murray State | ",
- "Upcoming Oct 31 Ohio State at Texas at El Paso | ",
- "Upcoming Nov 8 Ohio State at Massachusetts Institute of Technology | ",
- "Upcoming Nov 21 Ohio State at Texas at El Paso | ",
- "Upcoming Nov 22 Ohio State at Texas at El Paso | ",
+ "Upcoming Oct 31 Ohio State at UTEP | ",
+ "Upcoming Nov 8 Ohio State at MIT | ",
+ "Upcoming Nov 21 Ohio State at UTEP | ",
+ "Upcoming Nov 22 Ohio State at UTEP | ",
  "Upcoming Jan 17 Ohio State at TCU | ",
  "Upcoming Jan 18 Ohio State at TCU | ",
  "Upcoming Jan 23 Ohio State at Mt. Aloysius | ",
@@ -607,6 +607,8 @@ void [parse,line,ownRecapsOnly,live];
   // Institution names read short; Miami University and Boston University keep
   // theirs (Miami and Boston are other schools).
   assert.deepEqual(['Miami University','Boston University','University of Memphis'].map(ohioStateShortName),['Miami University','Boston University','Memphis']);
+  // Rifle's upcoming opponents.
+  assert.deepEqual([...new Set(parse('Rifle','rifle').map(e=>e.opponent))].filter(n=>/UTEP|MIT|El Paso|Institute/.test(n)),['UTEP','MIT']);
   assert.deepEqual(parse('Soccer','mens-soccer').slice(0,4).map(e=>e.opponent),['Virginia Tech','DePaul','Memphis','Northern Kentucky']);
   // Baseball's "Scarlet & Gray World Series" is an intrasquad.
   assert.ok(!parse('Baseball','baseball').some(e=>/scarlet/i.test(e.opponent)));
