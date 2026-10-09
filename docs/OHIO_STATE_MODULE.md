@@ -4,7 +4,7 @@
 
 Ohio State was added to the app on October 9, 2026. All 19 sports were built and tested one at a time and published in one PR. The catalog listed the site as CUSTOM: it is SIDEARM (Nuxt page data) behind Imperva bot defense, which refuses the development sandbox (403 / redirect loop) and answers the Worker; every page is read through the private source route. The module starts from Oklahoma's handlers (`scripts/start-schools.mjs`), with Minnesota's per-team cross country.
 
-## Status (`4.75.2-ohio-state`)
+## Status (`4.75.4-ohio-state`, production verified Oct 9)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -47,4 +47,5 @@ Three per sport (`scripts/athlete-evidence.mjs`, Oct 9). **Pins:** Baseball (5 o
 - **Not in the app's sport catalog:** Ohio State also sponsors Pistol and Synchronized Swimming; the app has no such sports (no other school sponsors them). Spirit is not a competitive team.
 - **Waiting on publication:** Gymnastics, Rowing, Track & Field and men's Volleyball fill when ohiostatebuckeyes.com publishes 2026-27.
 - **Paul Short Run (women's XC, Oct 2):** no story of its own is published (the card links the fencing story); the result comes from TFRRS.
+- **Rifle conference:** Ohio State rifle competes in the Patriot Rifle Conference (its championship is on the schedule, Feb 5); the app shows no conference record for rifle (the Big Ten sponsors none) until the module names that league.
 - **Live cards:** no live card observed yet (field hockey vs Rutgers, women's hockey vs Wisconsin, volleyball vs Washington, Oct 9; football vs Maryland Oct 10).

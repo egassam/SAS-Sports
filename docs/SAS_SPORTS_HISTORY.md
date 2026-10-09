@@ -2103,3 +2103,49 @@ South Carolina + Vanderbilt (Oct 8, 25 sports, about 2 h incl. a new reader and 
 **Timing:** about 68 minutes start to production (13:53 start, 14:06 PR, 14:58 merge, 15:01 verified); three preview rounds, two of them for event/athlete names a by-eye name scan would have caught (now the survey's `ODD NAME`).
 
 **Open:** Minnesota Gymnastics, Track & Field and Northwestern Baseball, Lacrosse fill when published; Northwestern women's tennis ITA All-American and Spartan Invite wait on a story; first live cards not yet observed for either school. Found for another session: UCF's combined soccer has one unlabeled women's ESPN board.
+
+
+### October 9, 2026 — Ohio State added; UCF, BYU, LSU and conference-record handoff items (PR #282)
+
+**Request (user):** "Onboard Ohio State and fix UCF and any other handoff item."
+
+**Ohio State (19 sports):**
+- **Site and setup.** The catalog lists ohiostatebuckeyes.com as CUSTOM. It is SIDEARM (Nuxt) behind Imperva: the sandbox gets a 307 loop, then 403; the Worker's private source route reads it. `start-schools --from=oklahoma ohio-state=#BA0C2F,#A7B1B7,#ffffff` found 18 sports. Swimming & Diving was missing (`mens-swim-dive` slug, now in `add-school`); the second run crashed over the first, so the files were reset and setup ran once, cleanly (19 sports).
+- **Routes.** Cross country, swimming and track are `mens-`/`womens-` pages; the generic slugs are empty templates. Volleyball includes the men's page. 11 sports are combined.
+- **Rules (mutation-tested; four ported rules no page exercises were removed):**
+  - a card linking another sport's story has no recap (the women's Paul Short Run linked "Buckeyes named 2026-27 fencing captains"; the shared SIDEARM reader now passes the sport to `recapLinks`);
+  - institution names read short (University of Memphis, DePaul University, Texas Christian University → TCU, University of Mississippi → Ole Miss, UTEP, MIT; Miami/Boston University kept), and rifle duals sharing one story keep it by the short name;
+  - the NCAA field hockey tournament (type S) is not an exhibition;
+  - "Intercollegiate Tennis Association" takes its tournament name;
+  - pro tennis events (M25, Challenger) are out;
+  - the Scarlet & Gray World Series is an intrasquad, and "(10 inn.)" is not part of a name;
+  - women's hockey's league is WCHA and men's volleyball's is MIVA (`conference_name`);
+  - storyless individual golf (Toledo Rocket Classic) is not listed.
+- **Records on the preview** match the finals: football 4-1 (2-0), women's soccer 10-1-1 (6-1), men's 6-2-2 (1-2-1), volleyball 9-5 (2-2), field hockey 4-7 (0-3), women's hockey 4-0 (WCHA 2-0), rifle 1-4 (no conference record).
+- **Athletes:** 31 pins; profile cards in Rifle, Rowing and Volleyball (Mia Tuman's page also links `zbump7`, which unrelated athletes' pages carry, so her own `miatuman` is pinned). 19/19 sports show three athletes on production.
+
+**Handoff items:**
+- **UCF soccer:** already read labeled men's/women's ESPN boards through `COMBINED_SOCCER_SCOREBOARDS` (#270, before the note was written). A test with ESPN's Sep 27 boards now pins it; removing the fallback fails it.
+- **UCF publication:** the men's tennis schedule returns 404 (also `/2026-27` and `/2025-26`, spaced reads, though the nav links it); Rowing (2025-26) and Track & Field (2026) still show last season.
+- **BYU:**
+  - tennis tournaments read "at" where the divider says "vs." (championship/regional names);
+  - `verify:preview` then failed BYU Tennis (it fails on production too): four men's tournaments read "Completed" without a story. Past tournaments now take the team's `/news` story dated their last day or the two after, whose article names a distinctive word of the event (the Sep 28 story covers Sherwood and the Dar Walters Classic in Boise), or are not listed (Milwaukee, ITA All-American);
+  - the expanded view accepts that story (`archive_story_verified`).
+- **LSU:** ATP/ITF pro events are no longer listed (9 men's entries).
+- **Conference records:** a production sweep found Ole Miss rifle "SEC 1-0" (its page marks the Ohio State dual a conference match), West Virginia rifle "Big 12 1-0" and Minnesota women's hockey "Big Ten 2-0". `src/conference-games.mjs` now lists the sports each conference does not sponsor (`NOT_SPONSORED`, Big 12 / SEC / Big Ten); such games are never conference games unless the module names the league. Minnesota's women's hockey is now WCHA. Teams in another league for such a sport (e.g. SEC lacrosse, rowing, wrestling) now show no conference record until their module names it.
+
+**Tests and release:**
+- `npm run test:release` passed on 9e19168, 137a7c1, 1c9fb78 and a0623df (final).
+- `verify:preview` on a0623df (4.75.4): Ohio State all sports 60/60; BYU Tennis (3/3 expanded with stories), LSU Tennis, UCF Soccer, Minnesota Hockey, Ole Miss Rifle, West Virginia Rifle all pass; XC 18/20 and 26/21.
+- CI green; merged `4b049f7` (16:59 UTC). `verify:prod` all pass at 17:05-17:08 UTC.
+
+**Process notes:**
+- Four gate rounds: UTEP/MIT names seen in a screenshot, then BYU twice.
+- `pgrep -f` killed the shell once.
+- `git add -A` carried the draft handoff rows into a code commit (accurate, merged with #282).
+
+**Open:**
+- Ohio State Gymnastics, Rowing, Track & Field and men's Volleyball fill when published.
+- Ohio State rifle's Patriot Rifle Conference is not named (no record shown).
+- Pistol and Synchronized Swimming are not in the app catalog.
+- First live cards are not yet observed.
