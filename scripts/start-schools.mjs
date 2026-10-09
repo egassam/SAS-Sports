@@ -15,13 +15,14 @@
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/start-schools.mjs --from=oklahoma --log-dir=<dir> \
 //     iowa=#FFCD00,#000000,#07111f maryland=#E03A3E,#FFD520,#ffffff
-// A WMT site stops after scaffolding (its module starts from a WMT reader by
-// hand: src/schools/missouri.mjs or auburn.mjs).
+// A WMT site is ported from a converted WMT card reader instead
+// (scripts/port-wmt.mjs; --wmt-from=, default nebraska) and goes on to the
+// fixtures, athletes and survey like any other.
 import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
-const from=value('from')||'oklahoma',logDir=value('log-dir');
+const from=value('from')||'oklahoma',wmtFrom=value('wmt-from')||'nebraska',logDir=value('log-dir');
 const targets=args.filter(a=>!a.startsWith('--')).map(a=>{const [id,theme]=a.split('=');return{id,theme}});
 if(!targets.length||!logDir||targets.some(t=>!t.theme)){console.error('usage: node scripts/start-schools.mjs --from=<converted SIDEARM id> --log-dir=<dir> <id>=<primary>,<secondary>,<onAccent> ...');process.exit(2)}
 mkdirSync(logDir,{recursive:true});
@@ -52,7 +53,12 @@ for(const {id,theme} of targets){
   if(add.code){notes.push(`${id}: add-school failed (${add.log})`);continue}
   const scaffold=await run(id,'scaffold',['scripts/scaffold-school.mjs',`--school=${id}`,'--write']);
   if(scaffold.code){notes.push(`${id}: scaffold failed (${scaffold.log})`);continue}
-  if(/: WMT /.test(add.text)){notes.push(`${id}: WMT site — scaffolded only; start its module from a WMT reader (missouri.mjs, auburn.mjs)`);continue}
+  if(/: WMT /.test(add.text)){
+    const wmt=await run(id,'port',['scripts/port-wmt.mjs',`--from=${wmtFrom}`,`--to=${id}`]);
+    if(wmt.code){notes.push(`${id}: port-wmt failed (${wmt.log})`);continue}
+    notes.push(`${id}: WMT site, ported from ${wmtFrom}'s card reader; routes and lines to decide: ${wmt.log}`);
+    ready.push(school);continue;
+  }
   const port=await run(id,'port',['scripts/port-handlers.mjs',`--from=${from}`,`--to=${id}`]);
   if(port.code){notes.push(`${id}: port-handlers failed (${port.log})`);continue}
   notes.push(`${id}: ported from ${from}; lines to decide: ${port.log}`);

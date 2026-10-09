@@ -103,7 +103,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     // meetSports.
     const lastDay=g=>String(g.enddate||g.date).slice(0,10);
     const unlinked=current.filter(g=>lastDay(g)<today&&!g.noplay_text&&!(typeof g.result?.recap?.url==='string'&&/\/news\//.test(g.result.recap.url))&&!['W','L','T'].includes(String(g.result?.status||'').toUpperCase()));
-    if((missing||unlinked.length)&&!have(`${slug}-archives.html.gz`)){const list=await download(`https://${new URL(url).hostname}/sports/${slug}/archives`);if(list.body)save(`${slug}-archives.html.gz`,list.body)}
+    // A WMT site lists a sport's stories at /sports/<slug>/news (Iowa,
+    // Nebraska); it is saved under the same name.
+    if((missing||unlinked.length)&&!have(`${slug}-archives.html.gz`)){let list=await download(`https://${new URL(url).hostname}/sports/${slug}/archives`);if(!list.body)list=await download(`https://${new URL(url).hostname}/sports/${slug}/news`);if(list.body)save(`${slug}-archives.html.gz`,list.body)}
     let meetStories=0;
     if(unlinked.length&&have(`${slug}-archives.html.gz`)){
       const listing=gunzipSync(readFileSync(new URL(`${slug}-archives.html.gz`,dir))).toString('utf8').replace(/\\u002F/gi,'/');

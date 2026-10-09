@@ -31,7 +31,7 @@ const source=read('src/index.js').replace(/^import .*;\n/gm,'').replace('export 
 // Saved pages only: a sport's /archives, its stories and TFRRS pages (named as
 // scripts/fetch-school-fixtures.mjs saves them); anything else is offline.
 const fixtureFile=url=>{
-  const {hostname,pathname}=new URL(url),news=pathname.match(/^\/news\/(\d+)\/(\d+)\/(\d+)\/([^/?#]+)/),archive=pathname.match(/^\/sports\/([^/]+)\/archives/),tfrrs=pathname.match(/^\/results\/xc\/(\d+)\//),team=pathname.match(/^\/teams\/xc\/[A-Z]{2}_college_([fm])_/);
+  const {hostname,pathname}=new URL(url),news=pathname.match(/^\/news\/(\d+)\/(\d+)\/(\d+)\/([^/?#]+)/),archive=pathname.match(/^\/sports\/([^/]+)\/(?:archives|news\/?$)/),tfrrs=pathname.match(/^\/results\/xc\/(\d+)\//),team=pathname.match(/^\/teams\/xc\/[A-Z]{2}_college_([fm])_/);
   if(news)return[`story-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`];
   if(archive)return[`${archive[1]}-archives.html.gz`];
   if(hostname.endsWith('tfrrs.org')&&tfrrs)return[`tfrrs-${tfrrs[1]}.html.gz`];

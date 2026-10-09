@@ -44,7 +44,7 @@ for(const [,href] of html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);
-if(publisher==='WMT')console.log('WMT site: after scaffolding, start the module from src/schools/lsu.mjs (own card reader), not the SIDEARM kit.');
+if(publisher==='WMT')console.log('WMT site: scripts/start-schools.mjs ports it from a WMT card reader (scripts/port-wmt.mjs, --wmt-from=nebraska or iowa), not the SIDEARM kit.');
 
 const theme=value('theme')?.split(',');
 if(!write){console.log('dry run; add --write (with --theme) to write the four files');process.exit(0)}
