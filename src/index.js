@@ -52,7 +52,7 @@ import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,na
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.79.0-letsgorun-cross-country';
+const VERSION='4.79.1-letsgorun-cross-country';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1315,15 +1315,22 @@ async function tennisReportingResults(school,team,game){
 // the meet whose page carries the calendar day and the school's runners.
 // Known meets are listed in the module by day; others are looked up on the
 // timer's results list, a few pages at most, ranked by the calendar name.
-async function meetProResultsFor(school,module,team,game){
+// A slow timer site must not hold the feed: each read stops after 10 s, and
+// one refresh reads each page once (memo).
+const MEETPRO_TIMEOUT_MS=10000;
+function meetProReader(memo=new Map()){
+  return(url,ttl)=>{if(!memo.has(url))memo.set(url,sourceFetch(url,{signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS)},{ttl}).then(r=>r.ok?r.text():null).catch(()=>null));return memo.get(url);};
+}
+async function meetProResultsFor(school,module,team,game,read=meetProReader()){
   const config=module.meetPro,own=team.meetPro;if(!config||!own)return null;
-  const page=folder=>sourceFetch(`${config.base}${folder}/`,{},{ttl:SOURCE_TTL.document}).then(r=>r.ok?r.text():null).catch(()=>null);
+  const page=folder=>read(`${config.base}${folder}/`,SOURCE_TTL.document);
   let folders=[...(config.folders?.[game.date]||[])];
   if(!folders.length&&config.listing){
-    const listing=await sourceFetch(config.listing,{},{ttl:SOURCE_TTL.listing}).then(r=>r.ok?r.text():'').catch(()=>'');
+    const listing=await read(config.listing,SOURCE_TTL.listing)||'';
     const known=new Set(Object.values(config.folders||{}).flat()),words=nameKey(game.name).split(' ').filter(w=>w.length>2&&!/^(?:invite|invitational|meet|home|event|park|state|the)$/.test(w));
     const ranked=meetProLinks(listing).filter(f=>f.startsWith(game.date.slice(0,4)+'_')&&!known.has(f)).map(f=>({f,hits:words.filter(w=>nameKey(f.replace(/_/g,' ')).split(' ').includes(w)).length})).filter(x=>x.hits).sort((a,b)=>b.hits-a.hits).slice(0,3);
-    for(const {f} of ranked){const html=await page(f);if(html&&meetProDate(html)===game.date)folders.push(f);}
+    const pages=await Promise.all(ranked.map(({f})=>page(f)));
+    ranked.forEach(({f},i)=>{if(pages[i]&&meetProDate(pages[i])===game.date)folders.push(f);});
   }
   for(const folder of folders){
     const html=await page(folder);if(!html)continue;
@@ -1375,7 +1382,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       }
       continue;
     }
-    for(const game of games){
+    // Results for every past game at once (each source read in parallel).
+    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):null));
+    for(const [index,game] of games.entries()){
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);
       // MaxPreps names the opponent when the calendar names the host of a
@@ -1384,7 +1393,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
       // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
       const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
-      const results=game.date>today?null:team.tennisReporting?await tennisReportingResults(school,team,game):team.meetPro?await meetProResultsFor(school,module,team,game):null;
+      const results=gameResults[index];
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,now});
       if(event)events.push(event);
     }
