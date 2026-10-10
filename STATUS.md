@@ -1,27 +1,5 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| arkansas | Soccer | 🔴 on | live 2-1 · 59' · official_schedule+live_scoreboard |
-| arkansas | Volleyball | 🔴 on | live 10-8 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard |
-| auburn | Soccer | 🔴 on | live 0-0 · 60' · official_schedule+live_scoreboard |
-| florida | Volleyball | 🔴 on | live 20-10 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard |
-| indiana | Soccer | 🔴 on | live 7-0 · 84' · official_schedule+live_scoreboard |
-| iowa | Football | 🔴 on | live 6-0 · 7:02 - 1st · official_schedule+live_scoreboard |
-| kentucky | Soccer | 🔴 on | live 2-2 · 80' · official_schedule+live_scoreboard |
-| lsu | Soccer | 🔴 on | live 1-2 · 59' · official_schedule+live_scoreboard |
-| maryland | Soccer | 🔴 on | live 1-2 · 78' · official_schedule+live_scoreboard |
-| michigan | Hockey | 🔴 on | ESPN shows Michigan vs Alaska Anchorage live (End of 3rd) but the app has no live card (it is in results) |
-| michigan-state | Hockey | 🔴 on | live 4-2 · 12:41 - 3rd · official_schedule+live_scoreboard |
-| michigan-state | Soccer | 🔴 on | live 2-1 · 78' · official_schedule+live_scoreboard |
-| michigan-state | Volleyball | 🔴 on | live 5-8 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
-| mississippi-state | Soccer | 🔴 on | live 2-1 · 54' · official_schedule+live_scoreboard |
-| missouri | Volleyball | 🔴 on | live 10-20 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
-| ohio-state | Hockey | 🔴 on | ESPN shows Ohio State at Rensselaer live (End of 3rd) but the app has no live card (it is in results) |
-| oklahoma | Soccer | 🔴 on | live 0-0 · 60' · official_schedule+live_scoreboard |
-| oregon | Volleyball | 🔴 on | live 8-5 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
-| penn-state | Hockey | 🔴 on | ESPN shows Penn State at UConn live (End of 3rd) but the app has no live card (it is in results) |
-| texas | Soccer | 🔴 on | live 2-2 · 80' · official_schedule+live_scoreboard |
-| texas | Volleyball | 🔴 on | live 8-10 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard |
-| texas-am | Soccer | 🔴 on | live 1-2 · 54' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Football | ⚪ off (waiting) |  |
@@ -189,6 +167,7 @@
 | ohio-state | Baseball | ⚪ off (waiting) |  |
 | ohio-state | Basketball | ⚪ off (waiting) |  |
 | ohio-state | Football | ⚪ off (waiting) |  |
+| ohio-state | Hockey | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | ohio-state | Lacrosse | ⚪ off (waiting) |  |
 | ohio-state | Soccer | ⚪ off (waiting) |  |
 | ohio-state | Softball | ⚪ off (waiting) |  |
@@ -219,6 +198,7 @@
 | penn-state | Basketball | ⚪ off (waiting) |  |
 | penn-state | Field Hockey | ⚪ off (waiting) |  |
 | penn-state | Football | ⚪ off (waiting) |  |
+| penn-state | Hockey | ⚪ off (waiting) | final L, 1-3 (live phase not observed 2×; waits for the next game) |
 | penn-state | Lacrosse | ⚪ off (waiting) |  |
 | penn-state | Soccer | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
@@ -278,10 +258,30 @@
 | west-virginia | Football | ⚪ off (waiting) |  |
 | west-virginia | Soccer | ⚪ off (waiting) |  |
 | west-virginia | Volleyball | ⚪ off (waiting) |  |
+| arkansas | Soccer | ✅ off (passed) | Arkansas at LSU · 2026-10-10T07:23:28.884Z |
+| arkansas | Volleyball | ✅ off (passed) | Arkansas vs Texas · 2026-10-10T07:23:28.893Z |
+| auburn | Soccer | ✅ off (passed) | Auburn at Oklahoma · 2026-10-10T07:23:29.511Z |
 | auburn | Volleyball | ✅ off (passed) | Auburn at Vanderbilt · 2026-10-10T01:24:57.106Z |
+| florida | Volleyball | ✅ off (passed) | Florida at Missouri · 2026-10-10T07:23:29.528Z |
+| indiana | Soccer | ✅ off (passed) | Men's · Indiana vs Hanover · 2026-10-10T07:23:30.741Z |
 | iowa | Field Hockey | ✅ off (passed) | Iowa at Northwestern · 2026-10-09T21:48:31.382Z |
+| iowa | Football | ✅ off (passed) | Iowa at Washington · 2026-10-10T07:23:30.382Z |
+| kentucky | Soccer | ✅ off (passed) | Women's · Kentucky vs Texas · 2026-10-10T07:23:29.011Z |
+| lsu | Soccer | ✅ off (passed) | LSU vs Arkansas · 2026-10-10T07:23:29.837Z |
+| maryland | Soccer | ✅ off (passed) | Men's · Maryland vs Michigan St · 2026-10-10T07:23:32.146Z |
+| michigan | Hockey | ✅ off (passed) | Michigan vs Alaska Anchorage · 2026-10-10T07:23:29.531Z |
+| michigan-state | Hockey | ✅ off (passed) | Michigan State vs Northern Michigan · 2026-10-10T07:23:29.514Z |
+| michigan-state | Soccer | ✅ off (passed) | Men's · Michigan State at Maryland · 2026-10-10T07:23:32.268Z |
+| michigan-state | Volleyball | ✅ off (passed) | Michigan State vs Oregon · 2026-10-10T07:23:29.196Z |
+| mississippi-state | Soccer | ✅ off (passed) | Mississippi State vs Texas A&M · 2026-10-10T07:23:29.804Z |
+| missouri | Volleyball | ✅ off (passed) | Missouri vs Florida · 2026-10-10T07:23:30.142Z |
 | northwestern | Field Hockey | ✅ off (passed) | Northwestern vs Iowa · 2026-10-09T21:48:31.249Z |
 | ohio-state | Field Hockey | ✅ off (passed) | Ohio State vs Rutgers · 2026-10-09T21:46:27.666Z |
+| oklahoma | Soccer | ✅ off (passed) | Oklahoma vs Auburn · 2026-10-10T07:23:29.441Z |
+| oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
+| texas | Soccer | ✅ off (passed) | Texas at Kentucky · 2026-10-10T07:23:29.831Z |
+| texas | Volleyball | ✅ off (passed) | Texas at Arkansas · 2026-10-10T07:23:29.364Z |
+| texas-am | Soccer | ✅ off (passed) | Texas A&M at Mississippi St · 2026-10-10T07:23:29.490Z |
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 
-Done 5/283; on 22; off 256; failing 0.
+Done 25/283; on 0; off 258; failing 0.
