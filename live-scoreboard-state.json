@@ -316,7 +316,23 @@
    "state": "off"
   },
   "florida|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:20.377Z",
+   "last_detail": "live 20-10 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "florida|Volleyball||2026-10-09|1",
+    "title": "Florida at Missouri",
+    "started_seen": "2026-10-10T01:19:49.811Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.811Z",
+     "2026-10-10T01:21:53.579Z",
+     "2026-10-10T01:23:35.266Z",
+     "2026-10-10T01:25:17.604Z",
+     "2026-10-10T01:26:59.195Z",
+     "2026-10-10T01:28:20.377Z"
+    ],
+    "final_ok": false
+   }
   },
   "georgia|Baseball": {
    "state": "off"
@@ -346,7 +362,23 @@
    "state": "off"
   },
   "lsu|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:40.958Z",
+   "last_detail": "live 1-2 · 59' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lsu|Soccer||2026-10-09|1",
+    "title": "LSU vs Arkansas",
+    "started_seen": "2026-10-10T01:19:50.129Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.129Z",
+     "2026-10-10T01:21:52.832Z",
+     "2026-10-10T01:23:15.148Z",
+     "2026-10-10T01:25:17.534Z",
+     "2026-10-10T01:26:39.096Z",
+     "2026-10-10T01:28:40.958Z"
+    ],
+    "final_ok": false
+   }
   },
   "lsu|Softball": {
    "state": "off"
@@ -382,7 +414,23 @@
    "state": "off"
   },
   "mississippi-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:20.687Z",
+   "last_detail": "live 2-1 · 54' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mississippi-state|Soccer||2026-10-09|1",
+    "title": "Mississippi State vs Texas A&M",
+    "started_seen": "2026-10-10T01:19:49.693Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.693Z",
+     "2026-10-10T01:21:53.485Z",
+     "2026-10-10T01:23:15.402Z",
+     "2026-10-10T01:25:17.350Z",
+     "2026-10-10T01:26:59.132Z",
+     "2026-10-10T01:28:20.687Z"
+    ],
+    "final_ok": false
+   }
   },
   "mississippi-state|Softball": {
    "state": "off"
@@ -424,7 +472,23 @@
    "state": "off"
   },
   "missouri|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:20.700Z",
+   "last_detail": "live 10-20 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "missouri|Volleyball||2026-10-09|1",
+    "title": "Missouri vs Florida",
+    "started_seen": "2026-10-10T01:19:49.877Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.877Z",
+     "2026-10-10T01:21:53.624Z",
+     "2026-10-10T01:23:35.773Z",
+     "2026-10-10T01:25:17.489Z",
+     "2026-10-10T01:26:59.237Z",
+     "2026-10-10T01:28:20.700Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas|Baseball": {
    "state": "off"
@@ -436,13 +500,45 @@
    "state": "off"
   },
   "texas|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.005Z",
+   "last_detail": "live 2-2 · 80' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas|Soccer||2026-10-09|1",
+    "title": "Texas at Kentucky",
+    "started_seen": "2026-10-10T01:19:50.030Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.030Z",
+     "2026-10-10T01:21:52.845Z",
+     "2026-10-10T01:23:15.297Z",
+     "2026-10-10T01:25:17.373Z",
+     "2026-10-10T01:26:39.137Z",
+     "2026-10-10T01:28:41.005Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas|Softball": {
    "state": "off"
   },
   "texas|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:40.835Z",
+   "last_detail": "live 8-10 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas|Volleyball||2026-10-09|1",
+    "title": "Texas at Arkansas",
+    "started_seen": "2026-10-10T01:19:50.062Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.062Z",
+     "2026-10-10T01:21:53.509Z",
+     "2026-10-10T01:23:35.691Z",
+     "2026-10-10T01:25:17.634Z",
+     "2026-10-10T01:26:59.293Z",
+     "2026-10-10T01:28:40.835Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas-am|Baseball": {
    "state": "off"
@@ -454,7 +550,23 @@
    "state": "off"
   },
   "texas-am|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:20.543Z",
+   "last_detail": "live 1-2 · 54' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas-am|Soccer||2026-10-09|1",
+    "title": "Texas A&M at Mississippi St",
+    "started_seen": "2026-10-10T01:19:49.855Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.855Z",
+     "2026-10-10T01:21:52.862Z",
+     "2026-10-10T01:23:15.257Z",
+     "2026-10-10T01:25:17.542Z",
+     "2026-10-10T01:26:59.178Z",
+     "2026-10-10T01:28:20.543Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas-am|Softball": {
    "state": "off"
@@ -472,13 +584,45 @@
    "state": "off"
   },
   "arkansas|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.040Z",
+   "last_detail": "live 2-1 · 59' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "arkansas|Soccer||2026-10-09|1",
+    "title": "Arkansas at LSU",
+    "started_seen": "2026-10-10T01:19:49.553Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.553Z",
+     "2026-10-10T01:21:52.875Z",
+     "2026-10-10T01:23:15.235Z",
+     "2026-10-10T01:25:17.549Z",
+     "2026-10-10T01:26:39.142Z",
+     "2026-10-10T01:28:41.040Z"
+    ],
+    "final_ok": false
+   }
   },
   "arkansas|Softball": {
    "state": "off"
   },
   "arkansas|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.135Z",
+   "last_detail": "live 10-8 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "arkansas|Volleyball||2026-10-09|1",
+    "title": "Arkansas vs Texas",
+    "started_seen": "2026-10-10T01:19:49.453Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.453Z",
+     "2026-10-10T01:21:53.567Z",
+     "2026-10-10T01:23:35.727Z",
+     "2026-10-10T01:25:17.618Z",
+     "2026-10-10T01:26:59.402Z",
+     "2026-10-10T01:28:41.135Z"
+    ],
+    "final_ok": false
+   }
   },
   "auburn|Baseball": {
    "state": "off"
@@ -490,13 +634,35 @@
    "state": "off"
   },
   "auburn|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.082Z",
+   "last_detail": "live 0-0 · 60' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "auburn|Soccer||2026-10-09|1",
+    "title": "Auburn at Oklahoma",
+    "started_seen": "2026-10-10T01:19:50.152Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.152Z",
+     "2026-10-10T01:21:53.494Z",
+     "2026-10-10T01:23:15.371Z",
+     "2026-10-10T01:25:17.585Z",
+     "2026-10-10T01:26:39.116Z",
+     "2026-10-10T01:28:41.082Z"
+    ],
+    "final_ok": false
+   }
   },
   "auburn|Softball": {
    "state": "off"
   },
   "auburn|Volleyball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-10-10T01:24:57.106Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-10-10T01:24:57.106Z",
+   "verified_game": "Auburn at Vanderbilt",
+   "verified_detail": "final L, 0-3"
   },
   "oklahoma|Baseball": {
    "state": "off"
@@ -508,7 +674,23 @@
    "state": "off"
   },
   "oklahoma|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.029Z",
+   "last_detail": "live 0-0 · 60' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "oklahoma|Soccer||2026-10-09|1",
+    "title": "Oklahoma vs Auburn",
+    "started_seen": "2026-10-10T01:19:49.705Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.705Z",
+     "2026-10-10T01:21:53.536Z",
+     "2026-10-10T01:23:15.347Z",
+     "2026-10-10T01:25:17.557Z",
+     "2026-10-10T01:26:39.089Z",
+     "2026-10-10T01:28:41.029Z"
+    ],
+    "final_ok": false
+   }
   },
   "oklahoma|Softball": {
    "state": "off"
@@ -526,7 +708,23 @@
    "state": "off"
   },
   "kentucky|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.059Z",
+   "last_detail": "live 2-2 · 80' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kentucky|Soccer|Women's|2026-10-09|1",
+    "title": "Women's · Kentucky vs Texas",
+    "started_seen": "2026-10-10T01:19:49.561Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.561Z",
+     "2026-10-10T01:21:53.516Z",
+     "2026-10-10T01:23:15.303Z",
+     "2026-10-10T01:25:17.528Z",
+     "2026-10-10T01:26:39.166Z",
+     "2026-10-10T01:28:41.059Z"
+    ],
+    "final_ok": false
+   }
   },
   "kentucky|Softball": {
    "state": "off"
@@ -568,7 +766,13 @@
    "state": "off"
   },
   "vanderbilt|Volleyball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-10-10T01:24:56.948Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-10T01:24:56.948Z",
+   "verified_game": "Vanderbilt vs Auburn",
+   "verified_detail": "final W, 3-0"
   },
   "illinois|Baseball": {
    "state": "off"
@@ -601,7 +805,23 @@
    "state": "off"
   },
   "indiana|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.072Z",
+   "last_detail": "live 7-0 · 84' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "indiana|Soccer|Men's|2026-10-09|1",
+    "title": "Men's · Indiana vs Hanover",
+    "started_seen": "2026-10-10T01:19:50.380Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.380Z",
+     "2026-10-10T01:21:53.466Z",
+     "2026-10-10T01:23:15.381Z",
+     "2026-10-10T01:25:17.673Z",
+     "2026-10-10T01:26:39.081Z",
+     "2026-10-10T01:28:41.072Z"
+    ],
+    "final_ok": false
+   }
   },
   "indiana|Softball": {
    "state": "off"
@@ -628,7 +848,23 @@
    "verified_detail": "final L, 1-2"
   },
   "iowa|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.169Z",
+   "last_detail": "live 6-0 · 7:02 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iowa|Football||2026-10-09|1",
+    "title": "Iowa at Washington",
+    "started_seen": "2026-10-10T01:19:49.464Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.464Z",
+     "2026-10-10T01:21:53.689Z",
+     "2026-10-10T01:23:15.467Z",
+     "2026-10-10T01:25:17.692Z",
+     "2026-10-10T01:26:39.195Z",
+     "2026-10-10T01:28:41.169Z"
+    ],
+    "final_ok": false
+   }
   },
   "iowa|Soccer": {
    "state": "off"
@@ -655,7 +891,23 @@
    "state": "off"
   },
   "maryland|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:40.811Z",
+   "last_detail": "live 1-2 · 78' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "maryland|Soccer|Men's|2026-10-09|1",
+    "title": "Men's · Maryland vs Michigan St",
+    "started_seen": "2026-10-10T01:19:51.154Z",
+    "live_passes": [
+     "2026-10-10T01:19:51.154Z",
+     "2026-10-10T01:21:53.428Z",
+     "2026-10-10T01:23:15.447Z",
+     "2026-10-10T01:25:17.360Z",
+     "2026-10-10T01:26:39.205Z",
+     "2026-10-10T01:28:40.811Z"
+    ],
+    "final_ok": false
+   }
   },
   "maryland|Softball": {
    "state": "off"
@@ -676,7 +928,22 @@
    "state": "off"
   },
   "michigan|Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:29:00.998Z",
+   "last_detail": "ESPN shows Michigan vs Alaska Anchorage live (End of 3rd) but the app has no live card (it is in results)",
+   "game": {
+    "key": "michigan|Hockey||2026-10-09|1",
+    "title": "Michigan vs Alaska Anchorage",
+    "started_seen": "2026-10-10T01:19:50.415Z",
+    "live_passes": [
+     "2026-10-10T01:19:50.415Z",
+     "2026-10-10T01:21:53.940Z",
+     "2026-10-10T01:23:15.057Z",
+     "2026-10-10T01:25:17.807Z",
+     "2026-10-10T01:26:39.072Z"
+    ],
+    "final_ok": false
+   }
   },
   "michigan|Lacrosse": {
    "state": "off"
@@ -706,16 +973,64 @@
    "state": "off"
   },
   "michigan-state|Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:40.617Z",
+   "last_detail": "live 4-2 · 12:41 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "michigan-state|Hockey||2026-10-09|1",
+    "title": "Michigan State vs Northern Michigan",
+    "started_seen": "2026-10-10T01:19:49.615Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.615Z",
+     "2026-10-10T01:21:53.877Z",
+     "2026-10-10T01:23:15.219Z",
+     "2026-10-10T01:25:17.184Z",
+     "2026-10-10T01:26:39.109Z",
+     "2026-10-10T01:28:40.617Z"
+    ],
+    "final_ok": false
+   }
   },
   "michigan-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:40.875Z",
+   "last_detail": "live 2-1 · 78' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "michigan-state|Soccer|Men's|2026-10-09|1",
+    "title": "Men's · Michigan State at Maryland",
+    "started_seen": "2026-10-10T01:19:52.313Z",
+    "live_passes": [
+     "2026-10-10T01:19:52.313Z",
+     "2026-10-10T01:21:53.601Z",
+     "2026-10-10T01:23:15.212Z",
+     "2026-10-10T01:25:17.520Z",
+     "2026-10-10T01:26:39.129Z",
+     "2026-10-10T01:28:40.875Z"
+    ],
+    "final_ok": false
+   }
   },
   "michigan-state|Softball": {
    "state": "off"
   },
   "michigan-state|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.108Z",
+   "last_detail": "live 5-8 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "michigan-state|Volleyball||2026-10-09|1",
+    "title": "Michigan State vs Oregon",
+    "started_seen": "2026-10-10T01:19:49.914Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.914Z",
+     "2026-10-10T01:21:53.648Z",
+     "2026-10-10T01:23:35.757Z",
+     "2026-10-10T01:24:57.118Z",
+     "2026-10-10T01:26:59.386Z",
+     "2026-10-10T01:28:41.108Z"
+    ],
+    "final_ok": false
+   }
   },
   "nebraska|Baseball": {
    "state": "off"
@@ -805,7 +1120,16 @@
    "state": "off"
   },
   "ohio-state|Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:29:01.062Z",
+   "last_detail": "ESPN shows Ohio State at Rensselaer live (End of 3rd) but the app has no live card (it is in results)",
+   "game": {
+    "key": "ohio-state|Hockey||2026-10-09|1",
+    "title": "Ohio State at Rensselaer",
+    "started_seen": "2026-10-10T01:20:31.258Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "ohio-state|Lacrosse": {
    "state": "off"
@@ -838,7 +1162,23 @@
    "state": "off"
   },
   "oregon|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:28:41.148Z",
+   "last_detail": "live 8-5 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "oregon|Volleyball||2026-10-09|1",
+    "title": "Oregon at Michigan St",
+    "started_seen": "2026-10-10T01:19:49.984Z",
+    "live_passes": [
+     "2026-10-10T01:19:49.984Z",
+     "2026-10-10T01:21:53.593Z",
+     "2026-10-10T01:23:35.661Z",
+     "2026-10-10T01:24:57.091Z",
+     "2026-10-10T01:26:59.350Z",
+     "2026-10-10T01:28:41.148Z"
+    ],
+    "final_ok": false
+   }
   },
   "penn-state|Baseball": {
    "state": "off"
@@ -853,7 +1193,16 @@
    "state": "off"
   },
   "penn-state|Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T01:29:01.444Z",
+   "last_detail": "ESPN shows Penn State at UConn live (End of 3rd) but the app has no live card (it is in results)",
+   "game": {
+    "key": "penn-state|Hockey||2026-10-09|1",
+    "title": "Penn State at UConn",
+    "started_seen": "2026-10-10T01:20:31.246Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "penn-state|Lacrosse": {
    "state": "off"
@@ -868,7 +1217,7 @@
    "state": "off"
   }
  },
- "version": "4.77.0-high-school-manhattan",
- "updated_at": "2026-10-09T21:48:31.404Z",
+ "version": "4.78.1-manhattan-middle-schools",
+ "updated_at": "2026-10-10T01:29:01.446Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
