@@ -40,7 +40,16 @@
    "state": "off"
   },
   "oklahoma-state|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.972Z",
+   "last_detail": "ESPN shows Oklahoma State vs UCF live (14:15 - 4th) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "oklahoma-state|Football||2026-10-10|1",
+    "title": "Oklahoma State vs UCF",
+    "started_seen": "2026-10-10T18:26:12.376Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "oklahoma-state|Soccer": {
    "state": "off"
@@ -121,7 +130,16 @@
    "state": "off"
   },
   "ucf|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:46.136Z",
+   "last_detail": "ESPN shows UCF at Oklahoma St live (14:15 - 4th) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "ucf|Football||2026-10-10|1",
+    "title": "UCF at Oklahoma St",
+    "started_seen": "2026-10-10T18:26:12.365Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "ucf|Soccer": {
    "state": "off"
@@ -139,7 +157,16 @@
    "state": "off"
   },
   "arizona|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.566Z",
+   "last_detail": "ESPN shows Arizona at West Virginia live (1:02 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "arizona|Football||2026-10-10|1",
+    "title": "Arizona at West Virginia",
+    "started_seen": "2026-10-10T18:26:12.408Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "arizona|Soccer": {
    "state": "off"
@@ -271,7 +298,16 @@
    "state": "off"
   },
   "west-virginia|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.560Z",
+   "last_detail": "ESPN shows WVU vs Arizona live (1:02 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "west-virginia|Football||2026-10-10|1",
+    "title": "WVU vs Arizona",
+    "started_seen": "2026-10-10T18:26:13.025Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "west-virginia|Soccer": {
    "state": "off"
@@ -304,7 +340,16 @@
    "state": "off"
   },
   "florida|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.898Z",
+   "last_detail": "ESPN shows Florida vs South Carolina live (Halftime) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "florida|Football||2026-10-10|1",
+    "title": "Florida vs South Carolina",
+    "started_seen": "2026-10-10T18:26:12.139Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "florida|Lacrosse": {
    "state": "off"
@@ -433,7 +478,16 @@
    "state": "off"
   },
   "missouri|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.622Z",
+   "last_detail": "ESPN shows Missouri vs Texas A&M live (1:08 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "missouri|Football||2026-10-10|1",
+    "title": "Missouri vs Texas A&M",
+    "started_seen": "2026-10-10T18:26:11.517Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "missouri|Soccer": {
    "state": "off"
@@ -487,7 +541,16 @@
    "state": "off"
   },
   "texas-am|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.809Z",
+   "last_detail": "ESPN shows Texas A&M at Missouri live (1:08 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "texas-am|Football||2026-10-10|1",
+    "title": "Texas A&M at Missouri",
+    "started_seen": "2026-10-10T18:26:11.726Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "texas-am|Soccer": {
    "state": "done",
@@ -619,7 +682,16 @@
    "state": "off"
   },
   "south-carolina|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.791Z",
+   "last_detail": "ESPN shows South Carolina at Florida live (Halftime) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "south-carolina|Football||2026-10-10|1",
+    "title": "South Carolina at Florida",
+    "started_seen": "2026-10-10T18:26:12.056Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "south-carolina|Soccer": {
    "state": "off"
@@ -682,7 +754,16 @@
    "state": "off"
   },
   "indiana|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.864Z",
+   "last_detail": "ESPN shows Indiana at Nebraska live (1:31 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "indiana|Football||2026-10-10|1",
+    "title": "Indiana at Nebraska",
+    "started_seen": "2026-10-10T18:26:11.583Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "indiana|Soccer": {
    "state": "done",
@@ -850,7 +931,16 @@
    "state": "off"
   },
   "nebraska|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.593Z",
+   "last_detail": "ESPN shows Nebraska vs Indiana live (1:31 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "nebraska|Football||2026-10-10|1",
+    "title": "Nebraska vs Indiana",
+    "started_seen": "2026-10-10T18:26:11.681Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "nebraska|Soccer": {
    "state": "off"
@@ -898,7 +988,16 @@
    "verified_detail": "final W, 2-1"
   },
   "northwestern|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-10T18:34:45.779Z",
+   "last_detail": "ESPN shows Northwestern vs Ball State live (12:09 - 3rd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "northwestern|Football||2026-10-10|1",
+    "title": "Northwestern vs Ball State",
+    "started_seen": "2026-10-10T18:26:11.697Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "northwestern|Lacrosse": {
    "state": "off"
@@ -1007,6 +1106,6 @@
   }
  },
  "version": "4.79.2-robots-time-limit",
- "updated_at": "2026-10-10T07:23:32.270Z",
+ "updated_at": "2026-10-10T18:34:46.138Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

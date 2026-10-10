@@ -1,5 +1,16 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| arizona | Football | 🔴 on | ESPN shows Arizona at West Virginia live (1:02 - 3rd) but the app has no live card (still in upcoming) |
+| florida | Football | 🔴 on | ESPN shows Florida vs South Carolina live (Halftime) but the app has no live card (still in upcoming) |
+| indiana | Football | 🔴 on | ESPN shows Indiana at Nebraska live (1:31 - 3rd) but the app has no live card (still in upcoming) |
+| missouri | Football | 🔴 on | ESPN shows Missouri vs Texas A&M live (1:08 - 3rd) but the app has no live card (still in upcoming) |
+| nebraska | Football | 🔴 on | ESPN shows Nebraska vs Indiana live (1:31 - 3rd) but the app has no live card (still in upcoming) |
+| northwestern | Football | 🔴 on | ESPN shows Northwestern vs Ball State live (12:09 - 3rd) but the app has no live card (still in upcoming) |
+| oklahoma-state | Football | 🔴 on | ESPN shows Oklahoma State vs UCF live (14:15 - 4th) but the app has no live card (still in upcoming) |
+| south-carolina | Football | 🔴 on | ESPN shows South Carolina at Florida live (Halftime) but the app has no live card (still in upcoming) |
+| texas-am | Football | 🔴 on | ESPN shows Texas A&M at Missouri live (1:08 - 3rd) but the app has no live card (still in upcoming) |
+| ucf | Football | 🔴 on | ESPN shows UCF at Oklahoma St live (14:15 - 4th) but the app has no live card (still in upcoming) |
+| west-virginia | Football | 🔴 on | ESPN shows WVU vs Arizona live (1:02 - 3rd) but the app has no live card (still in upcoming) |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Football | ⚪ off (waiting) |  |
@@ -8,7 +19,6 @@
 | alabama | Volleyball | ⚪ off (waiting) |  |
 | arizona | Baseball | ⚪ off (waiting) |  |
 | arizona | Basketball | ⚪ off (waiting) |  |
-| arizona | Football | ⚪ off (waiting) |  |
 | arizona | Soccer | ⚪ off (waiting) |  |
 | arizona | Softball | ⚪ off (waiting) |  |
 | arizona | Volleyball | ⚪ off (waiting) |  |
@@ -53,7 +63,6 @@
 | colorado | Volleyball | ⚪ off (waiting) |  |
 | florida | Baseball | ⚪ off (waiting) |  |
 | florida | Basketball | ⚪ off (waiting) |  |
-| florida | Football | ⚪ off (waiting) |  |
 | florida | Lacrosse | ⚪ off (waiting) |  |
 | florida | Soccer | ⚪ off (waiting) |  |
 | florida | Softball | ⚪ off (waiting) |  |
@@ -78,7 +87,6 @@
 | indiana | Baseball | ⚪ off (waiting) |  |
 | indiana | Basketball | ⚪ off (waiting) |  |
 | indiana | Field Hockey | ⚪ off (waiting) |  |
-| indiana | Football | ⚪ off (waiting) |  |
 | indiana | Softball | ⚪ off (waiting) |  |
 | indiana | Volleyball | ⚪ off (waiting) |  |
 | indiana | Water Polo | ⚪ off (waiting) |  |
@@ -148,18 +156,15 @@
 | mississippi-state | Volleyball | ⚪ off (waiting) |  |
 | missouri | Baseball | ⚪ off (waiting) |  |
 | missouri | Basketball | ⚪ off (waiting) |  |
-| missouri | Football | ⚪ off (waiting) |  |
 | missouri | Soccer | ⚪ off (waiting) |  |
 | missouri | Softball | ⚪ off (waiting) |  |
 | nebraska | Baseball | ⚪ off (waiting) |  |
 | nebraska | Basketball | ⚪ off (waiting) |  |
-| nebraska | Football | ⚪ off (waiting) |  |
 | nebraska | Soccer | ⚪ off (waiting) |  |
 | nebraska | Softball | ⚪ off (waiting) |  |
 | nebraska | Volleyball | ⚪ off (waiting) |  |
 | northwestern | Baseball | ⚪ off (waiting) |  |
 | northwestern | Basketball | ⚪ off (waiting) |  |
-| northwestern | Football | ⚪ off (waiting) |  |
 | northwestern | Lacrosse | ⚪ off (waiting) |  |
 | northwestern | Soccer | ⚪ off (waiting) |  |
 | northwestern | Softball | ⚪ off (waiting) |  |
@@ -179,7 +184,6 @@
 | oklahoma | Volleyball | ⚪ off (waiting) |  |
 | oklahoma-state | Baseball | ⚪ off (waiting) |  |
 | oklahoma-state | Basketball | ⚪ off (waiting) |  |
-| oklahoma-state | Football | ⚪ off (waiting) |  |
 | oklahoma-state | Soccer | ⚪ off (waiting) |  |
 | oklahoma-state | Softball | ⚪ off (waiting) |  |
 | ole-miss | Baseball | ⚪ off (waiting) |  |
@@ -205,7 +209,6 @@
 | penn-state | Volleyball | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
-| south-carolina | Football | ⚪ off (waiting) |  |
 | south-carolina | Soccer | ⚪ off (waiting) |  |
 | south-carolina | Softball | ⚪ off (waiting) |  |
 | south-carolina | Volleyball | ⚪ off (waiting) |  |
@@ -226,7 +229,6 @@
 | texas | Softball | ⚪ off (waiting) |  |
 | texas-am | Baseball | ⚪ off (waiting) |  |
 | texas-am | Basketball | ⚪ off (waiting) |  |
-| texas-am | Football | ⚪ off (waiting) |  |
 | texas-am | Softball | ⚪ off (waiting) |  |
 | texas-am | Volleyball | ⚪ off (waiting) |  |
 | texas-tech | Baseball | ⚪ off (waiting) |  |
@@ -237,7 +239,6 @@
 | texas-tech | Volleyball | ⚪ off (waiting) |  |
 | ucf | Baseball | ⚪ off (waiting) |  |
 | ucf | Basketball | ⚪ off (waiting) |  |
-| ucf | Football | ⚪ off (waiting) |  |
 | ucf | Soccer | ⚪ off (waiting) |  |
 | ucf | Softball | ⚪ off (waiting) |  |
 | ucf | Volleyball | ⚪ off (waiting) |  |
@@ -255,7 +256,6 @@
 | vanderbilt | Soccer | ⚪ off (waiting) |  |
 | west-virginia | Baseball | ⚪ off (waiting) |  |
 | west-virginia | Basketball | ⚪ off (waiting) |  |
-| west-virginia | Football | ⚪ off (waiting) |  |
 | west-virginia | Soccer | ⚪ off (waiting) |  |
 | west-virginia | Volleyball | ⚪ off (waiting) |  |
 | arkansas | Soccer | ✅ off (passed) | Arkansas at LSU · 2026-10-10T07:23:28.884Z |
@@ -284,4 +284,4 @@
 | texas-am | Soccer | ✅ off (passed) | Texas A&M at Mississippi St · 2026-10-10T07:23:29.490Z |
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 
-Done 25/283; on 0; off 258; failing 0.
+Done 25/283; on 11; off 247; failing 0.
