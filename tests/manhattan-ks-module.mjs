@@ -22,9 +22,11 @@ const SCHOOL_ID='41006ce9-cfb3-492a-a951-d320637bc985';
 assert.equal(school.level,'high-school');
 assert.equal(school.state,'Kansas');
 assert.equal(school.classification,'6A');
-// The school list is grouped by city (user, October 9).
+// High school: State, then City, then School (user, October 9).
 for(const id of ['manhattan-ks','anthony-ms-ks','eisenhower-ms-ks'])assert.equal(schools.find(x=>x.id===id).city,'Manhattan');
-assert.match(read('../public/index.html'),/sectionOf:s=>s.city||s.classification/);
+const page=read('../public/index.html');
+assert.ok(page.includes("cityOf:s=>s.city||''"),'high school has a City box');
+assert.ok(page.includes('<select id="city"'),'the City select exists');
 assert.equal(school.conference,'Centennial League');
 // Intrasquad scrimmages are practice (an upcoming one is not listed either).
 for(const name of ['Inter Squad Scrimmage','Intrasquad','Intra-Squad Scrimmage'])assert.ok(manhattanKsSchool.skip.test(name),name);
