@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 9, 2026 (3:30 PM), America/Chicago. Production `4.79.2-robots-time-limit` (verified).
+Last updated: October 10, 2026 (2:40 PM), America/Chicago. Production `4.80.0-scoreboard-game-days` (verified).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 9, 2026 (3:30 PM), America/Chicago. Production `4.79.2-rob
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.76.2-oregon-penn-state`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.80.0-scoreboard-game-days`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -114,6 +114,7 @@ User: "put the sports overall win/loss record for every sport", then "add the co
 ## Working notes
 
 - **Live scores for every sport with an ESPN live feed** (user, Oct 8: "It should read any sport that has a live feed"; PR #270, 4.70.0). A school-sport without its own `liveScoreboards` entry reads ESPN's college board by default (basketball, volleyball, soccer, baseball, softball, lacrosse, hockey, field hockey, water polo). The defaults are join-only: a score shows only on a game the official schedule lists that day, and a school's single team label (KU "Women's") is adopted. Found when K-State vs KU soccer stayed "Today" while live; 25 school-sports at KU, Oklahoma State, Utah, ASU, BYU and UCF had no live score.
+- **ESPN refusals (Oct 10, #295):** ESPN's CDN (Akamai) answered the app's scoreboard reads with 403 "Access Denied" during Saturday football, keyed to the exact user-agent string (`SAS-Sports/<VERSION>`; other strings got 200 from any network), so 11 live games stayed "Today". The board is now read only for the official schedule's unfinished games of yesterday/today (+ next day for a night game; three days when the official page failed). `/live/status` lists `scoreboard_reads` (HTTP status, games, matched, refusal body): read it first when a live card is missing. Never rotate the user agent to get around a refusal; cut volume instead.
 - **Live scoreboard tester** (`npm run test:live-scoreboard`; `tests/README.md`). ON while a game of a sport under test is live, OFF otherwise, DONE for good once one game passed live (two polls) and final. `.github/workflows/live-scoreboard.yml` runs it every 10 minutes; state and `STATUS.md` are on the `live-scoreboard-state` branch (`git fetch origin live-scoreboard-state && git show FETCH_HEAD:STATUS.md`). Oct 8 on production (local run): 12 DONE, 0 failing: volleyball Indiana, Texas Tech, Baylor, BYU, Houston, Illinois; soccer West Virginia, Cincinnati, Florida, Alabama, TCU, Texas Tech. This replaces the "first live cards not yet observed" notes for those sports.
 - **4.70.0 production check done** (Oct 9, 03:3x UTC): `verify:prod --school=kansas --sports=Soccer --version=4.70.0-live-every-sport` passed (status, XC 18/20 and 26/21, 3/3 refreshes, 13/13 expanded views). The tester workflow's `STATUS.md` was not read this session.
 - **User preference:** watch for the user's messages while working; stop or change course at once when they write.
@@ -171,3 +172,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 9 — Back-burner note: live high school XC/track results from timers** (user: "Add it"; docs only, no code change). Recorded under Working notes.
 - **Oct 9 — High school: Manhattan High School (Kansas 6A) and Manhattan middle schools** (user: "Let's do some highschool... start with Kansas, and just the 6A... Manhattan high school first", then "Smaller sports have priority", middle schools, TennisReporting). PR #287 merged `2f9017b` (football; production `4.77.0-high-school-manhattan` verified 19:2x UTC); PR #288 merged `e219d94` (soccer, volleyball, tennis, cross country, golf and Anthony/Eisenhower middle schools); production `4.78.1-manhattan-middle-schools` verified with `verify:prod --sports=all` for all three schools: 48/48 PASS, XC 18/20 and 26/21.
 - **Oct 10 — High school menus and cross country results** (user: city box "It should show city because there will be other cities added", then "Merge it"; LetsGoRun link bit.ly/LetsGoRunMHK). #290 city grouping, #291 City box (State → City → School → Sport), #292 cross country from LetsGoRun MeetPro pages for Manhattan High (varsity) and Anthony/Eisenhower (grade races), #293 time limit covers robots.txt reads. Production `4.79.2-robots-time-limit`: `verify:prod --sports=all` for the three schools 48/48 PASS.
+- **Oct 10 — Live scores refused by ESPN** (user: "Live is not working on Florida game", then merge approved). ESPN 403'd the app's scoreboard reads; reads now only for games under way (PR #295, merged `3d7c03d`; production `4.80.0-scoreboard-game-days` verified about 19:35 UTC: `verify:prod --school=florida --sports=Football` PASS, XC 18/20 and 26/21; Florida–South Carolina, WVU–Arizona, Nebraska–Indiana, Missouri–Texas A&M, Northwestern–Ball State live).
