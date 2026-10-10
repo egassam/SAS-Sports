@@ -15,7 +15,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {parseScoreboardPayload,scoreboardTeamMatchesSchool,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {parseScoreboardPayload,scoreboardTeamMatchesSchool,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive,scoreboardDatesForEvents};')(...Object.values(deps));
 
 // Who has the ball, from ESPN's live football scoreboard (real payload saved
 // during the October 3, 2026 games: Middle Tennessee had the ball at KU's 47
@@ -45,6 +45,20 @@ assert.equal(live('byu'),undefined);
   const official={id:'official-ku',sport:'Football',status:'Today',start_time:'2026-10-03T12:00:00.000Z',title:'KU vs Middle Tennessee',team_label:null};
   const [joined]=worker.reconcileScoreboardEvents([official],[ku]);
   assert.deepEqual([joined.id,joined.status,joined.possession,joined.down_distance,joined.red_zone],['official-ku','Live','opponent','4th & 13 at KU 47',false]);
+}
+
+// ESPN's CDN refused the app (HTTP 403, Oct 10, 2026, Florida vs South
+// Carolina live but shown "Today") while every feed build read three days of
+// every board. The board is read only for the official schedule's unfinished
+// games of yesterday and today, plus the next day for a night game.
+{
+  const florida=schools.find(s=>s.id==='florida'),at=new Date('2026-10-10T19:13:00Z');
+  const game=(start_time,status)=>({sport:'Football',status,start_time});
+  const dates=events=>worker.scoreboardDatesForEvents(events,florida,at);
+  assert.deepEqual(dates([game('2026-10-03T12:00:00.000Z','Final'),game('2026-10-10T12:45:00.000Z','Today'),game('2026-10-17T19:00:00.000Z','Upcoming')]),['20261010']);
+  assert.deepEqual(dates([game('2026-10-10T19:30:00.000Z','Today')]),['20261010','20261011'],'a night game');
+  assert.deepEqual(dates([game('2026-10-09T22:00:00.000Z','Today')]),['20261009','20261010'],'a late game still unfinished');
+  assert.deepEqual(dates([game('2026-10-10T12:45:00.000Z','Final'),game('2026-10-17T19:00:00.000Z','Upcoming')]),[],'no game under way: no read');
 }
 
 // The page draws a football beside the team with the ball and the down and

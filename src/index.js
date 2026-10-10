@@ -52,7 +52,7 @@ import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,na
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.79.2-robots-time-limit';
+const VERSION='4.80.0-scoreboard-game-days';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -2188,6 +2188,20 @@ function scoreboardDateKey(value){const n=Date.parse(value||'');return Number.is
 function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
 }
+// ESPN's CDN refused the app (HTTP 403, Oct 10, 2026) when every feed build
+// read three days of every live board, game or not. The board is read only
+// for the official schedule's unfinished games of yesterday and today (start
+// times are the school's wall clock), plus the next day for a night game.
+function scoreboardDatesForEvents(events,school,now){
+  const day=864e5,today=schoolToday(now,school),dates=new Set(),key=value=>new Date(value).toISOString().slice(0,10).replaceAll('-','');
+  for(const event of events){
+    if(event.status==='Final')continue;
+    const start=Date.parse(event.start_time||'');if(!Number.isFinite(start))continue;
+    const date=Math.floor(start/day)*day;if(date!==today&&date!==today-day)continue;
+    dates.add(key(date));if(new Date(start).getUTCHours()>=18)dates.add(key(date+day));
+  }
+  return[...dates];
+}
 // ESPN's college football and basketball scoreboards list only ~25 featured
 // games for "limit=1000" (K-State at Cincinnati and Arizona at Washington State
 // were missing on Sep 26; 12 of 53 men's basketball games on Mar 3, 2026).
@@ -2292,14 +2306,19 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
   for(const games of sameDay.values())if(games.length>1)games.sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time))).forEach((event,i)=>{event.game_number=i+1;event.id=`${event.id}-game-${i+1}`;event.title=`${event.title} (Game ${i+1})`;});
   return mergeEvents([found]);
 }
-async function fetchLiveScoreboards(school,sport,now){
+// Each read is recorded in `reads` (shown by /live/status), so a scoreboard
+// that answers badly is visible instead of silently empty.
+async function fetchLiveScoreboards(school,sport,now,reads=[],dates=scoreboardDates(now)){
   const found=[];
-  for(const provider of liveScoreboardProviders(school,sport))for(const date of scoreboardDates(now)){
+  for(const provider of liveScoreboardProviders(school,sport))for(const date of dates){
     const url=`https://site.api.espn.com/apis/site/v2/sports/${provider.path}/scoreboard?${scoreboardQuery(provider)}&dates=${date}`;
+    const read={url,http_status:null,games:null,matched:0,error:null};reads.push(read);
     try{
       const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
-      if(response.ok)found.push(...parseScoreboardPayload(await response.json(),school,sport,provider,url,now));
-    }catch{}
+      read.http_status=response.status;
+      if(!response.ok){read.server=response.headers.get('server');read.cache=response.headers.get('cf-cache-status')||response.headers.get('x-cache');read.body=(await response.text()).slice(0,160);}
+      if(response.ok){const payload=await response.json();read.games=payload?.events?.length??0;const events=parseScoreboardPayload(payload,school,sport,provider,url,now);read.matched=events.length;found.push(...events);}
+    }catch(error){read.error=error?.message||error?.name||'FetchError'}
   }
   return mergeEvents([found]);
 }
@@ -2330,9 +2349,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId);
   const urls=candidateUrls(school,sport),errors=[],successful=[];
-  // Start the independent scoreboard immediately. A stale or failed school
-  // page must not suppress a live football/basketball score.
-  const scoreboardPromise=fetchLiveScoreboards(school,sport,now);
+  const scoreboardReads=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
   // usable official schedule instead of hammering every possible publisher URL.
   const combined=schoolCombinedSports(school).has(sport);
@@ -2357,12 +2374,16 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // completed meet that already exposes an official result link before the
   // grouped feed is cached, so the summary count and cards match the modal.
   if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||moduleCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
-  const scoreboard=await scoreboardPromise;
+  // The independent scoreboard: for the official schedule's games under way,
+  // or for the last three days when the official page failed (a stale or
+  // failed school page must not suppress a live football/basketball score).
+  const scoreboardDays=officialFailed?scoreboardDates(now):scoreboardDatesForEvents(events,school,now);
+  const scoreboard=scoreboardDays.length?await fetchLiveScoreboards(school,sport,now,scoreboardReads,scoreboardDays):[];
   if(scoreboard.length){
     events=reconcileScoreboardEvents(events,scoreboard,{keepUnjoined:officialFailed});
     if(scoreboard.length)successful.push({url:scoreboard[0].live_score_source,events:scoreboard});
   }
-  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null,official_failed:officialFailed};
+  if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null,official_failed:officialFailed,scoreboard_reads:scoreboardReads};
   // The official page was read and publishes no events for this sport yet.
   if(emptySchedule)return{events:[],source_url:emptySchedule.url,source_urls:[emptySchedule.url],fetched_at:now.toISOString(),live_source_used:true,error:null};
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
@@ -2553,7 +2574,7 @@ export default{
       const shared=await globalCopy(env,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[]});}
     return env.ASSETS.fetch(request);
   }
 };
