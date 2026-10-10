@@ -68,10 +68,11 @@ export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.c
     const h=new Headers({'x-sas-source':state});const type=entry.headers.get('x-sas-content-type');if(type)h.set('content-type',type);
     return withUrl(new Response(body,{status:Number(entry.headers.get('x-sas-status'))||200,headers:h}),entry.headers.get('x-sas-final-url')||'');
   }
-  async function robotsRules(url){
+  // A caller's time limit (init.signal) covers the robots.txt read too.
+  async function robotsRules(url,signal){
     const origin=new URL(url).origin,memo=robotsMemo.get(origin);
     if(memo&&memo.expires>now())return memo.rules;
-    const response=await sourceFetch(`${origin}/robots.txt`,{},{ttl:ROBOTS_TTL,robots:false,cacheErrors:true});
+    const response=await sourceFetch(`${origin}/robots.txt`,signal?{signal}:{},{ttl:ROBOTS_TTL,robots:false,cacheErrors:true}).catch(()=>new Response('',{status:599}));
     // No readable robots.txt (missing, or refused by the site's bot defense):
     // nothing is disallowed.
     const rules=response.ok&&/text\/plain/i.test(response.headers.get('content-type')||'text/plain')?parseRobots(await response.text()):[];
@@ -92,7 +93,7 @@ export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.c
     const stale=()=>body&&staleOnError?fromCache(entry,body,'stale-on-error'):null;
     const backoffUntil=Number(entry?.headers.get('x-sas-backoff-until')||0);
     if(backoffUntil>now())return stale()||synthetic(503,url,'backoff',entry.headers.get('x-sas-status')||'');
-    if(robots&&!robotsAllows(await robotsRules(url),url))return synthetic(403,url,'robots-disallowed');
+    if(robots&&!robotsAllows(await robotsRules(url,init.signal),url))return synthetic(403,url,'robots-disallowed');
     const conditional={};
     if(body){const etag=entry.headers.get('x-sas-etag'),modified=entry.headers.get('x-sas-last-modified');if(etag)conditional['If-None-Match']=etag;if(modified)conditional['If-Modified-Since']=modified}
     let response;

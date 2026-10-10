@@ -52,7 +52,7 @@ import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,na
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.79.1-letsgorun-cross-country';
+const VERSION='4.79.2-robots-time-limit';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
