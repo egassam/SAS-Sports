@@ -17,7 +17,7 @@ class MemoryCache{
 function site(routes){
   const calls=[];
   const fetch=async(url,init)=>{
-    calls.push({url,headers:init.headers});
+    calls.push({url,headers:init.headers,signal:init.signal});
     const route=routes[new URL(url).pathname];
     const value=typeof route==='function'?route(init):route;
     if(!value)return new Response('missing',{status:404});
@@ -136,4 +136,13 @@ const PAGE='https://school.test/sports/football/schedule';
   ops=0;await sourceFetch('https://school.test/sports/soccer/schedule');assert.ok(ops<=2,`refusal used ${ops} cache calls`);
   ops=0;assert.equal((await sourceFetch('https://school.test/sports/soccer/schedule')).status,503);assert.equal(ops,1,'backoff costs one match');
 }
-console.log('source-fetch: 9 groups passed');
+
+// 10. A caller's time limit covers the robots.txt read: a site whose
+// robots.txt never answers cannot hold the page past the limit.
+{
+  const {sourceFetch,calls}=setup({'/robots.txt':init=>new Promise((resolve,reject)=>init.signal?.addEventListener('abort',()=>reject(init.signal.reason))),'/results/':'<html>meet</html>'});
+  const started=Date.now();await sourceFetch('https://school.test/results/',{signal:AbortSignal.timeout(50)},{ttl:SOURCE_TTL.document});
+  assert.ok(Date.now()-started<2000,'the robots.txt read stops at the caller\'s limit');
+  assert.ok(calls.find(c=>c.url.endsWith('/robots.txt')).signal,'robots.txt is read with the caller\'s signal');
+}
+console.log('source-fetch: 10 groups passed');
