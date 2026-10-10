@@ -48,11 +48,11 @@ import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.78.1-manhattan-middle-schools';
+const VERSION='4.79.1-letsgorun-cross-country';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -1311,6 +1311,46 @@ async function tennisReportingResults(school,team,game){
   }
   return null;
 }
+// Cross country results from the timer's MeetPro pages (LetsGoRun Timing):
+// the meet whose page carries the calendar day and the school's runners.
+// Known meets are listed in the module by day; others are looked up on the
+// timer's results list, a few pages at most, ranked by the calendar name.
+// A slow timer site must not hold the feed: each read stops after 10 s, and
+// one refresh reads each page once (memo).
+const MEETPRO_TIMEOUT_MS=10000;
+function meetProReader(memo=new Map()){
+  return(url,ttl)=>{if(!memo.has(url))memo.set(url,sourceFetch(url,{signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS)},{ttl}).then(r=>r.ok?r.text():null).catch(()=>null));return memo.get(url);};
+}
+async function meetProResultsFor(school,module,team,game,read=meetProReader()){
+  const config=module.meetPro,own=team.meetPro;if(!config||!own)return null;
+  const page=folder=>read(`${config.base}${folder}/`,SOURCE_TTL.document);
+  let folders=[...(config.folders?.[game.date]||[])];
+  if(!folders.length&&config.listing){
+    const listing=await read(config.listing,SOURCE_TTL.listing)||'';
+    const known=new Set(Object.values(config.folders||{}).flat()),words=nameKey(game.name).split(' ').filter(w=>w.length>2&&!/^(?:invite|invitational|meet|home|event|park|state|the)$/.test(w));
+    const ranked=meetProLinks(listing).filter(f=>f.startsWith(game.date.slice(0,4)+'_')&&!known.has(f)).map(f=>({f,hits:words.filter(w=>nameKey(f.replace(/_/g,' ')).split(' ').includes(w)).length})).filter(x=>x.hits).sort((a,b)=>b.hits-a.hits).slice(0,3);
+    const pages=await Promise.all(ranked.map(({f})=>page(f)));
+    ranked.forEach(({f},i)=>{if(pages[i]&&meetProDate(pages[i])===game.date)folders.push(f);});
+  }
+  for(const folder of folders){
+    const html=await page(folder);if(!html)continue;
+    const races=meetProResults(html,own.team).filter(r=>(!own.races||own.races.test(r.race))&&!(own.exclude&&own.exclude.test(r.race)));
+    if(!races.length)continue;
+    // Meets name races their own way ("7th Boys Two Mile Run 7th Grade Boys",
+    // "8th Girls Two MIle", "Girls Varsity"): grade and gender.
+    const label=race=>{const grade=(race.match(/\b(\d{1,2})(?:st|nd|rd|th)\b/i)||[])[0],sex=/\b(?:girls?|women'?s?)\b/i.test(race)?'Girls':/\b(?:boys?|men'?s?)\b/i.test(race)?'Boys':'';return[grade&&grade.toLowerCase(),sex].filter(Boolean).join(' ')||race;};
+    const group=race=>`${label(race)}${/\bvarsity\b/i.test(race)&&!/junior/i.test(race)?' Varsity':''}`;
+    const rows=[],highlights=[],headline=[];
+    for(const r of races){
+      if(r.team){rows.push({group:group(r.race),participant:`${school.short_name} team`,result:`${ORDINAL(r.team.place)} of ${r.teams}${r.team.score?` · ${r.team.score} pts`:''}`});headline.push(`${label(r.race)} ${ORDINAL(r.team.place)} of ${r.teams}`);}
+      for(const runner of r.runners)rows.push({group:group(r.race),participant:`${runner.athlete}${runner.year?` (${runner.year})`:''}`,result:`${ORDINAL(runner.place)} of ${r.field} · ${runner.time}`});
+      const top=r.runners[0];
+      highlights.push(`${group(r.race)}: ${r.team?`${school.short_name} ${r.team.place===1?'won the team title':`placed ${ORDINAL(r.team.place)} of ${r.teams}`}${r.team.score?` with ${r.team.score} points`:''}; `:''}${top.athlete} led ${school.short_name} in ${ORDINAL(top.place)} (${top.time}).`);
+    }
+    return{rows,headline:headline.join(' · ')||`${races.reduce((n,r)=>n+r.runners.length,0)} runners`,highlights,url:`${config.base}${folder}/`,label:'View full results (LetsGoRun Timing)',note:'Results as posted by LetsGoRun Timing (MeetPro).'};
+  }
+  return null;
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -1342,7 +1382,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       }
       continue;
     }
-    for(const game of games){
+    // Results for every past game at once (each source read in parallel).
+    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):null));
+    for(const [index,game] of games.entries()){
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);
       // MaxPreps names the opponent when the calendar names the host of a
@@ -1351,7 +1393,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
       // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
       const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
-      const results=team.tennisReporting&&game.date<=today?await tennisReportingResults(school,team,game):null;
+      const results=gameResults[index];
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,now});
       if(event)events.push(event);
     }

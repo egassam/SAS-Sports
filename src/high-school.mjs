@@ -191,3 +191,39 @@ export function parseMiddleSchoolTitle(title,{abbreviations={}}={}){
   if(/^home$/i.test(name))name='Home event';
   return name?{team,name,site}:null;
 }
+
+// MeetPro results (user, October 10: "Here is where my timer puts the cross
+// country races": bit.ly/LetsGoRunMHK, LetsGoRun Timing). Each meet is a
+// static page at results.tfmeetpro.com/LetsGoRun_Timing/<folder>/ with one
+// section per race: its team standings (td.team-place, td.team,
+// td.team-score) and individual results (td.place, td.athlete, td.year,
+// td.ath-team, td.time). The timer's race-results page links most meets.
+const cell=(row,name)=>{const m=row.match(new RegExp(`<td class="${name}"[^>]*>([\\s\\S]*?)</td>`));return m?clean(m[1].replace(/<[^>]+>/g,' ')):null;};
+const displayName=name=>{const m=String(name||'').match(/^([^,]+),\s*(.+)$/);const fix=s=>s.toLowerCase().replace(/(^|[\s'-])([a-z])/g,(_,a,b)=>a+b.toUpperCase());return m?`${fix(m[2])} ${fix(m[1])}`:fix(name);};
+export function meetProDate(html){
+  const m=clean(String(html||'').replace(/<[^>]+>/g,' ')).match(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/);
+  return m?`${m[3]}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`:null;
+}
+export function meetProName(html){const m=String(html||'').match(/<h\d[^>]*>\s*([^<]*?\d{4}[^<]*?)\s*<\/h\d>/)||String(html||'').match(/<title>([^<]*)<\/title>/);return m?clean(m[1]):null;}
+export function meetProLinks(html,prefix='LetsGoRun_Timing'){
+  return[...new Set([...String(html||'').matchAll(new RegExp(`https?://results\\.tfmeetpro\\.com/${prefix}/([^"'/<>\\s]+)/?`,'g'))].map(m=>m[1]))];
+}
+// One school, as meets write it: "Anthony", "Anthony Middle School",
+// "Anthony7G" (Fort Riley adds the grade and gender to the team).
+export const meetProTeam=name=>nameKey(String(name||'').replace(/\d+\s*[BG]$/i,'')).replace(/\b(?:middle school|middle|ms|junior high|jh)\b/g,' ').replace(/\s+/g,' ').trim();
+// The school's races at one meet: team place and its runners.
+export function meetProResults(html,team){
+  const ours=meetProTeam(team),isOurs=name=>meetProTeam(name)===ours;
+  const races=[];
+  for(const section of String(html||'').split(/<section id="event\d+"/).slice(1)){
+    const header=[...section.matchAll(/<p class="bold-cell">([\s\S]*?)<\/p>/g)].map(m=>clean(m[1]));
+    const name=header.find(h=>!/^Race #/i.test(h))||header[0]||'';
+    const teamRows=[...section.matchAll(/<tr>(?=<td class="team-place")([\s\S]*?)<\/tr>/g)].map(m=>m[1]);
+    const teams=teamRows.map(r=>({place:Number(cell(r,'team-place')),team:cell(r,'team'),score:cell(r,'team-score')}));
+    const runners=[...section.matchAll(/<tr>(?=<td class="place")([\s\S]*?)<\/tr>/g)].map(m=>m[1]).map(r=>({place:Number(cell(r,'place')),athlete:displayName(cell(r,'athlete')),year:cell(r,'year'),team:cell(r,'ath-team'),time:cell(r,'time')}));
+    const mine=runners.filter(r=>isOurs(r.team));
+    if(!mine.length)continue;
+    races.push({race:name,team:teams.find(t=>isOurs(t.team))||null,teams:teams.length,runners:mine,field:runners.length});
+  }
+  return races;
+}

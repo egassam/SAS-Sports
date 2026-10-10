@@ -4,6 +4,7 @@
 // their contest data and box score).
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -11,7 +12,7 @@ import {manhattanKsSchool} from '../src/schools/manhattan-ks.mjs';
 import {USD383_ABBREVIATIONS} from '../src/schools/manhattan-ks-middle.mjs';
 import {parseMiddleSchoolTitle,parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
-const fixture=name=>read('./fixtures/manhattan-ks-module/'+name);
+const fixture=name=>name.endsWith('.gz')?gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-module/'+name,import.meta.url))).toString('utf8'):read('./fixtures/manhattan-ks-module/'+name);
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const school=schools.find(s=>s.id==='manhattan-ks');
 const MAXPREPS='https://www.maxpreps.com/ks/manhattan/manhattan-indians/';
@@ -96,6 +97,8 @@ const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('expo
 const TR='https://api.tennisreporting.com/';
 const pages=new Map([[`${CALENDAR}?start_date=2026-07-01&end_date=2027-06-30`,fixture('calendar-2026-27.json')],[`${MAXPREPS}football/schedule/`,fixture('maxpreps-football-schedule.html')],[contests[2].game_url,fixture('maxpreps-football-game-2026-09-18.html')],
   ['https://ams.usd383.org/api/calendars/128968/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ams-2026-27.json')],['https://ems.usd383.org/api/calendars/128776/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ems-2026-27.json')],
+  ['https://letsgoruncom.rsupartner.com/race-results',fixture('letsgorun-race-results.html.gz')],
+  ...['2026_Manhattan_XC_Invitational','2026_Wamego_Middle_School_Invitational','2026_Fort_Riley_XC_Invitational','2026_Clay_Center_XC_Invitational','2026_Rock_Creek_Cross_Country_Invitational','2026_Centennial_League_Middle_School_XC_Championships'].map(f=>[`http://results.tfmeetpro.com/LetsGoRun_Timing/${f}/`,fixture(`meetpro-${f}.html.gz`)]),
   [`${MAXPREPS}soccer/schedule/`,fixture('maxpreps-soccer-schedule.html')],['https://www.maxpreps.com/ks/soccer/match/manhattan-vs-topeka/8-28-2026/?c=fff1bf1a-f39c-46f0-ab4d-daa0f0f1758f',fixture('maxpreps-soccer-game.html')],['https://www.maxpreps.com/ks/volleyball/match/bishop-carroll-wichita-vs-manhattan/8-29-2026/?c=48cf0816-eb79-40be-bb0f-c7254c3b6392',fixture('maxpreps-volleyball-game.html')],[`${MAXPREPS}volleyball/schedule/`,fixture('maxpreps-volleyball-schedule.html')],
   [`${TR}events#${JSON.stringify({page:0,pageSize:200,sorted:[],filtered:{stateId:23}})}`,fixture('tennisreporting-events-ks.json')],[`${TR}event/975`,fixture('tennisreporting-event-975.json')],[`${TR}event/975/host/4139/schools`,fixture('tennisreporting-975-4139-schools.json')],
   ...['Singles','Doubles'].flatMap(t=>[[`${TR}event/975/host/4139/bracket/get#${JSON.stringify({matchType:t,isConsolation:false})}`,fixture(`tennisreporting-975-4139-${t}.json`)],[`${TR}event/975/seed_list_by_params#${JSON.stringify({host:4139,matchType:t})}`,fixture(`tennisreporting-975-seeds-${t}.json`)]])]);
@@ -168,9 +171,20 @@ try{
   // Cross country and golf: meets are named for the host; a past meet with no
   // published result is not listed (K-State's rule), so only coming meets show
   // until results are published. Midnight means no time was set.
-  const xc=lines(await feed('Cross Country'));
-  assert.deepEqual(xc.results,[],'six past meets, none with published results');
+  // Cross country: results from the timer's MeetPro pages (LetsGoRun
+  // Timing), varsity races only; meets without published results are not
+  // listed. Midnight means no time was set.
+  const xcGroup=await feed('Cross Country'),xc=lines(xcGroup);
+  assert.deepEqual(xc.results,['Final Sep 5, 8:15 AM Manhattan · Manhattan Invite | Boys 2nd of 11 · Girls 1st of 5'],'the Manhattan Invitational (LetsGoRun); the other five past meets were timed elsewhere');
   assert.deepEqual(xc.upcoming,['Upcoming Oct 10 Manhattan at Haskell Invite | ','Upcoming Oct 17, 10:00 AM Manhattan at Centennial League JV/V | ','Upcoming Oct 24 Manhattan at Regional Meet - WARNER PARK | ','Upcoming Oct 31, 9:30 AM Manhattan at State Meet | ']);
+  const invite=xcGroup.results[0];
+  assert.deepEqual(invite.results.slice(0,3).map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Boys Varsity | Manhattan team | 2nd of 11 · 65 pts','Boys Varsity | Jaxon Wheeler (SO) | 3rd of 81 · 17:06.1','Boys Varsity | Benjamin Huser (SR) | 7th of 81 · 17:21.1']);
+  assert.ok(invite.results.some(x=>x.participant==='Gabrielle Converse (SR)'&&x.result==='1st of 49 · 19:03.3'));
+  assert.ok(!invite.results.some(x=>/junior|jv|\bc\b/i.test(x.group)),'JV and C races are not varsity');
+  assert.equal(invite.highlights[1],'Girls Varsity: Manhattan won the team title with 28 points; Gabrielle Converse led Manhattan in 1st (19:03.3).');
+  assert.equal(invite.recap_url,'http://results.tfmeetpro.com/LetsGoRun_Timing/2026_Manhattan_XC_Invitational/');
+  assert.equal(invite.recap_label,'View full results (LetsGoRun Timing)');
+  assert.equal(invite.meet_results_verified,true);
   assert.deepEqual(lines(await feed('Golf')).upcoming,['Upcoming Oct 12 Girls · Manhattan at Regionals | ','Upcoming Oct 19 Girls · Manhattan at State Golf | ']);
 
   // Soccer: boys in the fall (girls in the spring), records by team.
@@ -237,6 +251,26 @@ try{
   assert.equal(wrestling.upcoming[0].event_type,'DUAL');
   assert.ok(wrestling.upcoming.some(e=>e.team_label==='Girls'));
   assert.ok((await msFeed('eisenhower-ms-ks','Track & Field')).upcoming.every(e=>e.event_type==='MEET'));
+  // Middle school cross country: every grade race from LetsGoRun; team names
+  // vary by meet ("Anthony Middle School", "Anthony7G"), race names too.
+  const amsXc=await msFeed('anthony-ms-ks','Cross Country');
+  assert.deepEqual(amsXc.results.map(line),[
+    'Final Oct 2, 2:00 PM Anthony at Milford State Park | 7th Girls 1st of 5 · 7th Boys 1st of 8 · 8th Girls 1st of 4 · 8th Boys 1st of 6',
+    'Final Sep 29, 4:00 PM Anthony at Rock Creek H. S. | 7th Boys 1st of 6 · 7th Girls 1st of 5 · 8th Boys 1st of 5 · 8th Girls 1st of 1',
+    'Final Sep 15, 4:00 PM Anthony at Clay Center | 7th Girls 1st of 5 · 7th Boys 1st of 8 · 8th Girls 1st of 3 · 8th Boys 1st of 6',
+    'Final Sep 10, 4:30 PM Anthony at Milford State Park | 7th Girls 1st of 7 · 7th Boys 1st of 9 · 8th Girls 1st of 4 · 8th Boys 1st of 10',
+    'Final Sep 8, 9:00 AM Anthony at Wamego M.S. | 7th Boys 1st of 6 · 7th Girls 1st of 3 · 8th Boys 1st of 4 · 8th Girls 1st of 3'
+  ]);
+  assert.equal(amsXc.results[0].results[1].participant,'Stella Snively (7)');
+  const emsXc=await msFeed('eisenhower-ms-ks','Cross Country');
+  assert.deepEqual(emsXc.results.map(line),[
+    'Final Oct 2, 2:00 PM Eisenhower at Milford Stare Park League Tournament | 7th Boys 6th of 8 · 8th Boys 2nd of 6',
+    'Final Sep 29, 4:00 PM Eisenhower at Rock Creek | 7th Boys 3rd of 6 · 8th Boys 2nd of 5',
+    'Final Sep 15, 4:00 PM Eisenhower at Clay Center | 7th Boys 3rd of 8 · 8th Boys 3rd of 6',
+    'Final Sep 10, 4:30 PM Eisenhower at Fort Riley | 7th Boys 7th of 9 · 8th Boys 6th of 10'
+  ]);
+  const rockCreek=emsXc.results.find(e=>/Rock Creek/.test(e.title));
+  assert.ok(!rockCreek.results.some(x=>/Aurora Adams/.test(x.participant)),'middle school JV races are left out (at Rock Creek Aurora Adams ran the JV race)');
   const athletesMs=await worker.handler.fetch(new Request('https://x.test/live/athletes?school=eisenhower-ms-ks&sport=Football'),{},{});
   assert.deepEqual(await athletesMs.json(),[]);
 }finally{globalThis.Date=RealDate;}
