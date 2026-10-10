@@ -52,7 +52,7 @@ import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,na
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 
-const VERSION='4.79.3-scoreboard-reads';
+const VERSION='4.79.4-scoreboard-reads';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -2302,6 +2302,7 @@ async function fetchLiveScoreboards(school,sport,now,reads=[]){
     try{
       const response=await fetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:15,cacheEverything:true}});
       read.http_status=response.status;
+      if(!response.ok){read.server=response.headers.get('server');read.cache=response.headers.get('cf-cache-status')||response.headers.get('x-cache');read.body=(await response.text()).slice(0,160);}
       if(response.ok){const payload=await response.json();read.games=payload?.events?.length??0;const events=parseScoreboardPayload(payload,school,sport,provider,url,now);read.matched=events.length;found.push(...events);}
     }catch(error){read.error=error?.message||error?.name||'FetchError'}
   }
