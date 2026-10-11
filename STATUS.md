@@ -1,5 +1,26 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| baylor | Soccer | 🔴 on | live 0-1 · 64' · official_schedule+live_scoreboard |
+| cincinnati | Volleyball | 🔴 on | live 3-7 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
+| indiana | Volleyball | 🔴 on | live 23-22 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| iowa | Volleyball | 🔴 on | live 20-22 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard |
+| iowa-state | Volleyball | 🔴 on | live 7-3 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
+| kansas | Volleyball | 🔴 on | live 2-4 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
+| kentucky | Volleyball | 🔴 on | live 6-5 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
+| kstate | Soccer | 🔴 on | live 1-0 · 64' · official_schedule+live_scoreboard |
+| lsu | Volleyball | 🔴 on | live 21-25 · End of 1st · Sets 0-1 · official_schedule+live_scoreboard |
+| michigan | Soccer | 🔴 on | live 1-0 · 69' · official_schedule+live_scoreboard |
+| minnesota | Soccer | 🔴 on | live 0-1 · 21' · official_schedule+live_scoreboard |
+| nebraska | Soccer | 🔴 on | live 0-0 · 61' · official_schedule+live_scoreboard |
+| ohio-state | Soccer | 🔴 on | live 1-0 · 21' · official_schedule+live_scoreboard |
+| oklahoma-state | Soccer | 🔴 on | live 1-2 · 75' · official_schedule+live_scoreboard |
+| ole-miss | Volleyball | 🔴 on | live 5-6 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard |
+| tcu | Soccer | 🔴 on | live 0-0 · 26' · official_schedule+live_scoreboard |
+| tennessee | Volleyball | 🔴 on | live 25-21 · End of 1st · Sets 1-0 · official_schedule+live_scoreboard |
+| texas-am | Volleyball | 🔴 on | live 24-20 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
+| texas-tech | Soccer | 🔴 on | live 0-0 · 26' · official_schedule+live_scoreboard |
+| ucf | Soccer | 🔴 on | live 2-1 · 75' · official_schedule+live_scoreboard |
+| ucf | Volleyball | 🔴 on | live 4-2 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -29,7 +50,6 @@
 | baylor | Baseball | ⚪ off (waiting) |  |
 | baylor | Basketball | ⚪ off (waiting) |  |
 | baylor | Football | ⚪ off (waiting) |  |
-| baylor | Soccer | ⚪ off (waiting) |  |
 | baylor | Softball | ⚪ off (waiting) |  |
 | baylor | Volleyball | ⚪ off (waiting) |  |
 | byu | Baseball | ⚪ off (waiting) |  |
@@ -42,7 +62,6 @@
 | cincinnati | Football | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
 | cincinnati | Soccer | ⚪ off (waiting) |  |
-| cincinnati | Volleyball | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado | Football | ⚪ off (waiting) |  |
 | colorado | Soccer | ⚪ off (waiting) |  |
@@ -73,35 +92,28 @@
 | indiana | Field Hockey | ⚪ off (waiting) |  |
 | indiana | Football | ⚪ off (waiting) | final W, 20-17 (live phase not observed 2×; waits for the next game) |
 | indiana | Softball | ⚪ off (waiting) |  |
-| indiana | Volleyball | ⚪ off (waiting) |  |
 | indiana | Water Polo | ⚪ off (waiting) |  |
 | iowa | Baseball | ⚪ off (waiting) |  |
 | iowa | Basketball | ⚪ off (waiting) |  |
 | iowa | Soccer | ⚪ off (waiting) |  |
 | iowa | Softball | ⚪ off (waiting) |  |
-| iowa | Volleyball | ⚪ off (waiting) |  |
 | iowa-state | Basketball | ⚪ off (waiting) |  |
 | iowa-state | Football | ⚪ off (waiting) |  |
 | iowa-state | Soccer | ⚪ off (waiting) |  |
 | iowa-state | Softball | ⚪ off (waiting) |  |
-| iowa-state | Volleyball | ⚪ off (waiting) |  |
 | kansas | Baseball | ⚪ off (waiting) |  |
 | kansas | Basketball | ⚪ off (waiting) |  |
 | kansas | Soccer | ⚪ off (waiting) |  |
 | kansas | Softball | ⚪ off (waiting) |  |
-| kansas | Volleyball | ⚪ off (waiting) |  |
 | kentucky | Baseball | ⚪ off (waiting) |  |
 | kentucky | Basketball | ⚪ off (waiting) |  |
 | kentucky | Softball | ⚪ off (waiting) |  |
-| kentucky | Volleyball | ⚪ off (waiting) |  |
 | kstate | Baseball | ⚪ off (waiting) |  |
 | kstate | Basketball | ⚪ off (waiting) |  |
-| kstate | Soccer | ⚪ off (waiting) |  |
 | kstate | Volleyball | ⚪ off (waiting) |  |
 | lsu | Baseball | ⚪ off (waiting) |  |
 | lsu | Basketball | ⚪ off (waiting) |  |
 | lsu | Softball | ⚪ off (waiting) |  |
-| lsu | Volleyball | ⚪ off (waiting) |  |
 | maryland | Baseball | ⚪ off (waiting) |  |
 | maryland | Basketball | ⚪ off (waiting) |  |
 | maryland | Field Hockey | ⚪ off (waiting) |  |
@@ -112,7 +124,6 @@
 | michigan | Field Hockey | ⚪ off (waiting) |  |
 | michigan | Football | ⚪ off (waiting) |  |
 | michigan | Lacrosse | ⚪ off (waiting) |  |
-| michigan | Soccer | ⚪ off (waiting) |  |
 | michigan | Softball | ⚪ off (waiting) |  |
 | michigan | Water Polo | ⚪ off (waiting) |  |
 | michigan-state | Baseball | ⚪ off (waiting) |  |
@@ -122,7 +133,6 @@
 | minnesota | Baseball | ⚪ off (waiting) |  |
 | minnesota | Basketball | ⚪ off (waiting) |  |
 | minnesota | Hockey | ⚪ off (waiting) |  |
-| minnesota | Soccer | ⚪ off (waiting) |  |
 | minnesota | Softball | ⚪ off (waiting) |  |
 | minnesota | Volleyball | ⚪ off (waiting) |  |
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
@@ -138,7 +148,6 @@
 | nebraska | Baseball | ⚪ off (waiting) |  |
 | nebraska | Basketball | ⚪ off (waiting) |  |
 | nebraska | Football | ⚪ off (waiting) | final L, 17-20 (live phase not observed 2×; waits for the next game) |
-| nebraska | Soccer | ⚪ off (waiting) |  |
 | nebraska | Softball | ⚪ off (waiting) |  |
 | northwestern | Baseball | ⚪ off (waiting) |  |
 | northwestern | Basketball | ⚪ off (waiting) |  |
@@ -150,7 +159,6 @@
 | ohio-state | Basketball | ⚪ off (waiting) |  |
 | ohio-state | Hockey | ⚪ off (waiting) | final W, 3-2 (live phase not observed 2×; waits for the next game) |
 | ohio-state | Lacrosse | ⚪ off (waiting) |  |
-| ohio-state | Soccer | ⚪ off (waiting) |  |
 | ohio-state | Softball | ⚪ off (waiting) |  |
 | ohio-state | Volleyball | ⚪ off (waiting) |  |
 | oklahoma | Baseball | ⚪ off (waiting) |  |
@@ -160,13 +168,11 @@
 | oklahoma-state | Baseball | ⚪ off (waiting) |  |
 | oklahoma-state | Basketball | ⚪ off (waiting) |  |
 | oklahoma-state | Football | ⚪ off (waiting) | final W, 42-28 (live phase not observed 2×; waits for the next game) |
-| oklahoma-state | Soccer | ⚪ off (waiting) |  |
 | oklahoma-state | Softball | ⚪ off (waiting) |  |
 | ole-miss | Baseball | ⚪ off (waiting) |  |
 | ole-miss | Basketball | ⚪ off (waiting) |  |
 | ole-miss | Soccer | ⚪ off (waiting) |  |
 | ole-miss | Softball | ⚪ off (waiting) |  |
-| ole-miss | Volleyball | ⚪ off (waiting) |  |
 | oregon | Baseball | ⚪ off (waiting) |  |
 | oregon | Basketball | ⚪ off (waiting) |  |
 | oregon | Lacrosse | ⚪ off (waiting) |  |
@@ -189,13 +195,11 @@
 | tcu | Baseball | ⚪ off (waiting) |  |
 | tcu | Basketball | ⚪ off (waiting) |  |
 | tcu | Football | ⚪ off (waiting) |  |
-| tcu | Soccer | ⚪ off (waiting) |  |
 | tcu | Volleyball | ⚪ off (waiting) |  |
 | tennessee | Baseball | ⚪ off (waiting) |  |
 | tennessee | Basketball | ⚪ off (waiting) |  |
 | tennessee | Soccer | ⚪ off (waiting) |  |
 | tennessee | Softball | ⚪ off (waiting) |  |
-| tennessee | Volleyball | ⚪ off (waiting) |  |
 | texas | Baseball | ⚪ off (waiting) |  |
 | texas | Basketball | ⚪ off (waiting) |  |
 | texas | Softball | ⚪ off (waiting) |  |
@@ -203,19 +207,15 @@
 | texas-am | Basketball | ⚪ off (waiting) |  |
 | texas-am | Football | ⚪ off (waiting) | final L, 6-27 (live phase not observed 2×; waits for the next game) |
 | texas-am | Softball | ⚪ off (waiting) |  |
-| texas-am | Volleyball | ⚪ off (waiting) |  |
 | texas-tech | Baseball | ⚪ off (waiting) |  |
 | texas-tech | Basketball | ⚪ off (waiting) |  |
 | texas-tech | Football | ⚪ off (waiting) |  |
-| texas-tech | Soccer | ⚪ off (waiting) |  |
 | texas-tech | Softball | ⚪ off (waiting) |  |
 | texas-tech | Volleyball | ⚪ off (waiting) |  |
 | ucf | Baseball | ⚪ off (waiting) |  |
 | ucf | Basketball | ⚪ off (waiting) |  |
 | ucf | Football | ⚪ off (waiting) | final L, 28-42 (live phase not observed 2×; waits for the next game) |
-| ucf | Soccer | ⚪ off (waiting) |  |
 | ucf | Softball | ⚪ off (waiting) |  |
-| ucf | Volleyball | ⚪ off (waiting) |  |
 | utah | Baseball | ⚪ off (waiting) |  |
 | utah | Basketball | ⚪ off (waiting) |  |
 | utah | Lacrosse | ⚪ off (waiting) |  |
@@ -284,4 +284,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 53/283; on 0; off 230; failing 0.
+Done 53/283; on 21; off 209; failing 0.

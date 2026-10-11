@@ -16,7 +16,24 @@
    "verified_detail": "final L, 16-35"
   },
   "kstate|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.570Z",
+   "last_detail": "live 1-0 · 64' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kstate|Soccer||2026-10-11|1",
+    "title": "K-State at Baylor",
+    "started_seen": "2026-10-11T18:27:51.613Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.613Z",
+     "2026-10-11T18:28:53.735Z",
+     "2026-10-11T18:30:15.160Z",
+     "2026-10-11T18:31:36.287Z",
+     "2026-10-11T18:32:58.434Z",
+     "2026-10-11T18:34:20.018Z",
+     "2026-10-11T18:35:41.570Z"
+    ],
+    "final_ok": false
+   }
   },
   "kstate|Volleyball": {
    "state": "off"
@@ -43,7 +60,24 @@
    "state": "off"
   },
   "kansas|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.352Z",
+   "last_detail": "live 2-4 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kansas|Volleyball||2026-10-11|1",
+    "title": "KU at UCF",
+    "started_seen": "2026-10-11T18:27:51.834Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.834Z",
+     "2026-10-11T18:28:53.769Z",
+     "2026-10-11T18:30:15.011Z",
+     "2026-10-11T18:31:36.521Z",
+     "2026-10-11T18:33:18.834Z",
+     "2026-10-11T18:34:40.097Z",
+     "2026-10-11T18:35:41.352Z"
+    ],
+    "final_ok": false
+   }
   },
   "oklahoma-state|Baseball": {
    "state": "off"
@@ -58,7 +92,24 @@
    "game": null
   },
   "oklahoma-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.469Z",
+   "last_detail": "live 1-2 · 75' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "oklahoma-state|Soccer||2026-10-11|1",
+    "title": "Oklahoma State at UCF",
+    "started_seen": "2026-10-11T18:27:51.619Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.619Z",
+     "2026-10-11T18:28:53.642Z",
+     "2026-10-11T18:30:15.142Z",
+     "2026-10-11T18:31:36.537Z",
+     "2026-10-11T18:32:58.197Z",
+     "2026-10-11T18:34:40.626Z",
+     "2026-10-11T18:35:41.469Z"
+    ],
+    "final_ok": false
+   }
   },
   "oklahoma-state|Softball": {
    "state": "off"
@@ -160,13 +211,47 @@
    "game": null
   },
   "ucf|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.333Z",
+   "last_detail": "live 2-1 · 75' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ucf|Soccer|Women's|2026-10-11|1",
+    "title": "Women's · UCF vs Oklahoma St",
+    "started_seen": "2026-10-11T18:27:52.392Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.392Z",
+     "2026-10-11T18:28:53.801Z",
+     "2026-10-11T18:30:15.270Z",
+     "2026-10-11T18:31:36.305Z",
+     "2026-10-11T18:32:58.011Z",
+     "2026-10-11T18:34:40.313Z",
+     "2026-10-11T18:35:41.333Z"
+    ],
+    "final_ok": false
+   }
   },
   "ucf|Softball": {
    "state": "off"
   },
   "ucf|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.281Z",
+   "last_detail": "live 4-2 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ucf|Volleyball||2026-10-11|1",
+    "title": "UCF vs Kansas",
+    "started_seen": "2026-10-11T18:27:51.274Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.274Z",
+     "2026-10-11T18:28:53.889Z",
+     "2026-10-11T18:30:14.922Z",
+     "2026-10-11T18:31:36.532Z",
+     "2026-10-11T18:33:18.819Z",
+     "2026-10-11T18:34:40.127Z",
+     "2026-10-11T18:35:41.281Z"
+    ],
+    "final_ok": false
+   }
   },
   "arizona|Baseball": {
    "state": "off"
@@ -199,7 +284,24 @@
    "state": "off"
   },
   "baylor|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.433Z",
+   "last_detail": "live 0-1 · 64' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "baylor|Soccer||2026-10-11|1",
+    "title": "Baylor vs Kansas St",
+    "started_seen": "2026-10-11T18:27:51.599Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.599Z",
+     "2026-10-11T18:28:53.911Z",
+     "2026-10-11T18:30:15.130Z",
+     "2026-10-11T18:31:36.323Z",
+     "2026-10-11T18:32:57.913Z",
+     "2026-10-11T18:34:19.942Z",
+     "2026-10-11T18:35:41.433Z"
+    ],
+    "final_ok": false
+   }
   },
   "baylor|Softball": {
    "state": "off"
@@ -223,7 +325,24 @@
    "state": "off"
   },
   "cincinnati|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.591Z",
+   "last_detail": "live 3-7 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "cincinnati|Volleyball||2026-10-11|1",
+    "title": "Cincinnati vs Iowa State",
+    "started_seen": "2026-10-11T18:27:51.404Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.404Z",
+     "2026-10-11T18:28:53.749Z",
+     "2026-10-11T18:30:14.977Z",
+     "2026-10-11T18:31:56.955Z",
+     "2026-10-11T18:33:18.472Z",
+     "2026-10-11T18:34:40.166Z",
+     "2026-10-11T18:36:01.591Z"
+    ],
+    "final_ok": false
+   }
   },
   "colorado|Basketball": {
    "state": "off"
@@ -274,7 +393,24 @@
    "state": "off"
   },
   "iowa-state|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.694Z",
+   "last_detail": "live 7-3 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iowa-state|Volleyball||2026-10-11|1",
+    "title": "Iowa State at Cincinnati",
+    "started_seen": "2026-10-11T18:27:51.963Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.963Z",
+     "2026-10-11T18:28:53.906Z",
+     "2026-10-11T18:30:15.219Z",
+     "2026-10-11T18:31:56.880Z",
+     "2026-10-11T18:33:18.409Z",
+     "2026-10-11T18:34:40.108Z",
+     "2026-10-11T18:36:01.694Z"
+    ],
+    "final_ok": false
+   }
   },
   "tcu|Baseball": {
    "state": "off"
@@ -286,7 +422,24 @@
    "state": "off"
   },
   "tcu|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.425Z",
+   "last_detail": "live 0-0 · 26' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "tcu|Soccer||2026-10-11|1",
+    "title": "TCU vs Texas Tech",
+    "started_seen": "2026-10-11T18:27:51.839Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.839Z",
+     "2026-10-11T18:28:53.812Z",
+     "2026-10-11T18:30:14.951Z",
+     "2026-10-11T18:31:36.463Z",
+     "2026-10-11T18:32:57.968Z",
+     "2026-10-11T18:34:20.033Z",
+     "2026-10-11T18:35:41.425Z"
+    ],
+    "final_ok": false
+   }
   },
   "tcu|Volleyball": {
    "state": "off"
@@ -301,7 +454,24 @@
    "state": "off"
   },
   "texas-tech|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.476Z",
+   "last_detail": "live 0-0 · 26' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas-tech|Soccer||2026-10-11|1",
+    "title": "Texas Tech at TCU",
+    "started_seen": "2026-10-11T18:27:52.916Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.916Z",
+     "2026-10-11T18:28:53.683Z",
+     "2026-10-11T18:30:15.177Z",
+     "2026-10-11T18:31:36.552Z",
+     "2026-10-11T18:32:58.238Z",
+     "2026-10-11T18:34:19.979Z",
+     "2026-10-11T18:35:41.476Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas-tech|Softball": {
    "state": "off"
@@ -439,7 +609,24 @@
    "state": "off"
   },
   "lsu|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.480Z",
+   "last_detail": "live 21-25 · End of 1st · Sets 0-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lsu|Volleyball||2026-10-11|1",
+    "title": "LSU at Tennessee",
+    "started_seen": "2026-10-11T18:27:52.055Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.055Z",
+     "2026-10-11T18:29:13.997Z",
+     "2026-10-11T18:30:35.329Z",
+     "2026-10-11T18:31:56.836Z",
+     "2026-10-11T18:33:18.891Z",
+     "2026-10-11T18:34:19.845Z",
+     "2026-10-11T18:35:41.480Z"
+    ],
+    "final_ok": false
+   }
   },
   "ole-miss|Baseball": {
    "state": "off"
@@ -463,7 +650,24 @@
    "state": "off"
   },
   "ole-miss|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.543Z",
+   "last_detail": "live 5-6 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ole-miss|Volleyball||2026-10-11|1",
+    "title": "Ole Miss at Kentucky",
+    "started_seen": "2026-10-11T18:27:52.009Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.009Z",
+     "2026-10-11T18:29:13.990Z",
+     "2026-10-11T18:30:35.492Z",
+     "2026-10-11T18:31:56.928Z",
+     "2026-10-11T18:33:19.213Z",
+     "2026-10-11T18:34:40.225Z",
+     "2026-10-11T18:36:01.543Z"
+    ],
+    "final_ok": false
+   }
   },
   "mississippi-state|Baseball": {
    "state": "off"
@@ -511,7 +715,24 @@
    "state": "off"
   },
   "tennessee|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.515Z",
+   "last_detail": "live 25-21 · End of 1st · Sets 1-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "tennessee|Volleyball||2026-10-11|1",
+    "title": "Tennessee vs LSU",
+    "started_seen": "2026-10-11T18:27:51.424Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.424Z",
+     "2026-10-11T18:29:14.213Z",
+     "2026-10-11T18:30:35.688Z",
+     "2026-10-11T18:31:56.857Z",
+     "2026-10-11T18:33:18.540Z",
+     "2026-10-11T18:34:19.796Z",
+     "2026-10-11T18:35:41.515Z"
+    ],
+    "final_ok": false
+   }
   },
   "missouri|Baseball": {
    "state": "off"
@@ -601,7 +822,24 @@
    "state": "off"
   },
   "texas-am|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.733Z",
+   "last_detail": "live 24-20 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas-am|Volleyball||2026-10-11|1",
+    "title": "Texas A&M at Arkansas",
+    "started_seen": "2026-10-11T18:27:51.536Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.536Z",
+     "2026-10-11T18:29:13.981Z",
+     "2026-10-11T18:30:35.357Z",
+     "2026-10-11T18:31:56.940Z",
+     "2026-10-11T18:33:18.911Z",
+     "2026-10-11T18:34:40.053Z",
+     "2026-10-11T18:36:01.733Z"
+    ],
+    "final_ok": false
+   }
   },
   "arkansas|Baseball": {
    "state": "off"
@@ -727,7 +965,24 @@
    "state": "off"
   },
   "kentucky|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.862Z",
+   "last_detail": "live 6-5 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kentucky|Volleyball||2026-10-11|1",
+    "title": "Kentucky vs Ole Miss",
+    "started_seen": "2026-10-11T18:27:51.076Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.076Z",
+     "2026-10-11T18:29:14.186Z",
+     "2026-10-11T18:30:35.403Z",
+     "2026-10-11T18:31:56.909Z",
+     "2026-10-11T18:33:18.973Z",
+     "2026-10-11T18:34:40.244Z",
+     "2026-10-11T18:36:01.862Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-carolina|Baseball": {
    "state": "off"
@@ -832,7 +1087,24 @@
    "state": "off"
   },
   "indiana|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:36:01.645Z",
+   "last_detail": "live 23-22 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "indiana|Volleyball||2026-10-11|1",
+    "title": "Indiana vs USC",
+    "started_seen": "2026-10-11T18:27:51.948Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.948Z",
+     "2026-10-11T18:29:14.129Z",
+     "2026-10-11T18:30:15.171Z",
+     "2026-10-11T18:31:56.960Z",
+     "2026-10-11T18:33:19.120Z",
+     "2026-10-11T18:34:19.998Z",
+     "2026-10-11T18:36:01.645Z"
+    ],
+    "final_ok": false
+   }
   },
   "indiana|Water Polo": {
    "state": "off"
@@ -868,7 +1140,24 @@
    "state": "off"
   },
   "iowa|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.304Z",
+   "last_detail": "live 20-22 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iowa|Volleyball||2026-10-11|1",
+    "title": "Iowa at Michigan St",
+    "started_seen": "2026-10-11T18:27:51.470Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.470Z",
+     "2026-10-11T18:29:14.097Z",
+     "2026-10-11T18:30:35.336Z",
+     "2026-10-11T18:31:56.951Z",
+     "2026-10-11T18:32:58.465Z",
+     "2026-10-11T18:34:40.423Z",
+     "2026-10-11T18:35:41.304Z"
+    ],
+    "final_ok": false
+   }
   },
   "maryland|Baseball": {
    "state": "off"
@@ -937,7 +1226,24 @@
    "state": "off"
   },
   "michigan|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.522Z",
+   "last_detail": "live 1-0 · 69' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "michigan|Soccer|Women's|2026-10-11|1",
+    "title": "Women's · Michigan vs Wisconsin",
+    "started_seen": "2026-10-11T18:27:52.540Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.540Z",
+     "2026-10-11T18:28:53.881Z",
+     "2026-10-11T18:30:15.085Z",
+     "2026-10-11T18:31:36.557Z",
+     "2026-10-11T18:32:58.006Z",
+     "2026-10-11T18:34:19.957Z",
+     "2026-10-11T18:35:41.522Z"
+    ],
+    "final_ok": false
+   }
   },
   "michigan|Softball": {
    "state": "off"
@@ -1015,7 +1321,24 @@
    "game": null
   },
   "nebraska|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.462Z",
+   "last_detail": "live 0-0 · 61' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "nebraska|Soccer||2026-10-11|1",
+    "title": "Nebraska at Rutgers",
+    "started_seen": "2026-10-11T18:27:51.606Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.606Z",
+     "2026-10-11T18:28:53.731Z",
+     "2026-10-11T18:30:15.058Z",
+     "2026-10-11T18:31:36.561Z",
+     "2026-10-11T18:32:58.352Z",
+     "2026-10-11T18:34:19.805Z",
+     "2026-10-11T18:35:41.462Z"
+    ],
+    "final_ok": false
+   }
   },
   "nebraska|Softball": {
    "state": "off"
@@ -1048,7 +1371,24 @@
    "state": "off"
   },
   "minnesota|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.429Z",
+   "last_detail": "live 0-1 · 21' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "minnesota|Soccer||2026-10-11|1",
+    "title": "Minnesota vs Ohio State",
+    "started_seen": "2026-10-11T18:27:51.916Z",
+    "live_passes": [
+     "2026-10-11T18:27:51.916Z",
+     "2026-10-11T18:28:53.855Z",
+     "2026-10-11T18:30:14.980Z",
+     "2026-10-11T18:31:36.526Z",
+     "2026-10-11T18:32:58.175Z",
+     "2026-10-11T18:34:20.024Z",
+     "2026-10-11T18:35:41.429Z"
+    ],
+    "final_ok": false
+   }
   },
   "minnesota|Softball": {
    "state": "off"
@@ -1129,7 +1469,24 @@
    "state": "off"
   },
   "ohio-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-11T18:35:41.453Z",
+   "last_detail": "live 1-0 · 21' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ohio-state|Soccer|Women's|2026-10-11|1",
+    "title": "Women's · Ohio State at Minnesota",
+    "started_seen": "2026-10-11T18:27:52.986Z",
+    "live_passes": [
+     "2026-10-11T18:27:52.986Z",
+     "2026-10-11T18:28:53.824Z",
+     "2026-10-11T18:30:15.104Z",
+     "2026-10-11T18:31:36.470Z",
+     "2026-10-11T18:32:58.388Z",
+     "2026-10-11T18:34:20.132Z",
+     "2026-10-11T18:35:41.453Z"
+    ],
+    "final_ok": false
+   }
   },
   "ohio-state|Softball": {
    "state": "off"
@@ -1208,6 +1565,6 @@
   }
  },
  "version": "4.80.0-scoreboard-game-days",
- "updated_at": "2026-10-11T06:38:18.283Z",
+ "updated_at": "2026-10-11T18:36:01.866Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
