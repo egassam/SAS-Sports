@@ -904,24 +904,13 @@
    "state": "off"
   },
   "illinois|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-11T22:31:32.607Z",
-   "last_detail": "live 24-22 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "illinois|Volleyball||2026-10-11|1",
-    "title": "Illinois at Purdue",
-    "started_seen": "2026-10-11T22:23:42.838Z",
-    "live_passes": [
-     "2026-10-11T22:23:42.838Z",
-     "2026-10-11T22:25:05.210Z",
-     "2026-10-11T22:26:27.106Z",
-     "2026-10-11T22:27:48.236Z",
-     "2026-10-11T22:28:49.234Z",
-     "2026-10-11T22:30:31.199Z",
-     "2026-10-11T22:31:32.607Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-12T01:38:27.341Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-12T01:38:27.341Z",
+   "verified_game": "Illinois at Purdue",
+   "verified_detail": "final L, 2-3"
   },
   "indiana|Baseball": {
    "state": "off"
@@ -1363,6 +1352,6 @@
   }
  },
  "version": "4.80.0-scoreboard-game-days",
- "updated_at": "2026-10-11T22:31:53.183Z",
+ "updated_at": "2026-10-12T01:38:27.342Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

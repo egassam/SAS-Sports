@@ -1,6 +1,5 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| illinois | Volleyball | 🔴 on | live 24-22 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -222,6 +221,7 @@
 | georgia | Football | ✅ off (passed) | Georgia at Alabama · 2026-10-11T06:38:16.769Z |
 | houston | Football | ✅ off (passed) | Houston at Kansas St · 2026-10-11T00:49:40.506Z |
 | illinois | Football | ✅ off (passed) | Illinois at Michigan St · 2026-10-11T00:49:40.789Z |
+| illinois | Volleyball | ✅ off (passed) | Illinois at Purdue · 2026-10-12T01:38:27.341Z |
 | indiana | Soccer | ✅ off (passed) | Men's · Indiana vs Hanover · 2026-10-10T07:23:30.741Z |
 | indiana | Volleyball | ✅ off (passed) | Indiana vs USC · 2026-10-11T22:23:42.160Z |
 | iowa | Field Hockey | ✅ off (passed) | Iowa at Northwestern · 2026-10-09T21:48:31.382Z |
@@ -284,4 +284,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 76/283; on 1; off 206; failing 0.
+Done 77/283; on 0; off 206; failing 0.
