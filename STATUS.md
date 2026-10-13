@@ -1,8 +1,5 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| byu | Soccer | 🔴 on | live 1-0 · 68' · official_schedule+live_scoreboard |
-| cincinnati | Soccer | 🔴 on | live 0-1 · 68' · official_schedule+live_scoreboard |
-| south-carolina | Soccer | 🔴 on | live 2-0 · 64' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -215,7 +212,9 @@
 | auburn | Soccer | ✅ off (passed) | Auburn at Oklahoma · 2026-10-10T07:23:29.511Z |
 | auburn | Volleyball | ✅ off (passed) | Auburn at Vanderbilt · 2026-10-10T01:24:57.106Z |
 | baylor | Soccer | ✅ off (passed) | Baylor vs Kansas St · 2026-10-11T22:23:41.821Z |
+| byu | Soccer | ✅ off (passed) | BYU at Cincinnati · 2026-10-13T07:02:12.716Z |
 | byu | Volleyball | ✅ off (passed) | BYU vs West Virginia · 2026-10-11T06:38:17.001Z |
+| cincinnati | Soccer | ✅ off (passed) | Cincinnati vs BYU · 2026-10-13T07:02:12.366Z |
 | cincinnati | Volleyball | ✅ off (passed) | Cincinnati vs Iowa State · 2026-10-11T22:23:41.881Z |
 | florida | Volleyball | ✅ off (passed) | Florida at Missouri · 2026-10-10T07:23:29.528Z |
 | georgia | Football | ✅ off (passed) | Georgia at Alabama · 2026-10-11T06:38:16.769Z |
@@ -267,6 +266,7 @@
 | oregon | Football | ✅ off (passed) | Oregon vs UCLA · 2026-10-11T00:49:41.505Z |
 | oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
 | penn-state | Football | ✅ off (passed) | Penn State vs USC · 2026-10-11T06:38:16.471Z |
+| south-carolina | Soccer | ✅ off (passed) | Men's · South Carolina vs CCSC · 2026-10-13T07:02:13.001Z |
 | tcu | Soccer | ✅ off (passed) | TCU vs Texas Tech · 2026-10-11T22:23:42.811Z |
 | tcu | Volleyball | ✅ off (passed) | TCU at Arizona St · 2026-10-11T22:31:53.182Z |
 | tennessee | Football | ✅ off (passed) | Tennessee at Arkansas · 2026-10-11T00:49:40.741Z |
@@ -284,4 +284,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 77/283; on 3; off 203; failing 0.
+Done 80/283; on 0; off 203; failing 0.

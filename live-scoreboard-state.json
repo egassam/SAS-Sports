@@ -157,26 +157,13 @@
    "state": "off"
   },
   "byu|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-13T00:35:19.760Z",
-   "last_detail": "live 1-0 · 68' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "byu|Soccer||2026-10-12|1",
-    "title": "BYU at Cincinnati",
-    "started_seen": "2026-10-13T00:26:58.713Z",
-    "live_passes": [
-     "2026-10-13T00:26:58.713Z",
-     "2026-10-13T00:28:04.658Z",
-     "2026-10-13T00:29:06.467Z",
-     "2026-10-13T00:30:09.495Z",
-     "2026-10-13T00:31:11.918Z",
-     "2026-10-13T00:32:13.330Z",
-     "2026-10-13T00:33:15.511Z",
-     "2026-10-13T00:34:17.877Z",
-     "2026-10-13T00:35:19.760Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-13T07:02:12.716Z",
+   "last_detail": "final W, 1-0",
+   "game": null,
+   "verified_at": "2026-10-13T07:02:12.716Z",
+   "verified_game": "BYU at Cincinnati",
+   "verified_detail": "final W, 1-0"
   },
   "byu|Softball": {
    "state": "off"
@@ -281,26 +268,13 @@
    "state": "off"
   },
   "cincinnati|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-13T00:35:19.759Z",
-   "last_detail": "live 0-1 · 68' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "cincinnati|Soccer||2026-10-12|1",
-    "title": "Cincinnati vs BYU",
-    "started_seen": "2026-10-13T00:26:58.411Z",
-    "live_passes": [
-     "2026-10-13T00:26:58.411Z",
-     "2026-10-13T00:28:03.856Z",
-     "2026-10-13T00:29:07.073Z",
-     "2026-10-13T00:30:09.577Z",
-     "2026-10-13T00:31:12.259Z",
-     "2026-10-13T00:32:13.825Z",
-     "2026-10-13T00:33:15.559Z",
-     "2026-10-13T00:34:17.645Z",
-     "2026-10-13T00:35:19.759Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-13T07:02:12.366Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-10-13T07:02:12.366Z",
+   "verified_game": "Cincinnati vs BYU",
+   "verified_detail": "final L, 0-1"
   },
   "cincinnati|Volleyball": {
    "state": "done",
@@ -882,26 +856,13 @@
    "game": null
   },
   "south-carolina|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-13T00:35:19.974Z",
-   "last_detail": "live 2-0 · 64' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "south-carolina|Soccer|Men's|2026-10-12|1",
-    "title": "Men's · South Carolina vs CCSC",
-    "started_seen": "2026-10-13T00:27:03.187Z",
-    "live_passes": [
-     "2026-10-13T00:27:03.187Z",
-     "2026-10-13T00:28:04.263Z",
-     "2026-10-13T00:29:07.892Z",
-     "2026-10-13T00:30:10.072Z",
-     "2026-10-13T00:31:10.685Z",
-     "2026-10-13T00:32:13.344Z",
-     "2026-10-13T00:33:16.428Z",
-     "2026-10-13T00:34:18.006Z",
-     "2026-10-13T00:35:19.974Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-13T07:02:13.001Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-13T07:02:13.001Z",
+   "verified_game": "Men's · South Carolina vs CCSC",
+   "verified_detail": "final W, 3-0"
   },
   "south-carolina|Softball": {
    "state": "off"
@@ -1409,6 +1370,6 @@
   }
  },
  "version": "4.80.0-scoreboard-game-days",
- "updated_at": "2026-10-13T00:35:19.975Z",
+ "updated_at": "2026-10-13T07:02:13.003Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
