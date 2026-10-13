@@ -1,5 +1,8 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| byu | Soccer | 🔴 on | live 1-0 · 68' · official_schedule+live_scoreboard |
+| cincinnati | Soccer | 🔴 on | live 0-1 · 68' · official_schedule+live_scoreboard |
+| south-carolina | Soccer | 🔴 on | live 2-0 · 64' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -33,13 +36,11 @@
 | byu | Baseball | ⚪ off (waiting) |  |
 | byu | Basketball | ⚪ off (waiting) |  |
 | byu | Football | ⚪ off (waiting) |  |
-| byu | Soccer | ⚪ off (waiting) |  |
 | byu | Softball | ⚪ off (waiting) |  |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
 | cincinnati | Basketball | ⚪ off (waiting) |  |
 | cincinnati | Football | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
-| cincinnati | Soccer | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado | Football | ⚪ off (waiting) |  |
 | colorado | Soccer | ⚪ off (waiting) |  |
@@ -166,7 +167,6 @@
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) | final W, 38-19 (live phase not observed 2×; waits for the next game) |
-| south-carolina | Soccer | ⚪ off (waiting) |  |
 | south-carolina | Softball | ⚪ off (waiting) |  |
 | south-carolina | Volleyball | ⚪ off (waiting) |  |
 | tcu | Baseball | ⚪ off (waiting) |  |
@@ -284,4 +284,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 77/283; on 0; off 206; failing 0.
+Done 77/283; on 3; off 203; failing 0.
