@@ -326,5 +326,7 @@ const fromTfrrs=teams=>{
   assert.deepEqual(xc.map(e=>[e.opponent,e.headline,Boolean(e.meet_results_verified)]),[["Florida Intercollegiate XC Invitational","Women's team: 4th · 112 pts / Men's team: 5th · 119 pts",true],["FSU Pre-Regional","Women's team: 3rd · 139 pts / Men's team: 8th · 239 pts",true],["Joe Piane - Notre Dame Invitational","Women's team: 19th · 501 pts / Men's team: 18th · 542 pts",true]]);
   recapFixtures.clear();requests.length=0;
 }
+// A bio links Instagram without a scheme ("instagram.com/ruth_martinez_9").
+assert.equal(worker.verifiedInstagram(fixture('wvball-profile-ruth-martinez.html.gz')),'https://www.instagram.com/ruth_martinez_9/');
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Miami module checks passed');

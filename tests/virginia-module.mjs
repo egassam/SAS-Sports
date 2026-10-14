@@ -496,5 +496,13 @@ const fromTfrrs=teams=>{
   const {virginiaGolfPlace}=await import('../src/schools/virginia.mjs');
   assert.deepEqual(['Laha Medals, Leads Virginia to Win at Canadian Collegiate Invitational','Virginia Ties for Sixth at ANNIKA Intercollegiate','Play Concludes at Ben Hogan Collegiate Invitational'].map(virginiaGolfPlace),["1",null,null]);
 }
+// Roster cards: the portrait's link (alt "Women's Soccer") comes before the
+// title link that names the athlete.
+{
+  const profiles=worker.rosterProfiles(fixture('wsoc-roster.html.gz'),'https://virginiasports.com/sports/wsoc/roster');
+  assert.ok(profiles.length>=25);
+  assert.ok(profiles.every(p=>!/Soccer/.test(p.name)),'no team name as an athlete name');
+  assert.deepEqual(profiles.filter(p=>['Liv Rademaker','Tatum Galvin'].includes(p.name)).map(p=>[p.name,p.instagram_url]),[["Tatum Galvin","https://www.instagram.com/tatumgalvin/"],["Liv Rademaker","https://www.instagram.com/livrademaker/"]]);
+}
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Virginia module checks passed');

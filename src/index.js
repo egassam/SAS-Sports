@@ -61,7 +61,7 @@ import {miamiSchool,createMiamiHandlers} from './schools/miami.mjs';
 import {virginiaSchool,createVirginiaHandlers} from './schools/virginia.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.86.1-miami-virginia';
+const VERSION='4.86.2-miami-virginia';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -593,7 +593,10 @@ function rosterProfiles(raw,base){
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa; "Matthew Hull headshot
     // photo", UCLA).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // The portrait's link comes first and has no text; the card's title link
+    // names the athlete (Virginia's portraits are alt "Women's Soccer").
+    const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
+    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -613,7 +616,10 @@ function rosterProfiles(raw,base){
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa; "Matthew Hull headshot
     // photo", UCLA).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // The portrait's link comes first and has no text; the card's title link
+    // names the athlete (Virginia's portraits are alt "Women's Soccer").
+    const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
+    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -761,13 +767,14 @@ function verifiedInstagram(raw){
   // broken link, not the account "alex". A link written inside another
   // ("instagram.com/https://www.instagram.com/wyattnovara", Michigan) is the
   // inner one.
-  let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
+  // Miami's bios link "instagram.com/ruth_martinez_9", without a scheme.
+  let m;const re=/<a\b[^>]*href=["']((?:https?:\/\/)?(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
   while((m=re.exec(raw))){
     // The site's menu links the team's account (Michigan State's
     // msu_baseball on every baseball profile): never the athlete's.
     if(/\bdata-s-nav-link\b|\bc-navigation__url\b/.test(m[0]))continue;
     try{
-      const href=decodeHtml(m[1]),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
+      const href=decodeHtml(m[1]).replace(/^(?!https?:)/i,'https://'),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
       const u=new URL(inner.replace(/ /g,'%20')),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
       // Only a valid handle: "merritt%20_zieminick" is a broken link.
