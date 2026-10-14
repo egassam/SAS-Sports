@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>SAS Stream Overlay</title>
+<style>
+/* A score bug for live streams: add this page as a Browser Source in OBS,
+   vMix, Streamlabs or Boxcast (1920x1080). The background is transparent, so
+   only the bug shows over the video. */
+:root{--school:#28306C;--school-on:#fff;--bug:#0b0f1c;--line:#2a3352;--amber:#ffc531;--red:#ff4747;--green:#3ddc97;--muted:#aab4cc;--scale:1}
+*{box-sizing:border-box}
+html,body{margin:0;background:transparent;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.bug{position:fixed;display:flex;align-items:stretch;color:#fff;background:var(--bug);border-radius:10px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.45);transform:scale(var(--scale));font-size:22px;transition:opacity .4s}
+.bug.hidden{opacity:0}
+.pos-bottom-left{left:48px;bottom:48px;transform-origin:left bottom}
+.pos-bottom-right{right:48px;bottom:48px;transform-origin:right bottom}
+.pos-top-left{left:48px;top:40px;transform-origin:left top}
+.pos-top-right{right:48px;top:40px;transform-origin:right top}
+.pos-bottom-center{left:50%;bottom:48px;transform:translateX(-50%) scale(var(--scale));transform-origin:center bottom}
+.teams{display:grid;grid-template-rows:1fr 1fr}
+.team{display:grid;grid-template-columns:8px minmax(150px,auto) 58px;align-items:center;height:44px;border-bottom:1px solid var(--line)}
+.team:last-child{border-bottom:0}
+.team .bar{height:100%;background:#4b5677}
+.team.school .bar{background:var(--school);box-shadow:inset -2px 0 0 rgba(255,255,255,.35)}
+.team .name{padding:0 14px;font-weight:850;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.team .name .poss{color:var(--amber);font-size:16px;margin-left:6px}
+.team .score{height:100%;display:grid;place-items:center;font-weight:950;font-size:28px;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.06)}
+.team .score.bump{animation:bump .9s ease}
+@keyframes bump{0%{background:var(--amber);color:#000}100%{background:rgba(255,255,255,.06)}}
+.state{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0 16px;min-width:120px;border-left:1px solid var(--line);font-weight:850}
+.state .main{font-size:21px;white-space:nowrap}
+.state .clock{font-size:26px;font-variant-numeric:tabular-nums;color:var(--amber)}
+.state .small{font-size:14px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.state .final{color:var(--amber)}
+.diamondbox{display:flex;align-items:center;gap:12px}
+.mini{position:relative;width:34px;height:30px}
+.mini i{position:absolute;width:11px;height:11px;transform:rotate(45deg);border:2px solid #56628a}
+.mini i.on{background:var(--amber);border-color:var(--amber)}
+.mini .b2{left:11px;top:1px}.mini .b3{left:2px;top:12px}.mini .b1{left:20px;top:12px}
+.outs{display:flex;gap:4px}.outs i{width:9px;height:9px;border-radius:50%;border:2px solid #56628a}.outs i.on{background:var(--red);border-color:var(--red)}
+.count{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}
+.brand{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;letter-spacing:.18em;color:#7d88a6;padding:6px 4px;border-left:1px solid var(--line);font-weight:800}
+.help{position:fixed;inset:0;display:grid;place-items:center;color:#fff;font:18px/1.5 system-ui;background:rgba(0,0,0,.6);text-align:center;padding:40px}
+</style>
+</head>
+<body>
+<div id="bug" class="bug hidden"></div>
+<script>
+// ?game=<id> follows one game; ?school=<id> follows the school's live game.
+// Options: position=bottom-left|bottom-right|top-left|top-right|bottom-center,
+// scale=0.5..2, hide_when_idle=0 to keep a final score on screen.
+const params=new URLSearchParams(location.search);
+const gameId=params.get('game'),schoolId=params.get('school');
+const position=['bottom-left','bottom-right','top-left','top-right','bottom-center'].includes(params.get('position'))?params.get('position'):'bottom-left';
+const scale=Math.min(2,Math.max(.5,Number(params.get('scale'))||1));
+const hideIdle=params.get('hide_when_idle')!=='0';
+const COLORS={'manhattan-ks':['#28306C','#ffffff']};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bug=document.getElementById('bug');
+bug.classList.add('pos-'+position);
+document.documentElement.style.setProperty('--scale',scale);
+let game=null,offset=0,followed=gameId,lastScores={};
+
+function colors(id){const c=COLORS[id];if(c){document.documentElement.style.setProperty('--school',c[0]);document.documentElement.style.setProperty('--school-on',c[1])}}
+if(schoolId)colors(schoolId);
+if(!gameId&&!schoolId){document.body.insertAdjacentHTML('beforeend','<div class="help">Add <b>?school=&lt;id&gt;</b> or <b>?game=&lt;id&gt;</b> to this address.<br>Example: /overlay/?school=manhattan-ks</div>')}
+
+async function poll(){
+  try{
+    if(!followed&&schoolId){
+      const d=await (await fetch(`/api/score/games?school=${encodeURIComponent(schoolId)}`,{cache:'no-store'})).json();
+      offset=d.server_now-Date.now();
+      const pick=d.games.find(g=>g.status==='live')||d.games.find(g=>g.status==='final');
+      game=pick||null;followed=pick?.status==='live'?pick.id:null;render();return;
+    }
+    if(!followed)return;
+    const res=await fetch(`/api/score/games/${encodeURIComponent(followed)}${game?.id===followed?`?since=${game.version}`:''}`,{cache:'no-store'});
+    if(res.status===404){game=null;followed=gameId;render();return}
+    const d=await res.json();offset=d.server_now-Date.now();
+    if(!d.unchanged){game=d;colors(d.school_id);render()}
+    if(schoolId&&!gameId&&game?.status==='final')followed=null;
+  }catch{}
+}
+
+function clockText(){
+  const c=game?.state?.clock;if(!c)return'';
+  const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+offset-c.started_at):0);
+  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+}
+
+function render(){
+  // Show live games; finals stay up only when hide_when_idle=0 or for a
+  // game followed by id.
+  const visible=game&&(game.status==='live'||(game.status==='final'&&(!hideIdle||gameId)));
+  bug.classList.toggle('hidden',!visible);
+  if(!visible)return;
+  const g=game,s=g.state,diamond=g.sport!=='Soccer',live=g.status==='live';
+  const bat=diamond&&live?(s.half==='top'?'away':'home'):null;
+  const team=side=>{
+    const bumped=lastScores[g.id+side]!=null&&lastScores[g.id+side]!==g[side].score;
+    lastScores[g.id+side]=g[side].score;
+    return`<div class="team ${g[side].is_school?'school':''}"><span class="bar"></span><span class="name">${esc(g[side].name)}${bat===side?'<span class="poss">◀</span>':''}</span><span class="score ${bumped?'bump':''}">${g[side].score}</span></div>`;
+  };
+  let state;
+  if(!live)state=`<div class="state"><div class="main final">${esc(g.summary).toUpperCase()}</div><div class="small">${esc(g.sport)}</div></div>`;
+  else if(diamond){
+    state=`<div class="state"><div class="main">${s.half==='top'?'▲':'▼'} ${s.inning}</div><div class="diamondbox"><span class="mini"><i class="b2 ${s.bases[1]?'on':''}"></i><i class="b3 ${s.bases[2]?'on':''}"></i><i class="b1 ${s.bases[0]?'on':''}"></i></span><span><div class="count">${s.balls}-${s.strikes}</div><div class="outs">${[0,1].map(i=>`<i class="${i<s.outs?'on':''}"></i>`).join('')}</div></span></div></div>`;
+  }else{
+    state=`<div class="state"><div class="clock" id="clock">${clockText()}</div><div class="small">${esc(g.summary)}${s.period===5?` · PK ${s.pks.away}-${s.pks.home}`:''}</div></div>`;
+  }
+  bug.innerHTML=`<div class="teams">${team('away')}${team('home')}</div>${state}<div class="brand">SAS SPORTS</div>`;
+}
+setInterval(()=>{const el=document.getElementById('clock');if(el)el.textContent=clockText()},250);
+async function loop(){await poll();setTimeout(loop,game?.status==='live'?1000:5000)}
+if(gameId||schoolId)loop();
+</script>
+</body>
+</html>

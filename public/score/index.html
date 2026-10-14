@@ -90,7 +90,7 @@ table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{pa
 <!-- Games -->
 <section id="homeView" hidden>
   <div class="card">
-    <div class="row" style="align-items:center;margin-bottom:10px"><h2 style="margin:0">Games</h2><div style="flex:0 0 auto"><a class="small" id="schoolBoardLink" target="_blank" style="color:var(--accent);font-weight:800">School TV scoreboard ↗</a></div></div>
+    <div class="row" style="align-items:center;margin-bottom:10px"><h2 style="margin:0">Games</h2><div style="flex:0 0 auto"><a class="small" id="schoolBoardLink" target="_blank" style="color:var(--accent);font-weight:800">School TV scoreboard ↗</a> · <a class="small" id="schoolOverlayLink" target="_blank" style="color:var(--accent);font-weight:800">Stream overlay ↗</a></div></div>
     <div class="games" id="gameList"><p class="muted">Loading…</p></div>
   </div>
   <div class="card">
@@ -137,7 +137,8 @@ table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{pa
 <section id="consoleView" hidden>
   <div class="row" style="margin-bottom:10px;align-items:center"><button id="backBtn" class="btn ghost small" style="flex:0 0 auto">← Games</button><div class="muted small" id="consoleTitle" style="text-align:right"></div></div>
   <div class="board" id="board"></div>
-  <div class="links"><a id="tvLink" target="_blank">Open TV scoreboard ↗</a><a id="appLink" target="_blank">See it in the app ↗</a></div>
+  <div class="links"><a id="tvLink" target="_blank">Open TV scoreboard ↗</a><a id="appLink" target="_blank">See it in the app ↗</a><a id="overlayLink" target="_blank">Stream overlay ↗</a></div>
+  <p class="note small" style="margin-top:-4px">Streaming the game? In OBS, vMix or Boxcast add the <b>Stream overlay</b> link as a Browser Source (1920×1080). It shows the score over the video and updates with every tap.</p>
   <div id="controls"></div>
   <div class="error" id="consoleError"></div>
 </section>
@@ -192,6 +193,7 @@ async function enterHome(){
   show('homeView');stopConsole();
   $('#who').textContent=`${session.user.display_name} · ${session.user.school_name}`;
   $('#schoolBoardLink').href=`/scoreboard/?school=${encodeURIComponent(session.user.school_id)}`;
+  $('#schoolOverlayLink').href=`/overlay/?school=${encodeURIComponent(session.user.school_id)}`;
   $('#adminCard').hidden=session.user.role!=='admin';
   if(!sports.length)await loadSchools();
   try{
@@ -231,6 +233,7 @@ async function openGame(id){
   serverOffset=current.server_now-Date.now();
   $('#tvLink').href=`/scoreboard/?game=${encodeURIComponent(id)}`;
   $('#appLink').href=`/?school=${encodeURIComponent(current.school_id)}`;
+  $('#overlayLink').href=`/overlay/?game=${encodeURIComponent(id)}`;
   render();
   // Another scorer's taps (or a second device) show up here too.
   pollTimer=setInterval(async()=>{if(sending||queue.some(q=>q.game===current?.id))return;try{const d=await api(`/api/score/games/${encodeURIComponent(current.id)}?since=${current.version}`);if(!d.unchanged){current=d;render()}}catch{}},3000);
