@@ -10,6 +10,11 @@
   "kv_namespaces": [
     { "binding": "HIGHLIGHTS", "id": "38280ef8508844459bbe14735e825d7a" }
   ],
+  // School-entered live scores (scorer app /score, TV scoreboard /scoreboard).
+  // Not a Durable Object: those turn off branch previews for the whole Worker.
+  "d1_databases": [
+    { "binding": "SCORE_DB", "database_name": "sas-sports-live-scoring", "database_id": "47c6e939-fa7e-40fe-8471-4c0aad836eca" }
+  ],
   // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
   // deployed Cron Trigger in place (the reverted #87 added one).
   "triggers": {

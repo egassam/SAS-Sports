@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>SAS Scoreboard</title>
+<style>
+:root{--school:#28306C;--school-on:#ffffff;--bg:#000;--panel:#0b0f1c;--line:#232b45;--text:#fff;--muted:#9aa6c2;--amber:#ffc531;--red:#ff4747;--green:#3ddc97}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+.stage{height:100vh;display:flex;flex-direction:column;padding:2.2vh 2.4vw;gap:2vh}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:2.4vh;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.status-chip{padding:.35em .9em;border-radius:999px;background:#1b2238;color:#fff}
+.status-chip.live{background:var(--red)}
+.status-chip.final{background:#2d3654}
+.teams{flex:1;display:grid;grid-template-rows:1fr 1fr;gap:1.6vh;min-height:0}
+.team{display:grid;grid-template-columns:1fr auto;align-items:center;border-radius:2.2vh;padding:0 3vw;background:var(--panel);border:.3vh solid var(--line);min-height:0}
+.team.school{background:var(--school);color:var(--school-on);border-color:color-mix(in srgb,var(--school) 60%,#fff)}
+.team .name{font-size:8vh;font-weight:950;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.01em}
+.team .side{display:block;font-size:2.3vh;font-weight:800;letter-spacing:.14em;opacity:.7;margin-bottom:.8vh}
+.team .score{font-size:20vh;font-weight:950;font-variant-numeric:tabular-nums;line-height:1;min-width:1.3ch;text-align:right;color:var(--amber);text-shadow:0 0 2.4vh rgba(255,197,49,.35)}
+.team.batting .name::after{content:" ◂";color:var(--amber)}
+.bottom{display:grid;grid-template-columns:auto 1fr auto;gap:3vw;align-items:center;min-height:22vh}
+.linescore{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:3.4vh;justify-self:center}
+.linescore th,.linescore td{padding:.25em .55em;text-align:center;border-bottom:.2vh solid var(--line)}
+.linescore th{color:var(--muted);font-weight:800;font-size:2.6vh}
+.linescore td.team-cell{text-align:left;font-weight:900;max-width:22vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.linescore .tot{color:var(--amber);font-weight:950}
+.linescore .cur{background:#1b2238}
+.inning{font-size:7vh;font-weight:950;line-height:1;text-align:center}
+.inning small{display:block;font-size:2.6vh;color:var(--muted);letter-spacing:.12em;margin-top:.6vh}
+.count{display:grid;gap:1.2vh;font-size:3vh;font-weight:900}
+.count div{display:flex;align-items:center;gap:.8vh}
+.count b{width:2.2ch;color:var(--muted)}
+.lamp{width:3vh;height:3vh;border-radius:50%;background:#1b2238;border:.3vh solid #2d3654}
+.lamp.on{background:var(--green);border-color:var(--green);box-shadow:0 0 1.6vh var(--green)}
+.lamp.s.on{background:var(--amber);border-color:var(--amber);box-shadow:0 0 1.6vh var(--amber)}
+.lamp.o.on{background:var(--red);border-color:var(--red);box-shadow:0 0 1.6vh var(--red)}
+.diamond{position:relative;width:16vh;height:16vh}
+.diamond .base{position:absolute;width:5vh;height:5vh;transform:rotate(45deg);border:.5vh solid #3a4566;border-radius:.4vh}
+.diamond .base.on{background:var(--amber);border-color:var(--amber);box-shadow:0 0 1.8vh var(--amber)}
+.diamond .b2{left:5.5vh;top:.5vh}.diamond .b3{left:.5vh;top:5.5vh}.diamond .b1{left:10.5vh;top:5.5vh}
+.clock{font-size:16vh;font-weight:950;font-variant-numeric:tabular-nums;line-height:1;text-align:center;color:var(--amber)}
+.period{font-size:4vh;font-weight:900;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.foot{display:flex;justify-content:space-between;color:var(--muted);font-size:1.8vh}
+.empty{flex:1;display:grid;place-items:center;text-align:center;font-size:4vh;color:var(--muted)}
+.stale{color:var(--red);font-weight:800}
+.fs{position:fixed;right:1.5vw;bottom:2vh;background:#1b2238;color:#fff;border:0;border-radius:1vh;padding:1vh 1.4vw;font-size:2vh;cursor:pointer;opacity:.85;transition:opacity .4s}
+.fs.idle{opacity:0;pointer-events:none}
+@media (orientation:portrait){.team .name{font-size:5vh}.team .score{font-size:13vh}.bottom{grid-template-columns:1fr;justify-items:center;gap:2vh}.linescore{font-size:2.4vh}.clock{font-size:11vh}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage"><div class="empty">Loading scoreboard…</div></div>
+<button class="fs" id="fsBtn" type="button">Full screen</button>
+<script>
+// The TV scoreboard: open it on the computer or streaming stick that drives the
+// school's video board. ?game=<id> follows one game; ?school=<id> follows
+// whichever of the school's games is live (good for a screen left on all day).
+const params=new URLSearchParams(location.search),gameId=params.get('game'),schoolId=params.get('school');
+const COLORS={'manhattan-ks':['#28306C','#ffffff']};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=s=>document.querySelector(s);
+let game=null,offset=0,lastOk=Date.now(),followed=gameId;
+
+function applyColors(id){const c=COLORS[id];if(c){document.documentElement.style.setProperty('--school',c[0]);document.documentElement.style.setProperty('--school-on',c[1])}}
+if(schoolId)applyColors(schoolId);
+
+async function poll(){
+  try{
+    if(!followed&&schoolId){
+      const d=await (await fetch(`/api/score/games?school=${encodeURIComponent(schoolId)}`,{cache:'no-store'})).json();
+      offset=d.server_now-Date.now();lastOk=Date.now();
+      const pick=d.games.find(g=>g.status==='live')||d.games.find(g=>g.status==='final')||d.games.find(g=>g.status==='scheduled');
+      if(pick){game=pick;followed=pick.status==='live'?pick.id:null}else game=null;
+      render();return;
+    }
+    const res=await fetch(`/api/score/games/${encodeURIComponent(followed)}${game?.id===followed?`?since=${game.version}`:''}`,{cache:'no-store'});
+    if(res.status===404){game=null;followed=gameId;render();return}
+    const d=await res.json();offset=d.server_now-Date.now();lastOk=Date.now();
+    if(!d.unchanged){game=d;applyColors(d.school_id);render()}
+    // In school mode, go back to looking for the next game after a final.
+    if(schoolId&&!gameId&&game?.status==='final')followed=null;
+  }catch{}finally{renderStale()}
+}
+
+function clockText(){
+  const c=game?.state?.clock;if(!c)return'';
+  const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+offset-c.started_at):0);
+  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+}
+const lamps=(n,max,cls)=>Array.from({length:max},(_,i)=>`<span class="lamp ${cls} ${i<n?'on':''}"></span>`).join('');
+
+function render(){
+  const stage=$('#stage');
+  if(!game){stage.innerHTML=`<div class="empty">${!gameId&&!schoolId?'Add ?game= or ?school= to the address.':'No game right now.<br><small>The score appears here when the scorekeeper starts a game.</small>'}</div>`;return}
+  const g=game,s=g.state,diamond=g.sport!=='Soccer',live=g.status==='live';
+  const bat=diamond&&live?(s.half==='top'?'away':'home'):null;
+  const team=side=>`<div class="team ${g[side].is_school?'school':''} ${bat===side?'batting':''}"><div class="name"><span class="side">${side==='home'?'Home':'Guest'}</span>${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
+  let bottom='';
+  if(diamond){
+    const n=Math.max(s.innings_scheduled,s.line.length);
+    const cell=(i,side)=>{const v=s.line[i]?.[side];const cur=live&&i===s.inning-1&&side===bat;return`<td class="${cur?'cur':''}">${v==null?(cur?0:''):v}</td>`};
+    const row=side=>`<tr><td class="team-cell">${esc(g[side].name)}</td>${Array.from({length:n},(_,i)=>cell(i,side)).join('')}<td class="tot">${s.runs[side]}</td><td>${s.hits[side]}</td><td>${s.errors[side]}</td></tr>`;
+    const table=`<table class="linescore"><tr><th></th>${Array.from({length:n},(_,i)=>`<th>${i+1}</th>`).join('')}<th>R</th><th>H</th><th>E</th></tr>${row('away')}${row('home')}</table>`;
+    const inning=live?`<div class="inning">${s.half==='top'?'▲':'▼'} ${s.inning}<small>${s.half==='top'?'TOP':'BOTTOM'}</small></div>`:`<div class="inning">${esc(g.summary)}</div>`;
+    const side=live?`<div style="display:flex;gap:2.5vw;align-items:center"><div class="diamond"><span class="base b2 ${s.bases[1]?'on':''}"></span><span class="base b3 ${s.bases[2]?'on':''}"></span><span class="base b1 ${s.bases[0]?'on':''}"></span></div><div class="count"><div><b>B</b>${lamps(s.balls,3,'b')}</div><div><b>S</b>${lamps(s.strikes,2,'s')}</div><div><b>O</b>${lamps(s.outs,2,'o')}</div></div></div>`:'<div></div>';
+    bottom=`<div class="bottom">${inning}${table}${side}</div>`;
+  }else{
+    bottom=`<div class="bottom" style="grid-template-columns:1fr"><div><div class="clock" id="clock">${g.status==='scheduled'?'0:00':clockText()}</div><div class="period">${esc(g.summary)}${s.period===5?` · PKs ${s.pks.away}–${s.pks.home}`:''}</div></div></div>`;
+  }
+  const chip=g.status==='live'?'<span class="status-chip live">● Live</span>':g.status==='final'?'<span class="status-chip final">Final</span>':'<span class="status-chip">Starts '+esc(g.start_at?new Date(g.start_at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'soon')+'</span>';
+  stage.innerHTML=`<div class="top"><span>${esc(g.sport)}${g.venue?' · '+esc(g.venue):''}</span>${chip}</div><div class="teams">${team('away')}${team('home')}</div>${bottom}<div class="foot"><span>SAS Sports · live from the school scorekeeper</span><span id="stale"></span></div>`;
+}
+function renderStale(){const el=$('#stale');if(!el)return;const age=Date.now()-lastOk;el.innerHTML=age>10000?'<span class="stale">Reconnecting…</span>':''}
+
+setInterval(()=>{const el=$('#clock');if(el&&game?.status!=='scheduled')el.textContent=clockText()},250);
+// Polls every second; slower while nobody is scoring a game.
+async function loop(){await poll();setTimeout(loop,game?.status==='live'?1000:5000)}
+loop();
+
+// Full screen and keep the screen awake.
+const fsBtn=$('#fsBtn');let idle;
+fsBtn.addEventListener('click',()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.()});
+document.addEventListener('mousemove',()=>{fsBtn.classList.remove('idle');clearTimeout(idle);idle=setTimeout(()=>fsBtn.classList.add('idle'),3000)});
+idle=setTimeout(()=>fsBtn.classList.add('idle'),3000);
+async function wake(){try{await navigator.wakeLock?.request('screen')}catch{}}
+wake();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake()});
+</script>
+</body>
+</html>
