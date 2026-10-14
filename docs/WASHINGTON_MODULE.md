@@ -21,13 +21,14 @@ Washington was added to the app on October 14, 2026 (13 sports, one PR with Wisc
 ## Washington rules (beyond Oklahoma's handlers)
 
 - **Combined:** Basketball, Golf, Soccer, Swimming & Diving, Tennis.
+- **Empty template:** a season not yet published is SIDEARM's `@season @sport Schedule` page (beach volleyball): a valid empty schedule (Oregon's rule).
 - **Golf card places:** "T-8th (+24, 888)" (women's), "3rd, 890 (+26)" (men's).
 
 Every rule was mutated and each mutation fails `node tests/washington-module.mjs`.
 
 ## Athletes
 
-Three featured athletes per sport. Verified Instagram from profile pages for Baseball, Basketball, Cross Country, Football, Rowing, Soccer, Softball, Track & Field; pinned: Golf (8 of 14), Gymnastics (10 of 18), Tennis (8 of 17), Volleyball (12 of 30). **Profile cards:** Beach Volleyball (the roster read no profile pages).
+Three featured athletes per sport. Verified Instagram from profile pages for Baseball, Basketball, Cross Country, Football, Rowing, Soccer, Softball, Track & Field; pinned: Golf (8 of 14), Gymnastics (10 of 18), Tennis (8 of 17), Volleyball (12 of 30). Beach Volleyball is not in the athlete list until its 2027 roster is published (the roster page is the empty template).
 
 ## Open
 

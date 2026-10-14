@@ -383,5 +383,13 @@ assert.deepEqual(['Golf|womens-golf','Golf|mens-golf'].flatMap(key=>{const [spor
   assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer'],['Soccer','mens-soccer']].map(([sport,slug])=>records(sport,slug)),[["3-3","0-3"],["13-2","4-2"],["11-1-2","6-1-1"],["7-3-2","4-1-1"]]);
 }
 
+// A season not yet published is SIDEARM's empty template ("@season @sport
+// Schedule", beach volleyball): a valid empty schedule, not a failed source.
+{
+  const raw=fixture('beach-volleyball-schedule.html.gz'),url=page('beach-volleyball');
+  const events=worker.washingtonHandlers.parseSchedule(raw,school,'Beach Volleyball',url,now);
+  assert.deepEqual([events,worker.washingtonHandlers.isEmptySchedule(events)],[[],true]);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Washington module checks passed');
