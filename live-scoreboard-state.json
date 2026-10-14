@@ -1487,9 +1487,102 @@
   },
   "wisconsin|Volleyball": {
    "state": "off"
+  },
+  "miami|Baseball": {
+   "state": "off"
+  },
+  "miami|Basketball": {
+   "state": "off"
+  },
+  "miami|Football": {
+   "state": "off"
+  },
+  "miami|Soccer": {
+   "state": "off"
+  },
+  "miami|Volleyball": {
+   "state": "off"
+  },
+  "virginia|Baseball": {
+   "state": "off"
+  },
+  "virginia|Basketball": {
+   "state": "off"
+  },
+  "virginia|Field Hockey": {
+   "state": "off"
+  },
+  "virginia|Football": {
+   "state": "off"
+  },
+  "virginia|Lacrosse": {
+   "state": "off"
+  },
+  "virginia|Soccer": {
+   "state": "off"
+  },
+  "virginia|Softball": {
+   "state": "off"
+  },
+  "virginia|Volleyball": {
+   "state": "off"
+  },
+  "boston-college|Baseball": {
+   "state": "off"
+  },
+  "boston-college|Basketball": {
+   "state": "off"
+  },
+  "boston-college|Field Hockey": {
+   "state": "off"
+  },
+  "boston-college|Football": {
+   "state": "off"
+  },
+  "boston-college|Hockey": {
+   "state": "off"
+  },
+  "boston-college|Lacrosse": {
+   "state": "off"
+  },
+  "boston-college|Soccer": {
+   "state": "off"
+  },
+  "boston-college|Softball": {
+   "state": "off"
+  },
+  "boston-college|Volleyball": {
+   "state": "off"
+  },
+  "california|Baseball": {
+   "state": "off"
+  },
+  "california|Basketball": {
+   "state": "off"
+  },
+  "california|Field Hockey": {
+   "state": "off"
+  },
+  "california|Football": {
+   "state": "off"
+  },
+  "california|Lacrosse": {
+   "state": "off"
+  },
+  "california|Soccer": {
+   "state": "off"
+  },
+  "california|Softball": {
+   "state": "off"
+  },
+  "california|Volleyball": {
+   "state": "off"
+  },
+  "california|Water Polo": {
+   "state": "off"
   }
  },
- "version": "4.85.2-washington-wisconsin",
- "updated_at": "2026-10-14T18:59:31.345Z",
+ "version": "4.87.1-boston-college-california",
+ "updated_at": "2026-10-14T22:14:33.101Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

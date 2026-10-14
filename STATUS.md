@@ -30,10 +30,28 @@
 | baylor | Football | ⚪ off (waiting) |  |
 | baylor | Softball | ⚪ off (waiting) |  |
 | baylor | Volleyball | ⚪ off (waiting) |  |
+| boston-college | Baseball | ⚪ off (waiting) |  |
+| boston-college | Basketball | ⚪ off (waiting) |  |
+| boston-college | Field Hockey | ⚪ off (waiting) |  |
+| boston-college | Football | ⚪ off (waiting) |  |
+| boston-college | Hockey | ⚪ off (waiting) |  |
+| boston-college | Lacrosse | ⚪ off (waiting) |  |
+| boston-college | Soccer | ⚪ off (waiting) |  |
+| boston-college | Softball | ⚪ off (waiting) |  |
+| boston-college | Volleyball | ⚪ off (waiting) |  |
 | byu | Baseball | ⚪ off (waiting) |  |
 | byu | Basketball | ⚪ off (waiting) |  |
 | byu | Football | ⚪ off (waiting) |  |
 | byu | Softball | ⚪ off (waiting) |  |
+| california | Baseball | ⚪ off (waiting) |  |
+| california | Basketball | ⚪ off (waiting) |  |
+| california | Field Hockey | ⚪ off (waiting) |  |
+| california | Football | ⚪ off (waiting) |  |
+| california | Lacrosse | ⚪ off (waiting) |  |
+| california | Soccer | ⚪ off (waiting) |  |
+| california | Softball | ⚪ off (waiting) |  |
+| california | Volleyball | ⚪ off (waiting) |  |
+| california | Water Polo | ⚪ off (waiting) |  |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
 | cincinnati | Basketball | ⚪ off (waiting) |  |
 | cincinnati | Football | ⚪ off (waiting) |  |
@@ -94,6 +112,11 @@
 | maryland | Field Hockey | ⚪ off (waiting) |  |
 | maryland | Lacrosse | ⚪ off (waiting) |  |
 | maryland | Softball | ⚪ off (waiting) |  |
+| miami | Baseball | ⚪ off (waiting) |  |
+| miami | Basketball | ⚪ off (waiting) |  |
+| miami | Football | ⚪ off (waiting) |  |
+| miami | Soccer | ⚪ off (waiting) |  |
+| miami | Volleyball | ⚪ off (waiting) |  |
 | michigan | Baseball | ⚪ off (waiting) |  |
 | michigan | Basketball | ⚪ off (waiting) |  |
 | michigan | Field Hockey | ⚪ off (waiting) |  |
@@ -227,6 +250,14 @@
 | vanderbilt | Basketball | ⚪ off (waiting) |  |
 | vanderbilt | Lacrosse | ⚪ off (waiting) |  |
 | vanderbilt | Soccer | ⚪ off (waiting) |  |
+| virginia | Baseball | ⚪ off (waiting) |  |
+| virginia | Basketball | ⚪ off (waiting) |  |
+| virginia | Field Hockey | ⚪ off (waiting) |  |
+| virginia | Football | ⚪ off (waiting) |  |
+| virginia | Lacrosse | ⚪ off (waiting) |  |
+| virginia | Soccer | ⚪ off (waiting) |  |
+| virginia | Softball | ⚪ off (waiting) |  |
+| virginia | Volleyball | ⚪ off (waiting) |  |
 | washington | Baseball | ⚪ off (waiting) |  |
 | washington | Basketball | ⚪ off (waiting) |  |
 | washington | Football | ⚪ off (waiting) |  |
@@ -324,4 +355,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 80/323; on 0; off 243; failing 0.
+Done 80/354; on 0; off 274; failing 0.
