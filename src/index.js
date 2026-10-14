@@ -57,9 +57,11 @@ import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
 import {uscSchool,createUscHandlers} from './schools/usc.mjs';
 import {washingtonSchool,createWashingtonHandlers} from './schools/washington.mjs';
 import {wisconsinSchool,createWisconsinHandlers} from './schools/wisconsin.mjs';
+import {miamiSchool,createMiamiHandlers} from './schools/miami.mjs';
+import {virginiaSchool,createVirginiaHandlers} from './schools/virginia.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.85.2-washington-wisconsin';
+const VERSION='4.86.3-miami-virginia';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -381,6 +383,22 @@ const SCHOOL_MODULES=[
     // archive.
     beforeHighlights:async event=>{if(wisconsinHandlers.isFinalWithoutStory(event))await wisconsinHandlers.attachArchiveStory(event);},
     feed:async events=>{await Promise.all(events.filter(wisconsinHandlers.isFinalWithoutStory).map(event=>wisconsinHandlers.attachArchiveStory(event)));return events.filter(event=>!wisconsinHandlers.isTennisWithoutStory(event)&&!wisconsinHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:miamiSchool,parseSchedule:(...args)=>miamiHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>miamiHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>miamiHandlers.matchesRecap(...args),crossCountry:{matches:event=>miamiHandlers.isCrossCountry(event),attach:event=>miamiHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>miamiHandlers.isMiamiGolf(event),attach:event=>miamiHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(miamiHandlers.isFinalWithoutStory(event))await miamiHandlers.attachArchiveStory(event);},
+    // A past golf or tennis tournament still without a story publishes no
+    // place: it is not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(miamiHandlers.isFinalWithoutStory).map(event=>miamiHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(miamiHandlers.isMiamiGolf).map(event=>miamiHandlers.attachGolfPlace(event)));return events.filter(event=>!miamiHandlers.isTournamentWithoutStory(event));}}
+  ,{school:virginiaSchool,parseSchedule:(...args)=>virginiaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>virginiaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>virginiaHandlers.matchesRecap(...args),crossCountry:{matches:event=>virginiaHandlers.isCrossCountry(event),attach:event=>virginiaHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>virginiaHandlers.isVirginiaGolf(event),attach:event=>virginiaHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(virginiaHandlers.isFinalWithoutStory(event))await virginiaHandlers.attachArchiveStory(event);},
+    // A past golf or tennis tournament still without a story publishes no
+    // place: it is not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(virginiaHandlers.isFinalWithoutStory).map(event=>virginiaHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(virginiaHandlers.isVirginiaGolf).map(event=>virginiaHandlers.attachGolfPlace(event)));return events.filter(event=>!virginiaHandlers.isTournamentWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -507,6 +525,8 @@ const uclaHandlers=createUclaHandlers({makeEvent,visibleText,absoluteUrl,recapMa
 const uscHandlers=createUscHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const washingtonHandlers=createWashingtonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const wisconsinHandlers=createWisconsinHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const miamiHandlers=createMiamiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const virginiaHandlers=createVirginiaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
@@ -573,7 +593,10 @@ function rosterProfiles(raw,base){
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa; "Matthew Hull headshot
     // photo", UCLA).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // The portrait's link comes first and has no text; the card's title link
+    // names the athlete (Virginia's portraits are alt "Women's Soccer").
+    const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
+    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -593,7 +616,10 @@ function rosterProfiles(raw,base){
     // A link around the portrait only has no text: its alt names the
     // athlete ("Hannah Whittingstall Headshot", Iowa; "Matthew Hull headshot
     // photo", UCLA).
-    const name=clean((visibleText(profileMatch[2])||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // The portrait's link comes first and has no text; the card's title link
+    // names the athlete (Virginia's portraits are alt "Women's Soccer").
+    const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
+    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
@@ -741,13 +767,14 @@ function verifiedInstagram(raw){
   // broken link, not the account "alex". A link written inside another
   // ("instagram.com/https://www.instagram.com/wyattnovara", Michigan) is the
   // inner one.
-  let m;const re=/<a\b[^>]*href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
+  // Miami's bios link "instagram.com/ruth_martinez_9", without a scheme.
+  let m;const re=/<a\b[^>]*href=["']((?:https?:\/\/)?(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
   while((m=re.exec(raw))){
     // The site's menu links the team's account (Michigan State's
     // msu_baseball on every baseball profile): never the athlete's.
     if(/\bdata-s-nav-link\b|\bc-navigation__url\b/.test(m[0]))continue;
     try{
-      const href=decodeHtml(m[1]),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
+      const href=decodeHtml(m[1]).replace(/^(?!https?:)/i,'https://'),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
       const u=new URL(inner.replace(/ /g,'%20')),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
       // Only a valid handle: "merritt%20_zieminick" is a broken link.

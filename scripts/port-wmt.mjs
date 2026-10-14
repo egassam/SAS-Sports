@@ -18,6 +18,7 @@
 //   NODE_USE_ENV_PROXY=1 node scripts/port-wmt.mjs --from=nebraska --to=miami
 import {readFileSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
+import {inferSport} from './onboard-school.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const from=value('from')||'nebraska',to=value('to');
@@ -40,13 +41,16 @@ const slugOf=url=>{try{return(new URL(url).pathname.match(/^\/sports\/([^/]+)\/s
 const sports=sponsored[to],schedule={},roster={},combined=[],labels={},notes=[];
 for(const sport of sports){
   const candidates=[].concat(object.scheduleUrls?.[`${to}|${sport}`]||[]).map(slugOf).filter(Boolean);
-  let slugs=[...new Set(candidates)].filter(slug=>!nav.size||nav.has(slug));
+  // The menu's own codes for the sport too (Miami's `cross`, `soc`; Virginia's
+  // `msoc` beside the scaffold's `wsoc`, `mbball`/`wbball`, `xctrack`).
+  const menu=[...nav].filter(slug=>inferSport(`/sports/${slug}/schedule`)===sport);
+  let slugs=[...new Set([...candidates.filter(slug=>!nav.size||nav.has(slug)),...menu])];
   // A one-team sport the menu links under its team prefix only
   // (Northwestern's womens-cross-country, womens-fencing).
   if(!slugs.length&&nav.size)slugs=[...new Set(candidates.flatMap(slug=>[`womens-${slug}`,`mens-${slug}`]))].filter(slug=>nav.has(slug)).slice(0,2);
   if(!slugs.length){slugs=candidates.slice(0,1);notes.push(`${sport}: no route in the site's menu; kept ${slugs[0]?`/sports/${slugs[0]}/schedule`:'nothing'} (check by eye)`)}
   // Two team pages: men's and women's (mens-golf/womens-golf, mbball/wbball).
-  if(slugs.length>2)slugs=slugs.filter(s=>/^(?:mens|womens)-/.test(s)).slice(0,2);
+  if(slugs.length>2)slugs=slugs.filter(s=>/^(?:mens|womens)-|^[mw](?=[a-z]{3,})(?!restl)/.test(s)).slice(0,2);
   schedule[sport]=slugs;roster[sport]=slugs;
   if(slugs.length===2){
     combined.push(sport);
