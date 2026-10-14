@@ -17,7 +17,7 @@
 //   createArchiveStory({...})         a final with no linked story takes one from /sports/<slug>/archives
 //   createTfrrsMeetResults({...})     cross country races and team scores from TFRRS
 import {sidearmStartTime} from './sidearm-schedule-data.mjs';
-import {findTfrrsMeet,parseTfrrsResults} from './tfrrs-results.mjs';
+import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults} from './tfrrs-results.mjs';
 import {withoutRanking} from './sidearm-schedule-reader.mjs';
 
 const dayGap=(a,b)=>(Date.parse(String(b.date).slice(0,10))-Date.parse(String(a.date).slice(0,10)))/86400000;
@@ -264,7 +264,7 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
 // by date and name, the school's rows by the TEAM column. Every team place
 // the schedule publishes must agree, or the schedule's headline stays.
 // Feed and expanded view both call attach; the second call is a no-op.
-export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,decodeHtml,ordinal,fetch,headers}){
+export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay=false,decodeHtml,ordinal,fetch,headers}){
   const download=downloader(fetch,headers);
   const matches=event=>event?.school_id===id&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   async function attach(event){
@@ -279,7 +279,10 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
     for(const team of ['Women','Men']){
       if(!teams[team])continue;
       const listing=await download(teams[team]);if(!listing)continue;
-      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)});
+      // onlyMeetThatDay: a name TFRRS shortens past recognition (USC's "UC
+      // Riverside Invitational" is the "UCR XC Invite") is the team's only
+      // meet that day.
+      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)})||(onlyMeetThatDay?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
       if(url)pages.add(url);
     }
     if(!pages.size)return unavailable('No results for this meet are published on TFRRS yet.');
