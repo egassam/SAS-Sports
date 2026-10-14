@@ -519,5 +519,14 @@ const fromTfrrs=teams=>{
   recapFixtures.clear();requests.length=0;
 }
 
+// A page whose games this season are all past without a published result
+// (softball's fall exhibitions, Sep 11-Oct 7) is a valid empty schedule, not
+// a failed source (the first preview answered 502).
+{
+  const raw=fixture('softball-schedule.html.gz'),url=page('softball');
+  const events=worker.wisconsinHandlers.parseSchedule(raw,school,'Softball',url,now);
+  assert.deepEqual([events,worker.wisconsinHandlers.isEmptySchedule(events)],[[],true]);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Wisconsin module checks passed');

@@ -4,7 +4,7 @@
 
 Wisconsin was added to the app on October 14, 2026 (13 sports, one PR with Washington).
 
-## Status (`4.85.0-washington-wisconsin`)
+## Status (`4.85.1-washington-wisconsin`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -17,7 +17,8 @@ Wisconsin was added to the app on October 14, 2026 (13 sports, one PR with Washi
 | Tennis | `womens-tennis`, `mens-tennis` | Labeled; women's tournaments with stories; men's three past tournaments have no story of their own (not listed) |
 | Rowing | `womens-rowing`, `rowing` (lightweight) | Labeled Women's and Lightweight; regattas with their stories |
 | Swimming & Diving, Basketball, Wrestling | | 2026-27 schedules upcoming |
-| Softball, Track & Field | | Pages still show 2025-26: valid empty schedules until published |
+| Softball | `softball` | Fall exhibitions (Sep 11-Oct 7) all past without published results: a valid empty schedule (shared SIDEARM reader fix: such a page read as a failed source) |
+| Track & Field | | Pages still show 2025-26: valid empty schedules until published |
 
 ## Wisconsin rules (beyond Oklahoma's handlers)
 
@@ -36,5 +37,5 @@ Three featured athletes per sport. Verified Instagram from profile pages for Cro
 
 ## Open
 
-- Softball and Track & Field fill when 2026-27 is published.
+- Softball fills when its spring games are published; Track & Field when 2026-27 is published.
 - First live cards not yet observed.

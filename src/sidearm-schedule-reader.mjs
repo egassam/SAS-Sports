@@ -73,7 +73,10 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
     // the school's time) is current; a page with none is a valid empty
     // schedule.
     const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.slice(0,4))-1}-07-01`;
-    let pastSeason=0;
+    // A page whose games this season are all past without a published
+    // result (Wisconsin softball's fall exhibitions, Oct 14) is read, and
+    // empty too.
+    let pastSeason=0,passed=0;
     for(const game of games){
       const day=String(game.date||'').match(/^(\d{4})-(\d{2})-(\d{2})T/);
       if(!day)continue;
@@ -90,7 +93,7 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       const {firstDay,lastDay,listedDay}=daysOf(game);
       const ctx={sport,game,games,opponent,result,outcome,team,other,scored,meet,placing,firstDay,lastDay,listedDay,today,url,sourceUrl,parse};
       ctx.final=finalOf(ctx);
-      if(!ctx.final&&!keep(ctx))continue;
+      if(!ctx.final&&!keep(ctx)){passed++;continue;}
       const final=ctx.final;
       // K-State's results show the date only; upcoming games show the
       // published local time ("TBA" shows the date alone).
@@ -133,7 +136,7 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       config.afterEvent?.(event,ctx);
       events.push(event);
     }
-    if(!events.length&&pastSeason)emptiedBySeason.add(events);
+    if(!events.length&&(pastSeason||passed))emptiedBySeason.add(events);
     return events;
   }
   const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
