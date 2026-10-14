@@ -31,6 +31,18 @@ export function findTfrrsMeet(raw,{decodeHtml,date,name,match='any'}){
   return null;
 }
 
+// The team page's only meet on a day, or null (none, or several).
+export function onlyTfrrsMeetOn(raw,{decodeHtml,date}){
+  const found=[];
+  for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
+    const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
+    if(!link)continue;
+    const [day]=tfrrsCells(decodeHtml,tr[0]);
+    if(Date.parse(`${day} 12:00 UTC`)===Date.parse(`${date} 12:00 UTC`))found.push(new URL(link[1],'https://www.tfrrs.org').href);
+  }
+  return new Set(found).size===1?found[0]:null;
+}
+
 // One school's races at one meet, women first: the team result (when the
 // school scored as a team) and every runner of the school, by the TEAM
 // column only (App State's "Baylor Wolfe" is not Baylor). A race the school
