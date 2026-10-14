@@ -1367,9 +1367,129 @@
   },
   "penn-state|Volleyball": {
    "state": "off"
+  },
+  "purdue|Baseball": {
+   "state": "off"
+  },
+  "purdue|Basketball": {
+   "state": "off"
+  },
+  "purdue|Football": {
+   "state": "off"
+  },
+  "purdue|Soccer": {
+   "state": "off"
+  },
+  "purdue|Softball": {
+   "state": "off"
+  },
+  "purdue|Volleyball": {
+   "state": "off"
+  },
+  "rutgers|Baseball": {
+   "state": "off"
+  },
+  "rutgers|Basketball": {
+   "state": "off"
+  },
+  "rutgers|Field Hockey": {
+   "state": "off"
+  },
+  "rutgers|Football": {
+   "state": "off"
+  },
+  "rutgers|Lacrosse": {
+   "state": "off"
+  },
+  "rutgers|Soccer": {
+   "state": "off"
+  },
+  "rutgers|Softball": {
+   "state": "off"
+  },
+  "rutgers|Volleyball": {
+   "state": "off"
+  },
+  "ucla|Baseball": {
+   "state": "off"
+  },
+  "ucla|Basketball": {
+   "state": "off"
+  },
+  "ucla|Football": {
+   "state": "off"
+  },
+  "ucla|Soccer": {
+   "state": "off"
+  },
+  "ucla|Softball": {
+   "state": "off"
+  },
+  "ucla|Volleyball": {
+   "state": "off"
+  },
+  "ucla|Water Polo": {
+   "state": "off"
+  },
+  "usc|Baseball": {
+   "state": "off"
+  },
+  "usc|Basketball": {
+   "state": "off"
+  },
+  "usc|Football": {
+   "state": "off"
+  },
+  "usc|Lacrosse": {
+   "state": "off"
+  },
+  "usc|Soccer": {
+   "state": "off"
+  },
+  "usc|Volleyball": {
+   "state": "off"
+  },
+  "usc|Water Polo": {
+   "state": "off"
+  },
+  "washington|Baseball": {
+   "state": "off"
+  },
+  "washington|Basketball": {
+   "state": "off"
+  },
+  "washington|Football": {
+   "state": "off"
+  },
+  "washington|Soccer": {
+   "state": "off"
+  },
+  "washington|Softball": {
+   "state": "off"
+  },
+  "washington|Volleyball": {
+   "state": "off"
+  },
+  "wisconsin|Basketball": {
+   "state": "off"
+  },
+  "wisconsin|Football": {
+   "state": "off"
+  },
+  "wisconsin|Hockey": {
+   "state": "off"
+  },
+  "wisconsin|Soccer": {
+   "state": "off"
+  },
+  "wisconsin|Softball": {
+   "state": "off"
+  },
+  "wisconsin|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.80.0-scoreboard-game-days",
- "updated_at": "2026-10-13T07:02:13.003Z",
+ "version": "4.85.2-washington-wisconsin",
+ "updated_at": "2026-10-14T18:59:31.345Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

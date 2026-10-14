@@ -161,6 +161,20 @@
 | penn-state | Soccer | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
 | penn-state | Volleyball | ⚪ off (waiting) |  |
+| purdue | Baseball | ⚪ off (waiting) |  |
+| purdue | Basketball | ⚪ off (waiting) |  |
+| purdue | Football | ⚪ off (waiting) |  |
+| purdue | Soccer | ⚪ off (waiting) |  |
+| purdue | Softball | ⚪ off (waiting) |  |
+| purdue | Volleyball | ⚪ off (waiting) |  |
+| rutgers | Baseball | ⚪ off (waiting) |  |
+| rutgers | Basketball | ⚪ off (waiting) |  |
+| rutgers | Field Hockey | ⚪ off (waiting) |  |
+| rutgers | Football | ⚪ off (waiting) |  |
+| rutgers | Lacrosse | ⚪ off (waiting) |  |
+| rutgers | Soccer | ⚪ off (waiting) |  |
+| rutgers | Softball | ⚪ off (waiting) |  |
+| rutgers | Volleyball | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) | final W, 38-19 (live phase not observed 2×; waits for the next game) |
@@ -189,6 +203,20 @@
 | ucf | Basketball | ⚪ off (waiting) |  |
 | ucf | Football | ⚪ off (waiting) | final L, 28-42 (live phase not observed 2×; waits for the next game) |
 | ucf | Softball | ⚪ off (waiting) |  |
+| ucla | Baseball | ⚪ off (waiting) |  |
+| ucla | Basketball | ⚪ off (waiting) |  |
+| ucla | Football | ⚪ off (waiting) |  |
+| ucla | Soccer | ⚪ off (waiting) |  |
+| ucla | Softball | ⚪ off (waiting) |  |
+| ucla | Volleyball | ⚪ off (waiting) |  |
+| ucla | Water Polo | ⚪ off (waiting) |  |
+| usc | Baseball | ⚪ off (waiting) |  |
+| usc | Basketball | ⚪ off (waiting) |  |
+| usc | Football | ⚪ off (waiting) |  |
+| usc | Lacrosse | ⚪ off (waiting) |  |
+| usc | Soccer | ⚪ off (waiting) |  |
+| usc | Volleyball | ⚪ off (waiting) |  |
+| usc | Water Polo | ⚪ off (waiting) |  |
 | utah | Baseball | ⚪ off (waiting) |  |
 | utah | Basketball | ⚪ off (waiting) |  |
 | utah | Lacrosse | ⚪ off (waiting) |  |
@@ -199,10 +227,22 @@
 | vanderbilt | Basketball | ⚪ off (waiting) |  |
 | vanderbilt | Lacrosse | ⚪ off (waiting) |  |
 | vanderbilt | Soccer | ⚪ off (waiting) |  |
+| washington | Baseball | ⚪ off (waiting) |  |
+| washington | Basketball | ⚪ off (waiting) |  |
+| washington | Football | ⚪ off (waiting) |  |
+| washington | Soccer | ⚪ off (waiting) |  |
+| washington | Softball | ⚪ off (waiting) |  |
+| washington | Volleyball | ⚪ off (waiting) |  |
 | west-virginia | Baseball | ⚪ off (waiting) |  |
 | west-virginia | Basketball | ⚪ off (waiting) |  |
 | west-virginia | Football | ⚪ off (waiting) | final L, 31-52 (live phase not observed 2×; waits for the next game) |
 | west-virginia | Soccer | ⚪ off (waiting) |  |
+| wisconsin | Basketball | ⚪ off (waiting) |  |
+| wisconsin | Football | ⚪ off (waiting) |  |
+| wisconsin | Hockey | ⚪ off (waiting) |  |
+| wisconsin | Soccer | ⚪ off (waiting) |  |
+| wisconsin | Softball | ⚪ off (waiting) |  |
+| wisconsin | Volleyball | ⚪ off (waiting) |  |
 | alabama | Football | ✅ off (passed) | Alabama vs Georgia · 2026-10-11T06:38:16.684Z |
 | arizona-state | Hockey | ✅ off (passed) | ASU vs Holy Cross · 2026-10-11T00:53:26.581Z |
 | arizona-state | Volleyball | ✅ off (passed) | ASU vs TCU · 2026-10-11T22:31:53.086Z |
@@ -284,4 +324,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 80/283; on 0; off 203; failing 0.
+Done 80/323; on 0; off 243; failing 0.
