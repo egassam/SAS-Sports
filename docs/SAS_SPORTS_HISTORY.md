@@ -2257,3 +2257,32 @@ Built: `src/live-scoring/sports.mjs` (Baseball and Softball, 7 innings; Soccer, 
 Gates: `npm run test:release` passed. A Playwright run under `wrangler dev` scored a baseball and a soccer game, and taps reached the TV and the public card within about 2 s. `verify:preview --school=manhattan-ks --sports=all` passed (XC 18/20 and 26/21, 36 refreshes). CI was green. The PR changes more than one school module, so it was merged on the user's explicit "Merge it" (`b79f672`). Production: `/api/status` reports `4.81.0-live-scoring`, `/score/` and `/scoreboard/` return 200, the owner's sign-in works, and `verify:prod --school=manhattan-ks --sports=all` passed.
 
 Open: the LED-board bridge; more sports (tennis, golf, track & field, volleyball, basketball); finals flowing into the official results; TV colors for schools other than Manhattan. Previews and production share the one scores database.
+
+## October 14, 2026 — Stream overlay, LED-board requirements, competitor research (PR #299)
+
+User questions and requests, after live scoring went to production: what the scorekeeper opens (`/score/`); how the TV scoreboard displays; what a traditional LED board needs, then the same "into a PDF"; whether the concept is new and whether to patent, copyright or trademark it; "Research the competitors and compare them to ours", then the same "into a PDF"; "Add the stream overlay output"; and "Merge it".
+
+Answers given in the conversation:
+- **LED boards:** leave the console in charge and add a bridge that reads its data-out port. This is not built yet; it needs the Manhattan High console's make and model.
+- **IP (not legal advice):**
+  - A patent is unlikely to be worth it, because prior art exists.
+  - Copyright exists automatically, but AI-written code has limited protection.
+  - Trademark matters most. "SAS" conflicts with SAS Institute's mark, so a clearance search is recommended first.
+- **Competitors**, from six web searches with no companies contacted:
+  - ScoreVision: video boards that cost thousands.
+  - ScoreBird (Nevco): already sells the LED-console bridge, with fan app and stream overlays.
+  - Daktronics All Sport Lite: board control only, with no output for fans.
+  - GameChanger: fans pay.
+  - ScoreStream: fan-reported scores.
+- **The two PDFs** were sent to the user only and are not in the repository.
+
+Built: `public/overlay/index.html`, a transparent 1920×1080 score bug with `position`, `scale` and `hide_when_idle` options. The scorer app now links to it, `docs/LIVE_SCORING.md` covers it, and `tests/live-scoring.mjs` checks the page.
+
+Gates:
+- `npm run test:release` passed.
+- In Playwright, the overlay rendered a live game with a transparent background (corner alpha 0), and school mode found the live game.
+- `verify:preview --school=manhattan-ks --sports=all` passed, with XC at 18/20 and 26/21.
+- CI was green.
+- Merged on the user's "Merge it" (`c22cbcd`).
+
+Production: `/api/status` reports `4.82.0-stream-overlay`, `/overlay/` returns 200, and `verify:prod --school=manhattan-ks --sports=all` passed.
