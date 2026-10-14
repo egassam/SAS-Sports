@@ -4,7 +4,7 @@
 
 USC was added to the app on October 14, 2026 (14 sports, one PR with UCLA).
 
-## Status (`4.84.0-ucla-usc`)
+## Status (`4.84.1-ucla-usc`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

@@ -4,7 +4,7 @@
 
 UCLA was added to the app on October 14, 2026 (15 sports, one PR with USC). The catalog lists SIDEARM; uclabruins.com is **WMT** with Iowa/Vanderbilt's `schedule-item-block`/`schedule-item-team` cards, whose heading names the sport first as a link (`schedule-item-team__sport`, "Football"). `scripts/port-wmt.mjs` ported Nebraska's reader (it reads both generations).
 
-## Status (`4.84.0-ucla-usc`)
+## Status (`4.84.1-ucla-usc`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

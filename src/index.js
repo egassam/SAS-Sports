@@ -58,7 +58,7 @@ import {handleLiveScoring} from './live-scoring/api.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
 import {uscSchool,createUscHandlers} from './schools/usc.mjs';
 
-const VERSION='4.84.0-ucla-usc';
+const VERSION='4.84.1-ucla-usc';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
