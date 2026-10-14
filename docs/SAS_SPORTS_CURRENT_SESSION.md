@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 10, 2026 (2:40 PM), America/Chicago. Production `4.80.0-scoreboard-game-days` (verified).
+Last updated: October 14, 2026 (7:40 AM), America/Chicago. Production `4.81.0-live-scoring` (verified).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 10, 2026 (2:40 PM), America/Chicago. Production `4.80.0-sc
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.80.0-scoreboard-game-days`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.81.0-live-scoring`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -64,6 +64,7 @@ Last updated: October 10, 2026 (2:40 PM), America/Chicago. Production `4.80.0-sc
 | Northwestern (Big Ten) | `northwestern.mjs` (WMT, Auburn's reader; catalog said SIDEARM) | Complete (14 sports) | Added Oct 9 (#280). Baseball and Lacrosse fill when 2027 is published; women's tennis ITA All-American and Spartan Invite have no story (not listed); Tennis's last two athletes are profile cards; first live cards not yet observed |
 | **High school** (Kansas 6A) Manhattan High School | `manhattan-ks.mjs` + shared `src/high-school.mjs` | Live: Football (#287); Soccer, Volleyball, Tennis, Cross Country, Golf (#288) | Cross country results from LetsGoRun Timing (MeetPro) since #292; golf results source not yet found; winter/spring sports as published (`MANHATTAN_KS_MODULE.md`) |
 | **Middle schools** Anthony, Eisenhower (USD 383) | `manhattan-ks-middle.mjs` | Live (#288), schedules only | No scores published anywhere; Anthony's winter/spring calendar not yet published |
+| **Live scoring by schools** (SAS Scorer) | `src/live-scoring/` + `public/score/`, `public/scoreboard/` | Live since #297 (Oct 14): Baseball, Softball, Soccer; Manhattan High set up for the owner's testing | LED-board bridge, more sports, finals into the official feed, TV colors beyond Manhattan (`LIVE_SCORING.md`) |
 
 **All 16 Big 12 schools are converted** (West Virginia last, October 7). **SEC:** Alabama and Florida (PR #242), Georgia and LSU (PR #244), Ole Miss and Mississippi State (PR #246), Missouri and Tennessee (PR #250), Texas and Texas A&M (PR #252), Arkansas and Auburn (PR #254), Oklahoma and Kentucky (PR #259), South Carolina and Vanderbilt (PR #263) converted: **all 16 SEC schools are in the app.** **Big Ten** (alphabetical): Illinois and Indiana (PR #267), Iowa and Maryland (PR #272), Michigan and Michigan State (PR #274), Nebraska (PR #276), Minnesota and Northwestern (PR #280), Ohio State (PR #282), Oregon and Penn State (PR #284). Next: Purdue and Rutgers (then UCLA, USC, Washington, Wisconsin). WMT sites with Nebraska's cards (checked Oct 9): Miami, Virginia (ACC).
 
@@ -173,3 +174,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 9 — High school: Manhattan High School (Kansas 6A) and Manhattan middle schools** (user: "Let's do some highschool... start with Kansas, and just the 6A... Manhattan high school first", then "Smaller sports have priority", middle schools, TennisReporting). PR #287 merged `2f9017b` (football; production `4.77.0-high-school-manhattan` verified 19:2x UTC); PR #288 merged `e219d94` (soccer, volleyball, tennis, cross country, golf and Anthony/Eisenhower middle schools); production `4.78.1-manhattan-middle-schools` verified with `verify:prod --sports=all` for all three schools: 48/48 PASS, XC 18/20 and 26/21.
 - **Oct 10 — High school menus and cross country results** (user: city box "It should show city because there will be other cities added", then "Merge it"; LetsGoRun link bit.ly/LetsGoRunMHK). #290 city grouping, #291 City box (State → City → School → Sport), #292 cross country from LetsGoRun MeetPro pages for Manhattan High (varsity) and Anthony/Eisenhower (grade races), #293 time limit covers robots.txt reads. Production `4.79.2-robots-time-limit`: `verify:prod --sports=all` for the three schools 48/48 PASS.
 - **Oct 10 — Live scores refused by ESPN** (user: "Live is not working on Florida game", then merge approved). ESPN 403'd the app's scoreboard reads; reads now only for games under way (PR #295, merged `3d7c03d`; production `4.80.0-scoreboard-game-days` verified about 19:35 UTC: `verify:prod --school=florida --sports=Football` PASS, XC 18/20 and 26/21; Florida–South Carolina, WVU–Arizona, Nebraska–Indiana, Missouri–Texas A&M, Northwestern–Ball State live).
+- **Oct 14 — Live scoring by schools** (user: "an interface that is for the highschools that would 1 update their score boards and 2 broadcast out live results", then "Merge it"; PR #297, merged `b79f672`; production `4.81.0-live-scoring` verified). Scorer app `/score/`, TV scoreboard `/scoreboard/`, "Live from the field" cards; D1 `sas-sports-live-scoring` (not a Durable Object: previews). `docs/LIVE_SCORING.md`.
