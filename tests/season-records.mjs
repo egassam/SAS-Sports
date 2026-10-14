@@ -67,4 +67,10 @@ const records=(id,sport,file,url)=>{const raw=fixture(file);return{raw,events:wo
   assert.equal(worker.markConferenceGames([{...hockey}],'<html>no page data</html>',school('ole-miss'))[0].conference_game,false,'SEC: no hockey');
   assert.equal(worker.markConferenceGames([{...hockey,sport:'Lacrosse',conference_game:true,conference_name:'American'}],'',school('florida'))[0].conference_game,true,'a league the module names stays');
 }
+// ACC (Miami football): "Pittsburgh" is Pitt; Notre Dame plays football
+// outside the ACC (its other sports are in it); the ACC sponsors no hockey.
+{
+  const miami=school('miami'),game=(opponent,sport='Football')=>({id:opponent+sport,school_id:'miami',school:'Miami',sport,event_type:'GAME',status:'Final',start_time:'2026-10-24T16:00:00Z',title:`Miami vs ${opponent}`,opponent,headline:'W, 30-20'});
+  assert.deepEqual(worker.markConferenceGames([game('Pittsburgh'),game('Notre Dame'),game('Notre Dame','Volleyball'),game('Cal','Volleyball'),game('Florida'),game('Boston College','Hockey')],'<html>no page data</html>',miami).map(e=>e.conference_game),[true,false,true,true,false,false]);
+}
 console.log('Season record checks passed: Oklahoma State soccer 5-4-3 (1-2-1, exhibition from page data), K-State volleyball 9-3 (1-3), membership fallback');
