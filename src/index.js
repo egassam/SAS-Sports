@@ -51,9 +51,11 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
+import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
+import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.82.0-stream-overlay';
+const VERSION='4.83.0-purdue-rutgers';
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
 // every 15 s. School pages stay cached (source-fetch), so this does not add
@@ -334,6 +336,21 @@ const SCHOOL_MODULES=[
     // A past golf or tennis tournament still without a story publishes no
     // place: it is not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(pennStateHandlers.isFinalWithoutStory).map(event=>pennStateHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(pennStateHandlers.isPennStateGolf).map(event=>pennStateHandlers.attachGolfPlace(event)));return events.filter(event=>!pennStateHandlers.isTournamentWithoutStory(event));}}
+  ,{school:purdueSchool,parseSchedule:(...args)=>purdueHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>purdueHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>purdueHandlers.matchesRecap(...args),crossCountry:{matches:event=>purdueHandlers.isCrossCountry(event),attach:event=>purdueHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>purdueHandlers.isPurdueGolf(event),attach:event=>purdueHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(purdueHandlers.isFinalWithoutStory(event))await purdueHandlers.attachArchiveStory(event);},
+    // A past golf or tennis tournament still without a story publishes no
+    // place: it is not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(purdueHandlers.isFinalWithoutStory).map(event=>purdueHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(purdueHandlers.isPurdueGolf).map(event=>purdueHandlers.attachGolfPlace(event)));return events.filter(event=>!purdueHandlers.isTournamentWithoutStory(event));}}
+  ,{school:rutgersSchool,parseSchedule:(...args)=>rutgersHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>rutgersHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>rutgersHandlers.matchesRecap(...args),crossCountry:{matches:event=>rutgersHandlers.isCrossCountry(event),attach:event=>rutgersHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story.
+    results:[{matches:event=>rutgersHandlers.isRutgersGolf(event),attach:event=>rutgersHandlers.attachGolfPlace(event)}],
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(rutgersHandlers.isFinalWithoutStory(event))await rutgersHandlers.attachArchiveStory(event);},
+    feed:async(events,sport)=>{await Promise.all(events.filter(rutgersHandlers.isFinalWithoutStory).map(event=>rutgersHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(rutgersHandlers.isRutgersGolf).map(event=>rutgersHandlers.attachGolfPlace(event)));return events.filter(event=>!rutgersHandlers.isTennisWithoutStory(event)&&!rutgersHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -454,6 +471,8 @@ const northwesternHandlers=createNorthwesternHandlers({makeEvent,visibleText,abs
 const ohioStateHandlers=createOhioStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oregonHandlers=createOregonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const pennStateHandlers=createPennStateHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const purdueHandlers=createPurdueHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const rutgersHandlers=createRutgersHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
