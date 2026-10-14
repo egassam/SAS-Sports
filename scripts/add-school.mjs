@@ -41,6 +41,10 @@ for(const [,href] of html.matchAll(/href="([^"]*\/sports?\/[a-z-]+\/schedule)\/?
 // Newer SIDEARM navs link each sport's home (`/sports/womens-soccer`), not its
 // schedule (Illinois and Indiana listed only Football): read those too.
 for(const [,href] of html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z-]+)\/?"/g)){const sport=inferSport(href);if(sport)found.add(sport)}
+// Nuxt SIDEARM sites (calbears.com, Oct 14) build the menu from a payload:
+// sport slugs are bare JSON strings ("womens-golf"), not links. Read them only
+// when the links found almost nothing (the payload also names news slugs).
+if(found.size<3)for(const [,slug] of html.matchAll(/"((?:mens-|womens-)?[a-z]+(?:-[a-z]+){0,3})"/g)){const sport=inferSport(`/sports/${slug}`);if(sport)found.add(sport)}
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);
