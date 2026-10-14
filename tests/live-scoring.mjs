@@ -184,3 +184,13 @@ for(let i=0;i<8;i++)await login({password:'wrong-password-x'});
 assert.equal((await login()).status,429);
 
 console.log('Live scoring passed: baseball, softball and soccer rules; sign-in, accounts, games, undo, retries and school isolation.');
+
+// The stream overlay is a transparent page that reads the same public API.
+{
+  const {readFileSync}=await import('node:fs');
+  const overlay=readFileSync(new URL('../public/overlay/index.html',import.meta.url),'utf8');
+  assert.match(overlay,/html,body\{[^}]*background:transparent/,'the overlay page must be transparent for OBS and vMix');
+  assert.match(overlay,/\/api\/score\/games\?school=/);assert.match(overlay,/\/api\/score\/games\/\$\{/);
+  assert.match(readFileSync(new URL('../public/score/index.html',import.meta.url),'utf8'),/\/overlay\/\?game=/,'the scorer app links each game to its overlay');
+  console.log('Stream overlay page checks passed.');
+}

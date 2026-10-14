@@ -8,6 +8,7 @@ Started October 14, 2026 (user: "an interface that is for the highschools that w
 | --- | --- | --- |
 | Scorer app | `/score/` | School scorekeepers (sign-in: school, school code, username, password) |
 | TV scoreboard | `/scoreboard/?game=<id>` or `/scoreboard/?school=<id>` | The computer or streaming stick that drives a TV or video board. School mode follows whichever game is live |
+| Stream overlay | `/overlay/?school=<id>` or `/overlay/?game=<id>` | A transparent score bug for live streams: a Browser Source (1920×1080) in OBS, vMix, Streamlabs or Boxcast. Options: `position=bottom-left` (also bottom-right, top-left, top-right, bottom-center), `scale=0.5`–`2`, `hide_when_idle=0` to keep the final up. Added Oct 14 (4.82.0) |
 | Public app | `/` (school selected) | Everyone: a "Live from the field" card above the official feed |
 
 One tap in the scorer app saves the game. The TV and the app read the new score within about 1 second (TV) and 3 seconds (app).
