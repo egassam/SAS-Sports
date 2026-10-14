@@ -4,7 +4,7 @@
 
 UCLA was added to the app on October 14, 2026 (15 sports, one PR with USC). The catalog lists SIDEARM; uclabruins.com is **WMT** with Iowa/Vanderbilt's `schedule-item-block`/`schedule-item-team` cards, whose heading names the sport first as a link (`schedule-item-team__sport`, "Football"). `scripts/port-wmt.mjs` ported Nebraska's reader (it reads both generations).
 
-## Status (`4.84.1-ucla-usc`)
+## Status (`4.84.2-ucla-usc`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -26,6 +26,7 @@ UCLA was added to the app on October 14, 2026 (15 sports, one PR with USC). The 
 - **TFRRS:** a home dual is named for both schools ("UCR UCLA Dual"); TFRRS can date a meet a day before the card (Sep 3 vs Sep 4): the day before is read too.
 - **Recaps:** a tournament's own story may come three days after its last day (men's tennis, Sep 30); a story whose opening names another weekday is not the game's (volleyball at Miami, Friday and Saturday, both 3-0; at and vs Long Beach State, Aug 28-29).
 - **Internal:** swimming's "Blue vs. Gold".
+- **Athlete names (shared fix):** roster portraits named "Matthew Hull headshot photo" lose both trailing words (`src/index.js`, all schools).
 
 Every rule was mutated and each mutation fails `node tests/ucla-module.mjs`; a volleyball sets-in-words rule the weekday rule made redundant was removed.
 

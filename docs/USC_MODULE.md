@@ -4,7 +4,7 @@
 
 USC was added to the app on October 14, 2026 (14 sports, one PR with UCLA).
 
-## Status (`4.84.1-ucla-usc`)
+## Status (`4.84.2-ucla-usc`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -31,7 +31,7 @@ Every rule was mutated and each mutation fails `node tests/usc-module.mjs`.
 
 ## Athletes
 
-Three featured athletes per sport. Verified Instagram for Basketball (15 of 26) and Football (28 of 129); pinned: Golf (9 of 17), Water Polo (6 of 44), Rowing (2 of 47), Swimming & Diving (2 of 56). **Profile cards:** Rowing and Swimming & Diving's third slot, Baseball (41, 0), Beach Volleyball, Cross Country (12, 0), Lacrosse (24, 0), Soccer (58, 0), Tennis (18, 0), Track & Field (79, 0), Volleyball (32, 0).
+Three featured athletes per sport. Verified Instagram for Basketball (15 of 26) and Football (28 of 129); pinned: Golf (9 of 17), Water Polo (6 of 44), Rowing (2 of 47), Swimming & Diving (2 of 56). Beach Volleyball is not in the athlete list until its 2027 roster lists players (the roster page reads no profiles, as Oregon's did). **Profile cards:** Rowing and Swimming & Diving's third slot, Baseball (41, 0), Cross Country (12, 0), Lacrosse (24, 0), Soccer (58, 0), Tennis (18, 0), Track & Field (79, 0), Volleyball (32, 0).
 
 ## Open
 

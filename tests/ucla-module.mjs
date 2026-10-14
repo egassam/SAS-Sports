@@ -420,5 +420,14 @@ assert.deepEqual(['8th (+33, 897)','T-8th (+22, 862)','3rd/11 (+27, 891)','T-6th
   assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer'],['Soccer','mens-soccer'],['Water Polo','mens-water-polo']].map(([sport,slug])=>records(sport,slug)),[["5-0","3-0"],["13-4","4-2"],["10-3-1","7-1"],["7-1-4","3-1-2"],["16-1",null]]);
 }
 
+// Roster portraits are named by alt text with two trailing words ("Matthew
+// Hull headshot photo", men's golf): neither is part of the name.
+{
+  const profiles=worker.rosterProfiles(fixture('mens-golf-roster.html.gz'),'https://uclabruins.com/sports/mens-golf/roster');
+  assert.ok(profiles.length>=7);
+  assert.ok(profiles.every(p=>!/headshot|photo/i.test(p.name)),'no "headshot photo" in a name');
+  assert.ok(profiles.some(p=>p.name==='Matthew Hull'));
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('UCLA module checks passed');
