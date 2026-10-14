@@ -23,7 +23,7 @@ export const uscSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis','Water Polo']),
   verifiedInstagrams:{
     'usc|Golf|Bailey Shoemaker':'https://www.instagram.com/baileytheshoemaker/',
     'usc|Golf|Jasmine Koo':'https://www.instagram.com/jasmine.nekoo/',
@@ -296,7 +296,11 @@ export function createUscHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // A season not yet published is SIDEARM's empty template ("@season @sport
+  // Schedule": beach volleyball, Oct 14): a valid empty schedule (Oregon's
+  // rule).
+  const unpublished=(raw,school,sport,url)=>school?.id==='usc'&&uscSchool.pageDataSports.has(sport)&&/<title>\s*@season\b/i.test(String(raw||''))&&/^https:\/\/usctrojans\.com\/sports\/[^/]+\/schedule\/?$/.test(String(url||''));
+  const readSchedule=(...args)=>{if(unpublished(...args.slice(0,4))){const none=[];trackEmptied.add(none);return none;}const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // Golf: the cards publish no place; the final story's headline gives the
   // team's ("USC Men's Golf Ties for Fifth", "Women's Golf Wins the Golfweek
   // Red Sky Classic").

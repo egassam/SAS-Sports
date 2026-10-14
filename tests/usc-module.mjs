@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',uscSchool.scheduleUrls],['roster',uscSchool
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'usctrojans.com',`${key} must stay on usctrojans.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://usctrojans.com/sports/baseball/schedule"],"roster":["https://usctrojans.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://usctrojans.com/sports/mens-basketball/schedule","https://usctrojans.com/sports/womens-basketball/schedule"],"roster":["https://usctrojans.com/sports/mens-basketball/roster","https://usctrojans.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://usctrojans.com/sports/beach-volleyball/schedule"],"roster":["https://usctrojans.com/sports/beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://usctrojans.com/sports/cross-country/schedule"],"roster":["https://usctrojans.com/sports/cross-country/roster"],"combined":false},"Football":{"schedule":["https://usctrojans.com/sports/football/schedule"],"roster":["https://usctrojans.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://usctrojans.com/sports/womens-golf/schedule","https://usctrojans.com/sports/mens-golf/schedule"],"roster":["https://usctrojans.com/sports/womens-golf/roster","https://usctrojans.com/sports/mens-golf/roster"],"combined":true},"Lacrosse":{"schedule":["https://usctrojans.com/sports/womens-lacrosse/schedule"],"roster":["https://usctrojans.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://usctrojans.com/sports/womens-rowing/schedule"],"roster":["https://usctrojans.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://usctrojans.com/sports/womens-soccer/schedule"],"roster":["https://usctrojans.com/sports/womens-soccer/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://usctrojans.com/sports/womens-swimming-and-diving/schedule","https://usctrojans.com/sports/mens-swimming-and-diving/schedule"],"roster":["https://usctrojans.com/sports/womens-swimming-and-diving/roster","https://usctrojans.com/sports/mens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://usctrojans.com/sports/womens-tennis/schedule","https://usctrojans.com/sports/mens-tennis/schedule"],"roster":["https://usctrojans.com/sports/womens-tennis/roster","https://usctrojans.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://usctrojans.com/sports/track-and-field/schedule"],"roster":["https://usctrojans.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://usctrojans.com/sports/womens-volleyball/schedule"],"roster":["https://usctrojans.com/sports/womens-volleyball/roster"],"combined":false},"Water Polo":{"schedule":["https://usctrojans.com/sports/womens-water-polo/schedule","https://usctrojans.com/sports/mens-water-polo/schedule"],"roster":["https://usctrojans.com/sports/womens-water-polo/roster","https://usctrojans.com/sports/mens-water-polo/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://usctrojans.com/sports/baseball/schedule"],"roster":["https://usctrojans.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://usctrojans.com/sports/mens-basketball/schedule","https://usctrojans.com/sports/womens-basketball/schedule"],"roster":["https://usctrojans.com/sports/mens-basketball/roster","https://usctrojans.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://usctrojans.com/sports/beach-volleyball/schedule"],"roster":["https://usctrojans.com/sports/beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://usctrojans.com/sports/cross-country/schedule"],"roster":["https://usctrojans.com/sports/cross-country/roster"],"combined":false},"Football":{"schedule":["https://usctrojans.com/sports/football/schedule"],"roster":["https://usctrojans.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://usctrojans.com/sports/womens-golf/schedule","https://usctrojans.com/sports/mens-golf/schedule"],"roster":["https://usctrojans.com/sports/womens-golf/roster","https://usctrojans.com/sports/mens-golf/roster"],"combined":true},"Lacrosse":{"schedule":["https://usctrojans.com/sports/womens-lacrosse/schedule"],"roster":["https://usctrojans.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://usctrojans.com/sports/womens-rowing/schedule"],"roster":["https://usctrojans.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://usctrojans.com/sports/womens-soccer/schedule"],"roster":["https://usctrojans.com/sports/womens-soccer/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://usctrojans.com/sports/womens-swimming-and-diving/schedule","https://usctrojans.com/sports/mens-swimming-and-diving/schedule"],"roster":["https://usctrojans.com/sports/womens-swimming-and-diving/roster","https://usctrojans.com/sports/mens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://usctrojans.com/sports/womens-tennis/schedule","https://usctrojans.com/sports/mens-tennis/schedule"],"roster":["https://usctrojans.com/sports/womens-tennis/roster","https://usctrojans.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://usctrojans.com/sports/track-and-field/schedule"],"roster":["https://usctrojans.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://usctrojans.com/sports/womens-volleyball/schedule"],"roster":["https://usctrojans.com/sports/womens-volleyball/roster"],"combined":false},"Water Polo":{"schedule":["https://usctrojans.com/sports/womens-water-polo/schedule","https://usctrojans.com/sports/mens-water-polo/schedule"],"roster":["https://usctrojans.com/sports/womens-water-polo/roster","https://usctrojans.com/sports/mens-water-polo/roster"],"combined":true}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -331,29 +331,29 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_womenswaterpolo.map(line),[]);
   const v_menswaterpolo=parse("Water Polo","mens-water-polo");
   assert.deepEqual(v_menswaterpolo.map(line),[
- "Final Aug 28 USC vs Saint Mary's | W, 22-9",
- "Final Aug 29 USC vs McKendree | W, 30-5",
- "Final Aug 29 USC vs Claremont-Mudd-Scripps | W, 28-9",
- "Final Aug 30 USC vs UC Santa Barbara | W, 27-10",
- "Final Sep 4 USC at Long Beach State | W, 17-11",
- "Final Sep 6 USC vs Pepperdine | W, 17-14",
- "Final Sep 12 USC vs UC Irvine | W, 24-15",
- "Final Sep 18 USC vs California Baptist University | W, 17-13",
- "Final Sep 19 USC vs San Jose State | W, 16-7",
- "Final Sep 19 USC vs Stanford | L, 8-10",
- "Final Sep 20 USC vs California | W, 13-12",
- "Final Sep 27 USC vs Pacific | W, 15-8",
- "Final Oct 3 USC vs California | W, 15-14",
- "Final Oct 4 USC vs Stanford | L, 12-16",
- "Final Oct 10 USC vs UC San Diego | W, 15-9",
- "Upcoming Oct 17, 1:00 PM USC vs UCLA | ",
- "Upcoming Oct 24, 12:00 PM USC vs Air Force | ",
- "Upcoming Oct 31, 1:00 PM USC at Stanford | ",
- "Upcoming Nov 1, 1:00 PM USC at California | ",
- "Upcoming Nov 7, 1:00 PM USC at UC Santa Barbara | ",
- "Upcoming Nov 14, 1:00 PM USC at UCLA | ",
- "Upcoming Nov 20 USC at MPSF Tournament | ",
- "Upcoming Dec 4 USC at NCAA Tournament | "
+ "Final Aug 28 Men's · USC vs Saint Mary's | W, 22-9",
+ "Final Aug 29 Men's · USC vs McKendree | W, 30-5",
+ "Final Aug 29 Men's · USC vs Claremont-Mudd-Scripps | W, 28-9",
+ "Final Aug 30 Men's · USC vs UC Santa Barbara | W, 27-10",
+ "Final Sep 4 Men's · USC at Long Beach State | W, 17-11",
+ "Final Sep 6 Men's · USC vs Pepperdine | W, 17-14",
+ "Final Sep 12 Men's · USC vs UC Irvine | W, 24-15",
+ "Final Sep 18 Men's · USC vs California Baptist University | W, 17-13",
+ "Final Sep 19 Men's · USC vs San Jose State | W, 16-7",
+ "Final Sep 19 Men's · USC vs Stanford | L, 8-10",
+ "Final Sep 20 Men's · USC vs California | W, 13-12",
+ "Final Sep 27 Men's · USC vs Pacific | W, 15-8",
+ "Final Oct 3 Men's · USC vs California | W, 15-14",
+ "Final Oct 4 Men's · USC vs Stanford | L, 12-16",
+ "Final Oct 10 Men's · USC vs UC San Diego | W, 15-9",
+ "Upcoming Oct 17, 1:00 PM Men's · USC vs UCLA | ",
+ "Upcoming Oct 24, 12:00 PM Men's · USC vs Air Force | ",
+ "Upcoming Oct 31, 1:00 PM Men's · USC at Stanford | ",
+ "Upcoming Nov 1, 1:00 PM Men's · USC at California | ",
+ "Upcoming Nov 7, 1:00 PM Men's · USC at UC Santa Barbara | ",
+ "Upcoming Nov 14, 1:00 PM Men's · USC at UCLA | ",
+ "Upcoming Nov 20 Men's · USC at MPSF Tournament | ",
+ "Upcoming Dec 4 Men's · USC at NCAA Tournament | "
 ]);
   ownRecapsOnly(v_baseball,"Baseball baseball");
   ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
@@ -407,6 +407,15 @@ const fromTfrrs=teams=>{
 {
   const records=(sport,slug)=>{const group=worker.groupEvents(parse(sport,slug),now).find(g=>g.records?.length);const own=group?.records.find(r=>!r.team||slug.startsWith(r.team==="Men's"?'mens-':'womens-'))||group?.records[0];return[own?.text||null,own?.conference?.text||null];};
   assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer'],['Water Polo','mens-water-polo']].map(([sport,slug])=>records(sport,slug)),[["6-1","3-1"],["8-8","2-4"],["1-8-5","0-5-3"],["13-2","1-1"]]);
+}
+
+// A season not yet published is SIDEARM's empty template ("@season @sport
+// Schedule", beach volleyball): a valid empty schedule, not a failed source
+// (the first preview answered 502).
+{
+  const raw=fixture('beach-volleyball-schedule.html.gz'),url=page('beach-volleyball');
+  const events=worker.uscHandlers.parseSchedule(raw,school,'Beach Volleyball',url,now);
+  assert.deepEqual([events,worker.uscHandlers.isEmptySchedule(events)],[[],true]);
 }
 
 assert.equal(requests.length,0,'no unexpected network requests');

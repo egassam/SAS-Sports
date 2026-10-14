@@ -11,7 +11,7 @@ USC was added to the app on October 14, 2026 (14 sports, one PR with UCLA).
 | Football | `football` | 7 finals with stories; 6-1 (Big Ten 3-1) as published |
 | Volleyball | `womens-volleyball` | 18 finals with stories (two exhibitions); 8-8 (2-4) as published |
 | Soccer | `womens-soccer` | 14 finals with stories; 1-8-5 (0-5-3) as published |
-| Water Polo | `mens-water-polo` | 15 finals with stories; 13-2 (MPSF 1-1) as published |
+| Water Polo | `mens-water-polo`, `womens-water-polo` | Labeled; 15 finals with stories; 13-2 (MPSF 1-1) as published |
 | Cross Country | `cross-country` (women) | TFRRS: Pepperdine W 2nd, UC Riverside ("UCR XC Invite") W 11th, Master's W 9th |
 | Golf | `womens-golf`, `mens-golf` | Labeled; places from the final stories' headlines (2nd, 1st; T5th, 3rd, 2nd) |
 | Tennis | `womens-tennis`, `mens-tennis` | Labeled; tournaments with stories; UTR Pro Fall Slam, Hall of Fame Invite, Sherwood, UCSB Classic have none (not listed) |
@@ -21,7 +21,8 @@ USC was added to the app on October 14, 2026 (14 sports, one PR with UCLA).
 
 ## USC rules (beyond Oklahoma's handlers)
 
-- **Combined:** Basketball, Golf, Swimming & Diving, Tennis.
+- **Combined:** Basketball, Golf, Swimming & Diving, Tennis, Water Polo.
+- **Empty template:** a season not yet published is SIDEARM's `@season @sport Schedule` page (beach volleyball): a valid empty schedule (Oregon's rule; the first preview answered 502).
 - **Golf story places:** "USC Men's Golf Ties for Fifth", "Finishes in Third", "Places Second", "Wins the …".
 - **TFRRS:** a meet TFRRS names past recognition ("UCR XC Invite") is the team's only meet that day (`onlyMeetThatDay`, a new opt-in in `createTfrrsMeetResults`).
 - **Water polo:** MPSF (`conference_name`); the page data marks its league games.
