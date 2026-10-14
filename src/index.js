@@ -53,14 +53,13 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
-import {handleLiveScoring} from './live-scoring/api.mjs';
-
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
 import {uscSchool,createUscHandlers} from './schools/usc.mjs';
-
-const VERSION='4.85.0-washington-wisconsin';
 import {washingtonSchool,createWashingtonHandlers} from './schools/washington.mjs';
 import {wisconsinSchool,createWisconsinHandlers} from './schools/wisconsin.mjs';
+import {handleLiveScoring} from './live-scoring/api.mjs';
+
+const VERSION='4.85.0-washington-wisconsin';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
