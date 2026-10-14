@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {virginiaSchool} from '../src/schools/virginia.mjs';
+import {virginiaSchool,VIRGINIA_TFRRS_TEAMS} from '../src/schools/virginia.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -474,6 +474,27 @@ void [parse,line,ownRecapsOnly,live];
   // The Yale card's Recap link has "Rec" pasted on its slug (the link is a 404).
   assert.equal(parse('Soccer','wsoc').find(e=>e.opponent==='Yale').recap_url,'https://virginiasports.com/news/2026/08/30/bradleys-goal-lifts-no-13-virginia-past-yale');
   assert.deepEqual(parse('Baseball','baseball').filter(e=>e.opponent==='Virginia Tech').map(e=>[e.start_time.slice(0,10),e.conference_game]),[['2027-03-23',false]]);
+}
+// TFRRS: the team pages and every saved meet page they link.
+const fromTfrrs=teams=>{
+  for(const [team,url] of Object.entries(teams)){
+    if(!url)continue;const page=fixture(`tfrrs-team-${team==='Women'?'f':'m'}.html.gz`);recapFixtures.set(url,page);
+    for(const [href,meet] of page.matchAll(/(?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/(\d+)\/[^"'\s>]*/g))try{recapFixtures.set(new URL(href,'https://www.tfrrs.org').href,fixture(`tfrrs-${meet}.html.gz`));}catch{}
+  }
+};
+// Cross Country: one card per meet for both teams; the TFRRS meet page holds
+// both races.
+{
+  fromTfrrs(VIRGINIA_TFRRS_TEAMS);
+  const xc=parse('Cross Country','xc').filter(e=>e.status==='Final');
+  for(const meet of xc)await worker.attachOfficialMeetResults(meet);
+  assert.deepEqual(xc.map(e=>[e.opponent,e.headline,Boolean(e.meet_results_verified)]),[["Virginia Invitational","Women's team: 2nd · 28 pts / Men's team: 3rd · 80 pts",true],["Sean Earl Loyola Lakefront Invitational","Women's team: 1st · 71 pts / Men's team: 13th · 300 pts",true],["Paul Short Run","Women's: Ella Woehlcke 12th / Men's: Brenden McMahon 120th",true]]);
+  recapFixtures.clear();requests.length=0;
+}
+// Golf places from the final stories' headlines when the card has none.
+{
+  const {virginiaGolfPlace}=await import('../src/schools/virginia.mjs');
+  assert.deepEqual(['Laha Medals, Leads Virginia to Win at Canadian Collegiate Invitational','Virginia Ties for Sixth at ANNIKA Intercollegiate','Play Concludes at Ben Hogan Collegiate Invitational'].map(virginiaGolfPlace),["1",null,null]);
 }
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Virginia module checks passed');

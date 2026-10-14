@@ -510,7 +510,7 @@ export function createMiamiHandlers({makeEvent,visibleText,absoluteUrl,recapMatc
   }
   // Each team's page is its own event: its own TFRRS team page (Arkansas's
   // rule).
-  const tfrrs=Object.fromEntries(['Women','Men'].map(team=>[team,createTfrrsMeetResults({id:'miami',schoolName:'Miami',teams:{[team]:MIAMI_TFRRS_TEAMS[team]},decodeHtml,ordinal,fetch,headers})]));
+  const tfrrs=Object.fromEntries(['Women','Men'].map(team=>[team,createTfrrsMeetResults({id:'miami',schoolName:'Miami',tfrrsTeam:'Miami (Fla.)',teams:{[team]:MIAMI_TFRRS_TEAMS[team]},decodeHtml,ordinal,fetch,headers})]));
   const tfrrsTeam=event=>/^Men/.test(event?.team_label||'')?'Men':'Women';
   return{parseSchedule,isEmptySchedule,matchesRecap,isMiamiGolf,isTournamentWithoutStory,attachGolfPlace,isFinalWithoutStory,attachArchiveStory,
     isCrossCountry:event=>event?.school_id==='miami'&&tfrrs.Women.matches(event),attachMeetResults:async event=>{

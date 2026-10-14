@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {miamiSchool} from '../src/schools/miami.mjs';
+import {miamiSchool,MIAMI_TFRRS_TEAMS} from '../src/schools/miami.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -309,6 +309,22 @@ void [parse,line,ownRecapsOnly,live];
 {
   const {miamiGolfPlace}=await import('../src/schools/miami.mjs');
   assert.deepEqual(['Miami Golf Takes Team and Individual Titles at Boilermaker Classic to Open 2026-27 Season','Miami Golf Places Fifth at Cougar Classic','Schremmer Wins Golfweek Red Sky Classic as Miami Finishes Second','Schremmer Wins Golfweek Red Sky Classic'].map(miamiGolfPlace),['1','5','2',null]);
+}
+// TFRRS: the team pages and every saved meet page they link.
+const fromTfrrs=teams=>{
+  for(const [team,url] of Object.entries(teams)){
+    if(!url)continue;const page=fixture(`tfrrs-team-${team==='Women'?'f':'m'}.html.gz`);recapFixtures.set(url,page);
+    for(const [href,meet] of page.matchAll(/(?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/(\d+)\/[^"'\s>]*/g))try{recapFixtures.set(new URL(href,'https://www.tfrrs.org').href,fixture(`tfrrs-${meet}.html.gz`));}catch{}
+  }
+};
+// Cross Country: one card per meet for both teams; the TFRRS meet page holds
+// both races.
+{
+  fromTfrrs(MIAMI_TFRRS_TEAMS);
+  const xc=parse('Cross Country','cross').filter(e=>e.status==='Final');
+  for(const meet of xc)await worker.attachOfficialMeetResults(meet);
+  assert.deepEqual(xc.map(e=>[e.opponent,e.headline,Boolean(e.meet_results_verified)]),[["Florida Intercollegiate XC Invitational","Women's team: 4th · 112 pts / Men's team: 5th · 119 pts",true],["FSU Pre-Regional","Women's team: 3rd · 139 pts / Men's team: 8th · 239 pts",true],["Joe Piane - Notre Dame Invitational","Women's team: 19th · 501 pts / Men's team: 18th · 542 pts",true]]);
+  recapFixtures.clear();requests.length=0;
 }
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Miami module checks passed');
