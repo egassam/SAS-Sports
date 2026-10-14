@@ -96,6 +96,25 @@
     "Track & Field",
     "Volleyball"
   ],
+  "boston-college": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Skiing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "byu": [
     "Baseball",
     "Basketball",
@@ -109,6 +128,25 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "california": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "cincinnati": [
     "Baseball",

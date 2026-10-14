@@ -199,7 +199,9 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // sport, how many days before a meet's first day (Michigan's men's tennis
 // posts each tournament's page the day before and fills it in afterward:
 // the Fighting Irish Invitational, Sep 25-26, on Sep 24).
-export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false,meetDaysAfter=1,meetDaysBefore={}}){
+// skipStory(path): stories that are never an event's own (Boston College's
+// "#ForBoston Files" video series names the opponent and score a day later).
+export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false,meetDaysAfter=1,meetDaysBefore={},skipStory=()=>false}){
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
@@ -214,7 +216,7 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
     const span=isMeet(event)?Math.max(0,Math.round((Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`)-first)/86400000)):0;
     const before=isMeet(event)?meetDaysBefore[event.sport]||0:0;
     const days=Array.from({length:before+span+1+(isMeet(event)?meetDaysAfter:1)},(_,offset)=>new Date(first+(offset-before)*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
-    const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day)));
+    const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day))&&!skipStory(path));
     if(isMeet(event)){
       // Every word that tells the meet apart ("Roy Griak") is in the story.
       const words=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.test(word));

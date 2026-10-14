@@ -59,9 +59,11 @@ import {washingtonSchool,createWashingtonHandlers} from './schools/washington.mj
 import {wisconsinSchool,createWisconsinHandlers} from './schools/wisconsin.mjs';
 import {miamiSchool,createMiamiHandlers} from './schools/miami.mjs';
 import {virginiaSchool,createVirginiaHandlers} from './schools/virginia.mjs';
+import {bostonCollegeSchool,createBostonCollegeHandlers} from './schools/boston-college.mjs';
+import {californiaSchool,createCaliforniaHandlers} from './schools/california.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.86.3-miami-virginia';
+const VERSION='4.87.1-boston-college-california';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -399,6 +401,17 @@ const SCHOOL_MODULES=[
     // A past golf or tennis tournament still without a story publishes no
     // place: it is not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(virginiaHandlers.isFinalWithoutStory).map(event=>virginiaHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(virginiaHandlers.isVirginiaGolf).map(event=>virginiaHandlers.attachGolfPlace(event)));return events.filter(event=>!virginiaHandlers.isTournamentWithoutStory(event));}}
+  ,{school:bostonCollegeSchool,parseSchedule:(...args)=>bostonCollegeHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>bostonCollegeHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>bostonCollegeHandlers.matchesRecap(...args),crossCountry:{matches:event=>bostonCollegeHandlers.isCrossCountry(event),attach:event=>bostonCollegeHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(bostonCollegeHandlers.isFinalWithoutStory(event))await bostonCollegeHandlers.attachArchiveStory(event);},
+    feed:async events=>{await Promise.all(events.filter(bostonCollegeHandlers.isFinalWithoutStory).map(event=>bostonCollegeHandlers.attachArchiveStory(event)));return events.filter(event=>!bostonCollegeHandlers.isTennisWithoutStory(event)&&!bostonCollegeHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:californiaSchool,parseSchedule:(...args)=>californiaHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>californiaHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>californiaHandlers.matchesRecap(...args),crossCountry:{matches:event=>californiaHandlers.isCrossCountry(event),attach:event=>californiaHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    results:[{matches:event=>californiaHandlers.isCaliforniaGolf(event),attach:event=>californiaHandlers.attachGolfPlace(event)}],
+    beforeHighlights:async event=>{if(californiaHandlers.isFinalWithoutStory(event))await californiaHandlers.attachArchiveStory(event);},
+    feed:async(events,sport)=>{await Promise.all(events.filter(californiaHandlers.isFinalWithoutStory).map(event=>californiaHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(californiaHandlers.isCaliforniaGolf).map(event=>californiaHandlers.attachGolfPlace(event)));return events.filter(event=>!californiaHandlers.isTennisWithoutStory(event)&&!californiaHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -527,7 +540,11 @@ const washingtonHandlers=createWashingtonHandlers({makeEvent,recapMatchesEvent,e
 const wisconsinHandlers=createWisconsinHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const miamiHandlers=createMiamiHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const virginiaHandlers=createVirginiaHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
-function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>');}
+const bostonCollegeHandlers=createBostonCollegeHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const californiaHandlers=createCaliforniaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
+  // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
+  .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}
 function visibleText(raw){if(raw==null)return'';return clean(decodeHtml(raw).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' '))||'';}
 function sportMatches(a,b){const n=s=>String(s).toLowerCase().replace(/\b(men's|women's|mens|womens)\b/g,'').replace(/&/g,'and').replace(/[^a-z0-9]+/g,' ').trim();a=n(a);b=n(b);return a===b||a.includes(b)||b.includes(a);}
 function rosterUrls(school,sport){
@@ -928,6 +945,14 @@ async function featuredAthletes(schoolId,sport){
     .filter(profile=>!used.has(profile.url)&&profile.image_url)
     .sort((a,b)=>dailyRank(a.name)-dailyRank(b.name))
     .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:profile.image_url}));
+  // A module may let profiles without a published portrait fill the slots
+  // (California's gymnastics rosters, Oct 14: no athlete photos yet); the
+  // page shows initials.
+  if(schoolModule(schoolId)?.school.portraitlessProfileSports?.has(sport)){
+    const shown=new Set([...selected,...officialProfiles].map(athlete=>athlete.profile_url));
+    officialProfiles.push(...profiles.filter(profile=>!shown.has(profile.url)).sort((a,b)=>dailyRank(a.name)-dailyRank(b.name))
+      .map(profile=>({name:profile.name,instagram_url:null,profile_url:profile.url,image_url:null})));
+  }
   return [...selected,...officialProfiles].slice(0,3);
 }
 function candidateUrls(school,sport){const known=KNOWN_URLS.get(`${school.id}|${sport}`);if(known)return Array.isArray(known)?known:[known];const out=[],base=school.athletics_url.replace(/\/$/,'');for(const p of (SPORT_PATHS[sport]||[slug(sport)]))out.push(`${base}/sports/${p}/schedule`);out.push(`${base}/`);return[...new Set(out)];}
