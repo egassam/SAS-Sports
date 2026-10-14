@@ -36,7 +36,7 @@ export const wisconsinSchool={
     'wisconsin|Golf|Lauren Sammon':'https://www.instagram.com/lauren__sammon/',
     'wisconsin|Soccer|Drew Stover':'https://www.instagram.com/drew.stover/',
     'wisconsin|Soccer|Hailey Baumann':'https://www.instagram.com/haileybaumann3/',
-    'wisconsin|Soccer|Drew Stover':'https://www.instagram.com/drew.stover/',
+    'wisconsin|Soccer|Markie Hrvojevic':'https://www.instagram.com/markie_hrvojevic/',
     'wisconsin|Softball|Danielle Lucey':'https://www.instagram.com/dani.lucey/',
     'wisconsin|Softball|Hilary Blomberg':'https://www.instagram.com/hilaryblomberg/',
     'wisconsin|Softball|Alivia Bark':'https://www.instagram.com/livsb45/',

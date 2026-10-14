@@ -33,7 +33,7 @@ Every rule was mutated and each mutation fails `node tests/wisconsin-module.mjs`
 
 ## Athletes
 
-Three featured athletes per sport. Verified Instagram from profile pages for Cross Country (15 of 34), Football (76 of 113), Hockey (19 of 50), Rowing (31 of 89), Swimming & Diving (17 of 57), Track & Field (43 of 77); pinned: Basketball (7), Golf (3), Soccer (8), Softball (3), Tennis (7), Wrestling (3). **Profile cards:** Volleyball (36 profiles, 0 links).
+Three featured athletes per sport. Verified Instagram from profile pages for Cross Country (15 of 34), Football (76 of 113), Hockey (19 of 50), Rowing (31 of 89), Swimming & Diving (17 of 57), Track & Field (43 of 77); pinned: Basketball (7), Golf (3), Soccer (8 links, 7 athletes; the suggestion repeated one), Softball (3), Tennis (7), Wrestling (3). **Profile cards:** Volleyball (36 profiles, 0 links).
 
 ## Open
 
