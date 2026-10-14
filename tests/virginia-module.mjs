@@ -504,5 +504,14 @@ const fromTfrrs=teams=>{
   assert.ok(profiles.every(p=>!/Soccer/.test(p.name)),'no team name as an athlete name');
   assert.deepEqual(profiles.filter(p=>['Liv Rademaker','Tatum Galvin'].includes(p.name)).map(p=>[p.name,p.instagram_url]),[["Tatum Galvin","https://www.instagram.com/tatumgalvin/"],["Liv Rademaker","https://www.instagram.com/livrademaker/"]]);
 }
+// A card's own story may name the opponent short: "Cal", "FGCU".
+{
+  const fh=parse('Field Hockey','fhockey').find(e=>e.opponent==='California'),msoc=parse('Soccer','msoc').find(e=>e.opponent==='Florida Gulf Coast');
+  assert.equal(worker.virginiaHandlers.matchesRecap(fixture('story-fhockey-cal.html.gz'),fh,fh.recap_url),true);
+  assert.equal(worker.virginiaHandlers.matchesRecap(fixture('story-msoc-fgcu.html.gz'),msoc,msoc.recap_url),true);
+  // Not another game's: the Cal story is not the Stanford game's (Oct 2).
+  const stanford=parse('Field Hockey','fhockey').find(e=>e.opponent==='Stanford');
+  assert.equal(worker.virginiaHandlers.matchesRecap(fixture('story-fhockey-cal.html.gz'),stanford,fh.recap_url),false);
+}
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Virginia module checks passed');

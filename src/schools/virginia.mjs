@@ -103,6 +103,7 @@ export function virginiaGolfCardPlace(text){
   if(scored){const place=`${scored[1]?'T':''}${scored[2]}${scored[3].toLowerCase()}`;return{headline:place,results:[{label:'Result',value:place},{label:'Team score',value:scored[4]}]};}
   return null;
 }
+const SHORT_NAMES={'California':'Cal','Florida Gulf Coast':'FGCU'};
 const PRO_EVENT=/^(?:\d{4}\s+)?(?:ITF|ATP|WTA)\b|\bFutures\b|\b[MW]\d{2,3}\b|\bUTR\b|\bPTT\b|\b\d{2,3}K\s+Challenger\b/i;
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 // Sports whose single-year page title names the fall ("Football 2026"); every
@@ -468,6 +469,10 @@ export function createVirginiaHandlers({makeEvent,visibleText,absoluteUrl,recapM
     // "Miami (OH)" and "Loyola": the card's own story may name the opponent by
     // its first word.
     const first=String(event.opponent||'').split(/\s+/)[0];
+    // Its stories may use the opponent's short name ("Falls in Overtime to No.
+    // 20 Cal", field hockey Oct 4; "Late Defeat to FGCU", men's soccer Aug 31).
+    const short=SHORT_NAMES[event.opponent];
+    if(own&&short&&recapMatchesEvent(raw,{...identity,sport:'',opponent:short},url))return true;
     if(own)return recapMatchesEvent(raw,{...identity,sport:''},url)||/\//.test(event.opponent||'')&&recapMatchesEvent(raw,{...identity,sport:'',opponent:String(event.opponent).split('/').pop().trim()},url)||/\s/.test(event.opponent||'')&&first.length>=4&&recapMatchesEvent(raw,{...identity,sport:'',opponent:first},url);
     if(!recapMatchesEvent(raw,event,url))return false;
     const title=(String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=["']([^"']+)/i)||[])[1]||'';

@@ -61,7 +61,7 @@ import {miamiSchool,createMiamiHandlers} from './schools/miami.mjs';
 import {virginiaSchool,createVirginiaHandlers} from './schools/virginia.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.86.2-miami-virginia';
+const VERSION='4.86.3-miami-virginia';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
