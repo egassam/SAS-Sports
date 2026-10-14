@@ -4,7 +4,7 @@
 
 Boston College was added to the app on October 14, 2026 (17 sports, one PR with California). bceagles.com is SIDEARM (read directly from the sandbox).
 
-## Status (`4.87.0-boston-college-california`)
+## Status (`4.87.1-boston-college-california`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

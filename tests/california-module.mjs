@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,californiaHandlers,attachOfficialMeetResults,decodeHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,fetchLive,californiaHandlers,attachOfficialMeetResults,decodeHtml,featuredAthletes};')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/california-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport has explicit calbears.com routes, exactly
@@ -525,6 +525,19 @@ assert.deepEqual([...parse('Basketball','mens-basketball'),...parse('Lacrosse','
   const records=(sport,slug)=>{const group=worker.groupEvents(parse(sport,slug),now).find(g=>g.records?.length);const own=group?.records.find(r=>!r.team||slug.startsWith(r.team==="Men's"?'mens-':'womens-'))||group?.records[0];return[own?.text||null,own?.conference?[own.conference.name,own.conference.text].join(' '):null];};
   assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer'],['Soccer','mens-soccer'],['Field Hockey','field-hockey'],['Water Polo','mens-water-polo']].map(([sport,slug])=>records(sport,slug)),[["3-3","ACC 2-1"],["13-4","ACC 3-3"],["4-4-5","ACC 1-2-2"],["4-4-3","ACC 1-3-1"],["7-5","ACC 1-4"],["9-4","MPSF 0-2"]]);
 }
+
+// Gymnastics: the rosters publish no athlete portraits or Instagram; three
+// official profile cards fill the slots without a portrait (initials).
+{
+  recapFixtures.set('https://calbears.com/sports/womens-gymnastics/roster',fixture('womens-gymnastics-roster.html.gz'));
+  const athletes=await worker.featuredAthletes('california','Gymnastics');
+  assert.equal(athletes.length,3);
+  assert.ok(athletes.every(a=>a.instagram_url===null&&a.image_url===null&&a.profile_url.startsWith('https://calbears.com/sports/womens-gymnastics/roster/')));
+  recapFixtures.clear();requests.length=0;
+}
+
+// Accented letters by name: the basketball roster's "Mantas Ko&ccaron;anas".
+assert.deepEqual(['Mantas Ko&ccaron;anas','Jos&eacute; Mu&ntilde;oz','&Aring;sa'].map(worker.decodeHtml),['Mantas Kočanas','José Muñoz','Åsa']);
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('California module checks passed');

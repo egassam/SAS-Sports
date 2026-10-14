@@ -25,6 +25,9 @@ export const californiaSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Gymnastics','Rowing','Soccer','Swimming & Diving','Tennis','Water Polo']),
+  // Gymnastics rosters (2027 women's, men's) publish no athlete portraits
+  // or Instagram: official profile cards without a portrait fill the slots.
+  portraitlessProfileSports:new Set(['Gymnastics']),
   verifiedInstagrams:{
     'california|Golf|Constance Fouillet':'https://www.instagram.com/constancefouillet/',
     'california|Golf|Charlie Bundy':'https://www.instagram.com/charliebundygolf/',

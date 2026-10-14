@@ -4,7 +4,7 @@
 
 California was added to the app on October 14, 2026 (17 sports, one PR with Boston College). calbears.com is a newer (Nuxt) SIDEARM site that refuses the sandbox: it is read through the private source. Its menu lists sports as payload slugs, not links: `add-school` now reads those when the links give fewer than three sports.
 
-## Status (`4.87.0-boston-college-california`)
+## Status (`4.87.1-boston-college-california`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -34,7 +34,7 @@ Every rule was mutated and each mutation fails `node tests/california-module.mjs
 
 ## Athletes
 
-Three featured athletes per sport. Pinned from the profile pages (Oct 14): Golf, Swimming & Diving, Tennis (three each), Water Polo (Riley Clansen). **Profile cards** (`athlete_profile_fallback_sports`): Cross Country (0 of 35 profiles), Field Hockey (0 of 21), Gymnastics (0 of 40), Rowing (0 of 59), Soccer (0 of 90), Softball (0 of 24), Track & Field (0 of 100), Water Polo (1 of 44).
+Three featured athletes per sport. Pinned from the profile pages (Oct 14): Golf, Swimming & Diving, Tennis (three each), Water Polo (Riley Clansen). **Profile cards** (`athlete_profile_fallback_sports`): Cross Country (0 of 35 profiles), Field Hockey (0 of 21), Gymnastics (0 of 40), Rowing (0 of 59), Soccer (0 of 90), Softball (0 of 24), Track & Field (0 of 100), Water Polo (1 of 44). Gymnastics rosters publish no athlete portraits either: its cards show initials (`portraitlessProfileSports`, Cal only). Accented names written as entities ("Ko&ccaron;anas") are decoded (shared `decodeHtml`).
 
 ## Open
 
