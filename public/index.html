@@ -80,6 +80,17 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .level-switch .level{background:transparent;color:#cfe0f2;border:2px solid transparent}
 .level-switch .level.active{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#fff);border-color:var(--team-secondary,var(--accent))}
 .level-switch .level:disabled{color:#6f849a}
+
+/* Live from the field: scores a school's own scorekeeper enters (/score). */
+.field-live{margin:14px 0 4px}.field-live h2{font-size:15px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.field-live .fl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.fl-card{display:block;color:inherit;text-decoration:none;background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.fl-card .fl-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.fl-card .fl-row{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:16px;padding:2px 0}
+.fl-card .fl-row b{font-size:22px;font-variant-numeric:tabular-nums}
+.fl-card .fl-sum{margin-top:6px;font-size:13px;color:var(--warn);font-weight:800}
+.fl-card .fl-src{margin-top:4px;font-size:11px;color:var(--muted)}
+.fl-chip{font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid var(--line)}.fl-chip.live{background:var(--danger);border-color:var(--danger);color:#fff}
 </style>
 </head>
 <body>
@@ -115,6 +126,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <nav id="sportNav" class="sport-nav"></nav>
 </section>
 <div id="demoPanel" class="demo-panel" hidden><strong>DEMO · Sample game, not a live score</strong><span id="demoStep">Sample score shown in the Live tab.</span><button id="demoAdvance" class="ghost" type="button">Show Final</button></div>
+<section id="fieldLive" class="field-live" hidden aria-live="polite"></section>
 <main id="feed" class="feed"></main>
 <div class="footer-note" id="timeZoneNote"></div><div class="footer-note">SAS Sports · school-first web test · live official-source refresh · v1.8 reconciliation engine</div>
 </div>
@@ -748,6 +760,33 @@ populateSportFilter();
 $('#demoAdvance').addEventListener('click',()=>{demoStage=demoStage===2?0:demoStage+1;currentView=['upcoming','live','results'][demoStage];tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===currentView));updateDemo()});
 sweepFinalCache();
 (async()=>{try{await loadSchools();if(demoRequested&&school.value==='kstate'){populateSportFilter();sportFilter.value='Football';currentView='live';tabs.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='live'))}await loadFeed()}catch(e){status.textContent=e.message}})();
+</script>
+<script>
+// Live from the field: games a school's own scorekeeper is scoring in the
+// SAS Scorer app (/score). Shown above the official feed for schools that
+// score their own games; the official results are unchanged.
+(()=>{
+  const box=document.querySelector('#fieldLive'),select=document.querySelector('#school');
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let scoring=new Set(),timer=null,lastId=null;
+  const card=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span>${g.status==='live'?'<span class="fl-chip live">Live</span>':g.status==='final'?'<span class="fl-chip">Final</span>':'<span class="fl-chip">Today</span>'}</div><div class="fl-row"><span>${esc(g.away.name)}</span><b>${g.away.score}</b></div><div class="fl-row"><span>${esc(g.home.name)}</span><b>${g.home.score}</b></div><div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label)} · tap for the scoreboard</div></a>`;
+  async function refresh(){
+    clearTimeout(timer);
+    const id=select.value;lastId=id;
+    if(!scoring.has(id)){box.hidden=true;box.innerHTML='';return}
+    let games=[];
+    try{games=(await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games||[]}catch{}
+    if(select.value!==id)return;
+    box.hidden=!games.length;
+    box.innerHTML=games.length?`<h2><span class="live-dot"></span>Live from the field</h2><div class="fl-grid">${games.map(card).join('')}</div>`:'';
+    timer=setTimeout(refresh,games.some(g=>g.status==='live')?3000:30000);
+  }
+  fetch('/api/score/schools',{cache:'no-store'}).then(r=>r.json()).then(d=>{scoring=new Set((d.schools||[]).map(s=>s.school_id));refresh()}).catch(()=>{});
+  select.addEventListener('change',refresh);
+  // The school list fills in (and may restore a saved school) without a change event.
+  setInterval(()=>{if(select.value!==lastId)refresh()},1500);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
+})();
 </script>
 </body>
 </html>

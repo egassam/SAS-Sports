@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07111f">
+<title>SAS Scorer</title>
+<style>
+:root{--bg:#07111f;--panel:#0f2135;--panel2:#132a43;--line:#29435f;--text:#eef5fc;--muted:#9fb3c8;--accent:#42d3ff;--good:#3ddc97;--warn:#ffcf5a;--bad:#ff6b6b;--home:#7aa2ff;--away:#ffb86b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit}
+.shell{max-width:760px;margin:auto;padding:14px 14px calc(80px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:950;color:#07111f;background:linear-gradient(135deg,#3ddc97,#42d3ff)}
+.brand h1{margin:0;font-size:20px;line-height:1.1}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 12px;font-size:17px}
+label{display:block;margin-bottom:10px}
+label span{display:block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+input,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#081524;color:var(--text)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 160px}
+.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:850;cursor:pointer;background:var(--accent);color:#07111f;touch-action:manipulation}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.small{padding:7px 11px;font-size:14px;border-radius:10px}
+.btn.danger{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.muted{color:var(--muted)}.small{font-size:13px}
+.error{color:var(--bad);font-weight:700;min-height:1.4em}
+.note{background:#0b1a2b;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;color:var(--muted);font-size:13px}
+.games{display:grid;gap:10px}
+.game{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;color:inherit;text-align:left;width:100%}
+.game .teams{font-weight:800}.game .meta{font-size:13px;color:var(--muted)}
+.chip{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.chip.live{background:var(--bad);border-color:var(--bad);color:#fff}.chip.final{background:#26384c}
+/* Console */
+.board{background:#050b14;border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.board .line{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:4px 0}
+.board .name{font-weight:850;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .score{font-size:38px;font-weight:950;font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+.board .batting::before{content:"▸ ";color:var(--warn)}
+.board .status{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);margin-top:6px;padding-top:8px;color:var(--muted);font-weight:700}
+.dots{display:inline-flex;gap:4px;align-items:center;margin-right:10px}.dots b{font-size:12px;margin-right:3px}
+.dot{width:11px;height:11px;border-radius:50%;border:2px solid #4b6580}.dot.on{background:var(--warn);border-color:var(--warn)}.dot.out.on{background:var(--bad);border-color:var(--bad)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.pad .btn{padding:18px 8px;font-size:18px;border-radius:16px;min-height:66px}
+.pad .wide{grid-column:span 3}.pad .two{grid-column:span 2}
+.b-ball{background:#3ddc97}.b-strike{background:#ffcf5a}.b-foul{background:#ffe9a8}.b-out{background:#ff6b6b;color:#fff}.b-run{background:#42d3ff}.b-hit{background:#a99cff}.b-neutral{background:#26384c;color:var(--text)}
+.diamond{position:relative;width:120px;height:120px;margin:0 auto}
+.base{position:absolute;width:38px;height:38px;transform:rotate(45deg);border:3px solid #4b6580;background:#0b1a2b;cursor:pointer;border-radius:4px}
+.base.on{background:var(--warn);border-color:var(--warn)}
+.base[data-base="2"]{left:41px;top:4px}.base[data-base="3"]{left:4px;top:41px}.base[data-base="1"]{left:78px;top:41px}
+.home-plate{position:absolute;left:49px;top:86px;width:22px;height:22px;transform:rotate(45deg);background:#eef5fc;border-radius:3px}
+.split{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.fixes{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+details summary{cursor:pointer;font-weight:800;margin:6px 0 10px}
+.sync{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#0b1a2b;border-top:1px solid var(--line);font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sync .ok{color:var(--good)}.sync .wait{color:var(--warn)}.sync .bad{color:var(--bad)}
+.clock{font-size:46px;font-weight:950;font-variant-numeric:tabular-nums;text-align:center}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.links a{color:var(--accent);font-weight:800;font-size:14px}
+table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{padding:6px 4px;border-bottom:1px solid var(--line)}
+[hidden]{display:none!important}
+@media(max-width:420px){.pad .btn{font-size:16px;padding:14px 6px}.split{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="mark">SAS</div><div><h1>SAS Scorer</h1><p id="who">For school scorekeepers</p></div></div>
+  <button id="signOut" class="btn ghost small" hidden>Sign out</button>
+</header>
+
+<!-- Sign in -->
+<section id="signinView" class="card" hidden>
+  <h2>Scorekeeper sign-in</h2>
+  <form id="signinForm" autocomplete="on">
+    <label><span>School</span><select id="siSchool" required></select></label>
+    <label><span>School code</span><input id="siCode" required autocomplete="off" autocapitalize="characters" placeholder="Given to you by your school"></label>
+    <label><span>Username</span><input id="siUser" required autocomplete="username" autocapitalize="none"></label>
+    <label><span>Password</span><input id="siPass" type="password" required autocomplete="current-password"></label>
+    <div class="error" id="siError"></div>
+    <button class="btn" type="submit" style="width:100%">Sign in</button>
+  </form>
+  <p class="note">Only scorekeepers your school's athletic office adds can sign in. Scores you enter show at once on the school's TV scoreboard and in the SAS Sports app.</p>
+</section>
+
+<!-- Games -->
+<section id="homeView" hidden>
+  <div class="card">
+    <div class="row" style="align-items:center;margin-bottom:10px"><h2 style="margin:0">Games</h2><div style="flex:0 0 auto"><a class="small" id="schoolBoardLink" target="_blank" style="color:var(--accent);font-weight:800">School TV scoreboard ↗</a></div></div>
+    <div class="games" id="gameList"><p class="muted">Loading…</p></div>
+  </div>
+  <div class="card">
+    <h2>New game</h2>
+    <form id="newGameForm">
+      <div class="row">
+        <label><span>Sport</span><select id="ngSport"></select></label>
+        <label><span>We are</span><select id="ngSide"><option value="home">Home</option><option value="away">Away</option></select></label>
+      </div>
+      <label><span>Opponent</span><input id="ngOpponent" required maxlength="40" placeholder="e.g. Junction City"></label>
+      <div class="row">
+        <label><span>Start (optional)</span><input id="ngStart" type="datetime-local"></label>
+        <label id="ngLengthLabel"><span id="ngLengthName">Innings</span><input id="ngLength" type="number" min="1" max="60" value="7"></label>
+      </div>
+      <label><span>Venue (optional)</span><input id="ngVenue" maxlength="60" placeholder="e.g. Griffith Field"></label>
+      <div class="error" id="ngError"></div>
+      <button class="btn" type="submit">Create game</button>
+    </form>
+  </div>
+  <div class="card" id="adminCard" hidden>
+    <h2>Scorekeepers</h2>
+    <table class="users" id="userTable"></table>
+    <details style="margin-top:12px"><summary>Add or reset a scorekeeper</summary>
+      <form id="addUserForm">
+        <div class="row"><label><span>Username</span><input id="auUser" required autocapitalize="none" pattern="[a-zA-Z0-9][a-zA-Z0-9._\-]{2,31}"></label><label><span>Name shown</span><input id="auName" maxlength="40"></label></div>
+        <div class="row"><label><span>Password (10+ characters)</span><input id="auPass" required minlength="10" autocomplete="new-password"></label><label><span>Role</span><select id="auRole"><option value="scorer">Scorekeeper</option><option value="admin">School admin</option></select></label></div>
+        <div class="error" id="auError"></div>
+        <button class="btn" type="submit">Save scorekeeper</button>
+      </form>
+    </details>
+    <details><summary>Change the school code</summary>
+      <form id="codeForm"><label><span>New school code</span><input id="newCode" required autocapitalize="characters" pattern="[A-Za-z0-9\-]{8,32}"></label><div class="error" id="codeError"></div><button class="btn" type="submit">Change code</button></form>
+      <p class="note">Everyone signing in after this needs the new code. People already signed in stay signed in.</p>
+    </details>
+  </div>
+  <div class="card">
+    <details><summary>Change my password</summary>
+      <form id="pwForm"><label><span>Current password</span><input id="pwOld" type="password" required autocomplete="current-password"></label><label><span>New password (10+ characters)</span><input id="pwNew" type="password" required minlength="10" autocomplete="new-password"></label><div class="error" id="pwError"></div><button class="btn" type="submit">Change password</button></form>
+    </details>
+  </div>
+</section>
+
+<!-- Scoring console -->
+<section id="consoleView" hidden>
+  <div class="row" style="margin-bottom:10px;align-items:center"><button id="backBtn" class="btn ghost small" style="flex:0 0 auto">← Games</button><div class="muted small" id="consoleTitle" style="text-align:right"></div></div>
+  <div class="board" id="board"></div>
+  <div class="links"><a id="tvLink" target="_blank">Open TV scoreboard ↗</a><a id="appLink" target="_blank">See it in the app ↗</a></div>
+  <div id="controls"></div>
+  <div class="error" id="consoleError"></div>
+</section>
+</div>
+<div class="sync" id="syncBar" hidden><span id="syncText" class="ok">Saved</span><button id="undoBtn" class="btn ghost small">↶ Undo last</button></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SESSION_KEY='sas-score-session:v1',QUEUE_KEY='sas-score-queue:v1';
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del(k){try{localStorage.removeItem(k)}catch{}}};
+let session=store.get(SESSION_KEY),sports=[],current=null,queue=store.get(QUEUE_KEY)||[],sending=false,pollTimer=null,clockTimer=null,serverOffset=0;
+
+async function api(path,{method='GET',body}={}){
+  const headers={'content-type':'application/json'};
+  if(session?.token)headers.authorization=`Bearer ${session.token}`;
+  let res;
+  try{res=await fetch(path,{method,headers,body:body?JSON.stringify(body):undefined,cache:'no-store'})}
+  catch{const e=new Error('No connection');e.offline=true;throw e}
+  const data=await res.json().catch(()=>({}));
+  if(res.status===401&&session&&path!=='/api/score/login'){signOut(true);}
+  if(!res.ok){const e=new Error(data.detail||`Error ${res.status}`);e.status=res.status;e.offline=res.status>=500;throw e}
+  return data;
+}
+
+function show(view){for(const v of ['signinView','homeView','consoleView'])$('#'+v).hidden=v!==view;$('#signOut').hidden=view==='signinView';$('#syncBar').hidden=view!=='consoleView';}
+
+// --- sign in -------------------------------------------------------------------
+async function loadSchools(){
+  try{const d=await api('/api/score/schools');sports=d.sports;$('#siSchool').innerHTML=d.schools.map(s=>`<option value="${esc(s.school_id)}">${esc(s.name)}</option>`).join('')||'<option value="">No schools set up yet</option>';
+  $('#ngSport').innerHTML=sports.map(s=>`<option>${esc(s)}</option>`).join('');updateLengthField();}
+  catch(e){$('#siError').textContent=e.message}
+}
+$('#signinForm').addEventListener('submit',async e=>{
+  e.preventDefault();$('#siError').textContent='';
+  try{
+    const d=await api('/api/score/login',{method:'POST',body:{school:$('#siSchool').value,code:$('#siCode').value,username:$('#siUser').value,password:$('#siPass').value}});
+    session={token:d.token,user:d.user,expires_at:d.expires_at};store.set(SESSION_KEY,session);$('#siPass').value='';$('#siCode').value='';enterHome();
+  }catch(err){$('#siError').textContent=err.message}
+});
+function signOut(expired){
+  if(session&&!expired)api('/api/score/logout',{method:'POST'}).catch(()=>{});
+  session=null;store.del(SESSION_KEY);stopConsole();show('signinView');$('#who').textContent='For school scorekeepers';
+  if(expired)$('#siError').textContent='Your sign-in ended. Sign in again.';
+}
+$('#signOut').addEventListener('click',()=>signOut(false));
+
+// --- games list --------------------------------------------------------------------
+function teamsLine(g){return`${esc(g.away.name)} <span class="muted">at</span> ${esc(g.home.name)}`}
+function chip(g){return g.status==='live'?'<span class="chip live">Live</span>':g.status==='final'?'<span class="chip final">Final</span>':'<span class="chip">Scheduled</span>'}
+async function enterHome(){
+  show('homeView');stopConsole();
+  $('#who').textContent=`${session.user.display_name} · ${session.user.school_name}`;
+  $('#schoolBoardLink').href=`/scoreboard/?school=${encodeURIComponent(session.user.school_id)}`;
+  $('#adminCard').hidden=session.user.role!=='admin';
+  if(!sports.length)await loadSchools();
+  try{
+    const d=await api(`/api/score/games?school=${encodeURIComponent(session.user.school_id)}&all=1`);
+    $('#gameList').innerHTML=d.games.length?d.games.map(g=>`<button class="game" data-id="${esc(g.id)}"><div><div class="teams">${teamsLine(g)}</div><div class="meta">${esc(g.sport)} · ${esc(g.summary)} · ${g.away.score}–${g.home.score}${g.start_at?' · '+esc(new Date(g.start_at).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})):''}</div></div>${chip(g)}</button>`).join(''):'<p class="muted">No games yet. Create one below.</p>';
+  }catch(e){$('#gameList').innerHTML=`<p class="error">${esc(e.message)}</p>`}
+  if(session.user.role==='admin')loadUsers();
+}
+$('#gameList').addEventListener('click',e=>{const b=e.target.closest('.game');if(b)openGame(b.dataset.id)});
+function updateLengthField(){const soccer=$('#ngSport').value==='Soccer';$('#ngLengthName').textContent=soccer?'Minutes per half':'Innings';$('#ngLength').value=soccer?40:7;}
+$('#ngSport').addEventListener('change',updateLengthField);
+$('#newGameForm').addEventListener('submit',async e=>{
+  e.preventDefault();$('#ngError').textContent='';
+  const sport=$('#ngSport').value,len=Number($('#ngLength').value);
+  try{
+    const g=await api('/api/score/games',{method:'POST',body:{sport,opponent:$('#ngOpponent').value,home_away:$('#ngSide').value,start_at:$('#ngStart').value||null,venue:$('#ngVenue').value,innings:sport==='Soccer'?undefined:len,half_minutes:sport==='Soccer'?len:undefined}});
+    $('#ngOpponent').value='';$('#ngVenue').value='';openGame(g.id);
+  }catch(err){$('#ngError').textContent=err.message}
+});
+
+// --- admin ---------------------------------------------------------------------------
+async function loadUsers(){
+  try{const d=await api('/api/score/users');
+    $('#userTable').innerHTML=d.users.map(u=>`<tr><td><b>${esc(u.username)}</b>${u.display_name?` <span class="muted">${esc(u.display_name)}</span>`:''}</td><td class="muted">${u.role==='admin'?'School admin':'Scorekeeper'}</td><td style="text-align:right">${u.username===session.user.username?'<span class="muted small">You</span>':`<button class="btn ghost small" data-remove="${esc(u.username)}">Remove</button>`}</td></tr>`).join('');
+  }catch(e){$('#userTable').innerHTML=`<tr><td class="error">${esc(e.message)}</td></tr>`}
+}
+$('#userTable').addEventListener('click',async e=>{const u=e.target.closest('[data-remove]')?.dataset.remove;if(!u||!confirm(`Remove ${u}? They are signed out at once.`))return;try{await api(`/api/score/users/${encodeURIComponent(u)}`,{method:'DELETE'});loadUsers()}catch(err){alert(err.message)}});
+$('#addUserForm').addEventListener('submit',async e=>{e.preventDefault();$('#auError').textContent='';try{await api('/api/score/users',{method:'POST',body:{username:$('#auUser').value,display_name:$('#auName').value,password:$('#auPass').value,role:$('#auRole').value}});e.target.reset();loadUsers()}catch(err){$('#auError').textContent=err.message}});
+$('#codeForm').addEventListener('submit',async e=>{e.preventDefault();$('#codeError').textContent='';try{await api('/api/score/school-code',{method:'POST',body:{code:$('#newCode').value}});e.target.reset();$('#codeError').textContent='';alert('School code changed.')}catch(err){$('#codeError').textContent=err.message}});
+$('#pwForm').addEventListener('submit',async e=>{e.preventDefault();$('#pwError').textContent='';try{await api('/api/score/password',{method:'POST',body:{current_password:$('#pwOld').value,new_password:$('#pwNew').value}});e.target.reset();alert('Password changed.')}catch(err){$('#pwError').textContent=err.message}});
+
+// --- console --------------------------------------------------------------------------
+function stopConsole(){clearInterval(pollTimer);clearInterval(clockTimer);pollTimer=clockTimer=null;current=null}
+async function openGame(id){
+  stopConsole();show('consoleView');$('#board').innerHTML='<p class="muted">Loading…</p>';$('#controls').innerHTML='';
+  try{current=await api(`/api/score/games/${encodeURIComponent(id)}`)}catch(e){$('#board').innerHTML=`<p class="error">${esc(e.message)}</p>`;return}
+  serverOffset=current.server_now-Date.now();
+  $('#tvLink').href=`/scoreboard/?game=${encodeURIComponent(id)}`;
+  $('#appLink').href=`/?school=${encodeURIComponent(current.school_id)}`;
+  render();
+  // Another scorer's taps (or a second device) show up here too.
+  pollTimer=setInterval(async()=>{if(sending||queue.some(q=>q.game===current?.id))return;try{const d=await api(`/api/score/games/${encodeURIComponent(current.id)}?since=${current.version}`);if(!d.unchanged){current=d;render()}}catch{}},3000);
+  clockTimer=setInterval(()=>{const el=$('#clock');if(el&&current)el.textContent=clockText(current)},250);
+  flush();
+}
+$('#backBtn').addEventListener('click',enterHome);
+
+const newId=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+function send(type,extra={}){
+  if(!current)return;
+  queue.push({game:current.id,action:{type,...extra},action_id:newId()});store.set(QUEUE_KEY,queue);
+  if(navigator.vibrate)navigator.vibrate(15);
+  updateSync();flush();
+}
+// Taps are sent in order. With no signal they wait and retry; each carries an
+// id so a retry never counts twice.
+async function flush(){
+  if(sending||!queue.length)return updateSync();
+  sending=true;
+  while(queue.length){
+    const item=queue[0];
+    try{
+      const d=await api(`/api/score/games/${encodeURIComponent(item.game)}/action`,{method:'POST',body:{action:item.action,action_id:item.action_id}});
+      queue.shift();store.set(QUEUE_KEY,queue);
+      if(current?.id===item.game){current=d;render()}
+      $('#consoleError').textContent='';
+    }catch(e){
+      if(e.offline){updateSync('offline');sending=false;setTimeout(flush,2000);return}
+      queue.shift();store.set(QUEUE_KEY,queue);$('#consoleError').textContent=e.message;
+    }
+  }
+  sending=false;updateSync();
+}
+function updateSync(state){
+  const n=queue.length,el=$('#syncText');
+  if(state==='offline'){el.className='bad';el.textContent=`No connection · ${n} tap${n===1?'':'s'} waiting, retrying…`}
+  else if(n){el.className='wait';el.textContent=`Sending ${n}…`}
+  else{el.className='ok';el.textContent=current?`Saved · live on every screen`:'Saved'}
+}
+$('#undoBtn').addEventListener('click',()=>send('undo'));
+window.addEventListener('online',flush);
+
+function clockText(g){
+  const c=g.state.clock;if(!c)return'';
+  const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+serverOffset-c.started_at):0);
+  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+}
+const dots=(n,max,cls='')=>Array.from({length:max},(_,i)=>`<span class="dot ${cls} ${i<n?'on':''}"></span>`).join('');
+
+function render(){
+  const g=current;if(!g)return;
+  $('#consoleTitle').textContent=`${g.sport}${g.venue?' · '+g.venue:''}`;
+  const s=g.state,diamond=g.sport!=='Soccer';
+  const battingSide=diamond&&g.status==='live'?(s.half==='top'?'away':'home'):null;
+  const line=side=>`<div class="line"><div class="name ${battingSide===side?'batting':''}">${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
+  let status=`<span>${esc(g.summary)}</span>`;
+  if(diamond&&g.status==='live')status=`<span>${esc(g.summary)}</span><span><span class="dots"><b>B</b>${dots(s.balls,3)}</span><span class="dots"><b>S</b>${dots(s.strikes,2)}</span><span class="dots"><b>O</b>${dots(s.outs,2,'out')}</span></span>`;
+  if(!diamond&&g.status!=='scheduled')status=`<span>${esc(g.summary)}${s.period===5?` · PKs ${s.pks.away}–${s.pks.home}`:''}</span><span id="clock" style="font-variant-numeric:tabular-nums;color:var(--text)">${clockText(g)}</span>`;
+  $('#board').innerHTML=line('away')+line('home')+`<div class="status">${status}</div>`;
+  const C=$('#controls');
+  if(g.status==='scheduled'){C.innerHTML=`<div class="pad"><button class="btn wide" data-a="start" style="padding:22px">Start game</button></div><p class="note">Starting puts the game live on the TV scoreboard and in the app.</p>${g.status==='scheduled'&&session.user.role==='admin'?'<button class="btn ghost small" data-del>Delete this game</button>':''}`;return}
+  if(g.status==='final'){C.innerHTML=`<p class="note">Final. The result stays on the app's live card for 6 hours.</p><div class="pad"><button class="btn b-neutral wide" data-a="reopen">Reopen to fix the score</button></div>${session.user.role==='admin'?'<button class="btn ghost small" data-del>Delete this game</button>':''}`;return}
+  if(diamond){
+    const bat=s.half==='top'?'away':'home',fld=bat==='away'?'home':'away';
+    C.innerHTML=`
+    <div class="pad">
+      <button class="btn b-ball" data-a="ball">Ball</button><button class="btn b-strike" data-a="strike">Strike</button><button class="btn b-foul" data-a="foul">Foul</button>
+      <button class="btn b-out" data-a="out">Out</button><button class="btn b-run" data-a="run">Run +1<br><small>${esc(g[bat].name)}</small></button><button class="btn b-hit" data-a="hit">Hit</button>
+      <button class="btn b-neutral" data-a="walk">Walk / HBP</button><button class="btn b-neutral" data-a="next_batter">New batter</button><button class="btn b-neutral" data-a="error">Error<br><small>${esc(g[fld].name)}</small></button>
+    </div>
+    <div class="split">
+      <div class="diamond" aria-label="Runners on base">${[1,2,3].map(b=>`<button class="base ${s.bases[b-1]?'on':''}" data-base="${b}" aria-label="Runner on ${b===1?'first':b===2?'second':'third'}"></button>`).join('')}<div class="home-plate"></div></div>
+      <div class="note">Tap a base to put a runner on or take one off. Three outs end the half and clear the bases.</div>
+    </div>
+    <details><summary>Fix the score</summary>
+      <div class="fixes">
+        <button class="btn b-neutral small" data-a="run_minus" data-side="away">${esc(g.away.name)} run −1</button><button class="btn b-neutral small" data-a="run_minus" data-side="home">${esc(g.home.name)} run −1</button>
+        <button class="btn b-neutral small" data-a="hit_minus" data-side="away">${esc(g.away.name)} hit −1</button><button class="btn b-neutral small" data-a="hit_minus" data-side="home">${esc(g.home.name)} hit −1</button>
+        <button class="btn b-neutral small" data-a="error_minus" data-side="away">${esc(g.away.name)} error −1</button><button class="btn b-neutral small" data-a="error_minus" data-side="home">${esc(g.home.name)} error −1</button>
+        <button class="btn b-neutral small" data-a="end_half">End this half now</button><button class="btn b-neutral small" data-setcount>Set balls/strikes/outs</button>
+      </div>
+    </details>
+    <div class="pad" style="margin-top:12px"><button class="btn danger wide" data-final>End game (Final)</button></div>`;
+  }else{
+    const running=s.clock.running;
+    C.innerHTML=`
+    <div class="pad">
+      <button class="btn b-run" data-a="goal" data-side="away" style="grid-column:span 1">Goal<br><small>${esc(g.away.name)}</small></button>
+      <button class="btn ${running?'b-out':'b-ball'}" data-a="${running?'clock_stop':'clock_start'}">${running?'Stop clock':'Start clock'}</button>
+      <button class="btn b-run" data-a="goal" data-side="home">Goal<br><small>${esc(g.home.name)}</small></button>
+      <button class="btn b-neutral two" data-a="next_period" ${s.period>=5?'disabled':''}>Next period →</button><button class="btn b-neutral" data-setclock>Set clock</button>
+    </div>
+    <details><summary>Fix the score</summary><div class="fixes">
+      <button class="btn b-neutral small" data-a="goal_minus" data-side="away">${esc(g.away.name)} −1</button><button class="btn b-neutral small" data-a="goal_minus" data-side="home">${esc(g.home.name)} −1</button>
+    </div></details>
+    <div class="pad" style="margin-top:12px"><button class="btn danger wide" data-final>End game (Final)</button></div>`;
+  }
+}
+$('#controls').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b||!current)return;
+  if(b.dataset.a)return send(b.dataset.a,b.dataset.side?{side:b.dataset.side}:{});
+  if(b.dataset.base)return send('base',{base:Number(b.dataset.base)});
+  if(b.hasAttribute('data-final')){if(confirm('End the game and post the final score?'))send('final');return}
+  if(b.hasAttribute('data-setclock')){const v=prompt('Clock (minutes:seconds)',clockText(current));const m=String(v||'').match(/^(\d{1,3}):([0-5]\d)$/);if(m)send('clock_set',{seconds:Number(m[1])*60+Number(m[2])});return}
+  if(b.hasAttribute('data-setcount')){const v=prompt('Balls-Strikes-Outs, e.g. 2-1-1',`${current.state.balls}-${current.state.strikes}-${current.state.outs}`);const m=String(v||'').match(/^([0-3])-([0-2])-([0-2])$/);if(m)send('set_count',{balls:+m[1],strikes:+m[2],outs:+m[3]});return}
+  if(b.hasAttribute('data-del')){if(!confirm('Delete this game? It disappears from every screen.'))return;try{await api(`/api/score/games/${encodeURIComponent(current.id)}`,{method:'DELETE'});enterHome()}catch(err){$('#consoleError').textContent=err.message}}
+});
+
+// --- start ----------------------------------------------------------------------------------
+(async()=>{
+  await loadSchools();
+  if(session&&session.expires_at>Date.now()){try{await api('/api/score/me');enterHome();return}catch{}}
+  session=null;store.del(SESSION_KEY);show('signinView');
+})();
+</script>
+</body>
+</html>
