@@ -491,6 +491,9 @@ const fromTfrrs=teams=>{
   fromTfrrs(WISCONSIN_TFRRS_TEAMS);
   const xc=[...parse('Cross Country','womens-cross-country'),...parse('Cross Country','mens-cross-country')].filter(e=>e.status==='Final');
   for(const meet of xc)await worker.attachOfficialMeetResults(meet);
+  // Each team's card lists only its own races (the first preview showed the
+  // women's card with the men's 8K too).
+  assert.ok(xc.every(e=>e.results.length&&e.results.every(row=>row.group.startsWith(e.team_label))),'each team keeps its own races');
   assert.deepEqual(xc.map(e=>[e.title,e.headline,Boolean(e.meet_results_verified)]),[["Women's · Wisconsin at Badger Classic","Women's team: 1st · 15 pts",true],["Women's · Wisconsin at John McNichols Invitational","Women's team: 16th · 422 pts",true],["Women's · Wisconsin at Sean Earl Lakefront Invitational","Women's team: 15th · 371 pts",true],["Women's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour","Women's team: 33rd · 810 pts",true],["Men's · Wisconsin at Badger Classic","Men's team: 1st · 15 pts",true],["Men's · Wisconsin at John McNichols Invitational","Men's team: 9th · 267 pts",true],["Men's · Wisconsin at Sean Earl Lakefront Invitational","Men's team: 8th · 201 pts",true],["Men's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour","Men's team: 9th · 356 pts",true]]);
   recapFixtures.clear();requests.length=0;
 }

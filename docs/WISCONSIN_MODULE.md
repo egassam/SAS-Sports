@@ -4,7 +4,7 @@
 
 Wisconsin was added to the app on October 14, 2026 (13 sports, one PR with Washington).
 
-## Status (`4.85.1-washington-wisconsin`)
+## Status (`4.85.2-washington-wisconsin`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

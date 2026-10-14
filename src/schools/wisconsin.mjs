@@ -333,6 +333,7 @@ export function createWisconsinHandlers({makeEvent,recapMatchesEvent,eventType=(
       if(event.meet_results_verified&&event.team_label){
         const own=text=>new RegExp(`^${team}'s\\b`,'i').test(String(text||''));
         const other=team==='Men'?/\bwomen(?:'s)?\b/i:/\b(?<!wo)men(?:'s)?\b/i;
+        event.results=event.results.filter(row=>own(row.group));event.result_count=event.results.length;event.has_more_results=event.results.length>3;event.recap_result_count=event.results.length;
         event.headline=String(event.headline).split(' / ').filter(own).join(' / ')||event.headline;
         event.highlights=(event.highlights||[]).filter(line=>!other.test(line));
       }
