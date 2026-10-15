@@ -718,6 +718,20 @@
     "Volleyball",
     "Wrestling"
   ],
+  "pitt": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "purdue": [
     "Baseball",
     "Basketball",
@@ -749,6 +763,19 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "smu": [
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "south-carolina": [
     "Baseball",
