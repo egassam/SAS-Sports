@@ -39,4 +39,5 @@ Rosters publish athlete Instagram on most profile pages (Baseball 41 of 41, Foot
 ## Open
 
 - Track & Field fills when 2026-27 is published.
+- Women's Barbara Nicklaus Cup (Oct 5-6, match play) shows "Completed": the card publishes no place and the story ("Ohio State Defeats Clemson at Final Day") gives none.
 - First live cards not yet observed.
