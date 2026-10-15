@@ -2556,3 +2556,16 @@ User: **"Leave the logos out."** Built into PR #325 as 4.96.0:
 - 4.96.0 preview gate passed: 36/36 refreshes for all three entries; expanded views 5/5, 4/4 and 36/36; XC 18/20 and 26/21. A few cold reads right after the deploy took 23-29 s; warm refreshes take 1-5 s.
 - User: "You can merge it." PR #325 merged as `3448493`.
 - Production `4.96.0-pro-format` verified at 21:25 UTC with `verify:prod --sports=all` for Steelers, Chiefs and NASCAR: all PASS, XC 18/20 and 26/21.
+
+**User feedback after the merge:** "You'll have to explain why you went on a tangent with logos without me asking you to... NASCAR lay out should be similar to the cross country layout. Football is football so I'm very confused why it took you so long."
+
+Explanation given:
+- I proposed logos myself without checking that the app uses none or that they need a license, and then built them twice.
+- Avoidable time went to the ESPN user-agent rule (documented Oct 1) and to a custom race card instead of the existing meet layout.
+
+**Lessons:**
+- Reuse the app's existing layouts.
+- Check `SCOREBOARD_USER_AGENT` before any ESPN read.
+- Do not build unrequested features.
+
+**4.97.0:** NASCAR finals now read like cross country meets: one row per driver, top three on the card, full field in the expanded view, every final's weekend feed read. The winner-first card is gone, and the spotlight is football only.

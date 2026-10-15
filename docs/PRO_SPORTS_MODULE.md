@@ -28,7 +28,7 @@ Rules: K-State's — a past game or race without a published result is not liste
 ## Formatting (4.96.0, user, October 15)
 
 - **Next game / next race** leads the page (All view, nothing live): title, time, track for a race, TV channel (`broadcast`), and a countdown in days/hours/minutes. It is not repeated in the upcoming list.
-- **Race finals lead with the winner**: 🏁, car number, name and team, then 2nd and 3rd (`podium`). Only the five latest finals carry the top three (their weekend feeds, kept 6 hours); older finals show the winner and car number from the standings.
+- **Race finals use the cross-country layout** (4.97.0; user: "NASCAR lay out should be similar to the cross country layout"). There is one row per driver, for example "Chase Briscoe (#19) · 1st · Joe Gibbs Racing · 62 laps led". The card shows the top three and the expanded view shows the whole field. Every final reads its own weekend feed, kept 6 hours. If a read fails, the card shows the winner from the standings. The next-game spotlight is for football only.
 - **No logos** (user: "Leave the logos out"). NFL team logos and NASCAR car-number art are the leagues' and teams' trademarks or artwork, and they are not licensed here. Teams are identified by name and team colors, as schools are. A logo license (data provider or league) would be needed first. Legal note given to the user: scores and schedules are facts (*NBA v. Motorola*). ESPN's unofficial feed is used against its commercial-use terms, as the college live scores already are. Have a lawyer review the sources and the "SAS" name before a commercial launch.
 
 ## Limits

@@ -92,15 +92,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .fl-card .fl-src{margin-top:4px;font-size:11px;color:var(--muted)}
 .fl-chip{font-size:10px;font-weight:900;padding:2px 7px;border-radius:999px;border:1px solid var(--line)}.fl-chip.live{background:var(--danger);border-color:var(--danger);color:#fff}
 
-/* Pro: winner-first race cards and the next-event spotlight (no logos:
+/* Pro: the next-game spotlight (no logos:
    user, October 15, "Leave the logos out") */
-.race-winner{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
-.race-flag{font-size:22px;line-height:1}
-.race-car{font-weight:800;font-size:20px;color:var(--accent);min-width:44px}
-.race-name{font-weight:700;font-size:17px}
-.race-team{font-size:12px;color:var(--muted,#9aa7b8)}
-.race-podium{display:flex;gap:14px;font-size:13px;color:var(--muted,#9aa7b8);flex-wrap:wrap}
-.race-podium b{color:inherit;font-weight:700}
 .spotlight{border:1px solid var(--accent);border-radius:16px;padding:14px 16px;margin:4px 0 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);cursor:pointer}
 .spotlight-label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
 .spotlight-title{font-size:19px;font-weight:800;margin:6px 0 4px}
@@ -432,13 +425,6 @@ function raceLiveCard(e){
   const order=(e.results||[]).slice(0,5).map(r=>`<div class="result-row"><span>${esc(r.participant||r.label||'')}</span><strong>${esc(r.result||r.value||'')}</strong></div>`).join('');
   return `<article class="card live-card" data-event-id="${esc(e.id)}" aria-label="${esc(`Live: ${e.title}, ${e.recency_label||''}, ${e.headline||''}`)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(e.recency_label||'Under way')}</span></div><div class="event-title">${esc(e.title)}</div><div class="small muted">${esc(e.opponent||'')}${e.headline?` · ${esc(e.headline)}`:''}</div>${order}<div class="live-foot"><span>${esc(e.sport)}</span><span>${esc(e.live_score_source||'Official live source')}</span></div></article>`;
 }
-// A finished race leads with its winner, then second and third.
-function raceFinalCard(e){
-  const top=e.podium||[],w=top[0]||(e.winner?{name:e.winner.name,car:e.winner.car}:null);
-  if(!w)return null;
-  const rest=top.slice(1).map(p=>`<span>${p.place===2?'2nd':'3rd'} <b>${esc(p.name)}</b>${p.car?` #${esc(p.car)}`:''}</span>`).join('');
-  return`<article class="card" data-event-id="${esc(e.id)}"><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))} · ${esc(e.opponent||'')}</div><div class="race-winner"><span class="race-flag" aria-hidden="true">🏁</span>${w.car?`<span class="race-car">#${esc(w.car)}</span>`:''}<div><div class="race-name">${esc(w.name)}</div>${w.team?`<div class="race-team">${esc(w.team)}</div>`:''}</div></div>${rest?`<div class="race-podium">${rest}</div>`:''}</article>`;
-}
 // The next game or race of a pro team or series, with a countdown.
 function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;const ms=t-Date.now();if(ms<=0)return null;return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
 function spotlightCard(e){
@@ -446,7 +432,7 @@ function spotlightCard(e){
   const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
-function card(e,kind){if(kind==='live')return e.event_type==='RACE'?raceLiveCard(e):liveCard(e);if(e.event_type==='RACE'&&e.status==='Final'){const r=raceFinalCard(e);if(r)return r}const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
+function card(e,kind){if(kind==='live')return e.event_type==='RACE'?raceLiveCard(e):liveCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
 // A reached official schedule with nothing current is not a failed source.
 const eventTotal=g=>g.live.length+g.results.length+g.upcoming.length+g.other.length;
@@ -491,7 +477,7 @@ function visibleGroup(g,q){
   return x
 }
 // Pro: the next game or race leads the page when nothing is live (All view).
-const spotlightOf=g=>(g.upcoming[0]?.pro&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;
+const spotlightOf=g=>(g.upcoming[0]?.pro&&g.upcoming[0].event_type!=='RACE'&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;
 function render(groups){
   const q=search.value.trim().toLowerCase();
   const chosenSport=sportFilter.value;
