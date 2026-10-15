@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {nebraskaSchool,nebraskaGolfCardPlace,nebraskaGolfStoryPlace} from '../src/schools/nebraska.mjs';
+import {nebraskaSchool,nebraskaGolfCardPlace,nebraskaGolfStoryPlace,nebraskaGolfPlace} from '../src/schools/nebraska.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -582,6 +582,13 @@ const published=slug=>{const raw=fixture(`${slug}-schedule.html.gz`),stat=label=
 // Other schools and other hosts never reach the Nebraska reader.
 assert.equal(worker.nebraskaHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://huskers.com/',now),null);
 assert.equal(worker.nebraskaHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='iowa'),'Football',page('football'),now),null);
+
+// A golf final's story names Nebraska's team, not Iowa's (the rules came from
+// Iowa's module and named the Hawkeyes until Oct 15).
+assert.deepEqual(['Huskers Finish Third at the Bearcat Invitational','Nebraska Places 5th at Blessings Collegiate','Huskers Earn Runner-Up Finish','Hawkeyes Finish Third at Windon','Iowa Places 5th'].map(nebraskaGolfPlace),['3','5','2',null,null]);
+assert.deepEqual(nebraskaGolfStoryPlace('As a team, Nebraska finished 14th in the tournament with an 888.'),{place:'14th',score:'888'});
+assert.deepEqual(nebraskaGolfStoryPlace('As a team, the Huskers tied for 4th.'),{place:'T4th',score:null});
+assert.equal(nebraskaGolfStoryPlace('As a team, Iowa finished 14th in the tournament with an 888.'),null);
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Nebraska module checks passed');

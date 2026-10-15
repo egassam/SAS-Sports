@@ -395,3 +395,14 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
   }
   return{isGolfAwaitingPlace,attachGolfPlace,isGolfWithoutStory:event=>converted(event)&&event.sport==='Golf'&&event.status==='Final'&&!event.recap_url&&event.headline==='Completed'};
 }
+
+// A swimming dual per team, written on one line: "Women: W, 253-33 | Men:
+// M, 248-41" (the result letter is optional and may be wrong: the page has
+// written "M" for a win), or with team letters, "M: 149-108 | W: 156-101"
+// (North Carolina). The scores decide the outcome. Shared since Oct 15: the
+// ported copies read "Women: 253-33" as 53-33 (the optional letter took the
+// first digit).
+export function swimDualScores(text){
+  return[...String(text||'').matchAll(/\b(Women|Men|W|M):\s*(?:[A-Z],?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,mine,theirs])=>({team:{W:'Women',M:'Men'}[team.toUpperCase()]||team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`}));
+}
+

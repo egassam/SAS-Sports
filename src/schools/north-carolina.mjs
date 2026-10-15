@@ -1,5 +1,5 @@
 import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
-import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults,institutionShortName,createGolfStoryPlace} from '../sidearm-school-kit.mjs';
+import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults,institutionShortName,createGolfStoryPlace,swimDualScores} from '../sidearm-school-kit.mjs';
 // North Carolina school module. Shared publisher utilities stay in the Worker;
 // this file owns goheels.com routes, North Carolina's program combinations, its
 // verified Instagram tags and its schedule reader. Routes start as the exact
@@ -229,8 +229,7 @@ export function createNorthCarolinaHandlers({makeEvent,recapMatchesEvent,eventTy
         const text=String(result.postscore_info||result.prescore_info||'').replace(/\s+/g,' ').trim();
         // A dual per team ("Women: W, 253-33 | Men: M, 248-41"): the scores
         // decide the outcome (the page has written "M" for a win).
-        // North Carolina's letters: "M: 149-108 | W: 156-101".
-        const duals=[...text.matchAll(/\b(Women|Men|W|M):\s*(?:[A-Z],?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,mine,theirs])=>({team:{W:'Women',M:'Men'}[team.toUpperCase()]||team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`}));
+        const duals=swimDualScores(text);
         // A league match place: "3rd place - 263.0 points".
         // Georgia's: "4th, 207.5 pts.".
         const place=text.match(/^(T?\d+(?:st|nd|rd|th))(?: place\s*-|,)\s*(\d+(?:\.\d+)?) (?:points|pts\.?)$/i);

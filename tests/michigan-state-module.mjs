@@ -498,5 +498,16 @@ for(const sport of ['Basketball','Golf','Soccer','Tennis'])assert.ok(worker.scho
 assert.equal(worker.michiganStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),school,'Football','https://msuspartans.com/',now),null);
 assert.equal(worker.michiganStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='michigan'),'Football',page('football'),now),null);
 
+// A home tournament named after the host reads as its tournament. The rule
+// came from Oklahoma's module and matched "MichiganState(… | Sooners)" until
+// Oct 15: it never matched. The opponent is made the host here (the season
+// has no such card yet): the Great Lakes Invitational card's "Lindenwood"
+// becomes "Michigan State Spartans".
+{
+  const raw=fixture('mens-ice-hockey-schedule.html.gz').replaceAll('"Lindenwood"','"Michigan State Spartans"');
+  const events=worker.labelTeamEvents(worker.parseHtml(raw,school,'Hockey',page('mens-ice-hockey'),now),school,'Hockey',page('mens-ice-hockey'));
+  assert.deepEqual(events.filter(e=>/Great Lakes|Michigan State Spartans/.test(e.title)).map(e=>e.title),["Michigan State vs Great Lakes Invitational"]);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Michigan State module checks passed');

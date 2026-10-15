@@ -71,7 +71,7 @@ import {northCarolinaSchool,createNorthCarolinaHandlers} from './schools/north-c
 import {notreDameSchool,createNotreDameHandlers} from './schools/notre-dame.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.91.1-north-carolina-notre-dame';
+const VERSION='4.91.2-handoff-fixes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

@@ -307,7 +307,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_swimminganddiving=parse("Swimming & Diving","swimming-and-diving");
   assert.deepEqual(v_swimminganddiving.map(line),[
- "Final Oct 2 Duke at Davidson | Completed",
+ "Final Oct 2 Duke at Davidson | Men's team: W, 193-106 / Women's team: W, 246.5-53.5",
  "Upcoming Oct 16, 5:00 PM Duke at North Carolina | ",
  "Upcoming Oct 24, 11:00 AM Duke vs Virginia Tech | ",
  "Upcoming Nov 6, 5:00 PM Duke vs Northwestern | ",

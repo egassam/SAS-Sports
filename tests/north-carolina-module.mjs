@@ -5,7 +5,7 @@ import {northCarolinaSchool} from '../src/schools/north-carolina.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
-import {golfStoryPlace} from '../src/sidearm-school-kit.mjs';
+import {golfStoryPlace,swimDualScores} from '../src/sidearm-school-kit.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const school=schools.find(s=>s.id==='north-carolina');
@@ -464,6 +464,12 @@ void [parse,line,ownRecapsOnly,live];
 // (at Queens, Sep 25); fencing's October NAC (three day cards) is one meet.
 assert.deepEqual(parse('Swimming & Diving','swimming-and-diving').filter(e=>e.status==='Final').map(line),["Final Sep 25 UNC at Queens University of Charlotte | Men's team: W, 149-108 / Women's team: W, 156-101"]);
 assert.deepEqual(parse('Fencing','fencing').filter(e=>/October NAC/.test(e.title)).map(e=>[line(e),e.end_time]),[["Final Oct 9 UNC at October NAC | Completed","2026-10-11T23:59:59Z"]]);
+
+// The shared swim dual reader (26 schools): words or letters, the result
+// letter optional; "Women: 253-33" keeps its first digit.
+assert.deepEqual(swimDualScores('Women: W, 253-33 | Men: M, 248-41'),[{team:'Women',value:'W, 253-33'},{team:'Men',value:'W, 248-41'}]);
+assert.deepEqual(swimDualScores('Women: 253-33 | Men: 140-160'),[{team:'Women',value:'W, 253-33'},{team:'Men',value:'L, 140-160'}]);
+assert.deepEqual(swimDualScores('M: 149-108 | W: 156.5-101.5'),[{team:'Men',value:'W, 149-108'},{team:'Women',value:'W, 156.5-101.5'}]);
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('North Carolina module checks passed');

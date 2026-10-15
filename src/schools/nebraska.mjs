@@ -541,10 +541,11 @@ export function createNebraskaHandlers({makeEvent,visibleText,absoluteUrl,recapM
     }};
 }
 
-// "As a team, Iowa finished 14th in the tournament with an 888": the team's
-// place and score, or null.
+// "As a team, Nebraska finished 14th in the tournament with an 888": the
+// team's place and score, or null. (Ported from Iowa's, it named Iowa and the
+// Hawkeyes until Oct 15.)
 export function nebraskaGolfStoryPlace(text){
-  const m=String(text||'').replace(/’/g,"'").match(/\bAs a team,\s+(?:Iowa|the Hawkeyes)\s+(finished|placed|tied for)\s+(T-?)?(\d+)(st|nd|rd|th)\b([^.]*)/i);
+  const m=String(text||'').replace(/’/g,"'").match(/\bAs a team,\s+(?:Nebraska|the (?:Corn)?huskers)\s+(finished|placed|tied for)\s+(T-?)?(\d+)(st|nd|rd|th)\b([^.]*)/i);
   if(!m)return null;
   const score=(m[5].match(/\bwith\s+an?\s+(\d{3,4})\b/i)||[])[1]||null;
   return{place:`${m[2]||/^tied/i.test(m[1])?'T':''}${m[3]}${m[4].toLowerCase()}`,score};
@@ -552,13 +553,14 @@ export function nebraskaGolfStoryPlace(text){
 
 // "Missouri Men's Golf Finishes 12th at ...", "Men's Golf Finishes Seventh at the
 // Bryan Bros Collegiate", "Missouri Women's Golf Wins ...": the team's place, or
-// null when the headline's subject is a player.
+// null when the headline's subject is a player. Nebraska's: "Huskers Finish
+// Third at ...".
 export function nebraskaGolfPlace(title){
   // Texas A&M: "Men's Golf Earns Runner-Up Finish at ...", "Schartz Leads
   // Aggies to Runner-Up Finish", "... Aggies Finish Second".
   const text=String(title||'').replace(/’/g,"'");
-  if(/\b(?:Golf|Hawkeyes)\b[^,]{0,25}\bRunner-Up\b/i.test(text))return '2';
-  const aggies=text.match(/\b(?:Iowa|Hawkeyes)\s+(?:Finish|Finishes|Place|Places|Take|Takes)\s+(?:(T-?\d+|\d+)(?:st|nd|rd|th)\b|(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth|Thirteenth|Fourteenth|Fifteenth)\b)/i);
+  if(/\b(?:Golf|(?:Corn)?huskers)\b[^,]{0,25}\bRunner-Up\b/i.test(text))return '2';
+  const aggies=text.match(/\b(?:Nebraska|(?:Corn)?huskers)\s+(?:Finish|Finishes|Place|Places|Take|Takes)\s+(?:(T-?\d+|\d+)(?:st|nd|rd|th)\b|(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth|Thirteenth|Fourteenth|Fifteenth)\b)/i);
   if(aggies)return aggies[1]?aggies[1].replace(/^T-?/i,'T'):String(['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth'].indexOf(aggies[2].toLowerCase())+1);
   const m=text.match(/\bGolf\s+(?:Finishes|Places|Takes|Ties for)\s+(T-?\d+|\d+)(?:st|nd|rd|th)?\b|\bGolf\s+(?:Finishes|Places|Takes)\s+(First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Twelfth|Thirteenth|Fourteenth|Fifteenth)\b|\bGolf\s+(Wins)\b/i);
   if(!m)return null;

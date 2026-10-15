@@ -496,5 +496,15 @@ assert.deepEqual(parse('Swimming & Diving','swimming-and-diving').filter(e=>e.st
   assert.deepEqual([['Football','football'],['Volleyball','womens-volleyball'],['Soccer','womens-soccer'],['Soccer','mens-soccer'],['Field Hockey','field-hockey'],['Hockey','mens-ice-hockey'],['Hockey','womens-ice-hockey']].map(([sport,slug])=>records(sport,slug)),[["2-3","ACC 0-2"],["10-7","ACC 1-5"],["9-3-1","ACC 2-3-1"],["5-4-3","ACC 1-4-1"],["6-7","ACC 1-3"],["0-1",null],["2-1","Hockey East 1-1"]]);
 }
 
+// A home tournament named after the host reads as its tournament. The rule
+// came from Oklahoma's module and matched "BostonCollege(… | Sooners)" until
+// Oct 15: it never matched. The opponent is made the host here (the season
+// has no such card yet).
+{
+  const raw=fixture('fencing-schedule.html.gz').replaceAll('"Northeast Fencing Conference Meet #1"','"Boston College"');
+  const events=worker.labelTeamEvents(worker.parseHtml(raw,school,'Fencing',page('fencing'),now),school,'Fencing',page('fencing'));
+  assert.deepEqual(events.filter(e=>/Northeast Fencing|at Boston College/.test(e.title)).map(e=>e.title),["Boston College at Northeast Fencing Conference #1","Boston College at Northeast Fencing Conference Meet #2"]);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Boston College module checks passed');

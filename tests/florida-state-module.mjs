@@ -527,5 +527,16 @@ void [parse,line,ownRecapsOnly,live];
   recapFixtures.clear();requests.length=0;
 }
 
+// A home tournament named after the host reads as its tournament. The rule
+// came from Oklahoma's module and matched "FloridaState(… | Sooners)" until
+// Oct 15: it never matched. The opponent is made the host here (the season
+// has no such card yet): the ITA Kickoff Weekend card's "University of
+// Arkansas" becomes "Florida State University".
+{
+  const raw=fixture('mens-tennis-schedule.html.gz').replaceAll('"University of Arkansas"','"Florida State University"');
+  const events=worker.labelTeamEvents(worker.parseHtml(raw,school,'Tennis',page('mens-tennis'),now),school,'Tennis',page('mens-tennis'));
+  assert.deepEqual(events.filter(e=>/ITA Kickoff|Florida State University/.test(e.title)).map(e=>e.title),["Men's · Florida State at ITA Kickoff Weekend"]);
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Florida State module checks passed');
