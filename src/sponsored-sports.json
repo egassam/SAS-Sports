@@ -570,6 +570,25 @@
     "Volleyball",
     "Wrestling"
   ],
+  "north-carolina": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "northwestern": [
     "Baseball",
     "Basketball",
@@ -585,6 +604,23 @@
     "Tennis",
     "Volleyball",
     "Wrestling"
+  ],
+  "notre-dame": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "ohio-state": [
     "Baseball",
