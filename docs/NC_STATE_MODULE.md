@@ -12,7 +12,7 @@ NC State was added to the app on October 15, 2026 (13 sports, one PR with Louisv
 | Volleyball | `womens-volleyball` | 17 finals with stories |
 | Soccer | `womens-soccer`, `mens-soccer` | Labeled; finals with stories |
 | Cross Country | `cross-country` | TFRRS `NC_college_f/m_North_Carolina_St`; Adidas XC Challenge from the card ("Women: 1st place (21 points)"), Joe Piane from TFRRS (1st 39 / 3rd 110); Dill Family Foundation Invitational (Oct 2) has no result, story or TFRRS race: not listed |
-| Golf | `womens-golf`, `mens-golf` | Labeled. Women's cards "13th/18 (+21)" (place and score to par) and match play "finished 2nd/4 teams"; tournament names without the course ("Cougar Classic (Yeamans Hall Club)"); men's NB3 Matchplay 2nd from its final story |
+| Golf | `womens-golf`, `mens-golf` | Labeled. The page's own "Landall Tradition" typo shows as published. Women's cards "13th/18 (+21)" (place and score to par) and match play "finished 2nd/4 teams"; tournament names without the course ("Cougar Classic (Yeamans Hall Club)"); men's NB3 Matchplay 2nd from its final story |
 | Tennis | `womens-tennis`, `mens-tennis` | Labeled; tournaments with stories; ITA Carolina Regional under way |
 | Swimming & Diving | `swimming-and-diving` | College Swimming League with its story |
 | Wrestling | `wrestling` | 2026-27 schedule (upcoming) |
