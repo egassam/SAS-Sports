@@ -188,12 +188,28 @@
 | nebraska | Basketball | ⚪ off (waiting) |  |
 | nebraska | Football | ⚪ off (waiting) | final L, 17-20 (live phase not observed 2×; waits for the next game) |
 | nebraska | Softball | ⚪ off (waiting) |  |
+| north-carolina | Baseball | ⚪ off (waiting) |  |
+| north-carolina | Basketball | ⚪ off (waiting) |  |
+| north-carolina | Field Hockey | ⚪ off (waiting) |  |
+| north-carolina | Football | ⚪ off (waiting) |  |
+| north-carolina | Lacrosse | ⚪ off (waiting) |  |
+| north-carolina | Soccer | ⚪ off (waiting) |  |
+| north-carolina | Softball | ⚪ off (waiting) |  |
+| north-carolina | Volleyball | ⚪ off (waiting) |  |
 | northwestern | Baseball | ⚪ off (waiting) |  |
 | northwestern | Basketball | ⚪ off (waiting) |  |
 | northwestern | Football | ⚪ off (waiting) | final W, 45-14 (live phase not observed 2×; waits for the next game) |
 | northwestern | Lacrosse | ⚪ off (waiting) |  |
 | northwestern | Soccer | ⚪ off (waiting) |  |
 | northwestern | Softball | ⚪ off (waiting) |  |
+| notre-dame | Baseball | ⚪ off (waiting) |  |
+| notre-dame | Basketball | ⚪ off (waiting) |  |
+| notre-dame | Football | ⚪ off (waiting) |  |
+| notre-dame | Hockey | ⚪ off (waiting) |  |
+| notre-dame | Lacrosse | ⚪ off (waiting) |  |
+| notre-dame | Soccer | ⚪ off (waiting) |  |
+| notre-dame | Softball | ⚪ off (waiting) |  |
+| notre-dame | Volleyball | ⚪ off (waiting) |  |
 | ohio-state | Baseball | ⚪ off (waiting) |  |
 | ohio-state | Basketball | ⚪ off (waiting) |  |
 | ohio-state | Hockey | ⚪ off (waiting) | final W, 3-2 (live phase not observed 2×; waits for the next game) |
@@ -396,4 +412,4 @@
 | virginia | Volleyball | ✅ off (passed) | Virginia vs Virginia Tech · 2026-10-15T05:12:36.630Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 81/395; on 0; off 314; failing 0.
+Done 81/411; on 0; off 330; failing 0.

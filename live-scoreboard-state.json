@@ -1718,9 +1718,57 @@
   },
   "nc-state|Volleyball": {
    "state": "off"
+  },
+  "north-carolina|Baseball": {
+   "state": "off"
+  },
+  "north-carolina|Basketball": {
+   "state": "off"
+  },
+  "north-carolina|Field Hockey": {
+   "state": "off"
+  },
+  "north-carolina|Football": {
+   "state": "off"
+  },
+  "north-carolina|Lacrosse": {
+   "state": "off"
+  },
+  "north-carolina|Soccer": {
+   "state": "off"
+  },
+  "north-carolina|Softball": {
+   "state": "off"
+  },
+  "north-carolina|Volleyball": {
+   "state": "off"
+  },
+  "notre-dame|Baseball": {
+   "state": "off"
+  },
+  "notre-dame|Basketball": {
+   "state": "off"
+  },
+  "notre-dame|Football": {
+   "state": "off"
+  },
+  "notre-dame|Hockey": {
+   "state": "off"
+  },
+  "notre-dame|Lacrosse": {
+   "state": "off"
+  },
+  "notre-dame|Soccer": {
+   "state": "off"
+  },
+  "notre-dame|Softball": {
+   "state": "off"
+  },
+  "notre-dame|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.90.1-louisville-nc-state",
- "updated_at": "2026-10-15T05:12:37.187Z",
+ "version": "4.91.3-handoff-fixes",
+ "updated_at": "2026-10-15T14:59:17.949Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
