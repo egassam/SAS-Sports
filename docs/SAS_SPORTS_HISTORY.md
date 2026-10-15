@@ -2536,3 +2536,18 @@ Illinois + Indiana (Oct 8, 28 sports, about 2 h 20 min incl. one preview round).
 - 4.95.2: two "Sport" boxes on Pro. Fixed in 4.95.3: the sport filter is hidden on Pro.
 - **4.95.3 gate passed:** 36/36 refreshes and every expanded view for Steelers (5), Chiefs (4) and NASCAR (36). XC 18/20 and 26/21; the run before it read 0/0 right after a deploy, the known transient. Screenshots show Sport / League / Team, "Record 3-2 · AFC North 1-1", and race cards with winners.
 - Not merged: awaiting the user's approval.
+
+**Formatting round (same session):** the user asked "Show be both", so the current and formatted versions were compared side by side. The formatted version ran from a local Worker bundle (esbuild, Node server; not pushed).
+
+Questions and answers:
+- "Can we use team logos for this?" / "I'm speaking of the NFL team logos": the NFL logos were shown in the header, next-game card, result cards and live board.
+- "But are we allowed to use the logos in this app?" / "Is it legal?": answered, not as legal advice:
+  - Scores are facts (*NBA v. Motorola*).
+  - ESPN's terms bar commercial use of its feed.
+  - Team logos are trademarks that need a license.
+  - Have a lawyer review before a commercial launch.
+
+User: **"Leave the logos out."** Built into PR #325 as 4.96.0:
+- next-game/next-race spotlight with countdown and TV;
+- winner-first race cards (top three for the five latest races);
+- no logos or car-number art (tested).

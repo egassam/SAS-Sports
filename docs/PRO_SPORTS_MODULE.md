@@ -25,6 +25,12 @@ A new sport, league or team is a catalog entry (`level`, `pro_sport`, `league`, 
 
 Rules: K-State's — a past game or race without a published result is not listed; postponed/cancelled games are not listed. Header records: NFL overall record plus the division record (division opponents in the regular season: "Record 3-2 · AFC North 1-1"); playoff games are not in the record. Non-points NASCAR races (Clash, Duels, All-Star) are labeled "(non-points)". No featured athletes for pro entries (the three-athlete rule is for school rosters). ESPN team schedules are one read per refresh at most every 2 minutes (shared source cache), keeping ESPN volume low after the Oct 10 refusals.
 
+## Formatting (4.96.0, user, October 15)
+
+- **Next game / next race** leads the page (All view, nothing live): title, time, track for a race, TV channel (`broadcast`), and a countdown in days/hours/minutes. It is not repeated in the upcoming list.
+- **Race finals lead with the winner**: 🏁, car number, name and team, then 2nd and 3rd (`podium`). Only the five latest finals carry the top three (their weekend feeds, kept 6 hours); older finals show the winner and car number from the standings.
+- **No logos** (user: "Leave the logos out"). NFL team logos and NASCAR car-number art are the leagues' and teams' trademarks or artwork, and they are not licensed here. Teams are identified by name and team colors, as schools are. A logo license (data provider or league) would be needed first. Legal note given to the user: scores and schedules are facts (*NBA v. Motorola*). ESPN's unofficial feed is used against its commercial-use terms, as the college live scores already are. Have a lawyer review the sources and the "SAS" name before a commercial launch.
+
 ## Limits
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.

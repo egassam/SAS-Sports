@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails} from '../src/pro-sports.mjs';
+import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarPodium} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.json.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
@@ -154,5 +154,29 @@ assert.deepEqual(race.lines,[
   '11 lead changes among 5 drivers; 6 cautions for 33 laps.'
 ]);
 assert.deepEqual(race.stats,[{label:'Laps',value:'267'},{label:'Average speed',value:'139.561 mph'},{label:'Race time',value:'2:52:11'},{label:'Cars in the field',value:'39'}]);
+
+// Formatting (user, October 15). No logos or car-number art anywhere
+// ("Leave the logos out": trademarks not licensed here).
+assert.ok(!/logo/i.test(JSON.stringify([...pit,...kc,...races])),'no logo fields in pro events');
+assert.ok(!/espncdn\.com|carbadges|<img[^>]*logo/i.test(page),'the page shows no team logos or car badges');
+// The spotlight's TV line and the next race's.
+assert.equal(pit.find(e=>e.status==='Upcoming').broadcast,'CBS');
+assert.equal(races.find(r=>r.race_id===5633).broadcast,'USA');
+// Winner-first race cards: the top three from a race's own results.
+assert.deepEqual(nascarPodium(fixture('wf')),[
+  {place:1,name:'Chase Briscoe',car:'19',team:'Joe Gibbs Racing'},
+  {place:2,name:'Christopher Bell',car:'20',team:'Joe Gibbs Racing'},
+  {place:3,name:'Ryan Blaney',car:'12',team:'Team Penske'}
+]);
+assert.deepEqual(nascarPodium(null),[]);
+const withPodium=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,podiums:new Map([[5629,nascarPodium(fixture('wf'))]])});
+assert.equal(withPodium.find(r=>r.race_id===5629).podium.length,3);
+assert.equal(withPodium.find(r=>r.race_id===5630).podium,undefined,'races without a read keep the winner line only');
+assert.ok(worker.includes('.slice(0,5);')&&worker.includes('nascarPodium(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'the five latest finals read their top three');
+// The page: the next game or race leads (All view, nothing live) and is not
+// repeated in the upcoming list; race finals lead with the winner.
+assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]?.pro&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
+assert.ok(page.includes("section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')"));
+assert.ok(page.includes("if(e.event_type==='RACE'&&e.status==='Final'){const r=raceFinalCard(e);if(r)return r}"));
 
 console.log('pro sports module tests passed');

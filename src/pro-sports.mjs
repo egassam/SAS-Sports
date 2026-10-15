@@ -21,6 +21,8 @@
 //   race runs.
 // Pro players are adults, but no featured athletes are shown yet (the
 // three-athlete rule is for schools' official rosters).
+// No team logos or car-number art (user, October 15: "Leave the logos out":
+// they are the leagues' and teams' trademarks, not licensed here).
 
 export const PRO_TEAMS={
   'pittsburgh-steelers':{
@@ -93,11 +95,13 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       else if(state==='in')status='Live';
       else if(state==='pre'&&day>=today)status=day===today?'Today':'Upcoming';
       else continue;
+      const tv=(c.broadcasts||[]).map(b=>b.media?.shortName).filter(Boolean);
       const relation=c.neutralSite?'vs':own.homeAway==='away'?'at':'vs';
       const oppName=opp.team.displayName||opp.team.shortDisplayName;
       const week=game.week?.text||null,postseason=game.seasonType?.type===3||/post/i.test(game.seasonType?.name||'');
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:'ESPN team schedule (NFL)',sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;
+      if(tv.length)event.broadcast=tv.join(', ');
       event.round=postseason?(game.seasonType?.name||'Postseason'):week;
       if(status==='Final'||status==='Live'){
         event.school_score=String(us);event.opponent_score=String(them);
@@ -113,7 +117,6 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
         event.live_score_source='ESPN';
       }
       if(event.round)event.results.push({label:postseason?'Round':'Week',value:event.round});
-      const tv=(c.broadcasts||[]).map(b=>b.media?.shortName).filter(Boolean);
       if(tv.length&&status!=='Final')event.results.push({label:'TV',value:tv.join(', ')});
       if(c.venue?.fullName)event.venue=c.venue.fullName;
       event.result_count=event.results.length;
@@ -166,7 +169,7 @@ export function espnGameHighlights(event,summary,config){
 // The season's races. A race is Final once NASCAR names its winner; a past
 // race without one is not listed. Non-points races (the Clash, the Duels,
 // the All-Star Race) are labeled.
-export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null}){
+export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,podiums=new Map()}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[];
   for(const race of Array.isArray(list)?list:[]){
     if(race.series_id!==config.seriesId)continue;
@@ -187,6 +190,8 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
     if(status==='Final'){
       const winner=drivers.get(race.winner_driver_id);
       event.winner=winner||null;
+      // The top three, when the race's own results were read (recent races).
+      const podium=podiums.get(race.race_id);if(podium?.length)event.podium=podium;
       event.headline=winner?`Winner: ${winner.name}${winner.car?` (#${winner.car})`:''}`:'Final';
       if(winner)event.results.push({label:'Winner',value:`${winner.name}${winner.car?` · #${winner.car}`:''}`});
       if(laps)event.results.push({label:'Laps',value:String(laps)});
@@ -202,6 +207,7 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
       event.live_score_source='NASCAR live timing';
     }else{
       if(laps)event.results.push({label:'Distance',value:`${race.scheduled_laps} laps · ${race.scheduled_distance} mi`});
+      if(race.television_broadcaster)event.broadcast=race.television_broadcaster;
       if(race.television_broadcaster)event.results.push({label:'TV',value:race.television_broadcaster});
     }
     event.result_count=event.results.length;
@@ -242,4 +248,11 @@ export function nascarRaceDetails(event,feed){
   if(race.total_race_time)stats.push({label:'Race time',value:race.total_race_time});
   if(race.number_of_cars_in_field)stats.push({label:'Cars in the field',value:String(race.number_of_cars_in_field)});
   return{rows,lines,stats};
+}
+
+// The top three of a race from its weekend feed (for the winner-first card).
+export function nascarPodium(feed){
+  const results=feed?.weekend_race?.[0]?.results||[];
+  const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
+  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).slice(0,3).map(r=>({place:r.finishing_position,name:name(r.driver_fullname),car:r.car_number||null,team:r.team_name||null}));
 }
