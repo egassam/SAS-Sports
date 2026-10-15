@@ -2426,3 +2426,21 @@ Illinois + Indiana (Oct 8, 28 sports, about 2 h 20 min incl. one preview round).
 
 **Gate:** `test:release` passed on cc7a79e (an earlier run on 6dacc31 failed only `parse-budget`, 441 ms on a West Virginia page under load; it passed alone three times, slowest 236 ms). `verify:preview` per school for every changed school-sport (swimming for the 21 sponsoring schools, FSU Tennis/Golf, BC Fencing/Golf/Tennis, MSU Hockey/Golf/Tennis, Nebraska Golf): all PASS on 4.91.2/4.91.3 except Ohio State's Alumni Meet (fixed in 4.91.3, then PASS); XC 18/20 and 26/21 on every run; schools without swimming answered "does not sponsor" (their copies are dead code). CI green; merged `45627bf`. Production: see the current file.
 
+
+## October 15, 2026 — ACC: Pitt and SMU (PR #319, 4.92.0-pitt-smu)
+
+**User:** "Start the next two ACC schools. Learn and optimize". Next in the handoff's alphabetical ACC list: Pitt and SMU.
+
+**Setup:** `start-schools --from=nc-state pitt=#003594,#FFB81C,#ffffff smu=#CC0035,#354CA1,#ffffff` (15:26 UTC, 163 s). Pitt: 13 nav sports, read through the private source; SMU: 11 sports, read directly; TFRRS `PA_college_*_Pittsburgh`, `TX_college_*_SMU`.
+
+**Decisions and findings:**
+- Pitt Tennis removed: the women's tennis schedule page is still "2018-19"; the sport page's stories end with "Pitt Tennis Concludes Final Season" (Apr 17, 2019). Removed from `sponsored-sports.json`, `public/index.html`, the module, `certified-schools.json` and its fixture (12 sports).
+- Pitt: baseball "Blue/Gold" intrasquads internal; lacrosse "Play Day" events read "at"; Soccer combined. Gymnastics (2026 page) and Track & Field (2025-26 page) fill when published.
+- SMU: football opponents "[RV/RV] Florida State" and "[23/RV] Louisville" (shared `withoutRanking` fix); women's golf rounds "<Tournament> Day N" merged into one tournament (module); swimming "Day One"/"Day Two" entries of the SMU Classic merged under the meet name (shared `mergeMeetDays`) and its place "3rd, 271" read (module); Golf, Soccer, Tennis combined; TFRRS men's page null (women-only cross country); golf story team pattern "Mustangs|Ponies|SMU" (port left NC State's "Pack").
+- SMU women's tennis: the archive lists only the ITA All-Americans story this fall; ACU Invitational, Rice Invitational, ITA Regional stay unlisted (K-State rule).
+- Athletes: Pitt every sport publishes enough Instagram. SMU pins Soccer (Hali Hartman, Aubrey Brown, Jessi Curry) and Tennis (Allie Bittner, Natalie Stasny, Caroline McGinley); profile cards for Basketball (28 profiles), Cross Country (13), Football (106), Golf (15), Rowing (47), Track & Field (27). The first evidence run read 0 XC/T&F pages (transient); the re-run read 13 and 27.
+- Tool: `fetch-school-fixtures --prune` marks any sport left with two `mens-`/`womens-` schedule pages as combined; start-schools' soccer note now only warns.
+
+**Tests:** `tests/pitt-module.mjs`, `tests/smu-module.mjs` (generated blocks plus hand checks); seven new rules mutated, all killed. `npm run test:release` EXIT 0 on 6707fc7.
+
+**Gate:** preview 4.92.0: 23 feeds HTTP 200; `verify:preview --school=pitt,smu --sports=all` 72 PASS (36/36 refreshes per sport, expanded views, XC 18/20 and 26/21); athletes 3 per sport on all 23 (Instagram 3/3 except SMU's six profile-card sports); screenshots read (records: SMU football 4-1 ACC 2-1, volleyball 13-3 ACC 5-1). CI green, no conflict. Merged `9a571ef` (15:59 UTC). Production `4.92.0-pitt-smu` at 16:10; `verify:prod --school=pitt,smu --sports=all` 72 PASS at 16:12, XC 18/20 and 26/21.
