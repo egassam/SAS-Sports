@@ -56,7 +56,8 @@ let flagged=0;
 
 for(const sport of value('sport')?[value('sport')]:sponsored[id]){
   for(const url of worker.candidateUrls(school,sport)){
-    const slug=(new URL(url).pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
+    // Notre Dame's schedules are its site's API, one sport id per team (api-<id>).
+    const address=new URL(url),slug=(address.pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||(address.searchParams.get('filter[schedule.sport_id]')?`api-${address.searchParams.get('filter[schedule.sport_id]')}`:undefined);
     const file=new URL(`tests/fixtures/${id}-module/${slug}-schedule.html.gz`,root);
     if(!slug||!existsSync(file)){console.log(`== ${sport} ${url}: no saved page (run scripts/fetch-school-fixtures.mjs)`);continue}
     const raw=gunzipSync(readFileSync(file)).toString('utf8');

@@ -355,20 +355,29 @@ const PLACE_NAMES=['first','second','third','fourth','fifth','sixth','seventh','
 // tournament 16-over, 880, placing fourth."; NC State's NB3 Matchplay story). `team` is a pattern naming the
 // team; a player's finish names no team in its sentence and gives none.
 export function golfStoryPlace(raw,{team,decode=s=>s}){
-  const meta=name=>decode((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=["']([^"']+)`,'i'))||[])[1]||'');
+  // The content runs to its own closing quote ("North Carolina's ..." keeps its apostrophe).
+  const meta=name=>decode((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=(["'])([\\s\\S]*?)\\1`,'i'))||[])[2]||'');
   const body=decode(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
-  const lead=body.slice(Math.max(0,body.search(/\b[A-Z][A-Z .,']{3,}\s+[-–—]\s/)),undefined).slice(0,1500);
-  const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^T-?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
-  const word='(T-?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
+  // The story starts at its dateline after the byline; a story without one
+  // (North Carolina's) starts at the byline (a page title such as "... In The
+  // ANNIKA - University of North Carolina Athletics" is not a dateline).
+  const story=body.slice(Math.max(0,body.search(/\bBy:\s/)));
+  const lead=story.slice(Math.max(0,story.search(/\b[A-Z][A-Z .,']{3,}\s+[-–—]\s/))).slice(0,1500);
+  const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^(?:T-?)?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
+  const word='((?:T-?)?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
   const title=meta('title').replace(/[‘’]/g,"'");
   if(new RegExp(`\\b${team}\\s+Wins?\\b`,'i').test(title))return'1st';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
-  for(const sentence of `${meta('description')} ${lead}`.split(/(?<=\.)\s+/)){
-    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|finish(?:ed|ing)?(?:\\s+in)?|tied for)\\s+(?:the\\s+tournament\\s+in\\s+)?${word}\\b`,'i'));
-    if(m&&placeOf(m[2]))return`${/^tied/i.test(m[1])&&!/^T/i.test(m[2])?'T':''}${placeOf(m[2])}`;
+  // The summary ends before the story starts, whatever its last character.
+  for(const sentence of `${meta('description')}. ${lead}`.split(/(?<=\.)\s+/)){
+    // "to place eighth", "climb two spots into a tie for third" (North Carolina).
+    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+)?${word}\\b`,'i'));
+    if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
-  return null;
+  // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
+  const led=title.match(new RegExp(`\\bLeads?\\s+${team}\\s+To\\s+${word}\\b`,'i'));
+  return led&&placeOf(led[1])||null;
 }
 // A golf final whose card publishes no place takes it from its final story;
 // a story dated before the last round is not final (the tournament then has
