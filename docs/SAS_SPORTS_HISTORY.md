@@ -2529,3 +2529,10 @@ Illinois + Indiana (Oct 8, 28 sports, about 2 h 20 min incl. one preview round).
 - points strip
 - next-race countdown
 - track type
+
+**Preview rounds (same session):**
+- 4.95.0: Workers Builds started only on the second push. The Steelers feed answered 502: ESPN refused the full user agent, which carries the bot link (curl: 403 with it, 200 without). Fixed in 4.95.1: pro ESPN reads use `SCOREBOARD_USER_AGENT`, approved Oct 1.
+- 4.95.1: the Chiefs read 8/36, with 28 refreshes answering 502 in a burst; a re-run read 36/36. Fixed in 4.95.2: a refused pro read serves the last copy (`staleOnError`).
+- 4.95.2: two "Sport" boxes on Pro. Fixed in 4.95.3: the sport filter is hidden on Pro.
+- **4.95.3 gate passed:** 36/36 refreshes and every expanded view for Steelers (5), Chiefs (4) and NASCAR (36). XC 18/20 and 26/21; the run before it read 0/0 right after a deploy, the known transient. Screenshots show Sport / League / Team, "Record 3-2 · AFC North 1-1", and race cards with winners.
+- Not merged: awaiting the user's approval.
