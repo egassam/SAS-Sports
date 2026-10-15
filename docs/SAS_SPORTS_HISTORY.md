@@ -2551,3 +2551,8 @@ User: **"Leave the logos out."** Built into PR #325 as 4.96.0:
 - next-game/next-race spotlight with countdown and TV;
 - winner-first race cards (top three for the five latest races);
 - no logos or car-number art (tested).
+
+**Merged and verified:**
+- 4.96.0 preview gate passed: 36/36 refreshes for all three entries; expanded views 5/5, 4/4 and 36/36; XC 18/20 and 26/21. A few cold reads right after the deploy took 23-29 s; warm refreshes take 1-5 s.
+- User: "You can merge it." PR #325 merged as `3448493`.
+- Production `4.96.0-pro-format` verified at 21:25 UTC with `verify:prod --sports=all` for Steelers, Chiefs and NASCAR: all PASS, XC 18/20 and 26/21.
