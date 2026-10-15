@@ -1654,7 +1654,26 @@
    "state": "off"
   },
   "florida-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T22:22:01.402Z",
+   "last_detail": "live 0-0 · 14' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "florida-state|Soccer||2026-10-15|1",
+    "title": "Florida State at Wake Forest",
+    "started_seen": "2026-10-15T22:13:52.037Z",
+    "live_passes": [
+     "2026-10-15T22:13:52.037Z",
+     "2026-10-15T22:14:55.827Z",
+     "2026-10-15T22:15:56.373Z",
+     "2026-10-15T22:16:57.123Z",
+     "2026-10-15T22:17:58.089Z",
+     "2026-10-15T22:18:58.993Z",
+     "2026-10-15T22:19:59.670Z",
+     "2026-10-15T22:21:00.434Z",
+     "2026-10-15T22:22:01.402Z"
+    ],
+    "final_ok": false
+   }
   },
   "florida-state|Softball": {
    "state": "off"
@@ -1711,7 +1730,26 @@
    "state": "off"
   },
   "nc-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T22:22:01.416Z",
+   "last_detail": "live 0-0 · 16' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "nc-state|Soccer|Women's|2026-10-15|1",
+    "title": "Women's · NC State vs Syracuse",
+    "started_seen": "2026-10-15T22:13:52.785Z",
+    "live_passes": [
+     "2026-10-15T22:13:52.785Z",
+     "2026-10-15T22:14:55.841Z",
+     "2026-10-15T22:15:56.399Z",
+     "2026-10-15T22:16:57.126Z",
+     "2026-10-15T22:17:58.230Z",
+     "2026-10-15T22:18:58.946Z",
+     "2026-10-15T22:19:59.733Z",
+     "2026-10-15T22:21:00.396Z",
+     "2026-10-15T22:22:01.416Z"
+    ],
+    "final_ok": false
+   }
   },
   "nc-state|Softball": {
    "state": "off"
@@ -1843,7 +1881,26 @@
    "state": "off"
   },
   "syracuse|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T22:22:01.428Z",
+   "last_detail": "live 0-0 · 16' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "syracuse|Soccer|Women's|2026-10-15|1",
+    "title": "Women's · Syracuse at NC State",
+    "started_seen": "2026-10-15T22:13:54.869Z",
+    "live_passes": [
+     "2026-10-15T22:13:54.869Z",
+     "2026-10-15T22:14:55.812Z",
+     "2026-10-15T22:15:56.580Z",
+     "2026-10-15T22:16:57.129Z",
+     "2026-10-15T22:17:58.099Z",
+     "2026-10-15T22:18:58.969Z",
+     "2026-10-15T22:19:59.706Z",
+     "2026-10-15T22:21:00.389Z",
+     "2026-10-15T22:22:01.428Z"
+    ],
+    "final_ok": false
+   }
   },
   "syracuse|Softball": {
    "state": "off"
@@ -1864,7 +1921,26 @@
    "state": "off"
   },
   "wake-forest|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T22:22:01.353Z",
+   "last_detail": "live 0-0 · 14' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "wake-forest|Soccer|Women's|2026-10-15|1",
+    "title": "Women's · Wake Forest vs Florida St",
+    "started_seen": "2026-10-15T22:13:53.389Z",
+    "live_passes": [
+     "2026-10-15T22:13:53.389Z",
+     "2026-10-15T22:14:55.837Z",
+     "2026-10-15T22:15:56.406Z",
+     "2026-10-15T22:16:57.121Z",
+     "2026-10-15T22:17:58.102Z",
+     "2026-10-15T22:18:59.003Z",
+     "2026-10-15T22:19:59.716Z",
+     "2026-10-15T22:21:00.423Z",
+     "2026-10-15T22:22:01.353Z"
+    ],
+    "final_ok": false
+   }
   },
   "wake-forest|Volleyball": {
    "state": "off"
@@ -1891,7 +1967,7 @@
    "state": "off"
   }
  },
- "version": "4.94.2-virginia-tech-wake-forest",
- "updated_at": "2026-10-15T19:03:12.325Z",
+ "version": "4.96.0-pro-format",
+ "updated_at": "2026-10-15T22:22:01.429Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

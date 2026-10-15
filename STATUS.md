@@ -1,5 +1,9 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| florida-state | Soccer | 🔴 on | live 0-0 · 14' · official_schedule+live_scoreboard |
+| nc-state | Soccer | 🔴 on | live 0-0 · 16' · official_schedule+live_scoreboard |
+| syracuse | Soccer | 🔴 on | live 0-0 · 16' · official_schedule+live_scoreboard |
+| wake-forest | Soccer | 🔴 on | live 0-0 · 14' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -85,7 +89,6 @@
 | florida-state | Basketball | ⚪ off (waiting) |  |
 | florida-state | Football | ⚪ off (waiting) |  |
 | florida-state | Lacrosse | ⚪ off (waiting) |  |
-| florida-state | Soccer | ⚪ off (waiting) |  |
 | florida-state | Softball | ⚪ off (waiting) |  |
 | florida-state | Volleyball | ⚪ off (waiting) |  |
 | georgia | Baseball | ⚪ off (waiting) |  |
@@ -181,7 +184,6 @@
 | nc-state | Baseball | ⚪ off (waiting) |  |
 | nc-state | Basketball | ⚪ off (waiting) |  |
 | nc-state | Football | ⚪ off (waiting) |  |
-| nc-state | Soccer | ⚪ off (waiting) |  |
 | nc-state | Softball | ⚪ off (waiting) |  |
 | nc-state | Volleyball | ⚪ off (waiting) |  |
 | nebraska | Baseball | ⚪ off (waiting) |  |
@@ -285,7 +287,6 @@
 | syracuse | Football | ⚪ off (waiting) |  |
 | syracuse | Hockey | ⚪ off (waiting) |  |
 | syracuse | Lacrosse | ⚪ off (waiting) |  |
-| syracuse | Soccer | ⚪ off (waiting) |  |
 | syracuse | Softball | ⚪ off (waiting) |  |
 | syracuse | Volleyball | ⚪ off (waiting) |  |
 | tcu | Baseball | ⚪ off (waiting) |  |
@@ -353,7 +354,6 @@
 | wake-forest | Basketball | ⚪ off (waiting) |  |
 | wake-forest | Field Hockey | ⚪ off (waiting) |  |
 | wake-forest | Football | ⚪ off (waiting) |  |
-| wake-forest | Soccer | ⚪ off (waiting) |  |
 | wake-forest | Volleyball | ⚪ off (waiting) |  |
 | washington | Baseball | ⚪ off (waiting) |  |
 | washington | Basketball | ⚪ off (waiting) |  |
@@ -453,4 +453,4 @@
 | virginia | Volleyball | ✅ off (passed) | Virginia vs Virginia Tech · 2026-10-15T05:12:36.630Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 81/452; on 0; off 371; failing 0.
+Done 81/452; on 4; off 367; failing 0.
