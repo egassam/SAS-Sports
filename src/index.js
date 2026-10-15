@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.95.0-pro-sports';
+const VERSION='4.95.1-pro-sports';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1647,7 +1647,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
 }
 // Professional teams and series (src/pro-sports.mjs): NFL teams from ESPN's
 // team schedule, NASCAR races from NASCAR's own feeds.
-async function readJson(url,ttl){try{const r=await sourceFetch(url,{},{ttl});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+// ESPN reads carry the scoreboard identity (ESPN refuses a user agent with a
+// web address; see SCOREBOARD_USER_AGENT).
+async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
 async function fetchPro(school,sport,now,aiTargetId=null){
   const config=proTeam(school.id),timeZone=schoolTimeZone(school);
   const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});
