@@ -4,14 +4,14 @@
 
 Clemson was added to the app on October 15, 2026 (13 sports, one PR with Duke). clemsontigers.com is a **Nuxt WMT site, a sixth card generation**: `schedule-event-item` cards whose day reads "Sat, Sep 5" in `schedule-event-date__time` with **no `datetime`** (the year follows from the page title's season), the venue as text in `schedule-event-date__venue-type` ("away", "home", "neutral"), the opponent in `strong.schedule-event-default__name`, the result in `schedule-event-item-result__label` ("W Win 22-7") and meet text in `__text` ("13TH of 18", "COMPLETED"). Read directly (no private source).
 
-## Status (`4.88.0-clemson-duke`)
+## Status (`4.88.1-clemson-duke`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
-| Football | `football` | 5 finals with stories; page record 3-2 (Conf. 2-1) |
-| Volleyball | `volleyball` | 18 finals with stories; page record 6-12 (Conf. 0-6). "Orange vs. Purple" intrasquad out |
-| Soccer | `womens-soccer`, `mens-soccer` | Labeled; page records 6-3-4 (2-2-2) and 10-2-1 (4-1) |
-| Cross Country | `cross-country` (both teams) | Places from TFRRS (`SC_college_f/m_Clemson`); stories from the cards |
+| Football | `football` | 5 finals with stories; 3-2 (ACC 2-1), equal to the page |
+| Volleyball | `volleyball` | 18 finals with stories; 6-12 (ACC 0-6), equal to the page. "Orange vs. Purple" intrasquad out |
+| Soccer | `womens-soccer`, `mens-soccer` | Labeled; 6-3-4 (ACC 2-2-2) and 10-2-1 (ACC 4-1), equal to the pages |
+| Cross Country | `cross-country` (both teams) | Team places from the cards ("Men - 1st | Women - 2nd"), then full races from TFRRS (`SC_college_f/m_Clemson`, `onlyMeetThatDay`: TFRRS's "Eye Opener XC Meet" is the card's "USC Upstate Eyeopener"); all three meets verified |
 | Golf | `womens-golf`, `mens-golf` | Labeled. Men's cards name the host ("Toledo") with the course in the location: the tournament is the card's titled wrapper ("Inverness Intercollegiate"); men's places from the cards ("13TH of 18"). Women's cards publish no place: story headline (Tiger Classic "Co-Champions" T1st, Cougar Classic 9th, Mason Rudolph 10th). Men's Barbara Nicklaus Cup has no place or story: not listed |
 | Gymnastics | `gymnastics` | 2027 schedule; a quad meet's per-opponent cards under one titled wrapper on one day are one event ("at Sprouts Farmer Market Collegiate Quad"); "Team Showcase" out |
 | Tennis | `womens-tennis`, `mens-tennis` | Labeled; pro events out (ITF "W35"/"M15", ATP "Challenger", UTR PTT); past tournaments without a story not listed; neutral tournaments read "at" |
@@ -28,7 +28,7 @@ Women's basketball's page is `w-basketball` (a `w-` prefix): `add-school`/`port-
 - Venue from the date box text; a meet at a neutral site, a quad meet, a tournament or a meet named as an event reads "at".
 - Golf tournament name from the titled wrapper only when the card's location names a course ("City / Course").
 - Gymnastics quad meets merged; internal events (`INTERNAL`: intrasquad, scrimmage, "Orange vs. Purple", "Team Showcase") out; pro tennis events out (`PRO_EVENT` + "Challenger").
-- Conference games by ACC membership (cards carry no conference flag).
+- Conference games by ACC membership (cards carry no conference flag). Clemson writes "Miami (Fla.)": the shared ACC names now read it (`src/conference-games.mjs`), which corrected football to 2-1 and volleyball to 0-6.
 
 Every new rule was mutated and each mutation fails `node tests/clemson-module.mjs`.
 

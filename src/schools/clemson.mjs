@@ -298,6 +298,10 @@ export function createClemsonHandlers({makeEvent,visibleText,absoluteUrl,recapMa
         schoolScore:result?.[2]??null,oppScore:result?.[3]??null,resultText:result?`${result[1].toUpperCase()}, ${result[2]}-${result[3]}`:null,sourceUrl,now});
       if(lastDay>firstDay)event.end_time=new Date(lastDay).toISOString().slice(0,10)+'T23:59:59Z';
       if(over){event.headline='Completed';event.results=[{label:'Result',value:'Completed'}];event.result_count=1;}
+      // Cross country's card gives the team places ("Men - 1st | Women -
+      // 2nd"); TFRRS replaces them with full races when its places agree.
+      const teamPlaces=over&&sport==='Cross Country'?[...placeText.matchAll(/\b(Women|Men)\s*-\s*(T?\d+(?:st|nd|rd|th))\b/gi)].map(m=>`${m[1][0].toUpperCase()+m[1].slice(1).toLowerCase()}'s team: ${m[2].toLowerCase()}`).sort((x,y)=>(x.startsWith('Women')?0:1)-(y.startsWith('Women')?0:1)):[];
+      if(teamPlaces.length){event.headline=teamPlaces.join(' / ');event.results=teamPlaces.map(line=>{const [label,value]=line.split(': ');return{label,value};});event.result_count=event.results.length;}
       const placed=over&&sport==='Golf'?clemsonGolfCardPlace(placeText):null;
       if(placed){event.headline=placed.headline;event.results=placed.results;event.result_count=placed.results.length;}
       const recapUrl=result||over?cardRecap(block,sourceUrl,firstDay,lastDay):null;
@@ -393,7 +397,9 @@ export function createClemsonHandlers({makeEvent,visibleText,absoluteUrl,recapMa
     }
     return event;
   }
-  const crossCountry=createTfrrsMeetResults({id:'clemson',schoolName:'Clemson',teams:CLEMSON_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
+  // TFRRS names meets its own way ("Eye Opener XC Meet" for the card's "USC
+  // Upstate Eyeopener", Sep 4): the team's only meet that day is the one.
+  const crossCountry=createTfrrsMeetResults({id:'clemson',schoolName:'Clemson',teams:CLEMSON_TFRRS_TEAMS,onlyMeetThatDay:true,decodeHtml,ordinal,fetch,headers});
   return{parseSchedule,isEmptySchedule,matchesRecap,isClemsonGolf,isGolfWithoutStory,attachGolfPlace,isFinalWithoutStory,attachArchiveStory,
     isCrossCountry:event=>event?.school_id==='clemson'&&crossCountry.matches(event),attachMeetResults:crossCountry.attach};
 }

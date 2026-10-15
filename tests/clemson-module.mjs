@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {clemsonSchool,clemsonGolfPlace} from '../src/schools/clemson.mjs';
+import {clemsonSchool,clemsonGolfPlace,CLEMSON_TFRRS_TEAMS} from '../src/schools/clemson.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -168,9 +168,9 @@ assert.deepEqual(["Clemson Opens Campaign as Co-Champions of the Tiger Classic",
 ]);
   const v_crosscountry=parse("Cross Country","cross-country");
   assert.deepEqual(v_crosscountry.map(line),[
- "Final Sep 4 Clemson at USC Upstate Eyeopener | Completed",
- "Final Sep 18 Clemson at Southern Showcase | Completed",
- "Final Oct 2 Clemson at Joe Piane Invitational | Completed",
+ "Final Sep 4 Clemson at USC Upstate Eyeopener | Women's team: 2nd / Men's team: 1st",
+ "Final Sep 18 Clemson at Southern Showcase | Women's team: 2nd / Men's team: 4th",
+ "Final Oct 2 Clemson at Joe Piane Invitational | Women's team: 4th / Men's team: 7th",
  "Upcoming Oct 16 Clemson at Pre-Nationals | ",
  "Upcoming Oct 30 Clemson at ACC Championships | ",
  "Upcoming Nov 13 Clemson at Southeast Regionals | ",
@@ -356,6 +356,28 @@ assert.deepEqual(["Clemson Opens Campaign as Co-Champions of the Tiger Classic",
   ownRecapsOnly(v_trackfield,"Track & Field track-field");
 }
 // END generated
+
+// Cross Country: the cards' team places ("Men - 1st | Women - 2nd"), then
+// TFRRS's races when its places agree. TFRRS names the "USC Upstate
+// Eyeopener" (Sep 4) "Eye Opener XC Meet": the one meet that day.
+{
+  for(const [team,url] of Object.entries(CLEMSON_TFRRS_TEAMS)){
+    const page=fixture(`tfrrs-team-${team==='Women'?'f':'m'}.html.gz`);recapFixtures.set(url,page);
+    for(const [href,meet] of page.matchAll(/(?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/(\d+)\/[^"'\s>]*/g))try{recapFixtures.set(new URL(href,'https://www.tfrrs.org').href,fixture(`tfrrs-${meet}.html.gz`));}catch{}
+  }
+  const xc=parse('Cross Country','cross-country').filter(e=>e.status==='Final');
+  assert.deepEqual(xc.map(e=>e.headline),["Women's team: 2nd / Men's team: 1st","Women's team: 2nd / Men's team: 4th","Women's team: 4th / Men's team: 7th"]);
+  for(const meet of xc)await worker.attachOfficialMeetResults(meet);
+  assert.deepEqual(xc.map(e=>[e.title,e.headline,Boolean(e.meet_results_verified)]),[["Clemson at USC Upstate Eyeopener","Women's team: 2nd · 52 pts / Men's team: 1st · 22 pts",true],["Clemson at Southern Showcase","Women's team: 2nd · 69 pts / Men's team: 4th · 169 pts",true],["Clemson at Joe Piane Invitational","Women's team: 4th · 143 pts / Men's team: 7th · 221 pts",true]]);
+  recapFixtures.clear();requests.length=0;
+}
+
+// Records equal the published ones (football 3-2, Conf. 2-1; volleyball
+// 6-12, 0-6; soccer 6-3-4, 2-2-2 and 10-2-1, 4-1).
+{
+  const records=(sport,slug)=>{const group=worker.groupEvents(parse(sport,slug),now).find(g=>g.records?.length);const own=group?.records.find(r=>!r.team||slug.startsWith(r.team==="Men's"?'mens-':'womens-'))||group?.records[0];return[own?.text||null,own?.conference?[own.conference.name,own.conference.text].join(' '):null];};
+  assert.deepEqual([['Football','football'],['Volleyball','volleyball'],['Soccer','womens-soccer'],['Soccer','mens-soccer']].map(([sport,slug])=>records(sport,slug)),[["3-2","ACC 2-1"],["6-12","ACC 0-6"],["6-3-4","ACC 2-2-2"],["10-2-1","ACC 4-1"]]);
+}
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Clemson module checks passed');

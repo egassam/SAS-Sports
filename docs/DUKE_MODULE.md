@@ -4,7 +4,7 @@
 
 Duke was added to the app on October 15, 2026 (16 sports, one PR with Clemson). goduke.com is a Nuxt SIDEARM site read directly (it answers 403 only to a browser-like user agent from the sandbox).
 
-## Status (`4.88.0-clemson-duke`)
+## Status (`4.88.1-clemson-duke`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

@@ -65,7 +65,7 @@ import {clemsonSchool,createClemsonHandlers} from './schools/clemson.mjs';
 import {dukeSchool,createDukeHandlers} from './schools/duke.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.88.0-clemson-duke';
+const VERSION='4.88.1-clemson-duke';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
