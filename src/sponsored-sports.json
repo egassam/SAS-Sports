@@ -161,6 +161,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "clemson": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "colorado": [
     "Basketball",
     "Cross Country",
@@ -171,6 +186,24 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "duke": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "eisenhower-ms-ks": [
     "Basketball",

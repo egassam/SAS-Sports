@@ -49,8 +49,9 @@ export function discoverLinks(html,base){
 export function inferSport(url){
   const value=String(url||'').toLowerCase();
   for(const [sport,slugs] of Object.entries(SPORT_SLUGS)){
-    // A team prefix on any slug: `womens-cross-country`, `mens-swimming-and-diving`.
-    if(slugs.some(slug=>new RegExp(`/(?:sports/)?(?:(?:wo)?mens-)?${slug}(?:/|$)`,'i').test(value)))return sport;
+    // A team prefix on any slug: `womens-cross-country`, `mens-swimming-and-diving`,
+    // Clemson's `w-basketball`.
+    if(slugs.some(slug=>new RegExp(`/(?:sports/)?(?:(?:wo)?mens-|[mw]-)?${slug}(?:/|$)`,'i').test(value)))return sport;
   }
   return null;
 }
