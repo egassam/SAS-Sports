@@ -56,6 +56,10 @@ export function wmtMeetResult(text,sport){
   const value=String(text||'').replace(/\s+/g,' ').trim();if(!value)return null;
   const golf=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th),?\s*(\d{3,4})\s*\(([+-]?\d+|E)\)$/i);
   if(golf){const at=place(golf[1],golf[2],golf[3]);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${golf[4]} (${golf[5]})`}]};}
+  // Virginia Tech's golf: "1st/18 (286-278-280)", "T2nd/17 (272-274-280)":
+  // the place in the field, then each round's team score.
+  const rounds=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)\/(\d+)\s*\((\d{3}(?:-\d{3})*)\)$/i);
+  if(rounds){const at=`${place(rounds[1],rounds[2],rounds[3])} of ${rounds[4]}`,scores=rounds[5].split('-').map(Number);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${scores.reduce((a,b)=>a+b,0)} (${rounds[5]})`}]};}
   const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th) of (\d+)(?:\s*\((\d+(?:\.\d+)?)(?:\s*pts)?\))?$/i);
   if(fielded){const at=`${place(fielded[1],fielded[2],fielded[3])} of ${fielded[4]}`;return{headline:at,results:[{label:'Result',value:at},...(fielded[5]?[{label:'Team score',value:`${fielded[5]} pts`}]:[])]};}
   const teams=[...value.matchAll(/\b([MW])\s*[-:]\s*(T-?)?(\d+)(st|nd|rd|th)\b(?:\s*\((\d+)(?:\s+([A-Za-z]+))?\))?/gi)].map(m=>{
@@ -90,10 +94,25 @@ export function mergeWmtMeetEntries(games){
     if(item.length===1)return item[0];
     const sorted=[...item].sort((a,b)=>String(a.datetime).localeCompare(String(b.datetime))||Number(a.id)-Number(b.id));
     const first=sorted[0],last=sorted.at(-1),ends=sorted.map(g=>g.datetime_end||g.datetime).sort();
-    const story=[...sorted].reverse().find(g=>g.post_event_article)?.post_event_article||null;
+    // The meet's story is one dated within its days (or three days after):
+    // Virginia Tech's Oct 2 tri-meet entry for Penn State carried last
+    // season's story. Each entry's result is kept, by opponent ("Penn State:
+    // Women: W, 312-41 | Men: W, 265.50-87.50 · Liberty: Women: W, 240-113").
+    const dayOf=g=>(String(g.post_event_article?.permalink||'').match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//)||[]).slice(1).map(Number);
+    const firstDay=Date.parse(String(first.datetime).slice(0,10)),lastDayMs=Date.parse(String(ends.at(-1)).slice(0,10));
+    const inWindow=g=>{const d=dayOf(g);if(d.length!==3)return true;const t=Date.UTC(d[0],d[1]-1,d[2]);return t>=firstDay-86400000&&t<=lastDayMs+3*86400000;};
+    const story=[...sorted].reverse().find(g=>g.post_event_article&&inWindow(g))?.post_event_article||null;
+    // Golf's rounds ("Rounds 1-2", "Round 3"; men's golf names each round
+    // after the tournament) and a meet's days carry the running place: the
+    // last is the meet's. Only distinct opponents' results are joined.
+    const texts=sorted.filter(g=>String(g.schedule_event_result?.text||'').trim()&&!/\b(?:rounds?|day)\b/i.test(String(g.opponent_name||'')));
+    // Stanford's College Swimming League repeats the meet's place on each.
+    const distinct=new Set(texts.map(g=>String(g.opponent_name||'').trim())).size===texts.length&&new Set(texts.map(g=>String(g.schedule_event_result.text).trim())).size>1;
+    const result=texts.length>1&&distinct?{...last.schedule_event_result,text:texts.map(g=>`${String(g.opponent_name||'').trim()}: ${String(g.schedule_event_result.text).trim()}`).join(' · ')}:texts.length===1?texts[0].schedule_event_result:last.schedule_event_result;
     const lastDay=String(ends.at(-1)).slice(0,10)>String(first.datetime).slice(0,10)?ends.at(-1):null;
     return{...last,datetime:first.datetime,datetime_end:lastDay,opponent_name:String(first.tournament.name).trim(),second_opponent_name:null,
-      status:sorted.every(g=>g.status==='completed')?'completed':last.status,post_event_article:story,
+      status:sorted.every(g=>g.status==='completed')?'completed':last.status,post_event_article:story,schedule_event_result:result,
+      opponent_results:texts.length>1&&distinct?texts.map(g=>({label:String(g.opponent_name||'').trim(),value:String(g.schedule_event_result.text).trim()})):null,
       schedule_event_links:sorted.flatMap(g=>g.schedule_event_links||[])};
   });
 }
@@ -102,7 +121,7 @@ export function mergeWmtMeetEntries(games){
 // {Sport: [slug, ...]}, teams: {slug: label} (combined sports), tfrrsTeams,
 // conferenceNames: {conference_id: league} (a league other than the school's)}.
 export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeHtml=value=>String(value||''),eventType=()=>'GAME',ordinal=value=>String(value),fetch,headers}){
-  const {id,schoolName,host,timeZone,sportIds,slugs,teams={},tfrrsTeams,conferenceNames={}}=config;
+  const {id,schoolName,host,timeZone,sportIds,slugs,teams={},tfrrsTeams,conferenceNames={},internal=null}=config;
   const apiSports=new Set(Object.keys(slugs));
   const converted=event=>event?.school_id===id&&apiSports.has(event.sport);
   const schedulePage=slug=>`https://${host}/sports/${slug}/schedule`;
@@ -134,11 +153,18 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       const finish=game.datetime_end?wmtLocalTime(game.datetime_end,timeZone):start;
       const lastDay=Math.max(start.day_ms,finish.day_ms);
       let name=decodeHtml(String(game.opponent_name||'')).replace(/\s+/g,' ').trim();
-      if(!name||INTERNAL.test(name))continue;
+      // A school's own intrasquad by name (config.internal: Virginia Tech's
+      // "Hokie Belt Challenge", Maroon vs Orange).
+      if(!name||INTERNAL.test(name)||internal?.test(name))continue;
       if(sport==='Tennis'&&PRO_EVENT.test(name))continue;
       // A second opponent is a second team ("Wisconsin and Iowa"); fencing's
       // "Women's Team Meet" says which team competes.
       const second=decodeHtml(String(game.second_opponent_name||'')).trim();
+      // A neutral game between two other teams is not the school's: the
+      // tournament it hosts lists every match (Virginia Tech's Hokie
+      // Invitational, Aug 28-29: "Kent State vs Coppin State", the winner as
+      // the result text).
+      if(!meet&&second&&game.neutral_event)continue;
       if(second&&!/\bteam (?:meet|event)\b/i.test(second))name=`${name} and ${second}`;
       // Exhibitions read as K-State labels them ("Dayton (Exhibition)").
       const exhibition=Boolean(game.is_exhibition)||/\((?:exh\.?|exhibition)\)$/i.test(name);
@@ -147,7 +173,9 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       const score=game.status==='completed'?wmtScore(game.schedule_event_result):null;
       const text=String(game.schedule_event_result?.text||'').trim();
       const story=storyOf(game);
-      const placed=!score&&meet&&game.status==='completed'?wmtMeetResult(text,sport):null;
+      // A merged meet's opponents each keep their own row (Virginia Tech's
+      // tri-meet: West Virginia, Liberty, Penn State).
+      const placed=!score&&meet&&game.status==='completed'?(game.opponent_results?{headline:text,results:game.opponent_results}:wmtMeetResult(text,sport)):null;
       // A past meet is final with its result (a place, or its story); a past
       // game without a score is not listed. Yesterday's game stays: a night
       // game can end after midnight.

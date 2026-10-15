@@ -73,9 +73,11 @@ import {pittSchool,createPittHandlers} from './schools/pitt.mjs';
 import {smuSchool,createSmuHandlers} from './schools/smu.mjs';
 import {stanfordSchool,createStanfordHandlers} from './schools/stanford.mjs';
 import {syracuseSchool,createSyracuseHandlers} from './schools/syracuse.mjs';
+import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.mjs';
+import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.93.0-stanford-syracuse';
+const VERSION='4.94.2-virginia-tech-wake-forest';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -498,6 +500,15 @@ const SCHOOL_MODULES=[
     // (kit createGolfStoryPlace, when the handlers spread it).
     results:[{matches:event=>syracuseHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>syracuseHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(syracuseHandlers.isFinalWithoutStory).map(event=>syracuseHandlers.attachArchiveStory(event)));if(sport==='Golf'&&syracuseHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(syracuseHandlers.isGolfAwaitingPlace).map(event=>syracuseHandlers.attachGolfPlace(event)));return events.filter(event=>!syracuseHandlers.isTennisWithoutStory(event)&&!syracuseHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:wakeForestSchool,parseSchedule:(...args)=>wakeForestHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>wakeForestHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>wakeForestHandlers.matchesRecap(...args),crossCountry:{matches:event=>wakeForestHandlers.isCrossCountry(event),attach:event=>wakeForestHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(wakeForestHandlers.isFinalWithoutStory(event))await wakeForestHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>wakeForestHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>wakeForestHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(wakeForestHandlers.isFinalWithoutStory).map(event=>wakeForestHandlers.attachArchiveStory(event)));if(sport==='Golf'&&wakeForestHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(wakeForestHandlers.isGolfAwaitingPlace).map(event=>wakeForestHandlers.attachGolfPlace(event)));return events.filter(event=>!wakeForestHandlers.isTennisWithoutStory(event)&&!wakeForestHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:virginiaTechSchool,parseSchedule:(...args)=>virginiaTechHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>virginiaTechHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>virginiaTechHandlers.matchesRecap(...args),crossCountry:{matches:event=>virginiaTechHandlers.isCrossCountry(event),attach:event=>virginiaTechHandlers.attachMeetResults(event)}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -641,6 +652,8 @@ const pittHandlers=createPittHandlers({makeEvent,recapMatchesEvent,eventType,dec
 const smuHandlers=createSmuHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const stanfordHandlers=createStanfordHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const syracuseHandlers=createSyracuseHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const wakeForestHandlers=createWakeForestHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const virginiaTechHandlers=createVirginiaTechHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}
@@ -715,7 +728,10 @@ function rosterProfiles(raw,base){
     // The portrait's link comes first and has no text; the card's title link
     // names the athlete (Virginia's portraits are alt "Women's Soccer").
     const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
-    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // A card whose link wraps the whole card ("Chris Bacchioni 149 lbs
+    // Senior", Virginia Tech wrestling) names the athlete in its title.
+    const heading=clean(visibleText((body.match(/<h[1-6]\b[^>]*class=["'][^"']*\broster-card-item__title\b[^"']*["'][^>]*>([\s\S]*?)<\/h[1-6]>/i)||[])[1]||''));
+    const name=nameScore(heading)>0?heading:clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');
