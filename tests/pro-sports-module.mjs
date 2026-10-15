@@ -176,6 +176,7 @@ assert.deepEqual(charlotte.results,finish.slice(0,3));
 assert.equal(charlotte.result_count,39);assert.equal(charlotte.has_more_results,true);
 assert.equal(charlotte.headline,'Winner: Chase Briscoe (#19)');
 assert.ok(worker.includes('nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'every final reads its results');
+assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===config.seriesId))return failed('),'an empty race list is a failed read');
 // The page: the next game or race leads (All view, nothing live) and is not
 // repeated in the upcoming list; race finals lead with the winner.
 // The next-game spotlight is for football; races keep the cross-country lists.

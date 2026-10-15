@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.97.0-nascar-xc-layout';
+const VERSION='4.97.1-nascar-xc-layout';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1681,7 +1681,9 @@ async function fetchPro(school,sport,now,aiTargetId=null){
   if(config.kind==='nascar'){
     const year=schoolNow(now,school).getUTCFullYear(),listUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/race_list_basic.json`,pointsUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/racinginsights-points-feed.json`;
     const [list,points]=await Promise.all([readJson(listUrl,SOURCE_TTL.listing),readJson(pointsUrl,SOURCE_TTL.listing)]);
-    if(!Array.isArray(list))return failed(`${listUrl}: unreadable`);
+    // An empty list is a failed read (the season has races): the last good copy
+    // is served instead of a blank page (4.97.0 preview, first reads after a deploy).
+    if(!Array.isArray(list)||!list.some(r=>r.series_id===config.seriesId))return failed(`${listUrl}: unreadable or empty`);
     const sources=[listUrl,pointsUrl],weekend=id=>`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/${id}/weekend-feed.json`;
     // A winner missing from the standings (a part-time driver) is named from
     // that race's own results.
