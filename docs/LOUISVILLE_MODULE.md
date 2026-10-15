@@ -4,7 +4,7 @@
 
 Louisville was added to the app on October 15, 2026 (14 sports, one PR with NC State). gocards.com is a Nuxt SIDEARM site behind Imperva (the sandbox gets a redirect loop; the onboarding tools and the Worker read it through the private source).
 
-## Status (`4.90.0-louisville-nc-state`)
+## Status (`4.90.1-louisville-nc-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

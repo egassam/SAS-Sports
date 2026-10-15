@@ -33,6 +33,8 @@ export const ncStateSchool={
     'nc-state|Softball|Carmen Montes de Oca':'https://www.instagram.com/carmen.mdeo/',
     'nc-state|Tennis|Gabriella Broadfoot':'https://www.instagram.com/gabbifoot/',
     'nc-state|Tennis|Darius Pop':'https://www.instagram.com/dariusmonfi/',
+    // Soccer: the women's roster links two; the men's profiles link theirs.
+    'nc-state|Soccer|Aidan Payne':'https://www.instagram.com/aidanpayne1/',
     'nc-state|Tennis|Jules Leroux':'https://www.instagram.com/julesler1/'
   },
   scheduleUrls:{

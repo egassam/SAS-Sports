@@ -4,7 +4,7 @@
 
 NC State was added to the app on October 15, 2026 (13 sports, one PR with Louisville). gopack.com is a Nuxt SIDEARM site, read through the private source.
 
-## Status (`4.90.0-louisville-nc-state`)
+## Status (`4.90.1-louisville-nc-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -31,7 +31,7 @@ Every new rule was mutated and each mutation fails `node tests/nc-state-module.m
 
 ## Athletes
 
-Pinned from the profile pages (Oct 15): Softball, Tennis (three each). Gymnastics' 21 profiles publish no Instagram: profile cards (`athlete_profile_fallback_sports`). Every other sport's roster or profiles publish enough Instagram.
+Pinned from the profile pages (Oct 15): Softball, Tennis (three each), Soccer (Aidan Payne from the men's profiles: the women's roster links two). Gymnastics' 21 profiles publish no Instagram: profile cards (`athlete_profile_fallback_sports`). Every other sport's roster or profiles publish enough Instagram.
 
 ## Open
 
