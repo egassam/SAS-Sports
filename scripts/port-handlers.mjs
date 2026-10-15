@@ -53,7 +53,11 @@ out=lines.join('\n');
 // The source's host written into a regular expression (`mutigers\.com`).
 const hostOf=id=>new URL(schools.find(s=>s.id===id).athletics_url).hostname.replace(/^www\./,'');
 out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'\\.'));
-const [oldNick,newNick]=(value('nickname')||':').split(':');
+// The nickname defaults to each school's catalog mascot (the alias that is
+// neither an institution nor an abbreviation): Oklahoma's "Louisville(?:
+// University| Sooners)?" ported to Louisville kept "Sooners" (Oct 15).
+const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
+const [oldNick,newNick]=(value('nickname')||`${mascot(from)}:${mascot(to)}`).split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');
 writeFileSync(new URL(`src/schools/${to}.mjs`,root),head+out);

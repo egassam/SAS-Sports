@@ -37,7 +37,11 @@ const started=Date.now(),clock=()=>`${Math.round((Date.now()-started)/1000)}s`;
 
 const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Florida:'FL',Georgia:'GA',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Nebraska:'NE','New Jersey':'NJ','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI'};
 async function tfrrsTeams(school){
-  const st=STATES[school.state],names=[school.short_name,school.name].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  // TFRRS can name the team by its institution, "State" cut to "St"
+  // (NC State: NC_college_f_North_Carolina_St, from "North Carolina State
+  // University").
+  const institutions=(school.aliases||[]).filter(n=>/\bUniversity\b/.test(n)).map(n=>n.replace(/^University of\s+|\s+University$/g,'')).flatMap(n=>[n,n.replace(/\bState$/,'St')]);
+  const st=STATES[school.state],names=[school.short_name,school.name,...institutions].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;
     try{const r=await fetch(url('f'),{signal:AbortSignal.timeout(20000)});if(r.ok&&/Cross Country/i.test(await r.text()))return{Women:url('f'),Men:url('m')};}catch{}
