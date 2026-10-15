@@ -1,5 +1,5 @@
 import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
-import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
+import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults,swimDualScores} from '../sidearm-school-kit.mjs';
 // Ohio State school module. Shared publisher utilities stay in the Worker;
 // this file owns ohiostatebuckeyes.com routes, Ohio State's program combinations, its
 // verified Instagram tags and its schedule reader. Routes start as the exact
@@ -114,7 +114,9 @@ const ohioStateToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series".
 // Ohio State's own: baseball's "Scarlet & Gray World Series" (Oct 9-11).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|\bscarlet (?:&|and) gray\b/i;
+// Swimming's "Alumni Meet" (Oct 10, an exhibition against the team's
+// alumni, no result published) is internal too.
+const INTERNAL=/\balumni meet\b|\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|\bscarlet (?:&|and) gray\b/i;
 // Opponents the pages write as institutions ("University of Memphis",
 // "DePaul University", "Texas Christian University"); the app writes the
 // short name, as the stories do. Miami University and Boston University keep
@@ -273,7 +275,7 @@ export function createOhioStateHandlers({makeEvent,recapMatchesEvent,eventType=(
         const text=String(result.postscore_info||result.prescore_info||'').replace(/\s+/g,' ').trim();
         // A dual per team ("Women: W, 253-33 | Men: M, 248-41"): the scores
         // decide the outcome (the page has written "M" for a win).
-        const duals=[...text.matchAll(/\b(Women|Men):\s*\w?,?\s*(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,mine,theirs])=>({team:team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`}));
+        const duals=swimDualScores(text);
         // A league match place: "3rd place - 263.0 points".
         // Georgia's: "4th, 207.5 pts.".
         const place=text.match(/^(T?\d+(?:st|nd|rd|th))(?: place\s*-|,)\s*(\d+(?:\.\d+)?) (?:points|pts\.?)$/i);

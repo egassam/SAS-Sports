@@ -451,7 +451,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Oct 2 Women's · Ohio State at Stanford | Completed",
  "Final Oct 2 Women's · Ohio State at California | Completed",
  "Final Oct 2 Women's · Ohio State at Auburn | Completed",
- "Upcoming Oct 10, 10:30 AM Women's · Ohio State vs Alumni Meet (Exhibition) | ",
+ 
  "Upcoming Oct 16 Women's · Ohio State at Zips Classic | ",
  "Upcoming Nov 6, 5:00 PM Women's · Ohio State at Kentucky | ",
  "Upcoming Nov 17 Women's · Ohio State at Ohio State Fall Invitational | ",
@@ -472,7 +472,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Oct 2 Men's · Ohio State at Stanford | Completed",
  "Final Oct 2 Men's · Ohio State at California | Completed",
  "Final Oct 2 Men's · Ohio State at Auburn | Completed",
- "Upcoming Oct 10, 10:30 AM Men's · Ohio State vs Alumni Meet (Exhibition) | ",
+ 
  "Upcoming Oct 16 Men's · Ohio State at Zips Classic | ",
  "Upcoming Nov 6, 5:00 PM Men's · Ohio State at Kentucky | ",
  "Upcoming Nov 17 Men's · Ohio State at Ohio State Fall Invitational | ",
@@ -630,6 +630,10 @@ void [parse,line,ownRecapsOnly,live];
   // Men's and women's volleyball are shown together; each board carries its team.
   assert.deepEqual(worker.liveScoreboardProviders(school,'Volleyball').map(p=>[p.path,p.team_label]),[['volleyball/womens-college-volleyball',"Women's"],['volleyball/mens-college-volleyball',"Men's"]]);
 }
+
+// Swimming's Alumni Meet (Oct 10) is the team against its alumni, with no
+// published result: not listed, before or after the day.
+for(const at of [now,new Date('2026-10-15T15:00:00Z')])for(const slug of ['womens-swim-dive','mens-swim-dive'])assert.ok(!parse('Swimming & Diving',slug,at).some(e=>/Alumni/.test(e.title)),`${slug}: the Alumni Meet is internal`);
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Ohio State module checks passed');
