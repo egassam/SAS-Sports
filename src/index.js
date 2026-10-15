@@ -51,6 +51,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
+import {proTeam,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -77,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.94.2-virginia-tech-wake-forest';
+const VERSION='4.95.0-pro-sports';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -570,7 +571,8 @@ const SEASONS={
   'Gymnastics':[[1,4]],'Track & Field':[[12,6]],'Baseball':[[2,6]],'Softball':[[2,6]],
   'Lacrosse':[[2,5]],'Rowing':[[3,6],[9,11]],'Beach Volleyball':[[2,5]],'Water Polo':[[1,5],[8,12]],
   'Fencing':[[10,3]],'Bowling':[[10,4]],'Equestrian':[[9,11],[2,4]],'Rifle':[[9,3]],
-  'Skiing':[[1,3]],'Triathlon':[[8,11]],'Acrobatics & Tumbling':[[2,4]],'STUNT':[[2,5]]
+  'Skiing':[[1,3]],'Triathlon':[[8,11]],'Acrobatics & Tumbling':[[2,4]],'STUNT':[[2,5]],
+  'Auto Racing':[[2,11]]
 };
 
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
@@ -1414,6 +1416,7 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
 const isHighSchool=school=>school?.level==='high-school';
+const isPro=school=>school?.level==='pro';
 const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function highSchoolDateText(date){const [y,m,d]=date.split('-').map(Number);return`${MONTH_NAMES[m-1]} ${d}, ${y}`;}
 function highSchoolDisplayTime(date,time){const [,m,d]=date.split('-').map(Number),day=`${MONTH_NAMES[m-1]} ${d}`;if(!time)return day;const [h,min]=time.split(':').map(Number);return`${day}, ${h%12||12}:${String(min).padStart(2,'0')} ${h>=12?'PM':'AM'}`;}
@@ -1641,6 +1644,63 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     target.highlight_status=box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
   }
   return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+}
+// Professional teams and series (src/pro-sports.mjs): NFL teams from ESPN's
+// team schedule, NASCAR races from NASCAR's own feeds.
+async function readJson(url,ttl){try{const r=await sourceFetch(url,{},{ttl});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+async function fetchPro(school,sport,now,aiTargetId=null){
+  const config=proTeam(school.id),timeZone=schoolTimeZone(school);
+  const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});
+  if(!config||config.sport!==sport)return failed('Sport not built for this team');
+  if(config.kind==='espn-team'){
+    const base=`${ESPN_SITE}${config.espn.path}/teams/${config.espn.team}/schedule`,urls=[base];
+    // The postseason is read only in its months (January and February).
+    const month=schoolNow(now,school).getUTCMonth()+1;if(month<=2)urls.push(`${base}?seasontype=3`);
+    const payloads=await Promise.all(urls.map(url=>readJson(url,SOURCE_TTL.schedule)));
+    if(!payloads[0])return failed(`${base}: unreadable`);
+    const events=espnTeamGames(payloads.filter(Boolean),{school,config,timeZone,now});
+    const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+    if(target&&target.status==='Final'&&target.espn_event_id){
+      const summary=await readJson(`${ESPN_SITE}${config.espn.path}/summary?event=${target.espn_event_id}`,SOURCE_TTL.document);
+      const details=summary&&espnGameHighlights(target,summary,config);
+      if(details){
+        target.highlights=details.lines;target.highlights_verified=true;
+        if(details.stats.length)target.game_stats=details.stats;
+        if(details.scoring.length)target.results=[...target.results,...details.scoring.map(value=>({label:'Scoring',value}))];
+        target.result_count=target.results.length;
+        if(details.recap){target.recap_url=details.recap;target.recap_label='View ESPN recap';}
+        target.highlight_status='Line score, team stats and leaders from ESPN\'s game summary.';
+      }
+    }
+    return{events,source_url:base,source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  }
+  if(config.kind==='nascar'){
+    const year=schoolNow(now,school).getUTCFullYear(),listUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/race_list_basic.json`,pointsUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/racinginsights-points-feed.json`;
+    const [list,points]=await Promise.all([readJson(listUrl,SOURCE_TTL.listing),readJson(pointsUrl,SOURCE_TTL.listing)]);
+    if(!Array.isArray(list))return failed(`${listUrl}: unreadable`);
+    const sources=[listUrl,pointsUrl],weekend=id=>`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/${id}/weekend-feed.json`;
+    // A winner missing from the standings (a part-time driver) is named from
+    // that race's own results.
+    let drivers=nascarDrivers(points);
+    const unnamed=list.filter(r=>r.series_id===config.seriesId&&r.winner_driver_id&&!drivers.has(r.winner_driver_id));
+    if(unnamed.length){const feeds=await Promise.all(unnamed.slice(0,6).map(r=>readJson(weekend(r.race_id),SOURCE_TTL.document)));drivers=nascarDrivers(points,feeds.filter(Boolean));}
+    // Live timing is read only on a race day.
+    const today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
+    let live=null;
+    if(list.some(r=>r.series_id===config.seriesId&&!r.winner_driver_id&&String(r.date_scheduled).slice(0,10)===today)){const url=`${NASCAR_FEEDS}live/feeds/live-feed.json`;live=await readJson(url,30);if(live)sources.push(url);}
+    const events=nascarRaces(list,{school,config,timeZone,now,drivers,live});
+    const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+    if(target&&target.status==='Final'){
+      const url=weekend(target.race_id),details=nascarRaceDetails(target,await readJson(url,SOURCE_TTL.document));
+      if(details){
+        target.results=details.rows;target.result_count=details.rows.length;
+        target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+        target.highlight_status='Finishing order and race numbers from NASCAR\'s official results feed.';
+      }
+    }
+    return{events,source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  }
+  return failed('Unknown pro source');
 }
 function parseLabel(label,school,sport,sourceUrl,now){const s=clean(label);if(!s)return null;let m=s.match(/^Upcoming Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})(?:\s+at\s+(.+?))?$/i);if(m)return fromMatch('Upcoming','upcoming',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*(?:(Win|Loss|Tie|Draw)?\s*,?\s*)?(\d+(?:\.\d+)?)?\s*,?\s*(?:to|-)?\s*,?\s*(\d+(?:\.\d+)?)?\s*$/i);if(m)return fromMatch('Final','score',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*,\s*(.+?)\s*$/i);if(m)return fromMatch('Final','meet',m);m=s.match(/^Live Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)(?:\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4}))?\s*$/i);if(m)return fromMatch('Live','live',m);return null;function fromMatch(status,kind,x){const parsedSport=clean(x[1])||sport;if(!sportMatches(sport,parsedSport))return null;const opponent=clean(x[3]);if(!opponent||/\b(?:vs\.?|versus)\b/i.test(opponent))return null;return makeEvent({school,sport,status,relation:clean(x[2])||'vs',opponent,date:clean(x[4]),time:kind==='upcoming'?clean(x[5]):null,schoolScore:kind==='score'?clean(x[6]):null,oppScore:kind==='score'?clean(x[7]):null,resultText:kind==='meet'?clean(x[5]):null,sourceUrl,now});}}
 function extractEventLabels(raw){
@@ -1901,6 +1961,8 @@ function seasonRecords(results){
   for(const e of results){
     const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
     if(months&&!months.includes(month))continue;
+    // NFL playoffs are not part of the season record.
+    if(e.not_in_record)continue;
     if(e.exhibition||/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
     const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
     const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0,conference:{wins:0,losses:0,ties:0,games:0}};
@@ -1920,7 +1982,7 @@ function seasonRecords(results){
     return{...r,text:text(r),conference:games&&(name||conference)?{name:name||conference,...tally,text:text(tally)}:null};
   });
 }
-function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,catalogSchool=schools.find(s=>s.id===events[0].school_id),local=schoolNow(now,catalogSchool);if(!isHighSchool(catalogSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,catalogSchool=schools.find(s=>s.id===events[0].school_id),local=schoolNow(now,catalogSchool);if(!isHighSchool(catalogSchool)&&!isPro(catalogSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
@@ -2575,6 +2637,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=schools.find(s=>s.id===schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId);
+  if(isPro(school))return fetchPro(school,sport,now,aiTargetId);
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   const scoreboardReads=[];
   // Candidate paths are fallbacks, not independent feeds. Stop after the first
@@ -2748,7 +2811,7 @@ export default{
       if(!school||!sport)return json({detail:'school and sport are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       // High school athletes are minors: none are featured (user, October 9).
-      if(isHighSchool(schools.find(s=>s.id===school)))return json([]);
+      if(isHighSchool(schools.find(s=>s.id===school))||isPro(schools.find(s=>s.id===school)))return json([]);
       // The key carries the sport's pinned athletes too: a build that adds a
       // pin must not serve the list cached before it (same version, 6 h).
       const pins=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${school}|${sport}|`)).sort().join(',');

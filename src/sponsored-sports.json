@@ -360,6 +360,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "kansas-city-chiefs": [
+    "Football"
+  ],
   "kentucky": [
     "Baseball",
     "Basketball",
@@ -536,6 +539,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "nascar-cup-series": [
+    "Auto Racing"
   ],
   "nc-state": [
     "Baseball",
@@ -731,6 +737,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "pittsburgh-steelers": [
+    "Football"
   ],
   "purdue": [
     "Baseball",
