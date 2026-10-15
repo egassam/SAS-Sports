@@ -10,7 +10,7 @@ Wake Forest was added to the app on October 15, 2026 (10 sports, one PR with Vir
 | --- | --- | --- |
 | Football | `football` | Finals with stories; at Purdue (Sep 12, W 38-36) has no story the schedule or the archive lists (the archive listing reaches back only to Sep 14) |
 | Volleyball | `womens-volleyball` | Finals with stories |
-| Soccer | `womens-soccer`, `mens-soccer` | Combined, labeled; women's at Cal (Sep 17) takes its archive story ("Demon Deacons Stay Perfect, Down Golden Bears", 3-1) |
+| Soccer | `womens-soccer`, `mens-soccer` | Combined, labeled; women's at Cal (Sep 17) takes its archive story ("Demon Deacons Stay Perfect, Down Golden Bears", 3-1); women's page data marks every game `conference:false`, so ACC games are by membership (module `ACC_WOMENS_SOCCER`; men's keeps the page's flags) |
 | Field Hockey | `field-hockey` | Finals with stories |
 | Cross Country | `cross-country` | Team places; TFRRS `NC_college_*_Wake_Forest` |
 | Golf | `womens-golf`, `mens-golf` | Combined; men's places from the cards; women's from the final stories (ANNIKA "Team Title" 1st; Stephens Cup "Finishes Runner-Up" 2nd) |

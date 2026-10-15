@@ -15,7 +15,7 @@ Virginia Tech was added to the app on October 15, 2026 (13 sports, 17 teams, one
 | Golf | 15 (women), 7 (men) | Labeled; "1st/18 (286-278-280)" reads "1st of 18" with the team score 844 (286-278-280) |
 | Swimming & Diving | 11 | Oct 2 tri-meet (Penn State, Liberty, West Virginia entries) is one meet with each opponent's result and its Oct 3 story; SMU Classic team places; Hokie Belt Challenge (intrasquad, Maroon vs Orange) not listed |
 | Tennis | 17 (women), 9 (men) | Labeled; women's ITA Regional (Oct 15-19) is today's event |
-| Basketball, Wrestling, Softball | 14/6, 18, 10 | Upcoming (softball's fall games) |
+| Basketball, Wrestling, Softball | 14/6, 18, 10 | Upcoming (softball's fall games). Wrestling's roster is a card grid whose link wraps the whole card ("Chris Bacchioni 149 lbs Senior"): the shared roster reader now takes the card's `roster-card-item__title` (no athletes were shown before) |
 | Baseball, Lacrosse (women's), Track & Field | 1, 5, 12 | Nothing published for 2026-27 yet (valid empty) |
 
 ## Rules (shared kit, new October 15)

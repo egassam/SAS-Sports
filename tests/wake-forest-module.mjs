@@ -335,6 +335,10 @@ void [parse,line,ownRecapsOnly,live];
 
 assert.equal(requests.length,0,'no unexpected network requests');
 
+// Women's soccer's page data marks no ACC game: membership decides (Virginia,
+// NC State, Miami; Cal and Stanford too). Men's keeps the page's flags.
+assert.deepEqual(parse('Soccer','womens-soccer').filter(e=>e.status==='Final'&&e.conference_game).map(e=>e.opponent),['Virginia','Cal','Stanford','NC State','Miami']);
+assert.deepEqual(parse('Soccer','mens-soccer').filter(e=>e.status==='Final'&&e.conference_game).map(e=>e.opponent),['Duke','Virginia Tech','Virginia','NC State','SMU','Boston College']);
 // Men's tennis lists players' pro events ("ATP Challenger 75k"): not the team's.
 assert.ok(!parse('Tennis','mens-tennis').some(e=>/ATP|Challenger/.test(e.opponent)));
 assert.deepEqual(parse('Tennis','mens-tennis').filter(e=>e.status==='Final').map(e=>e.opponent),['ITA All-American Championships','ITA Carolina Regionals']);

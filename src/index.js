@@ -77,7 +77,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.94.0-virginia-tech-wake-forest';
+const VERSION='4.94.1-virginia-tech-wake-forest';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -728,7 +728,10 @@ function rosterProfiles(raw,base){
     // The portrait's link comes first and has no text; the card's title link
     // names the athlete (Virginia's portraits are alt "Women's Soccer").
     const titled=[...body.matchAll(/<a\b[^>]*href=["'][^"']*\/roster\/(?:season\/[^/"'?#]+\/)?player\/[^"'?#]+[^"']*["'][^>]*>([\s\S]*?)<\/a>/gi)].map(x=>clean(visibleText(x[1]))).find(text=>nameScore(text)>0);
-    const name=clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
+    // A card whose link wraps the whole card ("Chris Bacchioni 149 lbs
+    // Senior", Virginia Tech wrestling) names the athlete in its title.
+    const heading=clean(visibleText((body.match(/<h[1-6]\b[^>]*class=["'][^"']*\broster-card-item__title\b[^"']*["'][^>]*>([\s\S]*?)<\/h[1-6]>/i)||[])[1]||''));
+    const name=nameScore(heading)>0?heading:clean((visibleText(profileMatch[2])||titled||imgAlt).replace(/(?:\s+(?:headshot|photo|head shot))+\.?$/i,''));if(nameScore(name)<=0)continue;
     const instagram=(body.match(/href=["'](https?:\/\/(?:www\.)?instagram\.com\/[^"'?#\s]+)[^"']*["']/i)||[])[1];
     const instagram_url=officialCardInstagram(instagram);
     const imgTitle=decodeHtml((body.match(/<img\b[^>]*title=["']([^"']*)/i)||[])[1]||'');

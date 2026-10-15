@@ -19,7 +19,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {officialCardInstagram,verifiedInstagram,featuredAthletes,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,labelTeamEvents,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,virginiaTechHandlers,schoolModule}')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {rosterProfiles,officialCardInstagram,verifiedInstagram,featuredAthletes,candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,labelTeamEvents,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,virginiaTechHandlers,schoolModule}')(...Object.values(deps));
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/virginia-tech-module/'+name,import.meta.url))).toString('utf8');
 
 // Module ownership: every sponsored sport reads hokiesports.com's schedule API, one
@@ -379,5 +379,12 @@ assert.deepEqual(parse('Golf','api-7').filter(e=>e.status==='Final').map(e=>e.he
   const tri=swim.find(e=>e.opponent==='Tri-Meet');
   assert.equal(tri.headline,'West Virginia: Men: W, 264-89 · Liberty: Women: W, 240-113 · Penn State: Women: W, 312-41 | Men: W, 265.50-87.50');
   assert.match(tri.recap_url,/\/news\/2026\/10\/03\/virginia-tech-swim-dive-hokies-kick-off-season/);
+}
+// Wrestling's roster cards: the link wraps the whole card ("Chris Bacchioni
+// 149 lbs Senior"); the card's title names the athlete.
+{
+  const card=(slug,name,fields)=>`<div class="roster-card-item" data-v-6ea3e9bb><a href="/sports/wrestling/roster/player/${slug}" class="roster-card-item__link"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="${name}" class="image roster-card-item__image"><div class="roster-card-item__body"><div class="roster-card-item__content"><h3 class="roster-card-item__title">${name}</h3><div class="roster-players-cards-item__profile-fields"><span class="roster-player-card-profile-field__value">${fields[0]}</span><span class="roster-player-card-profile-field__value">${fields[1]}</span></div></div></div></a></div>`;
+  const raw=card('chris-bacchioni','Chris Bacchioni',['149 lbs','Senior'])+card('bo-bassett','Bo Bassett',['141 lbs','Freshman']);
+  assert.deepEqual(worker.rosterProfiles(raw,'https://hokiesports.com/sports/wrestling/roster').map(p=>[p.name,p.url]),[['Chris Bacchioni','https://hokiesports.com/sports/wrestling/roster/player/chris-bacchioni'],['Bo Bassett','https://hokiesports.com/sports/wrestling/roster/player/bo-bassett']]);
 }
 console.log('Virginia Tech module checks passed');

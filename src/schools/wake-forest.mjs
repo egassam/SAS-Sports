@@ -64,6 +64,8 @@ export const wakeForestSchool={
 };
 
 const HOST='godeacs.com';
+// The ACC's other women's soccer teams (2026-27; Georgia Tech has none).
+const ACC_WOMENS_SOCCER=/^(?:Boston College|Cal|California|Clemson|Duke|Florida State|Louisville|Miami|NC State|North Carolina|UNC|Notre Dame|Pitt|Pittsburgh|SMU|Stanford|Syracuse|Virginia|Virginia Tech)$/i;
 // Wake Forest's calendar day.
 const wakeForestToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
@@ -275,6 +277,11 @@ export function createWakeForestHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
+      // Women's soccer's page data marks every game conference:false (men's
+      // marks its ACC games): a regular-season game against an ACC women's
+      // soccer team is a conference game (Virginia Sep 12, NC State Oct 4,
+      // Miami Oct 10).
+      if(sport==='Soccer'&&/\/womens-soccer\//.test(String(event.source?.url||''))){event.conference_game=game.type!=='S'&&game.type!=='P'&&ACC_WOMENS_SOCCER.test(withoutRanking(game.opponent?.title).replace(/\s*\((?:exh\.?|ex\.|exhibition)\)$/i,'').trim());return;}
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));
