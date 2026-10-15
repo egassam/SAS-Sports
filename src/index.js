@@ -51,7 +51,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
-import {proTeam,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarPodium,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
+import {proTeam,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.96.0-pro-format';
+const VERSION='4.97.0-nascar-xc-layout';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1692,11 +1692,10 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     const today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
     let live=null;
     if(list.some(r=>r.series_id===config.seriesId&&!r.winner_driver_id&&String(r.date_scheduled).slice(0,10)===today)){const url=`${NASCAR_FEEDS}live/feeds/live-feed.json`;live=await readJson(url,30);if(live)sources.push(url);}
-    // The five latest finals carry their top three (finished races do not
-    // change: their results are kept six hours).
-    const recent=list.filter(r=>r.series_id===config.seriesId&&r.winner_driver_id).sort((a,b)=>String(b.date_scheduled).localeCompare(String(a.date_scheduled))).slice(0,5);
-    const podiums=new Map((await Promise.all(recent.map(async r=>[r.race_id,nascarPodium(await readJson(weekend(r.race_id),SOURCE_TTL.document))]))).filter(([,p])=>p.length));
-    const events=nascarRaces(list,{school,config,timeZone,now,drivers,live,podiums});
+    // Every final's results (kept six hours: a finished race does not change).
+    const finals=list.filter(r=>r.series_id===config.seriesId&&r.winner_driver_id);
+    const finishes=new Map((await Promise.all(finals.map(async r=>[r.race_id,nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))]))).filter(([,rows])=>rows.length));
+    const events=nascarRaces(list,{school,config,timeZone,now,drivers,live,finishes});
     const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
     if(target&&target.status==='Final'){
       const url=weekend(target.race_id),details=nascarRaceDetails(target,await readJson(url,SOURCE_TTL.document));

@@ -169,7 +169,11 @@ export function espnGameHighlights(event,summary,config){
 // The season's races. A race is Final once NASCAR names its winner; a past
 // race without one is not listed. Non-points races (the Clash, the Duels,
 // the All-Star Race) are labeled.
-export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,podiums=new Map()}){
+// Race finals read like cross country meets (user, October 15: "NASCAR lay
+// out should be similar to the cross country layout"): one row per driver,
+// "Chase Briscoe (#19)" · "1st · Joe Gibbs Racing"; the card shows the top
+// three, the expanded view the whole field.
+export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,finishes=new Map()}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[];
   for(const race of Array.isArray(list)?list:[]){
     if(race.series_id!==config.seriesId)continue;
@@ -190,14 +194,12 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
     if(status==='Final'){
       const winner=drivers.get(race.winner_driver_id);
       event.winner=winner||null;
-      // The top three, when the race's own results were read (recent races).
-      const podium=podiums.get(race.race_id);if(podium?.length)event.podium=podium;
       event.headline=winner?`Winner: ${winner.name}${winner.car?` (#${winner.car})`:''}`:'Final';
-      if(winner)event.results.push({label:'Winner',value:`${winner.name}${winner.car?` · #${winner.car}`:''}`});
-      if(laps)event.results.push({label:'Laps',value:String(laps)});
-      if(race.number_of_lead_changes!=null)event.results.push({label:'Lead changes',value:`${race.number_of_lead_changes} among ${race.number_of_leaders} drivers`});
-      if(race.number_of_cautions!=null)event.results.push({label:'Cautions',value:`${race.number_of_cautions} for ${race.number_of_caution_laps} laps`});
-      if(race.margin_of_victory)event.results.push({label:'Margin of victory',value:`${seconds(race.margin_of_victory)} s`});
+      // The race's own results; without them, the winner from the standings.
+      const rows=finishes.get(race.race_id)||[];
+      event.results=rows.length?rows.slice(0,3):winner?[{participant:`${winner.name}${winner.car?` (#${winner.car})`:''}`,result:'1st'}]:[];
+      event.has_more_results=rows.length>3;
+      event.result_count=rows.length||event.results.length;
     }else if(status==='Live'){
       const order=(live.vehicles||[]).slice().sort((a,b)=>a.running_position-b.running_position);
       const leader=order[0];
@@ -210,7 +212,7 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
       if(race.television_broadcaster)event.broadcast=race.television_broadcaster;
       if(race.television_broadcaster)event.results.push({label:'TV',value:race.television_broadcaster});
     }
-    event.result_count=event.results.length;
+    if(status!=='Final')event.result_count=event.results.length;
     events.push(event);
   }
   return events;
@@ -232,7 +234,7 @@ export function nascarRaceDetails(event,feed){
   const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
   const order=race.results.slice().sort((a,b)=>a.finishing_position-b.finishing_position);
   const winner=order[0],second=order[1];
-  const rows=order.map(r=>({participant:`${ordinal(r.finishing_position)} ${name(r.driver_fullname)}`,result:[`#${r.car_number}`,r.team_name,r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:null,r.laps_led?`${r.laps_led} laps led`:null].filter(Boolean).join(' · ')}));
+  const rows=nascarFinishRows(feed);
   const lines=[`${name(winner.driver_fullname)} (#${winner.car_number}, ${winner.team_name}) won the ${String(race.race_name).trim()} at ${race.track_name}${second?`, ahead of ${name(second.driver_fullname)}`:''}${race.margin_of_victory?` by ${seconds(race.margin_of_victory)} s`:''}.`];
   if(winner.starting_position)lines.push(`${name(winner.driver_fullname)} started ${ordinal(winner.starting_position)}${winner.laps_led?` and led ${winner.laps_led} laps`:''}.`);
   const mostLed=order.reduce((a,b)=>!a||b.laps_led>a.laps_led?b:a,null);
@@ -250,9 +252,9 @@ export function nascarRaceDetails(event,feed){
   return{rows,lines,stats};
 }
 
-// The top three of a race from its weekend feed (for the winner-first card).
-export function nascarPodium(feed){
+// Every driver's finish from a race's weekend feed, cross-country style.
+export function nascarFinishRows(feed){
   const results=feed?.weekend_race?.[0]?.results||[];
   const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
-  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).slice(0,3).map(r=>({place:r.finishing_position,name:name(r.driver_fullname),car:r.car_number||null,team:r.team_name||null}));
+  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({participant:`${name(r.driver_fullname)}${r.car_number?` (#${r.car_number})`:''}`,result:[ordinal(r.finishing_position),r.team_name,r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:null,r.laps_led?`${r.laps_led} laps led`:null].filter(Boolean).join(' · ')}));
 }

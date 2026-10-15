@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarPodium} from '../src/pro-sports.mjs';
+import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.json.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
@@ -122,7 +122,8 @@ assert.deepEqual(races.slice(-6).map(raceLine),[
 ]);
 assert.equal(races[0].title,'Cook Out Clash at Bowman Gray (non-points)');assert.equal(races[0].exhibition,true);
 assert.equal(races.find(r=>r.title==='Hollywood Casino 400').headline,'Winner: Kyle Larson (#5)');
-assert.deepEqual(races.find(r=>r.race_id===5629).results,[{label:'Winner',value:'Chase Briscoe · #19'},{label:'Laps',value:'267'},{label:'Lead changes',value:'11 among 5 drivers'},{label:'Cautions',value:'6 for 33 laps'},{label:'Margin of victory',value:'0.029 s'}]);
+// Without the race's own results, the card shows the winner from the standings.
+assert.deepEqual(races.find(r=>r.race_id===5629).results,[{participant:'Chase Briscoe (#19)',result:'1st'}]);
 assert.deepEqual(races.find(r=>r.race_id===5633).results,[{label:'Distance',value:'312 laps · 312 mi'},{label:'TV',value:'USA'}]);
 // Part-time winners (driver 4387) are not in the standings: named from their
 // race's own results; until then the race reads "Final".
@@ -144,7 +145,7 @@ assert.equal(nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nasc
 // Expanded final race: the finishing order and the race's numbers.
 const race=nascarRaceDetails(races.find(r=>r.race_id===5629),fixture('wf'));
 assert.equal(race.rows.length,39);
-assert.deepEqual(race.rows.slice(0,3),[{participant:'1st Chase Briscoe',result:'#19 · Joe Gibbs Racing · 62 laps led'},{participant:'2nd Christopher Bell',result:'#20 · Joe Gibbs Racing · 93 laps led'},{participant:'3rd Ryan Blaney',result:'#12 · Team Penske · 4 laps led'}]);
+assert.deepEqual(race.rows.slice(0,3),[{participant:'Chase Briscoe (#19)',result:'1st · Joe Gibbs Racing · 62 laps led'},{participant:'Christopher Bell (#20)',result:'2nd · Joe Gibbs Racing · 93 laps led'},{participant:'Ryan Blaney (#12)',result:'3rd · Team Penske · 4 laps led'}]);
 assert.deepEqual(race.lines,[
   'Chase Briscoe (#19, Joe Gibbs Racing) won the Bank of America 400 at Charlotte Motor Speedway, ahead of Christopher Bell by 0.029 s.',
   'Chase Briscoe started 2nd and led 62 laps.',
@@ -163,20 +164,23 @@ assert.ok(!/espncdn\.com|carbadges|<img[^>]*logo/i.test(page),'the page shows no
 assert.equal(pit.find(e=>e.status==='Upcoming').broadcast,'CBS');
 assert.equal(races.find(r=>r.race_id===5633).broadcast,'USA');
 // Winner-first race cards: the top three from a race's own results.
-assert.deepEqual(nascarPodium(fixture('wf')),[
-  {place:1,name:'Chase Briscoe',car:'19',team:'Joe Gibbs Racing'},
-  {place:2,name:'Christopher Bell',car:'20',team:'Joe Gibbs Racing'},
-  {place:3,name:'Ryan Blaney',car:'12',team:'Team Penske'}
-]);
-assert.deepEqual(nascarPodium(null),[]);
-const withPodium=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,podiums:new Map([[5629,nascarPodium(fixture('wf'))]])});
-assert.equal(withPodium.find(r=>r.race_id===5629).podium.length,3);
-assert.equal(withPodium.find(r=>r.race_id===5630).podium,undefined,'races without a read keep the winner line only');
-assert.ok(worker.includes('.slice(0,5);')&&worker.includes('nascarPodium(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'the five latest finals read their top three');
+// Cross-country layout (user, October 15): one row per driver; the card the
+// top three, the expanded view the whole field.
+const finish=nascarFinishRows(fixture('wf'));
+assert.equal(finish.length,39);
+assert.deepEqual(finish[38],{participant:'William Byron (#24)',result:'39th · Hendrick Motorsports · Accident'});
+assert.deepEqual(nascarFinishRows(null),[]);
+const withRows=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,finishes:new Map([[5629,finish]])});
+const charlotte=withRows.find(r=>r.race_id===5629);
+assert.deepEqual(charlotte.results,finish.slice(0,3));
+assert.equal(charlotte.result_count,39);assert.equal(charlotte.has_more_results,true);
+assert.equal(charlotte.headline,'Winner: Chase Briscoe (#19)');
+assert.ok(worker.includes('nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'every final reads its results');
 // The page: the next game or race leads (All view, nothing live) and is not
 // repeated in the upcoming list; race finals lead with the winner.
-assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]?.pro&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
+// The next-game spotlight is for football; races keep the cross-country lists.
+assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]?.pro&&g.upcoming[0].event_type!=='RACE'&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
 assert.ok(page.includes("section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')"));
-assert.ok(page.includes("if(e.event_type==='RACE'&&e.status==='Final'){const r=raceFinalCard(e);if(r)return r}"));
+assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result card');
 
 console.log('pro sports module tests passed');
