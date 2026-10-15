@@ -243,6 +243,9 @@ export function createGeorgiaTechHandlers({makeEvent,visibleText,absoluteUrl,rec
     let page;try{page=new URL(sourceUrl);}catch{return null;}
     if(page.hostname!==HOST||!/^\/sports\/[^/]+\/schedule\/?$/.test(page.pathname))return null;
     raw=String(raw||'');
+    // Georgia Tech's track pages (Oct 15) render the schedule app with no
+    // season loaded yet (no title season, no cards): valid empty until published.
+    if(/"scheduleAfterHeroBanner"/.test(raw)&&!cardBlocks(raw).length&&!/<title>[^<]*\b20\d\d\b/i.test(raw)){const none=[];emptied.add(none);return none;}
     const yearOf=georgiaTechSeasonYear(raw,sport);if(!yearOf)return null;
     const local=centralDay(now.getTime()),today=Date.parse(`${local}T00:00:00Z`);
     const season=Number(local.slice(5,7))>=7?Number(local.slice(0,4)):Number(local.slice(0,4))-1;

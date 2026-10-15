@@ -4,7 +4,7 @@
 
 Florida State was added to the app on October 15, 2026 (13 sports, one PR with Georgia Tech). seminoles.com is a Nuxt SIDEARM site (catalog: CUSTOM), read through the private source.
 
-## Status (`4.89.0-florida-state-georgia-tech`)
+## Status (`4.89.1-florida-state-georgia-tech`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

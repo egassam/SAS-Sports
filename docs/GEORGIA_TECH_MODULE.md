@@ -4,7 +4,7 @@
 
 Georgia Tech was added to the app on October 15, 2026 (10 sports, one PR with Florida State). ramblinwreck.com is a Nuxt WMT site read directly. Its sport pages use CSTV codes (`m-footbl`, `w-volley`, `m-baskbl`, `m-basebl`, `w-softbl`, `c-swim`, `m-xc`), now read by `scripts/onboard-school.mjs`.
 
-## Status (`4.89.0-florida-state-georgia-tech`)
+## Status (`4.89.1-florida-state-georgia-tech`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
@@ -16,7 +16,7 @@ Georgia Tech was added to the app on October 15, 2026 (10 sports, one PR with Fl
 | Swimming & Diving | `c-swim` | Emory dual with story; "White vs. Gold" intrasquad out; Atlanta Open Water Swim (no result or story) not listed |
 | Basketball | `m-baskbl`, `w-baskbl` | Labeled; exhibition vs Maryland labeled |
 | Baseball, Softball | | Fall exhibitions |
-| Track & Field | `m-track`, `w-track` | Not published yet: valid empty until 2026-27 is posted |
+| Track & Field | `m-track`, `w-track` | Not published yet: the pages render the schedule app with no season (no title season, no cards), read as a valid empty schedule until 2026-27 is posted |
 
 ## Georgia Tech rules
 

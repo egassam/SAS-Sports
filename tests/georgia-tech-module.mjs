@@ -376,6 +376,15 @@ void [parse,line,ownRecapsOnly,live];
   assert.equal(line(events.find(e=>/Baylor/.test(e.title))),'Final Sep 10 Georgia Tech vs Baylor | L, 0-3');
 }
 
+// Track & Field: both team pages render the schedule app with no season yet
+// (Oct 15): a valid empty schedule, not a failed source; a page without the
+// schedule app is still a failure.
+{
+  const h=worker.georgiaTechHandlers;
+  for(const slug of ['m-track','w-track']){const events=h.parseSchedule(fixture(`${slug}-schedule.html.gz`),school,'Track & Field',page(slug),now);assert.ok(Array.isArray(events)&&!events.length&&h.isEmptySchedule(events),slug);}
+  assert.equal(h.parseSchedule('<html><body>Service unavailable</body></html>',school,'Track & Field',page('m-track'),now),null);
+}
+
 // Swimming: the "White vs. Gold" intrasquad (Sep 18) is not listed, and the
 // Atlanta Open Water Swim (Sep 19) publishes no result or story.
 {

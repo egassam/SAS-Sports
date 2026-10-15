@@ -67,7 +67,7 @@ import {floridaStateSchool,createFloridaStateHandlers} from './schools/florida-s
 import {georgiaTechSchool,createGeorgiaTechHandlers} from './schools/georgia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.89.0-florida-state-georgia-tech';
+const VERSION='4.89.1-florida-state-georgia-tech';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
