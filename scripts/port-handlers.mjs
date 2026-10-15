@@ -34,7 +34,11 @@ let out=handlers
 // Identifiers are renamed in code; in comments only when the Pascal name is
 // not also the school's name ("Tennessee: the team score ..." cites
 // Tennessee's example and keeps it).
+// In code, the bare name inside a pattern is the school's name, not an
+// identifier: Virginia's golf headlines (/\bLeads\s+(?:Virginia|Cavaliers)/)
+// ported to "GeorgiaTech" (Oct 15), which matches nothing.
 out=out.split('\n').map(l=>{
+  if(!/^\s*\/\//.test(l)&&a.Pascal===a.name)l=l.replace(new RegExp(`(?<![A-Za-z0-9_$])${escape(a.Pascal)}(?![A-Za-z0-9_$])`,'g'),b.name);
   if(!/^\s*\/\//.test(l)||a.Pascal!==a.name)l=l.replace(new RegExp(escape(a.Pascal),'g'),b.Pascal);
   return l.replace(new RegExp(`\\b${escape(a.camel)}(?=[A-Z_(])`,'g'),b.camel).replace(new RegExp(`\\b${escape(a.CONST)}_`,'g'),`${b.CONST}_`);
 }).join('\n');

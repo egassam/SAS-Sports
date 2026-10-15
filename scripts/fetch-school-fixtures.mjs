@@ -15,6 +15,7 @@
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/fetch-school-fixtures.mjs --school=iowa-state [--sports=Football,Soccer] [--tfrrs-f=... --tfrrs-m=...]
 import {readFileSync,writeFileSync,mkdirSync,existsSync,readdirSync,unlinkSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
@@ -61,7 +62,7 @@ const have=name=>existsSync(new URL(name,dir));
 export const recapFile=url=>{const [,y,m,d,slug]=url.match(/\/news\/(\d+)\/(\d+)\/(\d+)\/([A-Za-z0-9-]+)/);return`recap-${y}-${m}-${d}-${slug.slice(0,40)}.html.gz`;};
 
 const ESPN={Football:'football/college-football/scoreboard?groups=80&limit=300',Volleyball:'volleyball/womens-college-volleyball/scoreboard?limit=1000',Soccer:'soccer/usa.ncaa.w.1/scoreboard?limit=1000',Basketball:'basketball/mens-college-basketball/scoreboard?groups=50&limit=400',Baseball:'baseball/college-baseball/scoreboard?limit=400',Softball:'baseball/college-softball/scoreboard?limit=400'};
-const summary=[],dropped=[];
+const summary=[],dropped=[],teamRoutes=[];
 // Sports are fetched six at a time, and each sport's stories at once: the
 // private source answers in about a second, so one page after another took
 // ten minutes a school (Illinois, Indiana). Each sport keeps its own summary
@@ -149,7 +150,20 @@ const perSport=await mapLimit(sports,6,async sport=>{
   // Every candidate flagged (Oregon's Beach Volleyball, Oct 9: an unpublished
   // season is SIDEARM's empty template): the sport keeps its template route,
   // which fills when the season is published, not the homepage.
-  if(!kept&&template){dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
+  // Florida State's cross country, track and beach volleyball (Oct 15): the
+  // generic page is the template and the season is on the team pages
+  // (`womens-cross-country`, `mens-cross-country`), as at Boston College and
+  // Wisconsin. --prune moves the sport to them.
+  if(!kept&&template){
+    const base=new URL(template).pathname.match(/^\/sports?\/(?:(?:wo)?mens-)?([^/]+)\/schedule/)[1],teams=[];
+    for(const team of ['womens','mens']){
+      const url=template.replace(/\/sports?\/[^/]+\/schedule/,`/sports/${team}-${base}/schedule`);if(url===template)continue;
+      const page=await download(url),title=(page.body?.match(/<title>([^<]*)/)||[])[1]?.trim()||'';
+      if(page.body&&title&&!/@season\b/.test(title)&&sidearmScheduleGames(page.body).length){save(`${team}-${base}-schedule.html.gz`,page.body);teams.push(url);}
+    }
+    if(teams.length){dropped.push(template);teamRoutes.push({sport,template,teams});summary.push(`${sport}: the season is on the team pages ${teams.map(u=>new URL(u).pathname).join(', ')}${args.includes('--prune')?' (routes moved; fixtures fetched again)':' — use them (--prune moves the routes)'}`);}
+    else{dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
+  }
   return summary;
 });
 summary.push(...perSport.flat());
@@ -160,6 +174,16 @@ if(args.includes('--prune')&&dropped.length){
   for(const url of dropped)for(const target of [url,url.replace(/\/schedule$/,'/roster')])text=text.replace(new RegExp(`,${quoted(target)}(?=[,\\]])|${quoted(target)},(?=')`,'g'),'');
   // A one-route array reads as its route.
   text=text.replace(/(\n\s*'[^'\n]+\|[^'\n]+':)\[('[^'\]]+')\]/g,'$1$2');
+  // A sport whose season is on its team pages takes them (both schedule and
+  // roster), and two team pages make it a combined sport.
+  for(const {sport,teams} of teamRoutes){
+    const list=kind=>teams.length===1?`'${teams[0].replace(/schedule$/,kind)}'`:`[${teams.map(u=>`'${u.replace(/schedule$/,kind)}'`).join(',')}]`;
+    // The sport's first entry is its schedule route, the second its roster.
+    let n=0;text=text.replace(new RegExp(`(\\n\\s*'${id}\\|${sport.replace(/[.*+?^${}()|[\]\\&]/g,'\\$&')}':)(?:'[^'\\n]*'|\\[[^\\]\\n]*\\])(?=,?\\n)`,'g'),(all,key)=>n<2?`${key}${list(['schedule','roster'][n++])}`:all);
+    // The roster twin was pruned above: put the sport's roster route back.
+    if(!new RegExp(`'${id}\\|${sport.replace(/[.*+?^${}()|[\]\\&]/g,'\\$&')}':[^\\n]*\\/roster`).test(text))summary.push(`${sport}: add its roster route by hand (${teams.map(u=>u.replace(/schedule$/,'roster')).join(', ')})`);
+    if(teams.length===2)text=text.replace(/(combinedSports:new Set\(\[)([^\]]*)\]/,(all,head,list)=>list.includes(`'${sport}'`)?all:`${head}${[...list.split(',').filter(Boolean),`'${sport}'`].sort().join(',')}]`);
+  }
   writeFileSync(moduleUrl,text);
   summary.push(`--prune: ${dropped.length} routes removed from src/schools/${id}.mjs (check combinedSports when one team page is left)`);
 }
@@ -170,5 +194,10 @@ if(args.includes('--prune')){
   const dir=new URL(`tests/fixtures/${id}-module/`,root),stale=existsSync(dir)?readdirSync(dir).filter(name=>{const slug=(name.match(/^(.+)-schedule\.html\.gz$/)||[])[1];return slug&&!used.has(slug);}):[];
   for(const name of stale)unlinkSync(new URL(name,dir));
   if(stale.length)summary.push(`--prune: ${stale.length} schedule fixtures no route uses removed`);
+}
+// The moved sports' pages, stories and TFRRS meets, read again from their new routes.
+if(args.includes('--prune')&&teamRoutes.length){
+  const again=spawnSync(process.execPath,[new URL(import.meta.url).pathname,...args.filter(a=>!/^--(?:sports|prune)\b/.test(a)),`--sports=${teamRoutes.map(r=>r.sport).join(',')}`],{env:process.env,encoding:'utf8'});
+  summary.push(...String(again.stdout).split('\n').slice(1).map(line=>line.trim()).filter(Boolean));
 }
 console.log(`${school.name} fixtures in tests/fixtures/${id}-module/ (season from ${seasonStart}, today ${today}):\n  ${summary.join('\n  ')}`);

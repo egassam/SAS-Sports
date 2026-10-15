@@ -4,16 +4,17 @@ import {spawn} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 
 // WMT sites use short codes (Iowa: `/sports/mbball`, `wcross`, `fhockey`;
-// Miami: `cross`, `soc`, `swim`, `track`; Virginia: `xctrack`).
+// Miami: `cross`, `soc`, `swim`, `track`; Virginia: `xctrack`; Georgia Tech's
+// CSTV codes: `m-footbl`, `w-volley`, `m-baskbl`, `m-basebl`, `w-softbl`, `c-swim`).
 const SPORT_SLUGS={
-  'Football':['football'],'Volleyball':['womens-volleyball','volleyball','wvball'],
+  'Football':['football','footbl'],'Volleyball':['womens-volleyball','volleyball','wvball','volley'],
   'Soccer':['womens-soccer','soccer','wsoc','msoc','soc'],'Cross Country':['cross-country','xc','wcross','mcross','cross'],
-  'Basketball':['mens-basketball','womens-basketball','basketball','mbball','wbball'],
+  'Basketball':['mens-basketball','womens-basketball','basketball','mbball','wbball','baskbl'],
   'Swimming & Diving':['swimming-and-diving','swimming-diving','swim-dive','swimming','wswim','mswim','swim'],
   'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis','wten','mten'],
   'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow'],
-  'Track & Field':['track-and-field','track-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball'],
-  'Softball':['softball'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
+  'Track & Field':['track-and-field','track-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball','basebl'],
+  'Softball':['softball','softbl'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
   'Field Hockey':['field-hockey','fhockey'],'Hockey':['ice-hockey','hockey'],
   'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics','wgym','mgym'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
@@ -50,8 +51,8 @@ export function inferSport(url){
   const value=String(url||'').toLowerCase();
   for(const [sport,slugs] of Object.entries(SPORT_SLUGS)){
     // A team prefix on any slug: `womens-cross-country`, `mens-swimming-and-diving`,
-    // Clemson's `w-basketball`.
-    if(slugs.some(slug=>new RegExp(`/(?:sports/)?(?:(?:wo)?mens-|[mw]-)?${slug}(?:/|$)`,'i').test(value)))return sport;
+    // Clemson's `w-basketball`, Georgia Tech's combined `c-swim`.
+    if(slugs.some(slug=>new RegExp(`/(?:sports/)?(?:(?:wo)?mens-|[mwc]-)?${slug}(?:/|$)`,'i').test(value)))return sport;
   }
   return null;
 }

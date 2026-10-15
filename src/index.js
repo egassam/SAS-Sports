@@ -63,9 +63,11 @@ import {bostonCollegeSchool,createBostonCollegeHandlers} from './schools/boston-
 import {californiaSchool,createCaliforniaHandlers} from './schools/california.mjs';
 import {clemsonSchool,createClemsonHandlers} from './schools/clemson.mjs';
 import {dukeSchool,createDukeHandlers} from './schools/duke.mjs';
+import {floridaStateSchool,createFloridaStateHandlers} from './schools/florida-state.mjs';
+import {georgiaTechSchool,createGeorgiaTechHandlers} from './schools/georgia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.88.1-clemson-duke';
+const VERSION='4.89.1-florida-state-georgia-tech';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -428,6 +430,20 @@ const SCHOOL_MODULES=[
     beforeHighlights:async event=>{if(dukeHandlers.isFinalWithoutStory(event))await dukeHandlers.attachArchiveStory(event);},
     results:[{matches:event=>dukeHandlers.isDukeGolf(event),attach:event=>dukeHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(dukeHandlers.isFinalWithoutStory).map(event=>dukeHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(dukeHandlers.isDukeGolf).map(event=>dukeHandlers.attachGolfPlace(event)));return events.filter(event=>!dukeHandlers.isTennisWithoutStory(event)&&!dukeHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:floridaStateSchool,parseSchedule:(...args)=>floridaStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>floridaStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>floridaStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>floridaStateHandlers.isCrossCountry(event),attach:event=>floridaStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(floridaStateHandlers.isFinalWithoutStory(event))await floridaStateHandlers.attachArchiveStory(event);},
+    results:[{matches:event=>floridaStateHandlers.isFloridaStateGolf(event),attach:event=>floridaStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(floridaStateHandlers.isFinalWithoutStory).map(event=>floridaStateHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(floridaStateHandlers.isFloridaStateGolf).map(event=>floridaStateHandlers.attachGolfPlace(event)));return events.filter(event=>!floridaStateHandlers.isTennisWithoutStory(event)&&!floridaStateHandlers.isGolfWithoutStory(event));}}
+  ,{school:georgiaTechSchool,parseSchedule:(...args)=>georgiaTechHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>georgiaTechHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>georgiaTechHandlers.matchesRecap(...args),crossCountry:{matches:event=>georgiaTechHandlers.isCrossCountry(event),attach:event=>georgiaTechHandlers.attachMeetResults(event)},
+    // Golf's team place comes from the final story's headline.
+    results:[{matches:event=>georgiaTechHandlers.isGeorgiaTechGolf(event),attach:event=>georgiaTechHandlers.attachGolfPlace(event)}],
+    // A final whose card links no story takes the archive's.
+    beforeHighlights:async event=>{if(georgiaTechHandlers.isFinalWithoutStory(event))await georgiaTechHandlers.attachArchiveStory(event);},
+    // A past golf or tennis tournament still without a story publishes no
+    // place: it is not listed.
+    feed:async(events,sport)=>{await Promise.all(events.filter(georgiaTechHandlers.isFinalWithoutStory).map(event=>georgiaTechHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(georgiaTechHandlers.isGeorgiaTechGolf).map(event=>georgiaTechHandlers.attachGolfPlace(event)));return events.filter(event=>!georgiaTechHandlers.isTournamentWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -560,6 +576,8 @@ const bostonCollegeHandlers=createBostonCollegeHandlers({makeEvent,recapMatchesE
 const californiaHandlers=createCaliforniaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const clemsonHandlers=createClemsonHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const dukeHandlers=createDukeHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const floridaStateHandlers=createFloridaStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const georgiaTechHandlers=createGeorgiaTechHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}
