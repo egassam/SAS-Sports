@@ -2569,3 +2569,9 @@ Explanation given:
 - Do not build unrequested features.
 
 **4.97.0:** NASCAR finals now read like cross country meets: one row per driver, top three on the card, full field in the expanded view, every final's weekend feed read. The winner-first card is gone, and the spotlight is football only.
+
+**4.97.1 merged and verified:**
+- PR #327 merged as `af9f442` on the user's "Merge it".
+- Production `4.97.1-nascar-xc-layout` passed `verify:prod --sports=all` for NASCAR (40 events, 36 expanded views), Steelers and Chiefs. XC 18/20 and 26/21.
+- Found on the first 4.97.0 preview run: 36 refreshes answered 200 with 0 events and the gate still passed. The likely cause was an empty race list right after the deploy; an empty list is now a failed read.
+- Still open: `verify-release` should fail a feed with 0 events.
