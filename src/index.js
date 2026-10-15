@@ -69,9 +69,11 @@ import {louisvilleSchool,createLouisvilleHandlers} from './schools/louisville.mj
 import {ncStateSchool,createNcStateHandlers} from './schools/nc-state.mjs';
 import {northCarolinaSchool,createNorthCarolinaHandlers} from './schools/north-carolina.mjs';
 import {notreDameSchool,createNotreDameHandlers} from './schools/notre-dame.mjs';
+import {pittSchool,createPittHandlers} from './schools/pitt.mjs';
+import {smuSchool,createSmuHandlers} from './schools/smu.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.91.3-handoff-fixes';
+const VERSION='4.92.0-pitt-smu';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -469,6 +471,22 @@ const SCHOOL_MODULES=[
     results:[{matches:event=>northCarolinaHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>northCarolinaHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(northCarolinaHandlers.isFinalWithoutStory).map(event=>northCarolinaHandlers.attachArchiveStory(event)));if(sport==='Golf'&&northCarolinaHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(northCarolinaHandlers.isGolfAwaitingPlace).map(event=>northCarolinaHandlers.attachGolfPlace(event)));return events.filter(event=>!northCarolinaHandlers.isTennisWithoutStory(event)&&!northCarolinaHandlers.isGolfWithoutStory?.(event));}}
   ,{school:notreDameSchool,parseSchedule:(...args)=>notreDameHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>notreDameHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>notreDameHandlers.matchesRecap(...args),crossCountry:{matches:event=>notreDameHandlers.isCrossCountry(event),attach:event=>notreDameHandlers.attachMeetResults(event)}}
+  ,{school:pittSchool,parseSchedule:(...args)=>pittHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>pittHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>pittHandlers.matchesRecap(...args),crossCountry:{matches:event=>pittHandlers.isCrossCountry(event),attach:event=>pittHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(pittHandlers.isFinalWithoutStory(event))await pittHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>pittHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>pittHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(pittHandlers.isFinalWithoutStory).map(event=>pittHandlers.attachArchiveStory(event)));if(sport==='Golf'&&pittHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(pittHandlers.isGolfAwaitingPlace).map(event=>pittHandlers.attachGolfPlace(event)));return events.filter(event=>!pittHandlers.isTennisWithoutStory(event)&&!pittHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:smuSchool,parseSchedule:(...args)=>smuHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>smuHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>smuHandlers.matchesRecap(...args),crossCountry:{matches:event=>smuHandlers.isCrossCountry(event),attach:event=>smuHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(smuHandlers.isFinalWithoutStory(event))await smuHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>smuHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>smuHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(smuHandlers.isFinalWithoutStory).map(event=>smuHandlers.attachArchiveStory(event)));if(sport==='Golf'&&smuHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(smuHandlers.isGolfAwaitingPlace).map(event=>smuHandlers.attachGolfPlace(event)));return events.filter(event=>!smuHandlers.isTennisWithoutStory(event)&&!smuHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -608,6 +626,8 @@ const louisvilleHandlers=createLouisvilleHandlers({makeEvent,recapMatchesEvent,e
 const ncStateHandlers=createNcStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const northCarolinaHandlers=createNorthCarolinaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const notreDameHandlers=createNotreDameHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const pittHandlers=createPittHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const smuHandlers=createSmuHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

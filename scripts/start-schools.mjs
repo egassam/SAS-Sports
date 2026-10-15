@@ -107,7 +107,7 @@ for(const school of ready){
   const unlabeled="'Soccer':[{path:'soccer/usa.ncaa.w.1',sourceName:'Live college soccer scoreboard'}]";
   if(/\/sports\/mens-soccer\/schedule/.test(text)&&/\/sports\/womens-soccer\/schedule/.test(text)&&text.includes(unlabeled)){
     text=text.replace(unlabeled,`'Soccer':[{path:'soccer/usa.ncaa.m.1',team_label:"Men's",sourceName:"Live men's college soccer scoreboard"},{path:'soccer/usa.ncaa.w.1',team_label:"Women's",sourceName:"Live women's college soccer scoreboard"}]`);
-    if(!/combinedSports:new Set\(\[[^\]]*'Soccer'/.test(text))notes.push(`${school.id}: two soccer pages: add Soccer to combinedSports`);
+    if(!/combinedSports:new Set\(\[[^\]]*'Soccer'/.test(text))notes.push(`${school.id}: two soccer pages: Soccer is not in combinedSports (check)`);
     writeFileSync(file,text);notes.push(`${school.id}: soccer reads one labeled ESPN board per team`);
   }
 }

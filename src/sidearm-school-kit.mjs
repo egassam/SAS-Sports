@@ -55,7 +55,12 @@ export function mergeTournamentRounds(games){
 // Track publishes one entry per meet day: days of the same meet at most three
 // days apart become one event from its first to its last day, with the last
 // day's place and the latest story a day links.
-export function mergeMeetDays(games,{name=game=>withoutRanking(game.opponent?.title).toLowerCase()}={}){
+// A meet may name its days instead ("Day One", "Day Two" of the SMU Classic,
+// SMU swimming): the days are one event under the meet's name.
+const DAY_LABEL=/^day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
+const dayLabelled=game=>DAY_LABEL.test(String(game.opponent?.title||'').trim())&&Boolean(String(game.tournament?.title||'').trim());
+const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title);
+export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}={}){
   const groups=[];
   for(const game of games){
     const key=name(game),previous=groups.find(group=>group.key===key&&dayGap(group.at(-1),game)>=0&&dayGap(group.at(-1),game)<=3);
@@ -63,10 +68,11 @@ export function mergeMeetDays(games,{name=game=>withoutRanking(game.opponent?.ti
     const group=[game];group.key=key;groups.push(group);
   }
   return groups.map(days=>{
-    if(days.length===1)return days[0];
+    const first=dayLabelled(days[0])?{...days[0],opponent:{...days[0].opponent,title:meetDayName(days[0])}}:days[0];
+    if(days.length===1)return first;
     const last=days.at(-1),result=last.result||{},story=[...days].reverse().map(day=>day.result?.recap).find(recap=>recap?.url);
     const end=[...days.map(day=>day.date),...days.map(day=>day.enddate).filter(Boolean)].sort().at(-1);
-    return{...days[0],enddate:end,result:{...result,recap:result.recap?.url?result.recap:story||null}};
+    return{...first,enddate:end,result:{...result,recap:result.recap?.url?result.recap:story||null}};
   });
 }
 

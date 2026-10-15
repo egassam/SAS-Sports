@@ -184,6 +184,13 @@ if(args.includes('--prune')&&dropped.length){
     if(!new RegExp(`'${id}\\|${sport.replace(/[.*+?^${}()|[\]\\&]/g,'\\$&')}':[^\\n]*\\/roster`).test(text))summary.push(`${sport}: add its roster route by hand (${teams.map(u=>u.replace(/schedule$/,'roster')).join(', ')})`);
     if(teams.length===2)text=text.replace(/(combinedSports:new Set\(\[)([^\]]*)\]/,(all,head,list)=>list.includes(`'${sport}'`)?all:`${head}${[...list.split(',').filter(Boolean),`'${sport}'`].sort().join(',')}]`);
   }
+  // Any sport left with two team schedule pages (men's and women's) is a
+  // combined sport: Pitt's and SMU's soccer, SMU's golf and tennis kept both
+  // pages but were not marked (Oct 15), so their events had no team label.
+  for(const m of text.matchAll(new RegExp(`\\n\\s*'${id}\\|([^'\\n]+)':\\[('[^'\\]]+'),('[^'\\]]+')\\]`,'g'))){
+    const [,sport,a,b]=m;if(!/\/schedule'$/.test(a)||!/\/(?:mens|womens|m|w)-[^/']+\/schedule'$/.test(a)||!/\/(?:mens|womens|m|w)-[^/']+\/schedule'$/.test(b))continue;
+    text=text.replace(/(combinedSports:new Set\(\[)([^\]]*)\]/,(all,head,list)=>list.includes(`'${sport}'`)?all:`${head}${[...list.split(',').filter(Boolean),`'${sport}'`].sort().join(',')}]`);
+  }
   writeFileSync(moduleUrl,text);
   summary.push(`--prune: ${dropped.length} routes removed from src/schools/${id}.mjs (check combinedSports when one team page is left)`);
 }
