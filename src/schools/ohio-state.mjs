@@ -114,7 +114,9 @@ const ohioStateToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series".
 // Ohio State's own: baseball's "Scarlet & Gray World Series" (Oct 9-11).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|\bscarlet (?:&|and) gray\b/i;
+// Swimming's "Alumni Meet" (Oct 10, an exhibition against the team's
+// alumni, no result published) is internal too.
+const INTERNAL=/\balumni meet\b|\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|\bscarlet (?:&|and) gray\b/i;
 // Opponents the pages write as institutions ("University of Memphis",
 // "DePaul University", "Texas Christian University"); the app writes the
 // short name, as the stories do. Miami University and Boston University keep
