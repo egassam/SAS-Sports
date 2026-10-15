@@ -241,6 +241,13 @@
 | penn-state | Soccer | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
 | penn-state | Volleyball | ⚪ off (waiting) |  |
+| pitt | Baseball | ⚪ off (waiting) |  |
+| pitt | Basketball | ⚪ off (waiting) |  |
+| pitt | Football | ⚪ off (waiting) |  |
+| pitt | Lacrosse | ⚪ off (waiting) |  |
+| pitt | Soccer | ⚪ off (waiting) |  |
+| pitt | Softball | ⚪ off (waiting) |  |
+| pitt | Volleyball | ⚪ off (waiting) |  |
 | purdue | Baseball | ⚪ off (waiting) |  |
 | purdue | Basketball | ⚪ off (waiting) |  |
 | purdue | Football | ⚪ off (waiting) |  |
@@ -255,11 +262,32 @@
 | rutgers | Soccer | ⚪ off (waiting) |  |
 | rutgers | Softball | ⚪ off (waiting) |  |
 | rutgers | Volleyball | ⚪ off (waiting) |  |
+| smu | Basketball | ⚪ off (waiting) |  |
+| smu | Football | ⚪ off (waiting) |  |
+| smu | Soccer | ⚪ off (waiting) |  |
+| smu | Volleyball | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) | final W, 38-19 (live phase not observed 2×; waits for the next game) |
 | south-carolina | Softball | ⚪ off (waiting) |  |
 | south-carolina | Volleyball | ⚪ off (waiting) |  |
+| stanford | Baseball | ⚪ off (waiting) |  |
+| stanford | Basketball | ⚪ off (waiting) |  |
+| stanford | Field Hockey | ⚪ off (waiting) |  |
+| stanford | Football | ⚪ off (waiting) |  |
+| stanford | Lacrosse | ⚪ off (waiting) |  |
+| stanford | Soccer | ⚪ off (waiting) |  |
+| stanford | Softball | ⚪ off (waiting) |  |
+| stanford | Volleyball | ⚪ off (waiting) |  |
+| stanford | Water Polo | ⚪ off (waiting) |  |
+| syracuse | Basketball | ⚪ off (waiting) |  |
+| syracuse | Field Hockey | ⚪ off (waiting) |  |
+| syracuse | Football | ⚪ off (waiting) |  |
+| syracuse | Hockey | ⚪ off (waiting) |  |
+| syracuse | Lacrosse | ⚪ off (waiting) |  |
+| syracuse | Soccer | ⚪ off (waiting) |  |
+| syracuse | Softball | ⚪ off (waiting) |  |
+| syracuse | Volleyball | ⚪ off (waiting) |  |
 | tcu | Baseball | ⚪ off (waiting) |  |
 | tcu | Basketball | ⚪ off (waiting) |  |
 | tcu | Football | ⚪ off (waiting) |  |
@@ -314,6 +342,19 @@
 | virginia | Lacrosse | ⚪ off (waiting) |  |
 | virginia | Soccer | ⚪ off (waiting) |  |
 | virginia | Softball | ⚪ off (waiting) |  |
+| virginia-tech | Baseball | ⚪ off (waiting) |  |
+| virginia-tech | Basketball | ⚪ off (waiting) |  |
+| virginia-tech | Football | ⚪ off (waiting) |  |
+| virginia-tech | Lacrosse | ⚪ off (waiting) |  |
+| virginia-tech | Soccer | ⚪ off (waiting) |  |
+| virginia-tech | Softball | ⚪ off (waiting) |  |
+| virginia-tech | Volleyball | ⚪ off (waiting) |  |
+| wake-forest | Baseball | ⚪ off (waiting) |  |
+| wake-forest | Basketball | ⚪ off (waiting) |  |
+| wake-forest | Field Hockey | ⚪ off (waiting) |  |
+| wake-forest | Football | ⚪ off (waiting) |  |
+| wake-forest | Soccer | ⚪ off (waiting) |  |
+| wake-forest | Volleyball | ⚪ off (waiting) |  |
 | washington | Baseball | ⚪ off (waiting) |  |
 | washington | Basketball | ⚪ off (waiting) |  |
 | washington | Football | ⚪ off (waiting) |  |
@@ -412,4 +453,4 @@
 | virginia | Volleyball | ✅ off (passed) | Virginia vs Virginia Tech · 2026-10-15T05:12:36.630Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 81/411; on 0; off 330; failing 0.
+Done 81/452; on 0; off 371; failing 0.

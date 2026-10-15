@@ -1766,9 +1766,132 @@
   },
   "notre-dame|Volleyball": {
    "state": "off"
+  },
+  "pitt|Baseball": {
+   "state": "off"
+  },
+  "pitt|Basketball": {
+   "state": "off"
+  },
+  "pitt|Football": {
+   "state": "off"
+  },
+  "pitt|Lacrosse": {
+   "state": "off"
+  },
+  "pitt|Soccer": {
+   "state": "off"
+  },
+  "pitt|Softball": {
+   "state": "off"
+  },
+  "pitt|Volleyball": {
+   "state": "off"
+  },
+  "smu|Basketball": {
+   "state": "off"
+  },
+  "smu|Football": {
+   "state": "off"
+  },
+  "smu|Soccer": {
+   "state": "off"
+  },
+  "smu|Volleyball": {
+   "state": "off"
+  },
+  "stanford|Baseball": {
+   "state": "off"
+  },
+  "stanford|Basketball": {
+   "state": "off"
+  },
+  "stanford|Field Hockey": {
+   "state": "off"
+  },
+  "stanford|Football": {
+   "state": "off"
+  },
+  "stanford|Lacrosse": {
+   "state": "off"
+  },
+  "stanford|Soccer": {
+   "state": "off"
+  },
+  "stanford|Softball": {
+   "state": "off"
+  },
+  "stanford|Volleyball": {
+   "state": "off"
+  },
+  "stanford|Water Polo": {
+   "state": "off"
+  },
+  "syracuse|Basketball": {
+   "state": "off"
+  },
+  "syracuse|Field Hockey": {
+   "state": "off"
+  },
+  "syracuse|Football": {
+   "state": "off"
+  },
+  "syracuse|Hockey": {
+   "state": "off"
+  },
+  "syracuse|Lacrosse": {
+   "state": "off"
+  },
+  "syracuse|Soccer": {
+   "state": "off"
+  },
+  "syracuse|Softball": {
+   "state": "off"
+  },
+  "syracuse|Volleyball": {
+   "state": "off"
+  },
+  "wake-forest|Baseball": {
+   "state": "off"
+  },
+  "wake-forest|Basketball": {
+   "state": "off"
+  },
+  "wake-forest|Field Hockey": {
+   "state": "off"
+  },
+  "wake-forest|Football": {
+   "state": "off"
+  },
+  "wake-forest|Soccer": {
+   "state": "off"
+  },
+  "wake-forest|Volleyball": {
+   "state": "off"
+  },
+  "virginia-tech|Baseball": {
+   "state": "off"
+  },
+  "virginia-tech|Basketball": {
+   "state": "off"
+  },
+  "virginia-tech|Football": {
+   "state": "off"
+  },
+  "virginia-tech|Lacrosse": {
+   "state": "off"
+  },
+  "virginia-tech|Soccer": {
+   "state": "off"
+  },
+  "virginia-tech|Softball": {
+   "state": "off"
+  },
+  "virginia-tech|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.91.3-handoff-fixes",
- "updated_at": "2026-10-15T14:59:17.949Z",
+ "version": "4.94.2-virginia-tech-wake-forest",
+ "updated_at": "2026-10-15T19:03:12.325Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
