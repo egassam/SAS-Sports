@@ -6,13 +6,14 @@ import {pathToFileURL} from 'node:url';
 // WMT sites use short codes (Iowa: `/sports/mbball`, `wcross`, `fhockey`;
 // Miami: `cross`, `soc`, `swim`, `track`; Virginia: `xctrack`; Georgia Tech's
 // CSTV codes: `m-footbl`, `w-volley`, `m-baskbl`, `m-basebl`, `w-softbl`, `c-swim`).
+// Syracuse's men's rowing is `mens-crew`.
 const SPORT_SLUGS={
   'Football':['football','footbl'],'Volleyball':['womens-volleyball','volleyball','wvball','volley'],
   'Soccer':['womens-soccer','soccer','wsoc','msoc','soc'],'Cross Country':['cross-country','xc','wcross','mcross','cross'],
   'Basketball':['mens-basketball','womens-basketball','basketball','mbball','wbball','baskbl'],
   'Swimming & Diving':['swimming-and-diving','swimming-diving','swim-dive','swimming','wswim','mswim','swim'],
   'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis','wten','mten'],
-  'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow'],
+  'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow','mrow','crew'],
   'Track & Field':['track-and-field','track-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball','basebl'],
   'Softball':['softball','softbl'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
   'Field Hockey':['field-hockey','fhockey'],'Hockey':['ice-hockey','hockey'],
