@@ -378,6 +378,7 @@ assert.deepEqual(parse('Golf','api-7').filter(e=>e.status==='Final').map(e=>e.he
   assert.ok(!swim.some(e=>/Hokie Belt/.test(e.opponent)));
   const tri=swim.find(e=>e.opponent==='Tri-Meet');
   assert.equal(tri.headline,'West Virginia: Men: W, 264-89 · Liberty: Women: W, 240-113 · Penn State: Women: W, 312-41 | Men: W, 265.50-87.50');
+  assert.deepEqual(tri.results.map(r=>`${r.label}: ${r.value}`),['West Virginia: Men: W, 264-89','Liberty: Women: W, 240-113','Penn State: Women: W, 312-41 | Men: W, 265.50-87.50']);
   assert.match(tri.recap_url,/\/news\/2026\/10\/03\/virginia-tech-swim-dive-hokies-kick-off-season/);
 }
 // Wrestling's roster cards: the link wraps the whole card ("Chris Bacchioni

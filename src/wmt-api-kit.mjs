@@ -112,6 +112,7 @@ export function mergeWmtMeetEntries(games){
     const lastDay=String(ends.at(-1)).slice(0,10)>String(first.datetime).slice(0,10)?ends.at(-1):null;
     return{...last,datetime:first.datetime,datetime_end:lastDay,opponent_name:String(first.tournament.name).trim(),second_opponent_name:null,
       status:sorted.every(g=>g.status==='completed')?'completed':last.status,post_event_article:story,schedule_event_result:result,
+      opponent_results:texts.length>1&&distinct?texts.map(g=>({label:String(g.opponent_name||'').trim(),value:String(g.schedule_event_result.text).trim()})):null,
       schedule_event_links:sorted.flatMap(g=>g.schedule_event_links||[])};
   });
 }
@@ -172,7 +173,9 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       const score=game.status==='completed'?wmtScore(game.schedule_event_result):null;
       const text=String(game.schedule_event_result?.text||'').trim();
       const story=storyOf(game);
-      const placed=!score&&meet&&game.status==='completed'?wmtMeetResult(text,sport):null;
+      // A merged meet's opponents each keep their own row (Virginia Tech's
+      // tri-meet: West Virginia, Liberty, Penn State).
+      const placed=!score&&meet&&game.status==='completed'?(game.opponent_results?{headline:text,results:game.opponent_results}:wmtMeetResult(text,sport)):null;
       // A past meet is final with its result (a place, or its story); a past
       // game without a score is not listed. Yesterday's game stays: a night
       // game can end after midnight.
