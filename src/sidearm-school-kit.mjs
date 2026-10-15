@@ -373,6 +373,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   const word='((?:T-?)?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
   const title=meta('title').replace(/[‘’]/g,"'");
   if(new RegExp(`\\b${team}\\s+Wins?\\b`,'i').test(title))return'1st';
+  // "Demon Deacons Open Season with Team Title at ANNIKA Intercollegiate";
+  // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
+  if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
+  if(new RegExp(`\\b${team}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
   // The summary ends before the story starts, whatever its last character.

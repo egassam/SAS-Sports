@@ -17,7 +17,8 @@
 //     iowa=#FFCD00,#000000,#07111f maryland=#E03A3E,#FFD520,#ffffff
 // A WMT site is ported from a converted WMT card reader instead
 // (scripts/port-wmt.mjs; --wmt-from=, default nebraska) and goes on to the
-// fixtures, athletes and survey like any other.
+// fixtures, athletes and survey like any other; one whose /website-api/sports
+// answers goes on the shared JSON-API kit (scripts/port-wmt-api.mjs).
 import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 
@@ -58,6 +59,16 @@ for(const {id,theme} of targets){
   const scaffold=await run(id,'scaffold',['scripts/scaffold-school.mjs',`--school=${id}`,'--write']);
   if(scaffold.code){notes.push(`${id}: scaffold failed (${scaffold.log})`);continue}
   if(/: WMT /.test(add.text)){
+    // A WMT site with its own JSON schedule API (Stanford, Virginia Tech)
+    // needs only the shared API kit's config: no card reader to port.
+    let api=false;
+    try{const r=await fetch(`${school.athletics_url.replace(/\/$/,'')}/website-api/sports?per_page=100`,{signal:AbortSignal.timeout(20000)});api=r.ok&&Array.isArray((await r.json()).data);}catch{}
+    if(api){
+      const port=await run(id,'port',['scripts/port-wmt-api.mjs',`--to=${id}`]);
+      if(port.code){notes.push(`${id}: port-wmt-api failed (${port.log})`);continue}
+      notes.push(`${id}: WMT site with a JSON API: shared API kit (scripts/port-wmt-api.mjs); NOTE lines to decide: ${port.log}`);
+      ready.push(school);continue;
+    }
     const wmt=await run(id,'port',['scripts/port-wmt.mjs',`--from=${wmtFrom}`,`--to=${id}`]);
     if(wmt.code){notes.push(`${id}: port-wmt failed (${wmt.log})`);continue}
     notes.push(`${id}: WMT site, ported from ${wmtFrom}'s card reader; routes and lines to decide: ${wmt.log}`);

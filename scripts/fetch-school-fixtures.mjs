@@ -200,7 +200,10 @@ if(args.includes('--prune')&&dropped.length){
 // --prune: schedule pages no route uses any more (a candidate from an earlier
 // run, Minnesota's 22 template pages) leave the fixtures too.
 if(args.includes('--prune')){
-  const used=new Set([...readFileSync(new URL(`src/schools/${id}.mjs`,root),'utf8').matchAll(/\/sports\/([a-z0-9-]+)\/schedule\b/g)].map(m=>m[1]));
+  // An API school's routes are its sport ids (api-<id>; Virginia Tech's
+  // first run lost all 17, Oct 15).
+  const moduleText=readFileSync(new URL(`src/schools/${id}.mjs`,root),'utf8');
+  const used=new Set([...[...moduleText.matchAll(/\/sports\/([a-z0-9-]+)\/schedule\b/g)].map(m=>m[1]),...[...moduleText.matchAll(/filter%5Bschedule\.sport_id%5D=(\d+)/g)].map(m=>`api-${m[1]}`)]);
   const dir=new URL(`tests/fixtures/${id}-module/`,root),stale=existsSync(dir)?readdirSync(dir).filter(name=>{const slug=(name.match(/^(.+)-schedule\.html\.gz$/)||[])[1];return slug&&!used.has(slug);}):[];
   for(const name of stale)unlinkSync(new URL(name,dir));
   if(stale.length)summary.push(`--prune: ${stale.length} schedule fixtures no route uses removed`);
