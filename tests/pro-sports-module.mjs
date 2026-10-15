@@ -37,6 +37,7 @@ assert.ok(worker.includes('if(!isHighSchool(catalogSchool)&&!isPro(catalogSchool
 assert.ok(worker.includes('if(e.not_in_record)continue;'),'NFL playoffs are out of the season record');
 // ESPN refuses a user agent carrying a web address (found on the preview).
 assert.ok(worker.includes("url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT"),'ESPN reads use the scoreboard identity');
+assert.ok(worker.includes('const r=await sourceFetch(url,init,{ttl,staleOnError:true});'),'a refused pro read serves the last copy');
 
 // Times: ESPN gives UTC; the app keeps the team's wall clock.
 assert.equal(wallClock('2026-10-02T00:15Z',EASTERN),'2026-10-01T20:15:00.000Z');
