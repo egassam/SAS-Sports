@@ -113,8 +113,8 @@
     ],
     "providers": [
       {
-      "provider": "CUSTOM",
-      "slug": "gobearcats",
+        "provider": "CUSTOM",
+        "slug": "gobearcats",
         "provider_school_id": null
       }
     ]
@@ -1461,6 +1461,79 @@
         "provider": "PARENTSQUARE_CALENDAR",
         "slug": "128776",
         "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "pittsburgh-steelers",
+    "name": "Pittsburgh Steelers",
+    "short_name": "Steelers",
+    "state": "Pennsylvania",
+    "city": "Pittsburgh",
+    "conference": "AFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC North",
+    "athletics_url": "https://www.steelers.com",
+    "aliases": [
+      "Steelers",
+      "PIT"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/pit",
+        "provider_school_id": "23"
+      }
+    ]
+  },
+  {
+    "id": "kansas-city-chiefs",
+    "name": "Kansas City Chiefs",
+    "short_name": "Chiefs",
+    "state": "Missouri",
+    "city": "Kansas City",
+    "conference": "AFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC West",
+    "athletics_url": "https://www.chiefs.com",
+    "aliases": [
+      "Chiefs",
+      "KC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/kc",
+        "provider_school_id": "12"
+      }
+    ]
+  },
+  {
+    "id": "nascar-cup-series",
+    "name": "NASCAR Cup Series",
+    "short_name": "Cup Series",
+    "state": "North Carolina",
+    "city": "Charlotte",
+    "conference": "NASCAR",
+    "league": "NASCAR",
+    "pro_sport": "Auto Racing",
+    "level": "pro",
+    "division": "NASCAR Cup Series",
+    "athletics_url": "https://www.nascar.com",
+    "aliases": [
+      "NASCAR",
+      "Cup Series",
+      "NASCAR Cup"
+    ],
+    "providers": [
+      {
+        "provider": "NASCAR",
+        "slug": "cacher/1",
+        "provider_school_id": "1"
       }
     ]
   }
