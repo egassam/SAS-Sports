@@ -16,6 +16,9 @@ import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from '../tests/school-module-deps.mjs';
 
+// A WMT site's JSON schedule API (Notre Dame, Stanford): one address per
+// team's sport id, saved as api-<id>-schedule.html.gz (as survey-school names it).
+const apiSlug=url=>{const id=new URL(url).searchParams.get('filter[schedule.sport_id]');return id?`api-${id}`:undefined;};
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school');
 if(!id){console.error('usage: node scripts/generate-module-tests.mjs --school=<id> [--date=YYYY-MM-DD]');process.exit(2)}
@@ -44,7 +47,7 @@ let test=read(testPath).replace(/^const parity=.*;$/m,()=>`const parity=${JSON.s
 // One block per schedule page.
 const blocks=[],recaps=[];let missing=0;
 for(const sport of sports)for(const url of worker.candidateUrls(school,sport)){
-  const slug=(new URL(url).pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
+  const slug=(new URL(url).pathname.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||apiSlug(url);
   if(!slug||!has(`${slug}-schedule.html.gz`))continue;
   const events=worker.labelTeamEvents(worker.parseHtml(fixture(`${slug}-schedule.html.gz`),school,sport,url,now),school,sport,url);
   // One page can serve two sports (Texas's "Track & Field / Cross Country"):

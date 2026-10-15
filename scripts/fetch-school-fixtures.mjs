@@ -23,6 +23,9 @@ import {schoolModuleDeps} from '../tests/school-module-deps.mjs';
 import {sidearmScheduleGames} from '../src/sidearm-schedule-data.mjs';
 import {findTfrrsMeet} from '../src/tfrrs-results.mjs';
 
+// A WMT site's JSON schedule API (Notre Dame, Stanford): one address per
+// team's sport id, saved as api-<id>-schedule.html.gz (as survey-school names it).
+const apiSlug=url=>{const id=new URL(url).searchParams.get('filter[schedule.sport_id]');return id?`api-${id}`:undefined;};
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school');
 if(!id){console.error('usage: node scripts/fetch-school-fixtures.mjs --school=<id> [--sports=A,B] [--tfrrs-f=<url> --tfrrs-m=<url>] [--date=YYYY-MM-DD] [--prune]');process.exit(2)}
@@ -73,7 +76,7 @@ const perSport=await mapLimit(sports,6,async sport=>{
   const titles=new Set();
   let kept=false,template=null;
   for(const url of worker.candidateUrls(school,sport)){
-    const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1];
+    const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||apiSlug(url);
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
     const name=`${slug}-schedule.html.gz`;
     const page=await download(url);
@@ -88,7 +91,7 @@ const perSport=await mapLimit(sports,6,async sport=>{
     // "@season @sport", or "@season Women's Swimming & Diving" (Tennessee).
     if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);template??=url;continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
-    if(titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
+    if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
     titles.add(title);kept=true;
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;
