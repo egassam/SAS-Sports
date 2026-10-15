@@ -20,7 +20,9 @@ const day=value=>String(value||'').slice(0,10);
 const shiftDay=(date,days)=>new Date(Date.parse(`${date}T00:00:00Z`)+days*86400000).toISOString().slice(0,10);
 
 // "Kansas State" is "Kansas St." and "K-State"; "UCF" is "Central Florida".
-const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu:['brigham young'],tcu:['texas christian'],'west-virginia':['wvu','west virginia'],'arizona-state':['asu'],'oklahoma-state':['osu'],kansas:['ku'],pitt:['pittsburgh'],california:['california','cal'],'north-carolina':['unc']};
+const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu:['brigham young'],tcu:['texas christian'],'west-virginia':['wvu','west virginia'],'arizona-state':['asu'],'oklahoma-state':['osu'],kansas:['ku'],pitt:['pittsburgh'],california:['california','cal'],'north-carolina':['unc'],
+  // Clemson writes "Miami (Fla.)" (football Oct 3, volleyball Oct 9).
+  miami:['miami fla','miami fl']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};

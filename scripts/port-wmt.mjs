@@ -50,11 +50,12 @@ for(const sport of sports){
   if(!slugs.length&&nav.size)slugs=[...new Set(candidates.flatMap(slug=>[`womens-${slug}`,`mens-${slug}`]))].filter(slug=>nav.has(slug)).slice(0,2);
   if(!slugs.length){slugs=candidates.slice(0,1);notes.push(`${sport}: no route in the site's menu; kept ${slugs[0]?`/sports/${slugs[0]}/schedule`:'nothing'} (check by eye)`)}
   // Two team pages: men's and women's (mens-golf/womens-golf, mbball/wbball).
-  if(slugs.length>2)slugs=slugs.filter(s=>/^(?:mens|womens)-|^[mw](?=[a-z]{3,})(?!restl)/.test(s)).slice(0,2);
+  // Clemson's women's basketball is `w-basketball`.
+  if(slugs.length>2)slugs=slugs.filter(s=>/^(?:mens|womens|[mw])-|^[mw](?=[a-z]{3,})(?!restl)/.test(s)).slice(0,2);
   schedule[sport]=slugs;roster[sport]=slugs;
   if(slugs.length===2){
     combined.push(sport);
-    for(const slug of slugs){const women=/^womens?-|^w(?=[a-z]{3,})(?!restl)/.test(slug);labels[`/sports/${slug}/schedule`]=women?"Women's":"Men's";}
+    for(const slug of slugs){const women=/^womens?-|^w-|^w(?=[a-z]{3,})(?!restl)/.test(slug);labels[`/sports/${slug}/schedule`]=women?"Women's":"Men's";}
   }
 }
 const list=slugs=>slugs.length===1?`'https://${host}/sports/${slugs[0]}/%s'`:`[${slugs.map(s=>`'https://${host}/sports/${s}/%s'`).join(',')}]`;
