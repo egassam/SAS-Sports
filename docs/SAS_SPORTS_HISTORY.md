@@ -2489,3 +2489,43 @@ Illinois + Indiana (Oct 8, 28 sports, about 2 h 20 min incl. one preview round).
 **Gate:** preview 4.94.2: `verify:preview --school=virginia-tech,wake-forest --sports=all` 71 PASS, 1 FAIL (VT Wrestling 35/36 refreshes: one client fetch with status 0, no 1102/503). The Wrestling re-run passed 36/36. XC 18/20 and 26/21. All 23 sports show three distinct athletes. Screenshots read (tri-meet rows). CI green, no conflict. Merged `bb79d18`. Production `4.94.2-virginia-tech-wake-forest` deployed by 18:21 UTC; `verify:prod --school=virginia-tech,wake-forest --sports=all` 72 PASS at 18:24 UTC, XC 18/20 and 26/21. About 62 minutes from start to production.
 
 **Open:** see the module docs (spring sports fill when published; first live cards not yet observed). All 18 ACC schools are in the app; the next conference or task is the user's choice.
+
+
+## October 15, 2026 — Pro sports level (PR #325)
+
+**Request (user):** "Let's add some professional sports. Same three menu style, first menu is sports like football, auto racing, golf, etc... second menu if the first menu is football the second menu could be leagues and third menu could be teams. Let's add football, NFL, Pittsburgh Steelers and Kansas City Chiefs, and auto racing, NASCAR and races." Later: "If you have suggestions of a better formatting please give them."
+
+**Decisions:**
+- New Pro level; the level switch now reads High School, College, Pro, as the handoff's "Later, not now" note asked.
+- Pro menus are Sport (`pro_sport`) → League (`league`, the City box relabeled) → Team. For Auto Racing the third box is labeled "Races", and its single entry is "NASCAR Cup Series" (every Cup race).
+- Pro entries are catalog entries with `level: "pro"`.
+- NFL source: ESPN team schedule. The app already reads ESPN for live scores, and the schedule is cached 2 minutes in the shared source cache. The postseason payload is read only in January and February. The expanded final comes from ESPN's game summary: halftime, line score, leaders, team stats, scoring plays and the ESPN recap link.
+- NFL header records: overall plus the division record (division opponents in the regular season). Playoff games are left out of the record (`not_in_record`).
+- NASCAR source: NASCAR's own `cf.nascar.com` feeds:
+  - the race list;
+  - the standings, for winner names and car numbers; a part-time winner is named from that race's weekend feed;
+  - the weekend feed, for the full finishing order in an expanded final;
+  - the live feed, read only on race days, for a new live race card.
+- Non-points races are labeled. No featured athletes for pro entries.
+
+**Tests:**
+- New `tests/pro-sports-module.mjs`, run on the real feeds of Oct 15. Steelers 3-2 (AFC North 1-1); Chiefs 4-0 (AFC West 2-0, Colts win in OT); 40 Cup races, 36 final, Charlotte won by Chase Briscoe by 0.029 s.
+- `npm run test:release` exit 0. CI green (guardrails, certification-matrix).
+
+**Publication:**
+- PR #325 is open.
+- Cloudflare Workers Builds posted no check for the first push (`a51107f`), and the branch preview still answered "nothing here yet" after 15 minutes. The docs commit is pushed to trigger the build.
+- Not merged: the change touches the shared page, beyond the one-school standing permission, so the user approves the merge.
+
+**Formatting ideas offered to the user (not built):**
+- "Soon" for unbuilt sports and leagues
+- Xfinity and Truck series
+- auto-filled single-league menu
+- team logos
+- division standing
+- season sections and bye week
+- live possession
+- winner-first race cards
+- points strip
+- next-race countdown
+- track type
