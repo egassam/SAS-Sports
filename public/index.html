@@ -109,7 +109,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <label class="field"><span class="field-label" id="groupLabel">Conference</span><select id="conference" aria-labelledby="groupLabel"><option value="">All conferences</option></select></label>
     <label class="field" id="cityField" hidden><span class="field-label" id="cityLabel">City</span><select id="city" aria-labelledby="cityLabel"><option value="">All cities</option></select></label>
     <label class="field field-team"><span class="field-label" id="teamLabel">School</span><select id="school" aria-labelledby="teamLabel"><option>Loading schools…</option></select></label>
-    <label class="field"><span class="field-label" id="sportLabel">Sport</span><select id="sportFilter" aria-labelledby="sportLabel"><option value="">All sports</option></select></label>
+    <label class="field" id="sportField"><span class="field-label" id="sportLabel">Sport</span><select id="sportFilter" aria-labelledby="sportLabel"><option value="">All sports</option></select></label>
   </div>
   <div class="action-row">
     <input id="search" type="search" placeholder="Search events…" aria-label="Search events">
@@ -508,6 +508,8 @@ function renderLevels(){
   const level=LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
   $('#groupLabel').textContent=level.group;$('#teamLabel').textContent=level.teamFor?level.teamFor(conference.value):level.team;
   if(level.middle)$('#cityLabel').textContent=level.middle;
+  // A pro team or series plays one sport, already chosen in the first box.
+  $('#sportField').hidden=level.id==='pro';
   $('#cityField').hidden=!level.cityOf;$('.finder').classList.toggle('has-city',Boolean(level.cityOf));
   favorite.title=favorite.title.replace(/school|team/i,level.team.toLowerCase());
 }

@@ -31,6 +31,8 @@ assert.deepEqual(levelOrder,['high-school','college','pro']);
 const boot=JSON.parse(page.match(/const BOOTSTRAP_SCHOOLS=(\[.*?\]);\n/)[1]);
 for(const s of pro){assert.ok(boot.some(b=>b.id===s.id&&b.level==='pro'),s.id);assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);}
 assert.ok(page.includes("'nascar-cup-series':['Auto Racing']"));
+// One Sport box on Pro: the sport filter is hidden (a team plays one sport).
+assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
 // Worker: pro feeds skip the college season filter; no featured athletes.
 assert.ok(worker.includes('if(isPro(school))return fetchPro(school,sport,now,aiTargetId);'));
 assert.ok(worker.includes('if(!isHighSchool(catalogSchool)&&!isPro(catalogSchool))events=filterActiveSeason'));
