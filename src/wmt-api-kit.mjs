@@ -102,8 +102,13 @@ export function mergeWmtMeetEntries(games){
     const firstDay=Date.parse(String(first.datetime).slice(0,10)),lastDayMs=Date.parse(String(ends.at(-1)).slice(0,10));
     const inWindow=g=>{const d=dayOf(g);if(d.length!==3)return true;const t=Date.UTC(d[0],d[1]-1,d[2]);return t>=firstDay-86400000&&t<=lastDayMs+3*86400000;};
     const story=[...sorted].reverse().find(g=>g.post_event_article&&inWindow(g))?.post_event_article||null;
-    const texts=sorted.filter(g=>String(g.schedule_event_result?.text||'').trim());
-    const result=texts.length>1?{...last.schedule_event_result,text:texts.map(g=>`${String(g.opponent_name||'').trim()}: ${String(g.schedule_event_result.text).trim()}`).join(' · ')}:texts.length===1?texts[0].schedule_event_result:last.schedule_event_result;
+    // Golf's rounds ("Rounds 1-2", "Round 3"; men's golf names each round
+    // after the tournament) and a meet's days carry the running place: the
+    // last is the meet's. Only distinct opponents' results are joined.
+    const texts=sorted.filter(g=>String(g.schedule_event_result?.text||'').trim()&&!/\b(?:rounds?|day)\b/i.test(String(g.opponent_name||'')));
+    // Stanford's College Swimming League repeats the meet's place on each.
+    const distinct=new Set(texts.map(g=>String(g.opponent_name||'').trim())).size===texts.length&&new Set(texts.map(g=>String(g.schedule_event_result.text).trim())).size>1;
+    const result=texts.length>1&&distinct?{...last.schedule_event_result,text:texts.map(g=>`${String(g.opponent_name||'').trim()}: ${String(g.schedule_event_result.text).trim()}`).join(' · ')}:texts.length===1?texts[0].schedule_event_result:last.schedule_event_result;
     const lastDay=String(ends.at(-1)).slice(0,10)>String(first.datetime).slice(0,10)?ends.at(-1):null;
     return{...last,datetime:first.datetime,datetime_end:lastDay,opponent_name:String(first.tournament.name).trim(),second_opponent_name:null,
       status:sorted.every(g=>g.status==='completed')?'completed':last.status,post_event_article:story,schedule_event_result:result,
