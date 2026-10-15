@@ -4,7 +4,7 @@
 
 North Carolina was added to the app on October 15, 2026 (17 sports, one PR with Notre Dame). goheels.com is a SIDEARM site that refuses the sandbox (403); it is read through the private source.
 
-## Status (`4.91.0-north-carolina-notre-dame`)
+## Status (`4.91.1-north-carolina-notre-dame`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

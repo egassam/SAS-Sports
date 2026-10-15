@@ -4,7 +4,7 @@
 
 Notre Dame was added to the app on October 15, 2026 (15 sports, one PR with North Carolina). fightingirish.com is a WMT (Nuxt) site whose schedule pages render no events: the page loads them from the site's own JSON API, `/website-api/schedule-events` (one sport id per team, from `/website-api/sports`). The module reads that API, the same official data the page shows: date and time (Eastern), venue (`home`/`away`/`neutral`), opponent, the conference flag (`is_conference`), the exhibition flag, the result (`win`/`loss`/`tie` with the winner's and loser's scores; a meet's text), its story (`post_event_article`) and links ("Recap"). Rosters render on the page and are read as usual.
 
-## Status (`4.91.0-north-carolina-notre-dame`)
+## Status (`4.91.1-north-carolina-notre-dame`)
 
 | Sport | Team ids | State |
 | --- | --- | --- |

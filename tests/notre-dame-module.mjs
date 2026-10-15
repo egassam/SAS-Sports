@@ -93,6 +93,11 @@ assert.deepEqual(parse('Lacrosse',13).map(line),["Upcoming Oct 18, 9:30 AM Women
   assert.deepEqual(parse('Golf',9).filter(e=>e.status==='Final').map(e=>e.end_time),['2026-09-09T23:59:59Z','2026-09-15T23:59:59Z','2026-09-29T23:59:59Z','2026-10-05T23:59:59Z']);
 }
 
+// Chloe Hooker's profile links "https://instagram.com/www.instagram.com/chloe._.hooker/"
+// (volleyball, Oct 15): the inner handle, on the roster card and the profile.
+assert.equal(worker.officialCardInstagram('https://instagram.com/www.instagram.com/chloe._.hooker/'),'https://www.instagram.com/chloe._.hooker/');
+assert.equal(worker.verifiedInstagram('<a href="https://instagram.com/www.instagram.com/chloe._.hooker/">x</a>'),'https://www.instagram.com/chloe._.hooker/');
+
 // A team with nothing this season yet is a valid empty schedule.
 for(const [sport,id] of [['Lacrosse',12],['Rowing',14],['Softball',17],['Track & Field',21]]){const events=worker.parseHtml(fixture(`api-${id}-schedule.html.gz`),school,sport,address(id),now);assert.equal(events.length,0);assert.equal(worker.schoolModule('notre-dame').isEmptySchedule([],events),true,`${sport} is a valid empty schedule`);}
 // Combined sports' events carry their team in the id as well as the label.

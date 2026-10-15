@@ -71,7 +71,7 @@ import {northCarolinaSchool,createNorthCarolinaHandlers} from './schools/north-c
 import {notreDameSchool,createNotreDameHandlers} from './schools/notre-dame.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.91.0-north-carolina-notre-dame';
+const VERSION='4.91.1-north-carolina-notre-dame';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -643,7 +643,10 @@ function officialCardInstagram(value){
   // final handle while still rejecting navigation/team destinations.
   // The handle must end the path: "merritt%20_zieminick" (Vanderbilt) is a
   // broken link, and its prefix "merritt" is someone else's account.
-  const matches=[...decodeHtml(value||'').matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)(?=$|[/?#"'\s])/gi)];
+  // A link written inside another without its scheme
+  // ("instagram.com/www.instagram.com/chloe._.hooker/", Notre Dame) is the inner one.
+  const text=decodeHtml(value||'').replace(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?=(?:https?:\/\/)?(?:www\.)?instagram\.com\/)/gi,'');
+  const matches=[...text.matchAll(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/@?([A-Za-z0-9._]+)(?=$|[/?#"'\s])/gi)];
   const handle=matches.at(-1)?.[1]?.replace(/^@/,'').toLowerCase();
   return handle&&!BLOCKED_INSTAGRAM_HANDLES.has(handle)?`https://www.instagram.com/${handle}/`:null;
 }
@@ -848,7 +851,8 @@ function verifiedInstagram(raw){
   if(bio&&bio[0]!==raw)return verifiedInstagram(bio[0]);
   // The whole link is read: "instagram.com/Alex Gatto._" (Michigan) is a
   // broken link, not the account "alex". A link written inside another
-  // ("instagram.com/https://www.instagram.com/wyattnovara", Michigan) is the
+  // ("instagram.com/https://www.instagram.com/wyattnovara", Michigan;
+  // "instagram.com/www.instagram.com/chloe._.hooker/", Notre Dame) is the
   // inner one.
   // Miami's bios link "instagram.com/ruth_martinez_9", without a scheme.
   let m;const re=/<a\b[^>]*href=["']((?:https?:\/\/)?(?:www\.)?instagram\.com\/[^"']+)["'][^>]*>/gi;
@@ -857,7 +861,7 @@ function verifiedInstagram(raw){
     // msu_baseball on every baseball profile): never the athlete's.
     if(/\bdata-s-nav-link\b|\bc-navigation__url\b/.test(m[0]))continue;
     try{
-      const href=decodeHtml(m[1]).replace(/^(?!https?:)/i,'https://'),inner=href.match(/^https?:\/\/(?:www\.)?instagram\.com\/(https?:\/\/(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href;
+      const href=decodeHtml(m[1]).replace(/^(?!https?:)/i,'https://'),inner=(href.match(/^https?:\/\/(?:www\.)?instagram\.com\/((?:https?:\/\/)?(?:www\.)?instagram\.com\/.*)$/i)?.[1]||href).replace(/^(?!https?:)/i,'https://');
       const u=new URL(inner.replace(/ /g,'%20')),parts=u.pathname.split('/').filter(Boolean);
       const handle=(parts[0]||'').replace(/^@/,'').toLowerCase();
       // Only a valid handle: "merritt%20_zieminick" is a broken link.
