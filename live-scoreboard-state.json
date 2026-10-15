@@ -1528,23 +1528,13 @@
    "state": "off"
   },
   "virginia|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-15T00:45:00.559Z",
-   "last_detail": "live 1-0 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "virginia|Volleyball||2026-10-14|1",
-    "title": "Virginia vs Virginia Tech",
-    "started_seen": "2026-10-15T00:36:09.367Z",
-    "live_passes": [
-     "2026-10-15T00:36:09.367Z",
-     "2026-10-15T00:38:13.231Z",
-     "2026-10-15T00:39:54.812Z",
-     "2026-10-15T00:41:16.605Z",
-     "2026-10-15T00:43:18.881Z",
-     "2026-10-15T00:45:00.559Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-15T05:12:36.630Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-10-15T05:12:36.630Z",
+   "verified_game": "Virginia vs Virginia Tech",
+   "verified_detail": "final W, 3-1"
   },
   "boston-college|Baseball": {
    "state": "off"
@@ -1559,16 +1549,10 @@
    "state": "off"
   },
   "boston-college|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-15T00:45:20.838Z",
-   "last_detail": "ESPN shows Boston College vs Merrimack live (End of 2nd) but the app has no live card (still in upcoming)",
-   "game": {
-    "key": "boston-college|Hockey||2026-10-14|1",
-    "title": "Boston College vs Merrimack",
-    "started_seen": "2026-10-15T00:36:52.142Z",
-    "live_passes": [],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-10-15T05:12:37.185Z",
+   "last_detail": "final W, 5-0 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "boston-college|Lacrosse": {
    "state": "off"
@@ -1611,9 +1595,132 @@
   },
   "california|Water Polo": {
    "state": "off"
+  },
+  "clemson|Baseball": {
+   "state": "off"
+  },
+  "clemson|Basketball": {
+   "state": "off"
+  },
+  "clemson|Football": {
+   "state": "off"
+  },
+  "clemson|Lacrosse": {
+   "state": "off"
+  },
+  "clemson|Soccer": {
+   "state": "off"
+  },
+  "clemson|Softball": {
+   "state": "off"
+  },
+  "clemson|Volleyball": {
+   "state": "off"
+  },
+  "duke|Baseball": {
+   "state": "off"
+  },
+  "duke|Basketball": {
+   "state": "off"
+  },
+  "duke|Field Hockey": {
+   "state": "off"
+  },
+  "duke|Football": {
+   "state": "off"
+  },
+  "duke|Lacrosse": {
+   "state": "off"
+  },
+  "duke|Soccer": {
+   "state": "off"
+  },
+  "duke|Softball": {
+   "state": "off"
+  },
+  "duke|Volleyball": {
+   "state": "off"
+  },
+  "florida-state|Baseball": {
+   "state": "off"
+  },
+  "florida-state|Basketball": {
+   "state": "off"
+  },
+  "florida-state|Football": {
+   "state": "off"
+  },
+  "florida-state|Lacrosse": {
+   "state": "off"
+  },
+  "florida-state|Soccer": {
+   "state": "off"
+  },
+  "florida-state|Softball": {
+   "state": "off"
+  },
+  "florida-state|Volleyball": {
+   "state": "off"
+  },
+  "georgia-tech|Baseball": {
+   "state": "off"
+  },
+  "georgia-tech|Basketball": {
+   "state": "off"
+  },
+  "georgia-tech|Football": {
+   "state": "off"
+  },
+  "georgia-tech|Softball": {
+   "state": "off"
+  },
+  "georgia-tech|Volleyball": {
+   "state": "off"
+  },
+  "louisville|Baseball": {
+   "state": "off"
+  },
+  "louisville|Basketball": {
+   "state": "off"
+  },
+  "louisville|Field Hockey": {
+   "state": "off"
+  },
+  "louisville|Football": {
+   "state": "off"
+  },
+  "louisville|Lacrosse": {
+   "state": "off"
+  },
+  "louisville|Soccer": {
+   "state": "off"
+  },
+  "louisville|Softball": {
+   "state": "off"
+  },
+  "louisville|Volleyball": {
+   "state": "off"
+  },
+  "nc-state|Baseball": {
+   "state": "off"
+  },
+  "nc-state|Basketball": {
+   "state": "off"
+  },
+  "nc-state|Football": {
+   "state": "off"
+  },
+  "nc-state|Soccer": {
+   "state": "off"
+  },
+  "nc-state|Softball": {
+   "state": "off"
+  },
+  "nc-state|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.87.1-boston-college-california",
- "updated_at": "2026-10-15T00:45:20.840Z",
+ "version": "4.90.1-louisville-nc-state",
+ "updated_at": "2026-10-15T05:12:37.187Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

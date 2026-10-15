@@ -1,7 +1,5 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| boston-college | Hockey | 🔴 on | ESPN shows Boston College vs Merrimack live (End of 2nd) but the app has no live card (still in upcoming) |
-| virginia | Volleyball | 🔴 on | live 1-0 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -36,6 +34,7 @@
 | boston-college | Basketball | ⚪ off (waiting) |  |
 | boston-college | Field Hockey | ⚪ off (waiting) |  |
 | boston-college | Football | ⚪ off (waiting) |  |
+| boston-college | Hockey | ⚪ off (waiting) | final W, 5-0 (live phase not observed 2×; waits for the next game) |
 | boston-college | Lacrosse | ⚪ off (waiting) |  |
 | boston-college | Soccer | ⚪ off (waiting) |  |
 | boston-college | Softball | ⚪ off (waiting) |  |
@@ -57,21 +56,48 @@
 | cincinnati | Basketball | ⚪ off (waiting) |  |
 | cincinnati | Football | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
+| clemson | Baseball | ⚪ off (waiting) |  |
+| clemson | Basketball | ⚪ off (waiting) |  |
+| clemson | Football | ⚪ off (waiting) |  |
+| clemson | Lacrosse | ⚪ off (waiting) |  |
+| clemson | Soccer | ⚪ off (waiting) |  |
+| clemson | Softball | ⚪ off (waiting) |  |
+| clemson | Volleyball | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado | Football | ⚪ off (waiting) |  |
 | colorado | Soccer | ⚪ off (waiting) |  |
 | colorado | Volleyball | ⚪ off (waiting) |  |
+| duke | Baseball | ⚪ off (waiting) |  |
+| duke | Basketball | ⚪ off (waiting) |  |
+| duke | Field Hockey | ⚪ off (waiting) |  |
+| duke | Football | ⚪ off (waiting) |  |
+| duke | Lacrosse | ⚪ off (waiting) |  |
+| duke | Soccer | ⚪ off (waiting) |  |
+| duke | Softball | ⚪ off (waiting) |  |
+| duke | Volleyball | ⚪ off (waiting) |  |
 | florida | Baseball | ⚪ off (waiting) |  |
 | florida | Basketball | ⚪ off (waiting) |  |
 | florida | Football | ⚪ off (waiting) | final L, 19-38 (live phase not observed 2×; waits for the next game) |
 | florida | Lacrosse | ⚪ off (waiting) |  |
 | florida | Soccer | ⚪ off (waiting) |  |
 | florida | Softball | ⚪ off (waiting) |  |
+| florida-state | Baseball | ⚪ off (waiting) |  |
+| florida-state | Basketball | ⚪ off (waiting) |  |
+| florida-state | Football | ⚪ off (waiting) |  |
+| florida-state | Lacrosse | ⚪ off (waiting) |  |
+| florida-state | Soccer | ⚪ off (waiting) |  |
+| florida-state | Softball | ⚪ off (waiting) |  |
+| florida-state | Volleyball | ⚪ off (waiting) |  |
 | georgia | Baseball | ⚪ off (waiting) |  |
 | georgia | Basketball | ⚪ off (waiting) |  |
 | georgia | Soccer | ⚪ off (waiting) |  |
 | georgia | Softball | ⚪ off (waiting) |  |
 | georgia | Volleyball | ⚪ off (waiting) |  |
+| georgia-tech | Baseball | ⚪ off (waiting) |  |
+| georgia-tech | Basketball | ⚪ off (waiting) |  |
+| georgia-tech | Football | ⚪ off (waiting) |  |
+| georgia-tech | Softball | ⚪ off (waiting) |  |
+| georgia-tech | Volleyball | ⚪ off (waiting) |  |
 | houston | Baseball | ⚪ off (waiting) |  |
 | houston | Basketball | ⚪ off (waiting) |  |
 | houston | Soccer | ⚪ off (waiting) |  |
@@ -105,6 +131,14 @@
 | kstate | Baseball | ⚪ off (waiting) |  |
 | kstate | Basketball | ⚪ off (waiting) |  |
 | kstate | Volleyball | ⚪ off (waiting) |  |
+| louisville | Baseball | ⚪ off (waiting) |  |
+| louisville | Basketball | ⚪ off (waiting) |  |
+| louisville | Field Hockey | ⚪ off (waiting) |  |
+| louisville | Football | ⚪ off (waiting) |  |
+| louisville | Lacrosse | ⚪ off (waiting) |  |
+| louisville | Soccer | ⚪ off (waiting) |  |
+| louisville | Softball | ⚪ off (waiting) |  |
+| louisville | Volleyball | ⚪ off (waiting) |  |
 | lsu | Baseball | ⚪ off (waiting) |  |
 | lsu | Basketball | ⚪ off (waiting) |  |
 | lsu | Softball | ⚪ off (waiting) |  |
@@ -144,6 +178,12 @@
 | missouri | Football | ⚪ off (waiting) | final W, 27-6 (live phase not observed 2×; waits for the next game) |
 | missouri | Soccer | ⚪ off (waiting) |  |
 | missouri | Softball | ⚪ off (waiting) |  |
+| nc-state | Baseball | ⚪ off (waiting) |  |
+| nc-state | Basketball | ⚪ off (waiting) |  |
+| nc-state | Football | ⚪ off (waiting) |  |
+| nc-state | Soccer | ⚪ off (waiting) |  |
+| nc-state | Softball | ⚪ off (waiting) |  |
+| nc-state | Volleyball | ⚪ off (waiting) |  |
 | nebraska | Baseball | ⚪ off (waiting) |  |
 | nebraska | Basketball | ⚪ off (waiting) |  |
 | nebraska | Football | ⚪ off (waiting) | final L, 17-20 (live phase not observed 2×; waits for the next game) |
@@ -353,6 +393,7 @@
 | utah | Football | ✅ off (passed) | Utah vs Kansas · 2026-10-11T06:38:16.961Z |
 | vanderbilt | Football | ✅ off (passed) | Vanderbilt vs Ole Miss · 2026-10-11T00:49:40.791Z |
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
+| virginia | Volleyball | ✅ off (passed) | Virginia vs Virginia Tech · 2026-10-15T05:12:36.630Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 80/354; on 2; off 272; failing 0.
+Done 81/395; on 0; off 314; failing 0.
