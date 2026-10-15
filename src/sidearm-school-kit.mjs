@@ -100,11 +100,12 @@ export function mergeTbaBracket(games){
 
 // Team places a meet card publishes as text, either team first: "M- 2nd,
 // W- 2nd", "W- 3rd, M - 4th", "M-1st/W-NTS", "M- T-5th (57 points), W-12th
-// (22 points)", "Men: 1st Women: 12th". "Did not score" and "NTS" are no
+// (22 points)", "Men: 1st Women: 12th", "Women: 1st place (21 points) | Men:
+// 2nd place (66 points)" (NC State). "Did not score" and "NTS" are no
 // place.
 export function meetTeamPlaces(text,ordinal=value=>String(value)){
   const places={};
-  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)\s*[-:]?\s*(T-?)?(\d{1,3})(?:st|nd|rd|th)\b(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
+  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)\s*[-:]?\s*(T-?)?(\d{1,3})(?:st|nd|rd|th)\b(?:\s+place)?(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
     const team=/^w/i.test(m[1])?'Women':'Men';
     places[team]??={place:`${m[2]?'T':''}${ordinal(m[3])}`,points:m[4]||null};
   }
@@ -331,4 +332,57 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
     return event;
   }
   return{matches,attach};
+}
+
+// Opponents a page writes as institutions ("University of Kentucky",
+// "Southern Methodist University", "Spalding University (Ky.)", "Stony Brook
+// University") read by the short name, as the stories write them (Ohio
+// State's rule, shared since Louisville and NC State, Oct 15). Miami, Boston
+// and Washington University keep theirs: the short name is another school.
+const INSTITUTION_NAMES={'Texas Christian':'TCU','Southern Methodist':'SMU','Mississippi':'Ole Miss','Texas at El Paso':'UTEP','Massachusetts Institute of Technology':'MIT','North Carolina State':'NC State'};
+export function institutionShortName(name){
+  const text=String(name||'').trim();
+  if(/^(?:Miami|Boston|Washington) University\b/i.test(text))return text;
+  const short=text.replace(/^University of\s+/i,'').replace(/\s+University(?=\s*(?:\([^)]*\))?$)/i,'').trim();
+  return INSTITUTION_NAMES[short]||short||text;
+}
+
+const PLACE_NAMES=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth'];
+// The team's golf place in a final story, or null (Florida State's rule,
+// shared since NC State): the headline ("Pack Win ...", "Women's Golf
+// Finishes Second at ..."), else
+// the summary or the story's first paragraphs ("The Seminoles finished the
+// tournament 16-over, 880, placing fourth."; NC State's NB3 Matchplay story). `team` is a pattern naming the
+// team; a player's finish names no team in its sentence and gives none.
+export function golfStoryPlace(raw,{team,decode=s=>s}){
+  const meta=name=>decode((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=["']([^"']+)`,'i'))||[])[1]||'');
+  const body=decode(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+  const lead=body.slice(Math.max(0,body.search(/\b[A-Z][A-Z .,']{3,}\s+[-–—]\s/)),undefined).slice(0,1500);
+  const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^T-?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
+  const word='(T-?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
+  const title=meta('title').replace(/[‘’]/g,"'");
+  if(new RegExp(`\\b${team}\\s+Wins?\\b`,'i').test(title))return'1st';
+  const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
+  if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
+  for(const sentence of `${meta('description')} ${lead}`.split(/(?<=\.)\s+/)){
+    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|finish(?:ed|ing)?(?:\\s+in)?|tied for)\\s+(?:the\\s+tournament\\s+in\\s+)?${word}\\b`,'i'));
+    if(m&&placeOf(m[2]))return`${/^tied/i.test(m[1])&&!/^T/i.test(m[2])?'T':''}${placeOf(m[2])}`;
+  }
+  return null;
+}
+// A golf final whose card publishes no place takes it from its final story;
+// a story dated before the last round is not final (the tournament then has
+// no published result and is not listed: isGolfWithoutStory).
+export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,headers}){
+  const isGolfAwaitingPlace=event=>converted(event)&&event.sport==='Golf'&&event.status==='Final'&&Boolean(event.recap_url)&&event.headline==='Completed';
+  async function attachGolfPlace(event){
+    if(!isGolfAwaitingPlace(event))return event;
+    const day=new URL(event.recap_url,`https://${host}`).pathname.match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
+    if(day&&`${day[1]}-${day[2].padStart(2,'0')}-${day[3].padStart(2,'0')}`<String(event.end_time||event.start_time).slice(0,10)){delete event.recap_url;delete event.recap_title;return event;}
+    let raw=null;try{const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});raw=response.ok?await response.text():null;}catch{}
+    const place=raw&&golfStoryPlace(raw,{team,decode:decodeHtml});
+    if(place){event.headline=place;event.results=[{label:'Result',value:place}];event.result_count=1;}
+    return event;
+  }
+  return{isGolfAwaitingPlace,attachGolfPlace,isGolfWithoutStory:event=>converted(event)&&event.sport==='Golf'&&event.status==='Final'&&!event.recap_url&&event.headline==='Completed'};
 }

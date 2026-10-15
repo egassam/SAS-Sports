@@ -65,9 +65,11 @@ import {clemsonSchool,createClemsonHandlers} from './schools/clemson.mjs';
 import {dukeSchool,createDukeHandlers} from './schools/duke.mjs';
 import {floridaStateSchool,createFloridaStateHandlers} from './schools/florida-state.mjs';
 import {georgiaTechSchool,createGeorgiaTechHandlers} from './schools/georgia-tech.mjs';
+import {louisvilleSchool,createLouisvilleHandlers} from './schools/louisville.mjs';
+import {ncStateSchool,createNcStateHandlers} from './schools/nc-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.89.1-florida-state-georgia-tech';
+const VERSION='4.90.0-louisville-nc-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -444,6 +446,18 @@ const SCHOOL_MODULES=[
     // A past golf or tennis tournament still without a story publishes no
     // place: it is not listed.
     feed:async(events,sport)=>{await Promise.all(events.filter(georgiaTechHandlers.isFinalWithoutStory).map(event=>georgiaTechHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(georgiaTechHandlers.isGeorgiaTechGolf).map(event=>georgiaTechHandlers.attachGolfPlace(event)));return events.filter(event=>!georgiaTechHandlers.isTournamentWithoutStory(event));}}
+  ,{school:louisvilleSchool,parseSchedule:(...args)=>louisvilleHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>louisvilleHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>louisvilleHandlers.matchesRecap(...args),crossCountry:{matches:event=>louisvilleHandlers.isCrossCountry(event),attach:event=>louisvilleHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(louisvilleHandlers.isFinalWithoutStory(event))await louisvilleHandlers.attachArchiveStory(event);},
+    results:[{matches:event=>louisvilleHandlers.isGolfAwaitingPlace(event),attach:event=>louisvilleHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(louisvilleHandlers.isFinalWithoutStory).map(event=>louisvilleHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(louisvilleHandlers.isGolfAwaitingPlace).map(event=>louisvilleHandlers.attachGolfPlace(event)));return events.filter(event=>!louisvilleHandlers.isTennisWithoutStory(event)&&!louisvilleHandlers.isGolfWithoutStory(event));}}
+  ,{school:ncStateSchool,parseSchedule:(...args)=>ncStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ncStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ncStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>ncStateHandlers.isCrossCountry(event),attach:event=>ncStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(ncStateHandlers.isFinalWithoutStory(event))await ncStateHandlers.attachArchiveStory(event);},
+    results:[{matches:event=>ncStateHandlers.isGolfAwaitingPlace(event),attach:event=>ncStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(ncStateHandlers.isFinalWithoutStory).map(event=>ncStateHandlers.attachArchiveStory(event)));if(sport==='Golf')await Promise.all(events.filter(ncStateHandlers.isGolfAwaitingPlace).map(event=>ncStateHandlers.attachGolfPlace(event)));return events.filter(event=>!ncStateHandlers.isTennisWithoutStory(event)&&!ncStateHandlers.isGolfWithoutStory(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -578,6 +592,8 @@ const clemsonHandlers=createClemsonHandlers({makeEvent,visibleText,absoluteUrl,r
 const dukeHandlers=createDukeHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const floridaStateHandlers=createFloridaStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const georgiaTechHandlers=createGeorgiaTechHandlers({makeEvent,visibleText,absoluteUrl,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const louisvilleHandlers=createLouisvilleHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const ncStateHandlers=createNcStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

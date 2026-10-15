@@ -72,10 +72,11 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
       try{if(worker.handlers?.isFinalWithoutStory?.(e))await worker.handlers.attachArchiveStory(e);}catch{}
       try{await worker.attachOfficialMeetResults(e);}catch{}
     }
-    // The module's feed hook, as the Worker runs it: an event it leaves out
+    // The module's feed hook, as the Worker runs it (with the sport: golf
+    // places from final stories): an event it leaves out
     // (a past tennis tournament without a story) is not listed and not gated.
     let listed=new Set(events);
-    try{const feed=worker.schoolModule(id)?.feed;if(feed)listed=new Set(await feed([...events]));}catch{}
+    try{const feed=worker.schoolModule(id)?.feed;if(feed)listed=new Set(await feed([...events],sport));}catch{}
     const unlisted=e=>!listed.has(e);
     if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
