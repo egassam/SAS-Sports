@@ -583,7 +583,10 @@
    "state": "off"
   },
   "mississippi-state|Volleyball": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-10-15T00:38:13.307Z",
+   "last_detail": "final L, 0-3 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "tennessee|Baseball": {
    "state": "off"
@@ -1525,7 +1528,23 @@
    "state": "off"
   },
   "virginia|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T00:45:00.559Z",
+   "last_detail": "live 1-0 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "virginia|Volleyball||2026-10-14|1",
+    "title": "Virginia vs Virginia Tech",
+    "started_seen": "2026-10-15T00:36:09.367Z",
+    "live_passes": [
+     "2026-10-15T00:36:09.367Z",
+     "2026-10-15T00:38:13.231Z",
+     "2026-10-15T00:39:54.812Z",
+     "2026-10-15T00:41:16.605Z",
+     "2026-10-15T00:43:18.881Z",
+     "2026-10-15T00:45:00.559Z"
+    ],
+    "final_ok": false
+   }
   },
   "boston-college|Baseball": {
    "state": "off"
@@ -1540,7 +1559,16 @@
    "state": "off"
   },
   "boston-college|Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-15T00:45:20.838Z",
+   "last_detail": "ESPN shows Boston College vs Merrimack live (End of 2nd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "boston-college|Hockey||2026-10-14|1",
+    "title": "Boston College vs Merrimack",
+    "started_seen": "2026-10-15T00:36:52.142Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "boston-college|Lacrosse": {
    "state": "off"
@@ -1570,7 +1598,10 @@
    "state": "off"
   },
   "california|Soccer": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-10-15T00:37:55.296Z",
+   "last_detail": "final W, 4-0 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "california|Softball": {
    "state": "off"
@@ -1583,6 +1614,6 @@
   }
  },
  "version": "4.87.1-boston-college-california",
- "updated_at": "2026-10-14T22:14:33.101Z",
+ "updated_at": "2026-10-15T00:45:20.840Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

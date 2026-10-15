@@ -1,5 +1,7 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| boston-college | Hockey | 🔴 on | ESPN shows Boston College vs Merrimack live (End of 2nd) but the app has no live card (still in upcoming) |
+| virginia | Volleyball | 🔴 on | live 1-0 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Soccer | ⚪ off (waiting) |  |
@@ -34,7 +36,6 @@
 | boston-college | Basketball | ⚪ off (waiting) |  |
 | boston-college | Field Hockey | ⚪ off (waiting) |  |
 | boston-college | Football | ⚪ off (waiting) |  |
-| boston-college | Hockey | ⚪ off (waiting) |  |
 | boston-college | Lacrosse | ⚪ off (waiting) |  |
 | boston-college | Soccer | ⚪ off (waiting) |  |
 | boston-college | Softball | ⚪ off (waiting) |  |
@@ -48,7 +49,7 @@
 | california | Field Hockey | ⚪ off (waiting) |  |
 | california | Football | ⚪ off (waiting) |  |
 | california | Lacrosse | ⚪ off (waiting) |  |
-| california | Soccer | ⚪ off (waiting) |  |
+| california | Soccer | ⚪ off (waiting) | final W, 4-0 (live phase not observed 2×; waits for the next game) |
 | california | Softball | ⚪ off (waiting) |  |
 | california | Volleyball | ⚪ off (waiting) |  |
 | california | Water Polo | ⚪ off (waiting) |  |
@@ -137,7 +138,7 @@
 | mississippi-state | Basketball | ⚪ off (waiting) |  |
 | mississippi-state | Football | ⚪ off (waiting) |  |
 | mississippi-state | Softball | ⚪ off (waiting) |  |
-| mississippi-state | Volleyball | ⚪ off (waiting) |  |
+| mississippi-state | Volleyball | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | missouri | Baseball | ⚪ off (waiting) |  |
 | missouri | Basketball | ⚪ off (waiting) |  |
 | missouri | Football | ⚪ off (waiting) | final W, 27-6 (live phase not observed 2×; waits for the next game) |
@@ -257,7 +258,6 @@
 | virginia | Lacrosse | ⚪ off (waiting) |  |
 | virginia | Soccer | ⚪ off (waiting) |  |
 | virginia | Softball | ⚪ off (waiting) |  |
-| virginia | Volleyball | ⚪ off (waiting) |  |
 | washington | Baseball | ⚪ off (waiting) |  |
 | washington | Basketball | ⚪ off (waiting) |  |
 | washington | Football | ⚪ off (waiting) |  |
@@ -355,4 +355,4 @@
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 80/354; on 0; off 274; failing 0.
+Done 80/354; on 2; off 272; failing 0.
