@@ -1,6 +1,11 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| penn-state | Hockey | 🔴 on | ESPN shows Penn State vs Lindenwood live (8:09 - 1st) but the app has no live card (still in upcoming) |
+| iowa | Soccer | 🔴 on | live 2-0 · 24' · official_schedule+live_scoreboard |
+| maryland | Field Hockey | 🔴 on | live 4-0 · 54:00 - 4th · official_schedule+live_scoreboard |
+| michigan-state | Field Hockey | 🔴 on | live 0-4 · 54:00 - 4th · official_schedule+live_scoreboard |
+| penn-state | Field Hockey | 🔴 on | live 1-0 · 17:55 - 2nd · official_schedule+live_scoreboard |
+| stanford | Field Hockey | 🔴 on | live 1-0 · 54:00 - 4th · official_schedule+live_scoreboard |
+| west-virginia | Soccer | 🔴 on | live 0-1 · 82' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -110,7 +115,6 @@
 | indiana | Water Polo | ⚪ off (waiting) |  |
 | iowa | Baseball | ⚪ off (waiting) |  |
 | iowa | Basketball | ⚪ off (waiting) |  |
-| iowa | Soccer | ⚪ off (waiting) |  |
 | iowa | Softball | ⚪ off (waiting) |  |
 | iowa-state | Basketball | ⚪ off (waiting) |  |
 | iowa-state | Football | ⚪ off (waiting) |  |
@@ -138,7 +142,6 @@
 | lsu | Softball | ⚪ off (waiting) |  |
 | maryland | Baseball | ⚪ off (waiting) |  |
 | maryland | Basketball | ⚪ off (waiting) |  |
-| maryland | Field Hockey | ⚪ off (waiting) |  |
 | maryland | Lacrosse | ⚪ off (waiting) |  |
 | maryland | Softball | ⚪ off (waiting) |  |
 | miami | Baseball | ⚪ off (waiting) |  |
@@ -155,7 +158,6 @@
 | michigan | Water Polo | ⚪ off (waiting) |  |
 | michigan-state | Baseball | ⚪ off (waiting) |  |
 | michigan-state | Basketball | ⚪ off (waiting) |  |
-| michigan-state | Field Hockey | ⚪ off (waiting) |  |
 | michigan-state | Softball | ⚪ off (waiting) |  |
 | minnesota | Baseball | ⚪ off (waiting) |  |
 | minnesota | Basketball | ⚪ off (waiting) |  |
@@ -224,7 +226,7 @@
 | oregon | Softball | ⚪ off (waiting) |  |
 | penn-state | Baseball | ⚪ off (waiting) |  |
 | penn-state | Basketball | ⚪ off (waiting) |  |
-| penn-state | Field Hockey | ⚪ off (waiting) |  |
+| penn-state | Hockey | ⚪ off (waiting) | final W, 5-4 (live phase not observed 2×; waits for the next game) |
 | penn-state | Lacrosse | ⚪ off (waiting) |  |
 | penn-state | Soccer | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
@@ -260,7 +262,6 @@
 | south-carolina | Volleyball | ⚪ off (waiting) |  |
 | stanford | Baseball | ⚪ off (waiting) |  |
 | stanford | Basketball | ⚪ off (waiting) |  |
-| stanford | Field Hockey | ⚪ off (waiting) |  |
 | stanford | Football | ⚪ off (waiting) |  |
 | stanford | Lacrosse | ⚪ off (waiting) |  |
 | stanford | Soccer | ⚪ off (waiting) |  |
@@ -347,7 +348,6 @@
 | west-virginia | Baseball | ⚪ off (waiting) |  |
 | west-virginia | Basketball | ⚪ off (waiting) |  |
 | west-virginia | Football | ⚪ off (waiting) | final L, 31-52 (live phase not observed 2×; waits for the next game) |
-| west-virginia | Soccer | ⚪ off (waiting) |  |
 | wisconsin | Basketball | ⚪ off (waiting) |  |
 | wisconsin | Football | ⚪ off (waiting) |  |
 | wisconsin | Hockey | ⚪ off (waiting) |  |
@@ -453,4 +453,4 @@
 | wake-forest | Soccer | ✅ off (passed) | Women's · Wake Forest vs Florida St · 2026-10-16T00:29:05.736Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 98/452; on 1; off 353; failing 0.
+Done 98/452; on 6; off 348; failing 0.
