@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,bundledStore,d1Store,catalogMenu,catalogEntries} from '../src/catalog.mjs';
+import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from '../src/catalog.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
 const page=read('../public/index.html'),worker=read('../src/index.js'),wrangler=read('../wrangler.jsonc');
@@ -48,6 +48,14 @@ const fewer=cards.filter(c=>c.id!=='kstate'),fewerRevision=await catalogRevision
 assert.equal(await syncCatalog(db,fewer,fewerRevision),'synced');
 assert.equal(db.sqlite.prepare(`SELECT COUNT(*) AS n FROM catalog_entries WHERE id='kstate'`).get().n,0);
 await syncCatalog(db,cards,revision);
+// D1 is used only with this revision and all of its rows.
+assert.equal(await storeMatches(db,revision,cards.length),true);
+assert.equal(await storeMatches(db,fewerRevision,fewer.length),false);
+db.sqlite.prepare(`DELETE FROM catalog_entries WHERE id='kstate'`).run();
+assert.equal(await storeMatches(db,revision,cards.length),false,'a short table is not used');
+await syncCatalog(db,cards,'rebuild');await syncCatalog(db,cards,revision);
+assert.equal(await storeMatches(db,revision,cards.length),true);
+assert.equal(await storeMatches(fakeD1(),revision,cards.length),false,'no tables');
 
 // The menus the page drew from the whole catalog before the move (its LEVELS
 // rules), for every level, group and city: D1 and the bundled copy agree.
@@ -108,7 +116,8 @@ for(const store of stores){
 assert.ok(wrangler.includes('"binding": "CATALOG_DB", "database_name": "sas-sports-catalog"'));
 assert.ok(wrangler.includes('"/catalog/*"'),'catalog routes reach the Worker');
 assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);"),'only production writes the catalog');
-assert.ok(worker.includes('if(await storedRevision(env.CATALOG_DB)===bundle.revision)store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision');
+assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision, with every row');
+assert.ok(worker.includes("url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store"),'?source=bundled compares the copies');
 assert.ok(worker.includes("try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}"));
 assert.ok(worker.includes("if(url.pathname==='/catalog/menu')return catalogAnswer("));
 assert.ok(worker.includes("if(url.pathname==='/catalog/entries')return catalogAnswer("));

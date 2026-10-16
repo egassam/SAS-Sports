@@ -1,7 +1,7 @@
 import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
-import {catalogCards,catalogRevision,syncCatalog,storedRevision,bundledStore,d1Store,catalogMenu,catalogEntries} from './catalog.mjs';
+import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
@@ -79,7 +79,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.100.0-catalog-d1';
+const VERSION='4.100.1-catalog-d1';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -601,13 +601,15 @@ async function catalogStore(env,url,now=Date.now()){
   let store=bundle.store;
   try{
     if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);
-    if(await storedRevision(env.CATALOG_DB)===bundle.revision)store=d1Store(env.CATALOG_DB);
+    if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);
   }catch{}
   catalogChoice={at:now,value:{store,revision:bundle.revision}};
   return catalogChoice.value;
 }
+// ?source=bundled answers from the bundled copy (to compare it with D1).
 async function catalogAnswer(env,url,read){
-  const {store,revision}=await catalogStore(env,url);
+  const chosen=await catalogStore(env,url),revision=chosen.revision;
+  const store=url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store;
   let body,source=store.kind;
   try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}
   const response=json(body);response.headers.set('x-sas-catalog',`${source} ${revision}`);

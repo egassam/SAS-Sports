@@ -72,6 +72,13 @@ export async function syncCatalog(db,cards,revision,now=Date.now()){
 export async function storedRevision(db){
   try{return(await db.prepare(`SELECT value FROM catalog_meta WHERE key='revision'`).first())?.value||null}catch{return null}
 }
+// D1 is read only when it holds this revision and every row of it.
+export async function storeMatches(db,revision,count){
+  try{
+    const [meta,rows]=await Promise.all([storedRevision(db),db.prepare(`SELECT COUNT(*) AS n FROM catalog_entries`).first()]);
+    return meta===revision&&Number(rows?.n)===count;
+  }catch{return false}
+}
 
 // Two stores with one interface: D1, and the bundled cards (previews with
 // catalog changes, a failed read, tests).

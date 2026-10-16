@@ -4,12 +4,13 @@ User, October 16, 2026: "The plan is to expand it for all middle schools, high s
 
 That is about 40,000–50,000 entries. The page used to carry every entry (`BOOTSTRAP_SCHOOLS` in `public/index.html`) and download them all again from `/schools`. That does not scale, so the catalog now lives in Cloudflare D1, and the page reads its menus one step at a time.
 
-## Now (4.100.0, step 1 of the move)
+## Now (4.100.1, step 1 of the move)
 
 - **Store:** D1 database `sas-sports-catalog` (binding `CATALOG_DB`, id `49c4cfa6-ca6a-4999-93c8-1233cd084012`, created Oct 16 in ENAM). The tables are created by the Worker (`CATALOG_SCHEMA` in `src/catalog.mjs`):
   - `catalog_entries(id, level, grp, mid, sort, card)`, indexed on `(level, grp, mid, sort)`. `grp` is the first box: state, conference or sport. `mid` is the second box: city or league. `card` is what the page needs: name, short name, level, state, city, conference, league, sport, class, division, time zone and sponsored sports. It holds no source settings.
   - `catalog_meta`: `revision`, `count`, `synced_at`.
-- **Authoring:** `src/schools.json` and `src/sponsored-sports.json` are still the copy reviewed in pull requests. The revision is a hash of the cards. On its first catalog read each minute, **production** (host `sas-sports.lovetogivepain.workers.dev`) replaces the D1 rows when the revision changed, in one transaction. **Previews never write.** A preview reads D1 when the database holds its own revision; otherwise (a branch with catalog changes) it answers from the bundled cards. A failed D1 read also answers from the bundled cards. The response header `x-sas-catalog: <d1|bundled> <revision>` says which was used.
+- **Authoring:** `src/schools.json` and `src/sponsored-sports.json` are still the copy reviewed in pull requests. The revision is a hash of the cards. On its first catalog read each minute, **production** (host `sas-sports.lovetogivepain.workers.dev`) replaces the D1 rows when the revision changed, in one transaction. **Previews never write.** A preview reads D1 when the database holds its own revision and every one of its rows (`storeMatches`); otherwise (a branch with catalog changes) it answers from the bundled cards. A failed D1 read also answers from the bundled cards. The response header `x-sas-catalog: <d1|bundled> <revision>` says which was used.
+- **Check:** `node scripts/verify-catalog.mjs --prod --expect=d1` (or `--branch=<b> --expect=bundled`) reads every menu step as served and with `?source=bundled`, and compares the two.
 - **API:**
   - `GET /catalog/menu?level=&group=&middle=` returns every level with its count, the level's groups, the group's cities or leagues, and the matching entries in catalog order. A group or city the level does not have reads as "All".
   - `GET /catalog/entries?ids=a,b` returns up to 50 entries by id.
