@@ -2703,3 +2703,21 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - **Production (`4.104.0`):** the same counts as the preview, and `verify:prod` Texas XC passed.
 - **Next:** schools whose NIL page (not the homepage) links a marketplace, and more profile-card sports at those schools.
 
+## October 16, 2026 — NIL marketplaces for every school that links one (PR #352)
+
+- **User:** "Fix all the schools from the nil."
+- **Survey:** for the 38 schools that still had profile-card sports (161 school-sports), I read each official homepage through the private source route and followed up to three links mentioning NIL. Opendorse was linked from the NIL pages of Mississippi State, Vanderbilt and Boston College. INFLCR Exchange (Teamworks) was linked by Utah, Indiana, USC, Ohio State, Purdue, UCLA, Duke, Michigan, Minnesota, Rutgers and Miami. The other 24 link no marketplace (none, Teamworks app links, or nil.store merch): Oklahoma State, BYU, Colorado, Iowa State, Alabama, Georgia, Ole Miss, Tennessee, Arkansas, Kentucky, South Carolina, Michigan State, Northwestern, Penn State, California, Georgia Tech, NC State, North Carolina, Notre Dame, Pitt, SMU, Stanford, Wake Forest, Virginia Tech.
+- **INFLCR reader (`src/inflcr.mjs`):** the exchange's public endpoint `api.inflcr.com/public/schools/<school>/athletes?name=<First Last>` (robots.txt disallows nothing). `data` is an array or an object keyed by position. Instagram is `social_profiles[]` with `social_provider===2`. `inflcrTeamSports` maps team names (MBB/WBB, T&F, Track/Field & XC, field versus ice hockey, and indoor versus beach volleyball via a lookbehind, which was a bug found in testing). Cross-country runners may be on the track team. Rules: on the current official roster, same name, a team of the same sport, and a valid unblocked handle.
+- **Shared code:** `src/opendorse.mjs` exports `plain`, `sameName` and `instagramFrom`, and one lookup loop in `featuredAthletes` serves both marketplaces (`instagram_source` `opendorse` or `inflcr`). Rutgers track took 13–15 s with batches of 3 and 22.5 s uncached with batches of 6, so lookups now run six at a time and only within the request's first 10 s (`NIL_LOOKUP_MS=10000`, commit `0c05c16`).
+- **Certification:** `official_nil_marketplace` was recorded for the schools where a marketplace supplied athletes. The profile-card fallback lists are unchanged. Module docs have notes.
+- **Tests:** `tests/inflcr-module.mjs` uses real Michigan exchange answers (James Kavouklis, Riley Flemington, Sammi Woods). `tests/opendorse-module.mjs` is updated. `test:release` passed on `0c05c16`, and CI was green.
+- **Spot checks:** Abbrie Covarrubias is on USC's official baseball roster and on USC Baseball in the exchange. Aaron Grimm is on "Ohio State Mens VB".
+- **Preview (`4.105.2`):**
+  - `validate-schools --athletes-only` passed 193/193 at the 14 schools.
+  - 87 marketplace athletes in 46 school-sports, with 153/193 school-sports at 3/3.
+  - `verify:preview` Rutgers Track & Field and Volleyball passed 36/36, with XC 18/20 and 26/21.
+- **Production:** merged `00bf51f`.
+  - `/api/status` is `4.105.2-nil-marketplaces`.
+  - `verify:prod` Rutgers T&F and Volleyball passed (XC 18/20 and 26/21), and `verify-catalog --prod --expect=d1` passed.
+  - Marketplace athletes: 38 on cold reads, then 47 and 52 on cached reads, then 73 and 75 after forced refreshes (151/193 at 3/3). The counts climb as source caches warm, because the first reads stop at 10 s.
+- **Next:** the user's choice. The remaining profile-card sports are at schools with no linked marketplace, or have no handle in the marketplace.
