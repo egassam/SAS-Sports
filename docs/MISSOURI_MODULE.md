@@ -47,3 +47,5 @@ Certification lists all 13 sports (minimum 3). On October 8, every roster and pr
 ## Athletes from the NIL marketplace (October 16, 2026)
 
 Cross Country and Track & Field show three athletes with Instagram from the official NIL marketplace (opendorse.com/missouri-tigers, linked from mutigers.com); Tennis one. The profile-card fallback stays listed. Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
+
+**Production `4.105.2`, October 16 (after forced refreshes):** the marketplace supplies athletes in Cross Country, Tennis and Track & Field; Cross Country and Track & Field now show three with Instagram. Still short of three (profile cards fill the rest): Tennis (1 of 3). Counts vary from day to day with the roster athletes tried, so the profile-card fallback list is unchanged.

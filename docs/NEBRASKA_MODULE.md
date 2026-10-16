@@ -51,3 +51,5 @@ Certification lists all 16 sports (minimum 3). `scripts/athlete-evidence.mjs` (O
 ## Athletes from the NIL marketplace (October 16, 2026)
 
 Nebraska's marketplace (opendorse.com/nebraska-huskers) is configured; every sport already had three Instagram athletes (Oct 16). Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
+
+**Production `4.105.2`, October 16 (after forced refreshes):** the marketplace supplied no athletes in this read. Every sport shows three athletes with Instagram. Counts vary from day to day with the roster athletes tried, so the profile-card fallback list is unchanged.

@@ -2721,3 +2721,15 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
   - `verify:prod` Rutgers T&F and Volleyball passed (XC 18/20 and 26/21), and `verify-catalog --prod --expect=d1` passed.
   - Marketplace athletes: 38 on cold reads, then 47 and 52 on cached reads, then 73 and 75 after forced refreshes (151/193 at 3/3). The counts climb as source caches warm, because the first reads stop at 10 s.
 - **Next:** the user's choice. The remaining profile-card sports are at schools with no linked marketplace, or have no handle in the marketplace.
+
+## October 16, 2026 — Docs cleanup after the NIL marketplaces
+
+- **User:** "Clean up the docs."
+- **Measured:** on production `4.105.2`, each certified athlete sport at the 21 marketplace schools was read twice with `refresh=1`, keeping the better count.
+  - Every sport shows three athletes with Instagram at Utah, Mississippi State, Oklahoma, Maryland, Nebraska, Ohio State and Wisconsin.
+  - TCU, Missouri, Indiana, Miami and Duke are each short in one sport.
+  - Most of the remaining short sports are at Rutgers, USC, Michigan and Purdue.
+- **Changed:**
+  - The school table's profile-card notes now list the sports still short, with counts. They replace the pre-marketplace lists such as "9 sports use profile cards".
+  - Each of the 21 module docs has a production snapshot paragraph in its "Athletes from the NIL marketplace" section.
+- **Not changed:** `athlete_profile_fallback_sports` in `tests/certified-schools.json`. Counts vary by day: Texas Rowing and Track & Field read 0 in this pass after reading 3 on October 16, and a cold read stops at 10 s. Removing those sports would make validation fail on low days.
