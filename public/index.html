@@ -69,6 +69,25 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .live-stats td,.live-stats th{padding:2px 4px;text-align:right}
 .live-stats td:first-child,.live-stats th:first-child{text-align:left;color:var(--muted);font-weight:600}
 .live-stats th{color:var(--muted);font-size:10px;text-transform:uppercase}
+.box-section{margin-top:14px}
+.box-line{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+.box-line th,.box-line td{padding:7px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
+.box-line th{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:800}
+.box-line th[scope=row]{text-align:left;color:#eef5fc;font-size:14px;letter-spacing:0}
+.box-line td.total{font-weight:900;font-size:16px}
+.box-line tr.won th[scope=row],.box-line tr.won td.total{color:#fff}
+.box-stats{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+.box-stats th,.box-stats td{padding:7px 6px;border-bottom:1px solid rgba(255,255,255,.07);text-align:right;font-weight:800}
+.box-stats th{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.box-stats td:first-child,.box-stats th:first-child{text-align:left;color:var(--muted);font-weight:600}
+.play-head{margin:12px 0 4px;color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.play-row{display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:start;padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.03);margin-bottom:6px}
+.play-row.ours{background:rgba(255,255,255,.07)}
+.play-team{grid-row:span 2;font-size:11px;font-weight:900;padding:3px 7px;border-radius:7px;background:rgba(255,255,255,.1);color:#eef5fc;align-self:start}
+.play-row.ours .play-team{background:var(--team-primary,var(--accent));color:var(--theme-on-accent,#fff)}
+.play-text{font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.play-score{font-weight:900;font-variant-numeric:tabular-nums;font-size:14px}
+.play-clock{grid-column:2 / span 2;color:var(--muted);font-size:12px}
 .live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
 .live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
 
@@ -940,10 +959,25 @@ async function openEvent(id){
   const recapUrl=e.recap_url||(/recap/i.test(e.source?.name||'')?e.source?.url:null);
   const recapButton=recapUrl?`<a class="recap-button" href="${esc(recapUrl)}" target="_blank" rel="noopener">${esc(e.recap_label||'View Full Official Recap')}</a>`:'';
   const highlights=(e.highlights||[]).length?`<div class="highlights"><h4>Event Highlights</h4><ul>${e.highlights.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>${recapButton}</div>`:'';
-  const gameStats=(e.game_stats||[]).length?`<div class="game-stats">${e.game_stats.map(x=>`<div class="game-stat"><span>${esc(x.label)}</span><strong>${esc(x.value)}</strong></div>`).join('')}</div>`:'';
+  const box=boxScoreHtml(e);
+  const gameStats=e.box_score?'':(e.game_stats||[]).length?`<div class="game-stats">${e.game_stats.map(x=>`<div class="game-stat"><span>${esc(x.label)}</span><strong>${esc(x.value)}</strong></div>`).join('')}</div>`:'';
   const highlightStatus=e.highlight_status?`<div class="highlight-status">${esc(e.highlight_status)}</div>`:'';
   const source=e.source?.url?`<p class="small muted">Source: ${recapUrl?esc(e.source.name||'Official athletics source'):`<a class="official-link" href="${esc(e.source.url)}" target="_blank" rel="noopener">${esc(e.source.name||'Official athletics source')}</a>`} · verified ${esc(e.last_verified_at||e.source.updated_at||'now')}</p>`:'';
-  $('#modalBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${highlights}${!highlights?recapButton:''}${gameStats}${highlightStatus}${source}`;
+  $('#modalBody').innerHTML=`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}${highlightStatus}${source}`;
+}
+// A football final's expanded view (user, October 16: "can we clean up the
+// card please"): the score by quarter, team stats, and the scoring plays by
+// quarter with the team, the play and the running score.
+function boxScoreHtml(e){
+  const b=e.box_score;if(!b)return{line:'',stats:'',plays:''};
+  const us=b.teams?.ours||'',them=b.teams?.theirs||'',won=k=>Number(b.totals?.[k])>Number(b.totals?.[k==='ours'?'theirs':'ours']);
+  const row=(k,name)=>`<tr class="${won(k)?'won':''}"><th scope="row">${esc(name)}</th>${(b.line||[]).map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(b.totals?.[k]??'')}</td></tr>`;
+  const line=(b.line||[]).length?`<div class="box-section"><div class="section-label">Score by Quarter</div><table class="box-line"><tr><th></th>${b.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>T</th></tr>${row('ours',us)}${row('theirs',them)}</table></div>`:'';
+  const stats=(b.stats||[]).length?`<div class="box-section"><div class="section-label">Team Stats</div><table class="box-stats"><tr><th></th><th>${esc(us)}</th><th>${esc(them)}</th></tr>${b.stats.map(r=>`<tr><td>${esc(r.label)}</td><td>${esc(r.ours)}</td><td>${esc(r.theirs)}</td></tr>`).join('')}</table></div>`:'';
+  const names={Q1:'1st Quarter',Q2:'2nd Quarter',Q3:'3rd Quarter',Q4:'4th Quarter',OT:'Overtime'};
+  let last='';
+  const plays=(b.scoring||[]).map(p=>{const head=p.period!==last?`<div class="play-head">${esc(names[p.period]||p.period)}</div>`:'';last=p.period;return head+`<div class="play-row ${p.ours?'ours':''}"><span class="play-team">${esc(p.team)}</span><span class="play-text">${esc(p.text)}</span><span class="play-score">${esc(p.score||'')}</span><span class="play-clock">${esc(p.clock)}</span></div>`}).join('');
+  return{line,stats,plays:plays?`<div class="box-section"><div class="section-label">Scoring Plays</div>${plays}</div>`:''};
 }
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));

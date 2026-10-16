@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.98.0-nfl-live-cards';
+const VERSION='4.98.1-nfl-box-score';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1680,8 +1680,10 @@ async function fetchPro(school,sport,now,aiTargetId=null){
       const details=summary&&espnGameHighlights(target,summary,config);
       if(details){
         target.highlights=details.lines;target.highlights_verified=true;
-        if(details.stats.length)target.game_stats=details.stats;
-        if(details.scoring.length)target.results=[...target.results,...details.scoring.map(value=>({label:'Scoring',value}))];
+        // The expanded view lays these out as tables (user, October 16: "can we
+        // clean up the card please"): score by quarter, team stats and the
+        // scoring plays by quarter; the results keep the short rows only.
+        target.box_score=details.box_score;
         target.result_count=target.results.length;
         if(details.recap){target.recap_url=details.recap;target.recap_label='View ESPN recap';}
         target.highlight_status='Line score, team stats and leaders from ESPN\'s game summary.';
@@ -2801,7 +2803,8 @@ const HIGHLIGHT_STORE_TTL=30*24*60*60;
 // A school module may carry a highlight revision: raising it retires that
 // school's stored finals after a change to how they are written (Baylor's
 // cross country highlights went from two lines to four).
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}`;
+// Pro finals saved before the box-score layout (4.98.1) are rebuilt once.
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box':''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

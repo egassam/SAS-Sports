@@ -128,6 +128,38 @@ assert.deepEqual(details.stats.slice(0,5).map(s=>`${s.label}: ${s.value}`),['Q1:
 assert.equal(details.scoring.length,7);
 assert.equal(details.scoring[5],'Q4 14:05 · PIT: T.J. Watt 35 Yd Interception Return (Chris Boswell Kick)');
 assert.equal(details.recap,'https://www.espn.com/nfl/recap?gameId=401872658');
+// The expanded view's own layout (user, October 16: "can we clean up the
+// card please": scoring plays were squeezed into label/value rows and
+// overtime read "Q5"). Score by quarter, team stats, scoring plays by quarter
+// with the running score from the team's side.
+const box=details.box_score;
+assert.deepEqual([box.teams,box.totals],[{ours:'PIT',theirs:'ATL'},{ours:'20',theirs:'13'}]);
+assert.deepEqual(box.line.map(p=>`${p.label} ${p.ours}-${p.theirs}`),['Q1 3-7','Q2 10-0','Q3 0-3','Q4 7-3']);
+assert.equal(box.stats.length,11);assert.deepEqual(box.stats[0],{label:'Total yards',ours:'264',theirs:'238'});
+assert.deepEqual(box.scoring[1],{period:'Q1',clock:'1:13',team:'ATL',ours:false,text:'Bijan Robinson 23 Yd pass from Cooper Rush (Nick Folk Kick)',score:'3-7'});
+assert.deepEqual(box.scoring.at(-1),{period:'Q4',clock:'10:35',team:'ATL',ours:false,text:'Nick Folk 43 Yd Field Goal',score:'20-13'});
+{
+  const ot=JSON.parse(JSON.stringify(fixture('sum')));ot.scoringPlays.push({...ot.scoringPlays[0],period:{number:5},clock:{displayValue:'1:55'}});
+  const withOt=espnGameHighlights(pit[0],ot,PRO_TEAMS['pittsburgh-steelers']);
+  assert.equal(withOt.box_score.scoring.at(-1).period,'OT');assert.match(withOt.scoring.at(-1),/^OT 1:55 · PIT:/);
+}
+// The Worker gives the final its box score and keeps the scoring plays out
+// of the result rows.
+assert.ok(worker.includes('target.box_score=details.box_score;'));
+assert.ok(!worker.includes("details.scoring.map(value=>({label:'Scoring',value}))"));
+assert.ok(worker.includes("${proTeam(school)?'|box':''}"),'saved pro expanded views are rebuilt once');
+{
+  const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
+  const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
+  const boxScoreHtml=Function(`${line('const esc=')}\n${fn('boxScoreHtml')};return boxScoreHtml;`)();
+  const html=boxScoreHtml({box_score:box});
+  assert.match(html.line,/<th>Q1<\/th><th>Q2<\/th><th>Q3<\/th><th>Q4<\/th><th>T<\/th><\/tr><tr class="won"><th scope="row">PIT<\/th><td>3<\/td><td>10<\/td><td>0<\/td><td>7<\/td><td class="total">20<\/td>/);
+  assert.match(html.stats,/<td>Time of possession<\/td><td>28:53<\/td><td>31:07<\/td>/);
+  assert.match(html.plays,/<div class="play-head">1st Quarter<\/div><div class="play-row ours"><span class="play-team">PIT<\/span><span class="play-text">Chris Boswell 43 Yd Field Goal<\/span><span class="play-score">3-0<\/span><span class="play-clock">8:30<\/span><\/div>/);
+  assert.equal((html.plays.match(/play-head/g)||[]).length,4);
+  assert.deepEqual(boxScoreHtml({}),{line:'',stats:'',plays:''});
+  assert.ok(page.includes("${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}"));
+}
 
 // NASCAR: the 2026 Cup Series, 40 races (36 run, 4 to go).
 const series=schools.find(s=>s.id==='nascar-cup-series');

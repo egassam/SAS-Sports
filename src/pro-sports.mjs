@@ -183,9 +183,21 @@ export function espnGameHighlights(event,summary,config){
   if(ownBox&&oppBox)for(const [n,label] of [['totalYards','Total yards'],['turnovers','Turnovers'],['possessionTime','Time of possession'],['firstDowns','First downs']]){
     const a=stat(ownBox,n),b=stat(oppBox,n);if(a!=null&&b!=null)stats.push({label,value:`${name} ${a} · ${oppShort} ${b}`});
   }
-  const scoring=(summary.scoringPlays||[]).map(p=>`Q${p.period?.number} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text}`.replace(/\s+/g,' ').trim());
+  const scoring=(summary.scoringPlays||[]).map(p=>`${periodName(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text}`.replace(/\s+/g,' ').trim());
   const recap=summary.article?.links?.web?.href?.replace(/^http:/,'https:')||null;
-  return{lines,stats,scoring,recap};
+  // The expanded view's own layout (user, October 16: "can we clean up the
+  // card please"): a score-by-quarter table, a two-column team stats table
+  // and the scoring plays grouped by quarter, instead of label/value rows.
+  const ownAbbr=own.team.abbreviation,oppAbbr=opp.team.abbreviation;
+  const boxStats=ownBox&&oppBox?LIVE_STATS.map(([n,l])=>({label:l,ours:stat(ownBox,n),theirs:stat(oppBox,n)})).filter(r=>r.ours!=null&&r.theirs!=null):[];
+  const box_score={
+    teams:{ours:ownAbbr,theirs:oppAbbr},
+    line:quarters.map(({q,us,them})=>({label:periodName(q),ours:String(us),theirs:String(them)})),
+    totals:{ours:String(us),theirs:String(them)},
+    stats:boxStats,
+    scoring:(summary.scoringPlays||[]).map(p=>({period:periodName(p.period?.number),clock:p.clock?.displayValue||'',team:p.team?.abbreviation||'',ours:p.team?.abbreviation===ownAbbr,text:String(p.text||'').replace(/\s+/g,' ').trim(),score:p.awayScore!=null&&p.homeScore!=null?(own.homeAway==='home'?`${p.homeScore}-${p.awayScore}`:`${p.awayScore}-${p.homeScore}`):null}))
+  };
+  return{lines,stats,scoring,recap,box_score};
 }
 
 // ---- NASCAR (cf.nascar.com) ----
@@ -294,6 +306,8 @@ export function nascarFinishRows(feed){
 // scoring play. Shared by the NFL teams and the college live boards (the
 // scoreboards have one shape). Each part is left out when ESPN does not
 // publish it (between plays, at breaks, in sports without them).
+// Football periods: Q1-Q4, then OT (OT2 for a second overtime).
+const periodName=n=>n<=4?`Q${n}`:n===5?'OT':`OT${n-4}`;
 const LIVE_STATS=[['totalYards','Total yards'],['netPassingYards','Passing yards'],['rushingYards','Rushing yards'],['firstDowns','First downs'],['thirdDownEff','3rd down'],['fourthDownEff','4th down'],['redZoneAttempts','Red zone'],['turnovers','Turnovers'],['sacksYardsLost','Sacks-yards'],['totalPenaltiesYards','Penalties'],['possessionTime','Time of possession']];
 const teamIdOf=c=>String(c?.id??c?.team?.id??'');
 const shortTeam=c=>c?.team?.abbreviation||c?.team?.shortDisplayName||'';
