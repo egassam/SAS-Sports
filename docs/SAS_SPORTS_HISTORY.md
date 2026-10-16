@@ -2663,5 +2663,5 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - **#343 (`4.101.2`):** catalog calls took 0.5–1.1 s from Europe, against 0.26–0.7 s from the bundled copy.
   - `catalogAnswer` keeps answers in the location's cache for an hour, keyed by revision, store and request; a bundled fallback after a D1 failure is not kept. The preview showed `x-sas-cache: edge` on a second read at ATL.
   - `loadSchools` calls `populateSportFilter()` once the cards are known. In the browser, 12 of 12 teams showed their own sports, with colors unchanged.
-  - Gate: `test:release` passed, CI green, K-State XC and IMSA 36/36. The preview read D1 (revision matched) 14/14. Merged as `aa559e5`.
+  - Gate: `test:release` passed, CI green, K-State XC and IMSA 36/36. The preview read D1 (revision matched) 14/14. Merged as `aa559e5`. Production `4.101.2-catalog-edge-cache`: `verify-catalog --prod --expect=d1` passed 14/14, and `verify:prod --school=kstate --sports="Cross Country"` passed (XC 18/20 and 26/21).
 
