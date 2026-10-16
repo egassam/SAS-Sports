@@ -79,7 +79,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.100.1-catalog-d1';
+const VERSION='4.100.2-high-school-stale-copy';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1617,7 +1617,10 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
   const year=highSchoolYear(now,school),calendarUrl=`${module.calendar.url}?start_date=${year.start}&end_date=${year.end}`;
-  const calendarResponse=await sourceFetch(calendarUrl,{},{ttl:SOURCE_TTL.schedule});
+  // A failed read serves the last copy read (up to a day old): the school's
+  // site answers Cloudflare with an intermittent 520, which blanked 3 of 8
+  // forced refreshes of Manhattan football and volleyball (Oct 16).
+  const calendarResponse=await sourceFetch(calendarUrl,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});
   if(!calendarResponse.ok)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: HTTP ${calendarResponse.status}`};
   let payload=null;try{payload=JSON.parse(await calendarResponse.text())}catch{}
   if(!payload)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: not a calendar`};
@@ -1627,7 +1630,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     let contests=[];
     if(team.maxpreps){
       const url=`${module.maxpreps.base}${team.maxpreps}/schedule/`;
-      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}}catch{}
+      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}}catch{}
     }
     const label=team.label||null,used=new Set();
     // Volleyball: MaxPreps lists each match of a tournament or triangular;

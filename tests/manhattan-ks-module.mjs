@@ -274,4 +274,9 @@ try{
   const athletesMs=await worker.handler.fetch(new Request('https://x.test/live/athletes?school=eisenhower-ms-ks&sport=Football'),{},{});
   assert.deepEqual(await athletesMs.json(),[]);
 }finally{globalThis.Date=RealDate;}
+// A failed calendar or MaxPreps read serves the last copy (the school's site
+// answered Cloudflare with an intermittent 520; Oct 16, 3 of 8 refreshes blank).
+{const w=read('../src/index.js');
+assert.ok(w.includes('const calendarResponse=await sourceFetch(calendarUrl,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});'),'calendar read keeps its last copy');
+assert.ok(w.includes('const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests('),'MaxPreps read keeps its last copy');}
 console.log('Manhattan (KS) module: high school football, soccer, volleyball, tennis, cross country, golf and both middle schools verified (schedules, scores, records, TennisReporting draws, expanded views)');
