@@ -251,7 +251,7 @@ const charlotte=withRows.find(r=>r.race_id===5629);
 assert.deepEqual(charlotte.results,finish.slice(0,3));
 assert.equal(charlotte.result_count,39);assert.equal(charlotte.has_more_results,true);
 assert.equal(charlotte.headline,'Winner: Chase Briscoe (#19)');
-assert.ok(worker.includes('nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'every final reads its results');
+assert.ok(worker.includes('const feeds=new Map(await Promise.all(finals.map(async r=>[r.race_id,await readJson(weekend(r.race_id),SOURCE_TTL.document)])));'),'every final reads its results');
 assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===config.seriesId))return failed('),'an empty race list is a failed read');
 // The page: the next game or race leads (All view, nothing live) and is not
 // repeated in the upcoming list; race finals lead with the winner.
@@ -335,6 +335,11 @@ assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result car
   assert.match(html,/^<div class="race-table"><div class="race-row podium"><span class="race-pos">1<\/span><span class="race-driver">Chase Briscoe<small>#19<\/small><\/span><span class="race-make">Toyota<\/span><span class="race-team">Joe Gibbs Racing<\/span><span class="race-note">62 laps led<\/span><\/div>/);
   assert.match(html,/<span class="race-pos">39<\/span><span class="race-driver">William Byron<small>#24<\/small><\/span><span class="race-make">Chevrolet<\/span><span class="race-team">Hendrick Motorsports<\/span><span class="race-note out">Accident<\/span>/);
   assert.equal(raceTableHtml({}),'');
+  // The list card shows the top three in the same layout.
+  const listed=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,tables:new Map([[5629,table]])}).find(r=>r.race_id===5629);
+  assert.deepEqual(listed.race_table,table.slice(0,3));
+  assert.ok(page.includes("if(e.race_table?.length&&kind!=='live')return raceCard(e);"));
+  assert.ok(page.includes('${raceTableHtml({race_table:e.race_table.slice(0,3)})}'));
   assert.ok(page.includes('const rows=e.race_table?.length?raceTableHtml(e):displayResults.map('));
   // Finals kept on the phone before this layout are read again.
   assert.ok(page.includes("const FINAL_CACHE_PREFIX='sas-final:v2:',"));

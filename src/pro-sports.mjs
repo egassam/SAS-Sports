@@ -209,7 +209,7 @@ export function espnGameHighlights(event,summary,config){
 // out should be similar to the cross country layout"): one row per driver,
 // "Chase Briscoe (#19)" · "1st · Joe Gibbs Racing"; the card shows the top
 // three, the expanded view the whole field.
-export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,finishes=new Map()}){
+export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,finishes=new Map(),tables=new Map()}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[];
   for(const race of Array.isArray(list)?list:[]){
     if(race.series_id!==config.seriesId)continue;
@@ -235,6 +235,7 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
       const rows=finishes.get(race.race_id)||[];
       event.results=rows.length?rows.slice(0,3):winner?[{participant:`${winner.name}${winner.car?` (#${winner.car})`:''}`,result:'1st'}]:[];
       event.has_more_results=rows.length>3;
+      const table=tables.get(race.race_id);if(table?.length)event.race_table=table.slice(0,3);
       event.result_count=rows.length||event.results.length;
     }else if(status==='Live'){
       const order=(live.vehicles||[]).slice().sort((a,b)=>a.running_position-b.running_position);
