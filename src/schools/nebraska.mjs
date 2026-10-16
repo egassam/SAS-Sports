@@ -8,6 +8,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // recaps included, in schedule-event-bottom__link anchors).
 export const nebraskaSchool={
   id:'nebraska',
+  // The official NIL marketplace the school's homepage links (checked Oct 16):
+  // athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'nebraska-huskers',team:'Nebraska Huskers'},
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Beach Volleyball','Bowling','Cross Country','Football','Golf','Gymnastics','Rifle','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),

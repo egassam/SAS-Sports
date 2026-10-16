@@ -4,6 +4,7 @@ import sponsoredSports from './sponsored-sports.json';
 import teamThemes from './team-themes.json';
 import {catalogCards,catalogRevision,catalogDerived,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords,catalogOpponent,catalogHostKnown,catalogMembers,catalogAllRecords} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
+import {OPENDORSE_PROFILE,opendorseSlug,opendorseInstagram} from './opendorse.mjs';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
@@ -80,7 +81,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.103.1-high-school-scores-missing';
+const VERSION='4.104.0-opendorse-athletes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1016,7 +1017,7 @@ async function instagramProfileImage(instagramUrl){
 }
 // Profile pages read per sport when roster cards hold fewer than three
 // verified links.
-const ATHLETE_PROFILE_BUDGET=24;
+const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18;
 // Each roster card's event group ("Distance", "DISTANCE/XC", "Cross
 // Country/Distance", "Sprints"), by profile address: the text of the first
 // element named for a position between the card's profile link and the next
@@ -1116,6 +1117,26 @@ async function featuredAthletes(schoolId,sport){
         found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:officialProfileImage(html,r.url||profile.url)||athleteImage(html,r.url||profile.url,profile.name)||profile.image_url});
       }catch{}
     }));
+  }
+  // The school's official NIL marketplace (src/opendorse.mjs): roster
+  // athletes still without a verified link are looked up by name, at most
+  // OPENDORSE_BUDGET a sport, until three athletes have Instagram.
+  const marketplace=schoolModule(schoolId)?.school.opendorse;
+  if(marketplace&&found.filter(a=>a.instagram_url).length<3){
+    const linked=new Set(found.filter(a=>a.instagram_url).map(a=>a.profile_url));
+    const candidates=profiles.filter(profile=>!linked.has(profile.url)&&opendorseSlug(profile.name)).sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,OPENDORSE_BUDGET);
+    for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3;start+=3){
+      await Promise.all(candidates.slice(start,start+3).map(async profile=>{
+        try{
+          const r=await sourceFetch(`${OPENDORSE_PROFILE}${opendorseSlug(profile.name)}`,{},{ttl:SOURCE_TTL.document});if(!r.ok)return;
+          const instagram_url=opendorseInstagram(await r.text(),{name:profile.name,team:marketplace.team,sport,blocked:BLOCKED_INSTAGRAM_HANDLES});
+          if(!instagram_url)return;
+          const known=found.find(a=>a.profile_url===profile.url);
+          if(known){known.instagram_url=instagram_url;known.instagram_source='opendorse'}
+          else found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:profile.image_url||null,instagram_source:'opendorse'});
+        }catch{}
+      }));
+    }
   }
   // Final publisher-independent guard. Every portrait source—roster HTML,
   // embedded payload, profile markup, or Schema.org—must pass this check.
