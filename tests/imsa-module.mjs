@@ -25,8 +25,6 @@ for(const s of imsa){
   assert.equal(proTeam(s.id).kind,'imsa');assert.equal(proTeam(s.id).championship,s.name);
   assert.ok(page.includes(`'${s.id}':['Auto Racing']`),s.id);
   assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);
-  const boot=JSON.parse(page.match(/const BOOTSTRAP_SCHOOLS=(\[.*?\]);\n/)[1]);
-  assert.ok(boot.some(b=>b.id===s.id&&b.league==='IMSA'),s.id);
 }
 assert.ok(worker.includes("if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);"));
 // Race windows list IMSA's field under class headings; the card shows the class winners.

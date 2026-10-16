@@ -1,6 +1,7 @@
 import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
+import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
@@ -78,7 +79,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.99.1-imsa';
+const VERSION='4.100.1-catalog-d1';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -583,6 +584,37 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
 const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
 const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
+// The catalog's menus (src/catalog.mjs): D1 in production, the bundled cards
+// on a preview carrying catalog changes or when a read fails. The choice is
+// made once a minute per isolate; production copies a changed catalog into
+// D1 first. The page reads /catalog/menu and /catalog/entries.
+const PRODUCTION_HOST='sas-sports.lovetogivepain.workers.dev';
+let catalogBundle=null,catalogChoice=null;
+async function bundledCatalog(){
+  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone);catalogBundle={cards,store:bundledStore(cards),revision:await catalogRevision(cards)};}
+  return catalogBundle;
+}
+async function catalogStore(env,url,now=Date.now()){
+  const bundle=await bundledCatalog();
+  if(!env?.CATALOG_DB)return{store:bundle.store,revision:bundle.revision};
+  if(catalogChoice&&now-catalogChoice.at<60000)return catalogChoice.value;
+  let store=bundle.store;
+  try{
+    if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);
+    if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);
+  }catch{}
+  catalogChoice={at:now,value:{store,revision:bundle.revision}};
+  return catalogChoice.value;
+}
+// ?source=bundled answers from the bundled copy (to compare it with D1).
+async function catalogAnswer(env,url,read){
+  const chosen=await catalogStore(env,url),revision=chosen.revision;
+  const store=url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store;
+  let body,source=store.kind;
+  try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}
+  const response=json(body);response.headers.set('x-sas-catalog',`${source} ${revision}`);
+  return response;
+}
 function schoolTimeZone(school){return SCHOOL_TIME_ZONES[school?.id]||STATE_TIME_ZONES[school?.state]||(school?.state?'America/New_York':'America/Chicago');}
 function localWallClock(value,timeZone){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(value)).map(p=>[p.type,p.value]));return new Date(Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour)%24,Number(parts.minute),Number(parts.second)));}
 function schoolNow(now,school){return localWallClock(now,schoolTimeZone(school));}
@@ -2874,6 +2906,8 @@ export default{
     // School-entered live scores (scorer app, TV scoreboard, public live cards).
     if(url.pathname.startsWith('/api/score/'))return handleLiveScoring(request,env,url);
     if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
+    if(url.pathname==='/catalog/menu')return catalogAnswer(env,url,store=>catalogMenu(store,{level:url.searchParams.get('level'),group:url.searchParams.get('group'),middle:url.searchParams.get('middle')}));
+    if(url.pathname==='/catalog/entries')return catalogAnswer(env,url,store=>catalogEntries(store,url.searchParams.get('ids')));
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,time_zone:schoolTimeZone(s),sponsored_sports:sponsoredSports[s.id]||null})));}
     if(url.pathname==='/api/source')return privateSource(request,env);
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}

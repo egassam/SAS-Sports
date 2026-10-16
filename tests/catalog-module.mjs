@@ -1,0 +1,135 @@
+// The catalog in D1 (user, October 16: "Start the catalog move"): the page
+// reads its menus a step at a time from /catalog/menu and /catalog/entries.
+// D1 and the bundled copy must give the same answers, and both must give the
+// menus the page drew from the full catalog before the move.
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {DatabaseSync} from 'node:sqlite';
+import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from '../src/catalog.mjs';
+const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
+const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
+const page=read('../public/index.html'),worker=read('../src/index.js'),wrangler=read('../wrangler.jsonc');
+
+function fakeD1(){
+  const sqlite=new DatabaseSync(':memory:');
+  const statement=(sql,args=[])=>({
+    bind:(...a)=>statement(sql,a),
+    async first(){return sqlite.prepare(sql).get(...args)??null},
+    async all(){return{results:sqlite.prepare(sql).all(...args)}},
+    exec(){if(/^\s*SELECT/i.test(sql))return{results:sqlite.prepare(sql).all(...args)};sqlite.prepare(sql).run(...args);return{}}
+  });
+  return{sqlite,prepare:sql=>statement(sql),async batch(list){sqlite.exec('BEGIN');try{const out=list.map(s=>s.exec());sqlite.exec('COMMIT');return out}catch(e){sqlite.exec('ROLLBACK');throw e}}};
+}
+const zone=s=>s.state==='Kansas'?'America/Chicago':'America/New_York';
+const cards=catalogCards(schools,sponsored,zone);
+
+// Cards: every entry with sponsored sports, in catalog order, with only what
+// the page needs (no source settings).
+assert.equal(cards.length,schools.filter(s=>sponsored[s.id]?.length).length);
+assert.deepEqual(cards.map(c=>c.id),schools.filter(s=>sponsored[s.id]?.length).map(s=>s.id));
+const kstate=cards.find(c=>c.id==='kstate');
+assert.deepEqual(Object.keys(kstate).sort(),['conference','division','id','level','name','short_name','sponsored_sports','state','time_zone']);
+assert.equal(kstate.level,'college');assert.deepEqual(kstate.sponsored_sports,sponsored.kstate);
+assert.ok(!('providers' in kstate)&&!('athletics_url' in kstate));
+const revision=await catalogRevision(cards);
+assert.match(revision,/^[0-9a-f]{24}$/);
+assert.equal(await catalogRevision(cards),revision);
+assert.notEqual(await catalogRevision(cards.slice(1)),revision);
+
+// Sync: the first copy writes, the same revision does nothing, a new revision
+// replaces every row in one transaction.
+const db=fakeD1();
+assert.equal(await storedRevision(db),null,'no table yet');
+assert.equal(await syncCatalog(db,cards,revision),'synced');
+assert.equal(await syncCatalog(db,cards,revision),'current');
+assert.equal(await storedRevision(db),revision);
+assert.equal(db.sqlite.prepare('SELECT COUNT(*) AS n FROM catalog_entries').get().n,cards.length);
+const fewer=cards.filter(c=>c.id!=='kstate'),fewerRevision=await catalogRevision(fewer);
+assert.equal(await syncCatalog(db,fewer,fewerRevision),'synced');
+assert.equal(db.sqlite.prepare(`SELECT COUNT(*) AS n FROM catalog_entries WHERE id='kstate'`).get().n,0);
+await syncCatalog(db,cards,revision);
+// D1 is used only with this revision and all of its rows.
+assert.equal(await storeMatches(db,revision,cards.length),true);
+assert.equal(await storeMatches(db,fewerRevision,fewer.length),false);
+db.sqlite.prepare(`DELETE FROM catalog_entries WHERE id='kstate'`).run();
+assert.equal(await storeMatches(db,revision,cards.length),false,'a short table is not used');
+await syncCatalog(db,cards,'rebuild');await syncCatalog(db,cards,revision);
+assert.equal(await storeMatches(db,revision,cards.length),true);
+assert.equal(await storeMatches(fakeD1(),revision,cards.length),false,'no tables');
+
+// The menus the page drew from the whole catalog before the move (its LEVELS
+// rules), for every level, group and city: D1 and the bundled copy agree.
+const before=({level,group='',middle=''})=>{
+  const rule=CATALOG_LEVELS.find(l=>l.id===level),inLevel=cards.filter(c=>c.level===level);
+  return{
+    groups:[...new Set(inLevel.map(rule.group))].filter(Boolean).sort(),
+    middles:rule.middle?[...new Set(inLevel.filter(c=>!group||rule.group(c)===group).map(rule.middle))].filter(Boolean).sort():[],
+    entries:inLevel.filter(c=>(!group||rule.group(c)===group)&&(!middle||!rule.middle||rule.middle(c)===middle)).map(c=>c.id)
+  };
+};
+const stores=[bundledStore(cards),d1Store(db)];
+let checked=0;
+for(const rule of CATALOG_LEVELS){
+  const inLevel=cards.filter(c=>c.level===rule.id);
+  for(const group of ['',...new Set(inLevel.map(rule.group))]){
+    const middles=rule.middle?['',...new Set(inLevel.filter(c=>!group||rule.group(c)===group).map(rule.middle))]:[''];
+    for(const middle of middles){
+      const want=before({level:rule.id,group,middle});
+      const answers=await Promise.all(stores.map(store=>catalogMenu(store,{level:rule.id,group,middle})));
+      for(const answer of answers){
+        assert.equal(answer.level,rule.id);assert.equal(answer.group,group);assert.equal(answer.middle,middle);
+        assert.deepEqual(answer.groups,want.groups,`${rule.id} ${group} groups`);
+        assert.deepEqual(answer.middles,want.middles,`${rule.id} ${group} middles`);
+        assert.deepEqual(answer.entries.map(e=>e.id),want.entries,`${rule.id} ${group} ${middle} entries`);
+      }
+      assert.deepEqual(answers[0],answers[1],`${rule.id} ${group} ${middle}: D1 equals the bundled copy`);
+      checked++;
+    }
+  }
+}
+assert.ok(checked>=18,`${checked} menu steps checked`);
+// Levels and their counts (an empty level reads "Soon" on the page).
+const levels=(await catalogMenu(stores[1],{level:'pro'})).levels;
+assert.deepEqual(levels.map(l=>l.id),['high-school','college','pro']);
+assert.deepEqual(levels.map(l=>l.count),['high-school','college','pro'].map(id=>cards.filter(c=>c.level===id).length));
+// Steps the page relies on.
+const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
+assert.deepEqual(pro.middles,['IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
+const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
+assert.deepEqual(kansas.middles,['Manhattan']);
+const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});
+assert.equal(big12.entries.length,16);assert.equal(big12.entries[0].id,cards.find(c=>c.conference==='Big 12').id);
+// A group or city the level does not have reads as "All", not as empty.
+const stale=await catalogMenu(stores[1],{level:'college',group:'Pac-12'});
+assert.equal(stale.group,'');assert.equal(stale.entries.length,cards.filter(c=>c.level==='college').length);
+assert.equal((await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Topeka'})).middle,'');
+assert.equal((await catalogMenu(stores[1],{level:'moon'})).level,'college');
+// Entries by id: the saved team and favorites, at most 50, unknown ids left out.
+for(const store of stores){
+  assert.deepEqual((await catalogEntries(store,'kstate,nascar-cup-series,nobody,kstate')).map(e=>e.id),['kstate','nascar-cup-series']);
+  assert.deepEqual(await catalogEntries(store,''),[]);
+  assert.equal((await catalogEntries(store,cards.map(c=>c.id).join(','))).length,50);
+}
+
+// Worker: D1 binding, production-only writes, menu routes, a bundled answer
+// when D1 is behind or fails.
+assert.ok(wrangler.includes('"binding": "CATALOG_DB", "database_name": "sas-sports-catalog"'));
+assert.ok(wrangler.includes('"/catalog/*"'),'catalog routes reach the Worker');
+assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);"),'only production writes the catalog');
+assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision, with every row');
+assert.ok(worker.includes("url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store"),'?source=bundled compares the copies');
+assert.ok(worker.includes("try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}"));
+assert.ok(worker.includes("if(url.pathname==='/catalog/menu')return catalogAnswer("));
+assert.ok(worker.includes("if(url.pathname==='/catalog/entries')return catalogAnswer("));
+
+// Page: no packaged catalog, no full download; menus a step at a time, kept
+// on the device for a dropped network.
+assert.ok(!page.includes('BOOTSTRAP_SCHOOLS'),'the page no longer carries the catalog');
+assert.ok(!page.includes("apiFetch('/schools')"),'the page no longer downloads every entry');
+assert.ok(page.includes('const menu=await catalogFetch(`/catalog/menu?level=${encodeURIComponent(level)}&group=${encodeURIComponent(group)}&middle=${encodeURIComponent(middle)}`);'));
+assert.ok(page.includes('rememberEntries(await catalogFetch(`/catalog/entries?ids=${encodeURIComponent(missing.join(\',\'))}`))'));
+assert.ok(page.includes("const key=`sas-catalog:v1:${path}`;"));
+assert.ok(page.includes("conference.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
+assert.ok(page.includes("city.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
+assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow menu answer never overwrites a newer one');
+console.log(`Catalog module tests passed (${checked} menu steps, D1 equals bundled)`);
