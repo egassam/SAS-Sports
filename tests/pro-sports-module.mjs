@@ -16,8 +16,10 @@ const now=new Date('2026-10-15T18:00:00Z'),EASTERN='America/New_York',CENTRAL='A
 // Catalog: the whole NFL (user, October 16: "Add the entire NFL. Group them
 // by division"), 32 teams in their eight divisions, then the Cup Series.
 const pro=schools.filter(s=>s.level==='pro');
-assert.equal(pro.length,33);
-assert.deepEqual(pro.at(-1).id,'nascar-cup-series');
+// IMSA's two championships follow (user, October 16: "Let's add IMSA racing
+// series under auto racing"; tests/imsa-module.mjs).
+assert.equal(pro.length,35);
+assert.deepEqual(pro.slice(-3).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{
@@ -339,7 +341,7 @@ assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result car
   const listed=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,tables:new Map([[5629,table]])}).find(r=>r.race_id===5629);
   assert.deepEqual(listed.race_table,table.slice(0,3));
   assert.ok(page.includes("if(e.race_table?.length&&kind!=='live')return raceCard(e);"));
-  assert.ok(page.includes('${raceTableHtml({race_table:e.race_table.slice(0,3)})}'));
+  assert.ok(page.includes('${raceTableHtml({race_table:e.race_card?.length?e.race_card:e.race_table.slice(0,3)})}'));
   assert.ok(page.includes('const rows=e.race_table?.length?raceTableHtml(e):displayResults.map('));
   // Finals kept on the phone before this layout are read again.
   assert.ok(page.includes("const FINAL_CACHE_PREFIX='sas-final:v2:',"));

@@ -11,8 +11,8 @@ The level switch now reads **High School · College · Pro** (the order the hand
 | Box | Field | Values |
 | --- | --- | --- |
 | Sport | `pro_sport` | Football, Auto Racing |
-| League | `league` | NFL, NASCAR |
-| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series |
+| League | `league` | NFL, NASCAR, IMSA |
+| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge |
 
 **The whole NFL (October 16, 2026; user: "Add the entire NFL. Group them by division and update all live cards to show all the data").** All 32 teams are catalog entries with `conference` = division; the Team box always groups NFL teams under their division (`sectionOf`), in the catalog's order (AFC East, North, South, West, then NFC). Team colors come from ESPN's team list; the Raiders use Pacific time (`Nevada` in `STATE_TIME_ZONES`). `PRO_TEAMS` names each team's ESPN abbreviation, its three division rivals (the header's division record) and its official schedule page.
 
@@ -48,7 +48,19 @@ The event window for a final reads: Full Team Results (Result, Week only), **Sco
 
 The phone showed a race window kept on the device from before 4.97.2. The rows read "1st Chase Briscoe | #19 · Joe Gibbs Racing · 62 laps led", with no make. Finals kept on the device now use `sas-final:v2:`, and the old copies are dropped, so every final is read again. The window now lists one row per car: the finish, the driver with the car number, a make tag (Toyota, Ford, Chevrolet), the team, and laps led. A car that fell out shows its status (Accident, Engine) in red. The podium rows are brighter. Source: `nascarFinishTable` (`race_table` on the event). The server's saved expanded views are rebuilt once (`|box2`).
 
+## IMSA (4.99.1, user, October 16: "Let's add IMSA racing series under auto racing")
+
+Two entries under Auto Racing → IMSA: `imsa-weathertech` (WeatherTech SportsCar Championship: GTP, LMP2, GTD PRO, GTD) and `imsa-pilot-challenge` (Michelin Pilot Challenge: GS, TCR). Code: the IMSA part of `src/pro-sports.mjs`, `fetchImsa` in `src/index.js`. Test: `tests/imsa-module.mjs` (real folders and classifications of Oct 16 in `tests/fixtures/pro-sports/imsa-*`).
+
+- **Source: IMSA's official results**, `results.imsa.com`, which redirects to its timing provider's host `imsa.results.alkamelcloud.com`. The host serves plain folder listings: `Results/26_2026/` (events) → `21_Road Atlanta/` → `01_IMSA WeatherTech SportsCar Championship/` → `202610031210_Race/` (the track's local start) → `03_Results_Race_Official.JSON` (or Provisional, Unofficial, an `_Amended` copy first). An endurance race keeps its classification in its last `NN_Hour N` folder, with hourly standings (`04_Results by Hour_Race_Unofficial.JSON`) in each. robots.txt is empty. The older host `imsa.alkamelsystems.com` stops at April 2024.
+- **Coming races** come from IMSA's 2027 calendars, announced on March 19, 2026, in `IMSA_CALENDARS` (weekend dates, race name where IMSA named it, length, classes). The card reads the weekend ("Jan 28-31"), Length, Classes and the Track. A race IMSA has not named takes the track as its title. A season's event folder appears only once its weekend starts. imsa.com answers automated reads with a Cloudflare bot challenge, which the app does not get around. Text read from the announcement as reprinted by midohio.com and speedsport.com. When a weekend's folder appears, its race replaces the calendar entry (it then carries the real start time).
+- **Card:** one row per class winner (class tag, drivers, car number, team and car, "7th overall"). **Race window:** the whole field under class headings, with each car's class finish, make, team and car, and its overall finish and laps, or "Did not finish". The lines give the overall winner and margin, each class winner, and the fastest lap. Numbers: laps, race time, cars, classes, and the track (Wet).
+- **While a race runs:** the hourly standings of an endurance race give the live card, "After Hour 3", with the leader and every car's class place and gap. A sprint race has no standings until its classification. It reads "Under way" for up to 26 hours after its start. A past race with no classification is not listed.
+- Reads: one season listing, each event listing, then the championship, race and hour folders, and the classification. Folders more than 8 days old are kept 6 hours, and a race weekend's folders 2 minutes. Official classifications are kept 6 hours.
+
 ## Limits
+
+- IMSA: no live timing (Al Kamel's live timing is a Meteor app). Sprint races show no running order until they finish. The 2027 calendar is hand-entered from IMSA's announcement; check it against imsa.com if IMSA changes a date. Start times appear only when the weekend's folder does. Auto Racing's in-season window is February–November, so the Rolex 24 (late January) shows out of season. The VP Racing SportsCar Challenge and the single-make series in the same folders are not added (no 2027 calendar found).
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.
 - NASCAR's live feed shape (vehicle fields) was read from an idle feed; the first live race (Phoenix, Oct 18) is the first live check.
