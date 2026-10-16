@@ -572,6 +572,9 @@ async function loadSchools(){
   await ensureEntries([savedSchool(),...favoriteSchoolIds()]);
   try{await populateSchoolControls()}
   catch(err){status.textContent='Could not load the team menus; reconnecting to the SAS Sports backend…';throw err}
+  // The team's own sports as soon as its card is known (not the generic list
+  // until the feed answers).
+  populateSportFilter();
   updateFavorite();
 }
 async function loadFeaturedAthletes(groups,schoolId,generation){
