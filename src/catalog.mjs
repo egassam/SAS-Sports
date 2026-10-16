@@ -33,11 +33,14 @@ const rules=id=>CATALOG_LEVELS.find(l=>l.id===id)||CATALOG_LEVELS[1];
 // What the page needs to know about an entry (no source settings: those
 // stay with the Worker).
 const CARD_FIELDS=['id','name','short_name','level','state','city','conference','league','pro_sport','classification','division'];
-export function catalogCards(schools,sponsored,timeZoneOf){
+// Each card carries the team's colors (src/team-themes.json; the page keeps
+// only the SAS default) and its sports, so the page holds no per-team list.
+export function catalogCards(schools,sponsored,timeZoneOf,themes={}){
   return schools.filter(s=>Array.isArray(sponsored[s.id])&&sponsored[s.id].length).map(s=>{
     const card={};for(const f of CARD_FIELDS)if(s[f]!=null&&s[f]!=='')card[f]=s[f];
     if(!card.level)card.level='college';
     card.time_zone=timeZoneOf(s);card.sponsored_sports=sponsored[s.id];
+    if(themes[s.id])card.theme=themes[s.id];
     return card;
   });
 }

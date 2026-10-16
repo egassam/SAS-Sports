@@ -316,7 +316,8 @@ contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');
 contains(page,/Number\(active\.has\(b\)\)-Number\(active\.has\(a\)\)/,'In-season sports must sort above out-of-season sports');
-contains(page,/'kstate':\['Baseball','Basketball','Cross Country'/,'K-State must load only sports it sponsors');
+contains(page,/SCHOOL_SPORTS\[s\.id\]=s\.sponsored_sports/,'Each team must load only the sports its catalog card lists');
+assert.deepEqual(JSON.parse(readFileSync(new URL('../src/sponsored-sports.json',import.meta.url),'utf8')).kstate.slice(0,3),['Baseball','Basketball','Cross Country'],'K-State must load only sports it sponsors');
 contains(page,/\['Cross Country'\]\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip Cross Country when a school does not sponsor it');
 contains(page,/if\(!chosen&&SCHOOL_SPORTS\[id\]\)/,'Sponsored sports must remain visible while waiting for a new schedule');
 contains(page,/\|\|\(g\.featured_athletes\|\|\[\]\)\.length/,'A sport with verified athletes must remain visible without current events');
@@ -367,7 +368,8 @@ contains(page,/Checking live scores, finals, and highlights/,'The live refresh l
 contains(page,/REFRESH_LOADER_MIN_MS=1500/,'The live refresh loader must remain visible for 1.5 seconds');
 
 // Favorite teams must persist, migrate the original single favorite, and remain quickly selectable.
-contains(page,/const TEAM_THEMES=/,'School color themes must exist');
+contains(page,/const SAS_THEME=/,'The SAS default theme must exist (team colors come with each catalog card)');
+contains(page,/let theme=catalogEntry\(themeId\)\?\.theme;/,'The loaded team applies its catalog card colors');
 contains(page,/function applyCurrentSchoolTheme\(/,'The currently loaded school must apply its team theme');
 contains(page,/--theme-on-accent/,'Team controls must use explicit contrast-safe text colors');
 contains(page,/prefers-contrast:more/,'High-contrast preferences must receive stronger borders');

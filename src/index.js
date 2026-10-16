@@ -1,6 +1,7 @@
 import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
+import teamThemes from './team-themes.json';
 import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
@@ -79,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.100.2-high-school-stale-copy';
+const VERSION='4.101.0-catalog-themes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -591,7 +592,7 @@ const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
 const PRODUCTION_HOST='sas-sports.lovetogivepain.workers.dev';
 let catalogBundle=null,catalogChoice=null;
 async function bundledCatalog(){
-  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone);catalogBundle={cards,store:bundledStore(cards),revision:await catalogRevision(cards)};}
+  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes);catalogBundle={cards,store:bundledStore(cards),revision:await catalogRevision(cards)};}
   return catalogBundle;
 }
 async function catalogStore(env,url,now=Date.now()){

@@ -23,8 +23,7 @@ for(const s of imsa){
   assert.equal(s.level,'pro');assert.equal(s.pro_sport,'Auto Racing');assert.equal(s.conference,'IMSA');
   assert.deepEqual(sponsored[s.id],['Auto Racing']);
   assert.equal(proTeam(s.id).kind,'imsa');assert.equal(proTeam(s.id).championship,s.name);
-  assert.ok(page.includes(`'${s.id}':['Auto Racing']`),s.id);
-  assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);
+  assert.ok(JSON.parse(read('../src/team-themes.json'))[s.id]?.primary,`${s.id} theme`);
 }
 assert.ok(worker.includes("if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);"));
 // Race windows list IMSA's field under class headings; the card shows the class winners.

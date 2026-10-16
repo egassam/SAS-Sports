@@ -50,10 +50,10 @@ assert.ok(page.includes("teamFor:sport=>sport==='Auto Racing'?'Races'"),'racing 
 assert.ok(page.includes("cityOf:s=>s.league||'',middle:'League',middles:'All leagues'"),'League is the middle menu');
 const levelOrder=[...page.matchAll(/\{id:'(high-school|college|pro)',label:/g)].map(m=>m[1]);
 assert.deepEqual(levelOrder,['high-school','college','pro']);
-// The menus come from the catalog (tests/catalog-module.mjs); each pro entry
-// keeps its colors on the page.
-for(const s of pro)assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);
-assert.ok(page.includes("'nascar-cup-series':['Auto Racing']"));
+// The menus, colors and sports come with the catalog cards
+// (tests/catalog-module.mjs; colors in src/team-themes.json).
+const themes=JSON.parse(read('../src/team-themes.json'));
+for(const s of pro)assert.ok(themes[s.id]?.primary,`${s.id} theme`);
 // The Team box groups NFL teams under their division, always (user, October
 // 16: "Group them by division"); NASCAR's series sits under NASCAR.
 assert.ok(page.includes("sectionOf:s=>s.league==='NFL'?s.conference:s.league}"));
