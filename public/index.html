@@ -88,6 +88,16 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .play-text{font-size:14px;line-height:1.35;overflow-wrap:anywhere}
 .play-score{font-weight:900;font-variant-numeric:tabular-nums;font-size:14px}
 .play-clock{grid-column:2 / span 2;color:var(--muted);font-size:12px}
+.race-table{display:grid;gap:6px}
+.race-row{display:grid;grid-template-columns:34px 1fr auto;gap:2px 10px;align-items:center;padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.03)}
+.race-row.podium{background:rgba(255,255,255,.07)}
+.race-pos{grid-row:span 2;font-weight:900;font-size:17px;font-variant-numeric:tabular-nums;text-align:center}
+.race-driver{font-weight:800;font-size:15px;min-width:0;overflow-wrap:anywhere}
+.race-driver small{color:var(--muted);font-weight:800;margin-left:4px}
+.race-make{font-size:11px;font-weight:900;padding:3px 8px;border-radius:7px;background:rgba(255,255,255,.1);text-transform:uppercase;letter-spacing:.04em;justify-self:end}
+.race-team{color:var(--muted);font-size:12px;min-width:0;overflow-wrap:anywhere}
+.race-note{font-size:12px;font-weight:800;justify-self:end;white-space:nowrap}
+.race-note.out{color:#fca5a5}
 .live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
 .live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
 
@@ -565,7 +575,7 @@ function spotlightCard(e){
   const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
-function card(e,kind){if(kind==='live')return e.event_type==='RACE'?raceLiveCard(e):liveCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
+function card(e,kind){if(kind==='live')return e.event_type==='RACE'?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const allRows=e.results||[],teamRows=allRows.filter(r=>/\bteam$/i.test(r.participant||'')),preview=(teamRows.length>1?teamRows:allRows).slice(0,3);const rows=preview.map(r=>`<div class="result-row"><span>${esc([r.group,r.participant,r.label].filter(Boolean).join(' · '))}</span><strong>${esc(r.result||r.place||r.value||'')}</strong></div>`).join('');return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
 // A reached official schedule with nothing current is not a failed source.
 const eventTotal=g=>g.live.length+g.results.length+g.upcoming.length+g.other.length;
@@ -891,13 +901,15 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
 // without waiting on the network or the AI. Unverified answers (an AI timeout)
 // are never kept, so they are asked again. Everything kept is cleared once a
 // month, so corrections still arrive.
-const FINAL_CACHE_PREFIX='sas-final:v1:',FINAL_CACHE_CLEARED='sas-final:cleared-at',FINAL_CACHE_MS=30*24*60*60*1000;
+// v2 (4.98.2): finals kept before the race-results table and the NFL box
+// score are dropped once, so they are read again in the new layout.
+const FINAL_CACHE_PREFIX='sas-final:v2:',FINAL_CACHE_CLEARED='sas-final:cleared-at',FINAL_CACHE_MS=30*24*60*60*1000;
 function finalCacheKey(e){return`${FINAL_CACHE_PREFIX}${e.school_id}|${e.sport}|${e.id}`}
 function sweepFinalCache(store=localStorage,now=Date.now()){
   try{
     const cleared=Number(store.getItem(FINAL_CACHE_CLEARED)||0);
     if(cleared&&now-cleared<FINAL_CACHE_MS)return false;
-    const keys=[];for(let i=0;i<store.length;i++){const key=store.key(i);if(key&&key.startsWith(FINAL_CACHE_PREFIX))keys.push(key)}
+    const keys=[];for(let i=0;i<store.length;i++){const key=store.key(i);if(key&&key.startsWith('sas-final:v')&&key!==FINAL_CACHE_CLEARED)keys.push(key)}
     keys.forEach(key=>store.removeItem(key));
     store.setItem(FINAL_CACHE_CLEARED,String(now));
     return true;
@@ -954,7 +966,7 @@ async function openEvent(id){
   const score=e.school_score!=null?`${e.school_score}–${e.opponent_score}`:(e.headline||teamSummary||'—');
   let lastGroup='';
   const displayResults=e.event_type==='MEET'?(e.results||[]).filter(x=>x.group||x.participant):(e.results||[]);
-  const rows=displayResults.map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
+  const rows=e.race_table?.length?raceTableHtml(e):displayResults.map(x=>{const group=x.group||'';const heading=group&&group!==lastGroup?`<div class="result-group-head">${esc(group)}</div>`:'';lastGroup=group;const isTeam=/\bteam$/i.test(x.participant||'');return heading+`<div class="result-row meet-result-row ${isTeam?'team-result':''}"><span>${esc(isTeam?'Team finish':(x.participant||x.label||'Result'))}</span><strong>${esc(x.result||x.place||x.value||'')}</strong></div>`}).join('');
   const resultsTitle=e.event_type==='MEET'?'Full Meet Results':e.event_type==='RACE'?'Full Race Results':'Full Team Results';
   const recapUrl=e.recap_url||(/recap/i.test(e.source?.name||'')?e.source?.url:null);
   const recapButton=recapUrl?`<a class="recap-button" href="${esc(recapUrl)}" target="_blank" rel="noopener">${esc(e.recap_label||'View Full Official Recap')}</a>`:'';
@@ -979,6 +991,16 @@ function boxScoreHtml(e){
   const plays=(b.scoring||[]).map(p=>{const head=p.period!==last?`<div class="play-head">${esc(names[p.period]||p.period)}</div>`:'';last=p.period;return head+`<div class="play-row ${p.ours?'ours':''}"><span class="play-team">${esc(p.team)}</span><span class="play-text">${esc(p.text)}</span><span class="play-score">${esc(p.score||'')}</span><span class="play-clock">${esc(p.clock)}</span></div>`}).join('');
   return{line,stats,plays:plays?`<div class="box-section"><div class="section-label">Scoring Plays</div>${plays}</div>`:''};
 }
+// A race's full results, one row per car (user, October 16: "NASCAR full
+// results is still not showing car manufacturer and the layout is messy"):
+// finish, driver and car number, the make, the team, and laps led or why
+// the car fell out.
+function raceTableHtml(e){
+  const rows=e.race_table||[];if(!rows.length)return'';
+  return`<div class="race-table">${rows.map(r=>`<div class="race-row${r.pos<=3?' podium':''}"><span class="race-pos">${esc(r.pos)}</span><span class="race-driver">${esc(r.driver)}<small>${esc(r.car)}</small></span><span class="race-make">${esc(r.make)}</span><span class="race-team">${esc(r.team)}</span><span class="race-note${r.status?' out':''}">${esc(r.status||(r.laps_led?`${r.laps_led} laps led`:''))}</span></div>`).join('')}</div>`;
+}
+// A final race in the list: the top three in the race window's layout.
+function raceCard(e){return`<article class="card" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${esc(e.title)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div></div><div class="results">${raceTableHtml({race_table:e.race_table.slice(0,3)})}</div></article>`}
 function closeModal(){modalWrap.classList.remove('open');modalWrap.setAttribute('aria-hidden','true')}
 refresh.addEventListener('click',()=>loadFeed(true));
 school.addEventListener('change',()=>{activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSportFilter();feed.innerHTML='<div class="empty">Loading the selected school…</div>';loadFeed(false)});

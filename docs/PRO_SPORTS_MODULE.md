@@ -44,6 +44,10 @@ Rules: K-State's — a past game or race without a published result is not liste
 
 The event window for a final reads: Full Team Results (Result, Week only), **Score by Quarter** (a table with each quarter, OT and the total; the winner's row brighter), Event Highlights, **Team Stats** (two columns, the same eleven rows as the live card), and **Scoring Plays** grouped under 1st Quarter … Overtime, with each play's team, the running score from the team's side, and the clock. Scoring plays were label/value rows that wrapped "Scoring" letter by letter on a phone, and overtime read "Q5". Saved expanded views of pro finals are rebuilt once (`|box` in the store key).
 
+## Race results window (4.98.3, user, October 16: "NASCAR full results is still not showing car manufacturer and the layout is messy")
+
+The phone showed a race window kept on the device from before 4.97.2. The rows read "1st Chase Briscoe | #19 · Joe Gibbs Racing · 62 laps led", with no make. Finals kept on the device now use `sas-final:v2:`, and the old copies are dropped, so every final is read again. The window now lists one row per car: the finish, the driver with the car number, a make tag (Toyota, Ford, Chevrolet), the team, and laps led. A car that fell out shows its status (Accident, Engine) in red. The podium rows are brighter. Source: `nascarFinishTable` (`race_table` on the event). The server's saved expanded views are rebuilt once (`|box2`).
+
 ## Limits
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.

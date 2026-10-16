@@ -51,7 +51,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.98.1-nfl-box-score';
+const VERSION='4.98.3-race-results-table';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1709,13 +1709,17 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     if(list.some(r=>r.series_id===config.seriesId&&!r.winner_driver_id&&String(r.date_scheduled).slice(0,10)===today)){const url=`${NASCAR_FEEDS}live/feeds/live-feed.json`;live=await readJson(url,30);if(live)sources.push(url);}
     // Every final's results (kept six hours: a finished race does not change).
     const finals=list.filter(r=>r.series_id===config.seriesId&&r.winner_driver_id);
-    const finishes=new Map((await Promise.all(finals.map(async r=>[r.race_id,nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))]))).filter(([,rows])=>rows.length));
-    const events=nascarRaces(list,{school,config,timeZone,now,drivers,live,finishes});
+    const feeds=new Map(await Promise.all(finals.map(async r=>[r.race_id,await readJson(weekend(r.race_id),SOURCE_TTL.document)])));
+    const finishes=new Map([...feeds].map(([id,feed])=>[id,nascarFinishRows(feed)]).filter(([,rows])=>rows.length));
+    // The card's top three as table rows, the race window's layout.
+    const tables=new Map([...feeds].map(([id,feed])=>[id,nascarFinishTable(feed)]).filter(([,rows])=>rows.length));
+    const events=nascarRaces(list,{school,config,timeZone,now,drivers,live,finishes,tables});
     const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
     if(target&&target.status==='Final'){
       const url=weekend(target.race_id),details=nascarRaceDetails(target,await readJson(url,SOURCE_TTL.document));
       if(details){
         target.results=details.rows;target.result_count=details.rows.length;
+        target.race_table=details.table;
         target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
         target.highlight_status='Finishing order and race numbers from NASCAR\'s official results feed.';
       }
@@ -2803,8 +2807,9 @@ const HIGHLIGHT_STORE_TTL=30*24*60*60;
 // A school module may carry a highlight revision: raising it retires that
 // school's stored finals after a change to how they are written (Baylor's
 // cross country highlights went from two lines to four).
-// Pro finals saved before the box-score layout (4.98.1) are rebuilt once.
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box':''}`;
+// Pro finals saved before the box-score and race-table layouts (4.98.2) are
+// rebuilt once.
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box2':''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

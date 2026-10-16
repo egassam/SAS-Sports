@@ -2594,3 +2594,12 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - **Not merged:** the standing permission covers one school's sports with 36 refreshes. This PR changes shared college live code and 32 new entries, and 36 refreshes × 32 teams was judged too many ESPN reads after the Oct 10 refusals. The user is asked to merge.
 - **Open:** the first live NASCAR check is Phoenix on Oct 18 (vehicle field names from the feed's known shape). The first college live card with the new details will be observed on the next college game day.
 - **Merged and verified:** the user wrote "Merge it". The PR was merged as `2c8b0cb`, and production served `4.98.0-nfl-live-cards`. `verify:prod --school=<33 pro ids> --sports=all` passed 102 checks with no failures, and XC read 18/20 and 26/21.
+
+## October 16, 2026 — NFL final as a box score (PR #333); new merge rule
+
+- User, with a phone screenshot of the Bills at Rams expanded view: "the full team results can we clean up the card please. It's not laid out very well". Every scoring play was a label/value result row: on a phone "Scoring" wrapped letter by letter, the plays ran off the right edge, and overtime read "Q5".
+- Fix (`4.98.1-nfl-box-score`): `espnGameHighlights` returns `box_score` with the line score, totals, eleven team stats, and the scoring plays (period, clock, team, own-side running score). `fetchPro` sets it and stops adding Scoring rows. The page's `boxScoreHtml` renders Score by Quarter, Team Stats and Scoring Plays by quarter. Saved pro expanded views are rebuilt once (`|box` key). Tested on the real Steelers–Falcons summary with OT naming; the preview was screenshotted at 390 px (Bills at Rams).
+- Gate: `test:release` passed; `verify:preview` for the 32 NFL teams passed (99 checks, 3 refreshes each), XC 18/20 and 26/21; CI green.
+- The user set a new rule: "I guess we need a new rule. When you finish and everything passes you can merge it." It is recorded in `AGENTS.md` item 6: no stopping to ask when the work is finished and every check passes, and the one-school scope limit is dropped. For ESPN-read pro entries, 3 refreshes per entry replace 36 (the agent's reading, reported to the user).
+- Merged as `b2436fe`. Production `4.98.1-nfl-box-score`: `verify:prod` passed for all 32 teams, and the Bills–Rams `/live/highlights` returns Result and Week, Q1–Q4 and OT, 12 plays and 11 stats.
+

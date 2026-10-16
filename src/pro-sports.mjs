@@ -209,7 +209,7 @@ export function espnGameHighlights(event,summary,config){
 // out should be similar to the cross country layout"): one row per driver,
 // "Chase Briscoe (#19)" · "1st · Joe Gibbs Racing"; the card shows the top
 // three, the expanded view the whole field.
-export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,finishes=new Map()}){
+export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),live=null,finishes=new Map(),tables=new Map()}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[];
   for(const race of Array.isArray(list)?list:[]){
     if(race.series_id!==config.seriesId)continue;
@@ -235,6 +235,7 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
       const rows=finishes.get(race.race_id)||[];
       event.results=rows.length?rows.slice(0,3):winner?[{participant:`${winner.name}${winner.car?` (#${winner.car})`:''}`,result:'1st'}]:[];
       event.has_more_results=rows.length>3;
+      const table=tables.get(race.race_id);if(table?.length)event.race_table=table.slice(0,3);
       event.result_count=rows.length||event.results.length;
     }else if(status==='Live'){
       const order=(live.vehicles||[]).slice().sort((a,b)=>a.running_position-b.running_position);
@@ -286,7 +287,7 @@ export function nascarRaceDetails(event,feed){
   if(race.average_speed)stats.push({label:'Average speed',value:`${race.average_speed} mph`});
   if(race.total_race_time)stats.push({label:'Race time',value:race.total_race_time});
   if(race.number_of_cars_in_field)stats.push({label:'Cars in the field',value:String(race.number_of_cars_in_field)});
-  return{rows,lines,stats};
+  return{rows,lines,stats,table:nascarFinishTable(feed)};
 }
 
 // Every driver's finish from a race's weekend feed, cross-country style,
@@ -419,4 +420,14 @@ export function nascarLiveDetails(live){
     pit:v.is_on_track===false?'Pit road':null
   }));
   return details;
+}
+
+// The expanded view's results table (user, October 16: "NASCAR full results
+// is still not showing car manufacturer and the layout is messy"): one row
+// per car with its finish, driver, car number, team, make, laps led, and any
+// finishing status other than Running (Accident, Engine).
+export function nascarFinishTable(feed){
+  const results=feed?.weekend_race?.[0]?.results||[];
+  const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
+  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({pos:r.finishing_position,driver:name(r.driver_fullname),car:r.car_number?`#${r.car_number}`:'',team:r.team_name||'',make:r.car_make||'',laps_led:r.laps_led||0,status:r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:''}));
 }

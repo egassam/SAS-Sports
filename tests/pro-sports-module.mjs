@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarLiveDetails,applyEspnLive,espnLiveDetails} from '../src/pro-sports.mjs';
+import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarLiveDetails,applyEspnLive,espnLiveDetails,nascarFinishTable} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.json.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
@@ -147,7 +147,7 @@ assert.deepEqual(box.scoring.at(-1),{period:'Q4',clock:'10:35',team:'ATL',ours:f
 // of the result rows.
 assert.ok(worker.includes('target.box_score=details.box_score;'));
 assert.ok(!worker.includes("details.scoring.map(value=>({label:'Scoring',value}))"));
-assert.ok(worker.includes("${proTeam(school)?'|box':''}"),'saved pro expanded views are rebuilt once');
+assert.ok(worker.includes("${proTeam(school)?'|box2':''}"),'saved pro expanded views are rebuilt once');
 {
   const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
   const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
@@ -251,7 +251,7 @@ const charlotte=withRows.find(r=>r.race_id===5629);
 assert.deepEqual(charlotte.results,finish.slice(0,3));
 assert.equal(charlotte.result_count,39);assert.equal(charlotte.has_more_results,true);
 assert.equal(charlotte.headline,'Winner: Chase Briscoe (#19)');
-assert.ok(worker.includes('nascarFinishRows(await readJson(weekend(r.race_id),SOURCE_TTL.document))'),'every final reads its results');
+assert.ok(worker.includes('const feeds=new Map(await Promise.all(finals.map(async r=>[r.race_id,await readJson(weekend(r.race_id),SOURCE_TTL.document)])));'),'every final reads its results');
 assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===config.seriesId))return failed('),'an empty race list is a failed read');
 // The page: the next game or race leads (All view, nothing live) and is not
 // repeated in the upcoming list; race finals lead with the winner.
@@ -316,4 +316,32 @@ assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result car
   assert.ok(page.includes("if(ev.target.closest('.live-more details'))return;"),'opening a fold does not open the event window');
 }
 
+// The race window's results table (user, October 16: "NASCAR full results
+// is still not showing car manufacturer and the layout is messy"): the phone
+// showed a copy kept on the device from before the make was added, in the
+// old "1st Chase Briscoe | #19 · Joe Gibbs Racing" rows.
+{
+  const table=nascarFinishTable(fixture('wf'));
+  assert.equal(table.length,39);
+  assert.deepEqual(table[0],{pos:1,driver:'Chase Briscoe',car:'#19',team:'Joe Gibbs Racing',make:'Toyota',laps_led:62,status:''});
+  assert.deepEqual(table[38],{pos:39,driver:'William Byron',car:'#24',team:'Hendrick Motorsports',make:'Chevrolet',laps_led:0,status:'Accident'});
+  assert.equal(table.filter(r=>!r.make).length,0,'every car has its make');
+  assert.deepEqual(nascarRaceDetails(races.find(r=>r.race_id===5629),fixture('wf')).table,table);
+  assert.ok(worker.includes('target.race_table=details.table;'));
+  const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
+  const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
+  const raceTableHtml=Function(`${line('const esc=')}\n${fn('raceTableHtml')};return raceTableHtml;`)();
+  const html=raceTableHtml({race_table:table});
+  assert.match(html,/^<div class="race-table"><div class="race-row podium"><span class="race-pos">1<\/span><span class="race-driver">Chase Briscoe<small>#19<\/small><\/span><span class="race-make">Toyota<\/span><span class="race-team">Joe Gibbs Racing<\/span><span class="race-note">62 laps led<\/span><\/div>/);
+  assert.match(html,/<span class="race-pos">39<\/span><span class="race-driver">William Byron<small>#24<\/small><\/span><span class="race-make">Chevrolet<\/span><span class="race-team">Hendrick Motorsports<\/span><span class="race-note out">Accident<\/span>/);
+  assert.equal(raceTableHtml({}),'');
+  // The list card shows the top three in the same layout.
+  const listed=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,tables:new Map([[5629,table]])}).find(r=>r.race_id===5629);
+  assert.deepEqual(listed.race_table,table.slice(0,3));
+  assert.ok(page.includes("if(e.race_table?.length&&kind!=='live')return raceCard(e);"));
+  assert.ok(page.includes('${raceTableHtml({race_table:e.race_table.slice(0,3)})}'));
+  assert.ok(page.includes('const rows=e.race_table?.length?raceTableHtml(e):displayResults.map('));
+  // Finals kept on the phone before this layout are read again.
+  assert.ok(page.includes("const FINAL_CACHE_PREFIX='sas-final:v2:',"));
+}
 console.log('pro sports module tests passed');
