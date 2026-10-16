@@ -2,12 +2,13 @@
 // pass the imported names in themselves. School modules are read here from
 // index.js's own `./schools/*` imports, so adding a school module needs only
 // its import line in index.js: no harness has to list it. The shared
-// conference-games module is passed the same way.
+// conference-games module (and the pro-sports readers the live boards share)
+// are passed the same way.
 import {readFileSync} from 'node:fs';
 
 const index=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 export const schoolModuleDeps={};
-for(const [,names,path] of index.matchAll(/^import\s*\{([^}]*)\}\s*from\s*['"](\.\/(?:schools\/[^'"]+|conference-games\.mjs|high-school\.mjs))['"];?$/gm)){
+for(const [,names,path] of index.matchAll(/^import\s*\{([^}]*)\}\s*from\s*['"](\.\/(?:schools\/[^'"]+|conference-games\.mjs|high-school\.mjs|pro-sports\.mjs))['"];?$/gm)){
   const module=await import(new URL(`../src/${path.slice(2)}`,import.meta.url));
   for(const name of names.split(',').map(x=>x.trim()).filter(Boolean)){
     if(!(name in module))throw Error(`src/index.js imports ${name} from ${path}, which does not export it`);

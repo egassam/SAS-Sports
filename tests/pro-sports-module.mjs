@@ -6,20 +6,40 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows} from '../src/pro-sports.mjs';
+import {PRO_TEAMS,proTeam,wallClock,displayTime,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarLiveDetails,applyEspnLive,espnLiveDetails} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.json.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
 const page=read('../public/index.html'),worker=read('../src/index.js');
 const now=new Date('2026-10-15T18:00:00Z'),EASTERN='America/New_York',CENTRAL='America/Chicago';
 
-// Catalog: three pro entries, each with its sport and league for the menus.
+// Catalog: the whole NFL (user, October 16: "Add the entire NFL. Group them
+// by division"), 32 teams in their eight divisions, then the Cup Series.
 const pro=schools.filter(s=>s.level==='pro');
-assert.deepEqual(pro.map(s=>[s.id,s.pro_sport,s.league,s.name]),[
-  ['pittsburgh-steelers','Football','NFL','Pittsburgh Steelers'],
-  ['kansas-city-chiefs','Football','NFL','Kansas City Chiefs'],
-  ['nascar-cup-series','Auto Racing','NASCAR','NASCAR Cup Series']
-]);
+assert.equal(pro.length,33);
+assert.deepEqual(pro.at(-1).id,'nascar-cup-series');
+const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
+for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
+assert.deepEqual(divisions,{
+  'AFC East':['Bills','Dolphins','Patriots','Jets'],'AFC North':['Ravens','Bengals','Browns','Steelers'],
+  'AFC South':['Texans','Colts','Jaguars','Titans'],'AFC West':['Broncos','Chiefs','Raiders','Chargers'],
+  'NFC East':['Cowboys','Giants','Eagles','Commanders'],'NFC North':['Bears','Lions','Packers','Vikings'],
+  'NFC South':['Falcons','Panthers','Saints','Buccaneers'],'NFC West':['Cardinals','Rams','49ers','Seahawks']
+});
+// Each team reads its own ESPN schedule; its division rivals are the other
+// three teams of its catalog division (the header's division record).
+const abbr=s=>PRO_TEAMS[s.id].espn.team.toUpperCase();
+assert.equal(new Set(nfl.map(abbr)).size,32);
+for(const s of nfl){
+  const config=PRO_TEAMS[s.id];
+  assert.equal(s.division,`NFL · ${s.conference}`,s.id);assert.equal(s.pro_sport,'Football');
+  assert.equal(config.division.name,s.conference,s.id);
+  assert.deepEqual(config.division.members.slice().sort(),nfl.filter(t=>t.conference===s.conference&&t!==s).map(abbr).sort(),s.id);
+  assert.equal(s.providers[0].slug,`football/nfl/teams/${config.espn.team}`,s.id);
+  assert.match(config.schedule,/^https:\/\/www\.[a-z0-9]+\.com\/schedule\/$/,s.id);
+}
+// The Raiders play in Las Vegas (Pacific time), not the Eastern default.
+assert.ok(worker.includes("Nevada:'America/Los_Angeles'"));
 for(const s of pro){assert.ok(proTeam(s.id),s.id);assert.deepEqual(sponsored[s.id],[proTeam(s.id).sport],s.id);}
 // The page: Pro menus are Sport, League, then Team (Races for racing); the
 // levels run High School, College, Pro; the packaged catalog has the teams.
@@ -31,6 +51,10 @@ assert.deepEqual(levelOrder,['high-school','college','pro']);
 const boot=JSON.parse(page.match(/const BOOTSTRAP_SCHOOLS=(\[.*?\]);\n/)[1]);
 for(const s of pro){assert.ok(boot.some(b=>b.id===s.id&&b.level==='pro'),s.id);assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);}
 assert.ok(page.includes("'nascar-cup-series':['Auto Racing']"));
+// The Team box groups NFL teams under their division, always (user, October
+// 16: "Group them by division"); NASCAR's series sits under NASCAR.
+assert.ok(page.includes("sectionOf:s=>s.league==='NFL'?s.conference:s.league}"));
+assert.ok(page.includes("const sectioned=!conf||level.id==='high-school'||level.id==='pro';"));
 // One Sport box on Pro: the sport filter is hidden (a team plays one sport).
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
 // Worker: pro feeds skip the college season filter; no featured athletes.
@@ -139,6 +163,26 @@ const liveRace=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['na
 assert.equal(liveRace.status,'Live');assert.equal(liveRace.recency_label,'Lap 120 of 312 · Caution');assert.equal(liveRace.headline,'Leader: Chase Briscoe (#19)');
 assert.deepEqual(liveRace.results.map(r=>r.participant),['1st Chase Briscoe','2nd Kyle Larson']);
 assert.equal(liveRace.event_type,'RACE');
+// The live card shows the whole live timing feed (user, October 16: "update
+// all live cards to show all the data"): stage, laps to go, cautions, lead
+// changes, and every car's gap, make, laps led and last-lap speed. Field
+// names are the live feed's (read idle on Oct 15; the first live race is
+// Phoenix, Oct 18).
+const fullFeed={...liveFeed,laps_to_go:192,number_of_caution_segments:3,number_of_caution_laps:17,number_of_lead_changes:6,number_of_leaders:4,stage:{stage_num:2,finish_at_lap:185,laps_in_stage:140},vehicles:[
+  {running_position:1,vehicle_number:'19',driver:{full_name:'Chase Briscoe'},delta:0,vehicle_manufacturer:'Tyt',laps_led:[{start_lap:1,end_lap:40},{start_lap:101,end_lap:120}],last_lap_speed:131.2,is_on_track:true},
+  {running_position:2,vehicle_number:'5',driver:{full_name:'Kyle Larson'},delta:1.204,vehicle_manufacturer:'Chv',laps_led:[{start_lap:41,end_lap:100}],last_lap_speed:130.95,is_on_track:true},
+  {running_position:3,vehicle_number:'88',driver:{full_name:'Shane van Gisbergen (i)'},delta:-1,vehicle_manufacturer:'Chv',laps_led:[],last_lap_speed:0,is_on_track:false}
+]};
+const raceLive=nascarLiveDetails(fullFeed);
+assert.equal(raceLive.stage,'Stage 2 · ends lap 185');assert.equal(raceLive.laps_to_go,192);
+assert.deepEqual(raceLive.numbers,[{label:'Cautions',value:'3 for 17 laps'},{label:'Lead changes',value:'6 among 4 drivers'}]);
+assert.deepEqual(raceLive.order,[
+  {position:1,driver:'Chase Briscoe',car:'#19',gap:'Leader',make:'Toyota',laps_led:60,last_lap_speed:'131.200 mph',pit:null},
+  {position:2,driver:'Kyle Larson',car:'#5',gap:'+1.204 s',make:'Chevrolet',laps_led:60,last_lap_speed:'130.950 mph',pit:null},
+  {position:3,driver:'Shane van Gisbergen',car:'#88',gap:'1 lap down',make:'Chevrolet',laps_led:null,last_lap_speed:null,pit:'Pit road'}
+]);
+assert.equal(nascarLiveDetails(null),null);
+assert.deepEqual(nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now:raceDay,drivers,live:fullFeed}).find(r=>r.race_id===5633).live_details,raceLive);
 // Before the green flag the race reads Today.
 assert.equal(nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now:raceDay,drivers,live:{...liveFeed,flag_state:9,lap_number:0}}).find(r=>r.race_id===5633).status,'Today');
 
@@ -183,5 +227,61 @@ assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===
 assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]?.pro&&g.upcoming[0].event_type!=='RACE'&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
 assert.ok(page.includes("section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')"));
 assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result card');
+
+// Live cards show everything ESPN publishes (user, October 16: "update all
+// live cards to show all the data"). Real scoreboard and summary of Seattle at
+// Denver, Oct 15 (13:44 left in the 3rd, Denver ball, 3rd & 11 at DEN 44).
+{
+  const board=fixture('live-sb'),summary=fixture('live-sum');
+  const today=()=>({id:'live-x-401872995-today',status:'Today',results:[{label:'Week',value:'Week 7'},{label:'TV',value:'Prime Video'}],espn_event_id:'401872995'});
+  const den=applyEspnLive(today(),board,summary,PRO_TEAMS['denver-broncos']);
+  assert.deepEqual([den.id,den.status,den.school_score,den.opponent_score,den.recency_label,den.possession,den.down_distance,den.red_zone],['live-x-401872995-live','Live','14','3','13:44 - 3rd','school','3rd & 11 at DEN 44',false]);
+  const d=den.live_details;
+  assert.deepEqual(d.line,[{label:'Q1',ours:'0',theirs:'3'},{label:'Q2',ours:'14',theirs:'0'},{label:'Q3',ours:'0',theirs:'0'}]);
+  assert.deepEqual([d.teams,d.records,d.timeouts,d.win_probability],[{ours:'DEN',theirs:'SEA'},{ours:'3-2',theirs:'3-2'},{ours:3,theirs:3},82.4]);
+  assert.equal(d.last_play,'J.Dobbins left guard to DEN 44 for no gain (D.Lawrence).');assert.equal(d.drive,'3 plays, 9 yards, 1:16');
+  assert.deepEqual(d.leaders.map(l=>`${l.label}: ${l.value}`),['Passing: Bo Nix (DEN), 11/16, 88 YDS','Rushing: J.K. Dobbins (DEN), 13 CAR, 34 YDS, 1 TD','Receiving: Cooper Kupp (SEA), 4 REC, 33 YDS']);
+  assert.equal(d.stats.length,11);assert.deepEqual(d.stats[0],{label:'Total yards',ours:'139',theirs:'91'});assert.deepEqual(d.stats.at(-1),{label:'Time of possession',ours:'17:25',theirs:'13:51'});
+  assert.deepEqual(d.scoring,['Q1 6:31 · SEA: Jason Myers 55 Yd Field Goal','Q2 12:52 · DEN: J.K. Dobbins 4 Yd Rush (Wil Lutz Kick)','Q2 5:15 · DEN: RJ Harvey 1 Yd Rush (Wil Lutz Kick)']);
+  assert.deepEqual([d.broadcast,d.venue],['Prime Video','Empower Field at Mile High']);
+  // From Seattle's side everything turns around.
+  const sea=applyEspnLive(today(),board,summary,PRO_TEAMS['seattle-seahawks']);
+  assert.deepEqual([sea.school_score,sea.opponent_score,sea.possession,sea.live_details.win_probability,sea.live_details.stats[0].ours,sea.live_details.line[0].ours],['3','14','opponent',17.7,'91','3']);
+  // Without the summary the board's details still show.
+  const bare=applyEspnLive(today(),board,null,PRO_TEAMS['denver-broncos']);
+  assert.equal(bare.live_details.stats,undefined);assert.equal(bare.live_details.last_play,d.last_play);
+  // Timeouts by side (Denver is home), overtime periods by name.
+  const tweaked=JSON.parse(JSON.stringify(board)),tc=tweaked.events[0].competitions[0];tc.situation.homeTimeouts=1;tc.competitors.forEach(t=>t.linescores.push({value:3,displayValue:'3',period:5}));
+  assert.deepEqual(applyEspnLive(today(),tweaked,null,PRO_TEAMS['seattle-seahawks']).live_details.timeouts,{ours:3,theirs:1});
+  assert.equal(applyEspnLive(today(),tweaked,null,PRO_TEAMS['denver-broncos']).live_details.line.at(-1).label,'OT');
+  // A game that ends between team-schedule reads turns Final from the board.
+  const ended=JSON.parse(JSON.stringify(board));const c=ended.events[0].competitions[0];c.status.type={state:'post',shortDetail:'Final'};c.competitors.find(t=>t.team.abbreviation==='DEN').score='24';c.competitors.find(t=>t.team.abbreviation==='SEA').score='10';
+  const final=applyEspnLive(today(),ended,null,PRO_TEAMS['denver-broncos']);
+  assert.deepEqual([final.id,final.status,final.headline,final.results],['live-x-401872995-final','Final','W 24-10',[{label:'Result',value:'W 24-10'},{label:'Week',value:'Week 7'}]]);
+  // Another team's game (not on this board) is left alone.
+  assert.equal(applyEspnLive(today(),board,summary,PRO_TEAMS['pittsburgh-steelers']).status,'Today');
+  // The Worker reads the board and summary only for a game past its kickoff.
+  assert.ok(worker.includes("for(const event of events.filter(e=>(e.status==='Live'||e.status==='Today')&&Date.parse(e.espn_date)<=now.getTime())){"));
+  assert.ok(worker.includes('readJson(board,15),readJson(game,30)'));
+  // The page: score by quarter, facts, last play, leaders, folded team stats
+  // and scoring plays; NASCAR: stage, numbers and every car.
+  const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
+  const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
+  const [liveMore,raceMore]=Function(`${line('const esc=')}\n${line('function monogram(')}\n${fn('liveMore')}\n${fn('raceMore')};return [liveMore,raceMore];`)();
+  const html=liveMore(den,'Broncos','Seattle Seahawks');
+  assert.match(html,/<th>Q1<\/th><th>Q2<\/th><th>Q3<\/th><th>T<\/th>/);
+  assert.match(html,/<th scope="row">DEN <small>\(3-2\)<\/small><\/th><td>0<\/td><td>14<\/td><td>0<\/td><td class="total">14<\/td>/);
+  assert.match(html,/Timeouts <b>DEN 3 · SEA 3<\/b>[^]*Win probability <b>DEN 82\.4%<\/b>[^]*TV <b>Prime Video<\/b>[^]*Empower Field at Mile High/);
+  assert.match(html,/<details><summary>Team stats<\/summary>[^]*<td>Time of possession<\/td><td>17:25<\/td><td>13:51<\/td>/);
+  assert.match(html,/<details><summary>Scoring plays \(3\)<\/summary>/);
+  assert.equal(liveMore({},'a','b'),'');
+  const race=raceMore({live_details:raceLive});
+  assert.match(race,/Stage 2 · ends lap 185[^]*192 laps to go[^]*Cautions: 3 for 17 laps/);
+  assert.match(race,/<td>3<\/td><td>Shane van Gisbergen #88 <small>Pit road<\/small><\/td><td>1 lap down<\/td><td>Chevrolet<\/td>/);
+  assert.ok(!race.includes('Rest of the field'),'ten cars or fewer: nothing folded');
+  const many=raceMore({live_details:{order:Array.from({length:38},(_,i)=>({position:i+1,driver:`D${i+1}`,car:`#${i+1}`}))}});
+  assert.match(many,/Rest of the field \(28\)/);
+  assert.ok(page.includes("if(ev.target.closest('.live-more details'))return;"),'opening a fold does not open the event window');
+}
 
 console.log('pro sports module tests passed');

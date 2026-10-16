@@ -12,7 +12,9 @@ The level switch now reads **High School · College · Pro** (the order the hand
 | --- | --- | --- |
 | Sport | `pro_sport` | Football, Auto Racing |
 | League | `league` | NFL, NASCAR |
-| Team (Races for Auto Racing) | the entry | Pittsburgh Steelers, Kansas City Chiefs; NASCAR Cup Series |
+| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series |
+
+**The whole NFL (October 16, 2026; user: "Add the entire NFL. Group them by division and update all live cards to show all the data").** All 32 teams are catalog entries with `conference` = division; the Team box always groups NFL teams under their division (`sectionOf`), in the catalog's order (AFC East, North, South, West, then NFC). Team colors come from ESPN's team list; the Raiders use Pacific time (`Nevada` in `STATE_TIME_ZONES`). `PRO_TEAMS` names each team's ESPN abbreviation, its three division rivals (the header's division record) and its official schedule page.
 
 A new sport, league or team is a catalog entry (`level`, `pro_sport`, `league`, `conference` = division), a `PRO_TEAMS` entry, `sponsored-sports.json`, and the page's `SCHOOL_SPORTS`, `TEAM_THEMES` and `BOOTSTRAP_SCHOOLS`.
 
@@ -31,8 +33,16 @@ Rules: K-State's — a past game or race without a published result is not liste
 - **Race finals use the cross-country layout** (4.97.0; user: "NASCAR lay out should be similar to the cross country layout"). There is one row per driver, for example "Chase Briscoe (#19) · 1st · Joe Gibbs Racing · Toyota · 62 laps led". The car make was added in 4.97.2 (user: "put the type of car manufacturer in the results"). The card shows the top three and the expanded view shows the whole field. Every final reads its own weekend feed, kept 6 hours. If a read fails, the card shows the winner from the standings. The next-game spotlight is for football only.
 - **No logos** (user: "Leave the logos out"). NFL team logos and NASCAR car-number art are the leagues' and teams' trademarks or artwork, and they are not licensed here. Teams are identified by name and team colors, as schools are. A logo license (data provider or league) would be needed first. Legal note given to the user: scores and schedules are facts (*NBA v. Motorola*). ESPN's unofficial feed is used against its commercial-use terms, as the college live scores already are. Have a lawyer review the sources and the "SAS" name before a commercial launch.
 
+## Live cards (4.98.0, user, October 16: "update all live cards to show all the data")
+
+- **NFL:** a game under way (or past its kickoff and not yet final on the team schedule) also reads ESPN's league scoreboard for that day (15 s, shared by all 32 teams) and the game summary (30 s). The live card shows the score board with the ball beside the team that has it, down and distance and red zone, then the score by quarter with both records, timeouts, win probability, TV, stadium, the last play and the drive, the game leaders, and folded "Team stats" (total, passing and rushing yards, first downs, 3rd/4th down, red zone, turnovers, sacks, penalties, time of possession) and "Scoring plays". A game that ends between team-schedule reads turns Final from the scoreboard. Shapes were read from Seattle at Denver live on Oct 15 (`tests/fixtures/pro-sports/live-*`).
+- **College live boards** (every ESPN board the app reads) pass the same details through `espnLiveDetails` (score by period, records, last play, drive, timeouts, win probability, leaders, TV, venue) and the join onto the official card keeps them. Team stats and scoring plays are NFL only (they need a summary read per game; college volume stays as it was after the Oct 10 refusals).
+- **NASCAR:** the live card shows the stage, laps to go, cautions, lead changes, and every car (top ten, the rest folded) with its gap to the leader (or laps down), make, laps led and last-lap speed, and "Pit road" when off track.
+- Folded parts stay open across the 15 s refresh and do not open the event window.
+
 ## Limits
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.
 - NASCAR's live feed shape (vehicle fields) was read from an idle feed; the first live race (Phoenix, Oct 18) is the first live check.
-- NFL live cards show score and clock; possession/down-and-distance is not read for pro games yet.
+- NASCAR's live vehicle fields (`delta` negative for laps down, `laps_led` as lap ranges, `vehicle_manufacturer` codes) are read from the feed's known shape; the first live race (Phoenix, Oct 18) is the first live check.
+- No team logos or player headshots on live cards (ESPN's payload carries them; not licensed here).
