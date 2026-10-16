@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const michiganSchool={
   id:'michigan',
+  // The school's INFLCR Exchange, its official NIL marketplace (mgoblue.com/feature/NIL,
+  // checked Oct 16): athlete Instagram for a sport still short of three (src/inflcr.mjs).
+  inflcr:{school:'university-of-michigan'},
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.

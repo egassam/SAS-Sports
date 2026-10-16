@@ -5,6 +5,7 @@ import teamThemes from './team-themes.json';
 import {catalogCards,catalogRevision,catalogDerived,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords,catalogOpponent,catalogHostKnown,catalogMembers,catalogAllRecords} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {OPENDORSE_PROFILE,opendorseSlug,opendorseInstagram} from './opendorse.mjs';
+import {INFLCR_SCHOOLS,inflcrInstagram} from './inflcr.mjs';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
@@ -81,7 +82,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.104.0-opendorse-athletes';
+const VERSION='4.105.0-nil-marketplaces';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1118,22 +1119,25 @@ async function featuredAthletes(schoolId,sport){
       }catch{}
     }));
   }
-  // The school's official NIL marketplace (src/opendorse.mjs): roster
-  // athletes still without a verified link are looked up by name, at most
-  // OPENDORSE_BUDGET a sport, until three athletes have Instagram.
-  const marketplace=schoolModule(schoolId)?.school.opendorse;
-  if(marketplace&&found.filter(a=>a.instagram_url).length<3){
+  // The school's official NIL marketplace (src/opendorse.mjs, src/inflcr.mjs):
+  // roster athletes still without a verified link are looked up by name, at
+  // most OPENDORSE_BUDGET a sport, until three athletes have Instagram.
+  const nil=schoolModule(schoolId)?.school;
+  const lookup=nil?.opendorse?{source:'opendorse',url:profile=>`${OPENDORSE_PROFILE}${opendorseSlug(profile.name)}`,read:async(r,profile)=>opendorseInstagram(await r.text(),{name:profile.name,team:nil.opendorse.team,sport,blocked:BLOCKED_INSTAGRAM_HANDLES})}
+    :nil?.inflcr?{source:'inflcr',url:profile=>`${INFLCR_SCHOOLS}${nil.inflcr.school}/athletes?name=${encodeURIComponent(profile.name)}`,init:{headers:{accept:'application/json'}},read:async(r,profile)=>{let payload=null;try{payload=JSON.parse(await r.text())}catch{}return inflcrInstagram(payload,{name:profile.name,sport,blocked:BLOCKED_INSTAGRAM_HANDLES})}}
+    :null;
+  if(lookup&&found.filter(a=>a.instagram_url).length<3){
     const linked=new Set(found.filter(a=>a.instagram_url).map(a=>a.profile_url));
     const candidates=profiles.filter(profile=>!linked.has(profile.url)&&opendorseSlug(profile.name)).sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,OPENDORSE_BUDGET);
     for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3;start+=3){
       await Promise.all(candidates.slice(start,start+3).map(async profile=>{
         try{
-          const r=await sourceFetch(`${OPENDORSE_PROFILE}${opendorseSlug(profile.name)}`,{},{ttl:SOURCE_TTL.document});if(!r.ok)return;
-          const instagram_url=opendorseInstagram(await r.text(),{name:profile.name,team:marketplace.team,sport,blocked:BLOCKED_INSTAGRAM_HANDLES});
+          const r=await sourceFetch(lookup.url(profile),lookup.init||{},{ttl:SOURCE_TTL.document});if(!r.ok)return;
+          const instagram_url=await lookup.read(r,profile);
           if(!instagram_url)return;
           const known=found.find(a=>a.profile_url===profile.url);
-          if(known){known.instagram_url=instagram_url;known.instagram_source='opendorse'}
-          else found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:profile.image_url||null,instagram_source:'opendorse'});
+          if(known){known.instagram_url=instagram_url;known.instagram_source=lookup.source}
+          else found.push({name:profile.name,instagram_url,profile_url:profile.url,image_url:profile.image_url||null,instagram_source:lookup.source});
         }catch{}
       }));
     }

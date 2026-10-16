@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const bostonCollegeSchool={
   id:'boston-college',
+  // The official NIL marketplace the school links (bceagles.com/sports/2026/7/2/nil, checked
+  // Oct 16): athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'bostoncollege-eagles',team:'Boston College Eagles'},
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
