@@ -50,8 +50,9 @@ assert.ok(page.includes("teamFor:sport=>sport==='Auto Racing'?'Races'"),'racing 
 assert.ok(page.includes("cityOf:s=>s.league||'',middle:'League',middles:'All leagues'"),'League is the middle menu');
 const levelOrder=[...page.matchAll(/\{id:'(high-school|college|pro)',label:/g)].map(m=>m[1]);
 assert.deepEqual(levelOrder,['high-school','college','pro']);
-const boot=JSON.parse(page.match(/const BOOTSTRAP_SCHOOLS=(\[.*?\]);\n/)[1]);
-for(const s of pro){assert.ok(boot.some(b=>b.id===s.id&&b.level==='pro'),s.id);assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);}
+// The menus come from the catalog (tests/catalog-module.mjs); each pro entry
+// keeps its colors on the page.
+for(const s of pro)assert.ok(page.includes(`'${s.id}':{primary:`),`${s.id} theme`);
 assert.ok(page.includes("'nascar-cup-series':['Auto Racing']"));
 // The Team box groups NFL teams under their division, always (user, October
 // 16: "Group them by division"); NASCAR's series sits under NASCAR.

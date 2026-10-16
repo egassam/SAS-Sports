@@ -13,7 +13,10 @@
   // School-entered live scores (scorer app /score, TV scoreboard /scoreboard).
   // Not a Durable Object: those turn off branch previews for the whole Worker.
   "d1_databases": [
-    { "binding": "SCORE_DB", "database_name": "sas-sports-live-scoring", "database_id": "47c6e939-fa7e-40fe-8471-4c0aad836eca" }
+    { "binding": "SCORE_DB", "database_name": "sas-sports-live-scoring", "database_id": "47c6e939-fa7e-40fe-8471-4c0aad836eca" },
+    // The catalog of schools, teams and series (src/catalog.mjs). Production
+    // writes it from src/schools.json; previews only read it.
+    { "binding": "CATALOG_DB", "database_name": "sas-sports-catalog", "database_id": "49c4cfa6-ca6a-4999-93c8-1233cd084012" }
   ],
   // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
   // deployed Cron Trigger in place (the reverted #87 added one).
@@ -23,6 +26,6 @@
   "assets": {
     "directory": "./public/",
     "binding": "ASSETS",
-    "run_worker_first": ["/", "/index.html", "/schools*", "/live/*", "/api/*", "/web"]
+    "run_worker_first": ["/", "/index.html", "/schools*", "/catalog/*", "/live/*", "/api/*", "/web"]
   }
 }
