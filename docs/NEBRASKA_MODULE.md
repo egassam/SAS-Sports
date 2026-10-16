@@ -47,3 +47,7 @@ Certification lists all 16 sports (minimum 3). `scripts/athlete-evidence.mjs` (O
 - **Baseball:** the Oct 9 Creighton fall game is not labeled an exhibition on the card (season records leave fall ball out by date).
 - **Tournaments under way (shared):** the module marks the men's ITA Regional (Oct 7-11) today's event, but the shared grouping (`groupEvents` in `src/index.js`) drops a Today/Upcoming event whose first day has passed without reading its `end_time`, so it is not shown while it runs. This affects every school's multi-day events; the fix is shared code, outside this one-school PR (proposed to the user).
 - **Live cards:** no live card observed yet (volleyball vs Wisconsin Oct 10, football vs Indiana Oct 10).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Nebraska's marketplace (opendorse.com/nebraska-huskers) is configured; every sport already had three Instagram athletes (Oct 16). Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).

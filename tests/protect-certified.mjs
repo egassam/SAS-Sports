@@ -23,7 +23,9 @@ const schoolModuleSource=Object.fromEntries(readdirSync(new URL('../src/schools/
 const page=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
 const sponsored=readJson('../src/sponsored-sports.json');
 const REQUIRED_BASELINE=['kstate','kansas','florida','arizona','arizona-state','oklahoma-state','texas-tech','baylor','byu'];
-const ATHLETE_VERIFICATION_SOURCES=new Set(['official_roster_profiles','official_team_instagram']);
+// official_nil_marketplace: the school's own Opendorse marketplace, linked from
+// its official site (user, October 8; src/opendorse.mjs).
+const ATHLETE_VERIFICATION_SOURCES=new Set(['official_roster_profiles','official_team_instagram','official_nil_marketplace']);
 // Since the catalog moved to D1 (docs/CATALOG.md) the page holds no
 // per-team list: each team's sports and colors come with its catalog card.
 assert.ok(page.includes('let SCHOOL_SPORTS={};'),'the page must not carry its own sponsored-sports list');

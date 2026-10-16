@@ -39,3 +39,7 @@ Three per sport from roster cards and profile pages (`scripts/athlete-evidence.m
 
 - **Waiting on publication:** Gymnastics, Track & Field and men's Lacrosse fill when umterps.com publishes 2027.
 - **Live cards:** no live card observed yet (volleyball vs UCLA and men's soccer vs Michigan State Oct 9; football at Ohio State Oct 10).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Maryland's marketplace (opendorse.com/maryland-terrapins) is configured; every sport already had three Instagram athletes (Oct 16). Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).

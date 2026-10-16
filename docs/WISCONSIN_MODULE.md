@@ -39,3 +39,7 @@ Three featured athletes per sport. Verified Instagram from profile pages for Cro
 
 - Softball fills when its spring games are published; Track & Field when 2026-27 is published.
 - First live cards not yet observed.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Volleyball shows three athletes with Instagram from the official NIL marketplace (opendorse.com/wisconsin-badgers, linked from uwbadgers.com). The profile-card fallback stays listed. Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).

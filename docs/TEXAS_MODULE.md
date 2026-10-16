@@ -41,3 +41,7 @@ Certification lists all 13 sports (minimum 3). On October 8, every roster and pr
 - Rowing and Track & Field fill when texaslonghorns.com publishes 2026-27 meets.
 - Golf's Bayou City Collegiate Classic was individuals only ("Completed", with its story).
 - No live card observed yet.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Cross Country, Rowing, Tennis and Track & Field show three athletes with Instagram from the official NIL marketplace (opendorse.com/texas-longhorns, linked from texaslonghorns.com); Golf one. The profile-card fallback stays listed for days when fewer roster athletes are tried. Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
