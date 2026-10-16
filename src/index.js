@@ -80,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.101.1-high-school-global-copy';
+const VERSION='4.101.2-catalog-edge-cache';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -608,12 +608,21 @@ async function catalogStore(env,url,now=Date.now()){
   return catalogChoice.value;
 }
 // ?source=bundled answers from the bundled copy (to compare it with D1).
+// An answer never changes within a revision, so each Cloudflare location
+// keeps it for an hour, keyed by revision, store and request: D1 sits in
+// eastern North America, and from Europe each menu step's D1 reads added
+// 0.3-0.5 s (Oct 16). A failed D1 read (answered from the bundled copy) is
+// not kept.
+const CATALOG_EDGE_SECONDS=3600;
 async function catalogAnswer(env,url,read){
   const chosen=await catalogStore(env,url),revision=chosen.revision;
   const store=url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store;
+  const edge=globalThis.caches?.default,key=new Request(`${url.origin}/__sas_cache/catalog?r=${revision}&s=${store.kind}&p=${encodeURIComponent(url.pathname+url.search)}`);
+  if(edge){try{const hit=await edge.match(key);if(hit){const copy=new Response(hit.body,hit);copy.headers.set('cache-control','no-store');copy.headers.set('x-sas-cache','edge');return copy;}}catch{}}
   let body,source=store.kind;
   try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}
   const response=json(body);response.headers.set('x-sas-catalog',`${source} ${revision}`);
+  if(edge&&source===store.kind){try{const kept=response.clone();kept.headers.set('cache-control',`public, max-age=${CATALOG_EDGE_SECONDS}`);await edge.put(key,kept)}catch{}}
   return response;
 }
 function schoolTimeZone(school){return SCHOOL_TIME_ZONES[school?.id]||STATE_TIME_ZONES[school?.state]||(school?.state?'America/New_York':'America/Chicago');}

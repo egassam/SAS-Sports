@@ -125,6 +125,11 @@ assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,
 assert.ok(worker.includes("url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store"),'?source=bundled compares the copies');
 assert.ok(worker.includes("try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}"));
 assert.ok(worker.includes("if(url.pathname==='/catalog/menu')return catalogAnswer("));
+// Each location keeps an answer for an hour, keyed by revision, store and
+// request; an answer that fell back to the bundled copy is not kept.
+assert.ok(worker.includes('key=new Request(`${url.origin}/__sas_cache/catalog?r=${revision}&s=${store.kind}&p=${encodeURIComponent(url.pathname+url.search)}`)'));
+assert.ok(worker.includes("if(edge&&source===store.kind){try{const kept=response.clone();kept.headers.set('cache-control',`public, max-age=${CATALOG_EDGE_SECONDS}`);await edge.put(key,kept)}catch{}}"));
+assert.ok(page.includes("  populateSportFilter();\n  updateFavorite();"),'the sport box shows the team\'s sports once its card is known');
 assert.ok(worker.includes("if(url.pathname==='/catalog/entries')return catalogAnswer("));
 
 // Page: no packaged catalog, no full download; menus a step at a time, kept
