@@ -37,3 +37,7 @@ Three featured athletes per sport. The roster cards link only the department's t
 - Baseball, Rowing, Track & Field fill when 2026-27 is published.
 - Golf shows the place without field size (neither cards nor headlines give it).
 - First live cards not yet observed.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange university-of-miami, linked from miamihurricanes.com/nil. On the preview (4.105.0), the sports that use profile cards: Swimming & Diving 1 of 3 with Instagram (0 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

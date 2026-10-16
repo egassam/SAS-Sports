@@ -44,3 +44,7 @@ Three per sport (`scripts/athlete-evidence.mjs`, Oct 9). **Pins** (few links amo
 
 - **Waiting on publication:** Gymnastics, Lacrosse, Rowing and Track & Field fill when mgoblue.com publishes 2026-27.
 - **Live cards:** no live card observed yet (field hockey vs Maryland, hockey vs Alaska Anchorage, men's soccer vs Penn State, volleyball vs Iowa, Oct 9).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange university-of-michigan (mgoblue.com/feature/NIL). On the preview (4.105.0), the sports that use profile cards: Field Hockey 2 of 3 with Instagram (2 from the marketplace); Football 3 of 3 with Instagram (3 from the marketplace); Rowing 0 of 3 with Instagram (0 from the marketplace); Soccer 1 of 3 with Instagram (1 from the marketplace); Softball 2 of 3 with Instagram (2 from the marketplace); Swimming & Diving 1 of 3 with Instagram (1 from the marketplace); Wrestling 3 of 3 with Instagram (3 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

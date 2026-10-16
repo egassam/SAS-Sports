@@ -82,7 +82,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.105.0-nil-marketplaces';
+const VERSION='4.105.1-nil-marketplaces';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1129,8 +1129,10 @@ async function featuredAthletes(schoolId,sport){
   if(lookup&&found.filter(a=>a.instagram_url).length<3){
     const linked=new Set(found.filter(a=>a.instagram_url).map(a=>a.profile_url));
     const candidates=profiles.filter(profile=>!linked.has(profile.url)&&opendorseSlug(profile.name)).sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,OPENDORSE_BUDGET);
-    for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3;start+=3){
-      await Promise.all(candidates.slice(start,start+3).map(async profile=>{
+    // Six at a time: a large roster's official pages already took most of
+    // the request's time (Rutgers track, 13-15 s, Oct 16).
+    for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3;start+=6){
+      await Promise.all(candidates.slice(start,start+6).map(async profile=>{
         try{
           const r=await sourceFetch(lookup.url(profile),lookup.init||{},{ttl:SOURCE_TTL.document});if(!r.ok)return;
           const instagram_url=await lookup.read(r,profile);

@@ -40,3 +40,7 @@ Three featured athletes per sport. Verified Instagram from profile pages: Basket
 
 - Gymnastics and Track & Field fill when 2026-27 is published.
 - First live cards not yet observed.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange rutgers-university (scarletknights.com/feature/rnil). On the preview (4.105.0), the sports that use profile cards: Cross Country 2 of 3 with Instagram (2 from the marketplace); Field Hockey 2 of 3 with Instagram (1 from the marketplace); Football 3 of 3 with Instagram (3 from the marketplace); Golf 2 of 3 with Instagram (2 from the marketplace); Lacrosse 1 of 3 with Instagram (1 from the marketplace); Swimming & Diving 0 of 3 with Instagram (0 from the marketplace); Tennis 1 of 3 with Instagram (1 from the marketplace); Wrestling 1 of 3 with Instagram (1 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

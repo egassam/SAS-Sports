@@ -37,3 +37,7 @@ Three featured athletes per sport. Pinned from the profile pages (Oct 14): Baseb
 
 - Baseball, Softball, Lacrosse, Skiing, Track & Field fill when 2026-27 is published.
 - First live cards not yet observed.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: opendorse.com/bostoncollege-eagles, linked from the bceagles.com NIL page. On the preview (4.105.0), the sports that use profile cards: Fencing 0 of 3 with Instagram (0 from the marketplace); Hockey 1 of 3 with Instagram (0 from the marketplace); Lacrosse 1 of 3 with Instagram (1 from the marketplace); Rowing 3 of 3 with Instagram (2 from the marketplace); Swimming & Diving 3 of 3 with Instagram (3 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

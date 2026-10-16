@@ -49,3 +49,7 @@ Three per sport (`scripts/athlete-evidence.mjs`, Oct 9). **Pins:** Baseball (5 o
 - **Paul Short Run (women's XC, Oct 2):** no story of its own is published (the card links the fencing story); the result comes from TFRRS.
 - **Rifle conference:** Ohio State rifle competes in the Patriot Rifle Conference (its championship is on the schedule, Feb 5); the app shows no conference record for rifle (the Big Ten sponsors none) until the module names that league.
 - **Live cards:** no live card observed yet (field hockey vs Rutgers, women's hockey vs Wisconsin, volleyball vs Washington, Oct 9; football vs Maryland Oct 10).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange the-ohio-state-university (ohiostatebuckeyes.com/feature/nil). On the preview (4.105.0), the sports that use profile cards: Rifle 3 of 3 with Instagram (3 from the marketplace); Rowing 3 of 3 with Instagram (3 from the marketplace); Volleyball 3 of 3 with Instagram (2 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).
