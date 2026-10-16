@@ -153,6 +153,30 @@ try{
   const jc=(await worker.fetchLive('manhattan-ks','Football',null,group.results[0].id)).events.find(e=>e.id===group.results[0].id);
   assert.equal(jc.highlights[0],'Manhattan beat Junction City 34-7 on the road in a Centennial League game.');
 
+  // A failed MaxPreps read leaves every past game without its score: the
+  // build is marked and the feed keeps its last good copy (Oct 16: Manhattan
+  // football read 0 of 7 results on a forced refresh).
+  {
+    class MemoryCache{constructor(){this.store=new Map()}async match(r){const hit=this.store.get(String(r.url??r));return hit?hit.clone():undefined}async put(r,response){this.store.set(String(r.url??r),response.clone())}}
+    let maxprepsDown=false;
+    const flaky=async(url,init={})=>maxprepsDown&&String(url).startsWith(MAXPREPS)?{ok:false,status:503,url:String(url),headers:new Headers(),text:async()=>'',json:async()=>({})}:fetch(url,init);
+    const d2={...deps,fetch:flaky,caches:{default:new MemoryCache()}},w2=Function(...Object.keys(d2),source+';return {fetchLive,handler}')(...Object.values(d2));
+    const feed=async()=>{const r=await w2.handler.fetch(new Request('https://x.test/live/feed/grouped?school=manhattan-ks&sport=Football&refresh=1'),{},{waitUntil(){}});return{state:r.headers.get('x-sas-cache'),results:(await r.json())[0]?.results?.length??0}};
+    assert.deepEqual(await feed(),{state:'live',results:5});
+    maxprepsDown=true;
+    assert.equal((await w2.fetchLive('manhattan-ks','Football')).scores_missing,true);
+    const fallback=await feed();
+    assert.notEqual(fallback.state,'live','a build without its scores does not replace the feed');
+    assert.equal(fallback.results,5,'the last good copy keeps its five finals');
+    maxprepsDown=false;
+    assert.equal((await w2.fetchLive('manhattan-ks','Football')).scores_missing,false);
+    assert.deepEqual(await feed(),{state:'live',results:5});
+    // With no saved copy at all, the schedule is still shown (not saved as last good).
+    const d3={...deps,fetch:async(u,i)=>String(u).startsWith(MAXPREPS)?{ok:false,status:503,url:String(u),headers:new Headers(),text:async()=>'',json:async()=>({})}:fetch(u,i),caches:{default:new MemoryCache()}},w3=Function(...Object.keys(d3),source+';return {handler}')(...Object.values(d3));
+    const first=await w3.handler.fetch(new Request('https://x.test/live/feed/grouped?school=manhattan-ks&sport=Football&refresh=1'),{},{waitUntil(){}});
+    assert.equal(first.status,200);assert.equal((await first.json())[0].upcoming.length,4);
+  }
+
   // No athletes for high school (minors).
   const athletes=await worker.handler.fetch(new Request('https://x.test/live/athletes?school=manhattan-ks&sport=Football'),{},{});
   assert.deepEqual(await athletes.json(),[]);
