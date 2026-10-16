@@ -4,9 +4,8 @@
 //     private source route when the site refuses the sandbox), prints the
 //     publisher (SIDEARM or WMT: count of markers, since newer SIDEARM pages
 //     also carry __NUXT__) and the sponsored sports from the site's nav;
-//   - writes src/sponsored-sports.json, SCHOOL_SPORTS and TEAM_THEMES in
-//     public/index.html, and the tests/certified-schools.json entry (every
-//     sport, minimum 3).
+//   - writes src/sponsored-sports.json, src/team-themes.json (colors) and
+//     the tests/certified-schools.json entry (every sport, minimum 3).
 // Then run scripts/scaffold-school.mjs.
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/add-school.mjs --school=tennessee --theme=#FF8200,#58595B,#07111f [--sports=A,B] [--write]
@@ -51,25 +50,23 @@ console.log(`sports (${sports.length}): ${sports.join(', ')}`);
 if(publisher==='WMT')console.log('WMT site: scripts/start-schools.mjs ports it from a WMT card reader (scripts/port-wmt.mjs, --wmt-from=nebraska or iowa), not the SIDEARM kit.');
 
 const theme=value('theme')?.split(',');
-if(!write){console.log('dry run; add --write (with --theme) to write the four files');process.exit(0)}
+if(!write){console.log('dry run; add --write (with --theme) to write the three files');process.exit(0)}
 if(!theme||theme.length!==3){console.error('--theme=<primary>,<secondary>,<onAccent> is required with --write');process.exit(2)}
 const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),toHex=rgb=>'#'+rgb.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
 const mix=(h,dark,weight)=>toHex(hex(h).map((v,i)=>v*weight+hex(dark)[i]*(1-weight)));
 const [primary,secondary,onAccent]=theme;
-const themeLine=`  ${/-/.test(id)?`'${id}'`:id}:{primary:'${primary}',secondary:'${secondary}',panel:'${mix(primary,'#0b0b10',0.22)}',panelDark:'${mix(primary,'#050508',0.1)}',line:'${mix(primary,'#20202a',0.55)}',onAccent:'${onAccent}'},`;
+const theme_={primary,secondary,panel:mix(primary,'#0b0b10',0.22),panelDark:mix(primary,'#050508',0.1),line:mix(primary,'#20202a',0.55),onAccent};
 
 const sponsored=JSON.parse(read('src/sponsored-sports.json'));
 if(sponsored[id])console.log(`src/sponsored-sports.json already lists ${id}; replacing`);
 sponsored[id]=sports;
 writeFileSync(new URL('src/sponsored-sports.json',root),JSON.stringify(Object.fromEntries(Object.entries(sponsored).sort(([a],[b])=>a.localeCompare(b))),null,2)+'\n');
 
-let index=read('public/index.html');
-const key=`'${id}'`;
-index=index.replace(new RegExp(`^\\s*(?:${key}|${id}):\\{primary:.*\\n`,'m'),'').replace(new RegExp(`^\\s*${key}:\\[.*\\n`,'m'),'');
-index=index.replace(/(\n  lsu:\{primary:)/,`\n${themeLine}$1`);
-index=index.replace(/(\n  'lsu':\[)/,`\n  ${key}:[${sports.map(s=>`'${s}'`).join(',')}],$1`);
-if(!index.includes(themeLine)||!index.includes(`${key}:[`))throw Error('could not place the theme or sports line in public/index.html');
-writeFileSync(new URL('public/index.html',root),index);
+// The team's colors go with its catalog card (src/team-themes.json); the page
+// holds no per-team list since the catalog moved to D1 (docs/CATALOG.md).
+const themes=JSON.parse(read('src/team-themes.json'));
+themes[id]=theme_;
+writeFileSync(new URL('src/team-themes.json',root),JSON.stringify(Object.fromEntries(Object.entries(themes).sort(([a],[b])=>a.localeCompare(b))),null,2)+'\n');
 
 const certifiedPath=new URL('tests/certified-schools.json',root);
 let certified=readFileSync(certifiedPath,'utf8');
@@ -80,5 +77,5 @@ certified=certified.replace(new RegExp(`\\n    \\{"id":"${id}",.*`),'');
 certified=certified.replace(/\}\n  \]\n\}\s*$/,`},\n${entry}\n  ]\n}\n`);
 JSON.parse(certified);
 writeFileSync(certifiedPath,certified);
-console.log('wrote src/sponsored-sports.json, public/index.html (SCHOOL_SPORTS, TEAM_THEMES), tests/certified-schools.json');
+console.log('wrote src/sponsored-sports.json, src/team-themes.json, tests/certified-schools.json');
 console.log(`next: npm run scaffold-school -- --school=${id} --write`);

@@ -1,0 +1,850 @@
+{
+  "alabama": {
+    "primary": "#9E1B32",
+    "secondary": "#FFFFFF",
+    "panel": "#32151e",
+    "panelDark": "#16090e",
+    "line": "#824052",
+    "onAccent": "#ffffff"
+  },
+  "anthony-ms-ks": {
+    "primary": "#613384",
+    "secondary": "#FFFFFF",
+    "panel": "#2a1838",
+    "panelDark": "#130b1a",
+    "line": "#7a4fa0",
+    "onAccent": "#ffffff"
+  },
+  "arizona": {
+    "primary": "#CC0033",
+    "secondary": "#003366",
+    "panel": "#321426",
+    "panelDark": "#170a13",
+    "line": "#7d2b4a",
+    "onAccent": "#ffffff"
+  },
+  "arizona-cardinals": {
+    "primary": "#A40227",
+    "secondary": "#FFFFFF",
+    "panel": "#2a0a14",
+    "panelDark": "#120509",
+    "line": "#732a3e",
+    "onAccent": "#ffffff"
+  },
+  "arizona-state": {
+    "primary": "#8C1D40",
+    "secondary": "#FFC627",
+    "panel": "#351625",
+    "panelDark": "#180a11",
+    "line": "#80435a",
+    "onAccent": "#ffffff"
+  },
+  "arkansas": {
+    "primary": "#9D2235",
+    "secondary": "#FFFFFF",
+    "panel": "#2b1018",
+    "panelDark": "#14080d",
+    "line": "#652130",
+    "onAccent": "#ffffff"
+  },
+  "atlanta-falcons": {
+    "primary": "#A71930",
+    "secondary": "#000000",
+    "panel": "#2a0f16",
+    "panelDark": "#120709",
+    "line": "#743442",
+    "onAccent": "#ffffff"
+  },
+  "auburn": {
+    "primary": "#0C2340",
+    "secondary": "#E87722",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "baltimore-ravens": {
+    "primary": "#29126F",
+    "secondary": "#000000",
+    "panel": "#110d22",
+    "panelDark": "#08060e",
+    "line": "#3b315e",
+    "onAccent": "#ffffff"
+  },
+  "baylor": {
+    "primary": "#154734",
+    "secondary": "#FFB81C",
+    "panel": "#153027",
+    "panelDark": "#091610",
+    "line": "#3d745f",
+    "onAccent": "#ffffff"
+  },
+  "boston-college": {
+    "primary": "#8A100B",
+    "secondary": "#B29D6C",
+    "panel": "#270c0f",
+    "panelDark": "#120608",
+    "line": "#5a1719",
+    "onAccent": "#ffffff"
+  },
+  "buffalo-bills": {
+    "primary": "#00338D",
+    "secondary": "#D50A0A",
+    "panel": "#091428",
+    "panelDark": "#050911",
+    "line": "#29406b",
+    "onAccent": "#ffffff"
+  },
+  "byu": {
+    "primary": "#002E5D",
+    "secondary": "#FFFFFF",
+    "panel": "#10253b",
+    "panelDark": "#08121e",
+    "line": "#3b638b",
+    "onAccent": "#ffffff"
+  },
+  "california": {
+    "primary": "#003262",
+    "secondary": "#FDB515",
+    "panel": "#091422",
+    "panelDark": "#050a11",
+    "line": "#0e2a49",
+    "onAccent": "#ffffff"
+  },
+  "carolina-panthers": {
+    "primary": "#0085CA",
+    "secondary": "#000000",
+    "panel": "#092434",
+    "panelDark": "#050f16",
+    "line": "#296587",
+    "onAccent": "#ffffff"
+  },
+  "chicago-bears": {
+    "primary": "#0B1C3A",
+    "secondary": "#E64100",
+    "panel": "#0b0f18",
+    "panelDark": "#05070a",
+    "line": "#7f3d26",
+    "onAccent": "#ffffff"
+  },
+  "cincinnati": {
+    "primary": "#E00122",
+    "secondary": "#000000",
+    "panel": "#321317",
+    "panelDark": "#16080a",
+    "line": "#8a3541",
+    "onAccent": "#ffffff"
+  },
+  "cincinnati-bengals": {
+    "primary": "#FB4F14",
+    "secondary": "#000000",
+    "panel": "#3b1910",
+    "panelDark": "#190b07",
+    "line": "#9a4c35",
+    "onAccent": "#ffffff"
+  },
+  "clemson": {
+    "primary": "#F56600",
+    "secondary": "#522D80",
+    "panel": "#3e1f0c",
+    "panelDark": "#1d0f07",
+    "line": "#954713",
+    "onAccent": "#ffffff"
+  },
+  "cleveland-browns": {
+    "primary": "#472A08",
+    "secondary": "#FF3C00",
+    "panel": "#17120e",
+    "panelDark": "#0a0806",
+    "line": "#493c30",
+    "onAccent": "#ffffff"
+  },
+  "colorado": {
+    "primary": "#CFB87C",
+    "secondary": "#000000",
+    "panel": "#302b20",
+    "panelDark": "#15120d",
+    "line": "#7f7250",
+    "onAccent": "#07111f"
+  },
+  "dallas-cowboys": {
+    "primary": "#002A5C",
+    "secondary": "#B0B7BC",
+    "panel": "#09121e",
+    "panelDark": "#05080d",
+    "line": "#293c55",
+    "onAccent": "#ffffff"
+  },
+  "denver-broncos": {
+    "primary": "#0A2343",
+    "secondary": "#FC4C02",
+    "panel": "#0b1119",
+    "panelDark": "#05070b",
+    "line": "#884127",
+    "onAccent": "#ffffff"
+  },
+  "detroit-lions": {
+    "primary": "#0076B6",
+    "secondary": "#BBBBBB",
+    "panel": "#092130",
+    "panelDark": "#050e14",
+    "line": "#295e7e",
+    "onAccent": "#ffffff"
+  },
+  "duke": {
+    "primary": "#003087",
+    "secondary": "#FFFFFF",
+    "panel": "#09132a",
+    "panelDark": "#050915",
+    "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
+  "eisenhower-ms-ks": {
+    "primary": "#00853F",
+    "secondary": "#FFFFFF",
+    "panel": "#10301f",
+    "panelDark": "#07160e",
+    "line": "#2f8a5a",
+    "onAccent": "#ffffff"
+  },
+  "florida": {
+    "primary": "#0021A5",
+    "secondary": "#FA4616",
+    "panel": "#111d3b",
+    "panelDark": "#080e20",
+    "line": "#3654a0",
+    "onAccent": "#ffffff"
+  },
+  "florida-state": {
+    "primary": "#782F40",
+    "secondary": "#CEB888",
+    "panel": "#23131b",
+    "panelDark": "#11090e",
+    "line": "#502836",
+    "onAccent": "#ffffff"
+  },
+  "georgia": {
+    "primary": "#BA0C2F",
+    "secondary": "#000000",
+    "panel": "#331418",
+    "panelDark": "#16090b",
+    "line": "#8a3a47",
+    "onAccent": "#ffffff"
+  },
+  "georgia-tech": {
+    "primary": "#003057",
+    "secondary": "#B3A369",
+    "panel": "#091320",
+    "panelDark": "#050910",
+    "line": "#0e2943",
+    "onAccent": "#ffffff"
+  },
+  "green-bay-packers": {
+    "primary": "#204E32",
+    "secondary": "#FFB612",
+    "panel": "#0f1916",
+    "panelDark": "#070b0a",
+    "line": "#374c43",
+    "onAccent": "#ffffff"
+  },
+  "houston": {
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "panel": "#32151d",
+    "panelDark": "#16090d",
+    "line": "#863d50",
+    "onAccent": "#ffffff"
+  },
+  "houston-texans": {
+    "primary": "#021018",
+    "secondary": "#EB0028",
+    "panel": "#090d11",
+    "panelDark": "#050607",
+    "line": "#812336",
+    "onAccent": "#ffffff"
+  },
+  "illinois": {
+    "primary": "#13294B",
+    "secondary": "#FF5F05",
+    "panel": "#0d121d",
+    "panelDark": "#06090f",
+    "line": "#19253c",
+    "onAccent": "#ffffff"
+  },
+  "imsa-pilot-challenge": {
+    "primary": "#27509B",
+    "secondary": "#FCE500",
+    "panel": "#0f1d36",
+    "panelDark": "#070e1a",
+    "line": "#3b5f99",
+    "onAccent": "#ffffff"
+  },
+  "imsa-weathertech": {
+    "primary": "#D71920",
+    "secondary": "#1B2A4A",
+    "panel": "#2a0d10",
+    "panelDark": "#130607",
+    "line": "#7a2a2e",
+    "onAccent": "#ffffff"
+  },
+  "indiana": {
+    "primary": "#990000",
+    "secondary": "#EEEDEB",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "indianapolis-colts": {
+    "primary": "#003B75",
+    "secondary": "#FFFFFF",
+    "panel": "#091523",
+    "panelDark": "#05090f",
+    "line": "#294361",
+    "onAccent": "#ffffff"
+  },
+  "iowa": {
+    "primary": "#FFCD00",
+    "secondary": "#000000",
+    "panel": "#41360c",
+    "panelDark": "#1e1907",
+    "line": "#9b7f13",
+    "onAccent": "#07111f"
+  },
+  "iowa-state": {
+    "primary": "#C8102E",
+    "secondary": "#F1BE48",
+    "panel": "#351820",
+    "panelDark": "#170a0e",
+    "line": "#884352",
+    "onAccent": "#ffffff"
+  },
+  "jacksonville-jaguars": {
+    "primary": "#007487",
+    "secondary": "#D7A22A",
+    "panel": "#092127",
+    "panelDark": "#050e10",
+    "line": "#295d69",
+    "onAccent": "#ffffff"
+  },
+  "kansas": {
+    "primary": "#0051BA",
+    "secondary": "#E8000D",
+    "panel": "#101f3d",
+    "panelDark": "#080f22",
+    "line": "#315f9e",
+    "onAccent": "#ffffff"
+  },
+  "kansas-city-chiefs": {
+    "primary": "#E31837",
+    "secondary": "#FFB81C",
+    "panel": "#361219",
+    "panelDark": "#17080b",
+    "line": "#8a3a47",
+    "onAccent": "#ffffff"
+  },
+  "kentucky": {
+    "primary": "#0033A0",
+    "secondary": "#FFFFFF",
+    "panel": "#091430",
+    "panelDark": "#050a17",
+    "line": "#0e2a6b",
+    "onAccent": "#ffffff"
+  },
+  "kstate": {
+    "primary": "#512888",
+    "secondary": "#A7A9AC",
+    "panel": "#241936",
+    "panelDark": "#120d1d",
+    "line": "#7556a0",
+    "onAccent": "#ffffff"
+  },
+  "las-vegas-raiders": {
+    "primary": "#131417",
+    "secondary": "#A5ACAF",
+    "panel": "#0d0e11",
+    "panelDark": "#060607",
+    "line": "#65686c",
+    "onAccent": "#ffffff"
+  },
+  "los-angeles-chargers": {
+    "primary": "#0080C6",
+    "secondary": "#FFC20E",
+    "panel": "#092334",
+    "panelDark": "#050f15",
+    "line": "#296285",
+    "onAccent": "#ffffff"
+  },
+  "los-angeles-rams": {
+    "primary": "#003594",
+    "secondary": "#FFD100",
+    "panel": "#09142a",
+    "panelDark": "#050911",
+    "line": "#29416f",
+    "onAccent": "#ffffff"
+  },
+  "louisville": {
+    "primary": "#AD0000",
+    "secondary": "#000000",
+    "panel": "#2f090c",
+    "panelDark": "#160507",
+    "line": "#6e0e13",
+    "onAccent": "#ffffff"
+  },
+  "lsu": {
+    "primary": "#461D7C",
+    "secondary": "#FDD023",
+    "panel": "#24163a",
+    "panelDark": "#100a1c",
+    "line": "#6b4b9a",
+    "onAccent": "#ffffff"
+  },
+  "manhattan-ks": {
+    "primary": "#28306C",
+    "secondary": "#FFFFFF",
+    "panel": "#181d3a",
+    "panelDark": "#0b0e1d",
+    "line": "#4a5290",
+    "onAccent": "#ffffff"
+  },
+  "maryland": {
+    "primary": "#E03A3E",
+    "secondary": "#FFD520",
+    "panel": "#3a151a",
+    "panelDark": "#1b0a0d",
+    "line": "#8a2e35",
+    "onAccent": "#ffffff"
+  },
+  "miami": {
+    "primary": "#005030",
+    "secondary": "#F47321",
+    "panel": "#091a17",
+    "panelDark": "#050d0c",
+    "line": "#0e3a2d",
+    "onAccent": "#ffffff"
+  },
+  "miami-dolphins": {
+    "primary": "#008E97",
+    "secondary": "#FC4C02",
+    "panel": "#09262a",
+    "panelDark": "#051012",
+    "line": "#296970",
+    "onAccent": "#ffffff"
+  },
+  "michigan": {
+    "primary": "#00274C",
+    "secondary": "#FFCB05",
+    "panel": "#09111d",
+    "panelDark": "#05080f",
+    "line": "#0e243d",
+    "onAccent": "#ffffff"
+  },
+  "michigan-state": {
+    "primary": "#18453B",
+    "secondary": "#FFFFFF",
+    "panel": "#0e1819",
+    "panelDark": "#070b0d",
+    "line": "#1c3433",
+    "onAccent": "#ffffff"
+  },
+  "minnesota": {
+    "primary": "#7A0019",
+    "secondary": "#FFCC33",
+    "panel": "#230912",
+    "panelDark": "#11050a",
+    "line": "#520e21",
+    "onAccent": "#ffffff"
+  },
+  "minnesota-vikings": {
+    "primary": "#4F2683",
+    "secondary": "#FFC62F",
+    "panel": "#191126",
+    "panelDark": "#0b0810",
+    "line": "#4c3a67",
+    "onAccent": "#ffffff"
+  },
+  "mississippi-state": {
+    "primary": "#660000",
+    "secondary": "#FFFFFF",
+    "panel": "#2e1010",
+    "panelDark": "#140707",
+    "line": "#7a3a3a",
+    "onAccent": "#ffffff"
+  },
+  "missouri": {
+    "primary": "#F1B82D",
+    "secondary": "#000000",
+    "panel": "#3e3116",
+    "panelDark": "#1d170c",
+    "line": "#93742c",
+    "onAccent": "#07111f"
+  },
+  "nascar-cup-series": {
+    "primary": "#007AC2",
+    "secondary": "#FFD659",
+    "panel": "#10283a",
+    "panelDark": "#08131d",
+    "line": "#3a6f96",
+    "onAccent": "#ffffff"
+  },
+  "nc-state": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#35090c",
+    "panelDark": "#190507",
+    "line": "#7f0e13",
+    "onAccent": "#ffffff"
+  },
+  "nebraska": {
+    "primary": "#E41C38",
+    "secondary": "#F5F1E7",
+    "panel": "#3b0f19",
+    "panelDark": "#1b070d",
+    "line": "#8c1e32",
+    "onAccent": "#ffffff"
+  },
+  "new-england-patriots": {
+    "primary": "#002A5C",
+    "secondary": "#C60C30",
+    "panel": "#09121e",
+    "panelDark": "#05080d",
+    "line": "#293c55",
+    "onAccent": "#ffffff"
+  },
+  "new-orleans-saints": {
+    "primary": "#D3BC8D",
+    "secondary": "#000000",
+    "panel": "#332f28",
+    "panelDark": "#151411",
+    "line": "#887d6b",
+    "onAccent": "#111111"
+  },
+  "new-york-giants": {
+    "primary": "#003C7F",
+    "secondary": "#C9243F",
+    "panel": "#091625",
+    "panelDark": "#050910",
+    "line": "#294465",
+    "onAccent": "#ffffff"
+  },
+  "new-york-jets": {
+    "primary": "#115740",
+    "secondary": "#FFFFFF",
+    "panel": "#0c1b19",
+    "panelDark": "#060c0b",
+    "line": "#305049",
+    "onAccent": "#ffffff"
+  },
+  "north-carolina": {
+    "primary": "#7BAFD4",
+    "secondary": "#13294B",
+    "panel": "#242f3b",
+    "panelDark": "#11161c",
+    "line": "#526f88",
+    "onAccent": "#13294B"
+  },
+  "northwestern": {
+    "primary": "#4E2A84",
+    "secondary": "#FFFFFF",
+    "panel": "#1a122a",
+    "panelDark": "#0c0914",
+    "line": "#39265c",
+    "onAccent": "#ffffff"
+  },
+  "notre-dame": {
+    "primary": "#0C2340",
+    "secondary": "#C99700",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "ohio-state": {
+    "primary": "#BA0C2F",
+    "secondary": "#A7B1B7",
+    "panel": "#320b17",
+    "panelDark": "#17060c",
+    "line": "#75152d",
+    "onAccent": "#ffffff"
+  },
+  "oklahoma": {
+    "primary": "#841617",
+    "secondary": "#FDF9D8",
+    "panel": "#260d12",
+    "panelDark": "#12070a",
+    "line": "#571b20",
+    "onAccent": "#ffffff"
+  },
+  "oklahoma-state": {
+    "primary": "#FF7300",
+    "secondary": "#000000",
+    "panel": "#302015",
+    "panelDark": "#140d09",
+    "line": "#8b4d22",
+    "onAccent": "#07111f"
+  },
+  "ole-miss": {
+    "primary": "#CE1126",
+    "secondary": "#14213D",
+    "panel": "#14213D",
+    "panelDark": "#0a1120",
+    "line": "#3d5585",
+    "onAccent": "#ffffff"
+  },
+  "oregon": {
+    "primary": "#154733",
+    "secondary": "#FEE123",
+    "panel": "#0d1818",
+    "panelDark": "#070c0c",
+    "line": "#1a352f",
+    "onAccent": "#ffffff"
+  },
+  "penn-state": {
+    "primary": "#041E42",
+    "secondary": "#1E407C",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
+  "philadelphia-eagles": {
+    "primary": "#06424D",
+    "secondary": "#000000",
+    "panel": "#0a171b",
+    "panelDark": "#050a0c",
+    "line": "#2b464f",
+    "onAccent": "#ffffff"
+  },
+  "pitt": {
+    "primary": "#003594",
+    "secondary": "#FFB81C",
+    "panel": "#09142d",
+    "panelDark": "#050a16",
+    "line": "#0e2c64",
+    "onAccent": "#ffffff"
+  },
+  "pittsburgh-steelers": {
+    "primary": "#101820",
+    "secondary": "#FFB612",
+    "panel": "#1d2026",
+    "panelDark": "#0b0c0f",
+    "line": "#5a5440",
+    "onAccent": "#ffffff"
+  },
+  "purdue": {
+    "primary": "#000000",
+    "secondary": "#CFB991",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "rutgers": {
+    "primary": "#CC0033",
+    "secondary": "#5F6A72",
+    "panel": "#350918",
+    "panelDark": "#19050c",
+    "line": "#7f0e2f",
+    "onAccent": "#ffffff"
+  },
+  "san-francisco-49ers": {
+    "primary": "#AA0000",
+    "secondary": "#B3995D",
+    "panel": "#2b0a0c",
+    "panelDark": "#120506",
+    "line": "#75292c",
+    "onAccent": "#ffffff"
+  },
+  "seattle-seahawks": {
+    "primary": "#002A5C",
+    "secondary": "#69BE28",
+    "panel": "#09121e",
+    "panelDark": "#05080d",
+    "line": "#293c55",
+    "onAccent": "#ffffff"
+  },
+  "smu": {
+    "primary": "#CC0035",
+    "secondary": "#354CA1",
+    "panel": "#350918",
+    "panelDark": "#19050d",
+    "line": "#7f0e30",
+    "onAccent": "#ffffff"
+  },
+  "south-carolina": {
+    "primary": "#73000A",
+    "secondary": "#000000",
+    "panel": "#22090f",
+    "panelDark": "#100508",
+    "line": "#4e0e18",
+    "onAccent": "#ffffff"
+  },
+  "stanford": {
+    "primary": "#8C1515",
+    "secondary": "#4D4F53",
+    "panel": "#270d11",
+    "panelDark": "#130709",
+    "line": "#5b1a1e",
+    "onAccent": "#ffffff"
+  },
+  "syracuse": {
+    "primary": "#F76900",
+    "secondary": "#000E54",
+    "panel": "#3f200c",
+    "panelDark": "#1d0f07",
+    "line": "#964813",
+    "onAccent": "#07111f"
+  },
+  "tampa-bay-buccaneers": {
+    "primary": "#BD1C36",
+    "secondary": "#3E3A35",
+    "panel": "#2f0f17",
+    "panelDark": "#14070a",
+    "line": "#7e3544",
+    "onAccent": "#ffffff"
+  },
+  "tcu": {
+    "primary": "#4D1979",
+    "secondary": "#A3A9AC",
+    "panel": "#251735",
+    "panelDark": "#110a1a",
+    "line": "#704b91",
+    "onAccent": "#ffffff"
+  },
+  "tennessee": {
+    "primary": "#FF8200",
+    "secondary": "#58595B",
+    "panel": "#41250c",
+    "panelDark": "#1e1207",
+    "line": "#9b5613",
+    "onAccent": "#07111f"
+  },
+  "tennessee-titans": {
+    "primary": "#4495D2",
+    "secondary": "#001532",
+    "panel": "#162736",
+    "panelDark": "#0a1116",
+    "line": "#476c8b",
+    "onAccent": "#ffffff"
+  },
+  "texas": {
+    "primary": "#BF5700",
+    "secondary": "#333F48",
+    "panel": "#331c0c",
+    "panelDark": "#180d07",
+    "line": "#773e13",
+    "onAccent": "#ffffff"
+  },
+  "texas-am": {
+    "primary": "#500000",
+    "secondary": "#707373",
+    "panel": "#1a090c",
+    "panelDark": "#0d0507",
+    "line": "#3a0e13",
+    "onAccent": "#ffffff"
+  },
+  "texas-tech": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#301316",
+    "panelDark": "#140809",
+    "line": "#85383d",
+    "onAccent": "#ffffff"
+  },
+  "ucf": {
+    "primary": "#BA9B37",
+    "secondary": "#000000",
+    "panel": "#302b18",
+    "panelDark": "#151208",
+    "line": "#776b32",
+    "onAccent": "#07111f"
+  },
+  "ucla": {
+    "primary": "#2D68C4",
+    "secondary": "#F2A900",
+    "panel": "#121f38",
+    "panelDark": "#090f1b",
+    "line": "#27487f",
+    "onAccent": "#ffffff"
+  },
+  "usc": {
+    "primary": "#990000",
+    "secondary": "#FFC72C",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "utah": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#301315",
+    "panelDark": "#140809",
+    "line": "#81363b",
+    "onAccent": "#ffffff"
+  },
+  "vanderbilt": {
+    "primary": "#000000",
+    "secondary": "#CFAE70",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "virginia": {
+    "primary": "#232D4B",
+    "secondary": "#E57200",
+    "panel": "#10121d",
+    "panelDark": "#08090f",
+    "line": "#22273c",
+    "onAccent": "#ffffff"
+  },
+  "virginia-tech": {
+    "primary": "#630031",
+    "secondary": "#CF4420",
+    "panel": "#1e0917",
+    "panelDark": "#0e050c",
+    "line": "#450e2e",
+    "onAccent": "#ffffff"
+  },
+  "wake-forest": {
+    "primary": "#000000",
+    "secondary": "#9E7E38",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "washington": {
+    "primary": "#4B2E83",
+    "secondary": "#B7A57A",
+    "panel": "#191329",
+    "panelDark": "#0c0914",
+    "line": "#38285b",
+    "onAccent": "#ffffff"
+  },
+  "washington-commanders": {
+    "primary": "#5A1414",
+    "secondary": "#FFB612",
+    "panel": "#1b0e10",
+    "panelDark": "#0c0607",
+    "line": "#513235",
+    "onAccent": "#ffffff"
+  },
+  "west-virginia": {
+    "primary": "#002855",
+    "secondary": "#EAAA00",
+    "panel": "#11243a",
+    "panelDark": "#080f1d",
+    "line": "#3a6087",
+    "onAccent": "#ffffff"
+  },
+  "wisconsin": {
+    "primary": "#C5050C",
+    "secondary": "#FFFFFF",
+    "panel": "#340a0f",
+    "panelDark": "#180508",
+    "line": "#7b111a",
+    "onAccent": "#ffffff"
+  }
+}

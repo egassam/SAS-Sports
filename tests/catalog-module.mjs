@@ -20,15 +20,20 @@ function fakeD1(){
   });
   return{sqlite,prepare:sql=>statement(sql),async batch(list){sqlite.exec('BEGIN');try{const out=list.map(s=>s.exec());sqlite.exec('COMMIT');return out}catch(e){sqlite.exec('ROLLBACK');throw e}}};
 }
+const themes=JSON.parse(read('../src/team-themes.json'));
 const zone=s=>s.state==='Kansas'?'America/Chicago':'America/New_York';
-const cards=catalogCards(schools,sponsored,zone);
+const cards=catalogCards(schools,sponsored,zone,themes);
 
 // Cards: every entry with sponsored sports, in catalog order, with only what
 // the page needs (no source settings).
 assert.equal(cards.length,schools.filter(s=>sponsored[s.id]?.length).length);
 assert.deepEqual(cards.map(c=>c.id),schools.filter(s=>sponsored[s.id]?.length).map(s=>s.id));
 const kstate=cards.find(c=>c.id==='kstate');
-assert.deepEqual(Object.keys(kstate).sort(),['conference','division','id','level','name','short_name','sponsored_sports','state','time_zone']);
+assert.deepEqual(Object.keys(kstate).sort(),['conference','division','id','level','name','short_name','sponsored_sports','state','theme','time_zone']);
+// Colors come with every card (step 1 of docs/CATALOG.md: the page holds none).
+assert.deepEqual(kstate.theme,{primary:'#512888',secondary:'#A7A9AC',panel:'#241936',panelDark:'#120d1d',line:'#7556a0',onAccent:'#ffffff'});
+assert.ok(cards.every(c=>/^#[0-9A-Fa-f]{6}$/.test(c.theme?.primary||'')&&c.theme.onAccent),'every card has its colors');
+assert.equal(Object.keys(themes).length,cards.length,'one theme per catalog card');
 assert.equal(kstate.level,'college');assert.deepEqual(kstate.sponsored_sports,sponsored.kstate);
 assert.ok(!('providers' in kstate)&&!('athletics_url' in kstate));
 const revision=await catalogRevision(cards);
@@ -129,6 +134,12 @@ assert.ok(!page.includes("apiFetch('/schools')"),'the page no longer downloads e
 assert.ok(page.includes('const menu=await catalogFetch(`/catalog/menu?level=${encodeURIComponent(level)}&group=${encodeURIComponent(group)}&middle=${encodeURIComponent(middle)}`);'));
 assert.ok(page.includes('rememberEntries(await catalogFetch(`/catalog/entries?ids=${encodeURIComponent(missing.join(\',\'))}`))'));
 assert.ok(page.includes("const key=`sas-catalog:v1:${path}`;"));
+// No per-team lists on the page: sports and colors come with the cards.
+assert.ok(!page.includes('TEAM_THEMES')&&page.includes('let SCHOOL_SPORTS={};'),'the page carries no per-team map');
+assert.ok(!/'kstate':\[/.test(page)&&!/kstate:\{primary:/.test(page));
+assert.ok(page.includes("let theme=catalogEntry(themeId)?.theme;"));
+assert.ok(page.includes("localStorage.setItem('sas-theme:v1',JSON.stringify({id:themeId,theme}))"),'the last team colors are kept for the next load');
+assert.ok(worker.includes('catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes)'));
 assert.ok(page.includes("conference.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
 assert.ok(page.includes("city.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
 assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow menu answer never overwrites a newer one');
