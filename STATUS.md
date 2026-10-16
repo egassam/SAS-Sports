@@ -1,5 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| penn-state | Hockey | 🔴 on | ESPN shows Penn State vs Lindenwood live (8:09 - 1st) but the app has no live card (still in upcoming) |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -224,7 +225,6 @@
 | penn-state | Baseball | ⚪ off (waiting) |  |
 | penn-state | Basketball | ⚪ off (waiting) |  |
 | penn-state | Field Hockey | ⚪ off (waiting) |  |
-| penn-state | Hockey | ⚪ off (waiting) | final L, 3-6 (live phase not observed 2×; waits for the next game) |
 | penn-state | Lacrosse | ⚪ off (waiting) |  |
 | penn-state | Soccer | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
@@ -453,4 +453,4 @@
 | wake-forest | Soccer | ✅ off (passed) | Women's · Wake Forest vs Florida St · 2026-10-16T00:29:05.736Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
 
-Done 98/452; on 0; off 354; failing 0.
+Done 98/452; on 1; off 353; failing 0.

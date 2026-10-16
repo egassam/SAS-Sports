@@ -1408,10 +1408,16 @@
    "verified_detail": "final L, 23-31"
   },
   "penn-state|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-11T06:38:18.260Z",
-   "last_detail": "final L, 3-6 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-16T18:20:37.252Z",
+   "last_detail": "ESPN shows Penn State vs Lindenwood live (8:09 - 1st) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "penn-state|Hockey||2026-10-16|1",
+    "title": "Penn State vs Lindenwood",
+    "started_seen": "2026-10-16T18:11:58.948Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "penn-state|Lacrosse": {
    "state": "off"
@@ -1993,7 +1999,7 @@
    "state": "off"
   }
  },
- "version": "4.98.0-nfl-live-cards",
- "updated_at": "2026-10-16T04:55:15.576Z",
+ "version": "4.103.1-high-school-scores-missing",
+ "updated_at": "2026-10-16T18:20:37.253Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
