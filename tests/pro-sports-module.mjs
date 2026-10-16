@@ -62,7 +62,7 @@ assert.ok(page.includes("const sectioned=!conf||level.id==='high-school'||level.
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
 // Worker: pro feeds skip the college season filter; no featured athletes.
 assert.ok(worker.includes('if(isPro(school))return fetchPro(school,sport,now,aiTargetId);'));
-assert.ok(worker.includes('if(!isHighSchool(catalogSchool)&&!isPro(catalogSchool))events=filterActiveSeason'));
+assert.ok(worker.includes('if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason'));
 assert.ok(worker.includes('if(e.not_in_record)continue;'),'NFL playoffs are out of the season record');
 // ESPN refuses a user agent carrying a web address (found on the preview).
 assert.ok(worker.includes("url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT"),'ESPN reads use the scoreboard identity');
