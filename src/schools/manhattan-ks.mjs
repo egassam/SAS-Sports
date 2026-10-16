@@ -29,6 +29,9 @@ export const LETSGORUN_MEETPRO={
 export const manhattanKsSchool={
   id:'manhattan-ks',
   calendar:{url:'https://mhs.usd383.org/api/calendars/128516/events',prefix:'MHS'},
+  // mhs.usd383.org answers Cloudflare's European locations with 520: a
+  // location that cannot rebuild serves the last feed built elsewhere (KV).
+  globalSavedCopy:true,
   meetPro:LETSGORUN_MEETPRO,
   maxpreps:{schoolId:'41006ce9-cfb3-492a-a951-d320637bc985',base:'https://www.maxpreps.com/ks/manhattan/manhattan-indians/'},
   // Each sport: its varsity teams. `calendar` matches the team words of a

@@ -80,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.101.0-catalog-themes';
+const VERSION='4.101.1-high-school-global-copy';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2798,7 +2798,10 @@ function lastGoodFeedKey(url,school,sport){const key=new URL('/__sas_cache/feed-
 // an hour per sport (KV writes are metered); read only when a rebuild fails.
 const GLOBAL_COPY_WRITE_MS=60*60*1000;
 const globalCopyKey=(school,sport)=>`feed:v1:${school}|${sport}|${VERSION}`;
-const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy);
+// The Manhattan (USD 383) school sites answer Cloudflare's European
+// locations with 520 (Stockholm, Warsaw; Oct 16) and Newark with 200: their
+// feeds keep the global copy too.
+const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);
 async function saveGlobalCopy(env,school,sport,body,fetchedAt){
   if(!env?.HIGHLIGHTS||!usesGlobalCopy(school))return;
   try{

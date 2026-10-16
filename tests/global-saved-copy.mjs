@@ -77,4 +77,9 @@ assert.equal((await atlanta('utah','Football','&refresh=1')).status,200);
 assert.equal(kv.writes,2,'no copy for schools without globalSavedCopy');
 assert.equal((await paris('utah','Football','&refresh=1')).status,502);
 
+// High school entries opt in through their own module (the Manhattan USD 383
+// sites answer Cloudflare's European locations with 520; Oct 16).
+assert.ok(read('../src/index.js').includes('const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);'));
+{const {manhattanKsSchool}=await import('../src/schools/manhattan-ks.mjs'),{anthonyMsSchool,eisenhowerMsSchool}=await import('../src/schools/manhattan-ks-middle.mjs');
+for(const m of [manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool])assert.equal(m.globalSavedCopy,true,m.id);}
 console.log('Global saved copy checks passed: a refused location serves the feed another built (saved-global), one write an hour per sport, week-long limit, opt-in schools only');
