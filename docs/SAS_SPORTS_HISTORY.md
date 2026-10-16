@@ -2643,3 +2643,25 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - **Process slip:** `pkill -f "npm run test:release"` killed its own shell and the new run, as the handoff warns. The leftover process was killed by PID and the suite re-run.
 - **Next (in `docs/CATALOG.md`):** move colors and sports maps into the cards; async Worker lookups from D1; importers; a required state and FTS5 search for the high-school level.
 
+## October 16, 2026 — Catalog: colors and sports with the cards (PR #341); Manhattan global copy (PR #342); catalog edge cache (PR #343)
+
+- **User:** "Start with 1" (step 1 of `docs/CATALOG.md`).
+- **#341 (`4.101.0`):**
+  - `TEAM_THEMES` (106 teams) was parsed out of the page into `src/team-themes.json`.
+  - `catalogCards(…, themes)` adds `theme`; `let SCHOOL_SPORTS={}` is filled from the cards. The embedded sports map equalled `sponsored-sports.json` for every team, checked before removal.
+  - The page keeps `SAS_THEME` and saves the last team's colors in `sas-theme:v1`.
+  - `add-school` writes the JSON file.
+  - Tests: `protect-certified` (colors in the JSON, no page sports list), `catalog-module` (theme on every card, no per-team map), `regression`, `pro-sports-module`, `imsa-module`.
+  - A browser script drove 12 teams on production and on the preview: every team's six theme values and background were equal. The sport box was timing-dependent on both sites (fixed in #343).
+  - The first merge call used a guessed head SHA and got a 409; it was retried with the real one.
+  - Merged as `2da1db6`. Production synced D1 to revision `164ff13e…` by itself; `verify-catalog --prod --expect=d1` passed 14/14 and `verify:prod` passed for K-State XC.
+- **#342 (`4.101.1`):** the #339 fallback alone left production flapping (Volleyball `200 502 502 502`).
+  - `/live/status?…&refresh=1` with each response's `cf-ray` showed the calendar answering 520 at ARN and WAW (503 during the backoff) and 200 at EWR and MRS. Each location's Cache API copy is its own, so a European location with no good read has nothing to serve. This is the same pattern as South Carolina in Paris.
+  - Fix: `globalSavedCopy:true` on `manhattan-ks`, `anthony-ms-ks` and `eisenhower-ms-ks`. `usesGlobalCopy` now reads high-school modules too.
+  - Preview: all 15 sports passed 36/36. **Caveat:** the sandbox's traffic moved to EWR during the gate, so those refreshes did not exercise the European path. The mechanism is the one `tests/global-saved-copy.mjs` simulates for Paris.
+  - Merged as `341cf12`. Production `verify:prod` for the three schools: all pass (48 checks).
+- **#343 (`4.101.2`):** catalog calls took 0.5–1.1 s from Europe, against 0.26–0.7 s from the bundled copy.
+  - `catalogAnswer` keeps answers in the location's cache for an hour, keyed by revision, store and request; a bundled fallback after a D1 failure is not kept. The preview showed `x-sas-cache: edge` on a second read at ATL.
+  - `loadSchools` calls `populateSportFilter()` once the cards are known. In the browser, 12 of 12 teams showed their own sports, with colors unchanged.
+  - Gate: `test:release` passed, CI green, K-State XC and IMSA 36/36. The preview read D1 (revision matched) 14/14. Merged as `aa559e5`.
+
