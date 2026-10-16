@@ -40,16 +40,20 @@ const NOT_SPONSORED={
   ACC:new Set(['Rifle','Bowling','Beach Volleyball','Equestrian','Hockey','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
-export function createConferenceGames({schools}){
-  const memberNames=new Map();
+// membersOf(conference): the conference's catalog entries (the Worker loads
+// them from D1 with the requested school; the bundled list otherwise). The
+// name map is kept per member list.
+export function createConferenceGames({schools=[],membersOf=conference=>schools.filter(s=>s.conference===conference)}){
+  const memberNames=new WeakMap();
   const namesOf=conference=>{
-    if(!memberNames.has(conference)){
+    const members=membersOf(conference);
+    if(!memberNames.has(members)){
       const names=new Map();
-      for(const school of schools.filter(s=>s.conference===conference))
+      for(const school of members)
         for(const name of [school.name,school.short_name,...(EXTRA_NAMES[school.id]||[])])names.set(words(name),school.id);
-      memberNames.set(conference,names);
+      memberNames.set(members,names);
     }
-    return memberNames.get(conference);
+    return memberNames.get(members);
   };
   // Postseason and tournament games are not in a conference record.
   const POSTSEASON=/\b(?:tournament|tourney|championships?|regional|super regional|ncaa|bowl|playoff)\b/i;

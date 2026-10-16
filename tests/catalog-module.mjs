@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 import * as catalogModule from '../src/catalog.mjs';
-import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords} from '../src/catalog.mjs';
+import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords,catalogOpponent,catalogHostKnown,catalogMembers,catalogAllRecords} from '../src/catalog.mjs';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -124,7 +124,7 @@ for(const store of stores){
 // when D1 is behind or fails.
 assert.ok(wrangler.includes('"binding": "CATALOG_DB", "database_name": "sas-sports-catalog"'));
 assert.ok(wrangler.includes('"/catalog/*"'),'catalog routes reach the Worker');
-assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records);"),'only production writes the catalog');
+assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records,bundle.derived);"),'only production writes the catalog');
 assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length,bundle.records.length))store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision, with every row');
 assert.ok(worker.includes("url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store"),'?source=bundled compares the copies');
 assert.ok(worker.includes("try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}"));
@@ -171,16 +171,51 @@ assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow m
   // record from D1 (marked here so it can be told apart from the bundled one).
   const source=worker.replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
   const deps={...schoolModuleDeps,...catalogModule,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,teamThemes:themes,rosterSocialInstagrams,handleLiveScoring:()=>new Response(''),extractText:()=>{throw Error('no PDF')},fetch:async()=>new Response('',{status:404}),caches:{default:{async match(){},async put(){}}}};
-  const {handler,catalogSchool,bundledCatalog}=Function(...Object.keys(deps),source+';return {handler,catalogSchool,bundledCatalog};')(...Object.values(deps));
+  const {handler,catalogSchool,bundledCatalog,matchText,opponentSchoolFor,sourceHostAllowed,conferenceMembers}=Function(...Object.keys(deps),source+';return {handler,catalogSchool,bundledCatalog,matchText,opponentSchoolFor,sourceHostAllowed,conferenceMembers};')(...Object.values(deps));
   // D1 as production writes it (the Worker's own cards, records and revision).
   const bundle=await bundledCatalog(),db3=fakeD1();
-  await syncCatalog(db3,bundle.cards,bundle.revision,Date.now(),bundle.records);
+  await syncCatalog(db3,bundle.cards,bundle.revision,Date.now(),bundle.records,bundle.derived);
   db3.sqlite.prepare(`UPDATE catalog_records SET entry=? WHERE id='kstate'`).run(JSON.stringify({...records.find(r=>r.id==='kstate'),name:'Kansas State (from D1)'}));
   assert.equal(catalogSchool('kstate').name,'Kansas State','before a request: the bundled record');
   await handler.fetch(new Request('https://preview.example/live/status?school=kstate&sport=Volleyball'),{CATALOG_DB:db3},{waitUntil(){}}).catch(()=>{});
   assert.equal(catalogSchool('kstate').name,'Kansas State (from D1)','the request loaded the D1 record');
   assert.equal(catalogSchool('kansas').name,'Kansas','others come from the bundled file until a request names them');
   assert.equal(catalogSchool('nobody'),null);
+  // Step 3: the scans that read every entry have D1 indexes, written by the
+  // same sync and part of the revision.
+  assert.ok(bundle.derived.names.length>schools.length&&bundle.derived.hosts.length===schools.length);
+  assert.notEqual(await catalogRevision(bundle.cards,bundle.records,{...bundle.derived,names:bundle.derived.names.slice(1)}),bundle.revision,'the derived rows are part of the revision');
+  assert.equal(db3.sqlite.prepare('SELECT COUNT(*) AS n FROM catalog_names').get().n,bundle.derived.names.length);
+  // Opponent names: the old scan over every entry and the one D1 query pick
+  // the same school for every name, alias, part of a name and decorated
+  // name in the catalog, and for names of no catalog school.
+  const oldScan=(opponent,current)=>{const wanted=matchText(opponent);if(!wanted)return null;return schools.find(c=>c.id!==current&&[c.name,c.short_name,...(c.aliases||[])].some(label=>{const v=matchText(label);return v===wanted||(v.length>3&&wanted.length>3&&(v.includes(wanted)||wanted.includes(v)))}))?.id||null};
+  const probes=new Set(['','Washburn','Northern Iowa','UMKC','Kansas City','Fort Hays State','Nebraska-Omaha','Iowa St.','#12 Texas (Exhibition)','vs. Oklahoma State','at TCU','Miami (Fla.)','Ohio','State','Saint Louis']);
+  for(const r of schools)for(const label of [r.name,r.short_name,...(r.aliases||[])].filter(Boolean)){probes.add(label);probes.add(`#5 ${label}`);probes.add(`${label} (Neutral)`);probes.add(label.slice(0,Math.ceil(label.length*0.6)));probes.add(`${label} University`);}
+  let agreed=0;
+  for(const probe of probes)for(const current of ['kstate','kansas','manhattan-ks','nascar-cup-series']){
+    const want=oldScan(probe,current),got=await catalogOpponent(db3,matchText(probe),current);
+    assert.equal(got,want,`opponent "${probe}" for ${current}`);agreed++;
+  }
+  assert.ok(agreed>1500,`${agreed} opponent lookups agree`);
+  // The Worker's own lookup uses D1 now (requestCatalog was set by the request above).
+  assert.equal((await opponentSchoolFor({opponent:'#9 Iowa State'},{id:'kstate'}))?.id,'iowa-state');
+  assert.equal(await opponentSchoolFor({opponent:'Washburn'},{id:'kstate'}),null);
+  assert.ok(worker.includes('    const opponentSchool=await opponentSchoolFor(target,school);'));
+  // Hosts: every official site, nothing else.
+  for(const r of schools)assert.equal(await catalogHostKnown(db3,new URL(r.athletics_url).hostname.replace(/^www\./,'')),true,r.id);
+  assert.equal(await catalogHostKnown(db3,'evil.example'),false);
+  assert.equal(await sourceHostAllowed('www.kstatesports.com'),true);assert.equal(await sourceHostAllowed('tfrrs.org'),true);assert.equal(await sourceHostAllowed('evil.example'),false);
+  // Conference members: the same entries in the same order as the old filter.
+  for(const conference of new Set(schools.map(r=>r.conference).filter(Boolean)))
+    assert.deepEqual((await catalogMembers(db3,conference)).map(r=>r.id),schools.filter(r=>r.conference===conference).map(r=>r.id),conference);
+  assert.equal(conferenceMembers('Big 12').length,16,'the requested school\'s conference was loaded from D1');
+  // /schools from D1 equals the bundled listing.
+  const listed=async env=>(await handler.fetch(new Request('https://preview.example/schools'),env,{waitUntil(){}})).json();
+  assert.equal((await listed({CATALOG_DB:db3})).find(r=>r.id==='kstate').name,'Kansas State (from D1)','/schools reads D1');
+  db3.sqlite.prepare(`UPDATE catalog_records SET entry=? WHERE id='kstate'`).run(JSON.stringify(records.find(r=>r.id==='kstate')));
+  assert.deepEqual(await listed({CATALOG_DB:db3}),await listed({}));
+  assert.deepEqual(await catalogAllRecords(db3),schools);
   // Without a catalog database (tests, a misconfigured deploy) nothing changes.
   const plain=Function(...Object.keys(deps),source+';return {handler,catalogSchool};')(...Object.values(deps));
   await plain.handler.fetch(new Request('https://preview.example/live/status?school=kstate&sport=Volleyball'),{},{waitUntil(){}}).catch(()=>{});
