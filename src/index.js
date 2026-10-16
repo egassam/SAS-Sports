@@ -80,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.103.0-catalog-indexes';
+const VERSION='4.103.1-high-school-scores-missing';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1673,12 +1673,15 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
   let payload=null;try{payload=JSON.parse(await calendarResponse.text())}catch{}
   if(!payload)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: not a calendar`};
   const sourceUrl=calendarUrl.split('?')[0],sources=[calendarUrl],events=[],today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
+  // A failed MaxPreps read leaves every past game without its score (and so
+  // unlisted): the build is marked, and the feed keeps its last good copy.
+  let scoresMissing=false;
   for(const team of teams){
     const games=calendarEvents(payload,{prefix:module.calendar.prefix,team:team.calendar,parse:module.calendar.parse}).filter(game=>!module.skip?.test(game.name));
     let contests=[];
     if(team.maxpreps){
       const url=`${module.maxpreps.base}${team.maxpreps}/schedule/`;
-      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}}catch{}
+      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else scoresMissing=true}catch{scoresMissing=true}
     }
     const label=team.label||null,used=new Set();
     // Volleyball: MaxPreps lists each match of a tournament or triangular;
@@ -1726,7 +1729,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     if(stats.length)target.game_stats=stats;
     target.highlight_status=box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
   }
-  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL teams from ESPN's
 // team schedule, NASCAR races from NASCAR's own feeds.
@@ -2877,6 +2880,13 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   const result=await fetchLive(school,sport,env);
   if(!result.events.length&&!result.live_source_used)return null;
   let events=result.events;
+  // A build missing its scores source (a high school's MaxPreps read failed,
+  // Oct 16: Manhattan football read 0 of 7 results) yields to the last good
+  // copy; with none, it is shown but never saved as the last good copy.
+  if(result.scores_missing){
+    const saved=await cache.match(lastGoodFeedKey(url,school,sport));
+    if((saved&&cachedAge(saved)<=LAST_GOOD_MS)||await globalCopy(env,school,sport))return null;
+  }
   // The official page failed but a live scoreboard answered (a one-off
   // kstatesports.com failure during K-State vs BYU, Oct 1): lay the live score
   // over the last good full feed instead of replacing the whole schedule with
@@ -2891,7 +2901,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
   stored.headers.set('x-sas-fetched-at',result.fetched_at);
-  if(result.official_failed){await cache.put(key,stored.clone());return stored;}
+  if(result.official_failed||result.scores_missing){await cache.put(key,stored.clone());return stored;}
   const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
   const body=usesGlobalCopy(school)?await stored.clone().text():null;
   await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood),body&&saveGlobalCopy(env,school,sport,body,result.fetched_at)]);return stored;
