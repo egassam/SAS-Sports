@@ -2603,3 +2603,10 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - The user set a new rule: "I guess we need a new rule. When you finish and everything passes you can merge it." It is recorded in `AGENTS.md` item 6: no stopping to ask when the work is finished and every check passes, and the one-school scope limit is dropped. For ESPN-read pro entries, 3 refreshes per entry replace 36 (the agent's reading, reported to the user).
 - Merged as `b2436fe`. Production `4.98.1-nfl-box-score`: `verify:prod` passed for all 32 teams, and the Bills–Rams `/live/highlights` returns Result and Week, Q1–Q4 and OT, 12 plays and 11 stats.
 
+## October 16, 2026 — NASCAR results table with make (PR #334)
+
+- User, with a phone screenshot of the Bank of America 400 window: "NASCAR full results is still not showing car manufacturer and the layout is messy". Production already sent "1st · Joe Gibbs Racing · Toyota · 62 laps led". The phone's rows ("1st Chase Briscoe | #19 · Joe Gibbs Racing · 62 laps led") were a final kept in the device cache (`sas-final:v1:`, kept 30 days) from before 4.97.2.
+- Fix: device finals now use `sas-final:v2:`, and the monthly sweep removes every `sas-final:v*` key. `nascarFinishTable` produces `race_table` for the window (all cars) and for the list card (top three). The page's `raceTableHtml`/`raceCard` show the finish, driver and #, make tag, team, and laps led, or the status in red. Saved server views are rebuilt once (`|box2`).
+- Gate: `test:release` passed. Preview `verify:preview --school=nascar-cup-series`: 36/36 forced refreshes, 36/36 expanded views, XC 18/20 and 26/21. Screenshots of the window and the card were taken at 390 px. CI was green on `d1e0b03`. Merged as `04e86ed` under the user's new rule.
+- Production `4.98.3-race-results-table`: the first `verify:prod` read one edge still on 4.98.1 during the rollout; the re-run passed everything. The feed's first race card has the table with "Toyota".
+
