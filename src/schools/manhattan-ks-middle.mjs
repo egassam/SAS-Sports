@@ -21,5 +21,5 @@ const sports=team=>({
   Wrestling:[{calendar:/^Boys Wrestling$/i,meet:true,label:'Boys'},{calendar:/^Girls Wrestling$/i,meet:true,label:'Girls'}],
   'Track & Field':[{calendar:/^Track & Field$/i,meet:true}]
 });
-export const anthonyMsSchool={id:'anthony-ms-ks',calendar:{url:'https://ams.usd383.org/api/calendars/128968/events',parse},meetPro:LETSGORUN_MEETPRO,sports:sports('Anthony')};
-export const eisenhowerMsSchool={id:'eisenhower-ms-ks',calendar:{url:'https://ems.usd383.org/api/calendars/128776/events',parse},meetPro:LETSGORUN_MEETPRO,sports:sports('Eisenhower')};
+export const anthonyMsSchool={id:'anthony-ms-ks',calendar:{url:'https://ams.usd383.org/api/calendars/128968/events',parse},globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,sports:sports('Anthony')};
+export const eisenhowerMsSchool={id:'eisenhower-ms-ks',calendar:{url:'https://ems.usd383.org/api/calendars/128776/events',parse},globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,sports:sports('Eisenhower')};
