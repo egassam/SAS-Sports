@@ -2665,3 +2665,16 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
   - `loadSchools` calls `populateSportFilter()` once the cards are known. In the browser, 12 of 12 teams showed their own sports, with colors unchanged.
   - Gate: `test:release` passed, CI green, K-State XC and IMSA 36/36. The preview read D1 (revision matched) 14/14. Merged as `aa559e5`. Production `4.101.2-catalog-edge-cache`: `verify-catalog --prod --expect=d1` passed 14/14, and `verify:prod --school=kstate --sports="Cross Country"` passed (XC 18/20 and 26/21).
 
+## October 16, 2026 — Catalog step 2: the Worker's lookups by id read D1 (PR #345)
+
+- **User:** "Continue".
+- **Built (`4.102.0`):**
+  - `catalog_records(id, entry)` holds every full record (source settings included), written by the same transaction as the cards. `catalogRevision(cards, records)` covers both. `storeMatches` also requires the record count.
+  - `catalogRecords(db, ids)` reads up to 50 records.
+  - In the Worker, `bundledById` and `loadedEntries` (per isolate, reset on a new revision) back the synchronous `catalogSchool(id)`. `loadCatalogEntries(env, url, ids)` runs at the start of any `/live/*` or `/api/*` request with `school=` and only when `CATALOG_DB` exists, so the test harnesses are unchanged.
+  - All seven `schools.find(s=>s.id===…)` sites were replaced. The local `catalogSchool` in `groupEvents` became `groupSchool`; it would otherwise have shadowed the function and thrown a TDZ error. `/api/status` adds `catalog: {source, revision}`.
+- **Test:** `catalog-module` evaluates the real Worker over a node:sqlite D1 synced from the Worker's own bundle. A request for K-State loads its D1 record (marked "from D1"); other entries stay bundled; without `CATALOG_DB` nothing changes. A first try synced the test D1 from the test's own cards with a simplified time-zone rule; its revision differed and the Worker correctly ignored that D1. Mutation check: with the preload disabled, the test fails.
+- **Gate:** `test:release` passed on `bbff019`. The preview served from the bundled copy (new revision), with `verify-catalog` passing. K-State XC, Manhattan volleyball and IMSA passed 36/36, the Steelers 3/3, and XC was 18/20 and 26/21. CI was green.
+- **Production:** synced at 16:25:56 UTC (106 cards, 106 records, revision `ce17c33b…`); `/api/status` reports `catalog.source` `d1`. `verify-catalog --prod --expect=d1` passed 14/14. `verify:prod` passed for K-State XC, Manhattan volleyball, IMSA WeatherTech, the Steelers and Ohio State football.
+- **Still scanning the bundled list:** `opponentSchoolFor` (names and aliases), `createConferenceGames` (members), `sourceHostAllowed`, `/schools` and the catalog count. The planned indexes are in `docs/CATALOG.md`.
+
