@@ -145,7 +145,7 @@ assert.equal(nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nasc
 // Expanded final race: the finishing order and the race's numbers.
 const race=nascarRaceDetails(races.find(r=>r.race_id===5629),fixture('wf'));
 assert.equal(race.rows.length,39);
-assert.deepEqual(race.rows.slice(0,3),[{participant:'Chase Briscoe (#19)',result:'1st · Joe Gibbs Racing · 62 laps led'},{participant:'Christopher Bell (#20)',result:'2nd · Joe Gibbs Racing · 93 laps led'},{participant:'Ryan Blaney (#12)',result:'3rd · Team Penske · 4 laps led'}]);
+assert.deepEqual(race.rows.slice(0,3),[{participant:'Chase Briscoe (#19)',result:'1st · Joe Gibbs Racing · Toyota · 62 laps led'},{participant:'Christopher Bell (#20)',result:'2nd · Joe Gibbs Racing · Toyota · 93 laps led'},{participant:'Ryan Blaney (#12)',result:'3rd · Team Penske · Ford · 4 laps led'}]);
 assert.deepEqual(race.lines,[
   'Chase Briscoe (#19, Joe Gibbs Racing) won the Bank of America 400 at Charlotte Motor Speedway, ahead of Christopher Bell by 0.029 s.',
   'Chase Briscoe started 2nd and led 62 laps.',
@@ -168,7 +168,7 @@ assert.equal(races.find(r=>r.race_id===5633).broadcast,'USA');
 // top three, the expanded view the whole field.
 const finish=nascarFinishRows(fixture('wf'));
 assert.equal(finish.length,39);
-assert.deepEqual(finish[38],{participant:'William Byron (#24)',result:'39th · Hendrick Motorsports · Accident'});
+assert.deepEqual(finish[38],{participant:'William Byron (#24)',result:'39th · Hendrick Motorsports · Chevrolet · Accident'});
 assert.deepEqual(nascarFinishRows(null),[]);
 const withRows=nascarRaces(fixture('nascar'),{school:series,config:PRO_TEAMS['nascar-cup-series'],timeZone:EASTERN,now,drivers,finishes:new Map([[5629,finish]])});
 const charlotte=withRows.find(r=>r.race_id===5629);

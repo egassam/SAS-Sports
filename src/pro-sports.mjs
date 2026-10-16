@@ -252,9 +252,11 @@ export function nascarRaceDetails(event,feed){
   return{rows,lines,stats};
 }
 
-// Every driver's finish from a race's weekend feed, cross-country style.
+// Every driver's finish from a race's weekend feed, cross-country style,
+// with the car's make (user, October 15: "put the type of car manufacturer
+// in the results").
 export function nascarFinishRows(feed){
   const results=feed?.weekend_race?.[0]?.results||[];
   const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
-  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({participant:`${name(r.driver_fullname)}${r.car_number?` (#${r.car_number})`:''}`,result:[ordinal(r.finishing_position),r.team_name,r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:null,r.laps_led?`${r.laps_led} laps led`:null].filter(Boolean).join(' · ')}));
+  return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({participant:`${name(r.driver_fullname)}${r.car_number?` (#${r.car_number})`:''}`,result:[ordinal(r.finishing_position),r.team_name,r.car_make||null,r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:null,r.laps_led?`${r.laps_led} laps led`:null].filter(Boolean).join(' · ')}));
 }
