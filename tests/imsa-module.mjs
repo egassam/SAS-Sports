@@ -93,7 +93,9 @@ assert.equal(final.headline,'Overall: #6 Porsche Penske Motorsport');assert.equa
 assert.ok(!events.some(e=>/Long Beach/.test(e.opponent)&&e.season===2026));
 const daytona=events[1];
 assert.deepEqual([daytona.status,daytona.title,daytona.display_time,daytona.start_time,daytona.end_time],['Upcoming','Rolex 24 At Daytona','Jan 28-31','2027-01-28T00:00:00.000Z','2027-01-31T23:59:00.000Z']);
-assert.deepEqual(daytona.results,[{label:'Length',value:'24 hours'},{label:'Classes',value:'GTP, LMP2, GTD PRO, GTD'},{label:'Weekend',value:'Jan 28-31'}]);
+assert.deepEqual(daytona.results,[{label:'Length',value:'24 hours'},{label:'Classes',value:'GTP, LMP2, GTD PRO, GTD'},{label:'Track',value:'Daytona International Speedway'}]);
+// A race IMSA has not named takes the track as its title (no Track row).
+assert.deepEqual(events.find(e=>/Laguna/.test(e.opponent)).results.map(r=>r.label),['Length','Classes']);
 assert.equal(events.at(-1).title,'30th Motul Petit Le Mans');assert.equal(events.find(e=>/Laguna/.test(e.opponent)).display_time,'Apr 30-May 2');
 // Once a weekend's folder exists, its race replaces the calendar's entry.
 const withFolder=imsaRaces([{session:'202701301340_Race',track:imsaTrack('02_Daytona International Speedway'),results:null,hour:null}],{school,config,timeZone:EASTERN,now:new Date('2027-01-29T15:00:00Z'),calendar:IMSA_CALENDARS.weathertech});

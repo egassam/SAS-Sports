@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.99.0-imsa';
+const VERSION='4.99.1-imsa';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

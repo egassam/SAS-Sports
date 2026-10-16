@@ -635,7 +635,7 @@ export function imsaRaces(races,{school,config,timeZone,now,calendar=[]}){
     event.end_time=`${entry.to}T23:59:00.000Z`;event.track=track.name;event.season=Number(year);
     if(entry.length)event.results.push({label:'Length',value:entry.length});
     if(entry.classes)event.results.push({label:'Classes',value:entry.classes});
-    event.results.push({label:'Weekend',value:weekend(entry.from,entry.to)});
+    if(entry.name)event.results.push({label:'Track',value:track.name});
     event.result_count=event.results.length;
     events.push(event);
   }
