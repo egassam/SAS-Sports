@@ -2575,3 +2575,9 @@ Explanation given:
 - Production `4.97.1-nascar-xc-layout` passed `verify:prod --sports=all` for NASCAR (40 events, 36 expanded views), Steelers and Chiefs. XC 18/20 and 26/21.
 - Found on the first 4.97.0 preview run: 36 refreshes answered 200 with 0 events and the gate still passed. The likely cause was an empty race list right after the deploy; an empty list is now a failed read.
 - Still open: `verify-release` should fail a feed with 0 events.
+
+**Car make (Oct 16):**
+- User: "Can we put the type of car manufacturer in the results as well if it's available?" NASCAR's weekend feed publishes `car_make` (Toyota, Ford, Chevrolet), and each result row now shows it after the team.
+- The user saw production before the merge ("It's not showing car make"); the change was not yet live.
+- PR #329 merged as `ff5984e` under the standing permission: one entry, preview gate passed with 36/36 refreshes, 36/36 expanded views, XC 18/20 and 26/21.
+- Production `4.97.2-nascar-car-make` verified: `verify:prod` PASS, makes shown.
