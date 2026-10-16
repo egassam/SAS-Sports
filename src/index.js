@@ -2,7 +2,7 @@ import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import teamThemes from './team-themes.json';
-import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords} from './catalog.mjs';
+import {catalogCards,catalogRevision,catalogDerived,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords,catalogOpponent,catalogHostKnown,catalogMembers,catalogAllRecords} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
@@ -80,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.102.0-catalog-lookups';
+const VERSION='4.103.0-catalog-indexes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -592,7 +592,7 @@ const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
 const PRODUCTION_HOST='sas-sports.lovetogivepain.workers.dev';
 let catalogBundle=null,catalogChoice=null;
 async function bundledCatalog(){
-  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes);catalogBundle={cards,records:schools,store:bundledStore(cards),revision:await catalogRevision(cards,schools)};}
+  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes),derived=catalogDerived(schools,matchText);catalogBundle={cards,records:schools,derived,store:bundledStore(cards),revision:await catalogRevision(cards,schools,derived)};}
   return catalogBundle;
 }
 async function catalogStore(env,url,now=Date.now()){
@@ -601,7 +601,7 @@ async function catalogStore(env,url,now=Date.now()){
   if(catalogChoice&&now-catalogChoice.at<60000)return catalogChoice.value;
   let store=bundle.store;
   try{
-    if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records);
+    if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records,bundle.derived);
     if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length,bundle.records.length))store=d1Store(env.CATALOG_DB);
   }catch{}
   catalogChoice={at:now,value:{store,revision:bundle.revision}};
@@ -613,18 +613,36 @@ async function catalogStore(env,url,now=Date.now()){
 // kept per isolate for the revision); the bundled file answers the rest, so
 // the bundled file can stop holding every entry once importers write D1.
 const bundledById=new Map(schools.map(s=>[s.id,s]));
-let loadedEntries={revision:null,byId:new Map()};
+let loadedEntries={revision:null,byId:new Map(),members:new Map()};
 function catalogSchool(id){return loadedEntries.byId.get(id)||bundledById.get(id)||null}
+// A conference's members (conference records): loaded from D1 with the
+// requested school, else the bundled list.
+const bundledMembers=new Map();
+function conferenceMembers(conference){
+  const loaded=loadedEntries.members.get(conference);if(loaded)return loaded;
+  if(!bundledMembers.has(conference))bundledMembers.set(conference,schools.filter(s=>s.conference===conference));
+  return bundledMembers.get(conference);
+}
+// The request's catalog (the opponent lookup and the host allowlist read it
+// deep in the build, where only the request's env and address are known).
+let requestCatalog={env:null,url:null};
+async function catalogD1(){
+  const {env,url}=requestCatalog;if(!env?.CATALOG_DB||!url)return null;
+  try{const {store}=await catalogStore(env,url);return store.kind==='d1'?env.CATALOG_DB:null}catch{return null}
+}
 async function loadCatalogEntries(env,url,ids){
   if(!env?.CATALOG_DB)return;
   try{
     const {store,revision}=await catalogStore(env,url);
     if(store.kind!=='d1')return;
-    if(loadedEntries.revision!==revision)loadedEntries={revision,byId:new Map()};
+    if(loadedEntries.revision!==revision)loadedEntries={revision,byId:new Map(),members:new Map()};
     const missing=ids.filter(id=>id&&!loadedEntries.byId.has(id));
-    if(!missing.length)return;
-    const found=await catalogRecords(env.CATALOG_DB,missing);
-    if(loadedEntries.revision===revision)for(const entry of found)loadedEntries.byId.set(entry.id,entry);
+    if(missing.length){
+      const found=await catalogRecords(env.CATALOG_DB,missing);
+      if(loadedEntries.revision===revision)for(const entry of found)loadedEntries.byId.set(entry.id,entry);
+    }
+    for(const conference of new Set(ids.map(id=>loadedEntries.byId.get(id)?.conference).filter(Boolean)))
+      if(!loadedEntries.members.has(conference)){const members=await catalogMembers(env.CATALOG_DB,conference);if(loadedEntries.revision===revision)loadedEntries.members.set(conference,members);}
   }catch{}
 }
 // ?source=bundled answers from the bundled copy (to compare it with D1).
@@ -2040,7 +2058,7 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
 }
 // Every schedule's events, each game marked as a conference game or not
 // (src/conference-games.mjs), for the sport's conference record.
-const {markConferenceGames}=createConferenceGames({schools});
+const {markConferenceGames}=createConferenceGames({schools,membersOf:conferenceMembers});
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
   return markConferenceGames(parseScheduleEvents(raw,school,sport,sourceUrl,now),raw,school);
 }
@@ -2203,9 +2221,13 @@ function automaticFinalHighlights(e){
   return items;
 }
 function matchText(s){return String(s||'').toLowerCase().replace(/\b(?:exhibition|neutral|rv|ranked)\b/g,' ').replace(/#[0-9]+|\([^)]+\)/g,' ').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();}
-function opponentSchoolFor(event,currentSchool){
+// The catalog entry an event's opponent names: one indexed query on D1
+// (catalog_names), the same rule over the bundled list otherwise.
+async function opponentSchoolFor(event,currentSchool){
   const wanted=matchText(event.opponent);
   if(!wanted)return null;
+  const db=await catalogD1();
+  if(db){try{const id=await catalogOpponent(db,wanted,currentSchool.id);if(!id)return null;return catalogSchool(id)||(await catalogRecords(db,[id]))[0]||null}catch{}}
   return schools.find(candidate=>candidate.id!==currentSchool.id&&[candidate.name,candidate.short_name,...(candidate.aliases||[])]
     .some(label=>{const value=matchText(label);return value===wanted||(value.length>3&&wanted.length>3&&(value.includes(wanted)||wanted.includes(value)));}))||null;
 }
@@ -2505,7 +2527,7 @@ async function attachOfficialHighlights(events,raw,school,sport,sourceUrl,now,en
   // published an official article. Check that opponent's official schedule as
   // a controlled fallback, still requiring the exact event date and teams.
   if(!recapUrl){
-    const opponentSchool=opponentSchoolFor(target,school);
+    const opponentSchool=await opponentSchoolFor(target,school);
     if(opponentSchool){
       for(const opponentScheduleUrl of candidateUrls(opponentSchool,sport).slice(0,4)){
         try{
@@ -2886,9 +2908,13 @@ async function verification(schoolId,sport){const result=await fetchLive(schoolI
 //   - for https pages on a catalog school's official athletics site or TFRRS,
 //     which the app already reads, including after redirects.
 const SOURCE_EXTRA_HOSTS=['tfrrs.org'];
-function sourceHostAllowed(hostname){
+// The bundled list, then the catalog's host index (catalog_hosts in D1).
+async function sourceHostAllowed(hostname){
   const host=String(hostname||'').toLowerCase().replace(/^www\./,'');
-  return schools.some(s=>{try{return new URL(s.athletics_url).hostname.toLowerCase().replace(/^www\./,'')===host}catch{return false}})||SOURCE_EXTRA_HOSTS.includes(host);
+  if(SOURCE_EXTRA_HOSTS.includes(host)||schools.some(s=>{try{return new URL(s.athletics_url).hostname.toLowerCase().replace(/^www\./,'')===host}catch{return false}}))return true;
+  const db=await catalogD1();
+  if(db){try{return await catalogHostKnown(db,host)}catch{}}
+  return false;
 }
 async function sameSecret(given,expected){
   // Compare digests so the check takes the same time for any wrong key.
@@ -2903,10 +2929,10 @@ async function privateSource(request,env){
   const given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
   if(!given||!(await sameSecret(given,secret)))return json({detail:'Unauthorized'},401);
   let target;try{target=new URL(new URL(request.url).searchParams.get('url')||'');}catch{return json({detail:'url is required'},400);}
-  if(target.protocol!=='https:'||!sourceHostAllowed(target.hostname))return json({detail:'Only official athletics pages the app reads are allowed'},400);
+  if(target.protocol!=='https:'||!(await sourceHostAllowed(target.hostname)))return json({detail:'Only official athletics pages the app reads are allowed'},400);
   const response=await sourceFetch(target.href);
   const finalUrl=response.url||target.href;
-  try{if(!sourceHostAllowed(new URL(finalUrl).hostname))return json({detail:'The page redirected outside the official athletics sites'},502);}catch{}
+  try{if(!(await sourceHostAllowed(new URL(finalUrl).hostname)))return json({detail:'The page redirected outside the official athletics sites'},502);}catch{}
   const headers=new Headers({'cache-control':'no-store','x-robots-tag':'noindex','x-sas-final-url':finalUrl,'x-sas-upstream-status':String(response.status)});
   for(const name of['content-type','x-sas-source'])if(response.headers.get(name))headers.set(name,response.headers.get(name));
   return new Response(await response.arrayBuffer(),{status:response.status,headers});
@@ -2937,16 +2963,16 @@ function storeHighlights(env,ctx,key,event){
 
 export default{
   async fetch(request,env,ctx){
-    const url=new URL(request.url);sourceCacheOrigin=url.origin;
+    const url=new URL(request.url);sourceCacheOrigin=url.origin;requestCatalog={env,url};
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     // School-entered live scores (scorer app, TV scoreboard, public live cards).
     if(url.pathname.startsWith('/api/score/'))return handleLiveScoring(request,env,url);
     // A request naming a school has its catalog entry loaded first.
     if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);
-    if(url.pathname==='/api/status'){const {store,revision}=await catalogStore(env,url);return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,catalog:{source:store.kind,revision},web_path:'/'});}
+    if(url.pathname==='/api/status'){const {store,revision}=await catalogStore(env,url);let count=schools.length;if(store.kind==='d1')try{count=Number((await env.CATALOG_DB.prepare(`SELECT value FROM catalog_meta WHERE key='records'`).first())?.value)||count}catch{}return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:count,catalog:{source:store.kind,revision},web_path:'/'});}
     if(url.pathname==='/catalog/menu')return catalogAnswer(env,url,store=>catalogMenu(store,{level:url.searchParams.get('level'),group:url.searchParams.get('group'),middle:url.searchParams.get('middle')}));
     if(url.pathname==='/catalog/entries')return catalogAnswer(env,url,store=>catalogEntries(store,url.searchParams.get('ids')));
-    if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,time_zone:schoolTimeZone(s),sponsored_sports:sponsoredSports[s.id]||null})));}
+    if(url.pathname==='/schools'){const listDb=await catalogD1();let list=listDb?await catalogAllRecords(listDb).catch(()=>schools):schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,time_zone:schoolTimeZone(s),sponsored_sports:sponsoredSports[s.id]||null})));}
     if(url.pathname==='/api/source')return privateSource(request,env);
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}

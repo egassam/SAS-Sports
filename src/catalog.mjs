@@ -44,10 +44,11 @@ export function catalogCards(schools,sponsored,timeZoneOf,themes={}){
     return card;
   });
 }
-// The revision covers the cards and the full records (a changed source
-// setting is a new revision too).
-export async function catalogRevision(cards,records=[]){
-  const bytes=new TextEncoder().encode(JSON.stringify(records.length?[cards,records]:cards));
+// The revision covers the cards, the full records and the rows derived from
+// them (a changed source setting, or a changed rule for names, is a new
+// revision too).
+export async function catalogRevision(cards,records=[],derived=null){
+  const bytes=new TextEncoder().encode(JSON.stringify(derived?[cards,records,derived]:records.length?[cards,records]:cards));
   const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
   return[...digest.slice(0,12)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
@@ -58,23 +59,42 @@ export const CATALOG_SCHEMA=[
   `CREATE TABLE IF NOT EXISTS catalog_meta(key TEXT PRIMARY KEY,value TEXT NOT NULL)`,
   // The full entry (source settings included) for the Worker's own lookups
   // by id; the page never reads it.
-  `CREATE TABLE IF NOT EXISTS catalog_records(id TEXT PRIMARY KEY,entry TEXT NOT NULL)`
+  `CREATE TABLE IF NOT EXISTS catalog_records(id TEXT PRIMARY KEY,entry TEXT NOT NULL)`,
+  // Indexes for the lookups that used to scan every entry (catalog step 3):
+  // each entry's names and aliases as the Worker normalizes them (opponent
+  // matching), and each official site's host (the private-source allowlist).
+  `CREATE TABLE IF NOT EXISTS catalog_names(name TEXT NOT NULL,id TEXT NOT NULL,sort INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS catalog_names_by_name ON catalog_names(name)`,
+  `CREATE TABLE IF NOT EXISTS catalog_hosts(host TEXT NOT NULL,id TEXT NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS catalog_hosts_by_host ON catalog_hosts(host)`
 ];
+// The derived rows: every entry's normalized names (in catalog order) and
+// its official host. `normalize` is the Worker's own name rule.
+export function catalogDerived(records,normalize){
+  const names=[],hosts=[];
+  records.forEach((r,sort)=>{
+    for(const name of new Set([r.name,r.short_name,...(r.aliases||[])].map(normalize).filter(Boolean)))names.push([name,r.id,sort]);
+    try{hosts.push([new URL(r.athletics_url).hostname.toLowerCase().replace(/^www\./,''),r.id])}catch{}
+  });
+  return{names,hosts};
+}
 const rowOf=(card,sort)=>{const r=rules(card.level);return{id:card.id,level:card.level,grp:r.group(card),mid:r.middle?r.middle(card):'',sort,card:JSON.stringify(card)}};
 
 // Production only: replace the stored catalog when the revision changed, in
 // one transaction (a reader sees the old catalog or the new one).
-export async function syncCatalog(db,cards,revision,now=Date.now(),records=[]){
+export async function syncCatalog(db,cards,revision,now=Date.now(),records=[],derived={names:[],hosts:[]}){
   await db.batch(CATALOG_SCHEMA.map(sql=>db.prepare(sql)));
   const stored=await db.prepare(`SELECT value FROM catalog_meta WHERE key='revision'`).first();
   if(stored?.value===revision)return'current';
   const insert=db.prepare(`INSERT INTO catalog_entries(id,level,grp,mid,sort,card) VALUES(?,?,?,?,?,?)`);
   const meta=db.prepare(`INSERT OR REPLACE INTO catalog_meta(key,value) VALUES(?,?)`);
   const record=db.prepare(`INSERT INTO catalog_records(id,entry) VALUES(?,?)`);
+  const name=db.prepare(`INSERT INTO catalog_names(name,id,sort) VALUES(?,?,?)`),host=db.prepare(`INSERT INTO catalog_hosts(host,id) VALUES(?,?)`);
   await db.batch([
-    db.prepare(`DELETE FROM catalog_entries`),db.prepare(`DELETE FROM catalog_records`),
+    db.prepare(`DELETE FROM catalog_entries`),db.prepare(`DELETE FROM catalog_records`),db.prepare(`DELETE FROM catalog_names`),db.prepare(`DELETE FROM catalog_hosts`),
     ...cards.map((card,i)=>{const r=rowOf(card,i);return insert.bind(r.id,r.level,r.grp,r.mid,r.sort,r.card)}),
     ...records.map(entry=>record.bind(entry.id,JSON.stringify(entry))),
+    ...derived.names.map(row=>name.bind(...row)),...derived.hosts.map(row=>host.bind(...row)),
     meta.bind('revision',revision),meta.bind('count',String(cards.length)),meta.bind('records',String(records.length)),meta.bind('synced_at',new Date(now).toISOString())
   ]);
   return'synced';
@@ -93,6 +113,28 @@ export async function storeMatches(db,revision,count,records=0){
 export async function catalogRecords(db,ids){
   const list=[...new Set(ids.filter(Boolean))].slice(0,50);if(!list.length)return[];
   const {results}=await db.prepare(`SELECT entry FROM catalog_records WHERE id IN (${list.map(()=>'?').join(',')})`).bind(...list).all();
+  return(results||[]).map(r=>JSON.parse(r.entry));
+}
+
+// The opponent an event names: the first entry in catalog order (other than
+// the school itself) with a name equal to it, or, both longer than three
+// letters, one containing the other (the Worker's rule, now one query).
+export async function catalogOpponent(db,wanted,excludeId){
+  if(!wanted)return null;
+  const row=await db.prepare(`SELECT id FROM catalog_names WHERE id<>? AND (name=? OR (length(name)>3 AND length(?)>3 AND (instr(name,?)>0 OR instr(?,name)>0))) ORDER BY sort LIMIT 1`).bind(excludeId||'',wanted,wanted,wanted,wanted).first();
+  return row?.id||null;
+}
+export async function catalogHostKnown(db,host){
+  return Boolean(await db.prepare(`SELECT 1 AS ok FROM catalog_hosts WHERE host=? LIMIT 1`).bind(host).first());
+}
+// A conference's members (full records, catalog order).
+export async function catalogMembers(db,conference){
+  const {results}=await db.prepare(`SELECT entry FROM catalog_records WHERE json_extract(entry,'$.conference')=? ORDER BY rowid`).bind(conference).all();
+  return(results||[]).map(r=>JSON.parse(r.entry));
+}
+// Every full record (the /schools listing for scripts), catalog order.
+export async function catalogAllRecords(db){
+  const {results}=await db.prepare(`SELECT entry FROM catalog_records ORDER BY rowid`).all();
   return(results||[]).map(r=>JSON.parse(r.entry));
 }
 
