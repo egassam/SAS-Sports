@@ -44,8 +44,10 @@ export function catalogCards(schools,sponsored,timeZoneOf,themes={}){
     return card;
   });
 }
-export async function catalogRevision(cards){
-  const bytes=new TextEncoder().encode(JSON.stringify(cards));
+// The revision covers the cards and the full records (a changed source
+// setting is a new revision too).
+export async function catalogRevision(cards,records=[]){
+  const bytes=new TextEncoder().encode(JSON.stringify(records.length?[cards,records]:cards));
   const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
   return[...digest.slice(0,12)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
@@ -53,22 +55,27 @@ export async function catalogRevision(cards){
 export const CATALOG_SCHEMA=[
   `CREATE TABLE IF NOT EXISTS catalog_entries(id TEXT PRIMARY KEY,level TEXT NOT NULL,grp TEXT NOT NULL,mid TEXT NOT NULL,sort INTEGER NOT NULL,card TEXT NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS catalog_by_menu ON catalog_entries(level,grp,mid,sort)`,
-  `CREATE TABLE IF NOT EXISTS catalog_meta(key TEXT PRIMARY KEY,value TEXT NOT NULL)`
+  `CREATE TABLE IF NOT EXISTS catalog_meta(key TEXT PRIMARY KEY,value TEXT NOT NULL)`,
+  // The full entry (source settings included) for the Worker's own lookups
+  // by id; the page never reads it.
+  `CREATE TABLE IF NOT EXISTS catalog_records(id TEXT PRIMARY KEY,entry TEXT NOT NULL)`
 ];
 const rowOf=(card,sort)=>{const r=rules(card.level);return{id:card.id,level:card.level,grp:r.group(card),mid:r.middle?r.middle(card):'',sort,card:JSON.stringify(card)}};
 
 // Production only: replace the stored catalog when the revision changed, in
 // one transaction (a reader sees the old catalog or the new one).
-export async function syncCatalog(db,cards,revision,now=Date.now()){
+export async function syncCatalog(db,cards,revision,now=Date.now(),records=[]){
   await db.batch(CATALOG_SCHEMA.map(sql=>db.prepare(sql)));
   const stored=await db.prepare(`SELECT value FROM catalog_meta WHERE key='revision'`).first();
   if(stored?.value===revision)return'current';
   const insert=db.prepare(`INSERT INTO catalog_entries(id,level,grp,mid,sort,card) VALUES(?,?,?,?,?,?)`);
   const meta=db.prepare(`INSERT OR REPLACE INTO catalog_meta(key,value) VALUES(?,?)`);
+  const record=db.prepare(`INSERT INTO catalog_records(id,entry) VALUES(?,?)`);
   await db.batch([
-    db.prepare(`DELETE FROM catalog_entries`),
+    db.prepare(`DELETE FROM catalog_entries`),db.prepare(`DELETE FROM catalog_records`),
     ...cards.map((card,i)=>{const r=rowOf(card,i);return insert.bind(r.id,r.level,r.grp,r.mid,r.sort,r.card)}),
-    meta.bind('revision',revision),meta.bind('count',String(cards.length)),meta.bind('synced_at',new Date(now).toISOString())
+    ...records.map(entry=>record.bind(entry.id,JSON.stringify(entry))),
+    meta.bind('revision',revision),meta.bind('count',String(cards.length)),meta.bind('records',String(records.length)),meta.bind('synced_at',new Date(now).toISOString())
   ]);
   return'synced';
 }
@@ -76,11 +83,17 @@ export async function storedRevision(db){
   try{return(await db.prepare(`SELECT value FROM catalog_meta WHERE key='revision'`).first())?.value||null}catch{return null}
 }
 // D1 is read only when it holds this revision and every row of it.
-export async function storeMatches(db,revision,count){
+export async function storeMatches(db,revision,count,records=0){
   try{
-    const [meta,rows]=await Promise.all([storedRevision(db),db.prepare(`SELECT COUNT(*) AS n FROM catalog_entries`).first()]);
-    return meta===revision&&Number(rows?.n)===count;
+    const [meta,rows,full]=await Promise.all([storedRevision(db),db.prepare(`SELECT COUNT(*) AS n FROM catalog_entries`).first(),db.prepare(`SELECT COUNT(*) AS n FROM catalog_records`).first()]);
+    return meta===revision&&Number(rows?.n)===count&&Number(full?.n)===records;
   }catch{return false}
+}
+// Full entries by id from D1 (the Worker's lookups; at most 50 a read).
+export async function catalogRecords(db,ids){
+  const list=[...new Set(ids.filter(Boolean))].slice(0,50);if(!list.length)return[];
+  const {results}=await db.prepare(`SELECT entry FROM catalog_records WHERE id IN (${list.map(()=>'?').join(',')})`).bind(...list).all();
+  return(results||[]).map(r=>JSON.parse(r.entry));
 }
 
 // Two stores with one interface: D1, and the bundled cards (previews with

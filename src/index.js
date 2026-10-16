@@ -2,7 +2,7 @@ import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import teamThemes from './team-themes.json';
-import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from './catalog.mjs';
+import {catalogCards,catalogRevision,syncCatalog,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords} from './catalog.mjs';
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {extractText} from 'unpdf';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
@@ -80,7 +80,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.101.2-catalog-edge-cache';
+const VERSION='4.102.0-catalog-lookups';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -592,7 +592,7 @@ const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
 const PRODUCTION_HOST='sas-sports.lovetogivepain.workers.dev';
 let catalogBundle=null,catalogChoice=null;
 async function bundledCatalog(){
-  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes);catalogBundle={cards,store:bundledStore(cards),revision:await catalogRevision(cards)};}
+  if(!catalogBundle){const cards=catalogCards(schools,sponsoredSports,schoolTimeZone,teamThemes);catalogBundle={cards,records:schools,store:bundledStore(cards),revision:await catalogRevision(cards,schools)};}
   return catalogBundle;
 }
 async function catalogStore(env,url,now=Date.now()){
@@ -601,11 +601,31 @@ async function catalogStore(env,url,now=Date.now()){
   if(catalogChoice&&now-catalogChoice.at<60000)return catalogChoice.value;
   let store=bundle.store;
   try{
-    if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);
-    if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);
+    if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records);
+    if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length,bundle.records.length))store=d1Store(env.CATALOG_DB);
   }catch{}
   catalogChoice={at:now,value:{store,revision:bundle.revision}};
   return catalogChoice.value;
+}
+// The Worker's lookups by id (catalog step 2, docs/CATALOG.md): every one
+// goes through catalogSchool(id), synchronous for the code that calls it. A
+// request naming a school loads that entry from D1 first (loadCatalogEntries,
+// kept per isolate for the revision); the bundled file answers the rest, so
+// the bundled file can stop holding every entry once importers write D1.
+const bundledById=new Map(schools.map(s=>[s.id,s]));
+let loadedEntries={revision:null,byId:new Map()};
+function catalogSchool(id){return loadedEntries.byId.get(id)||bundledById.get(id)||null}
+async function loadCatalogEntries(env,url,ids){
+  if(!env?.CATALOG_DB)return;
+  try{
+    const {store,revision}=await catalogStore(env,url);
+    if(store.kind!=='d1')return;
+    if(loadedEntries.revision!==revision)loadedEntries={revision,byId:new Map()};
+    const missing=ids.filter(id=>id&&!loadedEntries.byId.has(id));
+    if(!missing.length)return;
+    const found=await catalogRecords(env.CATALOG_DB,missing);
+    if(loadedEntries.revision===revision)for(const entry of found)loadedEntries.byId.set(entry.id,entry);
+  }catch{}
 }
 // ?source=bundled answers from the bundled copy (to compare it with D1).
 // An answer never changes within a revision, so each Cloudflare location
@@ -1006,7 +1026,7 @@ function rosterPositions(raw,base){
 // distance runners only.
 const DISTANCE_GROUP=/\b(?:distance|cross[\s-]*country|xc)\b/i;
 async function featuredAthletes(schoolId,sport){
-  const school=schools.find(s=>s.id===schoolId);if(!school)return[];
+  const school=catalogSchool(schoolId);if(!school)return[];
   const sharedTrack=sport==='Cross Country'&&rosterUrls(school,sport).some(url=>rosterUrls(school,'Track & Field').includes(url));
   let profiles=[];
   const pinned=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${schoolId}|${sport}|`)).map(key=>key.split('|').slice(2).join('|'));
@@ -1393,7 +1413,7 @@ async function attachOfficialMeetResults(event){
   if(event.recap_result_count>0&&event.results?.length)return event;
   try{
     const url=new URL(event.result_url);
-    const school=schools.find(x=>x.id===event.school_id);let rows=[];
+    const school=catalogSchool(event.school_id);let rows=[];
     if(/(^|\.)tfrrs\.org$/i.test(url.hostname)){
       const response=await sourceFetch(url);if(response.ok)rows=parseTfrrsCrossCountryResults(await response.text(),school);
     }else{
@@ -2092,13 +2112,13 @@ function seasonRecords(results){
     byTeam.set(team,record);
   }
   const text=r=>`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`;
-  const conference=schools.find(s=>s.id===results[0]?.school_id)?.conference||null;
+  const conference=catalogSchool(results[0]?.school_id)?.conference||null;
   return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>{
     const {games,name,...tally}=r.conference;
     return{...r,text:text(r),conference:games&&(name||conference)?{name:name||conference,...tally,text:text(tally)}:null};
   });
 }
-function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,catalogSchool=schools.find(s=>s.id===events[0].school_id),local=schoolNow(now,catalogSchool);if(!isHighSchool(catalogSchool)&&!isPro(catalogSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
@@ -2749,7 +2769,7 @@ function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=fals
   return events;
 }
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
-  const school=schools.find(s=>s.id===schoolId),now=new Date();
+  const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId);
   if(isPro(school))return fetchPro(school,sport,now,aiTargetId);
@@ -2854,7 +2874,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   const body=usesGlobalCopy(school)?await stored.clone().text():null;
   await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood),body&&saveGlobalCopy(env,school,sport,body,result.fetched_at)]);return stored;
 }
-async function diagnostic(schoolId,sport){const school=schools.find(s=>s.id===schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed,source_cache:r.source_cache,upstream_status:r.upstream_status,empty_schedule:Boolean(r.empty_schedule)});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
+async function diagnostic(schoolId,sport){const school=catalogSchool(schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed,source_cache:r.source_cache,upstream_status:r.upstream_status,empty_schedule:Boolean(r.empty_schedule)});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
 
 // Private source fetch for development (user-approved, October 2). The
@@ -2921,7 +2941,9 @@ export default{
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     // School-entered live scores (scorer app, TV scoreboard, public live cards).
     if(url.pathname.startsWith('/api/score/'))return handleLiveScoring(request,env,url);
-    if(url.pathname==='/api/status')return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,web_path:'/'});
+    // A request naming a school has its catalog entry loaded first.
+    if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);
+    if(url.pathname==='/api/status'){const {store,revision}=await catalogStore(env,url);return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:schools.length,catalog:{source:store.kind,revision},web_path:'/'});}
     if(url.pathname==='/catalog/menu')return catalogAnswer(env,url,store=>catalogMenu(store,{level:url.searchParams.get('level'),group:url.searchParams.get('group'),middle:url.searchParams.get('middle')}));
     if(url.pathname==='/catalog/entries')return catalogAnswer(env,url,store=>catalogEntries(store,url.searchParams.get('ids')));
     if(url.pathname==='/schools'){let list=schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,time_zone:schoolTimeZone(s),sponsored_sports:sponsoredSports[s.id]||null})));}
@@ -2933,7 +2955,7 @@ export default{
       if(!school||!sport)return json({detail:'school and sport are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       // High school athletes are minors: none are featured (user, October 9).
-      if(isHighSchool(schools.find(s=>s.id===school))||isPro(schools.find(s=>s.id===school)))return json([]);
+      if(isHighSchool(catalogSchool(school))||isPro(catalogSchool(school)))return json([]);
       // The key carries the sport's pinned athletes too: a build that adds a
       // pin must not serve the list cached before it (same version, 6 h).
       const pins=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${school}|${sport}|`)).sort().join(',');

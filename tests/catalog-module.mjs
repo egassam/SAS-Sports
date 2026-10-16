@@ -5,7 +5,11 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries} from '../src/catalog.mjs';
+import * as catalogModule from '../src/catalog.mjs';
+import {CATALOG_LEVELS,catalogCards,catalogRevision,syncCatalog,storedRevision,storeMatches,bundledStore,d1Store,catalogMenu,catalogEntries,catalogRecords} from '../src/catalog.mjs';
+import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
+import {rosterSocialInstagrams} from '../src/roster-socials.js';
+import {schoolModuleDeps} from './school-module-deps.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json'));
 const page=read('../public/index.html'),worker=read('../src/index.js'),wrangler=read('../wrangler.jsonc');
@@ -120,8 +124,8 @@ for(const store of stores){
 // when D1 is behind or fails.
 assert.ok(wrangler.includes('"binding": "CATALOG_DB", "database_name": "sas-sports-catalog"'));
 assert.ok(wrangler.includes('"/catalog/*"'),'catalog routes reach the Worker');
-assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision);"),'only production writes the catalog');
-assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length))store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision, with every row');
+assert.ok(worker.includes("if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records);"),'only production writes the catalog');
+assert.ok(worker.includes('if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length,bundle.records.length))store=d1Store(env.CATALOG_DB);'),'D1 is read only at the bundled revision, with every row');
 assert.ok(worker.includes("url.searchParams.get('source')==='bundled'?(await bundledCatalog()).store:chosen.store"),'?source=bundled compares the copies');
 assert.ok(worker.includes("try{body=await read(store)}catch{const bundle=await bundledCatalog();body=await read(bundle.store);source='bundled';}"));
 assert.ok(worker.includes("if(url.pathname==='/catalog/menu')return catalogAnswer("));
@@ -148,4 +152,41 @@ assert.ok(worker.includes('catalogCards(schools,sponsoredSports,schoolTimeZone,t
 assert.ok(page.includes("conference.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
 assert.ok(page.includes("city.addEventListener('change',async()=>{if(await refillFromMenus())loadFeed()});"));
 assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow menu answer never overwrites a newer one');
+// Step 2: the Worker's lookups by id. Full records go to D1 with the cards
+// (a changed source setting is a new revision); D1 is used only with every
+// record; a request naming a school loads its record from D1 first, and
+// every lookup by id goes through catalogSchool.
+{
+  const records=schools,full=await catalogRevision(cards,records);
+  assert.notEqual(full,revision,'the records are part of the revision');
+  const changed=records.map(r=>r.id==='kstate'?{...r,aliases:[...(r.aliases||[]),'KSU']}:r);
+  assert.notEqual(await catalogRevision(cards,changed),full,'a changed source setting is a new revision');
+  const db2=fakeD1();
+  assert.equal(await syncCatalog(db2,cards,full,Date.now(),records),'synced');
+  assert.equal(db2.sqlite.prepare('SELECT COUNT(*) AS n FROM catalog_records').get().n,records.length);
+  assert.equal(await storeMatches(db2,full,cards.length,records.length),true);
+  assert.equal(await storeMatches(db2,full,cards.length,records.length+1),false,'a short records table is not used');
+  assert.deepEqual((await catalogRecords(db2,['kstate','nobody']))[0],records.find(r=>r.id==='kstate'));
+  // The real Worker over this D1: a request for K-State loads K-State's
+  // record from D1 (marked here so it can be told apart from the bundled one).
+  const source=worker.replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
+  const deps={...schoolModuleDeps,...catalogModule,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,teamThemes:themes,rosterSocialInstagrams,handleLiveScoring:()=>new Response(''),extractText:()=>{throw Error('no PDF')},fetch:async()=>new Response('',{status:404}),caches:{default:{async match(){},async put(){}}}};
+  const {handler,catalogSchool,bundledCatalog}=Function(...Object.keys(deps),source+';return {handler,catalogSchool,bundledCatalog};')(...Object.values(deps));
+  // D1 as production writes it (the Worker's own cards, records and revision).
+  const bundle=await bundledCatalog(),db3=fakeD1();
+  await syncCatalog(db3,bundle.cards,bundle.revision,Date.now(),bundle.records);
+  db3.sqlite.prepare(`UPDATE catalog_records SET entry=? WHERE id='kstate'`).run(JSON.stringify({...records.find(r=>r.id==='kstate'),name:'Kansas State (from D1)'}));
+  assert.equal(catalogSchool('kstate').name,'Kansas State','before a request: the bundled record');
+  await handler.fetch(new Request('https://preview.example/live/status?school=kstate&sport=Volleyball'),{CATALOG_DB:db3},{waitUntil(){}}).catch(()=>{});
+  assert.equal(catalogSchool('kstate').name,'Kansas State (from D1)','the request loaded the D1 record');
+  assert.equal(catalogSchool('kansas').name,'Kansas','others come from the bundled file until a request names them');
+  assert.equal(catalogSchool('nobody'),null);
+  // Without a catalog database (tests, a misconfigured deploy) nothing changes.
+  const plain=Function(...Object.keys(deps),source+';return {handler,catalogSchool};')(...Object.values(deps));
+  await plain.handler.fetch(new Request('https://preview.example/live/status?school=kstate&sport=Volleyball'),{},{waitUntil(){}}).catch(()=>{});
+  assert.equal(plain.catalogSchool('kstate').name,'Kansas State');
+  // No lookup by id scans the bundled list any more.
+  assert.ok(!/schools\.find\((?:s|x)=>(?:s|x)\.id===/.test(worker),'every lookup by id goes through catalogSchool');
+  assert.ok(worker.includes("if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);"));
+}
 console.log(`Catalog module tests passed (${checked} menu steps, D1 equals bundled)`);
