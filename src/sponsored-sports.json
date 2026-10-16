@@ -34,6 +34,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "arizona-cardinals": [
+    "Football"
+  ],
   "arizona-state": [
     "Baseball",
     "Basketball",
@@ -67,6 +70,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "atlanta-falcons": [
+    "Football"
+  ],
   "auburn": [
     "Baseball",
     "Basketball",
@@ -81,6 +87,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "baltimore-ravens": [
+    "Football"
   ],
   "baylor": [
     "Acrobatics & Tumbling",
@@ -115,6 +124,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "buffalo-bills": [
+    "Football"
+  ],
   "byu": [
     "Baseball",
     "Basketball",
@@ -148,6 +160,12 @@
     "Volleyball",
     "Water Polo"
   ],
+  "carolina-panthers": [
+    "Football"
+  ],
+  "chicago-bears": [
+    "Football"
+  ],
   "cincinnati": [
     "Baseball",
     "Basketball",
@@ -160,6 +178,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "cincinnati-bengals": [
+    "Football"
   ],
   "clemson": [
     "Baseball",
@@ -176,6 +197,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "cleveland-browns": [
+    "Football"
+  ],
   "colorado": [
     "Basketball",
     "Cross Country",
@@ -186,6 +210,15 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "dallas-cowboys": [
+    "Football"
+  ],
+  "denver-broncos": [
+    "Football"
+  ],
+  "detroit-lions": [
+    "Football"
   ],
   "duke": [
     "Baseball",
@@ -270,6 +303,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "green-bay-packers": [
+    "Football"
+  ],
   "houston": [
     "Baseball",
     "Basketball",
@@ -282,6 +318,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "houston-texans": [
+    "Football"
   ],
   "illinois": [
     "Baseball",
@@ -315,6 +354,9 @@
     "Water Polo",
     "Wrestling"
   ],
+  "indianapolis-colts": [
+    "Football"
+  ],
   "iowa": [
     "Baseball",
     "Basketball",
@@ -345,6 +387,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "jacksonville-jaguars": [
+    "Football"
   ],
   "kansas": [
     "Baseball",
@@ -390,6 +435,15 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "las-vegas-raiders": [
+    "Football"
+  ],
+  "los-angeles-chargers": [
+    "Football"
+  ],
+  "los-angeles-rams": [
+    "Football"
   ],
   "louisville": [
     "Baseball",
@@ -459,6 +513,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "miami-dolphins": [
+    "Football"
+  ],
   "michigan": [
     "Baseball",
     "Basketball",
@@ -512,6 +569,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "minnesota-vikings": [
+    "Football"
   ],
   "mississippi-state": [
     "Baseball",
@@ -575,6 +635,18 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "new-england-patriots": [
+    "Football"
+  ],
+  "new-orleans-saints": [
+    "Football"
+  ],
+  "new-york-giants": [
+    "Football"
+  ],
+  "new-york-jets": [
+    "Football"
   ],
   "north-carolina": [
     "Baseball",
@@ -724,6 +796,9 @@
     "Volleyball",
     "Wrestling"
   ],
+  "philadelphia-eagles": [
+    "Football"
+  ],
   "pitt": [
     "Baseball",
     "Basketball",
@@ -772,6 +847,12 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "san-francisco-49ers": [
+    "Football"
+  ],
+  "seattle-seahawks": [
+    "Football"
   ],
   "smu": [
     "Basketball",
@@ -836,6 +917,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "tampa-bay-buccaneers": [
+    "Football"
+  ],
   "tcu": [
     "Baseball",
     "Basketball",
@@ -865,6 +949,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "tennessee-titans": [
+    "Football"
   ],
   "texas": [
     "Baseball",
@@ -1042,6 +1129,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "washington-commanders": [
+    "Football"
   ],
   "west-virginia": [
     "Baseball",

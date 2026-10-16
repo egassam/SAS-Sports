@@ -1465,6 +1465,174 @@
     ]
   },
   {
+    "id": "buffalo-bills",
+    "name": "Buffalo Bills",
+    "short_name": "Bills",
+    "state": "New York",
+    "city": "Orchard Park",
+    "conference": "AFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC East",
+    "athletics_url": "https://www.buffalobills.com",
+    "aliases": [
+      "Bills",
+      "BUF"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/buf",
+        "provider_school_id": "2"
+      }
+    ]
+  },
+  {
+    "id": "miami-dolphins",
+    "name": "Miami Dolphins",
+    "short_name": "Dolphins",
+    "state": "Florida",
+    "city": "Miami Gardens",
+    "conference": "AFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC East",
+    "athletics_url": "https://www.miamidolphins.com",
+    "aliases": [
+      "Dolphins",
+      "MIA"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/mia",
+        "provider_school_id": "15"
+      }
+    ]
+  },
+  {
+    "id": "new-england-patriots",
+    "name": "New England Patriots",
+    "short_name": "Patriots",
+    "state": "Massachusetts",
+    "city": "Foxborough",
+    "conference": "AFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC East",
+    "athletics_url": "https://www.patriots.com",
+    "aliases": [
+      "Patriots",
+      "NE"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/ne",
+        "provider_school_id": "17"
+      }
+    ]
+  },
+  {
+    "id": "new-york-jets",
+    "name": "New York Jets",
+    "short_name": "Jets",
+    "state": "New Jersey",
+    "city": "East Rutherford",
+    "conference": "AFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC East",
+    "athletics_url": "https://www.newyorkjets.com",
+    "aliases": [
+      "Jets",
+      "NYJ"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/nyj",
+        "provider_school_id": "20"
+      }
+    ]
+  },
+  {
+    "id": "baltimore-ravens",
+    "name": "Baltimore Ravens",
+    "short_name": "Ravens",
+    "state": "Maryland",
+    "city": "Baltimore",
+    "conference": "AFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC North",
+    "athletics_url": "https://www.baltimoreravens.com",
+    "aliases": [
+      "Ravens",
+      "BAL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/bal",
+        "provider_school_id": "33"
+      }
+    ]
+  },
+  {
+    "id": "cincinnati-bengals",
+    "name": "Cincinnati Bengals",
+    "short_name": "Bengals",
+    "state": "Ohio",
+    "city": "Cincinnati",
+    "conference": "AFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC North",
+    "athletics_url": "https://www.bengals.com",
+    "aliases": [
+      "Bengals",
+      "CIN"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/cin",
+        "provider_school_id": "4"
+      }
+    ]
+  },
+  {
+    "id": "cleveland-browns",
+    "name": "Cleveland Browns",
+    "short_name": "Browns",
+    "state": "Ohio",
+    "city": "Cleveland",
+    "conference": "AFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC North",
+    "athletics_url": "https://www.clevelandbrowns.com",
+    "aliases": [
+      "Browns",
+      "CLE"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/cle",
+        "provider_school_id": "5"
+      }
+    ]
+  },
+  {
     "id": "pittsburgh-steelers",
     "name": "Pittsburgh Steelers",
     "short_name": "Steelers",
@@ -1489,6 +1657,126 @@
     ]
   },
   {
+    "id": "houston-texans",
+    "name": "Houston Texans",
+    "short_name": "Texans",
+    "state": "Texas",
+    "city": "Houston",
+    "conference": "AFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC South",
+    "athletics_url": "https://www.houstontexans.com",
+    "aliases": [
+      "Texans",
+      "HOU"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/hou",
+        "provider_school_id": "34"
+      }
+    ]
+  },
+  {
+    "id": "indianapolis-colts",
+    "name": "Indianapolis Colts",
+    "short_name": "Colts",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "conference": "AFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC South",
+    "athletics_url": "https://www.colts.com",
+    "aliases": [
+      "Colts",
+      "IND"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/ind",
+        "provider_school_id": "11"
+      }
+    ]
+  },
+  {
+    "id": "jacksonville-jaguars",
+    "name": "Jacksonville Jaguars",
+    "short_name": "Jaguars",
+    "state": "Florida",
+    "city": "Jacksonville",
+    "conference": "AFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC South",
+    "athletics_url": "https://www.jaguars.com",
+    "aliases": [
+      "Jaguars",
+      "JAX"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/jax",
+        "provider_school_id": "30"
+      }
+    ]
+  },
+  {
+    "id": "tennessee-titans",
+    "name": "Tennessee Titans",
+    "short_name": "Titans",
+    "state": "Tennessee",
+    "city": "Nashville",
+    "conference": "AFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC South",
+    "athletics_url": "https://www.tennesseetitans.com",
+    "aliases": [
+      "Titans",
+      "TEN"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/ten",
+        "provider_school_id": "10"
+      }
+    ]
+  },
+  {
+    "id": "denver-broncos",
+    "name": "Denver Broncos",
+    "short_name": "Broncos",
+    "state": "Colorado",
+    "city": "Denver",
+    "conference": "AFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC West",
+    "athletics_url": "https://www.denverbroncos.com",
+    "aliases": [
+      "Broncos",
+      "DEN"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/den",
+        "provider_school_id": "7"
+      }
+    ]
+  },
+  {
     "id": "kansas-city-chiefs",
     "name": "Kansas City Chiefs",
     "short_name": "Chiefs",
@@ -1509,6 +1797,438 @@
         "provider": "ESPN",
         "slug": "football/nfl/teams/kc",
         "provider_school_id": "12"
+      }
+    ]
+  },
+  {
+    "id": "las-vegas-raiders",
+    "name": "Las Vegas Raiders",
+    "short_name": "Raiders",
+    "state": "Nevada",
+    "city": "Las Vegas",
+    "conference": "AFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC West",
+    "athletics_url": "https://www.raiders.com",
+    "aliases": [
+      "Raiders",
+      "LV"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/lv",
+        "provider_school_id": "13"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-chargers",
+    "name": "Los Angeles Chargers",
+    "short_name": "Chargers",
+    "state": "California",
+    "city": "Inglewood",
+    "conference": "AFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · AFC West",
+    "athletics_url": "https://www.chargers.com",
+    "aliases": [
+      "Chargers",
+      "LAC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/lac",
+        "provider_school_id": "24"
+      }
+    ]
+  },
+  {
+    "id": "dallas-cowboys",
+    "name": "Dallas Cowboys",
+    "short_name": "Cowboys",
+    "state": "Texas",
+    "city": "Arlington",
+    "conference": "NFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC East",
+    "athletics_url": "https://www.dallascowboys.com",
+    "aliases": [
+      "Cowboys",
+      "DAL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/dal",
+        "provider_school_id": "6"
+      }
+    ]
+  },
+  {
+    "id": "new-york-giants",
+    "name": "New York Giants",
+    "short_name": "Giants",
+    "state": "New Jersey",
+    "city": "East Rutherford",
+    "conference": "NFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC East",
+    "athletics_url": "https://www.giants.com",
+    "aliases": [
+      "Giants",
+      "NYG"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/nyg",
+        "provider_school_id": "19"
+      }
+    ]
+  },
+  {
+    "id": "philadelphia-eagles",
+    "name": "Philadelphia Eagles",
+    "short_name": "Eagles",
+    "state": "Pennsylvania",
+    "city": "Philadelphia",
+    "conference": "NFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC East",
+    "athletics_url": "https://www.philadelphiaeagles.com",
+    "aliases": [
+      "Eagles",
+      "PHI"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/phi",
+        "provider_school_id": "21"
+      }
+    ]
+  },
+  {
+    "id": "washington-commanders",
+    "name": "Washington Commanders",
+    "short_name": "Commanders",
+    "state": "Maryland",
+    "city": "Landover",
+    "conference": "NFC East",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC East",
+    "athletics_url": "https://www.commanders.com",
+    "aliases": [
+      "Commanders",
+      "WSH"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/wsh",
+        "provider_school_id": "28"
+      }
+    ]
+  },
+  {
+    "id": "chicago-bears",
+    "name": "Chicago Bears",
+    "short_name": "Bears",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "NFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC North",
+    "athletics_url": "https://www.chicagobears.com",
+    "aliases": [
+      "Bears",
+      "CHI"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/chi",
+        "provider_school_id": "3"
+      }
+    ]
+  },
+  {
+    "id": "detroit-lions",
+    "name": "Detroit Lions",
+    "short_name": "Lions",
+    "state": "Michigan",
+    "city": "Detroit",
+    "conference": "NFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC North",
+    "athletics_url": "https://www.detroitlions.com",
+    "aliases": [
+      "Lions",
+      "DET"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/det",
+        "provider_school_id": "8"
+      }
+    ]
+  },
+  {
+    "id": "green-bay-packers",
+    "name": "Green Bay Packers",
+    "short_name": "Packers",
+    "state": "Wisconsin",
+    "city": "Green Bay",
+    "conference": "NFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC North",
+    "athletics_url": "https://www.packers.com",
+    "aliases": [
+      "Packers",
+      "GB"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/gb",
+        "provider_school_id": "9"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-vikings",
+    "name": "Minnesota Vikings",
+    "short_name": "Vikings",
+    "state": "Minnesota",
+    "city": "Minneapolis",
+    "conference": "NFC North",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC North",
+    "athletics_url": "https://www.vikings.com",
+    "aliases": [
+      "Vikings",
+      "MIN"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/min",
+        "provider_school_id": "16"
+      }
+    ]
+  },
+  {
+    "id": "atlanta-falcons",
+    "name": "Atlanta Falcons",
+    "short_name": "Falcons",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "conference": "NFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC South",
+    "athletics_url": "https://www.atlantafalcons.com",
+    "aliases": [
+      "Falcons",
+      "ATL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/atl",
+        "provider_school_id": "1"
+      }
+    ]
+  },
+  {
+    "id": "carolina-panthers",
+    "name": "Carolina Panthers",
+    "short_name": "Panthers",
+    "state": "North Carolina",
+    "city": "Charlotte",
+    "conference": "NFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC South",
+    "athletics_url": "https://www.panthers.com",
+    "aliases": [
+      "Panthers",
+      "CAR"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/car",
+        "provider_school_id": "29"
+      }
+    ]
+  },
+  {
+    "id": "new-orleans-saints",
+    "name": "New Orleans Saints",
+    "short_name": "Saints",
+    "state": "Louisiana",
+    "city": "New Orleans",
+    "conference": "NFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC South",
+    "athletics_url": "https://www.neworleanssaints.com",
+    "aliases": [
+      "Saints",
+      "NO"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/no",
+        "provider_school_id": "18"
+      }
+    ]
+  },
+  {
+    "id": "tampa-bay-buccaneers",
+    "name": "Tampa Bay Buccaneers",
+    "short_name": "Buccaneers",
+    "state": "Florida",
+    "city": "Tampa",
+    "conference": "NFC South",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC South",
+    "athletics_url": "https://www.buccaneers.com",
+    "aliases": [
+      "Buccaneers",
+      "TB"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/tb",
+        "provider_school_id": "27"
+      }
+    ]
+  },
+  {
+    "id": "arizona-cardinals",
+    "name": "Arizona Cardinals",
+    "short_name": "Cardinals",
+    "state": "Arizona",
+    "city": "Glendale",
+    "conference": "NFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC West",
+    "athletics_url": "https://www.azcardinals.com",
+    "aliases": [
+      "Cardinals",
+      "ARI"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/ari",
+        "provider_school_id": "22"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-rams",
+    "name": "Los Angeles Rams",
+    "short_name": "Rams",
+    "state": "California",
+    "city": "Inglewood",
+    "conference": "NFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC West",
+    "athletics_url": "https://www.therams.com",
+    "aliases": [
+      "Rams",
+      "LAR"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/lar",
+        "provider_school_id": "14"
+      }
+    ]
+  },
+  {
+    "id": "san-francisco-49ers",
+    "name": "San Francisco 49ers",
+    "short_name": "49ers",
+    "state": "California",
+    "city": "Santa Clara",
+    "conference": "NFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC West",
+    "athletics_url": "https://www.49ers.com",
+    "aliases": [
+      "49ers",
+      "SF"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/sf",
+        "provider_school_id": "25"
+      }
+    ]
+  },
+  {
+    "id": "seattle-seahawks",
+    "name": "Seattle Seahawks",
+    "short_name": "Seahawks",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "NFC West",
+    "league": "NFL",
+    "pro_sport": "Football",
+    "level": "pro",
+    "division": "NFL · NFC West",
+    "athletics_url": "https://www.seahawks.com",
+    "aliases": [
+      "Seahawks",
+      "SEA"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "football/nfl/teams/sea",
+        "provider_school_id": "26"
       }
     ]
   },

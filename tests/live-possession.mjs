@@ -26,6 +26,16 @@ const live=id=>worker.parseScoreboardPayload(payload,schools.find(s=>s.id===id),
 const ku=live('kansas'),ucf=live('ucf');
 assert.deepEqual([ku.status,ku.possession,ku.down_distance,ku.red_zone],['Live','opponent','4th & 13 at KU 47',false]);
 assert.deepEqual([ucf.status,ucf.school_score,ucf.opponent_score,ucf.possession,ucf.down_distance],['Live','7','0','opponent','2nd & 5 at HOU 30']);
+// Everything else the board publishes (user, October 16: "update all live
+// cards to show all the data"): score by period, records, last play, drive,
+// timeouts, win probability, leaders, TV and venue.
+assert.deepEqual(ku.live_details,{
+  line:[{label:'Q1',ours:'0',theirs:'0'}],teams:{ours:'KU',theirs:'MTSU'},records:{ours:'1-2',theirs:'2-2'},
+  last_play:'(11:34) No Huddle-Shotgun #16 R.Gagliano pass complete short right to #9 T.Brown Jr. caught at KAN47, for 2 yards loss to the KAN47 (#7 D.Crouch)',
+  drive:'8 plays, 28 yards, 3:34',timeouts:{ours:3,theirs:3},win_probability:88.9,
+  leaders:[{label:'Passing',value:'Roman Gagliano (MTSU), 3/5, 12 YDS'},{label:'Rushing',value:'Terrence Brown (MTSU), 3 CAR, 16 YDS'},{label:'Receiving',value:"Cam'ron Lacy (MTSU), 1 REC, 10 YDS"}],
+  broadcast:'ESPNU',venue:'David Booth Kansas Memorial Stadium'
+});
 // The team with the ball as the school's own side.
 const swapped=JSON.parse(JSON.stringify(payload));
 for(const e of swapped.events)if(/Kansas Jay/.test(e.name)){e.competitions[0].situation.possession='2305';e.competitions[0].situation.isRedZone=true;}
@@ -45,6 +55,7 @@ assert.equal(live('byu'),undefined);
   const official={id:'official-ku',sport:'Football',status:'Today',start_time:'2026-10-03T12:00:00.000Z',title:'KU vs Middle Tennessee',team_label:null};
   const [joined]=worker.reconcileScoreboardEvents([official],[ku]);
   assert.deepEqual([joined.id,joined.status,joined.possession,joined.down_distance,joined.red_zone],['official-ku','Live','opponent','4th & 13 at KU 47',false]);
+  assert.equal(joined.live_details.drive,'8 plays, 28 yards, 3:34','the live details travel with the score');
 }
 
 // ESPN's CDN refused the app (HTTP 403, Oct 10, 2026, Florida vs South
@@ -67,7 +78,7 @@ assert.equal(live('byu'),undefined);
   const page=read('../public/index.html');
   const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
   const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
-  const liveCard=Function(`${line('const esc=')}\n${line('const lastLiveScores=')}\n${fn('liveSides')}\n${line('function monogram(')}\n${fn('liveCard')};return liveCard;`)();
+  const liveCard=Function(`${line('const esc=')}\n${line('const lastLiveScores=')}\n${fn('liveSides')}\n${line('function monogram(')}\n${fn('liveMore')}\n${fn('liveCard')};return liveCard;`)();
   const base={id:'x',sport:'Football',title:'KU vs Middle Tennessee',opponent:'Middle Tennessee',school_score:'0',opponent_score:'0',recency_label:'10:50 - 1st',live_score_source:'https://site.api.espn.com/x'};
   const theirs=liveCard({...base,possession:'opponent',down_distance:'4th & 13 at KU 47',red_zone:false});
   const rows=theirs.split('<div class="live-team ').slice(1);
@@ -77,6 +88,14 @@ assert.equal(live('byu'),undefined);
   const ours=liveCard({...base,id:'y',possession:'school',down_distance:'1st & Goal at MTSU 4',red_zone:true});
   assert.ok(ours.split('<div class="live-team ')[1].startsWith('ours')&&ours.split('<div class="live-team ')[1].includes('live-ball'));
   assert.match(ours,/live-situation red-zone[^]*Red zone/);
+  // The rest of the board: score by period with records, timeouts, win
+  // probability, the last play and drive, the leaders.
+  const full=liveCard({...base,id:'z',possession:'opponent',down_distance:'4th & 13 at KU 47',live_details:ku.live_details});
+  assert.match(full,/<table class="live-line" aria-label="Score by period"><tr><th><\/th><th>Q1<\/th><th>T<\/th><\/tr><tr><th scope="row">KU <small>\(1-2\)<\/small><\/th><td>0<\/td><td class="total">0<\/td><\/tr>/);
+  assert.match(full,/Timeouts <b>KU 3 · MTSU 3<\/b>[^]*Win probability <b>KU 88\.9%<\/b>[^]*TV <b>ESPNU<\/b>/);
+  assert.match(full,/R\.Gagliano pass complete[^]*<small>Drive: 8 plays, 28 yards, 3:34<\/small>/);
+  assert.match(full,/<span>Passing<\/span><strong>Roman Gagliano \(MTSU\), 3\/5, 12 YDS<\/strong>/);
+  assert.ok(!liveCard({...base,id:'w'}).includes('live-more'),'nothing extra without details');
   // The traveling glow: the card's delay follows the clock (the 15 s redraw
   // does not restart it), and reduced motion stops it.
   assert.match(theirs,/style="--sas-glow-delay:-\d+ms"/);

@@ -25,17 +25,41 @@
 // they are the leagues' and teams' trademarks, not licensed here).
 
 export const PRO_TEAMS={
-  'pittsburgh-steelers':{
-    kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'pit'},
-    // Division games give the header's "AFC North 2-1" (regular season).
-    division:{name:'AFC North',members:['BAL','CIN','CLE']},
-    schedule:'https://www.steelers.com/schedule/'
-  },
-  'kansas-city-chiefs':{
-    kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'kc'},
-    division:{name:'AFC West',members:['DEN','LV','LAC']},
-    schedule:'https://www.chiefs.com/schedule/'
-  },
+  // The 32 NFL teams by division (user, October 16: "Add the entire NFL.
+  // Group them by division"). Division games give the header's "AFC North
+  // 2-1" (regular season).
+  'buffalo-bills':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'buf'},division:{name:'AFC East',members:['MIA','NE','NYJ']},schedule:'https://www.buffalobills.com/schedule/'},
+  'miami-dolphins':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'mia'},division:{name:'AFC East',members:['BUF','NE','NYJ']},schedule:'https://www.miamidolphins.com/schedule/'},
+  'new-england-patriots':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'ne'},division:{name:'AFC East',members:['BUF','MIA','NYJ']},schedule:'https://www.patriots.com/schedule/'},
+  'new-york-jets':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'nyj'},division:{name:'AFC East',members:['BUF','MIA','NE']},schedule:'https://www.newyorkjets.com/schedule/'},
+  'baltimore-ravens':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'bal'},division:{name:'AFC North',members:['CIN','CLE','PIT']},schedule:'https://www.baltimoreravens.com/schedule/'},
+  'cincinnati-bengals':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'cin'},division:{name:'AFC North',members:['BAL','CLE','PIT']},schedule:'https://www.bengals.com/schedule/'},
+  'cleveland-browns':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'cle'},division:{name:'AFC North',members:['BAL','CIN','PIT']},schedule:'https://www.clevelandbrowns.com/schedule/'},
+  'pittsburgh-steelers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'pit'},division:{name:'AFC North',members:['BAL','CIN','CLE']},schedule:'https://www.steelers.com/schedule/'},
+  'houston-texans':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'hou'},division:{name:'AFC South',members:['IND','JAX','TEN']},schedule:'https://www.houstontexans.com/schedule/'},
+  'indianapolis-colts':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'ind'},division:{name:'AFC South',members:['HOU','JAX','TEN']},schedule:'https://www.colts.com/schedule/'},
+  'jacksonville-jaguars':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'jax'},division:{name:'AFC South',members:['HOU','IND','TEN']},schedule:'https://www.jaguars.com/schedule/'},
+  'tennessee-titans':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'ten'},division:{name:'AFC South',members:['HOU','IND','JAX']},schedule:'https://www.tennesseetitans.com/schedule/'},
+  'denver-broncos':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'den'},division:{name:'AFC West',members:['KC','LV','LAC']},schedule:'https://www.denverbroncos.com/schedule/'},
+  'kansas-city-chiefs':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'kc'},division:{name:'AFC West',members:['DEN','LV','LAC']},schedule:'https://www.chiefs.com/schedule/'},
+  'las-vegas-raiders':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'lv'},division:{name:'AFC West',members:['DEN','KC','LAC']},schedule:'https://www.raiders.com/schedule/'},
+  'los-angeles-chargers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'lac'},division:{name:'AFC West',members:['DEN','KC','LV']},schedule:'https://www.chargers.com/schedule/'},
+  'dallas-cowboys':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'dal'},division:{name:'NFC East',members:['NYG','PHI','WSH']},schedule:'https://www.dallascowboys.com/schedule/'},
+  'new-york-giants':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'nyg'},division:{name:'NFC East',members:['DAL','PHI','WSH']},schedule:'https://www.giants.com/schedule/'},
+  'philadelphia-eagles':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'phi'},division:{name:'NFC East',members:['DAL','NYG','WSH']},schedule:'https://www.philadelphiaeagles.com/schedule/'},
+  'washington-commanders':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'wsh'},division:{name:'NFC East',members:['DAL','NYG','PHI']},schedule:'https://www.commanders.com/schedule/'},
+  'chicago-bears':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'chi'},division:{name:'NFC North',members:['DET','GB','MIN']},schedule:'https://www.chicagobears.com/schedule/'},
+  'detroit-lions':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'det'},division:{name:'NFC North',members:['CHI','GB','MIN']},schedule:'https://www.detroitlions.com/schedule/'},
+  'green-bay-packers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'gb'},division:{name:'NFC North',members:['CHI','DET','MIN']},schedule:'https://www.packers.com/schedule/'},
+  'minnesota-vikings':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'min'},division:{name:'NFC North',members:['CHI','DET','GB']},schedule:'https://www.vikings.com/schedule/'},
+  'atlanta-falcons':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'atl'},division:{name:'NFC South',members:['CAR','NO','TB']},schedule:'https://www.atlantafalcons.com/schedule/'},
+  'carolina-panthers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'car'},division:{name:'NFC South',members:['ATL','NO','TB']},schedule:'https://www.panthers.com/schedule/'},
+  'new-orleans-saints':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'no'},division:{name:'NFC South',members:['ATL','CAR','TB']},schedule:'https://www.neworleanssaints.com/schedule/'},
+  'tampa-bay-buccaneers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'tb'},division:{name:'NFC South',members:['ATL','CAR','NO']},schedule:'https://www.buccaneers.com/schedule/'},
+  'arizona-cardinals':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'ari'},division:{name:'NFC West',members:['LAR','SF','SEA']},schedule:'https://www.azcardinals.com/schedule/'},
+  'los-angeles-rams':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'lar'},division:{name:'NFC West',members:['ARI','SF','SEA']},schedule:'https://www.therams.com/schedule/'},
+  'san-francisco-49ers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'sf'},division:{name:'NFC West',members:['ARI','LAR','SEA']},schedule:'https://www.49ers.com/schedule/'},
+  'seattle-seahawks':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'sea'},division:{name:'NFC West',members:['ARI','LAR','SF']},schedule:'https://www.seahawks.com/schedule/'},
   'nascar-cup-series':{
     kind:'nascar',sport:'Auto Racing',seriesId:1,
     schedule:'https://www.nascar.com/nascar-cup-series/schedule/'
@@ -100,7 +124,7 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       const oppName=opp.team.displayName||opp.team.shortDisplayName;
       const week=game.week?.text||null,postseason=game.seasonType?.type===3||/post/i.test(game.seasonType?.name||'');
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:'ESPN team schedule (NFL)',sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
-      event.espn_event_id=game.id;
+      event.espn_event_id=game.id;event.espn_date=game.date;
       if(tv.length)event.broadcast=tv.join(', ');
       event.round=postseason?(game.seasonType?.name||'Postseason'):week;
       if(status==='Final'||status==='Live'){
@@ -206,6 +230,7 @@ export function nascarRaces(list,{school,config,timeZone,now,drivers=new Map(),l
       event.recency_label=`Lap ${live.lap_number} of ${live.laps_in_race}`+(live.flag_state===2?' · Caution':live.flag_state===3?' · Red flag':'');
       event.headline=leader?`Leader: ${leader.driver?.full_name||''} (#${leader.vehicle_number})`:'Under way';
       event.results=order.slice(0,10).map(v=>({participant:`${ordinal(v.running_position)} ${v.driver?.full_name||''}`.trim(),result:`#${v.vehicle_number}`}));
+      event.live_details=nascarLiveDetails(live);
       event.live_score_source='NASCAR live timing';
     }else{
       if(laps)event.results.push({label:'Distance',value:`${race.scheduled_laps} laps · ${race.scheduled_distance} mi`});
@@ -259,4 +284,125 @@ export function nascarFinishRows(feed){
   const results=feed?.weekend_race?.[0]?.results||[];
   const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
   return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({participant:`${name(r.driver_fullname)}${r.car_number?` (#${r.car_number})`:''}`,result:[ordinal(r.finishing_position),r.team_name,r.car_make||null,r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:null,r.laps_led?`${r.laps_led} laps led`:null].filter(Boolean).join(' · ')}));
+}
+
+// ---- Live game details (ESPN scoreboard and game summary) ----
+// Everything ESPN publishes about a game under way, for the live card (user,
+// October 16: "update all live cards to show all the data"): the score by
+// period, who has the ball, down and distance, the last play and the drive,
+// timeouts, the win probability, the game leaders, the team stats and every
+// scoring play. Shared by the NFL teams and the college live boards (the
+// scoreboards have one shape). Each part is left out when ESPN does not
+// publish it (between plays, at breaks, in sports without them).
+const LIVE_STATS=[['totalYards','Total yards'],['netPassingYards','Passing yards'],['rushingYards','Rushing yards'],['firstDowns','First downs'],['thirdDownEff','3rd down'],['fourthDownEff','4th down'],['redZoneAttempts','Red zone'],['turnovers','Turnovers'],['sacksYardsLost','Sacks-yards'],['totalPenaltiesYards','Penalties'],['possessionTime','Time of possession']];
+const teamIdOf=c=>String(c?.id??c?.team?.id??'');
+const shortTeam=c=>c?.team?.abbreviation||c?.team?.shortDisplayName||'';
+export function espnLiveDetails(competition,{ours,opponent,sport='Football',summary=null}){
+  const out={possession:null,down_distance:null,red_zone:null,live_details:null};
+  if(!competition||!ours||!opponent)return out;
+  const situation=competition.situation||null,details={};
+  const ourId=teamIdOf(ours),theirId=teamIdOf(opponent),side=id=>id===ourId?'ours':id===theirId?'theirs':null;
+  const label=n=>sport==='Football'?(n<=4?`Q${n}`:n===5?'OT':`OT${n-4}`):String(n);
+  // Score by period ("Q1 3-0"); a period not yet played is not shown.
+  const periods=c=>new Map((c?.linescores||[]).map((l,i)=>[Number(l.period??i+1),l.displayValue??(l.value!=null?String(l.value):null)]));
+  const a=periods(ours),b=periods(opponent),numbers=[...new Set([...a.keys(),...b.keys()])].filter(Number.isFinite).sort((x,y)=>x-y);
+  if(numbers.length)details.line=numbers.map(n=>({label:label(n),ours:a.get(n)??'0',theirs:b.get(n)??'0'}));
+  details.teams={ours:shortTeam(ours),theirs:shortTeam(opponent)};
+  const record=c=>(c?.records||[]).find(r=>r.type==='total'||r.name==='overall')?.summary||null;
+  if(record(ours)||record(opponent))details.records={ours:record(ours),theirs:record(opponent)};
+  if(situation){
+    const holder=situation.possession!=null?side(String(situation.possession)):null;
+    if(holder){
+      out.possession=holder==='ours'?'school':'opponent';
+      out.down_distance=String(situation.downDistanceText||'').replace(/\s+/g,' ').trim()||null;
+      out.red_zone=situation.isRedZone===true;
+    }
+    const last=situation.lastPlay;
+    if(last?.text)details.last_play=String(last.text).replace(/\s+/g,' ').trim();
+    if(last?.drive?.description)details.drive=String(last.drive.description).trim();
+    if(Number.isFinite(situation.homeTimeouts)&&Number.isFinite(situation.awayTimeouts)){
+      const home=ours.homeAway==='home';
+      details.timeouts={ours:home?situation.homeTimeouts:situation.awayTimeouts,theirs:home?situation.awayTimeouts:situation.homeTimeouts};
+    }
+    const p=last?.probability;
+    if(p&&Number.isFinite(p.homeWinPercentage)){const home=ours.homeAway==='home',v=home?p.homeWinPercentage:p.awayWinPercentage;if(Number.isFinite(v))details.win_probability=Math.round(v*1000)/10;}
+  }
+  const current=summary?.drives?.current;
+  if(!details.drive&&current?.description)details.drive=String(current.description).trim();
+  // Game leaders: the scoreboard's (one per category, either team), or each
+  // side's own (college basketball lists them per team).
+  const leaders=[];
+  const leaderLine=(group,team)=>{const top=group?.leaders?.[0],who=top?.athlete?.displayName||top?.athlete?.fullName;if(!who||!top.displayValue)return;const id=String(top.team?.id??top.athlete?.team?.id??team??''),tag=id===ourId?details.teams.ours:id===theirId?details.teams.theirs:'';leaders.push({label:String(group.displayName||group.name||'').replace(/ Leader$/,''),value:`${who}${tag?` (${tag})`:''}, ${top.displayValue}`});};
+  for(const group of competition.leaders||[])leaderLine(group);
+  if(!leaders.length)for(const c of [ours,opponent])for(const group of c.leaders||[])leaderLine(group,teamIdOf(c));
+  if(leaders.length)details.leaders=leaders;
+  // Team stats and scoring plays from the game summary (football).
+  const box=summary?.boxscore?.teams||[],ownBox=box.find(t=>String(t.team?.id)===ourId),oppBox=box.find(t=>String(t.team?.id)===theirId);
+  const stat=(t,n)=>t?.statistics?.find(s=>s.name===n)?.displayValue;
+  if(ownBox&&oppBox){const stats=LIVE_STATS.map(([n,l])=>({label:l,ours:stat(ownBox,n),theirs:stat(oppBox,n)})).filter(s=>s.ours!=null&&s.theirs!=null);if(stats.length)details.stats=stats;}
+  const scoring=(summary?.scoringPlays||[]).map(p=>`${label(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text||''}`.replace(/\s+/g,' ').trim());
+  if(scoring.length)details.scoring=scoring;
+  const tv=[...new Set((competition.broadcasts||[]).flatMap(b=>b.names||[]))];
+  if(tv.length)details.broadcast=tv.join(', ');
+  if(competition.venue?.fullName)details.venue=competition.venue.fullName;
+  out.live_details=Object.keys(details).length>1?details:null;
+  return out;
+}
+
+// Lays the league scoreboard (and the game summary) over a team's game that
+// is under way, or that ESPN's team schedule still shows before kickoff: the
+// scoreboard is read every 15 s, the team schedule every 2 minutes.
+export function applyEspnLive(event,scoreboard,summary,config){
+  const game=(scoreboard?.events||[]).find(g=>String(g.id)===String(event.espn_event_id)),c=game?.competitions?.[0];
+  if(!c)return event;
+  const sides=c.competitors||[],own=sides.find(t=>t.team?.abbreviation?.toLowerCase()===config.espn.team),opp=sides.find(t=>t!==own);
+  if(!own||!opp)return event;
+  const type=c.status?.type||{},state=type.state;
+  const us=own.score,them=opp.score;
+  if(state==='in'){
+    event.status='Live';event.priority_bucket='live';
+    event.school_score=String(us??'0');event.opponent_score=String(them??'0');
+    event.recency_label=type.shortDetail||'In progress';event.headline=`${event.school_score}-${event.opponent_score}`;
+    event.live_score_source='ESPN';
+    event.results=event.results.filter(r=>r.label!=='Result');
+    Object.assign(event,espnLiveDetails(c,{ours:own,opponent:opp,sport:'Football',summary}));
+  }else if(state==='post'&&event.status!=='Final'&&us!=null&&them!=null){
+    const a=Number(us),b=Number(them),outcome=a>b?'W':a<b?'L':'T';
+    event.status='Final';event.priority_bucket='recent_final';event.recency_label='Final';
+    event.school_score=String(us);event.opponent_score=String(them);
+    event.headline=`${outcome} ${us}-${them}${/OT/.test(type.shortDetail||'')?' (OT)':''}`;
+    event.results=[{label:'Result',value:event.headline},...event.results.filter(r=>r.label!=='TV'&&r.label!=='Result')];
+  }
+  event.result_count=event.results.length;
+  // The id names the status, as the team schedule's own events do.
+  event.id=event.id.replace(/-(?:today|upcoming|live|final)$/,`-${event.status.toLowerCase()}`);
+  return event;
+}
+
+// A race under way, everything the live timing feed publishes: the stage,
+// laps to go, cautions, lead changes, and every car's position, gap to the
+// leader, laps led, make and last-lap speed.
+const MAKES={Chv:'Chevrolet',Frd:'Ford',Tyt:'Toyota'};
+export function nascarLiveDetails(live){
+  if(!live)return null;
+  const details={};
+  if(live.stage?.stage_num)details.stage=`Stage ${live.stage.stage_num}${live.stage.finish_at_lap?` · ends lap ${live.stage.finish_at_lap}`:''}`;
+  if(Number.isFinite(live.laps_to_go))details.laps_to_go=live.laps_to_go;
+  const numbers=[];
+  if(Number.isFinite(live.number_of_caution_segments))numbers.push({label:'Cautions',value:`${live.number_of_caution_segments} for ${live.number_of_caution_laps||0} laps`});
+  if(Number.isFinite(live.number_of_lead_changes))numbers.push({label:'Lead changes',value:`${live.number_of_lead_changes} among ${live.number_of_leaders||0} drivers`});
+  if(numbers.length)details.numbers=numbers;
+  const led=v=>Array.isArray(v?.laps_led)?v.laps_led.reduce((n,s)=>n+Math.max(0,(Number(s.end_lap)||0)-(Number(s.start_lap)||0)+1),0):Number(v?.laps_led)||0;
+  const gap=v=>{const d=Number(v.delta);if(v.running_position===1)return'Leader';if(!Number.isFinite(d))return null;return d<0?`${Math.abs(Math.round(d))} lap${Math.abs(Math.round(d))===1?'':'s'} down`:`+${d.toFixed(3)} s`;};
+  details.order=(live.vehicles||[]).slice().sort((a,b)=>a.running_position-b.running_position).map(v=>({
+    position:v.running_position,
+    driver:`${v.driver?.full_name||''}`.replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim(),
+    car:v.vehicle_number?`#${v.vehicle_number}`:'',
+    gap:gap(v),
+    make:MAKES[v.vehicle_manufacturer]||v.vehicle_manufacturer||null,
+    laps_led:led(v)||null,
+    last_lap_speed:Number(v.last_lap_speed)?`${Number(v.last_lap_speed).toFixed(3)} mph`:null,
+    pit:v.is_on_track===false?'Pit road':null
+  }));
+  return details;
 }

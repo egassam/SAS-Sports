@@ -51,7 +51,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
-import {proTeam,espnTeamGames,espnGameHighlights,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.97.2-nascar-car-make';
+const VERSION='4.98.0-nfl-live-cards';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -581,7 +581,7 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Official schedule times are stored as the school's local wall clock with a
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
-const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
 const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
 function schoolTimeZone(school){return SCHOOL_TIME_ZONES[school?.id]||STATE_TIME_ZONES[school?.state]||(school?.state?'America/New_York':'America/Chicago');}
 function localWallClock(value,timeZone){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(value)).map(p=>[p.type,p.value]));return new Date(Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day),Number(parts.hour)%24,Number(parts.minute),Number(parts.second)));}
@@ -1663,6 +1663,17 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     const payloads=await Promise.all(urls.map(url=>readJson(url,SOURCE_TTL.schedule)));
     if(!payloads[0])return failed(`${base}: unreadable`);
     const events=espnTeamGames(payloads.filter(Boolean),{school,config,timeZone,now});
+    // A game under way (or past its kickoff and not yet final on the team
+    // schedule) takes the league scoreboard and its game summary: the live
+    // card shows everything ESPN publishes (user, October 16: "update all live
+    // cards to show all the data"). Read only on game day, once per 15 s for
+    // the whole league (shared cache), keeping ESPN volume low.
+    for(const event of events.filter(e=>(e.status==='Live'||e.status==='Today')&&Date.parse(e.espn_date)<=now.getTime())){
+      const day=wallClock(event.espn_date,'America/New_York').slice(0,10).replaceAll('-','');
+      const board=`${ESPN_SITE}${config.espn.path}/scoreboard?dates=${day}`,game=`${ESPN_SITE}${config.espn.path}/summary?event=${event.espn_event_id}`;
+      const [scoreboard,summary]=await Promise.all([readJson(board,15),readJson(game,30)]);
+      if(scoreboard){applyEspnLive(event,scoreboard,summary,config);urls.push(board);if(summary)urls.push(game);}
+    }
     const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
     if(target&&target.status==='Final'&&target.espn_event_id){
       const summary=await readJson(`${ESPN_SITE}${config.espn.path}/summary?event=${target.espn_event_id}`,SOURCE_TTL.document);
@@ -2558,13 +2569,12 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       // Who has the ball (football): ESPN names the team id in possession and
       // the down and distance ("4th & 13 at KU 47"). Between a score and the
       // kickoff, and at breaks, ESPN names no team, so nothing is shown.
-      const situation=competition?.situation,teamId=c=>String(c?.id??c?.team?.id??'');
-      const possession=situation?.possession!=null?String(situation.possession):'';
-      if(possession&&(possession===teamId(ours)||possession===teamId(opponent))){
-        event.possession=possession===teamId(ours)?'school':'opponent';
-        event.down_distance=clean(situation.downDistanceText||'')||null;
-        event.red_zone=situation.isRedZone===true;
-      }
+      // Everything else the board publishes (score by period, last play,
+      // timeouts, win probability, leaders) goes on the live card too (user,
+      // October 16: "update all live cards to show all the data").
+      const live=espnLiveDetails(competition,{ours,opponent,sport});
+      if(live.possession){event.possession=live.possession;event.down_distance=live.down_distance;event.red_zone=live.red_zone;}
+      if(live.live_details)event.live_details=live.live_details;
     }else event.recency_label='Final';
     // Volleyball scores are sets won (0-0 during the first set). The live
     // headline adds the current set's points; a final reads like K-State's
@@ -2638,7 +2648,7 @@ function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=fals
     if(index<0){if(!score.join_only||keepUnjoined)events.push(score);continue}
     joined.add(index);
     const official=events[index];
-    events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source,possession:score.possession??null,down_distance:score.down_distance??null,red_zone:score.red_zone??null};
+    events[index]={...official,status:score.status,priority_bucket:score.priority_bucket,school_score:score.school_score,opponent_score:score.opponent_score,headline:score.headline,recency_label:score.recency_label,last_verified_at:score.last_verified_at,freshness_seconds:0,verification_state:'official_schedule+live_scoreboard',source_count:2,live_score_source:score.live_score_source,possession:score.possession??null,down_distance:score.down_distance??null,red_zone:score.red_zone??null,live_details:score.live_details??null};
   }
   return events;
 }
