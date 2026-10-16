@@ -39,3 +39,7 @@ Three featured athletes per sport. Verified Instagram from profile pages for Bas
 - Baseball, Softball, Beach Volleyball, Gymnastics, Rowing, Track & Field and women's Water Polo fill when 2026-27 is published.
 - Men's water polo's MPSF record: the cards carry no league mark.
 - First live cards not yet observed.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange ucla (uclabruins.com/nil). On the preview (4.105.0), the sports that use profile cards: Baseball 1 of 3 with Instagram (1 from the marketplace); Rowing 1 of 3 with Instagram (1 from the marketplace); Swimming & Diving 2 of 3 with Instagram (2 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

@@ -57,10 +57,11 @@ assert.equal(opendorseInstagram(sport("Women's Track and Field"),{...texas,name:
 // The Worker asks Opendorse only for a school whose official site links its
 // marketplace, after roster cards and profile pages, for roster athletes,
 // until three have Instagram, at most OPENDORSE_BUDGET a sport.
-for(const [id,marketplace,team] of [['texas','texas-longhorns','Texas Longhorns'],['oklahoma','oklahoma-sooners','Oklahoma Sooners'],['missouri','missouri-tigers','Missouri Tigers'],['wisconsin','wisconsin-badgers','Wisconsin Badgers'],['tcu','tcu-hornedfrogs','TCU Horned Frogs'],['nebraska','nebraska-huskers','Nebraska Huskers'],['maryland','maryland-terrapins','Maryland Terrapins']])
+for(const [id,marketplace,team] of [['mississippi-state','mississippistate-bulldogs','Mississippi State Bulldogs'],['vanderbilt','vanderbilt-commodores','Vanderbilt Commodores'],['boston-college','bostoncollege-eagles','Boston College Eagles'],['texas','texas-longhorns','Texas Longhorns'],['oklahoma','oklahoma-sooners','Oklahoma Sooners'],['missouri','missouri-tigers','Missouri Tigers'],['wisconsin','wisconsin-badgers','Wisconsin Badgers'],['tcu','tcu-hornedfrogs','TCU Horned Frogs'],['nebraska','nebraska-huskers','Nebraska Huskers'],['maryland','maryland-terrapins','Maryland Terrapins']])
   assert.ok(read(`../src/schools/${id}.mjs`).includes(`opendorse:{marketplace:'${marketplace}',team:'${team}'}`),id);
-assert.ok(worker.includes('const marketplace=schoolModule(schoolId)?.school.opendorse;'));
-assert.ok(worker.includes("if(marketplace&&found.filter(a=>a.instagram_url).length<3){"));
-assert.ok(worker.indexOf('const marketplace=schoolModule(schoolId)?.school.opendorse;')>worker.indexOf('for(let start=0;start<Math.min(unread.length,ATHLETE_PROFILE_BUDGET)'),'after the official profile pages');
-assert.ok(worker.includes('const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18;'));
+assert.ok(worker.includes("const lookup=nil?.opendorse?{source:'opendorse',url:profile=>`${OPENDORSE_PROFILE}${opendorseSlug(profile.name)}`"));
+assert.ok(worker.includes("if(lookup&&found.filter(a=>a.instagram_url).length<3){"));
+assert.ok(worker.indexOf("if(lookup&&found.filter(a=>a.instagram_url).length<3){")>worker.indexOf('for(let start=0;start<Math.min(unread.length,ATHLETE_PROFILE_BUDGET)'),'after the official profile pages');
+assert.ok(worker.includes('const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18,NIL_LOOKUP_MS=10000;'));
+assert.ok(worker.includes('&&Date.now()-started<NIL_LOOKUP_MS;start+=6){'),'marketplace lookups stop after the time limit');
 console.log('Opendorse module tests passed');

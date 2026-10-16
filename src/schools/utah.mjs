@@ -5,6 +5,9 @@ import {createScheduleDataEnricher,sidearmScheduleGames,sidearmStartTime} from '
 // each sport is then corrected and verified one at a time.
 export const utahSchool={
   id:'utah',
+  // The school's INFLCR Exchange, its official NIL marketplace (utahutes.com (homepage),
+  // checked Oct 16): athlete Instagram for a sport still short of three (src/inflcr.mjs).
+  inflcr:{school:'university-of-utah'},
   // Basketball, Swimming & Diving and Tennis publish separate men's and
   // women's pages; both teams are shown, labeled by team.
   combinedSports:new Set(['Basketball','Swimming & Diving','Tennis']),

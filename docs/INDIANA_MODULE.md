@@ -40,3 +40,7 @@ Three per sport. **Profile cards:** Football (`athlete_profile_fallback_sports`)
 - **Waiting on publication:** Track & Field and Water Polo fill when iuhoosiers.com publishes the new seasons.
 - **Golf field size:** not published on the schedule (place only).
 - **Live cards:** no live card observed yet (women's soccer at UCLA and volleyball vs Nebraska Oct 8).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: INFLCR Exchange indiana-university, linked from iuhoosiers.com. On the preview (4.105.0), the sports that use profile cards: Football 0 of 3 with Instagram (0 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).

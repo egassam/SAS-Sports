@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const mississippiStateSchool={
   id:'mississippi-state',
+  // The official NIL marketplace the school links (hailstate.com/feature/nil, checked
+  // Oct 16): athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'mississippistate-bulldogs',team:'Mississippi State Bulldogs'},
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.

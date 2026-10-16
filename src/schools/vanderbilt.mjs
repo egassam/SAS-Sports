@@ -5,6 +5,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // verified Instagram tags and its schedule reader (WMT cards, Auburn's reader).
 export const vanderbiltSchool={
   id:'vanderbilt',
+  // The official NIL marketplace the school links (vucommodores.com/vandynil/, checked
+  // Oct 16): athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'vanderbilt-commodores',team:'Vanderbilt Commodores'},
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Football','Golf','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),

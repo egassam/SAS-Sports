@@ -7,6 +7,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // reader: src/schools/nebraska.mjs; scripts/port-wmt.mjs).
 export const purdueSchool={
   id:'purdue',
+  // The school's INFLCR Exchange, its official NIL marketplace (purduesports.com/nil,
+  // checked Oct 16): athlete Instagram for a sport still short of three (src/inflcr.mjs).
+  inflcr:{school:'purdue-university'},
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),

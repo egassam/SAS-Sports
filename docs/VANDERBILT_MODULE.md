@@ -40,3 +40,7 @@ Shared fix: Merritt Zieminick's profile links `instagram.com/merritt%20_zieminic
 
 - Lacrosse and Track & Field fill when 2026-27 is published.
 - Bowling's first results come with its Oct 16 tournament.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Source: opendorse.com/vanderbilt-commodores, linked from vucommodores.com/vandynil. On the preview (4.105.0), the sports that use profile cards: Bowling 3 of 3 with Instagram (1 from the marketplace); Cross Country 2 of 3 with Instagram (2 from the marketplace); Football 3 of 3 with Instagram (3 from the marketplace); Golf 1 of 3 with Instagram (1 from the marketplace); Lacrosse 3 of 3 with Instagram (3 from the marketplace); Soccer 3 of 3 with Instagram (3 from the marketplace); Tennis 3 of 3 with Instagram (3 from the marketplace); Track & Field 3 of 3 with Instagram (3 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).
