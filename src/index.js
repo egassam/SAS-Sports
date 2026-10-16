@@ -51,7 +51,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.98.3-race-results-table';
+const VERSION='4.99.0-imsa';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1726,7 +1726,52 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     }
     return{events,source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
   }
+  if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   return failed('Unknown pro source');
+}
+// IMSA's results folders (src/pro-sports.mjs): the season's events, each
+// championship's race sessions, and each race's classification. Folders of
+// weekends more than a week old are kept six hours (they no longer change);
+// a race weekend's are read every 2 minutes.
+async function readText(url,ttl){try{const r=await sourceFetch(url,{},{ttl,staleOnError:true});if(!r.ok)return r.status===404?'':null;return await r.text()}catch{return null}}
+const readResults=async(url,ttl)=>{const text=await readText(url,ttl);if(!text)return null;try{return JSON.parse(text.replace(/^\uFEFF/,''))}catch{return null}};
+async function fetchImsa(school,config,now,timeZone,aiTargetId,failed){
+  const year=schoolNow(now,school).getUTCFullYear(),seasonUrl=`${IMSA_RESULTS}${String(year).slice(2)}_${year}/`;
+  const listing=await readText(seasonUrl,SOURCE_TTL.listing);
+  // No folder yet for a new season (before its first weekend) is an empty
+  // season, not a failed read.
+  if(listing==null)return failed(`${seasonUrl}: unreadable`);
+  const sources=[seasonUrl],settled=modified=>{const t=Date.parse(String(modified).replace(' ','T')+':00Z');return Number.isFinite(t)&&now.getTime()-t>8*864e5};
+  const races=(await Promise.all(imsaListing(listing).filter(e=>e.dir).map(async ev=>{
+    const ttl=settled(ev.modified)?SOURCE_TTL.document:SOURCE_TTL.schedule,eventUrl=`${seasonUrl}${ev.href}`;
+    const series=imsaListing(await readText(eventUrl,ttl)).find(e=>e.dir&&e.name.replace(/^\d+_/,'')===config.championship);
+    if(!series)return[];
+    const seriesUrl=`${eventUrl}${series.href}`,track=imsaTrack(ev.name);
+    return Promise.all(imsaRaceSessions(imsaListing(await readText(seriesUrl,ttl))).map(async session=>{
+      const raceUrl=`${seriesUrl}${session.href}`,files=imsaListing(await readText(raceUrl,ttl));
+      // An endurance race keeps its classification in its last hour folder,
+      // and hourly standings in each.
+      let folder=raceUrl,entries=files,hour=null;
+      const hours=imsaHourFolders(files);
+      if(!imsaResultsFile(files)&&hours.length){folder=`${raceUrl}${hours[0].href}`;entries=imsaListing(await readText(folder,ttl));}
+      const file=imsaResultsFile(entries),final=file&&/^03_Results_Race_Official/.test(file.name);
+      const results=file?await readResults(`${folder}${file.href}`,final?SOURCE_TTL.document:SOURCE_TTL.schedule):null;
+      if(!results&&hours.length){const standings=entries.find(e=>/^04_Results by Hour_Race_.*\.JSON$/i.test(e.name));if(standings)hour=await readResults(`${folder}${standings.href}`,SOURCE_TTL.schedule);}
+      return{session:session.name,event:ev.name.replace(/^\d+_/,''),track,results,hour,path:file?`${folder}${file.href}`:null};
+    }));
+  }))).flat();
+  const events=imsaRaces(races,{school,config,timeZone,now,calendar:IMSA_CALENDARS[config.calendar]||[]});
+  const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+  if(target&&target.status==='Final'&&target.imsa_path){
+    const details=imsaRaceDetails(await readResults(target.imsa_path,SOURCE_TTL.document));
+    if(details){
+      target.results=details.rows;target.result_count=details.rows.length;
+      target.race_table=details.table;delete target.race_card;
+      target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+      target.highlight_status='Finishing order by class and race numbers from IMSA\'s official results.';
+    }
+  }
+  return{events,source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 function parseLabel(label,school,sport,sourceUrl,now){const s=clean(label);if(!s)return null;let m=s.match(/^Upcoming Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})(?:\s+at\s+(.+?))?$/i);if(m)return fromMatch('Upcoming','upcoming',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*(?:(Win|Loss|Tie|Draw)?\s*,?\s*)?(\d+(?:\.\d+)?)?\s*,?\s*(?:to|-)?\s*,?\s*(\d+(?:\.\d+)?)?\s*$/i);if(m)return fromMatch('Final','score',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*,\s*(.+?)\s*$/i);if(m)return fromMatch('Final','meet',m);m=s.match(/^Live Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)(?:\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4}))?\s*$/i);if(m)return fromMatch('Live','live',m);return null;function fromMatch(status,kind,x){const parsedSport=clean(x[1])||sport;if(!sportMatches(sport,parsedSport))return null;const opponent=clean(x[3]);if(!opponent||/\b(?:vs\.?|versus)\b/i.test(opponent))return null;return makeEvent({school,sport,status,relation:clean(x[2])||'vs',opponent,date:clean(x[4]),time:kind==='upcoming'?clean(x[5]):null,schoolScore:kind==='score'?clean(x[6]):null,oppScore:kind==='score'?clean(x[7]):null,resultText:kind==='meet'?clean(x[5]):null,sourceUrl,now});}}
 function extractEventLabels(raw){

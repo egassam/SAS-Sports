@@ -63,6 +63,16 @@ export const PRO_TEAMS={
   'nascar-cup-series':{
     kind:'nascar',sport:'Auto Racing',seriesId:1,
     schedule:'https://www.nascar.com/nascar-cup-series/schedule/'
+  },
+  // IMSA (user, October 16: "Let's add IMSA racing series under auto
+  // racing"): its two championships, each a Races entry under IMSA.
+  'imsa-weathertech':{
+    kind:'imsa',sport:'Auto Racing',championship:'IMSA WeatherTech SportsCar Championship',calendar:'weathertech',
+    schedule:'https://www.imsa.com/weathertech/schedule/'
+  },
+  'imsa-pilot-challenge':{
+    kind:'imsa',sport:'Auto Racing',championship:'IMSA Michelin Pilot Challenge',calendar:'pilotChallenge',
+    schedule:'https://www.imsa.com/michelinpilotchallenge/schedule/'
   }
 };
 export const proTeam=id=>PRO_TEAMS[id]||null;
@@ -430,4 +440,204 @@ export function nascarFinishTable(feed){
   const results=feed?.weekend_race?.[0]?.results||[];
   const name=n=>String(n||'').replace(/\s*\(i\)\s*$/i,'').replace(/\s*#\s*$/,'').trim();
   return results.slice().sort((a,b)=>a.finishing_position-b.finishing_position).map(r=>({pos:r.finishing_position,driver:name(r.driver_fullname),car:r.car_number?`#${r.car_number}`:'',team:r.team_name||'',make:r.car_make||'',laps_led:r.laps_led||0,status:r.finishing_status&&r.finishing_status!=='Running'?r.finishing_status:''}));
+}
+
+// ---- IMSA (results.imsa.com) ----
+// User, October 16: "Let's add IMSA racing series under auto racing". IMSA's
+// official results (results.imsa.com, served by its timing provider Al Kamel
+// at imsa.results.alkamelcloud.com) are plain folders: season → event →
+// championship → session ("202610031210_Race", the track's local start),
+// with each race's classification as JSON ("03_Results_Race_Official.JSON";
+// an endurance race keeps it in its last "NN_Hour N" folder and posts hourly
+// standings in the others). A folder appears only once a race weekend has
+// started, so coming races are from IMSA's published calendar (imsa.com
+// answers automated reads with a bot challenge; the 2027 schedules were
+// announced on March 19, 2026). Sports cars race in classes (GTP, LMP2, GTD
+// PRO, GTD; GS and TCR in the Pilot Challenge), so the card shows each
+// class winner and the race window the whole field by class.
+export const IMSA_RESULTS='https://imsa.results.alkamelcloud.com/Results/';
+// Folder names give the track; its zone turns the folder's local start into
+// the series' wall clock.
+const IMSA_TRACKS=[
+  [/Daytona/i,'Daytona International Speedway','America/New_York'],
+  [/Sebring/i,'Sebring International Raceway','America/New_York'],
+  [/Long Beach/i,'Long Beach Street Circuit','America/Los_Angeles'],
+  [/Laguna Seca/i,'WeatherTech Raceway Laguna Seca','America/Los_Angeles'],
+  [/Detroit/i,'Detroit Street Circuit','America/Detroit'],
+  [/Mid-Ohio/i,'Mid-Ohio Sports Car Course','America/New_York'],
+  [/Watkins Glen/i,'Watkins Glen International','America/New_York'],
+  [/Canadian Tire|Mosport/i,'Canadian Tire Motorsport Park','America/Toronto'],
+  [/Road America/i,'Road America','America/Chicago'],
+  [/VIRginia|\bVIR\b/,'VIRginia International Raceway','America/New_York'],
+  [/Indianapolis/i,'Indianapolis Motor Speedway','America/Indiana/Indianapolis'],
+  [/Road Atlanta/i,'Michelin Raceway Road Atlanta','America/New_York'],
+  [/Lime Rock/i,'Lime Rock Park','America/New_York'],
+  [/Circuit of the Americas|COTA/i,'Circuit of The Americas','America/Chicago'],
+  [/Miami/i,'Miami International Autodrome','America/New_York']
+];
+export function imsaTrack(name){const t=IMSA_TRACKS.find(([re])=>re.test(String(name||'')));return t?{name:t[1],timeZone:t[2]}:{name:String(name||'').replace(/^\d+_/,'').trim(),timeZone:'America/New_York'}}
+// IMSA's 2027 calendars as announced on March 19, 2026 ("2027 schedules
+// revealed for IMSA WeatherTech SportsCar Championship, IMSA Michelin Pilot
+// Challenge"): race weekends, the race's name where IMSA gave one, its length
+// and the classes that race. Start times come with the event's folder.
+export const IMSA_CALENDARS={
+  weathertech:[
+    {from:'2027-01-28',to:'2027-01-31',track:'Daytona',name:'Rolex 24 At Daytona',length:'24 hours',classes:'GTP, LMP2, GTD PRO, GTD'},
+    {from:'2027-03-17',to:'2027-03-20',track:'Sebring',name:'Mobil 1 Twelve Hours of Sebring',length:'12 hours',classes:'GTP, LMP2, GTD PRO, GTD'},
+    {from:'2027-04-16',to:'2027-04-17',track:'Long Beach',name:'Acura Grand Prix of Long Beach',length:'100 minutes',classes:'GTP, GTD'},
+    {from:'2027-04-30',to:'2027-05-02',track:'Laguna Seca',length:'2 hours 40 minutes',classes:'GTP, GTD PRO, GTD'},
+    {from:'2027-06-04',to:'2027-06-05',track:'Detroit',name:'Chevrolet Detroit Grand Prix',length:'100 minutes',classes:'GTP, GTD PRO'},
+    {from:'2027-06-24',to:'2027-06-27',track:'Watkins Glen',name:"Sahlen's Six Hours of The Glen",length:'6 hours',classes:'GTP, LMP2, GTD PRO, GTD'},
+    {from:'2027-07-09',to:'2027-07-11',track:'Canadian Tire',length:'2 hours 40 minutes',classes:'LMP2, GTD PRO, GTD'},
+    {from:'2027-07-29',to:'2027-08-01',track:'Road America',length:'6 hours',classes:'GTP, LMP2, GTD PRO, GTD'},
+    {from:'2027-08-20',to:'2027-08-22',track:'VIR',name:'Michelin GT Challenge at VIR',length:'2 hours 40 minutes',classes:'GTD PRO, GTD'},
+    {from:'2027-09-17',to:'2027-09-19',track:'Indianapolis',name:'TireRack.com Battle on the Bricks',length:'2 hours 40 minutes',classes:'GTP, LMP2, GTD PRO, GTD'},
+    {from:'2027-10-06',to:'2027-10-09',track:'Road Atlanta',name:'30th Motul Petit Le Mans',length:'10 hours'}
+  ],
+  pilotChallenge:[
+    {from:'2027-01-28',to:'2027-01-31',track:'Daytona',length:'4 hours',classes:'GS, TCR'},
+    {from:'2027-03-17',to:'2027-03-20',track:'Sebring',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-06-11',to:'2027-06-13',track:'Mid-Ohio',length:'4 hours',classes:'GS, TCR'},
+    {from:'2027-06-24',to:'2027-06-27',track:'Watkins Glen',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-07-09',to:'2027-07-11',track:'Canadian Tire',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-07-29',to:'2027-08-01',track:'Road America',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-08-20',to:'2027-08-22',track:'VIR',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-09-17',to:'2027-09-19',track:'Indianapolis',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-09-23',to:'2027-09-25',track:'Lime Rock',name:'FCP Euro Northeast Grand Prix',length:'2 hours',classes:'GS, TCR'},
+    {from:'2027-10-06',to:'2027-10-09',track:'Road Atlanta',length:'2 hours',classes:'GS, TCR'}
+  ]
+};
+
+// An Apache folder listing: each entry's name (decoded, no trailing slash),
+// whether it is a folder, and its last-modified time.
+export function imsaListing(html){
+  const out=[];
+  for(const m of String(html||'').matchAll(/<a href="([^"?/][^"]*)">[^<]*<\/a>\s*<\/td>\s*<td[^>]*>([^<]*)/g)){
+    let name;try{name=decodeURIComponent(m[1])}catch{name=m[1]}
+    const dir=name.endsWith('/');
+    out.push({href:m[1],name:dir?name.slice(0,-1):name,dir,modified:m[2].trim()});
+  }
+  return out;
+}
+// The race sessions in a championship folder ("202610031210_Race", "…_Race 2").
+export const imsaRaceSessions=entries=>entries.filter(e=>e.dir&&/^\d{12}_Race\b/i.test(e.name));
+// The race's classification file, most final first: Official, then
+// Provisional, then Unofficial (an amended copy before its original).
+const MARKS=['Official_Amended','Official','Provisional_Amended','Provisional','Unofficial_Amended','Unofficial'];
+export function imsaResultsFile(entries){
+  for(const mark of MARKS){const f=entries.find(e=>!e.dir&&e.name===`03_Results_Race_${mark}.JSON`);if(f)return f}
+  return null;
+}
+// An endurance race's hour folders, last first ("10_Hour 10").
+export const imsaHourFolders=entries=>entries.filter(e=>e.dir&&/^\d+_Hour \d+$/i.test(e.name)).sort((a,b)=>parseInt(b.name)-parseInt(a.name));
+// A folder's local start ("202610031210") on the series' wall clock.
+export function imsaStart(session,trackZone,timeZone){
+  const m=String(session).match(/^(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)/);if(!m)return null;
+  const local=`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:00.000Z`,guess=Date.parse(local);
+  const offset=Date.parse(wallClock(guess,trackZone))-guess;
+  return wallClock(guess-offset,timeZone);
+}
+const className=c=>String(c||'').replace(/^GTDPRO$/i,'GTD PRO');
+const imsaDrivers=car=>(car.drivers||[]).map(d=>`${d.firstname||''} ${d.surname||''}`.trim()).filter(Boolean);
+const surnames=car=>(car.drivers||[]).map(d=>String(d.surname||'').trim()).filter(Boolean).join(' / ');
+// The cars in finishing order, each with its class position.
+function imsaOrder(results){
+  const cars=(results?.classification||[]).slice().sort((a,b)=>a.position-b.position),inClass=new Map();
+  return cars.map(car=>{const cls=className(car.class),n=(inClass.get(cls)||0)+1;inClass.set(cls,n);return{car,cls,classPos:n}});
+}
+const outOf=car=>{const done=car.not_finished===true||car.not_finished==='True';if(done)return car.not_finished_cause||'Did not finish';return car.status&&car.status!=='Classified'?car.status:''};
+// The card: one row per class winner, in the order the classes finished.
+export function imsaClassWinners(results){
+  return imsaOrder(results).filter(r=>r.classPos===1).map(({car,cls})=>({pos:1,driver:surnames(car),car:`#${car.number}`,make:cls,team:[car.team,car.vehicle].filter(Boolean).join(' · '),laps_led:0,status:outOf(car),note:car.position===1?'Overall winner':`${ordinal(car.position)} overall`}));
+}
+// The field by class (the classes in the order their winners finished),
+// each class in its finishing order.
+function byClass(results){
+  const order=imsaOrder(results),rank=new Map();
+  for(const r of order)if(!rank.has(r.cls))rank.set(r.cls,rank.size);
+  return order.slice().sort((a,b)=>rank.get(a.cls)-rank.get(b.cls)||a.classPos-b.classPos);
+}
+// The race window: the whole field under its class headings.
+export function imsaFinishTable(results){
+  return byClass(results).map(({car,cls,classPos})=>({group:cls,pos:classPos,driver:surnames(car),car:`#${car.number}`,make:car.manufacturer||'',team:[car.team,car.vehicle].filter(Boolean).join(' · '),laps_led:0,status:outOf(car),note:`${ordinal(car.position)} overall · ${car.laps} laps`}));
+}
+// Cross-country rows (shared result contract): each car with its class
+// finish, overall finish, team and car.
+export function imsaFinishRows(results){
+  return byClass(results).map(({car,cls,classPos})=>({group:cls,participant:`#${car.number} ${imsaDrivers(car).join(', ')}`.trim(),result:[`${ordinal(classPos)} ${cls}`,`${ordinal(car.position)} overall`,car.team,car.vehicle,outOf(car)||null].filter(Boolean).join(' · ')}));
+}
+// The race window's lines and numbers.
+export function imsaRaceDetails(results){
+  const order=imsaOrder(results);if(!order.length)return null;
+  const s=results.session||{},title=String(s.event_name||'').trim(),track=imsaTrack(s.circuit?.name).name;
+  const [{car:winner}]=order,second=order[1]?.car;
+  const lines=[`#${winner.number} ${winner.team} (${imsaDrivers(winner).join(', ')}; ${winner.vehicle}) won ${title?(/^the\b/i.test(title)?title:`the ${title}`):'the race'} overall at ${track}, ${winner.laps} laps${second&&/^\+/.test(second.gap_first||'')?`, ${second.gap_first.slice(1)} s ahead of #${second.number} ${second.team}`:''}.`];
+  for(const {car,cls} of order.filter(r=>r.classPos===1&&r.car!==winner))lines.push(`${cls}: #${car.number} ${car.team} (${imsaDrivers(car).join(', ')}; ${car.vehicle}).`);
+  const fast=results.fastest_lap;
+  if(fast?.time)lines.push(`Fastest lap: ${fast.time} by ${`${fast.driver_firstname||''} ${fast.driver_surname||''}`.trim()} (#${fast.participant_number}).`);
+  if(s.report_mark&&s.report_mark!=='Official')lines.push(`Results are ${s.report_mark.toLowerCase()} until IMSA makes them official.`);
+  const stats=[{label:'Laps',value:String(winner.laps)}];
+  if(winner.elapsed_time)stats.push({label:'Race time',value:winner.elapsed_time});
+  stats.push({label:'Cars in the field',value:String(order.length)});
+  const classes=[...new Set(order.map(r=>r.cls))];stats.push({label:'Classes',value:classes.join(', ')});
+  if(s.weather?.track_status)stats.push({label:'Track',value:s.weather.track_status});
+  return{lines,stats,rows:imsaFinishRows(results),table:imsaFinishTable(results)};
+}
+const weekend=(from,to)=>{const [,m1,d1]=from.split('-').map(Number),[,m2,d2]=to.split('-').map(Number);return m1===m2?`${MONTHS[m1-1]} ${d1}-${d2}`:`${MONTHS[m1-1]} ${d1}-${MONTHS[m2-1]} ${d2}`};
+// The series' races: every race session in the season's folders (Final with
+// its classification; Live with hourly standings; Today or Upcoming before
+// the start), then the calendar's coming weekends that have no folder yet.
+// A past race without a published classification is not listed (K-State's
+// rule).
+// races: [{session, event, track:{name,timeZone}, results, hour}] read by the Worker.
+export function imsaRaces(races,{school,config,timeZone,now,calendar=[]}){
+  const sport=config.sport,nowWall=Date.parse(wallClock(now,timeZone)),today=dayOf(wallClock(now,timeZone)),events=[],seen=new Set();
+  for(const race of races){
+    const start=imsaStart(race.session,race.track.timeZone,timeZone);if(!start)continue;
+    const year=start.slice(0,4),began=Date.parse(start),day=dayOf(start);
+    seen.add(`${year}|${race.track.name}`);
+    const results=race.results?.classification?.length?race.results:null;
+    let status;
+    if(results)status='Final';
+    else if(began<=nowWall&&nowWall-began<=26*3600e3)status='Live';
+    else if(began>nowWall)status=day===today?'Today':'Upcoming';
+    else continue;
+    const title=String(results?.session?.event_name||race.hour?.session?.event_name||race.event||race.track.name).trim();
+    const event=baseEvent({school,sport,status,title,start,display:displayTime(start),opponent:race.track.name,sourceName:'IMSA official results (Al Kamel Systems)',sourceUrl:'https://results.imsa.com/',now,key:`${race.session}|${race.track.name}|${status}`});
+    event.track=race.track.name;event.season=Number(year);event.imsa_path=race.path||null;
+    if(status==='Final'){
+      const winners=imsaClassWinners(results),overall=imsaOrder(results)[0].car;
+      event.headline=`Overall: #${overall.number} ${overall.team}`;
+      event.winner={name:imsaDrivers(overall).join(', '),car:overall.number,team:overall.team};
+      event.race_table=winners;event.race_card=winners;
+      event.results=winners.map(w=>({participant:`${w.car} ${w.driver}`,result:`${w.make} winner · ${w.team}`}));
+      event.result_count=results.classification.length;event.has_more_results=results.classification.length>winners.length;
+      if(results.session?.report_mark&&results.session.report_mark!=='Official')event.recency_label=`Final (${results.session.report_mark.toLowerCase()})`;
+    }else if(status==='Live'){
+      const order=imsaOrder(race.hour);
+      event.recency_label=race.hour?.session?.hour_name?`After ${race.hour.session.hour_name}`:'Under way';
+      event.headline=order[0]?`Leader: #${order[0].car.number} ${order[0].car.team}`:'Under way';
+      event.results=order.slice(0,10).map(({car,cls,classPos})=>({participant:`${ordinal(car.position)} #${car.number} ${car.team}`,result:`${ordinal(classPos)} ${cls}`}));
+      event.live_details=order.length?{stage:event.recency_label,order:order.map(({car,cls,classPos})=>({position:car.position,driver:`${surnames(car)} (${car.team})`,car:`#${car.number} · ${ordinal(classPos)} ${cls}`,gap:car.position===1?'Leader':car.gap_first||null,make:car.manufacturer||null,laps_led:null,last_lap_speed:null,pit:null}))}:null;
+      event.live_score_source='IMSA hourly standings';
+      event.result_count=event.results.length;
+    }
+    events.push(event);
+  }
+  // The calendar's weekends still to come with no race folder yet.
+  for(const entry of calendar){
+    const track=imsaTrack(entry.track),year=entry.from.slice(0,4);
+    if(seen.has(`${year}|${track.name}`))continue;
+    const first=Date.parse(`${entry.from}T00:00:00Z`),last=Date.parse(`${entry.to}T00:00:00Z`);
+    if(last<today)continue;
+    const status=first<=today?'Today':'Upcoming',start=`${entry.from}T00:00:00.000Z`;
+    const event=baseEvent({school,sport,status,title:entry.name||track.name,start,display:weekend(entry.from,entry.to),opponent:track.name,sourceName:'IMSA 2027 schedule (announced March 19, 2026)',sourceUrl:config.schedule,now,key:`${entry.from}|${track.name}|${status}`});
+    event.end_time=`${entry.to}T23:59:00.000Z`;event.track=track.name;event.season=Number(year);
+    if(entry.length)event.results.push({label:'Length',value:entry.length});
+    if(entry.classes)event.results.push({label:'Classes',value:entry.classes});
+    event.results.push({label:'Weekend',value:weekend(entry.from,entry.to)});
+    event.result_count=event.results.length;
+    events.push(event);
+  }
+  return events;
 }

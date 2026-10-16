@@ -2256,5 +2256,55 @@
         "provider_school_id": "1"
       }
     ]
+  },
+  {
+    "id": "imsa-weathertech",
+    "name": "IMSA WeatherTech SportsCar Championship",
+    "short_name": "WeatherTech Championship",
+    "state": "Florida",
+    "city": "Daytona Beach",
+    "conference": "IMSA",
+    "league": "IMSA",
+    "pro_sport": "Auto Racing",
+    "level": "pro",
+    "division": "IMSA WeatherTech SportsCar Championship",
+    "athletics_url": "https://www.imsa.com",
+    "aliases": [
+      "IMSA",
+      "WeatherTech Championship",
+      "IMSA WeatherTech"
+    ],
+    "providers": [
+      {
+        "provider": "IMSA",
+        "slug": "results.imsa.com/IMSA WeatherTech SportsCar Championship",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "imsa-pilot-challenge",
+    "name": "IMSA Michelin Pilot Challenge",
+    "short_name": "Michelin Pilot Challenge",
+    "state": "Florida",
+    "city": "Daytona Beach",
+    "conference": "IMSA",
+    "league": "IMSA",
+    "pro_sport": "Auto Racing",
+    "level": "pro",
+    "division": "IMSA Michelin Pilot Challenge",
+    "athletics_url": "https://www.imsa.com",
+    "aliases": [
+      "IMSA",
+      "Pilot Challenge",
+      "Michelin Pilot Challenge"
+    ],
+    "providers": [
+      {
+        "provider": "IMSA",
+        "slug": "results.imsa.com/IMSA Michelin Pilot Challenge",
+        "provider_school_id": null
+      }
+    ]
   }
 ]
