@@ -40,6 +40,10 @@ Rules: K-State's — a past game or race without a published result is not liste
 - **NASCAR:** the live card shows the stage, laps to go, cautions, lead changes, and every car (top ten, the rest folded) with its gap to the leader (or laps down), make, laps led and last-lap speed, and "Pit road" when off track.
 - Folded parts stay open across the 15 s refresh and do not open the event window.
 
+## Expanded NFL final (4.98.1, user, October 16: "can we clean up the card please")
+
+The event window for a final reads: Full Team Results (Result, Week only), **Score by Quarter** (a table with each quarter, OT and the total; the winner's row brighter), Event Highlights, **Team Stats** (two columns, the same eleven rows as the live card), and **Scoring Plays** grouped under 1st Quarter … Overtime, with each play's team, the running score from the team's side, and the clock. Scoring plays were label/value rows that wrapped "Scoring" letter by letter on a phone, and overtime read "Q5". Saved expanded views of pro finals are rebuilt once (`|box` in the store key).
+
 ## Limits
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.
