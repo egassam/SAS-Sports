@@ -2620,3 +2620,26 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
 - **Merged** `69302ae` under the standing permission. Production `4.99.1-imsa`: `verify:prod --school=imsa-weathertech,imsa-pilot-challenge --sports=all` passed (3/3 refreshes, 11/11 and 10/10 expanded views, XC 18/20 and 26/21). The production page shows Petit Le Mans and the Fox Factory 120 first.
 - **Limits:** no live timing; sprint races show no running order until they finish. The calendar is hand-entered. Auto Racing's in-season window (Feb–Nov) marks the late-January Rolex 24 as out of season. LMP2's "make" is IMSA's manufacturer field (Gibson, the engine). The VP Racing SportsCar Challenge, the Porsche Carrera Cup and the MX-5 Cup (in the same folders) were not added.
 
+## October 16, 2026 — Catalog in D1, step 1 (PR #338); high school last-copy fallback (PR #339)
+
+- **Question and plan:** the user asked whether high school and pro need separate JSON files. The answer was no, not yet: one catalog with a `level` field. Then the user wrote: "The plan is to expand it for all middle schools, high schools in the country, all NCAA sports, and all pro events. What do you recommend with this information?" At about 40,000–50,000 entries the recommendation was:
+  1. move the catalog into D1, with menus loaded one step at a time;
+  2. read sites by provider (config rows) instead of per-school modules;
+  3. get licensed or partner data for high and middle schools (MaxPreps or schedule platforms) and for pro (a licensed feed instead of ESPN);
+  4. certify readers and check random samples instead of gating every entry.
+  The user said "Start the catalog move".
+- **Built (`4.100.0`, then `4.100.1`):**
+  - The D1 database `sas-sports-catalog` (id `49c4cfa6-…`, ENAM) was created through the Cloudflare connector, with binding `CATALOG_DB`. The Worker creates the tables: `catalog_entries(id, level, grp, mid, sort, card)` and `catalog_meta`.
+  - `src/catalog.mjs` turns schools.json and sponsored-sports into cards (no source settings). The revision is the cards' SHA-256.
+  - `syncCatalog` (production host only) replaces every row in one transaction when the revision changes.
+  - `storeMatches` uses D1 only when it holds this revision with every row. Otherwise, or when a read fails, the answer comes from the bundled copy.
+  - `catalogMenu` and `catalogEntries` serve `/catalog/menu` and `/catalog/entries`. `?source=bundled` forces the bundled copy, and the `x-sas-catalog` header names the source.
+  - Page: `BOOTSTRAP_SCHOOLS` and the full `/schools` download were removed (the page went from 154 KB to 119 KB). `populateSchoolControls` is async and reads one step at a time. Answers are kept in `localStorage` (`sas-catalog:v1:`), and a generation counter drops stale answers.
+- **Tests:** `tests/catalog-module.mjs` (node:sqlite D1 stand-in) checks every menu step against the page's old LEVELS rules, with D1 equal to the bundled copy (18 steps). It also covers sync (write, current, replace), short tables, stale groups and cities, and lookups by id. `scripts/verify-catalog.mjs` compares served and bundled answers on a live host.
+- **Preview gate:** a browser script drove 9 menu states, and every option list, label and team line was identical to production's old page. `verify-catalog` returned bundled 14/14 (D1 was empty and previews never write). `verify:preview` passed for K-State Cross Country and IMSA WeatherTech at 36/36. `test:release` passed on `1389013`, and CI was green.
+- **D1 seed refused:** loading production's rows into D1 by hand, to exercise the D1 path on the preview, was refused by the permission check as a shared-resource change. So the D1 path was first exercised on production: `storeMatches` was added, plus the `?source=bundled` comparison. The Worker had created the empty tables through the connector earlier; that was harmless.
+- **Production:** merged as `840f03b`. Production synced itself at 14:21:17 UTC (106 entries, revision `cbcd1a80…`; college 68, high school 3, pro 35) and serves `d1`. `verify-catalog --prod --expect=d1` passed 14/14, and the 9 browser menu states are identical to the pre-move baseline. `verify:prod` passed for K-State XC and IMSA WeatherTech, with XC 18/20 and 26/21.
+- **Found along the way:** Manhattan High forced refreshes answered 502 on production too (Football 3/8, Volleyball 3/8). `mhs.usd383.org` gives Cloudflare an intermittent 520 (sandbox reads were 5/5), and the 2-minute calendar read kept no stale copy (`staleOnError` defaults on only for reads cached 10 minutes or longer). PR #339 (`4.100.2`) added `staleOnError` to the calendar and MaxPreps reads. Preview: Manhattan's 6 sports passed 36/36 (Golf after one status-0 client drop) and the middle schools' 9 sports passed 36/36. `test:release` passed and CI was green. Merged as `c69c0b4`.
+- **Process slip:** `pkill -f "npm run test:release"` killed its own shell and the new run, as the handoff warns. The leftover process was killed by PID and the suite re-run.
+- **Next (in `docs/CATALOG.md`):** move colors and sports maps into the cards; async Worker lookups from D1; importers; a required state and FTS5 search for the high-school level.
+
