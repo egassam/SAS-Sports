@@ -82,7 +82,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.105.1-nil-marketplaces';
+const VERSION='4.105.2-nil-marketplaces';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1018,7 +1018,7 @@ async function instagramProfileImage(instagramUrl){
 }
 // Profile pages read per sport when roster cards hold fewer than three
 // verified links.
-const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18;
+const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18,NIL_LOOKUP_MS=10000;
 // Each roster card's event group ("Distance", "DISTANCE/XC", "Cross
 // Country/Distance", "Sprints"), by profile address: the text of the first
 // element named for a position between the card's profile link and the next
@@ -1047,6 +1047,7 @@ function rosterPositions(raw,base){
 const DISTANCE_GROUP=/\b(?:distance|cross[\s-]*country|xc)\b/i;
 async function featuredAthletes(schoolId,sport){
   const school=catalogSchool(schoolId);if(!school)return[];
+  const started=Date.now();
   const sharedTrack=sport==='Cross Country'&&rosterUrls(school,sport).some(url=>rosterUrls(school,'Track & Field').includes(url));
   let profiles=[];
   const pinned=[...VERIFIED_TEAM_TAG_INSTAGRAM.keys()].filter(key=>key.startsWith(`${schoolId}|${sport}|`)).map(key=>key.split('|').slice(2).join('|'));
@@ -1131,7 +1132,9 @@ async function featuredAthletes(schoolId,sport){
     const candidates=profiles.filter(profile=>!linked.has(profile.url)&&opendorseSlug(profile.name)).sort((a,b)=>Number(Boolean(b.image_url))-Number(Boolean(a.image_url))||dailyRank(a.name)-dailyRank(b.name)).slice(0,OPENDORSE_BUDGET);
     // Six at a time: a large roster's official pages already took most of
     // the request's time (Rutgers track, 13-15 s, Oct 16).
-    for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3;start+=6){
+    // Only within the request's first NIL_LOOKUP_MS (Rutgers track took 22 s
+    // to build when its official pages were slow, Oct 16).
+    for(let start=0;start<candidates.length&&found.filter(a=>a.instagram_url).length<3&&Date.now()-started<NIL_LOOKUP_MS;start+=6){
       await Promise.all(candidates.slice(start,start+6).map(async profile=>{
         try{
           const r=await sourceFetch(lookup.url(profile),lookup.init||{},{ttl:SOURCE_TTL.document});if(!r.ok)return;

@@ -62,5 +62,6 @@ for(const [id,marketplace,team] of [['mississippi-state','mississippistate-bulld
 assert.ok(worker.includes("const lookup=nil?.opendorse?{source:'opendorse',url:profile=>`${OPENDORSE_PROFILE}${opendorseSlug(profile.name)}`"));
 assert.ok(worker.includes("if(lookup&&found.filter(a=>a.instagram_url).length<3){"));
 assert.ok(worker.indexOf("if(lookup&&found.filter(a=>a.instagram_url).length<3){")>worker.indexOf('for(let start=0;start<Math.min(unread.length,ATHLETE_PROFILE_BUDGET)'),'after the official profile pages');
-assert.ok(worker.includes('const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18;'));
+assert.ok(worker.includes('const ATHLETE_PROFILE_BUDGET=24,OPENDORSE_BUDGET=18,NIL_LOOKUP_MS=10000;'));
+assert.ok(worker.includes('&&Date.now()-started<NIL_LOOKUP_MS;start+=6){'),'marketplace lookups stop after the time limit');
 console.log('Opendorse module tests passed');
