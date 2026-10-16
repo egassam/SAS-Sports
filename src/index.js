@@ -78,7 +78,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.98.1-nfl-box-score';
+const VERSION='4.98.2-race-results-table';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1716,6 +1716,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
       const url=weekend(target.race_id),details=nascarRaceDetails(target,await readJson(url,SOURCE_TTL.document));
       if(details){
         target.results=details.rows;target.result_count=details.rows.length;
+        target.race_table=details.table;
         target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
         target.highlight_status='Finishing order and race numbers from NASCAR\'s official results feed.';
       }
@@ -2803,8 +2804,9 @@ const HIGHLIGHT_STORE_TTL=30*24*60*60;
 // A school module may carry a highlight revision: raising it retires that
 // school's stored finals after a change to how they are written (Baylor's
 // cross country highlights went from two lines to four).
-// Pro finals saved before the box-score layout (4.98.1) are rebuilt once.
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box':''}`;
+// Pro finals saved before the box-score and race-table layouts (4.98.2) are
+// rebuilt once.
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box2':''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;
