@@ -6,6 +6,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // LSU's rules; Missouri's cards also carry each day's full date.
 export const missouriSchool={
   id:'missouri',
+  // The official NIL marketplace the school's homepage links (checked Oct 16):
+  // athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'missouri-tigers',team:'Missouri Tigers'},
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Gymnastics','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),

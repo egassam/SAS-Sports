@@ -43,3 +43,7 @@ Certification lists all 13 sports (minimum 3). On October 8, every roster and pr
 - The Aug 5 soccer exhibition at Lindenwood has no story; its card links only a photo gallery, and the archive lists no story from that week.
 - Gymnastics and Track & Field fill when Missouri publishes them.
 - No live card observed yet.
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+Cross Country and Track & Field show three athletes with Instagram from the official NIL marketplace (opendorse.com/missouri-tigers, linked from mutigers.com); Tennis one. The profile-card fallback stays listed. Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).

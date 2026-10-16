@@ -45,3 +45,7 @@ Not fixable from the official sources today:
 - Swimming meets read `Completed` (the schedule publishes no dual scores); the story carries the results.
 - Cowboy Jamboree: TFRRS lists only TCU's women.
 - No finals yet for Baseball, Track & Field, women's basketball; live scores are tested on real ESPN payloads but no TCU game has been observed live under the module yet (soccer vs UCF Oct 8, volleyball vs Arizona Oct 9).
+
+## Athletes from the NIL marketplace (October 16, 2026)
+
+TCU's marketplace (opendorse.com/tcu-hornedfrogs) is configured; Triathlon's third athlete is still a profile card (no matching marketplace profile with Instagram, Oct 16). Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
