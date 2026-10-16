@@ -22,10 +22,12 @@ The user wants one school-module project per conversation.
      - CI on the PR head is green, and the PR has no merge conflict.
      - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows every changed sport in K-State's results format.
      - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
-     - The change stays within the one school in scope (one or more of its sports).
+     - The change is the work the user asked for in this session (since October 16, 2026, it need not stay within one school: shared code, pro leagues and several entries are covered when every check here passes for every entry the change touches).
      - On that preview, 36 forced refreshes (`refresh=1`) of each changed sport all return HTTP 200, with no Cloudflare 1102 or 503 errors.
      - `npm run verify:preview -- --branch=<branch> --school=<id> --sports="<changed sports>"` runs the XC, refresh, results-format and expanded-view checks above in one command; the page itself is still checked by eye.
    - **Docs-only PRs:** CI is green and the PR has no merge conflict.
+
+   **User, October 16, 2026: "When you finish and everything passes you can merge it."** Do not stop to ask for a merge when the work is finished and every check above passes. Merge, verify production, and then report. For pro entries that read ESPN, 3 forced refreshes per entry replace the 36. ESPN refused the app on October 10, 2026, and 36 refreshes for each of 32 NFL teams would be about 1,150 reads.
 
    If any condition fails or is uncertain, stop and ask the user instead of merging.
 
