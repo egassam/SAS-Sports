@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 15, 2026 (about 4:30 PM), America/Chicago. Production `4.97.2-nascar-car-make` (verified).
+Last updated: October 15, 2026 (about 10:30 PM), America/Chicago. Production `4.98.0-nfl-live-cards` (verified).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 15, 2026 (about 4:30 PM), America/Chicago. Production `4.9
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.97.2-nascar-car-make`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.98.0-nfl-live-cards`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -222,4 +222,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 15 — Pro sports: NFL (Steelers, Chiefs) and NASCAR Cup Series races** (user: "Let's add some professional sports. Same three menu style...", then "If you have suggestions of a better formatting please give them"; PR #325, `4.95.3-pro-sports`). ESPN team schedules and game summaries for the NFL; NASCAR's own race list, standings, weekend and live feeds. Formatting without logos (4.96.0). Merged `3448493` (user: "You can merge it"); production `4.96.0-pro-format` verified 21:25 UTC: `verify:prod --sports=all` for the three entries passed (3/3 refreshes, expanded views 5/5, 4/4, 36/36; XC 18/20 and 26/21).
 - **Oct 15 — NASCAR in the cross-country layout** (user: "NASCAR lay out should be similar to the cross country layout", then "Merge it"; PR #327 merged `af9f442`; production `4.97.1-nascar-xc-layout` verified: `verify:prod --sports=all` for NASCAR, Steelers, Chiefs all PASS, XC 18/20 and 26/21). Open: `verify-release` passes a feed with 0 events (seen on the first 4.97.0 preview run); an empty NASCAR race list is now a failed read. Lessons: reuse existing layouts, check `SCOREBOARD_USER_AGENT` before an ESPN read, build nothing unrequested (logos).
 - **Oct 16 — NASCAR results show the car make** (user: "Can we put the type of car manufacturer in the results", then "It's not showing car make in the results" before the merge; PR #329 merged `ff5984e` under the standing permission; production `4.97.2-nascar-car-make` verified: `verify:prod` PASS, "1st · Joe Gibbs Racing · Toyota · 62 laps led").
-- **Oct 16 — Whole NFL by division; live cards show all the data** (user: "Add the entire NFL. Group them by division and update all live cards to show all the data"; PR #331, `4.98.0-nfl-live-cards`, **not merged**: it changes the shared college live-board code and all 32 teams, outside the standing permission's one-school scope, so it needs the user's go). On the preview: `test:release` passed; `verify:preview` passed for 33 pro entries + KU, 46/46 sport checks with 3 forced refreshes each (not 36, to limit ESPN reads), and XC was 18/20 and 26/21. The live Broncos–Seahawks card was checked by eye, with folds that don't open the modal. NASCAR live details are first checked at Phoenix on Oct 18.
+- **Oct 16 — Whole NFL by division; live cards show all the data** (user: "Add the entire NFL. Group them by division and update all live cards to show all the data"; PR #331, `4.98.0-nfl-live-cards`, merged `2c8b0cb` on the user's "Merge it"; production verified: `verify:prod --sports=all` for all 33 pro entries, every check PASS, XC 18/20 and 26/21). On the preview: `test:release` passed; `verify:preview` passed for 33 pro entries + KU, 46/46 sport checks with 3 forced refreshes each (not 36, to limit ESPN reads), and XC was 18/20 and 26/21. The live Broncos–Seahawks card was checked by eye, with folds that don't open the modal. NASCAR live details are first checked at Phoenix on Oct 18.
