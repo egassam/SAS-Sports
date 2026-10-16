@@ -65,3 +65,5 @@ utahutes.com returned HTTP 403 (bot protection) to the development sandbox on Se
 ## Athletes from the NIL marketplace (October 16, 2026)
 
 Source: INFLCR Exchange university-of-utah, linked from utahutes.com. On the preview (4.105.0), the sports that use profile cards: Volleyball 3 of 3 with Instagram (2 from the marketplace). A slot still short keeps its official profile card, and the profile-card fallback stays listed (the athletes tried vary by day). Athletes connect these accounts themselves; the app uses one only for an athlete on the current official roster whose marketplace record names the same athlete and sport (`src/opendorse.mjs`, `src/inflcr.mjs`).
+
+**Production `4.105.2`, October 16 (after forced refreshes):** the marketplace supplies athletes in Volleyball; Volleyball now shows three with Instagram. Every sport shows three athletes with Instagram. Counts vary from day to day with the roster athletes tried, so the profile-card fallback list is unchanged.

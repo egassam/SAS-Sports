@@ -49,3 +49,5 @@ Not fixable from the official sources today:
 ## Athletes from the NIL marketplace (October 16, 2026)
 
 TCU's marketplace (opendorse.com/tcu-hornedfrogs) is configured; Triathlon's third athlete is still a profile card (no matching marketplace profile with Instagram, Oct 16). Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
+
+**Production `4.105.2`, October 16 (after forced refreshes):** the marketplace supplied no athletes in this read. Still short of three (profile cards fill the rest): Triathlon (2 of 3). Counts vary from day to day with the roster athletes tried, so the profile-card fallback list is unchanged.

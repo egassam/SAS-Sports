@@ -46,3 +46,5 @@ Every rule was mutated, and every mutation fails `npm run test:oklahoma-module`.
 ## Athletes from the NIL marketplace (October 16, 2026)
 
 Volleyball shows three athletes with Instagram from the official NIL marketplace (opendorse.com/oklahoma-sooners, linked from soonersports.com). The profile-card fallback stays listed. Athletes enter these handles themselves on Opendorse; the app uses one only for an athlete on the current official roster whose profile names the same athlete, the sport and the school (`src/opendorse.mjs`).
+
+**Production `4.105.2`, October 16 (after forced refreshes):** the marketplace supplies athletes in Volleyball; Volleyball now shows three with Instagram. Every sport shows three athletes with Instagram. Counts vary from day to day with the roster athletes tried, so the profile-card fallback list is unchanged.
