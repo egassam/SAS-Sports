@@ -1,27 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Virginia: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| alabama | Volleyball | 🔴 on | live 15-8 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
-| arizona | Soccer | 🔴 on | live 0-0 · 39' · official_schedule+live_scoreboard |
-| arizona-state | Soccer | 🔴 on | live 1-0 · 72' · official_schedule+live_scoreboard |
-| duke | Soccer | 🔴 on | live 1-0 · 36' · official_schedule+live_scoreboard |
-| houston | Volleyball | 🔴 on | live 8-7 · 5th Set · Sets 2-2 · official_schedule+live_scoreboard |
-| louisville | Soccer | 🔴 on | live 0-3 · 90' · official_schedule+live_scoreboard |
-| miami | Volleyball | 🔴 on | live 5-7 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
-| minnesota | Hockey | 🔴 on | ESPN shows Minnesota at Minnesota Duluth live (End of 2nd) but the app has no live card (it is in results) |
-| minnesota | Volleyball | 🔴 on | live 15-13 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
-| northwestern | Soccer | 🔴 on | live 1-1 · 90' · official_schedule+live_scoreboard |
-| oregon | Soccer | 🔴 on | live 0-1 · 34' · official_schedule+live_scoreboard |
-| penn-state | Soccer | 🔴 on | live 1-1 · 90' · official_schedule+live_scoreboard |
-| purdue | Football | 🔴 on | live 17-24 · Halftime · official_schedule+live_scoreboard |
-| rutgers | Soccer | 🔴 on | live 1-0 · 73' · official_schedule+live_scoreboard |
-| smu | Soccer | 🔴 on | live 0-1 · 36' · official_schedule+live_scoreboard |
-| smu | Volleyball | 🔴 on | live 7-5 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
-| ucla | Soccer | 🔴 on | live 3-3 · 62' · official_schedule+live_scoreboard |
-| utah | Soccer | 🔴 on | live 0-0 · 39' · official_schedule+live_scoreboard |
-| washington | Football | 🔴 on | live 24-17 · Halftime · official_schedule+live_scoreboard |
-| wisconsin | Hockey | 🔴 on | ESPN shows Wisconsin vs Minnesota St live (11:43 - 3rd) but the app has no live card (still in upcoming) |
-| wisconsin | Soccer | 🔴 on | live 3-3 · 62' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -159,6 +138,7 @@
 | michigan-state | Softball | ⚪ off (waiting) |  |
 | minnesota | Baseball | ⚪ off (waiting) |  |
 | minnesota | Basketball | ⚪ off (waiting) |  |
+| minnesota | Hockey | ⚪ off (waiting) | final L, 1-7 (live phase not observed 2×; waits for the next game) |
 | minnesota | Softball | ⚪ off (waiting) |  |
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
 | mississippi-state | Basketball | ⚪ off (waiting) |  |
@@ -326,10 +306,14 @@
 | west-virginia | Football | ⚪ off (waiting) | final L, 31-52 (live phase not observed 2×; waits for the next game) |
 | wisconsin | Basketball | ⚪ off (waiting) |  |
 | wisconsin | Football | ⚪ off (waiting) |  |
+| wisconsin | Hockey | ⚪ off (waiting) | final W, 5-1 (live phase not observed 2×; waits for the next game) |
 | wisconsin | Softball | ⚪ off (waiting) |  |
 | alabama | Football | ✅ off (passed) | Alabama vs Georgia · 2026-10-11T06:38:16.684Z |
 | alabama | Soccer | ✅ off (passed) | Alabama vs Georgia · 2026-10-16T04:55:14.970Z |
+| alabama | Volleyball | ✅ off (passed) | Alabama at Vanderbilt · 2026-10-17T06:14:53.357Z |
+| arizona | Soccer | ✅ off (passed) | Arizona at Utah · 2026-10-17T06:14:53.409Z |
 | arizona-state | Hockey | ✅ off (passed) | ASU vs Holy Cross · 2026-10-11T00:53:26.581Z |
+| arizona-state | Soccer | ✅ off (passed) | ASU at Oklahoma St · 2026-10-17T06:14:53.377Z |
 | arizona-state | Volleyball | ✅ off (passed) | ASU vs TCU · 2026-10-11T22:31:53.086Z |
 | arkansas | Football | ✅ off (passed) | Arkansas vs Tennessee · 2026-10-11T00:49:40.520Z |
 | arkansas | Soccer | ✅ off (passed) | Arkansas at LSU · 2026-10-10T07:23:28.884Z |
@@ -346,6 +330,7 @@
 | clemson | Volleyball | ✅ off (passed) | Clemson vs Boston College · 2026-10-17T01:39:25.518Z |
 | colorado | Soccer | ✅ off (passed) | Colorado at Kansas St · 2026-10-17T01:48:25.086Z |
 | colorado | Volleyball | ✅ off (passed) | Colorado at Iowa State · 2026-10-16T04:55:14.946Z |
+| duke | Soccer | ✅ off (passed) | Women's · Duke at SMU · 2026-10-17T06:14:54.229Z |
 | duke | Volleyball | ✅ off (passed) | Duke at Louisville · 2026-10-17T01:39:26.814Z |
 | florida | Soccer | ✅ off (passed) | Florida at Vanderbilt · 2026-10-16T04:55:15.089Z |
 | florida | Volleyball | ✅ off (passed) | Florida at Missouri · 2026-10-10T07:23:29.528Z |
@@ -357,6 +342,7 @@
 | georgia-tech | Volleyball | ✅ off (passed) | Georgia Tech vs Syracuse · 2026-10-17T01:39:25.719Z |
 | houston | Football | ✅ off (passed) | Houston at Kansas St · 2026-10-11T00:49:40.506Z |
 | houston | Soccer | ✅ off (passed) | Houston at Cincinnati · 2026-10-17T01:39:26.021Z |
+| houston | Volleyball | ✅ off (passed) | Houston vs UCF · 2026-10-17T06:14:54.291Z |
 | illinois | Football | ✅ off (passed) | Illinois at Michigan St · 2026-10-11T00:49:40.789Z |
 | illinois | Volleyball | ✅ off (passed) | Illinois at Purdue · 2026-10-12T01:38:27.341Z |
 | indiana | Soccer | ✅ off (passed) | Men's · Indiana vs Hanover · 2026-10-10T07:23:30.741Z |
@@ -376,6 +362,7 @@
 | kstate | Football | ✅ off (passed) | K-State vs Houston · 2026-10-11T00:49:40.898Z |
 | kstate | Soccer | ✅ off (passed) | K-State at Baylor · 2026-10-11T22:23:41.660Z |
 | kstate | Volleyball | ✅ off (passed) | K-State vs Kansas · 2026-10-16T04:55:14.831Z |
+| louisville | Soccer | ✅ off (passed) | Men's · Louisville at Clemson · 2026-10-17T06:14:55.131Z |
 | louisville | Volleyball | ✅ off (passed) | Louisville vs Duke · 2026-10-17T01:39:45.404Z |
 | lsu | Football | ✅ off (passed) | LSU at Kentucky · 2026-10-11T06:38:16.311Z |
 | lsu | Soccer | ✅ off (passed) | LSU vs Arkansas · 2026-10-10T07:23:29.837Z |
@@ -384,6 +371,7 @@
 | maryland | Football | ✅ off (passed) | Maryland at Ohio State · 2026-10-11T00:49:40.707Z |
 | maryland | Soccer | ✅ off (passed) | Men's · Maryland vs Michigan St · 2026-10-10T07:23:32.146Z |
 | maryland | Volleyball | ✅ off (passed) | Maryland vs Northwestern · 2026-10-11T06:38:17.170Z |
+| miami | Volleyball | ✅ off (passed) | Miami at SMU · 2026-10-17T06:14:53.656Z |
 | michigan | Hockey | ✅ off (passed) | Michigan vs Alaska Anchorage · 2026-10-10T07:23:29.531Z |
 | michigan | Soccer | ✅ off (passed) | Women's · Michigan vs Wisconsin · 2026-10-11T22:23:43.466Z |
 | michigan | Volleyball | ✅ off (passed) | Michigan vs Oregon · 2026-10-11T06:38:16.497Z |
@@ -394,6 +382,7 @@
 | michigan-state | Volleyball | ✅ off (passed) | Michigan State vs Oregon · 2026-10-10T07:23:29.196Z |
 | minnesota | Football | ✅ off (passed) | Minnesota at Purdue · 2026-10-11T06:38:16.103Z |
 | minnesota | Soccer | ✅ off (passed) | Minnesota vs Ohio State · 2026-10-11T22:23:42.710Z |
+| minnesota | Volleyball | ✅ off (passed) | Minnesota vs Michigan · 2026-10-17T06:14:53.501Z |
 | mississippi-state | Soccer | ✅ off (passed) | Mississippi State vs Texas A&M · 2026-10-10T07:23:29.804Z |
 | missouri | Soccer | ✅ off (passed) | Missouri at Ole Miss · 2026-10-16T04:55:15.245Z |
 | missouri | Volleyball | ✅ off (passed) | Missouri vs Florida · 2026-10-10T07:23:30.142Z |
@@ -403,6 +392,7 @@
 | north-carolina | Soccer | ✅ off (passed) | Women's · UNC at Clemson · 2026-10-16T04:55:15.574Z |
 | north-carolina | Volleyball | ✅ off (passed) | UNC at Notre Dame · 2026-10-17T01:39:26.098Z |
 | northwestern | Field Hockey | ✅ off (passed) | Northwestern vs Iowa · 2026-10-09T21:48:31.249Z |
+| northwestern | Soccer | ✅ off (passed) | Men's · Northwestern vs Penn State · 2026-10-17T06:14:54.946Z |
 | northwestern | Volleyball | ✅ off (passed) | Northwestern at Maryland · 2026-10-11T06:38:16.590Z |
 | notre-dame | Hockey | ✅ off (passed) | Notre Dame at Western Michigan · 2026-10-17T01:39:26.255Z |
 | notre-dame | Soccer | ✅ off (passed) | Women's · Notre Dame vs Pittsburgh · 2026-10-16T04:55:14.882Z |
@@ -418,11 +408,17 @@
 | ole-miss | Soccer | ✅ off (passed) | Ole Miss vs Missouri · 2026-10-16T04:55:15.083Z |
 | ole-miss | Volleyball | ✅ off (passed) | Ole Miss at Kentucky · 2026-10-11T22:23:41.854Z |
 | oregon | Football | ✅ off (passed) | Oregon vs UCLA · 2026-10-11T00:49:41.505Z |
+| oregon | Soccer | ✅ off (passed) | Oregon vs Michigan · 2026-10-17T06:14:53.726Z |
 | oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
 | penn-state | Field Hockey | ✅ off (passed) | Penn State vs Ohio State · 2026-10-16T23:47:54.155Z |
 | penn-state | Football | ✅ off (passed) | Penn State vs USC · 2026-10-11T06:38:16.471Z |
+| penn-state | Soccer | ✅ off (passed) | Men's · Penn State at Northwestern · 2026-10-17T06:14:54.859Z |
 | pitt | Soccer | ✅ off (passed) | Women's · Pitt at Notre Dame · 2026-10-16T04:55:15.560Z |
 | pitt | Volleyball | ✅ off (passed) | Pitt vs Florida St · 2026-10-17T01:39:26.309Z |
+| purdue | Football | ✅ off (passed) | Purdue vs Washington · 2026-10-17T06:14:53.101Z |
+| rutgers | Soccer | ✅ off (passed) | Men's · Rutgers vs Indiana · 2026-10-17T06:14:54.714Z |
+| smu | Soccer | ✅ off (passed) | Women's · SMU vs Duke · 2026-10-17T06:14:54.422Z |
+| smu | Volleyball | ✅ off (passed) | SMU vs Miami · 2026-10-17T06:14:53.469Z |
 | south-carolina | Soccer | ✅ off (passed) | Men's · South Carolina vs CCSC · 2026-10-13T07:02:13.001Z |
 | stanford | Field Hockey | ✅ off (passed) | Stanford at UC Davis · 2026-10-16T23:47:53.732Z |
 | stanford | Soccer | ✅ off (passed) | Men's · Stanford at SMU · 2026-10-17T01:39:25.934Z |
@@ -443,14 +439,18 @@
 | texas-tech | Volleyball | ✅ off (passed) | Texas Tech at TCU · 2026-10-17T01:39:29.033Z |
 | ucf | Soccer | ✅ off (passed) | Women's · UCF vs Oklahoma St · 2026-10-11T22:23:42.554Z |
 | ucf | Volleyball | ✅ off (passed) | UCF vs Kansas · 2026-10-11T22:23:41.697Z |
+| ucla | Soccer | ✅ off (passed) | Men's · UCLA at Wisconsin · 2026-10-17T06:14:53.774Z |
 | utah | Football | ✅ off (passed) | Utah vs Kansas · 2026-10-11T06:38:16.961Z |
+| utah | Soccer | ✅ off (passed) | Utah vs Arizona · 2026-10-17T06:14:53.315Z |
 | vanderbilt | Football | ✅ off (passed) | Vanderbilt vs Ole Miss · 2026-10-11T00:49:40.791Z |
 | vanderbilt | Soccer | ✅ off (passed) | Vanderbilt vs Florida · 2026-10-16T04:55:14.886Z |
 | vanderbilt | Volleyball | ✅ off (passed) | Vanderbilt vs Auburn · 2026-10-10T01:24:56.948Z |
 | virginia | Volleyball | ✅ off (passed) | Virginia vs Virginia Tech · 2026-10-15T05:12:36.630Z |
 | wake-forest | Soccer | ✅ off (passed) | Women's · Wake Forest vs Florida St · 2026-10-16T00:29:05.736Z |
+| washington | Football | ✅ off (passed) | Washington at Purdue · 2026-10-17T06:14:53.186Z |
 | west-virginia | Soccer | ✅ off (passed) | WVU vs UCF · 2026-10-16T23:47:53.900Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
+| wisconsin | Soccer | ✅ off (passed) | Men's · Wisconsin vs UCLA · 2026-10-17T06:14:54.134Z |
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 
-Done 125/452; on 21; off 305; failing 1.
+Done 144/452; on 0; off 307; failing 1.
