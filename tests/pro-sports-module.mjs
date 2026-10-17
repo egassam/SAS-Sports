@@ -19,9 +19,10 @@ const pro=schools.filter(s=>s.level==='pro');
 // IMSA's two championships follow (user, October 16: "Let's add IMSA racing
 // series under auto racing"; tests/imsa-module.mjs).
 // Formula 1 follows (user, October 16: "Add formula one under auto racing";
-// tests/f1-module.mjs).
-assert.equal(pro.length,36);
-assert.deepEqual(pro.slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
+// tests/f1-module.mjs). The 30 MLS clubs come last (user, October 17:
+// "Let's add soccer to the pro section"; tests/mls-module.mjs).
+assert.equal(pro.length,66);
+assert.deepEqual(pro.filter(s=>s.league!=='MLS').slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{
