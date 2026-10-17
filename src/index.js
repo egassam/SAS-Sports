@@ -82,7 +82,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.106.0-formula-1';
+const VERSION='4.106.1-formula-1';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1768,7 +1768,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
 // web address; see SCOREBOARD_USER_AGENT).
 // A refused or failed read serves the last copy read (a burst of ESPN refusals
 // blanked the Chiefs for 28 of 36 preview refreshes, Oct 15).
-async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+// Jolpica answers 406 to the HTML Accept header school pages are read with.
+async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
 async function fetchPro(school,sport,now,aiTargetId=null){
   const config=proTeam(school.id),timeZone=schoolTimeZone(school);
   const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});

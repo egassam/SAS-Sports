@@ -25,6 +25,9 @@ assert.equal(proTeam('formula-1').kind,'f1');assert.equal(proTeam('formula-1').s
 assert.ok(JSON.parse(read('../src/team-themes.json'))['formula-1']?.primary);
 assert.ok(worker.includes("if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);"));
 assert.ok(worker.includes("'formula-1':'America/New_York'"));
+// Jolpica answers 406 to the HTML Accept header school pages are read with
+// (the first preview read nothing); its reads ask for JSON.
+assert.ok(worker.includes("url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}"));
 
 // formula1.com's season page: 17 Grands Prix run, each with its winner and link.
 const season=f1SeasonResults(raw('f1-season.html'),2026);
