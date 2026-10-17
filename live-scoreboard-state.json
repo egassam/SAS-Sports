@@ -292,7 +292,23 @@
    "state": "off"
   },
   "cincinnati|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.511Z",
+   "last_detail": "live 14-14 · 2:19 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "cincinnati|Football||2026-10-17|1",
+    "title": "Cincinnati at West Virginia",
+    "started_seen": "2026-10-17T17:13:12.699Z",
+    "live_passes": [
+     "2026-10-17T17:13:12.699Z",
+     "2026-10-17T17:15:15.760Z",
+     "2026-10-17T17:16:57.679Z",
+     "2026-10-17T17:18:18.809Z",
+     "2026-10-17T17:20:21.129Z",
+     "2026-10-17T17:21:42.511Z"
+    ],
+    "final_ok": false
+   }
   },
   "cincinnati|Lacrosse": {
    "state": "off"
@@ -466,10 +482,23 @@
    "state": "off"
   },
   "west-virginia|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:18.879Z",
-   "last_detail": "final L, 31-52 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.490Z",
+   "last_detail": "live 14-14 · 2:19 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "west-virginia|Football||2026-10-17|1",
+    "title": "WVU vs Cincinnati",
+    "started_seen": "2026-10-17T17:13:14.926Z",
+    "live_passes": [
+     "2026-10-17T17:13:14.926Z",
+     "2026-10-17T17:15:15.793Z",
+     "2026-10-17T17:16:57.704Z",
+     "2026-10-17T17:18:18.801Z",
+     "2026-10-17T17:20:21.193Z",
+     "2026-10-17T17:21:42.490Z"
+    ],
+    "final_ok": false
+   }
   },
   "west-virginia|Soccer": {
    "state": "done",
@@ -532,10 +561,23 @@
    "state": "off"
   },
   "florida|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:17.515Z",
-   "last_detail": "final L, 19-38 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:22:02.789Z",
+   "last_detail": "live 3-17 · 3:14 - 2nd · ball: opponent (1st & 10 at FLA 49) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "florida|Football||2026-10-17|1",
+    "title": "Florida at Texas",
+    "started_seen": "2026-10-17T17:13:13.412Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.412Z",
+     "2026-10-17T17:15:15.915Z",
+     "2026-10-17T17:16:37.520Z",
+     "2026-10-17T17:18:39.253Z",
+     "2026-10-17T17:20:00.894Z",
+     "2026-10-17T17:22:02.789Z"
+    ],
+    "final_ok": false
+   }
   },
   "florida|Lacrosse": {
    "state": "off"
@@ -676,7 +718,23 @@
    "state": "off"
   },
   "mississippi-state|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.470Z",
+   "last_detail": "live 0-21 · 5:39 - 2nd · ball: school (2nd & 7 at MSST 28) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mississippi-state|Football||2026-10-17|1",
+    "title": "Mississippi State at LSU",
+    "started_seen": "2026-10-17T17:13:13.144Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.144Z",
+     "2026-10-17T17:15:15.708Z",
+     "2026-10-17T17:16:37.494Z",
+     "2026-10-17T17:18:39.985Z",
+     "2026-10-17T17:20:21.201Z",
+     "2026-10-17T17:21:42.470Z"
+    ],
+    "final_ok": false
+   }
   },
   "mississippi-state|Soccer": {
    "state": "done",
@@ -808,10 +866,23 @@
    "state": "off"
   },
   "texas-am|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:17.284Z",
-   "last_detail": "final L, 6-27 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.500Z",
+   "last_detail": "live 7-0 · 5:24 - 1st · ball: opponent (1st & 10 at CIT 46) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas-am|Football||2026-10-17|1",
+    "title": "Texas A&M vs The Citadel",
+    "started_seen": "2026-10-17T17:13:12.718Z",
+    "live_passes": [
+     "2026-10-17T17:13:12.718Z",
+     "2026-10-17T17:15:15.949Z",
+     "2026-10-17T17:16:57.750Z",
+     "2026-10-17T17:18:19.022Z",
+     "2026-10-17T17:20:21.633Z",
+     "2026-10-17T17:21:42.500Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas-am|Soccer": {
    "state": "done",
@@ -1075,10 +1146,23 @@
    "state": "off"
   },
   "indiana|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:18.830Z",
-   "last_detail": "final W, 20-17 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.438Z",
+   "last_detail": "live 7-3 · 10:22 - 2nd · ball: school (2nd & 4 at IU 26) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "indiana|Football||2026-10-17|1",
+    "title": "Indiana vs Ohio State",
+    "started_seen": "2026-10-17T17:13:13.552Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.552Z",
+     "2026-10-17T17:15:15.856Z",
+     "2026-10-17T17:16:37.446Z",
+     "2026-10-17T17:18:39.192Z",
+     "2026-10-17T17:20:21.195Z",
+     "2026-10-17T17:21:42.438Z"
+    ],
+    "final_ok": false
+   }
   },
   "indiana|Soccer": {
    "state": "done",
@@ -1390,10 +1474,23 @@
    "verified_detail": "final W, 2-1"
   },
   "northwestern|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:17.267Z",
-   "last_detail": "final W, 45-14 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:22:02.803Z",
+   "last_detail": "live 10-7 · 2:48 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "northwestern|Football||2026-10-17|1",
+    "title": "Northwestern at Michigan St",
+    "started_seen": "2026-10-17T17:13:13.169Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.169Z",
+     "2026-10-17T17:15:15.862Z",
+     "2026-10-17T17:16:37.528Z",
+     "2026-10-17T17:18:39.147Z",
+     "2026-10-17T17:20:00.974Z",
+     "2026-10-17T17:22:02.803Z"
+    ],
+    "final_ok": false
+   }
   },
   "northwestern|Lacrosse": {
    "state": "off"
@@ -1531,10 +1628,16 @@
    "verified_detail": "final L, 23-31"
   },
   "penn-state|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-17T01:39:26.844Z",
-   "last_detail": "final L, 3-6 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-17T17:22:23.846Z",
+   "last_detail": "ESPN shows Penn State vs Lindenwood live (End of 2nd) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "penn-state|Hockey||2026-10-17|1",
+    "title": "Penn State vs Lindenwood",
+    "started_seen": "2026-10-17T17:13:54.585Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "penn-state|Lacrosse": {
    "state": "off"
@@ -1588,7 +1691,23 @@
    "state": "off"
   },
   "rutgers|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:22:02.820Z",
+   "last_detail": "live 7-7 · 13:36 - 2nd · ball: opponent (1st & 10 at RUTG 49) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "rutgers|Football||2026-10-17|1",
+    "title": "Rutgers at Maryland",
+    "started_seen": "2026-10-17T17:13:13.867Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.867Z",
+     "2026-10-17T17:15:15.815Z",
+     "2026-10-17T17:16:37.625Z",
+     "2026-10-17T17:18:39.170Z",
+     "2026-10-17T17:20:00.919Z",
+     "2026-10-17T17:22:02.820Z"
+    ],
+    "final_ok": false
+   }
   },
   "rutgers|Lacrosse": {
    "state": "off"
@@ -1747,7 +1866,23 @@
    "game": null
   },
   "virginia|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:22:02.894Z",
+   "last_detail": "live 10-10 · 0:25 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "virginia|Football||2026-10-17|1",
+    "title": "Virginia at SMU",
+    "started_seen": "2026-10-17T17:13:12.801Z",
+    "live_passes": [
+     "2026-10-17T17:13:12.801Z",
+     "2026-10-17T17:15:15.786Z",
+     "2026-10-17T17:16:37.472Z",
+     "2026-10-17T17:18:39.176Z",
+     "2026-10-17T17:20:00.908Z",
+     "2026-10-17T17:22:02.894Z"
+    ],
+    "final_ok": false
+   }
   },
   "virginia|Lacrosse": {
    "state": "off"
@@ -1780,7 +1915,23 @@
    "state": "off"
   },
   "boston-college|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.373Z",
+   "last_detail": "live 7-12 · 4:12 - 2nd · ball: opponent (2nd & 9 at PITT 35) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "boston-college|Football||2026-10-17|1",
+    "title": "Boston College vs Pitt",
+    "started_seen": "2026-10-17T17:13:15.203Z",
+    "live_passes": [
+     "2026-10-17T17:13:15.203Z",
+     "2026-10-17T17:15:16.667Z",
+     "2026-10-17T17:16:37.599Z",
+     "2026-10-17T17:18:39.149Z",
+     "2026-10-17T17:20:21.178Z",
+     "2026-10-17T17:21:42.373Z"
+    ],
+    "final_ok": false
+   }
   },
   "boston-college|Hockey": {
    "state": "off",
@@ -1843,7 +1994,23 @@
    "state": "off"
   },
   "clemson|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.345Z",
+   "last_detail": "live 31-0 · 3:51 - 2nd · ball: opponent (4th & 7 at CHSO 28) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "clemson|Football||2026-10-17|1",
+    "title": "Clemson vs Charleston So",
+    "started_seen": "2026-10-17T17:13:12.744Z",
+    "live_passes": [
+     "2026-10-17T17:13:12.744Z",
+     "2026-10-17T17:15:15.898Z",
+     "2026-10-17T17:16:57.732Z",
+     "2026-10-17T17:18:18.803Z",
+     "2026-10-17T17:20:21.164Z",
+     "2026-10-17T17:21:42.345Z"
+    ],
+    "final_ok": false
+   }
   },
   "clemson|Lacrosse": {
    "state": "off"
@@ -1876,7 +2043,22 @@
    "state": "off"
   },
   "duke|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.441Z",
+   "last_detail": "live 0-0 · 4:00 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "duke|Field Hockey||2026-10-17|1",
+    "title": "Duke at Louisville",
+    "started_seen": "2026-10-17T17:14:56.695Z",
+    "live_passes": [
+     "2026-10-17T17:14:56.695Z",
+     "2026-10-17T17:16:58.297Z",
+     "2026-10-17T17:18:18.858Z",
+     "2026-10-17T17:20:21.127Z",
+     "2026-10-17T17:21:42.441Z"
+    ],
+    "final_ok": false
+   }
   },
   "duke|Football": {
    "state": "off"
@@ -1966,7 +2148,22 @@
    "state": "off"
   },
   "louisville|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.629Z",
+   "last_detail": "live 0-0 · 4:00 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "louisville|Field Hockey||2026-10-17|1",
+    "title": "Louisville vs Duke",
+    "started_seen": "2026-10-17T17:14:58.718Z",
+    "live_passes": [
+     "2026-10-17T17:14:58.718Z",
+     "2026-10-17T17:16:58.295Z",
+     "2026-10-17T17:18:18.907Z",
+     "2026-10-17T17:20:21.146Z",
+     "2026-10-17T17:21:42.629Z"
+    ],
+    "final_ok": false
+   }
   },
   "louisville|Football": {
    "state": "off"
@@ -2104,7 +2301,23 @@
    "state": "off"
   },
   "pitt|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:21:42.380Z",
+   "last_detail": "live 12-7 · 4:12 - 2nd · ball: school (2nd & 9 at PITT 35) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "pitt|Football||2026-10-17|1",
+    "title": "Pitt at Boston College",
+    "started_seen": "2026-10-17T17:13:13.252Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.252Z",
+     "2026-10-17T17:15:15.743Z",
+     "2026-10-17T17:16:37.698Z",
+     "2026-10-17T17:18:39.118Z",
+     "2026-10-17T17:20:21.651Z",
+     "2026-10-17T17:21:42.380Z"
+    ],
+    "final_ok": false
+   }
   },
   "pitt|Lacrosse": {
    "state": "off"
@@ -2134,7 +2347,23 @@
    "state": "off"
   },
   "smu|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T17:22:02.839Z",
+   "last_detail": "live 10-10 · 0:25 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "smu|Football||2026-10-17|1",
+    "title": "SMU vs Virginia",
+    "started_seen": "2026-10-17T17:13:13.359Z",
+    "live_passes": [
+     "2026-10-17T17:13:13.359Z",
+     "2026-10-17T17:15:15.827Z",
+     "2026-10-17T17:16:37.481Z",
+     "2026-10-17T17:18:39.312Z",
+     "2026-10-17T17:20:01.243Z",
+     "2026-10-17T17:22:02.839Z"
+    ],
+    "final_ok": false
+   }
   },
   "smu|Soccer": {
    "state": "done",
@@ -2293,7 +2522,7 @@
    "state": "off"
   }
  },
- "version": "4.106.1-formula-1",
- "updated_at": "2026-10-17T06:14:55.594Z",
+ "version": "4.107.0-mls",
+ "updated_at": "2026-10-17T17:22:23.848Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

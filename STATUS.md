@@ -1,6 +1,22 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Virginia: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| boston-college | Football | 🔴 on | live 7-12 · 4:12 - 2nd · ball: opponent (2nd & 9 at PITT 35) · official_schedule+live_scoreboard |
+| cincinnati | Football | 🔴 on | live 14-14 · 2:19 - 2nd · official_schedule+live_scoreboard |
+| clemson | Football | 🔴 on | live 31-0 · 3:51 - 2nd · ball: opponent (4th & 7 at CHSO 28) · official_schedule+live_scoreboard |
+| duke | Field Hockey | 🔴 on | live 0-0 · 4:00 - 1st · official_schedule+live_scoreboard |
+| florida | Football | 🔴 on | live 3-17 · 3:14 - 2nd · ball: opponent (1st & 10 at FLA 49) · official_schedule+live_scoreboard |
+| indiana | Football | 🔴 on | live 7-3 · 10:22 - 2nd · ball: school (2nd & 4 at IU 26) · official_schedule+live_scoreboard |
+| louisville | Field Hockey | 🔴 on | live 0-0 · 4:00 - 1st · official_schedule+live_scoreboard |
+| mississippi-state | Football | 🔴 on | live 0-21 · 5:39 - 2nd · ball: school (2nd & 7 at MSST 28) · official_schedule+live_scoreboard |
+| northwestern | Football | 🔴 on | live 10-7 · 2:48 - 2nd · official_schedule+live_scoreboard |
+| penn-state | Hockey | 🔴 on | ESPN shows Penn State vs Lindenwood live (End of 2nd) but the app has no live card (still in upcoming) |
+| pitt | Football | 🔴 on | live 12-7 · 4:12 - 2nd · ball: school (2nd & 9 at PITT 35) · official_schedule+live_scoreboard |
+| rutgers | Football | 🔴 on | live 7-7 · 13:36 - 2nd · ball: opponent (1st & 10 at RUTG 49) · official_schedule+live_scoreboard |
+| smu | Football | 🔴 on | live 10-10 · 0:25 - 2nd · official_schedule+live_scoreboard |
+| texas-am | Football | 🔴 on | live 7-0 · 5:24 - 1st · ball: opponent (1st & 10 at CIT 46) · official_schedule+live_scoreboard |
+| virginia | Football | 🔴 on | live 10-10 · 0:25 - 2nd · official_schedule+live_scoreboard |
+| west-virginia | Football | 🔴 on | live 14-14 · 2:19 - 2nd · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -30,7 +46,6 @@
 | boston-college | Baseball | ⚪ off (waiting) |  |
 | boston-college | Basketball | ⚪ off (waiting) |  |
 | boston-college | Field Hockey | ⚪ off (waiting) |  |
-| boston-college | Football | ⚪ off (waiting) |  |
 | boston-college | Hockey | ⚪ off (waiting) | final W, 4-0 (live phase not observed 2×; waits for the next game) |
 | boston-college | Lacrosse | ⚪ off (waiting) |  |
 | boston-college | Soccer | ⚪ off (waiting) |  |
@@ -50,24 +65,20 @@
 | california | Water Polo | ⚪ off (waiting) |  |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
 | cincinnati | Basketball | ⚪ off (waiting) |  |
-| cincinnati | Football | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
 | clemson | Baseball | ⚪ off (waiting) |  |
 | clemson | Basketball | ⚪ off (waiting) |  |
-| clemson | Football | ⚪ off (waiting) |  |
 | clemson | Lacrosse | ⚪ off (waiting) |  |
 | clemson | Softball | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado | Football | ⚪ off (waiting) |  |
 | duke | Baseball | ⚪ off (waiting) |  |
 | duke | Basketball | ⚪ off (waiting) |  |
-| duke | Field Hockey | ⚪ off (waiting) |  |
 | duke | Football | ⚪ off (waiting) |  |
 | duke | Lacrosse | ⚪ off (waiting) |  |
 | duke | Softball | ⚪ off (waiting) |  |
 | florida | Baseball | ⚪ off (waiting) |  |
 | florida | Basketball | ⚪ off (waiting) |  |
-| florida | Football | ⚪ off (waiting) | final L, 19-38 (live phase not observed 2×; waits for the next game) |
 | florida | Lacrosse | ⚪ off (waiting) |  |
 | florida | Softball | ⚪ off (waiting) |  |
 | florida-state | Baseball | ⚪ off (waiting) |  |
@@ -92,7 +103,6 @@
 | indiana | Baseball | ⚪ off (waiting) |  |
 | indiana | Basketball | ⚪ off (waiting) |  |
 | indiana | Field Hockey | ⚪ off (waiting) |  |
-| indiana | Football | ⚪ off (waiting) | final W, 20-17 (live phase not observed 2×; waits for the next game) |
 | indiana | Softball | ⚪ off (waiting) |  |
 | indiana | Water Polo | ⚪ off (waiting) |  |
 | iowa | Baseball | ⚪ off (waiting) |  |
@@ -111,7 +121,6 @@
 | kstate | Basketball | ⚪ off (waiting) |  |
 | louisville | Baseball | ⚪ off (waiting) |  |
 | louisville | Basketball | ⚪ off (waiting) |  |
-| louisville | Field Hockey | ⚪ off (waiting) |  |
 | louisville | Football | ⚪ off (waiting) |  |
 | louisville | Lacrosse | ⚪ off (waiting) |  |
 | louisville | Softball | ⚪ off (waiting) |  |
@@ -142,7 +151,6 @@
 | minnesota | Softball | ⚪ off (waiting) |  |
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
 | mississippi-state | Basketball | ⚪ off (waiting) |  |
-| mississippi-state | Football | ⚪ off (waiting) |  |
 | mississippi-state | Softball | ⚪ off (waiting) |  |
 | mississippi-state | Volleyball | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | missouri | Baseball | ⚪ off (waiting) |  |
@@ -166,7 +174,6 @@
 | north-carolina | Softball | ⚪ off (waiting) |  |
 | northwestern | Baseball | ⚪ off (waiting) |  |
 | northwestern | Basketball | ⚪ off (waiting) |  |
-| northwestern | Football | ⚪ off (waiting) | final W, 45-14 (live phase not observed 2×; waits for the next game) |
 | northwestern | Lacrosse | ⚪ off (waiting) |  |
 | northwestern | Softball | ⚪ off (waiting) |  |
 | notre-dame | Baseball | ⚪ off (waiting) |  |
@@ -196,13 +203,11 @@
 | oregon | Softball | ⚪ off (waiting) |  |
 | penn-state | Baseball | ⚪ off (waiting) |  |
 | penn-state | Basketball | ⚪ off (waiting) |  |
-| penn-state | Hockey | ⚪ off (waiting) | final L, 3-6 (live phase not observed 2×; waits for the next game) |
 | penn-state | Lacrosse | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
 | penn-state | Volleyball | ⚪ off (waiting) |  |
 | pitt | Baseball | ⚪ off (waiting) |  |
 | pitt | Basketball | ⚪ off (waiting) |  |
-| pitt | Football | ⚪ off (waiting) |  |
 | pitt | Lacrosse | ⚪ off (waiting) |  |
 | pitt | Softball | ⚪ off (waiting) |  |
 | purdue | Baseball | ⚪ off (waiting) |  |
@@ -213,12 +218,10 @@
 | rutgers | Baseball | ⚪ off (waiting) |  |
 | rutgers | Basketball | ⚪ off (waiting) |  |
 | rutgers | Field Hockey | ⚪ off (waiting) |  |
-| rutgers | Football | ⚪ off (waiting) |  |
 | rutgers | Lacrosse | ⚪ off (waiting) |  |
 | rutgers | Softball | ⚪ off (waiting) |  |
 | rutgers | Volleyball | ⚪ off (waiting) |  |
 | smu | Basketball | ⚪ off (waiting) |  |
-| smu | Football | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) | final W, 38-19 (live phase not observed 2×; waits for the next game) |
@@ -247,7 +250,6 @@
 | texas | Softball | ⚪ off (waiting) |  |
 | texas-am | Baseball | ⚪ off (waiting) |  |
 | texas-am | Basketball | ⚪ off (waiting) |  |
-| texas-am | Football | ⚪ off (waiting) | final L, 6-27 (live phase not observed 2×; waits for the next game) |
 | texas-am | Softball | ⚪ off (waiting) |  |
 | texas-tech | Baseball | ⚪ off (waiting) |  |
 | texas-tech | Basketball | ⚪ off (waiting) |  |
@@ -281,7 +283,6 @@
 | virginia | Baseball | ⚪ off (waiting) |  |
 | virginia | Basketball | ⚪ off (waiting) |  |
 | virginia | Field Hockey | ⚪ off (waiting) | final W, 1-0 (live phase not observed 2×; waits for the next game) |
-| virginia | Football | ⚪ off (waiting) |  |
 | virginia | Lacrosse | ⚪ off (waiting) |  |
 | virginia | Soccer | ⚪ off (waiting) | final W, 1-0 (live phase not observed 2×; waits for the next game) |
 | virginia | Softball | ⚪ off (waiting) |  |
@@ -303,7 +304,6 @@
 | washington | Volleyball | ⚪ off (waiting) |  |
 | west-virginia | Baseball | ⚪ off (waiting) |  |
 | west-virginia | Basketball | ⚪ off (waiting) |  |
-| west-virginia | Football | ⚪ off (waiting) | final L, 31-52 (live phase not observed 2×; waits for the next game) |
 | wisconsin | Basketball | ⚪ off (waiting) |  |
 | wisconsin | Football | ⚪ off (waiting) |  |
 | wisconsin | Hockey | ⚪ off (waiting) | final W, 5-1 (live phase not observed 2×; waits for the next game) |
@@ -453,4 +453,4 @@
 | wisconsin | Soccer | ✅ off (passed) | Men's · Wisconsin vs UCLA · 2026-10-17T06:14:54.134Z |
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 
-Done 144/452; on 0; off 307; failing 1.
+Done 144/452; on 16; off 291; failing 1.
