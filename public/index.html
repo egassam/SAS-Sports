@@ -458,7 +458,7 @@ function updateFavorite(){
 const LEVELS=[
   {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.city||'',middle:'City',middles:'All cities',sectionOf:s=>s.classification||s.conference},
   {id:'college',label:'College',group:'Conference',groups:'All conferences',team:'School',groupOf:s=>s.conference,sectionOf:s=>s.conference},
-  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>s.league==='NFL'?s.conference:s.league}
+  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS'].includes(s.league)?s.conference:s.league}
 ];
 const currentLevelInfo=()=>LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
 const schoolLevel=s=>s?.level||'college';
@@ -518,7 +518,8 @@ function fillSchools(wanted){
   const current=wanted||school.value||savedSchool();
   // With every conference shown, teams are grouped under their conference;
   // high schools are always grouped under their class, NFL teams under their
-  // division (user, October 16: "Group them by division").
+  // division (user, October 16: "Group them by division"), MLS clubs under
+  // their conference.
   const sectioned=!conf||level.id==='high-school'||level.id==='pro';
   const groups=[...new Set(list.map(level.sectionOf))].map(name=>[name,list.filter(s=>level.sectionOf(s)===name)]);
   school.innerHTML=!sectioned?list.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):groups.map(([name,items])=>`<optgroup label="${esc(name)}">${items.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}</optgroup>`).join('');
@@ -800,17 +801,18 @@ async function openEvent(id){
 }
 // A football final's expanded view (user, October 16: "can we clean up the
 // card please"): the score by quarter, team stats, and the scoring plays by
-// quarter with the team, the play and the running score.
+// quarter with the team, the play and the running score. An MLS final names
+// its own headings (score by half, goals).
 function boxScoreHtml(e){
   const b=e.box_score;if(!b)return{line:'',stats:'',plays:''};
   const us=b.teams?.ours||'',them=b.teams?.theirs||'',won=k=>Number(b.totals?.[k])>Number(b.totals?.[k==='ours'?'theirs':'ours']);
   const row=(k,name)=>`<tr class="${won(k)?'won':''}"><th scope="row">${esc(name)}</th>${(b.line||[]).map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(b.totals?.[k]??'')}</td></tr>`;
-  const line=(b.line||[]).length?`<div class="box-section"><div class="section-label">Score by Quarter</div><table class="box-line"><tr><th></th>${b.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>T</th></tr>${row('ours',us)}${row('theirs',them)}</table></div>`:'';
+  const line=(b.line||[]).length?`<div class="box-section"><div class="section-label">${esc(b.line_title||'Score by Quarter')}</div><table class="box-line"><tr><th></th>${b.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>T</th></tr>${row('ours',us)}${row('theirs',them)}</table></div>`:'';
   const stats=(b.stats||[]).length?`<div class="box-section"><div class="section-label">Team Stats</div><table class="box-stats"><tr><th></th><th>${esc(us)}</th><th>${esc(them)}</th></tr>${b.stats.map(r=>`<tr><td>${esc(r.label)}</td><td>${esc(r.ours)}</td><td>${esc(r.theirs)}</td></tr>`).join('')}</table></div>`:'';
   const names={Q1:'1st Quarter',Q2:'2nd Quarter',Q3:'3rd Quarter',Q4:'4th Quarter',OT:'Overtime'};
   let last='';
   const plays=(b.scoring||[]).map(p=>{const head=p.period!==last?`<div class="play-head">${esc(names[p.period]||p.period)}</div>`:'';last=p.period;return head+`<div class="play-row ${p.ours?'ours':''}"><span class="play-team">${esc(p.team)}</span><span class="play-text">${esc(p.text)}</span><span class="play-score">${esc(p.score||'')}</span><span class="play-clock">${esc(p.clock)}</span></div>`}).join('');
-  return{line,stats,plays:plays?`<div class="box-section"><div class="section-label">Scoring Plays</div>${plays}</div>`:''};
+  return{line,stats,plays:plays?`<div class="box-section"><div class="section-label">${esc(b.scoring_title||'Scoring Plays')}</div>${plays}</div>`:''};
 }
 // A race's full results, one row per car (user, October 16: "NASCAR full
 // results is still not showing car manufacturer and the layout is messy"):

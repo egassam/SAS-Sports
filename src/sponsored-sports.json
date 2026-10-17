@@ -73,6 +73,9 @@
   "atlanta-falcons": [
     "Football"
   ],
+  "atlanta-united": [
+    "Soccer"
+  ],
   "auburn": [
     "Baseball",
     "Basketball",
@@ -87,6 +90,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "austin-fc": [
+    "Soccer"
   ],
   "baltimore-ravens": [
     "Football"
@@ -163,8 +169,17 @@
   "carolina-panthers": [
     "Football"
   ],
+  "cf-montreal": [
+    "Soccer"
+  ],
+  "charlotte-fc": [
+    "Soccer"
+  ],
   "chicago-bears": [
     "Football"
+  ],
+  "chicago-fire": [
+    "Soccer"
   ],
   "cincinnati": [
     "Baseball",
@@ -211,8 +226,17 @@
     "Track & Field",
     "Volleyball"
   ],
+  "colorado-rapids": [
+    "Soccer"
+  ],
+  "columbus-crew": [
+    "Soccer"
+  ],
   "dallas-cowboys": [
     "Football"
+  ],
+  "dc-united": [
+    "Soccer"
   ],
   "denver-broncos": [
     "Football"
@@ -245,6 +269,12 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "fc-cincinnati": [
+    "Soccer"
+  ],
+  "fc-dallas": [
+    "Soccer"
   ],
   "florida": [
     "Baseball",
@@ -322,6 +352,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "houston-dynamo": [
+    "Soccer"
+  ],
   "houston-texans": [
     "Football"
   ],
@@ -365,6 +398,9 @@
   ],
   "indianapolis-colts": [
     "Football"
+  ],
+  "inter-miami": [
+    "Soccer"
   ],
   "iowa": [
     "Baseball",
@@ -444,6 +480,12 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "la-galaxy": [
+    "Soccer"
+  ],
+  "lafc": [
+    "Soccer"
   ],
   "las-vegas-raiders": [
     "Football"
@@ -579,6 +621,9 @@
     "Volleyball",
     "Wrestling"
   ],
+  "minnesota-united": [
+    "Soccer"
+  ],
   "minnesota-vikings": [
     "Football"
   ],
@@ -611,6 +656,9 @@
   ],
   "nascar-cup-series": [
     "Auto Racing"
+  ],
+  "nashville-sc": [
+    "Soccer"
   ],
   "nc-state": [
     "Baseball",
@@ -648,14 +696,23 @@
   "new-england-patriots": [
     "Football"
   ],
+  "new-england-revolution": [
+    "Soccer"
+  ],
   "new-orleans-saints": [
     "Football"
+  ],
+  "new-york-city-fc": [
+    "Soccer"
   ],
   "new-york-giants": [
     "Football"
   ],
   "new-york-jets": [
     "Football"
+  ],
+  "new-york-red-bulls": [
+    "Soccer"
   ],
   "north-carolina": [
     "Baseball",
@@ -786,6 +843,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "orlando-city": [
+    "Soccer"
+  ],
   "penn-state": [
     "Baseball",
     "Basketball",
@@ -808,6 +868,9 @@
   "philadelphia-eagles": [
     "Football"
   ],
+  "philadelphia-union": [
+    "Soccer"
+  ],
   "pitt": [
     "Baseball",
     "Basketball",
@@ -825,6 +888,9 @@
   "pittsburgh-steelers": [
     "Football"
   ],
+  "portland-timbers": [
+    "Soccer"
+  ],
   "purdue": [
     "Baseball",
     "Basketball",
@@ -838,6 +904,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "real-salt-lake": [
+    "Soccer"
   ],
   "rutgers": [
     "Baseball",
@@ -857,11 +926,20 @@
     "Volleyball",
     "Wrestling"
   ],
+  "san-diego-fc": [
+    "Soccer"
+  ],
   "san-francisco-49ers": [
     "Football"
   ],
+  "san-jose-earthquakes": [
+    "Soccer"
+  ],
   "seattle-seahawks": [
     "Football"
+  ],
+  "seattle-sounders": [
+    "Soccer"
   ],
   "smu": [
     "Basketball",
@@ -890,6 +968,12 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "sporting-kansas-city": [
+    "Soccer"
+  ],
+  "st-louis-city": [
+    "Soccer"
   ],
   "stanford": [
     "Baseball",
@@ -1003,6 +1087,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "toronto-fc": [
+    "Soccer"
+  ],
   "ucf": [
     "Baseball",
     "Basketball",
@@ -1065,6 +1152,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "vancouver-whitecaps": [
+    "Soccer"
   ],
   "vanderbilt": [
     "Baseball",

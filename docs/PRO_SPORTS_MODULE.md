@@ -10,9 +10,9 @@ The level switch now reads **High School · College · Pro** (the order the hand
 
 | Box | Field | Values |
 | --- | --- | --- |
-| Sport | `pro_sport` | Football, Auto Racing |
-| League | `league` | NFL, NASCAR, IMSA, Formula 1 |
-| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship |
+| Sport | `pro_sport` | Football, Soccer, Auto Racing |
+| League | `league` | NFL, MLS, NASCAR, IMSA, Formula 1 |
+| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); all 30 MLS clubs, grouped by conference; NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship |
 
 **The whole NFL (October 16, 2026; user: "Add the entire NFL. Group them by division and update all live cards to show all the data").** All 32 teams are catalog entries with `conference` = division; the Team box always groups NFL teams under their division (`sectionOf`), in the catalog's order (AFC East, North, South, West, then NFC). Team colors come from ESPN's team list; the Raiders use Pacific time (`Nevada` in `STATE_TIME_ZONES`). `PRO_TEAMS` names each team's ESPN abbreviation, its three division rivals (the header's division record) and its official schedule page.
 
@@ -70,7 +70,19 @@ One entry under Auto Racing → Formula 1: `formula-1` (Formula 1 World Champion
 - **Live:** from a session's start until its result (4 hours at most), ESPN's F1 board (`racing/f1/scoreboard?dates=<Eastern day>`, 30 s, only then) gives the lap and running order (`Race`, or `SR` for a sprint); each driver's team and number come from the latest classification. ESPN publishes no gaps. A past race with no result is not listed.
 - Reads per build: the calendar and season page (10 min), one classification per final (6 hours), Jolpica only for unlisted races.
 
+## MLS (4.107.0, user, October 17: "Let's add soccer to the pro section")
+
+Pro → Soccer → MLS → all 30 clubs, under Eastern Conference and Western Conference (catalog `conference`; the Team box groups MLS like the NFL). Code: the `espn-team` reader shared with the NFL (`espnTeamGames`, `applyEspnLive`) plus the soccer parts of `src/pro-sports.mjs` (`espnSoccerHighlights`, `soccerGoals`, `SOCCER_STATS`). Test: `tests/mls-module.mjs` (ESPN payloads of Oct 17 in `tests/fixtures/pro-sports/mls-*`).
+
+- **Source: ESPN's team schedule** `site.api.espn.com/.../soccer/usa.1/teams/<numeric id>/schedule` (results; the abbreviation answers 400) and the same with `?fixture=true` (coming matches). Playoff rounds come in the same lists as their own season types ("Eastern Conference Playoffs - Round One", "MLS Cup"): labeled as the round and kept out of the record. Each club's official schedule page (`<club site>/schedule/`, checked 200 for all 30 on Oct 17; Charlotte's is charlottefootballclub.com, Montréal's en.cfmontreal.com) is the source link. Colors from ESPN's team list (Vancouver's white primary swapped for its navy).
+- **Card:** "Sporting KC vs Real Salt Lake", the result as W/L/T ("T 3-3"), TV (Apple TV) and stadium; the header record W-L-T from the finals (ESPN prints W-D-L, 6-4-19; the app 6-19-4). No conference record (MLS publishes none). A playoff draw settled on penalties reads "W 1-1 (4-3 PK)". MLS is in season February to December (`PRO_SEASONS`, pro entries only).
+- **Expanded final:** the result line, the halftime score, the club's scorers with their minutes, red cards, a shootout; **Score by Half** (1st, 2nd, ET1, ET2), **Team Stats** (possession, shots, on target, corners, saves, fouls, cards, offsides, passes completed) and **Goals** by half with the scorer, assist, penalty or own goal, and the running score. The box keeps the NFL's layout; its headings come from `box_score.line_title`/`scoring_title`.
+- **Live:** as the NFL — once a match is past kickoff the league scoreboard (15 s) and match summary (30 s) give the clock ("67'"), score, both records (converted to W-L-T), team stats and every goal. The live shape was read from the Oct 14 Nashville–SKC board turned "in"; the first live MLS card to observe is Oct 17 (14 matches, Real Salt Lake at Sporting KC 7:30 PM Central).
+- Reads: two ESPN schedule reads per club per refresh at most every 2 minutes (shared cache); the board and summary only during a match.
+
 ## Limits
+
+- MLS: league matches only (Leagues Cup, U.S. Open Cup and CONCACAF matches are in other ESPN leagues). No player headshots or club crests (not licensed). The first live MLS card is to be observed on Oct 17.
 
 - Formula 1: live cards carry the running order only (ESPN publishes no gaps; F1's own live timing feed, `livetiming.formula1.com`, answers 401). The live card shape was read from a finished race's board turned "in"; the United States Grand Prix (Oct 25) is the first live check. Practice and qualifying are not listed. No driver headshots or team logos (formula1.com's images are not licensed here).
 - IMSA: no live timing (Al Kamel's live timing is a Meteor app). Sprint races show no running order until they finish. The 2027 calendar is hand-entered from IMSA's announcement; check it against imsa.com if IMSA changes a date. Start times appear only when the weekend's folder does. Auto Racing's in-season window is February–November, so the Rolex 24 (late January) shows out of season. The VP Racing SportsCar Challenge and the single-make series in the same folders are not added (no 2027 calendar found).

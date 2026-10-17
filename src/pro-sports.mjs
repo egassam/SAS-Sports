@@ -64,6 +64,40 @@ export const PRO_TEAMS={
   'los-angeles-rams':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'lar'},division:{name:'NFC West',members:['ARI','SF','SEA']},schedule:'https://www.therams.com/schedule/'},
   'san-francisco-49ers':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'sf'},division:{name:'NFC West',members:['ARI','LAR','SEA']},schedule:'https://www.49ers.com/schedule/'},
   'seattle-seahawks':{kind:'espn-team',sport:'Football',espn:{path:'football/nfl',team:'sea'},division:{name:'NFC West',members:['ARI','LAR','SF']},schedule:'https://www.seahawks.com/schedule/'},
+  // Major League Soccer (user, October 17: "Let's add soccer to the pro
+  // section"): all 30 clubs, Eastern then Western Conference. ESPN's team
+  // schedule URL takes the numeric team id; its games name the club by
+  // abbreviation. Results and fixtures are two reads (`fixtures`).
+  'atlanta-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'atl',id:18418},fixtures:true,schedule:'https://www.atlutd.com/schedule/'},
+  'charlotte-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'clt',id:21300},fixtures:true,schedule:'https://www.charlottefootballclub.com/schedule/'},
+  'chicago-fire':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'chi',id:182},fixtures:true,schedule:'https://www.chicagofirefc.com/schedule/'},
+  'cf-montreal':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'mtl',id:9720},fixtures:true,schedule:'https://en.cfmontreal.com/schedule/'},
+  'columbus-crew':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'clb',id:183},fixtures:true,schedule:'https://www.columbuscrew.com/schedule/'},
+  'dc-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'dc',id:193},fixtures:true,schedule:'https://www.dcunited.com/schedule/'},
+  'fc-cincinnati':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'cin',id:18267},fixtures:true,schedule:'https://www.fccincinnati.com/schedule/'},
+  'inter-miami':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'mia',id:20232},fixtures:true,schedule:'https://www.intermiamicf.com/schedule/'},
+  'nashville-sc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'nsh',id:18986},fixtures:true,schedule:'https://www.nashvillesc.com/schedule/'},
+  'new-england-revolution':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'ne',id:189},fixtures:true,schedule:'https://www.revolutionsoccer.net/schedule/'},
+  'new-york-city-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'nyc',id:17606},fixtures:true,schedule:'https://www.newyorkcityfc.com/schedule/'},
+  'new-york-red-bulls':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'rbny',id:190},fixtures:true,schedule:'https://www.newyorkredbulls.com/schedule/'},
+  'orlando-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'orl',id:12011},fixtures:true,schedule:'https://www.orlandocitysc.com/schedule/'},
+  'philadelphia-union':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'phi',id:10739},fixtures:true,schedule:'https://www.philadelphiaunion.com/schedule/'},
+  'toronto-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'tor',id:7318},fixtures:true,schedule:'https://www.torontofc.ca/schedule/'},
+  'austin-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'atx',id:20906},fixtures:true,schedule:'https://www.austinfc.com/schedule/'},
+  'colorado-rapids':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'col',id:184},fixtures:true,schedule:'https://www.coloradorapids.com/schedule/'},
+  'fc-dallas':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'dal',id:185},fixtures:true,schedule:'https://www.fcdallas.com/schedule/'},
+  'houston-dynamo':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'hou',id:6077},fixtures:true,schedule:'https://www.houstondynamofc.com/schedule/'},
+  'la-galaxy':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'la',id:187},fixtures:true,schedule:'https://www.lagalaxy.com/schedule/'},
+  'lafc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'lafc',id:18966},fixtures:true,schedule:'https://www.lafc.com/schedule/'},
+  'minnesota-united':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'min',id:17362},fixtures:true,schedule:'https://www.mnufc.com/schedule/'},
+  'portland-timbers':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'por',id:9723},fixtures:true,schedule:'https://www.timbers.com/schedule/'},
+  'real-salt-lake':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'rsl',id:4771},fixtures:true,schedule:'https://www.rsl.com/schedule/'},
+  'san-diego-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'sd',id:22529},fixtures:true,schedule:'https://www.sandiegofc.com/schedule/'},
+  'san-jose-earthquakes':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'sj',id:191},fixtures:true,schedule:'https://www.sjearthquakes.com/schedule/'},
+  'seattle-sounders':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'sea',id:9726},fixtures:true,schedule:'https://www.soundersfc.com/schedule/'},
+  'sporting-kansas-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'skc',id:186},fixtures:true,schedule:'https://www.sportingkc.com/schedule/'},
+  'st-louis-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'stl',id:21812},fixtures:true,schedule:'https://www.stlcitysc.com/schedule/'},
+  'vancouver-whitecaps':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'van',id:9727},fixtures:true,schedule:'https://www.whitecapsfc.com/schedule/'},
   'nascar-cup-series':{
     kind:'nascar',sport:'Auto Racing',seriesId:1,
     schedule:'https://www.nascar.com/nascar-cup-series/schedule/'
@@ -116,11 +150,12 @@ function baseEvent({school,sport,status,title,start,display,opponent,sourceName,
   return{id:'live-'+slug(`${school.id}|${sport}|${key}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:sport==='Auto Racing'?'RACE':'GAME',status,title,start_time:start,display_time:display,opponent,school_score:null,opponent_score:null,headline:null,team_summaries:[],results:[],result_count:0,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Live:'live',Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status]||'other',recency_label:{Live:'Live now',Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status]||status,last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:1,conflicting_sources:false,pro:true};
 }
 
-// ---- NFL (ESPN team schedule) ----
+// ---- NFL and MLS (ESPN team schedule) ----
 
 // One team's games from ESPN's team schedule (regular season, and the
-// postseason payload when given). A past game without a final score is not
-// listed (K-State's rule); postponed and cancelled games are not either.
+// postseason payload when given; MLS: results and fixtures, playoffs in the
+// same lists). A past game without a final score is not listed (K-State's
+// rule); postponed and cancelled games are not either.
 export function espnTeamGames(payloads,{school,config,timeZone,now}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[],seen=new Set();
   for(const payload of payloads){
@@ -142,8 +177,10 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       const tv=(c.broadcasts||[]).map(b=>b.media?.shortName).filter(Boolean);
       const relation=c.neutralSite?'vs':own.homeAway==='away'?'at':'vs';
       const oppName=opp.team.displayName||opp.team.shortDisplayName;
-      const week=game.week?.text||null,postseason=game.seasonType?.type===3||/post/i.test(game.seasonType?.name||'');
-      const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:'ESPN team schedule (NFL)',sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
+      // MLS playoff rounds are their own season types ("Eastern Conference
+      // Playoffs - Round One", "MLS Cup").
+      const week=game.week?.text||null,postseason=game.seasonType?.type===3||/post|playoff|mls cup/i.test(game.seasonType?.name||'');
+      const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`ESPN team schedule (${school.league||'NFL'})`,sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;event.espn_date=game.date;
       if(tv.length)event.broadcast=tv.join(', ');
       event.round=postseason?(game.seasonType?.name||'Postseason'):week;
@@ -151,8 +188,7 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
         event.school_score=String(us);event.opponent_score=String(them);
       }
       if(status==='Final'){
-        const a=Number(us),b=Number(them),outcome=a>b?'W':a<b?'L':'T';
-        event.headline=`${outcome} ${us}-${them}${/OT/.test(c.status?.type?.shortDetail||'')?' (OT)':''}`;
+        event.headline=finalHeadline(us,them,own.shootoutScore,opp.shootoutScore,c.status?.type?.shortDetail);
         event.results=[{label:'Result',value:event.headline}];
       }
       if(status==='Live'){
@@ -176,9 +212,18 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
   return events;
 }
 
+// "W 20-13", "T 3-3", "L 24-27 (OT)"; a soccer playoff draw settled on
+// penalties reads from the shootout: "W 1-1 (4-3 PK)".
+function finalHeadline(us,them,pkUs,pkThem,detail=''){
+  const a=Number(us),b=Number(them),pk=a===b&&pkUs!=null&&pkThem!=null;
+  const x=pk?Number(pkUs):a,y=pk?Number(pkThem):b,outcome=x>y?'W':x<y?'L':'T';
+  return`${outcome} ${us}-${them}${pk?` (${pkUs}-${pkThem} PK)`:/AET/.test(detail)?' (AET)':/OT/.test(detail)?' (OT)':''}`;
+}
+
 // The expanded view of a final: plain facts from ESPN's game summary,
 // written from the team's side.
 export function espnGameHighlights(event,summary,config){
+  if(config.sport==='Soccer')return espnSoccerHighlights(event,summary,config);
   const header=summary?.header?.competitions?.[0],sides=header?.competitors||[];
   const own=sides.find(t=>t.team?.abbreviation?.toLowerCase()===config.espn.team),opp=sides.find(t=>t!==own);
   if(!own||!opp)return null;
@@ -218,6 +263,74 @@ export function espnGameHighlights(event,summary,config){
     scoring:(summary.scoringPlays||[]).map(p=>({period:periodName(p.period?.number),clock:p.clock?.displayValue||'',team:p.team?.abbreviation||'',ours:p.team?.abbreviation===ownAbbr,text:String(p.text||'').replace(/\s+/g,' ').trim(),score:p.awayScore!=null&&p.homeScore!=null?(own.homeAway==='home'?`${p.homeScore}-${p.awayScore}`:`${p.awayScore}-${p.homeScore}`):null}))
   };
   return{lines,stats,scoring,recap,box_score};
+}
+
+// ---- MLS finals (ESPN game summary) ----
+// Soccer periods: halves, then extra time; a shootout is not a period.
+const SOCCER_PERIODS={1:['1st','1st Half'],2:['2nd','2nd Half'],3:['ET1','Extra Time'],4:['ET2','Extra Time']};
+const soccerPeriod=(n,full=false)=>(SOCCER_PERIODS[n]||[String(n),String(n)])[full?1:0];
+const SOCCER_STATS=[['possessionPct','Possession'],['totalShots','Shots'],['shotsOnTarget','Shots on target'],['wonCorners','Corners'],['saves','Saves'],['foulsCommitted','Fouls'],['yellowCards','Yellow cards'],['redCards','Red cards'],['offsides','Offsides'],['accuratePasses','Passes completed']];
+const soccerStat=(team,n)=>{const v=team?.statistics?.find(s=>s.name===n)?.displayValue;return v==null?null:n==='possessionPct'?`${v}%`:v;};
+const reEscape=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+// Each goal (shootout kicks aside) with its scorer, the running score from
+// the team's side and the side that gained it. ESPN's text carries the score
+// after the goal ("Goal! Sporting Kansas City 1, Portland Timbers 2."), which
+// also credits an own goal to the right side.
+export function soccerGoals(keyEvents,own,opp){
+  const ownName=own.team.displayName,oppName=opp.team.displayName,ownId=String(own.team.id),goals=[];
+  const re=new RegExp(`${reEscape(ownName)} (\\d+), ${reEscape(oppName)} (\\d+)|${reEscape(oppName)} (\\d+), ${reEscape(ownName)} (\\d+)`);
+  let ours=0,theirs=0;
+  for(const k of keyEvents||[]){
+    if(!k.scoringPlay||k.shootout)continue;
+    const m=String(k.text||'').match(re);
+    let a,b;
+    if(m){a=Number(m[1]??m[4]);b=Number(m[2]??m[3]);}
+    else if(String(k.team?.id)===ownId){a=ours+1;b=theirs;}else{a=ours;b=theirs+1;}
+    const forUs=a>ours;ours=a;theirs=b;
+    const type=String(k.type?.text||''),[scorer,assist]=(k.participants||[]).map(p=>p.athlete?.displayName).filter(Boolean);
+    const note=/own goal/i.test(type)?' (own goal)':/penalty/i.test(type)?' (penalty)':assist?` (assist: ${assist})`:'';
+    goals.push({period:Number(k.period?.number)||1,clock:k.clock?.displayValue||'',ours:forUs,scorer:scorer||null,text:`${scorer||(forUs?ownName:oppName)}${note}`,score:`${ours}-${theirs}`});
+  }
+  return goals;
+}
+// The expanded view of an MLS final: the result, the halftime score, the
+// club's scorers and any red card; the score by half, team stats and every
+// goal for the box (the football box's layout with soccer's headings).
+function espnSoccerHighlights(event,summary,config){
+  const header=summary?.header?.competitions?.[0],sides=header?.competitors||[];
+  const own=sides.find(t=>t.team?.abbreviation?.toLowerCase()===config.espn.team),opp=sides.find(t=>t!==own);
+  if(!own||!opp)return null;
+  const us=Number(own.score),them=Number(opp.score),name=own.team.displayName,oppName=opp.team.displayName;
+  const verb=us>them?'beat':us<them?'lost to':'drew with',where=event.title.includes(' at ')?' away':' at home';
+  const venue=summary.gameInfo?.venue?.fullName;
+  const lines=[`${name} ${verb} ${oppName} ${us>=them?`${us}-${them}`:`${them}-${us}`}${where}${venue?` (${venue})`:''}${event.round?`, ${event.round}`:''}.`];
+  const pkUs=own.shootoutScore,pkThem=opp.shootoutScore;
+  if(us===them&&pkUs!=null&&pkThem!=null)lines.push(`${Number(pkUs)>Number(pkThem)?name:oppName} won the penalty shootout ${Math.max(pkUs,pkThem)}-${Math.min(pkUs,pkThem)}.`);
+  const halves=(own.linescores||[]).map((l,i)=>({n:i+1,us:Number(l.displayValue??l.value??0),them:Number(opp.linescores?.[i]?.displayValue??opp.linescores?.[i]?.value??0)}));
+  if(halves.length>=2){
+    const a=halves[0].us,b=halves[0].them;
+    lines.push(a===b?(a?`The teams were level ${a}-${b} at halftime.`:'The game was scoreless at halftime.'):`${a>b?name:oppName} led ${Math.max(a,b)}-${Math.min(a,b)} at halftime.`);
+  }
+  const goals=soccerGoals(summary.keyEvents,own,opp);
+  const scorers=new Map();for(const g of goals.filter(g=>g.ours&&g.scorer&&!/own goal/.test(g.text)))scorers.set(g.scorer,[...(scorers.get(g.scorer)||[]),g.clock]);
+  if(scorers.size)lines.push(`${name} goals: ${[...scorers].map(([who,times])=>`${who} ${times.join(', ')}`).join('; ')}.`);
+  for(const k of (summary.keyEvents||[]).filter(k=>/red card/i.test(k.type?.text||''))){
+    const who=k.participants?.[0]?.athlete?.displayName,team=String(k.team?.id)===String(own.team.id)?name:oppName;
+    if(who)lines.push(`Red card: ${who} (${team}), ${k.clock?.displayValue||''}.`.replace(/, \.$/,'.'));
+  }
+  const box=summary.boxscore?.teams||[],ownBox=box.find(t=>String(t.team?.id)===String(own.team.id)),oppBox=box.find(t=>t!==ownBox);
+  const boxStats=ownBox&&oppBox?SOCCER_STATS.map(([n,l])=>({label:l,ours:soccerStat(ownBox,n),theirs:soccerStat(oppBox,n)})).filter(r=>r.ours!=null&&r.theirs!=null):[];
+  const ownAbbr=own.team.abbreviation,oppAbbr=opp.team.abbreviation;
+  const box_score={
+    teams:{ours:ownAbbr,theirs:oppAbbr},line_title:'Score by Half',scoring_title:'Goals',
+    line:halves.map(({n,us,them})=>({label:soccerPeriod(n),ours:String(us),theirs:String(them)})),
+    totals:{ours:String(us),theirs:String(them)},
+    stats:boxStats,
+    scoring:goals.map(g=>({period:soccerPeriod(g.period,true),clock:g.clock,team:g.ours?ownAbbr:oppAbbr,ours:g.ours,text:g.text,score:g.score}))
+  };
+  const stats=boxStats.map(r=>({label:r.label,value:`${ownAbbr} ${r.ours} · ${oppAbbr} ${r.theirs}`}));
+  const scoring=goals.map(g=>`${g.clock} · ${g.ours?ownAbbr:oppAbbr}: ${g.text} (${g.score})`);
+  return{lines,stats,scoring,recap:null,box_score};
 }
 
 // ---- NASCAR (cf.nascar.com) ----
@@ -337,13 +450,15 @@ export function espnLiveDetails(competition,{ours,opponent,sport='Football',summ
   if(!competition||!ours||!opponent)return out;
   const situation=competition.situation||null,details={};
   const ourId=teamIdOf(ours),theirId=teamIdOf(opponent),side=id=>id===ourId?'ours':id===theirId?'theirs':null;
-  const label=n=>sport==='Football'?(n<=4?`Q${n}`:n===5?'OT':`OT${n-4}`):String(n);
+  const label=n=>sport==='Football'?(n<=4?`Q${n}`:n===5?'OT':`OT${n-4}`):sport==='Soccer'?soccerPeriod(n):String(n);
   // Score by period ("Q1 3-0"); a period not yet played is not shown.
   const periods=c=>new Map((c?.linescores||[]).map((l,i)=>[Number(l.period??i+1),l.displayValue??(l.value!=null?String(l.value):null)]));
   const a=periods(ours),b=periods(opponent),numbers=[...new Set([...a.keys(),...b.keys()])].filter(Number.isFinite).sort((x,y)=>x-y);
   if(numbers.length)details.line=numbers.map(n=>({label:label(n),ours:a.get(n)??'0',theirs:b.get(n)??'0'}));
   details.teams={ours:shortTeam(ours),theirs:shortTeam(opponent)};
-  const record=c=>(c?.records||[]).find(r=>r.type==='total'||r.name==='overall')?.summary||null;
+  // ESPN gives a soccer record as wins-draws-losses ("20-6-3"); the app reads
+  // W-L-T, as the header's record does ("20-3-6").
+  const record=c=>{const r=(c?.records||[]).find(r=>r.type==='total'||r.name==='overall')?.summary||null;if(sport!=='Soccer'||!r)return r;const m=r.match(/^(\d+)-(\d+)-(\d+)$/);return m?`${m[1]}-${m[3]}-${m[2]}`:r;};
   if(record(ours)||record(opponent))details.records={ours:record(ours),theirs:record(opponent)};
   if(situation){
     const holder=situation.possession!=null?side(String(situation.possession)):null;
@@ -374,8 +489,10 @@ export function espnLiveDetails(competition,{ours,opponent,sport='Football',summ
   // Team stats and scoring plays from the game summary (football).
   const box=summary?.boxscore?.teams||[],ownBox=box.find(t=>String(t.team?.id)===ourId),oppBox=box.find(t=>String(t.team?.id)===theirId);
   const stat=(t,n)=>t?.statistics?.find(s=>s.name===n)?.displayValue;
-  if(ownBox&&oppBox){const stats=LIVE_STATS.map(([n,l])=>({label:l,ours:stat(ownBox,n),theirs:stat(oppBox,n)})).filter(s=>s.ours!=null&&s.theirs!=null);if(stats.length)details.stats=stats;}
-  const scoring=(summary?.scoringPlays||[]).map(p=>`${label(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text||''}`.replace(/\s+/g,' ').trim());
+  // MLS: soccer's team stats, and each goal from the summary's key events.
+  const statList=sport==='Soccer'?SOCCER_STATS:LIVE_STATS,statOf=sport==='Soccer'?soccerStat:stat;
+  if(ownBox&&oppBox){const stats=statList.map(([n,l])=>({label:l,ours:statOf(ownBox,n),theirs:statOf(oppBox,n)})).filter(s=>s.ours!=null&&s.theirs!=null);if(stats.length)details.stats=stats;}
+  const scoring=sport==='Soccer'?soccerGoals(summary?.keyEvents,ours,opponent).map(g=>`${g.clock} · ${g.ours?details.teams.ours:details.teams.theirs}: ${g.text} (${g.score})`):(summary?.scoringPlays||[]).map(p=>`${label(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text||''}`.replace(/\s+/g,' ').trim());
   if(scoring.length)details.scoring=scoring;
   const tv=[...new Set((competition.broadcasts||[]).flatMap(b=>b.names||[]))];
   if(tv.length)details.broadcast=tv.join(', ');
@@ -400,12 +517,11 @@ export function applyEspnLive(event,scoreboard,summary,config){
     event.recency_label=type.shortDetail||'In progress';event.headline=`${event.school_score}-${event.opponent_score}`;
     event.live_score_source='ESPN';
     event.results=event.results.filter(r=>r.label!=='Result');
-    Object.assign(event,espnLiveDetails(c,{ours:own,opponent:opp,sport:'Football',summary}));
+    Object.assign(event,espnLiveDetails(c,{ours:own,opponent:opp,sport:config.sport||'Football',summary}));
   }else if(state==='post'&&event.status!=='Final'&&us!=null&&them!=null){
-    const a=Number(us),b=Number(them),outcome=a>b?'W':a<b?'L':'T';
     event.status='Final';event.priority_bucket='recent_final';event.recency_label='Final';
     event.school_score=String(us);event.opponent_score=String(them);
-    event.headline=`${outcome} ${us}-${them}${/OT/.test(type.shortDetail||'')?' (OT)':''}`;
+    event.headline=finalHeadline(us,them,own.shootoutScore,opp.shootoutScore,type.shortDetail||'');
     event.results=[{label:'Result',value:event.headline},...event.results.filter(r=>r.label!=='TV'&&r.label!=='Result')];
   }
   event.result_count=event.results.length;

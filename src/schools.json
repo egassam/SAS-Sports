@@ -2332,5 +2332,743 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "atlanta-united",
+    "name": "Atlanta United FC",
+    "short_name": "Atlanta United",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.atlutd.com",
+    "aliases": [
+      "Atlanta United",
+      "ATL",
+      "Atlanta United FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/18418",
+        "provider_school_id": "18418"
+      }
+    ]
+  },
+  {
+    "id": "charlotte-fc",
+    "name": "Charlotte FC",
+    "short_name": "Charlotte FC",
+    "state": "North Carolina",
+    "city": "Charlotte",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.charlottefootballclub.com",
+    "aliases": [
+      "Charlotte FC",
+      "CLT"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/21300",
+        "provider_school_id": "21300"
+      }
+    ]
+  },
+  {
+    "id": "chicago-fire",
+    "name": "Chicago Fire FC",
+    "short_name": "Fire",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.chicagofirefc.com",
+    "aliases": [
+      "Fire",
+      "CHI",
+      "Chicago Fire FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/182",
+        "provider_school_id": "182"
+      }
+    ]
+  },
+  {
+    "id": "cf-montreal",
+    "name": "CF Montréal",
+    "short_name": "CF Montréal",
+    "state": "Quebec",
+    "city": "Montréal",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://en.cfmontreal.com",
+    "aliases": [
+      "CF Montréal",
+      "MTL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/9720",
+        "provider_school_id": "9720"
+      }
+    ]
+  },
+  {
+    "id": "columbus-crew",
+    "name": "Columbus Crew",
+    "short_name": "Crew",
+    "state": "Ohio",
+    "city": "Columbus",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.columbuscrew.com",
+    "aliases": [
+      "Crew",
+      "CLB",
+      "Columbus Crew"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/183",
+        "provider_school_id": "183"
+      }
+    ]
+  },
+  {
+    "id": "dc-united",
+    "name": "D.C. United",
+    "short_name": "D.C. United",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.dcunited.com",
+    "aliases": [
+      "D.C. United",
+      "DC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/193",
+        "provider_school_id": "193"
+      }
+    ]
+  },
+  {
+    "id": "fc-cincinnati",
+    "name": "FC Cincinnati",
+    "short_name": "FC Cincinnati",
+    "state": "Ohio",
+    "city": "Cincinnati",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.fccincinnati.com",
+    "aliases": [
+      "FC Cincinnati",
+      "CIN"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/18267",
+        "provider_school_id": "18267"
+      }
+    ]
+  },
+  {
+    "id": "inter-miami",
+    "name": "Inter Miami CF",
+    "short_name": "Inter Miami",
+    "state": "Florida",
+    "city": "Fort Lauderdale",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.intermiamicf.com",
+    "aliases": [
+      "Inter Miami",
+      "MIA",
+      "Inter Miami CF"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/20232",
+        "provider_school_id": "20232"
+      }
+    ]
+  },
+  {
+    "id": "nashville-sc",
+    "name": "Nashville SC",
+    "short_name": "Nashville SC",
+    "state": "Tennessee",
+    "city": "Nashville",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.nashvillesc.com",
+    "aliases": [
+      "Nashville SC",
+      "NSH"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/18986",
+        "provider_school_id": "18986"
+      }
+    ]
+  },
+  {
+    "id": "new-england-revolution",
+    "name": "New England Revolution",
+    "short_name": "Revolution",
+    "state": "Massachusetts",
+    "city": "Foxborough",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.revolutionsoccer.net",
+    "aliases": [
+      "Revolution",
+      "NE",
+      "New England Revolution"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/189",
+        "provider_school_id": "189"
+      }
+    ]
+  },
+  {
+    "id": "new-york-city-fc",
+    "name": "New York City FC",
+    "short_name": "NYCFC",
+    "state": "New York",
+    "city": "New York",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.newyorkcityfc.com",
+    "aliases": [
+      "NYCFC",
+      "NYC",
+      "New York City FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/17606",
+        "provider_school_id": "17606"
+      }
+    ]
+  },
+  {
+    "id": "new-york-red-bulls",
+    "name": "Red Bull New York",
+    "short_name": "Red Bulls",
+    "state": "New Jersey",
+    "city": "Harrison",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.newyorkredbulls.com",
+    "aliases": [
+      "Red Bulls",
+      "RBNY",
+      "Red Bull New York"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/190",
+        "provider_school_id": "190"
+      }
+    ]
+  },
+  {
+    "id": "orlando-city",
+    "name": "Orlando City SC",
+    "short_name": "Orlando City",
+    "state": "Florida",
+    "city": "Orlando",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.orlandocitysc.com",
+    "aliases": [
+      "Orlando City",
+      "ORL",
+      "Orlando City SC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/12011",
+        "provider_school_id": "12011"
+      }
+    ]
+  },
+  {
+    "id": "philadelphia-union",
+    "name": "Philadelphia Union",
+    "short_name": "Union",
+    "state": "Pennsylvania",
+    "city": "Chester",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.philadelphiaunion.com",
+    "aliases": [
+      "Union",
+      "PHI",
+      "Philadelphia Union"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/10739",
+        "provider_school_id": "10739"
+      }
+    ]
+  },
+  {
+    "id": "toronto-fc",
+    "name": "Toronto FC",
+    "short_name": "Toronto FC",
+    "state": "Ontario",
+    "city": "Toronto",
+    "conference": "Eastern Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Eastern Conference",
+    "athletics_url": "https://www.torontofc.ca",
+    "aliases": [
+      "Toronto FC",
+      "TOR"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/7318",
+        "provider_school_id": "7318"
+      }
+    ]
+  },
+  {
+    "id": "austin-fc",
+    "name": "Austin FC",
+    "short_name": "Austin FC",
+    "state": "Texas",
+    "city": "Austin",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.austinfc.com",
+    "aliases": [
+      "Austin FC",
+      "ATX"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/20906",
+        "provider_school_id": "20906"
+      }
+    ]
+  },
+  {
+    "id": "colorado-rapids",
+    "name": "Colorado Rapids",
+    "short_name": "Rapids",
+    "state": "Colorado",
+    "city": "Commerce City",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.coloradorapids.com",
+    "aliases": [
+      "Rapids",
+      "COL",
+      "Colorado Rapids"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/184",
+        "provider_school_id": "184"
+      }
+    ]
+  },
+  {
+    "id": "fc-dallas",
+    "name": "FC Dallas",
+    "short_name": "FC Dallas",
+    "state": "Texas",
+    "city": "Frisco",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.fcdallas.com",
+    "aliases": [
+      "FC Dallas",
+      "DAL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/185",
+        "provider_school_id": "185"
+      }
+    ]
+  },
+  {
+    "id": "houston-dynamo",
+    "name": "Houston Dynamo FC",
+    "short_name": "Dynamo",
+    "state": "Texas",
+    "city": "Houston",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.houstondynamofc.com",
+    "aliases": [
+      "Dynamo",
+      "HOU",
+      "Houston Dynamo FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/6077",
+        "provider_school_id": "6077"
+      }
+    ]
+  },
+  {
+    "id": "la-galaxy",
+    "name": "LA Galaxy",
+    "short_name": "Galaxy",
+    "state": "California",
+    "city": "Carson",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.lagalaxy.com",
+    "aliases": [
+      "Galaxy",
+      "LA",
+      "LA Galaxy"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/187",
+        "provider_school_id": "187"
+      }
+    ]
+  },
+  {
+    "id": "lafc",
+    "name": "LAFC",
+    "short_name": "LAFC",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.lafc.com",
+    "aliases": [
+      "LAFC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/18966",
+        "provider_school_id": "18966"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-united",
+    "name": "Minnesota United FC",
+    "short_name": "Minnesota United",
+    "state": "Minnesota",
+    "city": "Saint Paul",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.mnufc.com",
+    "aliases": [
+      "Minnesota United",
+      "MIN",
+      "Minnesota United FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/17362",
+        "provider_school_id": "17362"
+      }
+    ]
+  },
+  {
+    "id": "portland-timbers",
+    "name": "Portland Timbers",
+    "short_name": "Timbers",
+    "state": "Oregon",
+    "city": "Portland",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.timbers.com",
+    "aliases": [
+      "Timbers",
+      "POR",
+      "Portland Timbers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/9723",
+        "provider_school_id": "9723"
+      }
+    ]
+  },
+  {
+    "id": "real-salt-lake",
+    "name": "Real Salt Lake",
+    "short_name": "Real Salt Lake",
+    "state": "Utah",
+    "city": "Sandy",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.rsl.com",
+    "aliases": [
+      "Real Salt Lake",
+      "RSL"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/4771",
+        "provider_school_id": "4771"
+      }
+    ]
+  },
+  {
+    "id": "san-diego-fc",
+    "name": "San Diego FC",
+    "short_name": "San Diego FC",
+    "state": "California",
+    "city": "San Diego",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.sandiegofc.com",
+    "aliases": [
+      "San Diego FC",
+      "SD"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/22529",
+        "provider_school_id": "22529"
+      }
+    ]
+  },
+  {
+    "id": "san-jose-earthquakes",
+    "name": "San Jose Earthquakes",
+    "short_name": "Earthquakes",
+    "state": "California",
+    "city": "San Jose",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.sjearthquakes.com",
+    "aliases": [
+      "Earthquakes",
+      "SJ",
+      "San Jose Earthquakes"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/191",
+        "provider_school_id": "191"
+      }
+    ]
+  },
+  {
+    "id": "seattle-sounders",
+    "name": "Seattle Sounders FC",
+    "short_name": "Sounders",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.soundersfc.com",
+    "aliases": [
+      "Sounders",
+      "SEA",
+      "Seattle Sounders FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/9726",
+        "provider_school_id": "9726"
+      }
+    ]
+  },
+  {
+    "id": "sporting-kansas-city",
+    "name": "Sporting Kansas City",
+    "short_name": "Sporting KC",
+    "state": "Kansas",
+    "city": "Kansas City",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.sportingkc.com",
+    "aliases": [
+      "Sporting KC",
+      "SKC",
+      "Sporting Kansas City"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/186",
+        "provider_school_id": "186"
+      }
+    ]
+  },
+  {
+    "id": "st-louis-city",
+    "name": "St. Louis CITY SC",
+    "short_name": "St. Louis CITY",
+    "state": "Missouri",
+    "city": "St. Louis",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.stlcitysc.com",
+    "aliases": [
+      "St. Louis CITY",
+      "STL",
+      "St. Louis CITY SC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/21812",
+        "provider_school_id": "21812"
+      }
+    ]
+  },
+  {
+    "id": "vancouver-whitecaps",
+    "name": "Vancouver Whitecaps",
+    "short_name": "Whitecaps",
+    "state": "British Columbia",
+    "city": "Vancouver",
+    "conference": "Western Conference",
+    "league": "MLS",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "MLS · Western Conference",
+    "athletics_url": "https://www.whitecapsfc.com",
+    "aliases": [
+      "Whitecaps",
+      "VAN",
+      "Vancouver Whitecaps"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.1/teams/9727",
+        "provider_school_id": "9727"
+      }
+    ]
   }
 ]
