@@ -11,8 +11,8 @@ The level switch now reads **High School · College · Pro** (the order the hand
 | Box | Field | Values |
 | --- | --- | --- |
 | Sport | `pro_sport` | Football, Auto Racing |
-| League | `league` | NFL, NASCAR, IMSA |
-| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge |
+| League | `league` | NFL, NASCAR, IMSA, Formula 1 |
+| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship |
 
 **The whole NFL (October 16, 2026; user: "Add the entire NFL. Group them by division and update all live cards to show all the data").** All 32 teams are catalog entries with `conference` = division; the Team box always groups NFL teams under their division (`sectionOf`), in the catalog's order (AFC East, North, South, West, then NFC). Team colors come from ESPN's team list; the Raiders use Pacific time (`Nevada` in `STATE_TIME_ZONES`). `PRO_TEAMS` names each team's ESPN abbreviation, its three division rivals (the header's division record) and its official schedule page.
 
@@ -58,8 +58,21 @@ Two entries under Auto Racing → IMSA: `imsa-weathertech` (WeatherTech SportsCa
 - **While a race runs:** the hourly standings of an endurance race give the live card, "After Hour 3", with the leader and every car's class place and gap. A sprint race has no standings until its classification. It reads "Under way" for up to 26 hours after its start. A past race with no classification is not listed.
 - Reads: one season listing, each event listing, then the championship, race and hour folders, and the classification. Folders more than 8 days old are kept 6 hours, and a race weekend's folders 2 minutes. Official classifications are kept 6 hours.
 
+## Formula 1 (4.106.0, user, October 16: "Add formula one under auto racing")
+
+One entry under Auto Racing → Formula 1: `formula-1` (Formula 1 World Championship), every Grand Prix and Sprint. Code: the Formula 1 part of `src/pro-sports.mjs`, `fetchF1` in `src/index.js`. Test: `tests/f1-module.mjs` (formula1.com pages and Jolpica/ESPN payloads of Oct 16 in `tests/fixtures/pro-sports/f1-*`, the pages trimmed to heading and table).
+
+- **Results: formula1.com's official results pages** (robots.txt allows them). The season page (`/en/results/2026/races`) lists each Grand Prix run with its winner and link; the race's `race-result` page (and `sprint-results`) holds the classification: position (or NC), number, driver, team, laps, time or gap ("+7.335s", "+1 lap") or DNF/DNS/DSQ, points. A season row is matched to a calendar round by date, a day either way (Las Vegas starts Saturday night local, Sunday UTC).
+- **Calendar: the Jolpica F1 database** (`api.jolpi.ca/ergast/f1/2026.json`, the open successor of Ergast): each round's race and sprint start in UTC, circuit and place. formula1.com's schedule shows times only in the browser. The entry is in Eastern time (`SCHOOL_TIME_ZONES`), as ESPN and US broadcasts list F1.
+- **A race formula1.com has not listed yet** (its first hours; a sprint before Sunday, since the race link appears only with the Grand Prix result) takes Jolpica's results (`/2026/<round>/results.json`, `sprint.json`), read only in the week after the start. Jolpica names drivers in full ("Andrea Kimi Antonelli"); formula1.com's page replaces them once listed.
+- **Card:** the top three in the race window's layout: finish, driver and number, the team as the tag, the time or gap, points. **Race window:** the whole field (DNF in red), the winner and margin, where the winner started and the pole sitter (`starting-grid`), the fastest lap (`fastest-laps`), who did not finish; numbers: laps, race time, cars, classified, fastest lap. Sprints have no grid or fastest-lap lines.
+- **Coming races:** Circuit, Location, "Round 18 of 23" ("· Sprint weekend" when it has one).
+- **Live:** from a session's start until its result (4 hours at most), ESPN's F1 board (`racing/f1/scoreboard?dates=<Eastern day>`, 30 s, only then) gives the lap and running order (`Race`, or `SR` for a sprint); each driver's team and number come from the latest classification. ESPN publishes no gaps. A past race with no result is not listed.
+- Reads per build: the calendar and season page (10 min), one classification per final (6 hours), Jolpica only for unlisted races.
+
 ## Limits
 
+- Formula 1: live cards carry the running order only (ESPN publishes no gaps; F1's own live timing feed, `livetiming.formula1.com`, answers 401). The live card shape was read from a finished race's board turned "in"; the United States Grand Prix (Oct 25) is the first live check. Practice and qualifying are not listed. No driver headshots or team logos (formula1.com's images are not licensed here).
 - IMSA: no live timing (Al Kamel's live timing is a Meteor app). Sprint races show no running order until they finish. The 2027 calendar is hand-entered from IMSA's announcement; check it against imsa.com if IMSA changes a date. Start times appear only when the weekend's folder does. Auto Racing's in-season window is February–November, so the Rolex 24 (late January) shows out of season. The VP Racing SportsCar Challenge and the single-make series in the same folders are not added (no 2027 calendar found).
 
 - Two 2026 race winners (Anduril 250, Brickyard 400: driver 4387, not in the standings) are named from their race's weekend feed (up to six such reads per build); the race reads "Final" if that read fails.

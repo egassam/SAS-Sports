@@ -103,7 +103,7 @@ assert.deepEqual(levels.map(l=>l.id),['high-school','college','pro']);
 assert.deepEqual(levels.map(l=>l.count),['high-school','college','pro'].map(id=>cards.filter(c=>c.level===id).length));
 // Steps the page relies on.
 const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
-assert.deepEqual(pro.middles,['IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
+assert.deepEqual(pro.middles,['Formula 1','IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
 const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
 assert.deepEqual(kansas.middles,['Manhattan']);
 const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});

@@ -19,6 +19,10 @@
 //   driver standings for the winners' names and car numbers; each race's
 //   weekend feed for the full finishing order; the live timing feed while a
 //   race runs.
+// - IMSA: its official results folders (results.imsa.com), below.
+// - Formula 1: formula1.com's official results pages, the Jolpica F1
+//   database for the calendar's start times, and ESPN's F1 board while a race
+//   runs, below.
 // Pro players are adults, but no featured athletes are shown yet (the
 // three-athlete rule is for schools' official rosters).
 // No team logos or car-number art (user, October 15: "Leave the logos out":
@@ -73,6 +77,12 @@ export const PRO_TEAMS={
   'imsa-pilot-challenge':{
     kind:'imsa',sport:'Auto Racing',championship:'IMSA Michelin Pilot Challenge',calendar:'pilotChallenge',
     schedule:'https://www.imsa.com/michelinpilotchallenge/schedule/'
+  },
+  // Formula 1 (user, October 16: "Add formula one under auto racing"): every
+  // Grand Prix and Sprint of the World Championship.
+  'formula-1':{
+    kind:'f1',sport:'Auto Racing',
+    schedule:'https://www.formula1.com/en/racing/2026'
   }
 };
 export const proTeam=id=>PRO_TEAMS[id]||null;
@@ -638,6 +648,176 @@ export function imsaRaces(races,{school,config,timeZone,now,calendar=[]}){
     if(entry.name)event.results.push({label:'Track',value:track.name});
     event.result_count=event.results.length;
     events.push(event);
+  }
+  return events;
+}
+
+// ---- Formula 1 (formula1.com, Jolpica F1, ESPN) ----
+// User, October 16: "Add formula one under auto racing". Auto Racing →
+// Formula 1 → World Championship: every Grand Prix and Sprint.
+// - Results: formula1.com's official results pages. The season page lists
+//   each Grand Prix with its winner and a link; each race's page holds the
+//   classification (position, number, driver, team, laps, time or why the
+//   car retired, points), with the sprint, starting grid and fastest laps
+//   beside it. robots.txt allows them.
+// - Calendar: the Jolpica F1 database (api.jolpi.ca, the open successor of
+//   Ergast): each round's race and sprint start in UTC, circuit and place.
+//   formula1.com's schedule shows times only in the browser. A race the
+//   season page has not listed yet (its first hours, or a sprint before
+//   Sunday) takes Jolpica's results until it does.
+// - Live: ESPN's F1 board (the feed the app reads for college live scores),
+//   read only from a session's start until its result: lap and running order.
+export const F1_RESULTS='https://www.formula1.com/en/results/';
+export const F1_SITE='https://www.formula1.com';
+export const JOLPICA_F1='https://api.jolpi.ca/ergast/f1/';
+const textOf=html=>String(html||'').replace(/<svg[\s\S]*?<\/svg>/g,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#x27;|&#39;/g,"'").replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+// The page's results table: its header names and each row's cells (text, and
+// the raw cell for the driver and link).
+export function f1Table(html){
+  const t=String(html||''),i=t.indexOf('<table'),j=t.indexOf('</table>',i);if(i<0||j<0)return{head:[],rows:[]};
+  const rows=[...t.slice(i,j).matchAll(/<tr[\s\S]*?<\/tr>/g)].map(m=>[...m[0].matchAll(/<t([dh])[^>]*>([\s\S]*?)<\/t\1>/g)].map(c=>({kind:c[1],raw:c[2],text:textOf(c[2])})));
+  const head=(rows.find(r=>r.every(c=>c.kind==='h'))||[]).map(c=>c.text);
+  return{head,rows:rows.filter(r=>r.length&&r.some(c=>c.kind==='d'))};
+}
+// "<span>Max</span> <span>Verstappen</span><span class="md:hidden">VER</span>"
+// reads "Max Verstappen" (the code is the phone's short form).
+const f1Driver=raw=>({name:textOf(String(raw).replace(/<span class="md:hidden">[^<]*<\/span>/g,'')),code:(String(raw).match(/<span class="md:hidden">([^<]*)<\/span>/)||[])[1]||''});
+const column=(head,re)=>head.findIndex(h=>re.test(h));
+// The season page: one row per Grand Prix run, with its winner and link.
+export function f1SeasonResults(html,year){
+  const {head,rows}=f1Table(html),at=re=>column(head,re);
+  const [gp,date,winner,team,laps,time]=[/^Grand Prix$/i,/^Date$/i,/^Winner$/i,/^Team$/i,/^Laps$/i,/^Time$/i].map(at);
+  if([gp,date,winner].some(n=>n<0))return[];
+  return rows.map(r=>{
+    const href=(r[gp].raw.match(/href="([^"]+\/race-result)"/)||(r.map(c=>c.raw).join('').match(/href="([^"]+\/race-result)"/))||[])[1]||null;
+    const [d,mon]=r[date].text.split(' '),m=MONTHS.indexOf(mon);
+    return{name:r[gp].text,date:m<0?null:`${year}-${pad(m+1)}-${pad(Number(d))}`,winner:f1Driver(r[winner].raw).name,team:team<0?'':r[team].text,laps:laps<0?null:Number(r[laps].text)||null,time:time<0?'':r[time].text,href:href?new URL(href,F1_SITE).href.replace(/\/race-result$/,'/'):null};
+  }).filter(r=>r.date);
+}
+const OUT=/^(DNF|DNS|DSQ|DQ|NC|EXCL|DNQ)$/i;
+// A race or sprint classification page: every car in finishing order.
+export function f1Classification(html){
+  const {head,rows}=f1Table(html),at=re=>column(head,re);
+  const [pos,no,driver,team,laps,time,pts]=[/^Pos/i,/^No/i,/^Driver$/i,/^Team$/i,/^Laps$/i,/^Time/i,/^Pts/i].map(at);
+  if([pos,driver,team].some(n=>n<0)||time<0)return[];
+  return rows.map(r=>{
+    const t=r[time].text,{name,code}=f1Driver(r[driver].raw);
+    return{pos:r[pos].text,number:no<0?'':r[no].text,driver:name,code,team:r[team].text,laps:laps<0?null:Number(r[laps].text),time:OUT.test(t)?'':t,status:OUT.test(t)?t.toUpperCase():'',points:pts<0?0:Number(r[pts].text)||0};
+  }).filter(r=>r.driver);
+}
+// The starting grid or fastest laps: each driver's place (and lap time).
+export function f1DriverTable(html){
+  const {head,rows}=f1Table(html),at=re=>column(head,re);
+  const [pos,driver,team,lap,time]=[/^Pos/i,/^Driver$/i,/^Team$/i,/^Lap$/i,/^Time$/i].map(at);
+  if(pos<0||driver<0)return[];
+  return rows.map(r=>({pos:r[pos].text,driver:f1Driver(r[driver].raw).name,team:team<0?'':r[team].text,lap:lap<0?null:Number(r[lap].text)||null,time:time<0?'':r[time].text})).filter(r=>r.driver);
+}
+// Jolpica's results (the fallback until formula1.com lists a race) in the
+// same shape: "R" retired, "D" disqualified, "W" withdrew, "N" not classified.
+export function f1JolpicaClassification(payload){
+  const race=payload?.MRData?.RaceTable?.Races?.[0],rows=race?.Results||race?.SprintResults||[];
+  return rows.map(r=>{
+    const mark=String(r.positionText),classified=/^\d+$/.test(mark);
+    // A classified car that retired late (90% of the distance) is "DNF" too.
+    const running=/^(Finished|Lapped|\+\d+ Laps?)$/i.test(String(r.status||'Finished'));
+    const status=classified?(running?'':'DNF'):mark==='D'?'DSQ':mark==='W'?'DNS':'DNF';
+    return{pos:classified?mark:mark==='D'?'DQ':'NC',number:String(r.number||''),driver:`${r.Driver?.givenName||''} ${r.Driver?.familyName||''}`.trim(),code:r.Driver?.code||'',team:r.Constructor?.name||'',laps:Number(r.laps)||0,time:r.Time?.time||(classified&&running&&/lap/i.test(r.status)?r.status:''),status,points:Number(r.points)||0};
+  });
+}
+// The calendar: each round's Grand Prix and Sprint with their UTC starts.
+export function f1Calendar(payload){
+  return(payload?.MRData?.RaceTable?.Races||[]).map(r=>{
+    const at=s=>s?.date?`${s.date}T${(s.time||'00:00:00Z').replace(/Z$/,'')}Z`:null;
+    return{round:Number(r.round),name:String(r.raceName||'').trim(),start:at(r),timed:!!r.time,sprint:at(r.Sprint),circuit:r.Circuit?.circuitName||'',place:[r.Circuit?.Location?.locality,r.Circuit?.Location?.country].filter(Boolean).join(', ')};
+  });
+}
+// formula1.com's season row for a calendar round: the same day, give or take
+// one (a night race's local date can differ from its UTC date).
+export function f1SeasonRow(season,round){
+  const day=Date.parse(round.start.slice(0,10)+'T00:00:00Z');
+  return season.find(r=>Math.abs(Date.parse(r.date+'T00:00:00Z')-day)<=864e5)||null;
+}
+// The card's rows and the race window's table: finish, driver and number,
+// the team as the tag, the time or gap, and points (or why the car is out).
+export function f1FinishTable(rows){
+  return rows.map(r=>({pos:/^\d+$/.test(r.pos)?Number(r.pos):r.pos,driver:r.driver,car:r.number?`#${r.number}`:'',make:r.team,team:r.time||(r.laps!=null?`${r.laps} laps`:''),laps_led:0,status:r.status,note:r.points?`${r.points} pt${r.points===1?'':'s'}`:''}));
+}
+// Cross-country rows (shared result contract).
+export function f1FinishRows(rows){
+  return rows.map(r=>({participant:`${r.driver}${r.number?` (#${r.number})`:''}`,result:[/^\d+$/.test(r.pos)?ordinal(Number(r.pos)):r.pos,r.team,r.time||null,r.status||null,r.points?`${r.points} pt${r.points===1?'':'s'}`:null].filter(Boolean).join(' · ')}));
+}
+// The race window's lines and numbers: the winner and margin, where the
+// winner started and who took pole, the fastest lap, and who did not finish.
+export function f1RaceDetails(event,rows,{grid=[],fastest=[]}={}){
+  if(!rows?.length)return null;
+  const [winner,second]=rows;
+  const gap=second?.time&&/^\+[\d.:]+s?$/.test(second.time)?`, ${second.time.replace(/^\+/,'').replace(/s$/,'')} s ahead of ${second.driver} (${second.team})`:second?`, ahead of ${second.driver} (${second.team})`:'';
+  const lines=[`${winner.driver} (${winner.team}) won the ${event.title} at ${event.track}${winner.laps?`, ${winner.laps} laps`:''}${winner.time?` in ${winner.time}`:''}${gap}.`];
+  const started=grid.find(g=>g.driver===winner.driver);
+  if(started)lines.push(`${winner.driver} started ${/^\d+$/.test(started.pos)?ordinal(Number(started.pos)):started.pos}${grid[0]&&grid[0].driver!==winner.driver?`; ${grid[0].driver} (${grid[0].team}) started on pole`:' (pole position)'}.`);
+  const best=fastest[0];
+  if(best?.time)lines.push(`Fastest lap: ${best.time} by ${best.driver} (${best.team})${best.lap?`, lap ${best.lap}`:''}.`);
+  const out=rows.filter(r=>r.status);
+  if(out.length)lines.push(`Did not finish: ${out.map(r=>`${r.driver} (${r.status})`).join(', ')}.`);
+  const stats=[];
+  if(winner.laps)stats.push({label:'Laps',value:String(winner.laps)});
+  if(winner.time)stats.push({label:'Race time',value:winner.time});
+  stats.push({label:'Cars',value:String(rows.length)});
+  stats.push({label:'Classified',value:String(rows.filter(r=>/^\d+$/.test(r.pos)).length)});
+  if(best?.time)stats.push({label:'Fastest lap',value:`${best.time} (${best.driver})`});
+  return{lines,stats,rows:f1FinishRows(rows),table:f1FinishTable(rows)};
+}
+// The running order of a session under way on ESPN's F1 board ("Race" or
+// the sprint "SR"), named against the latest classification for each
+// driver's team and number.
+export function f1LiveDetails(board,{sprint=false,start,drivers=new Map()}){
+  const comps=(board?.events||[]).flatMap(e=>e.competitions||[]);
+  const comp=comps.find(c=>c.type?.abbreviation===(sprint?'SR':'Race')&&Math.abs(Date.parse(c.date)-Date.parse(start))<6*3600e3);
+  if(!comp||comp.status?.type?.state!=='in')return null;
+  const order=(comp.competitors||[]).slice().sort((a,b)=>a.order-b.order).map(c=>{const name=c.athlete?.displayName||c.athlete?.fullName||'',known=drivers.get(name);return{position:c.order,driver:name,car:known?.number?`#${known.number}`:'',gap:c.order===1?'Leader':null,make:known?.team||null,laps_led:null,last_lap_speed:null,pit:null}});
+  return{lap:Number(comp.status.period)||null,order};
+}
+// The championship's races: each round's Sprint and Grand Prix. Final with a
+// classification (formula1.com, or Jolpica until formula1.com lists it); Live
+// from its start until then (4 hours at most); Today or Upcoming before. A
+// past race without a published result is not listed (K-State's rule).
+// results: Map of `${round}|gp` or `${round}|sprint` → classification rows.
+export function f1Races(calendar,{school,config,timeZone,now,results=new Map(),live=new Map(),sources=new Map()}){
+  const sport=config.sport,nowMs=now.getTime(),today=dayOf(wallClock(now,timeZone)),events=[],total=calendar.length;
+  for(const round of calendar){
+    for(const sprint of [true,false]){
+      const at=sprint?round.sprint:round.start;if(!at)continue;
+      const key=`${round.round}|${sprint?'sprint':'gp'}`,rows=results.get(key)||[],began=Date.parse(at),start=wallClock(at,timeZone),day=dayOf(start);
+      let status;
+      if(rows.length)status='Final';
+      else if(began<=nowMs&&nowMs-began<=4*3600e3)status='Live';
+      else if(began>nowMs)status=day===today?'Today':'Upcoming';
+      else continue;
+      const title=sprint?`${round.name} Sprint`:round.name;
+      const event=baseEvent({school,sport,status,title,start,display:displayTime(start,{timed:round.timed}),opponent:round.circuit,sourceName:status==='Final'?(sources.get(key)?.name||'Formula 1 official results (formula1.com)'):'Formula 1 calendar (Jolpica F1 database)',sourceUrl:status==='Final'?(sources.get(key)?.url||config.schedule):config.schedule,now,key:`${key}|${status}`});
+      event.track=round.circuit;event.season=Number(at.slice(0,4));event.f1_round=round.round;if(sprint)event.sprint=true;
+      if(status==='Final'){
+        const [winner]=rows;
+        event.winner={name:winner.driver,car:winner.number,team:winner.team};
+        event.headline=`Winner: ${winner.driver} (${winner.team})`;
+        event.race_table=f1FinishTable(rows.slice(0,3));
+        event.results=f1FinishRows(rows.slice(0,3));
+        event.has_more_results=rows.length>3;event.result_count=rows.length;
+      }else if(status==='Live'){
+        const details=live.get(key);
+        event.recency_label=details?.lap?`Lap ${details.lap}`:'Under way';
+        event.headline=details?.order?.[0]?`Leader: ${details.order[0].driver}`:'Under way';
+        event.results=(details?.order||[]).slice(0,10).map(o=>({participant:`${ordinal(o.position)} ${o.driver}`,result:[o.make,o.car].filter(Boolean).join(' · ')}));
+        if(details?.order?.length){event.live_details={stage:event.recency_label,order:details.order};event.live_score_source='ESPN Formula 1 board';}
+        event.result_count=event.results.length;
+      }else{
+        event.results.push({label:'Circuit',value:round.circuit});
+        if(round.place)event.results.push({label:'Location',value:round.place});
+        event.results.push({label:'Round',value:`${round.round} of ${total}${round.sprint?' · Sprint weekend':''}`});
+        event.result_count=event.results.length;
+      }
+      events.push(event);
+    }
   }
   return events;
 }

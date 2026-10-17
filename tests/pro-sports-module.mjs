@@ -18,8 +18,10 @@ const now=new Date('2026-10-15T18:00:00Z'),EASTERN='America/New_York',CENTRAL='A
 const pro=schools.filter(s=>s.level==='pro');
 // IMSA's two championships follow (user, October 16: "Let's add IMSA racing
 // series under auto racing"; tests/imsa-module.mjs).
-assert.equal(pro.length,35);
-assert.deepEqual(pro.slice(-3).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge']);
+// Formula 1 follows (user, October 16: "Add formula one under auto racing";
+// tests/f1-module.mjs).
+assert.equal(pro.length,36);
+assert.deepEqual(pro.slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{

@@ -55,7 +55,7 @@ import {createConferenceGames} from './conference-games.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -82,7 +82,7 @@ import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.m
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.105.2-nil-marketplaces';
+const VERSION='4.106.1-formula-1';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -586,7 +586,8 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
 const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
-const SCHOOL_TIME_ZONES={tennessee:'America/New_York'};
+// Formula 1 races are listed in Eastern time, as ESPN and US broadcasts list them.
+const SCHOOL_TIME_ZONES={tennessee:'America/New_York','formula-1':'America/New_York'};
 // The catalog's menus (src/catalog.mjs): D1 in production, the bundled cards
 // on a preview carrying catalog changes or when a read fails. The choice is
 // made once a minute per isolate; production copies a changed catalog into
@@ -1767,7 +1768,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
 // web address; see SCOREBOARD_USER_AGENT).
 // A refused or failed read serves the last copy read (a burst of ESPN refusals
 // blanked the Chiefs for 28 of 36 preview refreshes, Oct 15).
-async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+// Jolpica answers 406 to the HTML Accept header school pages are read with.
+async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
 async function fetchPro(school,sport,now,aiTargetId=null){
   const config=proTeam(school.id),timeZone=schoolTimeZone(school);
   const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});
@@ -1843,7 +1845,60 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     return{events,source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
   }
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
+  if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
   return failed('Unknown pro source');
+}
+// Formula 1 (src/pro-sports.mjs): the calendar from Jolpica, the season's
+// winners and links from formula1.com, and each race's and sprint's official
+// classification (kept six hours: a finished race does not change). A race
+// formula1.com has not listed yet takes Jolpica's results; one under way
+// reads ESPN's F1 board every 30 s.
+async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
+  const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
+  const [calendarPayload,seasonHtml]=await Promise.all([readJson(calendarUrl,SOURCE_TTL.listing),readText(seasonUrl,SOURCE_TTL.listing)]);
+  const calendar=f1Calendar(calendarPayload);
+  if(!calendar.length)return failed(`${calendarUrl}: unreadable or empty`);
+  const season=f1SeasonResults(seasonHtml,year),sources=[calendarUrl,seasonUrl],nowMs=now.getTime();
+  const results=new Map(),origins=new Map(),pages=new Map();
+  await Promise.all(calendar.flatMap(round=>[false,true].map(async sprint=>{
+    const at=sprint?round.sprint:round.start;if(!at||Date.parse(at)>nowMs)return;
+    const key=`${round.round}|${sprint?'sprint':'gp'}`,row=f1SeasonRow(season,round);
+    if(row?.href){
+      const url=`${row.href}${sprint?'sprint-results':'race-result'}`,rows=f1Classification(await readText(url,SOURCE_TTL.document));
+      if(rows.length){results.set(key,rows);origins.set(key,{name:'Formula 1 official results (formula1.com)',url});pages.set(key,row.href);return;}
+    }
+    // Not on formula1.com yet (its first hours, or a sprint before Sunday's
+    // race): Jolpica's results, read only in the week after the start.
+    if(nowMs-Date.parse(at)>7*864e5&&!row?.href)return;
+    const url=`${JOLPICA_F1}${year}/${round.round}/${sprint?'sprint':'results'}.json`,rows=f1JolpicaClassification(await readJson(url,row?.href?SOURCE_TTL.document:SOURCE_TTL.schedule));
+    if(rows.length){results.set(key,rows);origins.set(key,{name:'Jolpica F1 database (until formula1.com lists the race)',url});}
+  })));
+  // A race or sprint under way: ESPN's board for its day (Eastern), with each
+  // driver's team and number from the latest classification.
+  const live=new Map(),latest=[...results.entries()].sort((a,b)=>parseInt(b[0])-parseInt(a[0]))[0]?.[1]||[];
+  const drivers=new Map(latest.map(r=>[r.driver,r]));
+  for(const round of calendar)for(const sprint of [false,true]){
+    const at=sprint?round.sprint:round.start,key=`${round.round}|${sprint?'sprint':'gp'}`;
+    if(!at||results.has(key)||Date.parse(at)>nowMs||nowMs-Date.parse(at)>4*3600e3)continue;
+    const board=`${ESPN_SITE}racing/f1/scoreboard?dates=${wallClock(at,'America/New_York').slice(0,10).replaceAll('-','')}`;
+    const details=f1LiveDetails(await readJson(board,30),{sprint,start:at,drivers});
+    if(details){live.set(key,details);sources.push(board);}
+  }
+  const events=f1Races(calendar,{school,config,timeZone,now,results,live,sources:origins});
+  const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+  if(target&&target.status==='Final'){
+    const key=`${target.f1_round}|${target.sprint?'sprint':'gp'}`,base=pages.get(key);
+    // The Grand Prix's starting grid and fastest laps (formula1.com).
+    const [grid,fastest]=base&&!target.sprint?await Promise.all(['starting-grid','fastest-laps'].map(async page=>f1DriverTable(await readText(`${base}${page}`,SOURCE_TTL.document)))):[[],[]];
+    const details=f1RaceDetails(target,results.get(key),{grid,fastest});
+    if(details){
+      target.results=details.rows;target.result_count=details.rows.length;
+      target.race_table=details.table;
+      target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+      target.highlight_status=`Classification${grid.length?', starting grid and fastest laps':''} from ${origins.get(key)?.name||'Formula 1 official results'}.`;
+    }
+  }
+  return{events,source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 // IMSA's results folders (src/pro-sports.mjs): the season's events, each
 // championship's race sessions, and each race's classification. Folders of
