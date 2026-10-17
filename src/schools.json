@@ -2306,5 +2306,31 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "formula-1",
+    "name": "Formula 1 World Championship",
+    "short_name": "World Championship",
+    "state": "England",
+    "city": "London",
+    "conference": "Formula 1",
+    "league": "Formula 1",
+    "pro_sport": "Auto Racing",
+    "level": "pro",
+    "division": "FIA Formula One World Championship",
+    "athletics_url": "https://www.formula1.com",
+    "aliases": [
+      "Formula 1",
+      "Formula One",
+      "F1",
+      "Formula 1 World Championship"
+    ],
+    "providers": [
+      {
+        "provider": "Formula 1",
+        "slug": "formula1.com/en/results",
+        "provider_school_id": null
+      }
+    ]
   }
 ]

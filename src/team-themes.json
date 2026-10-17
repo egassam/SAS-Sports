@@ -223,6 +223,14 @@
     "line": "#502836",
     "onAccent": "#ffffff"
   },
+  "formula-1": {
+    "primary": "#E10600",
+    "secondary": "#FFFFFF",
+    "panel": "#2a0b0b",
+    "panelDark": "#130505",
+    "line": "#7a2626",
+    "onAccent": "#ffffff"
+  },
   "georgia": {
     "primary": "#BA0C2F",
     "secondary": "#000000",
