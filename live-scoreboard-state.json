@@ -125,8 +125,8 @@
   },
   "utah|Volleyball": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.414Z",
-   "last_detail": "live 0-0 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:15.954Z",
+   "last_detail": "live 4-10 · 5th Set · Sets 2-2 · official_schedule+live_scoreboard",
    "game": {
     "key": "utah|Volleyball||2026-10-17|1",
     "title": "Utah at Iowa State",
@@ -137,7 +137,15 @@
      "2026-10-17T19:34:09.707Z",
      "2026-10-17T19:36:12.933Z",
      "2026-10-17T19:37:34.957Z",
-     "2026-10-17T19:39:37.414Z"
+     "2026-10-17T19:39:37.414Z",
+     "2026-10-17T21:44:24.280Z",
+     "2026-10-17T21:45:28.534Z",
+     "2026-10-17T21:46:50.375Z",
+     "2026-10-17T21:48:11.514Z",
+     "2026-10-17T21:49:32.369Z",
+     "2026-10-17T21:50:53.781Z",
+     "2026-10-17T21:52:14.860Z",
+     "2026-10-17T21:53:15.954Z"
     ],
     "final_ok": false
    }
@@ -149,7 +157,25 @@
    "state": "off"
   },
   "arizona-state|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T21:53:16.127Z",
+   "last_detail": "live 10-43 · 12:58 - 3rd · ball: school (2nd & 10 at ASU 38) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "arizona-state|Football||2026-10-17|1",
+    "title": "ASU at Texas Tech",
+    "started_seen": "2026-10-17T21:44:23.630Z",
+    "live_passes": [
+     "2026-10-17T21:44:23.630Z",
+     "2026-10-17T21:45:28.563Z",
+     "2026-10-17T21:46:50.459Z",
+     "2026-10-17T21:48:11.562Z",
+     "2026-10-17T21:49:52.806Z",
+     "2026-10-17T21:50:53.990Z",
+     "2026-10-17T21:52:15.078Z",
+     "2026-10-17T21:53:16.127Z"
+    ],
+    "final_ok": false
+   }
   },
   "arizona-state|Hockey": {
    "state": "done",
@@ -458,7 +484,25 @@
    "state": "off"
   },
   "texas-tech|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T21:53:16.277Z",
+   "last_detail": "live 43-10 · 12:58 - 3rd · ball: opponent (2nd & 10 at ASU 38) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "texas-tech|Football||2026-10-17|1",
+    "title": "Texas Tech vs Arizona St",
+    "started_seen": "2026-10-17T21:44:23.996Z",
+    "live_passes": [
+     "2026-10-17T21:44:23.996Z",
+     "2026-10-17T21:45:28.706Z",
+     "2026-10-17T21:46:50.496Z",
+     "2026-10-17T21:48:11.577Z",
+     "2026-10-17T21:49:52.777Z",
+     "2026-10-17T21:50:54.003Z",
+     "2026-10-17T21:52:15.163Z",
+     "2026-10-17T21:53:16.277Z"
+    ],
+    "final_ok": false
+   }
   },
   "texas-tech|Soccer": {
    "state": "done",
@@ -774,15 +818,23 @@
   },
   "missouri|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.422Z",
-   "last_detail": "live 0-0 · 13:32 - 1st · ball: opponent (2nd & 10 at MISS 35) · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:16.129Z",
+   "last_detail": "live 3-21 · 8:21 - 3rd · ball: opponent (3rd & 7 at MISS 43) · official_schedule+live_scoreboard",
    "game": {
     "key": "missouri|Football||2026-10-17|1",
     "title": "Missouri at Ole Miss",
     "started_seen": "2026-10-17T19:37:35.073Z",
     "live_passes": [
      "2026-10-17T19:37:35.073Z",
-     "2026-10-17T19:39:37.422Z"
+     "2026-10-17T19:39:37.422Z",
+     "2026-10-17T21:44:23.865Z",
+     "2026-10-17T21:45:28.686Z",
+     "2026-10-17T21:46:50.530Z",
+     "2026-10-17T21:48:11.525Z",
+     "2026-10-17T21:49:32.547Z",
+     "2026-10-17T21:50:54.105Z",
+     "2026-10-17T21:52:15.156Z",
+     "2026-10-17T21:53:16.129Z"
     ],
     "final_ok": false
    }
@@ -851,29 +903,13 @@
    "state": "off"
   },
   "texas-am|Football": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:37.517Z",
-   "last_detail": "live 34-0 · 7:44 - 4th · ball: school (3rd & 5 at CIT 49) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "texas-am|Football||2026-10-17|1",
-    "title": "Texas A&M vs The Citadel",
-    "started_seen": "2026-10-17T17:13:12.718Z",
-    "live_passes": [
-     "2026-10-17T17:13:12.718Z",
-     "2026-10-17T17:15:15.949Z",
-     "2026-10-17T17:16:57.750Z",
-     "2026-10-17T17:18:19.022Z",
-     "2026-10-17T17:20:21.633Z",
-     "2026-10-17T17:21:42.500Z",
-     "2026-10-17T19:30:43.528Z",
-     "2026-10-17T19:32:47.918Z",
-     "2026-10-17T19:34:09.596Z",
-     "2026-10-17T19:36:12.436Z",
-     "2026-10-17T19:37:34.839Z",
-     "2026-10-17T19:39:37.517Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-17T21:44:23.924Z",
+   "last_detail": "final W, 41-0",
+   "game": null,
+   "verified_at": "2026-10-17T21:44:23.924Z",
+   "verified_game": "Texas A&M vs The Citadel",
+   "verified_detail": "final W, 41-0"
   },
   "texas-am|Soccer": {
    "state": "done",
@@ -940,15 +976,23 @@
   },
   "auburn|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.376Z",
-   "last_detail": "live 0-0 · 13:22 - 1st · ball: opponent (1st & 10 at AUB 25) · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:16.147Z",
+   "last_detail": "live 24-14 · 8:13 - 3rd · ball: opponent (1st & 10 at AUB 24) · official_schedule+live_scoreboard",
    "game": {
     "key": "auburn|Football||2026-10-17|1",
     "title": "Auburn at Georgia",
     "started_seen": "2026-10-17T19:37:35.562Z",
     "live_passes": [
      "2026-10-17T19:37:35.562Z",
-     "2026-10-17T19:39:37.376Z"
+     "2026-10-17T19:39:37.376Z",
+     "2026-10-17T21:44:24.269Z",
+     "2026-10-17T21:45:28.741Z",
+     "2026-10-17T21:47:10.665Z",
+     "2026-10-17T21:48:11.426Z",
+     "2026-10-17T21:49:32.361Z",
+     "2026-10-17T21:50:54.033Z",
+     "2026-10-17T21:52:15.106Z",
+     "2026-10-17T21:53:16.147Z"
     ],
     "final_ok": false
    }
@@ -1149,29 +1193,13 @@
    "state": "off"
   },
   "indiana|Football": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:37.869Z",
-   "last_detail": "live 15-19 · 1:58 - 4th · ball: school (3rd & 15 at OSU 48) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "indiana|Football||2026-10-17|1",
-    "title": "Indiana vs Ohio State",
-    "started_seen": "2026-10-17T17:13:13.552Z",
-    "live_passes": [
-     "2026-10-17T17:13:13.552Z",
-     "2026-10-17T17:15:15.856Z",
-     "2026-10-17T17:16:37.446Z",
-     "2026-10-17T17:18:39.192Z",
-     "2026-10-17T17:20:21.195Z",
-     "2026-10-17T17:21:42.438Z",
-     "2026-10-17T19:30:44.381Z",
-     "2026-10-17T19:32:47.843Z",
-     "2026-10-17T19:34:09.586Z",
-     "2026-10-17T19:36:12.588Z",
-     "2026-10-17T19:37:34.778Z",
-     "2026-10-17T19:39:37.869Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-17T21:44:24.435Z",
+   "last_detail": "final L, 15-19",
+   "game": null,
+   "verified_at": "2026-10-17T21:44:24.435Z",
+   "verified_game": "Indiana vs Ohio State",
+   "verified_detail": "final L, 15-19"
   },
   "indiana|Soccer": {
    "state": "done",
@@ -1300,7 +1328,25 @@
    "state": "off"
   },
   "michigan|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T21:53:16.118Z",
+   "last_detail": "live 7-3 · 8:20 - 3rd · ball: opponent (3rd & 3 at MICH 32) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "michigan|Football||2026-10-17|1",
+    "title": "Michigan vs Penn State",
+    "started_seen": "2026-10-17T21:44:24.372Z",
+    "live_passes": [
+     "2026-10-17T21:44:24.372Z",
+     "2026-10-17T21:45:28.727Z",
+     "2026-10-17T21:46:50.543Z",
+     "2026-10-17T21:48:31.765Z",
+     "2026-10-17T21:49:32.612Z",
+     "2026-10-17T21:50:54.045Z",
+     "2026-10-17T21:52:15.257Z",
+     "2026-10-17T21:53:16.118Z"
+    ],
+    "final_ok": false
+   }
   },
   "michigan|Hockey": {
    "state": "done",
@@ -1441,16 +1487,10 @@
    "verified_detail": "final L, 13-41"
   },
   "minnesota|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:57.982Z",
-   "last_detail": "ESPN shows Minnesota vs Ohio State live (0:21 - 1st) but the app has no live card (still in upcoming)",
-   "game": {
-    "key": "minnesota|Hockey||2026-10-17|1",
-    "title": "Minnesota vs Ohio State",
-    "started_seen": "2026-10-17T19:31:26.181Z",
-    "live_passes": [],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-10-17T21:44:26.448Z",
+   "last_detail": "final L, 5-6 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "minnesota|Soccer": {
    "state": "done",
@@ -1546,16 +1586,10 @@
    "verified_detail": "final W, 45-16"
   },
   "ohio-state|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:57.830Z",
-   "last_detail": "ESPN shows Ohio State at Minnesota live (0:21 - 1st) but the app has no live card (still in upcoming)",
-   "game": {
-    "key": "ohio-state|Hockey||2026-10-17|1",
-    "title": "Ohio State at Minnesota",
-    "started_seen": "2026-10-17T19:31:26.156Z",
-    "live_passes": [],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-10-17T21:44:26.453Z",
+   "last_detail": "final W, 6-5 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "ohio-state|Lacrosse": {
    "state": "off"
@@ -1684,7 +1718,25 @@
    "state": "off"
   },
   "purdue|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-17T21:53:36.222Z",
+   "last_detail": "live 21-17 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "purdue|Volleyball||2026-10-17|1",
+    "title": "Purdue at Nebraska",
+    "started_seen": "2026-10-17T21:44:24.808Z",
+    "live_passes": [
+     "2026-10-17T21:44:24.808Z",
+     "2026-10-17T21:45:48.957Z",
+     "2026-10-17T21:47:10.613Z",
+     "2026-10-17T21:48:11.380Z",
+     "2026-10-17T21:49:53.128Z",
+     "2026-10-17T21:51:14.316Z",
+     "2026-10-17T21:52:15.138Z",
+     "2026-10-17T21:53:36.222Z"
+    ],
+    "final_ok": false
+   }
   },
   "rutgers|Baseball": {
    "state": "off"
@@ -1696,29 +1748,13 @@
    "state": "off"
   },
   "rutgers|Football": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:37.387Z",
-   "last_detail": "live 37-30 · 2:17 - 4th · official_schedule+live_scoreboard",
-   "game": {
-    "key": "rutgers|Football||2026-10-17|1",
-    "title": "Rutgers at Maryland",
-    "started_seen": "2026-10-17T17:13:13.867Z",
-    "live_passes": [
-     "2026-10-17T17:13:13.867Z",
-     "2026-10-17T17:15:15.815Z",
-     "2026-10-17T17:16:37.625Z",
-     "2026-10-17T17:18:39.170Z",
-     "2026-10-17T17:20:00.919Z",
-     "2026-10-17T17:22:02.820Z",
-     "2026-10-17T19:30:44.458Z",
-     "2026-10-17T19:32:47.828Z",
-     "2026-10-17T19:34:09.474Z",
-     "2026-10-17T19:36:12.343Z",
-     "2026-10-17T19:37:34.828Z",
-     "2026-10-17T19:39:37.387Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-17T21:44:24.312Z",
+   "last_detail": "final W, 37-30",
+   "game": null,
+   "verified_at": "2026-10-17T21:44:24.312Z",
+   "verified_game": "Rutgers at Maryland",
+   "verified_detail": "final W, 37-30"
   },
   "rutgers|Lacrosse": {
    "state": "off"
@@ -1778,23 +1814,13 @@
    "state": "off"
   },
   "usc|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:37.324Z",
-   "last_detail": "live 2-0 · 70' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "usc|Soccer||2026-10-17|1",
-    "title": "USC at Northwestern",
-    "started_seen": "2026-10-17T19:30:44.614Z",
-    "live_passes": [
-     "2026-10-17T19:30:44.614Z",
-     "2026-10-17T19:32:47.850Z",
-     "2026-10-17T19:34:09.772Z",
-     "2026-10-17T19:36:12.667Z",
-     "2026-10-17T19:37:34.900Z",
-     "2026-10-17T19:39:37.324Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-17T21:44:24.750Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-17T21:44:24.750Z",
+   "verified_game": "USC at Northwestern",
+   "verified_detail": "final W, 3-0"
   },
   "usc|Volleyball": {
    "state": "off"
@@ -1833,16 +1859,10 @@
    "state": "off"
   },
   "wisconsin|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-17T19:39:57.854Z",
-   "last_detail": "ESPN shows Wisconsin vs Minnesota St live (End of 1st) but the app has no live card (still in upcoming)",
-   "game": {
-    "key": "wisconsin|Hockey||2026-10-17|1",
-    "title": "Wisconsin vs Minnesota St",
-    "started_seen": "2026-10-17T19:31:26.151Z",
-    "live_passes": [],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-10-17T21:44:24.838Z",
+   "last_detail": "final W, 12-1 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "wisconsin|Soccer": {
    "state": "done",
@@ -2056,15 +2076,23 @@
   },
   "duke|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.484Z",
-   "last_detail": "live 0-0 · 13:03 - 1st · ball: opponent (1st & 10 at DUKE 34) · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:36.121Z",
+   "last_detail": "live 10-17 · 6:46 - 3rd · ball: opponent (2nd & 4 at UNC 31) · official_schedule+live_scoreboard",
    "game": {
     "key": "duke|Football||2026-10-17|1",
     "title": "Duke vs North Carolina",
     "started_seen": "2026-10-17T19:37:35.446Z",
     "live_passes": [
      "2026-10-17T19:37:35.446Z",
-     "2026-10-17T19:39:37.484Z"
+     "2026-10-17T19:39:37.484Z",
+     "2026-10-17T21:44:24.267Z",
+     "2026-10-17T21:45:28.607Z",
+     "2026-10-17T21:46:50.328Z",
+     "2026-10-17T21:48:11.354Z",
+     "2026-10-17T21:49:52.709Z",
+     "2026-10-17T21:50:54.091Z",
+     "2026-10-17T21:52:15.150Z",
+     "2026-10-17T21:53:36.121Z"
     ],
     "final_ok": false
    }
@@ -2134,15 +2162,23 @@
   },
   "georgia-tech|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.508Z",
-   "last_detail": "live 0-7 · 13:37 - 1st · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:16.264Z",
+   "last_detail": "live 17-31 · 1:11 - 3rd · ball: school (4th & 19 at GT 31) · official_schedule+live_scoreboard",
    "game": {
     "key": "georgia-tech|Football||2026-10-17|1",
     "title": "Georgia Tech at Virginia Tech",
     "started_seen": "2026-10-17T19:37:35.693Z",
     "live_passes": [
      "2026-10-17T19:37:35.693Z",
-     "2026-10-17T19:39:37.508Z"
+     "2026-10-17T19:39:37.508Z",
+     "2026-10-17T21:44:23.444Z",
+     "2026-10-17T21:45:28.582Z",
+     "2026-10-17T21:47:10.573Z",
+     "2026-10-17T21:48:11.332Z",
+     "2026-10-17T21:49:32.360Z",
+     "2026-10-17T21:50:54.098Z",
+     "2026-10-17T21:52:15.143Z",
+     "2026-10-17T21:53:16.264Z"
     ],
     "final_ok": false
    }
@@ -2236,15 +2272,23 @@
   },
   "north-carolina|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.402Z",
-   "last_detail": "live 0-0 · 13:03 - 1st · ball: school (1st & 10 at DUKE 34) · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:36.164Z",
+   "last_detail": "live 17-10 · 6:46 - 3rd · ball: school (2nd & 4 at UNC 31) · official_schedule+live_scoreboard",
    "game": {
     "key": "north-carolina|Football||2026-10-17|1",
     "title": "UNC at Duke",
     "started_seen": "2026-10-17T19:37:35.579Z",
     "live_passes": [
      "2026-10-17T19:37:35.579Z",
-     "2026-10-17T19:39:37.402Z"
+     "2026-10-17T19:39:37.402Z",
+     "2026-10-17T21:44:24.466Z",
+     "2026-10-17T21:45:28.734Z",
+     "2026-10-17T21:46:50.384Z",
+     "2026-10-17T21:48:11.356Z",
+     "2026-10-17T21:49:53.046Z",
+     "2026-10-17T21:50:54.134Z",
+     "2026-10-17T21:52:15.103Z",
+     "2026-10-17T21:53:36.164Z"
     ],
     "final_ok": false
    }
@@ -2500,15 +2544,23 @@
   },
   "virginia-tech|Football": {
    "state": "on",
-   "last_check": "2026-10-17T19:39:37.479Z",
-   "last_detail": "live 7-0 · 13:37 - 1st · official_schedule+live_scoreboard",
+   "last_check": "2026-10-17T21:53:15.925Z",
+   "last_detail": "live 31-17 · 1:11 - 3rd · ball: opponent (4th & 19 at GT 31) · official_schedule+live_scoreboard",
    "game": {
     "key": "virginia-tech|Football||2026-10-17|1",
     "title": "Virginia Tech vs Georgia Tech",
     "started_seen": "2026-10-17T19:37:35.353Z",
     "live_passes": [
      "2026-10-17T19:37:35.353Z",
-     "2026-10-17T19:39:37.479Z"
+     "2026-10-17T19:39:37.479Z",
+     "2026-10-17T21:44:24.029Z",
+     "2026-10-17T21:45:28.595Z",
+     "2026-10-17T21:47:10.654Z",
+     "2026-10-17T21:48:11.481Z",
+     "2026-10-17T21:49:32.643Z",
+     "2026-10-17T21:50:54.011Z",
+     "2026-10-17T21:52:15.107Z",
+     "2026-10-17T21:53:15.925Z"
     ],
     "final_ok": false
    }
@@ -2536,6 +2588,6 @@
   }
  },
  "version": "4.107.0-mls",
- "updated_at": "2026-10-17T19:39:57.984Z",
+ "updated_at": "2026-10-17T21:53:36.224Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
