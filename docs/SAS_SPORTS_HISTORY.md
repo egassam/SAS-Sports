@@ -2733,3 +2733,17 @@ User: "Add the entire NFL. Group them by division and update all live cards to s
   - The school table's profile-card notes now list the sports still short, with counts. They replace the pre-marketplace lists such as "9 sports use profile cards".
   - Each of the 21 module docs has a production snapshot paragraph in its "Athletes from the NIL marketplace" section.
 - **Not changed:** `athlete_profile_fallback_sports` in `tests/certified-schools.json`. Counts vary by day: Texas Rowing and Track & Field read 0 in this pass after reading 3 on October 16, and a cold read stops at 10 s. Removing those sports would make validation fail on low days.
+
+## October 16, 2026 — Formula 1 under Auto Racing
+
+- **User:** "Add formula one under auto racing."
+- **Sources chosen:**
+  - Results: formula1.com's official results pages (robots.txt allows them). The season page lists each Grand Prix with winner and link; each race's `race-result`, `sprint-results`, `starting-grid` and `fastest-laps` pages hold the tables.
+  - Calendar: the Jolpica F1 database (`api.jolpi.ca/ergast/f1/2026.json`), for UTC start times (formula1.com shows times only in the browser). Jolpica's results cover a race formula1.com has not listed yet (a sprint before Sunday's race).
+  - Live: ESPN's F1 board (`racing/f1/scoreboard`), read only from a session's start until its result. `livetiming.formula1.com` answers 401.
+  - A hand-guessed formula1.com URL (`/1295/singapore/`) was Azerbaijan's page and showed the wrong winner; the app uses the season page's own links. formula1.com, Jolpica, OpenF1 and ESPN all agree Verstappen won Singapore on October 11.
+- **Built (`4.106.0`, branch `ccr-4d8a546d-go5t13`):** `formula-1` catalog entry (league Formula 1, Eastern time), `fetchF1` in `src/index.js`, the Formula 1 part of `src/pro-sports.mjs`, `tests/f1-module.mjs` with trimmed fixtures. Existing pro and catalog tests updated for the new entry.
+- **Found on the first preview:** the feed read nothing ("All official source candidates failed"). Reproduced with `wrangler dev`: Jolpica answers 406 to the `Accept: text/html` header school pages are read with. Jolpica reads now ask for JSON (`4.106.1`), with a test.
+- **Tests:** `npm run test:release` passed on both commits. Preview `verify:preview --school=formula-1 --sports="Auto Racing"`: status `4.106.1-formula-1`, K-State XC 18/20, KU XC 26/21, 36/36 forced refreshes (29 events, slowest 602 ms), 23 results each with a result line, expanded views 23/23. Screenshots: cards with top three (team tag, gap, points), coming races with circuit/location/round, the Singapore race window with all 22 cars.
+- **Limits:** live cards carry lap and running order only (no gaps); the shape was read from a finished board turned "in", so the US Grand Prix (Oct 25) is the first live check. Practice and qualifying are not listed. No headshots or team logos.
+
