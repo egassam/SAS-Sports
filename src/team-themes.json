@@ -95,6 +95,14 @@
     "line": "#3d745f",
     "onAccent": "#ffffff"
   },
+  "boise-state": {
+    "primary": "#0033A0",
+    "secondary": "#D64309",
+    "panel": "#091430",
+    "panelDark": "#050a17",
+    "line": "#0e2a6b",
+    "onAccent": "#ffffff"
+  },
   "boston-college": {
     "primary": "#8A100B",
     "secondary": "#B29D6C",
@@ -213,6 +221,14 @@
     "panel": "#271117",
     "panelDark": "#12080c",
     "line": "#5a222e",
+    "onAccent": "#ffffff"
+  },
+  "colorado-state": {
+    "primary": "#1E4D2B",
+    "secondary": "#C8C372",
+    "panel": "#0f1a16",
+    "panelDark": "#080c0c",
+    "line": "#1f392b",
     "onAccent": "#ffffff"
   },
   "columbus-crew": {

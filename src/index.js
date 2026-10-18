@@ -80,9 +80,11 @@ import {stanfordSchool,createStanfordHandlers} from './schools/stanford.mjs';
 import {syracuseSchool,createSyracuseHandlers} from './schools/syracuse.mjs';
 import {wakeForestSchool,createWakeForestHandlers} from './schools/wake-forest.mjs';
 import {virginiaTechSchool,createVirginiaTechHandlers} from './schools/virginia-tech.mjs';
+import {boiseStateSchool,createBoiseStateHandlers} from './schools/boise-state.mjs';
+import {coloradoStateSchool,createColoradoStateHandlers} from './schools/colorado-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.107.0-mls';
+const VERSION='4.109.2-boise-state-colorado-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -514,6 +516,22 @@ const SCHOOL_MODULES=[
     results:[{matches:event=>wakeForestHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>wakeForestHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(wakeForestHandlers.isFinalWithoutStory).map(event=>wakeForestHandlers.attachArchiveStory(event)));if(sport==='Golf'&&wakeForestHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(wakeForestHandlers.isGolfAwaitingPlace).map(event=>wakeForestHandlers.attachGolfPlace(event)));return events.filter(event=>!wakeForestHandlers.isTennisWithoutStory(event)&&!wakeForestHandlers.isGolfWithoutStory?.(event));}}
   ,{school:virginiaTechSchool,parseSchedule:(...args)=>virginiaTechHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>virginiaTechHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>virginiaTechHandlers.matchesRecap(...args),crossCountry:{matches:event=>virginiaTechHandlers.isCrossCountry(event),attach:event=>virginiaTechHandlers.attachMeetResults(event)}}
+  ,{school:boiseStateSchool,parseSchedule:(...args)=>boiseStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>boiseStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>boiseStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>boiseStateHandlers.isCrossCountry(event),attach:event=>boiseStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(boiseStateHandlers.isFinalWithoutStory(event))await boiseStateHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>boiseStateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>boiseStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(boiseStateHandlers.isFinalWithoutStory).map(event=>boiseStateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&boiseStateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(boiseStateHandlers.isGolfAwaitingPlace).map(event=>boiseStateHandlers.attachGolfPlace(event)));return events.filter(event=>!boiseStateHandlers.isTennisWithoutStory(event)&&!boiseStateHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:coloradoStateSchool,parseSchedule:(...args)=>coloradoStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>coloradoStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>coloradoStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>coloradoStateHandlers.isCrossCountry(event),attach:event=>coloradoStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(coloradoStateHandlers.isFinalWithoutStory(event))await coloradoStateHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>coloradoStateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>coloradoStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(coloradoStateHandlers.isFinalWithoutStory).map(event=>coloradoStateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&coloradoStateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(coloradoStateHandlers.isGolfAwaitingPlace).map(event=>coloradoStateHandlers.attachGolfPlace(event)));return events.filter(event=>!coloradoStateHandlers.isTennisWithoutStory(event)&&!coloradoStateHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -585,7 +603,7 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Official schedule times are stored as the school's local wall clock with a
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
-const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles','British Columbia':'America/Vancouver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Colorado:'America/Denver',Nevada:'America/Los_Angeles','British Columbia':'America/Vancouver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
 // Formula 1 races are listed in Eastern time, as ESPN and US broadcasts list them.
 const SCHOOL_TIME_ZONES={tennessee:'America/New_York','formula-1':'America/New_York'};
 // The catalog's menus (src/catalog.mjs): D1 in production, the bundled cards
@@ -739,6 +757,8 @@ const stanfordHandlers=createStanfordHandlers({makeEvent,recapMatchesEvent,decod
 const syracuseHandlers=createSyracuseHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const wakeForestHandlers=createWakeForestHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const virginiaTechHandlers=createVirginiaTechHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const boiseStateHandlers=createBoiseStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const coloradoStateHandlers=createColoradoStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}
