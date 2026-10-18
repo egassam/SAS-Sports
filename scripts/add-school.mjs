@@ -25,7 +25,7 @@ const base=school.athletics_url.replace(/\/$/,'');
 async function page(url){
   try{const response=await fetch(url,{headers:{'user-agent':'SAS-Sports onboarding (+https://sas-sports.lovetogivepain.workers.dev)'}});if(response.ok)return{html:await response.text(),via:'direct'}}catch{}
   const key=process.env.SAS_SOURCE_KEY;if(!key)throw Error(`${url} refused the sandbox and SAS_SOURCE_KEY is not set`);
-  const response=await fetch(`https://sas-sports.lovetogivepain.workers.dev/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`}});
+  const response=await fetch(`${(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'')}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`}});
   if(!response.ok)throw Error(`${url}: ${response.status} through the private source`);
   return{html:await response.text(),via:'private source'};
 }

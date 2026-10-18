@@ -1057,6 +1057,196 @@
     ]
   },
   {
+    "id": "boise-state",
+    "name": "Boise State",
+    "short_name": "Boise State",
+    "state": "Idaho",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://broncosports.com",
+    "aliases": [
+      "Boise State University",
+      "Broncos",
+      "BSU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "broncosports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "colorado-state",
+    "name": "Colorado State",
+    "short_name": "Colorado State",
+    "state": "Colorado",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://csurams.com",
+    "aliases": [
+      "Colorado State University",
+      "Rams",
+      "CSU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "csurams",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fresno-state",
+    "name": "Fresno State",
+    "short_name": "Fresno State",
+    "state": "California",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobulldogs.com",
+    "aliases": [
+      "California State University, Fresno",
+      "Fresno State University",
+      "Bulldogs",
+      "Fresno St."
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobulldogs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "gonzaga",
+    "name": "Gonzaga",
+    "short_name": "Gonzaga",
+    "state": "Washington",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gozags.com",
+    "aliases": [
+      "Gonzaga University",
+      "Bulldogs",
+      "Zags"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gozags",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "oregon-state",
+    "name": "Oregon State",
+    "short_name": "Oregon State",
+    "state": "Oregon",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://osubeavers.com",
+    "aliases": [
+      "Oregon State University",
+      "Beavers",
+      "OSU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "osubeavers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "san-diego-state",
+    "name": "San Diego State",
+    "short_name": "San Diego State",
+    "state": "California",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goaztecs.com",
+    "aliases": [
+      "San Diego State University",
+      "Aztecs",
+      "SDSU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goaztecs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "texas-state",
+    "name": "Texas State",
+    "short_name": "Texas State",
+    "state": "Texas",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://txst.com",
+    "aliases": [
+      "Texas State University",
+      "Bobcats",
+      "TXST"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "txst",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utah-state",
+    "name": "Utah State",
+    "short_name": "Utah State",
+    "state": "Utah",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utahstateaggies.com",
+    "aliases": [
+      "Utah State University",
+      "Aggies",
+      "USU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utahstateaggies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "washington-state",
+    "name": "Washington State",
+    "short_name": "Washington State",
+    "state": "Washington",
+    "conference": "Pac-12",
+    "division": "NCAA Division I",
+    "athletics_url": "https://wsucougars.com",
+    "aliases": [
+      "Washington State University",
+      "Cougars",
+      "WSU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "wsucougars",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",
