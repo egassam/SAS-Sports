@@ -540,4 +540,6 @@ assert.deepEqual([...parse('Basketball','mens-basketball'),...parse('Lacrosse','
 assert.deepEqual(['Mantas Ko&ccaron;anas','Jos&eacute; Mu&ntilde;oz','&Aring;sa'].map(worker.decodeHtml),['Mantas Kočanas','José Muñoz','Åsa']);
 
 assert.equal(requests.length,0,'no unexpected network requests');
+// The site's nav links its INFLCR Exchange (found Oct 18 by add-school).
+assert.deepEqual(californiaSchool.inflcr,{school:'university-of-california-berkeley'});
 console.log('California module checks passed');

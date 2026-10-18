@@ -42,6 +42,8 @@ These four rules are also in the scaffold template (`scripts/templates/sidearm-h
 
 ## Athletes
 
+- **INFLCR Exchange (Oct 18):** cyclones.com links its INFLCR Exchange (`dash.inflcr.com/exchange/iowa-state-university`; missed by the Oct 16 NIL sweep, found by the improved `add-school` detector). The module sets `inflcr:{school:'iowa-state-university'}`: roster athletes without a profile link are looked up there before profile cards fill a slot.
+
 Three featured athletes per sport (`AGENTS.md` 5a). Cross Country: two roster cards carry Instagram (Nathan Pestka, Ryan Watts); no other card or profile page (24 read) publishes one, so an official roster-profile card fills the third slot. Tennis and Swimming & Diving: no roster card or profile page publishes Instagram; three official profile cards. `validate-schools --athletes-only` 12/12 in production (Oct 7).
 
 ## Limitations
