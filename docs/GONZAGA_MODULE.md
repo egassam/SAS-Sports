@@ -27,7 +27,7 @@ Every new rule was mutated and each mutation fails `node tests/gonzaga-module.mj
 
 ## Athletes
 
-Profile pages link Instagram in Baseball (37 of 38) and Basketball (23 of 28); none in the other sports. gozags.com links no NIL marketplace (homepage checked Oct 18), so profile cards (`athlete_profile_fallback_sports`) fill Cross Country, Golf, Rowing, Soccer, Tennis, Track & Field, Volleyball.
+Profile pages link Instagram in Baseball (37 of 38) and Basketball (23 of 28); none in the other sports. **Correction (Oct 18, later session):** gozags.com's nav does link an INFLCR Exchange (`app.inflcr.com/exchange/gonzaga-university`, under the student-athlete menu; the first check missed it). The module now sets `inflcr:{school:'gonzaga-university'}`, so roster athletes without a profile link are looked up there; profile cards (`athlete_profile_fallback_sports`) still fill whatever slots remain in Cross Country, Golf, Rowing, Soccer, Tennis, Track & Field, Volleyball.
 
 ## Open
 

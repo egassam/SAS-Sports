@@ -43,7 +43,9 @@ for(const sport of sports){
       const name=((String(page).match(/<title>([^<]*)/i)||[])[1]||'').replace(/&#8211;/g,'–').split(/\s+[-|–]\s+/)[0].replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/&amp;/g,'&').trim();
       // A season roster page ("2027 Softball Roster", Northwestern) links every
       // athlete: it is no athlete's page.
-      if(own.length&&!/\bRoster$/i.test(name))found.push({path,name,own,label:`${path.split('/').pop()}${name?` (${name})`:''}`});
+      // A WMT season roster ("/roster/season/2026", "Women's Volleyball
+      // 2026", San Diego State) matches the SIDEARM profile pattern.
+      if(own.length&&!/\bRoster$/i.test(name)&&!/\/roster\/season\/[^/]+$/.test(path))found.push({path,name,own,label:`${path.split('/').pop()}${name?` (${name})`:''}`});
     }));
   }
   // A team's own account is on every athlete's page (Michigan State's menu

@@ -51,6 +51,27 @@ if(found.has('Football')&&via){const home=await page(`${base}/`).catch(()=>null)
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);
+// A sport whose nav links both a men's and a women's page (Gonzaga and
+// Oregon State rowing, Oct 18: the scaffold wrote only the women's page).
+// scripts/start-schools.mjs reads this line and combines the two.
+const navHtml=via==='direct'||publisher==='WMT'?html:(await page(`${base}/`).catch(()=>({html})))?.html||html,teamPages={};
+for(const [,slug] of navHtml.matchAll(/href="(?:https?:\/\/[^"/]+)?\/sports\/((?:mens|womens)-[a-z-]+?)(?:\/schedule)?\/?"/g)){const sport=inferSport(`/sports/${slug}`);if(sport&&sports.includes(sport))(teamPages[sport]??=new Set()).add(slug)}
+const twoTeams=Object.entries(teamPages).filter(([,slugs])=>[...slugs].some(s=>s.startsWith('mens-'))&&[...slugs].some(s=>s.startsWith('womens-')));
+if(twoTeams.length)console.log(`team pages: ${twoTeams.map(([sport,slugs])=>`${sport}=${[...slugs].sort().join(',')}`).join('; ')}`);
+// The school's NIL marketplace (INFLCR Exchange or Opendorse), linked from
+// the homepage or its NIL page (Oregon State, San Diego State, Fresno State's
+// /feature/NIL): scripts/start-schools.mjs wires an INFLCR one.
+let nil=null;
+// The nav's own NIL page first (San Diego State's /sports/aztec-nil).
+const nilPages=[...new Set([...navHtml.matchAll(/href="((?:https?:\/\/[^"/]+)?\/(?:sports|feature|nil)\/[a-z-]*nil[a-z-]*)\/?"/gi)].map(m=>m[1].startsWith('/')?`${base}${m[1]}`:m[1]).filter(u=>u.startsWith(base)))];
+// A WMT nav comes from the site's API: its NIL page is a "sport" there.
+if(publisher==='WMT')try{const r=await fetch(`${base}/website-api/sports?per_page=100`,{signal:AbortSignal.timeout(20000)});for(const sport of (await r.json()).data||[])if(/(?:^|-)nil(?:-|$)/.test(sport.slug))nilPages.push(`${base}/sports/${sport.slug}`);}catch{}
+for(const url of [null,...nilPages.slice(0,2),`${base}/feature/NIL`,`${base}/sports/nil`]){
+  const text=url?(await page(url).catch(()=>null))?.html||'':navHtml;
+  const found_=text.match(/app\.inflcr\.com\/exchange\/([a-z0-9-]+)/i)||text.match(/opendorse\.com\/(?!profile\b)([a-z0-9-]+)/i);
+  if(found_){nil=`${/inflcr/i.test(found_[0])?'inflcr':'opendorse'}:${found_[1]}`;break;}
+}
+console.log(`NIL marketplace: ${nil||`none linked (homepage, ${[...nilPages.slice(0,2),'/feature/NIL','/sports/nil'].join(', ')})`}`);
 if(publisher==='WMT')console.log('WMT site: scripts/start-schools.mjs ports it from a WMT card reader (scripts/port-wmt.mjs, --wmt-from=nebraska or iowa), not the SIDEARM kit.');
 
 const theme=value('theme')?.split(',');

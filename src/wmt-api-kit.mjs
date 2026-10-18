@@ -18,8 +18,9 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 const GAME_EVENT=/\b(?:tournament|championships?|final four|regionals?|rounds?|(?:quarter|semi)?finals?|bowl)\b/i;
 // An event, not a team: a dual is "vs"/"at" its opponent, a meet "at".
 const EVENT_NAME=/\b(?:invit\w*|invite|classic|championships?|open|relays|duals|collegiate|intercollegiate|tournament|festival|cup|regionals?|nationals?|trials|NAC|olympics|series|fest|meet|league|match(?: \d+)?|wild card)\b/i;
-// The tennis pages list players' pro events ("M15 Ann Arbor", "Sumter W15").
-const PRO_EVENT=/^(?:\d{4}\s+)?(?:ITF|ATP|WTA)\b|\bFutures\b|\b[MW]\d{2,3}\b|\bUTR\b/i;
+// The tennis pages list players' pro events ("M15 Ann Arbor", "Sumter W15",
+// San Diego State's "San Diego Challenger").
+const PRO_EVENT=/^(?:\d{4}\s+)?(?:ITF|ATP|WTA)\b|\bFutures\b|\bChallenger\b|\b[MW]\d{2,3}\b|\bUTR\b/i;
 // Internal events: intrasquads, scrimmages, "Blue-Gold".
 const INTERNAL=/\bintrasquad\b|\bscrimmages?\b|^blue\s*(?:&|and|-|\/|vs\.?)\s*gold\b/i;
 
@@ -54,21 +55,24 @@ const place=(tie,n,suffix)=>`${tie?'T':''}${n}${suffix.toLowerCase()}`;
 // team place.
 export function wmtMeetResult(text,sport){
   const value=String(text||'').replace(/\s+/g,' ').trim();if(!value)return null;
-  const golf=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th),?\s*(\d{3,4})\s*\(([+-]?\d+|E)\)$/i);
-  if(golf){const at=place(golf[1],golf[2],golf[3]);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${golf[4]} (${golf[5]})`}]};}
+  // San Diego State's: "4th - 890 (+26)", "T-10th of 12; 906 (+42)".
+  const golf=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: of (\d+))?(?:,|;|\s+-)?\s*(\d{3,4})\s*\(([+-]?\d+|E)\)$/i);
+  if(golf){const at=`${place(golf[1],golf[2],golf[3])}${golf[4]?` of ${golf[4]}`:''}`;return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${golf[5]} (${golf[6]})`}]};}
   // Virginia Tech's golf: "1st/18 (286-278-280)", "T2nd/17 (272-274-280)":
   // the place in the field, then each round's team score.
   const rounds=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)\/(\d+)\s*\((\d{3}(?:-\d{3})*)\)$/i);
   if(rounds){const at=`${place(rounds[1],rounds[2],rounds[3])} of ${rounds[4]}`,scores=rounds[5].split('-').map(Number);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${scores.reduce((a,b)=>a+b,0)} (${rounds[5]})`}]};}
-  const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th) of (\d+)(?:\s*\((\d+(?:\.\d+)?)(?:\s*pts)?\))?$/i);
-  if(fielded){const at=`${place(fielded[1],fielded[2],fielded[3])} of ${fielded[4]}`;return{headline:at,results:[{label:'Result',value:at},...(fielded[5]?[{label:'Team score',value:`${fielded[5]} pts`}]:[])]};}
+  // San Diego State's: "1st of 5 teams (1,090.50 pts)"; cross country "6th
+  // (157 pts)", the field not given.
+  const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: of (\d+)(?: teams)?)?(?:\s*\((\d[\d,]*(?:\.\d+)?)(?:\s*pts)?\))?$/i);
+  if(fielded&&(fielded[4]||fielded[5])){const at=`${place(fielded[1],fielded[2],fielded[3])}${fielded[4]?` of ${fielded[4]}`:''}`;return{headline:at,results:[{label:'Result',value:at},...(fielded[5]?[{label:'Team score',value:`${fielded[5]} pts`}]:[])]};}
   const teams=[...value.matchAll(/\b([MW])\s*[-:]\s*(T-?)?(\d+)(st|nd|rd|th)\b(?:\s*\((\d+)(?:\s+([A-Za-z]+))?\))?/gi)].map(m=>{
     const race=m[6]&&!/^championship$/i.test(m[6])?` (${m[6]} race)`:'';
     return{label:`${m[1].toUpperCase()==='W'?"Women's":"Men's"} team`,value:`${place(m[2],m[3],m[4])}${m[5]?` · ${m[5]} pts`:''}${race}`};
   });
   if(teams.length)return{headline:teams.map(row=>`${row.label}: ${row.value}`).join(' / '),results:teams};
   if(/^ind(?:\.|ividual)? results$/i.test(value))return{headline:'Individual results',results:[{label:'Result',value:'Individual results'}]};
-  if(/^no team scores?$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
+  if(/^(?:no team scores?|NTS)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
   return{headline:value,results:[{label:'Result',value}]};
 }
 
@@ -83,7 +87,9 @@ export function mergeWmtMeetEntries(games){
   const open=new Map(),out=[];
   const time=game=>Date.parse(game.datetime);
   for(const game of [...games].sort((a,b)=>time(a)-time(b))){
-    const name=String(game?.tournament?.name||'').trim(),scored=game?.schedule_event_result?.winning_score!=null;
+    // San Diego State's golf rounds carry no tournament: one entry a day,
+    // each named after the tournament.
+    const name=String(game?.tournament?.name||game?.opponent_name||'').trim(),scored=game?.schedule_event_result?.winning_score!=null;
     if(!name||scored){out.push(game);continue;}
     const group=open.get(name);
     if(group&&time(game)-time(group.at(-1))<=2*86400000){group.push(game);continue;}
@@ -110,7 +116,7 @@ export function mergeWmtMeetEntries(games){
     const distinct=new Set(texts.map(g=>String(g.opponent_name||'').trim())).size===texts.length&&new Set(texts.map(g=>String(g.schedule_event_result.text).trim())).size>1;
     const result=texts.length>1&&distinct?{...last.schedule_event_result,text:texts.map(g=>`${String(g.opponent_name||'').trim()}: ${String(g.schedule_event_result.text).trim()}`).join(' · ')}:texts.length===1?texts[0].schedule_event_result:last.schedule_event_result;
     const lastDay=String(ends.at(-1)).slice(0,10)>String(first.datetime).slice(0,10)?ends.at(-1):null;
-    return{...last,datetime:first.datetime,datetime_end:lastDay,opponent_name:String(first.tournament.name).trim(),second_opponent_name:null,
+    return{...last,datetime:first.datetime,datetime_end:lastDay,opponent_name:String(first.tournament?.name||first.opponent_name).trim(),second_opponent_name:null,
       status:sorted.every(g=>g.status==='completed')?'completed':last.status,post_event_article:story,schedule_event_result:result,
       opponent_results:texts.length>1&&distinct?texts.map(g=>({label:String(g.opponent_name||'').trim(),value:String(g.schedule_event_result.text).trim()})):null,
       schedule_event_links:sorted.flatMap(g=>g.schedule_event_links||[])};
@@ -168,7 +174,13 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       if(second&&!/\bteam (?:meet|event)\b/i.test(second))name=`${name} and ${second}`;
       // Exhibitions read as K-State labels them ("Dayton (Exhibition)").
       const exhibition=Boolean(game.is_exhibition)||/\((?:exh\.?|exhibition)\)$/i.test(name);
-      let opponent=name.replace(/\s*\((?:exh\.?|exhibition)\)$/i,'').trim();
+      // A ranking written into the name (San Diego State's "#9 San Diego",
+      // "No. 10 Washington", "(rv) Cal Poly") is not part of it.
+      let opponent=name.replace(/\s*\((?:exh\.?|exhibition)\)$/i,'').replace(/^(?:#\d+|No\.\s*\d+|\((?:rv|\d+)\))\s+/i,'').trim();
+      // A cross country meet named by its host ("Oregon", "UC Riverside"):
+      // its story names the meet ("... at Bill Dellinger Invitational").
+      const storyMeet=sport==='Cross Country'&&!EVENT_NAME.test(opponent)&&String(game.post_event_article?.title||'').match(/\bat (?:the )?((?:[A-Z0-9][\w'’.&-]*\s+){0,5}(?:Invitational|Invite|Classic|Championships?|Open|Challenge|Festival))\b/);
+      if(storyMeet)opponent=decodeHtml(storyMeet[1]).replace(/’/g,"'").trim();
       if(exhibition)opponent=`${opponent} (Exhibition)`;
       const score=game.status==='completed'?wmtScore(game.schedule_event_result):null;
       const text=String(game.schedule_event_result?.text||'').trim();
