@@ -68,7 +68,7 @@ const nilPages=[...new Set([...navHtml.matchAll(/href="((?:https?:\/\/[^"/]+)?\/
 if(publisher==='WMT')try{const r=await fetch(`${base}/website-api/sports?per_page=100`,{signal:AbortSignal.timeout(20000)});for(const sport of (await r.json()).data||[])if(/(?:^|-)nil(?:-|$)/.test(sport.slug))nilPages.push(`${base}/sports/${sport.slug}`);}catch{}
 for(const url of [null,...nilPages.slice(0,2),`${base}/feature/NIL`,`${base}/sports/nil`]){
   const text=url?(await page(url).catch(()=>null))?.html||'':navHtml;
-  const found_=text.match(/app\.inflcr\.com\/exchange\/([a-z0-9-]+)/i)||text.match(/opendorse\.com\/(?!profile\b)([a-z0-9-]+)/i);
+  const found_=text.match(/(?:app|dash)\.inflcr\.com\/exchange\/([a-z0-9-]+)/i)||text.match(/opendorse\.com\/(?!profile\b)([a-z0-9-]+)/i);
   if(found_){nil=`${/inflcr/i.test(found_[0])?'inflcr':'opendorse'}:${found_[1]}`;break;}
 }
 console.log(`NIL marketplace: ${nil||`none linked (homepage, ${[...nilPages.slice(0,2),'/feature/NIL','/sports/nil'].join(', ')})`}`);

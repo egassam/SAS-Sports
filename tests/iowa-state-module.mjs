@@ -449,4 +449,6 @@ assert.equal(worker.iowaStateHandlers.parseSchedule(fixture('football-schedule.h
 assert.equal(worker.iowaStateHandlers.parseSchedule(fixture('football-schedule.html.gz'),schools.find(s=>s.id==='tcu'),'Football',page('football'),now),null);
 requests.length=0;
 assert.equal(requests.length,0,'no unexpected network requests');
+// The site's nav links its INFLCR Exchange (found Oct 18 by add-school).
+assert.deepEqual(iowaStateSchool.inflcr,{school:'iowa-state-university'});
 console.log('Iowa State module checks passed');

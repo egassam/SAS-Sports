@@ -34,6 +34,8 @@ Every rule was mutated and each mutation fails `node tests/california-module.mjs
 
 ## Athletes
 
+- **INFLCR Exchange (Oct 18):** calbears.com links "GOLDEN: The Official NIL Program of Cal Athletics" (`app.inflcr.com/exchange/university-of-california-berkeley`; missed by the Oct 16 NIL sweep, found by the improved `add-school` detector). The module sets `inflcr:{school:'university-of-california-berkeley'}`: roster athletes without a profile link are looked up there before profile cards fill a slot.
+
 Three featured athletes per sport. Pinned from the profile pages (Oct 14): Golf, Swimming & Diving, Tennis (three each), Water Polo (Riley Clansen). **Profile cards** (`athlete_profile_fallback_sports`): Cross Country (0 of 35 profiles), Field Hockey (0 of 21), Gymnastics (0 of 40), Rowing (0 of 59), Soccer (0 of 90), Softball (0 of 24), Track & Field (0 of 100), Water Polo (1 of 44). Gymnastics rosters publish no athlete portraits either: its cards show initials (`portraitlessProfileSports`, Cal only). Accented names written as entities ("Ko&ccaron;anas") are decoded (shared `decodeHtml`).
 
 ## Open
