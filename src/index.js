@@ -84,9 +84,11 @@ import {boiseStateSchool,createBoiseStateHandlers} from './schools/boise-state.m
 import {coloradoStateSchool,createColoradoStateHandlers} from './schools/colorado-state.mjs';
 import {fresnoStateSchool,createFresnoStateHandlers} from './schools/fresno-state.mjs';
 import {gonzagaSchool,createGonzagaHandlers} from './schools/gonzaga.mjs';
+import {oregonStateSchool,createOregonStateHandlers} from './schools/oregon-state.mjs';
+import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-diego-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.110.0-fresno-state-gonzaga';
+const VERSION='4.111.1-oregon-state-san-diego-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -550,6 +552,15 @@ const SCHOOL_MODULES=[
     // (kit createGolfStoryPlace, when the handlers spread it).
     results:[{matches:event=>gonzagaHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>gonzagaHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(gonzagaHandlers.isFinalWithoutStory).map(event=>gonzagaHandlers.attachArchiveStory(event)));if(sport==='Golf'&&gonzagaHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(gonzagaHandlers.isGolfAwaitingPlace).map(event=>gonzagaHandlers.attachGolfPlace(event)));return events.filter(event=>!gonzagaHandlers.isTennisWithoutStory(event)&&!gonzagaHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:oregonStateSchool,parseSchedule:(...args)=>oregonStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>oregonStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>oregonStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>oregonStateHandlers.isCrossCountry(event),attach:event=>oregonStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(oregonStateHandlers.isFinalWithoutStory(event))await oregonStateHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>oregonStateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>oregonStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(oregonStateHandlers.isFinalWithoutStory).map(event=>oregonStateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&oregonStateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(oregonStateHandlers.isGolfAwaitingPlace).map(event=>oregonStateHandlers.attachGolfPlace(event)));return events.filter(event=>!oregonStateHandlers.isTennisWithoutStory(event)&&!oregonStateHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:sanDiegoStateSchool,parseSchedule:(...args)=>sanDiegoStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>sanDiegoStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>sanDiegoStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>sanDiegoStateHandlers.isCrossCountry(event),attach:event=>sanDiegoStateHandlers.attachMeetResults(event)}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -779,6 +790,8 @@ const boiseStateHandlers=createBoiseStateHandlers({makeEvent,recapMatchesEvent,e
 const coloradoStateHandlers=createColoradoStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const fresnoStateHandlers=createFresnoStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const gonzagaHandlers=createGonzagaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const oregonStateHandlers=createOregonStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const sanDiegoStateHandlers=createSanDiegoStateHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

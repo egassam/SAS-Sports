@@ -791,6 +791,14 @@
     "line": "#1a352f",
     "onAccent": "#ffffff"
   },
+  "oregon-state": {
+    "primary": "#DC4405",
+    "secondary": "#000000",
+    "panel": "#39180e",
+    "panelDark": "#1b0b08",
+    "line": "#873416",
+    "onAccent": "#ffffff"
+  },
   "orlando-city": {
     "primary": "#60269E",
     "secondary": "#F0D283",
@@ -877,6 +885,14 @@
     "panel": "#202328",
     "panelDark": "#0f1114",
     "line": "#485257",
+    "onAccent": "#ffffff"
+  },
+  "san-diego-state": {
+    "primary": "#A6192E",
+    "secondary": "#000000",
+    "panel": "#2d0e17",
+    "panelDark": "#15070c",
+    "line": "#6a1c2c",
     "onAccent": "#ffffff"
   },
   "san-francisco-49ers": {

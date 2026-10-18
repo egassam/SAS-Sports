@@ -894,6 +894,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "oregon-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "orlando-city": [
     "Soccer"
   ],
@@ -979,6 +993,21 @@
   ],
   "san-diego-fc": [
     "Soccer"
+  ],
+  "san-diego-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "san-francisco-49ers": [
     "Football"

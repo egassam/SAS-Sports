@@ -348,5 +348,7 @@ void [parse,line,ownRecapsOnly,live];
 // Gonzaga sponsors no football: no route, no athletes.
 assert.ok(!gonzagaSchool.pageDataSports.has('Football')&&!gonzagaSchool.scheduleUrls['gonzaga|Football']);
 
+// gozags.com's nav links its INFLCR Exchange (found Oct 18 by add-school).
+assert.deepEqual(gonzagaSchool.inflcr,{school:'gonzaga-university'});
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Gonzaga module checks passed');

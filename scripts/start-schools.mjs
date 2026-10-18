@@ -58,6 +58,8 @@ for(const {id,theme} of targets){
   if(add.code){notes.push(`${id}: add-school failed (${add.log})`);continue}
   const scaffold=await run(id,'scaffold',['scripts/scaffold-school.mjs',`--school=${id}`,'--write']);
   if(scaffold.code){notes.push(`${id}: scaffold failed (${scaffold.log})`);continue}
+  school.nil=add.text.match(/^NIL marketplace: ((?:inflcr|opendorse):\S+)/m)?.[1]||null;
+  school.teamPages=Object.fromEntries((add.text.match(/^team pages: (.*)$/m)?.[1]||'').split('; ').filter(Boolean).map(x=>{const [sport,slugs]=x.split('=');return[sport,slugs.split(',')]}));
   if(/: WMT /.test(add.text)){
     // A WMT site with its own JSON schedule API (Stanford, Virginia Tech)
     // needs only the shared API kit's config: no card reader to port.
@@ -88,6 +90,21 @@ await Promise.all(ready.map(async school=>{
   const teams=sponsored[school.id].includes('Cross Country')?await tfrrsTeams(school):null;
   if(teams)text=text.replace(/(_TFRRS_TEAMS=)\{Women:null,Men:null\};/,`$1{Women:'${teams.Women}',Men:'${teams.Men}'};`);
   else if(sponsored[school.id].includes('Cross Country'))notes.push(`${school.id}: TFRRS team page not found by address; find it on a conference meet page (Big Ten: /results/xc/27246) and pass --tfrrs-f/--tfrrs-m`);
+  // Both team pages of a sport the nav links twice (add-school's "team
+  // pages" line), combined: the scaffold's candidates kept only one.
+  for(const [sport,slugs] of Object.entries(school.teamPages||{})){
+    if(text.includes(`/sports/${slugs[0]}/schedule`)&&text.includes(`/sports/${slugs[1]}/schedule`))continue;
+    const host=new URL(school.athletics_url).origin;
+    for(const kind of ['schedule','roster'])text=text.replace(new RegExp(`('${school.id}\\|${sport.replace(/&/g,'&')}':)'[^']*'`,'g'),(line,key)=>line.includes(`/${kind}'`)?`${key}[${slugs.map(slug=>`'${host}/sports/${slug}/${kind}'`).join(',')}]`:line);
+    text=text.replace(/combinedSports:new Set\(\[([^\]]*)\]\)/,(all,list)=>list.includes(`'${sport}'`)?all:`combinedSports:new Set([${[list,`'${sport}'`].filter(Boolean).join(',')}])`);
+    notes.push(`${school.id}: ${sport} combined from the nav's team pages (${slugs.join(', ')})`);
+  }
+  // The INFLCR Exchange add-school found (an Opendorse marketplace needs its
+  // team name: by hand, as Colorado State's).
+  const nil=school.nil?.match(/^(inflcr|opendorse):(.+)$/);
+  if(nil?.[1]==='inflcr'&&!text.includes('inflcr:{'))text=text.replace(`  id:'${school.id}',\n`,`  id:'${school.id}',\n  // The school's INFLCR Exchange, its official NIL marketplace (linked from\n  // ${new URL(school.athletics_url).hostname}): athlete Instagram for a sport still short of three (src/inflcr.mjs).\n  inflcr:{school:'${nil[2]}'},\n`);
+  if(nil?.[1]==='opendorse')notes.push(`${school.id}: Opendorse marketplace ${nil[2]}: add opendorse:{marketplace:'${nil[2]}',team:'<its team name>'} (Colorado State's)`);
+  if(nil)notes.push(`${school.id}: NIL marketplace ${school.nil}`);
   school.tfrrs=teams;writeFileSync(file,text);
 }));
 console.log(`[${clock()}] modules ready: ${ready.map(s=>`${s.id} (${sponsored[s.id].length} sports${s.tfrrs?', TFRRS':''})`).join(', ')}`);
@@ -104,7 +121,14 @@ await Promise.all(ready.map(async school=>{
   const none=[...athletes.text.matchAll(/^([^:\n]+): \d+ profile pages read; athlete Instagram on 0\b/gm)].map(m=>m[1]);
   const few=[...athletes.text.matchAll(/^([^:\n]+): \d+ profile pages read; athlete Instagram on ([1-9]|1[0-2])\b/gm)].map(m=>`${m[1]} (${m[2]})`);
   if(none.length)notes.push(`${id}: profile-card sports (0 links): ${none.join(', ')} → athlete_profile_fallback_sports`);
-  if(few.length)notes.push(`${id}: pin these (12 links or fewer; lines in ${athletes.log}): ${few.join(', ')}`);
+  // The pins athlete-evidence printed go into the module at once (every
+  // session pasted them by hand); check them for three distinct names.
+  const pins=athletes.text.split('\n').filter(line=>line.startsWith(`    '${id}|`));
+  if(pins.length){
+    const file=new URL(`src/schools/${id}.mjs`,root),text=readFileSync(file,'utf8');
+    if(text.includes('verifiedInstagrams:{},')){writeFileSync(file,text.replace('verifiedInstagrams:{},',`verifiedInstagrams:{\n${pins.join('\n').replace(/,$/,'')}\n  },`));notes.push(`${id}: ${pins.length} Instagram pins written for ${few.join(', ')} (check the names)`);}
+    else notes.push(`${id}: pin these (12 links or fewer; lines in ${athletes.log}): ${few.join(', ')}`);
+  }
   const pruned=fixtures.text.match(/--prune: .*/);if(pruned)notes.push(`${id}: ${pruned[0]}`);
   const survey=await run(id,'survey',['scripts/survey-school.mjs',`--school=${id}`]);
   const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME/.test(l));
