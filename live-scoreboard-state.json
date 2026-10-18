@@ -316,24 +316,13 @@
    "state": "off"
   },
   "baylor|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:39:01.462Z",
-   "last_detail": "live 22-24 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "baylor|Volleyball||2026-10-18|1",
-    "title": "Baylor at TCU",
-    "started_seen": "2026-10-18T20:29:49.921Z",
-    "live_passes": [
-     "2026-10-18T20:29:49.921Z",
-     "2026-10-18T20:32:11.861Z",
-     "2026-10-18T20:33:32.868Z",
-     "2026-10-18T20:34:55.619Z",
-     "2026-10-18T20:36:37.520Z",
-     "2026-10-18T20:37:40.169Z",
-     "2026-10-18T20:39:01.462Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:28.132Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:28.132Z",
+   "verified_game": "Baylor at TCU",
+   "verified_detail": "final W, 3-0"
   },
   "cincinnati|Baseball": {
    "state": "off"
@@ -1581,7 +1570,26 @@
    "state": "off"
   },
   "ohio-state|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-18T22:42:58.712Z",
+   "last_detail": "live 0-2 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ohio-state|Volleyball|Women's|2026-10-18|1",
+    "title": "Women's · Ohio State at UCLA",
+    "started_seen": "2026-10-18T22:34:30.042Z",
+    "live_passes": [
+     "2026-10-18T22:34:30.042Z",
+     "2026-10-18T22:35:51.697Z",
+     "2026-10-18T22:36:52.839Z",
+     "2026-10-18T22:37:53.683Z",
+     "2026-10-18T22:38:54.776Z",
+     "2026-10-18T22:39:55.454Z",
+     "2026-10-18T22:40:56.614Z",
+     "2026-10-18T22:41:57.705Z",
+     "2026-10-18T22:42:58.712Z"
+    ],
+    "final_ok": false
+   }
   },
   "oregon|Baseball": {
    "state": "off"
@@ -1746,24 +1754,13 @@
    "state": "off"
   },
   "rutgers|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:39:01.644Z",
-   "last_detail": "live 8-7 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "rutgers|Volleyball||2026-10-18|1",
-    "title": "Rutgers at Oregon",
-    "started_seen": "2026-10-18T20:29:50.193Z",
-    "live_passes": [
-     "2026-10-18T20:29:50.193Z",
-     "2026-10-18T20:31:51.728Z",
-     "2026-10-18T20:33:53.886Z",
-     "2026-10-18T20:35:16.354Z",
-     "2026-10-18T20:36:37.526Z",
-     "2026-10-18T20:37:39.374Z",
-     "2026-10-18T20:39:01.644Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:29.160Z",
+   "last_detail": "final L, 1-3",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:29.160Z",
+   "verified_game": "Rutgers at Oregon",
+   "verified_detail": "final L, 1-3"
   },
   "ucla|Baseball": {
    "state": "off"
@@ -1793,7 +1790,26 @@
    "state": "off"
   },
   "ucla|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-18T22:42:58.851Z",
+   "last_detail": "live 2-0 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ucla|Volleyball||2026-10-18|1",
+    "title": "UCLA vs Ohio State",
+    "started_seen": "2026-10-18T22:34:28.469Z",
+    "live_passes": [
+     "2026-10-18T22:34:28.469Z",
+     "2026-10-18T22:35:51.846Z",
+     "2026-10-18T22:36:52.754Z",
+     "2026-10-18T22:37:53.770Z",
+     "2026-10-18T22:38:54.764Z",
+     "2026-10-18T22:39:55.613Z",
+     "2026-10-18T22:40:56.641Z",
+     "2026-10-18T22:41:57.713Z",
+     "2026-10-18T22:42:58.851Z"
+    ],
+    "final_ok": false
+   }
   },
   "ucla|Water Polo": {
    "state": "off"
@@ -2024,24 +2040,13 @@
    "state": "off"
   },
   "california|Field Hockey": {
-   "state": "on",
-   "last_check": "2026-10-18T20:38:41.493Z",
-   "last_detail": "live 1-1 · 17:08 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "california|Field Hockey||2026-10-18|1",
-    "title": "Cal at UC Davis",
-    "started_seen": "2026-10-18T20:29:50.587Z",
-    "live_passes": [
-     "2026-10-18T20:29:50.587Z",
-     "2026-10-18T20:31:51.634Z",
-     "2026-10-18T20:33:33.129Z",
-     "2026-10-18T20:34:54.456Z",
-     "2026-10-18T20:36:17.182Z",
-     "2026-10-18T20:37:40.063Z",
-     "2026-10-18T20:38:41.493Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:28.480Z",
+   "last_detail": "final W, 7-1",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:28.480Z",
+   "verified_game": "Cal at UC Davis",
+   "verified_detail": "final W, 7-1"
   },
   "california|Football": {
    "state": "off"
@@ -2050,33 +2055,38 @@
    "state": "off"
   },
   "california|Soccer": {
-   "state": "off",
-   "last_check": "2026-10-15T00:37:55.296Z",
-   "last_detail": "final W, 4-0 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-18T22:42:58.835Z",
+   "last_detail": "live 2-1 · 65' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "california|Soccer|Men's|2026-10-18|1",
+    "title": "Men's · Cal vs NC State",
+    "started_seen": "2026-10-18T22:34:29.350Z",
+    "live_passes": [
+     "2026-10-18T22:34:29.350Z",
+     "2026-10-18T22:35:30.910Z",
+     "2026-10-18T22:36:52.619Z",
+     "2026-10-18T22:37:53.863Z",
+     "2026-10-18T22:38:54.760Z",
+     "2026-10-18T22:39:55.728Z",
+     "2026-10-18T22:40:56.928Z",
+     "2026-10-18T22:41:57.849Z",
+     "2026-10-18T22:42:58.835Z"
+    ],
+    "final_ok": false
+   }
   },
   "california|Softball": {
    "state": "off"
   },
   "california|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:38:41.271Z",
-   "last_detail": "live 3-2 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "california|Volleyball||2026-10-18|1",
-    "title": "Cal vs Wake Forest",
-    "started_seen": "2026-10-18T20:29:51.713Z",
-    "live_passes": [
-     "2026-10-18T20:29:51.713Z",
-     "2026-10-18T20:31:51.594Z",
-     "2026-10-18T20:33:12.691Z",
-     "2026-10-18T20:35:15.697Z",
-     "2026-10-18T20:36:37.538Z",
-     "2026-10-18T20:37:40.330Z",
-     "2026-10-18T20:38:41.271Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:29.668Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:29.668Z",
+   "verified_game": "Cal vs Wake Forest",
+   "verified_detail": "final W, 3-1"
   },
   "california|Water Polo": {
    "state": "off"
@@ -2304,24 +2314,13 @@
    "state": "off"
   },
   "nc-state|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:39:01.559Z",
-   "last_detail": "live 2-6 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "nc-state|Volleyball||2026-10-18|1",
-    "title": "NC State at Stanford",
-    "started_seen": "2026-10-18T20:29:50.285Z",
-    "live_passes": [
-     "2026-10-18T20:29:50.285Z",
-     "2026-10-18T20:31:51.711Z",
-     "2026-10-18T20:33:12.720Z",
-     "2026-10-18T20:35:15.682Z",
-     "2026-10-18T20:36:37.544Z",
-     "2026-10-18T20:37:40.397Z",
-     "2026-10-18T20:39:01.559Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:29.192Z",
+   "last_detail": "final L, 1-3",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:29.192Z",
+   "verified_game": "NC State at Stanford",
+   "verified_detail": "final L, 1-3"
   },
   "north-carolina|Baseball": {
    "state": "off"
@@ -2522,24 +2521,13 @@
    "state": "off"
   },
   "stanford|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:39:01.553Z",
-   "last_detail": "live 6-2 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "stanford|Volleyball|Women's|2026-10-18|1",
-    "title": "Women's · Stanford vs NC State",
-    "started_seen": "2026-10-18T20:30:10.351Z",
-    "live_passes": [
-     "2026-10-18T20:30:10.351Z",
-     "2026-10-18T20:31:31.256Z",
-     "2026-10-18T20:33:32.937Z",
-     "2026-10-18T20:35:15.746Z",
-     "2026-10-18T20:36:38.127Z",
-     "2026-10-18T20:37:39.571Z",
-     "2026-10-18T20:39:01.553Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:28.211Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:28.211Z",
+   "verified_game": "Women's · Stanford vs NC State",
+   "verified_detail": "final W, 3-1"
   },
   "stanford|Water Polo": {
    "state": "off"
@@ -2617,24 +2605,13 @@
    "verified_detail": "final L, 0-2"
   },
   "wake-forest|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T20:38:41.696Z",
-   "last_detail": "live 2-3 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "wake-forest|Volleyball||2026-10-18|1",
-    "title": "Wake Forest at California",
-    "started_seen": "2026-10-18T20:29:50.355Z",
-    "live_passes": [
-     "2026-10-18T20:29:50.355Z",
-     "2026-10-18T20:31:51.698Z",
-     "2026-10-18T20:33:13.328Z",
-     "2026-10-18T20:35:15.691Z",
-     "2026-10-18T20:36:37.499Z",
-     "2026-10-18T20:37:39.954Z",
-     "2026-10-18T20:38:41.696Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T22:34:28.163Z",
+   "last_detail": "final L, 1-3",
+   "game": null,
+   "verified_at": "2026-10-18T22:34:28.163Z",
+   "verified_game": "Wake Forest at California",
+   "verified_detail": "final L, 1-3"
   },
   "virginia-tech|Baseball": {
    "state": "off"
@@ -2734,9 +2711,51 @@
   },
   "gonzaga|Volleyball": {
    "state": "off"
+  },
+  "oregon-state|Baseball": {
+   "state": "off"
+  },
+  "oregon-state|Basketball": {
+   "state": "off"
+  },
+  "oregon-state|Football": {
+   "state": "off"
+  },
+  "oregon-state|Soccer": {
+   "state": "off"
+  },
+  "oregon-state|Softball": {
+   "state": "off"
+  },
+  "oregon-state|Volleyball": {
+   "state": "off"
+  },
+  "san-diego-state|Baseball": {
+   "state": "off"
+  },
+  "san-diego-state|Basketball": {
+   "state": "off"
+  },
+  "san-diego-state|Football": {
+   "state": "off"
+  },
+  "san-diego-state|Lacrosse": {
+   "state": "off"
+  },
+  "san-diego-state|Soccer": {
+   "state": "off"
+  },
+  "san-diego-state|Softball": {
+   "state": "off"
+  },
+  "san-diego-state|Volleyball": {
+   "state": "off"
+  },
+  "san-diego-state|Water Polo": {
+   "state": "off"
   }
  },
- "version": "4.110.0-fresno-state-gonzaga",
- "updated_at": "2026-10-18T20:39:01.646Z",
+ "version": "4.111.2-inflcr-iowa-state-california",
+ "updated_at": "2026-10-18T22:42:58.854Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
