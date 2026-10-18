@@ -44,6 +44,12 @@ export const sidearmRelation=game=>game.location_indicator==='A'?'at':game.locat
 // A meet's published team finishes as text ("Women 3rd, Men 4th").
 export const sidearmMeetPlacing=result=>String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim();
 
+// A story whose address names another sport is not the event's, even when
+// the schedule links it (Fresno State's equestrian meet at TCU, Oct 8, linked
+// the football game-day story). Only sports no other team's stories share.
+const STORY_SPORTS=[[/^football-/,'Football'],[/^baseball-/,'Baseball'],[/^softball-/,'Softball'],[/^equestrian-/,'Equestrian'],[/^(?:mens|womens)-basketball-/,'Basketball']];
+export const otherSportStory=(path,sport)=>{const slug=String(path).split('/').pop()||'';const named=STORY_SPORTS.find(([pattern])=>pattern.test(slug));return Boolean(named&&sport&&named[1]!==sport);};
+
 export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAME'}){
   const {id,host,sports,today:todayOf,squadSports=new Set()}=config;
   const listed=config.listed||(games=>games);
@@ -118,7 +124,7 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
           try{
             const link=new URL(candidate,sourceUrl),dated=link.pathname.match(/^\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
             const published=dated?Date.UTC(Number(dated[1]),Number(dated[2])-1,Number(dated[3])):NaN;
-            if(link.hostname===host&&dated&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000){
+            if(link.hostname===host&&dated&&!otherSportStory(link.pathname,sport)&&published>=Date.parse(`${firstDay}T00:00:00Z`)&&published<=Date.parse(`${lastDay}T00:00:00Z`)+3*86400000){
               event.recap_url=link.href;config.onRecap?.(event,link.href,ctx);break;
             }
           }catch{}
