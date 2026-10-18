@@ -76,25 +76,13 @@
    "state": "off"
   },
   "oklahoma-state|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.040Z",
-   "last_detail": "live 10-14 · 10:50 - 3rd · ball: opponent (2nd & 10 at HOU 25) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "oklahoma-state|Football||2026-10-17|1",
-    "title": "Oklahoma State at Houston",
-    "started_seen": "2026-10-17T23:37:55.418Z",
-    "live_passes": [
-     "2026-10-17T23:37:55.418Z",
-     "2026-10-17T23:39:37.238Z",
-     "2026-10-18T01:31:22.111Z",
-     "2026-10-18T01:33:26.945Z",
-     "2026-10-18T01:35:09.411Z",
-     "2026-10-18T01:36:30.558Z",
-     "2026-10-18T01:38:33.630Z",
-     "2026-10-18T01:39:55.040Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.850Z",
+   "last_detail": "final L, 32-35",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.850Z",
+   "verified_game": "Oklahoma State at Houston",
+   "verified_detail": "final L, 32-35"
   },
   "oklahoma-state|Soccer": {
    "state": "done",
@@ -205,23 +193,13 @@
    "state": "off"
   },
   "byu|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:15.583Z",
-   "last_detail": "live 21-10 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "byu|Football||2026-10-17|1",
-    "title": "BYU vs Notre Dame",
-    "started_seen": "2026-10-18T01:31:22.475Z",
-    "live_passes": [
-     "2026-10-18T01:31:22.475Z",
-     "2026-10-18T01:33:27.195Z",
-     "2026-10-18T01:34:48.967Z",
-     "2026-10-18T01:36:51.259Z",
-     "2026-10-18T01:38:13.089Z",
-     "2026-10-18T01:40:15.583Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:58.890Z",
+   "last_detail": "final W, 28-24",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:58.890Z",
+   "verified_game": "BYU vs Notre Dame",
+   "verified_detail": "final W, 28-24"
   },
   "byu|Soccer": {
    "state": "done",
@@ -302,23 +280,13 @@
    "state": "off"
   },
   "arizona|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:15.726Z",
-   "last_detail": "live 0-1 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "arizona|Volleyball||2026-10-17|1",
-    "title": "Arizona vs BYU",
-    "started_seen": "2026-10-18T01:31:23.099Z",
-    "live_passes": [
-     "2026-10-18T01:31:23.099Z",
-     "2026-10-18T01:33:27.107Z",
-     "2026-10-18T01:34:48.767Z",
-     "2026-10-18T01:36:51.424Z",
-     "2026-10-18T01:38:13.143Z",
-     "2026-10-18T01:40:15.726Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.996Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.996Z",
+   "verified_game": "Arizona vs BYU",
+   "verified_detail": "final L, 0-3"
   },
   "baylor|Baseball": {
    "state": "off"
@@ -327,29 +295,13 @@
    "state": "off"
   },
   "baylor|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:15.522Z",
-   "last_detail": "live 6-17 · 2:03 - 3rd · ball: school (1st & 10 at BAY 12) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "baylor|Football||2026-10-17|1",
-    "title": "Baylor vs TCU",
-    "started_seen": "2026-10-17T23:31:04.007Z",
-    "live_passes": [
-     "2026-10-17T23:31:04.007Z",
-     "2026-10-17T23:33:07.978Z",
-     "2026-10-17T23:34:28.682Z",
-     "2026-10-17T23:36:13.830Z",
-     "2026-10-17T23:38:14.736Z",
-     "2026-10-17T23:40:17.094Z",
-     "2026-10-18T01:31:22.884Z",
-     "2026-10-18T01:33:26.845Z",
-     "2026-10-18T01:34:48.867Z",
-     "2026-10-18T01:36:51.201Z",
-     "2026-10-18T01:38:13.162Z",
-     "2026-10-18T01:40:15.522Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:35:00.295Z",
+   "last_detail": "final L, 6-17",
+   "game": null,
+   "verified_at": "2026-10-18T06:35:00.295Z",
+   "verified_game": "Baylor vs TCU",
+   "verified_detail": "final L, 6-17"
   },
   "baylor|Soccer": {
    "state": "done",
@@ -496,29 +448,13 @@
    "state": "off"
   },
   "tcu|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:16.381Z",
-   "last_detail": "live 17-6 · 2:03 - 3rd · ball: opponent (1st & 10 at BAY 12) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "tcu|Football||2026-10-17|1",
-    "title": "TCU at Baylor",
-    "started_seen": "2026-10-17T23:31:04.160Z",
-    "live_passes": [
-     "2026-10-17T23:31:04.160Z",
-     "2026-10-17T23:33:08.004Z",
-     "2026-10-17T23:34:28.714Z",
-     "2026-10-17T23:36:34.010Z",
-     "2026-10-17T23:37:53.862Z",
-     "2026-10-17T23:39:57.226Z",
-     "2026-10-18T01:31:22.830Z",
-     "2026-10-18T01:33:26.817Z",
-     "2026-10-18T01:34:48.820Z",
-     "2026-10-18T01:36:51.047Z",
-     "2026-10-18T01:38:13.052Z",
-     "2026-10-18T01:40:16.381Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:35:00.423Z",
+   "last_detail": "final W, 17-6",
+   "game": null,
+   "verified_at": "2026-10-18T06:35:00.423Z",
+   "verified_game": "TCU at Baylor",
+   "verified_detail": "final W, 17-6"
   },
   "tcu|Soccer": {
    "state": "done",
@@ -1454,10 +1390,26 @@
    "state": "off"
   },
   "nebraska|Football": {
-   "state": "off",
-   "last_check": "2026-10-10T21:57:17.247Z",
-   "last_detail": "final L, 17-20 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-18T06:44:10.817Z",
+   "last_detail": "live 14-17 · 0:28 - 4th · ball: school (3rd & 10 at NEB 25) · official_schedule+live_scoreboard",
+   "game": {
+    "key": "nebraska|Football||2026-10-17|1",
+    "title": "Nebraska at Oregon",
+    "started_seen": "2026-10-18T06:34:59.455Z",
+    "live_passes": [
+     "2026-10-18T06:34:59.455Z",
+     "2026-10-18T06:36:01.960Z",
+     "2026-10-18T06:37:23.412Z",
+     "2026-10-18T06:38:24.006Z",
+     "2026-10-18T06:39:25.260Z",
+     "2026-10-18T06:40:26.555Z",
+     "2026-10-18T06:41:48.279Z",
+     "2026-10-18T06:42:49.035Z",
+     "2026-10-18T06:44:10.817Z"
+    ],
+    "final_ok": false
+   }
   },
   "nebraska|Soccer": {
    "state": "done",
@@ -1496,16 +1448,10 @@
    "verified_detail": "final L, 13-41"
   },
   "minnesota|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:35.963Z",
-   "last_detail": "ESPN shows Minnesota at Minnesota Duluth live (End of OT) but the app has no live card (it is in results)",
-   "game": {
-    "key": "minnesota|Hockey||2026-10-17|1",
-    "title": "Minnesota at Minnesota Duluth",
-    "started_seen": "2026-10-17T23:31:46.823Z",
-    "live_passes": [],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-10-18T06:35:00.778Z",
+   "last_detail": "final T, 2-2 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "minnesota|Soccer": {
    "state": "done",
@@ -1790,25 +1736,13 @@
    "state": "off"
   },
   "ucla|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.306Z",
-   "last_detail": "live 10-7 · 8:12 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "ucla|Football||2026-10-17|1",
-    "title": "UCLA vs Wisconsin",
-    "started_seen": "2026-10-17T23:37:55.781Z",
-    "live_passes": [
-     "2026-10-17T23:37:55.781Z",
-     "2026-10-17T23:39:56.756Z",
-     "2026-10-18T01:31:21.911Z",
-     "2026-10-18T01:33:27.166Z",
-     "2026-10-18T01:35:09.249Z",
-     "2026-10-18T01:36:30.957Z",
-     "2026-10-18T01:38:33.616Z",
-     "2026-10-18T01:39:55.306Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.253Z",
+   "last_detail": "final W, 17-7",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.253Z",
+   "verified_game": "UCLA vs Wisconsin",
+   "verified_detail": "final W, 17-7"
   },
   "ucla|Soccer": {
    "state": "done",
@@ -1889,25 +1823,13 @@
    "state": "off"
   },
   "wisconsin|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.338Z",
-   "last_detail": "live 7-10 · 8:12 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "wisconsin|Football||2026-10-17|1",
-    "title": "Wisconsin at UCLA",
-    "started_seen": "2026-10-17T23:37:54.617Z",
-    "live_passes": [
-     "2026-10-17T23:37:54.617Z",
-     "2026-10-17T23:39:56.737Z",
-     "2026-10-18T01:31:22.115Z",
-     "2026-10-18T01:33:26.784Z",
-     "2026-10-18T01:35:09.147Z",
-     "2026-10-18T01:36:30.700Z",
-     "2026-10-18T01:38:33.553Z",
-     "2026-10-18T01:39:55.338Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.450Z",
+   "last_detail": "final L, 7-17",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.450Z",
+   "verified_game": "Wisconsin at UCLA",
+   "verified_detail": "final L, 7-17"
   },
   "wisconsin|Hockey": {
    "state": "off",
@@ -1943,29 +1865,13 @@
    "state": "off"
   },
   "miami|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.301Z",
-   "last_detail": "live 14-21 · 4:09 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "miami|Football||2026-10-17|1",
-    "title": "Miami vs Florida St",
-    "started_seen": "2026-10-17T23:31:04.048Z",
-    "live_passes": [
-     "2026-10-17T23:31:04.048Z",
-     "2026-10-17T23:33:08.034Z",
-     "2026-10-17T23:34:28.703Z",
-     "2026-10-17T23:36:13.772Z",
-     "2026-10-17T23:38:14.090Z",
-     "2026-10-17T23:39:36.443Z",
-     "2026-10-18T01:31:22.965Z",
-     "2026-10-18T01:33:26.728Z",
-     "2026-10-18T01:35:09.402Z",
-     "2026-10-18T01:36:30.711Z",
-     "2026-10-18T01:38:33.682Z",
-     "2026-10-18T01:39:55.301Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.165Z",
+   "last_detail": "final W, 43-35",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.165Z",
+   "verified_game": "Miami vs Florida St",
+   "verified_detail": "final W, 43-35"
   },
   "miami|Soccer": {
    "state": "off"
@@ -2193,29 +2099,13 @@
    "state": "off"
   },
   "florida-state|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.089Z",
-   "last_detail": "live 21-14 · 4:09 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "florida-state|Football||2026-10-17|1",
-    "title": "Florida State at Miami",
-    "started_seen": "2026-10-17T23:31:04.723Z",
-    "live_passes": [
-     "2026-10-17T23:31:04.723Z",
-     "2026-10-17T23:33:08.011Z",
-     "2026-10-17T23:34:28.833Z",
-     "2026-10-17T23:36:13.967Z",
-     "2026-10-17T23:37:54.628Z",
-     "2026-10-17T23:39:37.001Z",
-     "2026-10-18T01:31:22.414Z",
-     "2026-10-18T01:33:26.949Z",
-     "2026-10-18T01:35:09.128Z",
-     "2026-10-18T01:36:30.824Z",
-     "2026-10-18T01:38:33.528Z",
-     "2026-10-18T01:39:55.089Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.631Z",
+   "last_detail": "final L, 35-43",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.631Z",
+   "verified_game": "Florida State at Miami",
+   "verified_detail": "final L, 35-43"
   },
   "florida-state|Lacrosse": {
    "state": "off"
@@ -2284,25 +2174,13 @@
    "verified_detail": "final L, 0-1"
   },
   "louisville|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.284Z",
-   "last_detail": "live 28-23 · 14:20 - 3rd · ball: opponent (3rd & 7 at SYR 28) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "louisville|Football||2026-10-17|1",
-    "title": "Louisville at Syracuse",
-    "started_seen": "2026-10-17T23:37:55.392Z",
-    "live_passes": [
-     "2026-10-17T23:37:55.392Z",
-     "2026-10-17T23:39:37.249Z",
-     "2026-10-18T01:31:22.338Z",
-     "2026-10-18T01:33:26.876Z",
-     "2026-10-18T01:34:48.824Z",
-     "2026-10-18T01:36:51.035Z",
-     "2026-10-18T01:38:33.703Z",
-     "2026-10-18T01:39:55.284Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.141Z",
+   "last_detail": "final W, 34-26",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.141Z",
+   "verified_game": "Louisville at Syracuse",
+   "verified_detail": "final W, 34-26"
   },
   "louisville|Lacrosse": {
    "state": "off"
@@ -2401,23 +2279,13 @@
    "state": "off"
   },
   "notre-dame|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:15.506Z",
-   "last_detail": "live 10-21 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "notre-dame|Football||2026-10-17|1",
-    "title": "Notre Dame at BYU",
-    "started_seen": "2026-10-18T01:31:22.457Z",
-    "live_passes": [
-     "2026-10-18T01:31:22.457Z",
-     "2026-10-18T01:33:26.937Z",
-     "2026-10-18T01:34:48.788Z",
-     "2026-10-18T01:36:51.207Z",
-     "2026-10-18T01:38:13.220Z",
-     "2026-10-18T01:40:15.506Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:58.909Z",
+   "last_detail": "final L, 24-28",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:58.909Z",
+   "verified_game": "Notre Dame at BYU",
+   "verified_detail": "final L, 24-28"
   },
   "notre-dame|Hockey": {
    "state": "done",
@@ -2537,27 +2405,13 @@
    "verified_detail": "final W, 2-0"
   },
   "stanford|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:40:15.501Z",
-   "last_detail": "live 14-0 · 8:02 - 3rd · ball: opponent (1st & 10 at ELON 16) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "stanford|Football||2026-10-17|1",
-    "title": "Stanford vs Elon",
-    "started_seen": "2026-10-17T23:34:29.347Z",
-    "live_passes": [
-     "2026-10-17T23:34:29.347Z",
-     "2026-10-17T23:36:33.507Z",
-     "2026-10-17T23:37:53.957Z",
-     "2026-10-17T23:39:56.749Z",
-     "2026-10-18T01:31:22.747Z",
-     "2026-10-18T01:33:26.810Z",
-     "2026-10-18T01:34:48.902Z",
-     "2026-10-18T01:36:51.513Z",
-     "2026-10-18T01:38:13.333Z",
-     "2026-10-18T01:40:15.501Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:34:59.134Z",
+   "last_detail": "final W, 34-7",
+   "game": null,
+   "verified_at": "2026-10-18T06:34:59.134Z",
+   "verified_game": "Stanford vs Elon",
+   "verified_detail": "final W, 34-7"
   },
   "stanford|Lacrosse": {
    "state": "off"
@@ -2587,25 +2441,13 @@
    "state": "off"
   },
   "syracuse|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T01:39:55.144Z",
-   "last_detail": "live 23-28 · 14:20 - 3rd · ball: school (3rd & 7 at SYR 28) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "syracuse|Football||2026-10-17|1",
-    "title": "Syracuse vs Louisville",
-    "started_seen": "2026-10-17T23:37:55.967Z",
-    "live_passes": [
-     "2026-10-17T23:37:55.967Z",
-     "2026-10-17T23:39:56.785Z",
-     "2026-10-18T01:31:23.496Z",
-     "2026-10-18T01:33:26.960Z",
-     "2026-10-18T01:34:48.802Z",
-     "2026-10-18T01:36:51.103Z",
-     "2026-10-18T01:38:33.485Z",
-     "2026-10-18T01:39:55.144Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T06:35:01.174Z",
+   "last_detail": "final L, 26-34",
+   "game": null,
+   "verified_at": "2026-10-18T06:35:01.174Z",
+   "verified_game": "Syracuse vs Louisville",
+   "verified_detail": "final L, 26-34"
   },
   "syracuse|Hockey": {
    "state": "done",
@@ -2705,6 +2547,6 @@
   }
  },
  "version": "4.107.0-mls",
- "updated_at": "2026-10-18T01:40:35.964Z",
+ "updated_at": "2026-10-18T06:44:10.818Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
