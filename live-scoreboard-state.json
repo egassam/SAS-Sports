@@ -1390,26 +1390,13 @@
    "state": "off"
   },
   "nebraska|Football": {
-   "state": "on",
-   "last_check": "2026-10-18T06:44:10.817Z",
-   "last_detail": "live 14-17 · 0:28 - 4th · ball: school (3rd & 10 at NEB 25) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "nebraska|Football||2026-10-17|1",
-    "title": "Nebraska at Oregon",
-    "started_seen": "2026-10-18T06:34:59.455Z",
-    "live_passes": [
-     "2026-10-18T06:34:59.455Z",
-     "2026-10-18T06:36:01.960Z",
-     "2026-10-18T06:37:23.412Z",
-     "2026-10-18T06:38:24.006Z",
-     "2026-10-18T06:39:25.260Z",
-     "2026-10-18T06:40:26.555Z",
-     "2026-10-18T06:41:48.279Z",
-     "2026-10-18T06:42:49.035Z",
-     "2026-10-18T06:44:10.817Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-18T11:42:24.769Z",
+   "last_detail": "final L, 14-17",
+   "game": null,
+   "verified_at": "2026-10-18T11:42:24.769Z",
+   "verified_game": "Nebraska at Oregon",
+   "verified_detail": "final L, 14-17"
   },
   "nebraska|Soccer": {
    "state": "done",
@@ -2547,6 +2534,6 @@
   }
  },
  "version": "4.107.0-mls",
- "updated_at": "2026-10-18T06:44:10.818Z",
+ "updated_at": "2026-10-18T11:42:24.770Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
