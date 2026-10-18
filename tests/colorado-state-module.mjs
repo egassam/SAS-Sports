@@ -164,7 +164,7 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Nov 14, 8:30 PM Colorado State at Washington State | ",
  "Upcoming Nov 21, 5:30 PM Colorado State at Fresno State | ",
  "Upcoming Nov 28 Colorado State vs Flex Week | ",
- "Upcoming Dec 4, 6:00 PM Colorado State vs Pac-12 Championship | "
+ "Upcoming Dec 4, 6:00 PM Colorado State at Pac-12 Championship | "
 ]);
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[

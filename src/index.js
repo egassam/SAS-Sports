@@ -84,7 +84,7 @@ import {boiseStateSchool,createBoiseStateHandlers} from './schools/boise-state.m
 import {coloradoStateSchool,createColoradoStateHandlers} from './schools/colorado-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.109.1-boise-state-colorado-state';
+const VERSION='4.109.2-boise-state-colorado-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
