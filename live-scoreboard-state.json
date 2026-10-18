@@ -754,10 +754,19 @@
    "state": "off"
   },
   "mississippi-state|Volleyball": {
-   "state": "off",
-   "last_check": "2026-10-15T00:38:13.307Z",
-   "last_detail": "final L, 0-3 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-18T18:05:22.155Z",
+   "last_detail": "live 2-4 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mississippi-state|Volleyball||2026-10-18|1",
+    "title": "Mississippi State at Vanderbilt",
+    "started_seen": "2026-10-18T18:04:01.014Z",
+    "live_passes": [
+     "2026-10-18T18:04:01.014Z",
+     "2026-10-18T18:05:22.155Z"
+    ],
+    "final_ok": false
+   }
   },
   "tennessee|Baseball": {
    "state": "off"
@@ -1072,7 +1081,25 @@
    "state": "off"
   },
   "south-carolina|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-18T18:05:02.351Z",
+   "last_detail": "live 2-1 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-carolina|Volleyball||2026-10-18|1",
+    "title": "South Carolina at Ole Miss",
+    "started_seen": "2026-10-18T17:56:49.850Z",
+    "live_passes": [
+     "2026-10-18T17:56:49.850Z",
+     "2026-10-18T17:58:11.196Z",
+     "2026-10-18T17:59:32.939Z",
+     "2026-10-18T18:00:54.803Z",
+     "2026-10-18T18:01:55.406Z",
+     "2026-10-18T18:02:57.133Z",
+     "2026-10-18T18:03:58.778Z",
+     "2026-10-18T18:05:02.351Z"
+    ],
+    "final_ok": false
+   }
   },
   "vanderbilt|Baseball": {
    "state": "off"
@@ -1666,7 +1693,25 @@
    "verified_detail": "final L, 26-38"
   },
   "purdue|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-18T18:05:02.004Z",
+   "last_detail": "live 1-2 · 88' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "purdue|Soccer||2026-10-18|1",
+    "title": "Purdue vs Ohio State",
+    "started_seen": "2026-10-18T17:56:50.203Z",
+    "live_passes": [
+     "2026-10-18T17:56:50.203Z",
+     "2026-10-18T17:57:50.890Z",
+     "2026-10-18T17:59:12.652Z",
+     "2026-10-18T18:00:33.845Z",
+     "2026-10-18T18:01:56.462Z",
+     "2026-10-18T18:02:57.170Z",
+     "2026-10-18T18:03:59.098Z",
+     "2026-10-18T18:05:02.004Z"
+    ],
+    "final_ok": false
+   }
   },
   "purdue|Softball": {
    "state": "off"
@@ -1861,7 +1906,25 @@
    "verified_detail": "final W, 43-35"
   },
   "miami|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-18T18:05:02.178Z",
+   "last_detail": "live 1-0 · HT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "miami|Soccer||2026-10-18|1",
+    "title": "Miami vs Iona",
+    "started_seen": "2026-10-18T17:56:50.044Z",
+    "live_passes": [
+     "2026-10-18T17:56:50.044Z",
+     "2026-10-18T17:57:50.766Z",
+     "2026-10-18T17:59:12.933Z",
+     "2026-10-18T18:00:33.920Z",
+     "2026-10-18T18:01:56.209Z",
+     "2026-10-18T18:02:57.179Z",
+     "2026-10-18T18:03:59.047Z",
+     "2026-10-18T18:05:02.178Z"
+    ],
+    "final_ok": false
+   }
   },
   "miami|Volleyball": {
    "state": "done",
@@ -2531,9 +2594,39 @@
   },
   "virginia-tech|Volleyball": {
    "state": "off"
+  },
+  "boise-state|Basketball": {
+   "state": "off"
+  },
+  "boise-state|Football": {
+   "state": "off"
+  },
+  "boise-state|Soccer": {
+   "state": "off"
+  },
+  "boise-state|Softball": {
+   "state": "off"
+  },
+  "boise-state|Volleyball": {
+   "state": "off"
+  },
+  "colorado-state|Basketball": {
+   "state": "off"
+  },
+  "colorado-state|Football": {
+   "state": "off"
+  },
+  "colorado-state|Soccer": {
+   "state": "off"
+  },
+  "colorado-state|Softball": {
+   "state": "off"
+  },
+  "colorado-state|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.107.0-mls",
- "updated_at": "2026-10-18T11:42:24.770Z",
+ "version": "4.109.2-boise-state-colorado-state",
+ "updated_at": "2026-10-18T18:05:22.157Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

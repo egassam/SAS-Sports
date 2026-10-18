@@ -1,6 +1,10 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Virginia: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| miami | Soccer | 🔴 on | live 1-0 · HT · official_schedule+live_scoreboard |
+| mississippi-state | Volleyball | 🔴 on | live 2-4 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| purdue | Soccer | 🔴 on | live 1-2 · 88' · official_schedule+live_scoreboard |
+| south-carolina | Volleyball | 🔴 on | live 2-1 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -23,6 +27,11 @@
 | baylor | Basketball | ⚪ off (waiting) |  |
 | baylor | Softball | ⚪ off (waiting) |  |
 | baylor | Volleyball | ⚪ off (waiting) |  |
+| boise-state | Basketball | ⚪ off (waiting) |  |
+| boise-state | Football | ⚪ off (waiting) |  |
+| boise-state | Soccer | ⚪ off (waiting) |  |
+| boise-state | Softball | ⚪ off (waiting) |  |
+| boise-state | Volleyball | ⚪ off (waiting) |  |
 | boston-college | Baseball | ⚪ off (waiting) |  |
 | boston-college | Basketball | ⚪ off (waiting) |  |
 | boston-college | Field Hockey | ⚪ off (waiting) |  |
@@ -50,6 +59,11 @@
 | clemson | Softball | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado | Football | ⚪ off (waiting) |  |
+| colorado-state | Basketball | ⚪ off (waiting) |  |
+| colorado-state | Football | ⚪ off (waiting) |  |
+| colorado-state | Soccer | ⚪ off (waiting) |  |
+| colorado-state | Softball | ⚪ off (waiting) |  |
+| colorado-state | Volleyball | ⚪ off (waiting) |  |
 | duke | Baseball | ⚪ off (waiting) |  |
 | duke | Basketball | ⚪ off (waiting) |  |
 | duke | Lacrosse | ⚪ off (waiting) |  |
@@ -107,7 +121,6 @@
 | maryland | Softball | ⚪ off (waiting) |  |
 | miami | Baseball | ⚪ off (waiting) |  |
 | miami | Basketball | ⚪ off (waiting) |  |
-| miami | Soccer | ⚪ off (waiting) |  |
 | michigan | Baseball | ⚪ off (waiting) |  |
 | michigan | Basketball | ⚪ off (waiting) |  |
 | michigan | Field Hockey | ⚪ off (waiting) |  |
@@ -124,7 +137,6 @@
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
 | mississippi-state | Basketball | ⚪ off (waiting) |  |
 | mississippi-state | Softball | ⚪ off (waiting) |  |
-| mississippi-state | Volleyball | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | missouri | Baseball | ⚪ off (waiting) |  |
 | missouri | Basketball | ⚪ off (waiting) |  |
 | missouri | Softball | ⚪ off (waiting) |  |
@@ -179,7 +191,6 @@
 | pitt | Softball | ⚪ off (waiting) |  |
 | purdue | Baseball | ⚪ off (waiting) |  |
 | purdue | Basketball | ⚪ off (waiting) |  |
-| purdue | Soccer | ⚪ off (waiting) |  |
 | purdue | Softball | ⚪ off (waiting) |  |
 | rutgers | Baseball | ⚪ off (waiting) |  |
 | rutgers | Basketball | ⚪ off (waiting) |  |
@@ -192,7 +203,6 @@
 | south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Football | ⚪ off (waiting) | final W, 38-19 (live phase not observed 2×; waits for the next game) |
 | south-carolina | Softball | ⚪ off (waiting) |  |
-| south-carolina | Volleyball | ⚪ off (waiting) |  |
 | stanford | Baseball | ⚪ off (waiting) |  |
 | stanford | Basketball | ⚪ off (waiting) |  |
 | stanford | Lacrosse | ⚪ off (waiting) |  |
@@ -453,4 +463,4 @@
 | wisconsin | Soccer | ✅ off (passed) | Men's · Wisconsin vs UCLA · 2026-10-17T06:14:54.134Z |
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 
-Done 188/452; on 0; off 263; failing 1.
+Done 188/462; on 4; off 269; failing 1.
