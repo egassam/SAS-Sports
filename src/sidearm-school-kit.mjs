@@ -18,7 +18,7 @@
 //   createTfrrsMeetResults({...})     cross country races and team scores from TFRRS
 import {sidearmStartTime} from './sidearm-schedule-data.mjs';
 import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults} from './tfrrs-results.mjs';
-import {withoutRanking} from './sidearm-schedule-reader.mjs';
+import {withoutRanking,otherSportStory} from './sidearm-schedule-reader.mjs';
 
 const dayGap=(a,b)=>(Date.parse(String(b.date).slice(0,10))-Date.parse(String(a.date).slice(0,10)))/86400000;
 
@@ -181,6 +181,7 @@ export function createRecapMatcher({id,host,recapMatchesEvent,decodeHtml,trustOw
     const own=url===event.recap_url&&parsed.protocol==='https:'&&parsed.hostname===host&&parsed.pathname.startsWith('/news/');
     const identity=event.end_time?{...event,start_time:event.end_time.replace(/T.*$/,'T12:00:00.000Z')}:event;
     if(own&&url===event.final_story)return true;
+    if(own&&otherSportStory(parsed.pathname,event.sport))return false;
     if(own)return recapMatchesEvent(raw,{...identity,sport:''},url)||trustOwnLink&&ownLinkDated(event,url);
     if(event.recap_url)return false;
     if(!recapMatchesEvent(raw,event,url))return false;
@@ -212,7 +213,7 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
   const download=downloader(fetch,headers);
   const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
-  const needsStory=event=>isMeet(event)||event?.school_id===id&&event.event_type==='GAME'&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
+  const needsStory=event=>isMeet(event)||event?.school_id===id&&(event.event_type==='GAME'||event.event_type==='DUAL')&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
   const MEET_WORDS=/^(?:the|and|invitational|invite|meet|open|classic|championships?|teams?|only)$/i;
   const schedulePath=new RegExp(`^https://${host.replace(/\./g,'\\.')}/sports/([a-z-]+)/schedule`);
   async function attachArchiveStory(event){

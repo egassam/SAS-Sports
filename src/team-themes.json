@@ -327,6 +327,14 @@
     "line": "#7a2626",
     "onAccent": "#ffffff"
   },
+  "fresno-state": {
+    "primary": "#DB0032",
+    "secondary": "#13284C",
+    "panel": "#390917",
+    "panelDark": "#1a050c",
+    "line": "#870e2e",
+    "onAccent": "#ffffff"
+  },
   "georgia": {
     "primary": "#BA0C2F",
     "secondary": "#000000",
@@ -341,6 +349,14 @@
     "panel": "#091320",
     "panelDark": "#050910",
     "line": "#0e2943",
+    "onAccent": "#ffffff"
+  },
+  "gonzaga": {
+    "primary": "#041E42",
+    "secondary": "#C8102E",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#111f37",
     "onAccent": "#ffffff"
   },
   "green-bay-packers": {
