@@ -28,6 +28,7 @@ Women's rowing (sport id 17) is hidden from the site's menu and points to an old
 - A ranking written into the opponent's name ("#9", "No. 10", "(rv)") is dropped.
 - A cross country meet named by its host takes the meet's name from its story's title.
 - "Challenger" tennis events are pro events.
+- A cross country or golf entry is never a dual ("vs Pac-12" read "at Pac-12" after the first preview check).
 
 Each rule was mutated and each mutation fails `node tests/san-diego-state-module.mjs`; Stanford's, Virginia Tech's and Notre Dame's tests pass unchanged.
 

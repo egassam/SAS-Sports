@@ -155,7 +155,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 18 San Diego State at Saint Mary's Invitational | 6th",
  "Final Oct 9 San Diego State at Bill Dellinger Invitational | 9th",
  "Final Oct 17 San Diego State at Highlander Invitational | 13th",
- "Upcoming Oct 30 San Diego State vs Pac-12 | ",
+ "Upcoming Oct 30 San Diego State at Pac-12 | ",
  "Upcoming Nov 13 San Diego State at NCAA Championships | "
 ]);
   const v_api5=parse("Football","api-5");

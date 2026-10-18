@@ -195,7 +195,9 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       if(over&&!placed&&!story)continue;
       if(!score&&!meet&&lastDay<today-86400000)continue;
       const final=Boolean(score)||over;
-      const dual=meet&&!game.datetime_end&&!EVENT_NAME.test(opponent);
+      // A cross country or golf entry is a meet, never a dual (San Diego
+      // State's "Pac-12", Oct 30, read "vs Pac-12").
+      const dual=meet&&!['Cross Country','Golf'].includes(sport)&&!game.datetime_end&&!EVENT_NAME.test(opponent);
       const tournament=decodeHtml(String(game.tournament?.name||'')).trim();
       const relation=meet?(dual&&game.venue_type!=='away'?'vs':'at'):game.venue_type==='away'||GAME_EVENT.test(opponent)||Boolean(tournament)&&name===tournament?'at':'vs';
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,date:start.date,
