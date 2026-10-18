@@ -4,7 +4,7 @@
 
 Colorado State was added to the app on October 18, 2026 (10 sports, one PR with Boise State) in the new Pac-12. csurams.com is SIDEARM.
 
-## Status (`4.109.0-boise-state-colorado-state`)
+## Status (`4.109.1-boise-state-colorado-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

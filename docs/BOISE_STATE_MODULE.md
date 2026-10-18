@@ -4,7 +4,7 @@
 
 Boise State was added to the app on October 18, 2026 (11 sports, one PR with Colorado State), the first school of the new Pac-12 (2026-27: Boise State, Colorado State, Fresno State, Gonzaga, Oregon State, San Diego State, Texas State, Utah State, Washington State; all nine are in `src/schools.json`, only built schools are listed). broncosports.com is SIDEARM. Boise is in Idaho (`America/Boise`, Mountain time).
 
-## Status (`4.109.0-boise-state-colorado-state`)
+## Status (`4.109.1-boise-state-colorado-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |
