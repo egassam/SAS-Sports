@@ -309,5 +309,10 @@ void [parse,line,ownRecapsOnly,live];
 assert.ok(parse('Football','football').some(e=>e.opponent==='BYU'&&e.display_time==='Sep 19'));
 assert.ok(parse('Soccer','womens-soccer').some(e=>e.opponent==='Colorado'&&e.display_time==='Aug 12'));
 
+// Swimming's double dual (Oct 17): the page flags both legs a conference meet;
+// only Washington State is a Pac-12 member (Colorado Mesa is Division II).
+// Mutation: without the membership rule both counted (Pac-12 2-0).
+assert.deepEqual(parse('Swimming & Diving','womens-swimming-and-diving').filter(e=>e.status==='Final'&&e.school_score).map(e=>[e.opponent,e.conference_game]),[['Washington State',true],['Colorado Mesa',false]]);
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Colorado State module checks passed');

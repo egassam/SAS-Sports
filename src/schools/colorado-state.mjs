@@ -67,6 +67,9 @@ export const coloradoStateSchool={
 
 const HOST='csurams.com';
 // Colorado State's calendar day.
+// The Pac-12's women's swimming members and its affiliate (the league's July 1, 2026
+// release: Cal Baptist).
+const PAC12_SWIMMING=/^(?:Boise State|Colorado State|Fresno State|Gonzaga|Oregon State|San Diego State|Texas State|Utah State|Washington State|Cal Baptist|California Baptist)$/i;
 const coloradoStateToday=sidearmToday('America/Denver');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series".
@@ -285,6 +288,11 @@ export function createColoradoStateHandlers({makeEvent,recapMatchesEvent,eventTy
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
+      // Swimming's page data flags both legs of a double dual a conference
+      // meet (Oct 17: Washington State and Colorado Mesa, a Division II
+      // school): a dual counts for the Pac-12 only against a member or its
+      // swimming affiliate.
+      if(sport==='Swimming & Diving'&&game.type!=='S'&&game.type!=='P'&&event.school_score!=null&&event.school_score!==''){event.conference_game=PAC12_SWIMMING.test(withoutRanking(game.opponent?.title).trim());if(event.conference_game)event.conference_name='Pac-12';return;}
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));
