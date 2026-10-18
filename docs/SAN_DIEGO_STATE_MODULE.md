@@ -4,7 +4,7 @@
 
 San Diego State was added to the app on October 18, 2026 (13 sports, one PR with Oregon State) in the new Pac-12. goaztecs.com is WMT (Nuxt) and is read directly.
 
-## Status (`4.111.0-oregon-state-san-diego-state`)
+## Status (`4.111.1-oregon-state-san-diego-state`)
 
 | Sport | Teams | State |
 | --- | --- | --- |

@@ -4,7 +4,7 @@
 
 Oregon State was added to the app on October 18, 2026 (12 sports, one PR with San Diego State) in the new Pac-12. osubeavers.com is SIDEARM behind bot defense: pages come through the private source route.
 
-## Status (`4.111.0-oregon-state-san-diego-state`)
+## Status (`4.111.1-oregon-state-san-diego-state`)
 
 | Sport | Pages | State |
 | --- | --- | --- |

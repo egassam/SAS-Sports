@@ -88,7 +88,7 @@ import {oregonStateSchool,createOregonStateHandlers} from './schools/oregon-stat
 import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-diego-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.111.0-oregon-state-san-diego-state';
+const VERSION='4.111.1-oregon-state-san-diego-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
