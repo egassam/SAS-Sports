@@ -26,31 +26,31 @@ export const utahStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Gymnastics','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
-    'utah-state|Basketball':['https://utahstateaggies.com/sports/mens-basketball/schedule','https://utahstateaggies.com/sports/womens-basketball/schedule','https://utahstateaggies.com/sports/basketball/schedule'],
+    'utah-state|Basketball':['https://utahstateaggies.com/sports/mens-basketball/schedule','https://utahstateaggies.com/sports/womens-basketball/schedule'],
     'utah-state|Cross Country':'https://utahstateaggies.com/sports/cross-country/schedule',
     'utah-state|Football':'https://utahstateaggies.com/sports/football/schedule',
-    'utah-state|Golf':['https://utahstateaggies.com/sports/womens-golf/schedule','https://utahstateaggies.com/sports/mens-golf/schedule'],
-    'utah-state|Gymnastics':['https://utahstateaggies.com/sports/womens-gymnastics/schedule','https://utahstateaggies.com/sports/mens-gymnastics/schedule'],
-    'utah-state|Soccer':['https://utahstateaggies.com/sports/womens-soccer/schedule','https://utahstateaggies.com/sports/soccer/schedule'],
+    'utah-state|Golf':'https://utahstateaggies.com/sports/mens-golf/schedule',
+    'utah-state|Gymnastics':'https://utahstateaggies.com/sports/womens-gymnastics/schedule',
+    'utah-state|Soccer':'https://utahstateaggies.com/sports/womens-soccer/schedule',
     'utah-state|Softball':'https://utahstateaggies.com/sports/softball/schedule',
-    'utah-state|Tennis':['https://utahstateaggies.com/sports/womens-tennis/schedule','https://utahstateaggies.com/sports/mens-tennis/schedule','https://utahstateaggies.com/sports/tennis/schedule'],
-    'utah-state|Track & Field':['https://utahstateaggies.com/sports/track-and-field/schedule','https://utahstateaggies.com/sports/track-field/schedule'],
-    'utah-state|Volleyball':['https://utahstateaggies.com/sports/womens-volleyball/schedule','https://utahstateaggies.com/sports/volleyball/schedule']
+    'utah-state|Tennis':['https://utahstateaggies.com/sports/womens-tennis/schedule','https://utahstateaggies.com/sports/mens-tennis/schedule'],
+    'utah-state|Track & Field':'https://utahstateaggies.com/sports/track-and-field/schedule',
+    'utah-state|Volleyball':'https://utahstateaggies.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
-    'utah-state|Basketball':['https://utahstateaggies.com/sports/mens-basketball/roster','https://utahstateaggies.com/sports/womens-basketball/roster','https://utahstateaggies.com/sports/basketball/roster'],
+    'utah-state|Basketball':['https://utahstateaggies.com/sports/mens-basketball/roster','https://utahstateaggies.com/sports/womens-basketball/roster'],
     'utah-state|Cross Country':'https://utahstateaggies.com/sports/cross-country/roster',
     'utah-state|Football':'https://utahstateaggies.com/sports/football/roster',
-    'utah-state|Golf':['https://utahstateaggies.com/sports/womens-golf/roster','https://utahstateaggies.com/sports/mens-golf/roster'],
-    'utah-state|Gymnastics':['https://utahstateaggies.com/sports/womens-gymnastics/roster','https://utahstateaggies.com/sports/mens-gymnastics/roster'],
-    'utah-state|Soccer':['https://utahstateaggies.com/sports/womens-soccer/roster','https://utahstateaggies.com/sports/soccer/roster'],
+    'utah-state|Golf':'https://utahstateaggies.com/sports/mens-golf/roster',
+    'utah-state|Gymnastics':'https://utahstateaggies.com/sports/womens-gymnastics/roster',
+    'utah-state|Soccer':'https://utahstateaggies.com/sports/womens-soccer/roster',
     'utah-state|Softball':'https://utahstateaggies.com/sports/softball/roster',
-    'utah-state|Tennis':['https://utahstateaggies.com/sports/womens-tennis/roster','https://utahstateaggies.com/sports/mens-tennis/roster','https://utahstateaggies.com/sports/tennis/roster'],
-    'utah-state|Track & Field':['https://utahstateaggies.com/sports/track-and-field/roster','https://utahstateaggies.com/sports/track-field/roster'],
-    'utah-state|Volleyball':['https://utahstateaggies.com/sports/womens-volleyball/roster','https://utahstateaggies.com/sports/volleyball/roster']
+    'utah-state|Tennis':['https://utahstateaggies.com/sports/womens-tennis/roster','https://utahstateaggies.com/sports/mens-tennis/roster'],
+    'utah-state|Track & Field':'https://utahstateaggies.com/sports/track-and-field/roster',
+    'utah-state|Volleyball':'https://utahstateaggies.com/sports/womens-volleyball/roster'
   }
 };
 
@@ -241,6 +241,10 @@ export function createUtahStateHandlers({makeEvent,recapMatchesEvent,eventType=(
         // Georgia writes the total after "=": "T6th (280-273-281=834)".
         const scored=text.match(/^(T?\d+(?:st|nd|rd|th))\s*\((?:([\d-]+)[\/=])?(\d+)\)$/i);
         if(scored){event.headline=scored[1];event.results=[{label:'Result',value:scored[1]},{label:'Team score',value:scored[2]?`${scored[3]} (${scored[2]})`:scored[3]}];event.result_count=2;return;}
+        // Utah State: the place in the field, then the team total and score to
+        // par: "4th/18  (858, -6)", "9th of 16 (865, +25)", "T-5th/12  (843, -9)".
+        const totalPar=text.match(/^(T-?)?(\d+)(?:st|nd|rd|th)?\s*(?:\/|of)\s*(\d+)\s*\((\d{3,4}),\s*([+-]\d+|E)\)$/i);
+        if(totalPar){const value=`${totalPar[1]?'T':''}${ordinal(totalPar[2])} of ${totalPar[3]}`;event.headline=value;event.results=[{label:'Result',value},{label:'Team score',value:`${totalPar[4]} (${totalPar[5]})`}];event.result_count=2;return;}
         // NC State's women: the place in the field, then the team score to par
         // ("13th/18 (+21)"); match play ends with the final standing
         // ("vs. Oklahoma, tied 2.5-2.5 // finished 2nd/4 teams").
@@ -254,6 +258,10 @@ export function createUtahStateHandlers({makeEvent,recapMatchesEvent,eventType=(
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
+      // Cross country's both teams on one line: "M: 1/3, 15 pts; W: 2/3, 52
+      // pts" (Bengal Invitational, Oct 2), women first as on K-State's.
+      const teamRows=[...text.matchAll(/\b([MW]):\s*(T-?)?(\d+)\/(\d+),\s*(\d+)\s*pts\b/gi)].map(m=>({women:m[1].toUpperCase()==='W',label:`${m[1].toUpperCase()==='W'?"Women's":"Men's"} team`,value:`${m[2]?'T':''}${ordinal(m[3])} of ${m[4]} · ${m[5]} pts`})).sort((a,b)=>b.women-a.women);
+      if(sport==='Cross Country'&&teamRows.length){event.event_type='MEET';event.results=teamRows.map(({label,value})=>({label,value}));event.headline=event.results.map(row=>`${row.label}: ${row.value}`).join(' / ');event.result_count=event.results.length;return;}
       writeMeetPlaces(event,{text,schoolName:'Utah State',ordinal});
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
@@ -287,7 +295,7 @@ export function createUtahStateHandlers({makeEvent,recapMatchesEvent,eventType=(
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Aggies|Pack(?: Men| Women)?|Utah State|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Aggies|Utah State|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

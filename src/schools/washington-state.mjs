@@ -33,6 +33,9 @@ const routes=wmtApiSchoolRoutes(WASHINGTON_STATE_API);
 
 export const washingtonStateSchool={
   id:'washington-state',
+  // The school's Opendorse marketplace, its official NIL marketplace (linked
+  // from wsucougars.com): athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'washingtonstate-cougars',team:'Washington State Cougars'},
   // Sports whose official schedule this module reads itself (the site's
   // schedule API). Every other sport keeps the shared parsers.
   apiSports:new Set(Object.keys(SLUGS)),

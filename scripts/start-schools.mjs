@@ -93,7 +93,9 @@ await Promise.all(ready.map(async school=>{
   // Both team pages of a sport the nav links twice (add-school's "team
   // pages" line), combined: the scaffold's candidates kept only one.
   for(const [sport,slugs] of Object.entries(school.teamPages||{})){
-    if(text.includes(`/sports/${slugs[0]}/schedule`)&&text.includes(`/sports/${slugs[1]}/schedule`))continue;
+    // Only a module that lists team pages (a WMT API module lists sport ids).
+    const has=slugs.map(slug=>text.includes(`/sports/${slug}/schedule`));
+    if(has.every(Boolean)||!has.some(Boolean))continue;
     const host=new URL(school.athletics_url).origin;
     for(const kind of ['schedule','roster'])text=text.replace(new RegExp(`('${school.id}\\|${sport.replace(/&/g,'&')}':)'[^']*'`,'g'),(line,key)=>line.includes(`/${kind}'`)?`${key}[${slugs.map(slug=>`'${host}/sports/${slug}/${kind}'`).join(',')}]`:line);
     text=text.replace(/combinedSports:new Set\(\[([^\]]*)\]\)/,(all,list)=>list.includes(`'${sport}'`)?all:`combinedSports:new Set([${[list,`'${sport}'`].filter(Boolean).join(',')}])`);
@@ -103,7 +105,13 @@ await Promise.all(ready.map(async school=>{
   // team name: by hand, as Colorado State's).
   const nil=school.nil?.match(/^(inflcr|opendorse):(.+)$/);
   if(nil?.[1]==='inflcr'&&!text.includes('inflcr:{'))text=text.replace(`  id:'${school.id}',\n`,`  id:'${school.id}',\n  // The school's INFLCR Exchange, its official NIL marketplace (linked from\n  // ${new URL(school.athletics_url).hostname}): athlete Instagram for a sport still short of three (src/inflcr.mjs).\n  inflcr:{school:'${nil[2]}'},\n`);
-  if(nil?.[1]==='opendorse')notes.push(`${school.id}: Opendorse marketplace ${nil[2]}: add opendorse:{marketplace:'${nil[2]}',team:'<its team name>'} (Colorado State's)`);
+  // An Opendorse marketplace also needs its team name, read from the
+  // marketplace page ("Washington State Cougars").
+  if(nil?.[1]==='opendorse'&&!text.includes('opendorse:{')){
+    let team=null;try{const r=await fetch(`https://opendorse.com/${nil[2]}`,{signal:AbortSignal.timeout(20000)});const names=[...(await r.text()).matchAll(/"name":"([^"]+)"/g)].map(m=>m[1]).filter(n=>n.startsWith(school.short_name)||n.startsWith(school.name));team=names.sort((a,b)=>names.filter(x=>x===b).length-names.filter(x=>x===a).length)[0]||null;}catch{}
+    if(team)text=text.replace(`  id:'${school.id}',\n`,`  id:'${school.id}',\n  // The school's Opendorse marketplace, its official NIL marketplace (linked\n  // from ${new URL(school.athletics_url).hostname}): athlete Instagram for a sport still short of three (src/opendorse.mjs).\n  opendorse:{marketplace:'${nil[2]}',team:'${team.replace(/'/g,"\\'")}'},\n`);
+    else notes.push(`${school.id}: Opendorse marketplace ${nil[2]}: add opendorse:{marketplace:'${nil[2]}',team:'<its team name>'} (Colorado State's)`);
+  }
   if(nil)notes.push(`${school.id}: NIL marketplace ${school.nil}`);
   school.tfrrs=teams;writeFileSync(file,text);
 }));

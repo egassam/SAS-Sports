@@ -8,7 +8,7 @@
 // widget can repeat a game from the schedule).
 export function sidearmScheduleGames(raw){
   const script=String(raw||'').match(/<script\b[^>]*id=["']__NUXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
-  if(!script)return[];
+  if(!script)return classicScheduleGames(raw);
   let data;try{data=JSON.parse(script[1]);}catch{return[];}
   if(!Array.isArray(data))return[];
   const wrappers=new Set(['Reactive','ShallowReactive','Ref','ShallowRef','EmptyRef','EmptyShallowRef']);
@@ -96,4 +96,28 @@ export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new 
     }
     return events;
   };
+}
+
+// The older SIDEARM schedule page (Utah State, Oct 19: "sidearm-schedule-game"
+// rows, a Vue/knockout script) embeds the same game objects as plain JSON:
+// `"games":[{"id":16753,"date":"2026-09-05T17:00:00",...,"opponent":{...},
+// "result":{...}}]`. The array is cut out by bracket depth (strings skipped)
+// and parsed; nothing is evaluated.
+function classicScheduleGames(raw){
+  // Only a schedule page (its `var schedule_id`): the site's other pages
+  // carry a scoreboard widget with a "games" list too.
+  const text=String(raw||'');
+  if(!/\bvar\s+schedule_id\s*=\s*\d+/.test(text))return[];
+  for(let at=text.indexOf('"games":[');at>=0;at=text.indexOf('"games":[',at+9)){
+    const start=at+8;let depth=0,inString=false,end=-1;
+    for(let i=start;i<text.length&&i<start+5000000;i++){
+      const c=text[i];
+      if(inString){if(c==='\\')i++;else if(c==='"')inString=false;continue;}
+      if(c==='"')inString=true;else if(c==='['||c==='{')depth++;else if(c===']'||c==='}'){depth--;if(!depth){end=i+1;break;}}
+    }
+    if(end<0)continue;
+    let games;try{games=JSON.parse(text.slice(start,end));}catch{continue;}
+    if(Array.isArray(games)&&games.every(g=>g&&typeof g==='object'&&typeof g.date==='string'&&'opponent' in g&&'result' in g))return games.filter(g=>g.opponent&&typeof g.opponent==='object');
+  }
+  return[];
 }

@@ -90,6 +90,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     const current=games.filter(g=>String(g.date).slice(0,10)>=seasonStart);
     // "@season @sport", or "@season Women's Swimming & Diving" (Tennessee).
     if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);template??=url;continue}
+    // A missing team page answered with the site's generic page ("Utah State
+    // University Athletics", Oct 19: no 404): no games and no "Schedule" title.
+    if(!games.length&&title&&!/schedule/i.test(title)){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
     if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
     titles.add(title);kept=true;
