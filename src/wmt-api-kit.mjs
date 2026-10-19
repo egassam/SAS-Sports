@@ -17,7 +17,7 @@ const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov',
 // "<School> at ...", as K-State's tournaments are.
 const GAME_EVENT=/\b(?:tournament|championships?|final four|regionals?|rounds?|(?:quarter|semi)?finals?|bowl)\b/i;
 // An event, not a team: a dual is "vs"/"at" its opponent, a meet "at".
-const EVENT_NAME=/\b(?:invit\w*|invite|classic|championships?|open|relays|duals|collegiate|intercollegiate|tournament|festival|cup|regionals?|nationals?|trials|NAC|olympics|series|fest|meet|league|match(?: \d+)?|wild card)\b/i;
+const EVENT_NAME=/\bhead of\b|\b(?:invit\w*|invite|classic|championships?|open|relays|duals|collegiate|intercollegiate|tournament|festival|cup|regionals?|nationals?|trials|NAC|olympics|series|fest|meet|league|match(?: \d+)?|wild card)\b/i;
 // The tennis pages list players' pro events ("M15 Ann Arbor", "Sumter W15",
 // San Diego State's "San Diego Challenger").
 const PRO_EVENT=/^(?:\d{4}\s+)?(?:ITF|ATP|WTA)\b|\bFutures\b|\bChallenger\b|\b[MW]\d{2,3}\b|\bUTR\b/i;
@@ -58,6 +58,10 @@ export function wmtMeetResult(text,sport){
   // San Diego State's: "4th - 890 (+26)", "T-10th of 12; 906 (+42)".
   const golf=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: of (\d+))?(?:,|;|\s+-)?\s*(\d{3,4})\s*\(([+-]?\d+|E)\)$/i);
   if(golf){const at=`${place(golf[1],golf[2],golf[3])}${golf[4]?` of ${golf[4]}`:''}`;return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${golf[5]} (${golf[6]})`}]};}
+  // Washington State's golf: the score to par, the total, then the place:
+  // "+29 (893), 9th", "-1 (863), T-4th".
+  const parFirst=sport==='Golf'&&value.match(/^([+-]\d+|E)\s*\((\d{3,4})\),\s*(T-?)?(\d+)(st|nd|rd|th)$/i);
+  if(parFirst){const at=place(parFirst[3],parFirst[4],parFirst[5]);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${parFirst[2]} (${parFirst[1]})`}]};}
   // Virginia Tech's golf: "1st/18 (286-278-280)", "T2nd/17 (272-274-280)":
   // the place in the field, then each round's team score.
   const rounds=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)\/(\d+)\s*\((\d{3}(?:-\d{3})*)\)$/i);
@@ -71,9 +75,25 @@ export function wmtMeetResult(text,sport){
     return{label:`${m[1].toUpperCase()==='W'?"Women's":"Men's"} team`,value:`${place(m[2],m[3],m[4])}${m[5]?` · ${m[5]} pts`:''}${race}`};
   });
   if(teams.length)return{headline:teams.map(row=>`${row.label}: ${row.value}`).join(' / '),results:teams};
+  // Washington State's cross country: "3rd (W), 5th (M)".
+  const bracketed=[...value.matchAll(/(T-?)?(\d+)(st|nd|rd|th)\s*\(([WM])\)/gi)].map(m=>({label:`${m[4].toUpperCase()==='W'?"Women's":"Men's"} team`,value:place(m[1],m[2],m[3])}));
+  if(bracketed.length&&value.replace(/(T-?)?\d+(st|nd|rd|th)\s*\([WM]\)|[,;\s]/gi,'')==='')return{headline:bracketed.map(row=>`${row.label}: ${row.value}`).join(' / '),results:bracketed};
   if(/^ind(?:\.|ividual)? results$/i.test(value))return{headline:'Individual results',results:[{label:'Result',value:'Individual results'}]};
   if(/^(?:no team scores?|NTS)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
   return{headline:value,results:[{label:'Result',value}]};
+}
+
+// A meet against several teams scored dual by dual, each by its code:
+// "DU: L,150-144; AF: W, 157-137" (Washington State's swimming at Air Force
+// and Denver). Each code names the opponent whose words' initials, or first
+// letter, it starts with; the school's score first.
+export function wmtDualsByCode(text,opponent){
+  const rows=[...String(text||'').matchAll(/\b([A-Z]{2,5}):\s*([WLT]),\s*(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/g)];
+  if(rows.length<2||String(text).replace(/\b[A-Z]{2,5}:\s*[WLT],\s*[\d.]+-[\d.]+/g,'').replace(/[;,\s]/g,''))return null;
+  const names=String(opponent||'').split(/\s+and\s+|\//).map(n=>n.trim()).filter(Boolean);
+  const nameOf=code=>names.find(n=>n.split(/\s+/).map(w=>w[0]).join('').toUpperCase()===code)||(names.filter(n=>n[0].toUpperCase()===code[0]).length===1?names.find(n=>n[0].toUpperCase()===code[0]):code);
+  const results=rows.map(([,code,outcome,a,b])=>{const [hi,lo]=Number(a)>=Number(b)?[a,b]:[b,a],[mine,theirs]=outcome==='L'?[lo,hi]:[hi,lo];return{label:nameOf(code),value:`${outcome}, ${mine}-${theirs}`};});
+  return{headline:results.map(r=>`${r.label}: ${r.value}`).join(' · '),results};
 }
 
 // A meet over several entries is one event: golf's rounds ("Rounds 1-2",
@@ -171,7 +191,11 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       // Invitational, Aug 28-29: "Kent State vs Coppin State", the winner as
       // the result text).
       if(!meet&&second&&game.neutral_event)continue;
-      if(second&&!/\bteam (?:meet|event)\b/i.test(second))name=`${name} and ${second}`;
+      // Washington State's swimming names both in the first ("Air Force/Denver")
+      // and one again as the second ("Denver").
+      const parts=name.split('/').map(part=>part.trim()).filter(Boolean);
+      if(second&&parts.length>1&&parts.includes(second))name=parts.join(' and ');
+      else if(second&&!/\bteam (?:meet|event)\b/i.test(second))name=`${name} and ${second}`;
       // Exhibitions read as K-State labels them ("Dayton (Exhibition)").
       const exhibition=Boolean(game.is_exhibition)||/\((?:exh\.?|exhibition)\)$/i.test(name);
       // A ranking written into the name (San Diego State's "#9 San Diego",
@@ -187,7 +211,7 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       const story=storyOf(game);
       // A merged meet's opponents each keep their own row (Virginia Tech's
       // tri-meet: West Virginia, Liberty, Penn State).
-      const placed=!score&&meet&&game.status==='completed'?(game.opponent_results?{headline:text,results:game.opponent_results}:wmtMeetResult(text,sport)):null;
+      const placed=!score&&meet&&game.status==='completed'?(game.opponent_results?{headline:text,results:game.opponent_results}:wmtDualsByCode(text,opponent)||wmtMeetResult(text,sport)):null;
       // A past meet is final with its result (a place, or its story); a past
       // game without a score is not listed. Yesterday's game stays: a night
       // game can end after midnight.

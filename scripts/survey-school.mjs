@@ -51,6 +51,12 @@ const worker=Function(...Object.keys(deps),source+`;return {candidateUrls,parseH
 const now=new Date(value('date')?`${value('date')}T15:00:00Z`:Date.now());
 const pad=(text,width)=>String(text).padEnd(width);
 // The gate's rule: a final needs a result line other than Completed, or a story.
+// Sports whose every event is a meet, and the result lines the readers
+// write (scores, places, team rows, "Completed", match play, duals).
+const MEET_ONLY=new Set(['Cross Country','Golf','Track & Field']);
+const RESULT_FORMS=/^(?:[WLT],\s|(?:T-?)?\d+(?:st|nd|rd|th)(?: of \d+)?(?: \([^()]*\))?$|Completed$|No team score|Individual results$|Match play|Cancelled|Postponed|Canceled|(?:Women's|Men's)(?: team)?(?:: | · )|.*(?:'s team|team): |[^:]+: (?:(?:Women|Men): )?[WLT], \d)/i;
+const SCHOOL_NAMES=new Set(schools.flatMap(s=>[s.name,s.short_name]).filter(Boolean).map(n=>n.toLowerCase()));
+let formatted=0;
 const gateMiss=e=>e.status==='Final'&&!e.recap_url&&(!e.headline||e.headline==='Completed');
 let flagged=0;
 
@@ -84,9 +90,23 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
     // Names that are rarely an opponent or event: a leading mark ("(Receiving
     // Votes) Wisconsin", Minnesota), a practice or training trip, a selection
     // show (Northwestern, Nebraska). Read each by eye.
-    const odd=e=>/^[(\[#*]|\b(?:practice|training) trip\b|\bselection show\b|\bhead ?shot\b/i.test(String(e.opponent||''));
-    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${unlisted(e)?'  (not listed: the module leaves it out)':gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':odd(e)?'  << ODD NAME: check by eye':''}`);
+    const odd=e=>/^[(\[#*]|^No\.\s*\d+\s|\b(?:practice|training) trip\b|\bselection show\b|\bhead ?shot\b/i.test(String(e.opponent||''));
+    // FORMAT: K-State's results format, checked before the first push (the
+    // San Diego State preview showed "vs Pac-12" and raw golf text, Oct 18):
+    // a meet sport read as a dual, a result line no rule read, a meet named
+    // by its host school.
+    const format=e=>{
+      if(MEET_ONLY.has(sport)&&/ vs /.test(e.title))return'a meet read "vs" (meets are "at")';
+      if(/ vs /.test(e.title)&&/\bhead of\b|\b(?:invitational|invite|classic|championships?|regionals?)\b/i.test(String(e.opponent||'')))return'an event read "vs" (events are "at")';
+      if(sport==='Golf'&&e.status==='Final'&&/^Completed$/i.test(e.headline||''))return'golf final without a place (card, final story)';
+      if(e.status==='Final'&&e.headline&&!RESULT_FORMS.test(e.headline))return`result "${e.headline}" not read by any rule`;
+      if(MEET_ONLY.has(sport)&&e.status==='Final'&&SCHOOL_NAMES.has(String(e.opponent||'').toLowerCase()))return'meet named by its host school (find its name: story, TFRRS)';
+      return null;
+    };
+    formatted+=events.filter(e=>!unlisted(e)&&format(e)).length;
+    for(const e of events)console.log(` ${pad(e.status,8)} ${pad(e.display_time,16)} ${e.title} | ${e.headline||''} | ${e.recap_url?e.recap_url.replace(/^.*\/news\//,''):'-'}${e.end_time?` (to ${e.end_time.slice(0,10)})`:''}${e.recency_label&&e.recency_label!==e.status?` ${e.recency_label}`:''}${unlisted(e)?'  (not listed: the module leaves it out)':gateMiss(e)?'  << GATE: final without a result line or story (none in the saved /archives or TFRRS pages either)':format(e)?`  << FORMAT: ${format(e)}`:odd(e)?'  << ODD NAME: check by eye':''}`);
     flagged+=events.filter(e=>!unlisted(e)&&gateMiss(e)).length;
   }
 }
+if(formatted)console.log(`\n${formatted} line(s) not in K-State's results format (FORMAT): fix or explain each before the first push.`);
 if(flagged){console.log(`\n${flagged} final(s) without a result line or story: the release gate fails them.`);process.exitCode=1;}

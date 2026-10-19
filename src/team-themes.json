@@ -1127,6 +1127,14 @@
     "line": "#513235",
     "onAccent": "#ffffff"
   },
+  "washington-state": {
+    "primary": "#981E32",
+    "secondary": "#5E6A71",
+    "panel": "#2a0f17",
+    "panelDark": "#14080c",
+    "line": "#621f2e",
+    "onAccent": "#ffffff"
+  },
   "west-virginia": {
     "primary": "#002855",
     "secondary": "#EAAA00",

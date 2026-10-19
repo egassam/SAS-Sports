@@ -83,8 +83,16 @@ for(const xc of xcBaselines){
   report(text===want,`${xc.label} ${text} (want ${want})`);
 }
 
+// Sports of one school run three at a time (--sport-concurrency=): each
+// sport's refreshes stay one after another, spaced, as before; a 34-sport
+// gate took about 10 minutes one sport at a time (Oct 18).
+const sportConcurrency=Math.max(1,Number(value('sport-concurrency')||3));
 async function verifySchool(school,sports){
-for(const sport of sports){
+  const queue=[...sports];
+  await Promise.all(Array.from({length:Math.min(sportConcurrency,queue.length)},async()=>{while(queue.length)await verifySport(school,queue.shift());}));
+}
+async function verifySport(school,sport){
+{
   // Forced refreshes: every one must be a 200 JSON array.
   let ok=0,cpu=0,s503=0,other=[],slowest=0,events=null;
   for(let i=0;i<refreshes;i++){
@@ -107,7 +115,7 @@ for(const sport of sports){
   const bare=results.filter(e=>completed(e)&&!storyOnly.includes(e));
   report(feed.status===200&&!bare.length,`${school} ${sport}: ${results.length} results${bare.length?`, ${bare.length} without a result line or story (${bare.slice(0,3).map(e=>e.title).join('; ')})`:', each with a result line'}${storyOnly.length?` (${storyOnly.length} meet${storyOnly.length>1?'s':''} without a team result, with its story)`:''}`);
 
-  if(flag('no-expanded'))continue;
+  if(flag('no-expanded'))return;
   // Every final's expanded view answers 200 with its own event. AI timeouts
   // (`ai_failed`) are listed, not failed: the page asks once more.
   const states={};let bad=[];

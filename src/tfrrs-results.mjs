@@ -48,7 +48,15 @@ export function onlyTfrrsMeetOn(raw,{decodeHtml,date}){
 // column only (App State's "Baylor Wolfe" is not Baylor). A race the school
 // did not run is left out. A team listed with 0 points ("W-NTS") has no
 // team result. A second race for the same team ("... CC Open") is labeled.
-export function parseTfrrsResults(raw,{decodeHtml,ordinal,team:teamName}){
+export function parseTfrrsResults(raw,{decodeHtml,ordinal,team}){
+  // TFRRS shortens some schools' "State" to "St." ("Colorado St.", "San
+  // Diego St.", "Washington St."; Oct 19: their races never matched): the
+  // short name is read only when the full one has no rows.
+  const races=parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team});
+  const shortName=String(team||'').replace(/ State$/,' St.');
+  return races.length||shortName===team?races:parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:shortName});
+}
+function parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:teamName}){
   const races=new Map();
   for(const section of String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1)){
     const title=tfrrsText(decodeHtml,(section.match(/<h3\b[^>]*>([\s\S]*?)<span\b/i)||section.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)||section.match(/^[^>]*>([\s\S]*?)<\/div>/)||[])[1]||'');
