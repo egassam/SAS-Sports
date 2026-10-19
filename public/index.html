@@ -157,12 +157,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .hero .level{min-height:40px;padding:6px 12px;font-size:14px}
 .hero .finder,.hero .finder.has-city{max-width:none}
 .hero select{min-height:44px;padding:8px 10px;font-size:16px}
-.hero .action-row{grid-template-columns:minmax(0,1fr) 44px 44px;gap:6px;margin-top:8px}
+.hero .action-row{grid-template-columns:minmax(0,1fr) auto 44px;gap:6px;margin-top:8px}
 .hero .action-row #search{grid-column:auto;min-width:0;min-height:44px;padding:8px 10px;font-size:16px}
-.hero .favorite,#refresh{width:44px;min-width:44px;height:44px;padding:0}
-.hero .favorite{font-size:0}
-.hero .favorite::before{content:'☆';font-size:23px}
-.hero .favorite.on::before{content:'★'}
+#refresh{width:44px;min-width:44px;height:44px;padding:0}
+.hero .favorite{width:auto;min-width:0;height:44px;padding:0 10px;font-size:13px;white-space:nowrap}
 #refresh{font-size:26px;line-height:1}
 .hero .tabs{margin-top:8px;gap:4px}
 .hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
@@ -209,7 +207,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   </div>
   <div class="action-row">
     <input id="search" type="search" placeholder="Search events…" aria-label="Search events">
-    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school">☆</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
+    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school" aria-pressed="false">☆ Favorite team</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
   </div>
   <div id="favoriteTeams" class="favorite-teams" aria-label="Favorite teams"></div>
   <div class="tabs" id="tabs">
@@ -489,10 +487,11 @@ function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
   const team=catalogEntry(school.value)?.name||'this team';
-  favorite.textContent=on?'★ Favorite':'☆ Set favorite'; favorite.classList.toggle('on',on);
+  favorite.textContent=on?'★ Favorited':'☆ Favorite team'; favorite.classList.toggle('on',on);
+  favorite.setAttribute('aria-pressed',String(on));
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
-  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
+  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
   favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value)return;const item=catalogEntry(id);if(item)populateSchoolControls(id).then(()=>loadFeed(false))}));
 }
 // Levels of play. College is live; high school and professional teams are

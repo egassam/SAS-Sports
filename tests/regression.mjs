@@ -381,8 +381,8 @@ contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Fa
 contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
 contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
-contains(page,/★ Favorite/,'Selected homepage team must have a clear favorite label');
-contains(page,/☆ Set favorite/,'Users must have a clear control for choosing a homepage team');
+contains(page,/★ Favorited/,'Selected homepage team must have a clear favorite label');
+contains(page,/☆ Favorite team/,'Users must have a clear control for choosing a homepage team');
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
 // The selected sport's feed must survive a transient Worker failure. Cloudflare
