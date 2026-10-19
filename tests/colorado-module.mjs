@@ -82,7 +82,12 @@ assert.deepEqual(group.results.map(e=>e.display_time),['Oct 3','Sep 26','Sep 19'
 // cards, and the published times were lost.
 {
   recapFixtures.set(footballUrl,fixture('football-schedule.html.gz'));
-  const {events}=await worker.fetchLive('colorado','Football');
+  // The fixture's day (Oct 4): from Oct 19 the unscored Oct 17 game drops
+  // out by K-State's rule, so the count is checked on the page's own day.
+  const RealDate=Date;
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[now.getTime()]))}static now(){return now.getTime()}};
+  let events;
+  try{({events}=await worker.fetchLive('colorado','Football'));}finally{globalThis.Date=RealDate;}
   recapFixtures.delete(footballUrl);requests.length=0;
   assert.deepEqual(events.filter(e=>e.opponent==='Houston').map(e=>e.display_time),['Nov 13, 8:15 PM'],'the feed keeps the published start time');
   assert.equal(events.length,13);

@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.114.0-compact-controls';
+const VERSION='4.115.0-mlb';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1818,8 +1818,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
   }
   return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing};
 }
-// Professional teams and series (src/pro-sports.mjs): NFL and MLS teams from
-// ESPN's team schedule, NASCAR races from NASCAR's own feeds.
+// Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
+// from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
 // ESPN reads carry the scoreboard identity (ESPN refuses a user agent with a
 // web address; see SCOREBOARD_USER_AGENT).
 // A refused or failed read serves the last copy read (a burst of ESPN refusals
@@ -1837,7 +1837,13 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     if(config.fixtures)urls.push(`${base}?fixture=true`);
     // The NFL postseason is read only in its months (January and February).
     const month=schoolNow(now,school).getUTCMonth()+1;if(config.sport==='Football'&&month<=2)urls.push(`${base}?seasontype=3`);
-    const payloads=await Promise.all(urls.map(url=>readJson(url,SOURCE_TTL.schedule)));
+    // MLB: the plain list is the current season type (spring training, then
+    // the regular season, then the postseason), so the regular season is read
+    // by name, and the postseason in its months (September to November).
+    // After the regular season ends its list is kept six hours.
+    const ttl=url=>config.sport==='Baseball'&&url.endsWith('seasontype=2')&&(month>=10||month<=2)?SOURCE_TTL.document:SOURCE_TTL.schedule;
+    if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}
+    const payloads=await Promise.all(urls.map(url=>readJson(url,ttl(url))));
     if(!payloads[0])return failed(`${base}: unreadable`);
     const events=espnTeamGames(payloads.filter(Boolean),{school,config,timeZone,now});
     // A game under way (or past its kickoff and not yet final on the team
@@ -1863,7 +1869,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
         target.box_score=details.box_score;
         target.result_count=target.results.length;
         if(details.recap){target.recap_url=details.recap;target.recap_label='View ESPN recap';}
-        target.highlight_status=config.sport==='Soccer'?'Score by half, goals and team stats from ESPN\'s match summary.':'Line score, team stats and leaders from ESPN\'s game summary.';
+        target.highlight_status=config.sport==='Soccer'?'Score by half, goals and team stats from ESPN\'s match summary.':config.sport==='Baseball'?'Line score, pitchers of record, team stats and scoring plays from ESPN\'s game summary.':'Line score, team stats and leaders from ESPN\'s game summary.';
       }
     }
     return{events,source_url:base,source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
@@ -2248,8 +2254,8 @@ function compactScheduleHtml(raw,sourceUrl){
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}${e.school_id==='kansas'&&e.official_event_id?'|'+e.official_event_id:''}${e.game_number?'|game-'+e.game_number:''}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 // Pro leagues whose season is not the college one: MLS plays late February to
-// early December.
-const PRO_SEASONS={Soccer:[[2,12]]};
+// early December, MLB late March to the World Series (early November).
+const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]]};
 function inSeason(sport,month,pro=false){const windows=(pro&&PRO_SEASONS[sport])||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 // A sport's overall record this season (user, October 7: "the sports overall
 // win/loss record for every sport"), counted from its finals' W/L/T results
@@ -2263,7 +2269,8 @@ const RECORD_MONTHS={Basketball:[11,12,1,2,3,4],Baseball:[2,3,4,5,6],Softball:[2
 function seasonRecords(results){
   const byTeam=new Map();
   for(const e of results){
-    const months=RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
+    // A pro season's games all count (MLB plays April to September).
+    const months=e.pro?null:RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
     if(months&&!months.includes(month))continue;
     // NFL playoffs are not part of the season record.
     if(e.not_in_record)continue;

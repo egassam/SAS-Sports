@@ -3260,5 +3260,754 @@
         "provider_school_id": "9727"
       }
     ]
+  },
+  {
+    "id": "baltimore-orioles",
+    "name": "Baltimore Orioles",
+    "short_name": "Orioles",
+    "state": "Maryland",
+    "city": "Baltimore",
+    "conference": "AL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL East",
+    "athletics_url": "https://www.mlb.com/orioles",
+    "aliases": [
+      "Orioles",
+      "BAL",
+      "Baltimore Orioles"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/bal",
+        "provider_school_id": "1"
+      }
+    ]
+  },
+  {
+    "id": "boston-red-sox",
+    "name": "Boston Red Sox",
+    "short_name": "Red Sox",
+    "state": "Massachusetts",
+    "city": "Boston",
+    "conference": "AL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL East",
+    "athletics_url": "https://www.mlb.com/redsox",
+    "aliases": [
+      "Red Sox",
+      "BOS",
+      "Boston Red Sox"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/bos",
+        "provider_school_id": "2"
+      }
+    ]
+  },
+  {
+    "id": "new-york-yankees",
+    "name": "New York Yankees",
+    "short_name": "Yankees",
+    "state": "New York",
+    "city": "New York",
+    "conference": "AL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL East",
+    "athletics_url": "https://www.mlb.com/yankees",
+    "aliases": [
+      "Yankees",
+      "NYY",
+      "New York Yankees"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/nyy",
+        "provider_school_id": "10"
+      }
+    ]
+  },
+  {
+    "id": "tampa-bay-rays",
+    "name": "Tampa Bay Rays",
+    "short_name": "Rays",
+    "state": "Florida",
+    "city": "St. Petersburg",
+    "conference": "AL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL East",
+    "athletics_url": "https://www.mlb.com/rays",
+    "aliases": [
+      "Rays",
+      "TB",
+      "Tampa Bay Rays"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/tb",
+        "provider_school_id": "30"
+      }
+    ]
+  },
+  {
+    "id": "toronto-blue-jays",
+    "name": "Toronto Blue Jays",
+    "short_name": "Blue Jays",
+    "state": "Ontario",
+    "city": "Toronto",
+    "conference": "AL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL East",
+    "athletics_url": "https://www.mlb.com/bluejays",
+    "aliases": [
+      "Blue Jays",
+      "TOR",
+      "Toronto Blue Jays"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/tor",
+        "provider_school_id": "14"
+      }
+    ]
+  },
+  {
+    "id": "chicago-white-sox",
+    "name": "Chicago White Sox",
+    "short_name": "White Sox",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "AL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL Central",
+    "athletics_url": "https://www.mlb.com/whitesox",
+    "aliases": [
+      "White Sox",
+      "CHW",
+      "Chicago White Sox"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/chw",
+        "provider_school_id": "4"
+      }
+    ]
+  },
+  {
+    "id": "cleveland-guardians",
+    "name": "Cleveland Guardians",
+    "short_name": "Guardians",
+    "state": "Ohio",
+    "city": "Cleveland",
+    "conference": "AL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL Central",
+    "athletics_url": "https://www.mlb.com/guardians",
+    "aliases": [
+      "Guardians",
+      "CLE",
+      "Cleveland Guardians"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/cle",
+        "provider_school_id": "5"
+      }
+    ]
+  },
+  {
+    "id": "detroit-tigers",
+    "name": "Detroit Tigers",
+    "short_name": "Tigers",
+    "state": "Michigan",
+    "city": "Detroit",
+    "conference": "AL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL Central",
+    "athletics_url": "https://www.mlb.com/tigers",
+    "aliases": [
+      "Tigers",
+      "DET",
+      "Detroit Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/det",
+        "provider_school_id": "6"
+      }
+    ]
+  },
+  {
+    "id": "kansas-city-royals",
+    "name": "Kansas City Royals",
+    "short_name": "Royals",
+    "state": "Missouri",
+    "city": "Kansas City",
+    "conference": "AL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL Central",
+    "athletics_url": "https://www.mlb.com/royals",
+    "aliases": [
+      "Royals",
+      "KC",
+      "Kansas City Royals"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/kc",
+        "provider_school_id": "7"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-twins",
+    "name": "Minnesota Twins",
+    "short_name": "Twins",
+    "state": "Minnesota",
+    "city": "Minneapolis",
+    "conference": "AL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL Central",
+    "athletics_url": "https://www.mlb.com/twins",
+    "aliases": [
+      "Twins",
+      "MIN",
+      "Minnesota Twins"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/min",
+        "provider_school_id": "9"
+      }
+    ]
+  },
+  {
+    "id": "athletics",
+    "name": "Athletics",
+    "short_name": "Athletics",
+    "state": "California",
+    "city": "West Sacramento",
+    "conference": "AL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL West",
+    "athletics_url": "https://www.mlb.com/athletics",
+    "aliases": [
+      "Athletics",
+      "ATH"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/ath",
+        "provider_school_id": "11"
+      }
+    ]
+  },
+  {
+    "id": "houston-astros",
+    "name": "Houston Astros",
+    "short_name": "Astros",
+    "state": "Texas",
+    "city": "Houston",
+    "conference": "AL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL West",
+    "athletics_url": "https://www.mlb.com/astros",
+    "aliases": [
+      "Astros",
+      "HOU",
+      "Houston Astros"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/hou",
+        "provider_school_id": "18"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-angels",
+    "name": "Los Angeles Angels",
+    "short_name": "Angels",
+    "state": "California",
+    "city": "Anaheim",
+    "conference": "AL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL West",
+    "athletics_url": "https://www.mlb.com/angels",
+    "aliases": [
+      "Angels",
+      "LAA",
+      "Los Angeles Angels"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/laa",
+        "provider_school_id": "3"
+      }
+    ]
+  },
+  {
+    "id": "seattle-mariners",
+    "name": "Seattle Mariners",
+    "short_name": "Mariners",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "AL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL West",
+    "athletics_url": "https://www.mlb.com/mariners",
+    "aliases": [
+      "Mariners",
+      "SEA",
+      "Seattle Mariners"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/sea",
+        "provider_school_id": "12"
+      }
+    ]
+  },
+  {
+    "id": "texas-rangers",
+    "name": "Texas Rangers",
+    "short_name": "Rangers",
+    "state": "Texas",
+    "city": "Arlington",
+    "conference": "AL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · AL West",
+    "athletics_url": "https://www.mlb.com/rangers",
+    "aliases": [
+      "Rangers",
+      "TEX",
+      "Texas Rangers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/tex",
+        "provider_school_id": "13"
+      }
+    ]
+  },
+  {
+    "id": "atlanta-braves",
+    "name": "Atlanta Braves",
+    "short_name": "Braves",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "conference": "NL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL East",
+    "athletics_url": "https://www.mlb.com/braves",
+    "aliases": [
+      "Braves",
+      "ATL",
+      "Atlanta Braves"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/atl",
+        "provider_school_id": "15"
+      }
+    ]
+  },
+  {
+    "id": "miami-marlins",
+    "name": "Miami Marlins",
+    "short_name": "Marlins",
+    "state": "Florida",
+    "city": "Miami",
+    "conference": "NL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL East",
+    "athletics_url": "https://www.mlb.com/marlins",
+    "aliases": [
+      "Marlins",
+      "MIA",
+      "Miami Marlins"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/mia",
+        "provider_school_id": "28"
+      }
+    ]
+  },
+  {
+    "id": "new-york-mets",
+    "name": "New York Mets",
+    "short_name": "Mets",
+    "state": "New York",
+    "city": "New York",
+    "conference": "NL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL East",
+    "athletics_url": "https://www.mlb.com/mets",
+    "aliases": [
+      "Mets",
+      "NYM",
+      "New York Mets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/nym",
+        "provider_school_id": "21"
+      }
+    ]
+  },
+  {
+    "id": "philadelphia-phillies",
+    "name": "Philadelphia Phillies",
+    "short_name": "Phillies",
+    "state": "Pennsylvania",
+    "city": "Philadelphia",
+    "conference": "NL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL East",
+    "athletics_url": "https://www.mlb.com/phillies",
+    "aliases": [
+      "Phillies",
+      "PHI",
+      "Philadelphia Phillies"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/phi",
+        "provider_school_id": "22"
+      }
+    ]
+  },
+  {
+    "id": "washington-nationals",
+    "name": "Washington Nationals",
+    "short_name": "Nationals",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "NL East",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL East",
+    "athletics_url": "https://www.mlb.com/nationals",
+    "aliases": [
+      "Nationals",
+      "WSH",
+      "Washington Nationals"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/wsh",
+        "provider_school_id": "20"
+      }
+    ]
+  },
+  {
+    "id": "chicago-cubs",
+    "name": "Chicago Cubs",
+    "short_name": "Cubs",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "NL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL Central",
+    "athletics_url": "https://www.mlb.com/cubs",
+    "aliases": [
+      "Cubs",
+      "CHC",
+      "Chicago Cubs"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/chc",
+        "provider_school_id": "16"
+      }
+    ]
+  },
+  {
+    "id": "cincinnati-reds",
+    "name": "Cincinnati Reds",
+    "short_name": "Reds",
+    "state": "Ohio",
+    "city": "Cincinnati",
+    "conference": "NL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL Central",
+    "athletics_url": "https://www.mlb.com/reds",
+    "aliases": [
+      "Reds",
+      "CIN",
+      "Cincinnati Reds"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/cin",
+        "provider_school_id": "17"
+      }
+    ]
+  },
+  {
+    "id": "milwaukee-brewers",
+    "name": "Milwaukee Brewers",
+    "short_name": "Brewers",
+    "state": "Wisconsin",
+    "city": "Milwaukee",
+    "conference": "NL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL Central",
+    "athletics_url": "https://www.mlb.com/brewers",
+    "aliases": [
+      "Brewers",
+      "MIL",
+      "Milwaukee Brewers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/mil",
+        "provider_school_id": "8"
+      }
+    ]
+  },
+  {
+    "id": "pittsburgh-pirates",
+    "name": "Pittsburgh Pirates",
+    "short_name": "Pirates",
+    "state": "Pennsylvania",
+    "city": "Pittsburgh",
+    "conference": "NL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL Central",
+    "athletics_url": "https://www.mlb.com/pirates",
+    "aliases": [
+      "Pirates",
+      "PIT",
+      "Pittsburgh Pirates"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/pit",
+        "provider_school_id": "23"
+      }
+    ]
+  },
+  {
+    "id": "st-louis-cardinals",
+    "name": "St. Louis Cardinals",
+    "short_name": "Cardinals",
+    "state": "Missouri",
+    "city": "St. Louis",
+    "conference": "NL Central",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL Central",
+    "athletics_url": "https://www.mlb.com/cardinals",
+    "aliases": [
+      "Cardinals",
+      "STL",
+      "St. Louis Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/stl",
+        "provider_school_id": "24"
+      }
+    ]
+  },
+  {
+    "id": "arizona-diamondbacks",
+    "name": "Arizona Diamondbacks",
+    "short_name": "Diamondbacks",
+    "state": "Arizona",
+    "city": "Phoenix",
+    "conference": "NL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL West",
+    "athletics_url": "https://www.mlb.com/dbacks",
+    "aliases": [
+      "Diamondbacks",
+      "ARI",
+      "Arizona Diamondbacks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/ari",
+        "provider_school_id": "29"
+      }
+    ]
+  },
+  {
+    "id": "colorado-rockies",
+    "name": "Colorado Rockies",
+    "short_name": "Rockies",
+    "state": "Colorado",
+    "city": "Denver",
+    "conference": "NL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL West",
+    "athletics_url": "https://www.mlb.com/rockies",
+    "aliases": [
+      "Rockies",
+      "COL",
+      "Colorado Rockies"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/col",
+        "provider_school_id": "27"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-dodgers",
+    "name": "Los Angeles Dodgers",
+    "short_name": "Dodgers",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "NL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL West",
+    "athletics_url": "https://www.mlb.com/dodgers",
+    "aliases": [
+      "Dodgers",
+      "LAD",
+      "Los Angeles Dodgers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/lad",
+        "provider_school_id": "19"
+      }
+    ]
+  },
+  {
+    "id": "san-diego-padres",
+    "name": "San Diego Padres",
+    "short_name": "Padres",
+    "state": "California",
+    "city": "San Diego",
+    "conference": "NL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL West",
+    "athletics_url": "https://www.mlb.com/padres",
+    "aliases": [
+      "Padres",
+      "SD",
+      "San Diego Padres"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/sd",
+        "provider_school_id": "25"
+      }
+    ]
+  },
+  {
+    "id": "san-francisco-giants",
+    "name": "San Francisco Giants",
+    "short_name": "Giants",
+    "state": "California",
+    "city": "San Francisco",
+    "conference": "NL West",
+    "league": "MLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MLB · NL West",
+    "athletics_url": "https://www.mlb.com/giants",
+    "aliases": [
+      "Giants",
+      "SF",
+      "San Francisco Giants"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "baseball/mlb/teams/sf",
+        "provider_school_id": "26"
+      }
+    ]
   }
 ]

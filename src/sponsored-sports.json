@@ -37,6 +37,9 @@
   "arizona-cardinals": [
     "Football"
   ],
+  "arizona-diamondbacks": [
+    "Baseball"
+  ],
   "arizona-state": [
     "Baseball",
     "Basketball",
@@ -70,6 +73,12 @@
     "Track & Field",
     "Volleyball"
   ],
+  "athletics": [
+    "Baseball"
+  ],
+  "atlanta-braves": [
+    "Baseball"
+  ],
   "atlanta-falcons": [
     "Football"
   ],
@@ -93,6 +102,9 @@
   ],
   "austin-fc": [
     "Soccer"
+  ],
+  "baltimore-orioles": [
+    "Baseball"
   ],
   "baltimore-ravens": [
     "Football"
@@ -143,6 +155,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "boston-red-sox": [
+    "Baseball"
+  ],
   "buffalo-bills": [
     "Football"
   ],
@@ -191,8 +206,14 @@
   "chicago-bears": [
     "Football"
   ],
+  "chicago-cubs": [
+    "Baseball"
+  ],
   "chicago-fire": [
     "Soccer"
+  ],
+  "chicago-white-sox": [
+    "Baseball"
   ],
   "cincinnati": [
     "Baseball",
@@ -209,6 +230,9 @@
   ],
   "cincinnati-bengals": [
     "Football"
+  ],
+  "cincinnati-reds": [
+    "Baseball"
   ],
   "clemson": [
     "Baseball",
@@ -228,6 +252,9 @@
   "cleveland-browns": [
     "Football"
   ],
+  "cleveland-guardians": [
+    "Baseball"
+  ],
   "colorado": [
     "Basketball",
     "Cross Country",
@@ -241,6 +268,9 @@
   ],
   "colorado-rapids": [
     "Soccer"
+  ],
+  "colorado-rockies": [
+    "Baseball"
   ],
   "colorado-state": [
     "Basketball",
@@ -268,6 +298,9 @@
   ],
   "detroit-lions": [
     "Football"
+  ],
+  "detroit-tigers": [
+    "Baseball"
   ],
   "duke": [
     "Baseball",
@@ -403,6 +436,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "houston-astros": [
+    "Baseball"
+  ],
   "houston-dynamo": [
     "Soccer"
   ],
@@ -504,6 +540,9 @@
   "kansas-city-chiefs": [
     "Football"
   ],
+  "kansas-city-royals": [
+    "Baseball"
+  ],
   "kentucky": [
     "Baseball",
     "Basketball",
@@ -541,8 +580,14 @@
   "las-vegas-raiders": [
     "Football"
   ],
+  "los-angeles-angels": [
+    "Baseball"
+  ],
   "los-angeles-chargers": [
     "Football"
+  ],
+  "los-angeles-dodgers": [
+    "Baseball"
   ],
   "los-angeles-rams": [
     "Football"
@@ -618,6 +663,9 @@
   "miami-dolphins": [
     "Football"
   ],
+  "miami-marlins": [
+    "Baseball"
+  ],
   "michigan": [
     "Baseball",
     "Basketball",
@@ -655,6 +703,9 @@
     "Volleyball",
     "Wrestling"
   ],
+  "milwaukee-brewers": [
+    "Baseball"
+  ],
   "minnesota": [
     "Baseball",
     "Basketball",
@@ -671,6 +722,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "minnesota-twins": [
+    "Baseball"
   ],
   "minnesota-united": [
     "Soccer"
@@ -762,8 +816,14 @@
   "new-york-jets": [
     "Football"
   ],
+  "new-york-mets": [
+    "Baseball"
+  ],
   "new-york-red-bulls": [
     "Soccer"
+  ],
+  "new-york-yankees": [
+    "Baseball"
   ],
   "north-carolina": [
     "Baseball",
@@ -933,6 +993,9 @@
   "philadelphia-eagles": [
     "Football"
   ],
+  "philadelphia-phillies": [
+    "Baseball"
+  ],
   "philadelphia-union": [
     "Soccer"
   ],
@@ -949,6 +1012,9 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "pittsburgh-pirates": [
+    "Baseball"
   ],
   "pittsburgh-steelers": [
     "Football"
@@ -994,6 +1060,9 @@
   "san-diego-fc": [
     "Soccer"
   ],
+  "san-diego-padres": [
+    "Baseball"
+  ],
   "san-diego-state": [
     "Baseball",
     "Basketball",
@@ -1012,8 +1081,14 @@
   "san-francisco-49ers": [
     "Football"
   ],
+  "san-francisco-giants": [
+    "Baseball"
+  ],
   "san-jose-earthquakes": [
     "Soccer"
+  ],
+  "seattle-mariners": [
+    "Baseball"
   ],
   "seattle-seahawks": [
     "Football"
@@ -1051,6 +1126,9 @@
   ],
   "sporting-kansas-city": [
     "Soccer"
+  ],
+  "st-louis-cardinals": [
+    "Baseball"
   ],
   "st-louis-city": [
     "Soccer"
@@ -1092,6 +1170,9 @@
   ],
   "tampa-bay-buccaneers": [
     "Football"
+  ],
+  "tampa-bay-rays": [
+    "Baseball"
   ],
   "tcu": [
     "Baseball",
@@ -1155,6 +1236,9 @@
     "Track & Field",
     "Volleyball"
   ],
+  "texas-rangers": [
+    "Baseball"
+  ],
   "texas-tech": [
     "Baseball",
     "Basketball",
@@ -1166,6 +1250,9 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "toronto-blue-jays": [
+    "Baseball"
   ],
   "toronto-fc": [
     "Soccer"
@@ -1311,6 +1398,9 @@
   ],
   "washington-commanders": [
     "Football"
+  ],
+  "washington-nationals": [
+    "Baseball"
   ],
   "washington-state": [
     "Baseball",

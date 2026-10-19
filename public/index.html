@@ -359,10 +359,15 @@ function liveMore(e,ours,theirs){
   const us=d.teams?.ours||monogram(ours),them=d.teams?.theirs||monogram(theirs),parts=[];
   if(d.line?.length){
     const total=k=>k==='ours'?(e.school_score??''):(e.opponent_score??'');
-    const row=(k,name)=>`<tr><th scope="row">${esc(name)}${d.records?.[k]?` <small>(${esc(d.records[k])})</small>`:''}</th>${d.line.map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(total(k))}</td></tr>`;
-    parts.push(`<table class="live-line" aria-label="Score by period"><tr><th></th>${d.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>T</th></tr>${row('ours',us)}${row('theirs',them)}</table>`);
+    const extra=d.columns||[];
+    const row=(k,name)=>`<tr><th scope="row">${esc(name)}${d.records?.[k]?` <small>(${esc(d.records[k])})</small>`:''}</th>${d.line.map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(total(k))}</td>${extra.map(c=>`<td class="total">${esc(c[k])}</td>`).join('')}</tr>`;
+    parts.push(`<table class="live-line" aria-label="Score by period"><tr><th></th>${d.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>${extra.length?'R':'T'}</th>${extra.map(c=>`<th>${esc(c.label)}</th>`).join('')}</tr>${row('ours',us)}${row('theirs',them)}</table>`);
   }
   const facts=[];
+  // Baseball: the count and outs, the runners on base, who bats and pitches.
+  if(d.count)facts.push(`Count <b>${esc(d.count.balls)}-${esc(d.count.strikes)}</b>`,`<b>${esc(d.count.outs)} out${d.count.outs===1?'':'s'}</b>`);
+  if(d.bases)facts.push(d.bases.length?`On <b>${esc(d.bases.join(', '))}</b>`:'<b>Bases empty</b>');
+  if(d.matchup)facts.push(`<b>${esc(d.matchup)}</b>`);
   if(d.timeouts)facts.push(`Timeouts <b>${esc(us)} ${esc(d.timeouts.ours)} · ${esc(them)} ${esc(d.timeouts.theirs)}</b>`);
   if(d.win_probability!=null)facts.push(`Win probability <b>${esc(us)} ${esc(d.win_probability)}%</b>`);
   if(d.broadcast)facts.push(`TV <b>${esc(d.broadcast)}</b>`);
@@ -508,7 +513,7 @@ function updateFavorite(){
 const LEVELS=[
   {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.city||'',middle:'City',middles:'All cities',sectionOf:s=>s.classification||s.conference},
   {id:'college',label:'College',group:'Conference',groups:'All conferences',team:'School',groupOf:s=>s.conference,sectionOf:s=>s.conference},
-  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS'].includes(s.league)?s.conference:s.league}
+  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}
 ];
 const currentLevelInfo=()=>LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
 const schoolLevel=s=>s?.level||'college';
@@ -856,8 +861,10 @@ async function openEvent(id){
 function boxScoreHtml(e){
   const b=e.box_score;if(!b)return{line:'',stats:'',plays:''};
   const us=b.teams?.ours||'',them=b.teams?.theirs||'',won=k=>Number(b.totals?.[k])>Number(b.totals?.[k==='ours'?'theirs':'ours']);
-  const row=(k,name)=>`<tr class="${won(k)?'won':''}"><th scope="row">${esc(name)}</th>${(b.line||[]).map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(b.totals?.[k]??'')}</td></tr>`;
-  const line=(b.line||[]).length?`<div class="box-section"><div class="section-label">${esc(b.line_title||'Score by Quarter')}</div><table class="box-line"><tr><th></th>${b.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>T</th></tr>${row('ours',us)}${row('theirs',them)}</table></div>`:'';
+  // An MLB line score totals runs (R) and adds hits and errors (H, E).
+  const extra=b.columns||[];
+  const row=(k,name)=>`<tr class="${won(k)?'won':''}"><th scope="row">${esc(name)}</th>${(b.line||[]).map(p=>`<td>${esc(p[k])}</td>`).join('')}<td class="total">${esc(b.totals?.[k]??'')}</td>${extra.map(c=>`<td class="total">${esc(c[k])}</td>`).join('')}</tr>`;
+  const line=(b.line||[]).length?`<div class="box-section"><div class="section-label">${esc(b.line_title||'Score by Quarter')}</div><table class="box-line"><tr><th></th>${b.line.map(p=>`<th>${esc(p.label)}</th>`).join('')}<th>${esc(b.total_label||'T')}</th>${extra.map(c=>`<th>${esc(c.label)}</th>`).join('')}</tr>${row('ours',us)}${row('theirs',them)}</table></div>`:'';
   const stats=(b.stats||[]).length?`<div class="box-section"><div class="section-label">Team Stats</div><table class="box-stats"><tr><th></th><th>${esc(us)}</th><th>${esc(them)}</th></tr>${b.stats.map(r=>`<tr><td>${esc(r.label)}</td><td>${esc(r.ours)}</td><td>${esc(r.theirs)}</td></tr>`).join('')}</table></div>`:'';
   const names={Q1:'1st Quarter',Q2:'2nd Quarter',Q3:'3rd Quarter',Q4:'4th Quarter',OT:'Overtime'};
   let last='';
