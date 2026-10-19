@@ -153,17 +153,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 
 /* Compact controls and results-first athlete portraits. */
 .hero{padding:12px 14px;border-radius:18px}
-.browse-controls{margin-bottom:8px}
-.browse-controls summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;width:fit-content;font-size:12px;font-weight:850;color:#dce8f5;list-style:none}
-.browse-controls summary::before{content:'＋';font-size:16px}
-.browse-controls[open] summary::before{content:'−'}
-.browse-context{color:var(--muted);font-weight:500}
-.browse-panel{padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
-.browse-panel .level-switch{margin-bottom:8px}
-.browse-finder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:760px}
-.hero .finder,.hero .finder.has-city{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
-.hero .finder .field:last-child{grid-column:auto}
-.hero .finder:has(#sportField[hidden]){grid-template-columns:1fr}
+.hero .level-switch{margin-bottom:8px}
+.hero .level{min-height:40px;padding:6px 12px;font-size:14px}
+.hero .finder,.hero .finder.has-city{max-width:none}
 .hero select{min-height:44px;padding:8px 10px;font-size:16px}
 .hero .action-row{grid-template-columns:minmax(0,1fr) 44px 44px;gap:6px;margin-top:8px}
 .hero .action-row #search{grid-column:auto;min-width:0;min-height:44px;padding:8px 10px;font-size:16px}
@@ -177,11 +169,11 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
 .sport-nav[hidden]{display:none}
 .featured{padding:12px 15px 15px;border-top:1px solid var(--line)}
-.featured-row{grid-template-columns:repeat(3,minmax(0,180px))}
-.athlete-card{display:flex;flex-direction:column;min-height:0;box-shadow:none;border-radius:12px}
-.athlete-photo{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1/1;overflow:hidden;font-size:26px}
-.athlete-photo img{object-fit:contain;object-position:center top}
-.athlete-shade{position:static;inset:auto;flex:1;padding:9px 10px;background:#0b1b2d;justify-content:flex-start}
+.featured-row{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.athlete-card{display:grid;grid-template-columns:84px minmax(0,1fr);min-height:112px;box-shadow:none;border-radius:12px}
+.athlete-photo{position:relative;inset:auto;width:100%;height:100%;min-height:112px;overflow:hidden;font-size:26px}
+.athlete-photo img{display:block;object-fit:cover;object-position:center top}
+.athlete-shade{position:static;inset:auto;min-width:0;padding:10px;background:#0b1b2d;justify-content:center}
 .athlete-name{font-size:13px;line-height:1.3;text-shadow:none;overflow-wrap:anywhere}
 .athlete-instagram{font-size:9px;letter-spacing:0;flex-wrap:wrap}
 @media(max-width:560px){
@@ -189,6 +181,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   .brand h1{font-size:23px}.mark{width:44px;height:44px}
   .hero .statusline{flex-direction:row;flex-wrap:wrap;gap:2px 8px}
   .featured{padding:12px 10px}.featured-row{gap:7px}
+  .athlete-card{display:flex;flex-direction:column;min-height:0}
+  .athlete-photo{height:auto;min-height:0;aspect-ratio:3/4;flex:none}
+  .athlete-shade{flex:1;justify-content:flex-start}
   .athlete-shade{padding:8px 6px}.athlete-name{font-size:12px}
   .athlete-instagram{font-size:8px;gap:2px}
 }
@@ -205,17 +200,10 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="pill"><span class="live-dot"></span>Web Test v2.1 Live</div>
 </header>
 <section class="hero">
-  <details class="browse-controls">
-    <summary>Browse <span class="browse-context" id="browseContext">College</span></summary>
-    <div class="browse-panel">
-    <div class="level-switch" id="levelSwitch" role="group" aria-label="Level"></div>
-    <div class="browse-finder">
+  <div class="level-switch" id="levelSwitch" role="group" aria-label="Level"></div>
+  <div class="finder">
     <label class="field"><span class="field-label" id="groupLabel">Conference</span><select id="conference" aria-labelledby="groupLabel"><option value="">All conferences</option></select></label>
     <label class="field" id="cityField" hidden><span class="field-label" id="cityLabel">City</span><select id="city" aria-labelledby="cityLabel"><option value="">All cities</option></select></label>
-    </div>
-    </div>
-  </details>
-  <div class="finder">
     <label class="field field-team"><span class="field-label" id="teamLabel">School</span><select id="school" aria-labelledby="teamLabel"><option>Loading schools…</option></select></label>
     <label class="field" id="sportField"><span class="field-label" id="sportLabel">Sport</span><select id="sportFilter" aria-labelledby="sportLabel"><option value="">All sports</option></select></label>
   </div>
@@ -542,7 +530,6 @@ function renderLevels(){
   levelSwitch.innerHTML=LEVELS.map(level=>{const ready=(catalogMenuState.levels||[]).some(l=>l.id===level.id&&l.count>0);return`<button type="button" class="level ${level.id===currentLevel?'active':''}" data-level="${level.id}" aria-pressed="${level.id===currentLevel}" ${ready?'':'disabled title="Coming soon"'}>${esc(level.label)}${ready?'':'<span class="soon">Soon</span>'}</button>`}).join('');
   levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',async()=>{if(button.dataset.level===currentLevel)return;currentLevel=button.dataset.level;activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];const menu=await loadMenu(currentLevel).catch(()=>null);if(!menu)return;await populateSchoolControls(menu.entries[0]?.id);populateSportFilter();loadFeed(false)}));
   const level=LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
-  $('#browseContext').textContent=[level.label,conference.value,level.cityOf?city.value:''].filter(Boolean).join(' · ');
   $('#groupLabel').textContent=level.group;$('#teamLabel').textContent=level.teamFor?level.teamFor(conference.value):level.team;
   if(level.middle)$('#cityLabel').textContent=level.middle;
   // A pro team or series plays one sport, already chosen in the first box.
