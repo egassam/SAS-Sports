@@ -166,7 +166,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
 .hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
 .sport-nav[hidden]{display:none}
-.featured{padding:12px 15px 15px;border-top:1px solid var(--line)}
+.featured{padding:12px 15px 15px;border-bottom:1px solid var(--line)}
 .featured-row{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
 .athlete-card{display:grid;grid-template-columns:88px minmax(0,1fr);min-height:88px;box-shadow:none;border-radius:12px}
 .athlete-photo{position:relative;inset:auto;width:72px;height:72px;min-height:0;margin:8px;align-self:center;overflow:hidden;font-size:26px}
@@ -476,7 +476,7 @@ function render(groups){
   }
   sportNav.hidden=filtered.length<2;
   sportNav.innerHTML=filtered.map(g=>`<a class="sport-chip ${g.in_season?'active-season':''}" href="#sport-${slug(g.sport)}">${esc(g.sport)}</a>`).join('');
-  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}${featuredAthletesRow(g)}</section>`).join('');
+  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${featuredAthletesRow(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}</section>`).join('');
   // A live card's folded parts (team stats, scoring plays, the rest of the
   // field) open in place, stay open across the 15 s refresh, and do not open
   // the event window.
