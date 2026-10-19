@@ -2820,3 +2820,18 @@ User: "Let's add soccer to the pro section". Chosen scope: MLS, all 30 clubs (of
 - **Preview result:** the Worker sent back every cookie (txst.com: `visid_incap_3110122`, `incap_ses_*`; utahstateaggies.com: `visid_incap_3113058`, `incap_ses_*`) and Imperva kept redirecting with new session cookies: it requires its JavaScript-challenge cookie. A cookie jar is not enough; running the challenge would be circumvention, beyond the approval. All three commits reverted; nothing merged; production unchanged (`4.112.1-washington-state`).
 - **Open:** Utah State and Texas State need the schools to allow the app's user agent (or stay out).
 - **Decision (user, Oct 19):** "Let's just leave them out. I'm making this app to fix a problem. They are being part of the problem. I'll use them as examples later." Utah State and Texas State are left out; no further attempts. Evidence for the user's examples: both sites (Imperva) answer the app's identified requests with a redirect loop that only a browser running Imperva's JavaScript challenge gets through; plain requests from the sandbox get 403.
+
+
+## October 19, 2026 — Compact controls and results-first layout
+
+User supplied the Texas Tech production URL and asked how to improve the appearance. We inspected the current page and proposed smaller controls, results before athletes, and improved photo framing, plus additional optional design ideas. User selected only: "Start with the smaller controls results first layout and improve photo crops".
+
+Implemented the selected scope in shared `public/index.html` on local branch `ui-results-first`, commit `9b0525e`; version `4.113.0-results-first`. A native Browse disclosure contains the level switch and conference/state/sport plus city/league menus; School and Sport remain visible. Search, favorite and refresh share one row with 44px touch targets. The disclosure context shows the current level/group/middle. Single-sport navigation is hidden. Within each sport, featured athletes now follow live, recent results and upcoming sections. Athlete frames are square and use object-fit contain; names and account links are below photos. Athlete sources, rotation and result data are unchanged.
+
+Validation actually run: shared regression passed; extracted inline JavaScript `node --check` passed. Full `npm run test:release` stopped at Utah golf, `tests/utah-module.mjs:164`: expected Today Sep 30 Mark Simpson Collegiate, actual Final Sep 29. A detached unchanged `c3c50ea` worktree reproduced this same failure. No test assertion changed. Preview and production gates/visual verification have not run.
+
+Publication: a premature PR call before pushing returned invalid head (no PR created). The subsequent git push was rejected by automatic approval review because external publication had not been explicitly authorized in this user request. Did not retry through another tool. Branch and commit remain local; production unchanged. Need explicit authorization to publish to `egassam/SAS-Sports`, then complete preview checks. AGENTS item 6 requires all gates pass before autonomous merge; the baseline release failure remains open.
+
+
+### Publication follow-up
+User: "Push it" explicitly authorized the GitHub publication. Shell git push failed because the shell has no GitHub credential; using the connected GitHub API to publish the same four changed files on `ui-results-first`, based on unchanged `c3c50ea`. Preview and release verification are next.

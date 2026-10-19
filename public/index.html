@@ -150,6 +150,48 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .spotlight-count div{background:rgba(0,0,0,.28);border-radius:10px;padding:6px 10px;text-align:center;min-width:54px}
 .spotlight-count b{display:block;font-size:20px}
 .spotlight-count span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#9aa7b8)}
+
+/* Compact controls and results-first athlete portraits. */
+.hero{padding:12px 14px;border-radius:18px}
+.browse-controls{margin-bottom:8px}
+.browse-controls summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;width:fit-content;font-size:12px;font-weight:850;color:#dce8f5;list-style:none}
+.browse-controls summary::before{content:'＋';font-size:16px}
+.browse-controls[open] summary::before{content:'−'}
+.browse-context{color:var(--muted);font-weight:500}
+.browse-panel{padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.browse-panel .level-switch{margin-bottom:8px}
+.browse-finder{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:760px}
+.hero .finder,.hero .finder.has-city{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}
+.hero .finder .field:last-child{grid-column:auto}
+.hero .finder:has(#sportField[hidden]){grid-template-columns:1fr}
+.hero select{min-height:44px;padding:8px 10px;font-size:16px}
+.hero .action-row{grid-template-columns:minmax(0,1fr) 44px 44px;gap:6px;margin-top:8px}
+.hero .action-row #search{grid-column:auto;min-width:0;min-height:44px;padding:8px 10px;font-size:16px}
+.hero .favorite,#refresh{width:44px;min-width:44px;height:44px;padding:0}
+.hero .favorite{font-size:0}
+.hero .favorite::before{content:'☆';font-size:23px}
+.hero .favorite.on::before{content:'★'}
+#refresh{font-size:26px;line-height:1}
+.hero .tabs{margin-top:8px;gap:4px}
+.hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
+.hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
+.sport-nav[hidden]{display:none}
+.featured{padding:12px 15px 15px;border-top:1px solid var(--line)}
+.featured-row{grid-template-columns:repeat(3,minmax(0,180px))}
+.athlete-card{display:flex;flex-direction:column;min-height:0;box-shadow:none;border-radius:12px}
+.athlete-photo{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:1/1;overflow:hidden;font-size:26px}
+.athlete-photo img{object-fit:contain;object-position:center top}
+.athlete-shade{position:static;inset:auto;flex:1;padding:9px 10px;background:#0b1b2d;justify-content:flex-start}
+.athlete-name{font-size:13px;line-height:1.3;text-shadow:none;overflow-wrap:anywhere}
+.athlete-instagram{font-size:9px;letter-spacing:0;flex-wrap:wrap}
+@media(max-width:560px){
+  .hero{padding:10px}.brandbar{margin-bottom:10px}
+  .brand h1{font-size:23px}.mark{width:44px;height:44px}
+  .hero .statusline{flex-direction:row;flex-wrap:wrap;gap:2px 8px}
+  .featured{padding:12px 10px}.featured-row{gap:7px}
+  .athlete-shade{padding:8px 6px}.athlete-name{font-size:12px}
+  .athlete-instagram{font-size:8px;gap:2px}
+}
 </style>
 </head>
 <body>
@@ -163,16 +205,23 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   <div class="pill"><span class="live-dot"></span>Web Test v2.1 Live</div>
 </header>
 <section class="hero">
-  <div class="level-switch" id="levelSwitch" role="group" aria-label="Level"></div>
-  <div class="finder">
+  <details class="browse-controls">
+    <summary>Browse <span class="browse-context" id="browseContext">College</span></summary>
+    <div class="browse-panel">
+    <div class="level-switch" id="levelSwitch" role="group" aria-label="Level"></div>
+    <div class="browse-finder">
     <label class="field"><span class="field-label" id="groupLabel">Conference</span><select id="conference" aria-labelledby="groupLabel"><option value="">All conferences</option></select></label>
     <label class="field" id="cityField" hidden><span class="field-label" id="cityLabel">City</span><select id="city" aria-labelledby="cityLabel"><option value="">All cities</option></select></label>
+    </div>
+    </div>
+  </details>
+  <div class="finder">
     <label class="field field-team"><span class="field-label" id="teamLabel">School</span><select id="school" aria-labelledby="teamLabel"><option>Loading schools…</option></select></label>
     <label class="field" id="sportField"><span class="field-label" id="sportLabel">Sport</span><select id="sportFilter" aria-labelledby="sportLabel"><option value="">All sports</option></select></label>
   </div>
   <div class="action-row">
     <input id="search" type="search" placeholder="Search events…" aria-label="Search events">
-    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school">☆</button><button id="refresh">Refresh</button>
+    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school">☆</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
   </div>
   <div id="favoriteTeams" class="favorite-teams" aria-label="Favorite teams"></div>
   <div class="tabs" id="tabs">
@@ -426,8 +475,9 @@ function render(groups){
     const viewLabel=currentView==='all'?'events':currentView;
     feed.innerHTML=`<div class="empty">No ${viewLabel}${label} are loaded for this school yet. Try All sports or another view.</div>`;sportNav.innerHTML='';return
   }
+  sportNav.hidden=filtered.length<2;
   sportNav.innerHTML=filtered.map(g=>`<a class="sport-chip ${g.in_season?'active-season':''}" href="#sport-${slug(g.sport)}">${esc(g.sport)}</a>`).join('');
-  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${featuredAthletesRow(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}</section>`).join('');
+  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}${featuredAthletesRow(g)}</section>`).join('');
   // A live card's folded parts (team stats, scoring plays, the rest of the
   // field) open in place, stay open across the 15 s refresh, and do not open
   // the event window.
@@ -492,6 +542,7 @@ function renderLevels(){
   levelSwitch.innerHTML=LEVELS.map(level=>{const ready=(catalogMenuState.levels||[]).some(l=>l.id===level.id&&l.count>0);return`<button type="button" class="level ${level.id===currentLevel?'active':''}" data-level="${level.id}" aria-pressed="${level.id===currentLevel}" ${ready?'':'disabled title="Coming soon"'}>${esc(level.label)}${ready?'':'<span class="soon">Soon</span>'}</button>`}).join('');
   levelSwitch.querySelectorAll('[data-level]:not([disabled])').forEach(button=>button.addEventListener('click',async()=>{if(button.dataset.level===currentLevel)return;currentLevel=button.dataset.level;activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];const menu=await loadMenu(currentLevel).catch(()=>null);if(!menu)return;await populateSchoolControls(menu.entries[0]?.id);populateSportFilter();loadFeed(false)}));
   const level=LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
+  $('#browseContext').textContent=[level.label,conference.value,level.cityOf?city.value:''].filter(Boolean).join(' · ');
   $('#groupLabel').textContent=level.group;$('#teamLabel').textContent=level.teamFor?level.teamFor(conference.value):level.team;
   if(level.middle)$('#cityLabel').textContent=level.middle;
   // A pro team or series plays one sport, already chosen in the first box.
@@ -542,7 +593,7 @@ async function populateSchoolControls(preferred){
 // A new group or city: that step's cities and teams.
 async function refillFromMenus(){
   const menu=await loadMenu(currentLevel,conference.value,currentLevelInfo().cityOf?city.value:'').catch(()=>null);if(!menu)return false;
-  fillCities(menu.middle);fillSchools();return true;
+  fillCities(menu.middle);fillSchools();renderLevels();return true;
 }
 // Cloudflare serves a Worker resource-limit failure (Error 1102) as 503. Those
 // and dropped connections are transient; a deliberate answer such as 502
