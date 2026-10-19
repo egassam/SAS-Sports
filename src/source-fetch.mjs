@@ -47,7 +47,46 @@ function retryAfterSeconds(response){
 function withUrl(response,url){Object.defineProperty(response,'url',{value:url});return response}
 function synthetic(status,url,reason,upstream=''){const h={'x-sas-source':reason};if(upstream)h['x-sas-upstream-status']=upstream;return withUrl(new Response('',{status,headers:h}),url)}
 
-export function createSourceFetch({fetch:rawFetch,headers,cache=()=>globalThis.caches?.default,cacheOrigin=()=>null,now=()=>Date.now()}){
+// Sites whose bot defense (Imperva) answers with a session cookie and a
+// redirect to the same page, which a fetch without cookies follows until it
+// gives up ("Too many redirects"): utahstateaggies.com and txst.com. For
+// these hosts only, the fetcher keeps the cookies the site sets and sends them
+// back, as any HTTP client with a cookie jar does; the request stays the
+// app's own (same user agent). Approved by the user for these two schools
+// (Oct 19, 2026: "Allow for these two schools", then "Go with one").
+export const SESSION_COOKIE_HOSTS=new Set(['utahstateaggies.com','txst.com']);
+const MAX_REDIRECTS=6;
+
+// Follows redirects by hand, keeping the site's cookies (one jar per host,
+// for the isolate's lifetime; dropped when the redirects do not end).
+export function createSessionFetch(rawFetch,hosts=SESSION_COOKIE_HOSTS){
+  const jars=new Map();
+  const hostOf=url=>new URL(url).hostname.replace(/^www\./,'');
+  return async function sessionFetch(url,init={}){
+    const host=hostOf(url);
+    if(!hosts.has(host))return rawFetch(url,init);
+    const jar=jars.get(host)||new Map();jars.set(host,jar);
+    let current=url;
+    for(let hop=0;hop<=MAX_REDIRECTS;hop++){
+      const cookie=[...jar].map(([name,value])=>`${name}=${value}`).join('; ');
+      const response=await rawFetch(current,{...init,redirect:'manual',headers:{...(init.headers||{}),...(cookie?{cookie}:{})}});
+      const set=typeof response.headers.getSetCookie==='function'?response.headers.getSetCookie():(response.headers.get('set-cookie')?[response.headers.get('set-cookie')]:[]);
+      for(const line of set){const pair=String(line).split(';')[0],at=pair.indexOf('=');if(at>0)jar.set(pair.slice(0,at).trim(),pair.slice(at+1).trim());}
+      const location=response.headers.get('location');
+      if(response.status<300||response.status>=400||!location)return withUrl(response,current);
+      const next=new URL(location,current);
+      // Only within the same site: a redirect elsewhere goes on without cookies.
+      if(hostOf(next.href)!==host)return rawFetch(next.href,{...init,redirect:'follow'});
+      current=next.href;
+    }
+    jars.delete(host);
+    throw Error(`Too many redirects (session cookie): ${url}`);
+  };
+}
+
+export function createSourceFetch({fetch:plainFetch,headers,cache=()=>globalThis.caches?.default,cacheOrigin=()=>null,now=()=>Date.now(),sessionHosts=SESSION_COOKIE_HOSTS}){
+  // Utah State's and Texas State's sites keep their Imperva session cookie.
+  const rawFetch=createSessionFetch(plainFetch,sessionHosts);
   // One cache entry per page holds its body and any backoff, so a download
   // costs at most one match and one put. robots.txt rules are also kept in
   // memory for the isolate's lifetime (up to a day).

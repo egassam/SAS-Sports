@@ -1,6 +1,6 @@
 // Polite official-site access: caching, revalidation, backoff and robots.txt.
 import assert from 'node:assert/strict';
-import {createSourceFetch,parseRobots,robotsAllows,SOURCE_TTL} from '../src/source-fetch.mjs';
+import {createSourceFetch,createSessionFetch,SESSION_COOKIE_HOSTS,parseRobots,robotsAllows,SOURCE_TTL} from '../src/source-fetch.mjs';
 
 class MemoryCache{
   constructor(clock){this.clock=clock;this.entries=new Map()}
@@ -145,4 +145,35 @@ const PAGE='https://school.test/sports/football/schedule';
   assert.ok(Date.now()-started<2000,'the robots.txt read stops at the caller\'s limit');
   assert.ok(calls.find(c=>c.url.endsWith('/robots.txt')).signal,'robots.txt is read with the caller\'s signal');
 }
-console.log('source-fetch: 10 groups passed');
+// 11. Imperva's session cookie (utahstateaggies.com, txst.com only; user
+// approved Oct 19): a redirect to the same page with Set-Cookie is followed
+// with the cookie sent back, and the app's own headers kept. Other hosts are
+// fetched as before (no manual redirects, no cookies). A loop that never ends
+// is reported, not followed forever.
+{
+  assert.deepEqual([...SESSION_COOKIE_HOSTS].sort(),['txst.com','utahstateaggies.com']);
+  const calls=[];
+  const imperva=async(url,init)=>{
+    calls.push({url,cookie:init.headers?.cookie||null,ua:init.headers?.['user-agent'],redirect:init.redirect});
+    if(!String(init.headers?.cookie||'').includes('incap_ses_1=abc'))return new Response('',{status:302,headers:[['location',url],['set-cookie','visid_incap_1=xyz; path=/; HttpOnly'],['set-cookie','incap_ses_1=abc; path=/']]});
+    return new Response('<html>schedule</html>',{status:200,headers:{'content-type':'text/html'}});
+  };
+  const sessionFetch=createSessionFetch(imperva);
+  const page=await sessionFetch('https://utahstateaggies.com/sports/football/schedule',{headers:{'user-agent':'SAS-Sports/test'}});
+  assert.equal(page.status,200);assert.equal(await page.text(),'<html>schedule</html>');
+  assert.equal(page.url,'https://utahstateaggies.com/sports/football/schedule');
+  assert.deepEqual(calls.map(c=>[c.cookie,c.ua,c.redirect]),[[null,'SAS-Sports/test','manual'],['visid_incap_1=xyz; incap_ses_1=abc','SAS-Sports/test','manual']]);
+  // The jar is kept: the next page goes straight through.
+  calls.length=0;await sessionFetch('https://utahstateaggies.com/sports/softball/schedule',{headers:{'user-agent':'SAS-Sports/test'}});
+  assert.equal(calls.length,1);
+  // Another school's site: untouched.
+  calls.length=0;await sessionFetch('https://www.k-state.edu/x',{headers:{'user-agent':'SAS-Sports/test'}});
+  assert.deepEqual(calls.map(c=>[c.cookie,c.redirect]),[[null,undefined]]);
+  // A loop the cookie does not end.
+  const forever=createSessionFetch(async url=>new Response('',{status:302,headers:{location:url,'set-cookie':'a=b'}}));
+  await assert.rejects(forever('https://txst.com/sports/football/schedule'),/Too many redirects/);
+  // createSourceFetch applies it.
+  calls.length=0;const viaSource=createSourceFetch({fetch:imperva,headers:{'user-agent':'SAS-Sports/test'},cache:()=>null});
+  assert.equal((await viaSource('https://txst.com/sports/football/schedule')).status,200);
+}
+console.log('source-fetch: 11 groups passed');
