@@ -131,7 +131,7 @@ await Promise.all(ready.map(async school=>{
   }
   const pruned=fixtures.text.match(/--prune: .*/);if(pruned)notes.push(`${id}: ${pruned[0]}`);
   const survey=await run(id,'survey',['scripts/survey-school.mjs',`--school=${id}`]);
-  const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME/.test(l));
+  const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME|FORMAT:/.test(l));
   notes.push(`${id}: survey ${survey.log}${gates.length?` — ${gates.length} GATE:\n    ${gates.join('\n    ')}`:' — no GATE'}`);
 }));
 // Soccer with both team pages left after --prune reads one labeled ESPN board

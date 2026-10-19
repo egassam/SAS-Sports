@@ -1071,6 +1071,14 @@
     "line": "#81363b",
     "onAccent": "#ffffff"
   },
+  "utah-state": {
+    "primary": "#0F2439",
+    "secondary": "#8A8D8F",
+    "panel": "#0c1119",
+    "panelDark": "#06080d",
+    "line": "#172232",
+    "onAccent": "#ffffff"
+  },
   "vancouver-whitecaps": {
     "primary": "#12284C",
     "secondary": "#FFFFFF",
@@ -1125,6 +1133,14 @@
     "panel": "#1b0e10",
     "panelDark": "#0c0607",
     "line": "#513235",
+    "onAccent": "#ffffff"
+  },
+  "washington-state": {
+    "primary": "#981E32",
+    "secondary": "#5E6A71",
+    "panel": "#2a0f17",
+    "panelDark": "#14080c",
+    "line": "#621f2e",
     "onAccent": "#ffffff"
   },
   "west-virginia": {

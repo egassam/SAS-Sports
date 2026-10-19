@@ -86,9 +86,11 @@ import {fresnoStateSchool,createFresnoStateHandlers} from './schools/fresno-stat
 import {gonzagaSchool,createGonzagaHandlers} from './schools/gonzaga.mjs';
 import {oregonStateSchool,createOregonStateHandlers} from './schools/oregon-state.mjs';
 import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-diego-state.mjs';
+import {utahStateSchool,createUtahStateHandlers} from './schools/utah-state.mjs';
+import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.111.2-inflcr-iowa-state-california';
+const VERSION='4.112.0-texas-state-utah-state-washington-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -561,6 +563,15 @@ const SCHOOL_MODULES=[
     results:[{matches:event=>oregonStateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>oregonStateHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(oregonStateHandlers.isFinalWithoutStory).map(event=>oregonStateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&oregonStateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(oregonStateHandlers.isGolfAwaitingPlace).map(event=>oregonStateHandlers.attachGolfPlace(event)));return events.filter(event=>!oregonStateHandlers.isTennisWithoutStory(event)&&!oregonStateHandlers.isGolfWithoutStory?.(event));}}
   ,{school:sanDiegoStateSchool,parseSchedule:(...args)=>sanDiegoStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>sanDiegoStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>sanDiegoStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>sanDiegoStateHandlers.isCrossCountry(event),attach:event=>sanDiegoStateHandlers.attachMeetResults(event)}}
+  ,{school:utahStateSchool,parseSchedule:(...args)=>utahStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>utahStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>utahStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>utahStateHandlers.isCrossCountry(event),attach:event=>utahStateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(utahStateHandlers.isFinalWithoutStory(event))await utahStateHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>utahStateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>utahStateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(utahStateHandlers.isFinalWithoutStory).map(event=>utahStateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&utahStateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(utahStateHandlers.isGolfAwaitingPlace).map(event=>utahStateHandlers.attachGolfPlace(event)));return events.filter(event=>!utahStateHandlers.isTennisWithoutStory(event)&&!utahStateHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:washingtonStateSchool,parseSchedule:(...args)=>washingtonStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>washingtonStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>washingtonStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>washingtonStateHandlers.isCrossCountry(event),attach:event=>washingtonStateHandlers.attachMeetResults(event)}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -792,6 +803,8 @@ const fresnoStateHandlers=createFresnoStateHandlers({makeEvent,recapMatchesEvent
 const gonzagaHandlers=createGonzagaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const oregonStateHandlers=createOregonStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const sanDiegoStateHandlers=createSanDiegoStateHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const utahStateHandlers=createUtahStateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const washingtonStateHandlers=createWashingtonStateHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}
@@ -3084,7 +3097,9 @@ async function privateSource(request,env){
   if(!given||!(await sameSecret(given,secret)))return json({detail:'Unauthorized'},401);
   let target;try{target=new URL(new URL(request.url).searchParams.get('url')||'');}catch{return json({detail:'url is required'},400);}
   if(target.protocol!=='https:'||!(await sourceHostAllowed(target.hostname)))return json({detail:'Only official athletics pages the app reads are allowed'},400);
-  const response=await sourceFetch(target.href);
+  // A fetch that throws is reported, not a Worker exception (txst.com, Oct
+  // 19: Cloudflare 1101 with no reason).
+  let response;try{response=await sourceFetch(target.href);}catch(error){return json({detail:`The official page could not be read: ${String(error?.message||error).slice(0,300)}`},502);}
   const finalUrl=response.url||target.href;
   try{if(!(await sourceHostAllowed(new URL(finalUrl).hostname)))return json({detail:'The page redirected outside the official athletics sites'},502);}catch{}
   const headers=new Headers({'cache-control':'no-store','x-robots-tag':'noindex','x-sas-final-url':finalUrl,'x-sas-upstream-status':String(response.status)});
