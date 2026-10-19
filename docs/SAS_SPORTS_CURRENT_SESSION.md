@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 19, 2026. Production `4.115.0-mlb` is live (PR #372, merge `b4a9216`): Pro → Baseball → MLB, all 30 teams by division with the postseason. `verify:prod` 93/93 for the 30 teams (3 refreshes each), NFL/MLS spot check passes, XC 18/20 and 26/21; D1 menu lists Baseball → MLB (96 pro entries). Previous: `4.114.0-compact-controls` layout (PR #370). Existing Golf Big 12 Match Play result gap remains.
+Last updated: October 19, 2026. Production `4.116.2-scoreboard-polish` is live (PR #374, merge `26391a8`): stronger school colors, selected-only tab fill, grouped meet results with prominent team finishes. Full portraits above results and favorites preserved. Full release suite/CI passed. Preview 360/360 refreshes and 62/62 expanded views; production verification recorded below. Existing Golf Big 12 Match Play result gap remains. MLB from #372 retained.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 19, 2026. Production `4.115.0-mlb` is live (PR #372, merge
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.115.0-mlb`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.116.2-scoreboard-polish`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -288,3 +288,6 @@ Newest last. One short entry per session here; the full record goes at the end o
 
 
 - **Oct 19 — Restore school color (PR #374 preview correction).** User: "You took out to much team color. You need to add more back in". Version 4.116.2-scoreboard-polish restores a school-tinted background/top control panel, stronger school-color sport headers, colored card borders and tinted team-finish rows. Selected-only filled tabs, division grouping, full portraits, favorites and visible controls retained. npm run check (75 certified schools, 9/9 baseline), inline script syntax and diff checks passed. Preview 4.116.2 verified in browser: Texas Tech red and Kansas State purple return across the top panel, sport header and result accents; inactive tabs remain transparent. Production unchanged. Full release/feed merge gates not run for this preview correction.
+
+
+- **Oct 19 — Approved team-color polish LIVE (PR #374).** User: "That's much better. Make it live" explicitly authorized publication of the reviewed 4.116.2-scoreboard-polish. Merged exact head 6360147 normally as 26391a82402bd02003d7bff77a410c42972f5b49, preserving MLB. Full npm run test:release passed locally on exact head; CI success. Preview: 360/360 forced refreshes HTTP 200, 62/62 expanded views, K-State XC 18/20 and KU 26/21; only existing Texas Tech Golf Big 12 Match Play missing-result/story check failed (unchanged on prior production, already documented). Explicit publication approval applies; no protection bypass. Production /api/status confirmed 4.116.2-scoreboard-polish; verify:prod 30/30 forced refreshes HTTP 200, 62/62 expanded views, XC 18/20 and 26/21; same existing golf gap only. Browser confirmed school-colored header/top panel/cards, selected-only fill, full portraits above results, grouped team finishes and first expanded XC event 9 rows. Screenshot captured. Favorites storage unchanged. No newly observed regression; remaining golf source gap unchanged.
