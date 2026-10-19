@@ -2859,3 +2859,12 @@ Restored the original always-visible Level switch and Conference/State/Sport, Ci
 Published `4.113.1-results-first` to the existing `ui-results-first` branch/PR #370 under the user's existing push authorization. Local shared regression, extracted inline JavaScript syntax and diff checks pass. Preview serves the new version; browser inspected all visible controls, results-first ordering, 3 filled portrait frames and readable names/links. Read-only DOM measurements confirm each desktop image 84×112, object-fit cover, position 50% 0%, loaded from 100×100 source images. A phone viewport was not independently inspected. Viewport screenshot captured for user review.
 
 No full release suite or 360-refresh gate repeated for this CSS/markup correction; the earlier unchanged-main Utah/Colorado test failures and Texas Tech Golf Big 12 Match Play gap remain blockers. No merge and no production change. Next: review the revised preview with the user.
+
+
+### October 19 — Phone screenshot shows portrait correction was still wrong
+
+User sent a phone screenshot and "Not correct". Screenshot shows three tall portrait photos with heads cropped. The earlier desktop-only visual check missed the <=560px override setting 3:4 cover-fit photos. Acknowledged the problem and removed that rule. Version 4.113.2: all photo frames are 72×72 with object-fit contain and centered alignment, full original images visible; desktop thumbnail inset 8px inside compact 88px cards, mobile thumbnail centered with name/link below. Always-visible controls and results-first ordering retained.
+
+Published to the same ui-results-first branch/PR #370 under existing push authorization. Local shared regression, extracted inline JavaScript syntax and diff checks pass. Hosted preview stylesheet has the thumbnail rule and no old tall override; DOM measurements confirm all three loaded images are 72×72 contain-fit from 100×100 originals; desktop screenshot checked and saved. Mobile screenshot not independently reproduced: Browser provides no viewport resizing. A temporary local-file iframe harness was rejected by Browser's URL protocol policy; did not try a workaround for that blocked local file. Browser zoom shortcuts on the permitted hosted page had no effect. No mobile-emulation claim is made. User's supplied phone screenshot directly identified the media rule; final preview is ready for phone review.
+
+No full release/gates rerun for this styling correction; previously documented baseline test/data failures remain. No merge or production change.
