@@ -2811,3 +2811,11 @@ User: "Let's add soccer to the pro section". Chosen scope: MLS, all 30 clubs (of
 - **Preview:** quick pass (3 refreshes) for WSU, SDSU, CSU 105 PASS; screenshots of WSU Swimming & Diving, Golf, Cross Country, Rowing; full gate WSU all 36/36 (1 min 51 s), SDSU and CSU Cross Country 36/36, XC 18/20 and 26/21; WSU athletes 11/11.
 - **Published:** PR #366 merged as `618fa07`; production `4.112.1-washington-state` verified at 01:27 UTC (`verify:prod` WSU 36 PASS, SDSU and CSU Cross Country PASS, XC 18/20 and 26/21).
 - **Open:** Utah State and Texas State (user decision); WSU Baseball and Track & Field fill when published; swimming records leave out dual-by-code meets.
+
+## October 19, 2026 — Utah State and Texas State: Imperva session cookie tried
+
+- **User:** "Allow for these two schools", then "Go with one" (keep Imperva's session cookie for utahstateaggies.com and txst.com), then granted permissions for the session.
+- Claude Code's auto-mode classifier refused the change twice ("Security Weaken") until the user changed the session's permissions; the edit was undone each time.
+- **Built:** `createSessionFetch` in `src/source-fetch.mjs` (manual redirects, per-host cookie jar, same user agent, only the two hosts; unit test in `tests/source-fetch.mjs`), Utah State restored and regenerated (golf and cross-country hand checks, mutations killed). Commits `5083632`, `9b41a78`, `810f5e6`.
+- **Preview result:** the Worker sent back every cookie (txst.com: `visid_incap_3110122`, `incap_ses_*`; utahstateaggies.com: `visid_incap_3113058`, `incap_ses_*`) and Imperva kept redirecting with new session cookies: it requires its JavaScript-challenge cookie. A cookie jar is not enough; running the challenge would be circumvention, beyond the approval. All three commits reverted; nothing merged; production unchanged (`4.112.1-washington-state`).
+- **Open:** Utah State and Texas State need the schools to allow the app's user agent (or stay out).
