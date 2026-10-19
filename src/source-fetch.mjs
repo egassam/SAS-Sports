@@ -79,8 +79,8 @@ export function createSessionFetch(rawFetch,hosts=SESSION_COOKIE_HOSTS){
       if(hostOf(next.href)!==host)return rawFetch(next.href,{...init,redirect:'follow'});
       current=next.href;
     }
-    jars.delete(host);
-    throw Error(`Too many redirects (session cookie): ${url}`);
+    const kept=[...jar.keys()].join(',');jars.delete(host);
+    throw Error(`Too many redirects (session cookie; cookies kept: ${kept||'none'}): ${url}`);
   };
 }
 
