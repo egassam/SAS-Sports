@@ -2835,3 +2835,16 @@ Publication: a premature PR call before pushing returned invalid head (no PR cre
 
 ### Publication follow-up
 User: "Push it" explicitly authorized the GitHub publication. Shell git push failed because the shell has no GitHub credential; using the connected GitHub API to publish the same four changed files on `ui-results-first`, based on unchanged `c3c50ea`. Preview and release verification are next.
+
+
+### Publication and preview outcome — PR #370
+
+Published four changed files through GitHub API because shell Git has no write credential. Commit `ee2820aa20c017194900570e500606b1e35fa419`; PR https://github.com/egassam/SAS-Sports/pull/370; branch `ui-results-first`. Preview https://ui-results-first-sas-sports.lovetogivepain.workers.dev/?school=texas-tech serves `4.113.0-results-first`.
+
+Visual inspection: loaded Texas Tech Cross Country shows compact School/Sport, search/favorite/refresh row, working Browse expand/collapse with level/conference controls, no redundant single-sport chip, results before upcoming and athletes. Three athlete portraits show full faces in square frames and names below. Browser screenshots captured for proof; full-page screenshot API timed out, viewport captures succeeded. Phone-sized viewport was not independently inspected.
+
+`verify:preview --branch=ui-results-first --school=texas-tech --sports=all --version=4.113.0-results-first`: 360/360 forced refreshes HTTP 200 across 10 sports; K-State 18/20, KU 26/21; all 62 final expanded views HTTP 200. One failed check: men's Golf Big 12 Match Play headline `Completed`, with no recap. Checked unchanged production: HTTP 200 feed contains the same title/headline and missing recap. No source/parser changes were made by this layout PR.
+
+GitHub Actions run 39242170789: guardrails fails `tests/colorado-module.mjs:88`, expected 13 vs actual 12. Reproduced both on the UI branch and detached unchanged main `c3c50ea`. Local full suite earlier stopped at `tests/utah-module.mjs:164`; also reproduced on unchanged main. No test assertions changed or skipped to get green. Shared regression, inline JavaScript syntax and Texas Tech module tests pass.
+
+No merge or production deployment. Existing release failures must be resolved before the standing autonomous-merge rule applies. User will receive the preview/PR and this limitation.
