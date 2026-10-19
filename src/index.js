@@ -90,7 +90,7 @@ import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/was
 import {utahStateSchool,createUtahStateHandlers} from './schools/utah-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.113.1-utah-state-texas-state';
+const VERSION='4.113.0-utah-state-texas-state';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
