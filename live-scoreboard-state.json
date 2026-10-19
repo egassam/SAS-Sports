@@ -1570,26 +1570,13 @@
    "state": "off"
   },
   "ohio-state|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T22:42:58.712Z",
-   "last_detail": "live 0-2 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "ohio-state|Volleyball|Women's|2026-10-18|1",
-    "title": "Women's · Ohio State at UCLA",
-    "started_seen": "2026-10-18T22:34:30.042Z",
-    "live_passes": [
-     "2026-10-18T22:34:30.042Z",
-     "2026-10-18T22:35:51.697Z",
-     "2026-10-18T22:36:52.839Z",
-     "2026-10-18T22:37:53.683Z",
-     "2026-10-18T22:38:54.776Z",
-     "2026-10-18T22:39:55.454Z",
-     "2026-10-18T22:40:56.614Z",
-     "2026-10-18T22:41:57.705Z",
-     "2026-10-18T22:42:58.712Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-19T00:36:49.667Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-19T00:36:49.667Z",
+   "verified_game": "Women's · Ohio State at UCLA",
+   "verified_detail": "final L, 2-3"
   },
   "oregon|Baseball": {
    "state": "off"
@@ -1790,26 +1777,13 @@
    "state": "off"
   },
   "ucla|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-18T22:42:58.851Z",
-   "last_detail": "live 2-0 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "ucla|Volleyball||2026-10-18|1",
-    "title": "UCLA vs Ohio State",
-    "started_seen": "2026-10-18T22:34:28.469Z",
-    "live_passes": [
-     "2026-10-18T22:34:28.469Z",
-     "2026-10-18T22:35:51.846Z",
-     "2026-10-18T22:36:52.754Z",
-     "2026-10-18T22:37:53.770Z",
-     "2026-10-18T22:38:54.764Z",
-     "2026-10-18T22:39:55.613Z",
-     "2026-10-18T22:40:56.641Z",
-     "2026-10-18T22:41:57.713Z",
-     "2026-10-18T22:42:58.851Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-19T00:36:49.716Z",
+   "last_detail": "final W, 3-2",
+   "game": null,
+   "verified_at": "2026-10-19T00:36:49.716Z",
+   "verified_game": "UCLA vs Ohio State",
+   "verified_detail": "final W, 3-2"
   },
   "ucla|Water Polo": {
    "state": "off"
@@ -2055,26 +2029,13 @@
    "state": "off"
   },
   "california|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-18T22:42:58.835Z",
-   "last_detail": "live 2-1 · 65' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "california|Soccer|Men's|2026-10-18|1",
-    "title": "Men's · Cal vs NC State",
-    "started_seen": "2026-10-18T22:34:29.350Z",
-    "live_passes": [
-     "2026-10-18T22:34:29.350Z",
-     "2026-10-18T22:35:30.910Z",
-     "2026-10-18T22:36:52.619Z",
-     "2026-10-18T22:37:53.863Z",
-     "2026-10-18T22:38:54.760Z",
-     "2026-10-18T22:39:55.728Z",
-     "2026-10-18T22:40:56.928Z",
-     "2026-10-18T22:41:57.849Z",
-     "2026-10-18T22:42:58.835Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-19T00:29:39.551Z",
+   "last_detail": "final T, 2-2",
+   "game": null,
+   "verified_at": "2026-10-19T00:29:39.551Z",
+   "verified_game": "Men's · Cal vs NC State",
+   "verified_detail": "final T, 2-2"
   },
   "california|Softball": {
    "state": "off"
@@ -2756,6 +2717,6 @@
   }
  },
  "version": "4.111.2-inflcr-iowa-state-california",
- "updated_at": "2026-10-18T22:42:58.854Z",
+ "updated_at": "2026-10-19T00:36:49.718Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
