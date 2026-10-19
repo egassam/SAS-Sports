@@ -186,18 +186,18 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   .athlete-instagram{font-size:8px;gap:2px}
 }
 
-/* Calm surfaces; team colors identify selected controls and small accents. */
-body{background:#17191e}
-.hero{background:#20242b;border-color:#38414d}
-.sport{background:#191e26;border-color:#38414d}
-.sport-head{background:#232933;border-bottom-color:#38414d;box-shadow:inset 3px 0 var(--team-primary,var(--accent2))}
-.card{background:#222933;border-color:#3b4654}
+/* School colors frame the scoreboard; result surfaces stay readable. */
+body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team-primary) 24%,#17191e),#17191e 70%)}
+.hero{background:linear-gradient(120deg,color-mix(in srgb,var(--team-primary) 35%,#20242b),#20242b 85%);border-color:color-mix(in srgb,var(--team-primary) 65%,#526173);border-top:4px solid var(--team-primary)}
+.sport{background:#191e26;border-color:color-mix(in srgb,var(--team-primary) 55%,#526173)}
+.sport-head{background:linear-gradient(110deg,color-mix(in srgb,var(--team-primary) 70%,#232933),color-mix(in srgb,var(--team-primary) 35%,#232933));border-bottom-color:var(--team-primary);box-shadow:inset 4px 0 var(--team-primary,var(--accent2))}
+.card{background:#222933;border-color:color-mix(in srgb,var(--team-primary) 38%,#3b4654);border-top:2px solid color-mix(in srgb,var(--team-primary) 75%,#3b4654)}
 .hero .tab{background:transparent;color:#e2e9f3;border:2px solid #526173}
 .hero .tab.active{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#fff);border-color:var(--team-secondary,var(--accent));box-shadow:inset 0 -2px currentColor}
 .results{border-top-color:#3b4654}
 .preview-result-group + .preview-result-group{margin-top:12px;padding-top:10px;border-top:1px solid #3b4654}
 .preview-group-title{font-size:11px;font-weight:850;letter-spacing:.05em;color:#c7d3e3;margin-bottom:6px}
-.preview-team-result{padding:9px 10px;border-left:3px solid var(--team-primary,var(--accent2));border-radius:6px;background:#2e3744;align-items:center}
+.preview-team-result{padding:9px 10px;border-left:3px solid var(--team-primary,var(--accent2));border-radius:6px;background:color-mix(in srgb,var(--team-primary) 23%,#2e3744);align-items:center}
 .preview-team-result span{color:#e8eef6;font-size:12px;font-weight:750}
 .preview-team-result strong{font-size:18px;font-weight:950;color:#fff;font-variant-numeric:tabular-nums}
 .preview-individual-result{padding:5px 2px;color:#d8e1ef;align-items:flex-start}
@@ -337,7 +337,7 @@ function applyCurrentSchoolTheme(){
   root.style.setProperty('--theme-on-accent',theme.onAccent);
   root.style.setProperty('--accent2',theme.primary);
   root.style.setProperty('--accent',theme.secondary);
-  document.body.style.background='#17191e';
+  document.body.style.background='';
 }
 function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
