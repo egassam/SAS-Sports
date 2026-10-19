@@ -2848,3 +2848,14 @@ Visual inspection: loaded Texas Tech Cross Country shows compact School/Sport, s
 GitHub Actions run 39242170789: guardrails fails `tests/colorado-module.mjs:88`, expected 13 vs actual 12. Reproduced both on the UI branch and detached unchanged main `c3c50ea`. Local full suite earlier stopped at `tests/utah-module.mjs:164`; also reproduced on unchanged main. No test assertions changed or skipped to get green. Shared regression, inline JavaScript syntax and Texas Tech module tests pass.
 
 No merge or production deployment. Existing release failures must be resolved before the standing autonomous-merge rule applies. User will receive the preview/PR and this limitation.
+
+
+### October 19 — User rejects hidden controls and athlete framing
+
+User: "I do not like that layout". Asked what bothered them. User: "Hidden browser controls and the athletes still are not sized properly in the box".
+
+Restored the original always-visible Level switch and Conference/State/Sport, City/League when applicable, School and Sport selectors. Kept compact search/favorite/refresh and results-first event ordering. Removed Browse markup, its styles and context update. Replaced square contain-fit portraits and capped 180px columns with equal-width cards across the row: desktop has an 84×112 portrait beside name/link, with cover fit and top alignment; <=560px stacks a 3:4 photo above text in each of three cards. No athlete-source or result-parser changes.
+
+Published `4.113.1-results-first` to the existing `ui-results-first` branch/PR #370 under the user's existing push authorization. Local shared regression, extracted inline JavaScript syntax and diff checks pass. Preview serves the new version; browser inspected all visible controls, results-first ordering, 3 filled portrait frames and readable names/links. Read-only DOM measurements confirm each desktop image 84×112, object-fit cover, position 50% 0%, loaded from 100×100 source images. A phone viewport was not independently inspected. Viewport screenshot captured for user review.
+
+No full release suite or 360-refresh gate repeated for this CSS/markup correction; the earlier unchanged-main Utah/Colorado test failures and Texas Tech Golf Big 12 Match Play gap remain blockers. No merge and no production change. Next: review the revised preview with the user.
