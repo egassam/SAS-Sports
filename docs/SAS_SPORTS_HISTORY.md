@@ -2887,3 +2887,11 @@ Implemented visible labels in initial markup and updateFavorite, removed icon-on
 
 
 Favorite-label browser verification: deployed preview shows ☆ Favorite team with aria-pressed false. Clicking Add Texas Tech changes text to ★ Favorited, aria-pressed true, and shows MY TEAMS / ★ Texas Tech. Screenshot saved. Clicking Remove Texas Tech restores false and the empty saved-list state; the temporary preview-only test favorite was removed. Production favorites and data are untouched. Published as 4.113.4-results-first, PR #370, not merged.
+
+
+### October 19 — Restore featured athletes above results
+
+User: "Let's move the streets back above results". Interpreted "streets" as featured athletes based on the current layout discussion and said so before proceeding. Moved featuredAthletesRow immediately after the sport header/saved-source notice, before live/results/upcoming sections. Changed featured row divider from top to bottom. Kept corrected full original portraits in compact 72px frames, visible browse controls, explicit favorite labels and existing favorites storage. Version 4.114.0-compact-controls; PR #370 title/body rewritten around final compact-controls and athlete-above-results layout. Local shared regression, inline JS syntax and diff checks pass. Hosted visual order verification pending. No full release/feed gate repeated; existing release blockers still prevent autonomous merge. Production unchanged.
+
+
+Order correction verification: preview /api/status reports 4.114.0-compact-controls. Loaded Texas Tech Cross Country DOM and screenshot show sport header, featured athletes, recent results, upcoming schedule in that order. Full original portrait sources and explicit Favorite team button remain. Screenshot saved. Production unchanged; PR #370 remains open under the previously documented release blockers.
