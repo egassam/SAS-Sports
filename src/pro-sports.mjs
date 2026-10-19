@@ -98,6 +98,40 @@ export const PRO_TEAMS={
   'sporting-kansas-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'skc',id:186},fixtures:true,schedule:'https://www.sportingkc.com/schedule/'},
   'st-louis-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'stl',id:21812},fixtures:true,schedule:'https://www.stlcitysc.com/schedule/'},
   'vancouver-whitecaps':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'van',id:9727},fixtures:true,schedule:'https://www.whitecapsfc.com/schedule/'},
+  // Major League Baseball (user, October 19: "Let's add MLB in the pro
+  // section including playoff games"): all 30 teams by division, AL then NL.
+  // Division games give the header's "AL Central 30-22" (regular season);
+  // the postseason is listed by series and game, out of the record.
+  'baltimore-orioles':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'bal'},division:{name:'AL East',members:['BOS','NYY','TB','TOR']},schedule:'https://www.mlb.com/orioles/schedule'},
+  'boston-red-sox':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'bos'},division:{name:'AL East',members:['BAL','NYY','TB','TOR']},schedule:'https://www.mlb.com/redsox/schedule'},
+  'new-york-yankees':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'nyy'},division:{name:'AL East',members:['BAL','BOS','TB','TOR']},schedule:'https://www.mlb.com/yankees/schedule'},
+  'tampa-bay-rays':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'tb'},division:{name:'AL East',members:['BAL','BOS','NYY','TOR']},schedule:'https://www.mlb.com/rays/schedule'},
+  'toronto-blue-jays':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'tor'},division:{name:'AL East',members:['BAL','BOS','NYY','TB']},schedule:'https://www.mlb.com/bluejays/schedule'},
+  'chicago-white-sox':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'chw'},division:{name:'AL Central',members:['CLE','DET','KC','MIN']},schedule:'https://www.mlb.com/whitesox/schedule'},
+  'cleveland-guardians':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'cle'},division:{name:'AL Central',members:['CHW','DET','KC','MIN']},schedule:'https://www.mlb.com/guardians/schedule'},
+  'detroit-tigers':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'det'},division:{name:'AL Central',members:['CHW','CLE','KC','MIN']},schedule:'https://www.mlb.com/tigers/schedule'},
+  'kansas-city-royals':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'kc'},division:{name:'AL Central',members:['CHW','CLE','DET','MIN']},schedule:'https://www.mlb.com/royals/schedule'},
+  'minnesota-twins':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'min'},division:{name:'AL Central',members:['CHW','CLE','DET','KC']},schedule:'https://www.mlb.com/twins/schedule'},
+  'athletics':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'ath'},division:{name:'AL West',members:['HOU','LAA','SEA','TEX']},schedule:'https://www.mlb.com/athletics/schedule'},
+  'houston-astros':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'hou'},division:{name:'AL West',members:['ATH','LAA','SEA','TEX']},schedule:'https://www.mlb.com/astros/schedule'},
+  'los-angeles-angels':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'laa'},division:{name:'AL West',members:['ATH','HOU','SEA','TEX']},schedule:'https://www.mlb.com/angels/schedule'},
+  'seattle-mariners':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'sea'},division:{name:'AL West',members:['ATH','HOU','LAA','TEX']},schedule:'https://www.mlb.com/mariners/schedule'},
+  'texas-rangers':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'tex'},division:{name:'AL West',members:['ATH','HOU','LAA','SEA']},schedule:'https://www.mlb.com/rangers/schedule'},
+  'atlanta-braves':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'atl'},division:{name:'NL East',members:['MIA','NYM','PHI','WSH']},schedule:'https://www.mlb.com/braves/schedule'},
+  'miami-marlins':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'mia'},division:{name:'NL East',members:['ATL','NYM','PHI','WSH']},schedule:'https://www.mlb.com/marlins/schedule'},
+  'new-york-mets':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'nym'},division:{name:'NL East',members:['ATL','MIA','PHI','WSH']},schedule:'https://www.mlb.com/mets/schedule'},
+  'philadelphia-phillies':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'phi'},division:{name:'NL East',members:['ATL','MIA','NYM','WSH']},schedule:'https://www.mlb.com/phillies/schedule'},
+  'washington-nationals':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'wsh'},division:{name:'NL East',members:['ATL','MIA','NYM','PHI']},schedule:'https://www.mlb.com/nationals/schedule'},
+  'chicago-cubs':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'chc'},division:{name:'NL Central',members:['CIN','MIL','PIT','STL']},schedule:'https://www.mlb.com/cubs/schedule'},
+  'cincinnati-reds':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'cin'},division:{name:'NL Central',members:['CHC','MIL','PIT','STL']},schedule:'https://www.mlb.com/reds/schedule'},
+  'milwaukee-brewers':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'mil'},division:{name:'NL Central',members:['CHC','CIN','PIT','STL']},schedule:'https://www.mlb.com/brewers/schedule'},
+  'pittsburgh-pirates':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'pit'},division:{name:'NL Central',members:['CHC','CIN','MIL','STL']},schedule:'https://www.mlb.com/pirates/schedule'},
+  'st-louis-cardinals':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'stl'},division:{name:'NL Central',members:['CHC','CIN','MIL','PIT']},schedule:'https://www.mlb.com/cardinals/schedule'},
+  'arizona-diamondbacks':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'ari'},division:{name:'NL West',members:['COL','LAD','SD','SF']},schedule:'https://www.mlb.com/dbacks/schedule'},
+  'colorado-rockies':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'col'},division:{name:'NL West',members:['ARI','LAD','SD','SF']},schedule:'https://www.mlb.com/rockies/schedule'},
+  'los-angeles-dodgers':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'lad'},division:{name:'NL West',members:['ARI','COL','SD','SF']},schedule:'https://www.mlb.com/dodgers/schedule'},
+  'san-diego-padres':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'sd'},division:{name:'NL West',members:['ARI','COL','LAD','SF']},schedule:'https://www.mlb.com/padres/schedule'},
+  'san-francisco-giants':{kind:'espn-team',sport:'Baseball',espn:{path:'baseball/mlb',team:'sf'},division:{name:'NL West',members:['ARI','COL','LAD','SD']},schedule:'https://www.mlb.com/giants/schedule'},
   'nascar-cup-series':{
     kind:'nascar',sport:'Auto Racing',seriesId:1,
     schedule:'https://www.nascar.com/nascar-cup-series/schedule/'
@@ -150,12 +184,22 @@ function baseEvent({school,sport,status,title,start,display,opponent,sourceName,
   return{id:'live-'+slug(`${school.id}|${sport}|${key}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:sport==='Auto Racing'?'RACE':'GAME',status,title,start_time:start,display_time:display,opponent,school_score:null,opponent_score:null,headline:null,team_summaries:[],results:[],result_count:0,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Live:'live',Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status]||'other',recency_label:{Live:'Live now',Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status]||status,last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:1,conflicting_sources:false,pro:true};
 }
 
-// ---- NFL and MLS (ESPN team schedule) ----
+// ---- NFL, MLS and MLB (ESPN team schedule) ----
+
+// MLB postseason rounds as ESPN's game notes name them ("ALCS - Game 5",
+// "NLWC - Game 2", "World Series - Game 7 If Necessary").
+const MLB_ROUNDS={ALWC:'AL Wild Card Series',NLWC:'NL Wild Card Series'};
+export function mlbRound(note){
+  const m=String(note||'').match(/^(.+?) - Game (\d+)( If Necessary)?/i);
+  if(!m)return note?String(note).trim():null;
+  return{series:MLB_ROUNDS[m[1]]||m[1],game:Number(m[2]),label:`${MLB_ROUNDS[m[1]]||m[1]} · Game ${m[2]}${m[3]?' (if necessary)':''}`};
+}
 
 // One team's games from ESPN's team schedule (regular season, and the
 // postseason payload when given; MLS: results and fixtures, playoffs in the
-// same lists). A past game without a final score is not listed (K-State's
-// rule); postponed and cancelled games are not either.
+// same lists; MLB: the regular season and the postseason, two reads). A past
+// game without a final score is not listed (K-State's rule); postponed and
+// cancelled games are not either.
 export function espnTeamGames(payloads,{school,config,timeZone,now}){
   const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[],seen=new Set();
   for(const payload of payloads){
@@ -176,14 +220,20 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       else continue;
       const tv=(c.broadcasts||[]).map(b=>b.media?.shortName).filter(Boolean);
       const relation=c.neutralSite?'vs':own.homeAway==='away'?'at':'vs';
-      const oppName=opp.team.displayName||opp.team.shortDisplayName;
+      // A World Series opponent not yet decided is the other league's
+      // champion ("TBD" in ESPN's list).
+      const tbd=/^TBD$/i.test(opp.team.abbreviation||opp.team.displayName||'');
+      const mlb=sport==='Baseball',note=mlb?mlbRound(c.notes?.[0]?.headline):null;
+      const oppName=tbd&&mlb&&note?.series==='World Series'?`${/^NL/.test(config.division?.name||'')?'AL':'NL'} champion`:tbd?'TBD':opp.team.displayName||opp.team.shortDisplayName;
       // MLS playoff rounds are their own season types ("Eastern Conference
-      // Playoffs - Round One", "MLS Cup").
-      const week=game.week?.text||null,postseason=game.seasonType?.type===3||/post|playoff|mls cup/i.test(game.seasonType?.name||'');
+      // Playoffs - Round One", "MLS Cup"). ESPN's MLB "week" is not a
+      // baseball notion and is not shown.
+      const week=mlb?null:game.week?.text||null,postseason=game.seasonType?.type===3||String(game.seasonType?.id)==='3'||/post|playoff|mls cup/i.test(game.seasonType?.name||'');
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`ESPN team schedule (${school.league||'NFL'})`,sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;event.espn_date=game.date;
       if(tv.length)event.broadcast=tv.join(', ');
-      event.round=postseason?(game.seasonType?.name||'Postseason'):week;
+      event.round=postseason?(note?.label||note||game.seasonType?.name||'Postseason'):week;
+      if(note?.series&&postseason){event.series_name=note.series;event.series_game=note.game;}
       if(status==='Final'||status==='Live'){
         event.school_score=String(us);event.opponent_score=String(them);
       }
@@ -206,24 +256,63 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       if(postseason){event.postseason=true;event.not_in_record=true;}
       const recap=(game.links||[]).find(l=>(l.rel||[]).includes('recap'))||null;
       if(recap?.href&&status==='Final'){event.recap_url=recap.href;event.recap_label='View ESPN recap';}
+      event.opponent_short=tbd?oppName:opp.team.shortDisplayName||oppName;
       events.push(event);
     }
   }
-  return events;
+  if(sport!=='Baseball')return events;
+  const listed=mlbSeriesStatus(events,school);mlbDoubleheaders(listed);
+  return listed;
+}
+
+// Each postseason game carries its series' standing from the team's side:
+// after a final, the series as that game left it ("Guardians lead 2-1",
+// "Brewers won 4-0", "Tied 2-2"); on a coming game, the series as it stands.
+// A series is best of three (Wild Card), five (Division Series) or seven; an
+// "if necessary" game of a series already decided is not listed.
+const seriesLength=name=>/Wild Card/.test(name)?3:/DS$/.test(name)?5:7;
+function mlbSeriesStatus(events,school){
+  const series=new Map(),drop=new Set(),us=school.short_name;
+  for(const e of events.filter(e=>e.series_name).sort((a,b)=>String(a.espn_date).localeCompare(String(b.espn_date))))(series.get(e.series_name)||series.set(e.series_name,[]).get(e.series_name)).push(e);
+  for(const [name,games] of series){
+    const need=Math.floor(seriesLength(name)/2)+1;let won=0,lost=0;
+    for(const e of games){
+      if(e.status==='Live')continue;
+      if(e.status==='Final'){const o=String(e.headline||'')[0];if(o==='W')won++;else if(o==='L')lost++;}
+      else if(Math.max(won,lost)>=need){drop.add(e);continue;}
+      else if(!won&&!lost)continue;
+      const done=Math.max(won,lost)>=need;
+      const leader=won===lost?null:won>lost?us:e.opponent_short,score=`${Math.max(won,lost)}-${Math.min(won,lost)}`;
+      e.series_status=leader?`${leader} ${done?'won':'lead'} ${score}`:`Tied ${score}`;
+      e.series_sentence=leader?`The ${leader} ${done?'won':'lead'} the series ${score}.`:`The series is tied ${score}.`;
+      e.results.push({label:'Series',value:e.series_status});e.result_count=e.results.length;
+    }
+  }
+  return events.filter(e=>!drop.has(e));
+}
+// A doubleheader's two games share a day and an opponent: the game number
+// keeps them apart when feeds are merged.
+function mlbDoubleheaders(events){
+  const days=new Map();
+  for(const e of events){const key=`${slug(e.opponent)}|${String(e.start_time).slice(0,10)}`;(days.get(key)||days.set(key,[]).get(key)).push(e);}
+  for(const games of days.values())if(games.length>1)games.sort((a,b)=>String(a.espn_date).localeCompare(String(b.espn_date))).forEach((e,i)=>{e.game_number=i+1;});
 }
 
 // "W 20-13", "T 3-3", "L 24-27 (OT)"; a soccer playoff draw settled on
-// penalties reads from the shootout: "W 1-1 (4-3 PK)".
+// penalties reads from the shootout: "W 1-1 (4-3 PK)"; a baseball game in
+// extra innings: "W 6-5 (10 inn)", one called short: "L 2-4 (7 inn)".
 function finalHeadline(us,them,pkUs,pkThem,detail=''){
   const a=Number(us),b=Number(them),pk=a===b&&pkUs!=null&&pkThem!=null;
   const x=pk?Number(pkUs):a,y=pk?Number(pkThem):b,outcome=x>y?'W':x<y?'L':'T';
-  return`${outcome} ${us}-${them}${pk?` (${pkUs}-${pkThem} PK)`:/AET/.test(detail)?' (AET)':/OT/.test(detail)?' (OT)':''}`;
+  const innings=String(detail||'').match(/^Final\/(\d+)/);
+  return`${outcome} ${us}-${them}${pk?` (${pkUs}-${pkThem} PK)`:innings?` (${innings[1]} inn)`:/AET/.test(detail)?' (AET)':/OT/.test(detail)?' (OT)':''}`;
 }
 
 // The expanded view of a final: plain facts from ESPN's game summary,
 // written from the team's side.
 export function espnGameHighlights(event,summary,config){
   if(config.sport==='Soccer')return espnSoccerHighlights(event,summary,config);
+  if(config.sport==='Baseball')return espnBaseballHighlights(event,summary,config);
   const header=summary?.header?.competitions?.[0],sides=header?.competitors||[];
   const own=sides.find(t=>t.team?.abbreviation?.toLowerCase()===config.espn.team),opp=sides.find(t=>t!==own);
   if(!own||!opp)return null;
@@ -331,6 +420,54 @@ function espnSoccerHighlights(event,summary,config){
   const stats=boxStats.map(r=>({label:r.label,value:`${ownAbbr} ${r.ours} · ${oppAbbr} ${r.theirs}`}));
   const scoring=goals.map(g=>`${g.clock} · ${g.ours?ownAbbr:oppAbbr}: ${g.text} (${g.score})`);
   return{lines,stats,scoring,recap:null,box_score};
+}
+
+// ---- MLB finals (ESPN game summary) ----
+// ESPN's baseball box groups its team stats (batting, pitching, fielding).
+const BASEBALL_STATS=[['batting','hits','Hits'],['batting','homeRuns','Home runs'],['batting','doubles','Doubles'],['batting','RBIs','RBI'],['batting','walks','Walks'],['batting','strikeouts','Strikeouts'],['batting','stolenBases','Stolen bases'],['batting','avg','Batting average'],['pitching','pitches','Pitches'],['pitching','earnedRuns','Earned runs allowed'],['fielding','errors','Errors'],['fielding','doublePlays','Double plays']];
+const baseballStat=(team,[group,name])=>{const g=(team?.statistics||[]).find(x=>x.name===group);return g?.stats?.find(x=>x.name===name)?.displayValue??null;};
+const inningName=(half,n)=>`${/^bot/i.test(half||'')?'Bottom':'Top'} ${ordinal(Number(n)||1)}`;
+// Innings 1-9 (and extras) with runs, hits and errors; a half-inning not
+// played (the home team ahead after the top of the 9th) reads "X".
+export function baseballLine(own,opp){
+  const ours=own.linescores||[],theirs=opp.linescores||[],n=Math.max(ours.length,theirs.length);
+  const cell=l=>l?String(l.displayValue??l.value??0):'X';
+  return Array.from({length:n},(_,i)=>({label:String(i+1),ours:cell(ours[i]),theirs:cell(theirs[i])}));
+}
+// The scoring plays, each with the half-inning and the running score from
+// the team's side.
+export function baseballScoring(plays,own,opp){
+  const ownId=String(own.team.id),home=own.homeAway==='home',abbr=id=>String(id)===ownId?own.team.abbreviation:opp.team.abbreviation;
+  return(plays||[]).filter(p=>p.scoringPlay).map(p=>({period:inningName(p.period?.type,p.period?.number),clock:'',team:abbr(p.team?.id),ours:String(p.team?.id)===ownId,text:String(p.text||'').replace(/\s+/g,' ').trim(),score:p.awayScore!=null&&p.homeScore!=null?(home?`${p.homeScore}-${p.awayScore}`:`${p.awayScore}-${p.homeScore}`):null}));
+}
+// The expanded view of an MLB final: the result, the series, the pitchers of
+// record; the line score (R, H, E), team stats and every scoring play for the
+// box (the football box's layout with baseball's headings).
+function espnBaseballHighlights(event,summary,config){
+  const header=summary?.header?.competitions?.[0],sides=header?.competitors||[];
+  const own=sides.find(t=>t.team?.abbreviation?.toLowerCase()===config.espn.team),opp=sides.find(t=>t!==own);
+  if(!own||!opp)return null;
+  const us=Number(own.score),them=Number(opp.score),name=own.team.name||own.team.displayName,oppName=opp.team.name||opp.team.displayName;
+  const verb=us>them?'beat':'lost to',where=event.title.includes(' at ')?' on the road':' at home';
+  const venue=summary.gameInfo?.venue?.fullName,line=baseballLine(own,opp);
+  const round=event.series_name?`, Game ${event.series_game} of the ${event.series_name}`:event.round?`, ${event.round}`:'';
+  const lines=[`The ${name} ${verb} the ${oppName} ${Math.max(us,them)}-${Math.min(us,them)}${line.length>9?` in ${line.length} innings`:''}${where}${venue?` (${venue})`:''}${round}.`];
+  if(event.series_sentence)lines.push(event.series_sentence);
+  const pitchers=(header.status?.featuredAthletes||[]).map(a=>{const who=a.athlete?.displayName;if(!who)return null;const role={winningPitcher:'Win',losingPitcher:'Loss',savingPitcher:'Save'}[a.name];if(!role)return null;const detail=role==='Save'?(a.athlete.saves&&a.athlete.saves!=='0'?` (${a.athlete.saves})`:''):a.athlete.record?` (${a.athlete.record})`:'';return`${role}: ${who}${detail}`;}).filter(Boolean);
+  if(pitchers.length)lines.push(`${pitchers.join('. ')}.`);
+  const box=summary.boxscore?.teams||[],ownBox=box.find(t=>String(t.team?.id)===String(own.team.id)),oppBox=box.find(t=>t!==ownBox);
+  const boxStats=ownBox&&oppBox?BASEBALL_STATS.map(k=>({label:k[2],ours:baseballStat(ownBox,k),theirs:baseballStat(oppBox,k)})).filter(r=>r.ours!=null&&r.theirs!=null):[];
+  const ownAbbr=own.team.abbreviation,oppAbbr=opp.team.abbreviation,scoring=baseballScoring(summary.plays,own,opp);
+  const box_score={
+    teams:{ours:ownAbbr,theirs:oppAbbr},line_title:'Line Score',scoring_title:'Scoring Plays',total_label:'R',
+    line,totals:{ours:String(us),theirs:String(them)},
+    columns:[{label:'H',ours:String(own.hits??''),theirs:String(opp.hits??'')},{label:'E',ours:String(own.errors??''),theirs:String(opp.errors??'')}],
+    stats:boxStats,scoring
+  };
+  const stats=boxStats.map(r=>({label:r.label,value:`${ownAbbr} ${r.ours} · ${oppAbbr} ${r.theirs}`}));
+  const plays=scoring.map(p=>`${p.period} · ${p.team}: ${p.text} (${p.score})`);
+  const recap=summary.article?.links?.web?.href?.replace(/^http:/,'https:')||null;
+  return{lines,stats,scoring:plays,recap,box_score};
 }
 
 // ---- NASCAR (cf.nascar.com) ----
@@ -476,7 +613,17 @@ export function espnLiveDetails(competition,{ours,opponent,sport='Football',summ
     }
     const p=last?.probability;
     if(p&&Number.isFinite(p.homeWinPercentage)){const home=ours.homeAway==='home',v=home?p.homeWinPercentage:p.awayWinPercentage;if(Number.isFinite(v))details.win_probability=Math.round(v*1000)/10;}
+    // Baseball: the count, outs, the runners on base, and who bats and pitches.
+    if(sport==='Baseball'){
+      if([situation.balls,situation.strikes,situation.outs].some(Number.isFinite))details.count={balls:situation.balls??0,strikes:situation.strikes??0,outs:situation.outs??0};
+      if(['onFirst','onSecond','onThird'].some(k=>k in situation))details.bases=[['onFirst','1st'],['onSecond','2nd'],['onThird','3rd']].filter(([k])=>situation[k]===true||(situation[k]&&typeof situation[k]==='object')).map(([,b])=>b);
+      const who=x=>x?.athlete?.displayName||x?.athlete?.shortName||null;
+      const batter=who(situation.batter),pitcher=who(situation.pitcher);
+      if(batter||pitcher)details.matchup=[batter&&`At bat: ${batter}`,pitcher&&`Pitching: ${pitcher}`].filter(Boolean).join(' · ');
+    }
   }
+  // Baseball's line score also gives hits and errors.
+  if(sport==='Baseball'&&[ours.hits,opponent.hits].every(v=>v!=null))details.columns=[{label:'H',ours:String(ours.hits),theirs:String(opponent.hits)},{label:'E',ours:String(ours.errors??0),theirs:String(opponent.errors??0)}];
   const current=summary?.drives?.current;
   if(!details.drive&&current?.description)details.drive=String(current.description).trim();
   // Game leaders: the scoreboard's (one per category, either team), or each
@@ -490,9 +637,11 @@ export function espnLiveDetails(competition,{ours,opponent,sport='Football',summ
   const box=summary?.boxscore?.teams||[],ownBox=box.find(t=>String(t.team?.id)===ourId),oppBox=box.find(t=>String(t.team?.id)===theirId);
   const stat=(t,n)=>t?.statistics?.find(s=>s.name===n)?.displayValue;
   // MLS: soccer's team stats, and each goal from the summary's key events.
+  // MLB: batting, pitching and fielding stats, and each scoring play by
+  // half-inning.
   const statList=sport==='Soccer'?SOCCER_STATS:LIVE_STATS,statOf=sport==='Soccer'?soccerStat:stat;
-  if(ownBox&&oppBox){const stats=statList.map(([n,l])=>({label:l,ours:statOf(ownBox,n),theirs:statOf(oppBox,n)})).filter(s=>s.ours!=null&&s.theirs!=null);if(stats.length)details.stats=stats;}
-  const scoring=sport==='Soccer'?soccerGoals(summary?.keyEvents,ours,opponent).map(g=>`${g.clock} · ${g.ours?details.teams.ours:details.teams.theirs}: ${g.text} (${g.score})`):(summary?.scoringPlays||[]).map(p=>`${label(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text||''}`.replace(/\s+/g,' ').trim());
+  if(ownBox&&oppBox){const stats=sport==='Baseball'?BASEBALL_STATS.map(k=>({label:k[2],ours:baseballStat(ownBox,k),theirs:baseballStat(oppBox,k)})).filter(s=>s.ours!=null&&s.theirs!=null):statList.map(([n,l])=>({label:l,ours:statOf(ownBox,n),theirs:statOf(oppBox,n)})).filter(s=>s.ours!=null&&s.theirs!=null);if(stats.length)details.stats=stats;}
+  const scoring=sport==='Soccer'?soccerGoals(summary?.keyEvents,ours,opponent).map(g=>`${g.clock} · ${g.ours?details.teams.ours:details.teams.theirs}: ${g.text} (${g.score})`):sport==='Baseball'&&summary?.plays&&ours.team?.id?baseballScoring(summary.plays,ours,opponent).map(p=>`${p.period} · ${p.team}: ${p.text} (${p.score})`):(summary?.scoringPlays||[]).map(p=>`${label(p.period?.number)} ${p.clock?.displayValue||''} · ${p.team?.abbreviation||''}: ${p.text||''}`.replace(/\s+/g,' ').trim());
   if(scoring.length)details.scoring=scoring;
   const tv=[...new Set((competition.broadcasts||[]).flatMap(b=>b.names||[]))];
   if(tv.length)details.broadcast=tv.join(', ');

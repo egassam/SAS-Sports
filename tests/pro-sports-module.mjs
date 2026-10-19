@@ -20,9 +20,11 @@ const pro=schools.filter(s=>s.level==='pro');
 // series under auto racing"; tests/imsa-module.mjs).
 // Formula 1 follows (user, October 16: "Add formula one under auto racing";
 // tests/f1-module.mjs). The 30 MLS clubs come last (user, October 17:
-// "Let's add soccer to the pro section"; tests/mls-module.mjs).
-assert.equal(pro.length,66);
-assert.deepEqual(pro.filter(s=>s.league!=='MLS').slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
+// "Let's add soccer to the pro section"; tests/mls-module.mjs), then the 30
+// MLB teams (user, October 19: "Let's add MLB in the pro section including
+// playoff games"; tests/mlb-module.mjs).
+assert.equal(pro.length,96);
+assert.deepEqual(pro.filter(s=>s.league!=='MLS'&&s.league!=='MLB').slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{
@@ -59,7 +61,7 @@ const themes=JSON.parse(read('../src/team-themes.json'));
 for(const s of pro)assert.ok(themes[s.id]?.primary,`${s.id} theme`);
 // The Team box groups NFL teams under their division, always (user, October
 // 16: "Group them by division"); NASCAR's series sits under NASCAR.
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}"));
 assert.ok(page.includes("const sectioned=!conf||level.id==='high-school'||level.id==='pro';"));
 // One Sport box on Pro: the sport filter is hidden (a team plays one sport).
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));

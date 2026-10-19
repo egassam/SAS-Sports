@@ -10,9 +10,9 @@ The level switch now reads **High School · College · Pro** (the order the hand
 
 | Box | Field | Values |
 | --- | --- | --- |
-| Sport | `pro_sport` | Football, Soccer, Auto Racing |
-| League | `league` | NFL, MLS, NASCAR, IMSA, Formula 1 |
-| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); all 30 MLS clubs, grouped by conference; NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship |
+| Sport | `pro_sport` | Football, Soccer, Baseball, Auto Racing |
+| League | `league` | NFL, MLS, MLB, NASCAR, IMSA, Formula 1 |
+| Team (Races for Auto Racing) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); all 30 MLS clubs, grouped by conference; all 30 MLB teams, grouped by division (AL East … NL West); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship |
 
 **The whole NFL (October 16, 2026; user: "Add the entire NFL. Group them by division and update all live cards to show all the data").** All 32 teams are catalog entries with `conference` = division; the Team box always groups NFL teams under their division (`sectionOf`), in the catalog's order (AFC East, North, South, West, then NFC). Team colors come from ESPN's team list; the Raiders use Pacific time (`Nevada` in `STATE_TIME_ZONES`). `PRO_TEAMS` names each team's ESPN abbreviation, its three division rivals (the header's division record) and its official schedule page.
 
@@ -80,7 +80,20 @@ Pro → Soccer → MLS → all 30 clubs, under Eastern Conference and Western Co
 - **Live:** as the NFL — once a match is past kickoff the league scoreboard (15 s) and match summary (30 s) give the clock ("67'"), score, both records (converted to W-L-T), team stats and every goal. The live shape was read from the Oct 14 Nashville–SKC board turned "in"; the first live MLS card to observe is Oct 17 (14 matches, Real Salt Lake at Sporting KC 7:30 PM Central).
 - Reads: two ESPN schedule reads per club per refresh at most every 2 minutes (shared cache); the board and summary only during a match.
 
+## MLB (4.115.0, user, October 19: "Let's add MLB in the pro section including playoff games")
+
+Pro → Baseball → MLB → all 30 teams under their division (AL East, AL Central, AL West, NL East, NL Central, NL West; catalog `conference`). Code: the `espn-team` reader shared with the NFL and MLS (`espnTeamGames`, `applyEspnLive`) plus the baseball parts of `src/pro-sports.mjs` (`mlbRound`, `mlbSeriesStatus`, `espnBaseballHighlights`, `baseballLine`, `baseballScoring`, `BASEBALL_STATS`). Test: `tests/mlb-module.mjs` (ESPN payloads of Oct 19 in `tests/fixtures/pro-sports/mlb-*`, trimmed of logos and odds).
+
+- **Source: ESPN's team schedule** `site.api.espn.com/.../baseball/mlb/teams/<abbr>/schedule?seasontype=2` (the regular season, read by name: the plain list is the current season type, which is the postseason in October) and `?seasontype=3` (the postseason, read September to November). After the regular season ends (October to February) its list is kept six hours. Each team's mlb.com schedule page (`https://www.mlb.com/<team>/schedule`, all 30 checked 200 on Oct 19) is the source link. Colors from ESPN's team list.
+- **Card:** "Guardians at Tampa Bay Rays", "W 6-5 (10 inn)" for extra innings, TV and ballpark. Header record from the regular-season finals (Cleveland 85-77, as ESPN lists it) and the division record from games against the four division rivals ("AL Central 29-23"). Doubleheaders keep both games (`game_number`). ESPN's MLB "week" is not shown. MLB is in season March to November (`PRO_SEASONS`); `RECORD_MONTHS` (college baseball's February to June) does not apply to pro entries.
+- **Playoffs:** every Wild Card, Division Series, LCS and World Series game is listed from ESPN's game notes: "ALCS · Game 5", "AL Wild Card Series · Game 1", "World Series · Game 7 (if necessary)". Each carries the series as that game left it ("Series: Rays lead 3-2", "Guardians won 3-2", "Tied 2-2"); a coming game carries the series as it stands. Once a series is decided its "if necessary" games are not listed. A World Series opponent not yet decided reads "AL champion" or "NL champion" (ESPN: "TBD"). Playoff games stay out of the season record, as in the NFL and MLS. A rained-out game is not listed; its makeup is.
+- **Expanded final:** the result ("The Guardians lost to the Rays 3-1 at home (Progressive Field), Game 5 of the ALCS."), the series, and the pitchers of record ("Win: Drew Rasmussen (2-0). Loss: Parker Messick (0-3). Save: Bryan Baker (5)."); **Line Score** by inning with R, H and E columns (a half-inning not played reads X), **Team Stats** (hits, home runs, doubles, RBI, walks, strikeouts, stolen bases, batting average, pitches, earned runs allowed, errors, double plays) and **Scoring Plays** under Top 1st … Bottom 9th with the running score; the ESPN recap link.
+- **Live:** as the NFL and MLS. Once a game is past its first pitch, the league scoreboard (15 s) and game summary (30 s) give the inning ("Top 7th"), score, the line with R/H/E, both records, the count and outs, the runners on base, the batter and pitcher, the last play, team stats and every scoring play. The situation fields (`balls`, `strikes`, `outs`, `onFirst`…, `batter`, `pitcher`) are read from ESPN's known scoreboard shape, and the test turns a final into a live game. The first live MLB card to observe is ALCS Game 6, Guardians at Rays, Oct 19 at 8:00 PM Eastern. College baseball live boards pass through the same `espnLiveDetails` and gain the count, runners and R/H/E when ESPN publishes them.
+- Reads: two ESPN schedule reads per team per refresh at most every 2 minutes (shared cache; the regular season about 2.9 MB, parsed in about 15 ms); the board and summary only during a game.
+
 ## Limits
+
+- MLB: no live card observed yet (first: ALCS Game 6, Oct 19). Spring training is not listed. No player headshots or team logos (not licensed). Standings and playoff seeds are not shown.
 
 - MLS: league matches only (Leagues Cup, U.S. Open Cup and CONCACAF matches are in other ESPN leagues). No player headshots or club crests (not licensed). The first live MLS card is to be observed on Oct 17.
 

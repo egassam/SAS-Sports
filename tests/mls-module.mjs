@@ -34,14 +34,14 @@ assert.deepEqual([skc.name,skc.short_name,skc.conference,skc.state],['Sporting K
 assert.equal(themes['vancouver-whitecaps'].primary,'#12284C');
 assert.ok(worker.includes("'British Columbia':'America/Vancouver'"));
 // The Team box groups clubs under their conference, as it does NFL divisions.
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}"));
 
 // The Worker reads results and fixtures (ESPN's numeric id in the URL), the
 // NFL-only postseason read stays the NFL's, and MLS is in season Feb-Dec.
 assert.ok(worker.includes('/teams/${config.espn.id??config.espn.team}/schedule'));
 assert.ok(worker.includes('if(config.fixtures)urls.push(`${base}?fixture=true`);'));
 assert.ok(worker.includes("if(config.sport==='Football'&&month<=2)urls.push(`${base}?seasontype=3`);"));
-assert.ok(worker.includes('const PRO_SEASONS={Soccer:[[2,12]]};'));
+assert.ok(worker.includes('const PRO_SEASONS={Soccer:[[2,12]],'));
 assert.ok(worker.includes('inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool))'));
 
 // Sporting KC: 29 finals (W-L-T from the club's side), today's match and four
