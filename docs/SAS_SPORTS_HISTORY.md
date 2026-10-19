@@ -2895,3 +2895,16 @@ User: "Let's move the streets back above results". Interpreted "streets" as feat
 
 
 Order correction verification: preview /api/status reports 4.114.0-compact-controls. Loaded Texas Tech Cross Country DOM and screenshot show sport header, featured athletes, recent results, upcoming schedule in that order. Full original portrait sources and explicit Favorite team button remain. Screenshot saved. Production unchanged; PR #370 remains open under the previously documented release blockers.
+
+
+### October 19 — User approves and publishes final layout
+
+User: "Perfect. Make it live". This explicitly authorized publication of the reviewed PR #370 despite the previously disclosed pre-existing release blockers; did not rely on the standing conditional autonomous-merge permission. Read current PR head 3535c8836491c9c7c70e6c8671b3ba1c1099c99c, mergeable, CI failed. Created a clean detached worktree of that exact head and reran npm run test:release. Layout regression and syntax checks pass; full suite stops at tests/colorado-module.mjs:88, actual 12 expected 13 (same previously reproduced on unchanged main). Earlier Utah assertion did not fail in this final run. Told the user the remaining failure is the previously documented Colorado data assertion and that the reviewed layout would be published under their approval.
+
+Merged PR #370 normally, guarded by expected head, via GitHub merge API. Merge 1801ffe004a14f71ff2643ccc7cfa376465dcdc1. No branch-protection or force-push bypass. Waited for production /api/status to change from 4.112.1-washington-state to 4.114.0-compact-controls.
+
+Production verification: browser loaded the normal live Texas Tech URL and verified controls visible, ☆ Favorite team text, sport header -> featured athletes -> recent results -> upcoming schedule, all three original images loaded (1454×2000, 1454×2000, 1455×2000) with contain fit. Live screenshot saved. No favorite was added/removed on production; storage keys and migration unchanged.
+
+npm run verify:prod -- --school=texas-tech --sports=all --version=4.114.0-compact-controls: status/version pass, K-State XC 18/20 and KU XC 26/21, all 10 sports 3/3 forced refreshes HTTP 200 (30 total), all 62 final expanded views HTTP 200. Exactly one existing failure: men's Golf Big 12 Match Play still reads Completed with no result line/recap, as independently confirmed in unchanged production before merging. No new regression observed, so no revert opened. Phone viewport was not independently inspected; user reviewed phone screenshots and approved the final design before publication.
+
+Updated production baseline/handoff and preserved the complete decision history in a docs-only release record. Current source baseline is the live approved compact-controls/full-portraits design. Known Colorado test and Golf-data issues remain separate follow-up work.

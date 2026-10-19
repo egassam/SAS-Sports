@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 18, 2026 (about 8:40 PM), America/Chicago. Production `4.112.1-washington-state` (verified 01:27 UTC Oct 19: `verify:prod` WSU all sports, SDSU and CSU Cross Country, XC 18/20 and 26/21).
+Last updated: October 19, 2026. Production `4.114.0-compact-controls` is live (PR #370, merge `1801ffe`; user explicitly approved "Perfect. Make it live"). Production layout visually verified; 30/30 Texas Tech refreshes and 62/62 expanded views HTTP 200; XC baselines 18/20 and 26/21. Existing Golf Big 12 Match Play result gap remains.
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
@@ -9,7 +9,7 @@ Last updated: October 18, 2026 (about 8:40 PM), America/Chicago. Production `4.1
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.112.1-washington-state`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.114.0-compact-controls`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -279,3 +279,5 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Oct 19 — Favorite-team labels (PR #370, 4.113.4).** User asked where their saved teams went; explained browser storage is separate for live/preview origins. User approved explicit ☆ Favorite team / ★ Favorited labels and My Teams heading. Removed icon-only favorite CSS, made its grid column auto-width, added aria-pressed. Storage/migration and favorite-team selection logic unchanged. Existing label assertions updated; shared regression, inline JS syntax and diff checks pass. Browser verified ☆ Favorite team / aria-pressed false, click -> ★ Favorited / true and MY TEAMS with Texas Tech, remove -> unselected. Temporary preview-only test favorite removed; original empty preview favorites restored. Screenshot captured. No merge; existing release blockers remain.
 
 - **Oct 19 — Athletes back above results (PR #370, 4.114.0-compact-controls).** User: "Let's move the streets back above results"; interpreted in visible context as featured athletes, stated that interpretation and moved them back immediately below sport header/saved-source notice. Athletes now precede live/results/upcoming; compact full-portrait thumbnails, visible controls and explicit favorite labels remain. Featured section divider moved to its bottom. Shared regression, inline JS syntax and diff checks pass. Preview 4.114.0 verified: DOM and screenshot show sport header -> featured athletes -> recent results -> upcoming schedule. Existing release blockers remain; no merge or production change.
+
+- **Oct 19 — Approved layout LIVE (PR #370, merge 1801ffe004a14f71ff2643ccc7cfa376465dcdc1).** User: "Perfect. Make it live" explicitly authorized production publication of the reviewed layout, after the existing release blockers had been disclosed. Reran `npm run test:release` on exact head 3535c88: stops at unchanged Colorado test line 88 (12 vs 13); the earlier Utah assertion did not fail on this run. Layout regression and syntax checks pass. Merged normally with expected-head guard under this explicit approval, not the conditional autonomous merge rule. Production /api/status now 4.114.0-compact-controls. Browser confirmed visible controls, ☆ Favorite team, compact full portraits above recent results, original image dimensions 1454/1455×2000 with contain fit; screenshot captured. `verify:prod --school=texas-tech --sports=all --version=4.114.0-compact-controls`: 30/30 refreshes HTTP 200, all 62 expanded views HTTP 200, K-State 18/20 and KU 26/21; one existing Golf Big 12 Match Play result-line/recap gap remains (same before deployment). No newly observed layout/data regression. Favorites keys/migration unchanged. Remaining work: baseline Colorado assertion and published Golf result gap if user requests; phone viewport not independently inspected. Latest approved design is now production baseline.
