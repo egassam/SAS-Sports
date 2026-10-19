@@ -2820,3 +2820,78 @@ User: "Let's add soccer to the pro section". Chosen scope: MLS, all 30 clubs (of
 - **Preview result:** the Worker sent back every cookie (txst.com: `visid_incap_3110122`, `incap_ses_*`; utahstateaggies.com: `visid_incap_3113058`, `incap_ses_*`) and Imperva kept redirecting with new session cookies: it requires its JavaScript-challenge cookie. A cookie jar is not enough; running the challenge would be circumvention, beyond the approval. All three commits reverted; nothing merged; production unchanged (`4.112.1-washington-state`).
 - **Open:** Utah State and Texas State need the schools to allow the app's user agent (or stay out).
 - **Decision (user, Oct 19):** "Let's just leave them out. I'm making this app to fix a problem. They are being part of the problem. I'll use them as examples later." Utah State and Texas State are left out; no further attempts. Evidence for the user's examples: both sites (Imperva) answer the app's identified requests with a redirect loop that only a browser running Imperva's JavaScript challenge gets through; plain requests from the sandbox get 403.
+
+
+## October 19, 2026 — Compact controls and results-first layout
+
+User supplied the Texas Tech production URL and asked how to improve the appearance. We inspected the current page and proposed smaller controls, results before athletes, and improved photo framing, plus additional optional design ideas. User selected only: "Start with the smaller controls results first layout and improve photo crops".
+
+Implemented the selected scope in shared `public/index.html` on local branch `ui-results-first`, commit `9b0525e`; version `4.113.0-results-first`. A native Browse disclosure contains the level switch and conference/state/sport plus city/league menus; School and Sport remain visible. Search, favorite and refresh share one row with 44px touch targets. The disclosure context shows the current level/group/middle. Single-sport navigation is hidden. Within each sport, featured athletes now follow live, recent results and upcoming sections. Athlete frames are square and use object-fit contain; names and account links are below photos. Athlete sources, rotation and result data are unchanged.
+
+Validation actually run: shared regression passed; extracted inline JavaScript `node --check` passed. Full `npm run test:release` stopped at Utah golf, `tests/utah-module.mjs:164`: expected Today Sep 30 Mark Simpson Collegiate, actual Final Sep 29. A detached unchanged `c3c50ea` worktree reproduced this same failure. No test assertion changed. Preview and production gates/visual verification have not run.
+
+Publication: a premature PR call before pushing returned invalid head (no PR created). The subsequent git push was rejected by automatic approval review because external publication had not been explicitly authorized in this user request. Did not retry through another tool. Branch and commit remain local; production unchanged. Need explicit authorization to publish to `egassam/SAS-Sports`, then complete preview checks. AGENTS item 6 requires all gates pass before autonomous merge; the baseline release failure remains open.
+
+
+### Publication follow-up
+User: "Push it" explicitly authorized the GitHub publication. Shell git push failed because the shell has no GitHub credential; using the connected GitHub API to publish the same four changed files on `ui-results-first`, based on unchanged `c3c50ea`. Preview and release verification are next.
+
+
+### Publication and preview outcome — PR #370
+
+Published four changed files through GitHub API because shell Git has no write credential. Commit `ee2820aa20c017194900570e500606b1e35fa419`; PR https://github.com/egassam/SAS-Sports/pull/370; branch `ui-results-first`. Preview https://ui-results-first-sas-sports.lovetogivepain.workers.dev/?school=texas-tech serves `4.113.0-results-first`.
+
+Visual inspection: loaded Texas Tech Cross Country shows compact School/Sport, search/favorite/refresh row, working Browse expand/collapse with level/conference controls, no redundant single-sport chip, results before upcoming and athletes. Three athlete portraits show full faces in square frames and names below. Browser screenshots captured for proof; full-page screenshot API timed out, viewport captures succeeded. Phone-sized viewport was not independently inspected.
+
+`verify:preview --branch=ui-results-first --school=texas-tech --sports=all --version=4.113.0-results-first`: 360/360 forced refreshes HTTP 200 across 10 sports; K-State 18/20, KU 26/21; all 62 final expanded views HTTP 200. One failed check: men's Golf Big 12 Match Play headline `Completed`, with no recap. Checked unchanged production: HTTP 200 feed contains the same title/headline and missing recap. No source/parser changes were made by this layout PR.
+
+GitHub Actions run 39242170789: guardrails fails `tests/colorado-module.mjs:88`, expected 13 vs actual 12. Reproduced both on the UI branch and detached unchanged main `c3c50ea`. Local full suite earlier stopped at `tests/utah-module.mjs:164`; also reproduced on unchanged main. No test assertions changed or skipped to get green. Shared regression, inline JavaScript syntax and Texas Tech module tests pass.
+
+No merge or production deployment. Existing release failures must be resolved before the standing autonomous-merge rule applies. User will receive the preview/PR and this limitation.
+
+
+### October 19 — User rejects hidden controls and athlete framing
+
+User: "I do not like that layout". Asked what bothered them. User: "Hidden browser controls and the athletes still are not sized properly in the box".
+
+Restored the original always-visible Level switch and Conference/State/Sport, City/League when applicable, School and Sport selectors. Kept compact search/favorite/refresh and results-first event ordering. Removed Browse markup, its styles and context update. Replaced square contain-fit portraits and capped 180px columns with equal-width cards across the row: desktop has an 84×112 portrait beside name/link, with cover fit and top alignment; <=560px stacks a 3:4 photo above text in each of three cards. No athlete-source or result-parser changes.
+
+Published `4.113.1-results-first` to the existing `ui-results-first` branch/PR #370 under the user's existing push authorization. Local shared regression, extracted inline JavaScript syntax and diff checks pass. Preview serves the new version; browser inspected all visible controls, results-first ordering, 3 filled portrait frames and readable names/links. Read-only DOM measurements confirm each desktop image 84×112, object-fit cover, position 50% 0%, loaded from 100×100 source images. A phone viewport was not independently inspected. Viewport screenshot captured for user review.
+
+No full release suite or 360-refresh gate repeated for this CSS/markup correction; the earlier unchanged-main Utah/Colorado test failures and Texas Tech Golf Big 12 Match Play gap remain blockers. No merge and no production change. Next: review the revised preview with the user.
+
+
+### October 19 — Phone screenshot shows portrait correction was still wrong
+
+User sent a phone screenshot and "Not correct". Screenshot shows three tall portrait photos with heads cropped. The earlier desktop-only visual check missed the <=560px override setting 3:4 cover-fit photos. Acknowledged the problem and removed that rule. Version 4.113.2: all photo frames are 72×72 with object-fit contain and centered alignment, full original images visible; desktop thumbnail inset 8px inside compact 88px cards, mobile thumbnail centered with name/link below. Always-visible controls and results-first ordering retained.
+
+Published to the same ui-results-first branch/PR #370 under existing push authorization. Local shared regression, extracted inline JavaScript syntax and diff checks pass. Hosted preview stylesheet has the thumbnail rule and no old tall override; DOM measurements confirm all three loaded images are 72×72 contain-fit from 100×100 originals; desktop screenshot checked and saved. Mobile screenshot not independently reproduced: Browser provides no viewport resizing. A temporary local-file iframe harness was rejected by Browser's URL protocol policy; did not try a workaround for that blocked local file. Browser zoom shortcuts on the permitted hosted page had no effect. No mobile-emulation claim is made. User's supplied phone screenshot directly identified the media rule; final preview is ready for phone review.
+
+No full release/gates rerun for this styling correction; previously documented baseline test/data failures remain. No merge or production change.
+
+
+### October 19 — Source crop identified and removed
+
+User sent 6249.png with "Still chopping off their heads😂". Their screenshot showed the 72px thumbnail layout was deployed, but the top of each head was still missing. Inspected `currentSrc` and natural image dimensions in the hosted app. All 3 used SIDEARM's `https://images.sidearmdev.com/crop?url=<official image>&width=100&height=100&type=webp`; each natural image was 100×100. Thus CSS contain preserved an already cropped photo. Opened the embedded original Jenna_Carter.jpg from the official CloudFront host: 1454×2000 with clear space above her full head.
+
+Added client `portraitImageUrl`: only an HTTPS images.sidearmdev.com `/crop` URL is unwrapped; its embedded original must be HTTPS with no credentials. Unknown sources and malformed/unsafe URLs remain unchanged. Generated athlete img src uses that helper. Existing 72×72 contain-fit styling retains the entire portrait at all screen widths, including the original headroom. Lazy loading remains in place; original files are larger than the former 100px thumbnails. No backend athlete identity/selection/source parsing changed.
+
+Published 4.113.3 to ui-results-first / PR #370. Verified app script has helper; all 3 rendered image URLs now point directly to official originals, natural dimensions Jenna 1454×2000, Lily 1454×2000, Lila 1455×2000, contain fit. Inspected original Jenna and rendered row; full heads now visible. Screenshot captured. URL behavior tests pass for the actual crop URL, direct URL, signed query preserved, malformed URL, other hosts and unsafe inner URLs; shared regression, inline JS syntax and diff checks pass. Phone viewport not independently inspected; the same uncropped source is used regardless of viewport. Full release/gates not repeated; earlier blockers remain, no merge or production change.
+
+
+### October 19 — Explicit favorite-team control
+
+User asked "Where did the favorites go?" then clarified "I mean I already put some teams in my favorites". Explained that production and branch preview are different origins with separate browser localStorage; their production favorites remain on the live origin in the same browser. User asked whether people will know what the star means. Proposed ☆ Favorite team, selected ★ Favorited, and a My Teams saved-list label. User: "Make it so".
+
+Implemented visible labels in initial markup and updateFavorite, removed icon-only/pseudo-star CSS, widened the favorite grid column to auto while preserving compact search and 44px refresh, added aria-pressed, and capitalized My Teams. Favorites data keys, migration, selection/add/remove behavior unchanged. Updated the existing regression label expectations to the approved text. Local shared regression, inline JavaScript syntax and diff checks pass. Publishing 4.113.4 on the same branch/PR; browser state verification pending deployment. No release-blocker fixes, no merge or production change.
+
+
+Favorite-label browser verification: deployed preview shows ☆ Favorite team with aria-pressed false. Clicking Add Texas Tech changes text to ★ Favorited, aria-pressed true, and shows MY TEAMS / ★ Texas Tech. Screenshot saved. Clicking Remove Texas Tech restores false and the empty saved-list state; the temporary preview-only test favorite was removed. Production favorites and data are untouched. Published as 4.113.4-results-first, PR #370, not merged.
+
+
+### October 19 — Restore featured athletes above results
+
+User: "Let's move the streets back above results". Interpreted "streets" as featured athletes based on the current layout discussion and said so before proceeding. Moved featuredAthletesRow immediately after the sport header/saved-source notice, before live/results/upcoming sections. Changed featured row divider from top to bottom. Kept corrected full original portraits in compact 72px frames, visible browse controls, explicit favorite labels and existing favorites storage. Version 4.114.0-compact-controls; PR #370 title/body rewritten around final compact-controls and athlete-above-results layout. Local shared regression, inline JS syntax and diff checks pass. Hosted visual order verification pending. No full release/feed gate repeated; existing release blockers still prevent autonomous merge. Production unchanged.
+
+
+Order correction verification: preview /api/status reports 4.114.0-compact-controls. Loaded Texas Tech Cross Country DOM and screenshot show sport header, featured athletes, recent results, upcoming schedule in that order. Full original portrait sources and explicit Favorite team button remain. Screenshot saved. Production unchanged; PR #370 remains open under the previously documented release blockers.

@@ -150,6 +150,41 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .spotlight-count div{background:rgba(0,0,0,.28);border-radius:10px;padding:6px 10px;text-align:center;min-width:54px}
 .spotlight-count b{display:block;font-size:20px}
 .spotlight-count span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#9aa7b8)}
+
+/* Compact controls and results-first athlete portraits. */
+.hero{padding:12px 14px;border-radius:18px}
+.hero .level-switch{margin-bottom:8px}
+.hero .level{min-height:40px;padding:6px 12px;font-size:14px}
+.hero .finder,.hero .finder.has-city{max-width:none}
+.hero select{min-height:44px;padding:8px 10px;font-size:16px}
+.hero .action-row{grid-template-columns:minmax(0,1fr) auto 44px;gap:6px;margin-top:8px}
+.hero .action-row #search{grid-column:auto;min-width:0;min-height:44px;padding:8px 10px;font-size:16px}
+#refresh{width:44px;min-width:44px;height:44px;padding:0}
+.hero .favorite{width:auto;min-width:0;height:44px;padding:0 10px;font-size:13px;white-space:nowrap}
+#refresh{font-size:26px;line-height:1}
+.hero .tabs{margin-top:8px;gap:4px}
+.hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
+.hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
+.sport-nav[hidden]{display:none}
+.featured{padding:12px 15px 15px;border-bottom:1px solid var(--line)}
+.featured-row{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.athlete-card{display:grid;grid-template-columns:88px minmax(0,1fr);min-height:88px;box-shadow:none;border-radius:12px}
+.athlete-photo{position:relative;inset:auto;width:72px;height:72px;min-height:0;margin:8px;align-self:center;overflow:hidden;font-size:26px}
+.athlete-photo img{display:block;object-fit:contain;object-position:center}
+.athlete-shade{position:static;inset:auto;min-width:0;padding:10px;background:#0b1b2d;justify-content:center}
+.athlete-name{font-size:13px;line-height:1.3;text-shadow:none;overflow-wrap:anywhere}
+.athlete-instagram{font-size:9px;letter-spacing:0;flex-wrap:wrap}
+@media(max-width:560px){
+  .hero{padding:10px}.brandbar{margin-bottom:10px}
+  .brand h1{font-size:23px}.mark{width:44px;height:44px}
+  .hero .statusline{flex-direction:row;flex-wrap:wrap;gap:2px 8px}
+  .featured{padding:12px 10px}.featured-row{gap:7px}
+  .athlete-card{display:flex;flex-direction:column;min-height:0;padding-top:10px}
+  .athlete-photo{width:72px;height:72px;max-width:calc(100% - 16px);min-height:0;margin:0;aspect-ratio:1;flex:none;align-self:center}
+  .athlete-shade{flex:1;justify-content:flex-start}
+  .athlete-shade{padding:8px 6px}.athlete-name{font-size:12px}
+  .athlete-instagram{font-size:8px;gap:2px}
+}
 </style>
 </head>
 <body>
@@ -172,7 +207,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
   </div>
   <div class="action-row">
     <input id="search" type="search" placeholder="Search events…" aria-label="Search events">
-    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school">☆</button><button id="refresh">Refresh</button>
+    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school" aria-pressed="false">☆ Favorite team</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
   </div>
   <div id="favoriteTeams" class="favorite-teams" aria-label="Favorite teams"></div>
   <div class="tabs" id="tabs">
@@ -382,10 +417,23 @@ function savedAgo(at){const ms=Date.now()-Date.parse(at);if(!Number.isFinite(ms)
 function recordLine(g){const records=(g.records||[]).filter(r=>r&&r.text);if(!records.length)return'';const conf=r=>r.conference?.text?`${esc(r.conference.name)} <b>${esc(r.conference.text)}</b>`:'';return`<div class="sport-record" title="Records this season, from the official schedule's finals (exhibitions excluded); conference games as the school marks them">${records.length===1?`Record <b>${esc(records[0].text)}</b>${conf(records[0])?` · ${conf(records[0])}`:''}`:records.map(r=>`${esc(r.team_label||'Overall')} <b>${esc(r.text)}</b>${conf(r)?` (${conf(r)})`:''}`).join(' · ')}</div>`}
 function savedScheduleNote(g){return g.saved_at?`<div class="saved-note">Saved schedule · updated ${esc(savedAgo(g.saved_at))}. The official source could not be refreshed just now; press Refresh to try again.</div>`:''}
 function emptyScheduleNote(g){return eventTotal(g.source_group||g)?'':`<div class="empty-schedule">No current or upcoming ${esc(g.sport)} events are on ${esc(g.school)}'s official schedule yet. They will appear here when the school publishes them.</div>`}
+// SIDEARM's square /crop thumbnails can already have the top of a head
+// removed. Display the official image carried in the crop URL, then contain
+// the complete portrait in the thumbnail frame.
+function portraitImageUrl(src){
+  try{
+    const crop=new URL(src);
+    if(crop.protocol==='https:'&&crop.hostname==='images.sidearmdev.com'&&crop.pathname==='/crop'){
+      const original=new URL(crop.searchParams.get('url'));
+      if(original.protocol==='https:'&&!original.username&&!original.password)return original.href;
+    }
+  }catch{}
+  return src;
+}
 function featuredAthletesRow(g){
   const athletes=g.featured_athletes||[];if(!athletes.length)return'';
   const initials=name=>String(name||'').split(/\s+/).map(x=>x[0]||'').slice(0,2).join('').toUpperCase();
-  return `<div class="featured"><div class="featured-label">Featured Athletes</div><div class="featured-row">${athletes.map(a=>{const social=Boolean(a.instagram_url),href=a.instagram_url||a.profile_url;return `<a class="athlete-card" href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(a.name)} ${social?'Instagram':'official profile'}"><div class="athlete-photo"><span>${esc(initials(a.name))}</span>${a.image_url?`<img src="${esc(a.image_url)}" alt="" loading="lazy" onerror="this.remove()">`:''}</div><div class="athlete-shade"><div class="athlete-name">${esc(a.name)}</div><div class="athlete-instagram">${social?'Instagram':'Official profile'}</div></div></a>`}).join('')}</div></div>`;
+  return `<div class="featured"><div class="featured-label">Featured Athletes</div><div class="featured-row">${athletes.map(a=>{const social=Boolean(a.instagram_url),href=a.instagram_url||a.profile_url;return `<a class="athlete-card" href="${esc(href)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(a.name)} ${social?'Instagram':'official profile'}"><div class="athlete-photo"><span>${esc(initials(a.name))}</span>${a.image_url?`<img src="${esc(portraitImageUrl(a.image_url))}" alt="" loading="lazy" onerror="this.remove()">`:''}</div><div class="athlete-shade"><div class="athlete-name">${esc(a.name)}</div><div class="athlete-instagram">${social?'Instagram':'Official profile'}</div></div></a>`}).join('')}</div></div>`;
 }
 // The homepage feed: Cross Country, or for a school without it (Manhattan
 // High School while its sports are built one at a time) its first sport in
@@ -426,6 +474,7 @@ function render(groups){
     const viewLabel=currentView==='all'?'events':currentView;
     feed.innerHTML=`<div class="empty">No ${viewLabel}${label} are loaded for this school yet. Try All sports or another view.</div>`;sportNav.innerHTML='';return
   }
+  sportNav.hidden=filtered.length<2;
   sportNav.innerHTML=filtered.map(g=>`<a class="sport-chip ${g.in_season?'active-season':''}" href="#sport-${slug(g.sport)}">${esc(g.sport)}</a>`).join('');
   feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${featuredAthletesRow(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}</section>`).join('');
   // A live card's folded parts (team stats, scoring plays, the rest of the
@@ -438,10 +487,11 @@ function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
   const team=catalogEntry(school.value)?.name||'this team';
-  favorite.textContent=on?'★ Favorite':'☆ Set favorite'; favorite.classList.toggle('on',on);
+  favorite.textContent=on?'★ Favorited':'☆ Favorite team'; favorite.classList.toggle('on',on);
+  favorite.setAttribute('aria-pressed',String(on));
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
-  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
+  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
   favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value)return;const item=catalogEntry(id);if(item)populateSchoolControls(id).then(()=>loadFeed(false))}));
 }
 // Levels of play. College is live; high school and professional teams are
@@ -542,7 +592,7 @@ async function populateSchoolControls(preferred){
 // A new group or city: that step's cities and teams.
 async function refillFromMenus(){
   const menu=await loadMenu(currentLevel,conference.value,currentLevelInfo().cityOf?city.value:'').catch(()=>null);if(!menu)return false;
-  fillCities(menu.middle);fillSchools();return true;
+  fillCities(menu.middle);fillSchools();renderLevels();return true;
 }
 // Cloudflare serves a Worker resource-limit failure (Error 1102) as 503. Those
 // and dropped connections are transient; a deliberate answer such as 502
