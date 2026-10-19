@@ -2714,9 +2714,24 @@
   },
   "san-diego-state|Water Polo": {
    "state": "off"
+  },
+  "washington-state|Baseball": {
+   "state": "off"
+  },
+  "washington-state|Basketball": {
+   "state": "off"
+  },
+  "washington-state|Football": {
+   "state": "off"
+  },
+  "washington-state|Soccer": {
+   "state": "off"
+  },
+  "washington-state|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.111.2-inflcr-iowa-state-california",
- "updated_at": "2026-10-19T00:36:49.718Z",
+ "version": "4.112.1-washington-state",
+ "updated_at": "2026-10-19T05:13:52.142Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

@@ -280,6 +280,11 @@
 | washington | Soccer | ⚪ off (waiting) |  |
 | washington | Softball | ⚪ off (waiting) |  |
 | washington | Volleyball | ⚪ off (waiting) |  |
+| washington-state | Baseball | ⚪ off (waiting) |  |
+| washington-state | Basketball | ⚪ off (waiting) |  |
+| washington-state | Football | ⚪ off (waiting) |  |
+| washington-state | Soccer | ⚪ off (waiting) |  |
+| washington-state | Volleyball | ⚪ off (waiting) |  |
 | west-virginia | Baseball | ⚪ off (waiting) |  |
 | west-virginia | Basketball | ⚪ off (waiting) |  |
 | wisconsin | Basketball | ⚪ off (waiting) |  |
@@ -488,4 +493,4 @@
 | wisconsin | Soccer | ✅ off (passed) | Men's · Wisconsin vs UCLA · 2026-10-17T06:14:54.134Z |
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 
-Done 202/487; on 0; off 284; failing 1.
+Done 202/492; on 0; off 289; failing 1.
