@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: October 18, 2026 (about 8:40 PM), America/Chicago. Production `4.112.1-washington-state` (verify after #366 merges).
+Last updated: October 18, 2026 (about 8:40 PM), America/Chicago. Production `4.112.1-washington-state` (verified 01:27 UTC Oct 19: `verify:prod` WSU all sports, SDSU and CSU Cross Country, XC 18/20 and 26/21).
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
 
