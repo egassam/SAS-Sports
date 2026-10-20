@@ -1,6 +1,7 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Virginia: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| penn-state | Hockey | 🔴 on | ESPN shows Penn State vs Robert Morris live (End of 1st) but the app has no live card (still in upcoming) |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -189,7 +190,6 @@
 | oregon-state | Volleyball | ⚪ off (waiting) |  |
 | penn-state | Baseball | ⚪ off (waiting) |  |
 | penn-state | Basketball | ⚪ off (waiting) |  |
-| penn-state | Hockey | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
 | penn-state | Lacrosse | ⚪ off (waiting) |  |
 | penn-state | Softball | ⚪ off (waiting) |  |
 | pitt | Baseball | ⚪ off (waiting) |  |
@@ -493,4 +493,4 @@
 | wisconsin | Soccer | ✅ off (passed) | Men's · Wisconsin vs UCLA · 2026-10-17T06:14:54.134Z |
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 
-Done 202/492; on 0; off 289; failing 1.
+Done 202/492; on 1; off 288; failing 1.

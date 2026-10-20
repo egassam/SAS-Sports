@@ -1642,10 +1642,16 @@
    "verified_detail": "final L, 23-31"
   },
   "penn-state|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-17T19:30:45.500Z",
-   "last_detail": "final W, 3-0 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-20T22:42:54.358Z",
+   "last_detail": "ESPN shows Penn State vs Robert Morris live (End of 1st) but the app has no live card (still in upcoming)",
+   "game": {
+    "key": "penn-state|Hockey||2026-10-20|1",
+    "title": "Penn State vs Robert Morris",
+    "started_seen": "2026-10-20T22:34:26.495Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "penn-state|Lacrosse": {
    "state": "off"
@@ -2731,7 +2737,7 @@
    "state": "off"
   }
  },
- "version": "4.112.1-washington-state",
- "updated_at": "2026-10-19T05:13:52.142Z",
+ "version": "4.116.2-scoreboard-polish",
+ "updated_at": "2026-10-20T22:42:54.359Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
