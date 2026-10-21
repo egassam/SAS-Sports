@@ -179,11 +179,37 @@ assert.equal((await login({code:'new-code-2027'})).status,200);
 assert.equal((await call('DELETE','/api/score/users/coach.k',{token:owner})).status,200);
 assert.equal((await call('GET','/api/score/me',{token:scorer})).status,401,'a removed scorer is signed out');
 
+// Every other sport through the API (October 21): the game carries its display
+// and the scorer's buttons; a meet takes the meet's name and the school hosts.
+{
+  const options=(await call('GET','/api/score/schools')).body.sport_options;
+  assert.equal(options.Football.length.field,'period_minutes');assert.equal(options.Golf.kind,'meet');
+  const fb=(await call('POST','/api/score/games',{token:owner,body:{sport:'Football',opponent:'Junction City',home_away:'away',period_minutes:8}})).body;
+  assert.equal(fb.state.clock.limit_ms,8*60_000,'middle school quarter length');
+  assert.equal(fb.away.name,'Manhattan');assert.equal(fb.controls,null,'no buttons before the start');
+  const fbAct=(type,extra={})=>call('POST',`/api/score/games/${fb.id}/action`,{token:owner,body:{action:{type,...extra}}});
+  await fbAct('start');
+  const td=(await fbAct('score',{side:'away',kind:'td'})).body;
+  assert.equal(td.away.score,6);assert.equal(td.summary,'Q1');assert.deepEqual(td.view.table.away,[6,6]);
+  assert.ok(td.controls.some(row=>row.buttons.some(b=>b.action==='next_period')));
+  assert.equal((await fbAct('undo')).body.away.score,0,'undo works for every sport');
+  assert.equal((await call('POST','/api/score/games',{token:owner,body:{sport:'Golf',opponent:''}})).body.detail,'Meet name is required.');
+  const golf=(await call('POST','/api/score/games',{token:owner,body:{sport:'Golf',opponent:'Centennial League',home_away:'away'}})).body;
+  assert.equal(golf.home.name,'Manhattan','a meet lists the school as host');assert.equal(golf.away.name,'Centennial League');
+  await call('POST',`/api/score/games/${golf.id}/action`,{token:owner,body:{action:{type:'start'}}});
+  const posted=(await call('POST',`/api/score/games/${golf.id}/action`,{token:owner,body:{action:{type:'team',name:'Manhattan',value:'346'}}})).body;
+  assert.equal(posted.summary,'Under way · 1st of 1 · 346 strokes');assert.equal(posted.home.score,null);
+  const listed=(await call('GET','/api/score/games?school=manhattan-ks')).body.games.find(g=>g.id===golf.id);
+  assert.equal(listed.view.standings[0].is_school,true,'the public list carries the view');
+  const wr=(await call('POST','/api/score/games',{token:owner,body:{sport:'Wrestling',opponent:'Little Apple Grapple',format:'meet'}})).body;
+  assert.equal(wr.view.kind,'meet');assert.equal(wr.state.format,'meet');
+}
+
 // Repeated failures lock sign-in for that user for 15 minutes.
 for(let i=0;i<8;i++)await login({password:'wrong-password-x'});
 assert.equal((await login()).status,429);
 
-console.log('Live scoring passed: baseball, softball and soccer rules; sign-in, accounts, games, undo, retries and school isolation.');
+console.log('Live scoring passed: baseball, softball and soccer rules; every other sport through the API; sign-in, accounts, games, undo, retries and school isolation.');
 
 // The stream overlay is a transparent page that reads the same public API.
 {

@@ -42,6 +42,7 @@ html,body{margin:0;background:transparent;overflow:hidden;font-family:system-ui,
 .outs{display:flex;gap:4px}.outs i{width:9px;height:9px;border-radius:50%;border:2px solid #56628a}.outs i.on{background:var(--red);border-color:var(--red)}
 .count{font-size:16px;color:var(--muted);font-variant-numeric:tabular-nums}
 .brand{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;letter-spacing:.18em;color:#7d88a6;padding:6px 4px;border-left:1px solid var(--line);font-weight:800}
+.team .score.meet{font-size:20px;padding:0 6px}
 .help{position:fixed;inset:0;display:grid;place-items:center;color:#fff;font:18px/1.5 system-ui;background:rgba(0,0,0,.6);text-align:center;padding:40px}
 </style>
 </head>
@@ -84,10 +85,12 @@ async function poll(){
   }catch{}
 }
 
+// Soccer counts up; football and basketball count down from limit_ms.
 function clockText(){
-  const c=game?.state?.clock;if(!c)return'';
+  const c=game?.state?.clock;if(!c||c.off)return'';
   const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+offset-c.started_at):0);
-  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+  const shown=c.limit_ms!=null?Math.max(0,c.limit_ms-ms):ms;
+  const t=c.limit_ms!=null?Math.ceil(shown/1000):Math.floor(shown/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
 }
 
 function render(){
@@ -96,6 +99,7 @@ function render(){
   const visible=game&&(game.status==='live'||(game.status==='final'&&(!hideIdle||gameId)));
   bug.classList.toggle('hidden',!visible);
   if(!visible)return;
+  if(game.view)return renderGeneric();
   const g=game,s=g.state,diamond=g.sport!=='Soccer',live=g.status==='live';
   const bat=diamond&&live?(s.half==='top'?'away':'home'):null;
   const team=side=>{
@@ -110,6 +114,25 @@ function render(){
   }else{
     state=`<div class="state"><div class="clock" id="clock">${clockText()}</div><div class="small">${esc(g.summary)}${s.period===5?` · PK ${s.pks.away}-${s.pks.home}`:''}</div></div>`;
   }
+  bug.innerHTML=`<div class="teams">${team('away')}${team('home')}</div>${state}<div class="brand">SAS SPORTS</div>`;
+}
+// Every other sport: the score, the period or set, and possession or serve;
+// a meet shows the meet's name and the school's place.
+function renderGeneric(){
+  const g=game,v=g.view,live=g.status==='live';
+  if(v.kind==='meet'){
+    const me=v.standings.find(t=>t.is_school);
+    bug.innerHTML=`<div class="teams"><div class="team school"><span class="bar"></span><span class="name">${esc(g.home.name)}</span><span class="score meet">${me?.place?esc(me.place)+(['th','st','nd','rd'][me.place%100>10&&me.place%100<14?0:me.place%10]||'th'):'–'}</span></div><div class="team"><span class="bar"></span><span class="name">${esc(g.away.name)}</span><span class="score meet">${me?.value??''}</span></div></div><div class="state"><div class="main ${live?'':'final'}">${live?esc(v.round||'LIVE'):'FINAL'}</div><div class="small">${esc(g.sport)} · ${esc(v.value_label)}</div></div><div class="brand">SAS SPORTS</div>`;
+    return;
+  }
+  const team=side=>{
+    const bumped=lastScores[g.id+side]!=null&&lastScores[g.id+side]!==g[side].score;
+    lastScores[g.id+side]=g[side].score;
+    return`<div class="team ${g[side].is_school?'school':''}"><span class="bar"></span><span class="name">${esc(g[side].name)}${live&&v.possession===side?'<span class="poss">◀</span>':''}</span><span class="score ${bumped?'bump':''}">${g[side].score}</span></div>`;
+  };
+  const clock=g.state.clock&&!g.state.clock.off?`<div class="clock" id="clock">${clockText()}</div>`:'';
+  const small=v.kind==='sets'&&v.current?`${esc(v.period)} · ${v.current.away}-${v.current.home}`:v.period||esc(g.summary);
+  const state=live?`<div class="state">${clock||`<div class="main">${esc(v.kind==='sets'?'Sets':g.summary)}</div>`}<div class="small">${esc(small)}</div></div>`:`<div class="state"><div class="main final">${esc(g.status==='final'?'FINAL':g.summary.toUpperCase())}</div><div class="small">${esc(g.sport)}</div></div>`;
   bug.innerHTML=`<div class="teams">${team('away')}${team('home')}</div>${state}<div class="brand">SAS SPORTS</div>`;
 }
 setInterval(()=>{const el=document.getElementById('clock');if(el)el.textContent=clockText()},250);

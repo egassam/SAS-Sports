@@ -10,7 +10,7 @@
 // school's code, a username and a password; a school admin adds scorers. The
 // school code and passwords are stored as PBKDF2 hashes, never in the clear.
 
-import {SPORTS,SCORING_SPORTS,initialState,applyAction,gameSummary} from './sports.mjs';
+import {SPORTS,SCORING_SPORTS,SPORT_OPTIONS,initialState,applyAction,gameSummary,gameView} from './sports.mjs';
 
 const PBKDF2_ITERATIONS=100000; // the Workers maximum
 const SESSION_MS=14*60*60*1000; // one long game day
@@ -109,12 +109,14 @@ const newGameId=()=>b64url(crypto.getRandomValues(new Uint8Array(9))).replace(/[
 
 export function publicGame(row,now=Date.now()){
   const state=JSON.parse(row.state_json);
-  const {label,score}=gameSummary(row.sport,state,row.status);
+  const names={away:row.away_name,home:row.home_name,school:row.school_side==='away'?row.away_name:row.home_name};
+  const {label,score}=gameSummary(row.sport,state,row.status,names);
+  const {view,controls}=gameView(row.sport,state,row.status,names);
   return{
     id:row.id,school_id:row.school_id,sport:row.sport,status:row.status,summary:label,
     home:{name:row.home_name,score:score.home,is_school:row.school_side==='home'},
     away:{name:row.away_name,score:score.away,is_school:row.school_side==='away'},
-    start_at:row.start_at,venue:row.venue,state,version:row.version,updated_at:row.updated_at,
+    start_at:row.start_at,venue:row.venue,state,view,controls,version:row.version,updated_at:row.updated_at,
     source:'school-scorekeeper',source_label:'Reported live by the school scorekeeper',
     server_now:now,
   };
@@ -144,16 +146,20 @@ async function createGame(request,db,user){
   const sport=String(b.sport||'');
   if(!SPORTS[sport])return fail(`Sport must be one of: ${SCORING_SPORTS.join(', ')}.`);
   const opponent=cleanText(b.opponent,40);
-  if(!opponent)return fail('Opponent is required.');
-  const side=b.home_away==='away'?'away':'home';
+  const state=initialState(sport);
+  if(sport==='Baseball'||sport==='Softball'){if(Number(b.innings)>=1)state.innings_scheduled=Math.min(12,Math.trunc(Number(b.innings)))}
+  else if(sport==='Soccer'){if(Number(b.half_minutes)>=10)state.half_minutes=Math.min(60,Math.trunc(Number(b.half_minutes)))}
+  else SPORTS[sport].configure?.(state,b);
+  // A meet or tournament: the opponent field is the meet's name, and the
+  // school is listed as the host side.
+  const meet=state.format==='meet';
+  if(!opponent)return fail(meet?'Meet name is required.':'Opponent is required.');
+  const side=meet?'home':b.home_away==='away'?'away':'home';
   const school=await db.prepare(`SELECT name FROM score_schools WHERE school_id=?`).bind(user.school_id).first();
   const schoolName=cleanText(b.school_name,40)||school?.name||user.school_id;
   const home=side==='home'?schoolName:opponent,away=side==='home'?opponent:schoolName;
   const now=Date.now(),id=newGameId();
   const startAt=/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(String(b.start_at||''))?b.start_at:null;
-  const state=initialState(sport);
-  if(sport!=='Soccer'&&Number(b.innings)>=1)state.innings_scheduled=Math.min(12,Math.trunc(Number(b.innings)));
-  if(sport==='Soccer'&&Number(b.half_minutes)>=10)state.half_minutes=Math.min(60,Math.trunc(Number(b.half_minutes)));
   await db.prepare(`INSERT INTO score_games(id,school_id,sport,home_name,away_name,school_side,start_at,venue,status,state_json,version,created_by,created_at,updated_at,updated_by) VALUES(?,?,?,?,?,?,?,?,'scheduled',?,1,?,?,?,?)`)
     .bind(id,user.school_id,sport,home,away,side,startAt,cleanText(b.venue,60)||null,JSON.stringify(state),user.username,now,now,user.username).run();
   return json(publicGame(await db.prepare(`SELECT * FROM score_games WHERE id=?`).bind(id).first()),201);
@@ -274,7 +280,7 @@ async function route(request,db,url){
   // Public reads.
   if(method==='GET'&&head==='schools'){
     const rows=(await db.prepare(`SELECT school_id,name FROM score_schools WHERE enabled=1 ORDER BY name`).all()).results||[];
-    return json({schools:rows,sports:SCORING_SPORTS});
+    return json({schools:rows,sports:SCORING_SPORTS,sport_options:SPORT_OPTIONS});
   }
   if(method==='GET'&&head==='games'&&!id)return listGames(url,db);
   if(method==='GET'&&head==='games'&&id&&!tail)return getGame(id,url,db);

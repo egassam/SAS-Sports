@@ -958,7 +958,7 @@ sweepFinalCache();
   const box=document.querySelector('#fieldLive'),select=document.querySelector('#school');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let scoring=new Set(),timer=null,lastId=null;
-  const card=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span>${g.status==='live'?'<span class="fl-chip live">Live</span>':g.status==='final'?'<span class="fl-chip">Final</span>':'<span class="fl-chip">Today</span>'}</div><div class="fl-row"><span>${esc(g.away.name)}</span><b>${g.away.score}</b></div><div class="fl-row"><span>${esc(g.home.name)}</span><b>${g.home.score}</b></div><div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label)} · tap for the scoreboard</div></a>`;
+  const card=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span>${g.status==='live'?'<span class="fl-chip live">Live</span>':g.status==='final'?'<span class="fl-chip">Final</span>':'<span class="fl-chip">Today</span>'}</div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away.name)}</span><b>${g.away.score}</b></div><div class="fl-row"><span>${esc(g.home.name)}</span><b>${g.home.score}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label)} · tap for the scoreboard</div></a>`;
   async function refresh(){
     clearTimeout(timer);
     const id=select.value;lastId=id;

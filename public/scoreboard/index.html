@@ -48,6 +48,17 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-famil
 .stale{color:var(--red);font-weight:800}
 .fs{position:fixed;right:1.5vw;bottom:2vh;background:#1b2238;color:#fff;border:0;border-radius:1vh;padding:1vh 1.4vw;font-size:2vh;cursor:pointer;opacity:.85;transition:opacity .4s}
 .fs.idle{opacity:0;pointer-events:none}
+/* Every other sport (October 21): sets, duals and meets. */
+.team.poss .name::after{content:" ◂";color:var(--amber)}
+.chips{display:flex;flex-wrap:wrap;gap:1vh 1.2vw;justify-content:center;margin-top:1.4vh}.chips span{font-size:2.8vh;font-weight:900;background:#1b2238;border-radius:999px;padding:.3em .9em}
+.meet{flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:2.4vh 2.4vw;min-height:0;align-content:start}
+.meet h1{grid-column:1/-1;margin:0;font-size:7vh;line-height:1.05;font-weight:950;text-transform:uppercase}
+.meet .me{grid-column:1/-1;font-size:4.6vh;font-weight:950;color:var(--amber)}
+.standings{border-collapse:collapse;font-size:3.6vh;font-variant-numeric:tabular-nums;align-self:start;width:100%}
+.standings td{padding:.3em .5em;border-bottom:.2vh solid var(--line)}.standings td:last-child{text-align:right;color:var(--amber);font-weight:950}
+.standings tr.school td{background:var(--school);color:var(--school-on)}
+.feed{list-style:none;margin:0;padding:0;font-size:3vh;align-self:start}.feed li{padding:.45em 0;border-bottom:.2vh solid var(--line)}.feed b{color:var(--amber)}
+.log{list-style:none;margin:0;padding:0;font-size:2.8vh;max-height:22vh;overflow:hidden}.log li{padding:.25em 0;border-bottom:.2vh solid var(--line)}
 @media (orientation:portrait){.team .name{font-size:5vh}.team .score{font-size:13vh}.bottom{grid-template-columns:1fr;justify-items:center;gap:2vh}.linescore{font-size:2.4vh}.clock{font-size:11vh}}
 </style>
 </head>
@@ -85,16 +96,19 @@ async function poll(){
   }catch{}finally{renderStale()}
 }
 
+// Soccer counts up; football and basketball count down from limit_ms.
 function clockText(){
-  const c=game?.state?.clock;if(!c)return'';
+  const c=game?.state?.clock;if(!c||c.off)return'';
   const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+offset-c.started_at):0);
-  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+  const shown=c.limit_ms!=null?Math.max(0,c.limit_ms-ms):ms;
+  const t=c.limit_ms!=null?Math.ceil(shown/1000):Math.floor(shown/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
 }
 const lamps=(n,max,cls)=>Array.from({length:max},(_,i)=>`<span class="lamp ${cls} ${i<n?'on':''}"></span>`).join('');
 
 function render(){
   const stage=$('#stage');
   if(!game){stage.innerHTML=`<div class="empty">${!gameId&&!schoolId?'Add ?game= or ?school= to the address.':'No game right now.<br><small>The score appears here when the scorekeeper starts a game.</small>'}</div>`;return}
+  if(game.view)return renderGeneric(stage);
   const g=game,s=g.state,diamond=g.sport!=='Soccer',live=g.status==='live';
   const bat=diamond&&live?(s.half==='top'?'away':'home'):null;
   const team=side=>`<div class="team ${g[side].is_school?'school':''} ${bat===side?'batting':''}"><div class="name"><span class="side">${side==='home'?'Home':'Guest'}</span>${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
@@ -112,6 +126,25 @@ function render(){
   }
   const chip=g.status==='live'?'<span class="status-chip live">● Live</span>':g.status==='final'?'<span class="status-chip final">Final</span>':'<span class="status-chip">Starts '+esc(g.start_at?new Date(g.start_at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'soon')+'</span>';
   stage.innerHTML=`<div class="top"><span>${esc(g.sport)}${g.venue?' · '+esc(g.venue):''}</span>${chip}</div><div class="teams">${team('away')}${team('home')}</div>${bottom}<div class="foot"><span>SAS Sports · live from the school scorekeeper</span><span id="stale"></span></div>`;
+}
+// Every other sport: the display the game describes (view).
+function renderGeneric(stage){
+  const g=game,v=g.view,live=g.status==='live';
+  const chip=live?'<span class="status-chip live">● Live</span>':g.status==='final'?'<span class="status-chip final">Final</span>':'<span class="status-chip">Starts '+esc(g.start_at?new Date(g.start_at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'soon')+'</span>';
+  let body;
+  if(v.kind==='meet'){
+    const rows=v.standings.filter(t=>t.place!=null).slice(0,8).map(t=>`<tr class="${t.is_school?'school':''}"><td>${t.place}</td><td>${esc(t.name)}</td><td>${t.value}</td></tr>`).join('');
+    const feed=v.results.slice(0,6).map(r=>`<li><b>${r.place?esc(r.place)+'. ':''}${esc(r.name)}</b>${r.team?` · ${esc(r.team)}`:''}${r.event?` · ${esc(r.event)}`:''}${r.mark?` · ${esc(r.mark)}`:''}</li>`).join('');
+    body=`<div class="meet"><h1>${esc(g.away.name)}</h1><div class="me">${esc(g.summary)}</div>${rows?`<table class="standings">${rows}</table>`:'<div class="period">Team scores post here</div>'}<ul class="feed">${feed}</ul></div>`;
+  }else{
+    const team=side=>`<div class="team ${g[side].is_school?'school':''} ${v.possession===side&&live?'poss':''}"><div class="name"><span class="side">${side==='home'?'Home':'Guest'}</span>${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
+    const t=v.table&&g.status!=='scheduled'?`<table class="linescore"><tr><th></th>${v.table.columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${['away','home'].map(side=>`<tr><td class="team-cell">${esc(g[side].name)}</td>${v.table[side].map((x,i)=>`<td class="${i===v.table[side].length-1?'tot':''}">${x??''}</td>`).join('')}</tr>`).join('')}</table>`:'';
+    const clock=g.state.clock&&!g.state.clock.off?`<div class="clock" id="clock">${g.status==='scheduled'?clockText()||'0:00':clockText()}</div>`:'';
+    const current=v.current?`<div class="clock">${v.current.away}–${v.current.home}</div>`:'';
+    const log=v.log?.length?`<ul class="log">${v.log.slice(-5).reverse().map(l=>`<li><b>${esc(l.label||'')}</b> ${esc(l.text)}</li>`).join('')}</ul>`:'';
+    body=`<div class="teams">${team('away')}${team('home')}</div><div class="bottom" style="grid-template-columns:auto 1fr"><div>${clock}${current}<div class="period">${esc(v.kind==='sets'&&live&&v.period?v.period:g.summary)}</div>${v.chips?.length&&live?`<div class="chips">${v.chips.map(c=>`<span>${esc(c)}</span>`).join('')}</div>`:''}</div><div>${t}${log}</div></div>`;
+  }
+  stage.innerHTML=`<div class="top"><span>${esc(g.sport)}${g.venue?' · '+esc(g.venue):''}</span>${chip}</div>${body}<div class="foot"><span>SAS Sports · live from the school scorekeeper</span><span id="stale"></span></div>`;
 }
 function renderStale(){const el=$('#stale');if(!el)return;const age=Date.now()-lastOk;el.innerHTML=age>10000?'<span class="stale">Reconnecting…</span>':''}
 
