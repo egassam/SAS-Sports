@@ -36,7 +36,7 @@ const run=(id,step,cmd)=>new Promise(done=>{
 });
 const started=Date.now(),clock=()=>`${Math.round((Date.now()-started)/1000)}s`;
 
-const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Nebraska:'NE','New Jersey':'NJ','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI'};
+const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE','New Jersey':'NJ','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI'};
 async function tfrrsTeams(school){
   // TFRRS can name the team by its institution, "State" cut to "St"
   // (NC State: NC_college_f_North_Carolina_St, from "North Carolina State

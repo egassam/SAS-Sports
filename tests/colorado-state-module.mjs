@@ -199,7 +199,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Aug 16 Colorado State vs Denver | W, 1-0",
  "Final Aug 23 Colorado State at Northern Colorado | L, 1-2",
  "Final Aug 30 Colorado State vs South Carolina | L, 0-1",
- "Final Sep 3 Colorado State at Brigham Young | L, 1-2",
+ "Final Sep 3 Colorado State at BYU | L, 1-2",
  "Final Sep 6 Colorado State at Utah Tech | L, 0-1",
  "Final Sep 10 Colorado State vs Kansas State | T, 2-2",
  "Final Sep 17 Colorado State vs Wyoming | L, 0-1",

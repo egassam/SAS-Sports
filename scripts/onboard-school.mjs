@@ -4,6 +4,8 @@ import {spawn} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 
 // WMT sites use short codes (Iowa: `/sports/mbball`, `wcross`, `fhockey`;
+// Montana State's `ski`; Northern Colorado's `womens-indoor-track-field` and
+// `-outdoor-` pages (Oct 21).
 // Miami: `cross`, `soc`, `swim`, `track`; Virginia: `xctrack`; Georgia Tech's
 // CSTV codes: `m-footbl`, `w-volley`, `m-baskbl`, `m-basebl`, `w-softbl`, `c-swim`).
 // Syracuse's men's rowing is `mens-crew`.
@@ -14,12 +16,12 @@ const SPORT_SLUGS={
   'Swimming & Diving':['swimming-and-diving','swimming-diving','swim-dive','swimming','wswim','mswim','swim'],
   'Wrestling':['wrestling'],'Tennis':['womens-tennis','mens-tennis','tennis','wten','mten'],
   'Golf':['womens-golf','mens-golf','golf','wgolf','mgolf'],'Rowing':['womens-rowing','rowing','wrow','mrow','crew'],
-  'Track & Field':['track-and-field','track-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball','basebl'],
+  'Track & Field':['track-and-field','track-field','indoor-track-field','outdoor-track-field','indoor-track-and-field','outdoor-track-and-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball','basebl'],
   'Softball':['softball','softbl'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
   'Field Hockey':['field-hockey','fhockey'],'Hockey':['ice-hockey','hockey'],
   'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics','wgym','mgym'],'Beach Volleyball':['beach-volleyball'],
   'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
-  'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing'],
+  'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing','ski'],
   'Triathlon':['triathlon'],'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],
   'STUNT':['stunt']
 };
