@@ -78,7 +78,12 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
     return events;
   }
   function markGames(events,raw,school){
-    const games=/__NUXT_DATA__/.test(String(raw||''))?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
+    // SIDEARM's older page marks its conference games on the row (Big Sky,
+    // Oct 21: Idaho State's football page marks Cal Poly, a football-only
+    // Big Sky member); a page that marks none has no flags.
+    const nuxt=/__NUXT_DATA__/.test(String(raw||'')),classic=!nuxt&&/<li\b[^>]*class="sidearm-schedule-game\s/.test(String(raw||''));
+    const flagged=nuxt||classic?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
+    const games=classic&&!flagged.some(game=>game.conference)?[]:flagged;
     if(games.length){
       // The same page data marks exhibitions (type "S"), which records leave
       // out even when a card does not say so (Oklahoma State soccer at Tulsa,

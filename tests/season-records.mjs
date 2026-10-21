@@ -73,4 +73,15 @@ const records=(id,sport,file,url)=>{const raw=fixture(file);return{raw,events:wo
   const miami=school('miami'),game=(opponent,sport='Football')=>({id:opponent+sport,school_id:'miami',school:'Miami',sport,event_type:'GAME',status:'Final',start_time:'2026-10-24T16:00:00Z',title:`Miami vs ${opponent}`,opponent,headline:'W, 30-20'});
   assert.deepEqual(worker.markConferenceGames([game('Pittsburgh'),game('Notre Dame'),game('Notre Dame','Volleyball'),game('Cal','Volleyball'),game('Florida'),game('Boston College','Hockey')],'<html>no page data</html>',miami).map(e=>e.conference_game),[true,false,true,true,false,false]);
 }
+// SIDEARM's older page marks its conference games on the row (Idaho State
+// football, Oct 21): Cal Poly, a football-only Big Sky member, counts (Big Sky
+// 1-3 as the page publishes, not 1-2 by membership); VMI does not.
+// Mutation: without the row marks Cal Poly is non-conference.
+{
+  const raw=gunzipSync(readFileSync(new URL('./fixtures/idaho-state-module/football-schedule.html.gz',import.meta.url))).toString('utf8');
+  const events=worker.parseHtml(raw,school('idaho-state'),'Football','https://isubengals.com/sports/football/schedule',new Date('2026-10-21T15:00:00Z'));
+  worker.markConferenceGames(events,raw,school('idaho-state'));
+  const marked=Object.fromEntries(events.map(e=>[e.opponent,e.conference_game]));
+  assert.deepEqual([marked['Cal Poly'],marked['Weber State'],marked['VMI']],[true,true,false]);
+}
 console.log('Season record checks passed: Oklahoma State soccer 5-4-3 (1-2-1, exhibition from page data), K-State volleyball 9-3 (1-3), membership fallback');
