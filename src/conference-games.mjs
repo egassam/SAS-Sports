@@ -44,7 +44,12 @@ const NOT_SPONSORED={
   // The Big East plays no football (UConn independent, Georgetown and
   // Villanova in the Patriot League, Butler in the Pioneer), hockey
   // (UConn's Hockey East), wrestling or gymnastics.
-  'Big East':new Set(['Football','Hockey','Wrestling','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Big East':new Set(['Football','Hockey','Wrestling','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Big Sky (2026-27, with Southern Utah and Utah Tech) sponsors football,
+  // basketball, cross country, track, golf, tennis, women's soccer, softball
+  // and volleyball: no baseball (Utah Tech's), swimming (Northern Arizona's,
+  // Idaho's), gymnastics (Southern Utah's), hockey, wrestling or rowing.
+  'Big Sky':new Set(['Baseball','Swimming & Diving','Gymnastics','Hockey','Wrestling','Lacrosse','Rowing','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

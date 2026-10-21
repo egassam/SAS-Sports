@@ -97,7 +97,7 @@ import {uconnSchool,createUconnHandlers} from './schools/uconn.mjs';
 import {xavierSchool,createXavierHandlers} from './schools/xavier.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.126.0-big-east';
+const VERSION='4.127.0-big-sky-catalog';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -706,9 +706,10 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Official schedule times are stored as the school's local wall clock with a
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
-const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Colorado:'America/Denver',Nevada:'America/Los_Angeles','British Columbia':'America/Vancouver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Montana:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles','British Columbia':'America/Vancouver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago'};
 // Formula 1 races are listed in Eastern time, as ESPN and US broadcasts list them.
-const SCHOOL_TIME_ZONES={tennessee:'America/New_York','formula-1':'America/New_York'};
+// Idaho's Moscow (the Vandals) keeps Pacific time; Boise, Mountain.
+const SCHOOL_TIME_ZONES={tennessee:'America/New_York',idaho:'America/Los_Angeles','formula-1':'America/New_York'};
 // The catalog's menus (src/catalog.mjs): D1 in production, the bundled cards
 // on a preview carrying catalog changes or when a read fails. The choice is
 // made once a minute per isolate; production copies a changed catalog into

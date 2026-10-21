@@ -1470,6 +1470,235 @@
     ]
   },
   {
+    "id": "montana",
+    "name": "Montana",
+    "short_name": "Montana",
+    "state": "Montana",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gogriz.com",
+    "aliases": [
+      "University of Montana",
+      "Grizzlies",
+      "Griz"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gogriz",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "montana-state",
+    "name": "Montana State",
+    "short_name": "Montana State",
+    "state": "Montana",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://msubobcats.com",
+    "aliases": [
+      "Montana State University",
+      "Montana St.",
+      "Bobcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "msubobcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "idaho",
+    "name": "Idaho",
+    "short_name": "Idaho",
+    "state": "Idaho",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://govandals.com",
+    "aliases": [
+      "University of Idaho",
+      "Vandals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "govandals",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "idaho-state",
+    "name": "Idaho State",
+    "short_name": "Idaho State",
+    "state": "Idaho",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://isubengals.com",
+    "aliases": [
+      "Idaho State University",
+      "Idaho St.",
+      "Bengals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "isubengals",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "eastern-washington",
+    "name": "Eastern Washington",
+    "short_name": "Eastern Washington",
+    "state": "Washington",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goeags.com",
+    "aliases": [
+      "Eastern Washington University",
+      "EWU",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goeags",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northern-arizona",
+    "name": "Northern Arizona",
+    "short_name": "Northern Arizona",
+    "state": "Arizona",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nauathletics.com",
+    "aliases": [
+      "Northern Arizona University",
+      "NAU",
+      "Lumberjacks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nauathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northern-colorado",
+    "name": "Northern Colorado",
+    "short_name": "Northern Colorado",
+    "state": "Colorado",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uncbears.com",
+    "aliases": [
+      "University of Northern Colorado",
+      "UNC Bears",
+      "Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uncbears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "portland-state",
+    "name": "Portland State",
+    "short_name": "Portland State",
+    "state": "Oregon",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goviks.com",
+    "aliases": [
+      "Portland State University",
+      "Portland St.",
+      "Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goviks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "weber-state",
+    "name": "Weber State",
+    "short_name": "Weber State",
+    "state": "Utah",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://weberstatesports.com",
+    "aliases": [
+      "Weber State University",
+      "Weber St.",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "weberstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southern-utah",
+    "name": "Southern Utah",
+    "short_name": "Southern Utah",
+    "state": "Utah",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://suutbirds.com",
+    "aliases": [
+      "Southern Utah University",
+      "SUU",
+      "Thunderbirds"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "suutbirds",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utah-tech",
+    "name": "Utah Tech",
+    "short_name": "Utah Tech",
+    "state": "Utah",
+    "conference": "Big Sky",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utahtechtrailblazers.com",
+    "aliases": [
+      "Utah Tech University",
+      "Trailblazers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utahtechtrailblazers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",
