@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.122.1-prep-golf';
+const VERSION='4.122.2-prep-golf';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1768,7 +1768,7 @@ async function prepGolfResultsFor(school,module,team,game,read=meetProReader()){
   const placed=teams.filter(t=>t.place),own=players.filter(p=>p.school===config.code);
   const field=placed.length?` of ${placed.length}`:'';
   const rows=[{group:`${team.label} Varsity`,participant:`${school.short_name} team`,result:`${pick.place}${field} · ${pick.score}`},
-    ...own.map(p=>({group:`${team.label} Varsity`,participant:p.name,result:`${/^\d/.test(p.place||'')?ORDINAL(Number(p.place)):p.place||'–'} · ${p.total}${p.to_par?` (${p.to_par})`:''}${p.rounds.length>1?` · ${p.rounds.join('-')}`:''}`}))];
+    ...own.map(p=>({group:`${team.label} Varsity`,participant:p.name,result:`${/^\d/.test(p.place||'')?ORDINAL(Number(p.place)):p.place||'–'} · ${p.total}${p.to_par?` (${p.to_par})`:''}${p.rounds.length>1?` · ${p.rounds.join('-')}`:''}${p.qualified?' · Qualified for State':''}`}))];
   const top=own[0],win=/^1st$/i.test(pick.place);
   const highlights=[`${school.short_name} ${win?'won the team title':`placed ${pick.place}${field}`} with ${pick.score}.`,...(top?[`${top.name} led ${school.short_name}${top.place?` in ${/^\d/.test(top.place)?ORDINAL(Number(top.place)):top.place}`:''} with ${top.total}${top.to_par?` (${top.to_par})`:''}${top.place==='1'?', the medalist':''}.`]:[])];
   return{rows,headline:`${pick.place}${field} · ${pick.score}`,highlights,url,label:'View full results (Prep.Golf)',note:'Results as posted on Prep.Golf.'};

@@ -247,6 +247,7 @@ try{
       assert.deepEqual(post.map(e=>`${e.opponent} | ${e.headline}`),['State Golf | 4th of 12 · 687 (+111)','Regionals | 2nd of 7 · 343 (+55)']);
       assert.equal(post[0].results[1].participant+' | '+post[0].results[1].result,'Maddie Myers | 1st · 136 (-8) · 63-73');
       assert.equal(post[0].highlights[1],'Maddie Myers led Manhattan in 1st with 136 (-8), the medalist.');
+      assert.equal(post[1].results[1].participant+' | '+post[1].results[1].result,'Maddie Myers | 2nd · 72 (E) · Qualified for State','the state-qualifier badge is not part of the name');
     }finally{globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}}}
   }
 

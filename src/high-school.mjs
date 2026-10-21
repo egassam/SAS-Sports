@@ -268,7 +268,9 @@ export function prepGolfResults(html){
   if(indStart>=0)for(const row of tableRows(text.slice(indStart,indEnd))){
     const cells=row.cells.map(cellText);if(cells.length<5)continue;
     const place=cells[0].replace(/[^\dT]/g,'');
-    players.push({place:place||null,name:cells[1],school:(row.attrs.match(/data-school="([^"]+)"/)||[])[1]||cells[2],rounds:cells.slice(3,-2).filter(Boolean),total:cells.at(-2),to_par:cells.at(-1)});
+    // A "Q" badge after the name marks a state qualifier.
+    const qualified=/\sQ$/.test(cells[1]);
+    players.push({place:place||null,name:cells[1].replace(/\s+Q$/,''),qualified,school:(row.attrs.match(/data-school="([^"]+)"/)||[])[1]||cells[2],rounds:cells.slice(3,-2).filter(Boolean),total:cells.at(-2),to_par:cells.at(-1)});
   }
   return{teams,players};
 }
