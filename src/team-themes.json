@@ -319,6 +319,14 @@
     "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
+  "creighton": {
+    "primary": "#005CA9",
+    "secondary": "#13294B",
+    "panel": "#091d32",
+    "panelDark": "#050e18",
+    "line": "#0e4170",
+    "onAccent": "#ffffff"
+  },
   "dallas-cowboys": {
     "primary": "#002A5C",
     "secondary": "#B0B7BC",
@@ -341,6 +349,14 @@
     "panel": "#0b1119",
     "panelDark": "#05070b",
     "line": "#884127",
+    "onAccent": "#ffffff"
+  },
+  "depaul": {
+    "primary": "#005EB8",
+    "secondary": "#E4002B",
+    "panel": "#091d35",
+    "panelDark": "#050e1a",
+    "line": "#0e4278",
     "onAccent": "#ffffff"
   },
   "detroit-lions": {
@@ -677,6 +693,14 @@
     "panel": "#181d3a",
     "panelDark": "#0b0e1d",
     "line": "#4a5290",
+    "onAccent": "#ffffff"
+  },
+  "marquette": {
+    "primary": "#003366",
+    "secondary": "#FFCC00",
+    "panel": "#091423",
+    "panelDark": "#050a11",
+    "line": "#0e2a4b",
     "onAccent": "#ffffff"
   },
   "maryland": {
@@ -1031,6 +1055,14 @@
     "line": "#273c30",
     "onAccent": "#ffffff"
   },
+  "providence": {
+    "primary": "#000000",
+    "secondary": "#A2AAAD",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
   "purdue": {
     "primary": "#000000",
     "secondary": "#CFB991",
@@ -1127,6 +1159,14 @@
     "line": "#277c3d",
     "onAccent": "#0b0b10"
   },
+  "seton-hall": {
+    "primary": "#004488",
+    "secondary": "#A2AAAD",
+    "panel": "#09182a",
+    "panelDark": "#050b15",
+    "line": "#0e345e",
+    "onAccent": "#ffffff"
+  },
   "smu": {
     "primary": "#CC0035",
     "secondary": "#354CA1",
@@ -1150,6 +1190,14 @@
     "panelDark": "#15181f",
     "line": "#6a7b95",
     "onAccent": "#0b0b10"
+  },
+  "st-johns": {
+    "primary": "#BA0C2F",
+    "secondary": "#002D72",
+    "panel": "#320b17",
+    "panelDark": "#17060c",
+    "line": "#75152d",
+    "onAccent": "#ffffff"
   },
   "st-louis-cardinals": {
     "primary": "#BE0A14",
@@ -1287,6 +1335,14 @@
     "line": "#27487f",
     "onAccent": "#ffffff"
   },
+  "uconn": {
+    "primary": "#000E2F",
+    "secondary": "#E4002B",
+    "panel": "#090c17",
+    "panelDark": "#05060c",
+    "line": "#0e162d",
+    "onAccent": "#ffffff"
+  },
   "usc": {
     "primary": "#990000",
     "secondary": "#FFC72C",
@@ -1389,6 +1445,14 @@
     "panel": "#340a0f",
     "panelDark": "#180508",
     "line": "#7b111a",
+    "onAccent": "#ffffff"
+  },
+  "xavier": {
+    "primary": "#0C2340",
+    "secondary": "#9EA2A2",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
     "onAccent": "#ffffff"
   }
 }

@@ -287,6 +287,17 @@
   "columbus-crew": [
     "Soccer"
   ],
+  "creighton": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Volleyball"
+  ],
   "dallas-cowboys": [
     "Football"
   ],
@@ -295,6 +306,16 @@
   ],
   "denver-broncos": [
     "Football"
+  ],
+  "depaul": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "detroit-lions": [
     "Football"
@@ -629,6 +650,16 @@
     "Golf",
     "Soccer",
     "Tennis",
+    "Volleyball"
+  ],
+  "marquette": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
     "Volleyball"
   ],
   "maryland": [
@@ -1022,6 +1053,20 @@
   "portland-timbers": [
     "Soccer"
   ],
+  "providence": [
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "purdue": [
     "Baseball",
     "Basketball",
@@ -1096,6 +1141,17 @@
   "seattle-sounders": [
     "Soccer"
   ],
+  "seton-hall": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball"
+  ],
   "smu": [
     "Basketball",
     "Cross Country",
@@ -1126,6 +1182,19 @@
   ],
   "sporting-kansas-city": [
     "Soccer"
+  ],
+  "st-johns": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "st-louis-cardinals": [
     "Baseball"
@@ -1287,6 +1356,23 @@
     "Volleyball",
     "Water Polo"
   ],
+  "uconn": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "usc": [
     "Baseball",
     "Basketball",
@@ -1445,5 +1531,16 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "xavier": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ]
 }

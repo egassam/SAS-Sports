@@ -40,7 +40,11 @@ const NOT_SPONSORED={
   ACC:new Set(['Rifle','Bowling','Beach Volleyball','Equestrian','Hockey','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The new Pac-12's sports (its July 1, 2026 launch release): no beach
   // volleyball (Boise State's), rowing, lacrosse or equestrian.
-  'Pac-12':new Set(['Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Field Hockey','Hockey','Lacrosse','Rowing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Pac-12':new Set(['Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Field Hockey','Hockey','Lacrosse','Rowing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Big East plays no football (UConn independent, Georgetown and
+  // Villanova in the Patriot League, Butler in the Pioneer), hockey
+  // (UConn's Hockey East), wrestling or gymnastics.
+  'Big East':new Set(['Football','Hockey','Wrestling','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

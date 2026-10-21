@@ -13,7 +13,7 @@ Duke was added to the app on October 15, 2026 (16 sports, one PR with Clemson). 
 | Soccer | `womens-soccer`, `mens-soccer` | Labeled (combined) |
 | Field Hockey | `field-hockey` | 13 finals with stories |
 | Cross Country | `cross-country` (both teams) | TFRRS (`NC_college_f/m_Duke`) places per team |
-| Golf | `womens-golf`, `mens-golf` | Labeled. Places from the cards ("3rd of 12", "T8th of 12"); Windy City Classic from its story headline ("Blue Devils Place T2", `dukeGolfStoryPlace`) |
+| Golf | `womens-golf`, `mens-golf` | Labeled. Places from the cards ("3rd of 12", "T8th of 12"); Windy City Classic from its card ("T2 of 12", read since Oct 21; its story headline "Blue Devils Place T2" agrees, `dukeGolfStoryPlace`) |
 | Tennis | `womens-tennis`, `mens-tennis` | Labeled; tournaments with stories |
 | Swimming & Diving | `swimming-and-diving` | Meets with stories; "Blue/White Week" intrasquad out |
 | Basketball | `mens-`, `womens-basketball` | Labeled; exhibitions labeled |

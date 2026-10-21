@@ -16,6 +16,7 @@
 //   createRecapMatcher({...})         own recap: opponent and date; others must name the opponent in the headline
 //   createArchiveStory({...})         a final with no linked story takes one from /sports/<slug>/archives
 //   createTfrrsMeetResults({...})     cross country races and team scores from TFRRS
+//   createTeamTfrrsMeetResults({...}) the same for separate men's and women's pages
 import {sidearmStartTime} from './sidearm-schedule-data.mjs';
 import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults} from './tfrrs-results.mjs';
 import {withoutRanking,otherSportStory} from './sidearm-schedule-reader.mjs';
@@ -41,8 +42,11 @@ export function sidearmStartTimeText(date,time){
 export function mergeTournamentRounds(games){
   const groups=[];
   for(const game of games){
-    const name=String(game.tournament?.title||'').trim(),previous=groups.at(-1);
-    if(previous&&name&&previous.name===name&&dayGap(previous.at(-1),game)>=0&&dayGap(previous.at(-1),game)<=2){previous.push(game);continue;}
+    // Two tournaments played the same days (Xavier's Moraine Intercollegiate
+    // and Raider Individual, Oct 12-13) alternate on the page: a round joins
+    // its own tournament's rounds, not only the entry before it.
+    const name=String(game.tournament?.title||'').trim(),previous=groups.findLast(group=>group.name===name&&dayGap(group.at(-1),game)>=0&&dayGap(group.at(-1),game)<=2);
+    if(previous&&name){previous.push(game);continue;}
     const group=[game];group.name=name;groups.push(group);
   }
   return groups.map(rounds=>{
@@ -59,7 +63,10 @@ export function mergeTournamentRounds(games){
 // SMU swimming): the days are one event under the meet's name.
 const DAY_LABEL=/^day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
 const dayLabelled=game=>DAY_LABEL.test(String(game.opponent?.title||'').trim())&&Boolean(String(game.tournament?.title||'').trim());
-const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title);
+// Or it suffixes them: "BIG EAST Swimming and Diving Championships - Day 1"
+// (Xavier, Feb 17-20).
+const DAY_SUFFIX=/\s+[-–]\s+day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
+const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title).replace(DAY_SUFFIX,'');
 export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}={}){
   const groups=[];
   for(const game of games){
@@ -68,7 +75,7 @@ export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}
     const group=[game];group.key=key;groups.push(group);
   }
   return groups.map(days=>{
-    const first=dayLabelled(days[0])?{...days[0],opponent:{...days[0].opponent,title:meetDayName(days[0])}}:days[0];
+    const first=dayLabelled(days[0])||DAY_SUFFIX.test(String(days[0].opponent?.title||''))?{...days[0],opponent:{...days[0].opponent,title:meetDayName(days[0])}}:days[0];
     if(days.length===1)return first;
     const last=days.at(-1),result=last.result||{},story=[...days].reverse().map(day=>day.result?.recap).find(recap=>recap?.url);
     const end=[...days.map(day=>day.date),...days.map(day=>day.enddate).filter(Boolean)].sort().at(-1);
@@ -129,8 +136,12 @@ export function writeMeetPlaces(event,{text,schoolName,ordinal}){
 
 // "6th of 6", "t-10th of 12", "13th/20" -> "T10th of 12".
 export function golfPlacing(text){
-  const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i);
-  return m?`${m[1]?'T':''}${m[2]}${m[3].toLowerCase()} of ${m[4]}`:null;
+  // Providence writes the place without its suffix: "T9 of 10"; St. John's
+  // the field in brackets: "4th (9 Teams)".
+  const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
+  if(!m)return null;
+  const n=Number(m[2]),suffix=m[3]?m[3].toLowerCase():n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';
+  return`${m[1]?'T':''}${m[2]}${suffix} of ${m[4]}`;
 }
 
 // Golf match play, as the card publishes it: "defeated New Mexico State, 3-2;
@@ -341,6 +352,27 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
   return{matches,attach};
 }
 
+// A school whose men's and women's cross country teams publish separate
+// schedule pages (Florida State's, Creighton's): each page is its own event,
+// read from its own team's TFRRS page, and keeps only its own team's race
+// (the meet's TFRRS page holds both). Options as createTfrrsMeetResults's.
+export function createTeamTfrrsMeetResults({teams,...options}){
+  const byTeam=Object.fromEntries(['Women','Men'].map(team=>[team,createTfrrsMeetResults({...options,teams:{[team]:teams[team]}})]));
+  const teamOf=event=>/^Men/.test(event?.team_label||'')?'Men':'Women';
+  async function attach(event){
+    const team=teamOf(event);await byTeam[team].attach(event);
+    if(event.meet_results_verified&&event.team_label){
+      const own=text=>new RegExp(`^${team}'s\\b`,'i').test(String(text||''));
+      const other=team==='Men'?/\bwomen(?:'s)?\b/i:/\b(?<!wo)men(?:'s)?\b/i;
+      event.results=event.results.filter(row=>own(row.group));event.result_count=event.results.length;event.has_more_results=event.results.length>3;event.recap_result_count=event.results.length;
+      event.headline=String(event.headline).split(' / ').filter(own).join(' / ')||event.headline;
+      event.highlights=(event.highlights||[]).filter(line=>!other.test(line));
+    }
+    return event;
+  }
+  return{matches:byTeam.Women.matches,attach};
+}
+
 // Opponents a page writes as institutions ("University of Kentucky",
 // "Southern Methodist University", "Spalding University (Ky.)", "Stony Brook
 // University") read by the short name, as the stories write them (Ohio
@@ -380,15 +412,27 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   if(new RegExp(`\\b${team}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
+  // "Women's Golf Opens Season with Fourth-Place Finish at ..." (St. John's),
+  // "Golden Eagles Close Fall With Fifth-Place Finish" (Marquette, Oct 19).
+  const placeFinish=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
+  if(placeFinish&&placeOf(placeFinish[1]))return placeOf(placeFinish[1]);
   // The summary ends before the story starts, whatever its last character.
   for(const sentence of `${meta('description')}. ${lead}`.split(/(?<=\.)\s+/)){
+    // A player who "paced the Musketeers" places herself, not the team
+    // (Xavier's Flyer Invitational, Oct 20: "... paced the Musketeers at the
+    // Flyer Invitational on Tuesday, placing 10th").
+    if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
     // "to place eighth", "climb two spots into a tie for third" (North Carolina).
     const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
   const led=title.match(new RegExp(`\\bLeads?\\s+${team}\\s+To\\s+${word}\\b`,'i'));
-  return led&&placeOf(led[1])||null;
+  if(led&&placeOf(led[1]))return placeOf(led[1]);
+  // A tournament the team played as individuals has no team place (Xavier's
+  // Golfweek Put Me In Coach, "individuals only"; the Flyer Invitational,
+  // "five golfers compete as individuals").
+  return/\bindividuals?[- ]only\b|\bcompete[sd]?\s+as\s+individuals\b/i.test(`${title} ${lead}`)?'No team score (individuals only)':null;
 }
 // A golf final whose card publishes no place takes it from its final story;
 // a story dated before the last round is not final (the tournament then has
@@ -400,7 +444,9 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
     const day=new URL(event.recap_url,`https://${host}`).pathname.match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//);
     if(day&&`${day[1]}-${day[2].padStart(2,'0')}-${day[3].padStart(2,'0')}`<String(event.end_time||event.start_time).slice(0,10)){delete event.recap_url;delete event.recap_title;return event;}
     let raw=null;try{const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});raw=response.ok?await response.text():null;}catch{}
-    const place=raw&&golfStoryPlace(raw,{team,decode:decodeHtml});
+    // A tournament named for individuals (Xavier's "Raider Individual", Oct
+    // 12-13) has no team place either.
+    const place=raw&&golfStoryPlace(raw,{team,decode:decodeHtml})||(raw&&/\bIndividuals?\b/.test(event.opponent||'')?'No team score (individuals only)':null);
     if(place){event.headline=place;event.results=[{label:'Result',value:place}];event.result_count=1;}
     return event;
   }
