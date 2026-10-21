@@ -293,11 +293,11 @@ void [parse,line,ownRecapsOnly,live];
 
 // Golf places from final stories: "Strong Final Round Lifts Lumberjacks to
 // Seventh" (McGuire Invitational, Sep 15; the story's "a tie for seventh" is
-// after the first round) and "The Lumberjacks' three-day total ... placed
+// after the first round, and "its 153 pars were tied for 10th" a statistic) and "The Lumberjacks' three-day total ... placed
 // them 12th" after a dateline with its day ("VAIL, Colo. (September 23,
 // 2026) -", Red Sky Classic).
 {
-  const team="(?:Lumberjacks|Northern Arizona|NAU|(?:Men's|Women's) Golf)",decode=value=>worker.decodeHtml(value);
+  const team="(?:Lumberjacks|Jacks|Northern Arizona|NAU|(?:Men's|Women's) Golf)",decode=value=>worker.decodeHtml(value);
   assert.deepEqual(['recap-2026-9-15-womens-golf-strong-final-round-lifts-lum.html.gz','recap-2026-9-23-nau-golf-fires-11-under-in-final-round-o.html.gz'].map(name=>golfStoryPlace(fixture(name),{team,decode})),['7th','12th']);
 }
 

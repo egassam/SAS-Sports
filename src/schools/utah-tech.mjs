@@ -24,6 +24,9 @@ export const utahTechSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Baseball (2027) and women's tennis rosters publish no athlete portraits:
+  // official profile cards without a portrait fill the slots (California's).
+  portraitlessProfileSports:new Set(['Baseball','Tennis']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'utah-tech|Basketball|Ellie Taylor':'https://www.instagram.com/elitaylie17/',

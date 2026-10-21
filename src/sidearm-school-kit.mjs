@@ -431,22 +431,26 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // "Golden Eagles Close Fall With Fifth-Place Finish" (Marquette, Oct 19).
   const placeFinish=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
   if(placeFinish&&placeOf(placeFinish[1]))return placeOf(placeFinish[1]);
-  // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place
-  // Finish", "Strong Final Round Lifts Lumberjacks to Seventh" (Northern Arizona;
-  // read before the story, whose "a tie for seventh" is after the first round).
-  const led=title.match(new RegExp(`\\b(?:Leads?|Lifts?)\\s+(?:the\\s+)?${team}\\s+To\\s+${word}\\b`,'i'));
-  if(led&&placeOf(led[1]))return placeOf(led[1]);
   // The summary ends before the story starts, whatever its last character.
   for(const sentence of `${meta('description')}. ${lead}`.split(/(?<=\.)\s+/)){
     // A player who "paced the Musketeers" places herself, not the team
     // (Xavier's Flyer Invitational, Oct 20: "... paced the Musketeers at the
     // Flyer Invitational on Tuesday, placing 10th").
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
+    // A standing after an earlier round is not the final place (Northern
+    // Arizona's McGuire story: "NAU was +9 after the first round, which was
+    // good for a tie for seventh"; they finished seventh).
+    if(/\bafter\s+(?:the\s+)?(?:first|second|opening|1st|2nd)\s+round\b|\bafter\s+(?:day|round)\s+(?:one|two|1|2)\b/i.test(sentence))continue;
+    // A statistic's rank is no place ("its 153 pars were tied for 10th").
+    if(/\b(?:pars|birdies|eagles|bogeys|par-[345]s)\b/i.test(sentence))continue;
     // "to place eighth", "climb two spots into a tie for third" (North Carolina);
     // "The Lumberjacks' three-day total ... placed them 12th" (Northern Arizona).
     const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
+  // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
+  const led=title.match(new RegExp(`\\bLeads?\\s+${team}\\s+To\\s+${word}\\b`,'i'));
+  if(led&&placeOf(led[1]))return placeOf(led[1]);
   // A tournament the team played as individuals has no team place (Xavier's
   // Golfweek Put Me In Coach, "individuals only"; the Flyer Invitational,
   // "five golfers compete as individuals").
