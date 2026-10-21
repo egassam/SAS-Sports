@@ -7,10 +7,14 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const stJohnsSchool={
   id:'st-johns',
+  // The school's Opendorse marketplace, its official NIL marketplace (linked
+  // from redstormsports.com): athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  // Opendorse writes the team without punctuation ("St Johns Red Storm").
+  opendorse:{marketplace:'stjohns-red-storm',team:'St Johns Red Storm'},
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Fencing','Football','Golf','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Fencing','Golf','Lacrosse','Soccer','Softball','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +28,7 @@ export const stJohnsSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Soccer','Tennis']),
   verifiedInstagrams:{
     'st-johns|Tennis|Noemi Babikova':'https://www.instagram.com/noe_babik/',
     'st-johns|Tennis|Louise Rey':'https://www.instagram.com/louisee_rey/',
@@ -38,12 +42,10 @@ export const stJohnsSchool={
     'st-johns|Basketball':['https://redstormsports.com/sports/mens-basketball/schedule','https://redstormsports.com/sports/womens-basketball/schedule'],
     'st-johns|Cross Country':'https://redstormsports.com/sports/womens-cross-country/schedule',
     'st-johns|Fencing':'https://redstormsports.com/sports/fencing/schedule',
-    'st-johns|Football':'https://redstormsports.com/sports/football/schedule',
     'st-johns|Golf':['https://redstormsports.com/sports/womens-golf/schedule','https://redstormsports.com/sports/mens-golf/schedule'],
     'st-johns|Lacrosse':'https://redstormsports.com/sports/mens-lacrosse/schedule',
     'st-johns|Soccer':['https://redstormsports.com/sports/womens-soccer/schedule','https://redstormsports.com/sports/mens-soccer/schedule'],
     'st-johns|Softball':'https://redstormsports.com/sports/softball/schedule',
-    'st-johns|Swimming & Diving':'https://redstormsports.com/sports/womens-swimming-and-diving/schedule',
     'st-johns|Tennis':['https://redstormsports.com/sports/womens-tennis/schedule','https://redstormsports.com/sports/mens-tennis/schedule'],
     'st-johns|Track & Field':'https://redstormsports.com/sports/womens-track-and-field/schedule',
     'st-johns|Volleyball':'https://redstormsports.com/sports/womens-volleyball/schedule'
@@ -53,12 +55,10 @@ export const stJohnsSchool={
     'st-johns|Basketball':['https://redstormsports.com/sports/mens-basketball/roster','https://redstormsports.com/sports/womens-basketball/roster'],
     'st-johns|Cross Country':'https://redstormsports.com/sports/womens-cross-country/roster',
     'st-johns|Fencing':'https://redstormsports.com/sports/fencing/roster',
-    'st-johns|Football':'https://redstormsports.com/sports/football/roster',
     'st-johns|Golf':['https://redstormsports.com/sports/womens-golf/roster','https://redstormsports.com/sports/mens-golf/roster'],
     'st-johns|Lacrosse':'https://redstormsports.com/sports/mens-lacrosse/roster',
     'st-johns|Soccer':['https://redstormsports.com/sports/womens-soccer/roster','https://redstormsports.com/sports/mens-soccer/roster'],
     'st-johns|Softball':'https://redstormsports.com/sports/softball/roster',
-    'st-johns|Swimming & Diving':'https://redstormsports.com/sports/womens-swimming-and-diving/roster',
     'st-johns|Tennis':['https://redstormsports.com/sports/womens-tennis/roster','https://redstormsports.com/sports/mens-tennis/roster'],
     'st-johns|Track & Field':'https://redstormsports.com/sports/womens-track-and-field/roster',
     'st-johns|Volleyball':'https://redstormsports.com/sports/womens-volleyball/roster'
@@ -69,11 +69,12 @@ const HOST='redstormsports.com';
 // St. John's calendar day.
 const stJohnsToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
-// baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series".
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b/i;
+// baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
+// swimming's "Alumni Meet" (Xavier, Sep 19).
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b/i;
 // St. John's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const ST_JOHNS_TFRRS_TEAMS={Women:null,Men:null};
+export const ST_JOHNS_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NY_college_f_St_Johns_NY.html',Men:null};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -95,16 +96,24 @@ const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.end
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
-// A bracket game the page names only by its round ("Final", "Quarterfinals"
-// in the "BIG EAST Championship") or writes "vs. TBD" (Creighton's Players
-// Era 16, Nov 27-28) is its tournament's: "<School> at BIG EAST Championship
-// Final".
-const BRACKET_ROUND=/^(?:(?:first|second|third)\s+round|(?:quarter|semi)?-?finals?|championship(?:\s+game)?)$/i;
-const bracketRound=game=>{const tournament=String(game.tournament?.title||'').trim(),title=String(game.opponent?.title||'').trim().replace(/^vs\.?\s+/i,'');return Boolean(tournament)&&(/^TB[AD]\b/i.test(title)||BRACKET_ROUND.test(title));};
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
 const EVENT_NAME=/\b(?:tourn\w*|championships?|invit\w*|invite|regionals?|classic|open|ITA|NCAA|cup|duals?|circuit|meet|series|qualifier)\b/i;
 const SEASON_TITLE=/^(?:fall|spring|winter|summer)(?:\s+season)?$/i;
+// A bracket game the page names only by its round ("Final", "Quarterfinals"
+// in the "BIG EAST Championship") or as still to be drawn ("vs. TBD" in
+// Creighton's Players Era 16, Nov 27-28; "Friendship Four TBD", UConn hockey,
+// Nov 28) reads as its tournament: "<School> at BIG EAST Championship Final".
+// A game named after a championship or tournament ("BIG EAST Tournament
+// (Semifinals)", Creighton volleyball, Nov 21) keeps its name and is "at" too.
+const BRACKET_ROUND=/^(?:(?:first|second|third)\s+round|(?:quarter|semi)?-?finals?|championship(?:\s+game)?)$/i;
+const bracketName=game=>{
+  const tournament=String(game.tournament?.title||'').replace(/’/g,"'").trim(),title=String(game.opponent?.title||'').trim().replace(/^vs\.?\s+/i,'');
+  if(!tournament||SEASON_TITLE.test(tournament))return null;
+  if(/^TB[AD]\b/i.test(title)||/\sTB[AD]$/i.test(title))return tournament;
+  return BRACKET_ROUND.test(title)?`${tournament} ${title}`:null;
+};
+const bracketRound=game=>Boolean(bracketName(game))||Boolean(String(game.tournament?.title||'').trim())&&/\b(?:championships?|tournament)\b/i.test(String(game.opponent?.title||''));
 const isOpenChampionship=game=>{const title=String(game.opponent?.title||'').trim();const tournament=String(game.tournament?.title||'').trim();return/\bchampionship\b/i.test(title)&&Boolean(tournament)&&title.startsWith(tournament);};
 // utsports.com is a SIDEARM (Nuxt) site: the shared reader turns its schedule
 // page data into events in K-State's results format. These settings are
@@ -167,7 +176,7 @@ export function createStJohnsHandlers({makeEvent,recapMatchesEvent,eventType=()=
       let opponent=withoutRanking(String(game.opponent?.title||'').replace(/^#T\d+\s+/,'').replace(/^\*+\s*/,''));
       // Two polls: "#1/1 Ohio State", "#19/14 TCU"; unranked in one: "#-/22 Texas".
       opponent=opponent.replace(/^#(?:T?\d+|RV|-)\/(?:T?\d+|RV|-)\s+/i,'');
-      if(bracketRound(game)){const tournament=String(game.tournament.title).replace(/’/g,"'").trim(),round=opponent.replace(/^vs\.?\s+/i,'');return BRACKET_ROUND.test(round)?`${tournament} ${round}`:tournament;}
+      if(bracketName(game))return bracketName(game);
       // The tennis pages list players' pro events ("W75 Templeton", "W15
       // Nashville", "Columbia Futures 15K", "ITF Berkley W50"): not the team's.
       if(/^ITF\b|^[WM]\d{2,3}\b|\bFutures\b/i.test(opponent))return'';
@@ -241,7 +250,9 @@ export function createStJohnsHandlers({makeEvent,recapMatchesEvent,eventType=()=
       if(final&&meet&&sport==='Tennis')event.event_type='MEET';
       if(!final||!meet)return;
       // Men's golf publishes its place without a suffix ("3/14").
-      const text=String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim().replace(/^(T-?)?(\d+)\s*\//,(all,tied,place)=>`${tied?'T':''}${ordinal(place)}/`)
+      // Cross country writes "4th out 6 Teams (96 points)" and "3rd place, (77
+      // points)": the place in the field, then the points.
+      const text=String(result.prescore_info||result.postscore_info||'').replace(/\s+/g,' ').trim().replace(/^(T?\d+(?:st|nd|rd|th))\s+out\s+(?:of\s+)?(\d+)\s+teams\b\s*/i,'$1 of $2 ').replace(/^(T?\d+(?:st|nd|rd|th))\s+place,?\s*(?=\()/i,'$1 ').replace(/^(T-?)?(\d+)\s*\//,(all,tied,place)=>`${tied?'T':''}${ordinal(place)}/`)
         // Each team's place with its points in brackets: "Women (3rd, 98 pts.)".
         .replace(/\b(Women|Men)\s*\(((?:T-?)?\d+(?:st|nd|rd|th)),\s*(\d+)\s*pts\.?\)/gi,'$1: $2 ($3 points)')
         // The place alone: "T-6th Place", "First Place".
@@ -337,8 +348,8 @@ export function createStJohnsHandlers({makeEvent,recapMatchesEvent,eventType=()=
     attachMeetResults:crossCountry.attach,
     // A past tennis tournament is listed only with a story (its own or the
     // archive's), as K-State's.
-    // A past rowing or cross country meet with no result line, story or
+    // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

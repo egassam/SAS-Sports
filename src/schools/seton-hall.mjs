@@ -60,8 +60,9 @@ const HOST='shupirates.com';
 // Seton Hall's calendar day.
 const setonHallToday=sidearmToday('America/New_York');
 // Internal games: scrimmages, intrasquads, wrestling's "Wrestle Off",
-// baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series".
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b/i;
+// baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
+// swimming's "Alumni Meet" (Xavier, Sep 19).
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b/i;
 // Seton Hall's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
 export const SETON_HALL_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NJ_college_f_Seton_Hall.html',Men:'https://www.tfrrs.org/teams/xc/NJ_college_m_Seton_Hall.html'};
@@ -86,16 +87,24 @@ const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.end
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
-// A bracket game the page names only by its round ("Final", "Quarterfinals"
-// in the "BIG EAST Championship") or writes "vs. TBD" (Creighton's Players
-// Era 16, Nov 27-28) is its tournament's: "<School> at BIG EAST Championship
-// Final".
-const BRACKET_ROUND=/^(?:(?:first|second|third)\s+round|(?:quarter|semi)?-?finals?|championship(?:\s+game)?)$/i;
-const bracketRound=game=>{const tournament=String(game.tournament?.title||'').trim(),title=String(game.opponent?.title||'').trim().replace(/^vs\.?\s+/i,'');return Boolean(tournament)&&(/^TB[AD]\b/i.test(title)||BRACKET_ROUND.test(title));};
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
 const EVENT_NAME=/\b(?:tourn\w*|championships?|invit\w*|invite|regionals?|classic|open|ITA|NCAA|cup|duals?|circuit|meet|series|qualifier)\b/i;
 const SEASON_TITLE=/^(?:fall|spring|winter|summer)(?:\s+season)?$/i;
+// A bracket game the page names only by its round ("Final", "Quarterfinals"
+// in the "BIG EAST Championship") or as still to be drawn ("vs. TBD" in
+// Creighton's Players Era 16, Nov 27-28; "Friendship Four TBD", UConn hockey,
+// Nov 28) reads as its tournament: "<School> at BIG EAST Championship Final".
+// A game named after a championship or tournament ("BIG EAST Tournament
+// (Semifinals)", Creighton volleyball, Nov 21) keeps its name and is "at" too.
+const BRACKET_ROUND=/^(?:(?:first|second|third)\s+round|(?:quarter|semi)?-?finals?|championship(?:\s+game)?)$/i;
+const bracketName=game=>{
+  const tournament=String(game.tournament?.title||'').replace(/’/g,"'").trim(),title=String(game.opponent?.title||'').trim().replace(/^vs\.?\s+/i,'');
+  if(!tournament||SEASON_TITLE.test(tournament))return null;
+  if(/^TB[AD]\b/i.test(title)||/\sTB[AD]$/i.test(title))return tournament;
+  return BRACKET_ROUND.test(title)?`${tournament} ${title}`:null;
+};
+const bracketRound=game=>Boolean(bracketName(game))||Boolean(String(game.tournament?.title||'').trim())&&/\b(?:championships?|tournament)\b/i.test(String(game.opponent?.title||''));
 const isOpenChampionship=game=>{const title=String(game.opponent?.title||'').trim();const tournament=String(game.tournament?.title||'').trim();return/\bchampionship\b/i.test(title)&&Boolean(tournament)&&title.startsWith(tournament);};
 // utsports.com is a SIDEARM (Nuxt) site: the shared reader turns its schedule
 // page data into events in K-State's results format. These settings are
@@ -158,7 +167,7 @@ export function createSetonHallHandlers({makeEvent,recapMatchesEvent,eventType=(
       let opponent=withoutRanking(String(game.opponent?.title||'').replace(/^#T\d+\s+/,'').replace(/^\*+\s*/,''));
       // Two polls: "#1/1 Ohio State", "#19/14 TCU"; unranked in one: "#-/22 Texas".
       opponent=opponent.replace(/^#(?:T?\d+|RV|-)\/(?:T?\d+|RV|-)\s+/i,'');
-      if(bracketRound(game)){const tournament=String(game.tournament.title).replace(/’/g,"'").trim(),round=opponent.replace(/^vs\.?\s+/i,'');return BRACKET_ROUND.test(round)?`${tournament} ${round}`:tournament;}
+      if(bracketName(game))return bracketName(game);
       // The tennis pages list players' pro events ("W75 Templeton", "W15
       // Nashville", "Columbia Futures 15K", "ITF Berkley W50"): not the team's.
       if(/^ITF\b|^[WM]\d{2,3}\b|\bFutures\b/i.test(opponent))return'';
@@ -329,8 +338,10 @@ export function createSetonHallHandlers({makeEvent,recapMatchesEvent,eventType=(
     attachMeetResults:crossCountry.attach,
     // A past tennis tournament is listed only with a story (its own or the
     // archive's), as K-State's.
-    // A past rowing or cross country meet with no result line, story or
+    // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    // A diving-only session the page scores "No Score" (Colgate, Oct 17, the
+    // day of the Monmouth dual) has no result; the day's story is Monmouth's.
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&event.sport==='Swimming & Diving'&&/\(Diving Only\)/i.test(event.opponent||'')&&event.headline==='Completed'||converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

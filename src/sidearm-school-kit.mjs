@@ -63,7 +63,10 @@ export function mergeTournamentRounds(games){
 // SMU swimming): the days are one event under the meet's name.
 const DAY_LABEL=/^day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
 const dayLabelled=game=>DAY_LABEL.test(String(game.opponent?.title||'').trim())&&Boolean(String(game.tournament?.title||'').trim());
-const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title);
+// Or it suffixes them: "BIG EAST Swimming and Diving Championships - Day 1"
+// (Xavier, Feb 17-20).
+const DAY_SUFFIX=/\s+[-–]\s+day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
+const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title).replace(DAY_SUFFIX,'');
 export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}={}){
   const groups=[];
   for(const game of games){
@@ -72,7 +75,7 @@ export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}
     const group=[game];group.key=key;groups.push(group);
   }
   return groups.map(days=>{
-    const first=dayLabelled(days[0])?{...days[0],opponent:{...days[0].opponent,title:meetDayName(days[0])}}:days[0];
+    const first=dayLabelled(days[0])||DAY_SUFFIX.test(String(days[0].opponent?.title||''))?{...days[0],opponent:{...days[0].opponent,title:meetDayName(days[0])}}:days[0];
     if(days.length===1)return first;
     const last=days.at(-1),result=last.result||{},story=[...days].reverse().map(day=>day.result?.recap).find(recap=>recap?.url);
     const end=[...days.map(day=>day.date),...days.map(day=>day.enddate).filter(Boolean)].sort().at(-1);
@@ -133,8 +136,12 @@ export function writeMeetPlaces(event,{text,schoolName,ordinal}){
 
 // "6th of 6", "t-10th of 12", "13th/20" -> "T10th of 12".
 export function golfPlacing(text){
-  const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i);
-  return m?`${m[1]?'T':''}${m[2]}${m[3].toLowerCase()} of ${m[4]}`:null;
+  // Providence writes the place without its suffix: "T9 of 10"; St. John's
+  // the field in brackets: "4th (9 Teams)".
+  const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
+  if(!m)return null;
+  const n=Number(m[2]),suffix=m[3]?m[3].toLowerCase():n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';
+  return`${m[1]?'T':''}${m[2]}${suffix} of ${m[4]}`;
 }
 
 // Golf match play, as the card publishes it: "defeated New Mexico State, 3-2;
@@ -405,6 +412,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   if(new RegExp(`\\b${team}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
+  // "Women's Golf Opens Season with Fourth-Place Finish at ..." (St. John's),
+  // "Golden Eagles Close Fall With Fifth-Place Finish" (Marquette, Oct 19).
+  const placeFinish=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
+  if(placeFinish&&placeOf(placeFinish[1]))return placeOf(placeFinish[1]);
   // The summary ends before the story starts, whatever its last character.
   for(const sentence of `${meta('description')}. ${lead}`.split(/(?<=\.)\s+/)){
     // A player who "paced the Musketeers" places herself, not the team

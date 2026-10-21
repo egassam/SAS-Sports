@@ -67,7 +67,8 @@ function live(sport,payloadFile,events,at,expected){
 void [parse,line,ownRecapsOnly,live];
 
 // Golf: the team's place from the final story's headline (Windy City
-// Classic, Oct 6: the card publishes none); a player's finish gives none.
+// Classic, Oct 6); a player's finish gives none. The card's "T2 of 12" (no
+// suffix) is read since Oct 21 (Providence's "T9 of 10").
 {
   const title=name=>(fixture(name).match(/og:title" content="([^"]*)/)||[])[1];
   assert.equal(dukeGolfStoryPlace(title('recap-2026-10-6-womens-golf-li-turns-in-second-consecuti.html.gz')),'T2nd');
@@ -213,7 +214,7 @@ void [parse,line,ownRecapsOnly,live];
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[
  "Final Sep 7 Women's · Duke at Folds of Honor Collegiate | 3rd of 12",
- "Final Oct 5 Women's · Duke at Windy City Collegiate Classic | Completed",
+ "Final Oct 5 Women's · Duke at Windy City Collegiate Classic | T2nd of 12",
  "Upcoming Oct 16 Women's · Duke at Ruth's Chris Tar Heel Invitational | ",
  "Upcoming Oct 23 Women's · Duke at Landfall Tradition | ",
  "Upcoming Jan 25 Women's · Duke at Sea Best Intercollegiate | ",
