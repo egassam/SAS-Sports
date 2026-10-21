@@ -12,7 +12,9 @@ The first high school (user, October 9, 2026: "Let's do some highschool. The men
 
 ## Menus
 
-High School level: first box **State** (Kansas), second box **School**, grouped under its class (6A), third box **Sport**. The school line reads "Manhattan High School · 6A · Centennial League". `level`, `state` and `classification` in `src/schools.json`; `LEVELS` in `public/index.html`.
+High School level: **State** (Kansas), **County** (Riley County), **School** grouped under its class (6A) with its town after the name ("Manhattan High School — Manhattan"), then **Sport**. The school line reads "Manhattan High School · 6A · Centennial League". `level`, `state`, `county`, `city` (the town) and `classification` in `src/schools.json`; `LEVELS` in `public/index.html`.
+
+County, not city, since October 21 (user: "I've decided to place the schools by county instead of city because nanny of them are not in a city", then "Yes, go with state, county, school and show the town"; PR #376). Every school is in a county, and public data (NCES) gives each school's county, so imports need no hand-typed places.
 
 ## Sources
 
@@ -39,7 +41,7 @@ Winter (basketball, wrestling, boys swimming, bowling) and spring sports are add
 
 ## Middle schools (USD 383)
 
-User, October 9: "My timer friend also does middle schools so let's add the Manhattan area middle schools as well". Listed under Kansas with a **Middle School** heading (user's choice), below 6A.
+User, October 9: "My timer friend also does middle schools so let's add the Manhattan area middle schools as well". Since October 21 the middle schools have their own **Middle School** level, first in the level switch (user: "Let's pull middle out to it's own drop down menu. The menu order will be middle school, high school, college, and pro"; PR #376): `level: "middle-school"`, State → County (Riley County) → School (town shown) → Sport, with the same readers as the high school. Before, they were listed under Kansas with a **Middle School** heading below 6A.
 
 | School | id | Calendar | Sports listed |
 | --- | --- | --- | --- |
