@@ -16,6 +16,12 @@ One tap in the scorer app saves the game. The TV and the app read the new score 
 ## Design
 
 - `src/live-scoring/sports.mjs`: the rules per sport (Baseball and Softball: count, outs, bases, line score, R/H/E; Soccer: goals, running clock, halves, OT, PKs).
+- **Every other sport (October 21; user: "prepare all sports for live results")**, each sport also describing its display (`view`) and the scorer's buttons (`controls`), so the scorer app, TV, overlay and public card draw it with no sport-specific page code:
+  - **Football:** touchdown, PAT, 2-point try, field goal, safety by side; quarters with a countdown clock (12 minutes; middle school sets its own); ball, down and distance; timeouts (3 per half, 1 per overtime); untimed Kansas overtime ("Final/OT").
+  - **Basketball:** 1, 2 and 3 points; 8-minute quarters (6 in middle school), 4-minute overtimes; team fouls per quarter with the bonus from the fifth; possession arrow; timeouts.
+  - **Volleyball:** rally points; a set ends at 25 by two (the deciding set at its own target: 25 in a best of 3, 15 in a best of 5); serving side; timeouts per set. The scorer posts the final.
+  - **Wrestling and Tennis:** a dual (each bout's result gives team points: fall, forfeit, disqualification 6, tech fall 5, major 4, decision 3, team point deductions; each tennis flight's winner and score) or a tournament (a meet), chosen when the game is made.
+  - **Meets:** Cross Country and Golf (low wins), Track & Field, Swimming & Diving, Bowling, and wrestling or tennis tournaments: team standings by points, strokes or pins (ties share a place), individual results as they post, a round or status line. The game's opponent field holds the meet's name and the school is the host side.
 - `src/live-scoring/api.mjs`: `/api/score/*`. Storage is D1 `sas-sports-live-scoring` (binding `SCORE_DB`). The tables are created on first use.
 - **Why not a Durable Object (WebSockets)?** Cloudflare does not build preview URLs for a Worker that implements one, and every school gate needs previews. Screens poll instead. Moving to push later means a separate Worker for the Durable Object.
 - **Access:** only people the school allows. A school admin adds scorekeepers in `/score/`. The school code and passwords are stored only as PBKDF2 hashes, sessions are stored hashed, and 8 failed sign-ins lock that user (or IP) for 15 minutes. Each school sees and edits only its own games.
@@ -29,6 +35,6 @@ One tap in the scorer app saves the game. The TV and the app read the new score 
 ## Open items
 
 - Traditional LED scoreboards (Daktronics, Fair-Play, Nevco) need a hardware bridge that reads the console's data output.
-- More sports: tennis, golf, track & field, volleyball, basketball.
+- Every sport the Manhattan schools play can be scored (October 21). Cheer, dance and powerlifting are not scored.
 - Finals do not yet flow into the official results feed (they show on the live card for 6 hours).
 - The TV colors are set only for Manhattan.

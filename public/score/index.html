@@ -63,6 +63,19 @@ details summary{cursor:pointer;font-weight:800;margin:6px 0 10px}
 .links a{color:var(--accent);font-weight:800;font-size:14px}
 table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{padding:6px 4px;border-bottom:1px solid var(--line)}
 [hidden]{display:none!important}
+/* Every other sport (October 21): the board and buttons each sport describes. */
+.gen-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;font-variant-numeric:tabular-nums}
+.gen-table th,.gen-table td{padding:4px 6px;text-align:center;border-bottom:1px solid var(--line)}.gen-table th{color:var(--muted);font-weight:800}
+.gen-table td:first-child,.gen-table th:first-child{text-align:left;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gen-table tr.me td{color:var(--accent);font-weight:900}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chips span{background:#16283b;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:800}
+.board .poss::after{content:" ●";color:var(--warn);font-size:14px}
+.gen-log{list-style:none;margin:8px 0 0;padding:0;font-size:14px}.gen-log li{padding:5px 0;border-bottom:1px solid var(--line)}.gen-log b{color:var(--accent)}
+.pad .big{grid-column:span 3}
+.pad.two-col{grid-template-columns:repeat(2,1fr)}
+.act-form{background:#0d1f33;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.act-form label{display:block;margin-bottom:8px}.act-form label span{display:block;font-size:13px;color:var(--muted);font-weight:800;margin-bottom:3px}
+.act-form input,.act-form select{width:100%}
 @media(max-width:420px){.pad .btn{font-size:16px;padding:14px 6px}.split{grid-template-columns:1fr}}
 </style>
 </head>
@@ -100,7 +113,8 @@ table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{pa
         <label><span>Sport</span><select id="ngSport"></select></label>
         <label><span>We are</span><select id="ngSide"><option value="home">Home</option><option value="away">Away</option></select></label>
       </div>
-      <label><span>Opponent</span><input id="ngOpponent" required maxlength="40" placeholder="e.g. Junction City"></label>
+      <label id="ngFormatLabel" hidden><span>Format</span><select id="ngFormat"><option value="dual">Dual (team vs team)</option><option value="meet">Tournament or meet</option></select></label>
+      <label><span id="ngOpponentName">Opponent</span><input id="ngOpponent" required maxlength="40" placeholder="e.g. Junction City"></label>
       <div class="row">
         <label><span>Start (optional)</span><input id="ngStart" type="datetime-local"></label>
         <label id="ngLengthLabel"><span id="ngLengthName">Innings</span><input id="ngLength" type="number" min="1" max="60" value="7"></label>
@@ -150,7 +164,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SESSION_KEY='sas-score-session:v1',QUEUE_KEY='sas-score-queue:v1';
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del(k){try{localStorage.removeItem(k)}catch{}}};
-let session=store.get(SESSION_KEY),sports=[],current=null,queue=store.get(QUEUE_KEY)||[],sending=false,pollTimer=null,clockTimer=null,serverOffset=0;
+let session=store.get(SESSION_KEY),sports=[],sportOptions={},current=null,queue=store.get(QUEUE_KEY)||[],sending=false,pollTimer=null,clockTimer=null,serverOffset=0;
 
 async function api(path,{method='GET',body}={}){
   const headers={'content-type':'application/json'};
@@ -168,7 +182,7 @@ function show(view){for(const v of ['signinView','homeView','consoleView'])$('#'
 
 // --- sign in -------------------------------------------------------------------
 async function loadSchools(){
-  try{const d=await api('/api/score/schools');sports=d.sports;$('#siSchool').innerHTML=d.schools.map(s=>`<option value="${esc(s.school_id)}">${esc(s.name)}</option>`).join('')||'<option value="">No schools set up yet</option>';
+  try{const d=await api('/api/score/schools');sports=d.sports;sportOptions=d.sport_options||{};$('#siSchool').innerHTML=d.schools.map(s=>`<option value="${esc(s.school_id)}">${esc(s.name)}</option>`).join('')||'<option value="">No schools set up yet</option>';
   $('#ngSport').innerHTML=sports.map(s=>`<option>${esc(s)}</option>`).join('');updateLengthField();}
   catch(e){$('#siError').textContent=e.message}
 }
@@ -187,7 +201,7 @@ function signOut(expired){
 $('#signOut').addEventListener('click',()=>signOut(false));
 
 // --- games list --------------------------------------------------------------------
-function teamsLine(g){return`${esc(g.away.name)} <span class="muted">at</span> ${esc(g.home.name)}`}
+function teamsLine(g){return g.view?.kind==='meet'?`${esc(g.away.name)} <span class="muted">· ${esc(g.home.name)}</span>`:`${esc(g.away.name)} <span class="muted">at</span> ${esc(g.home.name)}`}
 function chip(g){return g.status==='live'?'<span class="chip live">Live</span>':g.status==='final'?'<span class="chip final">Final</span>':'<span class="chip">Scheduled</span>'}
 async function enterHome(){
   show('homeView');stopConsole();
@@ -198,18 +212,27 @@ async function enterHome(){
   if(!sports.length)await loadSchools();
   try{
     const d=await api(`/api/score/games?school=${encodeURIComponent(session.user.school_id)}&all=1`);
-    $('#gameList').innerHTML=d.games.length?d.games.map(g=>`<button class="game" data-id="${esc(g.id)}"><div><div class="teams">${teamsLine(g)}</div><div class="meta">${esc(g.sport)} · ${esc(g.summary)} · ${g.away.score}–${g.home.score}${g.start_at?' · '+esc(new Date(g.start_at).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})):''}</div></div>${chip(g)}</button>`).join(''):'<p class="muted">No games yet. Create one below.</p>';
+    $('#gameList').innerHTML=d.games.length?d.games.map(g=>`<button class="game" data-id="${esc(g.id)}"><div><div class="teams">${teamsLine(g)}</div><div class="meta">${esc(g.sport)} · ${esc(g.summary)}${g.away.score!=null?` · ${g.away.score}–${g.home.score}`:''}${g.start_at?' · '+esc(new Date(g.start_at).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})):''}</div></div>${chip(g)}</button>`).join(''):'<p class="muted">No games yet. Create one below.</p>';
   }catch(e){$('#gameList').innerHTML=`<p class="error">${esc(e.message)}</p>`}
   if(session.user.role==='admin')loadUsers();
 }
 $('#gameList').addEventListener('click',e=>{const b=e.target.closest('.game');if(b)openGame(b.dataset.id)});
-function updateLengthField(){const soccer=$('#ngSport').value==='Soccer';$('#ngLengthName').textContent=soccer?'Minutes per half':'Innings';$('#ngLength').value=soccer?40:7;}
-$('#ngSport').addEventListener('change',updateLengthField);
+// The form asks what the sport needs: its length (innings, minutes per half or
+// quarter, sets), a format for wrestling and tennis, and a meet's name.
+function isMeetForm(){const o=sportOptions[$('#ngSport').value]||{};return o.kind==='meet'||(o.formats&&$('#ngFormat').value==='meet')}
+function updateLengthField(){
+  const o=sportOptions[$('#ngSport').value]||{},len=o.length;
+  $('#ngLengthLabel').hidden=!len;if(len){$('#ngLengthName').textContent=len.label;$('#ngLength').value=len.value}
+  $('#ngFormatLabel').hidden=!o.formats;
+  const meet=isMeetForm();$('#ngSide').closest('label').hidden=meet;
+  $('#ngOpponentName').textContent=meet?'Meet or tournament name':'Opponent';$('#ngOpponent').placeholder=meet?'e.g. Centennial League Championship':'e.g. Junction City';
+}
+$('#ngSport').addEventListener('change',updateLengthField);$('#ngFormat').addEventListener('change',updateLengthField);
 $('#newGameForm').addEventListener('submit',async e=>{
   e.preventDefault();$('#ngError').textContent='';
-  const sport=$('#ngSport').value,len=Number($('#ngLength').value);
+  const sport=$('#ngSport').value,len=Number($('#ngLength').value),o=sportOptions[sport]||{};
   try{
-    const g=await api('/api/score/games',{method:'POST',body:{sport,opponent:$('#ngOpponent').value,home_away:$('#ngSide').value,start_at:$('#ngStart').value||null,venue:$('#ngVenue').value,innings:sport==='Soccer'?undefined:len,half_minutes:sport==='Soccer'?len:undefined}});
+    const g=await api('/api/score/games',{method:'POST',body:{sport,opponent:$('#ngOpponent').value,home_away:$('#ngSide').value,start_at:$('#ngStart').value||null,venue:$('#ngVenue').value,...(o.length?{[o.length.field]:len}:{}),...(o.formats?{format:$('#ngFormat').value}:{})}});
     $('#ngOpponent').value='';$('#ngVenue').value='';openGame(g.id);
   }catch(err){$('#ngError').textContent=err.message}
 });
@@ -277,16 +300,19 @@ function updateSync(state){
 $('#undoBtn').addEventListener('click',()=>send('undo'));
 window.addEventListener('online',flush);
 
+// Soccer counts up; football and basketball count down from limit_ms.
 function clockText(g){
-  const c=g.state.clock;if(!c)return'';
+  const c=g.state.clock;if(!c||c.off)return'';
   const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+serverOffset-c.started_at):0);
-  const t=Math.floor(ms/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+  const shown=c.limit_ms!=null?Math.max(0,c.limit_ms-ms):ms;
+  const t=c.limit_ms!=null?Math.ceil(shown/1000):Math.floor(shown/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
 }
 const dots=(n,max,cls='')=>Array.from({length:max},(_,i)=>`<span class="dot ${cls} ${i<n?'on':''}"></span>`).join('');
 
 function render(){
   const g=current;if(!g)return;
   $('#consoleTitle').textContent=`${g.sport}${g.venue?' · '+g.venue:''}`;
+  if(g.view)return renderGeneric(g);
   const s=g.state,diamond=g.sport!=='Soccer';
   const battingSide=diamond&&g.status==='live'?(s.half==='top'?'away':'home'):null;
   const line=side=>`<div class="line"><div class="name ${battingSide===side?'batting':''}">${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
@@ -333,8 +359,60 @@ function render(){
     <div class="pad" style="margin-top:12px"><button class="btn danger wide" data-final>End game (Final)</button></div>`;
   }
 }
+// Every other sport: the board and buttons come with the game (view, controls).
+let genButtons=[],openForm=null;
+const statTable=(g,t)=>`<table class="gen-table"><tr><th></th>${t.columns.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${['away','home'].map(side=>`<tr><td>${esc(g[side].name)}</td>${t[side].map(v=>`<td>${v??''}</td>`).join('')}</tr>`).join('')}</table>`;
+function renderGeneric(g){
+  const v=g.view;
+  if(v.kind==='meet'){
+    const rows=v.standings.map(t=>`<tr class="${t.is_school?'me':''}"><td>${esc(t.name)}</td><td>${t.place??'–'}</td><td>${t.value??''}</td></tr>`).join('');
+    const results=v.results.slice(0,8).map(r=>`<li><b>${r.place?esc(r.place)+'. ':''}${esc(r.name)}</b>${r.team?` · ${esc(r.team)}`:''}${r.event?` · ${esc(r.event)}`:''}${r.mark?` · ${esc(r.mark)}`:''}</li>`).join('');
+    $('#board').innerHTML=`<div class="line"><div class="name">${esc(g.away.name)}</div></div><div class="status"><span>${esc(g.summary)}</span></div>${rows?`<table class="gen-table"><tr><th>Team</th><th>Place</th><th>${esc(v.value_label)}${v.low_wins?' (low)':''}</th></tr>${rows}</table>`:'<p class="note">No team scores yet.</p>'}${results?`<ul class="gen-log">${results}</ul>`:''}`;
+  }else{
+    const line=side=>`<div class="line"><div class="name ${v.possession===side?'poss':''}">${esc(g[side].name)}</div><div class="score">${g[side].score}</div></div>`;
+    const clock=g.state.clock&&!g.state.clock.off&&g.status!=='scheduled'?`<span id="clock" style="font-variant-numeric:tabular-nums;color:var(--text)">${clockText(g)}</span>`:'';
+    const current=v.current?` · ${v.current.away}–${v.current.home}`:'';
+    $('#board').innerHTML=line('away')+line('home')+`<div class="status"><span>${esc(g.summary)}${v.kind==='sets'?'':current}</span>${clock}</div>`
+      +(v.table&&g.status!=='scheduled'?statTable(g,v.table):'')
+      +(v.stats?.length&&g.status==='live'?`<table class="gen-table">${v.stats.map(st=>`<tr><td>${esc(st.label)}</td><td>${esc(g.away.name)} ${st.away}</td><td>${esc(g.home.name)} ${st.home}</td></tr>`).join('')}</table>`:'')
+      +(v.chips?.length?`<div class="chips">${v.chips.map(c=>`<span>${esc(c)}</span>`).join('')}</div>`:'')
+      +(v.log?.length?`<ul class="gen-log">${v.log.slice().reverse().map(l=>`<li><b>${esc(l.label||'')}</b> ${esc(l.text)} <span class="muted">+${l.points}</span></li>`).join('')}</ul>`:'');
+  }
+  const C=$('#controls');
+  if(g.status==='scheduled'){C.innerHTML=`<div class="pad"><button class="btn wide" data-a="start" style="padding:22px">Start${v.kind==='meet'?' the meet':' game'}</button></div><p class="note">Starting puts it live on the TV scoreboard and in the app.</p>${session.user.role==='admin'?'<button class="btn ghost small" data-del>Delete this game</button>':''}`;return}
+  if(g.status==='final'){C.innerHTML=`<p class="note">Final. The result stays on the app's live card for 6 hours.</p><div class="pad"><button class="btn b-neutral wide" data-a="reopen">Reopen to fix the score</button></div>${session.user.role==='admin'?'<button class="btn ghost small" data-del>Delete this game</button>':''}`;return}
+  genButtons=[];
+  const btn=b=>{const i=genButtons.push(b)-1;return`<button class="btn ${esc(b.style||'b-neutral')} ${b.big?'big':''} ${b.fix?'small':''}" data-g="${i}">${esc(b.label)}${b.sub?`<br><small>${esc(b.sub)}</small>`:''}</button>`};
+  const rows=g.controls||[];
+  const main=rows.filter(r=>!r.fix).map(r=>`<div class="pad ${r.buttons.length===2||r.buttons.length===4?'two-col':''}">${r.buttons.map(btn).join('')}</div>`).join('');
+  const fixes=rows.filter(r=>r.fix&&r.buttons.length).map(r=>r.buttons.map(b=>btn({...b,fix:true})).join('')).join('');
+  C.innerHTML=`<div id="actForm"></div>${main}${fixes?`<details><summary>Fix the score</summary><div class="fixes">${fixes}</div></details>`:''}<div class="pad" style="margin-top:12px"><button class="btn danger wide" data-final>End ${v.kind==='meet'?'the meet':'game'} (Final)</button></div>`;
+  if(openForm)showForm(openForm);
+}
+// A button that needs details (a bout, a meet result) opens a small form.
+function showForm(b){
+  openForm=b;const g=current,box=$('#actForm');if(!box)return;
+  const field=f=>{
+    const id=`af_${f.name}`;
+    if(f.type==='side')return`<label><span>${esc(f.label)}</span><select id="${id}"><option value="away">${esc(g.away.name)}</option><option value="home">${esc(g.home.name)}</option></select></label>`;
+    if(f.type==='select')return`<label><span>${esc(f.label)}</span><select id="${id}">${f.options.map(o=>`<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('')}</select></label>`;
+    return`<label><span>${esc(f.label)}</span><input id="${id}" ${f.type==='number'?'inputmode="decimal"':''} value="${esc(f.value??'')}" maxlength="60"></label>`;
+  };
+  box.innerHTML=`<form class="act-form"><b>${esc(b.label)}</b>${b.form.map(field).join('')}<div class="row"><button class="btn" type="submit">Save</button><button class="btn ghost" type="button" data-cancel>Cancel</button></div></form>`;
+  const form=box.querySelector('form');
+  form.addEventListener('submit',e=>{e.preventDefault();const extra={};for(const f of b.form)extra[f.name]=form.querySelector(`#af_${f.name}`).value;openForm=null;box.innerHTML='';send(b.action,{...pick(b),...extra})});
+  form.querySelector('[data-cancel]').addEventListener('click',()=>{openForm=null;box.innerHTML=''});
+  form.querySelector('input,select')?.focus();
+}
+const pick=b=>Object.fromEntries(['side','kind','index'].filter(k=>b[k]!=null).map(k=>[k,b[k]]));
 $('#controls').addEventListener('click',async e=>{
   const b=e.target.closest('button');if(!b||!current)return;
+  if(b.dataset.g!=null){
+    const def=genButtons[Number(b.dataset.g)];if(!def)return;
+    if(def.form)return showForm(def);
+    if(def.prompt==='clock'){const v=prompt('Clock shown (minutes:seconds)',clockText(current));const m=String(v||'').match(/^(\d{1,3}):([0-5]\d)$/);if(m)send('clock_set',{seconds:Number(m[1])*60+Number(m[2])});return}
+    return send(def.action,pick(def));
+  }
   if(b.dataset.a)return send(b.dataset.a,b.dataset.side?{side:b.dataset.side}:{});
   if(b.dataset.base)return send('base',{base:Number(b.dataset.base)});
   if(b.hasAttribute('data-final')){if(confirm('End the game and post the final score?'))send('final');return}
