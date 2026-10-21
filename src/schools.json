@@ -1247,6 +1247,229 @@
     ]
   },
   {
+    "id": "butler",
+    "name": "Butler",
+    "short_name": "Butler",
+    "state": "Indiana",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://butlersports.com",
+    "aliases": [
+      "Butler University",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "butlersports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "creighton",
+    "name": "Creighton",
+    "short_name": "Creighton",
+    "state": "Nebraska",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gocreighton.com",
+    "aliases": [
+      "Creighton University",
+      "Bluejays"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gocreighton",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "depaul",
+    "name": "DePaul",
+    "short_name": "DePaul",
+    "state": "Illinois",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://depaulbluedemons.com",
+    "aliases": [
+      "DePaul University",
+      "Blue Demons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "depaulbluedemons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "georgetown",
+    "name": "Georgetown",
+    "short_name": "Georgetown",
+    "state": "District of Columbia",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://guhoyas.com",
+    "aliases": [
+      "Georgetown University",
+      "Hoyas"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "guhoyas",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "marquette",
+    "name": "Marquette",
+    "short_name": "Marquette",
+    "state": "Wisconsin",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gomarquette.com",
+    "aliases": [
+      "Marquette University",
+      "Golden Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gomarquette",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "providence",
+    "name": "Providence",
+    "short_name": "Providence",
+    "state": "Rhode Island",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://friars.com",
+    "aliases": [
+      "Providence College",
+      "Friars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "friars",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "seton-hall",
+    "name": "Seton Hall",
+    "short_name": "Seton Hall",
+    "state": "New Jersey",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://shupirates.com",
+    "aliases": [
+      "Seton Hall University",
+      "Pirates",
+      "SHU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "shupirates",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "st-johns",
+    "name": "St. John's",
+    "short_name": "St. John's",
+    "state": "New York",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://redstormsports.com",
+    "aliases": [
+      "St. John's University",
+      "St. John's (N.Y.)",
+      "Red Storm"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "redstormsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uconn",
+    "name": "UConn",
+    "short_name": "UConn",
+    "state": "Connecticut",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uconnhuskies.com",
+    "aliases": [
+      "University of Connecticut",
+      "Connecticut",
+      "Huskies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uconnhuskies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "villanova",
+    "name": "Villanova",
+    "short_name": "Villanova",
+    "state": "Pennsylvania",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://villanova.com",
+    "aliases": [
+      "Villanova University",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "villanova",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "xavier",
+    "name": "Xavier",
+    "short_name": "Xavier",
+    "state": "Ohio",
+    "conference": "Big East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goxavier.com",
+    "aliases": [
+      "Xavier University",
+      "Musketeers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goxavier",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",
