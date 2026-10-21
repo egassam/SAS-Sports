@@ -19,7 +19,7 @@ const step=async(level,group='',middle='')=>{
   if(expect&&served.source[0]!==expect)failures.push(`${level} / ${group||'All'} / ${middle||'All'}: served from ${served.source[0]}, expected ${expect}`);
   return served.body;
 };
-for(const level of ['high-school','college','pro']){
+for(const level of ['middle-school','high-school','college','pro']){
   const top=await step(level);
   for(const group of top.groups){
     const menu=await step(level,group);

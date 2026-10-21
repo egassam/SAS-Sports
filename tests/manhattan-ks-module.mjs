@@ -67,7 +67,7 @@ assert.equal(ms('7th Boys BB @ Washburn Rural @ Washburn Rural North'),'7th Boys
 assert.equal(ms('Boys Wrestling @ Fort Riley'),'Boys Wrestling | Fort Riley | AWAY');
 assert.equal(ms('Track @ McPherson'),'Track & Field | McPherson | AWAY');
 for(const title of ['7th VB B Tourney @WR North','8th VB B Team Tournament at Shawnee Heights','8th Grade Football Scrimmage @ Bishop Stadium','Volleyball Team Pictures','Girls Basketball Tryouts Begin','Boys Wrestling Practice Begins','JV Track @ Junction City','8th Girls BB','Board of Education Meeting'])assert.equal(ms(title),null,title);
-for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'high-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
+for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'middle-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
 assert.deepEqual(sponsoredSports['eisenhower-ms-ks'],['Basketball','Cross Country','Football','Track & Field','Volleyball','Wrestling']);
 
 // Varsity only: JV and 9th grade football are not read.

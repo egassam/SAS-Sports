@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.116.2-scoreboard-polish';
+const VERSION='4.117.0-middle-school-level';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1582,7 +1582,8 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 // MaxPreps team pages and the varsity teams of each sport.
 const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
-const isHighSchool=school=>school?.level==='high-school';
+// Middle schools have their own level (October 21) and the same readers.
+const isHighSchool=school=>school?.level==='high-school'||school?.level==='middle-school';
 const isPro=school=>school?.level==='pro';
 const MONTH_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function highSchoolDateText(date){const [y,m,d]=date.split('-').map(Number);return`${MONTH_NAMES[m-1]} ${d}, ${y}`;}

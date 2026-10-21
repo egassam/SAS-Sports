@@ -16,19 +16,22 @@
 // rules and the same answers.
 //
 // Menu rules, as the page draws them:
+// - Middle School: State, then City, then the school (its own level since
+//   October 21; user: "Let's pull middle out to it's own drop down menu").
 // - High School: State, then City, then the school (sections: class).
 // - College: Conference, then the school (sections: conference).
 // - Pro: Sport, then League, then the team or series (sections: NFL
 //   division, else league).
 
 export const CATALOG_LEVELS=[
+  {id:'middle-school',group:s=>s.state||'',middle:s=>s.city||''},
   {id:'high-school',group:s=>s.state||'',middle:s=>s.city||''},
   {id:'college',group:s=>s.conference||'',middle:null},
   {id:'pro',group:s=>s.pro_sport||'',middle:s=>s.league||''}
 ];
 export const levelOf=s=>s?.level||'college';
 const LEVEL_IDS=new Set(CATALOG_LEVELS.map(l=>l.id));
-const rules=id=>CATALOG_LEVELS.find(l=>l.id===id)||CATALOG_LEVELS[1];
+const rules=id=>CATALOG_LEVELS.find(l=>l.id===id)||CATALOG_LEVELS.find(l=>l.id==='college');
 
 // What the page needs to know about an entry (no source settings: those
 // stay with the Worker).
