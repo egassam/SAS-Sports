@@ -10,7 +10,7 @@ import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
 import {manhattanKsSchool} from '../src/schools/manhattan-ks.mjs';
 import {USD383_ABBREVIATIONS} from '../src/schools/manhattan-ks-middle.mjs';
-import {parseMiddleSchoolTitle,parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
+import {boundFinals,boundGame,boundMeet,parseMiddleSchoolTitle,parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>name.endsWith('.gz')?gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-module/'+name,import.meta.url))).toString('utf8'):read('./fixtures/manhattan-ks-module/'+name);
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
@@ -101,6 +101,7 @@ const pages=new Map([[`${CALENDAR}?start_date=2026-07-01&end_date=2027-06-30`,fi
   ['https://ams.usd383.org/api/calendars/128968/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ams-2026-27.json')],['https://ems.usd383.org/api/calendars/128776/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ems-2026-27.json')],
   ['https://letsgoruncom.rsupartner.com/race-results',fixture('letsgorun-race-results.html.gz')],
   ['https://ks.prep.golf/schools/11',fixture('prepgolf-school-11.html.gz')],
+  ['https://beta.gobound.com/api/schools/h20250204045200696bcbb2cc6f78a4e/scores?startDate=2026-07-01&endDate=2026-10-09&includePractices=false&pageSize=500&ticket=false',fixture('bound-scores-2026-10-09.json.gz')],
   ...[2431,2446,2453,2571,2577,2651,2663,2674].map(id=>[`https://ks.prep.golf/tournaments/results/${id}`,fixture(`prepgolf-results-${id}.html.gz`)]),
   ...['2026_Manhattan_XC_Invitational','2026_Wamego_Middle_School_Invitational','2026_Fort_Riley_XC_Invitational','2026_Clay_Center_XC_Invitational','2026_Rock_Creek_Cross_Country_Invitational','2026_Centennial_League_Middle_School_XC_Championships'].map(f=>[`http://results.tfmeetpro.com/LetsGoRun_Timing/${f}/`,fixture(`meetpro-${f}.html.gz`)]),
   [`${MAXPREPS}soccer/schedule/`,fixture('maxpreps-soccer-schedule.html')],['https://www.maxpreps.com/ks/soccer/match/manhattan-vs-topeka/8-28-2026/?c=fff1bf1a-f39c-46f0-ab4d-daa0f0f1758f',fixture('maxpreps-soccer-game.html')],['https://www.maxpreps.com/ks/volleyball/match/bishop-carroll-wichita-vs-manhattan/8-29-2026/?c=48cf0816-eb79-40be-bb0f-c7254c3b6392',fixture('maxpreps-volleyball-game.html')],[`${MAXPREPS}volleyball/schedule/`,fixture('maxpreps-volleyball-schedule.html')],
@@ -210,9 +211,15 @@ try{
   // Timing), varsity races only; meets without published results are not
   // listed. Midnight means no time was set.
   const xcGroup=await feed('Cross Country'),xc=lines(xcGroup);
-  assert.deepEqual(xc.results,['Final Sep 5, 8:15 AM Manhattan · Manhattan Invite | Boys 2nd of 11 · Girls 1st of 5'],'the Manhattan Invitational (LetsGoRun); the other five past meets were timed elsewhere');
+  // Rim Rock (Sep 26) was timed by someone else: its team places come from
+  // Bound, where the school entered them (October 21).
+  assert.deepEqual(xc.results,['Final Sep 26, 8:15 AM Manhattan at Rim Rock | Girls 1st of 10 · Boys 7th of 10','Final Sep 5, 8:15 AM Manhattan · Manhattan Invite | Boys 2nd of 11 · Girls 1st of 5'],'the Manhattan Invitational (LetsGoRun) and Rim Rock (Bound); the other four past meets have no published result');
+  const rimRock=xcGroup.results[0];
+  assert.deepEqual(rimRock.results.map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Girls Varsity | Manhattan team | 1st of 10 · 90 pts','Boys Varsity | Manhattan team | 7th of 10 · 238 pts']);
+  assert.deepEqual([rimRock.recap_label,rimRock.recap_url,rimRock.highlight_status],['View on Bound','https://beta.gobound.com/ks/schools/manhattanhs/scores','Team scores as entered on Bound by the school.']);
+  assert.equal(rimRock.highlights[0],'Girls Varsity: Manhattan won the team title with 90 pts.');
   assert.deepEqual(xc.upcoming,['Upcoming Oct 10 Manhattan at Haskell Invite | ','Upcoming Oct 17, 10:00 AM Manhattan at Centennial League JV/V | ','Upcoming Oct 24 Manhattan at Regional Meet - WARNER PARK | ','Upcoming Oct 31, 9:30 AM Manhattan at State Meet | ']);
-  const invite=xcGroup.results[0];
+  const invite=xcGroup.results.find(e=>/Manhattan Invite/.test(e.title));
   assert.deepEqual(invite.results.slice(0,3).map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Boys Varsity | Manhattan team | 2nd of 11 · 65 pts','Boys Varsity | Jaxon Wheeler (SO) | 3rd of 81 · 17:06.1','Boys Varsity | Benjamin Huser (SR) | 7th of 81 · 17:21.1']);
   assert.ok(invite.results.some(x=>x.participant==='Gabrielle Converse (SR)'&&x.result==='1st of 49 · 19:03.3'));
   assert.ok(!invite.results.some(x=>/junior|jv|\bc\b/i.test(x.group)),'JV and C races are not varsity');
@@ -252,14 +259,34 @@ try{
   }
 
   // Soccer: boys in the fall (girls in the spring), records by team.
-  const soccer=lines(await feed('Soccer'));
-  assert.equal(soccer.results.length,9);
+  const soccerGroup=await feed('Soccer'),soccer=lines(soccerGroup);
+  assert.equal(soccer.results.length,10);
   assert.equal(soccer.results[0],'Final Oct 8, 6:15 PM Boys · Manhattan at Washburn Rural | L, 0-5');
   // The calendar names the tournament host (Blue Valley West); MaxPreps the opponent.
   assert.ok(soccer.results.includes('Final Sep 3, 6:00 PM Boys · Manhattan at Blue Valley Northwest | T, 0-0'));
   // No calendar site: MaxPreps says Lawrence Free State played away.
   assert.ok(soccer.results.includes('Final Sep 8, 8:00 PM Boys · Manhattan vs Lawrence Free State | L, 2-4'));
-  assert.deepEqual(soccer.records,['Boys 3-5-1 · Centennial League 2-2']);
+  // MaxPreps has no score for Sep 1 at Blue Valley West: the school entered
+  // it on Bound (October 21). Bound's Sep 5 tournament entry (six teams, no
+  // scores) gives nothing, so that game stays unlisted.
+  assert.ok(soccer.results.includes('Final Sep 1, 8:00 PM Boys · Manhattan at Blue Valley West | L, 0-5'));
+  assert.ok(!soccer.results.some(r=>r.startsWith('Final Sep 5')));
+  const sep1=soccerGroup.results.find(e=>e.start_time.startsWith('2026-09-01'));
+  assert.deepEqual([sep1.score_source.name,sep1.recap_label,sep1.maxpreps_url],['Bound (score entered by the school)','View on Bound',undefined]);
+  assert.deepEqual(soccer.records,['Boys 3-6-1 · Centennial League 2-2']);
+  {
+    const expanded=(await worker.fetchLive('manhattan-ks','Soccer',null,sep1.id)).events.find(e=>e.id===sep1.id);
+    assert.equal(expanded.highlight_status,'Score as entered on Bound by the school.');
+    // Only the school's own events; 0-0 reads as not entered; the opponent must match.
+    const finals=boundFinals(JSON.parse(fixture('bound-scores-2026-10-09.json.gz')),{school:'h20250204045200696bcbb2cc6f78a4e',timeZone:'America/Chicago'});
+    assert.ok(finals.every(f=>f.teams.some(t=>t.own)),'other teams\' matches at a tournament are left out');
+    assert.equal(boundGame(finals,{acts:['Boys Soccer'],date:'2026-09-01',opponent:'Junction City',compatible:namesCompatible}),null,'a different opponent');
+    assert.equal(boundGame([{act:'Boys Soccer',date:'2026-09-01',teams:[{name:'Manhattan',score:0,own:true},{name:'Blue Valley West',score:0,own:false}]}],{acts:['Boys Soccer'],date:'2026-09-01',opponent:'Blue Valley West',compatible:namesCompatible}),null,'0-0 is not an entered score');
+    assert.equal(boundMeet(finals,{act:'Girls Tennis',date:'2026-09-25',lowWins:false}),null);
+    // Bound refuses the full identity (403 for a user agent with the bot
+    // page's address): it is read with the scoreboard identity (user, Oct 21).
+    assert.ok(source.includes("sourceFetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}},{ttl:SOURCE_TTL.listing,staleOnError:true})"));
+  }
   assert.equal(soccer.upcoming[0],'Upcoming Oct 13, 6:15 PM Boys · Manhattan at Wichita Northwest | ');
 
   // Volleyball: every match from MaxPreps (triangulars, tournaments);

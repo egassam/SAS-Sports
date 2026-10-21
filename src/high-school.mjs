@@ -274,3 +274,43 @@ export function prepGolfResults(html){
   }
   return{teams,players};
 }
+
+// --- Bound (beta.gobound.com), the KSHSAA scheduling platform a school uses
+// for its own schedule and tickets: finals the school enters itself (user,
+// October 21: "Build the Bound fallback for missing scores"). Read only for
+// what MaxPreps and the meet sources leave without a result. The school's
+// scores list also holds other teams' matches at its tournaments: only
+// events with the school's own team count. Times are UTC.
+export const BOUND_API='https://beta.gobound.com/api/schools/';
+const localDay=(iso,timeZone)=>{try{return new Intl.DateTimeFormat('en-CA',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(iso))}catch{return null}};
+export function boundFinals(payload,{school,timeZone}){
+  const out=[];
+  for(const group of Array.isArray(payload)?payload:[])for(const e of group?.Events||[]){
+    if(!e?.FinalFlag||!/^varsity$/i.test(e.LevelDisplay||''))continue;
+    const teams=(e.Teams||[]).map(t=>({name:clean(t.Name),score:Number.isFinite(Number(t.Score))?Number(t.Score):null,own:t.HostSchoolID===school}));
+    if(!teams.some(t=>t.own))continue;
+    const date=localDay(e.StartDateTime,timeZone);if(!date)continue;
+    out.push({act:clean(e.ActName),date,title:clean(group.Title),teams});
+  }
+  return out;
+}
+// A game: two teams, the school one of them, a score entered (0-0 is how an
+// unentered game reads, so it is not taken).
+export function boundGame(finals,{acts,date,opponent,compatible}){
+  for(const f of finals){
+    if(!acts.includes(f.act)||f.date!==date||f.teams.length!==2)continue;
+    const own=f.teams.find(t=>t.own),other=f.teams.find(t=>!t.own);
+    if(!own||!other||own.score==null||other.score==null||own.score+other.score===0)continue;
+    if(opponent&&!compatible(opponent,other.name))continue;
+    return{opponent:other.name,score:own.score,opponent_score:other.score,result:own.score>other.score?'W':own.score<other.score?'L':'T'};
+  }
+  return null;
+}
+// A meet: the school's place among the teams with a score (low wins for
+// cross country and golf).
+export function boundMeet(finals,{act,date,lowWins}){
+  const f=finals.find(x=>x.act===act&&x.date===date);if(!f)return null;
+  const scored=f.teams.filter(t=>t.score>0),own=scored.find(t=>t.own);if(!own||scored.length<2)return null;
+  const place=1+scored.filter(t=>lowWins?t.score<own.score:t.score>own.score).length;
+  return{place,teams:scored.length,score:own.score,tied:scored.filter(t=>t.score===own.score).length>1};
+}
