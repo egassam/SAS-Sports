@@ -72,7 +72,7 @@ void [parse,line,ownRecapsOnly,live];
 {
   const v_mensbasketball=parse("Basketball","mens-basketball");
   assert.deepEqual(v_mensbasketball.map(line),[
- "Upcoming Oct 25, 1:30 PM Men's · Portland State at Nevada | ",
+ "Upcoming Oct 25, 1:30 PM Men's · Portland State at Nevada (Exhibition) | ",
  "Upcoming Nov 3, 7:00 PM Men's · Portland State vs Lewis & Clark College | ",
  "Upcoming Nov 7, 7:00 PM Men's · Portland State at Seattle U | ",
  "Upcoming Nov 11, 6:00 PM Men's · Portland State at Colorado State | ",
@@ -114,7 +114,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensbasketball=parse("Basketball","womens-basketball");
   assert.deepEqual(v_womensbasketball.map(line),[
- "Upcoming Oct 27, 7:00 PM Women's · Portland State vs Warner Pacific | ",
+ "Upcoming Oct 27, 7:00 PM Women's · Portland State vs Warner Pacific (Exhibition) | ",
  "Upcoming Nov 2, 7:00 PM Women's · Portland State vs Pepperdine | ",
  "Upcoming Nov 6, 10:00 AM Women's · Portland State at Boise State | ",
  "Upcoming Nov 10, 6:00 PM Women's · Portland State at San Diego | ",
@@ -233,7 +233,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_trackandfield.map(line),[]);
   const v_womensvolleyball=parse("Volleyball","womens-volleyball");
   assert.deepEqual(v_womensvolleyball.map(line),[
- "Final Aug 22 Portland State at Seattle U | W, 3-1",
+ "Final Aug 22 Portland State at Seattle U (Exhibition) | W, 3-1",
  "Final Aug 28 Portland State at Portland | L, 2-3",
  "Final Aug 30 Portland State vs Nevada | W, 3-2",
  "Final Sep 2 Portland State at DePaul | L, 1-3",
