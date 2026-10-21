@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.119.0-saved-copies';
+const VERSION='4.120.0-saved-copies';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1769,7 +1769,11 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     let contests=[];
     if(team.maxpreps){
       const url=`${module.maxpreps.base}${team.maxpreps}/schedule/`;
-      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else scoresMissing=true}catch{scoresMissing=true}
+      // Only a team with past games needs its scores (Oct 21: the girls'
+      // soccer page, a spring season with no games yet, failed every read,
+      // so Manhattan soccer was never saved as a good copy).
+      const needsScores=games.some(game=>game.date<today);
+      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else if(needsScores)scoresMissing=true}catch{if(needsScores)scoresMissing=true}
     }
     const label=team.label||null,used=new Set();
     // Volleyball: MaxPreps lists each match of a tournament or triangular;
