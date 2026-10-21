@@ -49,12 +49,12 @@ for(const s of nfl){
 assert.ok(worker.includes("Nevada:'America/Los_Angeles'"));
 for(const s of pro){assert.ok(proTeam(s.id),s.id);assert.deepEqual(sponsored[s.id],[proTeam(s.id).sport],s.id);}
 // The page: Pro menus are Sport, League, then Team (Races for racing); the
-// levels run High School, College, Pro; the packaged catalog has the teams.
+// levels run Middle School, High School, College, Pro; the packaged catalog has the teams.
 assert.ok(page.includes("{id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team'"),'Pro level menus');
 assert.ok(page.includes("teamFor:sport=>sport==='Auto Racing'?'Races'"),'racing third menu is Races');
 assert.ok(page.includes("cityOf:s=>s.league||'',middle:'League',middles:'All leagues'"),'League is the middle menu');
-const levelOrder=[...page.matchAll(/\{id:'(high-school|college|pro)',label:/g)].map(m=>m[1]);
-assert.deepEqual(levelOrder,['high-school','college','pro']);
+const levelOrder=[...page.matchAll(/\{id:'(middle-school|high-school|college|pro)',label:/g)].map(m=>m[1]);
+assert.deepEqual(levelOrder,['middle-school','high-school','college','pro']);
 // The menus, colors and sports come with the catalog cards
 // (tests/catalog-module.mjs; colors in src/team-themes.json).
 const themes=JSON.parse(read('../src/team-themes.json'));
@@ -62,7 +62,7 @@ for(const s of pro)assert.ok(themes[s.id]?.primary,`${s.id} theme`);
 // The Team box groups NFL teams under their division, always (user, October
 // 16: "Group them by division"); NASCAR's series sits under NASCAR.
 assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}"));
-assert.ok(page.includes("const sectioned=!conf||level.id==='high-school'||level.id==='pro';"));
+assert.ok(page.includes("const sectioned=!conf||level.id==='middle-school'||level.id==='high-school'||level.id==='pro';"));
 // One Sport box on Pro: the sport filter is hidden (a team plays one sport).
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
 // Worker: pro feeds skip the college season filter; no featured athletes.

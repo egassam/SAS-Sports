@@ -23,10 +23,12 @@ const SCHOOL_ID='41006ce9-cfb3-492a-a951-d320637bc985';
 assert.equal(school.level,'high-school');
 assert.equal(school.state,'Kansas');
 assert.equal(school.classification,'6A');
-// High school: State, then City, then School (user, October 9).
-for(const id of ['manhattan-ks','anthony-ms-ks','eisenhower-ms-ks'])assert.equal(schools.find(x=>x.id===id).city,'Manhattan');
+// Middle and high school: State, then County, then School, with the town
+// shown beside the name (user, October 21; City from October 9).
+for(const id of ['manhattan-ks','anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.city,'Manhattan');assert.equal(s.county,'Riley County');}
 const page=read('../public/index.html');
-assert.ok(page.includes("cityOf:s=>s.city||''"),'high school has a City box');
+assert.equal(page.split("cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||''").length-1,2,'middle and high school have a County box and show the town');
+assert.ok(page.includes('return town?`${s.name} — ${town}`:s.name'),'the School box shows the town');
 assert.ok(page.includes('<select id="city"'),'the City select exists');
 assert.equal(school.conference,'Centennial League');
 // Intrasquad scrimmages are practice (an upcoming one is not listed either).
@@ -67,7 +69,7 @@ assert.equal(ms('7th Boys BB @ Washburn Rural @ Washburn Rural North'),'7th Boys
 assert.equal(ms('Boys Wrestling @ Fort Riley'),'Boys Wrestling | Fort Riley | AWAY');
 assert.equal(ms('Track @ McPherson'),'Track & Field | McPherson | AWAY');
 for(const title of ['7th VB B Tourney @WR North','8th VB B Team Tournament at Shawnee Heights','8th Grade Football Scrimmage @ Bishop Stadium','Volleyball Team Pictures','Girls Basketball Tryouts Begin','Boys Wrestling Practice Begins','JV Track @ Junction City','8th Girls BB','Board of Education Meeting'])assert.equal(ms(title),null,title);
-for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'high-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
+for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'middle-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
 assert.deepEqual(sponsoredSports['eisenhower-ms-ks'],['Basketball','Cross Country','Football','Track & Field','Volleyball','Wrestling']);
 
 // Varsity only: JV and 9th grade football are not read.

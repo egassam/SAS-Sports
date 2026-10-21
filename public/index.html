@@ -537,15 +537,19 @@ function updateFavorite(){
 // added later, each with its own grouping (state, league) and team wording.
 // A level is shown as "Soon" until the catalog holds teams for it.
 // groupOf fills the first box; sectionOf heads the schools in the second
-// (high school: State, then City, then schools under their class; user,
-// October 9: "It should show city because there will be other cities added").
+// (middle and high school: State, then County, then schools under their
+// class with their town shown; user, October 21: "go with state, county,
+// school and show the town"; it was City from October 9).
 // Pro (user, October 15: "Same three menu style, first menu is sports like
 // football, auto racing, golf ... second menu ... leagues and third menu
 // could be teams"): Sport, then League, then Team (Races for a racing
 // series). The middle box is the one high school uses for City.
-// Levels run High School, College, Pro.
+// Levels run Middle School, High School, College, Pro (user, October 21:
+// "Let's pull middle out to it's own drop down menu. The menu order will be
+// middle school, high school, college, and pro").
 const LEVELS=[
-  {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.city||'',middle:'City',middles:'All cities',sectionOf:s=>s.classification||s.conference},
+  {id:'middle-school',label:'Middle School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
+  {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
   {id:'college',label:'College',group:'Conference',groups:'All conferences',team:'School',groupOf:s=>s.conference,sectionOf:s=>s.conference},
   {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}
 ];
@@ -594,7 +598,8 @@ function fillGroups(wanted){
   conference.innerHTML=`<option value="">${esc(level.groups)}</option>`+(catalogMenuState.groups||[]).map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
   conference.value=(catalogMenuState.groups||[]).includes(wanted)?wanted:'';
 }
-// The City box (high school; League on Pro): the chosen group's cities.
+// The middle box (County for middle and high school; League on Pro): the
+// chosen group's counties or leagues.
 function fillCities(wanted){
   const level=currentLevelInfo();if(!level.cityOf)return;
   const conf=conference.value,cities=catalogMenuState.middles||[];
@@ -606,12 +611,15 @@ function fillSchools(wanted){
   const level=currentLevelInfo(),conf=conference.value,list=levelSchools();
   const current=wanted||school.value||savedSchool();
   // With every conference shown, teams are grouped under their conference;
-  // high schools are always grouped under their class, NFL teams under their
+  // middle and high schools are always grouped under their class, NFL teams under their
   // division (user, October 16: "Group them by division"), MLS clubs under
   // their conference.
-  const sectioned=!conf||level.id==='high-school'||level.id==='pro';
+  const sectioned=!conf||level.id==='middle-school'||level.id==='high-school'||level.id==='pro';
   const groups=[...new Set(list.map(level.sectionOf))].map(name=>[name,list.filter(s=>level.sectionOf(s)===name)]);
-  school.innerHTML=!sectioned?list.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):groups.map(([name,items])=>`<optgroup label="${esc(name)}">${items.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('')}</optgroup>`).join('');
+  // Middle and high schools show their town beside the name ("Manhattan
+  // High School — Manhattan"), since the menu above is the county.
+  const label=s=>{const town=level.townOf?.(s);return town?`${s.name} — ${town}`:s.name};
+  school.innerHTML=!sectioned?list.map(s=>`<option value="${esc(s.id)}">${esc(label(s))}</option>`).join(''):groups.map(([name,items])=>`<optgroup label="${esc(name)}">${items.map(s=>`<option value="${esc(s.id)}">${esc(label(s))}</option>`).join('')}</optgroup>`).join('');
   if(list.some(s=>s.id===current))school.value=current; else if(list.length)school.value=list[0].id;
 }
 // Fill every box for a team: its level, its group and city or league, and

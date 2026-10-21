@@ -16,23 +16,29 @@
 // rules and the same answers.
 //
 // Menu rules, as the page draws them:
-// - High School: State, then City, then the school (sections: class).
+// - Middle School: State, then County, then the school (its own level since
+//   October 21; user: "Let's pull middle out to it's own drop down menu").
+// - High School: State, then County, then the school (sections: class).
+//   County, not city, since October 21 (user: "go with state, county,
+//   school and show the town"): many schools are in no town, and every
+//   school is in a county.
 // - College: Conference, then the school (sections: conference).
 // - Pro: Sport, then League, then the team or series (sections: NFL
 //   division, else league).
 
 export const CATALOG_LEVELS=[
-  {id:'high-school',group:s=>s.state||'',middle:s=>s.city||''},
+  {id:'middle-school',group:s=>s.state||'',middle:s=>s.county||''},
+  {id:'high-school',group:s=>s.state||'',middle:s=>s.county||''},
   {id:'college',group:s=>s.conference||'',middle:null},
   {id:'pro',group:s=>s.pro_sport||'',middle:s=>s.league||''}
 ];
 export const levelOf=s=>s?.level||'college';
 const LEVEL_IDS=new Set(CATALOG_LEVELS.map(l=>l.id));
-const rules=id=>CATALOG_LEVELS.find(l=>l.id===id)||CATALOG_LEVELS[1];
+const rules=id=>CATALOG_LEVELS.find(l=>l.id===id)||CATALOG_LEVELS.find(l=>l.id==='college');
 
 // What the page needs to know about an entry (no source settings: those
 // stay with the Worker).
-const CARD_FIELDS=['id','name','short_name','level','state','city','conference','league','pro_sport','classification','division'];
+const CARD_FIELDS=['id','name','short_name','level','state','county','city','conference','league','pro_sport','classification','division'];
 // Each card carries the team's colors (src/team-themes.json; the page keeps
 // only the SAS default) and its sports, so the page holds no per-team list.
 export function catalogCards(schools,sponsored,timeZoneOf,themes={}){
