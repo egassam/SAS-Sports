@@ -341,6 +341,16 @@
     "Volleyball",
     "Wrestling"
   ],
+  "eastern-washington": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "eisenhower-ms-ks": [
     "Basketball",
     "Cross Country",
@@ -465,6 +475,17 @@
   ],
   "houston-texans": [
     "Football"
+  ],
+  "idaho-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "illinois": [
     "Baseball",
@@ -790,6 +811,27 @@
     "Volleyball",
     "Wrestling"
   ],
+  "montana": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "montana-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Skiing",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "nascar-cup-series": [
     "Auto Racing"
   ],
@@ -871,6 +913,30 @@
     "Softball",
     "Swimming & Diving",
     "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "northern-arizona": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "northern-colorado": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Track & Field",
     "Volleyball",
     "Wrestling"
@@ -1050,6 +1116,17 @@
   "pittsburgh-steelers": [
     "Football"
   ],
+  "portland-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "portland-timbers": [
     "Soccer"
   ],
@@ -1177,6 +1254,17 @@
     "Softball",
     "Swimming & Diving",
     "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "southern-utah": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
     "Track & Field",
     "Volleyball"
   ],
@@ -1406,6 +1494,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "utah-tech": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "vancouver-whitecaps": [
     "Soccer"
   ],
@@ -1497,6 +1598,17 @@
     "Rowing",
     "Soccer",
     "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "weber-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
     "Tennis",
     "Track & Field",
     "Volleyball"

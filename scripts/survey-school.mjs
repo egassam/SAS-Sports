@@ -32,7 +32,10 @@ const source=read('src/index.js').replace(/^import .*;\n/gm,'').replace('export 
 // scripts/fetch-school-fixtures.mjs saves them); anything else is offline.
 const fixtureFile=url=>{
   const {hostname,pathname}=new URL(url),news=pathname.match(/^\/news\/(\d+)\/(\d+)\/(\d+)\/([^/?#]+)/),archive=pathname.match(/^\/sports\/([^/]+)\/(?:archives|news\/?$)/),tfrrs=pathname.match(/^\/results\/xc\/(\d+)\//),team=pathname.match(/^\/teams\/xc\/[A-Z]{2}_college_([fm])_/);
-  if(news)return[`story-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`];
+  // The fetcher names a story by its address up to the first character
+  // outside [A-Za-z0-9-] (Portland State's "WGOLF_20260915.aspx" is saved as
+  // "recap-2026-9-15-WGOLF"): both names are tried.
+  if(news){const short=(news[4].match(/^[A-Za-z0-9-]+/)||[''])[0].slice(0,40);return[...new Set([`story-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${short}.html.gz`])];}
   if(archive)return[`${archive[1]}-archives.html.gz`];
   if(hostname.endsWith('tfrrs.org')&&tfrrs)return[`tfrrs-${tfrrs[1]}.html.gz`];
   if(hostname.endsWith('tfrrs.org')&&team)return[`tfrrs-team-${team[1]}.html.gz`];

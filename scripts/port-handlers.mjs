@@ -56,7 +56,9 @@ out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'
 // The nickname defaults to each school's catalog mascot (the alias that is
 // neither an institution nor an abbreviation): Oklahoma's "Louisville(?:
 // University| Sooners)?" ported to Louisville kept "Sooners" (Oct 15).
-const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
+// A short form ("Montana St.", Oct 21: the golf story pattern named it, not
+// "Bobcats") is no mascot.
+const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/\./.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
 const [oldNick,newNick]=(value('nickname')||`${mascot(from)}:${mascot(to)}`).split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');
