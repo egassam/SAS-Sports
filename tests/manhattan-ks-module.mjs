@@ -100,6 +100,8 @@ const TR='https://api.tennisreporting.com/';
 const pages=new Map([[`${CALENDAR}?start_date=2026-07-01&end_date=2027-06-30`,fixture('calendar-2026-27.json')],[`${MAXPREPS}football/schedule/`,fixture('maxpreps-football-schedule.html')],[contests[2].game_url,fixture('maxpreps-football-game-2026-09-18.html')],
   ['https://ams.usd383.org/api/calendars/128968/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ams-2026-27.json')],['https://ems.usd383.org/api/calendars/128776/events?start_date=2026-07-01&end_date=2027-06-30',fixture('calendar-ems-2026-27.json')],
   ['https://letsgoruncom.rsupartner.com/race-results',fixture('letsgorun-race-results.html.gz')],
+  ['https://ks.prep.golf/schools/11',fixture('prepgolf-school-11.html.gz')],
+  ...[2431,2446,2453,2571,2577,2651,2663,2674].map(id=>[`https://ks.prep.golf/tournaments/results/${id}`,fixture(`prepgolf-results-${id}.html.gz`)]),
   ...['2026_Manhattan_XC_Invitational','2026_Wamego_Middle_School_Invitational','2026_Fort_Riley_XC_Invitational','2026_Clay_Center_XC_Invitational','2026_Rock_Creek_Cross_Country_Invitational','2026_Centennial_League_Middle_School_XC_Championships'].map(f=>[`http://results.tfmeetpro.com/LetsGoRun_Timing/${f}/`,fixture(`meetpro-${f}.html.gz`)]),
   [`${MAXPREPS}soccer/schedule/`,fixture('maxpreps-soccer-schedule.html')],['https://www.maxpreps.com/ks/soccer/match/manhattan-vs-topeka/8-28-2026/?c=fff1bf1a-f39c-46f0-ab4d-daa0f0f1758f',fixture('maxpreps-soccer-game.html')],['https://www.maxpreps.com/ks/volleyball/match/bishop-carroll-wichita-vs-manhattan/8-29-2026/?c=48cf0816-eb79-40be-bb0f-c7254c3b6392',fixture('maxpreps-volleyball-game.html')],[`${MAXPREPS}volleyball/schedule/`,fixture('maxpreps-volleyball-schedule.html')],
   [`${TR}events#${JSON.stringify({page:0,pageSize:200,sorted:[],filtered:{stateId:23}})}`,fixture('tennisreporting-events-ks.json')],[`${TR}event/975`,fixture('tennisreporting-event-975.json')],[`${TR}event/975/host/4139/schools`,fixture('tennisreporting-975-4139-schools.json')],
@@ -219,6 +221,35 @@ try{
   assert.equal(invite.recap_label,'View full results (LetsGoRun Timing)');
   assert.equal(invite.meet_results_verified,true);
   assert.deepEqual(lines(await feed('Golf')).upcoming,['Upcoming Oct 12 Girls · Manhattan at Regionals | ','Upcoming Oct 19 Girls · Manhattan at State Golf | ']);
+  // Golf: results from Prep.Golf (October 21), varsity only, matched to the
+  // calendar by day (and by name when two varsity tournaments share a day:
+  // Centennial League and Clay Center on Sep 28). Salina Central (no place
+  // posted) and Blue Valley Northwest (not on Prep.Golf) are not listed.
+  {
+    const golfGroup=await feed('Golf'),golf=lines(golfGroup);
+    assert.deepEqual(golf.results,[
+      'Final Oct 5, 1:00 PM Girls · Manhattan · Manhattan Invite | 3rd of 12 · 338 (+50)',
+      'Final Sep 30, 9:00 AM Girls · Manhattan at Lawrence Invite | 7th of 24 · 345 (+57)',
+      'Final Sep 28, 1:00 PM Girls · Manhattan at Centennial League | 1st of 5 · 346 (+58)',
+      'Final Sep 22, 11:00 AM Girls · Manhattan at BV Southwest - Sycamore Ridge | 7th of 12 · 346 (+58)',
+      'Final Sep 16, 11:00 AM Girls · Manhattan at Washburn Rural Invite | 5th of 11 · 360 (+80)',
+      'Final Aug 24, 1:00 PM Girls · Manhattan at Blue Valley Southwest | 4th of 10 · 348 (+60)']);
+    const invite=golfGroup.results[0];
+    assert.deepEqual(invite.results.slice(0,3).map(x=>`${x.participant} | ${x.result}`),['Manhattan team | 3rd of 12 · 338 (+50)','Maddie Myers | 1st · 66 (-6)','Brooke Jones | T15 · 87 (+15)']);
+    assert.deepEqual(invite.highlights,['Manhattan placed 3rd of 12 with 338 (+50).','Maddie Myers led Manhattan in 1st with 66 (-6), the medalist.']);
+    assert.equal(invite.recap_url,'https://ks.prep.golf/tournaments/results/2651');assert.equal(invite.recap_label,'View full results (Prep.Golf)');
+    // After State: the calendar's "Regionals" (Oct 12) is Prep.Golf's 6A
+    // Sub-State a day later; State's two rounds show per golfer.
+    const later=new RealDate('2026-10-21T19:00:00Z');
+    globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[later.getTime()]))}static now(){return later.getTime()}};
+    try{
+      const post=(await worker.fetchLive('manhattan-ks','Golf')).events.filter(e=>e.status==='Final').sort((a,b)=>b.start_time.localeCompare(a.start_time)).slice(0,2);
+      assert.deepEqual(post.map(e=>`${e.opponent} | ${e.headline}`),['State Golf | 4th of 12 · 687 (+111)','Regionals | 2nd of 7 · 343 (+55)']);
+      assert.equal(post[0].results[1].participant+' | '+post[0].results[1].result,'Maddie Myers | 1st · 136 (-8) · 63-73');
+      assert.equal(post[0].highlights[1],'Maddie Myers led Manhattan in 1st with 136 (-8), the medalist.');
+      assert.equal(post[1].results[1].participant+' | '+post[1].results[1].result,'Maddie Myers | 2nd · 72 (E) · Qualified for State','the state-qualifier badge is not part of the name');
+    }finally{globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}}}
+  }
 
   // Soccer: boys in the fall (girls in the spring), records by team.
   const soccer=lines(await feed('Soccer'));

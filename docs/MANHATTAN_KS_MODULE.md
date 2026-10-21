@@ -35,7 +35,7 @@ Rule for every sport (K-State's): a past game or meet with no published result i
 | Volleyball | MaxPreps, every match (triangulars and tournaments list each match there; the calendar names only the day); sets in the expanded view | 21-7, league 9-1 |
 | Tennis (Girls fall, Boys spring) | TennisReporting draws (api.tennisreporting.com, the data behind its public bracket pages): the event found by date and the host site that lists "Manhattan HS"; every Manhattan entry's matches with names, rounds and scores, live during the day; team place once team points post | Oct 9 regional live (Matches 5-1 at 2 PM); 6A state Oct 16. Past invitationals (9) are not on TennisReporting and not listed |
 | Cross Country | The timer's MeetPro pages (user, Oct 10: bit.ly/LetsGoRunMHK → LetsGoRun Timing, `results.tfmeetpro.com/LetsGoRun_Timing/<meet>/`): team place and every runner's place and time, varsity races only. Meets are matched by date; known 2026 meets are listed in `LETSGORUN_MEETPRO` (the timer's results list does not link every meet), others are looked up on the list by name, three pages at most | Manhattan Invitational (Sep 5): girls 1st of 5, boys 2nd of 11. Meets timed by others (Emporia, Missouri Southern, Olathe North, Rim Rock, Baldwin) have no published results and are not listed |
-| Golf (Girls fall, Boys spring) | None yet | Coming meets only (regionals Oct 12, state Oct 19) |
+| Golf (Girls fall, Boys spring) | **Prep.Golf** since Oct 21 (`ks.prep.golf/schools/11`, where coaches and KSHSAA post results; robots.txt allows every page): the school page's place and score per tournament, the tournament page's team table and every Manhattan golfer (school code `MAN`) with rounds. Matched to the calendar by day, varsity only; by name when two varsity tournaments share a day (Sep 28 Centennial League and Clay Center); the calendar's "Regionals" is KSHSAA's "Sub-State" and may be a day apart (Oct 12 vs Oct 13) | Oct 21: 8 finals, from Queens of the Greens (4th, 348) to 6A State (4th of 12, 687; Maddie Myers state medalist, 63-73, 136, -8). Salina Central (no place posted) and Blue Valley Northwest (not on Prep.Golf) are not listed |
 
 Winter (basketball, wrestling, boys swimming, bowling) and spring sports are added as their seasons are published.
 
@@ -52,9 +52,19 @@ User, October 9: "My timer friend also does middle schools so let's add the Manh
 - Teams are the grades (7th, 8th; 7th Girls, 8th Boys in basketball).
 - **Results:** cross country from the same LetsGoRun MeetPro pages (every grade race; JV races left out; team names vary by meet: "Anthony", "Anthony Middle School", "Anthony7G"). Anthony: 5 meets, Eisenhower: 4 (Sep 8 to Oct 2). No site publishes middle school game scores; past games are not listed (K-State's rule).
 
+## Other sources checked (October 21)
+
+User: "look for alternate websites for getting official results for all the sports of middle school and high school".
+- **Prep.Golf** (`ks.prep.golf`): built for golf (above).
+- **Bound** (`beta.gobound.com`, the KSHSAA scheduling platform Manhattan uses for its schedule and tickets): the school's own scores, entered by the school, from `GET /api/schools/h20250204045200696bcbb2cc6f78a4e/scores?startDate=&endDate=&pageSize=` (the beta site's robots.txt allows everything; `www.gobound.com` disallows `/api/`). Fall 2026 varsity coverage: volleyball 17 of 27 events final, boys soccer 16 of 22, football 3 of 5, golf 4, cross country 1 (Rim Rock Farm Sep 26: girls 1st with 90, boys 7th with 238, a meet LetsGoRun did not time), tennis 1. Not built yet: a fallback for games MaxPreps has no score for and meets no other source covers. Anthony and Eisenhower are not on Bound.
+- **Midwest Timing & Results** (`midwesttiming.com`, robots allow): Kansas cross country meets it times (PDFs on MileSplit); none of Manhattan's 2026 meets found yet.
+- **KMAN** (`1350kman.com`) and **The Manhattan Mercury** (`themercury.com`): local stories with team places (swimming, track, state results); stories, not result tables.
+- **Not usable:** Athletic.net (403 to the app), MileSplit (results for paying members only), Trackwrestling (406), SwimCloud (API disallowed; no Manhattan team pages found).
+- **Middle schools:** no site publishes Anthony's or Eisenhower's game scores; their games need the school's own live scoring (SAS Scorer, every sport since October 21).
+
 ## Limitations
 
 - **No live scores.** No ESPN-style live feed exists for Kansas high schools; a game shows "Today" until MaxPreps has the final.
 - **Scores depend on coaches reporting to MaxPreps.** A past game without a reported score is not listed until it is reported.
-- **Meets without a results source:** golf lists coming meets only; cross country meets timed by someone other than LetsGoRun are not listed; tennis invitationals not on TennisReporting are not listed (MaxPreps has no contests for these Manhattan teams, checked Oct 9).
+- **Meets without a results source:** golf meets not on Prep.Golf (or with no place posted) are not listed; cross country meets timed by someone other than LetsGoRun are not listed; tennis invitationals not on TennisReporting are not listed (MaxPreps has no contests for these Manhattan teams, checked Oct 9).
 - MaxPreps volleyball pages hold pool placeholders (0-0 ties, no result); those are not matches.

@@ -227,3 +227,50 @@ export function meetProResults(html,team){
   }
   return races;
 }
+
+// --- Golf: Prep.Golf (ks.prep.golf), where Kansas coaches and KSHSAA post
+// tournament results (user, October 21: "look for alternate websites for
+// getting official results"). robots.txt allows every page.
+export const PREP_GOLF='https://ks.prep.golf/';
+const cellText=html=>clean(String(html||"").replace(/<[^>]+>/g," "));
+const tableRows=html=>[...String(html||'').matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/g)].map(m=>({attrs:m[1],cells:[...m[2].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(c=>c[1])}));
+const MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+// The school page: each tournament of the season (girls, then boys), with the
+// team's place and score: "4th", "687 (+111)".
+export function prepGolfTournaments(html){
+  const out=[],text=String(html||'');
+  for(const gender of ['girls','boys']){
+    const start=text.indexOf(`x-show="tab === '${gender}'"`);if(start<0)continue;
+    const end=text.indexOf('</table>',start);
+    for(const row of tableRows(text.slice(start,end))){
+      if(row.cells.length<6)continue;
+      const link=row.cells[0].match(/tournaments\/results\/(\d+)/);if(!link)continue;
+      const [name,date,course,type,place,score]=row.cells.map(cellText);
+      const d=date.match(/^([A-Za-z]{3})\w*\s+(\d{1,2})$/);if(!d)continue;
+      out.push({gender:gender==='girls'?'Girls':'Boys',id:link[1],name:name.replace(/\s*[✓!]\s*$/,'').trim(),month:MONTHS[d[1].toLowerCase()],day:Number(d[2]),course,type,place:/^\d+(?:st|nd|rd|th)$/i.test(place.replace(/^\D+/,''))?place.replace(/^\D+/,''):null,score:/^\d/.test(score)?score:null});
+    }
+  }
+  return out;
+}
+// A tournament's results page: the team table (place, team, score; teams
+// short of four players have no score) and the individual table (place,
+// player, school code, rounds, total, to par).
+export function prepGolfResults(html){
+  const text=String(html||''),teams=[],players=[];
+  const teamStart=text.indexOf('Team Results'),teamEnd=teamStart<0?-1:text.indexOf('</table>',teamStart);
+  if(teamStart>=0)for(const row of tableRows(text.slice(teamStart,teamEnd))){
+    const cells=row.cells.map(cellText);if(cells.length<3)continue;
+    const m=cells[1].match(/^(.*?)\s+-\s+(.+)$/);if(!m)continue;
+    const place=Number(cells[0].replace(/\D+/g,''))||null,score=Number(cells.at(-1))||null;
+    teams.push({place,name:m[1].replace(/^👑\s*/,'').trim(),squad:m[2].replace(/\s*Not enough players.*$/i,'').trim(),score:place?score:null});
+  }
+  const indStart=text.indexOf('individualResultsTable-desktop'),indEnd=indStart<0?-1:text.indexOf('</table>',indStart);
+  if(indStart>=0)for(const row of tableRows(text.slice(indStart,indEnd))){
+    const cells=row.cells.map(cellText);if(cells.length<5)continue;
+    const place=cells[0].replace(/[^\dT]/g,'');
+    // A "Q" badge after the name marks a state qualifier.
+    const qualified=/\sQ$/.test(cells[1]);
+    players.push({place:place||null,name:cells[1].replace(/\s+Q$/,''),qualified,school:(row.attrs.match(/data-school="([^"]+)"/)||[])[1]||cells[2],rounds:cells.slice(3,-2).filter(Boolean),total:cells.at(-2),to_par:cells.at(-1)});
+  }
+  return{teams,players};
+}
