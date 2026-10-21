@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {idahoStateSchool} from '../src/schools/idaho-state.mjs';
+import {idahoStateSchool,IDAHO_STATE_TFRRS_TEAMS} from '../src/schools/idaho-state.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
@@ -343,6 +343,23 @@ void [parse,line,ownRecapsOnly,live];
 {
   const races=parseTfrrsResults(fixture('tfrrs-28375.html.gz'),{decodeHtml:worker.decodeHtml,ordinal:n=>`${n}.`,team:'Idaho State'});
   assert.deepEqual(races.map(race=>[race.group,race.result]),[["Women's 5K",{place:3,score:'61'}],["Men's 8K",{place:3,score:'66'}]]);
+}
+
+// The feed keeps a cross country meet the schedule gives no result or story
+// for once TFRRS gives its results: the TFRRS step runs before the module's
+// feed hook, which leaves out a "Completed" meet without a story (every Idaho
+// State meet was dropped on the first preview).
+{
+  for(const slug of ['womens-cross-country','mens-cross-country'])recapFixtures.set(page(slug),fixture(`${slug}-schedule.html.gz`));
+  recapFixtures.set(IDAHO_STATE_TFRRS_TEAMS.Women,fixture('tfrrs-team-f.html.gz'));recapFixtures.set(IDAHO_STATE_TFRRS_TEAMS.Men,fixture('tfrrs-team-m.html.gz'));
+  for(const name of ['28102/USU_Alumni_Challenge','28599/Montana_XC_Invite','28375/Idaho_State_Bengal_Invitational','27843/Joe_Handelman_52_Fall_Classic'])recapFixtures.set(`https://www.tfrrs.org/results/xc/${name}`,fixture(`tfrrs-${name.split('/')[0]}.html.gz`));
+  const {events}=await worker.fetchLive('idaho-state','Cross Country');
+  assert.deepEqual(events.filter(e=>e.status==='Final').map(e=>`${e.team_label} ${e.opponent}: ${e.headline}`).sort(),[
+    "Men's Bengal Invitational: Men's team: 3rd · 66 pts","Men's Montana Invite: Men's team: 5th · 131 pts","Men's Princeton Invitational: Men's team: 16th · 443 pts","Men's Utah State Alumni Challenge: Men's team: 3rd · 91 pts",
+    "Women's Bengal Invitational: Women's team: 3rd · 61 pts","Women's Montana Invite: Women's team: 4th · 94 pts","Women's Princeton Classic: Women's team: 17th · 395 pts","Women's Utah State Alumni Challenge: Women's team: 3rd · 85 pts"]);
+  // Each meet without a story also looks for one in its team's archive (none saved here).
+  assert.deepEqual([...new Set(requests.filter(url=>!recapFixtures.has(url)))],['https://isubengals.com/sports/womens-cross-country/archives','https://isubengals.com/sports/mens-cross-country/archives']);
+  recapFixtures.clear();requests.length=0;
 }
 
 assert.equal(requests.length,0,'no unexpected network requests');
