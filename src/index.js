@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.122.0-prep-golf';
+const VERSION='4.122.1-prep-golf';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -3051,9 +3051,13 @@ async function saveGlobalCopy(env,url,school,sport,body,fetchedAt){
   if(!env?.HIGHLIGHTS||!usesGlobalCopy(school))return;
   try{
     const key=globalCopyKey(copyScope(url),school,sport);
+    // Within the hour a copy is rewritten only when its number of events
+    // changed (Oct 21: Manhattan golf's results from Prep.Golf waited behind an
+    // empty copy saved before them, now that copies outlive a deploy).
+    let events=null;try{events=JSON.parse(body).reduce((n,g)=>n+['live','results','upcoming','other'].reduce((m,k)=>m+(g[k]?.length||0),0),0)}catch{}
     const {metadata}=await env.HIGHLIGHTS.getWithMetadata(key,'text');
-    if(Date.now()-Date.parse(metadata?.fetched_at||'')<GLOBAL_COPY_WRITE_MS)return;
-    await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt}});
+    if(Date.now()-Date.parse(metadata?.fetched_at||'')<GLOBAL_COPY_WRITE_MS&&metadata?.events===events)return;
+    await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt,events}});
   }catch{}
 }
 async function globalCopy(env,url,school,sport){

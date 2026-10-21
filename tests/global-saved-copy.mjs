@@ -55,6 +55,17 @@ assert.equal(kv.writes,1,'the global copy is written');
 // Further rebuilds within the hour write nothing more.
 await atlanta('south-carolina','Football','&refresh=1');
 assert.equal(kv.writes,1,'at most one write an hour per sport');
+// Unless the number of events changed (new results posted): the copy saved
+// before them would otherwise stand for the hour.
+{
+  const key=[...kv.store.keys()][0],saved=kv.store.get(key);
+  kv.store.set(key,{value:'[]',metadata:{...saved.metadata,events:0}});
+  await atlanta('south-carolina','Football','&refresh=1');
+  assert.equal(kv.writes,2,'a copy with a different number of events is rewritten within the hour');
+  const ids=body=>JSON.parse(body).flatMap(g=>g.results.map(e=>e.id));
+  assert.deepEqual(ids(kv.store.get(key).value),ids(JSON.stringify(liveBody)));
+  kv.store.set(key,saved);kv.writes=1;
+}
 
 // Paris cannot rebuild and has no copy of its own: it serves Atlanta's copy.
 for(const query of ['&refresh=1','','&cached=1']){
