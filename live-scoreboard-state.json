@@ -2729,9 +2729,418 @@
   },
   "washington-state|Volleyball": {
    "state": "off"
+  },
+  "creighton|Baseball": {
+   "state": "off"
+  },
+  "creighton|Basketball": {
+   "state": "off"
+  },
+  "creighton|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.711Z",
+   "last_detail": "live 0-0 · 21' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "creighton|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · Creighton vs UConn",
+    "started_seen": "2026-10-21T23:20:41.984Z",
+    "live_passes": [
+     "2026-10-21T23:20:41.984Z",
+     "2026-10-21T23:21:45.370Z",
+     "2026-10-21T23:22:46.356Z",
+     "2026-10-21T23:23:47.895Z",
+     "2026-10-21T23:24:51.428Z",
+     "2026-10-21T23:25:52.614Z",
+     "2026-10-21T23:26:53.697Z",
+     "2026-10-21T23:27:55.652Z",
+     "2026-10-21T23:28:56.711Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "creighton|Softball": {
+   "state": "off"
+  },
+  "creighton|Volleyball": {
+   "state": "off"
+  },
+  "depaul|Basketball": {
+   "state": "off"
+  },
+  "depaul|Soccer": {
+   "state": "off"
+  },
+  "depaul|Softball": {
+   "state": "off"
+  },
+  "depaul|Volleyball": {
+   "state": "off"
+  },
+  "marquette|Basketball": {
+   "state": "off"
+  },
+  "marquette|Lacrosse": {
+   "state": "off"
+  },
+  "marquette|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.566Z",
+   "last_detail": "live 0-2 · 20' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "marquette|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · Marquette vs Xavier",
+    "started_seen": "2026-10-21T23:20:41.943Z",
+    "live_passes": [
+     "2026-10-21T23:20:41.943Z",
+     "2026-10-21T23:21:45.363Z",
+     "2026-10-21T23:22:46.805Z",
+     "2026-10-21T23:23:48.048Z",
+     "2026-10-21T23:24:50.831Z",
+     "2026-10-21T23:25:52.601Z",
+     "2026-10-21T23:26:53.594Z",
+     "2026-10-21T23:27:55.834Z",
+     "2026-10-21T23:28:56.566Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "marquette|Volleyball": {
+   "state": "off"
+  },
+  "providence|Basketball": {
+   "state": "off"
+  },
+  "providence|Field Hockey": {
+   "state": "off"
+  },
+  "providence|Hockey": {
+   "state": "off"
+  },
+  "providence|Lacrosse": {
+   "state": "off"
+  },
+  "providence|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.715Z",
+   "last_detail": "live 1-0 · 60' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "providence|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · Providence vs St John's",
+    "started_seen": "2026-10-21T23:20:42.349Z",
+    "live_passes": [
+     "2026-10-21T23:20:42.349Z",
+     "2026-10-21T23:21:45.388Z",
+     "2026-10-21T23:22:46.453Z",
+     "2026-10-21T23:23:47.869Z",
+     "2026-10-21T23:24:51.207Z",
+     "2026-10-21T23:25:52.608Z",
+     "2026-10-21T23:26:53.741Z",
+     "2026-10-21T23:27:55.763Z",
+     "2026-10-21T23:28:56.715Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "providence|Softball": {
+   "state": "off"
+  },
+  "providence|Volleyball": {
+   "state": "off"
+  },
+  "seton-hall|Baseball": {
+   "state": "off"
+  },
+  "seton-hall|Basketball": {
+   "state": "off"
+  },
+  "seton-hall|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.718Z",
+   "last_detail": "live 0-2 · 57' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "seton-hall|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · Seton Hall vs Villanova",
+    "started_seen": "2026-10-21T23:20:41.923Z",
+    "live_passes": [
+     "2026-10-21T23:20:41.923Z",
+     "2026-10-21T23:21:45.450Z",
+     "2026-10-21T23:22:46.337Z",
+     "2026-10-21T23:23:47.944Z",
+     "2026-10-21T23:24:50.798Z",
+     "2026-10-21T23:25:52.606Z",
+     "2026-10-21T23:26:53.735Z",
+     "2026-10-21T23:27:55.673Z",
+     "2026-10-21T23:28:56.718Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "seton-hall|Softball": {
+   "state": "off"
+  },
+  "seton-hall|Volleyball": {
+   "state": "off"
+  },
+  "st-johns|Baseball": {
+   "state": "off"
+  },
+  "st-johns|Basketball": {
+   "state": "off"
+  },
+  "st-johns|Lacrosse": {
+   "state": "off"
+  },
+  "st-johns|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.540Z",
+   "last_detail": "live 0-1 · 60' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "st-johns|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · St. John's at Providence",
+    "started_seen": "2026-10-21T23:20:44.389Z",
+    "live_passes": [
+     "2026-10-21T23:20:44.389Z",
+     "2026-10-21T23:21:45.582Z",
+     "2026-10-21T23:22:46.451Z",
+     "2026-10-21T23:23:47.804Z",
+     "2026-10-21T23:24:51.454Z",
+     "2026-10-21T23:25:52.612Z",
+     "2026-10-21T23:26:53.708Z",
+     "2026-10-21T23:27:55.677Z",
+     "2026-10-21T23:28:56.540Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "st-johns|Softball": {
+   "state": "off"
+  },
+  "st-johns|Volleyball": {
+   "state": "off"
+  },
+  "uconn|Baseball": {
+   "state": "off"
+  },
+  "uconn|Basketball": {
+   "state": "off"
+  },
+  "uconn|Field Hockey": {
+   "state": "off"
+  },
+  "uconn|Football": {
+   "state": "off"
+  },
+  "uconn|Hockey": {
+   "state": "off"
+  },
+  "uconn|Lacrosse": {
+   "state": "off"
+  },
+  "uconn|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.734Z",
+   "last_detail": "live 0-0 · 21' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uconn|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · UConn at Creighton",
+    "started_seen": "2026-10-21T23:20:41.938Z",
+    "live_passes": [
+     "2026-10-21T23:20:41.938Z",
+     "2026-10-21T23:21:45.405Z",
+     "2026-10-21T23:22:46.331Z",
+     "2026-10-21T23:23:48.181Z",
+     "2026-10-21T23:24:50.999Z",
+     "2026-10-21T23:25:52.581Z",
+     "2026-10-21T23:26:53.703Z",
+     "2026-10-21T23:27:55.648Z",
+     "2026-10-21T23:28:56.734Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "uconn|Softball": {
+   "state": "off"
+  },
+  "uconn|Volleyball": {
+   "state": "off"
+  },
+  "xavier|Baseball": {
+   "state": "off"
+  },
+  "xavier|Basketball": {
+   "state": "off"
+  },
+  "xavier|Soccer": {
+   "state": "on",
+   "last_check": "2026-10-21T23:28:56.560Z",
+   "last_detail": "live 2-0 · 20' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "xavier|Soccer|Women's|2026-10-21|1",
+    "title": "Women's · Xavier at Marquette",
+    "started_seen": "2026-10-21T23:20:41.927Z",
+    "live_passes": [
+     "2026-10-21T23:20:41.927Z",
+     "2026-10-21T23:21:45.410Z",
+     "2026-10-21T23:22:46.406Z",
+     "2026-10-21T23:23:47.825Z",
+     "2026-10-21T23:24:50.982Z",
+     "2026-10-21T23:25:52.585Z",
+     "2026-10-21T23:26:53.589Z",
+     "2026-10-21T23:27:55.823Z",
+     "2026-10-21T23:28:56.560Z"
+    ],
+    "final_ok": false
+   }
+  },
+  "xavier|Volleyball": {
+   "state": "off"
+  },
+  "montana|Basketball": {
+   "state": "off"
+  },
+  "montana|Football": {
+   "state": "off"
+  },
+  "montana|Soccer": {
+   "state": "off"
+  },
+  "montana|Softball": {
+   "state": "off"
+  },
+  "montana|Volleyball": {
+   "state": "off"
+  },
+  "montana-state|Basketball": {
+   "state": "off"
+  },
+  "montana-state|Football": {
+   "state": "off"
+  },
+  "montana-state|Volleyball": {
+   "state": "off"
+  },
+  "idaho-state|Basketball": {
+   "state": "off"
+  },
+  "idaho-state|Football": {
+   "state": "off"
+  },
+  "idaho-state|Soccer": {
+   "state": "off"
+  },
+  "idaho-state|Softball": {
+   "state": "off"
+  },
+  "idaho-state|Volleyball": {
+   "state": "off"
+  },
+  "eastern-washington|Basketball": {
+   "state": "off"
+  },
+  "eastern-washington|Football": {
+   "state": "off"
+  },
+  "eastern-washington|Soccer": {
+   "state": "off"
+  },
+  "eastern-washington|Volleyball": {
+   "state": "off"
+  },
+  "northern-arizona|Basketball": {
+   "state": "off"
+  },
+  "northern-arizona|Football": {
+   "state": "off"
+  },
+  "northern-arizona|Soccer": {
+   "state": "off"
+  },
+  "northern-arizona|Volleyball": {
+   "state": "off"
+  },
+  "northern-colorado|Baseball": {
+   "state": "off"
+  },
+  "northern-colorado|Basketball": {
+   "state": "off"
+  },
+  "northern-colorado|Football": {
+   "state": "off"
+  },
+  "northern-colorado|Soccer": {
+   "state": "off"
+  },
+  "northern-colorado|Softball": {
+   "state": "off"
+  },
+  "northern-colorado|Volleyball": {
+   "state": "off"
+  },
+  "portland-state|Basketball": {
+   "state": "off"
+  },
+  "portland-state|Football": {
+   "state": "off"
+  },
+  "portland-state|Soccer": {
+   "state": "off"
+  },
+  "portland-state|Softball": {
+   "state": "off"
+  },
+  "portland-state|Volleyball": {
+   "state": "off"
+  },
+  "weber-state|Basketball": {
+   "state": "off"
+  },
+  "weber-state|Football": {
+   "state": "off"
+  },
+  "weber-state|Soccer": {
+   "state": "off"
+  },
+  "weber-state|Softball": {
+   "state": "off"
+  },
+  "weber-state|Volleyball": {
+   "state": "off"
+  },
+  "southern-utah|Basketball": {
+   "state": "off"
+  },
+  "southern-utah|Football": {
+   "state": "off"
+  },
+  "southern-utah|Soccer": {
+   "state": "off"
+  },
+  "southern-utah|Softball": {
+   "state": "off"
+  },
+  "southern-utah|Volleyball": {
+   "state": "off"
+  },
+  "utah-tech|Baseball": {
+   "state": "off"
+  },
+  "utah-tech|Basketball": {
+   "state": "off"
+  },
+  "utah-tech|Football": {
+   "state": "off"
+  },
+  "utah-tech|Soccer": {
+   "state": "off"
+  },
+  "utah-tech|Softball": {
+   "state": "off"
+  },
+  "utah-tech|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.116.2-scoreboard-polish",
- "updated_at": "2026-10-21T00:56:42.205Z",
+ "version": "4.128.4-big-sky",
+ "updated_at": "2026-10-21T23:28:56.736Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
