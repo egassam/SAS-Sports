@@ -340,7 +340,12 @@ assert.ok(requests.every(url=>recapped.some(e=>e.recap_url===url)),'only the gam
   assert.ok(!worker.parseHtml(fixture('mens-basketball-schedule.html.gz'),school,'Basketball',urls.mens,new Date('2027-03-15T18:00:00Z')).some(e=>e.opponent==='Big 12 Championship'));
   // The feed labels both teams.
   recapFixtures.set(urls.mens,fixture('mens-basketball-schedule.html.gz'));recapFixtures.set(urls.womens,fixture('womens-basketball-schedule.html.gz'));
-  const feed=await worker.fetchLive('colorado','Basketball');
+  // On the fixture's day, as for football above: from Oct 21 the unscored
+  // Oct 18 North Texas exhibition drops out by K-State's rule.
+  const RealDate=Date;
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[now.getTime()]))}static now(){return now.getTime()}};
+  let feed;
+  try{feed=await worker.fetchLive('colorado','Basketball');}finally{globalThis.Date=RealDate;}
   recapFixtures.delete(urls.mens);recapFixtures.delete(urls.womens);
   assert.equal(feed.events.length,65);
   assert.deepEqual(feed.events.filter(e=>e.opponent==='Adams State (Exhibition)').map(e=>e.title),["Women's · Colorado vs Adams State (Exhibition)"]);
