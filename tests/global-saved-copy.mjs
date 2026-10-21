@@ -29,7 +29,7 @@ class MemoryKV{
 }
 const kv=new MemoryKV(),source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 // One Cloudflare location: its own cache, and whether the official sites answer it.
-function location(answered){
+function location(answered,{host='sas-sports.example',version=null,cache=new MemoryCache()}={}){
   const fetch=async url=>{
     if(String(url).startsWith('https://site.api.espn.com/'))return new Response('{"events":[]}',{status:200});
     if(!answered)return new Response('<html>403 Forbidden</html>',{status:403});
@@ -37,8 +37,10 @@ function location(answered){
     return page?new Response(page,{status:200,headers:{'content-type':'text/html'}}):new Response('not found',{status:404});
   };
   const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch,caches:{default:new MemoryCache()}};
-  const {handler}=Function(...Object.keys(deps),source+';return {handler};')(...Object.values(deps));
-  return(school,sport,query='')=>handler.fetch(new Request(`https://sas-sports.example/live/feed/grouped?school=${school}&sport=${sport}${query}`),{HIGHLIGHTS:kv},{waitUntil(){}});
+  deps.caches={default:cache};
+  const code=version?source.replace(/^const VERSION='[^']*';/m,`const VERSION='${version}';`):source;
+  const {handler}=Function(...Object.keys(deps),code+';return {handler};')(...Object.values(deps));
+  return(school,sport,query='')=>handler.fetch(new Request(`https://${host}/live/feed/grouped?school=${school}&sport=${sport}${query}`),{HIGHLIGHTS:kv},{waitUntil(){}});
 }
 const atlanta=location(true),paris=location(false);
 
@@ -82,4 +84,35 @@ assert.equal((await paris('utah','Football','&refresh=1')).status,502);
 assert.ok(read('../src/index.js').includes('const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);'));
 {const {manhattanKsSchool}=await import('../src/schools/manhattan-ks.mjs'),{anthonyMsSchool,eisenhowerMsSchool}=await import('../src/schools/manhattan-ks-middle.mjs');
 for(const m of [manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool])assert.equal(m.globalSavedCopy,true,m.id);}
-console.log('Global saved copy checks passed: a refused location serves the feed another built (saved-global), one write an hour per sport, week-long limit, opt-in schools only');
+// Saved copies outlive a deploy (Oct 21): a new version at the same
+// location, with the site down, serves the copy the old version saved.
+{
+  const PROD='sas-sports.lovetogivepain.workers.dev',shared=new MemoryCache();
+  const at=(answered,opts)=>{const call=location(answered,{host:PROD,...opts});return(school,sport,query)=>call(school,sport,query)};
+  // Fresh copies for this block.
+  kv.store.clear();
+  const before=at(true,{version:'1.0.0-old',cache:shared});
+  assert.equal((await before('south-carolina','Football','&refresh=1')).status,200);
+  const afterSameLocation=at(false,{version:'2.0.0-new',cache:shared});
+  const local=await afterSameLocation('south-carolina','Football','&refresh=1');
+  assert.equal(local.status,200,'the last good copy survives a new version');
+  assert.equal(local.headers.get('x-sas-cache'),'saved');
+  const afterElsewhere=at(false,{version:'2.0.0-new'});
+  const global=await afterElsewhere('south-carolina','Football','&refresh=1');
+  assert.equal(global.status,200,'the global copy survives a new version');
+  assert.equal(global.headers.get('x-sas-cache'),'saved-global');
+  // A branch preview writes its own copy and never replaces production's;
+  // with none of its own it reads production's.
+  const prodKey=[...kv.store.keys()].find(k=>k.startsWith('feed:v2:prod|south-carolina|Football|'));
+  assert.ok(prodKey,'production writes under its own scope');
+  const prodCopy=kv.store.get(prodKey).value;
+  const previewDown=location(false,{host:'branch-sas-sports.lovetogivepain.workers.dev'});
+  const fromProd=await previewDown('south-carolina','Football','&refresh=1');
+  assert.equal(fromProd.status,200,'a preview with no copy reads production\'s');
+  assert.equal(fromProd.headers.get('x-sas-cache'),'saved-global');
+  const previewUp=location(true,{host:'branch-sas-sports.lovetogivepain.workers.dev'});
+  assert.equal((await previewUp('south-carolina','Football','&refresh=1')).status,200);
+  assert.ok(kv.store.has(prodKey.replace('feed:v2:prod|','feed:v2:branch-sas-sports.lovetogivepain.workers.dev|')),'the preview saves under its own host');
+  assert.equal(kv.store.get(prodKey).value,prodCopy,'production\'s copy is untouched by the preview');
+}
+console.log('Global saved copy checks passed: a refused location serves the feed another built (saved-global), one write an hour per sport, week-long limit, opt-in schools only, copies survive a deploy, previews keep their own');

@@ -173,6 +173,13 @@ try{
     maxprepsDown=false;
     assert.equal((await w2.fetchLive('manhattan-ks','Football')).scores_missing,false);
     assert.deepEqual(await feed(),{state:'live',results:5});
+    // Only a team with past games needs its scores: the girls' soccer page
+    // (spring; no fixture, so every read fails) does not mark the build, the
+    // boys' page does (Oct 21: soccer was never saved as a good copy).
+    assert.equal((await w2.fetchLive('manhattan-ks','Soccer')).scores_missing,false,'girls soccer has no past games');
+    maxprepsDown=true;
+    assert.equal((await w2.fetchLive('manhattan-ks','Soccer')).scores_missing,true,'boys soccer has past games');
+    maxprepsDown=false;
     // With no saved copy at all, the schedule is still shown (not saved as last good).
     const d3={...deps,fetch:async(u,i)=>String(u).startsWith(MAXPREPS)?{ok:false,status:503,url:String(u),headers:new Headers(),text:async()=>'',json:async()=>({})}:fetch(u,i),caches:{default:new MemoryCache()}},w3=Function(...Object.keys(d3),source+';return {handler}')(...Object.values(d3));
     const first=await w3.handler.fetch(new Request('https://x.test/live/feed/grouped?school=manhattan-ks&sport=Football&refresh=1'),{},{waitUntil(){}});
