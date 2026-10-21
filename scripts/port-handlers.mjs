@@ -60,6 +60,9 @@ const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/
 const [oldNick,newNick]=(value('nickname')||`${mascot(from)}:${mascot(to)}`).split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');
+// A name with an apostrophe ("St. John's", Oct 21) is escaped in code: every
+// later step imports the module, and the bare quote ended its string.
+if(b.name.includes("'"))out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l.split(`${b.name}'s`).join(b.name):l.split(b.name).join(b.name.replace(/'/g,"\\'"))).join('\n');
 writeFileSync(new URL(`src/schools/${to}.mjs`,root),head+out);
 // The import line must carry every kit helper the handlers use.
 const imports=source.split('\n').filter(l=>l.startsWith('import '));
