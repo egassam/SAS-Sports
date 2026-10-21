@@ -105,8 +105,8 @@ assert.deepEqual(levels.map(l=>l.count),['middle-school','high-school','college'
 const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
 assert.deepEqual(pro.middles,['Formula 1','IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
 const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
-assert.deepEqual(kansas.middles,['Manhattan']);assert.deepEqual(kansas.entries.map(e=>e.id),['manhattan-ks']);
-const middle=await catalogMenu(stores[1],{level:'middle-school',group:'Kansas',middle:'Manhattan'});
+assert.deepEqual(kansas.middles,['Riley County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');assert.deepEqual(kansas.entries.map(e=>e.id),['manhattan-ks']);
+const middle=await catalogMenu(stores[1],{level:'middle-school',group:'Kansas',middle:'Riley County'});
 assert.deepEqual(middle.entries.map(e=>e.id),['anthony-ms-ks','eisenhower-ms-ks']);
 const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});
 assert.equal(big12.entries.length,16);assert.equal(big12.entries[0].id,cards.find(c=>c.conference==='Big 12').id);

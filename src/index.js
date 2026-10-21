@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.117.0-middle-school-level';
+const VERSION='4.118.0-county-menu';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

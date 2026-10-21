@@ -23,10 +23,12 @@ const SCHOOL_ID='41006ce9-cfb3-492a-a951-d320637bc985';
 assert.equal(school.level,'high-school');
 assert.equal(school.state,'Kansas');
 assert.equal(school.classification,'6A');
-// High school: State, then City, then School (user, October 9).
-for(const id of ['manhattan-ks','anthony-ms-ks','eisenhower-ms-ks'])assert.equal(schools.find(x=>x.id===id).city,'Manhattan');
+// Middle and high school: State, then County, then School, with the town
+// shown beside the name (user, October 21; City from October 9).
+for(const id of ['manhattan-ks','anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.city,'Manhattan');assert.equal(s.county,'Riley County');}
 const page=read('../public/index.html');
-assert.ok(page.includes("cityOf:s=>s.city||''"),'high school has a City box');
+assert.equal(page.split("cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||''").length-1,2,'middle and high school have a County box and show the town');
+assert.ok(page.includes('return town?`${s.name} — ${town}`:s.name'),'the School box shows the town');
 assert.ok(page.includes('<select id="city"'),'the City select exists');
 assert.equal(school.conference,'Centennial League');
 // Intrasquad scrimmages are practice (an upcoming one is not listed either).
