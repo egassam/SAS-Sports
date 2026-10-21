@@ -30,7 +30,7 @@ One tap in the scorer app saves the game. The TV and the app read the new score 
 
 ## Turning a school on
 
-`npm run score-setup -- --school=<id> --name="<name>"` prints the SQL plus a generated school code and admin password. Run the SQL against D1 (`npx wrangler d1 execute sas-sports-live-scoring --remote --file=...`, or the Cloudflare D1 console). Manhattan High (`manhattan-ks`) was set up for the owner's testing on October 14.
+`npm run score-setup -- --school=<id> --name="<name>"` prints the SQL plus a generated school code and admin password. Run the SQL against D1 (`npx wrangler d1 execute sas-sports-live-scoring --remote --file=...`, or the Cloudflare D1 console). Manhattan High (`manhattan-ks`) was set up for the owner's testing on October 14. Anthony Middle School (`anthony-ms-ks`) was set up on October 21 (user: "Add Anthony to live scorer"; the SQL applied to D1 through the Cloudflare connector; admin `owner`; the school code and password went to the user privately, never into the repository). Scope for now (user, October 21): "just for Riley county schools Manhattan high School/ Anthony Middle School".
 
 ## Open items
 
