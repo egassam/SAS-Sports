@@ -196,7 +196,7 @@ function live(sport,payloadFile,events,at,expected){
 void [parse,line,ownRecapsOnly,live];
 
 assert.equal(requests.length,0,'no unexpected network requests');
-console.log('${school.name} module checks passed');
+console.log(${JSON.stringify(`${school.name} module checks passed`)});
 `;
 
 console.log(`School: ${school.name} (${id}), ${host}; ${sports.length} sports: ${sports.join(', ')}`);

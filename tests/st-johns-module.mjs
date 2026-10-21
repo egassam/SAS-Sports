@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
+import {golfStoryPlace} from '../src/sidearm-school-kit.mjs';
 import {stJohnsSchool} from '../src/schools/st-johns.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
@@ -24,7 +25,7 @@ const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/st-johns-module/
 // Module ownership: every sponsored sport has explicit redstormsports.com routes, exactly
 // the candidates production used before the module (route parity).
 const sports=sponsoredSports['st-johns'];
-assert.equal(sports.length,13);
+assert.equal(sports.length,11);
 for(const [name,map] of [['schedule',stJohnsSchool.scheduleUrls],['roster',stJohnsSchool.rosterUrls]]){
   for(const [key,value] of Object.entries(map)){
     assert.ok(key.startsWith('st-johns|'),'module keys must carry the exact school identity');
@@ -32,7 +33,7 @@ for(const [name,map] of [['schedule',stJohnsSchool.scheduleUrls],['roster',stJoh
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'redstormsports.com',`${key} must stay on redstormsports.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://redstormsports.com/sports/baseball/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://redstormsports.com/sports/mens-basketball/schedule","https://redstormsports.com/sports/womens-basketball/schedule","https://redstormsports.com/sports/basketball/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/mens-basketball/roster","https://redstormsports.com/sports/womens-basketball/roster","https://redstormsports.com/sports/basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://redstormsports.com/sports/cross-country/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/cross-country/roster"],"combined":false},"Fencing":{"schedule":["https://redstormsports.com/sports/fencing/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/fencing/roster"],"combined":false},"Football":{"schedule":["https://redstormsports.com/sports/football/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://redstormsports.com/sports/womens-golf/schedule","https://redstormsports.com/sports/mens-golf/schedule","https://redstormsports.com/sports/golf/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-golf/roster","https://redstormsports.com/sports/mens-golf/roster","https://redstormsports.com/sports/golf/roster"],"combined":false},"Lacrosse":{"schedule":["https://redstormsports.com/sports/womens-lacrosse/schedule","https://redstormsports.com/sports/mens-lacrosse/schedule","https://redstormsports.com/sports/lacrosse/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-lacrosse/roster","https://redstormsports.com/sports/mens-lacrosse/roster","https://redstormsports.com/sports/lacrosse/roster"],"combined":false},"Soccer":{"schedule":["https://redstormsports.com/sports/womens-soccer/schedule","https://redstormsports.com/sports/wsoc/schedule","https://redstormsports.com/sports/soccer/schedule","https://redstormsports.com/sports/mens-soccer/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-soccer/roster","https://redstormsports.com/sports/wsoc/roster","https://redstormsports.com/sports/soccer/roster","https://redstormsports.com/sports/mens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://redstormsports.com/sports/softball/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://redstormsports.com/sports/womens-swimming-and-diving/schedule","https://redstormsports.com/sports/mens-swimming-and-diving/schedule","https://redstormsports.com/sports/womens-swimming-diving/schedule","https://redstormsports.com/sports/mens-swimming-diving/schedule","https://redstormsports.com/sports/swimming-and-diving/schedule","https://redstormsports.com/sports/swimming-diving/schedule","https://redstormsports.com/sports/swimming/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-swimming-and-diving/roster","https://redstormsports.com/sports/mens-swimming-and-diving/roster","https://redstormsports.com/sports/womens-swimming-diving/roster","https://redstormsports.com/sports/mens-swimming-diving/roster","https://redstormsports.com/sports/swimming-and-diving/roster","https://redstormsports.com/sports/swimming-diving/roster","https://redstormsports.com/sports/swimming/roster"],"combined":true},"Tennis":{"schedule":["https://redstormsports.com/sports/womens-tennis/schedule","https://redstormsports.com/sports/mens-tennis/schedule","https://redstormsports.com/sports/tennis/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-tennis/roster","https://redstormsports.com/sports/mens-tennis/roster","https://redstormsports.com/sports/tennis/roster"],"combined":false},"Track & Field":{"schedule":["https://redstormsports.com/sports/track-and-field/schedule","https://redstormsports.com/sports/track-field/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/track-and-field/roster","https://redstormsports.com/sports/track-field/roster"],"combined":false},"Volleyball":{"schedule":["https://redstormsports.com/sports/womens-volleyball/schedule","https://redstormsports.com/sports/wvball/schedule","https://redstormsports.com/sports/volleyball/schedule","https://redstormsports.com/"],"roster":["https://redstormsports.com/sports/womens-volleyball/roster","https://redstormsports.com/sports/wvball/roster","https://redstormsports.com/sports/volleyball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://redstormsports.com/sports/baseball/schedule"],"roster":["https://redstormsports.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://redstormsports.com/sports/mens-basketball/schedule","https://redstormsports.com/sports/womens-basketball/schedule"],"roster":["https://redstormsports.com/sports/mens-basketball/roster","https://redstormsports.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://redstormsports.com/sports/womens-cross-country/schedule"],"roster":["https://redstormsports.com/sports/womens-cross-country/roster"],"combined":false},"Fencing":{"schedule":["https://redstormsports.com/sports/fencing/schedule"],"roster":["https://redstormsports.com/sports/fencing/roster"],"combined":false},"Golf":{"schedule":["https://redstormsports.com/sports/womens-golf/schedule","https://redstormsports.com/sports/mens-golf/schedule"],"roster":["https://redstormsports.com/sports/womens-golf/roster","https://redstormsports.com/sports/mens-golf/roster"],"combined":true},"Lacrosse":{"schedule":["https://redstormsports.com/sports/mens-lacrosse/schedule"],"roster":["https://redstormsports.com/sports/mens-lacrosse/roster"],"combined":false},"Soccer":{"schedule":["https://redstormsports.com/sports/womens-soccer/schedule","https://redstormsports.com/sports/mens-soccer/schedule"],"roster":["https://redstormsports.com/sports/womens-soccer/roster","https://redstormsports.com/sports/mens-soccer/roster"],"combined":true},"Softball":{"schedule":["https://redstormsports.com/sports/softball/schedule"],"roster":["https://redstormsports.com/sports/softball/roster"],"combined":false},"Tennis":{"schedule":["https://redstormsports.com/sports/womens-tennis/schedule","https://redstormsports.com/sports/mens-tennis/schedule"],"roster":["https://redstormsports.com/sports/womens-tennis/roster","https://redstormsports.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://redstormsports.com/sports/womens-track-and-field/schedule"],"roster":["https://redstormsports.com/sports/womens-track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://redstormsports.com/sports/womens-volleyball/schedule"],"roster":["https://redstormsports.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -66,5 +67,244 @@ function live(sport,payloadFile,events,at,expected){
 }
 void [parse,line,ownRecapsOnly,live];
 
+// BEGIN generated (scripts/generate-module-tests.mjs --school=st-johns)
+// Every sport in K-State's results format, as the official pages publish it.
+{
+  const v_baseball=parse("Baseball","baseball");
+  assert.deepEqual(v_baseball.map(line),[]);
+  const v_mensbasketball=parse("Basketball","mens-basketball");
+  assert.deepEqual(v_mensbasketball.map(line),[
+ "Final Oct 14 Men's · St. John's vs Drexel (Exhibition) | W, 81-52",
+ "Final Oct 18 Men's · St. John's vs Rutgers (Exhibition) | W, 104-99",
+ "Upcoming Oct 25, 12:00 PM Men's · St. John's vs Texas (Exhibition) | ",
+ "Upcoming Nov 2, 6:30 PM Men's · St. John's vs Monmouth | ",
+ "Upcoming Nov 8, 12:00 PM Men's · St. John's vs Iona | ",
+ "Upcoming Nov 11, 7:00 PM Men's · St. John's vs Colgate | ",
+ "Upcoming Nov 15, 7:00 PM Men's · St. John's vs Syracuse | ",
+ "Upcoming Nov 18, 7:00 PM Men's · St. John's vs Siena | ",
+ "Upcoming Nov 24, 10:30 PM Men's · St. John's vs Oregon | ",
+ "Upcoming Nov 26 Men's · St. John's vs Louisville/Texas Tech | ",
+ "Upcoming Nov 27 Men's · St. John's at Players Era Championship | ",
+ "Upcoming Dec 1, 6:30 PM Men's · St. John's vs Columbia | ",
+ "Upcoming Dec 5, 12:00 PM Men's · St. John's vs Arizona | ",
+ "Upcoming Dec 8, 6:30 PM Men's · St. John's vs Wagner | ",
+ "Upcoming Dec 12, 3:30 PM Men's · St. John's at Alabama | ",
+ "Upcoming Dec 19, 8:30 PM Men's · St. John's vs DePaul | ",
+ "Upcoming Dec 23, 8:00 PM Men's · St. John's at Seton Hall | ",
+ "Upcoming Dec 30, 6:00 PM Men's · St. John's at Providence | ",
+ "Upcoming Jan 3, 5:00 PM Men's · St. John's at Butler | ",
+ "Upcoming Jan 6, 7:00 PM Men's · St. John's vs Georgetown | ",
+ "Upcoming Jan 13, 7:00 PM Men's · St. John's vs Providence | ",
+ "Upcoming Jan 16, 3:30 PM Men's · St. John's at Creighton | ",
+ "Upcoming Jan 19, 7:30 PM Men's · St. John's at DePaul | ",
+ "Upcoming Jan 23, 12:00 PM Men's · St. John's vs Seton Hall | ",
+ "Upcoming Jan 26, 8:00 PM Men's · St. John's at Xavier | ",
+ "Upcoming Jan 29, 8:00 PM Men's · St. John's vs Connecticut | ",
+ "Upcoming Feb 2, 7:30 PM Men's · St. John's at Marquette | ",
+ "Upcoming Feb 6, 12:30 PM Men's · St. John's at Villanova | ",
+ "Upcoming Feb 10, 6:30 PM Men's · St. John's vs Creighton | ",
+ "Upcoming Feb 13, 1:00 PM Men's · St. John's vs Xavier | ",
+ "Upcoming Feb 17, 7:00 PM Men's · St. John's vs Marquette | ",
+ "Upcoming Feb 20, 1:00 PM Men's · St. John's at Georgetown | ",
+ "Upcoming Feb 23, 7:00 PM Men's · St. John's vs Villanova | ",
+ "Upcoming Feb 27, 1:00 PM Men's · St. John's vs Butler | ",
+ "Upcoming Mar 2, 7:30 PM Men's · St. John's at Connecticut | ",
+ "Upcoming Mar 10 Men's · St. John's at BIG EAST Tournament | "
+]);
+  const v_womensbasketball=parse("Basketball","womens-basketball");
+  assert.deepEqual(v_womensbasketball.map(line),[
+ "Upcoming Nov 2, 2:00 PM Women's · St. John's vs Lafayette | ",
+ "Upcoming Nov 7, 1:00 PM Women's · St. John's vs Wagner | ",
+ "Upcoming Nov 11, 2:00 PM Women's · St. John's vs Quinnipiac | ",
+ "Upcoming Nov 14, 2:00 PM Women's · St. John's vs Rhode Island | ",
+ "Upcoming Nov 18, 7:30 PM Women's · St. John's at Oklahoma State | ",
+ "Upcoming Nov 24, 5:00 PM Women's · St. John's vs UCLA | ",
+ "Upcoming Nov 27, 2:30 PM Women's · St. John's vs Richmond | ",
+ "Upcoming Nov 28, 2:30 PM Women's · St. John's vs Dayton | ",
+ "Upcoming Dec 4, 2:00 PM Women's · St. John's vs Providence | ",
+ "Upcoming Dec 6, 1:00 PM Women's · St. John's at Xavier | ",
+ "Upcoming Dec 10, 7:00 PM Women's · St. John's vs Georgetown | ",
+ "Upcoming Dec 13, 2:00 PM Women's · St. John's vs Temple | ",
+ "Upcoming Dec 16, 6:00 PM Women's · St. John's vs Dartmouth | ",
+ "Upcoming Dec 20, 3:00 PM Women's · St. John's at Marquette | ",
+ "Upcoming Dec 22, 1:00 PM Women's · St. John's vs New Haven | ",
+ "Upcoming Dec 30, 6:00 PM Women's · St. John's at Butler | ",
+ "Upcoming Jan 2, 2:00 PM Women's · St. John's vs Villanova | ",
+ "Upcoming Jan 7, 7:00 PM Women's · St. John's vs Xavier | ",
+ "Upcoming Jan 10, 1:00 PM Women's · St. John's at Providence | ",
+ "Upcoming Jan 14, 7:30 PM Women's · St. John's at Creighton | ",
+ "Upcoming Jan 17, 2:00 PM Women's · St. John's vs DePaul | ",
+ "Upcoming Jan 24, 12:00 PM Women's · St. John's vs UConn | ",
+ "Upcoming Jan 28, 8:30 PM Women's · St. John's at Villanova | ",
+ "Upcoming Jan 31, 2:00 PM Women's · St. John's vs Marquette | ",
+ "Upcoming Feb 4, 6:30 PM Women's · St. John's at Seton Hall | ",
+ "Upcoming Feb 7, 3:00 PM Women's · St. John's at DePaul | ",
+ "Upcoming Feb 14, 11:00 AM Women's · St. John's vs Creighton | ",
+ "Upcoming Feb 18, 7:00 PM Women's · St. John's vs Butler | ",
+ "Upcoming Feb 21, 12:00 PM Women's · St. John's at UConn | ",
+ "Upcoming Feb 24, 7:00 PM Women's · St. John's vs Seton Hall | ",
+ "Upcoming Feb 27, 2:00 PM Women's · St. John's at Georgetown | ",
+ "Upcoming Mar 5 Women's · St. John's at BIG EAST Tournament | "
+]);
+  const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
+  assert.deepEqual(v_womenscrosscountry.map(line),[
+ "Final Sep 11 St. John's at Iona Meet of Champions | 4th of 6 (96 points)",
+ "Final Sep 26 St. John's at Sixth Annual Golden Eagle Invitational | Canceled due to inclement weather",
+ "Final Oct 10 St. John's at Metropolitan XC Championship | 3rd (77 points)",
+ "Final Oct 17 St. John's at ECAC XC Championships | 24th of 26",
+ "Upcoming Oct 30 St. John's at BIG EAST Cross Country Championship | ",
+ "Upcoming Nov 13 St. John's at NCAA Northeast Regional Cross Country Championship | "
+]);
+  const v_fencing=parse("Fencing","fencing");
+  assert.deepEqual(v_fencing.map(line),[]);
+  const v_womensgolf=parse("Golf","womens-golf");
+  assert.deepEqual(v_womensgolf.map(line),[
+ "Final Sep 14 Women's · St. John's at Charge at Quail Valley | 4th of 9",
+ "Final Sep 25 Women's · St. John's at Princeton Invitational | 7th of 12",
+ "Final Oct 11 Women's · St. John's at UAlbany Great Danes Invitational | 5th of 10",
+ "Upcoming Oct 24 Women's · St. John's at Lady Blue Hen Invitational | ",
+ "Upcoming Feb 20 Women's · St. John's at Space Coast Classic | ",
+ "Upcoming Mar 1 Women's · St. John's at UNCW River Landing Classic | ",
+ "Upcoming Mar 22 Women's · St. John's at Hennsler Invitational | ",
+ "Upcoming Apr 5 Women's · St. John's at St. John's Invitational | ",
+ "Upcoming Apr 10 Women's · St. John's at Rutgers Invitational | ",
+ "Upcoming Apr 24 Women's · St. John's at BIG EAST Championship | "
+]);
+  const v_mensgolf=parse("Golf","mens-golf");
+  assert.deepEqual(v_mensgolf.map(line),[
+ "Final Sep 12 Men's · St. John's at The Doc Gimmler | 2nd of 14",
+ "Final Sep 27 Men's · St. John's at UConn Invitational at GreatHorse | 6th of 14",
+ "Final Oct 5 Men's · St. John's at Nemacolin Collegiate Invitational | 7th of 16",
+ "Final Oct 19 Men's · St. John's at Nassau Invitational | 1st of 7",
+ "Upcoming Nov 4 Men's · St. John's at Pearl at Kalauao Invitational | ",
+ "Upcoming Feb 8 Men's · St. John's at BIG EAST Match Play | ",
+ "Upcoming Feb 21 Men's · St. John's at Savannah Intercollegiate | ",
+ "Upcoming Mar 8 Men's · St. John's at Ross Intercollegiate | ",
+ "Upcoming Mar 21 Men's · St. John's at UC San Diego Invitational | ",
+ "Upcoming Apr 5 Men's · St. John's at Wildcat Fazio Invitational | ",
+ "Upcoming Apr 17 Men's · St. John's at Rutherford Intercollegiate | ",
+ "Upcoming May 1 Men's · St. John's at BIG EAST Championship | "
+]);
+  const v_menslacrosse=parse("Lacrosse","mens-lacrosse");
+  assert.deepEqual(v_menslacrosse.map(line),[]);
+  const v_womenssoccer=parse("Soccer","womens-soccer");
+  assert.deepEqual(v_womenssoccer.map(line),[
+ "Final Aug 5 Women's · St. John's vs Wagner (Exhibition) | W, 1-0",
+ "Final Aug 8 Women's · St. John's vs Quinnipiac (Exhibition) | T, 2-2",
+ "Final Aug 13 Women's · St. John's vs UMass | L, 1-2",
+ "Final Aug 17 Women's · St. John's at Boston College | L, 1-2",
+ "Final Aug 20 Women's · St. John's vs Towson | W, 2-1",
+ "Final Aug 23 Women's · St. John's at Columbia | T, 0-0",
+ "Final Aug 27 Women's · St. John's at UMBC | W, 2-0",
+ "Final Sep 3 Women's · St. John's at Monmouth | L, 0-1",
+ "Final Sep 9 Women's · St. John's vs Central Connecticut | W, 1-0",
+ "Final Sep 19 Women's · St. John's vs Penn | L, 0-1",
+ "Final Sep 26 Women's · St. John's at Villanova | L, 0-2",
+ "Final Sep 30 Women's · St. John's vs UConn | T, 0-0",
+ "Final Oct 3 Women's · St. John's vs Creighton | T, 0-0",
+ "Final Oct 7 Women's · St. John's at Butler | T, 0-0",
+ "Final Oct 10 Women's · St. John's at Georgetown | L, 1-2",
+ "Final Oct 17 Women's · St. John's vs Marquette | L, 0-2",
+ "Today Oct 21, 6:00 PM Women's · St. John's at Providence | ",
+ "Upcoming Oct 24, 1:00 PM Women's · St. John's vs Xavier | ",
+ "Upcoming Oct 31, 2:00 PM Women's · St. John's at DePaul | ",
+ "Upcoming Nov 7, 7:00 PM Women's · St. John's vs Seton Hall | ",
+ "Upcoming Nov 11 Women's · St. John's at BIG EAST Tournament | "
+]);
+  const v_menssoccer=parse("Soccer","mens-soccer");
+  assert.deepEqual(v_menssoccer.map(line),[
+ "Final Aug 20 Men's · St. John's at Loyola Maryland | W, 5-0",
+ "Final Aug 27 Men's · St. John's at New Hampshire | L, 1-2",
+ "Final Sep 1 Men's · St. John's vs Hofstra | L, 1-2",
+ "Final Sep 6 Men's · St. John's vs Florida International | W, 1-0",
+ "Final Sep 9 Men's · St. John's at Syracuse | L, 0-5",
+ "Final Sep 13 Men's · St. John's vs Fordham | W, 2-0",
+ "Final Sep 18 Men's · St. John's vs Villanova | W, 2-1",
+ "Final Sep 22 Men's · St. John's at UNC Wilmington | L, 1-3",
+ "Final Oct 2 Men's · St. John's at Creighton | T, 1-1",
+ "Final Oct 6 Men's · St. John's vs Monmouth | W, 1-0",
+ "Final Oct 10 Men's · St. John's vs Georgetown | L, 0-3",
+ "Final Oct 16 Men's · St. John's at DePaul | T, 0-0",
+ "Final Oct 20 Men's · St. John's at Maryland | L, 0-1",
+ "Upcoming Oct 24, 6:00 PM Men's · St. John's at Seton Hall | ",
+ "Upcoming Oct 27, 6:00 PM Men's · St. John's vs UConn | ",
+ "Upcoming Oct 31, 7:00 PM Men's · St. John's vs Marquette | ",
+ "Upcoming Nov 6, 7:00 PM Men's · St. John's at Providence | ",
+ "Upcoming Nov 12 Men's · St. John's at BIG EAST Tournament | "
+]);
+  const v_softball=parse("Softball","softball");
+  assert.deepEqual(v_softball.map(line),[]);
+  const v_womenstennis=parse("Tennis","womens-tennis");
+  assert.deepEqual(v_womenstennis.map(line),[
+ "Final Sep 25 Women's · St. John's at Navy Blue and Gold Invitational | Completed",
+ "Final Oct 2 Women's · St. John's at Fordham Four Invitational | Completed",
+ "Final Oct 15 Women's · St. John's at ITA Northeast Regional | Completed",
+ "Upcoming Nov 6 Women's · St. John's at Buffalo Indoor Invitational | "
+]);
+  const v_menstennis=parse("Tennis","mens-tennis");
+  assert.deepEqual(v_menstennis.map(line),[
+ "Final Sep 25 Men's · St. John's at Hofstra Invitational | Completed",
+ "Final Oct 2 Men's · St. John's at Saint Joseph's Invitational | Completed",
+ "Final Oct 15 Men's · St. John's at ITA Northeast Regional | Completed",
+ "Upcoming Nov 5 Men's · St. John's at ITA Conference Masters | ",
+ "Upcoming Nov 6 Men's · St. John's at Dragon Invitational | "
+]);
+  const v_womenstrackandfield=parse("Track & Field","womens-track-and-field");
+  assert.deepEqual(v_womenstrackandfield.map(line),[]);
+  const v_womensvolleyball=parse("Volleyball","womens-volleyball");
+  assert.deepEqual(v_womensvolleyball.map(line),[
+ "Final Aug 28 St. John's vs Elon | W, 3-1",
+ "Final Aug 28 St. John's at Old Dominion | L, 2-3",
+ "Final Aug 29 St. John's vs USC Upstate | W, 3-1",
+ "Final Sep 4 St. John's vs Rider | W, 3-0",
+ "Final Sep 4 St. John's vs UAB | W, 3-1",
+ "Final Sep 5 St. John's vs East Texas A&M | L, 1-3",
+ "Final Sep 8 St. John's at Fordham | W, 3-0",
+ "Final Sep 11 St. John's vs Central Connecticut State | W, 3-0",
+ "Final Sep 12 St. John's vs NJIT | W, 3-0",
+ "Final Sep 12 St. John's at Iona | W, 3-0",
+ "Final Sep 18 St. John's vs Penn | W, 3-1",
+ "Final Sep 18 St. John's vs Bryant | W, 3-0",
+ "Final Sep 19 St. John's vs Rutgers | L, 2-3",
+ "Final Sep 23 St. John's vs Seton Hall | W, 3-0",
+ "Final Sep 26 St. John's vs Creighton | L, 1-3",
+ "Final Oct 2 St. John's vs Xavier | W, 3-2",
+ "Final Oct 3 St. John's vs Butler | W, 3-1",
+ "Final Oct 9 St. John's at UConn | W, 3-1",
+ "Final Oct 10 St. John's at Providence | W, 3-1",
+ "Final Oct 16 St. John's vs Marquette | L, 0-3",
+ "Final Oct 18 St. John's vs DePaul | L, 2-3",
+ "Upcoming Oct 23, 7:00 PM St. John's at Villanova | ",
+ "Upcoming Oct 24, 6:00 PM St. John's at Georgetown | ",
+ "Upcoming Oct 30, 7:00 PM St. John's at Butler | ",
+ "Upcoming Oct 31, 4:00 PM St. John's at Xavier | ",
+ "Upcoming Nov 6, 7:00 PM St. John's vs Providence | ",
+ "Upcoming Nov 7, 7:00 PM St. John's vs UConn | ",
+ "Upcoming Nov 13, 8:00 PM St. John's at DePaul | ",
+ "Upcoming Nov 14, 6:00 PM St. John's at Marquette | "
+]);
+  ownRecapsOnly(v_baseball,"Baseball baseball");
+  ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
+  ownRecapsOnly(v_womensbasketball,"Basketball womens-basketball");
+  ownRecapsOnly(v_womenscrosscountry,"Cross Country womens-cross-country");
+  ownRecapsOnly(v_fencing,"Fencing fencing");
+  ownRecapsOnly(v_womensgolf,"Golf womens-golf");
+  ownRecapsOnly(v_mensgolf,"Golf mens-golf");
+  ownRecapsOnly(v_menslacrosse,"Lacrosse mens-lacrosse");
+  ownRecapsOnly(v_womenssoccer,"Soccer womens-soccer");
+  ownRecapsOnly(v_menssoccer,"Soccer mens-soccer");
+  ownRecapsOnly(v_softball,"Softball softball");
+  ownRecapsOnly(v_womenstennis,"Tennis womens-tennis");
+  ownRecapsOnly(v_menstennis,"Tennis mens-tennis");
+  ownRecapsOnly(v_womenstrackandfield,"Track & Field womens-track-and-field");
+  ownRecapsOnly(v_womensvolleyball,"Volleyball womens-volleyball");
+}
+// END generated
+
+// Golf: a card without a place takes the team's from its final story, here
+// a headline "Women's Golf Opens Season with Fourth-Place Finish at Charge at
+// Quail Valley" (shared golfStoryPlace, Oct 21).
+assert.equal(golfStoryPlace(fixture('recap-2026-9-15-womens-golf-womens-golf-opens-season-wit.html.gz'),{team:"(?:Red Storm|St. John's|(?:Men's|Women's) Golf)"}),'4th');
+
 assert.equal(requests.length,0,'no unexpected network requests');
-console.log('St. John's module checks passed');
+console.log("St. John's module checks passed");
