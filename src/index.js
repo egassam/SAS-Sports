@@ -52,7 +52,7 @@ import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,PREP_GOLF,prepGolfTournaments,prepGolfResults} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
@@ -1749,6 +1749,30 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader()){
   }
   return null;
 }
+// Golf from Prep.Golf (October 21): the school page lists each tournament's
+// place and score; the tournament's page gives the team table and every
+// golfer. A tournament is matched to the calendar by day, varsity only, and by
+// name when two varsity tournaments share a day.
+async function prepGolfResultsFor(school,module,team,game,read=meetProReader()){
+  const config=module.prepGolf;if(!config||!team.meet)return null;
+  const list=prepGolfTournaments(await read(`${PREP_GOLF}schools/${config.school}`,SOURCE_TTL.listing)||'');
+  // KSHSAA renamed golf regionals "sub-state": the calendar's "Regionals" on
+  // Oct 12 is Prep.Golf's "6A Sub-State" on Oct 13. A named match may be a
+  // day off; any other match is by the day itself.
+  const key=name=>nameKey(String(name).replace(/\bsub-?state\b|\bregionals?\b/gi,' postseason ')).split(' ').filter(w=>w.length>3&&!/^(?:varsity|girls|boys|golf|invitational|invite|tournament|2026|2027)$/.test(w));
+  const words=key(game.name),dayOf=t=>Date.UTC(2000,t.month-1,t.day),gameDay=Date.UTC(2000,Number(game.date.slice(5,7))-1,Number(game.date.slice(8,10)));
+  const varsity=list.filter(t=>t.gender===team.label&&/^varsity$/i.test(t.type)&&t.place);
+  const sameDay=varsity.filter(t=>dayOf(t)===gameDay),named=varsity.filter(t=>Math.abs(dayOf(t)-gameDay)<=86400000&&words.some(w=>key(t.name).includes(w)));
+  const pick=sameDay.length===1?sameDay[0]:named.length===1?named[0]:null;if(!pick)return null;
+  const url=`${PREP_GOLF}tournaments/results/${pick.id}`,{teams,players}=prepGolfResults(await read(url,SOURCE_TTL.document)||'');
+  const placed=teams.filter(t=>t.place),own=players.filter(p=>p.school===config.code);
+  const field=placed.length?` of ${placed.length}`:'';
+  const rows=[{group:`${team.label} Varsity`,participant:`${school.short_name} team`,result:`${pick.place}${field} · ${pick.score}`},
+    ...own.map(p=>({group:`${team.label} Varsity`,participant:p.name,result:`${/^\d/.test(p.place||'')?ORDINAL(Number(p.place)):p.place||'–'} · ${p.total}${p.to_par?` (${p.to_par})`:''}${p.rounds.length>1?` · ${p.rounds.join('-')}`:''}`}))];
+  const top=own[0],win=/^1st$/i.test(pick.place);
+  const highlights=[`${school.short_name} ${win?'won the team title':`placed ${pick.place}${field}`} with ${pick.score}.`,...(top?[`${top.name} led ${school.short_name}${top.place?` in ${/^\d/.test(top.place)?ORDINAL(Number(top.place)):top.place}`:''} with ${top.total}${top.to_par?` (${top.to_par})`:''}${top.place==='1'?', the medalist':''}.`]:[])];
+  return{rows,headline:`${pick.place}${field} · ${pick.score}`,highlights,url,label:'View full results (Prep.Golf)',note:'Results as posted on Prep.Golf.'};
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -1791,7 +1815,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       continue;
     }
     // Results for every past game at once (each source read in parallel).
-    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):null));
+    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
     for(const [index,game] of games.entries()){
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);

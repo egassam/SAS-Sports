@@ -32,6 +32,7 @@ export const manhattanKsSchool={
   // mhs.usd383.org answers Cloudflare's European locations with 520: a
   // location that cannot rebuild serves the last feed built elsewhere (KV).
   globalSavedCopy:true,
+  prepGolf:{school:11,code:'MAN'},
   meetPro:LETSGORUN_MEETPRO,
   maxpreps:{schoolId:'41006ce9-cfb3-492a-a951-d320637bc985',base:'https://www.maxpreps.com/ks/manhattan/manhattan-indians/'},
   // Each sport: its varsity teams. `calendar` matches the team words of a
@@ -48,6 +49,7 @@ export const manhattanKsSchool={
     // Varsity races only (the JV and C races are run at the same meets).
     'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team:'Manhattan',races:/\bvarsity\b/i,exclude:/junior/i}}],
     Tennis:[{calendar:/^Varsity Girls Tennis$/i,meet:true,label:'Girls',tennisReporting:{stateId:23,genderId:2,school:'Manhattan HS'}},{calendar:/^Varsity Boys Tennis$/i,meet:true,label:'Boys',tennisReporting:{stateId:23,genderId:1,school:'Manhattan HS'}}],
+    // Golf results from Prep.Golf (school 11; golfers' school code MAN).
     Golf:[{calendar:/^Varsity Girls Golf$/i,meet:true,label:'Girls'},{calendar:/^Varsity Boys Golf$/i,meet:true,label:'Boys'}]
   },
   // Intrasquad scrimmages are practice, not games.
