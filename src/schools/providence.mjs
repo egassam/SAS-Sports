@@ -26,7 +26,7 @@ export const providenceSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Soccer','Swimming & Diving','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Soccer','Track & Field']),
   verifiedInstagrams:{
     'providence|Golf|Bailey Baio':'https://www.instagram.com/bailey_baio_golf/',
     'providence|Golf|Callan Fahey':'https://www.instagram.com/callan_fahey/',

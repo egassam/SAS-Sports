@@ -33,7 +33,7 @@ for(const [name,map] of [['schedule',xavierSchool.scheduleUrls],['roster',xavier
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'goxavier.com',`${key} must stay on goxavier.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://goxavier.com/sports/baseball/schedule"],"roster":["https://goxavier.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://goxavier.com/sports/mens-basketball/schedule","https://goxavier.com/sports/womens-basketball/schedule"],"roster":["https://goxavier.com/sports/mens-basketball/roster","https://goxavier.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://goxavier.com/sports/cross-country/schedule"],"roster":["https://goxavier.com/sports/cross-country/roster"],"combined":false},"Golf":{"schedule":["https://goxavier.com/sports/womens-golf/schedule","https://goxavier.com/sports/golf/schedule"],"roster":["https://goxavier.com/sports/womens-golf/roster","https://goxavier.com/sports/golf/roster"],"combined":false},"Soccer":{"schedule":["https://goxavier.com/sports/womens-soccer/schedule","https://goxavier.com/sports/mens-soccer/schedule"],"roster":["https://goxavier.com/sports/womens-soccer/roster","https://goxavier.com/sports/mens-soccer/roster"],"combined":true},"Swimming & Diving":{"schedule":["https://goxavier.com/sports/mens-swimming-and-diving/schedule"],"roster":["https://goxavier.com/sports/mens-swimming-and-diving/roster"],"combined":false},"Tennis":{"schedule":["https://goxavier.com/sports/womens-tennis/schedule","https://goxavier.com/sports/mens-tennis/schedule"],"roster":["https://goxavier.com/sports/womens-tennis/roster","https://goxavier.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://goxavier.com/sports/track-and-field/schedule"],"roster":["https://goxavier.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://goxavier.com/sports/womens-volleyball/schedule"],"roster":["https://goxavier.com/sports/womens-volleyball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://goxavier.com/sports/baseball/schedule"],"roster":["https://goxavier.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://goxavier.com/sports/mens-basketball/schedule","https://goxavier.com/sports/womens-basketball/schedule"],"roster":["https://goxavier.com/sports/mens-basketball/roster","https://goxavier.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://goxavier.com/sports/cross-country/schedule"],"roster":["https://goxavier.com/sports/cross-country/roster"],"combined":false},"Golf":{"schedule":["https://goxavier.com/sports/womens-golf/schedule","https://goxavier.com/sports/golf/schedule"],"roster":["https://goxavier.com/sports/womens-golf/roster","https://goxavier.com/sports/golf/roster"],"combined":true},"Soccer":{"schedule":["https://goxavier.com/sports/womens-soccer/schedule","https://goxavier.com/sports/mens-soccer/schedule"],"roster":["https://goxavier.com/sports/womens-soccer/roster","https://goxavier.com/sports/mens-soccer/roster"],"combined":true},"Swimming & Diving":{"schedule":["https://goxavier.com/sports/mens-swimming-and-diving/schedule"],"roster":["https://goxavier.com/sports/mens-swimming-and-diving/roster"],"combined":false},"Tennis":{"schedule":["https://goxavier.com/sports/womens-tennis/schedule","https://goxavier.com/sports/mens-tennis/schedule"],"roster":["https://goxavier.com/sports/womens-tennis/roster","https://goxavier.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://goxavier.com/sports/track-and-field/schedule"],"roster":["https://goxavier.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://goxavier.com/sports/womens-volleyball/schedule"],"roster":["https://goxavier.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -157,41 +157,41 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[
- "Final Sep 8 Xavier at The Bruzzy presented by Ashley Herrera | 6th of 11",
- "Final Sep 18 Xavier at Lady Paladin Invitational | T3rd of 12",
- "Final Sep 26 Xavier at Fighting Irish Classic | 6th of 14",
- "Final Oct 2 Xavier at Ron Moore Intercollegiate | 2nd of 15",
- "Final Oct 5 Xavier at Golfweek Put Me In Coach Invitational | Completed",
- "Final Oct 19 Xavier at Flyer Invitational | Completed",
- "Upcoming Feb 19 Xavier at WMU Rio Verde Invitational | ",
- "Upcoming Mar 1 Xavier at Daniel Island Invitational | ",
- "Upcoming Mar 22 Xavier at Bell Bank \"Pay It Forward\" Collegiate | ",
- "Upcoming Apr 5 Xavier at WKU Olde Stone Intercollegiate | ",
- "Upcoming Apr 10 Xavier at Dolores Black Falcon Invitational | ",
- "Upcoming Apr 17 Xavier at Therese Hession Buckeye Invitational | ",
- "Upcoming Apr 24 Xavier at BIG EAST Championships | "
+ "Final Sep 8 Women's · Xavier at The Bruzzy presented by Ashley Herrera | 6th of 11",
+ "Final Sep 18 Women's · Xavier at Lady Paladin Invitational | T3rd of 12",
+ "Final Sep 26 Women's · Xavier at Fighting Irish Classic | 6th of 14",
+ "Final Oct 2 Women's · Xavier at Ron Moore Intercollegiate | 2nd of 15",
+ "Final Oct 5 Women's · Xavier at Golfweek Put Me In Coach Invitational | Completed",
+ "Final Oct 19 Women's · Xavier at Flyer Invitational | Completed",
+ "Upcoming Feb 19 Women's · Xavier at WMU Rio Verde Invitational | ",
+ "Upcoming Mar 1 Women's · Xavier at Daniel Island Invitational | ",
+ "Upcoming Mar 22 Women's · Xavier at Bell Bank \"Pay It Forward\" Collegiate | ",
+ "Upcoming Apr 5 Women's · Xavier at WKU Olde Stone Intercollegiate | ",
+ "Upcoming Apr 10 Women's · Xavier at Dolores Black Falcon Invitational | ",
+ "Upcoming Apr 17 Women's · Xavier at Therese Hession Buckeye Invitational | ",
+ "Upcoming Apr 24 Women's · Xavier at BIG EAST Championships | "
 ]);
   const v_golf=parse("Golf","golf");
   assert.deepEqual(v_golf.map(line),[
- "Final Sep 14 Xavier at Bearcat Invitational | 17th of 17",
- "Final Sep 21 Xavier at Rod Myers Invitational | 6th of 13",
- "Final Oct 2 Xavier at The Indy at Forest Hills | Completed",
- "Final Oct 5 Xavier at Cullan Brown Collegiate | 8th of 15",
- "Final Oct 12 Xavier at Moraine Intercollegiate | 8th of 16",
- "Final Oct 12 Xavier at Raider Individual | Completed",
- "Final Oct 19 Xavier at Gateway Logistics Invitational | 1st of 9",
- "Today Oct 19, 11:00 AM Xavier at Saint Mary's Invitational | ",
- "Upcoming Feb 15 Xavier at Hal Williams Collegiate | ",
- "Upcoming Feb 28 Xavier at Lake Jovita Invitational | ",
- "Upcoming Mar 8 Xavier at 42nd Louisiana Classics | ",
- "Upcoming Mar 22 Xavier at Seahawk Intercollegiate | ",
- "Upcoming Apr 5 Xavier at Northern Kentucky's The Jewell | ",
- "Upcoming Apr 8 Xavier at Robert Kepler Intercollegiate | ",
- "Upcoming Apr 10 Xavier at Wright State Invitational | ",
- "Upcoming Apr 12 Xavier at Mountaineer Invitational | ",
- "Upcoming May 1 Xavier at BIG EAST Championships | ",
- "Upcoming May 16 Xavier at NCAA Tournament | ",
- "Upcoming May 28 Xavier at NCAA Tournament | "
+ "Final Sep 14 Men's · Xavier at Bearcat Invitational | 17th of 17",
+ "Final Sep 21 Men's · Xavier at Rod Myers Invitational | 6th of 13",
+ "Final Oct 2 Men's · Xavier at The Indy at Forest Hills | Completed",
+ "Final Oct 5 Men's · Xavier at Cullan Brown Collegiate | 8th of 15",
+ "Final Oct 12 Men's · Xavier at Moraine Intercollegiate | 8th of 16",
+ "Final Oct 12 Men's · Xavier at Raider Individual | Completed",
+ "Final Oct 19 Men's · Xavier at Gateway Logistics Invitational | 1st of 9",
+ "Today Oct 19, 11:00 AM Men's · Xavier at Saint Mary's Invitational | ",
+ "Upcoming Feb 15 Men's · Xavier at Hal Williams Collegiate | ",
+ "Upcoming Feb 28 Men's · Xavier at Lake Jovita Invitational | ",
+ "Upcoming Mar 8 Men's · Xavier at 42nd Louisiana Classics | ",
+ "Upcoming Mar 22 Men's · Xavier at Seahawk Intercollegiate | ",
+ "Upcoming Apr 5 Men's · Xavier at Northern Kentucky's The Jewell | ",
+ "Upcoming Apr 8 Men's · Xavier at Robert Kepler Intercollegiate | ",
+ "Upcoming Apr 10 Men's · Xavier at Wright State Invitational | ",
+ "Upcoming Apr 12 Men's · Xavier at Mountaineer Invitational | ",
+ "Upcoming May 1 Men's · Xavier at BIG EAST Championships | ",
+ "Upcoming May 16 Men's · Xavier at NCAA Tournament | ",
+ "Upcoming May 28 Men's · Xavier at NCAA Tournament | "
 ]);
   const v_womenssoccer=parse("Soccer","womens-soccer");
   assert.deepEqual(v_womenssoccer.map(line),[

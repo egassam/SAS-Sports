@@ -23,7 +23,9 @@ export const xavierSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Soccer','Tennis']),
+  // The men's golf page is plain /sports/golf (no "mens-" prefix).
+  teamLabels:{'/sports/golf/schedule':"Men's"},
   verifiedInstagrams:{
     'xavier|Basketball|Filip Borovicanin':'https://www.instagram.com/borovicanin_4/',
     'xavier|Basketball|Gabriel Pozzato':'https://www.instagram.com/gabrielbelfortpozzato/',

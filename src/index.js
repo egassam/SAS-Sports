@@ -97,7 +97,7 @@ import {uconnSchool,createUconnHandlers} from './schools/uconn.mjs';
 import {xavierSchool,createXavierHandlers} from './schools/xavier.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.125.0-big-east';
+const VERSION='4.126.0-big-east';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

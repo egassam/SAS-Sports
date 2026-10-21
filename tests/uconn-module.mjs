@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',uconnSchool.scheduleUrls],['roster',uconnSc
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'uconnhuskies.com',`${key} must stay on uconnhuskies.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://uconnhuskies.com/sports/baseball/schedule"],"roster":["https://uconnhuskies.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://uconnhuskies.com/sports/mens-basketball/schedule","https://uconnhuskies.com/sports/womens-basketball/schedule"],"roster":["https://uconnhuskies.com/sports/mens-basketball/roster","https://uconnhuskies.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://uconnhuskies.com/sports/womens-cross-country/schedule"],"roster":["https://uconnhuskies.com/sports/womens-cross-country/roster"],"combined":false},"Field Hockey":{"schedule":["https://uconnhuskies.com/sports/field-hockey/schedule"],"roster":["https://uconnhuskies.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://uconnhuskies.com/sports/football/schedule"],"roster":["https://uconnhuskies.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://uconnhuskies.com/sports/mens-golf/schedule"],"roster":["https://uconnhuskies.com/sports/mens-golf/roster"],"combined":false},"Hockey":{"schedule":["https://uconnhuskies.com/sports/mens-ice-hockey/schedule","https://uconnhuskies.com/sports/womens-ice-hockey/schedule"],"roster":["https://uconnhuskies.com/sports/mens-ice-hockey/roster","https://uconnhuskies.com/sports/womens-ice-hockey/roster"],"combined":true},"Lacrosse":{"schedule":["https://uconnhuskies.com/sports/womens-lacrosse/schedule"],"roster":["https://uconnhuskies.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://uconnhuskies.com/sports/womens-rowing/schedule"],"roster":["https://uconnhuskies.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://uconnhuskies.com/sports/womens-soccer/schedule","https://uconnhuskies.com/sports/mens-soccer/schedule"],"roster":["https://uconnhuskies.com/sports/womens-soccer/roster","https://uconnhuskies.com/sports/mens-soccer/roster"],"combined":true},"Softball":{"schedule":["https://uconnhuskies.com/sports/softball/schedule"],"roster":["https://uconnhuskies.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://uconnhuskies.com/sports/womens-swimming-and-diving/schedule"],"roster":["https://uconnhuskies.com/sports/womens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://uconnhuskies.com/sports/womens-tennis/schedule"],"roster":["https://uconnhuskies.com/sports/womens-tennis/roster"],"combined":false},"Track & Field":{"schedule":["https://uconnhuskies.com/sports/womens-track-and-field/schedule","https://uconnhuskies.com/sports/mens-track-and-field/schedule"],"roster":["https://uconnhuskies.com/sports/womens-track-and-field/roster","https://uconnhuskies.com/sports/mens-track-and-field/roster"],"combined":true},"Volleyball":{"schedule":["https://uconnhuskies.com/sports/womens-volleyball/schedule"],"roster":["https://uconnhuskies.com/sports/womens-volleyball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://uconnhuskies.com/sports/baseball/schedule"],"roster":["https://uconnhuskies.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://uconnhuskies.com/sports/mens-basketball/schedule","https://uconnhuskies.com/sports/womens-basketball/schedule"],"roster":["https://uconnhuskies.com/sports/mens-basketball/roster","https://uconnhuskies.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://uconnhuskies.com/sports/womens-cross-country/schedule"],"roster":["https://uconnhuskies.com/sports/womens-cross-country/roster"],"combined":false},"Field Hockey":{"schedule":["https://uconnhuskies.com/sports/field-hockey/schedule"],"roster":["https://uconnhuskies.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://uconnhuskies.com/sports/football/schedule"],"roster":["https://uconnhuskies.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://uconnhuskies.com/sports/mens-golf/schedule"],"roster":["https://uconnhuskies.com/sports/mens-golf/roster"],"combined":false},"Hockey":{"schedule":["https://uconnhuskies.com/sports/mens-ice-hockey/schedule","https://uconnhuskies.com/sports/womens-ice-hockey/schedule"],"roster":["https://uconnhuskies.com/sports/mens-ice-hockey/roster","https://uconnhuskies.com/sports/womens-ice-hockey/roster"],"combined":true},"Lacrosse":{"schedule":["https://uconnhuskies.com/sports/womens-lacrosse/schedule"],"roster":["https://uconnhuskies.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://uconnhuskies.com/sports/womens-rowing/schedule"],"roster":["https://uconnhuskies.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://uconnhuskies.com/sports/womens-soccer/schedule","https://uconnhuskies.com/sports/mens-soccer/schedule"],"roster":["https://uconnhuskies.com/sports/womens-soccer/roster","https://uconnhuskies.com/sports/mens-soccer/roster"],"combined":true},"Softball":{"schedule":["https://uconnhuskies.com/sports/softball/schedule"],"roster":["https://uconnhuskies.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://uconnhuskies.com/sports/womens-swimming-and-diving/schedule"],"roster":["https://uconnhuskies.com/sports/womens-swimming-and-diving/roster"],"combined":false},"Tennis":{"schedule":["https://uconnhuskies.com/sports/womens-tennis/schedule"],"roster":["https://uconnhuskies.com/sports/womens-tennis/roster"],"combined":false},"Track & Field":{"schedule":["https://uconnhuskies.com/sports/womens-track-and-field/schedule","https://uconnhuskies.com/sports/mens-track-and-field/schedule"],"roster":["https://uconnhuskies.com/sports/womens-track-and-field/roster","https://uconnhuskies.com/sports/mens-track-and-field/roster"],"combined":true},"Volleyball":{"schedule":["https://uconnhuskies.com/sports/womens-volleyball/schedule"],"roster":["https://uconnhuskies.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -348,20 +348,20 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensswimminganddiving=parse("Swimming & Diving","womens-swimming-and-diving");
   assert.deepEqual(v_womensswimminganddiving.map(line),[
- "Final Sep 24 Women's · UConn at Army | Completed",
- "Final Sep 26 Women's · UConn at Husky Diving Invite | Completed",
- "Final Oct 17 Women's · UConn at Villanova | Completed",
- "Upcoming Oct 31, 12:00 PM Women's · UConn vs Rhode Island | ",
- "Upcoming Nov 6, 4:00 PM Women's · UConn at Boston College | ",
- "Upcoming Nov 7, 12:00 PM Women's · UConn at Northeastern | ",
- "Upcoming Nov 17 Women's · UConn at Iowa Invitational | ",
- "Upcoming Dec 5, 2:00 PM Women's · UConn at Vermont | ",
- "Upcoming Jan 9 Women's · UConn at Massachusetts | ",
- "Upcoming Jan 16, 12:00 PM Women's · UConn vs New Hampshire | ",
- "Upcoming Feb 6 Women's · UConn vs Providence College | ",
- "Upcoming Feb 17 Women's · UConn at BIG EAST Championship | ",
- "Upcoming Mar 8 Women's · UConn at NCAA Diving Zones | ",
- "Upcoming Mar 17 Women's · UConn at NCAA Division 1 Swimming Championships | "
+ "Final Sep 24 UConn at Army | Completed",
+ "Final Sep 26 UConn at Husky Diving Invite | Completed",
+ "Final Oct 17 UConn at Villanova | Completed",
+ "Upcoming Oct 31, 12:00 PM UConn vs Rhode Island | ",
+ "Upcoming Nov 6, 4:00 PM UConn at Boston College | ",
+ "Upcoming Nov 7, 12:00 PM UConn at Northeastern | ",
+ "Upcoming Nov 17 UConn at Iowa Invitational | ",
+ "Upcoming Dec 5, 2:00 PM UConn at Vermont | ",
+ "Upcoming Jan 9 UConn at Massachusetts | ",
+ "Upcoming Jan 16, 12:00 PM UConn vs New Hampshire | ",
+ "Upcoming Feb 6 UConn vs Providence College | ",
+ "Upcoming Feb 17 UConn at BIG EAST Championship | ",
+ "Upcoming Mar 8 UConn at NCAA Diving Zones | ",
+ "Upcoming Mar 17 UConn at NCAA Division 1 Swimming Championships | "
 ]);
   const v_womenstennis=parse("Tennis","womens-tennis");
   assert.deepEqual(v_womenstennis.map(line),[
@@ -437,7 +437,7 @@ void [parse,line,ownRecapsOnly,live];
 {
   const h=worker.uconnHandlers,army='https://uconnhuskies.com/news/2026/9/25/womens-swimming-and-diving-huskies-place-2nd-in-opening-meet-of-the-season';
   const rows=parse('Swimming & Diving','womens-swimming-and-diving').filter(e=>e.status==='Final').map(e=>[line(e),Boolean(h.isTennisWithoutStory(/Army/.test(e.title)?{...e,recap_url:army}:e))]);
-  assert.deepEqual(rows,[["Final Sep 24 Women's · UConn at Army | Completed",false],["Final Sep 26 Women's · UConn at Husky Diving Invite | Completed",true],["Final Oct 17 Women's · UConn at Villanova | Completed",true]]);
+  assert.deepEqual(rows,[["Final Sep 24 UConn at Army | Completed",false],["Final Sep 26 UConn at Husky Diving Invite | Completed",true],["Final Oct 17 UConn at Villanova | Completed",true]]);
 }
 
 assert.equal(requests.length,0,'no unexpected network requests');

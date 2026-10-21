@@ -27,7 +27,7 @@ export const uconnSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Hockey','Soccer','Swimming & Diving','Track & Field']),
+  combinedSports:new Set(['Basketball','Hockey','Soccer','Track & Field']),
   verifiedInstagrams:{
     'uconn|Baseball|Rob Rispoli':'https://www.instagram.com/rob.rispoli1/',
     'uconn|Baseball|Frank Spirito IV':'https://www.instagram.com/frankspirito/',
