@@ -33,6 +33,9 @@ export const manhattanKsSchool={
   // location that cannot rebuild serves the last feed built elsewhere (KV).
   globalSavedCopy:true,
   prepGolf:{school:11,code:'MAN'},
+  // Bound: the school's own finals, for games MaxPreps has no score for and
+  // meets no timer or Prep.Golf page covers (`bound`, `boundMeet` below).
+  bound:{school:'h20250204045200696bcbb2cc6f78a4e',page:'https://beta.gobound.com/ks/schools/manhattanhs/scores'},
   meetPro:LETSGORUN_MEETPRO,
   maxpreps:{schoolId:'41006ce9-cfb3-492a-a951-d320637bc985',base:'https://www.maxpreps.com/ks/manhattan/manhattan-indians/'},
   // Each sport: its varsity teams. `calendar` matches the team words of a
@@ -43,14 +46,14 @@ export const manhattanKsSchool={
   // (volleyball triangulars and tournaments); `tennisReporting` finds the
   // team's draws on TennisReporting by date.
   sports:{
-    Football:[{calendar:/^Varsity Football$/i,maxpreps:'football'}],
-    Soccer:[{calendar:/^Varsity Boys Soccer$/i,maxpreps:'soccer',label:'Boys'},{calendar:/^Varsity Girls Soccer$/i,maxpreps:'soccer/girls',label:'Girls'}],
+    Football:[{calendar:/^Varsity Football$/i,maxpreps:'football',bound:['Football']}],
+    Soccer:[{calendar:/^Varsity Boys Soccer$/i,maxpreps:'soccer',label:'Boys',bound:['Boys Soccer']},{calendar:/^Varsity Girls Soccer$/i,maxpreps:'soccer/girls',label:'Girls',bound:['Girls Soccer']}],
     Volleyball:[{calendar:/^Varsity Volleyball$/i,maxpreps:'volleyball',matches:true}],
     // Varsity races only (the JV and C races are run at the same meets).
-    'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team:'Manhattan',races:/\bvarsity\b/i,exclude:/junior/i}}],
+    'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team:'Manhattan',races:/\bvarsity\b/i,exclude:/junior/i},boundMeet:{acts:{Girls:'Girls Cross Country',Boys:'Boys Cross Country'},lowWins:true,unit:'pts'}}],
     Tennis:[{calendar:/^Varsity Girls Tennis$/i,meet:true,label:'Girls',tennisReporting:{stateId:23,genderId:2,school:'Manhattan HS'}},{calendar:/^Varsity Boys Tennis$/i,meet:true,label:'Boys',tennisReporting:{stateId:23,genderId:1,school:'Manhattan HS'}}],
     // Golf results from Prep.Golf (school 11; golfers' school code MAN).
-    Golf:[{calendar:/^Varsity Girls Golf$/i,meet:true,label:'Girls'},{calendar:/^Varsity Boys Golf$/i,meet:true,label:'Boys'}]
+    Golf:[{calendar:/^Varsity Girls Golf$/i,meet:true,label:'Girls',boundMeet:{acts:{Girls:'Girls Golf'},lowWins:true,unit:'strokes'}},{calendar:/^Varsity Boys Golf$/i,meet:true,label:'Boys',boundMeet:{acts:{Boys:'Boys Golf'},lowWins:true,unit:'strokes'}}]
   },
   // Intrasquad scrimmages are practice, not games.
   skip:/\binter[- ]?squad\b|\bintra[- ]?squad\b/i

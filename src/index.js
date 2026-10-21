@@ -52,7 +52,7 @@ import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,PREP_GOLF,prepGolfTournaments,prepGolfResults} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.122.2-prep-golf';
+const VERSION='4.123.0-bound-fallback';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1617,8 +1617,9 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
   if(scored){
-    event.score_source={name:'MaxPreps (score reported by the team)',url:contest.game_url||null};
+    event.score_source=contest.source==='bound'?{name:'Bound (score entered by the school)',url:contest.source_url||null,bound:true}:{name:'MaxPreps (score reported by the team)',url:contest.game_url||null};
     if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='View MaxPreps game page';}
+    else if(contest.source==='bound'&&contest.source_url){event.recap_url=contest.source_url;event.recap_label='View on Bound';}
     if(contest.conference!=null){event.conference_game=contest.conference;if(contest.conference)event.conference_name=school.conference;}
     if(contest.tournament)event.tournament_game=true;
   }
@@ -1628,7 +1629,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
     event.meet_results_verified=true;
   }
   if(contest?.stream_url)event.stream_url=contest.stream_url;
-  if(contest)event.maxpreps_url=contest.game_url||null;
+  if(contest&&contest.source!=='bound')event.maxpreps_url=contest.game_url||null;
   return event;
 }
 // The expanded view of a high school final: plain facts from the score and
@@ -1773,6 +1774,28 @@ async function prepGolfResultsFor(school,module,team,game,read=meetProReader()){
   const highlights=[`${school.short_name} ${win?'won the team title':`placed ${pick.place}${field}`} with ${pick.score}.`,...(top?[`${top.name} led ${school.short_name}${top.place?` in ${/^\d/.test(top.place)?ORDINAL(Number(top.place)):top.place}`:''} with ${top.total}${top.to_par?` (${top.to_par})`:''}${top.place==='1'?', the medalist':''}.`]:[])];
   return{rows,headline:`${pick.place}${field} · ${pick.score}`,highlights,url,label:'View full results (Prep.Golf)',note:'Results as posted on Prep.Golf.'};
 }
+// Bound: the school's own finals, read once per build and only when a team
+// of the sport has a Bound fallback. Bound refuses the full identity (403 for
+// a user agent carrying the bot page's address) and answers the scoreboard
+// identity (user, October 21: "Go with option 1").
+async function boundFinalsFor(school,module,today){
+  const config=module.bound;if(!config)return[];
+  const url=`${BOUND_API}${config.school}/scores?startDate=${today.slice(0,4)-(today.slice(5,7)<'07'?1:0)}-07-01&endDate=${today}&includePractices=false&pageSize=500&ticket=false`;
+  try{const r=await sourceFetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}},{ttl:SOURCE_TTL.listing,staleOnError:true});if(!r.ok)return[];return boundFinals(JSON.parse(await r.text()),{school:config.school,timeZone:schoolTimeZone(school)})}catch{return[]}
+}
+// A meet's team places from Bound (cross country, golf) when the timer's
+// pages and Prep.Golf have none.
+function boundMeetResults(school,module,team,finals,date){
+  const rows=[],headline=[],highlights=[];
+  for(const [label,act] of Object.entries(team.boundMeet.acts)){
+    const m=boundMeet(finals,{act,date,lowWins:team.boundMeet.lowWins});if(!m)continue;
+    const place=`${m.tied?'T':''}${ORDINAL(m.place)}`;
+    rows.push({group:`${label} Varsity`,participant:`${school.short_name} team`,result:`${place} of ${m.teams} · ${m.score} ${team.boundMeet.unit}`});
+    headline.push(`${label} ${place} of ${m.teams}`);
+    highlights.push(`${label} Varsity: ${school.short_name} ${m.place===1&&!m.tied?'won the team title':`placed ${place} of ${m.teams}`} with ${m.score} ${team.boundMeet.unit}.`);
+  }
+  return rows.length?{rows,headline:headline.join(' · '),highlights,url:module.bound.page,label:'View on Bound',note:'Team scores as entered on Bound by the school.'}:null;
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -1815,17 +1838,24 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       continue;
     }
     // Results for every past game at once (each source read in parallel).
+    const bound=team.bound||team.boundMeet?await boundFinalsFor(school,module,new Date(today).toISOString().slice(0,10)):[];
     const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
     for(const [index,game] of games.entries()){
-      const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name),contest=named?null:matchContest(game,contests,used);
+      const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name);
+      let contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);
+      // MaxPreps has no score for a past game: the school's own final on Bound.
+      if(!named&&team.bound&&game.date<=new Date(today).toISOString().slice(0,10)&&!(contest?.result&&contest.score!=null)){
+        const own=boundGame(bound,{acts:team.bound,date:game.date,opponent:game.name,compatible:namesCompatible});
+        if(own)contest={...own,source:'bound',game_url:null,source_url:module.bound.page};
+      }
       // MaxPreps names the opponent when the calendar names the host of a
       // tournament day ("Blue Valley West" for a game against Blue Valley
       // Northwest there).
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
       // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
       const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
-      const results=gameResults[index];
+      const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null);
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,now});
       if(event)events.push(event);
     }
@@ -1843,7 +1873,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     const {lines,stats}=highSchoolHighlights(target,box);
     target.highlights=lines;target.highlights_verified=true;
     if(stats.length)target.game_stats=stats;
-    target.highlight_status=box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
+    target.highlight_status=target.score_source?.bound?'Score as entered on Bound by the school.':box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
   }
   return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing};
 }
