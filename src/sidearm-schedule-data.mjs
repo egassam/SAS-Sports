@@ -136,8 +136,9 @@ function classicScheduleGames(raw){
 // the first year). Rows become the page data's game objects, so every reader
 // setting applies unchanged. A season used as a tournament block ("Indoor
 // Season", "2026 Fall Schedule", "Fall Season") is no tournament; an
-// opponent marked "(Exh.)" is an exhibition (type "S", as the page data
-// types one).
+// opponent marked "(Exh.)", or a row whose promotion line reads
+// "Exhibition" (Northern Arizona soccer vs Embry-Riddle, Aug 9), is an
+// exhibition (type "S", as the page data types one).
 const SEASON_BLOCK=/^(?:\d{4}(?:-\d{2,4})?\s+)?(?:fall|spring|winter|summer|indoor|outdoor)(?:\s+(?:season|schedule))?$/i;
 const MONTH_INDEX={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
 const htmlText=html=>String(html||'').replace(/<script\b[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&#39;|&#x27;|&rsquo;|’/gi,"'").replace(/&quot;/gi,'"').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/\s+/g,' ').trim();
@@ -208,7 +209,7 @@ export function classicHtmlScheduleGames(raw){
       enddate:lastDay&&lastDay>firstDay?`${lastDay}T00:00:00`:null,time:clock?`${hour%12||12}:${String(minute).padStart(2,'0')} ${hour>=12?'PM':'AM'}`:(timeText.match(/^TB[AD]/i)||[''])[0].toUpperCase(),
       location_indicator:/\ssidearm-schedule-home-game\s/.test(classes)?'H':/\ssidearm-schedule-away-game\s/.test(classes)?'A':/\ssidearm-schedule-neutral-game\s/.test(classes)?'N':'',
       at_vs:atVs==='at'?'at':'vs',opponent:{title:opponent},tournament:tournament?{title:tournament[2]}:null,
-      result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)?'S':'',conference:/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/.test(row)});
+      result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)||/^exhibition$/i.test(htmlText(classBlock(row,'sidearm-schedule-game-promotion-name')))?'S':'',conference:/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/.test(row)});
   }
   return games;
 }

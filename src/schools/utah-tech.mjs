@@ -323,7 +323,10 @@ export function createUtahTechHandlers({makeEvent,recapMatchesEvent,eventType=()
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
+    afterEvent(event,{sport,game,games,url}){
+      // Men's soccer plays in the Mountain West (the Big Sky sponsors only
+      // women's soccer); its rows mark the Mountain West games.
+      if(/^\/sports\/mens-soccer\//.test(url?.pathname||''))event.conference_name='Mountain West';
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));

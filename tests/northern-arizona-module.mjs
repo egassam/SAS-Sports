@@ -179,7 +179,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womenssoccer=parse("Soccer","womens-soccer");
   assert.deepEqual(v_womenssoccer.map(line),[
- "Final Aug 9 Northern Arizona vs Embry-Riddle (Ariz.) | W, 3-0",
+ "Final Aug 9 Northern Arizona vs Embry-Riddle (Ariz.) (Exhibition) | W, 3-0",
  "Final Aug 12 Northern Arizona at UC Riverside | W, 2-0",
  "Final Aug 20 Northern Arizona at New Mexico | L, 0-2",
  "Final Aug 23 Northern Arizona vs UC San Diego | T, 0-0",

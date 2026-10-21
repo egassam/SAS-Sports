@@ -363,5 +363,13 @@ void [parse,line,ownRecapsOnly,live];
 }
 // END generated
 
+// Men's soccer plays in the Mountain West (its rows mark those games); the
+// Big Sky sponsors only women's soccer.
+{
+  const men=parse("Soccer","mens-soccer"),women=parse("Soccer","womens-soccer");
+  assert.ok(men.length&&men.every(e=>e.conference_name==='Mountain West'));
+  assert.ok(women.every(e=>e.conference_name===undefined));
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log("Utah Tech module checks passed");
