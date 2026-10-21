@@ -89,7 +89,7 @@ import {sanDiegoStateSchool,createSanDiegoStateHandlers} from './schools/san-die
 import {washingtonStateSchool,createWashingtonStateHandlers} from './schools/washington-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.118.0-county-menu';
+const VERSION='4.119.0-saved-copies';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2999,34 +2999,46 @@ function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',ur
 // so a Worker CPU-limit failure (Cloudflare 1102) never blanks a sport that
 // loaded recently at this Cloudflare location.
 const LAST_GOOD_MS=7*24*60*60*1000;
-function lastGoodFeedKey(url,school,sport){const key=new URL('/__sas_cache/feed-last-good',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
+// Saved copies outlive a deploy (Oct 21: keyed by VERSION, every merge
+// emptied them, and a school-site outage right after one answered 502).
+// Raise FEED_COPY_FORMAT only when the grouped feed's shape changes so an
+// older copy could not be drawn.
+const FEED_COPY_FORMAT='1';
+function lastGoodFeedKey(url,school,sport){const key=new URL('/__sas_cache/feed-last-good',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_copy',FEED_COPY_FORMAT);return new Request(key.toString(),{method:'GET'});}
 // A global saved copy (KV, shared by every Cloudflare location) for schools
 // whose official site refuses some locations: gamecocksonline.com answers
 // Paris with 403 (Oct 8). A location that cannot rebuild and has no copy of
 // its own serves the last feed another location built. Written at most once
 // an hour per sport (KV writes are metered); read only when a rebuild fails.
 const GLOBAL_COPY_WRITE_MS=60*60*1000;
-const globalCopyKey=(school,sport)=>`feed:v1:${school}|${sport}|${VERSION}`;
+// Each host keeps its own copy (a branch preview never replaces
+// production's); a preview with none of its own reads production's.
+const copyScope=url=>url.hostname===PRODUCTION_HOST?'prod':url.hostname;
+const globalCopyKey=(scope,school,sport)=>`feed:v2:${scope}|${school}|${sport}|${FEED_COPY_FORMAT}`;
 // The Manhattan (USD 383) school sites answer Cloudflare's European
 // locations with 520 (Stockholm, Warsaw; Oct 16) and Newark with 200: their
 // feeds keep the global copy too.
 const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);
-async function saveGlobalCopy(env,school,sport,body,fetchedAt){
+async function saveGlobalCopy(env,url,school,sport,body,fetchedAt){
   if(!env?.HIGHLIGHTS||!usesGlobalCopy(school))return;
   try{
-    const {metadata}=await env.HIGHLIGHTS.getWithMetadata(globalCopyKey(school,sport),'text');
+    const key=globalCopyKey(copyScope(url),school,sport);
+    const {metadata}=await env.HIGHLIGHTS.getWithMetadata(key,'text');
     if(Date.now()-Date.parse(metadata?.fetched_at||'')<GLOBAL_COPY_WRITE_MS)return;
-    await env.HIGHLIGHTS.put(globalCopyKey(school,sport),body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt}});
+    await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt}});
   }catch{}
 }
-async function globalCopy(env,school,sport){
+async function globalCopy(env,url,school,sport){
   if(!env?.HIGHLIGHTS||!usesGlobalCopy(school))return null;
-  try{
-    const {value,metadata}=await env.HIGHLIGHTS.getWithMetadata(globalCopyKey(school,sport),'text');
-    if(!value||!metadata?.fetched_at)return null;
-    const response=new Response(value,{headers:{'content-type':'application/json; charset=utf-8','x-sas-fetched-at':metadata.fetched_at,'cache-control':'no-store'}});
-    return cachedAge(response)<=LAST_GOOD_MS?response:null;
-  }catch{return null}
+  for(const scope of [...new Set([copyScope(url),'prod'])]){
+    try{
+      const {value,metadata}=await env.HIGHLIGHTS.getWithMetadata(globalCopyKey(scope,school,sport),'text');
+      if(!value||!metadata?.fetched_at)continue;
+      const response=new Response(value,{headers:{'content-type':'application/json; charset=utf-8','x-sas-fetched-at':metadata.fetched_at,'cache-control':'no-store'}});
+      if(cachedAge(response)<=LAST_GOOD_MS)return response;
+    }catch{}
+  }
+  return null;
 }
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
@@ -3040,7 +3052,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   // copy; with none, it is shown but never saved as the last good copy.
   if(result.scores_missing){
     const saved=await cache.match(lastGoodFeedKey(url,school,sport));
-    if((saved&&cachedAge(saved)<=LAST_GOOD_MS)||await globalCopy(env,school,sport))return null;
+    if((saved&&cachedAge(saved)<=LAST_GOOD_MS)||await globalCopy(env,url,school,sport))return null;
   }
   // The official page failed but a live scoreboard answered (a one-off
   // kstatesports.com failure during K-State vs BYU, Oct 1): lay the live score
@@ -3059,7 +3071,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key){
   if(result.official_failed||result.scores_missing){await cache.put(key,stored.clone());return stored;}
   const lastGood=stored.clone();lastGood.headers.set('cache-control',`public, max-age=${Math.floor(LAST_GOOD_MS/1000)}`);
   const body=usesGlobalCopy(school)?await stored.clone().text():null;
-  await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood),body&&saveGlobalCopy(env,school,sport,body,result.fetched_at)]);return stored;
+  await Promise.all([cache.put(key,stored.clone()),cache.put(lastGoodFeedKey(url,school,sport),lastGood),body&&saveGlobalCopy(env,url,school,sport,body,result.fetched_at)]);return stored;
 }
 async function diagnostic(schoolId,sport){const school=catalogSchool(schoolId),now=new Date();if(!school)return{version:VERSION,school:schoolId,sport,error:'School not found'};const rows=[];for(const url of candidateUrls(school,sport)){try{const r=await fetchUrl(url,school,sport,now);rows.push({requested_url:r.requested_url,url:r.url,http_status:r.http_status,ok:r.ok,content_length:r.content_length,label_count:r.label_count,event_count:r.event_count,has_upcoming:r.has_upcoming,has_completed:r.has_completed,source_cache:r.source_cache,upstream_status:r.upstream_status,empty_schedule:Boolean(r.empty_schedule)});}catch(e){rows.push({requested_url:url,error:e?.message||e?.name||'FetchError'});}}return{version:VERSION,school:schoolId,sport,checked_at:now.toISOString(),sources:rows};}
 async function verification(schoolId,sport){const result=await fetchLive(schoolId,sport),g=groupEvents(result.events)[0]||null;return{version:VERSION,school:schoolId,sport,verified_at:result.fetched_at,live_source_used:result.live_source_used,source_urls:result.source_urls,error:result.error,counts:g?{live:g.live.length,results:g.results.length,upcoming:g.upcoming.length,other:g.other.length}:{live:0,results:0,upcoming:0,other:0},latest_result:g?.results?.[0]||null,next_event:g?.upcoming?.[0]||null};}
@@ -3187,7 +3199,7 @@ export default{
       if(url.searchParams.get('cached')==='1'){
         const saved=cached||await cache.match(lastGoodFeedKey(url,school,sport));
         if(saved&&cachedAge(saved)<=LAST_GOOD_MS)return cacheResponse(saved,'saved');
-        const shared=await globalCopy(env,school,sport);if(shared)return cacheResponse(shared,'saved-global');
+        const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
         return json({detail:{message:'No saved schedule is available',school,sport}},404);
       }
       if(cached&&!force){
@@ -3200,7 +3212,7 @@ export default{
       if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(cached,'stale-fallback');
       const lastGood=await cache.match(lastGoodFeedKey(url,school,sport));
       if(lastGood&&cachedAge(lastGood)<=LAST_GOOD_MS)return cacheResponse(lastGood,'saved');
-      const shared=await globalCopy(env,school,sport);if(shared)return cacheResponse(shared,'saved-global');
+      const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[]});}
