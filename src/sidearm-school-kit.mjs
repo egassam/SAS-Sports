@@ -18,7 +18,7 @@
 //   createTfrrsMeetResults({...})     cross country races and team scores from TFRRS
 //   createTeamTfrrsMeetResults({...}) the same for separate men's and women's pages
 import {sidearmStartTime} from './sidearm-schedule-data.mjs';
-import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults} from './tfrrs-results.mjs';
+import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults,tfrrsTeamName} from './tfrrs-results.mjs';
 import {withoutRanking,otherSportStory} from './sidearm-schedule-reader.mjs';
 
 const dayGap=(a,b)=>(Date.parse(String(b.date).slice(0,10))-Date.parse(String(a.date).slice(0,10)))/86400000;
@@ -286,7 +286,11 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
 // by date and name, the school's rows by the TEAM column. Every team place
 // the schedule publishes must agree, or the schedule's headline stays.
 // Feed and expanded view both call attach; the second call is a no-op.
-export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay=false,decodeHtml,ordinal,fetch,headers}){
+// A meet the schedule names past recognition (by its host: Virginia Tech's
+// "Virginia" is TFRRS's "Panorama Farms Invitational") is the team's only
+// meet that day when the schedule's team places confirm it (the check
+// below); onlyMeetThatDay:true takes it without places too.
+export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay='checked',decodeHtml,ordinal,fetch,headers}){
   const download=downloader(fetch,headers);
   const matches=event=>event?.school_id===id&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   async function attach(event){
@@ -297,29 +301,45 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       return event;
     };
     const failed='Official race results could not be loaded. Open the official recap.';
-    const date=String(event.start_time).slice(0,10),pages=new Set();
+    const date=String(event.start_time).slice(0,10),pages=new Set(),names=new Set([tfrrsTeam]);
     for(const team of ['Women','Men']){
       if(!teams[team])continue;
       const listing=await download(teams[team]);if(!listing)continue;
+      // TFRRS's own name for the school ("Pittsburgh", "Xavier (Ohio)",
+      // "Connecticut": Pitt's, Xavier's and UConn's runners never matched).
+      const listed=tfrrsTeamName(listing,decodeHtml);if(listed)names.add(listed);
       // onlyMeetThatDay: a name TFRRS shortens past recognition (USC's "UC
       // Riverside Invitational" is the "UCR XC Invite") is the team's only
       // meet that day.
-      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)})||(onlyMeetThatDay?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
+      const checked=/\b(?:Men|Women)'s team: T?\d/.test(String(event.headline||''));
+      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)})||(onlyMeetThatDay===true||onlyMeetThatDay==='checked'&&checked?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
       if(url)pages.add(url);
     }
     if(!pages.size)return unavailable('No results for this meet are published on TFRRS yet.');
     const races=[];let resultsUrl=null;
     for(const url of pages){
       const page=await download(url);if(!page)return unavailable(failed);
-      for(const race of parseTfrrsResults(page,{decodeHtml,ordinal,team:tfrrsTeam}))if(!races.some(other=>other.group===race.group))races.push(race);
+      for(const name of names){
+        const found=parseTfrrsResults(page,{decodeHtml,ordinal,team:name});
+        for(const race of found)if(!races.some(other=>other.group===race.group))races.push(race);
+        if(found.length)break;
+      }
       resultsUrl??=url;
     }
-    races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
+    // Women first; a team's scored race with the bigger field (more points)
+    // before its other races (the Nuttycombe's Championship before the B Race).
+    races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1)||Number(b.result?.score||0)-Number(a.result?.score||0));
     if(!races.length)return unavailable(failed);
     const published=Object.fromEntries([...String(event.headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+)\w\w/g)].map(m=>[m[1],m[2]]));
+    // The schedule's place names the team's race when it ran several (the
+    // Pre-National's Blue and White): that race leads; with the same place
+    // in two, the bigger field's (the Nuttycombe's Championship 263 points,
+    // not the B Race's 160).
     for(const [team,place] of Object.entries(published)){
-      const race=races.find(race=>race.team===team&&race.result);
-      if(!race||String(race.result.place)!==place.replace(/^T/,''))return unavailable(failed);
+      const race=races.filter(race=>race.team===team&&race.result&&String(race.result.place)===place.replace(/^T/,'')).sort((a,b)=>Number(b.result.score)-Number(a.result.score))[0];
+      if(!race)return unavailable(failed);
+      const first=races.findIndex(other=>other.team===team);
+      if(races[first]!==race){races.splice(races.indexOf(race),1);races.splice(first,0,race);}
     }
     const rows=[],headline=[],lines=[];
     for(const race of races){
