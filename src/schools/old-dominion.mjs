@@ -10,7 +10,7 @@ import {createWmtApiHandlers,wmtApiSchoolRoutes} from '../wmt-api-kit.mjs';
 // scripts/port-wmt-api.mjs from /website-api/sports (2026-10-22).
 const HOST='odusports.com';
 // The site's sport ids (/website-api/sports): one per team.
-const SPORT_IDS={'womens-basketball':1,'mens-basketball':2,'mens-tennis':3,'swimming':4,'baseball':6,'field-hockey':15,'football':16,'mens-golf':19,'mens-soccer':20,'volleyball':25,'womens-golf':26,'womens-lacrosse':27,'womens-rowing':28,'womens-soccer':29,'womens-tennis':30,'wrestling':38};
+const SPORT_IDS={'womens-basketball':1,'mens-basketball':2,'mens-tennis':3,'swimming':4,'baseball':6,'field-hockey':15,'football':16,'mens-golf':19,'mens-soccer':20,'volleyball':25,'womens-golf':26,'womens-lacrosse':27,'womens-rowing':28,'womens-soccer':29,'womens-tennis':30};
 const SLUGS={
   'Baseball':['baseball'],
   'Basketball':['womens-basketball','mens-basketball'],
@@ -22,8 +22,7 @@ const SLUGS={
   'Soccer':['womens-soccer','mens-soccer'],
   'Tennis':['womens-tennis','mens-tennis'],
   'Volleyball':['volleyball'],
-  'Swimming & Diving':['swimming'],
-  'Wrestling':['wrestling']
+  'Swimming & Diving':['swimming']
 };
 const TEAMS={'womens-basketball':"Women's",'mens-basketball':"Men's",'womens-tennis':"Women's",'mens-tennis':"Men's",'womens-golf':"Women's",'mens-golf':"Men's",'womens-soccer':"Women's",'mens-soccer':"Men's"};
 // Old Dominion's TFRRS cross country team pages (complete races and team
@@ -67,8 +66,7 @@ export const oldDominionSchool={
     'old-dominion|Soccer':['https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=29&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament','https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=20&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'],
     'old-dominion|Tennis':['https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=30&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament','https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=3&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'],
     'old-dominion|Swimming & Diving':'https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=4&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament',
-    'old-dominion|Volleyball':'https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=25&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament',
-    'old-dominion|Wrestling':'https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=38&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'
+    'old-dominion|Volleyball':'https://odusports.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=25&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'
   },
   rosterUrls:{
     'old-dominion|Baseball':'https://odusports.com/sports/baseball/roster',
@@ -81,8 +79,7 @@ export const oldDominionSchool={
     'old-dominion|Soccer':['https://odusports.com/sports/womens-soccer/roster','https://odusports.com/sports/mens-soccer/roster'],
     'old-dominion|Tennis':['https://odusports.com/sports/womens-tennis/roster','https://odusports.com/sports/mens-tennis/roster'],
     'old-dominion|Swimming & Diving':'https://odusports.com/sports/swimming/roster',
-    'old-dominion|Volleyball':'https://odusports.com/sports/volleyball/roster',
-    'old-dominion|Wrestling':'https://odusports.com/sports/wrestling/roster'
+    'old-dominion|Volleyball':'https://odusports.com/sports/volleyball/roster'
   }
 };
 

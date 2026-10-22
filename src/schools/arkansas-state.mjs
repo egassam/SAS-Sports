@@ -11,6 +11,9 @@ export const arkansasStateSchool={
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
   pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Football','Golf','Soccer','Tennis','Track & Field','Volleyball']),
+  // Baseball (2027) and track rosters publish no athlete portraits yet:
+  // official profile cards without a portrait fill the slots (California's).
+  portraitlessProfileSports:new Set(['Baseball','Track & Field']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
