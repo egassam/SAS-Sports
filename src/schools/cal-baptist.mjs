@@ -11,6 +11,9 @@ export const calBaptistSchool={
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
   pageDataSports:new Set(['Baseball','Basketball','Cross Country','Golf','STUNT','Soccer','Softball','Swimming & Diving','Track & Field','Volleyball','Water Polo']),
+  // The 2027 softball roster publishes one athlete portrait: official
+  // profile cards without a portrait fill the slots (Arkansas State's).
+  portraitlessProfileSports:new Set(['Softball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).

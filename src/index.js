@@ -150,7 +150,7 @@ import {csuBakersfieldSchool,createCsuBakersfieldHandlers} from './schools/csu-b
 import {ucSantaBarbaraSchool,createUcSantaBarbaraHandlers} from './schools/uc-santa-barbara.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.139.1-big-west';
+const VERSION='4.139.2-big-west';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1689,6 +1689,11 @@ function rosterPositions(raw,base){
 // athletes instead of cross country athletes"): Cross Country features its
 // distance runners only.
 const DISTANCE_GROUP=/\b(?:distance|cross[\s-]*country|xc)\b/i;
+// Only when the athletes carry event groups: Cal Baptist's shared roster
+// (Oct 22) gives positions to its coaches alone, which dropped every runner.
+function distanceRunners(profiles,positions){
+  return profiles.some(profile=>positions.get(profile.url))?profiles.filter(profile=>DISTANCE_GROUP.test(positions.get(profile.url)||'')):profiles;
+}
 async function featuredAthletes(schoolId,sport){
   const school=catalogSchool(schoolId);if(!school)return[];
   const started=Date.now();
@@ -1700,7 +1705,7 @@ async function featuredAthletes(schoolId,sport){
       const r=await sourceFetch(rosterUrl,{},{ttl:SOURCE_TTL.listing});if(!r.ok)continue;
       const raw=await r.text();
       let discovered=rosterProfiles(raw,r.url||rosterUrl);
-      if(sharedTrack){const positions=rosterPositions(raw,r.url||rosterUrl);if(positions.size)discovered=discovered.filter(profile=>DISTANCE_GROUP.test(positions.get(profile.url)||''));}
+      if(sharedTrack)discovered=distanceRunners(discovered,rosterPositions(raw,r.url||rosterUrl));
       profiles.push(...discovered.filter(profile=>!profiles.some(existing=>existing.url===profile.url)));
       if(profiles.length&&!schoolCombinedSports(school).has(sport))break;
       // A pinned athlete on a later team's roster is read too (Michigan's

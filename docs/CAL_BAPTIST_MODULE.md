@@ -16,9 +16,10 @@ Each rule has a check in `tests/cal-baptist-module.mjs` (generated page blocks p
 
 ## Athletes
 
-Roster cards, then official profiles (no NIL marketplace linked from the site). Every sport shows three featured athletes on the preview (`validate-schools --athletes-only`, Oct 22). The official sources publish no athlete Instagram for any sport (the profile bios link only Instagram's embed script), so official profile cards fill the slots in every sport (`athlete_profile_fallback_sports` in `tests/certified-schools.json`).
+Roster cards, then official profiles (no NIL marketplace linked from the site). Every sport shows three featured athletes on the preview (`validate-schools --athletes-only`, Oct 22). The official sources publish no athlete Instagram for any sport (the profile bios link only Instagram's embed script), so official profile cards fill the slots in every sport (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The 2027 softball roster publishes one portrait: profile cards without a portrait fill its slots (`portraitlessProfileSports`). Cross country features the shared roster's runners (its athletes carry no event group; only the coaches have positions, which had emptied the list: shared fix). The 2027 STUNT roster lists coaches only: off the athlete list until it lists players.
 
 ## Open
 
+- STUNT athletes when its roster lists players.
 - STUNT, Baseball, Softball, Track & Field and women's water polo fill when published.
 - First live cards not yet observed.

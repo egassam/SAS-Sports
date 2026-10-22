@@ -65,9 +65,16 @@ assert.equal(isSidearmSplash('<a href="/splash.aspx?skip=true">x</a><a href="/sp
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch:async url=>{throw Error(`Unexpected network request: ${url}`)}};
-const worker=Function(...Object.keys(deps),source+';return {verifiedInstagram,officialCardInstagram}')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {verifiedInstagram,officialCardInstagram,distanceRunners}')(...Object.values(deps));
 assert.equal(worker.verifiedInstagram('<script async src="//www.instagram.com/embed.js"></script>'),null);
 assert.equal(worker.officialCardInstagram('https://www.instagram.com/embed.js'),null);
 assert.equal(worker.verifiedInstagram('<a href="https://www.instagram.com/kylie.phi/">IG</a>'),'https://www.instagram.com/kylie.phi/');
+
+// Cross country features distance runners from a roster shared with track,
+// but only when the athletes carry event groups: Cal Baptist's gives
+// positions to its coaches alone. Mutation: filtering anyway leaves none.
+const runners=[{url:'a'},{url:'b'}];
+assert.equal(worker.distanceRunners(runners,new Map([['coach','Head Cross-Country/Track Coach']])).length,2);
+assert.deepEqual(worker.distanceRunners(runners,new Map([['a','Distance'],['b','Sprints']])).map(p=>p.url),['a']);
 
 console.log('Big West shared checks passed');
