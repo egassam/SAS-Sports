@@ -286,6 +286,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 24 Women's · Temple at Rice | L, 1-5",
  "Final Sep 27 Women's · Temple at North Texas | T, 1-1",
  "Final Oct 1 Women's · Temple vs East Carolina | T, 2-2",
+ "Final Oct 4 Women's · Temple at Holy Family | W, 3-0",
  "Final Oct 11 Women's · Temple at South Florida | W, 1-0",
  "Final Oct 15 Women's · Temple vs Memphis | L, 0-2",
  "Today Oct 22, 7:00 PM Women's · Temple vs Florida Atlantic | ",

@@ -91,9 +91,14 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       if(seasonDay(game)<seasonStart){pastSeason++;continue;}
       const opponent=config.opponent(game,sport);
       if(!opponent)continue;
-      // Canceled and postponed games are not on K-State's schedule.
-      if(/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
+      // Canceled and postponed games are not on K-State's schedule. A game
+      // played after its postponement can keep the old "Postponed" note
+      // beside its score (Ball State soccer vs IU Indy, Aug 13; Temple
+      // women's soccer at Holy Family, Oct 4, W 3-0, 9-4-2 as published):
+      // the score decides.
       const result=game.result||{},outcome=String(result.status||'').toUpperCase();
+      const played=['W','L','T'].includes(outcome)&&/^\d/.test(String(result.team_score??'').trim());
+      if(!played&&/^(?:Cancel+ed|Postponed)\b/i.test(String(game.noplay_text||'').trim()))continue;
       const team=String(result.team_score??'').trim(),other=String(result.opponent_score??'').trim();
       const scored=['W','L','T'].includes(outcome)&&score.test(team)&&score.test(other);
       const meet=meetOf(sport,game,scored);

@@ -101,7 +101,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^big west\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
@@ -257,7 +257,7 @@ export function createSouthFloridaHandlers({makeEvent,recapMatchesEvent,eventTyp
     // football, Dec 5) is "at".
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
-    // ("Big West Final", Utah Valley men's soccer, Nov 13) are "at".
+    // ("American Conference Final") are "at".
     relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
@@ -344,9 +344,6 @@ export function createSouthFloridaHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Wrestling stays in the Big 12 (the Big West sponsors none); the page
-      // data marks its league duals.
-      if(sport==='Wrestling')event.conference_name='Big 12';
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));
