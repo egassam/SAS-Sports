@@ -27,7 +27,7 @@ export const santaClaraSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Rowing','Soccer','Swimming & Diving','Tennis','Water Polo']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Rowing','Soccer','Swimming & Diving','Tennis','Water Polo']),
   verifiedInstagrams:{
     'santa-clara|Basketball|Jake Ensminger':'https://www.instagram.com/jr.ense/',
     'santa-clara|Volleyball|Lexi Trapani':'https://www.instagram.com/alexatrapani_/',
@@ -36,10 +36,10 @@ export const santaClaraSchool={
   scheduleUrls:{
     'santa-clara|Baseball':'https://santaclarabroncos.com/sports/baseball/schedule',
     'santa-clara|Basketball':['https://santaclarabroncos.com/sports/mens-basketball/schedule','https://santaclarabroncos.com/sports/womens-basketball/schedule'],
-    'santa-clara|Beach Volleyball':'https://santaclarabroncos.com/',
-    'santa-clara|Cross Country':'https://santaclarabroncos.com/sports/cross-country/schedule',
+    'santa-clara|Beach Volleyball':'https://santaclarabroncos.com/sports/womens-beach-volleyball/schedule',
+    'santa-clara|Cross Country':['https://santaclarabroncos.com/sports/womens-cross-country/schedule','https://santaclarabroncos.com/sports/mens-cross-country/schedule'],
     'santa-clara|Golf':['https://santaclarabroncos.com/sports/womens-golf/schedule','https://santaclarabroncos.com/sports/mens-golf/schedule'],
-    'santa-clara|Rowing':'https://santaclarabroncos.com/sports/womens-rowing/schedule',
+    'santa-clara|Rowing':['https://santaclarabroncos.com/sports/womens-rowing/schedule','https://santaclarabroncos.com/sports/mens-rowing/schedule'],
     'santa-clara|Soccer':['https://santaclarabroncos.com/sports/womens-soccer/schedule','https://santaclarabroncos.com/sports/mens-soccer/schedule'],
     'santa-clara|Softball':'https://santaclarabroncos.com/sports/softball/schedule',
     'santa-clara|Tennis':['https://santaclarabroncos.com/sports/womens-tennis/schedule','https://santaclarabroncos.com/sports/mens-tennis/schedule'],
@@ -49,10 +49,10 @@ export const santaClaraSchool={
   rosterUrls:{
     'santa-clara|Baseball':'https://santaclarabroncos.com/sports/baseball/roster',
     'santa-clara|Basketball':['https://santaclarabroncos.com/sports/mens-basketball/roster','https://santaclarabroncos.com/sports/womens-basketball/roster'],
-    'santa-clara|Beach Volleyball':'https://santaclarabroncos.com/sports/beach-volleyball/roster',
-    'santa-clara|Cross Country':'https://santaclarabroncos.com/sports/cross-country/roster',
+    'santa-clara|Beach Volleyball':'https://santaclarabroncos.com/sports/womens-beach-volleyball/roster',
+    'santa-clara|Cross Country':['https://santaclarabroncos.com/sports/womens-cross-country/roster','https://santaclarabroncos.com/sports/mens-cross-country/roster'],
     'santa-clara|Golf':['https://santaclarabroncos.com/sports/womens-golf/roster','https://santaclarabroncos.com/sports/mens-golf/roster'],
-    'santa-clara|Rowing':'https://santaclarabroncos.com/sports/womens-rowing/roster',
+    'santa-clara|Rowing':['https://santaclarabroncos.com/sports/womens-rowing/roster','https://santaclarabroncos.com/sports/mens-rowing/roster'],
     'santa-clara|Soccer':['https://santaclarabroncos.com/sports/womens-soccer/roster','https://santaclarabroncos.com/sports/mens-soccer/roster'],
     'santa-clara|Softball':'https://santaclarabroncos.com/sports/softball/roster',
     'santa-clara|Tennis':['https://santaclarabroncos.com/sports/womens-tennis/roster','https://santaclarabroncos.com/sports/mens-tennis/roster'],

@@ -179,7 +179,7 @@ import {seattleUSchool,createSeattleUHandlers} from './schools/seattle-u.mjs';
 import {denverSchool,createDenverHandlers} from './schools/denver.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.147.0-wcc-catalog';
+const VERSION='4.148.0-wcc';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

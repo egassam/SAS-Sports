@@ -24,7 +24,7 @@ export const saintMarysSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'saint-marys|Basketball|NaTallia Urlacher':'https://www.instagram.com/cocourlacher/',
     'saint-marys|Basketball|Lucy Aherne':'https://www.instagram.com/_lucyaherne/',
@@ -36,14 +36,14 @@ export const saintMarysSchool={
     'saint-marys|Baseball':'https://smcgaels.com/sports/baseball/schedule',
     'saint-marys|Basketball':['https://smcgaels.com/sports/mens-basketball/schedule','https://smcgaels.com/sports/womens-basketball/schedule'],
     'saint-marys|Beach Volleyball':'https://smcgaels.com/sports/womens-beach-volleyball/schedule',
-    'saint-marys|Cross Country':'https://smcgaels.com/sports/cross-country/schedule',
+    'saint-marys|Cross Country':['https://smcgaels.com/sports/womens-cross-country/schedule','https://smcgaels.com/sports/mens-cross-country/schedule'],
     'saint-marys|Golf':'https://smcgaels.com/sports/mens-golf/schedule',
     'saint-marys|Rowing':'https://smcgaels.com/sports/womens-rowing/schedule',
     'saint-marys|Soccer':['https://smcgaels.com/sports/womens-soccer/schedule','https://smcgaels.com/sports/mens-soccer/schedule'],
     'saint-marys|Softball':'https://smcgaels.com/sports/softball/schedule',
     'saint-marys|Swimming & Diving':'https://smcgaels.com/sports/swimming/schedule',
     'saint-marys|Tennis':['https://smcgaels.com/sports/womens-tennis/schedule','https://smcgaels.com/sports/mens-tennis/schedule'],
-    'saint-marys|Track & Field':'https://smcgaels.com/sports/track-and-field/schedule',
+    'saint-marys|Track & Field':['https://smcgaels.com/sports/womens-track-and-field/schedule','https://smcgaels.com/sports/track-and-field/schedule'],
     'saint-marys|Volleyball':'https://smcgaels.com/sports/womens-volleyball/schedule',
     'saint-marys|Water Polo':'https://smcgaels.com/sports/mens-water-polo/schedule'
   },
@@ -51,14 +51,14 @@ export const saintMarysSchool={
     'saint-marys|Baseball':'https://smcgaels.com/sports/baseball/roster',
     'saint-marys|Basketball':['https://smcgaels.com/sports/mens-basketball/roster','https://smcgaels.com/sports/womens-basketball/roster'],
     'saint-marys|Beach Volleyball':'https://smcgaels.com/sports/womens-beach-volleyball/roster',
-    'saint-marys|Cross Country':'https://smcgaels.com/sports/cross-country/roster',
+    'saint-marys|Cross Country':['https://smcgaels.com/sports/womens-cross-country/roster','https://smcgaels.com/sports/mens-cross-country/roster'],
     'saint-marys|Golf':'https://smcgaels.com/sports/mens-golf/roster',
     'saint-marys|Rowing':'https://smcgaels.com/sports/womens-rowing/roster',
     'saint-marys|Soccer':['https://smcgaels.com/sports/womens-soccer/roster','https://smcgaels.com/sports/mens-soccer/roster'],
     'saint-marys|Softball':'https://smcgaels.com/sports/softball/roster',
     'saint-marys|Swimming & Diving':'https://smcgaels.com/sports/swimming/roster',
     'saint-marys|Tennis':['https://smcgaels.com/sports/womens-tennis/roster','https://smcgaels.com/sports/mens-tennis/roster'],
-    'saint-marys|Track & Field':'https://smcgaels.com/sports/track-and-field/roster',
+    'saint-marys|Track & Field':['https://smcgaels.com/sports/womens-track-and-field/roster','https://smcgaels.com/sports/track-and-field/roster'],
     'saint-marys|Volleyball':'https://smcgaels.com/sports/womens-volleyball/roster',
     'saint-marys|Water Polo':'https://smcgaels.com/sports/mens-water-polo/roster'
   }
@@ -74,7 +74,7 @@ const saintMarysToday=sidearmToday('America/Los_Angeles');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Saint Mary's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const SAINT_MARYS_TFRRS_TEAMS={Women:null,Men:null};
+export const SAINT_MARYS_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/CA_college_f_St_Marys_CA.html',Men:'https://www.tfrrs.org/teams/xc/CA_college_m_St_Marys_CA.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.

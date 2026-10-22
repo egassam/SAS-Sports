@@ -501,7 +501,8 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^(?:T-?)?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
   const word='((?:T-?)?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
   const title=meta('title').replace(/[‘’]/g,"'");
-  if(new RegExp(`\\b${team}\\s+Wins?\\b`,'i').test(title))return'1st';
+  // "Broncos Capture Bomb Darts Birds Collegiate ..." (Santa Clara, Sep 8).
+  if(new RegExp(`\\b${team}\\s+(?:Wins?|Captures?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
   // "Demon Deacons Open Season with Team Title at ANNIKA Intercollegiate";
   // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
   if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
@@ -541,6 +542,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // (North Texas, The Clerico, Oct 21).
     // A move on the final day: "As a team, Cal Poly slipped from fifth to
     // eighth during the final round" (Saint Mary's Invitational, Oct 21).
+    // "As a team, the Broncos tied for the low round of the day ... to
+    // secure a third-place finish" (Santa Clara, Canadian Collegiate, Sep 15).
+    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
     const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));

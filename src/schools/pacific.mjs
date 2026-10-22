@@ -27,7 +27,7 @@ export const pacificSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball','Water Polo']),
   verifiedInstagrams:{
     'pacific|Soccer|Faylinn Berkowitz':'https://www.instagram.com/faylinnb/',
     'pacific|Soccer|Kaya Rosa':'https://www.instagram.com/kaya_rosa19/',
@@ -37,33 +37,33 @@ export const pacificSchool={
   },
   scheduleUrls:{
     'pacific|Baseball':'https://pacifictigers.com/sports/baseball/schedule',
-    'pacific|Basketball':['https://pacifictigers.com/sports/mens-basketball/schedule','https://pacifictigers.com/sports/womens-basketball/schedule','https://pacifictigers.com/sports/basketball/schedule'],
-    'pacific|Beach Volleyball':'https://pacifictigers.com/sports/beach-volleyball/schedule',
-    'pacific|Cross Country':'https://pacifictigers.com/sports/cross-country/schedule',
-    'pacific|Golf':['https://pacifictigers.com/sports/womens-golf/schedule','https://pacifictigers.com/sports/mens-golf/schedule','https://pacifictigers.com/sports/golf/schedule'],
+    'pacific|Basketball':['https://pacifictigers.com/sports/womens-basketball/schedule','https://pacifictigers.com/sports/mens-basketball/schedule'],
+    'pacific|Beach Volleyball':'https://pacifictigers.com/sports/womens-beach-volleyball/schedule',
+    'pacific|Cross Country':['https://pacifictigers.com/sports/womens-cross-country/schedule','https://pacifictigers.com/sports/mens-cross-country/schedule'],
+    'pacific|Golf':'https://pacifictigers.com/sports/mens-golf/schedule',
     'pacific|STUNT':'https://pacifictigers.com/sports/stunt/schedule',
-    'pacific|Soccer':['https://pacifictigers.com/sports/womens-soccer/schedule','https://pacifictigers.com/sports/soccer/schedule','https://pacifictigers.com/sports/mens-soccer/schedule'],
+    'pacific|Soccer':['https://pacifictigers.com/sports/womens-soccer/schedule','https://pacifictigers.com/sports/mens-soccer/schedule'],
     'pacific|Softball':'https://pacifictigers.com/sports/softball/schedule',
-    'pacific|Swimming & Diving':['https://pacifictigers.com/sports/womens-swimming-and-diving/schedule','https://pacifictigers.com/sports/mens-swimming-and-diving/schedule','https://pacifictigers.com/sports/womens-swimming-diving/schedule','https://pacifictigers.com/sports/mens-swimming-diving/schedule','https://pacifictigers.com/sports/swimming-diving/schedule','https://pacifictigers.com/sports/swimming/schedule'],
-    'pacific|Tennis':['https://pacifictigers.com/sports/womens-tennis/schedule','https://pacifictigers.com/sports/mens-tennis/schedule','https://pacifictigers.com/sports/tennis/schedule'],
-    'pacific|Track & Field':['https://pacifictigers.com/sports/track-and-field/schedule','https://pacifictigers.com/sports/track-field/schedule'],
-    'pacific|Volleyball':['https://pacifictigers.com/sports/womens-volleyball/schedule','https://pacifictigers.com/sports/volleyball/schedule'],
-    'pacific|Water Polo':['https://pacifictigers.com/sports/womens-water-polo/schedule','https://pacifictigers.com/sports/mens-water-polo/schedule','https://pacifictigers.com/sports/water-polo/schedule']
+    'pacific|Swimming & Diving':['https://pacifictigers.com/sports/womens-swimming-and-diving/schedule','https://pacifictigers.com/sports/mens-swimming-and-diving/schedule'],
+    'pacific|Tennis':['https://pacifictigers.com/sports/womens-tennis/schedule','https://pacifictigers.com/sports/mens-tennis/schedule'],
+    'pacific|Track & Field':['https://pacifictigers.com/sports/womens-track-and-field/schedule','https://pacifictigers.com/sports/mens-track/schedule'],
+    'pacific|Volleyball':['https://pacifictigers.com/sports/womens-volleyball/schedule','https://pacifictigers.com/sports/mens-volleyball/schedule'],
+    'pacific|Water Polo':['https://pacifictigers.com/sports/womens-water-polo/schedule','https://pacifictigers.com/sports/mens-water-polo/schedule']
   },
   rosterUrls:{
     'pacific|Baseball':'https://pacifictigers.com/sports/baseball/roster',
-    'pacific|Basketball':['https://pacifictigers.com/sports/mens-basketball/roster','https://pacifictigers.com/sports/womens-basketball/roster','https://pacifictigers.com/sports/basketball/roster'],
-    'pacific|Beach Volleyball':'https://pacifictigers.com/sports/beach-volleyball/roster',
-    'pacific|Cross Country':'https://pacifictigers.com/sports/cross-country/roster',
-    'pacific|Golf':['https://pacifictigers.com/sports/womens-golf/roster','https://pacifictigers.com/sports/mens-golf/roster','https://pacifictigers.com/sports/golf/roster'],
+    'pacific|Basketball':['https://pacifictigers.com/sports/womens-basketball/roster','https://pacifictigers.com/sports/mens-basketball/roster'],
+    'pacific|Beach Volleyball':'https://pacifictigers.com/sports/womens-beach-volleyball/roster',
+    'pacific|Cross Country':['https://pacifictigers.com/sports/womens-cross-country/roster','https://pacifictigers.com/sports/mens-cross-country/roster'],
+    'pacific|Golf':'https://pacifictigers.com/sports/mens-golf/roster',
     'pacific|STUNT':'https://pacifictigers.com/sports/stunt/roster',
-    'pacific|Soccer':['https://pacifictigers.com/sports/womens-soccer/roster','https://pacifictigers.com/sports/soccer/roster','https://pacifictigers.com/sports/mens-soccer/roster'],
+    'pacific|Soccer':['https://pacifictigers.com/sports/womens-soccer/roster','https://pacifictigers.com/sports/mens-soccer/roster'],
     'pacific|Softball':'https://pacifictigers.com/sports/softball/roster',
-    'pacific|Swimming & Diving':['https://pacifictigers.com/sports/womens-swimming-and-diving/roster','https://pacifictigers.com/sports/mens-swimming-and-diving/roster','https://pacifictigers.com/sports/womens-swimming-diving/roster','https://pacifictigers.com/sports/mens-swimming-diving/roster','https://pacifictigers.com/sports/swimming-diving/roster','https://pacifictigers.com/sports/swimming/roster'],
-    'pacific|Tennis':['https://pacifictigers.com/sports/womens-tennis/roster','https://pacifictigers.com/sports/mens-tennis/roster','https://pacifictigers.com/sports/tennis/roster'],
-    'pacific|Track & Field':['https://pacifictigers.com/sports/track-and-field/roster','https://pacifictigers.com/sports/track-field/roster'],
-    'pacific|Volleyball':['https://pacifictigers.com/sports/womens-volleyball/roster','https://pacifictigers.com/sports/volleyball/roster'],
-    'pacific|Water Polo':['https://pacifictigers.com/sports/womens-water-polo/roster','https://pacifictigers.com/sports/mens-water-polo/roster','https://pacifictigers.com/sports/water-polo/roster']
+    'pacific|Swimming & Diving':['https://pacifictigers.com/sports/womens-swimming-and-diving/roster','https://pacifictigers.com/sports/mens-swimming-and-diving/roster'],
+    'pacific|Tennis':['https://pacifictigers.com/sports/womens-tennis/roster','https://pacifictigers.com/sports/mens-tennis/roster'],
+    'pacific|Track & Field':['https://pacifictigers.com/sports/womens-track-and-field/roster','https://pacifictigers.com/sports/mens-track/roster'],
+    'pacific|Volleyball':['https://pacifictigers.com/sports/womens-volleyball/roster','https://pacifictigers.com/sports/mens-volleyball/roster'],
+    'pacific|Water Polo':['https://pacifictigers.com/sports/womens-water-polo/roster','https://pacifictigers.com/sports/mens-water-polo/roster']
   }
 };
 

@@ -40,9 +40,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   fiu:['fla international'],'jacksonville-state':['jax state','jacksonville st'],'kennesaw-state':['kennesaw'],
   'middle-tennessee':['middle tenn','middle tennessee state','mtsu','middle tenn st'],'missouri-state':['missouri st'],'new-mexico-state':['new mexico st','nmsu'],
   'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud'],
-  // WCC opponents write "Loyola Marymount", "Saint Mary's (Calif.)", "St.
-  // Mary's", "USD", "Seattle", "Denver".
-  lmu:['loyola marymount','loyola marymount university'],'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons']};
+  // WCC opponents write "Saint Mary's (Calif.)", "St.
+  // Mary's" (its "St." reads as "State" here), "USD", "Seattle", "Denver".
+  'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca','state mary s'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};

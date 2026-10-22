@@ -26,7 +26,7 @@ export const portlandSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'portland|Baseball|Carter Gaston':'https://www.instagram.com/gastoncarter_/',
     'portland|Baseball|Morgan Codron':'https://www.instagram.com/morgancodron/',
@@ -35,23 +35,23 @@ export const portlandSchool={
   scheduleUrls:{
     'portland|Baseball':'https://portlandpilots.com/sports/baseball/schedule',
     'portland|Basketball':['https://portlandpilots.com/sports/mens-basketball/schedule','https://portlandpilots.com/sports/womens-basketball/schedule'],
-    'portland|Beach Volleyball':'https://portlandpilots.com/sports/beach-volleyball/schedule',
-    'portland|Cross Country':'https://portlandpilots.com/sports/cross-country/schedule',
+    'portland|Beach Volleyball':'https://portlandpilots.com/sports/womens-beach-volleyball/schedule',
+    'portland|Cross Country':['https://portlandpilots.com/sports/womens-cross-country/schedule','https://portlandpilots.com/sports/mens-cross-country/schedule'],
     'portland|Rowing':'https://portlandpilots.com/sports/womens-rowing/schedule',
     'portland|Soccer':['https://portlandpilots.com/sports/womens-soccer/schedule','https://portlandpilots.com/sports/mens-soccer/schedule'],
     'portland|Tennis':['https://portlandpilots.com/sports/womens-tennis/schedule','https://portlandpilots.com/sports/mens-tennis/schedule'],
-    'portland|Track & Field':'https://portlandpilots.com/sports/track-field/schedule',
+    'portland|Track & Field':['https://portlandpilots.com/sports/womens-track-and-field/schedule','https://portlandpilots.com/sports/mens-track-and-field/schedule'],
     'portland|Volleyball':'https://portlandpilots.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'portland|Baseball':'https://portlandpilots.com/sports/baseball/roster',
     'portland|Basketball':['https://portlandpilots.com/sports/mens-basketball/roster','https://portlandpilots.com/sports/womens-basketball/roster'],
-    'portland|Beach Volleyball':'https://portlandpilots.com/sports/beach-volleyball/roster',
-    'portland|Cross Country':'https://portlandpilots.com/sports/cross-country/roster',
+    'portland|Beach Volleyball':'https://portlandpilots.com/sports/womens-beach-volleyball/roster',
+    'portland|Cross Country':['https://portlandpilots.com/sports/womens-cross-country/roster','https://portlandpilots.com/sports/mens-cross-country/roster'],
     'portland|Rowing':'https://portlandpilots.com/sports/womens-rowing/roster',
     'portland|Soccer':['https://portlandpilots.com/sports/womens-soccer/roster','https://portlandpilots.com/sports/mens-soccer/roster'],
     'portland|Tennis':['https://portlandpilots.com/sports/womens-tennis/roster','https://portlandpilots.com/sports/mens-tennis/roster'],
-    'portland|Track & Field':'https://portlandpilots.com/sports/track-field/roster',
+    'portland|Track & Field':['https://portlandpilots.com/sports/womens-track-and-field/roster','https://portlandpilots.com/sports/mens-track-and-field/roster'],
     'portland|Volleyball':'https://portlandpilots.com/sports/womens-volleyball/roster'
   }
 };

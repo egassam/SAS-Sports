@@ -10,7 +10,7 @@ export const denverSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Basketball','Cross Country','Golf','Gymnastics','Hockey','Lacrosse','Skiing','Soccer','Swimming & Diving','Tennis','Triathlon','Volleyball']),
+  pageDataSports:new Set(['Basketball','Golf','Gymnastics','Hockey','Lacrosse','Skiing','Soccer','Swimming & Diving','Tennis','Triathlon','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -26,28 +26,26 @@ export const denverSchool={
   verifiedInstagrams:{},
   scheduleUrls:{
     'denver|Basketball':['https://denverpioneers.com/sports/mens-basketball/schedule','https://denverpioneers.com/sports/womens-basketball/schedule'],
-    'denver|Cross Country':'https://denverpioneers.com/sports/cross-country/schedule',
     'denver|Golf':['https://denverpioneers.com/sports/womens-golf/schedule','https://denverpioneers.com/sports/mens-golf/schedule'],
     'denver|Gymnastics':'https://denverpioneers.com/sports/womens-gymnastics/schedule',
     'denver|Hockey':'https://denverpioneers.com/sports/mens-ice-hockey/schedule',
     'denver|Lacrosse':['https://denverpioneers.com/sports/womens-lacrosse/schedule','https://denverpioneers.com/sports/mens-lacrosse/schedule'],
     'denver|Skiing':'https://denverpioneers.com/sports/skiing/schedule',
     'denver|Soccer':['https://denverpioneers.com/sports/womens-soccer/schedule','https://denverpioneers.com/sports/mens-soccer/schedule'],
-    'denver|Swimming & Diving':['https://denverpioneers.com/sports/womens-swimming-and-diving/schedule','https://denverpioneers.com/sports/mens-swimming-and-diving/schedule','https://denverpioneers.com/sports/swimming-and-diving/schedule'],
+    'denver|Swimming & Diving':['https://denverpioneers.com/sports/womens-swimming-and-diving/schedule','https://denverpioneers.com/sports/mens-swimming-and-diving/schedule'],
     'denver|Tennis':['https://denverpioneers.com/sports/womens-tennis/schedule','https://denverpioneers.com/sports/mens-tennis/schedule'],
     'denver|Triathlon':'https://denverpioneers.com/sports/triathlon/schedule',
     'denver|Volleyball':'https://denverpioneers.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'denver|Basketball':['https://denverpioneers.com/sports/mens-basketball/roster','https://denverpioneers.com/sports/womens-basketball/roster'],
-    'denver|Cross Country':'https://denverpioneers.com/sports/cross-country/roster',
     'denver|Golf':['https://denverpioneers.com/sports/womens-golf/roster','https://denverpioneers.com/sports/mens-golf/roster'],
     'denver|Gymnastics':'https://denverpioneers.com/sports/womens-gymnastics/roster',
     'denver|Hockey':'https://denverpioneers.com/sports/mens-ice-hockey/roster',
     'denver|Lacrosse':['https://denverpioneers.com/sports/womens-lacrosse/roster','https://denverpioneers.com/sports/mens-lacrosse/roster'],
     'denver|Skiing':'https://denverpioneers.com/sports/skiing/roster',
     'denver|Soccer':['https://denverpioneers.com/sports/womens-soccer/roster','https://denverpioneers.com/sports/mens-soccer/roster'],
-    'denver|Swimming & Diving':['https://denverpioneers.com/sports/womens-swimming-and-diving/roster','https://denverpioneers.com/sports/mens-swimming-and-diving/roster','https://denverpioneers.com/sports/swimming-and-diving/roster'],
+    'denver|Swimming & Diving':['https://denverpioneers.com/sports/womens-swimming-and-diving/roster','https://denverpioneers.com/sports/mens-swimming-and-diving/roster'],
     'denver|Tennis':['https://denverpioneers.com/sports/womens-tennis/roster','https://denverpioneers.com/sports/mens-tennis/roster'],
     'denver|Triathlon':'https://denverpioneers.com/sports/triathlon/roster',
     'denver|Volleyball':'https://denverpioneers.com/sports/womens-volleyball/roster'
@@ -61,7 +59,8 @@ const denverToday=sidearmToday('America/Denver');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+// The NCAA's "Selection Show" (men's soccer, Nov 16) is no game.
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$|^selection show$/i;
 // Denver's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
 export const DENVER_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/CO_college_f_Denver.html',Men:'https://www.tfrrs.org/teams/xc/CO_college_m_Denver.html'};
@@ -339,6 +338,11 @@ export function createDenverHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
+      // Sports the WCC does not sponsor play in other leagues; the page data
+      // marks their league games: hockey in the NCHC, lacrosse in the Big
+      // East, gymnastics in the Big 12.
+      const league={Hockey:'NCHC',Lacrosse:'Big East',Gymnastics:'Big 12'}[sport];
+      if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));

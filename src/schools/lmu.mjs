@@ -34,8 +34,8 @@ export const lmuSchool={
   scheduleUrls:{
     'lmu|Baseball':'https://lmulions.com/sports/baseball/schedule',
     'lmu|Basketball':['https://lmulions.com/sports/mens-basketball/schedule','https://lmulions.com/sports/womens-basketball/schedule'],
-    'lmu|Beach Volleyball':'https://lmulions.com/',
-    'lmu|Cross Country':'https://lmulions.com/sports/cross-country/schedule',
+    'lmu|Beach Volleyball':'https://lmulions.com/sports/womens-beach-volleyball/schedule',
+    'lmu|Cross Country':'https://lmulions.com/sports/womens-cross-country/schedule',
     'lmu|Golf':'https://lmulions.com/sports/mens-golf/schedule',
     'lmu|Soccer':['https://lmulions.com/sports/womens-soccer/schedule','https://lmulions.com/sports/mens-soccer/schedule'],
     'lmu|Softball':'https://lmulions.com/sports/softball/schedule',
@@ -46,8 +46,8 @@ export const lmuSchool={
   rosterUrls:{
     'lmu|Baseball':'https://lmulions.com/sports/baseball/roster',
     'lmu|Basketball':['https://lmulions.com/sports/mens-basketball/roster','https://lmulions.com/sports/womens-basketball/roster'],
-    'lmu|Beach Volleyball':'https://lmulions.com/sports/beach-volleyball/roster',
-    'lmu|Cross Country':'https://lmulions.com/sports/cross-country/roster',
+    'lmu|Beach Volleyball':'https://lmulions.com/sports/womens-beach-volleyball/roster',
+    'lmu|Cross Country':'https://lmulions.com/sports/womens-cross-country/roster',
     'lmu|Golf':'https://lmulions.com/sports/mens-golf/roster',
     'lmu|Soccer':['https://lmulions.com/sports/womens-soccer/roster','https://lmulions.com/sports/mens-soccer/roster'],
     'lmu|Softball':'https://lmulions.com/sports/softball/roster',
@@ -67,7 +67,7 @@ const lmuToday=sidearmToday('America/Los_Angeles');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Loyola Marymount's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const LMU_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/CA_college_f_Loyola_Marymount.html',Men:'https://www.tfrrs.org/teams/xc/CA_college_m_Loyola_Marymount.html'};
+export const LMU_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/CA_college_f_Loyola_Marymount.html',Men:null};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
