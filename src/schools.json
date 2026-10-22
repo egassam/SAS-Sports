@@ -3047,6 +3047,271 @@
     ]
   },
   {
+    "id": "charlotte",
+    "name": "Charlotte",
+    "short_name": "Charlotte",
+    "state": "North Carolina",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://charlotte49ers.com",
+    "aliases": [
+      "University of North Carolina at Charlotte",
+      "UNC Charlotte",
+      "49ers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "charlotte49ers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "east-carolina",
+    "name": "East Carolina",
+    "short_name": "East Carolina",
+    "state": "North Carolina",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ecupirates.com",
+    "aliases": [
+      "East Carolina University",
+      "ECU",
+      "Pirates"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ecupirates",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fau",
+    "name": "Florida Atlantic",
+    "short_name": "FAU",
+    "state": "Florida",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fausports.com",
+    "aliases": [
+      "Florida Atlantic University",
+      "Owls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fausports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "memphis",
+    "name": "Memphis",
+    "short_name": "Memphis",
+    "state": "Tennessee",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gotigersgo.com",
+    "aliases": [
+      "University of Memphis",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gotigersgo",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "north-texas",
+    "name": "North Texas",
+    "short_name": "North Texas",
+    "state": "Texas",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://meangreensports.com",
+    "aliases": [
+      "University of North Texas",
+      "UNT",
+      "Mean Green"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "meangreensports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "rice",
+    "name": "Rice",
+    "short_name": "Rice",
+    "state": "Texas",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://riceowls.com",
+    "aliases": [
+      "Rice University",
+      "Owls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "riceowls",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "south-florida",
+    "name": "South Florida",
+    "short_name": "USF",
+    "state": "Florida",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gousfbulls.com",
+    "aliases": [
+      "University of South Florida",
+      "Bulls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gousfbulls",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "temple",
+    "name": "Temple",
+    "short_name": "Temple",
+    "state": "Pennsylvania",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://owlsports.com",
+    "aliases": [
+      "Temple University",
+      "Owls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "owlsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "tulane",
+    "name": "Tulane",
+    "short_name": "Tulane",
+    "state": "Louisiana",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tulanegreenwave.com",
+    "aliases": [
+      "Tulane University",
+      "Green Wave"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tulanegreenwave",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "tulsa",
+    "name": "Tulsa",
+    "short_name": "Tulsa",
+    "state": "Oklahoma",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tulsahurricane.com",
+    "aliases": [
+      "University of Tulsa",
+      "Golden Hurricane"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tulsahurricane",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uab",
+    "name": "UAB",
+    "short_name": "UAB",
+    "state": "Alabama",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uabsports.com",
+    "aliases": [
+      "University of Alabama at Birmingham",
+      "Alabama-Birmingham",
+      "Blazers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uabsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utsa",
+    "name": "UTSA",
+    "short_name": "UTSA",
+    "state": "Texas",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goutsa.com",
+    "aliases": [
+      "University of Texas at San Antonio",
+      "UT San Antonio",
+      "Roadrunners"
+    ],
+    "providers": [
+      {
+        "provider": "WMT",
+        "slug": "goutsa",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wichita-state",
+    "name": "Wichita State",
+    "short_name": "Wichita State",
+    "state": "Kansas",
+    "conference": "American",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goshockers.com",
+    "aliases": [
+      "Wichita State University",
+      "Shockers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goshockers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

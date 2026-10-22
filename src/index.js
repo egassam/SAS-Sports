@@ -150,7 +150,7 @@ import {csuBakersfieldSchool,createCsuBakersfieldHandlers} from './schools/csu-b
 import {ucSantaBarbaraSchool,createUcSantaBarbaraHandlers} from './schools/uc-santa-barbara.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.139.3-big-west';
+const VERSION='4.140.0-american-catalog';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
