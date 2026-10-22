@@ -73,7 +73,13 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
     let url;try{url=new URL(sourceUrl);}catch{return null;}
     if(url.hostname!==host||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
     const pageGames=sidearmScheduleGames(raw);
-    if(!pageGames.length)return null;
+    // A season published with no events yet ("2027 Stunt Schedule", Pacific
+    // and UC Davis, Oct 22) or SIDEARM's empty "@season @sport" template is a
+    // valid empty schedule (USC's rule), not a failed read.
+    if(!pageGames.length){
+      if(/<title>\s*(?:@season\b|\d{4}(?:-\d{2})? [^<]*\bSchedule\b)/i.test(String(raw||''))){const none=[];emptiedBySeason.add(none);return none;}
+      return null;
+    }
     const today=todayOf(now),events=[],parse={};
     const games=merge(sport,listed(pageGames),today);
     // Pages keep showing last season until the next is published ("2025-26

@@ -515,6 +515,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "denver": [
+    "Basketball",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Skiing",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Triathlon",
+    "Volleyball"
+  ],
   "denver-broncos": [
     "Football"
   ],
@@ -974,6 +987,18 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "lmu": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Volleyball",
+    "Water Polo"
   ],
   "long-beach-state": [
     "Baseball",
@@ -1579,6 +1604,21 @@
   "orlando-city": [
     "Soccer"
   ],
+  "pacific": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
   "penn-state": [
     "Baseball",
     "Basketball",
@@ -1597,6 +1637,19 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "pepperdine": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "philadelphia-eagles": [
     "Football"
@@ -1626,6 +1679,17 @@
   ],
   "pittsburgh-steelers": [
     "Football"
+  ],
+  "portland": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Rowing",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "portland-state": [
     "Basketball",
@@ -1717,6 +1781,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "saint-marys": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
   "sam-houston": [
     "Baseball",
     "Basketball",
@@ -1751,6 +1830,17 @@
     "Volleyball",
     "Water Polo"
   ],
+  "san-francisco": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Track & Field",
+    "Triathlon",
+    "Volleyball"
+  ],
   "san-francisco-49ers": [
     "Football"
   ],
@@ -1776,6 +1866,19 @@
     "Volleyball",
     "Water Polo"
   ],
+  "santa-clara": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Volleyball",
+    "Water Polo"
+  ],
   "seattle-mariners": [
     "Baseball"
   ],
@@ -1784,6 +1887,19 @@
   ],
   "seattle-sounders": [
     "Soccer"
+  ],
+  "seattle-u": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "seton-hall": [
     "Baseball",

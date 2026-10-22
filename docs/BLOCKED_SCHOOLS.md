@@ -6,7 +6,7 @@ Every school whose official athletics site refuses the app is listed here (user,
 
 ## How the block works
 
-All fifteen sites below sit behind **Imperva** (Incapsula), a bot-defense service. The app runs on Cloudflare Workers and sends its own honest identity (`Mozilla/5.0 (compatible; SAS-Sports/<version>; +<bot page>)`). Imperva answers every request from Cloudflare's network with a redirect that sets a new session cookie and redirects again. The Worker gives up with **"Too many redirects"**, and `/api/source` answers HTTP 502.
+All sixteen sites below sit behind **Imperva** (Incapsula), a bot-defense service. The app runs on Cloudflare Workers and sends its own honest identity (`Mozilla/5.0 (compatible; SAS-Sports/<version>; +<bot page>)`). Imperva answers every request from Cloudflare's network with a redirect that sets a new session cookie and redirects again. The Worker gives up with **"Too many redirects"**, and `/api/source` answers HTTP 502.
 
 - **The block is by network, not by the app's identity.** On October 21, one request to utahstateaggies.com with the same honest user agent from another network (the build sandbox) got the full 596 KB football schedule, `robots.txt` and the iCal feed with HTTP 200.
 - **Keeping cookies does not help.** On October 19, with the user's approval, the Worker kept Imperva's session cookies for utahstateaggies.com and txst.com (commits `5083632`, `9b41a78`, `810f5e6`, then reverted). Imperva kept redirecting and issuing new cookies, because it wants the cookie its JavaScript challenge sets, which only a browser running its script can get. Running that challenge would be circumvention, so it was not done.
@@ -14,7 +14,7 @@ All fifteen sites below sit behind **Imperva** (Incapsula), a bot-defense servic
 
 ## Blocked schools
 
-Checked through the branch preview's `/api/source` (the same network as production). The latest check of the first eight was October 22, 11:10 UTC (the three Mountain West schools 13:10 UTC, Western Michigan 15:08 UTC, Wichita State 20:27 UTC, Kennesaw State and New Mexico State 21:55 UTC), and all answered "Too many redirects".
+Checked through the branch preview's `/api/source` (the same network as production). The latest check of the first eight was October 22, 11:10 UTC (the three Mountain West schools 13:10 UTC, Western Michigan 15:08 UTC, Wichita State 20:27 UTC, Kennesaw State and New Mexico State 21:55 UTC, San Diego 22:53 UTC), and all answered "Too many redirects".
 
 | School | Conference (2026-27) | Site | Blocked since | Checks | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -33,6 +33,7 @@ Checked through the branch preview's `/api/source` (the same network as producti
 | Wichita State | American | goshockers.com | Oct 22, 2026 | Oct 22 (about 20:05, 20:14 and 20:27 UTC: homepage and volleyball schedule) | Imperva (`visid_incap`, `incap_ses`, `x-iinfo`); the other twelve American schools read normally |
 | Kennesaw State | Conference USA | ksuowls.com | Oct 22, 2026 | Oct 22 (about 21:33, 21:44 and 21:55 UTC: homepage and volleyball schedule) | |
 | New Mexico State | Conference USA | nmstatesports.com | Oct 22, 2026 | Oct 22 (about 21:33, 21:44 and 21:55 UTC: homepage and volleyball schedule) | The other eight Conference USA schools read normally |
+| San Diego | WCC | usdtoreros.com | Oct 22, 2026 | Oct 22 (about 22:23, 22:42 and 22:53 UTC: homepage and volleyball schedule) | The other nine WCC schools read normally |
 
 The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked. Twelve of the thirteen American schools read (Oct 22, about 20:05 UTC); Wichita State is blocked.
 

@@ -3523,6 +3523,209 @@
     ]
   },
   {
+    "id": "lmu",
+    "name": "Loyola Marymount",
+    "short_name": "LMU",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lmulions.com",
+    "aliases": [
+      "Loyola Marymount University",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lmulions",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "pacific",
+    "name": "Pacific",
+    "short_name": "Pacific",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://pacifictigers.com",
+    "aliases": [
+      "University of the Pacific",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "pacifictigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "pepperdine",
+    "name": "Pepperdine",
+    "short_name": "Pepperdine",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://pepperdinewaves.com",
+    "aliases": [
+      "Pepperdine University",
+      "Waves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "pepperdinewaves",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "portland",
+    "name": "Portland",
+    "short_name": "Portland",
+    "state": "Oregon",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://portlandpilots.com",
+    "aliases": [
+      "University of Portland",
+      "Pilots"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "portlandpilots",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "saint-marys",
+    "name": "Saint Mary's",
+    "short_name": "Saint Mary's",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://smcgaels.com",
+    "aliases": [
+      "Saint Mary's College of California",
+      "St. Mary's",
+      "Gaels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "smcgaels",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "san-diego",
+    "name": "San Diego",
+    "short_name": "San Diego",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://usdtoreros.com",
+    "aliases": [
+      "University of San Diego",
+      "USD",
+      "Toreros"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "usdtoreros",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "san-francisco",
+    "name": "San Francisco",
+    "short_name": "San Francisco",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://usfdons.com",
+    "aliases": [
+      "University of San Francisco",
+      "USF Dons",
+      "Dons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "usfdons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "santa-clara",
+    "name": "Santa Clara",
+    "short_name": "Santa Clara",
+    "state": "California",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://santaclarabroncos.com",
+    "aliases": [
+      "Santa Clara University",
+      "Broncos"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "santaclarabroncos",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "seattle-u",
+    "name": "Seattle U",
+    "short_name": "Seattle U",
+    "state": "Washington",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goseattleu.com",
+    "aliases": [
+      "Seattle University",
+      "Redhawks"
+    ],
+    "providers": [
+      {
+        "provider": "WMT",
+        "slug": "goseattleu",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "denver",
+    "name": "Denver",
+    "short_name": "Denver",
+    "state": "Colorado",
+    "conference": "WCC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://denverpioneers.com",
+    "aliases": [
+      "University of Denver",
+      "Pioneers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "denverpioneers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

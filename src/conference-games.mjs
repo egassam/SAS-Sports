@@ -39,7 +39,10 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // "Sam Houston State", "WKU" and the like.
   fiu:['fla international'],'jacksonville-state':['jax state','jacksonville st'],'kennesaw-state':['kennesaw'],
   'middle-tennessee':['middle tenn','middle tennessee state','mtsu','middle tenn st'],'missouri-state':['missouri st'],'new-mexico-state':['new mexico st','nmsu'],
-  'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud']};
+  'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud'],
+  // WCC opponents write "Saint Mary's (Calif.)", "St.
+  // Mary's" (its "St." reads as "State" here), "USD", "Seattle", "Denver".
+  'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca','state mary s'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -117,7 +120,14 @@ const NOT_SPONSORED={
   // softball, soccer, volleyball, beach volleyball, golf, tennis, cross
   // country, track and swimming: no field hockey, lacrosse, rowing,
   // wrestling or gymnastics.
-  'Conference USA':new Set(['Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Conference USA':new Set(['Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The WCC (2026-27: LMU, Pacific, Pepperdine, Portland, Saint Mary's, San
+  // Diego, San Francisco, Santa Clara, Seattle U, Denver) sponsors
+  // basketball, baseball, softball, soccer, volleyball (both), beach
+  // volleyball, golf, tennis, cross country, track, swimming, rowing and
+  // men's water polo (with Air Force, San José State and UC Davis): no
+  // football, field hockey, lacrosse, hockey, wrestling or gymnastics.
+  WCC:new Set(['Football','Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
