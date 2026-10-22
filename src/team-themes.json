@@ -215,6 +215,30 @@
     "line": "#3b638b",
     "onAccent": "#ffffff"
   },
+  "cal-baptist": {
+    "primary": "#002554",
+    "secondary": "#C99700",
+    "panel": "#09111f",
+    "panelDark": "#050810",
+    "line": "#0e2341",
+    "onAccent": "#ffffff"
+  },
+  "cal-poly": {
+    "primary": "#154734",
+    "secondary": "#BD8B13",
+    "panel": "#0d1818",
+    "panelDark": "#070c0c",
+    "line": "#1a3530",
+    "onAccent": "#ffffff"
+  },
+  "cal-state-fullerton": {
+    "primary": "#00274C",
+    "secondary": "#FF7900",
+    "panel": "#09111d",
+    "panelDark": "#05080f",
+    "line": "#0e243d",
+    "onAccent": "#ffffff"
+  },
   "california": {
     "primary": "#003262",
     "secondary": "#FDB515",
@@ -389,6 +413,22 @@
     "panel": "#091d32",
     "panelDark": "#050e18",
     "line": "#0e4170",
+    "onAccent": "#ffffff"
+  },
+  "csu-bakersfield": {
+    "primary": "#003594",
+    "secondary": "#FFC72C",
+    "panel": "#09142d",
+    "panelDark": "#050a16",
+    "line": "#0e2c64",
+    "onAccent": "#ffffff"
+  },
+  "csun": {
+    "primary": "#D22030",
+    "secondary": "#000000",
+    "panel": "#371017",
+    "panelDark": "#1a080c",
+    "line": "#82202d",
     "onAccent": "#ffffff"
   },
   "dallas-cowboys": {
@@ -757,6 +797,14 @@
     "panel": "#0d0e11",
     "panelDark": "#060607",
     "line": "#65686c",
+    "onAccent": "#ffffff"
+  },
+  "long-beach-state": {
+    "primary": "#000000",
+    "secondary": "#F0AA00",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
   "los-angeles-angels": {
@@ -1303,6 +1351,14 @@
     "line": "#7f0e2f",
     "onAccent": "#ffffff"
   },
+  "sacramento-state": {
+    "primary": "#043927",
+    "secondary": "#C4B581",
+    "panel": "#091515",
+    "panelDark": "#050a0b",
+    "line": "#112e28",
+    "onAccent": "#ffffff"
+  },
   "san-diego-fc": {
     "primary": "#697A7C",
     "secondary": "#F89E1A",
@@ -1591,6 +1647,38 @@
     "line": "#0f243f",
     "onAccent": "#ffffff"
   },
+  "uc-irvine": {
+    "primary": "#0064A4",
+    "secondary": "#FFD200",
+    "panel": "#091f31",
+    "panelDark": "#050f18",
+    "line": "#0e456d",
+    "onAccent": "#ffffff"
+  },
+  "uc-riverside": {
+    "primary": "#003DA5",
+    "secondary": "#FFB81C",
+    "panel": "#091631",
+    "panelDark": "#050b18",
+    "line": "#0e306e",
+    "onAccent": "#ffffff"
+  },
+  "uc-san-diego": {
+    "primary": "#182B49",
+    "secondary": "#C69214",
+    "panel": "#0e121d",
+    "panelDark": "#07090f",
+    "line": "#1c263b",
+    "onAccent": "#ffffff"
+  },
+  "uc-santa-barbara": {
+    "primary": "#003660",
+    "secondary": "#FEBC11",
+    "panel": "#091422",
+    "panelDark": "#050a11",
+    "line": "#0e2c48",
+    "onAccent": "#ffffff"
+  },
   "ucf": {
     "primary": "#BA9B37",
     "secondary": "#000000",
@@ -1661,6 +1749,14 @@
     "panel": "#320f14",
     "panelDark": "#17070b",
     "line": "#751e25",
+    "onAccent": "#ffffff"
+  },
+  "utah-valley": {
+    "primary": "#275D38",
+    "secondary": "#FFFFFF",
+    "panel": "#111d19",
+    "panelDark": "#080e0d",
+    "line": "#244232",
     "onAccent": "#ffffff"
   },
   "utep": {

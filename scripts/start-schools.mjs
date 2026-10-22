@@ -42,7 +42,11 @@ async function tfrrsTeams(school){
   // (NC State: NC_college_f_North_Carolina_St, from "North Carolina State
   // University").
   const institutions=(school.aliases||[]).filter(n=>/\bUniversity\b/.test(n)).map(n=>n.replace(/^University of\s+|\s+University$/g,'')).flatMap(n=>[n,n.replace(/\bState$/,'St')]);
-  const st=STATES[school.state],names=[school.short_name,school.name,...institutions].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  // Or by another alias, any "State" cut to "St" (Big West, Oct 22:
+  // CA_college_f_Cal_St_Fullerton, Cal_St_Northridge from "Cal State
+  // Northridge", Long_Beach_St).
+  const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\bState\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St'));
+  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;
     try{const r=await fetch(url('f'),{signal:AbortSignal.timeout(20000)});if(r.ok&&/Cross Country/i.test(await r.text()))return{Women:url('f'),Men:url('m')};}catch{}

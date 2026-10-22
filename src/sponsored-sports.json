@@ -262,6 +262,45 @@
     "Track & Field",
     "Volleyball"
   ],
+  "cal-baptist": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
+  "cal-poly": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "cal-state-fullerton": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
   "california": [
     "Baseball",
     "Basketball",
@@ -413,6 +452,32 @@
     "Softball",
     "Tennis",
     "Volleyball"
+  ],
+  "csu-bakersfield": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "csun": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "dallas-cowboys": [
     "Football"
@@ -808,6 +873,19 @@
   ],
   "las-vegas-raiders": [
     "Football"
+  ],
+  "long-beach-state": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "los-angeles-angels": [
     "Baseball"
@@ -1460,6 +1538,21 @@
     "Volleyball",
     "Wrestling"
   ],
+  "sacramento-state": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "san-diego-fc": [
     "Soccer"
   ],
@@ -1781,6 +1874,56 @@
     "Volleyball",
     "Water Polo"
   ],
+  "uc-irvine": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
+  "uc-riverside": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "uc-san-diego": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
+  "uc-santa-barbara": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
   "ucf": [
     "Baseball",
     "Basketball",
@@ -1913,6 +2056,17 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "utah-valley": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "utep": [
     "Basketball",

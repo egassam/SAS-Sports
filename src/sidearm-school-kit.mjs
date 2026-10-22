@@ -154,13 +154,20 @@ export function golfPlacing(text){
 // "12th of 14, 289-291 -- 580 (+12)" and "T9 of 16, 292 -- 867 (+27)",
 // Eastern Michigan "T-5th (830/-34)" and "1st (863, -1)", Kent State
 // "T-12th / 13 teams (+61, 913)", Miami "2nd, 842", Toledo the score first
-// "864/T-2nd". The place reads "T5th of 12" (field known) or "T5th"; null
-// when the card is anything else (match play "CMU 10, Alabama State 2",
-// "No Team Score").
+// "864/T-2nd". Big West (Oct 22): UC Irvine names the round first ("Final -
+// 15th (905)"), Long Beach State adds its best player ("2nd/14; Phi, T3rd"),
+// Cal Poly spells the place ("Ninth"). The place reads "T5th of 12" (field
+// known) or "T5th"; null when the card is anything else (match play "CMU 10,
+// Alabama State 2", "No Team Score", a round's standing "Two Rounds - T15").
+const GOLF_WORD_PLACES=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth','twentieth'];
 export function golfCardPlace(text){
-  const card=String(text||'').replace(/\s+/g,' ').trim();
+  const card=String(text||'').replace(/\s+/g,' ').trim().replace(/^final(?: round)?\s*[-\u2013\u2014:]\s*/i,'');
   const scores=/^[\s,()\/+\-\u2013\u2014=:.E\d]*$/i;
   const place=(tied,n,field)=>{const v=Number(n),suffix=v%100>=11&&v%100<=13?'th':['th','st','nd','rd'][v%10]||'th';return`${tied?'T':''}${v}${suffix}${field?` of ${field}`:''}`;};
+  const word=card.match(/^(T-?|tied\s+)?([a-z]+)(?:\s+place)?$/i),spelled=word?GOLF_WORD_PLACES.indexOf(word[2].toLowerCase()):-1;
+  if(spelled>=0)return place(word[1],spelled+1);
+  const player=card.match(/^(T-?)?(\d{1,2})(?:st|nd|rd|th)?\s*\/\s*(\d{1,2})\s*;\s*[^;]+,\s*T?-?\d{1,3}(?:st|nd|rd|th)?$/i);
+  if(player&&Number(player[2])<=Number(player[3]))return place(player[1],player[2],player[3]);
   const first=card.match(/^\d{3,4}\s*\/\s*(T-?)?(\d{1,2})(?:st|nd|rd|th)?$/i);
   if(first)return place(first[1],first[2]);
   const m=card.match(/^(T-?)?(\d{1,2})(?:st|nd|rd|th)?(?:\s*(?:\/|of|out of)\s*(\d{1,2})(?:\s*teams)?)?(?=[\s,(\/\-\u2013\u2014]|$)(.*)$/i);
@@ -529,6 +536,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // finished in a tie for seventh place" (Louisiana) name the team without
     // its name; "Rounding out the team scoring, Ing Iadpluem ... tied for
     // 45th" (North Carolina, Oct 18) is a player's place.
+    // A move on the final day: "As a team, Cal Poly slipped from fifth to
+    // eighth during the final round" (Saint Mary's Invitational, Oct 21).
+    const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
+    if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
     const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
