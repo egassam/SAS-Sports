@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',duquesneSchool.scheduleUrls],['roster',duqu
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'goduquesne.com',`${key} must stay on goduquesne.com`);
   }
 }
-const parity={"Acrobatics & Tumbling":{"schedule":["https://goduquesne.com/sports/acrobatics-and-tumbling/schedule"],"roster":["https://goduquesne.com/sports/acrobatics-and-tumbling/roster"],"combined":false},"Basketball":{"schedule":["https://goduquesne.com/sports/mens-basketball/schedule","https://goduquesne.com/sports/womens-basketball/schedule"],"roster":["https://goduquesne.com/sports/mens-basketball/roster","https://goduquesne.com/sports/womens-basketball/roster"],"combined":true},"Bowling":{"schedule":["https://goduquesne.com/"],"roster":["https://goduquesne.com/sports/bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://goduquesne.com/sports/womens-cross-country/schedule","https://goduquesne.com/sports/mens-cross-country/schedule"],"roster":["https://goduquesne.com/sports/womens-cross-country/roster","https://goduquesne.com/sports/mens-cross-country/roster"],"combined":true},"Football":{"schedule":["https://goduquesne.com/sports/football/schedule"],"roster":["https://goduquesne.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://goduquesne.com/sports/womens-golf/schedule"],"roster":["https://goduquesne.com/sports/womens-golf/roster"],"combined":false},"Lacrosse":{"schedule":["https://goduquesne.com/sports/womens-lacrosse/schedule"],"roster":["https://goduquesne.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://goduquesne.com/sports/womens-rowing/schedule"],"roster":["https://goduquesne.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://goduquesne.com/sports/womens-soccer/schedule","https://goduquesne.com/sports/mens-soccer/schedule"],"roster":["https://goduquesne.com/sports/womens-soccer/roster","https://goduquesne.com/sports/mens-soccer/roster"],"combined":true},"Swimming & Diving":{"schedule":["https://goduquesne.com/sports/womens-swimming-and-diving/schedule"],"roster":["https://goduquesne.com/sports/womens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://goduquesne.com/sports/womens-tennis/schedule","https://goduquesne.com/sports/mens-tennis/schedule"],"roster":["https://goduquesne.com/sports/womens-tennis/roster","https://goduquesne.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://goduquesne.com/sports/womens-track-and-field/schedule","https://goduquesne.com/sports/mens-track-and-field/schedule"],"roster":["https://goduquesne.com/sports/womens-track-and-field/roster","https://goduquesne.com/sports/mens-track-and-field/roster"],"combined":true},"Triathlon":{"schedule":["https://goduquesne.com/sports/triathlon/schedule"],"roster":["https://goduquesne.com/sports/triathlon/roster"],"combined":false},"Volleyball":{"schedule":["https://goduquesne.com/sports/womens-volleyball/schedule"],"roster":["https://goduquesne.com/sports/womens-volleyball/roster"],"combined":false}};
+const parity={"Acrobatics & Tumbling":{"schedule":["https://goduquesne.com/sports/acrobatics-and-tumbling/schedule"],"roster":["https://goduquesne.com/sports/acrobatics-and-tumbling/roster"],"combined":false},"Basketball":{"schedule":["https://goduquesne.com/sports/mens-basketball/schedule","https://goduquesne.com/sports/womens-basketball/schedule"],"roster":["https://goduquesne.com/sports/mens-basketball/roster","https://goduquesne.com/sports/womens-basketball/roster"],"combined":true},"Bowling":{"schedule":["https://goduquesne.com/sports/womens-bowling/schedule"],"roster":["https://goduquesne.com/sports/womens-bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://goduquesne.com/sports/womens-cross-country/schedule","https://goduquesne.com/sports/mens-cross-country/schedule"],"roster":["https://goduquesne.com/sports/womens-cross-country/roster","https://goduquesne.com/sports/mens-cross-country/roster"],"combined":true},"Football":{"schedule":["https://goduquesne.com/sports/football/schedule"],"roster":["https://goduquesne.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://goduquesne.com/sports/womens-golf/schedule"],"roster":["https://goduquesne.com/sports/womens-golf/roster"],"combined":false},"Lacrosse":{"schedule":["https://goduquesne.com/sports/womens-lacrosse/schedule"],"roster":["https://goduquesne.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://goduquesne.com/sports/womens-rowing/schedule"],"roster":["https://goduquesne.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://goduquesne.com/sports/womens-soccer/schedule","https://goduquesne.com/sports/mens-soccer/schedule"],"roster":["https://goduquesne.com/sports/womens-soccer/roster","https://goduquesne.com/sports/mens-soccer/roster"],"combined":true},"Swimming & Diving":{"schedule":["https://goduquesne.com/sports/womens-swimming-and-diving/schedule"],"roster":["https://goduquesne.com/sports/womens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://goduquesne.com/sports/womens-tennis/schedule","https://goduquesne.com/sports/mens-tennis/schedule"],"roster":["https://goduquesne.com/sports/womens-tennis/roster","https://goduquesne.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://goduquesne.com/sports/womens-track-and-field/schedule","https://goduquesne.com/sports/mens-track-and-field/schedule"],"roster":["https://goduquesne.com/sports/womens-track-and-field/roster","https://goduquesne.com/sports/mens-track-and-field/roster"],"combined":true},"Triathlon":{"schedule":["https://goduquesne.com/sports/triathlon/schedule"],"roster":["https://goduquesne.com/sports/triathlon/roster"],"combined":false},"Volleyball":{"schedule":["https://goduquesne.com/sports/womens-volleyball/schedule"],"roster":["https://goduquesne.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -150,6 +150,41 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Feb 24, 6:00 PM Women's · Duquesne at St. Bonaventure | ",
  "Upcoming Feb 27, 2:00 PM Women's · Duquesne vs Loyola Chicago | ",
  "Upcoming Mar 3 Women's · Duquesne at Atlantic 10 Championship | "
+]);
+  const v_womensbowling=parse("Bowling","womens-bowling");
+  assert.deepEqual(v_womensbowling.map(line),[
+ "Final Oct 3 Duquesne vs Niagara | L, 902-962",
+ "Final Oct 3 Duquesne vs Mercyhurst | W, 932-887",
+ "Final Oct 3 Duquesne vs Le Moyne | L, 882-885",
+ "Final Oct 3 Duquesne vs Daemen | W, 869-850",
+ "Final Oct 3 Duquesne vs D'Youville | W, 971-739",
+ "Final Oct 4 Duquesne vs William Smith | W, 950-947",
+ "Final Oct 4 Duquesne vs Roberts Wesleyan | W, 961-907",
+ "Final Oct 4 Duquesne vs Hilbert | W, 888-844",
+ "Final Oct 4 Duquesne vs Niagara | L, 3-4",
+ "Final Oct 16 Duquesne vs Jacksonville State | L, 895-1128",
+ "Final Oct 16 Duquesne vs Western Illinois | W, 962-900",
+ "Final Oct 16 Duquesne vs Bryant | W, 978-945",
+ "Final Oct 16 Duquesne vs Wright State | L, 880-1045",
+ "Final Oct 16 Duquesne vs UMES | W, 911-890",
+ "Final Oct 17 Duquesne vs Mercyhurst | L, 883-952",
+ "Final Oct 17 Duquesne vs Valparaiso | L, 870-1020",
+ "Final Oct 17 Duquesne vs Arkansas State | W, 1007-1000",
+ "Final Oct 17 Duquesne vs Mount St. Mary's | L, 892-936",
+ "Final Oct 17 Duquesne vs North Carolina A&T | L, 872-1013",
+ "Final Oct 18 Duquesne vs Mercyhurst (Game 1) | W, 4-3",
+ "Final Oct 18 Duquesne vs Niagara | L, 0-4",
+ "Final Oct 18 Duquesne vs Mercyhurst (Game 2) | L, 1-4",
+ "Upcoming Oct 30 Duquesne at Destination Florida | ",
+ "Upcoming Nov 6 Duquesne at Duquesne Invitational | ",
+ "Upcoming Nov 13 Duquesne at NEC #1 | ",
+ "Upcoming Jan 15 Duquesne at Northeast Classic | ",
+ "Upcoming Feb 12 Duquesne at NEC #2 | ",
+ "Upcoming Mar 5 Duquesne at Music City Classic | ",
+ "Upcoming Mar 12 Duquesne at ISC & ITC Sectionals | ",
+ "Upcoming Mar 19 Duquesne at NEC Championship | ",
+ "Upcoming Apr 7 Duquesne at NCAA Championship | ",
+ "Upcoming Apr 13 Duquesne at ISC & ITC Championships | "
 ]);
   const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
   assert.deepEqual(v_womenscrosscountry.map(line),[
@@ -374,6 +409,7 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_acrobaticsandtumbling,"Acrobatics & Tumbling acrobatics-and-tumbling");
   ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
   ownRecapsOnly(v_womensbasketball,"Basketball womens-basketball");
+  ownRecapsOnly(v_womensbowling,"Bowling womens-bowling");
   ownRecapsOnly(v_womenscrosscountry,"Cross Country womens-cross-country");
   ownRecapsOnly(v_menscrosscountry,"Cross Country mens-cross-country");
   ownRecapsOnly(v_football,"Football football");

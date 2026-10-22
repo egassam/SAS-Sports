@@ -31,7 +31,7 @@ export const duquesneSchool={
   scheduleUrls:{
     'duquesne|Acrobatics & Tumbling':'https://goduquesne.com/sports/acrobatics-and-tumbling/schedule',
     'duquesne|Basketball':['https://goduquesne.com/sports/mens-basketball/schedule','https://goduquesne.com/sports/womens-basketball/schedule'],
-    'duquesne|Bowling':'https://goduquesne.com/',
+    'duquesne|Bowling':'https://goduquesne.com/sports/womens-bowling/schedule',
     'duquesne|Cross Country':['https://goduquesne.com/sports/womens-cross-country/schedule','https://goduquesne.com/sports/mens-cross-country/schedule'],
     'duquesne|Football':'https://goduquesne.com/sports/football/schedule',
     'duquesne|Golf':'https://goduquesne.com/sports/womens-golf/schedule',
@@ -47,7 +47,7 @@ export const duquesneSchool={
   rosterUrls:{
     'duquesne|Acrobatics & Tumbling':'https://goduquesne.com/sports/acrobatics-and-tumbling/roster',
     'duquesne|Basketball':['https://goduquesne.com/sports/mens-basketball/roster','https://goduquesne.com/sports/womens-basketball/roster'],
-    'duquesne|Bowling':'https://goduquesne.com/sports/bowling/roster',
+    'duquesne|Bowling':'https://goduquesne.com/sports/womens-bowling/roster',
     'duquesne|Cross Country':['https://goduquesne.com/sports/womens-cross-country/roster','https://goduquesne.com/sports/mens-cross-country/roster'],
     'duquesne|Football':'https://goduquesne.com/sports/football/roster',
     'duquesne|Golf':'https://goduquesne.com/sports/womens-golf/roster',
@@ -69,7 +69,8 @@ const duquesneToday=sidearmToday('America/New_York');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+// A bowling bye ("Bye (Baker)", Oct 4) is no match.
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$|^bye\b/i;
 // Duquesne's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
 export const DUQUESNE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/PA_college_f_Duquesne.html',Men:'https://www.tfrrs.org/teams/xc/PA_college_m_Duquesne.html'};
@@ -397,5 +398,5 @@ export function createDuquesneHandlers({makeEvent,recapMatchesEvent,eventType=()
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

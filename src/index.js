@@ -189,7 +189,7 @@ import {saintJosephsSchool,createSaintJosephsHandlers} from './schools/saint-jos
 import {saintLouisSchool,createSaintLouisHandlers} from './schools/saint-louis.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.153.0-atlantic-10';
+const VERSION='4.154.0-atlantic-10';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1912,7 +1912,31 @@ function rosterProfiles(raw,base){
     else if(nameScore(name)>nameScore(previous?.name))byUrl.set(url,{name,url,image_url});
     else if(previous&&!previous.image_url&&image_url)byUrl.set(url,{...previous,image_url});
   }
+  // A SIDEARM roster rendered in the browser (George Mason, Oct 22) carries
+  // its players as page data, "players":[{rp_id,first_name,last_name,image,
+  // socials:{Instagram:{handle}}}], and no athlete links: each player's
+  // official profile is <roster>/<first-last>/<rp_id>.
+  for(const player of rosterPagePlayers(raw)){
+    const name=`${player.first_name||''} ${player.last_name||''}`.replace(/\s+/g,' ').trim();
+    if(!name||!player.rp_id||player.rp_hide)continue;
+    const url=absoluteUrl(`${String(base||'').replace(/[?#].*$/,'').replace(/\/$/,'')}/${slug(name)}/${player.rp_id}`,base);
+    if(!url||byUrl.has(url))continue;
+    const handle=player.socials?.Instagram?.handle||player.instagram_username||'';
+    byUrl.set(url,{name,url,image_url:player.image?.fullpath?absoluteUrl(player.image.fullpath,base):null,instagram_url:handle?officialCardInstagram(`https://www.instagram.com/${String(handle).replace(/^@/,'')}`):null});
+  }
   return[...byUrl.values()].filter(x=>nameScore(x.name)>0).map(profile=>({...profile,instagram_url:profile.instagram_url||socials.get(profile.name.toLowerCase())||null}));
+}
+// The page data's "players" list on a browser-rendered SIDEARM roster.
+function rosterPagePlayers(raw){
+  const text=String(raw||''),at=text.indexOf('"players":[');
+  if(at<0||!/"rp_id":/.test(text.slice(at,at+400)))return[];
+  let depth=0,inString=false,escaped=false,start=at+'"players":'.length;
+  for(let i=start;i<text.length;i++){
+    const c=text[i];
+    if(inString){if(escaped)escaped=false;else if(c==='\\')escaped=true;else if(c==='"')inString=false;continue;}
+    if(c==='"')inString=true;else if(c==='[')depth++;else if(c===']'&&!--depth){try{const list=JSON.parse(text.slice(start,i+1));return Array.isArray(list)?list.filter(x=>x&&typeof x==='object'):[];}catch{return[];}}
+  }
+  return[];
 }
 function athleteImage(raw,base,name,trustedContainer=false){
   const candidates=[];
