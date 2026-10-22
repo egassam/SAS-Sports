@@ -3278,9 +3278,378 @@
   },
   "ulm|Volleyball": {
    "state": "off"
+  },
+  "air-force|Baseball": {
+   "state": "off"
+  },
+  "air-force|Basketball": {
+   "state": "off"
+  },
+  "air-force|Football": {
+   "state": "off"
+  },
+  "air-force|Hockey": {
+   "state": "off"
+  },
+  "air-force|Lacrosse": {
+   "state": "off"
+  },
+  "air-force|Soccer": {
+   "state": "off"
+  },
+  "air-force|Volleyball": {
+   "state": "off"
+  },
+  "air-force|Water Polo": {
+   "state": "off"
+  },
+  "grand-canyon|Baseball": {
+   "state": "off"
+  },
+  "grand-canyon|Basketball": {
+   "state": "off"
+  },
+  "grand-canyon|Soccer": {
+   "state": "off"
+  },
+  "grand-canyon|Softball": {
+   "state": "off"
+  },
+  "grand-canyon|Volleyball": {
+   "state": "off"
+  },
+  "new-mexico|Baseball": {
+   "state": "off"
+  },
+  "new-mexico|Basketball": {
+   "state": "off"
+  },
+  "new-mexico|Football": {
+   "state": "off"
+  },
+  "new-mexico|Soccer": {
+   "state": "off"
+  },
+  "new-mexico|Softball": {
+   "state": "off"
+  },
+  "new-mexico|Volleyball": {
+   "state": "off"
+  },
+  "san-jose-state|Baseball": {
+   "state": "off"
+  },
+  "san-jose-state|Basketball": {
+   "state": "off"
+  },
+  "san-jose-state|Football": {
+   "state": "off"
+  },
+  "san-jose-state|Soccer": {
+   "state": "off"
+  },
+  "san-jose-state|Softball": {
+   "state": "off"
+  },
+  "san-jose-state|Volleyball": {
+   "state": "off"
+  },
+  "san-jose-state|Water Polo": {
+   "state": "off"
+  },
+  "uc-davis|Baseball": {
+   "state": "off"
+  },
+  "uc-davis|Basketball": {
+   "state": "off"
+  },
+  "uc-davis|Field Hockey": {
+   "state": "off"
+  },
+  "uc-davis|Football": {
+   "state": "off"
+  },
+  "uc-davis|Lacrosse": {
+   "state": "off"
+  },
+  "uc-davis|Soccer": {
+   "state": "off"
+  },
+  "uc-davis|Softball": {
+   "state": "off"
+  },
+  "uc-davis|Volleyball": {
+   "state": "off"
+  },
+  "uc-davis|Water Polo": {
+   "state": "off"
+  },
+  "unlv|Baseball": {
+   "state": "off"
+  },
+  "unlv|Basketball": {
+   "state": "off"
+  },
+  "unlv|Football": {
+   "state": "off"
+  },
+  "unlv|Soccer": {
+   "state": "off"
+  },
+  "unlv|Softball": {
+   "state": "off"
+  },
+  "unlv|Volleyball": {
+   "state": "off"
+  },
+  "utep|Basketball": {
+   "state": "off"
+  },
+  "utep|Football": {
+   "state": "off"
+  },
+  "utep|Soccer": {
+   "state": "off"
+  },
+  "utep|Softball": {
+   "state": "off"
+  },
+  "utep|Volleyball": {
+   "state": "off"
+  },
+  "akron|Baseball": {
+   "state": "off"
+  },
+  "akron|Basketball": {
+   "state": "off"
+  },
+  "akron|Football": {
+   "state": "off"
+  },
+  "akron|Lacrosse": {
+   "state": "off"
+  },
+  "akron|Soccer": {
+   "state": "off"
+  },
+  "akron|Softball": {
+   "state": "off"
+  },
+  "akron|Volleyball": {
+   "state": "off"
+  },
+  "ball-state|Baseball": {
+   "state": "off"
+  },
+  "ball-state|Basketball": {
+   "state": "off"
+  },
+  "ball-state|Field Hockey": {
+   "state": "off"
+  },
+  "ball-state|Football": {
+   "state": "off"
+  },
+  "ball-state|Soccer": {
+   "state": "off"
+  },
+  "ball-state|Softball": {
+   "state": "off"
+  },
+  "ball-state|Volleyball": {
+   "state": "off"
+  },
+  "bowling-green|Baseball": {
+   "state": "off"
+  },
+  "bowling-green|Basketball": {
+   "state": "off"
+  },
+  "bowling-green|Football": {
+   "state": "off"
+  },
+  "bowling-green|Hockey": {
+   "state": "off"
+  },
+  "bowling-green|Soccer": {
+   "state": "off"
+  },
+  "bowling-green|Softball": {
+   "state": "off"
+  },
+  "bowling-green|Volleyball": {
+   "state": "off"
+  },
+  "buffalo|Basketball": {
+   "state": "off"
+  },
+  "buffalo|Football": {
+   "state": "off"
+  },
+  "buffalo|Soccer": {
+   "state": "off"
+  },
+  "buffalo|Softball": {
+   "state": "off"
+  },
+  "buffalo|Volleyball": {
+   "state": "off"
+  },
+  "central-michigan|Baseball": {
+   "state": "off"
+  },
+  "central-michigan|Basketball": {
+   "state": "off"
+  },
+  "central-michigan|Field Hockey": {
+   "state": "off"
+  },
+  "central-michigan|Football": {
+   "state": "off"
+  },
+  "central-michigan|Lacrosse": {
+   "state": "off"
+  },
+  "central-michigan|Soccer": {
+   "state": "off"
+  },
+  "central-michigan|Softball": {
+   "state": "off"
+  },
+  "central-michigan|Volleyball": {
+   "state": "off"
+  },
+  "eastern-michigan|Baseball": {
+   "state": "off"
+  },
+  "eastern-michigan|Basketball": {
+   "state": "off"
+  },
+  "eastern-michigan|Football": {
+   "state": "off"
+  },
+  "eastern-michigan|Lacrosse": {
+   "state": "off"
+  },
+  "eastern-michigan|Soccer": {
+   "state": "off"
+  },
+  "eastern-michigan|Volleyball": {
+   "state": "off"
+  },
+  "kent-state|Baseball": {
+   "state": "off"
+  },
+  "kent-state|Basketball": {
+   "state": "off"
+  },
+  "kent-state|Field Hockey": {
+   "state": "off"
+  },
+  "kent-state|Football": {
+   "state": "off"
+  },
+  "kent-state|Lacrosse": {
+   "state": "off"
+  },
+  "kent-state|Soccer": {
+   "state": "off"
+  },
+  "kent-state|Softball": {
+   "state": "off"
+  },
+  "kent-state|Volleyball": {
+   "state": "off"
+  },
+  "miami-oh|Baseball": {
+   "state": "off"
+  },
+  "miami-oh|Basketball": {
+   "state": "off"
+  },
+  "miami-oh|Field Hockey": {
+   "state": "off"
+  },
+  "miami-oh|Football": {
+   "state": "off"
+  },
+  "miami-oh|Hockey": {
+   "state": "off"
+  },
+  "miami-oh|Soccer": {
+   "state": "off"
+  },
+  "miami-oh|Softball": {
+   "state": "off"
+  },
+  "miami-oh|Volleyball": {
+   "state": "off"
+  },
+  "ohio|Baseball": {
+   "state": "off"
+  },
+  "ohio|Basketball": {
+   "state": "off"
+  },
+  "ohio|Field Hockey": {
+   "state": "off"
+  },
+  "ohio|Football": {
+   "state": "off"
+  },
+  "ohio|Soccer": {
+   "state": "off"
+  },
+  "ohio|Softball": {
+   "state": "off"
+  },
+  "ohio|Volleyball": {
+   "state": "off"
+  },
+  "toledo|Baseball": {
+   "state": "off"
+  },
+  "toledo|Basketball": {
+   "state": "off"
+  },
+  "toledo|Football": {
+   "state": "off"
+  },
+  "toledo|Soccer": {
+   "state": "off"
+  },
+  "toledo|Softball": {
+   "state": "off"
+  },
+  "toledo|Volleyball": {
+   "state": "off"
+  },
+  "umass|Baseball": {
+   "state": "off"
+  },
+  "umass|Basketball": {
+   "state": "off"
+  },
+  "umass|Field Hockey": {
+   "state": "off"
+  },
+  "umass|Football": {
+   "state": "off"
+  },
+  "umass|Hockey": {
+   "state": "off"
+  },
+  "umass|Lacrosse": {
+   "state": "off"
+  },
+  "umass|Soccer": {
+   "state": "off"
+  },
+  "umass|Softball": {
+   "state": "off"
   }
  },
- "version": "4.131.5-sun-belt",
- "updated_at": "2026-10-22T12:29:54.585Z",
+ "version": "4.137.0-mac",
+ "updated_at": "2026-10-22T17:35:11.158Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
