@@ -22,37 +22,37 @@ export const laSalleSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Rowing','Soccer','Swimming & Diving','Water Polo']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Rowing','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'la-salle|Acrobatics & Tumbling':'https://goexplorers.com/sports/acrobatics-tumbling/schedule',
     'la-salle|Baseball':'https://goexplorers.com/sports/baseball/schedule',
     'la-salle|Basketball':['https://goexplorers.com/sports/mens-basketball/schedule','https://goexplorers.com/sports/womens-basketball/schedule'],
-    'la-salle|Cross Country':'https://goexplorers.com/sports/cross-country/schedule',
+    'la-salle|Cross Country':['https://goexplorers.com/sports/womens-cross-country/schedule','https://goexplorers.com/sports/mens-cross-country/schedule'],
     'la-salle|Field Hockey':'https://goexplorers.com/sports/field-hockey/schedule',
     'la-salle|Golf':['https://goexplorers.com/sports/womens-golf/schedule','https://goexplorers.com/sports/mens-golf/schedule'],
     'la-salle|Lacrosse':'https://goexplorers.com/sports/womens-lacrosse/schedule',
-    'la-salle|Rowing':'https://goexplorers.com/sports/womens-rowing/schedule',
+    'la-salle|Rowing':['https://goexplorers.com/sports/womens-rowing/schedule','https://goexplorers.com/sports/mens-rowing/schedule'],
     'la-salle|Soccer':['https://goexplorers.com/sports/womens-soccer/schedule','https://goexplorers.com/sports/mens-soccer/schedule'],
-    'la-salle|Swimming & Diving':['https://goexplorers.com/sports/womens-swimming-and-diving/schedule','https://goexplorers.com/sports/mens-swimming-and-diving/schedule','https://goexplorers.com/sports/swimming-and-diving/schedule'],
-    'la-salle|Track & Field':'https://goexplorers.com/sports/track-and-field/schedule',
+    'la-salle|Swimming & Diving':['https://goexplorers.com/sports/womens-swimming-and-diving/schedule','https://goexplorers.com/sports/mens-swimming-and-diving/schedule'],
+    'la-salle|Track & Field':['https://goexplorers.com/sports/womens-track-and-field/schedule','https://goexplorers.com/sports/mens-track-and-field/schedule'],
     'la-salle|Triathlon':'https://goexplorers.com/sports/triathlon/schedule',
-    'la-salle|Water Polo':['https://goexplorers.com/sports/womens-water-polo/schedule','https://goexplorers.com/sports/mens-water-polo/schedule']
+    'la-salle|Water Polo':'https://goexplorers.com/sports/womens-water-polo/schedule'
   },
   rosterUrls:{
     'la-salle|Acrobatics & Tumbling':'https://goexplorers.com/sports/acrobatics-tumbling/roster',
     'la-salle|Baseball':'https://goexplorers.com/sports/baseball/roster',
     'la-salle|Basketball':['https://goexplorers.com/sports/mens-basketball/roster','https://goexplorers.com/sports/womens-basketball/roster'],
-    'la-salle|Cross Country':'https://goexplorers.com/sports/cross-country/roster',
+    'la-salle|Cross Country':['https://goexplorers.com/sports/womens-cross-country/roster','https://goexplorers.com/sports/mens-cross-country/roster'],
     'la-salle|Field Hockey':'https://goexplorers.com/sports/field-hockey/roster',
     'la-salle|Golf':['https://goexplorers.com/sports/womens-golf/roster','https://goexplorers.com/sports/mens-golf/roster'],
     'la-salle|Lacrosse':'https://goexplorers.com/sports/womens-lacrosse/roster',
-    'la-salle|Rowing':'https://goexplorers.com/sports/womens-rowing/roster',
+    'la-salle|Rowing':['https://goexplorers.com/sports/womens-rowing/roster','https://goexplorers.com/sports/mens-rowing/roster'],
     'la-salle|Soccer':['https://goexplorers.com/sports/womens-soccer/roster','https://goexplorers.com/sports/mens-soccer/roster'],
-    'la-salle|Swimming & Diving':['https://goexplorers.com/sports/womens-swimming-and-diving/roster','https://goexplorers.com/sports/mens-swimming-and-diving/roster','https://goexplorers.com/sports/swimming-and-diving/roster'],
-    'la-salle|Track & Field':'https://goexplorers.com/sports/track-and-field/roster',
+    'la-salle|Swimming & Diving':['https://goexplorers.com/sports/womens-swimming-and-diving/roster','https://goexplorers.com/sports/mens-swimming-and-diving/roster'],
+    'la-salle|Track & Field':['https://goexplorers.com/sports/womens-track-and-field/roster','https://goexplorers.com/sports/mens-track-and-field/roster'],
     'la-salle|Triathlon':'https://goexplorers.com/sports/triathlon/roster',
-    'la-salle|Water Polo':['https://goexplorers.com/sports/womens-water-polo/roster','https://goexplorers.com/sports/mens-water-polo/roster']
+    'la-salle|Water Polo':'https://goexplorers.com/sports/womens-water-polo/roster'
   }
 };
 
@@ -87,7 +87,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
@@ -251,7 +251,9 @@ export function createLaSalleHandlers({makeEvent,recapMatchesEvent,eventType=()=
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // A game named after its event with no opponent drawn yet ("Big 5
+    // Classic", Dec 5-6) is "at" (Temple's rule).
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|\bclassic$/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis

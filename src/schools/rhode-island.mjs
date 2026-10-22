@@ -24,12 +24,12 @@ export const rhodeIslandSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'rhode-island|Baseball':'https://gorhody.com/sports/baseball/schedule',
     'rhode-island|Basketball':['https://gorhody.com/sports/mens-basketball/schedule','https://gorhody.com/sports/womens-basketball/schedule'],
-    'rhode-island|Cross Country':'https://gorhody.com/sports/cross-country/schedule',
+    'rhode-island|Cross Country':['https://gorhody.com/sports/womens-cross-country/schedule','https://gorhody.com/sports/mens-cross-country/schedule'],
     'rhode-island|Football':'https://gorhody.com/sports/football/schedule',
     'rhode-island|Golf':'https://gorhody.com/sports/mens-golf/schedule',
     'rhode-island|Lacrosse':'https://gorhody.com/sports/womens-lacrosse/schedule',
@@ -38,13 +38,13 @@ export const rhodeIslandSchool={
     'rhode-island|Softball':'https://gorhody.com/sports/softball/schedule',
     'rhode-island|Swimming & Diving':'https://gorhody.com/sports/womens-swimming-and-diving/schedule',
     'rhode-island|Tennis':'https://gorhody.com/sports/womens-tennis/schedule',
-    'rhode-island|Track & Field':'https://gorhody.com/sports/track-field/schedule',
+    'rhode-island|Track & Field':['https://gorhody.com/sports/womens-track-and-field/schedule','https://gorhody.com/sports/mens-track-and-field/schedule'],
     'rhode-island|Volleyball':'https://gorhody.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'rhode-island|Baseball':'https://gorhody.com/sports/baseball/roster',
     'rhode-island|Basketball':['https://gorhody.com/sports/mens-basketball/roster','https://gorhody.com/sports/womens-basketball/roster'],
-    'rhode-island|Cross Country':'https://gorhody.com/sports/cross-country/roster',
+    'rhode-island|Cross Country':['https://gorhody.com/sports/womens-cross-country/roster','https://gorhody.com/sports/mens-cross-country/roster'],
     'rhode-island|Football':'https://gorhody.com/sports/football/roster',
     'rhode-island|Golf':'https://gorhody.com/sports/mens-golf/roster',
     'rhode-island|Lacrosse':'https://gorhody.com/sports/womens-lacrosse/roster',
@@ -53,7 +53,7 @@ export const rhodeIslandSchool={
     'rhode-island|Softball':'https://gorhody.com/sports/softball/roster',
     'rhode-island|Swimming & Diving':'https://gorhody.com/sports/womens-swimming-and-diving/roster',
     'rhode-island|Tennis':'https://gorhody.com/sports/womens-tennis/roster',
-    'rhode-island|Track & Field':'https://gorhody.com/sports/track-field/roster',
+    'rhode-island|Track & Field':['https://gorhody.com/sports/womens-track-and-field/roster','https://gorhody.com/sports/mens-track-and-field/roster'],
     'rhode-island|Volleyball':'https://gorhody.com/sports/womens-volleyball/roster'
   }
 };
@@ -89,7 +89,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").

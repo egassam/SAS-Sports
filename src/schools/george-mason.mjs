@@ -24,7 +24,7 @@ export const georgeMasonSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   verifiedInstagrams:{
     'george-mason|Basketball|Mary Amoateng':'https://www.instagram.com/maryy.3xtimes/',
     'george-mason|Soccer|Libby Davy':'https://www.instagram.com/libbydavyy/',
@@ -33,7 +33,7 @@ export const georgeMasonSchool={
   scheduleUrls:{
     'george-mason|Baseball':'https://gomason.com/sports/baseball/schedule',
     'george-mason|Basketball':['https://gomason.com/sports/mens-basketball/schedule','https://gomason.com/sports/womens-basketball/schedule'],
-    'george-mason|Cross Country':'https://gomason.com/',
+    'george-mason|Cross Country':['https://gomason.com/sports/womens-cross-country/schedule','https://gomason.com/sports/mens-cross-country/schedule'],
     'george-mason|Golf':'https://gomason.com/sports/mens-golf/schedule',
     'george-mason|Lacrosse':'https://gomason.com/sports/womens-lacrosse/schedule',
     'george-mason|Rowing':'https://gomason.com/sports/womens-rowing/schedule',
@@ -41,14 +41,14 @@ export const georgeMasonSchool={
     'george-mason|Softball':'https://gomason.com/sports/softball/schedule',
     'george-mason|Swimming & Diving':['https://gomason.com/sports/womens-swimming-and-diving/schedule','https://gomason.com/sports/mens-swimming-and-diving/schedule'],
     'george-mason|Tennis':['https://gomason.com/sports/womens-tennis/schedule','https://gomason.com/sports/mens-tennis/schedule'],
-    'george-mason|Track & Field':'https://gomason.com/sports/track-field/schedule',
-    'george-mason|Volleyball':'https://gomason.com/sports/womens-volleyball/schedule',
+    'george-mason|Track & Field':['https://gomason.com/sports/womens-track-and-field/schedule','https://gomason.com/sports/mens-track-and-field/schedule'],
+    'george-mason|Volleyball':['https://gomason.com/sports/womens-volleyball/schedule','https://gomason.com/sports/mens-volleyball/schedule'],
     'george-mason|Wrestling':'https://gomason.com/sports/wrestling/schedule'
   },
   rosterUrls:{
     'george-mason|Baseball':'https://gomason.com/sports/baseball/roster',
     'george-mason|Basketball':['https://gomason.com/sports/mens-basketball/roster','https://gomason.com/sports/womens-basketball/roster'],
-    'george-mason|Cross Country':'https://gomason.com/sports/cross-country/roster',
+    'george-mason|Cross Country':['https://gomason.com/sports/womens-cross-country/roster','https://gomason.com/sports/mens-cross-country/roster'],
     'george-mason|Golf':'https://gomason.com/sports/mens-golf/roster',
     'george-mason|Lacrosse':'https://gomason.com/sports/womens-lacrosse/roster',
     'george-mason|Rowing':'https://gomason.com/sports/womens-rowing/roster',
@@ -56,8 +56,8 @@ export const georgeMasonSchool={
     'george-mason|Softball':'https://gomason.com/sports/softball/roster',
     'george-mason|Swimming & Diving':['https://gomason.com/sports/womens-swimming-and-diving/roster','https://gomason.com/sports/mens-swimming-and-diving/roster'],
     'george-mason|Tennis':['https://gomason.com/sports/womens-tennis/roster','https://gomason.com/sports/mens-tennis/roster'],
-    'george-mason|Track & Field':'https://gomason.com/sports/track-field/roster',
-    'george-mason|Volleyball':'https://gomason.com/sports/womens-volleyball/roster',
+    'george-mason|Track & Field':['https://gomason.com/sports/womens-track-and-field/roster','https://gomason.com/sports/mens-track-and-field/roster'],
+    'george-mason|Volleyball':['https://gomason.com/sports/womens-volleyball/roster','https://gomason.com/sports/mens-volleyball/roster'],
     'george-mason|Wrestling':'https://gomason.com/sports/wrestling/roster'
   }
 };
@@ -93,7 +93,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").

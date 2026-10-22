@@ -531,6 +531,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // A player who "paced the Musketeers" places herself, not the team
     // (Xavier's Flyer Invitational, Oct 20: "... paced the Musketeers at the
     // Flyer Invitational on Tuesday, placing 10th").
+    // ... unless it led them to the team's place: "Powell led the Patriots to
+    // a fifth-place finish in the 13-team field" (George Mason, Sep 22).
+    const ledTo=sentence.match(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    if(ledTo&&placeOf(ledTo[2]))return`${ledTo[1]?'T':''}${placeOf(ledTo[2])}`;
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
     // A standing after an earlier round is not the final place (Northern
     // Arizona's McGuire story: "NAU was +9 after the first round, which was

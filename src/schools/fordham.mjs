@@ -27,12 +27,12 @@ export const fordhamSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'fordham|Baseball':'https://fordhamsports.com/sports/baseball/schedule',
     'fordham|Basketball':['https://fordhamsports.com/sports/mens-basketball/schedule','https://fordhamsports.com/sports/womens-basketball/schedule'],
-    'fordham|Cross Country':'https://fordhamsports.com/',
+    'fordham|Cross Country':['https://fordhamsports.com/sports/womens-cross-country/schedule','https://fordhamsports.com/sports/mens-cross-country/schedule'],
     'fordham|Football':'https://fordhamsports.com/sports/football/schedule',
     'fordham|Golf':'https://fordhamsports.com/sports/mens-golf/schedule',
     'fordham|Rowing':'https://fordhamsports.com/sports/womens-rowing/schedule',
@@ -40,14 +40,14 @@ export const fordhamSchool={
     'fordham|Softball':'https://fordhamsports.com/sports/softball/schedule',
     'fordham|Swimming & Diving':['https://fordhamsports.com/sports/womens-swimming-and-diving/schedule','https://fordhamsports.com/sports/mens-swimming-and-diving/schedule'],
     'fordham|Tennis':['https://fordhamsports.com/sports/womens-tennis/schedule','https://fordhamsports.com/sports/mens-tennis/schedule'],
-    'fordham|Track & Field':'https://fordhamsports.com/sports/track-field/schedule',
+    'fordham|Track & Field':['https://fordhamsports.com/sports/womens-track-and-field/schedule','https://fordhamsports.com/sports/mens-track-and-field/schedule'],
     'fordham|Volleyball':'https://fordhamsports.com/sports/womens-volleyball/schedule',
     'fordham|Water Polo':'https://fordhamsports.com/sports/mens-water-polo/schedule'
   },
   rosterUrls:{
     'fordham|Baseball':'https://fordhamsports.com/sports/baseball/roster',
     'fordham|Basketball':['https://fordhamsports.com/sports/mens-basketball/roster','https://fordhamsports.com/sports/womens-basketball/roster'],
-    'fordham|Cross Country':'https://fordhamsports.com/sports/cross-country/roster',
+    'fordham|Cross Country':['https://fordhamsports.com/sports/womens-cross-country/roster','https://fordhamsports.com/sports/mens-cross-country/roster'],
     'fordham|Football':'https://fordhamsports.com/sports/football/roster',
     'fordham|Golf':'https://fordhamsports.com/sports/mens-golf/roster',
     'fordham|Rowing':'https://fordhamsports.com/sports/womens-rowing/roster',
@@ -55,7 +55,7 @@ export const fordhamSchool={
     'fordham|Softball':'https://fordhamsports.com/sports/softball/roster',
     'fordham|Swimming & Diving':['https://fordhamsports.com/sports/womens-swimming-and-diving/roster','https://fordhamsports.com/sports/mens-swimming-and-diving/roster'],
     'fordham|Tennis':['https://fordhamsports.com/sports/womens-tennis/roster','https://fordhamsports.com/sports/mens-tennis/roster'],
-    'fordham|Track & Field':'https://fordhamsports.com/sports/track-field/roster',
+    'fordham|Track & Field':['https://fordhamsports.com/sports/womens-track-and-field/roster','https://fordhamsports.com/sports/mens-track-and-field/roster'],
     'fordham|Volleyball':'https://fordhamsports.com/sports/womens-volleyball/roster',
     'fordham|Water Polo':'https://fordhamsports.com/sports/mens-water-polo/roster'
   }
@@ -92,7 +92,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").

@@ -43,9 +43,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // WCC opponents write "Saint Mary's (Calif.)", "St.
   // Mary's" (its "St." reads as "State" here), "USD", "Seattle", "Denver".
   'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca','state mary s'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons'],
-  // Atlantic 10 opponents write "GW", "St. Bonaventure" (its "St." reads as
-  // "State" here), "St. Joseph's", "SLU", "URI", "Loyola (Ill.)", "Mason".
-  'george-washington':['gw','george washington'],'st-bonaventure':['state bonaventure','st bonaventure','bonnies'],'saint-josephs':['state joseph s','st joseph s','saint joseph s'],
+  // Atlantic 10 opponents write "GW", "Bonnies", "St. Joseph's" (its "St."
+  // reads as "State" here), "SLU", "URI", "Loyola (Ill.)", "Mason".
+  'george-washington':['gw','george washington'],'st-bonaventure':['bonnies'],'saint-josephs':['state joseph s','st joseph s','saint joseph s'],
   'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).

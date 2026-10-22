@@ -189,7 +189,7 @@ import {saintJosephsSchool,createSaintJosephsHandlers} from './schools/saint-jos
 import {saintLouisSchool,createSaintLouisHandlers} from './schools/saint-louis.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.151.0-atlantic-10-catalog';
+const VERSION='4.152.0-atlantic-10';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

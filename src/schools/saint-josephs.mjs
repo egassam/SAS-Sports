@@ -23,7 +23,7 @@ export const saintJosephsSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'saint-josephs|Basketball|Khaafiq Myers':'https://www.instagram.com/khaafiq/',
     'saint-josephs|Basketball|Mekai Johnson':'https://www.instagram.com/igb.kai/',
@@ -38,28 +38,28 @@ export const saintJosephsSchool={
   scheduleUrls:{
     'saint-josephs|Baseball':'https://sjuhawks.com/sports/baseball/schedule',
     'saint-josephs|Basketball':['https://sjuhawks.com/sports/mens-basketball/schedule','https://sjuhawks.com/sports/womens-basketball/schedule'],
-    'saint-josephs|Cross Country':'https://sjuhawks.com/',
+    'saint-josephs|Cross Country':['https://sjuhawks.com/sports/womens-cross-country/schedule','https://sjuhawks.com/sports/mens-cross-country/schedule'],
     'saint-josephs|Field Hockey':'https://sjuhawks.com/sports/field-hockey/schedule',
     'saint-josephs|Golf':['https://sjuhawks.com/sports/womens-golf/schedule','https://sjuhawks.com/sports/mens-golf/schedule'],
     'saint-josephs|Lacrosse':['https://sjuhawks.com/sports/womens-lacrosse/schedule','https://sjuhawks.com/sports/mens-lacrosse/schedule'],
-    'saint-josephs|Rowing':'https://sjuhawks.com/sports/womens-rowing/schedule',
+    'saint-josephs|Rowing':['https://sjuhawks.com/sports/womens-rowing/schedule','https://sjuhawks.com/sports/mens-rowing/schedule'],
     'saint-josephs|Soccer':['https://sjuhawks.com/sports/womens-soccer/schedule','https://sjuhawks.com/sports/mens-soccer/schedule'],
     'saint-josephs|Softball':'https://sjuhawks.com/sports/softball/schedule',
     'saint-josephs|Tennis':['https://sjuhawks.com/sports/womens-tennis/schedule','https://sjuhawks.com/sports/mens-tennis/schedule'],
-    'saint-josephs|Track & Field':'https://sjuhawks.com/sports/track-field/schedule'
+    'saint-josephs|Track & Field':['https://sjuhawks.com/sports/womens-track-and-field/schedule','https://sjuhawks.com/sports/mens-track-and-field/schedule']
   },
   rosterUrls:{
     'saint-josephs|Baseball':'https://sjuhawks.com/sports/baseball/roster',
     'saint-josephs|Basketball':['https://sjuhawks.com/sports/mens-basketball/roster','https://sjuhawks.com/sports/womens-basketball/roster'],
-    'saint-josephs|Cross Country':'https://sjuhawks.com/sports/cross-country/roster',
+    'saint-josephs|Cross Country':['https://sjuhawks.com/sports/womens-cross-country/roster','https://sjuhawks.com/sports/mens-cross-country/roster'],
     'saint-josephs|Field Hockey':'https://sjuhawks.com/sports/field-hockey/roster',
     'saint-josephs|Golf':['https://sjuhawks.com/sports/womens-golf/roster','https://sjuhawks.com/sports/mens-golf/roster'],
     'saint-josephs|Lacrosse':['https://sjuhawks.com/sports/womens-lacrosse/roster','https://sjuhawks.com/sports/mens-lacrosse/roster'],
-    'saint-josephs|Rowing':'https://sjuhawks.com/sports/womens-rowing/roster',
+    'saint-josephs|Rowing':['https://sjuhawks.com/sports/womens-rowing/roster','https://sjuhawks.com/sports/mens-rowing/roster'],
     'saint-josephs|Soccer':['https://sjuhawks.com/sports/womens-soccer/roster','https://sjuhawks.com/sports/mens-soccer/roster'],
     'saint-josephs|Softball':'https://sjuhawks.com/sports/softball/roster',
     'saint-josephs|Tennis':['https://sjuhawks.com/sports/womens-tennis/roster','https://sjuhawks.com/sports/mens-tennis/roster'],
-    'saint-josephs|Track & Field':'https://sjuhawks.com/sports/track-field/roster'
+    'saint-josephs|Track & Field':['https://sjuhawks.com/sports/womens-track-and-field/roster','https://sjuhawks.com/sports/mens-track-and-field/roster']
   }
 };
 
@@ -73,7 +73,7 @@ const saintJosephsToday=sidearmToday('America/New_York');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Saint Joseph's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const SAINT_JOSEPHS_TFRRS_TEAMS={Women:null,Men:null};
+export const SAINT_JOSEPHS_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/PA_college_f_St_Josephs_PA.html',Men:'https://www.tfrrs.org/teams/xc/PA_college_m_St_Josephs_PA.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -94,7 +94,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
@@ -258,7 +258,9 @@ export function createSaintJosephsHandlers({makeEvent,recapMatchesEvent,eventTyp
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // A game named after its event with no opponent drawn yet ("Big 5
+    // Classic", Dec 5-6) is "at" (Temple's rule).
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|\bclassic$/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis

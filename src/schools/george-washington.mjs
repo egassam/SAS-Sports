@@ -24,7 +24,7 @@ export const georgeWashingtonSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Water Polo']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving']),
   verifiedInstagrams:{
     'george-washington|Golf|Evan Eichenlaub':'https://www.instagram.com/evan.eichenlaub/',
     'george-washington|Gymnastics|Kasey Burke':'https://www.instagram.com/kaseyyburke/',
@@ -51,9 +51,9 @@ export const georgeWashingtonSchool={
     'george-washington|Soccer':['https://gwsports.com/sports/womens-soccer/schedule','https://gwsports.com/sports/mens-soccer/schedule'],
     'george-washington|Softball':'https://gwsports.com/sports/softball/schedule',
     'george-washington|Swimming & Diving':['https://gwsports.com/sports/womens-swimming-and-diving/schedule','https://gwsports.com/sports/mens-swimming-and-diving/schedule'],
-    'george-washington|Tennis':['https://gwsports.com/sports/womens-tennis/schedule','https://gwsports.com/sports/mens-tennis/schedule'],
+    'george-washington|Tennis':'https://gwsports.com/sports/womens-tennis/schedule',
     'george-washington|Volleyball':'https://gwsports.com/sports/womens-volleyball/schedule',
-    'george-washington|Water Polo':['https://gwsports.com/sports/womens-water-polo/schedule','https://gwsports.com/sports/mens-water-polo/schedule']
+    'george-washington|Water Polo':'https://gwsports.com/sports/mens-water-polo/schedule'
   },
   rosterUrls:{
     'george-washington|Baseball':'https://gwsports.com/sports/baseball/roster',
@@ -66,9 +66,9 @@ export const georgeWashingtonSchool={
     'george-washington|Soccer':['https://gwsports.com/sports/womens-soccer/roster','https://gwsports.com/sports/mens-soccer/roster'],
     'george-washington|Softball':'https://gwsports.com/sports/softball/roster',
     'george-washington|Swimming & Diving':['https://gwsports.com/sports/womens-swimming-and-diving/roster','https://gwsports.com/sports/mens-swimming-and-diving/roster'],
-    'george-washington|Tennis':['https://gwsports.com/sports/womens-tennis/roster','https://gwsports.com/sports/mens-tennis/roster'],
+    'george-washington|Tennis':'https://gwsports.com/sports/womens-tennis/roster',
     'george-washington|Volleyball':'https://gwsports.com/sports/womens-volleyball/roster',
-    'george-washington|Water Polo':['https://gwsports.com/sports/womens-water-polo/roster','https://gwsports.com/sports/mens-water-polo/roster']
+    'george-washington|Water Polo':'https://gwsports.com/sports/mens-water-polo/roster'
   }
 };
 
@@ -103,7 +103,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
@@ -142,6 +142,15 @@ export function createGeorgeWashingtonHandlers({makeEvent,recapMatchesEvent,even
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      // Swim duals write the scores in either order with decimals ("L,
+      // 174.00-87.00" at William & Mary; the men's "L, 593.00-197.00" against
+      // Auburn): the written W or L orders them.
+      if(sport==='Swimming & Diving')games=games.map(game=>{
+        const r=game.result||{},team=Number(r.team_score),other=Number(r.opponent_score);
+        if(!/^[WL]$/.test(r.status||'')||!Number.isFinite(team)||!Number.isFinite(other)||String(r.team_score).trim()===''||String(r.opponent_score).trim()==='')return game;
+        const [mine,theirs]=(r.status==='W')===(team>other)?[team,other]:[other,team];
+        return{...game,result:{...r,team_score:String(mine),opponent_score:String(theirs)}};
+      });
       // Cross country is on the men's and women's track pages ("Track &
       // Field/Cross Country"), as at Miami (OH): the fall meets
       // (August-November) are cross country, the rest track.

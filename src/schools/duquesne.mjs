@@ -22,7 +22,7 @@ export const duquesneSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'duquesne|Golf|Lindsey Powanda':'https://www.instagram.com/lindsey.powanda/',
     'duquesne|Golf|Abby Slankster':'https://www.instagram.com/abbyslank/',
@@ -32,7 +32,7 @@ export const duquesneSchool={
     'duquesne|Acrobatics & Tumbling':'https://goduquesne.com/sports/acrobatics-and-tumbling/schedule',
     'duquesne|Basketball':['https://goduquesne.com/sports/mens-basketball/schedule','https://goduquesne.com/sports/womens-basketball/schedule'],
     'duquesne|Bowling':'https://goduquesne.com/',
-    'duquesne|Cross Country':'https://goduquesne.com/sports/cross-country/schedule',
+    'duquesne|Cross Country':['https://goduquesne.com/sports/womens-cross-country/schedule','https://goduquesne.com/sports/mens-cross-country/schedule'],
     'duquesne|Football':'https://goduquesne.com/sports/football/schedule',
     'duquesne|Golf':'https://goduquesne.com/sports/womens-golf/schedule',
     'duquesne|Lacrosse':'https://goduquesne.com/sports/womens-lacrosse/schedule',
@@ -40,7 +40,7 @@ export const duquesneSchool={
     'duquesne|Soccer':['https://goduquesne.com/sports/womens-soccer/schedule','https://goduquesne.com/sports/mens-soccer/schedule'],
     'duquesne|Swimming & Diving':'https://goduquesne.com/sports/womens-swimming-and-diving/schedule',
     'duquesne|Tennis':['https://goduquesne.com/sports/womens-tennis/schedule','https://goduquesne.com/sports/mens-tennis/schedule'],
-    'duquesne|Track & Field':'https://goduquesne.com/sports/track-field/schedule',
+    'duquesne|Track & Field':['https://goduquesne.com/sports/womens-track-and-field/schedule','https://goduquesne.com/sports/mens-track-and-field/schedule'],
     'duquesne|Triathlon':'https://goduquesne.com/sports/triathlon/schedule',
     'duquesne|Volleyball':'https://goduquesne.com/sports/womens-volleyball/schedule'
   },
@@ -48,7 +48,7 @@ export const duquesneSchool={
     'duquesne|Acrobatics & Tumbling':'https://goduquesne.com/sports/acrobatics-and-tumbling/roster',
     'duquesne|Basketball':['https://goduquesne.com/sports/mens-basketball/roster','https://goduquesne.com/sports/womens-basketball/roster'],
     'duquesne|Bowling':'https://goduquesne.com/sports/bowling/roster',
-    'duquesne|Cross Country':'https://goduquesne.com/sports/cross-country/roster',
+    'duquesne|Cross Country':['https://goduquesne.com/sports/womens-cross-country/roster','https://goduquesne.com/sports/mens-cross-country/roster'],
     'duquesne|Football':'https://goduquesne.com/sports/football/roster',
     'duquesne|Golf':'https://goduquesne.com/sports/womens-golf/roster',
     'duquesne|Lacrosse':'https://goduquesne.com/sports/womens-lacrosse/roster',
@@ -56,7 +56,7 @@ export const duquesneSchool={
     'duquesne|Soccer':['https://goduquesne.com/sports/womens-soccer/roster','https://goduquesne.com/sports/mens-soccer/roster'],
     'duquesne|Swimming & Diving':'https://goduquesne.com/sports/womens-swimming-and-diving/roster',
     'duquesne|Tennis':['https://goduquesne.com/sports/womens-tennis/roster','https://goduquesne.com/sports/mens-tennis/roster'],
-    'duquesne|Track & Field':'https://goduquesne.com/sports/track-field/roster',
+    'duquesne|Track & Field':['https://goduquesne.com/sports/womens-track-and-field/roster','https://goduquesne.com/sports/mens-track-and-field/roster'],
     'duquesne|Triathlon':'https://goduquesne.com/sports/triathlon/roster',
     'duquesne|Volleyball':'https://goduquesne.com/sports/womens-volleyball/roster'
   }
@@ -93,7 +93,7 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^american(?: conference)?\b.*\bfinals?$/i.test(opponent));};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
