@@ -383,6 +383,14 @@
     "line": "#0e295d",
     "onAccent": "#ffffff"
   },
+  "eastern-washington": {
+    "primary": "#A10022",
+    "secondary": "#000000",
+    "panel": "#2c0914",
+    "panelDark": "#15050b",
+    "line": "#670e26",
+    "onAccent": "#ffffff"
+  },
   "eisenhower-ms-ks": {
     "primary": "#00853F",
     "secondary": "#FFFFFF",
@@ -502,6 +510,14 @@
     "panelDark": "#050607",
     "line": "#812336",
     "onAccent": "#ffffff"
+  },
+  "idaho-state": {
+    "primary": "#F47920",
+    "secondary": "#000000",
+    "panel": "#3e2314",
+    "panelDark": "#1d110a",
+    "line": "#955125",
+    "onAccent": "#07111f"
   },
   "illinois": {
     "primary": "#13294B",
@@ -807,6 +823,22 @@
     "line": "#93742c",
     "onAccent": "#07111f"
   },
+  "montana": {
+    "primary": "#70002E",
+    "secondary": "#999999",
+    "panel": "#210917",
+    "panelDark": "#10050c",
+    "line": "#4c0e2c",
+    "onAccent": "#ffffff"
+  },
+  "montana-state": {
+    "primary": "#003875",
+    "secondary": "#B9975B",
+    "panel": "#091526",
+    "panelDark": "#050a13",
+    "line": "#0e2d53",
+    "onAccent": "#ffffff"
+  },
   "nascar-cup-series": {
     "primary": "#007AC2",
     "secondary": "#FFD659",
@@ -918,6 +950,22 @@
     "panelDark": "#11161c",
     "line": "#526f88",
     "onAccent": "#13294B"
+  },
+  "northern-arizona": {
+    "primary": "#003466",
+    "secondary": "#FFD200",
+    "panel": "#091423",
+    "panelDark": "#050a11",
+    "line": "#0e2b4b",
+    "onAccent": "#ffffff"
+  },
+  "northern-colorado": {
+    "primary": "#013C65",
+    "secondary": "#F6B000",
+    "panel": "#091623",
+    "panelDark": "#050b11",
+    "line": "#0f2f4a",
+    "onAccent": "#ffffff"
   },
   "northwestern": {
     "primary": "#4E2A84",
@@ -1045,6 +1093,14 @@
     "panel": "#1d2026",
     "panelDark": "#0b0c0f",
     "line": "#5a5440",
+    "onAccent": "#ffffff"
+  },
+  "portland-state": {
+    "primary": "#154734",
+    "secondary": "#8A8D8F",
+    "panel": "#0d1818",
+    "panelDark": "#070c0c",
+    "line": "#1a3530",
     "onAccent": "#ffffff"
   },
   "portland-timbers": {
@@ -1181,6 +1237,14 @@
     "panel": "#22090f",
     "panelDark": "#100508",
     "line": "#4e0e18",
+    "onAccent": "#ffffff"
+  },
+  "southern-utah": {
+    "primary": "#C8102E",
+    "secondary": "#000000",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
     "onAccent": "#ffffff"
   },
   "sporting-kansas-city": {
@@ -1359,6 +1423,14 @@
     "line": "#81363b",
     "onAccent": "#ffffff"
   },
+  "utah-tech": {
+    "primary": "#BA1C21",
+    "secondary": "#003058",
+    "panel": "#320f14",
+    "panelDark": "#17070b",
+    "line": "#751e25",
+    "onAccent": "#ffffff"
+  },
   "vancouver-whitecaps": {
     "primary": "#12284C",
     "secondary": "#FFFFFF",
@@ -1429,6 +1501,14 @@
     "panel": "#2a0f17",
     "panelDark": "#14080c",
     "line": "#621f2e",
+    "onAccent": "#ffffff"
+  },
+  "weber-state": {
+    "primary": "#492365",
+    "secondary": "#A7A8AA",
+    "panel": "#191023",
+    "panelDark": "#0c0811",
+    "line": "#37224a",
     "onAccent": "#ffffff"
   },
   "west-virginia": {
