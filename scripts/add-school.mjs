@@ -12,7 +12,7 @@
 // --theme is primary,secondary,onAccent (on-accent: #ffffff on dark
 // primaries, #07111f on light ones); panel colors are derived from primary.
 import {readFileSync,writeFileSync} from 'node:fs';
-import {inferSport} from './onboard-school.mjs';
+import {inferSport,isSidearmSplash as splash} from './onboard-school.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school'),write=args.includes('--write');
@@ -32,7 +32,11 @@ async function page(url){
 
 // Some sites (Arkansas, WordPress) have no /sports/football/schedule: read
 // the homepage, whose nav lists every sport.
-const {html,via}=await page(`${base}/sports/football/schedule`).catch(()=>page(`${base}/`));
+let {html,via}=await page(`${base}/sports/football/schedule`).catch(()=>page(`${base}/`));
+// A SIDEARM splash homepage (onboard-school.mjs) has no menu, and neither
+// school behind one (Oct 22) plays football: read the menu of a sport page
+// every site has instead.
+if(splash(html))for(const slug of ['womens-volleyball','mens-basketball','baseball']){const other=await page(`${base}/sports/${slug}/schedule`).catch(()=>null);if(other&&!splash(other.html)){({html,via}=other);break;}}
 const count=re=>(html.match(re)||[]).length,wmt=count(/wmt/gi),sidearm=count(/sidearm/gi);
 const publisher=wmt>sidearm?'WMT':'SIDEARM';
 const found=new Set();
@@ -60,7 +64,7 @@ console.log(`sports (${sports.length}): ${sports.join(', ')}`);
 // A sport whose nav links both a men's and a women's page (Gonzaga and
 // Oregon State rowing, Oct 18: the scaffold wrote only the women's page).
 // scripts/start-schools.mjs reads this line and combines the two.
-const navHtml=via==='direct'||publisher==='WMT'?html:(await page(`${base}/`).catch(()=>({html})))?.html||html,teamPages={};
+const navHtml=via==='direct'||publisher==='WMT'?html:(home=>home&&!splash(home)?home:html)((await page(`${base}/`).catch(()=>null))?.html),teamPages={};
 for(const [,slug] of navHtml.matchAll(/href="(?:https?:\/\/[^"/]+)?\/sports\/((?:mens|womens)-[a-z-]+?)(?:\/schedule)?\/?"/g)){const sport=inferSport(`/sports/${slug}`);if(sport&&sports.includes(sport))(teamPages[sport]??=new Set()).add(slug)}
 const twoTeams=Object.entries(teamPages).filter(([,slugs])=>[...slugs].some(s=>s.startsWith('mens-'))&&[...slugs].some(s=>s.startsWith('womens-')));
 if(twoTeams.length)console.log(`team pages: ${twoTeams.map(([sport,slugs])=>`${sport}=${[...slugs].sort().join(',')}`).join('; ')}`);

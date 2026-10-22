@@ -73,7 +73,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_baseball.map(line),[]);
   const v_mensbasketball=parse("Basketball","mens-basketball");
   assert.deepEqual(v_mensbasketball.map(line),[
- "Upcoming Oct 28, 6:30 PM Men's · ULM vs Centenary | ",
+ "Upcoming Oct 28, 6:30 PM Men's · ULM vs Centenary (Exhibition) | ",
  "Upcoming Nov 2, 6:30 PM Men's · ULM vs Central Michigan | ",
  "Upcoming Nov 4, 6:30 PM Men's · ULM vs Champion Christian | ",
  "Upcoming Nov 9 Men's · ULM at Texas A&M | ",

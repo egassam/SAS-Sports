@@ -153,6 +153,8 @@ function elementEnd(text,start,tag){
   return text.length;
 }
 // The first element whose class list starts with `name` (exactly that class).
+// A promotion line that makes the game an exhibition.
+const EXHIBITION_PROMOTION=/^(?:exhibition\b|exh\.?$|(?:pre-?season\s+)?friendly\b|scrimmage\b)/i;
 function classBlock(html,name,tag='[a-z][a-z0-9]*'){
   const open=new RegExp(`<(${tag})\\b[^>]*\\bclass="${name}(?:\\s[^"]*)?"[^>]*>`,'i').exec(html);
   if(!open)return'';
@@ -204,12 +206,19 @@ export function classicHtmlScheduleGames(raw){
     if(recap)result.recap={url:recap.replace(/&amp;/g,'&')};
     const tournament=tournaments.find(([start,end])=>m.index>start&&m.index<end);
     const noplay=/^(?:cancel+ed|postponed)\b/i.test(result.prescore_info)?result.prescore_info:'';
+    // The row's promotion line: "Exhibition"; "Pre-Season Friendly / Gaucho
+    // Soccer Camp Night" (UCSB men's soccer vs LMU, Aug 14, out of the
+    // published 8-3-4); "Pac-12 Crossover" (src/conference-games.mjs).
+    const promotion=htmlText(classBlock(row,'sidearm-schedule-game-promotion-name')||classBlock(row,'sidearm-schedule-game-opponent-promotion'));
     if(id)seen.add(id);
     games.push({id:id?Number(id):null,date:`${firstDay}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00`,
       enddate:lastDay&&lastDay>firstDay?`${lastDay}T00:00:00`:null,time:clock?`${hour%12||12}:${String(minute).padStart(2,'0')} ${hour>=12?'PM':'AM'}`:(timeText.match(/^TB[AD]/i)||[''])[0].toUpperCase(),
       location_indicator:/\ssidearm-schedule-home-game\s/.test(classes)?'H':/\ssidearm-schedule-away-game\s/.test(classes)?'A':/\ssidearm-schedule-neutral-game\s/.test(classes)?'N':'',
       at_vs:atVs==='at'?'at':'vs',opponent:{title:opponent},tournament:tournament?{title:tournament[2]}:null,
-      result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)||/^exhibition$/i.test(htmlText(classBlock(row,'sidearm-schedule-game-promotion-name')))?'S':'',conference:/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/.test(row)});
+      result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)||EXHIBITION_PROMOTION.test(promotion)?'S':'',conference:/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/.test(row),
+        // The row's promotion line ("Pac-12 Crossover", Utah Valley men's
+        // soccer at Cal Poly, Oct 14: a series with another league).
+        ...(promotion?{promotion}:{})});
   }
   return games;
 }

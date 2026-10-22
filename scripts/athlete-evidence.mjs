@@ -23,7 +23,7 @@ const get=async url=>{
 };
 // A handle ends the link ("instagram.com/Alex Gatto._" is broken, not "alex");
 // a link written inside another is the inner one (Michigan's profiles).
-const handles=raw=>new Set([...String(raw).matchAll(/instagram\.com\/(?:https?:\/\/(?:www\.)?instagram\.com\/)?@?([A-Za-z0-9._]+)(?=["'\/?#\\]|$)/gi)].map(x=>x[1].toLowerCase()).filter(h=>!['p','reel','explore','accounts','https:','http:'].includes(h)));
+const handles=raw=>new Set([...String(raw).matchAll(/instagram\.com\/(?:https?:\/\/(?:www\.)?instagram\.com\/)?@?([A-Za-z0-9._]+)(?=["'\/?#\\]|$)/gi)].map(x=>x[1].toLowerCase()).filter(h=>!['p','reel','explore','accounts','https:','http:','embed.js','embed'].includes(h)));
 // The site's own accounts: on two different rosters' pages.
 const rosters=Object.values(school.rosterUrls).flat();
 const [a,b]=await Promise.all([get(rosters[0]),get(rosters.at(-1))]);

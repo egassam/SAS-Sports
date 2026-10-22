@@ -26,10 +26,12 @@ Checked through the branch preview's `/api/source` (the same network as producti
 | Idaho | Big Sky | govandals.com | Oct 21, 2026 | Oct 21 (20:4x and 22:16 UTC), Oct 22 | |
 | App State | Sun Belt | appstatesports.com | Oct 22, 2026 | Oct 22 (01:5x, 02:00, 11:10 UTC) | |
 | Georgia State | Sun Belt | georgiastatesports.com | Oct 22, 2026 | Oct 22 (01:5x, 02:00, 11:10 UTC) | |
-| Hawaii | Mountain West | hawaiiathletics.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
+| Hawaii | Mountain West | hawaiiathletics.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | Also a Big West affiliate (men's volleyball, beach volleyball, women's water polo): Big West schools' games against it count as conference games |
 | Nevada | Mountain West | nevadawolfpack.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
 | Wyoming | Mountain West | gowyo.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
 | Western Michigan | MAC | wmubroncos.com | Oct 22, 2026 | Oct 22 (about 14:12, 14:14, 14:30 and 15:08 UTC: football, volleyball and soccer schedules, homepage) | The other eleven MAC schools read normally |
+
+The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked.
 
 Not blocked, for contrast: many SIDEARM sites behind Imperva answer the build sandbox with 403 but let the Worker read them (Ohio State, Louisville, Creighton, Marquette, UConn, Xavier, Montana State, Northern Arizona and others). Those are built normally through the private source route.
 
