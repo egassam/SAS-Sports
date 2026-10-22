@@ -2200,6 +2200,262 @@
     ]
   },
   {
+    "id": "akron",
+    "name": "Akron",
+    "short_name": "Akron",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gozips.com",
+    "aliases": [
+      "University of Akron",
+      "Zips"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gozips",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "ball-state",
+    "name": "Ball State",
+    "short_name": "Ball State",
+    "state": "Indiana",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ballstatesports.com",
+    "aliases": [
+      "Ball State University",
+      "Ball St.",
+      "Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ballstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bowling-green",
+    "name": "Bowling Green",
+    "short_name": "Bowling Green",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bgsufalcons.com",
+    "aliases": [
+      "Bowling Green State",
+      "Bowling Green State University",
+      "BGSU",
+      "Falcons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bgsufalcons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "buffalo",
+    "name": "Buffalo",
+    "short_name": "Buffalo",
+    "state": "New York",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ubbulls.com",
+    "aliases": [
+      "University at Buffalo",
+      "UB",
+      "Bulls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ubbulls",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "central-michigan",
+    "name": "Central Michigan",
+    "short_name": "Central Michigan",
+    "state": "Michigan",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://cmuchippewas.com",
+    "aliases": [
+      "Central Michigan University",
+      "Central Mich.",
+      "CMU",
+      "Chippewas"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "cmuchippewas",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "eastern-michigan",
+    "name": "Eastern Michigan",
+    "short_name": "Eastern Michigan",
+    "state": "Michigan",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://emueagles.com",
+    "aliases": [
+      "Eastern Michigan University",
+      "Eastern Mich.",
+      "EMU",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "emueagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "kent-state",
+    "name": "Kent State",
+    "short_name": "Kent State",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://kentstatesports.com",
+    "aliases": [
+      "Kent State University",
+      "Kent St.",
+      "Golden Flashes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "kentstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "miami-oh",
+    "name": "Miami (OH)",
+    "short_name": "Miami (OH)",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://miamiredhawks.com",
+    "aliases": [
+      "Miami University",
+      "Miami (Ohio)",
+      "Miami (Oh.)",
+      "Miami Ohio",
+      "RedHawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "miamiredhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "ohio",
+    "name": "Ohio",
+    "short_name": "Ohio",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ohiobobcats.com",
+    "aliases": [
+      "Ohio University",
+      "Bobcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ohiobobcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "toledo",
+    "name": "Toledo",
+    "short_name": "Toledo",
+    "state": "Ohio",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utrockets.com",
+    "aliases": [
+      "University of Toledo",
+      "Rockets"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utrockets",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "umass",
+    "name": "UMass",
+    "short_name": "UMass",
+    "state": "Massachusetts",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://umassathletics.com",
+    "aliases": [
+      "Massachusetts",
+      "University of Massachusetts",
+      "UMass Amherst",
+      "Minutemen"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "umassathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "western-michigan",
+    "name": "Western Michigan",
+    "short_name": "Western Michigan",
+    "state": "Michigan",
+    "conference": "MAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://wmubroncos.com",
+    "aliases": [
+      "Western Michigan University",
+      "Western Mich.",
+      "WMU",
+      "Broncos"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "wmubroncos",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",

@@ -22,7 +22,10 @@ const shiftDay=(date,days)=>new Date(Date.parse(`${date}T00:00:00Z`)+days*864000
 // "Kansas State" is "Kansas St." and "K-State"; "UCF" is "Central Florida".
 const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu:['brigham young'],tcu:['texas christian'],'west-virginia':['wvu','west virginia'],'arizona-state':['asu'],'oklahoma-state':['osu'],kansas:['ku'],pitt:['pittsburgh'],california:['california','cal'],'north-carolina':['unc'],
   // Clemson writes "Miami (Fla.)" (football Oct 3, volleyball Oct 9).
-  miami:['miami fla','miami fl']};
+  miami:['miami fla','miami fl'],
+  // MAC opponents write "Miami (Ohio)", "Miami (OH)" or plain "Miami";
+  // "UMass" is "Massachusetts".
+  'miami-oh':['miami','miami ohio','miami oh','miami university','miami university oh'],umass:['massachusetts'],'bowling-green':['bowling green state','bgsu']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -65,7 +68,15 @@ const NOT_SPONSORED={
   // track, golf, tennis and swimming: no gymnastics (two teams left),
   // wrestling (Air Force's and Wyoming's in the Big 12), beach volleyball,
   // rifle, skiing (New Mexico's in the RMISA) or water polo.
-  'Mountain West':new Set(['Gymnastics','Wrestling','Beach Volleyball','Rifle','Skiing','Water Polo','Lacrosse','Field Hockey','Rowing','Hockey','Bowling','Equestrian','Fencing','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Mountain West':new Set(['Gymnastics','Wrestling','Beach Volleyball','Rifle','Skiing','Water Polo','Lacrosse','Field Hockey','Rowing','Hockey','Bowling','Equestrian','Fencing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The MAC (2026-27: Akron, Ball State, Bowling Green, Buffalo, Central
+  // Michigan, Eastern Michigan, Kent State, Miami (OH), Ohio, Toledo, UMass,
+  // Western Michigan; Sacramento State for football) sponsors football,
+  // basketball, baseball, softball, soccer, volleyball, cross country, track,
+  // golf, tennis, swimming, gymnastics, wrestling, field hockey and women's
+  // lacrosse: no hockey (Miami's and Bowling Green's in the CCHA/NCHC,
+  // UMass's in Hockey East), rowing or rifle.
+  MAC:new Set(['Hockey','Rowing','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

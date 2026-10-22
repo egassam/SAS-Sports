@@ -71,6 +71,8 @@ const summary=[],dropped=[],teamRoutes=[];
 // ten minutes a school (Illinois, Indiana). Each sport keeps its own summary
 // lines, printed in the sports' order.
 async function mapLimit(items,limit,work){const out=new Array(items.length);let next=0;await Promise.all(Array.from({length:Math.min(limit,items.length)},async()=>{while(next<items.length){const i=next++;out[i]=await work(items[i]);}}));return out;}
+// SIDEARM's short team codes, women's first (the menu's `index.aspx?path=`).
+const TEAM_CODES={Basketball:['wbball','mbball'],'Cross Country':['wcross','mcross'],Golf:['wgolf','mgolf'],'Swimming & Diving':['wswim','mswim'],'Track & Field':['wtrack','mtrack'],'Field Hockey':['fhockey'],Soccer:['wsoc','msoc'],Volleyball:['wvball'],Tennis:['wten','mten'],Lacrosse:['wlax','mlax'],Rowing:['wrow'],Hockey:['mhockey','whockey']};
 const perSport=await mapLimit(sports,6,async sport=>{
   const summary=[];
   const titles=new Set();
@@ -169,6 +171,16 @@ const perSport=await mapLimit(sports,6,async sport=>{
       const page=await download(url),title=(page.body?.match(/<title>([^<]*)/)||[])[1]?.trim()||'';
       if(page.body&&title&&!/@season\b/.test(title)&&sidearmScheduleGames(page.body).length){save(`${team}-${base}-schedule.html.gz`,page.body);teams.push(url);}
     }
+    // A site whose menu links each team by its code (ohiobobcats.com, Oct 22:
+    // `/sports/mbball`, `/sports/wcross`; the generic and team pages are all
+    // templates). Code pages need teamLabels in the module (the address
+    // names no team in words).
+    if(!teams.length)for(const code of TEAM_CODES[sport]||[]){
+      const url=template.replace(/\/sports?\/[^/]+\/schedule/,`/sports/${code}/schedule`);
+      const page=await download(url),title=(page.body?.match(/<title>([^<]*)/)||[])[1]?.trim()||'';
+      if(page.body&&title&&!/@season\b/.test(title)&&sidearmScheduleGames(page.body).length){save(`${code}-schedule.html.gz`,page.body);teams.push(url);}
+    }
+    if(teams.some(u=>/\/sports\/[mw][a-z]+\/schedule$/.test(new URL(u).pathname)&&teams.length>1))summary.push(`${sport}: label the team code pages in teamLabels (${teams.map(u=>new URL(u).pathname).join(', ')})`);
     if(teams.length){dropped.push(template);teamRoutes.push({sport,template,teams});summary.push(`${sport}: the season is on the team pages ${teams.map(u=>new URL(u).pathname).join(', ')}${args.includes('--prune')?' (routes moved; fixtures fetched again)':' — use them (--prune moves the routes)'}`);}
     else{dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
   }
