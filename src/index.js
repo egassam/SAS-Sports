@@ -107,7 +107,7 @@ import {southernUtahSchool,createSouthernUtahHandlers} from './schools/southern-
 import {utahTechSchool,createUtahTechHandlers} from './schools/utah-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.130.3-xc-tfrrs-fixes';
+const VERSION='4.130.4-xc-tfrrs-fixes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -196,7 +196,10 @@ const SCHOOL_MODULES=[
     // Golf finals the schedule links no story for take theirs from the team's
     // archive.
     beforeHighlights:async event=>{if(baylorHandlers.isBaylorGolfWithoutStory(event))await baylorHandlers.attachGolfStory(event);},
-    feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));return events;}},
+    // A past cross country meet with no result, story or TFRRS race is not
+    // listed (K-State's rule; the Chile Pepper Festival, Oct 3, until TFRRS
+    // publishes it).
+    feed:async(events,sport)=>{if(sport==='Golf')await Promise.all(events.filter(baylorHandlers.isBaylorGolfWithoutStory).map(event=>baylorHandlers.attachGolfStory(event)));return events.filter(event=>!(event.sport==='Cross Country'&&event.status==='Final'&&!event.recap_url&&!event.meet_results_verified&&/^(?:Completed)?$/.test(String(event.headline||''))));}},
   {school:cincinnatiSchool,parseSchedule:(...args)=>cincinnatiHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>cincinnatiHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>cincinnatiHandlers.matchesRecap(...args),crossCountry:{matches:event=>cincinnatiHandlers.isCincinnatiCrossCountry(event),attach:event=>cincinnatiHandlers.attachMeetResults(event)}},
   {school:coloradoSchool,parseSchedule:(...args)=>coloradoHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>coloradoHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>coloradoHandlers.matchesRecap(...args),crossCountry:{matches:event=>coloradoHandlers.isColoradoCrossCountry(event),attach:event=>coloradoHandlers.attachMeetResults(event)},
     // Finals the schedule links no story for take theirs from the sport's
