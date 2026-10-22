@@ -66,12 +66,16 @@ export function wmtMeetResult(text,sport){
   // the place in the field, then each round's team score.
   const rounds=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)\/(\d+)\s*\((\d{3}(?:-\d{3})*)\)$/i);
   if(rounds){const at=`${place(rounds[1],rounds[2],rounds[3])} of ${rounds[4]}`,scores=rounds[5].split('-').map(Number);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${scores.reduce((a,b)=>a+b,0)} (${rounds[5]})`}]};}
+  // UTSA's golf: the place and the field only, "2nd/11", "T-10th/13".
+  const ofField=sport==='Golf'&&value.match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\/\s*(\d+)$/i);
+  if(ofField){const at=`${place(ofField[1],ofField[2],ofField[3])} of ${ofField[4]}`;return{headline:at,results:[{label:'Result',value:at}]};}
   // San Diego State's: "1st of 5 teams (1,090.50 pts)"; cross country "6th
   // (157 pts)", the field not given.
   // San José State's: "6th out of 17 teams".
   const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: (?:out )?of (\d+)(?: teams)?)?(?:\s*\((\d[\d,]*(?:\.\d+)?)(?:\s*pts)?\))?$/i);
   if(fielded&&(fielded[4]||fielded[5])){const at=`${place(fielded[1],fielded[2],fielded[3])}${fielded[4]?` of ${fielded[4]}`:''}`;return{headline:at,results:[{label:'Result',value:at},...(fielded[5]?[{label:'Team score',value:`${fielded[5]} pts`}]:[])]};}
-  const teams=[...value.matchAll(/\b([MW])\s*[-:]\s*(T-?)?(\d+)(st|nd|rd|th)\b(?:\s*\((\d+)(?:\s+([A-Za-z]+))?\))?/gi)].map(m=>{
+  // UTSA's cross country names the teams: "Men's 4th / Women's 4th".
+  const teams=[...value.matchAll(/\b([MW])(?:en|omen)?(?:'s)?\s*[-:]?\s*(T-?)?(\d+)(st|nd|rd|th)\b(?:\s*\((\d+)(?:\s+([A-Za-z]+))?\))?/gi)].map(m=>{
     const race=m[6]&&!/^championship$/i.test(m[6])?` (${m[6]} race)`:'';
     return{label:`${m[1].toUpperCase()==='W'?"Women's":"Men's"} team`,value:`${place(m[2],m[3],m[4])}${m[5]?` · ${m[5]} pts`:''}${race}`};
   });
@@ -88,7 +92,10 @@ export function wmtMeetResult(text,sport){
   // and a meet scored for individuals only ("Individuals Only").
   const matches=sport==='Golf'&&value.match(/^(\d+)-(\d+)-(\d+) record$/i);
   if(matches){const at=`Match play: ${matches[1]}-${matches[2]}${Number(matches[3])?`-${matches[3]}`:''}`;return{headline:at,results:[{label:'Result',value:at}]};}
-  if(/^(?:no team scores?|NTS|individuals? only)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
+  // UTSA's "No Team Result": a tennis tournament is individual play
+  // (its story tells it); a golf tournament played for individuals only.
+  if(sport==='Tennis'&&/^no team results?$/i.test(value))return{headline:'Completed',results:[{label:'Result',value:'Completed'}]};
+  if(/^(?:no team (?:scores?|results?)|NTS|individuals? only)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
   return{headline:value,results:[{label:'Result',value}]};
 }
 

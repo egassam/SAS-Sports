@@ -116,10 +116,11 @@ export function mergeTbaBracket(games){
 // W- 2nd", "W- 3rd, M - 4th", "M-1st/W-NTS", "M- T-5th (57 points), W-12th
 // (22 points)", "Men: 1st Women: 12th", "Women: 1st place (21 points) | Men:
 // 2nd place (66 points)" (NC State). "Did not score" and "NTS" are no
-// place.
+// place. The American (Oct 22): "Women's 11th; Men's DNF" (East Carolina),
+// "Men's 4th / Women's 4th" (UTSA).
 export function meetTeamPlaces(text,ordinal=value=>String(value)){
   const places={};
-  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)\s*[-:]?\s*\(?(T-?)?(\d{1,3})(?:st|nd|rd|th)\b\)?(?:\s+place)?(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
+  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)(?:'s)?\s*[-:]?\s*\(?(T-?)?(\d{1,3})(?:st|nd|rd|th)\b\)?(?:\s+place)?(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
     const team=/^w/i.test(m[1])?'Women':'Men';
     places[team]??={place:`${m[2]?'T':''}${ordinal(m[3])}`,points:m[4]||null};
   }
@@ -536,11 +537,13 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // finished in a tie for seventh place" (Louisiana) name the team without
     // its name; "Rounding out the team scoring, Ing Iadpluem ... tied for
     // 45th" (North Carolina, Oct 18) is a player's place.
+    // "the UNT Men's Golf Team competed ..., taking 11th in the field of 13"
+    // (North Texas, The Clerico, Oct 21).
     // A move on the final day: "As a team, Cal Poly slipped from fifth to
     // eighth during the final round" (Saint Mary's Invitational, Oct 21).
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
-    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".

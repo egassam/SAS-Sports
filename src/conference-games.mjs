@@ -31,7 +31,10 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'cal-baptist':['california baptist','cbu'],'cal-poly':['cal poly slo','cal poly san luis obispo'],'csu-bakersfield':['cal state bakersfield','csub','bakersfield'],
   'cal-state-fullerton':['csuf','csu fullerton','fullerton'],csun:['cal state northridge','csu northridge','northridge'],'long-beach-state':['long beach st','lbsu','long beach','cal state long beach'],
   'uc-irvine':['uci','california irvine'],'uc-riverside':['ucr','california riverside'],'uc-san-diego':['ucsd','california san diego'],'uc-santa-barbara':['ucsb','california santa barbara'],
-  'sacramento-state':['sacramento st','sac state'],'utah-valley':['uvu']};
+  'sacramento-state':['sacramento st','sac state'],'utah-valley':['uvu'],
+  // American opponents write "FAU", "USF", "UTSA", "UAB", "ECU" and the like.
+  'south-florida':['south fla'],'north-texas':['unt'],uab:['alabama birmingham'],utsa:['ut san antonio','texas san antonio'],
+  'east-carolina':['ecu'],'wichita-state':['wichita st','wichita'],charlotte:['unc charlotte']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -95,7 +98,14 @@ const NOT_SPONSORED={
   // beach volleyball, water polo, cross country, track, golf and tennis: no
   // football (Cal Poly's in the Big Sky, Sacramento State's in the MAC),
   // swimming, wrestling (Utah Valley's in the Big 12) or rowing.
-  'Big West':new Set(['Football','Swimming & Diving','Gymnastics','Wrestling','Hockey','Lacrosse','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Big West':new Set(['Football','Swimming & Diving','Gymnastics','Wrestling','Hockey','Lacrosse','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The American (2026-27: Charlotte, East Carolina, FAU, Memphis, North
+  // Texas, Rice, South Florida, Temple, Tulane, Tulsa, UAB, UTSA, Wichita
+  // State; Army and Navy for football only) sponsors football, basketball,
+  // baseball, softball, soccer, volleyball, golf, tennis, cross country,
+  // track, women's swimming and lacrosse: no beach volleyball, gymnastics,
+  // wrestling, field hockey, hockey or rowing (Tulsa rows in the Big 12).
+  American:new Set(['Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

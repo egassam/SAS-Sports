@@ -341,6 +341,19 @@
   "cf-montreal": [
     "Soccer"
   ],
+  "charlotte": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "charlotte-fc": [
     "Soccer"
   ],
@@ -522,6 +535,20 @@
     "Volleyball",
     "Wrestling"
   ],
+  "east-carolina": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "eastern-michigan": [
     "Baseball",
     "Basketball",
@@ -554,6 +581,20 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "fau": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "fc-cincinnati": [
     "Soccer"
@@ -1003,6 +1044,19 @@
     "Volleyball",
     "Wrestling"
   ],
+  "memphis": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rifle",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "miami": [
     "Baseball",
     "Basketball",
@@ -1248,6 +1302,18 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "north-texas": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "northern-arizona": [
     "Basketball",
@@ -1520,6 +1586,18 @@
   "real-salt-lake": [
     "Soccer"
   ],
+  "rice": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "rutgers": [
     "Baseball",
     "Basketball",
@@ -1659,6 +1737,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "south-florida": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "southern-miss": [
     "Baseball",
     "Basketball",
@@ -1762,6 +1853,21 @@
     "Triathlon",
     "Volleyball"
   ],
+  "temple": [
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "tennessee": [
     "Baseball",
     "Basketball",
@@ -1849,6 +1955,46 @@
     "Cross Country",
     "Football",
     "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "tulane": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "tulsa": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "uab": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rifle",
     "Soccer",
     "Softball",
     "Tennis",
@@ -2076,6 +2222,18 @@
     "Rifle",
     "Soccer",
     "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "utsa": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
     "Track & Field",
     "Volleyball"
   ],
