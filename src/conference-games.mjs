@@ -46,7 +46,7 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // Atlantic 10 opponents write "GW", "St. Bonaventure" (its "St." reads as
   // "State" here), "St. Joseph's", "SLU", "URI", "Loyola (Ill.)", "Mason".
   'george-washington':['gw','george washington'],'st-bonaventure':['state bonaventure','st bonaventure','bonnies'],'saint-josephs':['state joseph s','st joseph s','saint joseph s'],
-  'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola chicago','loyola ill','loyola il','loyola'],'george-mason':['mason'],'vcu':['virginia commonwealth']};
+  'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
