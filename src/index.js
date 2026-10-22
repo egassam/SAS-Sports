@@ -179,11 +179,7 @@ import {seattleUSchool,createSeattleUHandlers} from './schools/seattle-u.mjs';
 import {denverSchool,createDenverHandlers} from './schools/denver.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-<<<<<<< HEAD
 const VERSION='4.151.0-atlantic-10-catalog';
-=======
-const VERSION='4.151.0-atlantic-10-catalog';
->>>>>>> 86f0a50 (Catalog: the fourteen Atlantic 10 schools (2026-27))
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
