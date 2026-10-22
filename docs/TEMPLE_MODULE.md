@@ -16,7 +16,7 @@ Each rule has a check in `tests/temple-module.mjs` (generated page blocks) or `t
 
 ## Athletes
 
-Roster cards, then official profiles, then the NIL marketplace: INFLCR Exchange (`inflcr:temple-university`). Profile cards fill the remaining slots in Cross Country, Lacrosse, Soccer, Tennis, Track & Field (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 22.
+Roster cards, then official profiles, then the NIL marketplace: INFLCR Exchange (`inflcr:temple-university`). Profile cards fill the remaining slots in Cross Country, Lacrosse, Rowing, Soccer, Tennis, Track & Field (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 22.
 
 ## Open
 
