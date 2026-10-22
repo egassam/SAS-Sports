@@ -124,3 +124,22 @@ function parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:teamName}){
   }
   return run.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
 }
+
+// A school's races at one meet, in the order they are shown: women first;
+// a team's main race before its Open race, and of two races of one distance
+// the bigger field's (more points: the Nuttycombe's Championship before its B
+// Race). The schedule's team places ("Women's team: 12th") name the race that
+// leads when the team ran several (the Pre-National's Blue and White); false
+// when a published place is in none of them.
+export function orderTfrrsRaces(races,headline){
+  const open=race=>/ Open$/.test(race.group)?1:0;
+  races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1)||open(a)-open(b)||Number(b.result?.score||0)-Number(a.result?.score||0));
+  const published=Object.fromEntries([...String(headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+)\w\w/g)].map(m=>[m[1],m[2]]));
+  for(const [team,place] of Object.entries(published)){
+    const race=races.find(race=>race.team===team&&race.result&&String(race.result.place)===place.replace(/^T/,''));
+    if(!race)return false;
+    const first=races.findIndex(other=>other.team===team);
+    if(races[first]!==race){races.splice(races.indexOf(race),1);races.splice(first,0,race);}
+  }
+  return true;
+}

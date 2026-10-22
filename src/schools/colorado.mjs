@@ -1,6 +1,6 @@
 import {sidearmStartTime,sidearmPlacing} from '../sidearm-schedule-data.mjs';
 import {createSidearmScheduleReader,sidearmRelation} from '../sidearm-schedule-reader.mjs';
-import {findTfrrsMeet,parseTfrrsResults} from '../tfrrs-results.mjs';
+import {findTfrrsMeet,parseTfrrsResults,orderTfrrsRaces} from '../tfrrs-results.mjs';
 // Colorado school module. Shared publisher utilities stay in the Worker; this
 // file owns cubuffs.com routes, Colorado's program combinations, its verified
 // Instagram tags and its schedule reader. Routes started as the exact
@@ -329,13 +329,7 @@ export function createColoradoHandlers({makeEvent,recapMatchesEvent,eventType=()
       for(const race of parseColoradoTfrrsResults(page,{decodeHtml,ordinal}))if(!races.some(other=>other.group===race.group))races.push(race);
       resultsUrl??=url;
     }
-    races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
-    if(!races.length)return unavailable(failed);
-    const published=Object.fromEntries([...String(event.headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+)\w\w/g)].map(m=>[m[1],m[2]]));
-    for(const [team,place] of Object.entries(published)){
-      const race=races.find(race=>race.team===team&&race.result);
-      if(!race||String(race.result.place)!==place.replace(/^T/,''))return unavailable(failed);
-    }
+    if(!races.length||!orderTfrrsRaces(races,event.headline))return unavailable(failed);
     const rows=[],headline=[],lines=[];
     for(const race of races){
       if(race.result){

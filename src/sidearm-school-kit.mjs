@@ -18,7 +18,7 @@
 //   createTfrrsMeetResults({...})     cross country races and team scores from TFRRS
 //   createTeamTfrrsMeetResults({...}) the same for separate men's and women's pages
 import {sidearmStartTime} from './sidearm-schedule-data.mjs';
-import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults,tfrrsTeamName} from './tfrrs-results.mjs';
+import {findTfrrsMeet,onlyTfrrsMeetOn,parseTfrrsResults,tfrrsTeamName,orderTfrrsRaces} from './tfrrs-results.mjs';
 import {withoutRanking,otherSportStory} from './sidearm-schedule-reader.mjs';
 
 const dayGap=(a,b)=>(Date.parse(String(b.date).slice(0,10))-Date.parse(String(a.date).slice(0,10)))/86400000;
@@ -326,21 +326,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       }
       resultsUrl??=url;
     }
-    // Women first; a team's scored race with the bigger field (more points)
-    // before its other races (the Nuttycombe's Championship before the B Race).
-    races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1)||Number(b.result?.score||0)-Number(a.result?.score||0));
-    if(!races.length)return unavailable(failed);
-    const published=Object.fromEntries([...String(event.headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+)\w\w/g)].map(m=>[m[1],m[2]]));
-    // The schedule's place names the team's race when it ran several (the
-    // Pre-National's Blue and White): that race leads; with the same place
-    // in two, the bigger field's (the Nuttycombe's Championship 263 points,
-    // not the B Race's 160).
-    for(const [team,place] of Object.entries(published)){
-      const race=races.filter(race=>race.team===team&&race.result&&String(race.result.place)===place.replace(/^T/,'')).sort((a,b)=>Number(b.result.score)-Number(a.result.score))[0];
-      if(!race)return unavailable(failed);
-      const first=races.findIndex(other=>other.team===team);
-      if(races[first]!==race){races.splice(races.indexOf(race),1);races.splice(first,0,race);}
-    }
+    if(!races.length||!orderTfrrsRaces(races,event.headline))return unavailable(failed);
     const rows=[],headline=[],lines=[];
     for(const race of races){
       if(race.result){

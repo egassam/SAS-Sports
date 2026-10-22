@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {findTfrrsMeet,parseTfrrsResults,tfrrsTeamName} from '../src/tfrrs-results.mjs';
+import {findTfrrsMeet,parseTfrrsResults,tfrrsTeamName,orderTfrrsRaces} from '../src/tfrrs-results.mjs';
 import {createTfrrsMeetResults} from '../src/sidearm-school-kit.mjs';
 
 const page=name=>gunzipSync(readFileSync(new URL(`./fixtures/tfrrs-shared/${name}.html.gz`,import.meta.url))).toString();
@@ -66,6 +66,16 @@ assert.deepEqual(parseTfrrsResults(page('pre-nationals'),{decodeHtml,ordinal,tea
   const wrong=meet('virginia-tech','Virginia','2026-10-16',"Men's team: 2nd / Women's team: 1st");
   await xc.attach(wrong);
   assert.equal(wrong.meet_results_verified,false);
+}
+
+// A main race leads its Open race even with fewer points (Southern Utah's
+// UCR Invitational, Sep 19: 6K 4th with 198, 5K Open 16th with 447; the
+// headline read the Open race). Mutation: without the Open rule, 5K Open first.
+{
+  const races=[{team:'Women',group:"Women's 5K Open",result:{place:16,score:'447'}},{team:'Men',group:"Men's 8K",result:{place:1,score:'49'}},{team:'Women',group:"Women's 6K",result:{place:4,score:'198'}}];
+  assert.equal(orderTfrrsRaces(races,''),true);
+  assert.deepEqual(races.map(r=>r.group),["Women's 6K","Women's 5K Open","Men's 8K"]);
+  assert.equal(orderTfrrsRaces(races,"Women's team: 5th"),false);
 }
 
 console.log('Shared TFRRS checks passed (plural names, TFRRS team names, named races, only meet that day when confirmed)');
