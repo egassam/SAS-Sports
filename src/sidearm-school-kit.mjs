@@ -582,7 +582,9 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
 // score first: UNLV's "Women: L, 231-68" at Arizona State (Oct 2) is a
 // 68-231 loss.
 export function swimDualScores(text){
-  return[...String(text||'').matchAll(/\b(Women|Men|W|M):\s*(?:([A-Z]),?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,letter,mine,theirs])=>{
+  // Missouri State writes the team word without its colon: "Men: W 196-157;
+  // Women L 152-199" (Oct 2).
+  return[...String(text||'').matchAll(/\b(?:(Women|Men):?|(W|M):)\s*(?:([A-Z]),?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,word,code,letter,mine,theirs])=>{const team=word||code;
     if(/^[WL]$/i.test(letter||'')&&(letter.toUpperCase()==='W')!==(Number(mine)>Number(theirs))&&Number(mine)!==Number(theirs))[mine,theirs]=[theirs,mine];
     return{team:{W:'Women',M:'Men'}[team.toUpperCase()]||team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`};
   });

@@ -276,7 +276,7 @@ void [parse,line,ownRecapsOnly,live];
   const v_swimminganddiving=parse("Swimming & Diving","swimming-and-diving");
   assert.deepEqual(v_swimminganddiving.map(line),[
  "Final Sep 24 Louisville at College Swimming League | Completed",
- "Final Oct 2 Louisville vs Xavier | Completed",
+ "Final Oct 2 Louisville vs Xavier | Men's team: W, 189.5-70.5 / Women's team: W, 188-69",
  "Final Oct 9 Louisville at College Swimming League | Completed",
  "Upcoming Oct 22, 2:30 PM Louisville at Notre Dame | ",
  "Upcoming Oct 29 Louisville at Team USA Short Course World Championship Trials | ",

@@ -10,7 +10,7 @@ export const westernKentuckySchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,7 @@ export const westernKentuckySchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Golf']),
   verifiedInstagrams:{
     'western-kentucky|Cross Country|Addie Frisch':'https://www.instagram.com/addiefrisch/',
     'western-kentucky|Cross Country|Ben Dunkle':'https://www.instagram.com/ben.dunkle/',
@@ -49,7 +49,6 @@ export const westernKentuckySchool={
     'western-kentucky|Golf':['https://wkusports.com/sports/womens-golf/schedule','https://wkusports.com/sports/mens-golf/schedule'],
     'western-kentucky|Soccer':'https://wkusports.com/sports/womens-soccer/schedule',
     'western-kentucky|Softball':'https://wkusports.com/sports/softball/schedule',
-    'western-kentucky|Swimming & Diving':'https://wkusports.com/sports/womens-swimming-and-diving/schedule',
     'western-kentucky|Tennis':'https://wkusports.com/sports/womens-tennis/schedule',
     'western-kentucky|Track & Field':'https://wkusports.com/sports/track-and-field/schedule',
     'western-kentucky|Volleyball':'https://wkusports.com/sports/womens-volleyball/schedule'
@@ -62,7 +61,6 @@ export const westernKentuckySchool={
     'western-kentucky|Golf':['https://wkusports.com/sports/womens-golf/roster','https://wkusports.com/sports/mens-golf/roster'],
     'western-kentucky|Soccer':'https://wkusports.com/sports/womens-soccer/roster',
     'western-kentucky|Softball':'https://wkusports.com/sports/softball/roster',
-    'western-kentucky|Swimming & Diving':'https://wkusports.com/sports/womens-swimming-and-diving/roster',
     'western-kentucky|Tennis':'https://wkusports.com/sports/womens-tennis/roster',
     'western-kentucky|Track & Field':'https://wkusports.com/sports/track-and-field/roster',
     'western-kentucky|Volleyball':'https://wkusports.com/sports/womens-volleyball/roster'
@@ -235,10 +233,6 @@ export function createWesternKentuckyHandlers({makeEvent,recapMatchesEvent,event
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
-      // Charlotte's opener is named by its host ("Queens University of
-      // Charlotte", Sep 11; its story, found in the archive, names the Queen
-      // City Invite).
-      if(sport==='Cross Country'&&/^Queens University of WesternKentucky$/i.test(opponent))opponent='Queen City Invite';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -332,7 +326,11 @@ export function createWesternKentuckyHandlers({makeEvent,recapMatchesEvent,event
         if(finished){const value=`${finished[1]?'T':''}${ordinal(finished[2])} of ${finished[3]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
         const matchPlay=golfMatchPlay(text);
         if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
-        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // An event for individuals ("Happy Valley Individuals", "Shepherd's
+        // Rock Individual", Delaware, Sep 7 and Oct 5, beside the team's
+        // tournament; Ohio's "Raider Individual") has no team place.
+        if(/\bIndividuals?\b/i.test(String(event.opponent||event.title||''))){event.headline='No team score (individuals only)';event.results=[{label:'Result',value:event.headline}];event.result_count=1;return;}
+        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score|^individuals?(?: only)?$/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
@@ -373,7 +371,7 @@ export function createWesternKentuckyHandlers({makeEvent,recapMatchesEvent,event
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Western Kentucky|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Hilltoppers|Western Kentucky|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

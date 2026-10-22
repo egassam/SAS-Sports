@@ -37,9 +37,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'east-carolina':['ecu'],'wichita-state':['wichita st','wichita'],charlotte:['unc charlotte'],
   // Conference USA opponents write "Jax State", "KSU", "MTSU", "NMSU",
   // "Sam Houston State", "WKU" and the like.
-  fiu:['florida international','fla international'],'jacksonville-state':['jax state','jacksonville st'],'kennesaw-state':['kennesaw st','kennesaw'],
+  fiu:['fla international'],'jacksonville-state':['jax state','jacksonville st'],'kennesaw-state':['kennesaw'],
   'middle-tennessee':['middle tenn','middle tennessee state','mtsu','middle tenn st'],'missouri-state':['missouri st'],'new-mexico-state':['new mexico st','nmsu'],
-  'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['wku','western ky'],delaware:['ud']};
+  'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};

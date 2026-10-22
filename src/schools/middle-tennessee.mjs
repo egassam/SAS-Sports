@@ -10,7 +10,7 @@ export const middleTennesseeSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,7 @@ export const middleTennesseeSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'middle-tennessee|Basketball|Jarred Hall':'https://www.instagram.com/jarr5dhall/',
     'middle-tennessee|Basketball|Jahvin Carter':'https://www.instagram.com/jahvin.carter/',
@@ -42,6 +42,7 @@ export const middleTennesseeSchool={
   scheduleUrls:{
     'middle-tennessee|Baseball':'https://goblueraiders.com/sports/baseball/schedule',
     'middle-tennessee|Basketball':['https://goblueraiders.com/sports/mens-basketball/schedule','https://goblueraiders.com/sports/womens-basketball/schedule'],
+    'middle-tennessee|Cross Country':['https://goblueraiders.com/sports/womens-track-and-field/schedule','https://goblueraiders.com/sports/mens-track-and-field/schedule'],
     'middle-tennessee|Football':'https://goblueraiders.com/sports/football/schedule',
     'middle-tennessee|Golf':['https://goblueraiders.com/sports/womens-golf/schedule','https://goblueraiders.com/sports/mens-golf/schedule'],
     'middle-tennessee|Soccer':'https://goblueraiders.com/sports/womens-soccer/schedule',
@@ -53,6 +54,7 @@ export const middleTennesseeSchool={
   rosterUrls:{
     'middle-tennessee|Baseball':'https://goblueraiders.com/sports/baseball/roster',
     'middle-tennessee|Basketball':['https://goblueraiders.com/sports/mens-basketball/roster','https://goblueraiders.com/sports/womens-basketball/roster'],
+    'middle-tennessee|Cross Country':['https://goblueraiders.com/sports/womens-track-and-field/roster','https://goblueraiders.com/sports/mens-track-and-field/roster'],
     'middle-tennessee|Football':'https://goblueraiders.com/sports/football/roster',
     'middle-tennessee|Golf':['https://goblueraiders.com/sports/womens-golf/roster','https://goblueraiders.com/sports/mens-golf/roster'],
     'middle-tennessee|Soccer':'https://goblueraiders.com/sports/womens-soccer/roster',
@@ -73,7 +75,7 @@ const middleTennesseeToday=sidearmToday('America/Chicago');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Middle Tennessee's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const MIDDLE_TENNESSEE_TFRRS_TEAMS={Women:null,Men:null};
+export const MIDDLE_TENNESSEE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/TN_college_f_Middle_Tennessee.html',Men:'https://www.tfrrs.org/teams/xc/TN_college_m_Middle_Tennessee.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -133,6 +135,13 @@ export function createMiddleTennesseeHandlers({makeEvent,recapMatchesEvent,event
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      // Cross country is on the men's and women's track pages ("Track &
+      // Field/Cross Country"), as at Miami (OH): the fall meets
+      // (August-November) are cross country, the rest track.
+      if(sport==='Cross Country'||sport==='Track & Field'){
+        const fall=game=>{const month=Number(String(game.date||'').slice(5,7));return month>=8&&month<=11};
+        games=games.filter(game=>fall(game)===(sport==='Cross Country'));
+      }
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
       // tournament that day.
@@ -229,10 +238,6 @@ export function createMiddleTennesseeHandlers({makeEvent,recapMatchesEvent,event
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
-      // Charlotte's opener is named by its host ("Queens University of
-      // Charlotte", Sep 11; its story, found in the archive, names the Queen
-      // City Invite).
-      if(sport==='Cross Country'&&/^Queens University of MiddleTennessee$/i.test(opponent))opponent='Queen City Invite';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -326,7 +331,11 @@ export function createMiddleTennesseeHandlers({makeEvent,recapMatchesEvent,event
         if(finished){const value=`${finished[1]?'T':''}${ordinal(finished[2])} of ${finished[3]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
         const matchPlay=golfMatchPlay(text);
         if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
-        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // An event for individuals ("Happy Valley Individuals", "Shepherd's
+        // Rock Individual", Delaware, Sep 7 and Oct 5, beside the team's
+        // tournament; Ohio's "Raider Individual") has no team place.
+        if(/\bIndividuals?\b/i.test(String(event.opponent||event.title||''))){event.headline='No team score (individuals only)';event.results=[{label:'Result',value:event.headline}];event.result_count=1;return;}
+        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score|^individuals?(?: only)?$/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
@@ -367,7 +376,7 @@ export function createMiddleTennesseeHandlers({makeEvent,recapMatchesEvent,event
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Middle Tennessee|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Blue Raiders|Middle Tennessee|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

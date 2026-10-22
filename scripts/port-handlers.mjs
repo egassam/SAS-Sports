@@ -59,7 +59,9 @@ out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'
 // A short form ("Montana St.", Oct 21: the golf story pattern named it, not
 // "Bobcats") is no mascot.
 // A form with a bracket ("Miami (Ohio)", Oct 22) is no mascot either.
-const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/[.()]/.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
+// The catalog writes the mascot last ("University of Alabama at Birmingham",
+// "Alabama-Birmingham", "Blazers").
+const mascot=id=>[...(schools.find(s=>s.id===id)?.aliases||[])].reverse().find(w=>/^[A-Z][a-z]/.test(w)&&!/[.()]/.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!/^Lady\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
 // A source whose catalog entry names no mascot still writes it in its own
 // patterns ("Troy(?: University| Trojans)?": "Trojans" stayed in all seven
 // Mountain West ports, Oct 22).
@@ -81,6 +83,11 @@ if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(ne
     return l;
   }).join('\n');
 }
+// The golf story's team pattern names the target's mascot too: a source
+// whose pattern has none ("(?:Charlotte|(?:Men's|Women's) Golf)") left every
+// port without it, and Delaware's "the Fightin' Blue Hens ... finish second"
+// went unread (Conference USA, Oct 22).
+if(newNick&&!new RegExp(`team:"\\(\\?:[^"]*\\b${escape(newNick)}\\b`).test(out))out=out.replace(/team:"\(\?:/,`team:"(?:${newNick.replace(/'/g,"\\'")}|`);
 // A name with an apostrophe ("St. John's", Oct 21) is escaped in code: every
 // later step imports the module, and the bare quote ended its string.
 if(b.name.includes("'"))out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l.split(`${b.name}'s`).join(b.name):l.split(b.name).join(b.name.replace(/'/g,"\\'"))).join('\n');

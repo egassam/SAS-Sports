@@ -224,10 +224,6 @@ export function createSamHoustonHandlers({makeEvent,recapMatchesEvent,eventType=
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
-      // Charlotte's opener is named by its host ("Queens University of
-      // Charlotte", Sep 11; its story, found in the archive, names the Queen
-      // City Invite).
-      if(sport==='Cross Country'&&/^Queens University of SamHouston$/i.test(opponent))opponent='Queen City Invite';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -321,7 +317,11 @@ export function createSamHoustonHandlers({makeEvent,recapMatchesEvent,eventType=
         if(finished){const value=`${finished[1]?'T':''}${ordinal(finished[2])} of ${finished[3]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
         const matchPlay=golfMatchPlay(text);
         if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
-        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // An event for individuals ("Happy Valley Individuals", "Shepherd's
+        // Rock Individual", Delaware, Sep 7 and Oct 5, beside the team's
+        // tournament; Ohio's "Raider Individual") has no team place.
+        if(/\bIndividuals?\b/i.test(String(event.opponent||event.title||''))){event.headline='No team score (individuals only)';event.results=[{label:'Result',value:event.headline}];event.result_count=1;return;}
+        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score|^individuals?(?: only)?$/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
@@ -362,7 +362,7 @@ export function createSamHoustonHandlers({makeEvent,recapMatchesEvent,eventType=
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Sam Houston|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Bearkats|Sam Houston|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),
@@ -382,5 +382,5 @@ export function createSamHoustonHandlers({makeEvent,recapMatchesEvent,eventType=
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

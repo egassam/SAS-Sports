@@ -10,7 +10,7 @@ export const fiuSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Beach Volleyball','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Beach Volleyball','Cross Country','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,7 @@ export const fiuSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'fiu|Golf|Catalina Harvey':'https://www.instagram.com/catalinamillaharvey/',
     'fiu|Golf|Gabriella Gomez':'https://www.instagram.com/gabriellaagomezz/',
@@ -37,26 +37,28 @@ export const fiuSchool={
     'fiu|Baseball':'https://fiusports.com/sports/baseball/schedule',
     'fiu|Basketball':['https://fiusports.com/sports/mens-basketball/schedule','https://fiusports.com/sports/womens-basketball/schedule'],
     'fiu|Beach Volleyball':'https://fiusports.com/sports/beach-volleyball/schedule',
+    'fiu|Cross Country':['https://fiusports.com/sports/womens-track-and-field/schedule','https://fiusports.com/sports/mens-track-and-field/schedule'],
     'fiu|Football':'https://fiusports.com/sports/football/schedule',
     'fiu|Golf':'https://fiusports.com/sports/womens-golf/schedule',
     'fiu|Soccer':['https://fiusports.com/sports/womens-soccer/schedule','https://fiusports.com/sports/mens-soccer/schedule'],
     'fiu|Softball':'https://fiusports.com/sports/softball/schedule',
     'fiu|Swimming & Diving':'https://fiusports.com/sports/womens-swimming-and-diving/schedule',
     'fiu|Tennis':'https://fiusports.com/sports/womens-tennis/schedule',
-    'fiu|Track & Field':'https://fiusports.com/sports/track-field/schedule',
+    'fiu|Track & Field':['https://fiusports.com/sports/womens-track-and-field/schedule','https://fiusports.com/sports/mens-track-and-field/schedule'],
     'fiu|Volleyball':'https://fiusports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'fiu|Baseball':'https://fiusports.com/sports/baseball/roster',
     'fiu|Basketball':['https://fiusports.com/sports/mens-basketball/roster','https://fiusports.com/sports/womens-basketball/roster'],
     'fiu|Beach Volleyball':'https://fiusports.com/sports/beach-volleyball/roster',
+    'fiu|Cross Country':['https://fiusports.com/sports/womens-track-and-field/roster','https://fiusports.com/sports/mens-track-and-field/roster'],
     'fiu|Football':'https://fiusports.com/sports/football/roster',
     'fiu|Golf':'https://fiusports.com/sports/womens-golf/roster',
     'fiu|Soccer':['https://fiusports.com/sports/womens-soccer/roster','https://fiusports.com/sports/mens-soccer/roster'],
     'fiu|Softball':'https://fiusports.com/sports/softball/roster',
     'fiu|Swimming & Diving':'https://fiusports.com/sports/womens-swimming-and-diving/roster',
     'fiu|Tennis':'https://fiusports.com/sports/womens-tennis/roster',
-    'fiu|Track & Field':'https://fiusports.com/sports/track-field/roster',
+    'fiu|Track & Field':['https://fiusports.com/sports/womens-track-and-field/roster','https://fiusports.com/sports/mens-track-and-field/roster'],
     'fiu|Volleyball':'https://fiusports.com/sports/womens-volleyball/roster'
   }
 };
@@ -71,7 +73,7 @@ const fiuToday=sidearmToday('America/New_York');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // FIU's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const FIU_TFRRS_TEAMS={Women:null,Men:null};
+export const FIU_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/FL_college_f_Florida_Intl.html',Men:'https://www.tfrrs.org/teams/xc/FL_college_m_Florida_Intl.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -131,6 +133,13 @@ export function createFiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      // Cross country is on the men's and women's track pages ("Track &
+      // Field/Cross Country"), as at Miami (OH): the fall meets
+      // (August-November) are cross country, the rest track.
+      if(sport==='Cross Country'||sport==='Track & Field'){
+        const fall=game=>{const month=Number(String(game.date||'').slice(5,7));return month>=8&&month<=11};
+        games=games.filter(game=>fall(game)===(sport==='Cross Country'));
+      }
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
       // tournament that day.
@@ -227,10 +236,6 @@ export function createFiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
-      // Charlotte's opener is named by its host ("Queens University of
-      // Charlotte", Sep 11; its story, found in the archive, names the Queen
-      // City Invite).
-      if(sport==='Cross Country'&&/^Queens University of Fiu$/i.test(opponent))opponent='Queen City Invite';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -324,7 +329,11 @@ export function createFiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
         if(finished){const value=`${finished[1]?'T':''}${ordinal(finished[2])} of ${finished[3]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
         const matchPlay=golfMatchPlay(text);
         if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
-        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // An event for individuals ("Happy Valley Individuals", "Shepherd's
+        // Rock Individual", Delaware, Sep 7 and Oct 5, beside the team's
+        // tournament; Ohio's "Raider Individual") has no team place.
+        if(/\bIndividuals?\b/i.test(String(event.opponent||event.title||''))){event.headline='No team score (individuals only)';event.results=[{label:'Result',value:event.headline}];event.result_count=1;return;}
+        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score|^individuals?(?: only)?$/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
@@ -365,7 +374,7 @@ export function createFiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:FIU|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Panthers|FIU|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

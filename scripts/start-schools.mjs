@@ -45,7 +45,8 @@ async function tfrrsTeams(school){
   // Or by another alias, any "State" cut to "St" (Big West, Oct 22:
   // CA_college_f_Cal_St_Fullerton, Cal_St_Northridge from "Cal State
   // Northridge", Long_Beach_St).
-  const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\bState\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St'));
+  // TFRRS also shortens "International" (FIU: FL_college_f_Florida_Intl).
+  const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\b(?:State|International)\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St').replace(/\bInternational\b/g,'Intl'));
   const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;

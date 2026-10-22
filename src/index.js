@@ -170,7 +170,7 @@ import {samHoustonSchool,createSamHoustonHandlers} from './schools/sam-houston.m
 import {westernKentuckySchool,createWesternKentuckyHandlers} from './schools/western-kentucky.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.144.0-conference-usa-catalog';
+const VERSION='4.145.0-conference-usa';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
