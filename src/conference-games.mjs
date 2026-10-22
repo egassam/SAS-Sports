@@ -124,9 +124,10 @@ const NOT_SPONSORED={
   // The WCC (2026-27: LMU, Pacific, Pepperdine, Portland, Saint Mary's, San
   // Diego, San Francisco, Santa Clara, Seattle U, Denver) sponsors
   // basketball, baseball, softball, soccer, volleyball (both), beach
-  // volleyball, golf, tennis, cross country, track, swimming and rowing: no
+  // volleyball, golf, tennis, cross country, track, swimming, rowing and
+  // men's water polo (with Air Force, San José State and UC Davis): no
   // football, field hockey, lacrosse, hockey, wrestling or gymnastics.
-  WCC:new Set(['Football','Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  WCC:new Set(['Football','Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
