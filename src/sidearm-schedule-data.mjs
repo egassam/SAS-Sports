@@ -218,7 +218,7 @@ export function classicHtmlScheduleGames(raw){
       result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)||EXHIBITION_PROMOTION.test(promotion)?'S':'',conference:/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/.test(row),
         // The row's promotion line ("Pac-12 Crossover", Utah Valley men's
         // soccer at Cal Poly, Oct 14: a series with another league).
-        promotion});
+        ...(promotion?{promotion}:{})});
   }
   return games;
 }
