@@ -4011,6 +4011,231 @@
     ]
   },
   {
+    "id": "belmont",
+    "name": "Belmont",
+    "short_name": "Belmont",
+    "state": "Tennessee",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://belmontbruins.com",
+    "aliases": [
+      "Belmont University",
+      "Bruins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "belmontbruins",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bradley",
+    "name": "Bradley",
+    "short_name": "Bradley",
+    "state": "Illinois",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bradleybraves.com",
+    "aliases": [
+      "Bradley University",
+      "Braves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bradleybraves",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "drake",
+    "name": "Drake",
+    "short_name": "Drake",
+    "state": "Iowa",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://godrakebulldogs.com",
+    "aliases": [
+      "Drake University",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "godrakebulldogs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "evansville",
+    "name": "Evansville",
+    "short_name": "Evansville",
+    "state": "Indiana",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gopurpleaces.com",
+    "aliases": [
+      "University of Evansville",
+      "Purple Aces"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gopurpleaces",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "illinois-state",
+    "name": "Illinois State",
+    "short_name": "Illinois State",
+    "state": "Illinois",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goredbirds.com",
+    "aliases": [
+      "Illinois State University",
+      "ISU",
+      "Redbirds"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goredbirds",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "indiana-state",
+    "name": "Indiana State",
+    "short_name": "Indiana State",
+    "state": "Indiana",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gosycamores.com",
+    "aliases": [
+      "Indiana State University",
+      "Sycamores"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gosycamores",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "murray-state",
+    "name": "Murray State",
+    "short_name": "Murray State",
+    "state": "Kentucky",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goracers.com",
+    "aliases": [
+      "Murray State University",
+      "Racers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goracers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northern-iowa",
+    "name": "Northern Iowa",
+    "short_name": "Northern Iowa",
+    "state": "Iowa",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://unipanthers.com",
+    "aliases": [
+      "University of Northern Iowa",
+      "UNI",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "unipanthers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southern-illinois",
+    "name": "Southern Illinois",
+    "short_name": "Southern Illinois",
+    "state": "Illinois",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://siusalukis.com",
+    "aliases": [
+      "Southern Illinois University",
+      "SIU",
+      "Salukis"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "siusalukis",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uic",
+    "name": "UIC",
+    "short_name": "UIC",
+    "state": "Illinois",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uicflames.com",
+    "aliases": [
+      "University of Illinois Chicago",
+      "Illinois-Chicago",
+      "Flames"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uicflames",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "valparaiso",
+    "name": "Valparaiso",
+    "short_name": "Valparaiso",
+    "state": "Indiana",
+    "conference": "Missouri Valley",
+    "division": "NCAA Division I",
+    "athletics_url": "https://valpoathletics.com",
+    "aliases": [
+      "Valparaiso University",
+      "Valpo",
+      "Beacons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "valpoathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
