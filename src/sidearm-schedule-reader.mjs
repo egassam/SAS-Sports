@@ -144,9 +144,33 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       config.afterEvent?.(event,ctx);
       events.push(event);
     }
+    if(sport==='Tennis'){
+      oneTournamentPerStory(events);
+      if(config.tennisNeedsStory)for(let i=events.length-1;i>=0;i--)if(events[i].event_type==='MEET'&&events[i].status==='Final'&&!events[i].recap_url)events.splice(i,1);
+    }
     if(!events.length&&(pastSeason||passed))emptiedBySeason.add(events);
     return events;
   }
   const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   return{parseSchedule,isEmptySchedule};
+}
+
+// Two tennis tournaments the same weekend can link one story (Arkansas
+// State's Memphis Invite story also on the ITA All-Americans, Sep 20): it
+// stays with the tournament its address names, else the one that ended
+// nearest the story's day; the other loses it (and, storyless, is not listed).
+export function oneTournamentPerStory(events){
+  const words=event=>String(event.opponent||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(word=>word.length>=4&&!/^(?:invitational|invite|classic|championships?|tournament|regionals?|fall)$/.test(word));
+  const shared=new Map();
+  for(const event of events||[])if(event.sport==='Tennis'&&event.event_type==='MEET'&&event.recap_url)shared.set(event.recap_url,[...(shared.get(event.recap_url)||[]),event]);
+  for(const [url,group] of shared){
+    if(group.length<2)continue;
+    const slug=String(url).toLowerCase(),day=(slug.match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//)||[]).slice(1).map(Number);
+    const storyDay=day.length?Date.UTC(day[0],day[1]-1,day[2]):0;
+    const named=event=>words(event).filter(word=>slug.includes(word)).length;
+    const distance=event=>Math.abs(storyDay-Date.parse(String(event.end_time||event.start_time).slice(0,10)));
+    const keep=[...group].sort((a,b)=>named(b)-named(a)||distance(a)-distance(b))[0];
+    for(const event of group)if(event!==keep){delete event.recap_url;delete event.recap_title;delete event.archive_story_verified;}
+  }
+  return events;
 }

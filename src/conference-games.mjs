@@ -52,10 +52,12 @@ const NOT_SPONSORED={
   'Big Sky':new Set(['Baseball','Swimming & Diving','Gymnastics','Hockey','Wrestling','Lacrosse','Rowing','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Sun Belt (2026-27, with Louisiana Tech, Texas State gone) sponsors
   // football, basketball, baseball, softball, soccer, volleyball, beach
-  // volleyball, cross country, track, golf, tennis and women's swimming: no
-  // lacrosse (James Madison's), field hockey (Old Dominion's, JMU's),
-  // wrestling (App State's), rowing, hockey or gymnastics.
-  'Sun Belt':new Set(['Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  // volleyball, cross country, track, golf and tennis: no swimming (its
+  // championship ended after 2025: JMU and Marshall swim in the American,
+  // ODU and Georgia Southern in the ASUN), lacrosse (James Madison's), field
+  // hockey (Old Dominion's, JMU's), wrestling (App State's, ODU's), rowing,
+  // hockey or gymnastics.
+  'Sun Belt':new Set(['Swimming & Diving','Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

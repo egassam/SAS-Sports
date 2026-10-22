@@ -55,6 +55,14 @@
     "line": "#652130",
     "onAccent": "#ffffff"
   },
+  "arkansas-state": {
+    "primary": "#CC092F",
+    "secondary": "#000000",
+    "panel": "#350b17",
+    "panelDark": "#19050c",
+    "line": "#7f132d",
+    "onAccent": "#ffffff"
+  },
   "athletics": {
     "primary": "#003831",
     "secondary": "#EFB21E",
@@ -279,6 +287,14 @@
     "line": "#0e2646",
     "onAccent": "#ffffff"
   },
+  "coastal-carolina": {
+    "primary": "#006F71",
+    "secondary": "#A27752",
+    "panel": "#092125",
+    "panelDark": "#051013",
+    "line": "#0e4b51",
+    "onAccent": "#ffffff"
+  },
   "colorado": {
     "primary": "#CFB87C",
     "secondary": "#000000",
@@ -455,6 +471,14 @@
     "line": "#8a3a47",
     "onAccent": "#ffffff"
   },
+  "georgia-southern": {
+    "primary": "#011E41",
+    "secondary": "#87714D",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#0f1f37",
+    "onAccent": "#ffffff"
+  },
   "georgia-tech": {
     "primary": "#003057",
     "secondary": "#B3A369",
@@ -591,6 +615,14 @@
     "line": "#295d69",
     "onAccent": "#ffffff"
   },
+  "james-madison": {
+    "primary": "#450084",
+    "secondary": "#CBB677",
+    "panel": "#18092a",
+    "panelDark": "#0b0514",
+    "line": "#340e5c",
+    "onAccent": "#ffffff"
+  },
   "kansas": {
     "primary": "#0051BA",
     "secondary": "#E8000D",
@@ -687,6 +719,22 @@
     "line": "#29416f",
     "onAccent": "#ffffff"
   },
+  "louisiana": {
+    "primary": "#CE181E",
+    "secondary": "#0A0A0A",
+    "panel": "#360e13",
+    "panelDark": "#19070a",
+    "line": "#801c23",
+    "onAccent": "#ffffff"
+  },
+  "louisiana-tech": {
+    "primary": "#002F8B",
+    "secondary": "#E31B23",
+    "panel": "#09132b",
+    "panelDark": "#050915",
+    "line": "#0e285f",
+    "onAccent": "#ffffff"
+  },
   "louisville": {
     "primary": "#AD0000",
     "secondary": "#000000",
@@ -718,6 +766,14 @@
     "panelDark": "#050a11",
     "line": "#0e2a4b",
     "onAccent": "#ffffff"
+  },
+  "marshall": {
+    "primary": "#00B140",
+    "secondary": "#A2AAAD",
+    "panel": "#09301b",
+    "panelDark": "#05160e",
+    "line": "#0e7036",
+    "onAccent": "#07111f"
   },
   "maryland": {
     "primary": "#E03A3E",
@@ -1007,6 +1063,14 @@
     "line": "#8b4d22",
     "onAccent": "#07111f"
   },
+  "old-dominion": {
+    "primary": "#003057",
+    "secondary": "#7C878E",
+    "panel": "#091320",
+    "panelDark": "#050910",
+    "line": "#0e2943",
+    "onAccent": "#ffffff"
+  },
   "ole-miss": {
     "primary": "#CE1126",
     "secondary": "#14213D",
@@ -1231,12 +1295,28 @@
     "line": "#7f0e30",
     "onAccent": "#ffffff"
   },
+  "south-alabama": {
+    "primary": "#00205B",
+    "secondary": "#BF0D3E",
+    "panel": "#091021",
+    "panelDark": "#050810",
+    "line": "#0e2045",
+    "onAccent": "#ffffff"
+  },
   "south-carolina": {
     "primary": "#73000A",
     "secondary": "#000000",
     "panel": "#22090f",
     "panelDark": "#100508",
     "line": "#4e0e18",
+    "onAccent": "#ffffff"
+  },
+  "southern-miss": {
+    "primary": "#000000",
+    "secondary": "#FFAB00",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
   "southern-utah": {
@@ -1383,6 +1463,14 @@
     "line": "#6c1c2b",
     "onAccent": "#ffffff"
   },
+  "troy": {
+    "primary": "#8A2432",
+    "secondary": "#B3B5B8",
+    "panel": "#271117",
+    "panelDark": "#12080c",
+    "line": "#5a222e",
+    "onAccent": "#ffffff"
+  },
   "ucf": {
     "primary": "#BA9B37",
     "secondary": "#000000",
@@ -1405,6 +1493,14 @@
     "panel": "#090c17",
     "panelDark": "#05060c",
     "line": "#0e162d",
+    "onAccent": "#ffffff"
+  },
+  "ulm": {
+    "primary": "#800029",
+    "secondary": "#BD955A",
+    "panel": "#250916",
+    "panelDark": "#11050b",
+    "line": "#550e29",
     "onAccent": "#ffffff"
   },
   "usc": {

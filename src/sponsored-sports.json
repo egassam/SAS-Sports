@@ -73,6 +73,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "arkansas-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "athletics": [
     "Baseball"
   ],
@@ -255,6 +267,20 @@
   "cleveland-guardians": [
     "Baseball"
   ],
+  "coastal-carolina": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "colorado": [
     "Basketball",
     "Cross Country",
@@ -428,6 +454,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "georgia-southern": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rifle",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball"
+  ],
   "georgia-tech": [
     "Baseball",
     "Basketball",
@@ -565,6 +604,21 @@
   "jacksonville-jaguars": [
     "Football"
   ],
+  "james-madison": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "kansas": [
     "Baseball",
     "Basketball",
@@ -634,6 +688,31 @@
   "los-angeles-rams": [
     "Football"
   ],
+  "louisiana": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "louisiana-tech": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "louisville": [
     "Baseball",
     "Basketball",
@@ -679,6 +758,20 @@
     "Golf",
     "Lacrosse",
     "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "marshall": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -1023,6 +1116,20 @@
     "Softball",
     "Track & Field"
   ],
+  "old-dominion": [
+    "Baseball",
+    "Basketball",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
+  ],
   "ole-miss": [
     "Baseball",
     "Basketball",
@@ -1242,6 +1349,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "south-alabama": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "south-carolina": [
     "Baseball",
     "Basketball",
@@ -1253,6 +1372,19 @@
     "Soccer",
     "Softball",
     "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "southern-miss": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -1414,6 +1546,18 @@
   "toronto-fc": [
     "Soccer"
   ],
+  "troy": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "ucf": [
     "Baseball",
     "Basketball",
@@ -1458,6 +1602,18 @@
     "Softball",
     "Swimming & Diving",
     "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "ulm": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
     "Track & Field",
     "Volleyball"
   ],
