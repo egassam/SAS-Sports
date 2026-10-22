@@ -68,7 +68,8 @@ export function wmtMeetResult(text,sport){
   if(rounds){const at=`${place(rounds[1],rounds[2],rounds[3])} of ${rounds[4]}`,scores=rounds[5].split('-').map(Number);return{headline:at,results:[{label:'Result',value:at},{label:'Team score',value:`${scores.reduce((a,b)=>a+b,0)} (${rounds[5]})`}]};}
   // San Diego State's: "1st of 5 teams (1,090.50 pts)"; cross country "6th
   // (157 pts)", the field not given.
-  const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: of (\d+)(?: teams)?)?(?:\s*\((\d[\d,]*(?:\.\d+)?)(?:\s*pts)?\))?$/i);
+  // San José State's: "6th out of 17 teams".
+  const fielded=value.match(/^(T-?)?(\d+)(st|nd|rd|th)(?: (?:out )?of (\d+)(?: teams)?)?(?:\s*\((\d[\d,]*(?:\.\d+)?)(?:\s*pts)?\))?$/i);
   if(fielded&&(fielded[4]||fielded[5])){const at=`${place(fielded[1],fielded[2],fielded[3])}${fielded[4]?` of ${fielded[4]}`:''}`;return{headline:at,results:[{label:'Result',value:at},...(fielded[5]?[{label:'Team score',value:`${fielded[5]} pts`}]:[])]};}
   const teams=[...value.matchAll(/\b([MW])\s*[-:]\s*(T-?)?(\d+)(st|nd|rd|th)\b(?:\s*\((\d+)(?:\s+([A-Za-z]+))?\))?/gi)].map(m=>{
     const race=m[6]&&!/^championship$/i.test(m[6])?` (${m[6]} race)`:'';
@@ -79,7 +80,15 @@ export function wmtMeetResult(text,sport){
   const bracketed=[...value.matchAll(/(T-?)?(\d+)(st|nd|rd|th)\s*\(([WM])\)/gi)].map(m=>({label:`${m[4].toUpperCase()==='W'?"Women's":"Men's"} team`,value:place(m[1],m[2],m[3])}));
   if(bracketed.length&&value.replace(/(T-?)?\d+(st|nd|rd|th)\s*\([WM]\)|[,;\s]/gi,'')==='')return{headline:bracketed.map(row=>`${row.label}: ${row.value}`).join(' / '),results:bracketed};
   if(/^ind(?:\.|ividual)? results$/i.test(value))return{headline:'Individual results',results:[{label:'Result',value:'Individual results'}]};
-  if(/^(?:no team scores?|NTS)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
+  // San José State's at an international event: "4th/2nd among American
+  // Universities" (the place overall, then among a group).
+  const among=value.match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\/\s*(T-?)?(\d+)(st|nd|rd|th) among (.+)$/i);
+  if(among){const at=`${place(among[1],among[2],among[3])} (${place(among[4],among[5],among[6])} among ${among[7]})`;return{headline:at,results:[{label:'Result',value:at}]};}
+  // New Mexico's: a match play's record ("1-2-0 record", the NB3 Matchplay)
+  // and a meet scored for individuals only ("Individuals Only").
+  const matches=sport==='Golf'&&value.match(/^(\d+)-(\d+)-(\d+) record$/i);
+  if(matches){const at=`Match play: ${matches[1]}-${matches[2]}${Number(matches[3])?`-${matches[3]}`:''}`;return{headline:at,results:[{label:'Result',value:at}]};}
+  if(/^(?:no team scores?|NTS|individuals? only)$/i.test(value))return{headline:'No team score (individuals only)',results:[{label:'Result',value:'No team score (individuals only)'}]};
   return{headline:value,results:[{label:'Result',value}]};
 }
 
@@ -220,8 +229,9 @@ export function createWmtApiHandlers(config,{makeEvent,recapMatchesEvent,decodeH
       if(!score&&!meet&&lastDay<today-86400000)continue;
       const final=Boolean(score)||over;
       // A cross country or golf entry is a meet, never a dual (San Diego
-      // State's "Pac-12", Oct 30, read "vs Pac-12").
-      const dual=meet&&!['Cross Country','Golf'].includes(sport)&&!game.datetime_end&&!EVENT_NAME.test(opponent);
+      // State's "Pac-12", Oct 30, read "vs Pac-12"), nor is a track meet (San
+      // José State's "Cal Opener", Mar 20, read "vs").
+      const dual=meet&&!['Cross Country','Golf','Track & Field'].includes(sport)&&!game.datetime_end&&!EVENT_NAME.test(opponent);
       const tournament=decodeHtml(String(game.tournament?.name||'')).trim();
       const relation=meet?(dual&&game.venue_type!=='away'?'vs':'at'):game.venue_type==='away'||GAME_EVENT.test(opponent)||Boolean(tournament)&&name===tournament?'at':'vs';
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation,opponent,date:start.date,

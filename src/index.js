@@ -118,9 +118,16 @@ import {southAlabamaSchool,createSouthAlabamaHandlers} from './schools/south-ala
 import {southernMissSchool,createSouthernMissHandlers} from './schools/southern-miss.mjs';
 import {troySchool,createTroyHandlers} from './schools/troy.mjs';
 import {ulmSchool,createUlmHandlers} from './schools/ulm.mjs';
+import {airForceSchool,createAirForceHandlers} from './schools/air-force.mjs';
+import {grandCanyonSchool,createGrandCanyonHandlers} from './schools/grand-canyon.mjs';
+import {newMexicoSchool,createNewMexicoHandlers} from './schools/new-mexico.mjs';
+import {sanJoseStateSchool,createSanJoseStateHandlers} from './schools/san-jose-state.mjs';
+import {ucDavisSchool,createUcDavisHandlers} from './schools/uc-davis.mjs';
+import {unlvSchool,createUnlvHandlers} from './schools/unlv.mjs';
+import {utepSchool,createUtepHandlers} from './schools/utep.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.132.0-mountain-west-catalog';
+const VERSION='4.133.0-mountain-west';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -830,6 +837,48 @@ const SCHOOL_MODULES=[
     // (kit createGolfStoryPlace, when the handlers spread it).
     results:[{matches:event=>ulmHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>ulmHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(ulmHandlers.isFinalWithoutStory).map(event=>ulmHandlers.attachArchiveStory(event)));if(sport==='Golf'&&ulmHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(ulmHandlers.isGolfAwaitingPlace).map(event=>ulmHandlers.attachGolfPlace(event)));return events.filter(event=>!ulmHandlers.isTennisWithoutStory(event)&&!ulmHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:airForceSchool,parseSchedule:(...args)=>airForceHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>airForceHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>airForceHandlers.matchesRecap(...args),crossCountry:{matches:event=>airForceHandlers.isCrossCountry(event),attach:event=>airForceHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(airForceHandlers.isFinalWithoutStory(event))await airForceHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>airForceHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>airForceHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(airForceHandlers.isFinalWithoutStory).map(event=>airForceHandlers.attachArchiveStory(event)));if(sport==='Golf'&&airForceHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(airForceHandlers.isGolfAwaitingPlace).map(event=>airForceHandlers.attachGolfPlace(event)));return events.filter(event=>!airForceHandlers.isTennisWithoutStory(event)&&!airForceHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:grandCanyonSchool,parseSchedule:(...args)=>grandCanyonHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>grandCanyonHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>grandCanyonHandlers.matchesRecap(...args),crossCountry:{matches:event=>grandCanyonHandlers.isCrossCountry(event),attach:event=>grandCanyonHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(grandCanyonHandlers.isFinalWithoutStory(event))await grandCanyonHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>grandCanyonHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>grandCanyonHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(grandCanyonHandlers.isFinalWithoutStory).map(event=>grandCanyonHandlers.attachArchiveStory(event)));if(sport==='Golf'&&grandCanyonHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(grandCanyonHandlers.isGolfAwaitingPlace).map(event=>grandCanyonHandlers.attachGolfPlace(event)));return events.filter(event=>!grandCanyonHandlers.isTennisWithoutStory(event)&&!grandCanyonHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:newMexicoSchool,parseSchedule:(...args)=>newMexicoHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>newMexicoHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>newMexicoHandlers.matchesRecap(...args),crossCountry:{matches:event=>newMexicoHandlers.isCrossCountry(event),attach:event=>newMexicoHandlers.attachMeetResults(event)}}
+  ,{school:sanJoseStateSchool,parseSchedule:(...args)=>sanJoseStateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>sanJoseStateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>sanJoseStateHandlers.matchesRecap(...args),crossCountry:{matches:event=>sanJoseStateHandlers.isCrossCountry(event),attach:event=>sanJoseStateHandlers.attachMeetResults(event)}}
+  ,{school:ucDavisSchool,parseSchedule:(...args)=>ucDavisHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>ucDavisHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>ucDavisHandlers.matchesRecap(...args),crossCountry:{matches:event=>ucDavisHandlers.isCrossCountry(event),attach:event=>ucDavisHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(ucDavisHandlers.isFinalWithoutStory(event))await ucDavisHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>ucDavisHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>ucDavisHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(ucDavisHandlers.isFinalWithoutStory).map(event=>ucDavisHandlers.attachArchiveStory(event)));if(sport==='Golf'&&ucDavisHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(ucDavisHandlers.isGolfAwaitingPlace).map(event=>ucDavisHandlers.attachGolfPlace(event)));return events.filter(event=>!ucDavisHandlers.isTennisWithoutStory(event)&&!ucDavisHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:unlvSchool,parseSchedule:(...args)=>unlvHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>unlvHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>unlvHandlers.matchesRecap(...args),crossCountry:{matches:event=>unlvHandlers.isCrossCountry(event),attach:event=>unlvHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(unlvHandlers.isFinalWithoutStory(event))await unlvHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>unlvHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>unlvHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(unlvHandlers.isFinalWithoutStory).map(event=>unlvHandlers.attachArchiveStory(event)));if(sport==='Golf'&&unlvHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(unlvHandlers.isGolfAwaitingPlace).map(event=>unlvHandlers.attachGolfPlace(event)));return events.filter(event=>!unlvHandlers.isTennisWithoutStory(event)&&!unlvHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:utepSchool,parseSchedule:(...args)=>utepHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>utepHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>utepHandlers.matchesRecap(...args),crossCountry:{matches:event=>utepHandlers.isCrossCountry(event),attach:event=>utepHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(utepHandlers.isFinalWithoutStory(event))await utepHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>utepHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>utepHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(utepHandlers.isFinalWithoutStory).map(event=>utepHandlers.attachArchiveStory(event)));if(sport==='Golf'&&utepHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(utepHandlers.isGolfAwaitingPlace).map(event=>utepHandlers.attachGolfPlace(event)));return events.filter(event=>!utepHandlers.isTennisWithoutStory(event)&&!utepHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -1093,6 +1142,13 @@ const southAlabamaHandlers=createSouthAlabamaHandlers({makeEvent,recapMatchesEve
 const southernMissHandlers=createSouthernMissHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const troyHandlers=createTroyHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const ulmHandlers=createUlmHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const airForceHandlers=createAirForceHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const grandCanyonHandlers=createGrandCanyonHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const newMexicoHandlers=createNewMexicoHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const sanJoseStateHandlers=createSanJoseStateHandlers({makeEvent,recapMatchesEvent,decodeHtml,eventType,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const ucDavisHandlers=createUcDavisHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const unlvHandlers=createUnlvHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const utepHandlers=createUtepHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

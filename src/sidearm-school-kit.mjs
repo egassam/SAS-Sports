@@ -140,8 +140,9 @@ export function writeMeetPlaces(event,{text,schoolName,ordinal}){
 export function golfPlacing(text){
   // Providence writes the place without its suffix: "T9 of 10"; St. John's
   // the field in brackets: "4th (9 Teams)"; Coastal Carolina adds the rounds:
-  // "1st of 16 (280-277-204=835)"; ULM the total inside: "T-3rd (844) / 15".
-  text=String(text||'').trim().replace(/\s*\(\d{2,4}(?:\s*[-=]\s*\d{2,4})*\)(?=\s*(?:\/|of\b|$))/g,'').trim();
+  // "1st of 16 (280-277-204=835)"; ULM the total inside: "T-3rd (844) / 15";
+  // UC Davis the score to par too: "7th Of 17 (286-299-296 - 881, +17)".
+  text=String(text||'').trim().replace(/\s*\(\d{2,4}(?:\s*[-=]\s*\d{2,4})*(?:,\s*(?:[+-]\d+|E|even))?\)(?=\s*(?:\/|of\b|$))/gi,'').trim();
   const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
   if(!m)return null;
   const n=Number(m[2]),suffix=m[3]?m[3].toLowerCase():n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';
@@ -253,15 +254,19 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       // count (Mississippi State's Cullan Brown).
       const day=path=>{const [y,m,d]=path.split('/').slice(2,5).map(Number);return Date.UTC(y,m-1,d);};
       const lastDay=Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`);
-      let named=null;
+      // Of those, the earliest: two days' matches against one opponent each
+      // have a story naming it (Air Force rifle at Ole Miss, Oct 17 and 18:
+      // the first match had taken the second day's story).
+      let named=null,titled=null,titledDay=0;
       for(const path of [...paths].sort((x,y)=>day(y)-day(x)).slice(0,4)){
         const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
         const text=storyText(raw).toLowerCase();
         if(!words.every(word=>text.includes(word)))continue;
         const title=decodeHtml((String(raw).match(/<meta\b[^>]*property=["']og:title["'][^>]*content=(["'])(.*?)\1/i)||[])[2]||(String(raw).match(/<title>([^<]*)/i)||[])[1]||'').toLowerCase();
-        if(day(path)>=lastDay&&words.every(word=>title.includes(word))){named=url;break;}
+        if(day(path)>=lastDay&&words.every(word=>title.includes(word))){if(!titled||day(path)<titledDay)[titled,titledDay]=[url,day(path)];continue;}
         named??=url;
       }
+      named=titled||named;
       if(named){event.recap_url=named;event.archive_story_verified=named;}
       return event;
     }
@@ -539,8 +544,13 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
 // written "M" for a win), or with team letters, "M: 149-108 | W: 156-101"
 // (North Carolina). The scores decide the outcome. Shared since Oct 15: the
 // ported copies read "Women: 253-33" as 53-33 (the optional letter took the
-// first digit).
+// first digit). A written W or L decides when the page puts the winner's
+// score first: UNLV's "Women: L, 231-68" at Arizona State (Oct 2) is a
+// 68-231 loss.
 export function swimDualScores(text){
-  return[...String(text||'').matchAll(/\b(Women|Men|W|M):\s*(?:[A-Z],?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,mine,theirs])=>({team:{W:'Women',M:'Men'}[team.toUpperCase()]||team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`}));
+  return[...String(text||'').matchAll(/\b(Women|Men|W|M):\s*(?:([A-Z]),?\s*)?(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/gi)].map(([,team,letter,mine,theirs])=>{
+    if(/^[WL]$/i.test(letter||'')&&(letter.toUpperCase()==='W')!==(Number(mine)>Number(theirs))&&Number(mine)!==Number(theirs))[mine,theirs]=[theirs,mine];
+    return{team:{W:'Women',M:'Men'}[team.toUpperCase()]||team[0].toUpperCase()+team.slice(1).toLowerCase(),value:`${Number(mine)>Number(theirs)?'W':Number(mine)<Number(theirs)?'L':'T'}, ${mine}-${theirs}`};
+  });
 }
 
