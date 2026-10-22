@@ -42,7 +42,11 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud'],
   // WCC opponents write "Saint Mary's (Calif.)", "St.
   // Mary's" (its "St." reads as "State" here), "USD", "Seattle", "Denver".
-  'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca','state mary s'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons']};
+  'saint-marys':['saint mary s','st mary s','saint mary s calif','saint mary s ca','st mary s ca','state mary s'],'san-diego':['usd'],'seattle-u':['seattle','seattle university'],'san-francisco':['usf','usf dons'],
+  // Atlantic 10 opponents write "GW", "St. Bonaventure" (its "St." reads as
+  // "State" here), "St. Joseph's", "SLU", "URI", "Loyola (Ill.)", "Mason".
+  'george-washington':['gw','george washington'],'st-bonaventure':['state bonaventure','st bonaventure','bonnies'],'saint-josephs':['state joseph s','st joseph s','saint joseph s'],
+  'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola chicago','loyola ill','loyola il','loyola'],'george-mason':['mason'],'vcu':['virginia commonwealth']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -127,7 +131,14 @@ const NOT_SPONSORED={
   // volleyball, golf, tennis, cross country, track, swimming, rowing and
   // men's water polo (with Air Force, San José State and UC Davis): no
   // football, field hockey, lacrosse, hockey, wrestling or gymnastics.
-  WCC:new Set(['Football','Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
+  WCC:new Set(['Football','Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Atlantic 10 (2026-27: Davidson, Dayton, Duquesne, Fordham, George
+  // Mason, George Washington, La Salle, Loyola Chicago, Rhode Island,
+  // Richmond, St. Bonaventure, Saint Joseph's, Saint Louis, VCU) sponsors
+  // basketball, baseball, softball, soccer, volleyball, golf, tennis, cross
+  // country, track, swimming, rowing, field hockey and women's lacrosse: no
+  // football, wrestling, gymnastics, hockey or water polo.
+  'Atlantic 10':new Set(['Football','Gymnastics','Wrestling','Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

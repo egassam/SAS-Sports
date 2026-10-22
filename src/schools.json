@@ -3726,6 +3726,291 @@
     ]
   },
   {
+    "id": "davidson",
+    "name": "Davidson",
+    "short_name": "Davidson",
+    "state": "North Carolina",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://davidsonwildcats.com",
+    "aliases": [
+      "Davidson College",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "davidsonwildcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "dayton",
+    "name": "Dayton",
+    "short_name": "Dayton",
+    "state": "Ohio",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://daytonflyers.com",
+    "aliases": [
+      "University of Dayton",
+      "Flyers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "daytonflyers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "duquesne",
+    "name": "Duquesne",
+    "short_name": "Duquesne",
+    "state": "Pennsylvania",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goduquesne.com",
+    "aliases": [
+      "Duquesne University",
+      "Dukes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goduquesne",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fordham",
+    "name": "Fordham",
+    "short_name": "Fordham",
+    "state": "New York",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fordhamsports.com",
+    "aliases": [
+      "Fordham University",
+      "Rams"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fordhamsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "george-mason",
+    "name": "George Mason",
+    "short_name": "George Mason",
+    "state": "Virginia",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gomason.com",
+    "aliases": [
+      "George Mason University",
+      "Mason",
+      "Patriots"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gomason",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "george-washington",
+    "name": "George Washington",
+    "short_name": "George Washington",
+    "state": "District of Columbia",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gwsports.com",
+    "aliases": [
+      "The George Washington University",
+      "GW",
+      "Revolutionaries"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gwsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "la-salle",
+    "name": "La Salle",
+    "short_name": "La Salle",
+    "state": "Pennsylvania",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goexplorers.com",
+    "aliases": [
+      "La Salle University",
+      "Explorers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goexplorers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "loyola-chicago",
+    "name": "Loyola Chicago",
+    "short_name": "Loyola Chicago",
+    "state": "Illinois",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://loyolaramblers.com",
+    "aliases": [
+      "Loyola University Chicago",
+      "Ramblers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "loyolaramblers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "rhode-island",
+    "name": "Rhode Island",
+    "short_name": "Rhode Island",
+    "state": "Rhode Island",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gorhody.com",
+    "aliases": [
+      "University of Rhode Island",
+      "URI",
+      "Rams"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gorhody",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "richmond",
+    "name": "Richmond",
+    "short_name": "Richmond",
+    "state": "Virginia",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://richmondspiders.com",
+    "aliases": [
+      "University of Richmond",
+      "Spiders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "richmondspiders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "st-bonaventure",
+    "name": "St. Bonaventure",
+    "short_name": "St. Bonaventure",
+    "state": "New York",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobonnies.sbu.edu",
+    "aliases": [
+      "St. Bonaventure University",
+      "Bonnies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobonnies-sbu",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "saint-josephs",
+    "name": "Saint Joseph's",
+    "short_name": "Saint Joseph's",
+    "state": "Pennsylvania",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://sjuhawks.com",
+    "aliases": [
+      "Saint Joseph's University",
+      "Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "sjuhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "saint-louis",
+    "name": "Saint Louis",
+    "short_name": "Saint Louis",
+    "state": "Missouri",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://slubillikens.com",
+    "aliases": [
+      "Saint Louis University",
+      "SLU",
+      "Billikens"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "slubillikens",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "vcu",
+    "name": "VCU",
+    "short_name": "VCU",
+    "state": "Virginia",
+    "conference": "Atlantic 10",
+    "division": "NCAA Division I",
+    "athletics_url": "https://vcuathletics.com",
+    "aliases": [
+      "Virginia Commonwealth University",
+      "Virginia Commonwealth",
+      "Rams"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "vcuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
