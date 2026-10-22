@@ -150,7 +150,7 @@ import {csuBakersfieldSchool,createCsuBakersfieldHandlers} from './schools/csu-b
 import {ucSantaBarbaraSchool,createUcSantaBarbaraHandlers} from './schools/uc-santa-barbara.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.139.0-big-west';
+const VERSION='4.139.1-big-west';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2859,7 +2859,7 @@ function parseTextScheduleRows(raw,school,sport,sourceUrl,now){
 // (src/conference-games.mjs), for the sport's conference record.
 const {markConferenceGames}=createConferenceGames({schools,membersOf:conferenceMembers});
 function parseHtml(raw,school,sport,sourceUrl,now=new Date()){
-  return markConferenceGames(parseScheduleEvents(raw,school,sport,sourceUrl,now),raw,school);
+  return markConferenceGames(parseScheduleEvents(raw,school,sport,sourceUrl,now),raw,school,sourceUrl);
 }
 function parseScheduleEvents(raw,school,sport,sourceUrl,now=new Date()){
   const ownReader=schoolModule(school.id)?.parseSchedule;

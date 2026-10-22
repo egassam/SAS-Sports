@@ -249,8 +249,8 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womenslacrosse=parse("Lacrosse","womens-lacrosse");
   assert.deepEqual(v_womenslacrosse.map(line),[
- "Upcoming Jan 23 UC Davis at Stanford | ",
- "Upcoming Jan 30 UC Davis vs Dominican | ",
+ "Upcoming Jan 23 UC Davis at Stanford (Exhibition) | ",
+ "Upcoming Jan 30 UC Davis vs Dominican (Exhibition) | ",
  "Upcoming Feb 5 UC Davis at USC | ",
  "Upcoming Feb 10 UC Davis vs California | ",
  "Upcoming Feb 15 UC Davis vs Marquette | ",

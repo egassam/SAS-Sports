@@ -333,9 +333,10 @@ export function createAirForceHandlers({makeEvent,recapMatchesEvent,eventType=()
       // none): a regular-season game against a member is a league game
       // (Syracuse's rule; the page data names no league).
       if(sport==='Hockey'){event.conference_name='Atlantic Hockey America';event.conference_game=game.type!=='S'&&game.type!=='P'&&AHA.test(withoutRanking(game.opponent?.title).trim());return;}
-      // Wrestling wrestles in the Big 12 and lacrosse plays in the ASUN; the
-      // page data marks their league games.
-      if(sport==='Wrestling')event.conference_name='Big 12';
+      // Wrestling wrestles in the Pac-12 from 2026-27 (gopoly.com, Apr 1:
+      // nine members with Air Force) and lacrosse plays in the ASUN; the page
+      // data marks their league games.
+      if(sport==='Wrestling')event.conference_name='Pac-12';
       if(sport==='Lacrosse')event.conference_name='ASUN';
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

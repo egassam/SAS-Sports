@@ -12,7 +12,7 @@
 // --theme is primary,secondary,onAccent (on-accent: #ffffff on dark
 // primaries, #07111f on light ones); panel colors are derived from primary.
 import {readFileSync,writeFileSync} from 'node:fs';
-import {inferSport} from './onboard-school.mjs';
+import {inferSport,isSidearmSplash as splash} from './onboard-school.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school'),write=args.includes('--write');
@@ -33,11 +33,9 @@ async function page(url){
 // Some sites (Arkansas, WordPress) have no /sports/football/schedule: read
 // the homepage, whose nav lists every sport.
 let {html,via}=await page(`${base}/sports/football/schedule`).catch(()=>page(`${base}/`));
-// A SIDEARM splash homepage (an ad screen linking only /index.aspx and
-// /splash.aspx: gorunners.com and ucsbgauchos.com, Oct 22) has no menu, and
-// neither school plays football: read the menu of a sport page every site
-// has instead.
-const splash=text=>/splash\.aspx\?skip=true/.test(text)&&!/href="[^"]*\/sports\/[a-z-]+/.test(text);
+// A SIDEARM splash homepage (onboard-school.mjs) has no menu, and neither
+// school behind one (Oct 22) plays football: read the menu of a sport page
+// every site has instead.
 if(splash(html))for(const slug of ['womens-volleyball','mens-basketball','baseball']){const other=await page(`${base}/sports/${slug}/schedule`).catch(()=>null);if(other&&!splash(other.html)){({html,via}=other);break;}}
 const count=re=>(html.match(re)||[]).length,wmt=count(/wmt/gi),sidearm=count(/sidearm/gi);
 const publisher=wmt>sidearm?'WMT':'SIDEARM';

@@ -35,6 +35,11 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
+// A school of another conference that is a member for some teams: Hawaii
+// (Mountain West since 2026) stays in the Big West for men's volleyball,
+// beach volleyball and women's water polo (bigwest.org, Jul 1, 2026). The
+// team is told by its schedule page.
+const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}]};
 
 // Sports a conference does not sponsor (2026-27). A team in one plays no
 // conference schedule or plays in another league (Ole Miss and West Virginia
@@ -111,19 +116,20 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
   // Postseason and tournament games are not in a conference record.
   const POSTSEASON=/\b(?:tournament|tourney|championships?|regional|super regional|ncaa|bowl|playoff)\b/i;
 
-  function markConferenceGames(events,raw,school){
+  function markConferenceGames(events,raw,school,sourceUrl=''){
     if(!Array.isArray(events)||!events.length||!school?.conference)return events;
-    markGames(events,raw,school);
+    markGames(events,raw,school,sourceUrl);
     const unsponsored=NOT_SPONSORED[school.conference];
     if(unsponsored)for(const event of events)if(unsponsored.has(event.sport)&&!event.conference_name)event.conference_game=false;
     return events;
   }
-  function markGames(events,raw,school){
+  function markGames(events,raw,school,sourceUrl){
     // SIDEARM's older page marks its conference games on the row (Big Sky,
     // Oct 21: Idaho State's football page marks Cal Poly, a football-only
     // Big Sky member); a page that marks none has no flags.
     const nuxt=/__NUXT_DATA__/.test(String(raw||'')),classic=!nuxt&&/<li\b[^>]*class="sidearm-schedule-game\s/.test(String(raw||''));
-    const flagged=nuxt||classic?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
+    const pageGames=nuxt||classic?sidearmScheduleGames(raw):[];
+    const flagged=pageGames.filter(game=>typeof game.conference==='boolean');
     const games=classic&&!flagged.some(game=>game.conference)?[]:flagged;
     if(games.length){
       // The same page data marks exhibitions (type "S"), which records leave
@@ -139,11 +145,18 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
       }
       return events;
     }
-    // No page-data flags: membership.
+    // No page-data flags: membership. A game the page bills as a crossover
+    // with another league ("Pac-12 Crossover": Utah Valley men's soccer at Cal
+    // Poly, Oct 14, whose men's soccer plays in the Pac-12) is not a league
+    // game; gouvu.com counts Big West play 4-1 without it.
     const members=namesOf(school.conference);
+    const crossover=pageGames.filter(game=>/\bcrossover\b/i.test(game.promotion||''));
     for(const event of events){
       if(typeof event.conference_game==='boolean'||!event.opponent)continue;
-      const id=members.get(words(event.opponent));
+      if(event.start_time&&crossover.some(game=>day(game.date)===day(event.start_time)&&words(game.opponent?.title)===words(event.opponent))){event.conference_game=false;continue;}
+      const opponent=words(event.opponent),path=(()=>{try{return new URL(sourceUrl).pathname}catch{return''}})();
+      const affiliate=(AFFILIATES[school.conference]||[]).find(a=>a.names.includes(opponent)&&a.teams[event.sport]?.test(path));
+      const id=members.get(opponent)||affiliate?.id;
       event.conference_game=Boolean(id&&id!==school.id&&!OUTSIDE[school.conference]?.[event.sport]?.has(id)&&!POSTSEASON.test(`${event.opponent} ${event.title||''}`));
     }
     return events;
