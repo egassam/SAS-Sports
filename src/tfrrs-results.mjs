@@ -58,18 +58,9 @@ export function parseTfrrsResults(raw,{decodeHtml,ordinal,team}){
 }
 function parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:teamName}){
   const races=new Map();
-  const sections=String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1);
-  const titleOf=section=>tfrrsText(decodeHtml,(section.match(/<h3\b[^>]*>([\s\S]*?)<span\b/i)||section.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)||section.match(/^[^>]*>([\s\S]*?)<\/div>/)||[])[1]||'');
-  // A meet whose races name no team ("Bengal Invite Team Results (8k)",
-  // "(5k)": Idaho State's Bengal Invitational, Oct 2): with exactly two
-  // distances, the longer race is the men's.
-  const UNNAMED=/^(?!.*\b(?:wo)?men(?:['\u2019]?s)?\b).*?\b(Team|Individual) Results\s*\(([^)]+)\)/i;
-  const kilometers=distance=>Number((String(distance).match(/^(\d+(?:\.\d+)?)\s*k$/i)||[])[1]);
-  const unnamed=[...new Set(sections.map(section=>titleOf(section).match(UNNAMED)?.[2]).filter(distance=>kilometers(distance)))].sort((a,b)=>kilometers(a)-kilometers(b));
-  for(const section of sections){
-    const title=titleOf(section);
-    const bare=unnamed.length===2&&title.match(UNNAMED);
-    const race=bare?[title,bare[2]===unnamed[1]?'Men':'Women','',bare[1],bare[2]]:title.match(/\b(Women|Men)(?:['\u2019]?s)?\b(.*?)\b(Team|Individual) Results\s*\(([^)]+)\)/i);
+  for(const section of String(raw||'').split(/<div\b[^>]*class=["'][^"']*custom-table-title/i).slice(1)){
+    const title=tfrrsText(decodeHtml,(section.match(/<h3\b[^>]*>([\s\S]*?)<span\b/i)||section.match(/<h3\b[^>]*>([\s\S]*?)<\/h3>/i)||section.match(/^[^>]*>([\s\S]*?)<\/div>/)||[])[1]||'');
+    const race=title.match(/\b(Women|Men)(?:['\u2019]?s)?\b(.*?)\b(Team|Individual) Results\s*\(([^)]+)\)/i);
     if(!race)continue;
     const team=race[1][0].toUpperCase()+race[1].slice(1).toLowerCase();
     const distance=race[4].trim().replace(/^(\d+(?:\.\d+)?)\s*k$/i,'$1K');

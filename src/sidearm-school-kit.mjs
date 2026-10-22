@@ -64,9 +64,8 @@ export function mergeTournamentRounds(games){
 const DAY_LABEL=/^day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
 const dayLabelled=game=>DAY_LABEL.test(String(game.opponent?.title||'').trim())&&Boolean(String(game.tournament?.title||'').trim());
 // Or it suffixes them: "BIG EAST Swimming and Diving Championships - Day 1"
-// (Xavier, Feb 17-20), or without a dash: "Colorado Mesa Intermountain
-// Shootout Day #1" (Utah Tech, Oct 2-3).
-const DAY_SUFFIX=/\s+(?:[-–]\s+day\s+(?:\d+|one|two|three|four|five|six|seven)|day\s+#\d+)$/i;
+// (Xavier, Feb 17-20).
+const DAY_SUFFIX=/\s+[-–]\s+day\s+(?:\d+|one|two|three|four|five|six|seven)$/i;
 const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title).replace(DAY_SUFFIX,'');
 export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}={}){
   const groups=[];
@@ -379,15 +378,11 @@ export function createTeamTfrrsMeetResults({teams,...options}){
 // University") read by the short name, as the stories write them (Ohio
 // State's rule, shared since Louisville and NC State, Oct 15). Miami, Boston
 // and Washington University keep theirs: the short name is another school.
-const INSTITUTION_NAMES={'Texas Christian':'TCU','Southern Methodist':'SMU','Mississippi':'Ole Miss','Texas at El Paso':'UTEP','Massachusetts Institute of Technology':'MIT','North Carolina State':'NC State','Brigham Young':'BYU'};
+const INSTITUTION_NAMES={'Texas Christian':'TCU','Southern Methodist':'SMU','Mississippi':'Ole Miss','Texas at El Paso':'UTEP','Massachusetts Institute of Technology':'MIT','North Carolina State':'NC State'};
 export function institutionShortName(name){
   const text=String(name||'').trim();
   if(/^(?:Miami|Boston|Washington) University\b/i.test(text))return text;
-  // Idaho State's classic pages write "California State University at
-  // Fullerton" and "the Pacific" (University of the Pacific).
-  const calState=text.match(/^California State University(?:,|\s+at)?\s+(.+)$/i);
-  if(calState)return`Cal State ${calState[1].trim()}`;
-  const short=text.replace(/^University of\s+/i,'').replace(/\s+University(?=\s*(?:\([^)]*\))?$)/i,'').replace(/^the\s+(?=[A-Z])/,'').trim();
+  const short=text.replace(/^University of\s+/i,'').replace(/\s+University(?=\s*(?:\([^)]*\))?$)/i,'').trim();
   return INSTITUTION_NAMES[short]||short||text;
 }
 
@@ -401,19 +396,12 @@ const PLACE_NAMES=['first','second','third','fourth','fifth','sixth','seventh','
 export function golfStoryPlace(raw,{team,decode=s=>s}){
   // The content runs to its own closing quote ("North Carolina's ..." keeps its apostrophe).
   const meta=name=>decode((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=(["'])([\\s\\S]*?)\\1`,'i'))||[])[2]||'');
-  const body=decode(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ')
-    // A place's suffix in superscript reads "12 th" (Montana State, Oct 20).
-    .replace(/\b(\d+) (st|nd|rd|th)\b/g,'$1$2');
+  const body=decode(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   // The story starts at its dateline after the byline; a story without one
   // (North Carolina's) starts at the byline (a page title such as "... In The
   // ANNIKA - University of North Carolina Athletics" is not a dateline).
   const story=body.slice(Math.max(0,body.search(/\bBy:\s/)));
-  // A dateline may name the state as written and the day ("VAIL, Colo.
-  // (September 23, 2026) -", Northern Arizona; its summary is cut short).
-  // The team's place can come late (Portland State's Sun Mountain story
-  // tells the medalist first: "The Vikings finished third" at 2,100
-  // characters).
-  const lead=story.slice(Math.max(0,story.search(/\b[A-Z][A-Z .,']{3,}(?:,\s*[A-Z][a-z]+\.?)?(?:\s*\([^)]{3,30}\))?\s+[-–—]\s/))).slice(0,3000);
+  const lead=story.slice(Math.max(0,story.search(/\b[A-Z][A-Z .,']{3,}\s+[-–—]\s/))).slice(0,1500);
   const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^(?:T-?)?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
   const word='((?:T-?)?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
   const title=meta('title').replace(/[‘’]/g,"'");
@@ -422,9 +410,6 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
   if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
   if(new RegExp(`\\b${team}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
-  // "Bobcats Repeat as Yellowstone Intercollegiate Team Champions" (Montana
-  // State, Sep 22).
-  if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
   // "Women's Golf Opens Season with Fourth-Place Finish at ..." (St. John's),
@@ -437,15 +422,8 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // (Xavier's Flyer Invitational, Oct 20: "... paced the Musketeers at the
     // Flyer Invitational on Tuesday, placing 10th").
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
-    // A standing after an earlier round is not the final place (Northern
-    // Arizona's McGuire story: "NAU was +9 after the first round, which was
-    // good for a tie for seventh"; they finished seventh).
-    if(/\bafter\s+(?:the\s+)?(?:first|second|opening|1st|2nd)\s+round\b|\bafter\s+(?:day|round)\s+(?:one|two|1|2)\b/i.test(sentence))continue;
-    // A statistic's rank is no place ("its 153 pars were tied for 10th").
-    if(/\b(?:pars|birdies|eagles|bogeys|par-[345]s)\b/i.test(sentence))continue;
-    // "to place eighth", "climb two spots into a tie for third" (North Carolina);
-    // "The Lumberjacks' three-day total ... placed them 12th" (Northern Arizona).
-    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    // "to place eighth", "climb two spots into a tie for third" (North Carolina).
+    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".

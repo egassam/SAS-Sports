@@ -44,18 +44,7 @@ const NOT_SPONSORED={
   // The Big East plays no football (UConn independent, Georgetown and
   // Villanova in the Patriot League, Butler in the Pioneer), hockey
   // (UConn's Hockey East), wrestling or gymnastics.
-  'Big East':new Set(['Football','Hockey','Wrestling','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
-  // The Big Sky (2026-27, with Southern Utah and Utah Tech) sponsors football,
-  // basketball, cross country, track, golf, tennis, women's soccer, softball
-  // and volleyball: no baseball (Utah Tech's), swimming (Northern Arizona's,
-  // Idaho's), gymnastics (Southern Utah's), hockey, wrestling or rowing.
-  'Big Sky':new Set(['Baseball','Swimming & Diving','Gymnastics','Hockey','Wrestling','Lacrosse','Rowing','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
-  // The Sun Belt (2026-27, with Louisiana Tech, Texas State gone) sponsors
-  // football, basketball, baseball, softball, soccer, volleyball, beach
-  // volleyball, cross country, track, golf, tennis and women's swimming: no
-  // lacrosse (James Madison's), field hockey (Old Dominion's, JMU's),
-  // wrestling (App State's), rowing, hockey or gymnastics.
-  'Sun Belt':new Set(['Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Big East':new Set(['Football','Hockey','Wrestling','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
@@ -84,12 +73,7 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
     return events;
   }
   function markGames(events,raw,school){
-    // SIDEARM's older page marks its conference games on the row (Big Sky,
-    // Oct 21: Idaho State's football page marks Cal Poly, a football-only
-    // Big Sky member); a page that marks none has no flags.
-    const nuxt=/__NUXT_DATA__/.test(String(raw||'')),classic=!nuxt&&/<li\b[^>]*class="sidearm-schedule-game\s/.test(String(raw||''));
-    const flagged=nuxt||classic?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
-    const games=classic&&!flagged.some(game=>game.conference)?[]:flagged;
+    const games=/__NUXT_DATA__/.test(String(raw||''))?sidearmScheduleGames(raw).filter(game=>typeof game.conference==='boolean'):[];
     if(games.length){
       // The same page data marks exhibitions (type "S"), which records leave
       // out even when a card does not say so (Oklahoma State soccer at Tulsa,
