@@ -90,4 +90,18 @@ assert.deepEqual(parseTfrrsResults(page('pre-nationals'),{decodeHtml,ordinal,tea
   assert.ok(event.results.some(r=>r.participant==='Arizona team'));
 }
 
+// No TFRRS meet: the official story's results lists (Montana's LC State
+// Invite, Oct 17). Mutation: without the story fallback, "Completed".
+{
+  const MONTANA={Women:'https://www.tfrrs.org/teams/xc/MT_college_f_Montana.html',Men:'https://www.tfrrs.org/teams/xc/MT_college_m_Montana.html'};
+  const story='https://gogriz.com/news/2026/10/17/mens-cross-country-mest-wins-lc-state-invite-to-cap-impressive-regular-season';
+  const fetchStory=async url=>String(url)===story?new Response(page('montana-lc-state-story')):String(url) in MONTANA?null:new Response('<table></table>');
+  const xc=createTfrrsMeetResults({id:'montana',schoolName:'Montana',teams:MONTANA,decodeHtml:s=>decodeHtml(s).replace(/&rsquo;/g,"'"),ordinal,fetch:fetchStory});
+  const event={...meet('montana','LC State Invite','2026-10-17','Completed'),recap_url:story};
+  await xc.attach(event);
+  assert.equal(event.headline,"Women's team: 6th · 149 pts / Men's: Luke Mest 1st");
+  assert.deepEqual(event.results.slice(0,3).map(r=>`${r.group}|${r.participant}|${r.result}`),["Women's race|Montana team|6th · 149 pts","Women's race|Malia Bradford|16th · 18:01","Women's race|Olivia Coll|22nd · 18:09"]);
+  assert.equal(event.results.filter(r=>r.group==="Men's race").length,9);
+}
+
 console.log('Shared TFRRS checks passed (plural names, TFRRS team names, named races, only meet that day when confirmed)');

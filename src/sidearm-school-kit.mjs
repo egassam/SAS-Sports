@@ -315,7 +315,27 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)})||(onlyMeetThatDay===true||onlyMeetThatDay==='checked'&&checked?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
       if(url)pages.add(url);
     }
-    if(!pages.size)return unavailable('No results for this meet are published on TFRRS yet.');
+    if(!pages.size){
+      // No TFRRS meet (Montana's LC State Invite, Oct 17, an NAIA host): the
+      // official story's own results lists, when it publishes them.
+      const story=event.recap_url&&await download(event.recap_url);
+      const races=story?storyMeetResults(story,{decodeHtml,ordinal}):[];
+      if(!races.length)return unavailable('No results for this meet are published on TFRRS yet.');
+      const rows=[],headline=[],lines=[];
+      for(const race of races){
+        const team=race.result?`${ordinal(race.result.place)} \u00b7 ${race.result.score} pts`:null;
+        if(team){rows.push({group:race.group,participant:`${schoolName} team`,result:team});headline.push(`${race.team}'s team: ${team}`);lines.push(`${schoolName}'s ${race.team.toLowerCase()} placed ${ordinal(race.result.place)} with ${race.result.score} points.`);}
+        else headline.push(`${race.team}'s: ${race.runners[0].participant} ${race.runners[0].result.split(' \u00b7 ')[0]}`);
+        rows.push(...race.runners.map(runner=>({group:race.group,participant:runner.participant,result:runner.result})));
+        lines.push(`${race.runners[0].participant} led ${schoolName}'s ${race.team.toLowerCase()}, finishing ${race.runners[0].result.replace(' \u00b7 ',' in ')}.`);
+      }
+      event.headline=headline.join(' / ');
+      event.results=rows;event.result_count=rows.length;event.has_more_results=rows.length>3;event.recap_result_count=rows.length;
+      event.source={...event.source,name:'Official athletics meet recap',url:event.recap_url};
+      event.highlights=lines.slice(0,4);event.highlights_verified=true;event.meet_results_verified=true;
+      event.highlight_state='official_recap_results';event.highlight_status=null;
+      return event;
+    }
     const races=[];let resultsUrl=null;
     for(const url of pages){
       const page=await download(url);if(!page)return unavailable(failed);
@@ -357,6 +377,28 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
     return event;
   }
   return{matches,attach};
+}
+
+// A cross country story's own results lists (gogriz.com, Oct 17):
+// "MONTANA MEN'S RESULTS" then "1. Luke Mest (24:06, 1st)" per runner ("*"
+// marks a personal best). A team's place and score only when a sentence says
+// both ("The Grizzly women finished in 6th place with a score of 149").
+export function storyMeetResults(raw,{decodeHtml,ordinal}){
+  const text=decodeHtml(String(raw||'').replace(/<sup>(\w+)<\/sup>/gi,'$1').replace(/<br\s*\/?>/gi,'\n').replace(/<\/p>/gi,'\n').replace(/<[^>]+>/g,'')).replace(/[ \t]+/g,' ');
+  const races=[];
+  for(const block of text.split(/\n\s*(?=[A-Z .'\u2019-]*\b(?:WOMEN|MEN)['\u2019]?S RESULTS\b)/).slice(1)){
+    const team=/^[^\n]*\bWOMEN/.test(block)?'Women':'Men';
+    const runners=[];
+    for(const line of block.split('\n').slice(1)){
+      const m=line.match(/^\s*\d+\.\s*(.+?)\s*\((\d{1,2}:\d{2}(?:\.\d)?)\*?,\s*(\d+)(?:st|nd|rd|th)\)\s*$/);
+      if(m)runners.push({participant:m[1].trim(),result:`${ordinal(m[3])} \u00b7 ${m[2]}`});
+      else if(runners.length&&line.trim())break;
+    }
+    if(!runners.length||races.some(race=>race.team===team))continue;
+    const said=text.match(new RegExp(`\\b${team==='Women'?'women':'(?<!wo)men'}(?:'s team)? finished (?:in )?(\\d+)(?:st|nd|rd|th)(?: place)?,? with (?:a score of )?(\\d+)(?: points)?`,'i'));
+    races.push({team,group:`${team}'s race`,result:said?{place:Number(said[1]),score:said[2]}:null,runners});
+  }
+  return races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
 }
 
 // A school whose men's and women's cross country teams publish separate
