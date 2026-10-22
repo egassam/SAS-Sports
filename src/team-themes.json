@@ -463,6 +463,14 @@
     "line": "#0e3c6a",
     "onAccent": "#ffffff"
   },
+  "denver": {
+    "primary": "#8B2332",
+    "secondary": "#8B6F4E",
+    "panel": "#271017",
+    "panelDark": "#12080c",
+    "line": "#5b222e",
+    "onAccent": "#ffffff"
+  },
   "denver-broncos": {
     "primary": "#0A2343",
     "secondary": "#FC4C02",
@@ -853,6 +861,14 @@
     "panel": "#091222",
     "panelDark": "#050911",
     "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
+  "lmu": {
+    "primary": "#8A1538",
+    "secondary": "#00345B",
+    "panel": "#270d19",
+    "panelDark": "#12070d",
+    "line": "#5a1a32",
     "onAccent": "#ffffff"
   },
   "long-beach-state": {
@@ -1335,12 +1351,28 @@
     "line": "#43236a",
     "onAccent": "#ffffff"
   },
+  "pacific": {
+    "primary": "#F47920",
+    "secondary": "#000000",
+    "panel": "#3e2314",
+    "panelDark": "#1d110a",
+    "line": "#955125",
+    "onAccent": "#ffffff"
+  },
   "penn-state": {
     "primary": "#041E42",
     "secondary": "#1E407C",
     "panel": "#090f1b",
     "panelDark": "#05080e",
     "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
+  "pepperdine": {
+    "primary": "#00205C",
+    "secondary": "#E35205",
+    "panel": "#091021",
+    "panelDark": "#050810",
+    "line": "#0e2046",
     "onAccent": "#ffffff"
   },
   "philadelphia-eagles": {
@@ -1389,6 +1421,14 @@
     "panel": "#1d2026",
     "panelDark": "#0b0c0f",
     "line": "#5a5440",
+    "onAccent": "#ffffff"
+  },
+  "portland": {
+    "primary": "#1E1656",
+    "secondary": "#A7A9AC",
+    "panel": "#0f0d1f",
+    "panelDark": "#080710",
+    "line": "#1f1b42",
     "onAccent": "#ffffff"
   },
   "portland-state": {
@@ -1455,6 +1495,14 @@
     "line": "#112e28",
     "onAccent": "#ffffff"
   },
+  "saint-marys": {
+    "primary": "#D80024",
+    "secondary": "#06315B",
+    "panel": "#380914",
+    "panelDark": "#1a050b",
+    "line": "#850e27",
+    "onAccent": "#ffffff"
+  },
   "sam-houston": {
     "primary": "#F76800",
     "secondary": "#0F1C2E",
@@ -1485,6 +1533,14 @@
     "panel": "#2d0e17",
     "panelDark": "#15070c",
     "line": "#6a1c2c",
+    "onAccent": "#ffffff"
+  },
+  "san-francisco": {
+    "primary": "#00543C",
+    "secondary": "#FDBB30",
+    "panel": "#091b1a",
+    "panelDark": "#050d0d",
+    "line": "#0e3d34",
     "onAccent": "#ffffff"
   },
   "san-francisco-49ers": {
@@ -1519,6 +1575,14 @@
     "line": "#0e3d6c",
     "onAccent": "#ffffff"
   },
+  "santa-clara": {
+    "primary": "#862633",
+    "secondary": "#CFB87C",
+    "panel": "#261118",
+    "panelDark": "#12080c",
+    "line": "#58232f",
+    "onAccent": "#ffffff"
+  },
   "seattle-mariners": {
     "primary": "#005C5C",
     "secondary": "#0C2C56",
@@ -1542,6 +1606,14 @@
     "panelDark": "#09190f",
     "line": "#277c3d",
     "onAccent": "#0b0b10"
+  },
+  "seattle-u": {
+    "primary": "#AA0000",
+    "secondary": "#000000",
+    "panel": "#2e090c",
+    "panelDark": "#160507",
+    "line": "#6c0e13",
+    "onAccent": "#ffffff"
   },
   "seton-hall": {
     "primary": "#004488",
