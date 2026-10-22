@@ -138,7 +138,7 @@ import {toledoSchool,createToledoHandlers} from './schools/toledo.mjs';
 import {umassSchool,createUmassHandlers} from './schools/umass.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.136.0-mac';
+const VERSION='4.137.0-mac';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
