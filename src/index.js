@@ -107,7 +107,7 @@ import {southernUtahSchool,createSouthernUtahHandlers} from './schools/southern-
 import {utahTechSchool,createUtahTechHandlers} from './schools/utah-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.129.0-sun-belt-catalog';
+const VERSION='4.129.1-xc-order-probe';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -3217,10 +3217,8 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // Before the module's feed hook (Big Sky, Oct 21): a meet the schedule
   // publishes no result or story for is kept once TFRRS gives its results
   // (Idaho State's and Southern Utah's meets were dropped as "Completed").
-  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||moduleCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
-  // School modules finish their own sports (golf and tennis stories, archive
-  // stories).
   const feedHook=schoolModule(school.id)?.feed;if(feedHook)events=await feedHook(events,sport);
+  if(sport==='Cross Country')await Promise.all(events.filter(event=>event.status==='Final'&&(event.result_url||isKStateCrossCountry(event)||moduleCrossCountry(event))&&!isKansasCrossCountry(event)).map(event=>attachOfficialMeetResults(event)));
   // The independent scoreboard: for the official schedule's games under way,
   // or for the last three days when the official page failed (a stale or
   // failed school page must not suppress a live football/basketball score).
