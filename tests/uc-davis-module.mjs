@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',ucDavisSchool.scheduleUrls],['roster',ucDav
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'ucdavisaggies.com',`${key} must stay on ucdavisaggies.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://ucdavisaggies.com/sports/baseball/schedule"],"roster":["https://ucdavisaggies.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://ucdavisaggies.com/sports/mens-basketball/schedule","https://ucdavisaggies.com/sports/womens-basketball/schedule"],"roster":["https://ucdavisaggies.com/sports/mens-basketball/roster","https://ucdavisaggies.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://ucdavisaggies.com/sports/beach-volleyball/schedule"],"roster":["https://ucdavisaggies.com/sports/beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://ucdavisaggies.com/sports/cross-country/schedule"],"roster":["https://ucdavisaggies.com/sports/cross-country/roster"],"combined":false},"Field Hockey":{"schedule":["https://ucdavisaggies.com/sports/field-hockey/schedule"],"roster":["https://ucdavisaggies.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://ucdavisaggies.com/sports/football/schedule"],"roster":["https://ucdavisaggies.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://ucdavisaggies.com/sports/womens-golf/schedule","https://ucdavisaggies.com/sports/mens-golf/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-golf/roster","https://ucdavisaggies.com/sports/mens-golf/roster"],"combined":true},"Gymnastics":{"schedule":["https://ucdavisaggies.com/sports/womens-gymnastics/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-gymnastics/roster"],"combined":false},"Lacrosse":{"schedule":["https://ucdavisaggies.com/sports/womens-lacrosse/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-lacrosse/roster"],"combined":false},"STUNT":{"schedule":["https://ucdavisaggies.com/sports/stunt/schedule"],"roster":["https://ucdavisaggies.com/sports/stunt/roster"],"combined":false},"Soccer":{"schedule":["https://ucdavisaggies.com/sports/womens-soccer/schedule","https://ucdavisaggies.com/sports/mens-soccer/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-soccer/roster","https://ucdavisaggies.com/sports/mens-soccer/roster"],"combined":true},"Softball":{"schedule":["https://ucdavisaggies.com/sports/softball/schedule"],"roster":["https://ucdavisaggies.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://ucdavisaggies.com/sports/swimming-and-diving/schedule"],"roster":["https://ucdavisaggies.com/sports/swimming-and-diving/roster"],"combined":false},"Tennis":{"schedule":["https://ucdavisaggies.com/sports/womens-tennis/schedule","https://ucdavisaggies.com/sports/mens-tennis/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-tennis/roster","https://ucdavisaggies.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://ucdavisaggies.com/sports/track-and-field/schedule"],"roster":["https://ucdavisaggies.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://ucdavisaggies.com/sports/womens-volleyball/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-volleyball/roster"],"combined":false},"Water Polo":{"schedule":["https://ucdavisaggies.com/sports/womens-water-polo/schedule","https://ucdavisaggies.com/sports/mens-water-polo/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-water-polo/roster","https://ucdavisaggies.com/sports/mens-water-polo/roster"],"combined":true}};
+const parity={"Baseball":{"schedule":["https://ucdavisaggies.com/sports/baseball/schedule"],"roster":["https://ucdavisaggies.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://ucdavisaggies.com/sports/mens-basketball/schedule","https://ucdavisaggies.com/sports/womens-basketball/schedule"],"roster":["https://ucdavisaggies.com/sports/mens-basketball/roster","https://ucdavisaggies.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://ucdavisaggies.com/sports/womens-beach-volleyball/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://ucdavisaggies.com/sports/cross-country/schedule"],"roster":["https://ucdavisaggies.com/sports/cross-country/roster"],"combined":false},"Field Hockey":{"schedule":["https://ucdavisaggies.com/sports/field-hockey/schedule"],"roster":["https://ucdavisaggies.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://ucdavisaggies.com/sports/football/schedule"],"roster":["https://ucdavisaggies.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://ucdavisaggies.com/sports/womens-golf/schedule","https://ucdavisaggies.com/sports/mens-golf/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-golf/roster","https://ucdavisaggies.com/sports/mens-golf/roster"],"combined":true},"Gymnastics":{"schedule":["https://ucdavisaggies.com/sports/womens-gymnastics/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-gymnastics/roster"],"combined":false},"Lacrosse":{"schedule":["https://ucdavisaggies.com/sports/womens-lacrosse/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-lacrosse/roster"],"combined":false},"STUNT":{"schedule":["https://ucdavisaggies.com/sports/stunt/schedule"],"roster":["https://ucdavisaggies.com/sports/stunt/roster"],"combined":false},"Soccer":{"schedule":["https://ucdavisaggies.com/sports/womens-soccer/schedule","https://ucdavisaggies.com/sports/mens-soccer/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-soccer/roster","https://ucdavisaggies.com/sports/mens-soccer/roster"],"combined":true},"Softball":{"schedule":["https://ucdavisaggies.com/sports/softball/schedule"],"roster":["https://ucdavisaggies.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://ucdavisaggies.com/sports/swimming-and-diving/schedule"],"roster":["https://ucdavisaggies.com/sports/swimming-and-diving/roster"],"combined":false},"Tennis":{"schedule":["https://ucdavisaggies.com/sports/womens-tennis/schedule","https://ucdavisaggies.com/sports/mens-tennis/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-tennis/roster","https://ucdavisaggies.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://ucdavisaggies.com/sports/track-and-field/schedule"],"roster":["https://ucdavisaggies.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://ucdavisaggies.com/sports/womens-volleyball/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-volleyball/roster"],"combined":false},"Water Polo":{"schedule":["https://ucdavisaggies.com/sports/womens-water-polo/schedule","https://ucdavisaggies.com/sports/mens-water-polo/schedule"],"roster":["https://ucdavisaggies.com/sports/womens-water-polo/roster","https://ucdavisaggies.com/sports/mens-water-polo/roster"],"combined":true}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -142,8 +142,22 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Mar 2, 6:00 PM Women's · UC Davis vs Nevada | ",
  "Upcoming Mar 7 Women's · UC Davis at Mountain West Championships | "
 ]);
-  const v_beachvolleyball=parse("Beach Volleyball","beach-volleyball");
-  assert.deepEqual(v_beachvolleyball.map(line),[]);
+  const v_womensbeachvolleyball=parse("Beach Volleyball","womens-beach-volleyball");
+  assert.deepEqual(v_womensbeachvolleyball.map(line),[
+ "Upcoming Oct 24 UC Davis at California | ",
+ "Upcoming Mar 5 UC Davis at Battle for the Bay | ",
+ "Upcoming Mar 12 UC Davis at WCC Challenge | ",
+ "Upcoming Mar 19 UC Davis at Cal Poly Tournament | ",
+ "Upcoming Mar 26 UC Davis at Hawai'i Tournament | ",
+ "Upcoming Apr 2, 10:00 AM UC Davis vs Pacific | ",
+ "Upcoming Apr 2, 2:00 PM UC Davis vs San Francisco | ",
+ "Upcoming Apr 3, 10:00 AM UC Davis vs Saint Mary's | ",
+ "Upcoming Apr 3, 2:00 PM UC Davis vs Santa Clara | ",
+ "Upcoming Apr 9 UC Davis at Pacific Tournament | ",
+ "Upcoming Apr 16 UC Davis at Long Beach Tournament | ",
+ "Upcoming Apr 23 UC Davis at Washington Tournament | ",
+ "Upcoming Apr 29 UC Davis at WCC Championships | "
+]);
   const v_crosscountry=parse("Cross Country","cross-country");
   assert.deepEqual(v_crosscountry.map(line),[
  "Final Sep 4 UC Davis at USF Invitational | Women's team: 7th / Men's team: 8th",
@@ -448,7 +462,7 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_baseball,"Baseball baseball");
   ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
   ownRecapsOnly(v_womensbasketball,"Basketball womens-basketball");
-  ownRecapsOnly(v_beachvolleyball,"Beach Volleyball beach-volleyball");
+  ownRecapsOnly(v_womensbeachvolleyball,"Beach Volleyball womens-beach-volleyball");
   ownRecapsOnly(v_crosscountry,"Cross Country cross-country");
   ownRecapsOnly(v_fieldhockey,"Field Hockey field-hockey");
   ownRecapsOnly(v_football,"Football football");
@@ -466,6 +480,15 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_menswaterpolo,"Water Polo mens-water-polo");
 }
 // END generated
+
+// A season published with no events yet ("2027 STUNT Schedule") is a valid
+// empty schedule, not a failed source (the preview answered 502). Mutation:
+// without the rule it is not empty-valid.
+{
+  const stunt=worker.ucDavisHandlers.parseSchedule(fixture('stunt-schedule.html.gz'),school,'STUNT',page('stunt'),now);
+  assert.deepEqual(stunt,[]);
+  assert.equal(worker.ucDavisHandlers.isEmptySchedule(stunt),true);
+}
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log("UC Davis module checks passed");

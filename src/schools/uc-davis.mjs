@@ -1,3 +1,4 @@
+import {sidearmScheduleGames} from '../sidearm-schedule-data.mjs';
 import {createSidearmScheduleReader,sidearmToday,withoutRanking,sidearmRelation} from '../sidearm-schedule-reader.mjs';
 import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket,writeMeetPlaces,golfPlacing,golfMatchPlay,doubleheaderNumber,createRecapMatcher,createArchiveStory,createTfrrsMeetResults,createTeamTfrrsMeetResults,institutionShortName,createGolfStoryPlace,swimDualScores} from '../sidearm-school-kit.mjs';
 // UC Davis school module. Shared publisher utilities stay in the Worker;
@@ -29,7 +30,7 @@ export const ucDavisSchool={
   scheduleUrls:{
     'uc-davis|Baseball':'https://ucdavisaggies.com/sports/baseball/schedule',
     'uc-davis|Basketball':['https://ucdavisaggies.com/sports/mens-basketball/schedule','https://ucdavisaggies.com/sports/womens-basketball/schedule'],
-    'uc-davis|Beach Volleyball':'https://ucdavisaggies.com/sports/beach-volleyball/schedule',
+    'uc-davis|Beach Volleyball':'https://ucdavisaggies.com/sports/womens-beach-volleyball/schedule',
     'uc-davis|Cross Country':'https://ucdavisaggies.com/sports/cross-country/schedule',
     'uc-davis|Field Hockey':'https://ucdavisaggies.com/sports/field-hockey/schedule',
     'uc-davis|Football':'https://ucdavisaggies.com/sports/football/schedule',
@@ -48,7 +49,7 @@ export const ucDavisSchool={
   rosterUrls:{
     'uc-davis|Baseball':'https://ucdavisaggies.com/sports/baseball/roster',
     'uc-davis|Basketball':['https://ucdavisaggies.com/sports/mens-basketball/roster','https://ucdavisaggies.com/sports/womens-basketball/roster'],
-    'uc-davis|Beach Volleyball':'https://ucdavisaggies.com/sports/beach-volleyball/roster',
+    'uc-davis|Beach Volleyball':'https://ucdavisaggies.com/sports/womens-beach-volleyball/roster',
     'uc-davis|Cross Country':'https://ucdavisaggies.com/sports/cross-country/roster',
     'uc-davis|Field Hockey':'https://ucdavisaggies.com/sports/field-hockey/roster',
     'uc-davis|Football':'https://ucdavisaggies.com/sports/football/roster',
@@ -354,7 +355,10 @@ export function createUcDavisHandlers({makeEvent,recapMatchesEvent,eventType=()=
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // A season published with no events yet ("2027 STUNT Schedule", Oct 22) or
+  // SIDEARM's empty template is a valid empty schedule (USC's rule).
+  const unpublished=(raw,school)=>school?.id==='uc-davis'&&/<title>\s*(?:@season\b|\d{4}(?:-\d{2})? [^<]*\bSchedule\b)/i.test(String(raw||''))&&!sidearmScheduleGames(String(raw||'')).length;
+  const readSchedule=(...args)=>{if(unpublished(...args.slice(0,2))){const none=[];trackEmptied.add(none);return none;}const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Aggies|UC Davis|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
