@@ -57,7 +57,15 @@ const NOT_SPONSORED={
   // ODU and Georgia Southern in the ASUN), lacrosse (James Madison's), field
   // hockey (Old Dominion's, JMU's), wrestling (App State's, ODU's), rowing,
   // hockey or gymnastics.
-  'Sun Belt':new Set(['Swimming & Diving','Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Sun Belt':new Set(['Swimming & Diving','Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Mountain West (2026-27: Air Force, Grand Canyon, Hawaii, Nevada, New
+  // Mexico, San Jose State, UC Davis, UNLV, UTEP, Wyoming; Northern Illinois
+  // for football) sponsors football, basketball, baseball, softball, soccer
+  // (men's from 2026-27, Utah Tech an affiliate), volleyball, cross country,
+  // track, golf, tennis and swimming: no gymnastics (two teams left),
+  // wrestling (Air Force's and Wyoming's in the Big 12), beach volleyball,
+  // rifle, skiing (New Mexico's in the RMISA) or water polo.
+  'Mountain West':new Set(['Gymnastics','Wrestling','Beach Volleyball','Rifle','Skiing','Water Polo','Lacrosse','Field Hockey','Rowing','Hockey','Bowling','Equestrian','Fencing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
