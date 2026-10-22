@@ -24,6 +24,9 @@ export const samHoustonSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // The women's tennis roster publishes no portraits (6 players): its
+  // profile cards show without one.
+  portraitlessProfileSports:new Set(['Tennis']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'sam-houston|Golf|Amelia Guo':'https://www.instagram.com/ameliag.5/',

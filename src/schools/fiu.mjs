@@ -36,7 +36,7 @@ export const fiuSchool={
   scheduleUrls:{
     'fiu|Baseball':'https://fiusports.com/sports/baseball/schedule',
     'fiu|Basketball':['https://fiusports.com/sports/mens-basketball/schedule','https://fiusports.com/sports/womens-basketball/schedule'],
-    'fiu|Beach Volleyball':'https://fiusports.com/sports/beach-volleyball/schedule',
+    'fiu|Beach Volleyball':'https://fiusports.com/sports/womens-beach-volleyball/schedule',
     'fiu|Cross Country':['https://fiusports.com/sports/womens-track-and-field/schedule','https://fiusports.com/sports/mens-track-and-field/schedule'],
     'fiu|Football':'https://fiusports.com/sports/football/schedule',
     'fiu|Golf':'https://fiusports.com/sports/womens-golf/schedule',
@@ -50,7 +50,7 @@ export const fiuSchool={
   rosterUrls:{
     'fiu|Baseball':'https://fiusports.com/sports/baseball/roster',
     'fiu|Basketball':['https://fiusports.com/sports/mens-basketball/roster','https://fiusports.com/sports/womens-basketball/roster'],
-    'fiu|Beach Volleyball':'https://fiusports.com/sports/beach-volleyball/roster',
+    'fiu|Beach Volleyball':'https://fiusports.com/sports/womens-beach-volleyball/roster',
     'fiu|Cross Country':['https://fiusports.com/sports/womens-track-and-field/roster','https://fiusports.com/sports/mens-track-and-field/roster'],
     'fiu|Football':'https://fiusports.com/sports/football/roster',
     'fiu|Golf':'https://fiusports.com/sports/womens-golf/roster',
@@ -394,5 +394,7 @@ export function createFiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    // Fall beach volleyball dates publish no result or story (Oct 3, Oct
+    // 10-11): not listed.
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Beach Volleyball')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }
