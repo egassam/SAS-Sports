@@ -15,7 +15,7 @@ Each rule has a check in `tests/george-washington-module.mjs` (generated page bl
 
 ## Athletes
 
-Roster cards, then official profiles, then the NIL marketplace: none linked. Every sport shows three athletes with verified Instagram. Checked with `validate-schools --athletes-only` on the preview, Oct 22.
+Roster cards, then official profiles, then the NIL marketplace: none linked. Profile cards fill the remaining slots in Golf, Rowing (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 22.
 
 ## Open
 
