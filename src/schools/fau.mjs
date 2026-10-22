@@ -27,7 +27,7 @@ export const fauSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Tennis']),
   verifiedInstagrams:{
     'fau|Basketball|Liam Dayco-Green':'https://www.instagram.com/daycogreenn/',
     'fau|Basketball|Erin Rodgers':'https://www.instagram.com/erin.rodgers_/',
@@ -46,12 +46,12 @@ export const fauSchool={
     'fau|Baseball':'https://fausports.com/sports/baseball/schedule',
     'fau|Basketball':['https://fausports.com/sports/mens-basketball/schedule','https://fausports.com/sports/womens-basketball/schedule'],
     'fau|Beach Volleyball':'https://fausports.com/sports/womens-beach-volleyball/schedule',
-    'fau|Cross Country':'https://fausports.com/sports/mens-cross-country/schedule',
+    'fau|Cross Country':['https://fausports.com/sports/womens-track-and-field/schedule','https://fausports.com/sports/mens-cross-country/schedule'],
     'fau|Football':'https://fausports.com/sports/football/schedule',
     'fau|Golf':['https://fausports.com/sports/womens-golf/schedule','https://fausports.com/sports/mens-golf/schedule'],
     'fau|Soccer':['https://fausports.com/sports/womens-soccer/schedule','https://fausports.com/sports/mens-soccer/schedule'],
     'fau|Softball':'https://fausports.com/sports/softball/schedule',
-    'fau|Swimming & Diving':['https://fausports.com/sports/mens-swimming-and-diving/schedule','https://fausports.com/sports/swimming-and-diving/schedule'],
+    'fau|Swimming & Diving':'https://fausports.com/sports/swimming-and-diving/schedule',
     'fau|Tennis':['https://fausports.com/sports/womens-tennis/schedule','https://fausports.com/sports/mens-tennis/schedule'],
     'fau|Track & Field':'https://fausports.com/sports/womens-track-and-field/schedule',
     'fau|Volleyball':'https://fausports.com/sports/womens-volleyball/schedule'
@@ -60,12 +60,12 @@ export const fauSchool={
     'fau|Baseball':'https://fausports.com/sports/baseball/roster',
     'fau|Basketball':['https://fausports.com/sports/mens-basketball/roster','https://fausports.com/sports/womens-basketball/roster'],
     'fau|Beach Volleyball':'https://fausports.com/sports/womens-beach-volleyball/roster',
-    'fau|Cross Country':'https://fausports.com/sports/mens-cross-country/roster',
+    'fau|Cross Country':['https://fausports.com/sports/womens-track-and-field/roster','https://fausports.com/sports/mens-cross-country/roster'],
     'fau|Football':'https://fausports.com/sports/football/roster',
     'fau|Golf':['https://fausports.com/sports/womens-golf/roster','https://fausports.com/sports/mens-golf/roster'],
     'fau|Soccer':['https://fausports.com/sports/womens-soccer/roster','https://fausports.com/sports/mens-soccer/roster'],
     'fau|Softball':'https://fausports.com/sports/softball/roster',
-    'fau|Swimming & Diving':['https://fausports.com/sports/mens-swimming-and-diving/roster','https://fausports.com/sports/swimming-and-diving/roster'],
+    'fau|Swimming & Diving':'https://fausports.com/sports/swimming-and-diving/roster',
     'fau|Tennis':['https://fausports.com/sports/womens-tennis/roster','https://fausports.com/sports/mens-tennis/roster'],
     'fau|Track & Field':'https://fausports.com/sports/womens-track-and-field/roster',
     'fau|Volleyball':'https://fausports.com/sports/womens-volleyball/roster'
@@ -142,6 +142,14 @@ export function createFauHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      // Women's cross country is on the women's track page ("Women's
+      // XC/Track & Field"), as at Miami (OH): the fall meets (August-November)
+      // are cross country, the rest track. The men's cross country page is
+      // all fall.
+      if(sport==='Cross Country'||sport==='Track & Field'){
+        const fall=game=>{const month=Number(String(game.date||'').slice(5,7));return month>=8&&month<=11};
+        games=games.filter(game=>fall(game)===(sport==='Cross Country'));
+      }
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
       // tournament that day.
@@ -230,7 +238,9 @@ export function createFauHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
       const dual=sport==='Swimming & Diving'&&/^\d/.test(String(game.result?.team_score||''))&&/^\d/.test(String(game.result?.opponent_score||''));
       if(tournament&&multiDay&&!dual&&!SEASON_TITLE.test(tournament)&&!EVENT_NAME.test(opponent))opponent=tournament;
       // A swimming dual names its opponent with "Dual" ("Utah Dual", Utah Tech).
-      if(sport==='Swimming & Diving')opponent=opponent.replace(/\s+Dual$/i,'');
+      // FAU names the squads swimming a meet: "Florida (Men S&D / Women's
+      // Diving)" (Sep 26).
+      if(sport==='Swimming & Diving')opponent=opponent.replace(/\s+Dual$/i,'').replace(/\s*\((?:Men|Women)[^()]*\)$/i,'');
       // A cross country meet the page names by its host ("Washington State",
       // Montana women's page, Sep 11; the men's page and the story name the
       // "WSU Cougar Classic") takes its name from the story's address

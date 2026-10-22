@@ -10,7 +10,7 @@ import {createWmtApiHandlers,wmtApiSchoolRoutes} from '../wmt-api-kit.mjs';
 // scripts/port-wmt-api.mjs from /website-api/sports (2026-10-22).
 const HOST='goutsa.com';
 // The site's sport ids (/website-api/sports): one per team.
-const SPORT_IDS={'baseball':2,'football':4,'mens-basketball':5,'mens-golf':7,'mens-tennis':8,'soccer':10,'softball':11,'volleyball':15,'womens-basketball':16,'womens-golf':18,'womens-tennis':19,'cross-country':54};
+const SPORT_IDS={'baseball':2,'football':4,'mens-basketball':5,'mens-golf':7,'mens-tennis':8,'soccer':10,'softball':11,'volleyball':15,'womens-basketball':16,'womens-golf':18,'womens-tennis':19,'cross-country':54,'track-fieldcross-country':14};
 const SLUGS={
   'Baseball':['baseball'],
   'Basketball':['womens-basketball','mens-basketball'],
@@ -20,6 +20,9 @@ const SLUGS={
   'Soccer':['soccer'],
   'Softball':['softball'],
   'Tennis':['womens-tennis','mens-tennis'],
+  // One page for track and cross country through 2025-26; cross country has
+  // its own since (id 54), so this one is the track season.
+  'Track & Field':['track-fieldcross-country'],
   'Volleyball':['volleyball']
 };
 const TEAMS={'womens-basketball':"Women's",'mens-basketball':"Men's",'womens-golf':"Women's",'mens-golf':"Men's",'womens-tennis':"Women's",'mens-tennis':"Men's"};
@@ -73,6 +76,7 @@ export const utsaSchool={
     'utsa|Soccer':'https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=10&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament',
     'utsa|Softball':'https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=11&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament',
     'utsa|Tennis':['https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=19&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament','https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=8&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'],
+    'utsa|Track & Field':'https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=14&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament',
     'utsa|Volleyball':'https://goutsa.com/website-api/schedule-events?filter%5Bschedule.sport_id%5D=15&per_page=100&sort=-datetime&include=scheduleEventResult,postEventArticle,scheduleEventLinks,tournament'
   },
   rosterUrls:{
@@ -84,6 +88,7 @@ export const utsaSchool={
     'utsa|Soccer':'https://goutsa.com/sports/soccer/roster',
     'utsa|Softball':'https://goutsa.com/sports/softball/roster',
     'utsa|Tennis':['https://goutsa.com/sports/womens-tennis/roster','https://goutsa.com/sports/mens-tennis/roster'],
+    'utsa|Track & Field':'https://goutsa.com/sports/track-fieldcross-country/roster',
     'utsa|Volleyball':'https://goutsa.com/sports/volleyball/roster'
   }
 };

@@ -244,6 +244,10 @@ export function createCharlotteHandlers({makeEvent,recapMatchesEvent,eventType=(
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // Charlotte's opener is named by its host ("Queens University of
+      // Charlotte", Sep 11; its story, found in the archive, names the Queen
+      // City Invite).
+      if(sport==='Cross Country'&&/^Queens University of Charlotte$/i.test(opponent))opponent='Queen City Invite';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },

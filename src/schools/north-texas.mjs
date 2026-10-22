@@ -13,7 +13,7 @@ export const northTexasSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Basketball','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Basketball','Cross Country','Football','Golf','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -26,7 +26,7 @@ export const northTexasSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Golf']),
   verifiedInstagrams:{
     'north-texas|Golf|Katharina Anglett':'https://www.instagram.com/katha.ang/',
     'north-texas|Golf|Connor Bryce':'https://www.instagram.com/connorbrycegolf/',
@@ -34,6 +34,8 @@ export const northTexasSchool={
   },
   scheduleUrls:{
     'north-texas|Basketball':['https://meangreensports.com/sports/mens-basketball/schedule','https://meangreensports.com/sports/womens-basketball/schedule'],
+    // Cross country is on the track page ("Track & Field/XC"), by season.
+    'north-texas|Cross Country':'https://meangreensports.com/sports/track-and-field/schedule',
     'north-texas|Football':'https://meangreensports.com/sports/football/schedule',
     'north-texas|Golf':['https://meangreensports.com/sports/womens-golf/schedule','https://meangreensports.com/sports/mens-golf/schedule'],
     'north-texas|Soccer':'https://meangreensports.com/sports/womens-soccer/schedule',
@@ -45,6 +47,7 @@ export const northTexasSchool={
   },
   rosterUrls:{
     'north-texas|Basketball':['https://meangreensports.com/sports/mens-basketball/roster','https://meangreensports.com/sports/womens-basketball/roster'],
+    'north-texas|Cross Country':'https://meangreensports.com/sports/track-and-field/roster',
     'north-texas|Football':'https://meangreensports.com/sports/football/roster',
     'north-texas|Golf':['https://meangreensports.com/sports/womens-golf/roster','https://meangreensports.com/sports/mens-golf/roster'],
     'north-texas|Soccer':'https://meangreensports.com/sports/womens-soccer/roster',
@@ -66,7 +69,7 @@ const northTexasToday=sidearmToday('America/Chicago');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // North Texas's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const NORTH_TEXAS_TFRRS_TEAMS={Women:null,Men:null};
+export const NORTH_TEXAS_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/TX_college_f_North_Texas.html',Men:'https://www.tfrrs.org/teams/xc/TX_college_m_North_Texas.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -126,6 +129,12 @@ export function createNorthTexasHandlers({makeEvent,recapMatchesEvent,eventType=
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      // One page lists both seasons ("Track & Field/XC"), as at Miami (OH):
+      // the fall meets (August-November) are cross country, the rest track.
+      if(sport==='Cross Country'||sport==='Track & Field'){
+        const fall=game=>{const month=Number(String(game.date||'').slice(5,7));return month>=8&&month<=11};
+        games=games.filter(game=>fall(game)===(sport==='Cross Country'));
+      }
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
       // tournament that day.
@@ -319,7 +328,8 @@ export function createNorthTexasHandlers({makeEvent,recapMatchesEvent,eventType=
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
-      writeMeetPlaces(event,{text,schoolName:'North Texas',ordinal});
+      // Cross country writes the place first: "1st (M) / 3rd (W)".
+      writeMeetPlaces(event,{text:text.replace(/\b((?:T-?)?\d{1,3}(?:st|nd|rd|th))\s*\((M|W)\)/g,'$2 $1'),schoolName:'North Texas',ordinal});
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
       if(sport==='Tennis'&&event.headline==='Completed'&&!/^no team scores?$/i.test(text))return;

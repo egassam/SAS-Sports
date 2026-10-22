@@ -256,7 +256,9 @@ export function createTempleHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("Big West Final", Utah Valley men's soccer, Nov 13) are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // A game named after its event with no opponent drawn yet ("Big 5
+    // Classic", Dec 5-6 at the Wells Fargo Center) is "at".
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|\bclassic$/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis

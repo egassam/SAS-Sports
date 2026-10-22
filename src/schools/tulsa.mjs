@@ -221,6 +221,12 @@ export function createTulsaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // A meet entered by one team names it: "Cowboy Jamboree (Men)" (the
+      // result line names the team).
+      opponent=opponent.replace(/\s*\((?:Men|Women)\)$/i,'');
+      // Golf writes some names in capitals ("ROUTE 66 INVITATIONAL HONORING
+      // DALE MCNAMARA"): each word capitalized.
+      if(sport==='Golf'&&/^[A-Z0-9&'.-]+(?:\s+[A-Z0-9&'.-]+){2,}$/.test(opponent))opponent=opponent.toLowerCase().replace(/\b[a-z]/g,c=>c.toUpperCase()).replace(/\bMc([a-z])/g,(all,c)=>`Mc${c.toUpperCase()}`);
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -252,7 +258,7 @@ export function createTulsaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
     startTime:sidearmStartTimeText,
     // Swimming dual scores may carry a half point.
     score:/^\d+(?:\.\d+)?$/,
-    result(event,{sport,result,meet,final,scored}){
+    result(event,{sport,game,result,meet,final,scored}){
       if(final&&!scored&&sport==='Swimming & Diving'){
         const text=String(result.postscore_info||result.prescore_info||'').replace(/\s+/g,' ').trim();
         // A dual per team ("Women: W, 253-33 | Men: M, 248-41"): the scores
@@ -318,6 +324,10 @@ export function createTulsaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
+      // One team's meet: "5th of 20" on "Cowboy Jamboree (Men)".
+      const squad=String(game?.opponent?.title||'').match(/\((Men|Women)\)$/i);
+      const alone=squad&&text.match(/^(T-?)?(\d+)(?:st|nd|rd|th)(?: of (\d+))?$/i);
+      if(alone){const team=/^w/i.test(squad[1])?'Women':'Men',value=`${alone[1]?'T':''}${ordinal(alone[2])}${alone[3]?` of ${alone[3]}`:''}`;event.headline=`${team}'s team: ${value}`;event.results=[{group:`${team}'s Team`,participant:'Tulsa team',result:value}];event.result_count=1;return;}
       writeMeetPlaces(event,{text,schoolName:'Tulsa',ordinal});
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
@@ -345,7 +355,7 @@ export function createTulsaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
     ownLinkDays:3});
   // A cross country meet's story can be missing from the schedule (Cowboy
   // Jamboree), and the swimming schedule links none; each is in the archive.
-  const archive=createArchiveStory({id:'tulsa',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,skipStory:path=>/\/this-week-in-/.test(path)});
+  const archive=createArchiveStory({id:'tulsa',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,skipStory:path=>/\/this-week-in-|-named-|-of-the-(?:week|month)\b/.test(path)});
   // Each team's cross country page is its own event (Florida State's split).
   const crossCountry=createTeamTfrrsMeetResults({id:'tulsa',schoolName:'Tulsa',
     teams:TULSA_TFRRS_TEAMS,

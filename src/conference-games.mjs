@@ -33,7 +33,7 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'uc-irvine':['uci','california irvine'],'uc-riverside':['ucr','california riverside'],'uc-san-diego':['ucsd','california san diego'],'uc-santa-barbara':['ucsb','california santa barbara'],
   'sacramento-state':['sacramento st','sac state'],'utah-valley':['uvu'],
   // American opponents write "FAU", "USF", "UTSA", "UAB", "ECU" and the like.
-  fau:['florida atlantic','fau'],'south-florida':['usf','south fla','south florida'],'north-texas':['unt'],uab:['alabama birmingham','uab'],utsa:['ut san antonio','texas san antonio'],
+  'south-florida':['south fla'],'north-texas':['unt'],uab:['alabama birmingham'],utsa:['ut san antonio','texas san antonio'],
   'east-carolina':['ecu'],'wichita-state':['wichita st','wichita'],charlotte:['unc charlotte']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).

@@ -51,7 +51,7 @@ export const uabSchool={
     'uab|Soccer':['https://uabsports.com/sports/womens-soccer/schedule','https://uabsports.com/sports/mens-soccer/schedule'],
     'uab|Softball':'https://uabsports.com/sports/softball/schedule',
     'uab|Tennis':['https://uabsports.com/sports/womens-tennis/schedule','https://uabsports.com/sports/mens-tennis/schedule'],
-    'uab|Track & Field':'https://uabsports.com/sports/track-and-field/schedule',
+    'uab|Track & Field':'https://uabsports.com/sports/womens-track-and-field/schedule',
     'uab|Volleyball':'https://uabsports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -66,7 +66,7 @@ export const uabSchool={
     'uab|Soccer':['https://uabsports.com/sports/womens-soccer/roster','https://uabsports.com/sports/mens-soccer/roster'],
     'uab|Softball':'https://uabsports.com/sports/softball/roster',
     'uab|Tennis':['https://uabsports.com/sports/womens-tennis/roster','https://uabsports.com/sports/mens-tennis/roster'],
-    'uab|Track & Field':'https://uabsports.com/sports/track-and-field/roster',
+    'uab|Track & Field':'https://uabsports.com/sports/womens-track-and-field/roster',
     'uab|Volleyball':'https://uabsports.com/sports/womens-volleyball/roster'
   }
 };
@@ -293,6 +293,10 @@ export function createUabHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
         .replace(/\b(Women|Men)\s*\(((?:T-?)?\d+(?:st|nd|rd|th)),\s*(\d+)\s*pts\.?\)/gi,'$1: $2 ($3 points)')
         // The place alone: "T-6th Place", "First Place".
         .replace(/^(?:(T-?)(\d+\w\w)|(\d+\w\w)|(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)) place$/i,(all,tied,tiedPlace,place,word)=>word?ordinal(PLACE_WORDS.indexOf(word.toLowerCase())+1):`${tied?'T':''}${tiedPlace||place}`);
+      // A bowling tournament's match record, then the place: "5-8, 6th of 14"
+      // (Colonial Lanes Classic, Oct 9-11).
+      const bowling=sport==='Bowling'&&text.match(/^(\d+)-(\d+),\s*(T-?)?(\d+(?:st|nd|rd|th)) of (\d+)$/i);
+      if(bowling){const value=`${bowling[3]?'T':''}${bowling[4].toLowerCase()} of ${bowling[5]}`;event.headline=value;event.results=[{label:'Result',value},{label:'Match record',value:`${bowling[1]}-${bowling[2]}`}];event.result_count=2;return;}
       if(sport==='Golf'){
         const card=`${String(result.prescore_info||'').trim()} ${String(result.postscore_info||'').trim()}`.replace(/\s+/g,' ').trim();
         // Ole Miss: the place in the field, then the team score to par:

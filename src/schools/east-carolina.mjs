@@ -27,7 +27,7 @@ export const eastCarolinaSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf']),
   verifiedInstagrams:{
     'east-carolina|Baseball|Davin Whitaker':'https://www.instagram.com/davin33whitaker/',
     'east-carolina|Baseball|Nick Parham':'https://www.instagram.com/nick_parham/',
@@ -55,8 +55,8 @@ export const eastCarolinaSchool={
     'east-carolina|Lacrosse':'https://ecupirates.com/sports/womens-lacrosse/schedule',
     'east-carolina|Soccer':'https://ecupirates.com/sports/womens-soccer/schedule',
     'east-carolina|Softball':'https://ecupirates.com/sports/softball/schedule',
-    'east-carolina|Swimming & Diving':['https://ecupirates.com/sports/womens-swimming-and-diving/schedule','https://ecupirates.com/sports/mens-swimming-and-diving/schedule','https://ecupirates.com/sports/swimming-and-diving/schedule'],
-    'east-carolina|Tennis':['https://ecupirates.com/sports/womens-tennis/schedule','https://ecupirates.com/sports/mens-tennis/schedule'],
+    'east-carolina|Swimming & Diving':'https://ecupirates.com/sports/womens-swimming-and-diving/schedule',
+    'east-carolina|Tennis':'https://ecupirates.com/sports/womens-tennis/schedule',
     'east-carolina|Track & Field':'https://ecupirates.com/sports/track-and-field/schedule',
     'east-carolina|Volleyball':'https://ecupirates.com/sports/womens-volleyball/schedule'
   },
@@ -69,8 +69,8 @@ export const eastCarolinaSchool={
     'east-carolina|Lacrosse':'https://ecupirates.com/sports/womens-lacrosse/roster',
     'east-carolina|Soccer':'https://ecupirates.com/sports/womens-soccer/roster',
     'east-carolina|Softball':'https://ecupirates.com/sports/softball/roster',
-    'east-carolina|Swimming & Diving':['https://ecupirates.com/sports/womens-swimming-and-diving/roster','https://ecupirates.com/sports/mens-swimming-and-diving/roster','https://ecupirates.com/sports/swimming-and-diving/roster'],
-    'east-carolina|Tennis':['https://ecupirates.com/sports/womens-tennis/roster','https://ecupirates.com/sports/mens-tennis/roster'],
+    'east-carolina|Swimming & Diving':'https://ecupirates.com/sports/womens-swimming-and-diving/roster',
+    'east-carolina|Tennis':'https://ecupirates.com/sports/womens-tennis/roster',
     'east-carolina|Track & Field':'https://ecupirates.com/sports/track-and-field/roster',
     'east-carolina|Volleyball':'https://ecupirates.com/sports/womens-volleyball/roster'
   }

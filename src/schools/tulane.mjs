@@ -25,12 +25,12 @@ export const tulaneSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'tulane|Baseball':'https://tulanegreenwave.com/sports/baseball/schedule',
     'tulane|Basketball':['https://tulanegreenwave.com/sports/mens-basketball/schedule','https://tulanegreenwave.com/sports/womens-basketball/schedule'],
-    'tulane|Beach Volleyball':'https://tulanegreenwave.com/sports/beach-volleyball/schedule',
+    'tulane|Beach Volleyball':'https://tulanegreenwave.com/sports/womens-beach-volleyball/schedule',
     'tulane|Bowling':'https://tulanegreenwave.com/sports/womens-bowling/schedule',
     'tulane|Cross Country':'https://tulanegreenwave.com/sports/cross-country/schedule',
     'tulane|Football':'https://tulanegreenwave.com/sports/football/schedule',
@@ -43,7 +43,7 @@ export const tulaneSchool={
   rosterUrls:{
     'tulane|Baseball':'https://tulanegreenwave.com/sports/baseball/roster',
     'tulane|Basketball':['https://tulanegreenwave.com/sports/mens-basketball/roster','https://tulanegreenwave.com/sports/womens-basketball/roster'],
-    'tulane|Beach Volleyball':'https://tulanegreenwave.com/sports/beach-volleyball/roster',
+    'tulane|Beach Volleyball':'https://tulanegreenwave.com/sports/womens-beach-volleyball/roster',
     'tulane|Bowling':'https://tulanegreenwave.com/sports/womens-bowling/roster',
     'tulane|Cross Country':'https://tulanegreenwave.com/sports/cross-country/roster',
     'tulane|Football':'https://tulanegreenwave.com/sports/football/roster',
@@ -350,8 +350,10 @@ export function createTulaneHandlers({makeEvent,recapMatchesEvent,eventType=()=>
   const crossCountry=createTeamTfrrsMeetResults({id:'tulane',schoolName:'Tulane',
     teams:TULANE_TFRRS_TEAMS,
     // TFRRS names the host's meet its own way ("WSU Cougar Classic"): the
-    // only meet that day is the school's.
-    onlyMeetThatDay:true,
+    // only meet that day is the school's when the schedule's team places
+    // confirm it (Tulane ran two meets on Oct 16: the women's Arturo Barrios
+    // results are not the men's Pre-Nationals).
+    onlyMeetThatDay:'checked',
     decodeHtml,ordinal,fetch,headers});
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
