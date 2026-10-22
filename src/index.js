@@ -107,7 +107,7 @@ import {southernUtahSchool,createSouthernUtahHandlers} from './schools/southern-
 import {utahTechSchool,createUtahTechHandlers} from './schools/utah-tech.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.130.1-xc-tfrrs-fixes';
+const VERSION='4.130.2-xc-tfrrs-fixes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

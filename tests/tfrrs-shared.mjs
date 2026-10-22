@@ -5,13 +5,14 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {findTfrrsMeet,parseTfrrsResults,tfrrsTeamName,orderTfrrsRaces} from '../src/tfrrs-results.mjs';
 import {createTfrrsMeetResults} from '../src/sidearm-school-kit.mjs';
+import {createArizonaHandlers,ARIZONA_TFRRS_TEAMS} from '../src/schools/arizona.mjs';
 
 const page=name=>gunzipSync(readFileSync(new URL(`./fixtures/tfrrs-shared/${name}.html.gz`,import.meta.url))).toString();
 const decodeHtml=s=>String(s??'').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').replace(/&uarr;/g,'');
 const ordinal=v=>{const n=Number(v),m=n%100;return Number.isFinite(n)?`${n}${m>=11&&m<=13?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th')}`:String(v)};
 const PITT={Women:'https://www.tfrrs.org/teams/xc/PA_college_f_Pittsburgh.html',Men:'https://www.tfrrs.org/teams/xc/PA_college_m_Pittsburgh.html'};
 const VT={Women:'https://www.tfrrs.org/teams/xc/VA_college_f_Virginia_Tech.html',Men:'https://www.tfrrs.org/teams/xc/VA_college_m_Virginia_Tech.html'};
-const pages=new Map([[PITT.Women,'pitt-f'],[PITT.Men,'pitt-m'],[VT.Women,'vt-f'],[VT.Men,'vt-m'],
+const pages=new Map([[ARIZONA_TFRRS_TEAMS.Women,'arizona-f'],[ARIZONA_TFRRS_TEAMS.Men,'arizona-m'],[PITT.Women,'pitt-f'],[PITT.Men,'pitt-m'],[VT.Women,'vt-f'],[VT.Men,'vt-m'],
   ['https://www.tfrrs.org/results/xc/28955/Under_Armour_Pre-National_Invitational','pre-nationals'],
   ['https://www.tfrrs.org/results/xc/28954/Panorama_Farms_Invitational','panorama-farms']]);
 const fetch=async url=>{const name=pages.get(String(url));return name?new Response(page(name)):new Response('',{status:404})};
@@ -76,6 +77,17 @@ assert.deepEqual(parseTfrrsResults(page('pre-nationals'),{decodeHtml,ordinal,tea
   assert.equal(orderTfrrsRaces(races,''),true);
   assert.deepEqual(races.map(r=>r.group),["Women's 6K","Women's 5K Open","Men's 8K"]);
   assert.equal(orderTfrrsRaces(races,"Women's team: 5th"),false);
+}
+
+// Arizona's Pre-National has no recap on arizonawildcats.com: its races
+// come from TFRRS. Mutation: without the fallback, "Completed".
+{
+  const arizona=createArizonaHandlers({makeEvent:x=>x,recapMatchesEvent:()=>false,decodeHtml,ordinal,fetch});
+  const event=meet('arizona','Pre-National Invitational','2026-10-16','Completed');
+  await arizona.attachMeetResults(event);
+  assert.equal(event.meet_results_verified,true);
+  assert.match(event.headline,/^Women's team: \d+\w\w · \d+ pts \/ Men's team: \d+\w\w · \d+ pts$/);
+  assert.ok(event.results.some(r=>r.participant==='Arizona team'));
 }
 
 console.log('Shared TFRRS checks passed (plural names, TFRRS team names, named races, only meet that day when confirmed)');
