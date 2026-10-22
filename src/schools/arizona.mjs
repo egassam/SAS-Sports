@@ -1,9 +1,13 @@
 import {createSidearmScheduleReader} from '../sidearm-schedule-reader.mjs';
+import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // Arizona school module. Shared publisher utilities stay in the Worker; this
 // file owns arizonawildcats.com routes, Arizona's program combinations and its
 // schedule reader. Routes started as the exact candidates production used
 // before the module existed (route parity); each sport is then corrected and
 // verified one at a time.
+// Arizona's TFRRS cross country team pages: a meet with no recap on
+// arizonawildcats.com reads its races there (the Pre-National, Oct 16).
+export const ARIZONA_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/AZ_college_f_Arizona.html',Men:'https://www.tfrrs.org/teams/xc/AZ_college_m_Arizona.html'};
 export const arizonaSchool={
   id:'arizona',
   // Sports whose official schedule this module reads itself, from the page
@@ -276,15 +280,16 @@ export function createArizonaHandlers({makeEvent,recapMatchesEvent,eventType=()=
   const isArizonaCrossCountry=event=>event?.school_id==='arizona'&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   // Feed and expanded view both call this; the second call is a no-op. Race
   // rows come from the meet's own recap (linked in the page data).
+  const tfrrs=createTfrrsMeetResults({id:'arizona',schoolName:'Arizona',teams:ARIZONA_TFRRS_TEAMS,decodeHtml,ordinal,fetch,headers});
   async function attachMeetResults(event){
     if(!isArizonaCrossCountry(event)||event.meet_results_verified)return event;
+    if(!event.recap_url)return tfrrs.attach(event);
     const unavailable=status=>{
       event.meet_results_verified=false;event.highlights_verified=false;event.highlights=[];
       event.highlight_state='official_results_partial';event.highlight_status=status;
       return event;
     };
     const failed='Official race results could not be loaded. Open the official recap.';
-    if(!event.recap_url)return unavailable('No official recap is published for this meet on arizonawildcats.com.');
     let raw;
     try{
       const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});

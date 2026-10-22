@@ -1699,6 +1699,297 @@
     ]
   },
   {
+    "id": "app-state",
+    "name": "App State",
+    "short_name": "App State",
+    "state": "North Carolina",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://appstatesports.com",
+    "aliases": [
+      "Appalachian State",
+      "Appalachian St.",
+      "Appalachian State University"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "appstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "arkansas-state",
+    "name": "Arkansas State",
+    "short_name": "Arkansas State",
+    "state": "Arkansas",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://astateredwolves.com",
+    "aliases": [
+      "Arkansas State University",
+      "Arkansas St.",
+      "A-State",
+      "Red Wolves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "astateredwolves",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "coastal-carolina",
+    "name": "Coastal Carolina",
+    "short_name": "Coastal Carolina",
+    "state": "South Carolina",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goccusports.com",
+    "aliases": [
+      "Coastal Carolina University",
+      "Chanticleers",
+      "CCU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goccusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "georgia-southern",
+    "name": "Georgia Southern",
+    "short_name": "Georgia Southern",
+    "state": "Georgia",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gseagles.com",
+    "aliases": [
+      "Georgia Southern University",
+      "Ga. Southern"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gseagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "georgia-state",
+    "name": "Georgia State",
+    "short_name": "Georgia State",
+    "state": "Georgia",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://georgiastatesports.com",
+    "aliases": [
+      "Georgia State University",
+      "Georgia St."
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "georgiastatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "james-madison",
+    "name": "James Madison",
+    "short_name": "James Madison",
+    "state": "Virginia",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://jmusports.com",
+    "aliases": [
+      "James Madison University",
+      "JMU",
+      "Dukes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "jmusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "louisiana",
+    "name": "Louisiana",
+    "short_name": "Louisiana",
+    "state": "Louisiana",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ragincajuns.com",
+    "aliases": [
+      "University of Louisiana at Lafayette",
+      "Louisiana-Lafayette",
+      "UL Lafayette",
+      "Ragin' Cajuns"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ragincajuns",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "louisiana-tech",
+    "name": "Louisiana Tech",
+    "short_name": "Louisiana Tech",
+    "state": "Louisiana",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://latechsports.com",
+    "aliases": [
+      "Louisiana Tech University",
+      "La. Tech",
+      "LA Tech"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "latechsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "marshall",
+    "name": "Marshall",
+    "short_name": "Marshall",
+    "state": "West Virginia",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://herdzone.com",
+    "aliases": [
+      "Marshall University",
+      "Thundering Herd"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "herdzone",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "old-dominion",
+    "name": "Old Dominion",
+    "short_name": "Old Dominion",
+    "state": "Virginia",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://odusports.com",
+    "aliases": [
+      "Old Dominion University",
+      "ODU",
+      "Monarchs"
+    ],
+    "providers": [
+      {
+        "provider": "WMT",
+        "slug": "odusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "south-alabama",
+    "name": "South Alabama",
+    "short_name": "South Alabama",
+    "state": "Alabama",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://usajaguars.com",
+    "aliases": [
+      "University of South Alabama",
+      "S. Alabama"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "usajaguars",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southern-miss",
+    "name": "Southern Miss",
+    "short_name": "Southern Miss",
+    "state": "Mississippi",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://southernmiss.com",
+    "aliases": [
+      "Southern Mississippi",
+      "University of Southern Mississippi"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "southernmiss",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "troy",
+    "name": "Troy",
+    "short_name": "Troy",
+    "state": "Alabama",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://troytrojans.com",
+    "aliases": [
+      "Troy University"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "troytrojans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "ulm",
+    "name": "ULM",
+    "short_name": "ULM",
+    "state": "Louisiana",
+    "conference": "Sun Belt",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ulmwarhawks.com",
+    "aliases": [
+      "Louisiana-Monroe",
+      "Louisiana Monroe",
+      "UL Monroe",
+      "University of Louisiana Monroe",
+      "Warhawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ulmwarhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",

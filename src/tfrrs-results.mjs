@@ -17,7 +17,9 @@ const GENERIC=new Set(['classic','challenge','invitational','invite','championsh
 export function findTfrrsMeet(raw,{decodeHtml,date,name,match='any'}){
   const words=match==='all'
     ?value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/^the\s+/,'').replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4)
-    :value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4&&!GENERIC.has(word)&&!/^\d+$/.test(word));
+    // A plural and its singular are one word ("Pre-Nationals" on the
+    // schedule, "Pre-National Invitational" on TFRRS: Oct 16, eleven schools).
+    :value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4&&!GENERIC.has(word)&&!/^\d+$/.test(word)).map(word=>word.replace(/(?<=[^s])s$/,''));
   const wanted=words(name);
   for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
     const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
@@ -48,6 +50,13 @@ export function onlyTfrrsMeetOn(raw,{decodeHtml,date}){
 // column only (App State's "Baylor Wolfe" is not Baylor). A race the school
 // did not run is left out. A team listed with 0 points ("W-NTS") has no
 // team result. A second race for the same team ("... CC Open") is labeled.
+// The team name a TFRRS team page uses for its school ("TFRRS | Pittsburgh
+// Men's Cross Country Results", "Xavier (Ohio)", "Connecticut"), or null.
+export function tfrrsTeamName(raw,decodeHtml){
+  const title=(String(raw||'').match(/<title>([\s\S]*?)<\/title>/i)||[])[1];
+  return (tfrrsText(decodeHtml,title||'').match(/^TFRRS \| (.+?) (?:Wo)?Men['\u2019]s Cross Country\b/i)||[])[1]||null;
+}
+
 export function parseTfrrsResults(raw,{decodeHtml,ordinal,team}){
   // TFRRS shortens some schools' "State" to "St." ("Colorado St.", "San
   // Diego St.", "Washington St."; Oct 19: their races never matched): the
@@ -75,11 +84,15 @@ function parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:teamName}){
     const distance=race[4].trim().replace(/^(\d+(?:\.\d+)?)\s*k$/i,'$1K');
     const open=/\bOpen\b/i.test(race[2]);
     const group=`${team}'s ${distance}${open?' Open':''}`;
+    // The race's own name ("Blue", "White", "B Race", "Championship"):
+    // a meet with several races of one distance keeps them apart.
+    const label=race[2].replace(/\bOpen\b/i,'').replace(/\b\d+(?:\.\d+)?\s*(?:k|km|m|mile|miles)\b/gi,'').replace(/\bRun CC\b/i,'').replace(/\s+/g,' ').trim();
     const table=(section.match(/<table\b[\s\S]*?<\/table>/i)||[])[0]||'';
     const rows=[...table.matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>tfrrsCells(decodeHtml,tr[0]));
     const head=(rows[0]||[]).map(value=>value.toUpperCase());
     const at=name=>head.indexOf(name);
-    const entry=races.get(group)||{team,group,result:null,runners:[]};
+    const key=`${group}|${label}`;
+    const entry=races.get(key)||{team,group,label,result:null,runners:[]};
     if(/team/i.test(race[3])&&at('SCORE')>=0){
       const row=rows.slice(1).find(cells=>cells[at('TEAM')]===teamName);
       if(row&&/^\d+$/.test(row[at('PL')])&&/^[1-9]\d*$/.test(row[at('SCORE')])){
@@ -95,11 +108,38 @@ function parseTfrrsResultsAs(raw,{decodeHtml,ordinal,team:teamName}){
         const place=cells[at('PL')],time=cells[at('TIME')];
         return{participant:cells[at('NAME')],place,result:/^\d+$/.test(place)?`${ordinal(place)} \u00b7 ${time}`:`${place} \u00b7 ${time}`};
       }).filter(row=>row.participant&&(/\d:\d{2}/.test(row.result)||/^(?:DNF|DNS)\b/i.test(row.result)));
-      // Races by color share a group (the Joe Piane Invitational's Blue and
-      // Gold): a race the school did not run leaves its runners as they are.
       if(runners.length)entry.runners=runners;
     }
-    races.set(group,entry);
+    races.set(key,entry);
   }
-  return[...races.values()].filter(race=>race.runners.length).sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
+  // Races by color share a group (the Joe Piane Invitational's Blue and
+  // Gold) when the school ran one of them; when it ran several (Notre Dame
+  // and Pitt in the Pre-National's Blue and White, Oct 16: their places and
+  // runners were mixed) each race is named.
+  const run=[...races.values()].filter(race=>race.runners.length);
+  const shared=new Set(run.filter(race=>run.some(other=>other!==race&&other.group===race.group)));
+  for(const race of run){
+    if(race.label&&shared.has(race))race.group=race.group.replace(/^(\w+'s) /,`$1 ${race.label} `);
+    delete race.label;
+  }
+  return run.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1));
+}
+
+// A school's races at one meet, in the order they are shown: women first;
+// a team's main race before its Open race, and of two races of one distance
+// the bigger field's (more points: the Nuttycombe's Championship before its B
+// Race). The schedule's team places ("Women's team: 12th") name the race that
+// leads when the team ran several (the Pre-National's Blue and White); false
+// when a published place is in none of them.
+export function orderTfrrsRaces(races,headline){
+  const open=race=>/ Open$/.test(race.group)?1:0;
+  races.sort((a,b)=>(a.team==='Women'?0:1)-(b.team==='Women'?0:1)||open(a)-open(b)||Number(b.result?.score||0)-Number(a.result?.score||0));
+  const published=Object.fromEntries([...String(headline||'').matchAll(/\b(Men|Women)'s team: (T?\d+)\w\w/g)].map(m=>[m[1],m[2]]));
+  for(const [team,place] of Object.entries(published)){
+    const race=races.find(race=>race.team===team&&race.result&&String(race.result.place)===place.replace(/^T/,''));
+    if(!race)return false;
+    const first=races.findIndex(other=>other.team===team);
+    if(races[first]!==race){races.splice(races.indexOf(race),1);races.splice(first,0,race);}
+  }
+  return true;
 }

@@ -18,7 +18,7 @@ const fetch=async url=>{
   return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body};
 };
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,baylorHandlers,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,rosterUrls,schoolCombinedSports,parseHtml,groupEvents,attachOfficialHighlights,recapMatchesEvent,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,labelTeamEvents,baylorHandlers,arizonaHandlers,fetchUrl,fetchLive,attachOfficialMeetResults,attachOfficialHighlights:attachOfficialHighlights,fetchLiveScoreboards,decodeHtml,fetchLive,schoolModule};')(...Object.values(deps));
 
 
 // Module ownership: every sponsored sport has explicit baylorbears.com routes,
@@ -456,4 +456,11 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
   assert.equal(inSeason.find(e=>e.opponent==='Michael Johnson Invitational').recap_url,'https://baylorbears.com/news/2026/4/26/track-field-t-f-bears-close-michael-johnson-with-4x400-sweep','a story the day after the last day');
 }
 
+// A past meet with no result, story or TFRRS race is not listed (the Chile
+// Pepper Festival, Oct 3, until TFRRS publishes it); a scored one stays.
+{
+  const base={school_id:'baylor',sport:'Cross Country',event_type:'MEET',status:'Final'};
+  const listed=await worker.schoolModule('baylor').feed([{...base,title:'Chile',headline:'Completed'},{...base,title:'Opener',headline:"Women's team: 3rd"},{...base,title:'Story',headline:'Completed',recap_url:'https://baylorbears.com/news/x'}],'Cross Country');
+  assert.deepEqual(listed.map(e=>e.title),['Opener','Story']);
+}
 console.log('Baylor module checks passed');
