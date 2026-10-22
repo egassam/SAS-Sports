@@ -25,7 +25,13 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   miami:['miami fla','miami fl'],
   // MAC opponents write "Miami (Ohio)", "Miami (OH)" or plain "Miami";
   // "UMass" is "Massachusetts".
-  'miami-oh':['miami','miami ohio','miami oh','miami university','miami university oh'],umass:['massachusetts'],'bowling-green':['bowling green state','bgsu']};
+  'miami-oh':['miami','miami ohio','miami oh','miami university','miami university oh'],umass:['massachusetts'],'bowling-green':['bowling green state','bgsu'],
+  // Big West opponents write "Long Beach St.", "Cal State Northridge",
+  // "CSUB", "UCSB" and the like.
+  'cal-baptist':['california baptist','cbu'],'cal-poly':['cal poly slo','cal poly san luis obispo'],'csu-bakersfield':['cal state bakersfield','csub','bakersfield'],
+  'cal-state-fullerton':['csuf','csu fullerton','fullerton'],csun:['cal state northridge','csu northridge','northridge'],'long-beach-state':['long beach st','lbsu','long beach','cal state long beach'],
+  'uc-irvine':['uci','california irvine'],'uc-riverside':['ucr','california riverside'],'uc-san-diego':['ucsd','california san diego'],'uc-santa-barbara':['ucsb','california santa barbara'],
+  'sacramento-state':['sacramento st','sac state'],'utah-valley':['uvu']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -76,7 +82,15 @@ const NOT_SPONSORED={
   // golf, tennis, swimming, gymnastics, wrestling, field hockey and women's
   // lacrosse: no hockey (Miami's and Bowling Green's in the CCHA/NCHC,
   // UMass's in Hockey East), rowing or rifle.
-  MAC:new Set(['Hockey','Rowing','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  MAC:new Set(['Hockey','Rowing','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Big West (2026-27: Cal Baptist, Cal Poly, CSU Bakersfield, Cal State
+  // Fullerton, CSUN, Long Beach State, UC Irvine, UC Riverside, UC San Diego,
+  // UC Santa Barbara, Sacramento State, Utah Valley; Hawaii an affiliate)
+  // sponsors basketball, baseball, softball, soccer, volleyball (both),
+  // beach volleyball, water polo, cross country, track, golf and tennis: no
+  // football (Cal Poly's in the Big Sky, Sacramento State's in the MAC),
+  // swimming, wrestling (Utah Valley's in the Big 12) or rowing.
+  'Big West':new Set(['Football','Swimming & Diving','Gymnastics','Wrestling','Hockey','Lacrosse','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

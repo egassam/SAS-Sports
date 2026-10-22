@@ -2456,6 +2456,267 @@
     ]
   },
   {
+    "id": "cal-baptist",
+    "name": "California Baptist",
+    "short_name": "Cal Baptist",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://cbulancers.com",
+    "aliases": [
+      "California Baptist University",
+      "CBU",
+      "Lancers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "cbulancers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "cal-poly",
+    "name": "Cal Poly",
+    "short_name": "Cal Poly",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gopoly.com",
+    "aliases": [
+      "California Polytechnic State University",
+      "Cal Poly San Luis Obispo",
+      "Mustangs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gopoly",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "csu-bakersfield",
+    "name": "CSU Bakersfield",
+    "short_name": "CSU Bakersfield",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gorunners.com",
+    "aliases": [
+      "Cal State Bakersfield",
+      "CSUB",
+      "Bakersfield",
+      "Roadrunners"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gorunners",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "cal-state-fullerton",
+    "name": "Cal State Fullerton",
+    "short_name": "Cal State Fullerton",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fullertontitans.com",
+    "aliases": [
+      "California State University, Fullerton",
+      "CSUF",
+      "CSU Fullerton",
+      "Titans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fullertontitans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "csun",
+    "name": "CSUN",
+    "short_name": "CSUN",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gomatadors.com",
+    "aliases": [
+      "Cal State Northridge",
+      "CSU Northridge",
+      "California State University, Northridge",
+      "Matadors"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gomatadors",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "long-beach-state",
+    "name": "Long Beach State",
+    "short_name": "Long Beach State",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://longbeachstate.com",
+    "aliases": [
+      "Long Beach St.",
+      "LBSU",
+      "Cal State Long Beach",
+      "The Beach"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "longbeachstate",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uc-irvine",
+    "name": "UC Irvine",
+    "short_name": "UC Irvine",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ucirvinesports.com",
+    "aliases": [
+      "University of California, Irvine",
+      "UCI",
+      "UC-Irvine",
+      "Anteaters"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ucirvinesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uc-riverside",
+    "name": "UC Riverside",
+    "short_name": "UC Riverside",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gohighlanders.com",
+    "aliases": [
+      "University of California, Riverside",
+      "UCR",
+      "UC-Riverside",
+      "Highlanders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gohighlanders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uc-san-diego",
+    "name": "UC San Diego",
+    "short_name": "UC San Diego",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ucsdtritons.com",
+    "aliases": [
+      "University of California San Diego",
+      "UCSD",
+      "UC-San Diego",
+      "Tritons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ucsdtritons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uc-santa-barbara",
+    "name": "UC Santa Barbara",
+    "short_name": "UC Santa Barbara",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ucsbgauchos.com",
+    "aliases": [
+      "University of California, Santa Barbara",
+      "UCSB",
+      "UC-Santa Barbara",
+      "Gauchos"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ucsbgauchos",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "sacramento-state",
+    "name": "Sacramento State",
+    "short_name": "Sacramento State",
+    "state": "California",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hornetsports.com",
+    "aliases": [
+      "Sacramento State University",
+      "Sacramento St.",
+      "Sac State",
+      "Hornets"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hornetsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utah-valley",
+    "name": "Utah Valley",
+    "short_name": "Utah Valley",
+    "state": "Utah",
+    "conference": "Big West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gouvu.com",
+    "aliases": [
+      "Utah Valley University",
+      "UVU",
+      "Wolverines"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gouvu",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",
