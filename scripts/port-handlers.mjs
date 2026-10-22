@@ -59,7 +59,11 @@ out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'
 // A short form ("Montana St.", Oct 21: the golf story pattern named it, not
 // "Bobcats") is no mascot.
 const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/\./.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
-const [oldNick,newNick]=(value('nickname')||`${mascot(from)}:${mascot(to)}`).split(':');
+// A source whose catalog entry names no mascot still writes it in its own
+// patterns ("Troy(?: University| Trojans)?": "Trojans" stayed in all seven
+// Mountain West ports, Oct 22).
+const codeMascot=id=>source.match(new RegExp(`${escape(name(id))}\\(\\?: University\\| ([A-Z][a-z]+)\\)\\?`))?.[1]||'';
+const [oldNick,newNick]=(value('nickname')||`${mascot(from)||codeMascot(from)}:${mascot(to)}`).split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');
 // Any other name of the source school left in a code pattern is dropped

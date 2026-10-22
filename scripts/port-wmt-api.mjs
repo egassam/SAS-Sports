@@ -33,6 +33,7 @@ if(!school||!sponsored[to]){console.error(`${to}: not in src/schools.json and sr
 const escape=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const host=new URL(school.athletics_url).hostname.replace(/^www\./,'');
 const ZONES={Arizona:'America/Phoenix',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Utah:'America/Denver',Colorado:'America/Denver',
+  Idaho:'America/Boise',Montana:'America/Denver',Wyoming:'America/Denver','New Mexico':'America/Denver',Nevada:'America/Los_Angeles',Hawaii:'Pacific/Honolulu',
   Texas:'America/Chicago',Oklahoma:'America/Chicago',Kansas:'America/Chicago',Iowa:'America/Chicago',Nebraska:'America/Chicago',Minnesota:'America/Chicago',Wisconsin:'America/Chicago',Illinois:'America/Chicago',Missouri:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Alabama:'America/Chicago',Tennessee:'America/Chicago'};
 const timeZone=ZONES[school.state]||'America/New_York';
 
@@ -55,7 +56,9 @@ for(const sport of sponsored[to])if(!slugs[sport])notes.push(`${sport}: sponsore
 const women=slug=>/^womens?-|^w-/.test(slug)||/^women/i.test(listed.find(s=>s.slug===slug)?.gender||'');
 for(const sport of Object.keys(slugs)){
   slugs[sport].sort((x,y)=>Number(women(y))-Number(women(x)));
-  if(slugs[sport].length>1)for(const slug of slugs[sport])teams[slug]=women(slug)?"Women's":/^mens?-|^m-/.test(slug)?"Men's":(notes.push(`${slug}: team label not known from the slug (set TEAMS by hand)`),slug);
+  // New Mexico's codes pair "mgolf" with "wgolf" (Oct 22).
+  const paired=slug=>/^[mw][a-z]/.test(slug)&&slugs[sport].includes(`${slug[0]==='m'?'w':'m'}${slug.slice(1)}`);
+  if(slugs[sport].length>1)for(const slug of slugs[sport])teams[slug]=women(slug)||paired(slug)&&slug[0]==='w'?"Women's":/^mens?-|^m-/.test(slug)||paired(slug)&&slug[0]==='m'?"Men's":(notes.push(`${slug}: team label not known from the slug (set TEAMS by hand)`),slug);
 }
 // The main conference is the one most teams play in; others are named by hand.
 const count={};for(const entry of listed)if(entry.conference_id!=null&&Object.values(sportIds).includes(entry.id))count[entry.conference_id]=(count[entry.conference_id]||0)+1;

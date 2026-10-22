@@ -1990,6 +1990,216 @@
     ]
   },
   {
+    "id": "air-force",
+    "name": "Air Force",
+    "short_name": "Air Force",
+    "state": "Colorado",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goairforcefalcons.com",
+    "aliases": [
+      "Air Force Academy",
+      "United States Air Force Academy",
+      "USAFA"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goairforcefalcons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "grand-canyon",
+    "name": "Grand Canyon",
+    "short_name": "Grand Canyon",
+    "state": "Arizona",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gculopes.com",
+    "aliases": [
+      "Grand Canyon University",
+      "GCU"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gculopes",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "hawaii",
+    "name": "Hawaii",
+    "short_name": "Hawaii",
+    "state": "Hawaii",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hawaiiathletics.com",
+    "aliases": [
+      "Hawai'i",
+      "Hawaiʻi",
+      "University of Hawaii",
+      "University of Hawai'i",
+      "Hawaii at Manoa"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hawaiiathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "nevada",
+    "name": "Nevada",
+    "short_name": "Nevada",
+    "state": "Nevada",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nevadawolfpack.com",
+    "aliases": [
+      "University of Nevada",
+      "University of Nevada, Reno",
+      "Nevada-Reno"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nevadawolfpack",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "new-mexico",
+    "name": "New Mexico",
+    "short_name": "New Mexico",
+    "state": "New Mexico",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://golobos.com",
+    "aliases": [
+      "University of New Mexico",
+      "UNM"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "golobos",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "san-jose-state",
+    "name": "San Jose State",
+    "short_name": "San Jose State",
+    "state": "California",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://sjsuspartans.com",
+    "aliases": [
+      "San José State",
+      "San Jose St.",
+      "San José St.",
+      "SJSU",
+      "San Jose State University"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "sjsuspartans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uc-davis",
+    "name": "UC Davis",
+    "short_name": "UC Davis",
+    "state": "California",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ucdavisaggies.com",
+    "aliases": [
+      "University of California, Davis",
+      "California-Davis",
+      "UC-Davis"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ucdavisaggies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "unlv",
+    "name": "UNLV",
+    "short_name": "UNLV",
+    "state": "Nevada",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://unlvrebels.com",
+    "aliases": [
+      "University of Nevada, Las Vegas",
+      "Nevada-Las Vegas",
+      "UNLV Rebels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "unlvrebels",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utep",
+    "name": "UTEP",
+    "short_name": "UTEP",
+    "state": "Texas",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utepminers.com",
+    "aliases": [
+      "University of Texas at El Paso",
+      "Texas-El Paso",
+      "UT El Paso"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utepminers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wyoming",
+    "name": "Wyoming",
+    "short_name": "Wyoming",
+    "state": "Wyoming",
+    "conference": "Mountain West",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gowyo.com",
+    "aliases": [
+      "University of Wyoming"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gowyo",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "alabama",
     "name": "Alabama",
     "short_name": "Alabama",

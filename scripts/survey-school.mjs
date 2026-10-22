@@ -20,6 +20,7 @@ import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from '../tests/school-module-deps.mjs';
 import {sidearmScheduleGames} from '../src/sidearm-schedule-data.mjs';
+import {oneTournamentPerStory} from '../src/sidearm-schedule-reader.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const id=value('school');
@@ -87,6 +88,10 @@ for(const sport of value('sport')?[value('sport')]:sponsored[id]){
     // (a past tennis tournament without a story) is not listed and not gated.
     let listed=new Set(events);
     try{const feed=worker.schoolModule(id)?.feed;if(feed)listed=new Set(await feed([...events],sport));}catch{}
+    // Then one story per tennis tournament, as the Worker does after the hook
+    // (Grand Canyon's Veterans Classic story had read on two other
+    // tournaments in the survey only, Oct 22).
+    if(sport==='Tennis'){const had=new Set([...listed].filter(e=>e.recap_url));oneTournamentPerStory([...listed]);listed=new Set([...listed].filter(e=>!(had.has(e)&&!e.recap_url&&e.event_type==='MEET'&&e.status==='Final')));}
     const unlisted=e=>!listed.has(e);
     if(args.includes('--lines')){console.log(`// ${sport} ${slug}\n${JSON.stringify(events.map(e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`),null,1)}`);continue;}
     console.log(`== ${sport} ${slug}: ${events.length} events`);
