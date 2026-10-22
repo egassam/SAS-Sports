@@ -2668,26 +2668,13 @@
    "state": "off"
   },
   "gonzaga|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-22T01:52:00.926Z",
-   "last_detail": "live 0-0 · 43' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "gonzaga|Soccer|Men's|2026-10-21|1",
-    "title": "Men's · Gonzaga vs Fullerton",
-    "started_seen": "2026-10-22T01:43:47.025Z",
-    "live_passes": [
-     "2026-10-22T01:43:47.025Z",
-     "2026-10-22T01:44:52.035Z",
-     "2026-10-22T01:45:53.472Z",
-     "2026-10-22T01:46:55.531Z",
-     "2026-10-22T01:47:56.435Z",
-     "2026-10-22T01:48:57.672Z",
-     "2026-10-22T01:49:58.457Z",
-     "2026-10-22T01:50:59.665Z",
-     "2026-10-22T01:52:00.926Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-22T06:39:55.832Z",
+   "last_detail": "final T, 3-3",
+   "game": null,
+   "verified_at": "2026-10-22T06:39:55.832Z",
+   "verified_game": "Men's · Gonzaga vs Fullerton",
+   "verified_detail": "final T, 3-3"
   },
   "gonzaga|Volleyball": {
    "state": "off"
@@ -3068,7 +3055,7 @@
    "state": "off"
   }
  },
- "version": "4.128.4-big-sky",
- "updated_at": "2026-10-22T01:52:00.927Z",
+ "version": "4.130.4-xc-tfrrs-fixes",
+ "updated_at": "2026-10-22T06:39:55.837Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

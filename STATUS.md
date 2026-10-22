@@ -1,7 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Virginia: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| gonzaga | Soccer | 🔴 on | live 0-0 · 43' · official_schedule+live_scoreboard |
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
@@ -426,6 +425,7 @@
 | georgia | Volleyball | ✅ off (passed) | Georgia at Ole Miss · 2026-10-17T01:39:25.420Z |
 | georgia-tech | Football | ✅ off (passed) | Georgia Tech at Virginia Tech · 2026-10-17T23:31:03.795Z |
 | georgia-tech | Volleyball | ✅ off (passed) | Georgia Tech vs Syracuse · 2026-10-17T01:39:25.719Z |
+| gonzaga | Soccer | ✅ off (passed) | Men's · Gonzaga vs Fullerton · 2026-10-22T06:39:55.832Z |
 | houston | Football | ✅ off (passed) | Houston at Kansas St · 2026-10-11T00:49:40.506Z |
 | houston | Soccer | ✅ off (passed) | Houston at Cincinnati · 2026-10-17T01:39:26.021Z |
 | houston | Volleyball | ✅ off (passed) | Houston vs UCF · 2026-10-17T06:14:54.291Z |
@@ -585,4 +585,4 @@
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 | xavier | Soccer | ✅ off (passed) | Women's · Xavier at Marquette · 2026-10-22T01:43:47.431Z |
 
-Done 209/584; on 1; off 373; failing 1.
+Done 210/584; on 0; off 373; failing 1.
