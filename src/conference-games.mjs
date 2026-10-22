@@ -49,7 +49,13 @@ const NOT_SPONSORED={
   // basketball, cross country, track, golf, tennis, women's soccer, softball
   // and volleyball: no baseball (Utah Tech's), swimming (Northern Arizona's,
   // Idaho's), gymnastics (Southern Utah's), hockey, wrestling or rowing.
-  'Big Sky':new Set(['Baseball','Swimming & Diving','Gymnastics','Hockey','Wrestling','Lacrosse','Rowing','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Big Sky':new Set(['Baseball','Swimming & Diving','Gymnastics','Hockey','Wrestling','Lacrosse','Rowing','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Sun Belt (2026-27, with Louisiana Tech, Texas State gone) sponsors
+  // football, basketball, baseball, softball, soccer, volleyball, beach
+  // volleyball, cross country, track, golf, tennis and women's swimming: no
+  // lacrosse (James Madison's), field hockey (Old Dominion's, JMU's),
+  // wrestling (App State's), rowing, hockey or gymnastics.
+  'Sun Belt':new Set(['Lacrosse','Field Hockey','Wrestling','Rowing','Hockey','Gymnastics','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
