@@ -75,6 +75,24 @@
 | byu | Baseball | ⚪ off (waiting) |  |
 | byu | Basketball | ⚪ off (waiting) |  |
 | byu | Softball | ⚪ off (waiting) |  |
+| cal-baptist | Baseball | ⚪ off (waiting) |  |
+| cal-baptist | Basketball | ⚪ off (waiting) |  |
+| cal-baptist | Soccer | ⚪ off (waiting) |  |
+| cal-baptist | Softball | ⚪ off (waiting) |  |
+| cal-baptist | Volleyball | ⚪ off (waiting) |  |
+| cal-baptist | Water Polo | ⚪ off (waiting) |  |
+| cal-poly | Baseball | ⚪ off (waiting) |  |
+| cal-poly | Basketball | ⚪ off (waiting) |  |
+| cal-poly | Football | ⚪ off (waiting) |  |
+| cal-poly | Soccer | ⚪ off (waiting) |  |
+| cal-poly | Softball | ⚪ off (waiting) |  |
+| cal-poly | Volleyball | ⚪ off (waiting) |  |
+| cal-state-fullerton | Baseball | ⚪ off (waiting) |  |
+| cal-state-fullerton | Basketball | ⚪ off (waiting) |  |
+| cal-state-fullerton | Soccer | ⚪ off (waiting) |  |
+| cal-state-fullerton | Softball | ⚪ off (waiting) |  |
+| cal-state-fullerton | Volleyball | ⚪ off (waiting) |  |
+| cal-state-fullerton | Water Polo | ⚪ off (waiting) |  |
 | california | Baseball | ⚪ off (waiting) |  |
 | california | Basketball | ⚪ off (waiting) |  |
 | california | Football | ⚪ off (waiting) |  |
@@ -114,6 +132,17 @@
 | creighton | Basketball | ⚪ off (waiting) |  |
 | creighton | Softball | ⚪ off (waiting) |  |
 | creighton | Volleyball | ⚪ off (waiting) |  |
+| csu-bakersfield | Baseball | ⚪ off (waiting) |  |
+| csu-bakersfield | Basketball | ⚪ off (waiting) |  |
+| csu-bakersfield | Soccer | ⚪ off (waiting) |  |
+| csu-bakersfield | Softball | ⚪ off (waiting) |  |
+| csu-bakersfield | Volleyball | ⚪ off (waiting) |  |
+| csun | Baseball | ⚪ off (waiting) |  |
+| csun | Basketball | ⚪ off (waiting) |  |
+| csun | Soccer | ⚪ off (waiting) |  |
+| csun | Softball | ⚪ off (waiting) |  |
+| csun | Volleyball | ⚪ off (waiting) |  |
+| csun | Water Polo | ⚪ off (waiting) |  |
 | depaul | Basketball | ⚪ off (waiting) |  |
 | depaul | Soccer | ⚪ off (waiting) |  |
 | depaul | Softball | ⚪ off (waiting) |  |
@@ -214,6 +243,12 @@
 | kentucky | Softball | ⚪ off (waiting) |  |
 | kstate | Baseball | ⚪ off (waiting) |  |
 | kstate | Basketball | ⚪ off (waiting) |  |
+| long-beach-state | Baseball | ⚪ off (waiting) |  |
+| long-beach-state | Basketball | ⚪ off (waiting) |  |
+| long-beach-state | Soccer | ⚪ off (waiting) |  |
+| long-beach-state | Softball | ⚪ off (waiting) |  |
+| long-beach-state | Volleyball | ⚪ off (waiting) |  |
+| long-beach-state | Water Polo | ⚪ off (waiting) |  |
 | louisiana | Baseball | ⚪ off (waiting) |  |
 | louisiana | Basketball | ⚪ off (waiting) |  |
 | louisiana | Football | ⚪ off (waiting) |  |
@@ -385,6 +420,12 @@
 | rutgers | Field Hockey | ⚪ off (waiting) |  |
 | rutgers | Lacrosse | ⚪ off (waiting) |  |
 | rutgers | Softball | ⚪ off (waiting) |  |
+| sacramento-state | Baseball | ⚪ off (waiting) |  |
+| sacramento-state | Basketball | ⚪ off (waiting) |  |
+| sacramento-state | Football | ⚪ off (waiting) |  |
+| sacramento-state | Soccer | ⚪ off (waiting) |  |
+| sacramento-state | Softball | ⚪ off (waiting) |  |
+| sacramento-state | Volleyball | ⚪ off (waiting) |  |
 | san-diego-state | Baseball | ⚪ off (waiting) |  |
 | san-diego-state | Basketball | ⚪ off (waiting) |  |
 | san-diego-state | Football | ⚪ off (waiting) |  |
@@ -475,6 +516,28 @@
 | uc-davis | Softball | ⚪ off (waiting) |  |
 | uc-davis | Volleyball | ⚪ off (waiting) |  |
 | uc-davis | Water Polo | ⚪ off (waiting) |  |
+| uc-irvine | Baseball | ⚪ off (waiting) |  |
+| uc-irvine | Basketball | ⚪ off (waiting) |  |
+| uc-irvine | Soccer | ⚪ off (waiting) |  |
+| uc-irvine | Volleyball | ⚪ off (waiting) |  |
+| uc-irvine | Water Polo | ⚪ off (waiting) |  |
+| uc-riverside | Baseball | ⚪ off (waiting) |  |
+| uc-riverside | Basketball | ⚪ off (waiting) |  |
+| uc-riverside | Soccer | ⚪ off (waiting) |  |
+| uc-riverside | Softball | ⚪ off (waiting) |  |
+| uc-riverside | Volleyball | ⚪ off (waiting) |  |
+| uc-san-diego | Baseball | ⚪ off (waiting) |  |
+| uc-san-diego | Basketball | ⚪ off (waiting) |  |
+| uc-san-diego | Soccer | ⚪ off (waiting) |  |
+| uc-san-diego | Softball | ⚪ off (waiting) |  |
+| uc-san-diego | Volleyball | ⚪ off (waiting) |  |
+| uc-san-diego | Water Polo | ⚪ off (waiting) |  |
+| uc-santa-barbara | Baseball | ⚪ off (waiting) |  |
+| uc-santa-barbara | Basketball | ⚪ off (waiting) |  |
+| uc-santa-barbara | Soccer | ⚪ off (waiting) |  |
+| uc-santa-barbara | Softball | ⚪ off (waiting) |  |
+| uc-santa-barbara | Volleyball | ⚪ off (waiting) |  |
+| uc-santa-barbara | Water Polo | ⚪ off (waiting) |  |
 | ucf | Baseball | ⚪ off (waiting) |  |
 | ucf | Basketball | ⚪ off (waiting) |  |
 | ucf | Football | ⚪ off (waiting) | final L, 28-42 (live phase not observed 2×; waits for the next game) |
@@ -526,6 +589,11 @@
 | utah-tech | Soccer | ⚪ off (waiting) |  |
 | utah-tech | Softball | ⚪ off (waiting) |  |
 | utah-tech | Volleyball | ⚪ off (waiting) |  |
+| utah-valley | Baseball | ⚪ off (waiting) |  |
+| utah-valley | Basketball | ⚪ off (waiting) |  |
+| utah-valley | Soccer | ⚪ off (waiting) |  |
+| utah-valley | Softball | ⚪ off (waiting) |  |
+| utah-valley | Volleyball | ⚪ off (waiting) |  |
 | utep | Basketball | ⚪ off (waiting) |  |
 | utep | Football | ⚪ off (waiting) |  |
 | utep | Soccer | ⚪ off (waiting) |  |
@@ -783,4 +851,4 @@
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 | xavier | Soccer | ✅ off (passed) | Women's · Xavier at Marquette · 2026-10-22T01:43:47.431Z |
 
-Done 210/782; on 0; off 571; failing 1.
+Done 210/850; on 0; off 639; failing 1.

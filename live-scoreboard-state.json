@@ -3647,9 +3647,213 @@
   },
   "umass|Softball": {
    "state": "off"
+  },
+  "cal-baptist|Baseball": {
+   "state": "off"
+  },
+  "cal-baptist|Basketball": {
+   "state": "off"
+  },
+  "cal-baptist|Soccer": {
+   "state": "off"
+  },
+  "cal-baptist|Softball": {
+   "state": "off"
+  },
+  "cal-baptist|Volleyball": {
+   "state": "off"
+  },
+  "cal-baptist|Water Polo": {
+   "state": "off"
+  },
+  "cal-poly|Baseball": {
+   "state": "off"
+  },
+  "cal-poly|Basketball": {
+   "state": "off"
+  },
+  "cal-poly|Football": {
+   "state": "off"
+  },
+  "cal-poly|Soccer": {
+   "state": "off"
+  },
+  "cal-poly|Softball": {
+   "state": "off"
+  },
+  "cal-poly|Volleyball": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Baseball": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Basketball": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Soccer": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Softball": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Volleyball": {
+   "state": "off"
+  },
+  "cal-state-fullerton|Water Polo": {
+   "state": "off"
+  },
+  "csun|Baseball": {
+   "state": "off"
+  },
+  "csun|Basketball": {
+   "state": "off"
+  },
+  "csun|Soccer": {
+   "state": "off"
+  },
+  "csun|Softball": {
+   "state": "off"
+  },
+  "csun|Volleyball": {
+   "state": "off"
+  },
+  "csun|Water Polo": {
+   "state": "off"
+  },
+  "long-beach-state|Baseball": {
+   "state": "off"
+  },
+  "long-beach-state|Basketball": {
+   "state": "off"
+  },
+  "long-beach-state|Soccer": {
+   "state": "off"
+  },
+  "long-beach-state|Softball": {
+   "state": "off"
+  },
+  "long-beach-state|Volleyball": {
+   "state": "off"
+  },
+  "long-beach-state|Water Polo": {
+   "state": "off"
+  },
+  "uc-irvine|Baseball": {
+   "state": "off"
+  },
+  "uc-irvine|Basketball": {
+   "state": "off"
+  },
+  "uc-irvine|Soccer": {
+   "state": "off"
+  },
+  "uc-irvine|Volleyball": {
+   "state": "off"
+  },
+  "uc-irvine|Water Polo": {
+   "state": "off"
+  },
+  "uc-riverside|Baseball": {
+   "state": "off"
+  },
+  "uc-riverside|Basketball": {
+   "state": "off"
+  },
+  "uc-riverside|Soccer": {
+   "state": "off"
+  },
+  "uc-riverside|Softball": {
+   "state": "off"
+  },
+  "uc-riverside|Volleyball": {
+   "state": "off"
+  },
+  "uc-san-diego|Baseball": {
+   "state": "off"
+  },
+  "uc-san-diego|Basketball": {
+   "state": "off"
+  },
+  "uc-san-diego|Soccer": {
+   "state": "off"
+  },
+  "uc-san-diego|Softball": {
+   "state": "off"
+  },
+  "uc-san-diego|Volleyball": {
+   "state": "off"
+  },
+  "uc-san-diego|Water Polo": {
+   "state": "off"
+  },
+  "sacramento-state|Baseball": {
+   "state": "off"
+  },
+  "sacramento-state|Basketball": {
+   "state": "off"
+  },
+  "sacramento-state|Football": {
+   "state": "off"
+  },
+  "sacramento-state|Soccer": {
+   "state": "off"
+  },
+  "sacramento-state|Softball": {
+   "state": "off"
+  },
+  "sacramento-state|Volleyball": {
+   "state": "off"
+  },
+  "utah-valley|Baseball": {
+   "state": "off"
+  },
+  "utah-valley|Basketball": {
+   "state": "off"
+  },
+  "utah-valley|Soccer": {
+   "state": "off"
+  },
+  "utah-valley|Softball": {
+   "state": "off"
+  },
+  "utah-valley|Volleyball": {
+   "state": "off"
+  },
+  "csu-bakersfield|Baseball": {
+   "state": "off"
+  },
+  "csu-bakersfield|Basketball": {
+   "state": "off"
+  },
+  "csu-bakersfield|Soccer": {
+   "state": "off"
+  },
+  "csu-bakersfield|Softball": {
+   "state": "off"
+  },
+  "csu-bakersfield|Volleyball": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Baseball": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Basketball": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Soccer": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Softball": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Volleyball": {
+   "state": "off"
+  },
+  "uc-santa-barbara|Water Polo": {
+   "state": "off"
   }
  },
- "version": "4.137.0-mac",
- "updated_at": "2026-10-22T17:35:11.158Z",
+ "version": "4.139.3-big-west",
+ "updated_at": "2026-10-22T20:48:48.276Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
