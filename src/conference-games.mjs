@@ -103,9 +103,9 @@ const NOT_SPONSORED={
   // Texas, Rice, South Florida, Temple, Tulane, Tulsa, UAB, UTSA, Wichita
   // State; Army and Navy for football only) sponsors football, basketball,
   // baseball, softball, soccer, volleyball, golf, tennis, cross country,
-  // track, women's swimming, rowing and lacrosse: no beach volleyball,
-  // gymnastics, wrestling, field hockey or hockey.
-  American:new Set(['Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  // track, women's swimming and lacrosse: no beach volleyball, gymnastics,
+  // wrestling, field hockey, hockey or rowing (Tulsa rows in the Big 12).
+  American:new Set(['Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

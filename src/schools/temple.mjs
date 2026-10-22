@@ -25,7 +25,7 @@ export const templeSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Rowing','Soccer','Tennis']),
   verifiedInstagrams:{
     'temple|Field Hockey|Yaya Copal':'https://www.instagram.com/yaya.copal/',
     'temple|Field Hockey|Lucia Campenni':'https://www.instagram.com/lucia_campenni4/',
@@ -45,7 +45,8 @@ export const templeSchool={
     'temple|Golf':'https://owlsports.com/sports/mens-golf/schedule',
     'temple|Gymnastics':'https://owlsports.com/sports/womens-gymnastics/schedule',
     'temple|Lacrosse':'https://owlsports.com/sports/womens-lacrosse/schedule',
-    'temple|Rowing':'https://owlsports.com/sports/womens-rowing/schedule',
+    // Rowing is filed under "crew": a women's and a men's team.
+    'temple|Rowing':['https://owlsports.com/sports/womens-crew/schedule','https://owlsports.com/sports/mens-crew/schedule'],
     'temple|Soccer':['https://owlsports.com/sports/womens-soccer/schedule','https://owlsports.com/sports/mens-soccer/schedule'],
     'temple|Tennis':['https://owlsports.com/sports/womens-tennis/schedule','https://owlsports.com/sports/mens-tennis/schedule'],
     'temple|Track & Field':'https://owlsports.com/sports/womens-track-and-field/schedule',
@@ -60,7 +61,7 @@ export const templeSchool={
     'temple|Golf':'https://owlsports.com/sports/mens-golf/roster',
     'temple|Gymnastics':'https://owlsports.com/sports/womens-gymnastics/roster',
     'temple|Lacrosse':'https://owlsports.com/sports/womens-lacrosse/roster',
-    'temple|Rowing':'https://owlsports.com/sports/womens-rowing/roster',
+    'temple|Rowing':['https://owlsports.com/sports/womens-crew/roster','https://owlsports.com/sports/mens-crew/roster'],
     'temple|Soccer':['https://owlsports.com/sports/womens-soccer/roster','https://owlsports.com/sports/mens-soccer/roster'],
     'temple|Tennis':['https://owlsports.com/sports/womens-tennis/roster','https://owlsports.com/sports/mens-tennis/roster'],
     'temple|Track & Field':'https://owlsports.com/sports/womens-track-and-field/roster',
@@ -239,7 +240,10 @@ export function createTempleHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     },
     // Meets are final once their last day has passed; team places are
     // published as text. A dual match is a game.
-    meet:(sport,game,scored)=>!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&isTournament(sport,game)),
+    // A regatta, head race or chase is a meet even when the page names no
+    // tournament (men's crew: Navy Day Regatta, Oct 11; Head of the Charles,
+    // Oct 18; women's Tail of the Turkey, Nov 7).
+    meet:(sport,game,scored)=>!scored&&(eventType(sport)==='MEET'||eventType(sport)!=='GAME'&&isTournament(sport,game)||sport==='Rowing'&&/\b(?:regatta|head of|chase|tail of|championships?|sprints)\b/i.test(String(game.opponent?.title||''))),
     // Yesterday's game without a score stays: a late game elsewhere ends
     // after midnight locally and its score is posted after.
     // A past swimming meet the schedule gives no score is final; its story

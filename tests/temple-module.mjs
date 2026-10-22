@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',templeSchool.scheduleUrls],['roster',temple
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'owlsports.com',`${key} must stay on owlsports.com`);
   }
 }
-const parity={"Basketball":{"schedule":["https://owlsports.com/sports/mens-basketball/schedule","https://owlsports.com/sports/womens-basketball/schedule"],"roster":["https://owlsports.com/sports/mens-basketball/roster","https://owlsports.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://owlsports.com/sports/womens-cross-country/schedule","https://owlsports.com/sports/mens-cross-country/schedule"],"roster":["https://owlsports.com/sports/womens-cross-country/roster","https://owlsports.com/sports/mens-cross-country/roster"],"combined":true},"Fencing":{"schedule":["https://owlsports.com/sports/womens-fencing/schedule"],"roster":["https://owlsports.com/sports/womens-fencing/roster"],"combined":false},"Field Hockey":{"schedule":["https://owlsports.com/sports/field-hockey/schedule"],"roster":["https://owlsports.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://owlsports.com/sports/football/schedule"],"roster":["https://owlsports.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://owlsports.com/sports/mens-golf/schedule"],"roster":["https://owlsports.com/sports/mens-golf/roster"],"combined":false},"Gymnastics":{"schedule":["https://owlsports.com/sports/womens-gymnastics/schedule"],"roster":["https://owlsports.com/sports/womens-gymnastics/roster"],"combined":false},"Lacrosse":{"schedule":["https://owlsports.com/sports/womens-lacrosse/schedule"],"roster":["https://owlsports.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://owlsports.com/sports/womens-rowing/schedule"],"roster":["https://owlsports.com/sports/womens-rowing/roster"],"combined":false},"Soccer":{"schedule":["https://owlsports.com/sports/womens-soccer/schedule","https://owlsports.com/sports/mens-soccer/schedule"],"roster":["https://owlsports.com/sports/womens-soccer/roster","https://owlsports.com/sports/mens-soccer/roster"],"combined":true},"Tennis":{"schedule":["https://owlsports.com/sports/womens-tennis/schedule","https://owlsports.com/sports/mens-tennis/schedule"],"roster":["https://owlsports.com/sports/womens-tennis/roster","https://owlsports.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://owlsports.com/sports/womens-track-and-field/schedule"],"roster":["https://owlsports.com/sports/womens-track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://owlsports.com/sports/womens-volleyball/schedule"],"roster":["https://owlsports.com/sports/womens-volleyball/roster"],"combined":false}};
+const parity={"Basketball":{"schedule":["https://owlsports.com/sports/mens-basketball/schedule","https://owlsports.com/sports/womens-basketball/schedule"],"roster":["https://owlsports.com/sports/mens-basketball/roster","https://owlsports.com/sports/womens-basketball/roster"],"combined":true},"Cross Country":{"schedule":["https://owlsports.com/sports/womens-cross-country/schedule","https://owlsports.com/sports/mens-cross-country/schedule"],"roster":["https://owlsports.com/sports/womens-cross-country/roster","https://owlsports.com/sports/mens-cross-country/roster"],"combined":true},"Fencing":{"schedule":["https://owlsports.com/sports/womens-fencing/schedule"],"roster":["https://owlsports.com/sports/womens-fencing/roster"],"combined":false},"Field Hockey":{"schedule":["https://owlsports.com/sports/field-hockey/schedule"],"roster":["https://owlsports.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://owlsports.com/sports/football/schedule"],"roster":["https://owlsports.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://owlsports.com/sports/mens-golf/schedule"],"roster":["https://owlsports.com/sports/mens-golf/roster"],"combined":false},"Gymnastics":{"schedule":["https://owlsports.com/sports/womens-gymnastics/schedule"],"roster":["https://owlsports.com/sports/womens-gymnastics/roster"],"combined":false},"Lacrosse":{"schedule":["https://owlsports.com/sports/womens-lacrosse/schedule"],"roster":["https://owlsports.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://owlsports.com/sports/womens-crew/schedule","https://owlsports.com/sports/mens-crew/schedule"],"roster":["https://owlsports.com/sports/womens-crew/roster","https://owlsports.com/sports/mens-crew/roster"],"combined":true},"Soccer":{"schedule":["https://owlsports.com/sports/womens-soccer/schedule","https://owlsports.com/sports/mens-soccer/schedule"],"roster":["https://owlsports.com/sports/womens-soccer/roster","https://owlsports.com/sports/mens-soccer/roster"],"combined":true},"Tennis":{"schedule":["https://owlsports.com/sports/womens-tennis/schedule","https://owlsports.com/sports/mens-tennis/schedule"],"roster":["https://owlsports.com/sports/womens-tennis/roster","https://owlsports.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://owlsports.com/sports/womens-track-and-field/schedule"],"roster":["https://owlsports.com/sports/womens-track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://owlsports.com/sports/womens-volleyball/schedule"],"roster":["https://owlsports.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -270,8 +270,23 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Feb 5 Temple at Delaware | ",
  "Upcoming Feb 7 Temple vs Delaware State | "
 ]);
-  const v_womensrowing=parse("Rowing","womens-rowing");
-  assert.deepEqual(v_womensrowing.map(line),[]);
+  const v_womenscrew=parse("Rowing","womens-crew");
+  assert.deepEqual(v_womenscrew.map(line),[
+ "Final Oct 11 Women's · Temple at Navy Day Regatta | Completed",
+ "Upcoming Oct 24 Women's · Temple at Head of the Schuylkill Regatta | ",
+ "Upcoming Nov 1 Women's · Temple at Princeton Chase | ",
+ "Upcoming Nov 7 Women's · Temple at Tail of the Turkey | ",
+ "Upcoming Nov 14 Women's · Temple at USRowing Small Boat National Championship | "
+]);
+  const v_menscrew=parse("Rowing","mens-crew");
+  assert.deepEqual(v_menscrew.map(line),[
+ "Final Oct 11 Men's · Temple at Navy Day Regatta | Completed",
+ "Final Oct 18 Men's · Temple at Head of the Charles Regatta | Completed",
+ "Upcoming Oct 24 Men's · Temple at Head of the Schuylkill Regatta | ",
+ "Upcoming Nov 1 Men's · Temple at Princeton 3-Mile Chase | ",
+ "Upcoming Nov 14 Men's · Temple at US Rowing Small Boat Championship | ",
+ "Upcoming Nov 15 Men's · Temple at US Rowing Small Boat Championships | "
+]);
   const v_womenssoccer=parse("Soccer","womens-soccer");
   assert.deepEqual(v_womenssoccer.map(line),[
  "Final Aug 12 Women's · Temple at George Washington | L, 0-4",
@@ -374,7 +389,8 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_mensgolf,"Golf mens-golf");
   ownRecapsOnly(v_womensgymnastics,"Gymnastics womens-gymnastics");
   ownRecapsOnly(v_womenslacrosse,"Lacrosse womens-lacrosse");
-  ownRecapsOnly(v_womensrowing,"Rowing womens-rowing");
+  ownRecapsOnly(v_womenscrew,"Rowing womens-crew");
+  ownRecapsOnly(v_menscrew,"Rowing mens-crew");
   ownRecapsOnly(v_womenssoccer,"Soccer womens-soccer");
   ownRecapsOnly(v_menssoccer,"Soccer mens-soccer");
   ownRecapsOnly(v_womenstennis,"Tennis womens-tennis");

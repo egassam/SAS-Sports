@@ -162,7 +162,7 @@ import {uabSchool,createUabHandlers} from './schools/uab.mjs';
 import {utsaSchool,createUtsaHandlers} from './schools/utsa.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.142.0-american';
+const VERSION='4.143.0-american';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

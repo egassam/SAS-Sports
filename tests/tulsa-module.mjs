@@ -187,7 +187,7 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Mar 26 Tulsa at Sarasota 2K | ",
  "Upcoming Apr 3 Tulsa vs Creighton | ",
  "Upcoming Apr 23 Tulsa at Lake Wheeler Invitational | ",
- "Upcoming May 1 Tulsa at vs. Kansas, Iowa, Minnesota and Kansas State | ",
+ "Upcoming May 1 Tulsa vs Kansas, Iowa, Minnesota and Kansas State | ",
  "Upcoming May 16 Tulsa at Big 12 Championship | "
 ]);
   const v_womenssoccer=parse("Soccer","womens-soccer");

@@ -8,7 +8,7 @@ Sports (10): Baseball, Basketball, Cross Country, Football, Golf, Soccer, Softba
 
 - Track & Field is the "Track & Field/Cross Country" team (id 14; cross country has its own team, id 54 since 2025).
 - The API's results "Men's 4th / Women's 4th", "2nd/11", "T-10th/13" and "No Team Result" (golf: individuals only; tennis: completed) read by the shared kit.
-- Shared American rules (`tests/american-shared.mjs`): team places written "Women's 11th"; the WMT API's "2nd/11", "Men's 4th / Women's 4th" and "No Team Result"; golf stories that say "taking 11th"; opponents "FAU", "USF", "UTSA", "UAB", "ECU", "Wichita" count as American members; the American sponsors no beach volleyball, gymnastics, wrestling, field hockey or hockey (no American record in those).
+- Shared American rules (`tests/american-shared.mjs`): team places written "Women's 11th"; the WMT API's "2nd/11", "Men's 4th / Women's 4th" and "No Team Result"; golf stories that say "taking 11th"; opponents "FAU", "USF", "UTSA", "UAB", "ECU", "Wichita" count as American members; the American sponsors no beach volleyball, gymnastics, wrestling, field hockey, hockey or rowing (no American record in those).
 
 Each rule has a check in `tests/utsa-module.mjs` (generated page blocks) or `tests/american-shared.mjs`; each new shared rule was mutated and its test failed. Every football, volleyball, soccer and field hockey record on the preview equals the page's own `schedule-record` (overall and conference, Oct 22).
 
