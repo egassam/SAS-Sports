@@ -7,6 +7,14 @@
     "line": "#0e295d",
     "onAccent": "#ffffff"
   },
+  "akron": {
+    "primary": "#041E42",
+    "secondary": "#A89968",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
   "alabama": {
     "primary": "#9E1B32",
     "secondary": "#FFFFFF",
@@ -119,6 +127,14 @@
     "line": "#0e7036",
     "onAccent": "#ffffff"
   },
+  "ball-state": {
+    "primary": "#BA0C2F",
+    "secondary": "#000000",
+    "panel": "#320b17",
+    "panelDark": "#17060c",
+    "line": "#75152d",
+    "onAccent": "#ffffff"
+  },
   "baltimore-orioles": {
     "primary": "#DF4601",
     "secondary": "#000000",
@@ -167,6 +183,22 @@
     "line": "#162642",
     "onAccent": "#ffffff"
   },
+  "bowling-green": {
+    "primary": "#FE5000",
+    "secondary": "#4F2C1D",
+    "panel": "#401a0c",
+    "panelDark": "#1e0d07",
+    "line": "#9a3a13",
+    "onAccent": "#ffffff"
+  },
+  "buffalo": {
+    "primary": "#005BBB",
+    "secondary": "#FFFFFF",
+    "panel": "#091d36",
+    "panelDark": "#050e1a",
+    "line": "#0e407a",
+    "onAccent": "#ffffff"
+  },
   "buffalo-bills": {
     "primary": "#00338D",
     "secondary": "#D50A0A",
@@ -197,6 +229,14 @@
     "panel": "#092434",
     "panelDark": "#050f16",
     "line": "#296587",
+    "onAccent": "#ffffff"
+  },
+  "central-michigan": {
+    "primary": "#6A0032",
+    "secondary": "#FFC82E",
+    "panel": "#200917",
+    "panelDark": "#0f050c",
+    "line": "#490e2e",
     "onAccent": "#ffffff"
   },
   "cf-montreal": {
@@ -405,6 +445,14 @@
     "panel": "#09132a",
     "panelDark": "#050915",
     "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
+  "eastern-michigan": {
+    "primary": "#006633",
+    "secondary": "#FFFFFF",
+    "panel": "#091f18",
+    "panelDark": "#050f0c",
+    "line": "#0e472f",
     "onAccent": "#ffffff"
   },
   "eastern-washington": {
@@ -663,6 +711,14 @@
     "line": "#0e355d",
     "onAccent": "#ffffff"
   },
+  "kent-state": {
+    "primary": "#003976",
+    "secondary": "#EAAB00",
+    "panel": "#091526",
+    "panelDark": "#050a13",
+    "line": "#0e2e54",
+    "onAccent": "#ffffff"
+  },
   "kentucky": {
     "primary": "#0033A0",
     "secondary": "#FFFFFF",
@@ -821,6 +877,14 @@
     "panel": "#092c3e",
     "panelDark": "#05151e",
     "line": "#0e688e",
+    "onAccent": "#ffffff"
+  },
+  "miami-oh": {
+    "primary": "#C3142D",
+    "secondary": "#000000",
+    "panel": "#330d16",
+    "panelDark": "#18070c",
+    "line": "#7a192c",
     "onAccent": "#ffffff"
   },
   "michigan": {
@@ -1061,6 +1125,14 @@
     "panel": "#0b101b",
     "panelDark": "#06080e",
     "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "ohio": {
+    "primary": "#00694E",
+    "secondary": "#FFFFFF",
+    "panel": "#09201e",
+    "panelDark": "#050f0f",
+    "line": "#0e483e",
     "onAccent": "#ffffff"
   },
   "ohio-state": {
@@ -1479,6 +1551,14 @@
     "line": "#85383d",
     "onAccent": "#ffffff"
   },
+  "toledo": {
+    "primary": "#15397F",
+    "secondary": "#FFDA00",
+    "panel": "#0d1528",
+    "panelDark": "#070a14",
+    "line": "#1a2e59",
+    "onAccent": "#ffffff"
+  },
   "toronto-blue-jays": {
     "primary": "#134A8E",
     "secondary": "#6CACE5",
@@ -1541,6 +1621,14 @@
     "panel": "#250916",
     "panelDark": "#11050b",
     "line": "#550e29",
+    "onAccent": "#ffffff"
+  },
+  "umass": {
+    "primary": "#881C1C",
+    "secondary": "#212721",
+    "panel": "#270f13",
+    "panelDark": "#12070a",
+    "line": "#591e22",
     "onAccent": "#ffffff"
   },
   "unlv": {

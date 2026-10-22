@@ -149,6 +149,26 @@ export function golfPlacing(text){
   return`${m[1]?'T':''}${m[2]}${suffix} of ${m[4]}`;
 }
 
+// A golf card's own place when it carries the team's scores beside it (MAC,
+// Oct 22): Ball State "14th of 16 Teams / 928 (+64)", Central Michigan
+// "12th of 14, 289-291 -- 580 (+12)" and "T9 of 16, 292 -- 867 (+27)",
+// Eastern Michigan "T-5th (830/-34)" and "1st (863, -1)", Kent State
+// "T-12th / 13 teams (+61, 913)", Miami "2nd, 842", Toledo the score first
+// "864/T-2nd". The place reads "T5th of 12" (field known) or "T5th"; null
+// when the card is anything else (match play "CMU 10, Alabama State 2",
+// "No Team Score").
+export function golfCardPlace(text){
+  const card=String(text||'').replace(/\s+/g,' ').trim();
+  const scores=/^[\s,()\/+\-\u2013\u2014=:.E\d]*$/i;
+  const place=(tied,n,field)=>{const v=Number(n),suffix=v%100>=11&&v%100<=13?'th':['th','st','nd','rd'][v%10]||'th';return`${tied?'T':''}${v}${suffix}${field?` of ${field}`:''}`;};
+  const first=card.match(/^\d{3,4}\s*\/\s*(T-?)?(\d{1,2})(?:st|nd|rd|th)?$/i);
+  if(first)return place(first[1],first[2]);
+  const m=card.match(/^(T-?)?(\d{1,2})(?:st|nd|rd|th)?(?:\s*(?:\/|of|out of)\s*(\d{1,2})(?:\s*teams)?)?(?=[\s,(\/\-\u2013\u2014]|$)(.*)$/i);
+  if(!m||!scores.test(m[4])||!/\d{3,4}/.test(m[4])&&!m[3])return null;
+  if(m[3]&&Number(m[2])>Number(m[3]))return null;
+  return place(m[1],m[2],m[3]);
+}
+
 // Golf match play, as the card publishes it: "defeated New Mexico State, 3-2;
 // lost to New Mexico, 3.5-1.5" -> headline "Match play: 1-1", one row per
 // match ("vs New Mexico" / "L, 1.5-3.5", the school's points first). Null

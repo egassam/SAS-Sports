@@ -18,6 +18,20 @@
     "Water Polo",
     "Wrestling"
   ],
+  "akron": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rifle",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "alabama": [
     "Baseball",
     "Basketball",
@@ -134,6 +148,21 @@
   "austin-fc": [
     "Soccer"
   ],
+  "ball-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "baltimore-orioles": [
     "Baseball"
   ],
@@ -189,6 +218,33 @@
   "boston-red-sox": [
     "Baseball"
   ],
+  "bowling-green": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "buffalo": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "buffalo-bills": [
     "Football"
   ],
@@ -227,6 +283,21 @@
   ],
   "carolina-panthers": [
     "Football"
+  ],
+  "central-michigan": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "cf-montreal": [
     "Soccer"
@@ -385,6 +456,21 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "eastern-michigan": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "eastern-washington": [
     "Basketball",
@@ -671,6 +757,21 @@
   "kansas-city-royals": [
     "Baseball"
   ],
+  "kent-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "kentucky": [
     "Baseball",
     "Basketball",
@@ -842,6 +943,21 @@
   ],
   "miami-marlins": [
     "Baseball"
+  ],
+  "miami-oh": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "michigan": [
     "Baseball",
@@ -1111,6 +1227,20 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "ohio": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "ohio-state": [
     "Baseball",
@@ -1600,6 +1730,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "toledo": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "toronto-blue-jays": [
     "Baseball"
   ],
@@ -1695,6 +1839,21 @@
     "Softball",
     "Track & Field",
     "Volleyball"
+  ],
+  "umass": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field"
   ],
   "unlv": [
     "Baseball",

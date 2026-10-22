@@ -58,7 +58,8 @@ out=out.split(hostOf(from).replace(/\./g,'\\.')).join(hostOf(to).replace(/\./g,'
 // University| Sooners)?" ported to Louisville kept "Sooners" (Oct 15).
 // A short form ("Montana St.", Oct 21: the golf story pattern named it, not
 // "Bobcats") is no mascot.
-const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/\./.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
+// A form with a bracket ("Miami (Ohio)", Oct 22) is no mascot either.
+const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/.test(w)&&!/[.()]/.test(w)&&!/\b(?:University|College|Institute)\b/.test(w)&&!w.startsWith(name(id))&&!name(id).startsWith(w))||'';
 // A source whose catalog entry names no mascot still writes it in its own
 // patterns ("Troy(?: University| Trojans)?": "Trojans" stayed in all seven
 // Mountain West ports, Oct 22).
@@ -84,6 +85,9 @@ if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(ne
 // later step imports the module, and the bare quote ended its string.
 if(b.name.includes("'"))out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l.split(`${b.name}'s`).join(b.name):l.split(b.name).join(b.name.replace(/'/g,"\\'"))).join('\n');
 writeFileSync(new URL(`src/schools/${to}.mjs`,root),head+out);
+// A name with a bracket or dot ("Miami (OH)", Oct 22) is written raw into the
+// code's patterns: check each one by eye.
+if(/[().]/.test(b.name))console.log(`The name "${b.name}" has regular-expression characters: escape it in every pattern (golf story team, opponent and place patterns).`);
 // The import line must carry every kit helper the handlers use.
 const imports=source.split('\n').filter(l=>l.startsWith('import '));
 const kept=(head.split('\n').filter(l=>l.startsWith('import ')));

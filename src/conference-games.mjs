@@ -25,7 +25,7 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   miami:['miami fla','miami fl'],
   // MAC opponents write "Miami (Ohio)", "Miami (OH)" or plain "Miami";
   // "UMass" is "Massachusetts".
-  'miami-oh':['miami','miami ohio','miami oh'],umass:['massachusetts'],'bowling-green':['bowling green state','bgsu']};
+  'miami-oh':['miami','miami ohio','miami oh','miami university','miami university oh'],umass:['massachusetts'],'bowling-green':['bowling green state','bgsu']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};

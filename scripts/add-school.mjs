@@ -44,10 +44,16 @@ for(const [,href] of html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z
 // sport slugs are bare JSON strings ("womens-golf"), not links. Read them only
 // when the links found almost nothing (the payload also names news slugs).
 if(found.size<3)for(const [,slug] of html.matchAll(/"((?:mens-|womens-)?[a-z]+(?:-[a-z]+){0,3})"/g)){const sport=inferSport(`/sports/${slug}`);if(sport)found.add(sport)}
+// Some navs link each team by its code (`/index.aspx?path=wten`: UMass,
+// Oct 22, where only three /sports/ links were found); the football schedule
+// page may carry only part of the menu, so read the homepage's too.
+const pathCodes=text=>{for(const [,code] of String(text).matchAll(/index\.aspx\?path=([a-z]+)\b/g)){const sport=inferSport(`/sports/${code}`);if(sport)found.add(sport)}};
+pathCodes(html);
+if(found.size<6&&via){const home=await page(`${base}/`).catch(()=>null);if(home)pathCodes(home.html)}
 // The football schedule address answers even where there is no football
 // (gozags.com, Oct 18: Gonzaga sponsors none); keep Football only when the
 // homepage's nav, read when it lists other sports, links it too.
-if(found.has('Football')&&via){const home=await page(`${base}/`).catch(()=>null);if(home){const homeSports=new Set();for(const [,href] of home.html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z-]+)(?:\/schedule)?\/?"/g)){const sport=inferSport(href);if(sport)homeSports.add(sport)}if(homeSports.size>=3&&!homeSports.has('Football'))found.delete('Football')}}
+if(found.has('Football')&&via){const home=await page(`${base}/`).catch(()=>null);if(home){const homeSports=new Set();for(const [,href] of home.html.matchAll(/href="((?:https?:\/\/[^"/]+)?\/sports?\/[a-z-]+)(?:\/schedule)?\/?"/g)){const sport=inferSport(href);if(sport)homeSports.add(sport)}for(const [,code] of home.html.matchAll(/index\.aspx\?path=([a-z]+)\b/g)){const sport=inferSport(`/sports/${code}`);if(sport)homeSports.add(sport)}if(homeSports.size>=3&&!homeSports.has('Football'))found.delete('Football')}}
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);
