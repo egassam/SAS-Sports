@@ -157,21 +157,22 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
 
 // Two tennis tournaments the same weekend can link one story (Arkansas
 // State's Memphis Invite story also on the ITA All-Americans, Sep 20): it
-// stays with the tournaments its address names, else the one that ended
-// nearest the story's day; the others lose it (and, storyless, are not listed).
+// stays with the tournaments its address names; the others lose it (and,
+// storyless, are not listed).
 export function oneTournamentPerStory(events){
   const words=event=>String(event.opponent||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(word=>word.length>=4&&!/^(?:invitational|invite|classic|championships?|tournament|regionals?|fall)$/.test(word));
   const shared=new Map();
   for(const event of events||[])if(event.sport==='Tennis'&&event.event_type==='MEET'&&event.recap_url)shared.set(event.recap_url,[...(shared.get(event.recap_url)||[]),event]);
   for(const [url,group] of shared){
     if(group.length<2)continue;
-    const slug=String(url).toLowerCase(),day=(slug.match(/\/news\/(\d{4})\/(\d{1,2})\/(\d{1,2})\//)||[]).slice(1).map(Number);
-    const storyDay=day.length?Date.UTC(day[0],day[1]-1,day[2]):0;
+    const slug=String(url).toLowerCase();
     const named=event=>words(event).filter(word=>slug.includes(word)).length;
-    const distance=event=>Math.abs(storyDay-Date.parse(String(event.end_time||event.start_time).slice(0,10)));
     // A story naming several (Illinois's "Milwaukee Tennis Classic, Furman
-    // Fall Classic" results, Sep 11) stays with each one it names.
-    const keep=group.some(named)?new Set(group.filter(named)):new Set([[...group].sort((a,b)=>distance(a)-distance(b))[0]]);
+    // Fall Classic" results, Sep 11) stays with each one it names; a story
+    // naming none, or a weekend's ("split weekend", "opening weekend",
+    // "first week of fall", "... headlines DePaul at Notre Dame"), covers them all.
+    if(!group.some(named)||/\b(?:split|weekend|week|headlines)\b/.test(slug.replace(/[-_]/g,' ')))continue;
+    const keep=new Set(group.filter(named));
     for(const event of group)if(!keep.has(event)){delete event.recap_url;delete event.recap_title;delete event.archive_story_verified;}
   }
   return events;

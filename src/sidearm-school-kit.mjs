@@ -502,8 +502,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // "The Lumberjacks' three-day total ... placed them 12th" (Northern Arizona).
     // "The team finished 15th out of 17" (ULM) and "UL's golf team ...
     // finished in a tie for seventh place" (Louisiana) name the team without
-    // its name.
-    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b[Tt]he team\\b|\\bgolf team\\b)[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    // its name; "Rounding out the team scoring, Ing Iadpluem ... tied for
+    // 45th" (North Carolina, Oct 18) is a player's place.
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
