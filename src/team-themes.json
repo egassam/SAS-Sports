@@ -271,6 +271,14 @@
     "line": "#0e306e",
     "onAccent": "#ffffff"
   },
+  "charlotte": {
+    "primary": "#046A38",
+    "secondary": "#B3A369",
+    "panel": "#092019",
+    "panelDark": "#050f0d",
+    "line": "#114932",
+    "onAccent": "#ffffff"
+  },
   "charlotte-fc": {
     "primary": "#0085CA",
     "secondary": "#000000",
@@ -487,6 +495,14 @@
     "line": "#0e295d",
     "onAccent": "#ffffff"
   },
+  "east-carolina": {
+    "primary": "#592A8A",
+    "secondary": "#FDC82F",
+    "panel": "#1c122b",
+    "panelDark": "#0d0915",
+    "line": "#3f265f",
+    "onAccent": "#ffffff"
+  },
   "eastern-michigan": {
     "primary": "#006633",
     "secondary": "#FFFFFF",
@@ -509,6 +525,14 @@
     "panel": "#10301f",
     "panelDark": "#07160e",
     "line": "#2f8a5a",
+    "onAccent": "#ffffff"
+  },
+  "fau": {
+    "primary": "#003366",
+    "secondary": "#CC0000",
+    "panel": "#091423",
+    "panelDark": "#050a11",
+    "line": "#0e2a4b",
     "onAccent": "#ffffff"
   },
   "fc-cincinnati": {
@@ -903,6 +927,14 @@
     "line": "#8a2e35",
     "onAccent": "#ffffff"
   },
+  "memphis": {
+    "primary": "#003087",
+    "secondary": "#898D8D",
+    "panel": "#09132a",
+    "panelDark": "#050915",
+    "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
   "miami": {
     "primary": "#005030",
     "secondary": "#F47321",
@@ -1143,6 +1175,14 @@
     "line": "#526f88",
     "onAccent": "#13294B"
   },
+  "north-texas": {
+    "primary": "#00853E",
+    "secondary": "#000000",
+    "panel": "#09261a",
+    "panelDark": "#05120d",
+    "line": "#0e5835",
+    "onAccent": "#ffffff"
+  },
   "northern-arizona": {
     "primary": "#003466",
     "secondary": "#FFD200",
@@ -1343,6 +1383,14 @@
     "line": "#682030",
     "onAccent": "#ffffff"
   },
+  "rice": {
+    "primary": "#00205B",
+    "secondary": "#C1C6C8",
+    "panel": "#091021",
+    "panelDark": "#050810",
+    "line": "#0e2045",
+    "onAccent": "#ffffff"
+  },
   "rutgers": {
     "primary": "#CC0033",
     "secondary": "#5F6A72",
@@ -1471,6 +1519,14 @@
     "line": "#4e0e18",
     "onAccent": "#ffffff"
   },
+  "south-florida": {
+    "primary": "#006747",
+    "secondary": "#CFC493",
+    "panel": "#091f1c",
+    "panelDark": "#050f0e",
+    "line": "#0e473a",
+    "onAccent": "#ffffff"
+  },
   "southern-miss": {
     "primary": "#000000",
     "secondary": "#FFAB00",
@@ -1559,6 +1615,14 @@
     "line": "#704b91",
     "onAccent": "#ffffff"
   },
+  "temple": {
+    "primary": "#9D2235",
+    "secondary": "#A7A8AA",
+    "panel": "#2b1018",
+    "panelDark": "#14080d",
+    "line": "#652130",
+    "onAccent": "#ffffff"
+  },
   "tennessee": {
     "primary": "#FF8200",
     "secondary": "#58595B",
@@ -1637,6 +1701,30 @@
     "panel": "#271117",
     "panelDark": "#12080c",
     "line": "#5a222e",
+    "onAccent": "#ffffff"
+  },
+  "tulane": {
+    "primary": "#006747",
+    "secondary": "#418FDE",
+    "panel": "#091f1c",
+    "panelDark": "#050f0e",
+    "line": "#0e473a",
+    "onAccent": "#ffffff"
+  },
+  "tulsa": {
+    "primary": "#003595",
+    "secondary": "#C8102E",
+    "panel": "#09142d",
+    "panelDark": "#050a16",
+    "line": "#0e2c65",
+    "onAccent": "#ffffff"
+  },
+  "uab": {
+    "primary": "#1E6B52",
+    "secondary": "#F4C300",
+    "panel": "#0f201f",
+    "panelDark": "#080f0f",
+    "line": "#1f4940",
     "onAccent": "#ffffff"
   },
   "uc-davis": {
@@ -1765,6 +1853,14 @@
     "panel": "#090f1b",
     "panelDark": "#05080e",
     "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
+  "utsa": {
+    "primary": "#0C2340",
+    "secondary": "#F15A22",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
     "onAccent": "#ffffff"
   },
   "vancouver-whitecaps": {
