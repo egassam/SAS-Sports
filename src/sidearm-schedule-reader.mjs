@@ -144,9 +144,36 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       config.afterEvent?.(event,ctx);
       events.push(event);
     }
+    if(sport==='Tennis'){
+      oneTournamentPerStory(events);
+      if(config.tennisNeedsStory)for(let i=events.length-1;i>=0;i--)if(events[i].event_type==='MEET'&&events[i].status==='Final'&&!events[i].recap_url)events.splice(i,1);
+    }
     if(!events.length&&(pastSeason||passed))emptiedBySeason.add(events);
     return events;
   }
   const isEmptySchedule=events=>Array.isArray(events)&&!events.length&&emptiedBySeason.has(events);
   return{parseSchedule,isEmptySchedule};
+}
+
+// Two tennis tournaments the same weekend can link one story (Arkansas
+// State's Memphis Invite story also on the ITA All-Americans, Sep 20): it
+// stays with the tournaments its address names; the others lose it (and,
+// storyless, are not listed).
+export function oneTournamentPerStory(events){
+  const words=event=>String(event.opponent||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(word=>word.length>=4&&!/^(?:invitational|invite|classic|championships?|tournament|regionals?|fall|spring|tennis|mens|womens|open|state|college|university)$/.test(word));
+  const shared=new Map();
+  for(const event of events||[])if(event.sport==='Tennis'&&event.event_type==='MEET'&&event.recap_url)shared.set(event.recap_url,[...(shared.get(event.recap_url)||[]),event]);
+  for(const [url,group] of shared){
+    if(group.length<2)continue;
+    const slug=String(url).toLowerCase();
+    const named=event=>words(event).filter(word=>slug.includes(word)).length;
+    // A story naming several (Illinois's "Milwaukee Tennis Classic, Furman
+    // Fall Classic" results, Sep 11) stays with each one it names; a story
+    // naming none, or a weekend's ("split weekend", "opening weekend",
+    // "first week of fall", "... headlines DePaul at Notre Dame"), covers them all.
+    if(!group.some(named)||/\b(?:split|weekend|week|headlines)\b/.test(slug.replace(/[-_]/g,' ')))continue;
+    const keep=new Set(group.filter(named));
+    for(const event of group)if(!keep.has(event)){delete event.recap_url;delete event.recap_title;delete event.archive_story_verified;}
+  }
+  return events;
 }

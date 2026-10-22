@@ -119,12 +119,13 @@ export function mergeTbaBracket(games){
 // place.
 export function meetTeamPlaces(text,ordinal=value=>String(value)){
   const places={};
-  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)\s*[-:]?\s*(T-?)?(\d{1,3})(?:st|nd|rd|th)\b(?:\s+place)?(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
+  for(const m of String(text||'').matchAll(/\b(M|W|Men|Women)\s*[-:]?\s*\(?(T-?)?(\d{1,3})(?:st|nd|rd|th)\b\)?(?:\s+place)?(?:\s*\((\d+(?:\.\d+)?)\s*points?\))?/gi)){
     const team=/^w/i.test(m[1])?'Women':'Men';
     places[team]??={place:`${m[2]?'T':''}${ordinal(m[3])}`,points:m[4]||null};
   }
   return places;
 }
+// Coastal Carolina writes "Women (9th); Men (2nd)".
 // K-State's meet result: women first, "Women's team: 12th · 22 pts / Men's
 // team: T5th · 57 pts"; with no team place, "Completed".
 export function writeMeetPlaces(event,{text,schoolName,ordinal}){
@@ -138,7 +139,9 @@ export function writeMeetPlaces(event,{text,schoolName,ordinal}){
 // "6th of 6", "t-10th of 12", "13th/20" -> "T10th of 12".
 export function golfPlacing(text){
   // Providence writes the place without its suffix: "T9 of 10"; St. John's
-  // the field in brackets: "4th (9 Teams)".
+  // the field in brackets: "4th (9 Teams)"; Coastal Carolina adds the rounds:
+  // "1st of 16 (280-277-204=835)"; ULM the total inside: "T-3rd (844) / 15".
+  text=String(text||'').trim().replace(/\s*\(\d{2,4}(?:\s*[-=]\s*\d{2,4})*\)(?=\s*(?:\/|of\b|$))/g,'').trim();
   const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
   if(!m)return null;
   const n=Number(m[2]),suffix=m[3]?m[3].toLowerCase():n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';
@@ -475,6 +478,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
   const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
+  // "Cajuns Finish Tied For 11th at Argent Financial Classic", "Bulldogs
+  // Close 2026 at The Clerico Tie for Seventh" (Louisiana, Louisiana Tech).
+  const tiedHeading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?\\s+)?Tied?\\s+For\\s+${word}\\b`,'i'));
+  if(tiedHeading&&placeOf(tiedHeading[1]))return`T${placeOf(tiedHeading[1]).replace(/^T/,'')}`;
   // "Women's Golf Opens Season with Fourth-Place Finish at ..." (St. John's),
   // "Golden Eagles Close Fall With Fifth-Place Finish" (Marquette, Oct 19).
   const placeFinish=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
@@ -493,7 +500,11 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     if(/\b(?:pars|birdies|eagles|bogeys|par-[345]s)\b/i.test(sentence))continue;
     // "to place eighth", "climb two spots into a tie for third" (North Carolina);
     // "The Lumberjacks' three-day total ... placed them 12th" (Northern Arizona).
-    const m=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    // "The team finished 15th out of 17" (ULM) and "UL's golf team ...
+    // finished in a tie for seventh place" (Louisiana) name the team without
+    // its name; "Rounding out the team scoring, Ing Iadpluem ... tied for
+    // 45th" (North Carolina, Oct 18) is a player's place.
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".

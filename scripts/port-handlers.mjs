@@ -62,6 +62,20 @@ const mascot=id=>(schools.find(s=>s.id===id)?.aliases||[]).find(w=>/^[A-Z][a-z]/
 const [oldNick,newNick]=(value('nickname')||`${mascot(from)}:${mascot(to)}`).split(':');
 // Nicknames in code only; comments keep the source school's examples.
 if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(new RegExp(`\\b${escape(oldNick)}\\b`,'g'),newNick)).join('\n');
+// Any other name of the source school left in a code pattern is dropped
+// (Montana's "Griz|Lady Griz" and, with no mascot in the target's catalog
+// entry, "Grizzlies" stayed in all eleven Sun Belt ports, Oct 22: the golf
+// story places were never read).
+{
+  const own=new Set([b.name,...(schools.find(s=>s.id===to)?.aliases||[])]);
+  const leftover=[...(schools.find(s=>s.id===from)?.aliases||[]),oldNick].filter(w=>w&&w.length>=3&&!own.has(w)).sort((x,y)=>y.length-x.length);
+  out=out.split('\n').map(l=>{
+    if(/^\s*\/\//.test(l))return l;
+    // An alternative containing the name goes with it ("Lady Griz").
+    for(const w of leftover){const e=escape(w),alt=`[^|()"]*\\b${e}\\b[^|()"]*`;l=l.replace(new RegExp(`\\|${alt}(?=[|)])`,'g'),'').replace(new RegExp(`(?<=\\(\\?:)${alt}\\|`,'g'),'');}
+    return l;
+  }).join('\n');
+}
 // A name with an apostrophe ("St. John's", Oct 21) is escaped in code: every
 // later step imports the module, and the bare quote ended its string.
 if(b.name.includes("'"))out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l.split(`${b.name}'s`).join(b.name):l.split(b.name).join(b.name.replace(/'/g,"\\'"))).join('\n');

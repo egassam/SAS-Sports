@@ -19,8 +19,8 @@ const SPORT_SLUGS={
   'Track & Field':['track-and-field','track-field','indoor-track-field','outdoor-track-field','indoor-track-and-field','outdoor-track-and-field','wtrack','mtrack','track','xctrack'],'Baseball':['baseball','basebl'],
   'Softball':['softball','softbl'],'Lacrosse':['womens-lacrosse','mens-lacrosse','lacrosse','wlax','mlax'],
   'Field Hockey':['field-hockey','fhockey'],'Hockey':['ice-hockey','hockey'],
-  'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics','wgym','mgym'],'Beach Volleyball':['beach-volleyball'],
-  'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['bowling'],
+  'Gymnastics':['womens-gymnastics','mens-gymnastics','gymnastics','wgym','mgym'],'Beach Volleyball':['beach-volleyball','womens-beach-volleyball','bvb','sand-volleyball'],
+  'Water Polo':['water-polo'],'Fencing':['fencing'],'Bowling':['womens-bowling','bowling'],
   'Equestrian':['equestrian'],'Rifle':['rifle'],'Skiing':['skiing','ski'],
   'Triathlon':['triathlon'],'Acrobatics & Tumbling':['acrobatics-tumbling','acrobatics-and-tumbling'],
   'STUNT':['stunt']

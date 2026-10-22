@@ -39,7 +39,10 @@ const timeZone=ZONES[school.state]||'America/New_York';
 // 1. The site's own sport list.
 const response=await fetch(`https://${host}/website-api/sports?per_page=100`,{signal:AbortSignal.timeout(20000)});
 if(!response.ok){console.error(`${host}/website-api/sports answered ${response.status}: not an API site (use scripts/port-wmt.mjs)`);process.exit(1)}
-const listed=(await response.json()).data.filter(s=>s.schedule_id&&!s.hide_from_dropdown);
+// A team may list no schedule_id though its events answer (Old Dominion's
+// swimming, Oct 22); a team hidden from the menu is a past program (ODU
+// wrestling, last season 2019-20).
+const listed=(await response.json()).data.filter(s=>!s.hide_from_dropdown);
 const notes=[],sportIds={},slugs={},teams={};
 for(const entry of listed){
   const sport=inferSport(`/sports/${entry.slug}/schedule`);
