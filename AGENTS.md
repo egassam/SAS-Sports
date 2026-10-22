@@ -16,6 +16,8 @@ The user wants one school-module project per conversation.
 
    Keep working through the open items one sport at a time without stopping to ask. Stop early only for something only the user can decide or unblock, and then say exactly which items are still open and why. Never describe a school with open items as "complete".
 
+5b. **Blocked schools go in `docs/BLOCKED_SCHOOLS.md` (user, October 22, 2026: "Add them all into their own MD file and add any more schools that we get into that file").** When a school's official site refuses the app (for example Imperva's "Too many redirects" on `/api/source` after spaced retries), add it to that file's table in the same session, with the dates, the rounds checked and the exact answer. Leave it out of the build (user, October 19), keep its catalog entry, and never route around the block. If it later answers, move it to the file's "No longer blocked" section and build it.
+
 6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
    - **Code PRs:**
      - `npm run test:release` passes locally on the final commit (it runs every test in `npm test`, plus the checks and isolation).
