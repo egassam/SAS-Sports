@@ -455,6 +455,14 @@
     "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
+  "delaware": {
+    "primary": "#00539F",
+    "secondary": "#FFD200",
+    "panel": "#091b2f",
+    "panelDark": "#050d17",
+    "line": "#0e3c6a",
+    "onAccent": "#ffffff"
+  },
   "denver-broncos": {
     "primary": "#0A2343",
     "secondary": "#FC4C02",
@@ -549,6 +557,14 @@
     "panel": "#340b19",
     "panelDark": "#18050d",
     "line": "#7b1333",
+    "onAccent": "#ffffff"
+  },
+  "fiu": {
+    "primary": "#081E3F",
+    "secondary": "#B6862C",
+    "panel": "#0a0f1a",
+    "panelDark": "#05080e",
+    "line": "#131f36",
     "onAccent": "#ffffff"
   },
   "florida": {
@@ -743,6 +759,14 @@
     "line": "#295d69",
     "onAccent": "#ffffff"
   },
+  "jacksonville-state": {
+    "primary": "#CC0000",
+    "secondary": "#000000",
+    "panel": "#35090c",
+    "panelDark": "#190507",
+    "line": "#7f0e13",
+    "onAccent": "#ffffff"
+  },
   "james-madison": {
     "primary": "#450084",
     "secondary": "#CBB677",
@@ -821,6 +845,14 @@
     "panel": "#0d0e11",
     "panelDark": "#060607",
     "line": "#65686c",
+    "onAccent": "#ffffff"
+  },
+  "liberty": {
+    "primary": "#002D62",
+    "secondary": "#C41230",
+    "panel": "#091222",
+    "panelDark": "#050911",
+    "line": "#0e2749",
     "onAccent": "#ffffff"
   },
   "long-beach-state": {
@@ -983,6 +1015,14 @@
     "line": "#1c3433",
     "onAccent": "#ffffff"
   },
+  "middle-tennessee": {
+    "primary": "#0066CC",
+    "secondary": "#000000",
+    "panel": "#091f39",
+    "panelDark": "#050f1c",
+    "line": "#0e4783",
+    "onAccent": "#ffffff"
+  },
   "milwaukee-brewers": {
     "primary": "#13294B",
     "secondary": "#FFC72C",
@@ -1038,6 +1078,14 @@
     "panelDark": "#1d170c",
     "line": "#93742c",
     "onAccent": "#07111f"
+  },
+  "missouri-state": {
+    "primary": "#5E0009",
+    "secondary": "#000000",
+    "panel": "#1d090e",
+    "panelDark": "#0e0508",
+    "line": "#420e18",
+    "onAccent": "#ffffff"
   },
   "montana": {
     "primary": "#70002E",
@@ -1405,6 +1453,14 @@
     "panel": "#091515",
     "panelDark": "#050a0b",
     "line": "#112e28",
+    "onAccent": "#ffffff"
+  },
+  "sam-houston": {
+    "primary": "#F76800",
+    "secondary": "#0F1C2E",
+    "panel": "#3f1f0c",
+    "panelDark": "#1d0f07",
+    "line": "#964813",
     "onAccent": "#ffffff"
   },
   "san-diego-fc": {
@@ -1949,6 +2005,14 @@
     "panel": "#11243a",
     "panelDark": "#080f1d",
     "line": "#3a6087",
+    "onAccent": "#ffffff"
+  },
+  "western-kentucky": {
+    "primary": "#C60C30",
+    "secondary": "#000000",
+    "panel": "#340b17",
+    "panelDark": "#18060c",
+    "line": "#7b152d",
     "onAccent": "#ffffff"
   },
   "wisconsin": {
