@@ -127,7 +127,7 @@ import {unlvSchool,createUnlvHandlers} from './schools/unlv.mjs';
 import {utepSchool,createUtepHandlers} from './schools/utep.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.134.0-mountain-west';
+const VERSION='4.135.0-mac-catalog';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
