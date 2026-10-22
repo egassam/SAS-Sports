@@ -447,6 +447,14 @@
     "line": "#293c55",
     "onAccent": "#ffffff"
   },
+  "davidson": {
+    "primary": "#D42121",
+    "secondary": "#000000",
+    "panel": "#371014",
+    "panelDark": "#1a080b",
+    "line": "#832125",
+    "onAccent": "#ffffff"
+  },
   "dc-united": {
     "primary": "#000000",
     "secondary": "#D61018",
@@ -509,6 +517,14 @@
     "panel": "#09132a",
     "panelDark": "#050915",
     "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
+  "duquesne": {
+    "primary": "#002D62",
+    "secondary": "#BA0C2F",
+    "panel": "#091222",
+    "panelDark": "#050911",
+    "line": "#0e2749",
     "onAccent": "#ffffff"
   },
   "east-carolina": {
@@ -591,6 +607,14 @@
     "line": "#502836",
     "onAccent": "#ffffff"
   },
+  "fordham": {
+    "primary": "#860038",
+    "secondary": "#A2AAAD",
+    "panel": "#260919",
+    "panelDark": "#12050d",
+    "line": "#580e32",
+    "onAccent": "#ffffff"
+  },
   "formula-1": {
     "primary": "#E10600",
     "secondary": "#FFFFFF",
@@ -605,6 +629,22 @@
     "panel": "#390917",
     "panelDark": "#1a050c",
     "line": "#870e2e",
+    "onAccent": "#ffffff"
+  },
+  "george-mason": {
+    "primary": "#006633",
+    "secondary": "#FFCC33",
+    "panel": "#091f18",
+    "panelDark": "#050f0c",
+    "line": "#0e472f",
+    "onAccent": "#ffffff"
+  },
+  "george-washington": {
+    "primary": "#033C5A",
+    "secondary": "#AA9868",
+    "panel": "#091620",
+    "panelDark": "#050b10",
+    "line": "#102f44",
     "onAccent": "#ffffff"
   },
   "georgia": {
@@ -837,6 +877,14 @@
     "panel": "#091021",
     "panelDark": "#050811",
     "line": "#0e2246",
+    "onAccent": "#ffffff"
+  },
+  "la-salle": {
+    "primary": "#003056",
+    "secondary": "#FFC72C",
+    "panel": "#09131f",
+    "panelDark": "#050910",
+    "line": "#0e2942",
     "onAccent": "#ffffff"
   },
   "lafc": {
@@ -1471,12 +1519,28 @@
     "line": "#682030",
     "onAccent": "#ffffff"
   },
+  "rhode-island": {
+    "primary": "#002147",
+    "secondary": "#75B2DD",
+    "panel": "#09101c",
+    "panelDark": "#05080e",
+    "line": "#0e213a",
+    "onAccent": "#ffffff"
+  },
   "rice": {
     "primary": "#00205B",
     "secondary": "#C1C6C8",
     "panel": "#091021",
     "panelDark": "#050810",
     "line": "#0e2045",
+    "onAccent": "#ffffff"
+  },
+  "richmond": {
+    "primary": "#990000",
+    "secondary": "#000066",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
     "onAccent": "#ffffff"
   },
   "rutgers": {
@@ -1493,6 +1557,22 @@
     "panel": "#091515",
     "panelDark": "#050a0b",
     "line": "#112e28",
+    "onAccent": "#ffffff"
+  },
+  "saint-josephs": {
+    "primary": "#9E1B32",
+    "secondary": "#A2AAAD",
+    "panel": "#2b0f17",
+    "panelDark": "#14070c",
+    "line": "#651d2e",
+    "onAccent": "#ffffff"
+  },
+  "saint-louis": {
+    "primary": "#003DA5",
+    "secondary": "#C8C9C7",
+    "panel": "#091631",
+    "panelDark": "#050b18",
+    "line": "#0e306e",
     "onAccent": "#ffffff"
   },
   "saint-marys": {
