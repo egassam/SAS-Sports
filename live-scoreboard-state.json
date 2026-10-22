@@ -3053,9 +3053,234 @@
   },
   "utah-tech|Volleyball": {
    "state": "off"
+  },
+  "arkansas-state|Baseball": {
+   "state": "off"
+  },
+  "arkansas-state|Basketball": {
+   "state": "off"
+  },
+  "arkansas-state|Football": {
+   "state": "off"
+  },
+  "arkansas-state|Soccer": {
+   "state": "off"
+  },
+  "arkansas-state|Volleyball": {
+   "state": "off"
+  },
+  "coastal-carolina|Baseball": {
+   "state": "off"
+  },
+  "coastal-carolina|Basketball": {
+   "state": "off"
+  },
+  "coastal-carolina|Football": {
+   "state": "off"
+  },
+  "coastal-carolina|Lacrosse": {
+   "state": "off"
+  },
+  "coastal-carolina|Soccer": {
+   "state": "off"
+  },
+  "coastal-carolina|Softball": {
+   "state": "off"
+  },
+  "coastal-carolina|Volleyball": {
+   "state": "off"
+  },
+  "georgia-southern|Baseball": {
+   "state": "off"
+  },
+  "georgia-southern|Basketball": {
+   "state": "off"
+  },
+  "georgia-southern|Football": {
+   "state": "off"
+  },
+  "georgia-southern|Soccer": {
+   "state": "off"
+  },
+  "georgia-southern|Softball": {
+   "state": "off"
+  },
+  "georgia-southern|Volleyball": {
+   "state": "off"
+  },
+  "james-madison|Baseball": {
+   "state": "off"
+  },
+  "james-madison|Basketball": {
+   "state": "off"
+  },
+  "james-madison|Field Hockey": {
+   "state": "off"
+  },
+  "james-madison|Football": {
+   "state": "off"
+  },
+  "james-madison|Lacrosse": {
+   "state": "off"
+  },
+  "james-madison|Soccer": {
+   "state": "off"
+  },
+  "james-madison|Softball": {
+   "state": "off"
+  },
+  "james-madison|Volleyball": {
+   "state": "off"
+  },
+  "louisiana|Baseball": {
+   "state": "off"
+  },
+  "louisiana|Basketball": {
+   "state": "off"
+  },
+  "louisiana|Football": {
+   "state": "off"
+  },
+  "louisiana|Soccer": {
+   "state": "off"
+  },
+  "louisiana|Softball": {
+   "state": "off"
+  },
+  "louisiana|Volleyball": {
+   "state": "off"
+  },
+  "louisiana-tech|Baseball": {
+   "state": "off"
+  },
+  "louisiana-tech|Basketball": {
+   "state": "off"
+  },
+  "louisiana-tech|Football": {
+   "state": "off"
+  },
+  "louisiana-tech|Soccer": {
+   "state": "off"
+  },
+  "louisiana-tech|Softball": {
+   "state": "off"
+  },
+  "louisiana-tech|Volleyball": {
+   "state": "off"
+  },
+  "marshall|Baseball": {
+   "state": "off"
+  },
+  "marshall|Basketball": {
+   "state": "off"
+  },
+  "marshall|Football": {
+   "state": "off"
+  },
+  "marshall|Soccer": {
+   "state": "off"
+  },
+  "marshall|Softball": {
+   "state": "off"
+  },
+  "marshall|Volleyball": {
+   "state": "off"
+  },
+  "old-dominion|Baseball": {
+   "state": "off"
+  },
+  "old-dominion|Basketball": {
+   "state": "off"
+  },
+  "old-dominion|Field Hockey": {
+   "state": "off"
+  },
+  "old-dominion|Football": {
+   "state": "off"
+  },
+  "old-dominion|Lacrosse": {
+   "state": "off"
+  },
+  "old-dominion|Soccer": {
+   "state": "off"
+  },
+  "old-dominion|Volleyball": {
+   "state": "off"
+  },
+  "south-alabama|Baseball": {
+   "state": "off"
+  },
+  "south-alabama|Basketball": {
+   "state": "off"
+  },
+  "south-alabama|Football": {
+   "state": "off"
+  },
+  "south-alabama|Soccer": {
+   "state": "off"
+  },
+  "south-alabama|Softball": {
+   "state": "off"
+  },
+  "south-alabama|Volleyball": {
+   "state": "off"
+  },
+  "southern-miss|Baseball": {
+   "state": "off"
+  },
+  "southern-miss|Basketball": {
+   "state": "off"
+  },
+  "southern-miss|Football": {
+   "state": "off"
+  },
+  "southern-miss|Soccer": {
+   "state": "off"
+  },
+  "southern-miss|Softball": {
+   "state": "off"
+  },
+  "southern-miss|Volleyball": {
+   "state": "off"
+  },
+  "troy|Baseball": {
+   "state": "off"
+  },
+  "troy|Basketball": {
+   "state": "off"
+  },
+  "troy|Football": {
+   "state": "off"
+  },
+  "troy|Soccer": {
+   "state": "off"
+  },
+  "troy|Softball": {
+   "state": "off"
+  },
+  "troy|Volleyball": {
+   "state": "off"
+  },
+  "ulm|Baseball": {
+   "state": "off"
+  },
+  "ulm|Basketball": {
+   "state": "off"
+  },
+  "ulm|Football": {
+   "state": "off"
+  },
+  "ulm|Soccer": {
+   "state": "off"
+  },
+  "ulm|Softball": {
+   "state": "off"
+  },
+  "ulm|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.130.4-xc-tfrrs-fixes",
- "updated_at": "2026-10-22T06:39:55.837Z",
+ "version": "4.131.5-sun-belt",
+ "updated_at": "2026-10-22T12:29:54.585Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
