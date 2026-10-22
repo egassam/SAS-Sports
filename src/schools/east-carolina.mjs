@@ -335,7 +335,11 @@ export function createEastCarolinaHandlers({makeEvent,recapMatchesEvent,eventTyp
         if(finished){const value=`${finished[1]?'T':''}${ordinal(finished[2])} of ${finished[3]}`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
         const matchPlay=golfMatchPlay(text);
         if(matchPlay){event.headline=matchPlay.headline;event.results=matchPlay.results;event.result_count=event.results.length;return;}
-        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score/i.test(text)?'No team score (individuals only)':'Completed');
+        // An event for individuals ("Happy Valley Individuals", "Shepherd's
+        // Rock Individual", Delaware, Sep 7 and Oct 5, beside the team's
+        // tournament; Ohio's "Raider Individual") has no team place.
+        if(/\bIndividuals?\b/i.test(String(event.opponent||event.title||''))){event.headline='No team score (individuals only)';event.results=[{label:'Result',value:event.headline}];event.result_count=1;return;}
+        const value=golfPlacing(text)||golfCardPlace(card)||(/^T?\d+(?:st|nd|rd|th)$/.test(text)?text:/no team score|^individuals?(?: only)?$/i.test(text)?'No team score (individuals only)':'Completed');
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }

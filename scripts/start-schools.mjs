@@ -36,7 +36,7 @@ const run=(id,step,cmd)=>new Promise(done=>{
 });
 const started=Date.now(),clock=()=>`${Math.round((Date.now()-started)/1000)}s`;
 
-const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'};
+const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'};
 async function tfrrsTeams(school){
   // TFRRS can name the team by its institution, "State" cut to "St"
   // (NC State: NC_college_f_North_Carolina_St, from "North Carolina State
@@ -45,7 +45,8 @@ async function tfrrsTeams(school){
   // Or by another alias, any "State" cut to "St" (Big West, Oct 22:
   // CA_college_f_Cal_St_Fullerton, Cal_St_Northridge from "Cal State
   // Northridge", Long_Beach_St).
-  const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\bState\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St'));
+  // TFRRS also shortens "International" (FIU: FL_college_f_Florida_Intl).
+  const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\b(?:State|International)\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St').replace(/\bInternational\b/g,'Intl'));
   const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others].map(n=>n.replace(/&/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;

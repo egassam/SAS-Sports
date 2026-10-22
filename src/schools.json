@@ -3312,6 +3312,217 @@
     ]
   },
   {
+    "id": "delaware",
+    "name": "Delaware",
+    "short_name": "Delaware",
+    "state": "Delaware",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bluehens.com",
+    "aliases": [
+      "University of Delaware",
+      "Blue Hens",
+      "UD"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bluehens",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fiu",
+    "name": "FIU",
+    "short_name": "FIU",
+    "state": "Florida",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fiusports.com",
+    "aliases": [
+      "Florida International University",
+      "Florida International",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fiusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "jacksonville-state",
+    "name": "Jacksonville State",
+    "short_name": "Jacksonville State",
+    "state": "Alabama",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://jaxstatesports.com",
+    "aliases": [
+      "Jacksonville State University",
+      "Jax State",
+      "Gamecocks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "jaxstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "kennesaw-state",
+    "name": "Kennesaw State",
+    "short_name": "Kennesaw State",
+    "state": "Georgia",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ksuowls.com",
+    "aliases": [
+      "Kennesaw State University",
+      "KSU",
+      "Owls"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ksuowls",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "liberty",
+    "name": "Liberty",
+    "short_name": "Liberty",
+    "state": "Virginia",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://libertyflames.com",
+    "aliases": [
+      "Liberty University",
+      "Flames",
+      "Lady Flames"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "libertyflames",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "middle-tennessee",
+    "name": "Middle Tennessee",
+    "short_name": "Middle Tennessee",
+    "state": "Tennessee",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goblueraiders.com",
+    "aliases": [
+      "Middle Tennessee State University",
+      "MTSU",
+      "Blue Raiders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goblueraiders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "missouri-state",
+    "name": "Missouri State",
+    "short_name": "Missouri State",
+    "state": "Missouri",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://missouristatebears.com",
+    "aliases": [
+      "Missouri State University",
+      "Bears",
+      "Lady Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "missouristatebears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "new-mexico-state",
+    "name": "New Mexico State",
+    "short_name": "New Mexico State",
+    "state": "New Mexico",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nmstatesports.com",
+    "aliases": [
+      "New Mexico State University",
+      "NMSU",
+      "Aggies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nmstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "sam-houston",
+    "name": "Sam Houston",
+    "short_name": "Sam Houston",
+    "state": "Texas",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobearkats.com",
+    "aliases": [
+      "Sam Houston State University",
+      "Sam Houston State",
+      "SHSU",
+      "Bearkats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobearkats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "western-kentucky",
+    "name": "Western Kentucky",
+    "short_name": "WKU",
+    "state": "Kentucky",
+    "conference": "Conference USA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://wkusports.com",
+    "aliases": [
+      "Western Kentucky University",
+      "Hilltoppers",
+      "Lady Toppers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "wkusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

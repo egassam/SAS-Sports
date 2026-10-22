@@ -58,7 +58,7 @@ const pad=(text,width)=>String(text).padEnd(width);
 // Sports whose every event is a meet, and the result lines the readers
 // write (scores, places, team rows, "Completed", match play, duals).
 const MEET_ONLY=new Set(['Cross Country','Golf','Track & Field']);
-const RESULT_FORMS=/^(?:[WLT],\s|(?:T-?)?\d+(?:st|nd|rd|th)(?: of \d+)?(?: \([^()]*\))?$|Completed$|No team score|Individual results$|Match play|Cancelled|Postponed|Canceled|(?:Women's|Men's)(?: team)?(?:: | · )|.*(?:'s team|team): |[^:]+: (?:(?:Women|Men): )?[WLT], \d)/i;
+const RESULT_FORMS=/^(?:[WLT],\s|(?:T-?)?\d+(?:st|nd|rd|th)(?: of \d+)?(?: \([^()]*\))?$|(?:T-?)?\d+(?:st|nd|rd|th) \u00b7 [\d.]+ pts$|No team score \(individuals only\)$|Completed$|No team score|Individual results$|Match play|Cancelled|Postponed|Canceled|(?:Women's|Men's)(?: team)?(?:: | · )|.*(?:'s team|team): |[^:]+: (?:(?:Women|Men): )?[WLT], \d)/i;
 const SCHOOL_NAMES=new Set(schools.flatMap(s=>[s.name,s.short_name]).filter(Boolean).map(n=>n.toLowerCase()));
 let formatted=0;
 const gateMiss=e=>e.status==='Final'&&!e.recap_url&&(!e.headline||e.headline==='Completed');

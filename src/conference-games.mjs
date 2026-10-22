@@ -34,7 +34,12 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'sacramento-state':['sacramento st','sac state'],'utah-valley':['uvu'],
   // American opponents write "FAU", "USF", "UTSA", "UAB", "ECU" and the like.
   'south-florida':['south fla'],'north-texas':['unt'],uab:['alabama birmingham'],utsa:['ut san antonio','texas san antonio'],
-  'east-carolina':['ecu'],'wichita-state':['wichita st','wichita'],charlotte:['unc charlotte']};
+  'east-carolina':['ecu'],'wichita-state':['wichita st','wichita'],charlotte:['unc charlotte'],
+  // Conference USA opponents write "Jax State", "KSU", "MTSU", "NMSU",
+  // "Sam Houston State", "WKU" and the like.
+  fiu:['fla international'],'jacksonville-state':['jax state','jacksonville st'],'kennesaw-state':['kennesaw'],
+  'middle-tennessee':['middle tenn','middle tennessee state','mtsu','middle tenn st'],'missouri-state':['missouri st'],'new-mexico-state':['new mexico st','nmsu'],
+  'sam-houston':['sam houston state','sam houston st','shsu'],'western-kentucky':['western ky'],delaware:['ud']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -105,7 +110,14 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country,
   // track, women's swimming and lacrosse: no beach volleyball, gymnastics,
   // wrestling, field hockey, hockey or rowing (Tulsa rows in the Big 12).
-  American:new Set(['Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
+  American:new Set(['Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // Conference USA (2026-27: Delaware, FIU, Jacksonville State, Kennesaw
+  // State, Liberty, Middle Tennessee, Missouri State, New Mexico State, Sam
+  // Houston, Western Kentucky) sponsors football, basketball, baseball,
+  // softball, soccer, volleyball, beach volleyball, golf, tennis, cross
+  // country, track and swimming: no field hockey, lacrosse, rowing,
+  // wrestling or gymnastics.
+  'Conference USA':new Set(['Gymnastics','Wrestling','Hockey','Field Hockey','Lacrosse','Rowing','Rifle','Bowling','Equestrian','Fencing','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads
