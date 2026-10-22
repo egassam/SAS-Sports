@@ -55,6 +55,12 @@ assert.equal(golfStoryPlace(story('marshall','2026-8-30-mens-golf'),{team:'(?:Th
   const cards=[tennis('ITA All American Championships','2026-09-19','2026-09-27',split),tennis('Rocky Top Invitational','2026-09-19','2026-09-21',split)];
   oneTournamentPerStory(cards);
   assert.deepEqual(cards.map(e=>e.recap_url||null),[split,split]);
+  // The sport's word names no tournament ("mens-tennis-opens-fall-campaign":
+  // Marquette's Milwaukee Tennis Classic and Youngstown State Invitational).
+  const campaign='https://gomarquette.com/news/2026/9/14/mens-tennis-opens-fall-campaign';
+  const mu=[tennis('Milwaukee Tennis Classic','2026-09-11','2026-09-13',campaign),tennis('Youngstown State Invitational','2026-09-12','2026-09-14',campaign)];
+  oneTournamentPerStory(mu);
+  assert.deepEqual(mu.map(e=>e.recap_url||null),[campaign,campaign]);
   // A story naming both keeps both (Illinois, Sep 11).
   const both='https://fightingillini.com/news/2026/9/11/womens-tennis-results-milwaukee-tennis-classic-furman-fall-classic';
   const illini=[tennis('Milwaukee Tennis Classic','2026-09-11','2026-09-13',both),tennis('Debbie Southern Furman Fall Classic','2026-09-11','2026-09-13',both)];

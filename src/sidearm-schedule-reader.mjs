@@ -160,7 +160,7 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
 // stays with the tournaments its address names; the others lose it (and,
 // storyless, are not listed).
 export function oneTournamentPerStory(events){
-  const words=event=>String(event.opponent||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(word=>word.length>=4&&!/^(?:invitational|invite|classic|championships?|tournament|regionals?|fall)$/.test(word));
+  const words=event=>String(event.opponent||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(word=>word.length>=4&&!/^(?:invitational|invite|classic|championships?|tournament|regionals?|fall|spring|tennis|mens|womens|open|state|college|university)$/.test(word));
   const shared=new Map();
   for(const event of events||[])if(event.sport==='Tennis'&&event.event_type==='MEET'&&event.recap_url)shared.set(event.recap_url,[...(shared.get(event.recap_url)||[]),event]);
   for(const [url,group] of shared){
