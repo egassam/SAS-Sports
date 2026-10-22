@@ -14,7 +14,7 @@ All twelve sites below sit behind **Imperva** (Incapsula), a bot-defense service
 
 ## Blocked schools
 
-Checked through the branch preview's `/api/source` (the same network as production). The latest check of the first eight was October 22, 11:10 UTC (the three Mountain West schools 13:10 UTC, Western Michigan 14:30 UTC), and all answered "Too many redirects".
+Checked through the branch preview's `/api/source` (the same network as production). The latest check of the first eight was October 22, 11:10 UTC (the three Mountain West schools 13:10 UTC, Western Michigan 15:08 UTC), and all answered "Too many redirects".
 
 | School | Conference (2026-27) | Site | Blocked since | Checks | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -29,7 +29,7 @@ Checked through the branch preview's `/api/source` (the same network as producti
 | Hawaii | Mountain West | hawaiiathletics.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
 | Nevada | Mountain West | nevadawolfpack.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
 | Wyoming | Mountain West | gowyo.com | Oct 22, 2026 | Oct 22 (about 12:50, 12:55, 13:10 UTC) | |
-| Western Michigan | MAC | wmubroncos.com | Oct 22, 2026 | Oct 22 (14:05, 14:14, 14:30 UTC: football and volleyball schedules, homepage) | The other eleven MAC schools read normally |
+| Western Michigan | MAC | wmubroncos.com | Oct 22, 2026 | Oct 22 (about 14:12, 14:14, 14:30 and 15:08 UTC: football, volleyball and soccer schedules, homepage) | The other eleven MAC schools read normally |
 
 Not blocked, for contrast: many SIDEARM sites behind Imperva answer the build sandbox with 403 but let the Worker read them (Ohio State, Louisville, Creighton, Marquette, UConn, Xavier, Montana State, Northern Arizona and others). Those are built normally through the private source route.
 

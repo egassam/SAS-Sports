@@ -212,6 +212,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_womensgymnastics.map(line),[]);
   const v_womenssoccer=parse("Soccer","womens-soccer");
   assert.deepEqual(v_womenssoccer.map(line),[
+ "Final Aug 13 Ball State vs IU Indy | W, 2-0",
  "Final Aug 20 Ball State at Butler | T, 1-1",
  "Final Aug 23 Ball State at Western Kentucky | L, 0-2",
  "Final Aug 27 Ball State at Purdue | L, 0-5",

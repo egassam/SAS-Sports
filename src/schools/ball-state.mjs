@@ -125,7 +125,10 @@ export function createBallStateHandlers({makeEvent,recapMatchesEvent,eventType=(
     id:'ball-state',host:HOST,sports:ballStateSchool.pageDataSports,squadSports:ballStateSchool.combinedSports,
     today:ballStateToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // A game played after its postponement keeps the old "Postponed" note
+    // beside its score (soccer vs IU Indy, Aug 13, moved from Aug 12: 6-5-4
+    // as published): the score decides.
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>game.noplay_text&&/^[WLT]$/.test(game.result?.status||'')&&/^\d/.test(String(game.result?.team_score||''))?{...game,noplay_text:''}:game),
     merge(sport,games){
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
