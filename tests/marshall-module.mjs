@@ -331,4 +331,13 @@ void [parse,line,ownRecapsOnly,live];
 // END generated
 
 assert.equal(requests.length,0,'no unexpected network requests');
+// An unpublished season's empty template ("@season STUNT Schedule") is a
+// valid empty schedule, not a failed source (502 on the first preview).
+{
+  const schoolEntry=schools.find(s=>s.id==='marshall'),url=Object.entries(marshallSchool.scheduleUrls).find(([key])=>key.endsWith('|STUNT'))[1];
+  const raw='<html><head><title>@season STUNT Schedule - Athletics</title></head><body></body></html>';
+  const events=worker.marshallHandlers.parseSchedule(raw,schoolEntry,'STUNT',url,now);
+  assert.equal(events.length,0);
+  assert.equal(worker.marshallHandlers.isEmptySchedule(events),true);
+}
 console.log("Marshall module checks passed");

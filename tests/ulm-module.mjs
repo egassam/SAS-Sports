@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',ulmSchool.scheduleUrls],['roster',ulmSchool
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'ulmwarhawks.com',`${key} must stay on ulmwarhawks.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://ulmwarhawks.com/sports/baseball/schedule"],"roster":["https://ulmwarhawks.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://ulmwarhawks.com/sports/mens-basketball/schedule","https://ulmwarhawks.com/sports/womens-basketball/schedule"],"roster":["https://ulmwarhawks.com/sports/mens-basketball/roster","https://ulmwarhawks.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://ulmwarhawks.com/"],"roster":["https://ulmwarhawks.com/sports/beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://ulmwarhawks.com/sports/cross-country/schedule"],"roster":["https://ulmwarhawks.com/sports/cross-country/roster"],"combined":false},"Football":{"schedule":["https://ulmwarhawks.com/sports/football/schedule"],"roster":["https://ulmwarhawks.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://ulmwarhawks.com/sports/womens-golf/schedule","https://ulmwarhawks.com/sports/mens-golf/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-golf/roster","https://ulmwarhawks.com/sports/mens-golf/roster"],"combined":true},"Soccer":{"schedule":["https://ulmwarhawks.com/sports/womens-soccer/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://ulmwarhawks.com/sports/softball/schedule"],"roster":["https://ulmwarhawks.com/sports/softball/roster"],"combined":false},"Track & Field":{"schedule":["https://ulmwarhawks.com/sports/track-and-field/schedule"],"roster":["https://ulmwarhawks.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://ulmwarhawks.com/sports/womens-volleyball/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-volleyball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://ulmwarhawks.com/sports/baseball/schedule"],"roster":["https://ulmwarhawks.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://ulmwarhawks.com/sports/mens-basketball/schedule","https://ulmwarhawks.com/sports/womens-basketball/schedule"],"roster":["https://ulmwarhawks.com/sports/mens-basketball/roster","https://ulmwarhawks.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://ulmwarhawks.com/sports/womens-beach-volleyball/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://ulmwarhawks.com/sports/cross-country/schedule"],"roster":["https://ulmwarhawks.com/sports/cross-country/roster"],"combined":false},"Football":{"schedule":["https://ulmwarhawks.com/sports/football/schedule"],"roster":["https://ulmwarhawks.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://ulmwarhawks.com/sports/womens-golf/schedule","https://ulmwarhawks.com/sports/mens-golf/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-golf/roster","https://ulmwarhawks.com/sports/mens-golf/roster"],"combined":true},"Soccer":{"schedule":["https://ulmwarhawks.com/sports/womens-soccer/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://ulmwarhawks.com/sports/softball/schedule"],"roster":["https://ulmwarhawks.com/sports/softball/roster"],"combined":false},"Track & Field":{"schedule":["https://ulmwarhawks.com/sports/track-and-field/schedule"],"roster":["https://ulmwarhawks.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://ulmwarhawks.com/sports/womens-volleyball/schedule"],"roster":["https://ulmwarhawks.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -142,6 +142,8 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Feb 23 Women's · ULM at Arkansas State | ",
  "Upcoming Feb 26 Women's · ULM at South Alabama | "
 ]);
+  const v_womensbeachvolleyball=parse("Beach Volleyball","womens-beach-volleyball");
+  assert.deepEqual(v_womensbeachvolleyball.map(line),[]);
   const v_crosscountry=parse("Cross Country","cross-country");
   assert.deepEqual(v_crosscountry.map(line),[
  "Final Sep 4 ULM at Mississippi Christian Opener | Women's team: 1st / Men's team: 2nd",
@@ -256,6 +258,7 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_baseball,"Baseball baseball");
   ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
   ownRecapsOnly(v_womensbasketball,"Basketball womens-basketball");
+  ownRecapsOnly(v_womensbeachvolleyball,"Beach Volleyball womens-beach-volleyball");
   ownRecapsOnly(v_crosscountry,"Cross Country cross-country");
   ownRecapsOnly(v_football,"Football football");
   ownRecapsOnly(v_womensgolf,"Golf womens-golf");
@@ -268,4 +271,13 @@ void [parse,line,ownRecapsOnly,live];
 // END generated
 
 assert.equal(requests.length,0,'no unexpected network requests');
+// An unpublished season's empty template ("@season Beach Volleyball Schedule") is a
+// valid empty schedule, not a failed source (502 on the first preview).
+{
+  const schoolEntry=schools.find(s=>s.id==='ulm'),url=Object.entries(ulmSchool.scheduleUrls).find(([key])=>key.endsWith('|Beach Volleyball'))[1];
+  const raw='<html><head><title>@season Beach Volleyball Schedule - Athletics</title></head><body></body></html>';
+  const events=worker.ulmHandlers.parseSchedule(raw,schoolEntry,'Beach Volleyball',url,now);
+  assert.equal(events.length,0);
+  assert.equal(worker.ulmHandlers.isEmptySchedule(events),true);
+}
 console.log("ULM module checks passed");

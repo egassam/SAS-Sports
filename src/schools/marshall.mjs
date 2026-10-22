@@ -358,7 +358,10 @@ export function createMarshallHandlers({makeEvent,recapMatchesEvent,eventType=()
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // A season not yet published is SIDEARM's empty template ("@season @sport
+  // Schedule": STUNT, Oct 22): a valid empty schedule (USC's rule).
+  const unpublished=(raw,school,sport,url)=>school?.id==='marshall'&&marshallSchool.pageDataSports.has(sport)&&/<title>\s*@season\b/i.test(String(raw||''))&&/^https:\/\/herdzone\.com\/sports\/[^/]+\/schedule\/?$/.test(String(url||''));
+  const readSchedule=(...args)=>{if(unpublished(...args.slice(0,4))){const none=[];trackEmptied.add(none);return none;}const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Thundering Herd|Herd|Marshall|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),

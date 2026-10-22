@@ -33,7 +33,7 @@ export const ulmSchool={
   scheduleUrls:{
     'ulm|Baseball':'https://ulmwarhawks.com/sports/baseball/schedule',
     'ulm|Basketball':['https://ulmwarhawks.com/sports/mens-basketball/schedule','https://ulmwarhawks.com/sports/womens-basketball/schedule'],
-    'ulm|Beach Volleyball':'https://ulmwarhawks.com/',
+    'ulm|Beach Volleyball':'https://ulmwarhawks.com/sports/womens-beach-volleyball/schedule',
     'ulm|Cross Country':'https://ulmwarhawks.com/sports/cross-country/schedule',
     'ulm|Football':'https://ulmwarhawks.com/sports/football/schedule',
     'ulm|Golf':['https://ulmwarhawks.com/sports/womens-golf/schedule','https://ulmwarhawks.com/sports/mens-golf/schedule'],
@@ -45,7 +45,7 @@ export const ulmSchool={
   rosterUrls:{
     'ulm|Baseball':'https://ulmwarhawks.com/sports/baseball/roster',
     'ulm|Basketball':['https://ulmwarhawks.com/sports/mens-basketball/roster','https://ulmwarhawks.com/sports/womens-basketball/roster'],
-    'ulm|Beach Volleyball':'https://ulmwarhawks.com/sports/beach-volleyball/roster',
+    'ulm|Beach Volleyball':'https://ulmwarhawks.com/sports/womens-beach-volleyball/roster',
     'ulm|Cross Country':'https://ulmwarhawks.com/sports/cross-country/roster',
     'ulm|Football':'https://ulmwarhawks.com/sports/football/roster',
     'ulm|Golf':['https://ulmwarhawks.com/sports/womens-golf/roster','https://ulmwarhawks.com/sports/mens-golf/roster'],
@@ -341,7 +341,10 @@ export function createUlmHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // A season not yet published is SIDEARM's empty template ("@season @sport
+  // Schedule": beach volleyball, Oct 22): a valid empty schedule (USC's rule).
+  const unpublished=(raw,school,sport,url)=>school?.id==='ulm'&&ulmSchool.pageDataSports.has(sport)&&/<title>\s*@season\b/i.test(String(raw||''))&&/^https:\/\/ulmwarhawks\.com\/sports\/[^/]+\/schedule\/?$/.test(String(url||''));
+  const readSchedule=(...args)=>{if(unpublished(...args.slice(0,4))){const none=[];trackEmptied.add(none);return none;}const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Warhawks|ULM|Louisiana-Monroe|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),

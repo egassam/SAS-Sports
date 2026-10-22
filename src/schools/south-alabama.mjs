@@ -53,13 +53,13 @@ export const southAlabamaSchool={
   rosterUrls:{
     'south-alabama|Baseball':'https://usajaguars.com/sports/baseball/roster',
     'south-alabama|Basketball':['https://usajaguars.com/sports/mens-basketball/roster','https://usajaguars.com/sports/womens-basketball/roster'],
-    'south-alabama|Cross Country':'https://usajaguars.com/sports/cross-country/roster',
+    'south-alabama|Cross Country':['https://usajaguars.com/sports/womens-cross-country/roster','https://usajaguars.com/sports/mens-cross-country/roster'],
     'south-alabama|Football':'https://usajaguars.com/sports/football/roster',
     'south-alabama|Golf':['https://usajaguars.com/sports/womens-golf/roster','https://usajaguars.com/sports/mens-golf/roster'],
     'south-alabama|Soccer':'https://usajaguars.com/sports/womens-soccer/roster',
     'south-alabama|Softball':'https://usajaguars.com/sports/softball/roster',
     'south-alabama|Tennis':['https://usajaguars.com/sports/womens-tennis/roster','https://usajaguars.com/sports/mens-tennis/roster'],
-    'south-alabama|Track & Field':'https://usajaguars.com/sports/track-and-field/roster',
+    'south-alabama|Track & Field':['https://usajaguars.com/sports/womens-track-and-field/roster','https://usajaguars.com/sports/mens-track-and-field/roster'],
     'south-alabama|Volleyball':'https://usajaguars.com/sports/womens-volleyball/roster'
   }
 };
