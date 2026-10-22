@@ -180,11 +180,11 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[
- "Final Sep 14 Montana State at Branch Law Firm/McGuire Invitational | Completed",
- "Final Sep 21 Montana State at Yellowstone Intercollegiate | Completed",
- "Final Sep 28 Montana State at Diane Thomason Invitational | Completed",
+ "Final Sep 14 Montana State at Branch Law Firm/McGuire Invitational | 4th of 13",
+ "Final Sep 21 Montana State at Yellowstone Intercollegiate | 1st of 11",
+ "Final Sep 28 Montana State at Diane Thomason Invitational | 7th of 13",
  "Final Oct 12 Montana State at Big O Classic | No team score (individuals only)",
- "Final Oct 19 Montana State at Route 66 Invitational | Completed",
+ "Final Oct 19 Montana State at Route 66 Invitational | 12th of 16",
  "Upcoming Feb 8 Montana State at Mountain Classic Match Play | ",
  "Upcoming Feb 15 Montana State at The Molly Collegiate Invitational | ",
  "Upcoming Feb 22 Montana State at Causeway Invitational | ",

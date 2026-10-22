@@ -46,6 +46,11 @@ assert.equal(golfStoryPlace(story('marshall','2026-8-30-mens-golf'),{team:'(?:Th
   const herd=[tennis('ITA All-American Championships','2026-09-19','2026-09-27',weekend),tennis('Thunder in the Mountains','2026-09-18','2026-09-20',weekend)];
   oneTournamentPerStory(herd);
   assert.deepEqual(herd.map(e=>e.recap_url||null),[null,weekend]);
+  // A story naming both keeps both (Illinois, Sep 11).
+  const both='https://fightingillini.com/news/2026/9/11/womens-tennis-results-milwaukee-tennis-classic-furman-fall-classic';
+  const illini=[tennis('Milwaukee Tennis Classic','2026-09-11','2026-09-13',both),tennis('Debbie Southern Furman Fall Classic','2026-09-11','2026-09-13',both)];
+  oneTournamentPerStory(illini);
+  assert.deepEqual(illini.map(e=>e.recap_url||null),[both,both]);
 }
 
 console.log('Sun Belt shared checks passed (golf card brackets, golf story places, "Women (9th)" meets, one story per tennis tournament)');
