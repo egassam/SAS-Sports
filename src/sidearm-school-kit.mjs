@@ -550,6 +550,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
   const heading=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
+  // A results block: "Place (Winthrop): 16th (896/+44)", "T-8th of 15", the
+  // headline's "Eagles 4th at UNCG Collegiate" too (Winthrop, Sep 29-Oct 20).
+  const results=lead.match(new RegExp(`\\bPlace\\s*\\((?:${team})\\):\\s*${word}`,'i'));
+  if(results&&placeOf(results[1]))return placeOf(results[1]);
   // "Cajuns Finish Tied For 11th at Argent Financial Classic", "Bulldogs
   // Close 2026 at The Clerico Tie for Seventh" (Louisiana, Louisiana Tech);
   // "Ohio Women's Golf Ties For Fourth at Butler Invitational" (Oct 6).
@@ -614,7 +618,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // A tournament the team played as individuals has no team place (Xavier's
   // Golfweek Put Me In Coach, "individuals only"; the Flyer Invitational,
   // "five golfers compete as individuals").
-  return/\bindividuals?[- ]only\b|\bcompete[sd]?\s+as\s+individuals\b/i.test(`${title} ${lead}`)?'No team score (individuals only)':null;
+  // "The Panthers had three individuals compete at the UNCG Collegiate" (High
+  // Point, Oct 20).
+  return/\bindividuals?[- ]only\b|\bcompete[sd]?\s+as\s+individuals\b|\b(?:had|sent|entered)\s+(?:\w+\s+)?individuals\s+compet/i.test(`${title} ${lead}`)?'No team score (individuals only)':null;
 }
 // A golf dual told by its story ("The Screaming Eagles defeated the Purple
 // Aces 9 ½ - 4 ½", Evansville's Battle of the Expressway, Oct 22): the

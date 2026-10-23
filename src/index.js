@@ -217,9 +217,17 @@ import {newHampshireSchool,createNewHampshireHandlers} from './schools/new-hamps
 import {njitSchool,createNjitHandlers} from './schools/njit.mjs';
 import {umassLowellSchool,createUmassLowellHandlers} from './schools/umass-lowell.mjs';
 import {umbcSchool,createUmbcHandlers} from './schools/umbc.mjs';
+import {charlestonSouthernSchool,createCharlestonSouthernHandlers} from './schools/charleston-southern.mjs';
+import {gardnerWebbSchool,createGardnerWebbHandlers} from './schools/gardner-webb.mjs';
+import {highPointSchool,createHighPointHandlers} from './schools/high-point.mjs';
+import {presbyterianSchool,createPresbyterianHandlers} from './schools/presbyterian.mjs';
+import {radfordSchool,createRadfordHandlers} from './schools/radford.mjs';
+import {uncAshevilleSchool,createUncAshevilleHandlers} from './schools/unc-asheville.mjs';
+import {uscUpstateSchool,createUscUpstateHandlers} from './schools/usc-upstate.mjs';
+import {winthropSchool,createWinthropHandlers} from './schools/winthrop.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.168.0-america-east';
+const VERSION='4.170.0-big-south';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1693,6 +1701,70 @@ const SCHOOL_MODULES=[
     // (kit createGolfStoryPlace, when the handlers spread it).
     results:[{matches:event=>umbcHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>umbcHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(umbcHandlers.isFinalWithoutStory).map(event=>umbcHandlers.attachArchiveStory(event)));if(sport==='Golf'&&umbcHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(umbcHandlers.isGolfAwaitingPlace).map(event=>umbcHandlers.attachGolfPlace(event)));return events.filter(event=>!umbcHandlers.isTennisWithoutStory(event)&&!umbcHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:charlestonSouthernSchool,parseSchedule:(...args)=>charlestonSouthernHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>charlestonSouthernHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>charlestonSouthernHandlers.matchesRecap(...args),crossCountry:{matches:event=>charlestonSouthernHandlers.isCrossCountry(event),attach:event=>charlestonSouthernHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(charlestonSouthernHandlers.isFinalWithoutStory(event))await charlestonSouthernHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>charlestonSouthernHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>charlestonSouthernHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(charlestonSouthernHandlers.isFinalWithoutStory).map(event=>charlestonSouthernHandlers.attachArchiveStory(event)));if(sport==='Golf'&&charlestonSouthernHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(charlestonSouthernHandlers.isGolfAwaitingPlace).map(event=>charlestonSouthernHandlers.attachGolfPlace(event)));return events.filter(event=>!charlestonSouthernHandlers.isTennisWithoutStory(event)&&!charlestonSouthernHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:gardnerWebbSchool,parseSchedule:(...args)=>gardnerWebbHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>gardnerWebbHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>gardnerWebbHandlers.matchesRecap(...args),crossCountry:{matches:event=>gardnerWebbHandlers.isCrossCountry(event),attach:event=>gardnerWebbHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(gardnerWebbHandlers.isFinalWithoutStory(event))await gardnerWebbHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>gardnerWebbHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>gardnerWebbHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(gardnerWebbHandlers.isFinalWithoutStory).map(event=>gardnerWebbHandlers.attachArchiveStory(event)));if(sport==='Golf'&&gardnerWebbHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(gardnerWebbHandlers.isGolfAwaitingPlace).map(event=>gardnerWebbHandlers.attachGolfPlace(event)));return events.filter(event=>!gardnerWebbHandlers.isTennisWithoutStory(event)&&!gardnerWebbHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:highPointSchool,parseSchedule:(...args)=>highPointHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>highPointHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>highPointHandlers.matchesRecap(...args),crossCountry:{matches:event=>highPointHandlers.isCrossCountry(event),attach:event=>highPointHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(highPointHandlers.isFinalWithoutStory(event))await highPointHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>highPointHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>highPointHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(highPointHandlers.isFinalWithoutStory).map(event=>highPointHandlers.attachArchiveStory(event)));if(sport==='Golf'&&highPointHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(highPointHandlers.isGolfAwaitingPlace).map(event=>highPointHandlers.attachGolfPlace(event)));return events.filter(event=>!highPointHandlers.isTennisWithoutStory(event)&&!highPointHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:presbyterianSchool,parseSchedule:(...args)=>presbyterianHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>presbyterianHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>presbyterianHandlers.matchesRecap(...args),crossCountry:{matches:event=>presbyterianHandlers.isCrossCountry(event),attach:event=>presbyterianHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(presbyterianHandlers.isFinalWithoutStory(event))await presbyterianHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>presbyterianHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>presbyterianHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(presbyterianHandlers.isFinalWithoutStory).map(event=>presbyterianHandlers.attachArchiveStory(event)));if(sport==='Golf'&&presbyterianHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(presbyterianHandlers.isGolfAwaitingPlace).map(event=>presbyterianHandlers.attachGolfPlace(event)));return events.filter(event=>!presbyterianHandlers.isTennisWithoutStory(event)&&!presbyterianHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:radfordSchool,parseSchedule:(...args)=>radfordHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>radfordHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>radfordHandlers.matchesRecap(...args),crossCountry:{matches:event=>radfordHandlers.isCrossCountry(event),attach:event=>radfordHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(radfordHandlers.isFinalWithoutStory(event))await radfordHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>radfordHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>radfordHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(radfordHandlers.isFinalWithoutStory).map(event=>radfordHandlers.attachArchiveStory(event)));if(sport==='Golf'&&radfordHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(radfordHandlers.isGolfAwaitingPlace).map(event=>radfordHandlers.attachGolfPlace(event)));return events.filter(event=>!radfordHandlers.isTennisWithoutStory(event)&&!radfordHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:uncAshevilleSchool,parseSchedule:(...args)=>uncAshevilleHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>uncAshevilleHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>uncAshevilleHandlers.matchesRecap(...args),crossCountry:{matches:event=>uncAshevilleHandlers.isCrossCountry(event),attach:event=>uncAshevilleHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(uncAshevilleHandlers.isFinalWithoutStory(event))await uncAshevilleHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>uncAshevilleHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>uncAshevilleHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(uncAshevilleHandlers.isFinalWithoutStory).map(event=>uncAshevilleHandlers.attachArchiveStory(event)));if(sport==='Golf'&&uncAshevilleHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(uncAshevilleHandlers.isGolfAwaitingPlace).map(event=>uncAshevilleHandlers.attachGolfPlace(event)));return events.filter(event=>!uncAshevilleHandlers.isTennisWithoutStory(event)&&!uncAshevilleHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:uscUpstateSchool,parseSchedule:(...args)=>uscUpstateHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>uscUpstateHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>uscUpstateHandlers.matchesRecap(...args),crossCountry:{matches:event=>uscUpstateHandlers.isCrossCountry(event),attach:event=>uscUpstateHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(uscUpstateHandlers.isFinalWithoutStory(event))await uscUpstateHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>uscUpstateHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>uscUpstateHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(uscUpstateHandlers.isFinalWithoutStory).map(event=>uscUpstateHandlers.attachArchiveStory(event)));if(sport==='Golf'&&uscUpstateHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(uscUpstateHandlers.isGolfAwaitingPlace).map(event=>uscUpstateHandlers.attachGolfPlace(event)));return events.filter(event=>!uscUpstateHandlers.isTennisWithoutStory(event)&&!uscUpstateHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:winthropSchool,parseSchedule:(...args)=>winthropHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>winthropHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>winthropHandlers.matchesRecap(...args),crossCountry:{matches:event=>winthropHandlers.isCrossCountry(event),attach:event=>winthropHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(winthropHandlers.isFinalWithoutStory(event))await winthropHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>winthropHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>winthropHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(winthropHandlers.isFinalWithoutStory).map(event=>winthropHandlers.attachArchiveStory(event)));if(sport==='Golf'&&winthropHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(winthropHandlers.isGolfAwaitingPlace).map(event=>winthropHandlers.attachGolfPlace(event)));return events.filter(event=>!winthropHandlers.isTennisWithoutStory(event)&&!winthropHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -2055,6 +2127,14 @@ const newHampshireHandlers=createNewHampshireHandlers({makeEvent,recapMatchesEve
 const njitHandlers=createNjitHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const umassLowellHandlers=createUmassLowellHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const umbcHandlers=createUmbcHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const charlestonSouthernHandlers=createCharlestonSouthernHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const gardnerWebbHandlers=createGardnerWebbHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const highPointHandlers=createHighPointHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const presbyterianHandlers=createPresbyterianHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const radfordHandlers=createRadfordHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const uncAshevilleHandlers=createUncAshevilleHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const uscUpstateHandlers=createUscUpstateHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const winthropHandlers=createWinthropHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

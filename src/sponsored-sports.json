@@ -438,6 +438,18 @@
   "cf-montreal": [
     "Soccer"
   ],
+  "charleston-southern": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "charlotte": [
     "Baseball",
     "Basketball",
@@ -861,6 +873,20 @@
     "Volleyball",
     "Water Polo"
   ],
+  "gardner-webb": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "george-mason": [
     "Baseball",
     "Basketball",
@@ -957,6 +983,17 @@
   ],
   "green-bay-packers": [
     "Football"
+  ],
+  "high-point": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Track & Field",
+    "Volleyball"
   ],
   "houston": [
     "Baseball",
@@ -2063,6 +2100,20 @@
   "portland-timbers": [
     "Soccer"
   ],
+  "presbyterian": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
+  ],
   "providence": [
     "Basketball",
     "Cross Country",
@@ -2104,6 +2155,18 @@
     "Tennis",
     "Track & Field",
     "Triathlon",
+    "Volleyball"
+  ],
+  "radford": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Track & Field",
     "Volleyball"
   ],
   "real-salt-lake": [
@@ -2844,6 +2907,17 @@
     "Track & Field",
     "Volleyball"
   ],
+  "unc-asheville": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "unlv": [
     "Baseball",
     "Basketball",
@@ -2872,6 +2946,16 @@
     "Track & Field",
     "Volleyball",
     "Water Polo"
+  ],
+  "usc-upstate": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
   ],
   "ut-arlington": [
     "Baseball",
@@ -3115,6 +3199,17 @@
     "Soccer",
     "Softball",
     "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "winthrop": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
     "Track & Field",
     "Volleyball"
   ],

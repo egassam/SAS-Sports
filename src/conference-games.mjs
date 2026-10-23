@@ -55,7 +55,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // "UTA", "UWF".
   'austin-peay':['apsu','austin peay state'],'central-arkansas':['uca','central ark'],'eastern-kentucky':['eku','eastern ky'],fgcu:['florida gulf coast','fla gulf coast'],jacksonville:['ju'],'north-alabama':['una','north ala'],'north-florida':['unf','north fla'],queens:['queens nc','queens n c','queens university of charlotte'],'west-georgia':['uwg','west ga'],'abilene-christian':['acu'],'little-rock':['ualr','arkansas little rock'],'tarleton-state':['tarleton'],'ut-arlington':['uta','texas arlington'],'west-florida':['uwf','west fla'],
   // America East opponents write "Albany", "UNH", "UML", "UVM".
-  ualbany:['albany','university at albany','albany ny'],'new-hampshire':['unh'],'umass-lowell':['uml','massachusetts lowell'],vermont:['uvm'],umbc:['maryland baltimore county'],njit:['new jersey tech']};
+  ualbany:['albany','university at albany','albany ny'],'new-hampshire':['unh'],'umass-lowell':['uml','massachusetts lowell'],vermont:['uvm'],umbc:['maryland baltimore county'],njit:['new jersey tech'],
+  // Big South opponents write "CSU", "Gardner Webb", "HPU", "PC", "UNCA", "Upstate".
+  'charleston-southern':['charleston so','charleston southern university'],'gardner-webb':['gardner webb','gwu'],'high-point':['hpu'],presbyterian:['presbyterian college'],'unc-asheville':['unca','unc asheville','north carolina asheville'],'usc-upstate':['upstate','south carolina upstate'],winthrop:['winthrop university']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -64,6 +66,9 @@ const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
 // beach volleyball and women's water polo (bigwest.org, Jul 1, 2026). The
 // team is told by its schedule page.
 const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}],
+  // Big South women's lacrosse's outside members (Gardner-Webb's, Radford's
+  // and Winthrop's conference schedules, Oct 23): Wofford, Mercer, Furman.
+  'Big South':[{names:['wofford','wofford college'],id:'wofford',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['mercer','mercer university'],id:'mercer',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['furman','furman university'],id:'furman',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}}],
   // ASUN lacrosse's outside members (Queens's and Bellarmine's conference
   // schedules, Oct 23): men's Air Force, Utah, Mercer; women's Kennesaw State,
   // Austin Peay (UAC), Lindenwood, Coastal Carolina, Delaware, Liberty.
@@ -166,6 +171,12 @@ const NOT_SPONSORED={
   // sponsors basketball, baseball, softball, soccer, volleyball, beach
   // volleyball, golf, tennis, cross country, track and women's lacrosse: no
   // football, swimming, rowing, wrestling or gymnastics.
+  // The Big South (2026-27: Charleston Southern, Gardner-Webb, High Point,
+  // Longwood, Presbyterian, Radford, UNC Asheville, USC Upstate, Winthrop)
+  // sponsors basketball, baseball, softball, soccer, volleyball, golf, tennis,
+  // cross country, track and lacrosse: no football (the Big South-OVC
+  // association), swimming, wrestling, field hockey or rowing.
+  'Big South':new Set(['Football','Swimming & Diving','Wrestling','Field Hockey','Rowing','Hockey','Gymnastics','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The America East (2026-27: UAlbany, Binghamton, Bryant, Maine, New
   // Hampshire, NJIT, UMass Lowell, UMBC, Vermont) sponsors basketball,
   // baseball, softball, soccer, volleyball, cross country, track, swimming,
