@@ -25,4 +25,8 @@ assert.match(read('../src/schools/penn.mjs'),/\|\^big 5\\b\/i\.test/);
 assert.match(read('../src/conference-games.mjs'),/'Ivy League':new Set\(\['Hockey','Rifle',/);
 for(const id of ['brown','cornell','dartmouth','princeton'])assert.match(read(`../src/schools/${id}.mjs`),/'Hockey':'ECAC Hockey'/);
 
+// Onboarding writes nothing for a site that lists no sport or answers with
+// Imperva's challenge page (Harvard, Oct 23).
+assert.match(read('../scripts/add-school.mjs'),/if\(!sports\.length\)\{console\.error\(\/_Incapsula_Resource\/\.test\(html\)/);
+
 console.log('Ivy League shared checks passed');

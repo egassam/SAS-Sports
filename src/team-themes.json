@@ -879,14 +879,6 @@
     "line": "#0e4772",
     "onAccent": "#ffffff"
   },
-  "harvard": {
-    "primary": "#A51C30",
-    "secondary": "#000000",
-    "panel": "#2d0f17",
-    "panelDark": "#15070c",
-    "line": "#691e2d",
-    "onAccent": "#ffffff"
-  },
   "high-point": {
     "primary": "#330072",
     "secondary": "#B9B9B9",
