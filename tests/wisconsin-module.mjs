@@ -146,20 +146,20 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
   assert.deepEqual(v_womenscrosscountry.map(line),[
- "Final Sep 4 Women's · Wisconsin at Badger Classic | 1st, 15 points",
- "Final Sep 19 Women's · Wisconsin at John McNichols Invitational | 16th, 422 points",
- "Final Sep 25 Women's · Wisconsin at Sean Earl Lakefront Invitational | 15th, 371 points",
- "Final Oct 9 Women's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour | 33rd, 810 Points",
+ "Final Sep 4 Women's · Wisconsin at Badger Classic | 1st · 15 pts",
+ "Final Sep 19 Women's · Wisconsin at John McNichols Invitational | 16th · 422 pts",
+ "Final Sep 25 Women's · Wisconsin at Sean Earl Lakefront Invitational | 15th · 371 pts",
+ "Final Oct 9 Women's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour | 33rd · 810 pts",
  "Upcoming Oct 30, 10:35 AM Women's · Wisconsin at Big Ten Championships | ",
  "Upcoming Nov 13 Women's · Wisconsin at NCAA Great Lakes Regional | ",
  "Upcoming Nov 21 Women's · Wisconsin at NCAA | "
 ]);
   const v_menscrosscountry=parse("Cross Country","mens-cross-country");
   assert.deepEqual(v_menscrosscountry.map(line),[
- "Final Sep 4 Men's · Wisconsin at Badger Classic | 1st, 15 points",
- "Final Sep 19 Men's · Wisconsin at John McNichols Invitational | 9th, 267 points",
- "Final Sep 25 Men's · Wisconsin at Sean Earl Lakefront Invitational | 8th, 201 points",
- "Final Oct 9 Men's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour | 9th, 356 Points",
+ "Final Sep 4 Men's · Wisconsin at Badger Classic | 1st · 15 pts",
+ "Final Sep 19 Men's · Wisconsin at John McNichols Invitational | 9th · 267 pts",
+ "Final Sep 25 Men's · Wisconsin at Sean Earl Lakefront Invitational | 8th · 201 pts",
+ "Final Oct 9 Men's · Wisconsin at Nuttycombe Wisconsin Invitational Presented by Under Armour | 9th · 356 pts",
  "Upcoming Oct 30, 11:35 AM Men's · Wisconsin at Big Ten Championships | ",
  "Upcoming Nov 13 Men's · Wisconsin at NCAA Great Lakes Regional | ",
  "Upcoming Nov 21 Men's · Wisconsin at NCAA Championships | "
