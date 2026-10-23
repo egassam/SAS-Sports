@@ -10,7 +10,7 @@ export const marylandEasternShoreSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Golf','Softball','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Golf','Softball','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -23,24 +23,28 @@ export const marylandEasternShoreSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field','Volleyball']),
+  // UMES's outdoor track pages are /sports/wot/ and /sports/mot/ (their titles, Oct 23).
+  teamLabels:{'/sports/wot/schedule':"Women's",'/sports/mot/schedule':"Men's"},
   verifiedInstagrams:{},
   scheduleUrls:{
     'maryland-eastern-shore|Baseball':'https://umeshawksports.com/sports/baseball/schedule',
     'maryland-eastern-shore|Basketball':['https://umeshawksports.com/sports/mens-basketball/schedule','https://umeshawksports.com/sports/womens-basketball/schedule'],
     'maryland-eastern-shore|Bowling':'https://umeshawksports.com/sports/womens-bowling/schedule',
-    'maryland-eastern-shore|Cross Country':'https://umeshawksports.com/sports/cross-country/schedule',
+    'maryland-eastern-shore|Cross Country':['https://umeshawksports.com/sports/womens-cross-country/schedule','https://umeshawksports.com/sports/mens-cross-country/schedule'],
     'maryland-eastern-shore|Golf':['https://umeshawksports.com/sports/womens-golf/schedule','https://umeshawksports.com/sports/mens-golf/schedule'],
     'maryland-eastern-shore|Softball':'https://umeshawksports.com/sports/softball/schedule',
+    'maryland-eastern-shore|Track & Field':['https://umeshawksports.com/sports/womens-indoor-track/schedule','https://umeshawksports.com/sports/mens-indoor-track/schedule','https://umeshawksports.com/sports/wot/schedule','https://umeshawksports.com/sports/mot/schedule'],
     'maryland-eastern-shore|Volleyball':'https://umeshawksports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'maryland-eastern-shore|Baseball':'https://umeshawksports.com/sports/baseball/roster',
     'maryland-eastern-shore|Basketball':['https://umeshawksports.com/sports/mens-basketball/roster','https://umeshawksports.com/sports/womens-basketball/roster'],
     'maryland-eastern-shore|Bowling':'https://umeshawksports.com/sports/womens-bowling/roster',
-    'maryland-eastern-shore|Cross Country':'https://umeshawksports.com/sports/cross-country/roster',
+    'maryland-eastern-shore|Cross Country':['https://umeshawksports.com/sports/womens-cross-country/roster','https://umeshawksports.com/sports/mens-cross-country/roster'],
     'maryland-eastern-shore|Golf':['https://umeshawksports.com/sports/womens-golf/roster','https://umeshawksports.com/sports/mens-golf/roster'],
     'maryland-eastern-shore|Softball':'https://umeshawksports.com/sports/softball/roster',
+    'maryland-eastern-shore|Track & Field':['https://umeshawksports.com/sports/womens-indoor-track/roster','https://umeshawksports.com/sports/mens-indoor-track/roster','https://umeshawksports.com/sports/wot/roster','https://umeshawksports.com/sports/mot/roster'],
     'maryland-eastern-shore|Volleyball':'https://umeshawksports.com/sports/womens-volleyball/roster'
   }
 };
@@ -121,6 +125,9 @@ export function createMarylandEasternShoreHandlers({makeEvent,recapMatchesEvent,
       if(sport==='Cross Country'||sport==='Track & Field'){
         const fall=game=>{const month=Number(String(game.date||'').slice(5,7));return month>=8&&month<=11};
         games=games.filter(game=>fall(game)===(sport==='Cross Country'));
+        // A team that did not race ("DNP": the men at the Salisbury Fall
+        // Classic, Sep 5, whose story is the women's) has no event.
+        games=games.filter(game=>!/^DNP$/i.test(String(game.result?.postscore_info||game.result?.prescore_info||'').trim()));
       }
       // A cancelled round ("Cancelled", The Ally's last, Oct 7) keeps the
       // place after the round before it, and a cancelled last round ends the
@@ -331,8 +338,8 @@ export function createMarylandEasternShoreHandlers({makeEvent,recapMatchesEvent,
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: baseball in the NEC.
+      const league={'Baseball':'NEC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
@@ -349,7 +356,7 @@ export function createMarylandEasternShoreHandlers({makeEvent,recapMatchesEvent,
   // Jamboree), and the swimming schedule links none; each is in the archive.
   const archive=createArchiveStory({id:'maryland-eastern-shore',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,skipStory:path=>/\/this-week-in-/.test(path)});
   // Each team's cross country page is its own event (Florida State's split).
-  const crossCountry=createTeamTfrrsMeetResults({id:'maryland-eastern-shore',schoolName:'Maryland Eastern Shore',
+  const crossCountry=createTeamTfrrsMeetResults({id:'maryland-eastern-shore',schoolName:'Maryland Eastern Shore',hostMeetName:true,
     teams:MARYLAND_EASTERN_SHORE_TFRRS_TEAMS,
     // TFRRS names the host's meet its own way ("WSU Cougar Classic"): the
     // only meet that day is the school's.

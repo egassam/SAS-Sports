@@ -194,10 +194,11 @@ const NOT_SPONSORED={
   // The MEAC (2026-27: Coppin State, Delaware State, Howard, Maryland
   // Eastern Shore, Morgan State, Norfolk State, North Carolina Central, South
   // Carolina State) sponsors football, basketball, softball, volleyball,
-  // women's soccer, bowling, tennis, cross country and track: no lacrosse,
-  // swimming, wrestling, hockey, rowing or field hockey (members' teams in
-  // those play elsewhere; modules name the leagues).
-  'MEAC':new Set(['Lacrosse','Swimming & Diving','Wrestling','Hockey','Rowing','Field Hockey','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // women's soccer, bowling, tennis, cross country and track: no baseball
+  // (its members play in the NEC, as their pages mark it), lacrosse,
+  // swimming, wrestling, hockey, rowing or field hockey (modules name the
+  // leagues).
+  'MEAC':new Set(['Baseball','Lacrosse','Swimming & Diving','Wrestling','Hockey','Rowing','Field Hockey','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Metro Conference (the MAAC's name from 2026-27, as its members'
   // pages mark it: Canisius, Fairfield, Iona, Manhattan, Marist,
   // Merrimack, Mount St. Mary's, Niagara, Quinnipiac, Rider, Sacred Heart,

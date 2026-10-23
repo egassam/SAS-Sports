@@ -26,13 +26,13 @@ export const southCarolinaStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'south-carolina-state|Basketball':['https://scsuathletics.com/sports/mens-basketball/schedule','https://scsuathletics.com/sports/womens-basketball/schedule'],
     'south-carolina-state|Cross Country':['https://scsuathletics.com/sports/womens-cross-country/schedule','https://scsuathletics.com/sports/mens-cross-country/schedule'],
     'south-carolina-state|Football':'https://scsuathletics.com/sports/football/schedule',
-    'south-carolina-state|Golf':['https://scsuathletics.com/sports/womens-golf/schedule','https://scsuathletics.com/sports/mens-golf/schedule'],
+    'south-carolina-state|Golf':'https://scsuathletics.com/sports/womens-golf/schedule',
     'south-carolina-state|Soccer':'https://scsuathletics.com/sports/womens-soccer/schedule',
     'south-carolina-state|Softball':'https://scsuathletics.com/sports/softball/schedule',
     'south-carolina-state|Tennis':['https://scsuathletics.com/sports/womens-tennis/schedule','https://scsuathletics.com/sports/mens-tennis/schedule'],
@@ -43,7 +43,7 @@ export const southCarolinaStateSchool={
     'south-carolina-state|Basketball':['https://scsuathletics.com/sports/mens-basketball/roster','https://scsuathletics.com/sports/womens-basketball/roster'],
     'south-carolina-state|Cross Country':['https://scsuathletics.com/sports/womens-cross-country/roster','https://scsuathletics.com/sports/mens-cross-country/roster'],
     'south-carolina-state|Football':'https://scsuathletics.com/sports/football/roster',
-    'south-carolina-state|Golf':['https://scsuathletics.com/sports/womens-golf/roster','https://scsuathletics.com/sports/mens-golf/roster'],
+    'south-carolina-state|Golf':'https://scsuathletics.com/sports/womens-golf/roster',
     'south-carolina-state|Soccer':'https://scsuathletics.com/sports/womens-soccer/roster',
     'south-carolina-state|Softball':'https://scsuathletics.com/sports/softball/roster',
     'south-carolina-state|Tennis':['https://scsuathletics.com/sports/womens-tennis/roster','https://scsuathletics.com/sports/mens-tennis/roster'],
@@ -338,7 +338,7 @@ export function createSouthCarolinaStateHandlers({makeEvent,recapMatchesEvent,ev
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues, as the page data marks them: every South Carolina State sport is a MEAC sport.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;

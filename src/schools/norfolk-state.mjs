@@ -26,7 +26,7 @@ export const norfolkStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Bowling','Cross Country','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'norfolk-state|Golf|Jael Gray':'https://www.instagram.com/jl_g_28/',
     'norfolk-state|Golf|Tihun Chapman':'https://www.instagram.com/_tihun/',
@@ -38,7 +38,7 @@ export const norfolkStateSchool={
   scheduleUrls:{
     'norfolk-state|Baseball':'https://nsuspartans.com/sports/baseball/schedule',
     'norfolk-state|Basketball':['https://nsuspartans.com/sports/mens-basketball/schedule','https://nsuspartans.com/sports/womens-basketball/schedule'],
-    'norfolk-state|Bowling':['https://nsuspartans.com/sports/womens-bowling/schedule','https://nsuspartans.com/sports/mens-bowling/schedule'],
+    'norfolk-state|Bowling':'https://nsuspartans.com/sports/womens-bowling/schedule',
     'norfolk-state|Cross Country':['https://nsuspartans.com/sports/womens-cross-country/schedule','https://nsuspartans.com/sports/mens-cross-country/schedule'],
     'norfolk-state|Football':'https://nsuspartans.com/sports/football/schedule',
     'norfolk-state|Golf':'https://nsuspartans.com/sports/womens-golf/schedule',
@@ -50,7 +50,7 @@ export const norfolkStateSchool={
   rosterUrls:{
     'norfolk-state|Baseball':'https://nsuspartans.com/sports/baseball/roster',
     'norfolk-state|Basketball':['https://nsuspartans.com/sports/mens-basketball/roster','https://nsuspartans.com/sports/womens-basketball/roster'],
-    'norfolk-state|Bowling':['https://nsuspartans.com/sports/womens-bowling/roster','https://nsuspartans.com/sports/mens-bowling/roster'],
+    'norfolk-state|Bowling':'https://nsuspartans.com/sports/womens-bowling/roster',
     'norfolk-state|Cross Country':['https://nsuspartans.com/sports/womens-cross-country/roster','https://nsuspartans.com/sports/mens-cross-country/roster'],
     'norfolk-state|Football':'https://nsuspartans.com/sports/football/roster',
     'norfolk-state|Golf':'https://nsuspartans.com/sports/womens-golf/roster',
@@ -347,8 +347,8 @@ export function createNorfolkStateHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: baseball in the NEC.
+      const league={'Baseball':'NEC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

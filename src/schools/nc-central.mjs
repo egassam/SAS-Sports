@@ -328,6 +328,10 @@ export function createNcCentralHandlers({makeEvent,recapMatchesEvent,eventType=(
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
       if(sport==='Tennis'&&event.headline==='Completed'&&!/^no team scores?$/i.test(text))return;
+      // A story headline in the result line ("Aaron Alukunyang Wins adidas
+      // Challenge, Stays Unbeaten", Sep 18) is no result: the meet keeps
+      // "Completed" and its story.
+      if(event.headline==='Completed'&&text.split(/\s+/).length>=4&&!golfPlacing(text)&&/\b(?:wins?|stays?|leads?|claims?|takes?|sets?|paces?|earns?)\b/i.test(text))return;
       if(event.headline==='Completed'&&text&&!/did not score|^nts$/i.test(text)){const value=golfPlacing(text)||text;event.headline=value;event.results=[{label:'Result',value}];}
     },
     // A golf tournament's final story is bound to its last round.
@@ -335,7 +339,7 @@ export function createNcCentralHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues, as the page data marks them: every North Carolina Central sport is a MEAC sport.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
