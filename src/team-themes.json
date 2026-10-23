@@ -1,4 +1,12 @@
 {
+  "abilene-christian": {
+    "primary": "#4F2683",
+    "secondary": "#A7A8AA",
+    "panel": "#1a1129",
+    "panelDark": "#0c0814",
+    "line": "#3a235b",
+    "onAccent": "#ffffff"
+  },
   "air-force": {
     "primary": "#003087",
     "secondary": "#8A8D8F",
@@ -1943,6 +1951,14 @@
     "line": "#132746",
     "onAccent": "#ffffff"
   },
+  "tarleton-state": {
+    "primary": "#4F2D7F",
+    "secondary": "#A2AAAD",
+    "panel": "#1a1228",
+    "panelDark": "#0c0914",
+    "line": "#3a2759",
+    "onAccent": "#ffffff"
+  },
   "tcu": {
     "primary": "#4D1979",
     "secondary": "#A3A9AC",
@@ -2159,6 +2175,14 @@
     "line": "#630e13",
     "onAccent": "#ffffff"
   },
+  "ut-arlington": {
+    "primary": "#0064B1",
+    "secondary": "#F58025",
+    "panel": "#091f33",
+    "panelDark": "#050f19",
+    "line": "#0e4574",
+    "onAccent": "#ffffff"
+  },
   "utah": {
     "primary": "#CC0000",
     "secondary": "#000000",
@@ -2285,6 +2309,14 @@
     "panel": "#191023",
     "panelDark": "#0c0811",
     "line": "#37224a",
+    "onAccent": "#ffffff"
+  },
+  "west-florida": {
+    "primary": "#004C97",
+    "secondary": "#009A44",
+    "panel": "#09192e",
+    "panelDark": "#050c16",
+    "line": "#0e3866",
     "onAccent": "#ffffff"
   },
   "west-georgia": {
