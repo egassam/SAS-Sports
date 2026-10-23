@@ -22,7 +22,7 @@ export const newHampshireSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Hockey','Soccer','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Hockey','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'new-hampshire|Football|Cameron Garner-Young':'https://www.instagram.com/cameron.gy/',
     'new-hampshire|Football|Jackson Downey':'https://www.instagram.com/jackson.downey5/',
@@ -40,7 +40,7 @@ export const newHampshireSchool={
     'new-hampshire|Skiing':'https://unhwildcats.com/sports/skiing/schedule',
     'new-hampshire|Soccer':['https://unhwildcats.com/sports/womens-soccer/schedule','https://unhwildcats.com/sports/mens-soccer/schedule'],
     'new-hampshire|Swimming & Diving':'https://unhwildcats.com/sports/womens-swimming-and-diving/schedule',
-    'new-hampshire|Track & Field':'https://unhwildcats.com/sports/track-and-field/schedule',
+    'new-hampshire|Track & Field':['https://unhwildcats.com/sports/womens-track-and-field/schedule','https://unhwildcats.com/sports/mens-track-and-field/schedule'],
     'new-hampshire|Volleyball':'https://unhwildcats.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -54,7 +54,7 @@ export const newHampshireSchool={
     'new-hampshire|Skiing':'https://unhwildcats.com/sports/skiing/roster',
     'new-hampshire|Soccer':['https://unhwildcats.com/sports/womens-soccer/roster','https://unhwildcats.com/sports/mens-soccer/roster'],
     'new-hampshire|Swimming & Diving':'https://unhwildcats.com/sports/womens-swimming-and-diving/roster',
-    'new-hampshire|Track & Field':'https://unhwildcats.com/sports/track-and-field/roster',
+    'new-hampshire|Track & Field':['https://unhwildcats.com/sports/womens-track-and-field/roster','https://unhwildcats.com/sports/mens-track-and-field/roster'],
     'new-hampshire|Volleyball':'https://unhwildcats.com/sports/womens-volleyball/roster'
   }
 };
@@ -66,10 +66,10 @@ const newHampshireToday=sidearmToday('America/New_York');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // New Hampshire's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const NEW_HAMPSHIRE_TFRRS_TEAMS={Women:null,Men:null};
+export const NEW_HAMPSHIRE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NH_college_f_New_Hampshire.html',Men:'https://www.tfrrs.org/teams/xc/NH_college_m_New_Hampshire.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -168,7 +168,8 @@ export function createNewHampshireHandlers({makeEvent,recapMatchesEvent,eventTyp
       }
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling')return mergeMeetDays(games);
+      // So does bowling (Bryant's Penguin Classic, Oct 16-18).
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -344,8 +345,8 @@ export function createNewHampshireHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (football plays in the CAA, hockey in Hockey East and gymnastics in the EAGL, as the page marks them; skiing names no league); the page data marks their league games.
+      const league={'Football':'CAA','Hockey':'Hockey East','Gymnastics':'EAGL'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
@@ -393,5 +394,5 @@ export function createNewHampshireHandlers({makeEvent,recapMatchesEvent,eventTyp
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

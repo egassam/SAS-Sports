@@ -10,7 +10,7 @@ export const njitSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Fencing','Hockey','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Fencing','Hockey','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -23,37 +23,35 @@ export const njitSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Fencing','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Fencing','Soccer','Tennis','Track & Field','Volleyball']),
   verifiedInstagrams:{
     'njit|Lacrosse|Jake Apel':'https://www.instagram.com/jakeapel_/'
   },
   scheduleUrls:{
     'njit|Baseball':'https://njithighlanders.com/sports/baseball/schedule',
     'njit|Basketball':['https://njithighlanders.com/sports/mens-basketball/schedule','https://njithighlanders.com/sports/womens-basketball/schedule'],
-    'njit|Bowling':'https://njithighlanders.com/sports/bowling/schedule',
     'njit|Cross Country':['https://njithighlanders.com/sports/womens-cross-country/schedule','https://njithighlanders.com/sports/mens-cross-country/schedule'],
     'njit|Fencing':['https://njithighlanders.com/sports/womens-fencing/schedule','https://njithighlanders.com/sports/mens-fencing/schedule'],
     'njit|Hockey':'https://njithighlanders.com/sports/mens-ice-hockey/schedule',
     'njit|Lacrosse':'https://njithighlanders.com/sports/mens-lacrosse/schedule',
     'njit|Soccer':['https://njithighlanders.com/sports/womens-soccer/schedule','https://njithighlanders.com/sports/mens-soccer/schedule'],
-    'njit|Swimming & Diving':['https://njithighlanders.com/sports/womens-swimming-and-diving/schedule','https://njithighlanders.com/sports/mens-swimming-and-diving/schedule'],
+    'njit|Swimming & Diving':'https://njithighlanders.com/sports/mens-swimming-and-diving/schedule',
     'njit|Tennis':['https://njithighlanders.com/sports/womens-tennis/schedule','https://njithighlanders.com/sports/mens-tennis/schedule'],
     'njit|Track & Field':['https://njithighlanders.com/sports/womens-track-and-field/schedule','https://njithighlanders.com/sports/mens-track-and-field/schedule'],
-    'njit|Volleyball':'https://njithighlanders.com/sports/womens-volleyball/schedule'
+    'njit|Volleyball':['https://njithighlanders.com/sports/womens-volleyball/schedule','https://njithighlanders.com/sports/mens-volleyball/schedule']
   },
   rosterUrls:{
     'njit|Baseball':'https://njithighlanders.com/sports/baseball/roster',
     'njit|Basketball':['https://njithighlanders.com/sports/mens-basketball/roster','https://njithighlanders.com/sports/womens-basketball/roster'],
-    'njit|Bowling':'https://njithighlanders.com/sports/bowling/roster',
     'njit|Cross Country':['https://njithighlanders.com/sports/womens-cross-country/roster','https://njithighlanders.com/sports/mens-cross-country/roster'],
     'njit|Fencing':['https://njithighlanders.com/sports/womens-fencing/roster','https://njithighlanders.com/sports/mens-fencing/roster'],
     'njit|Hockey':'https://njithighlanders.com/sports/mens-ice-hockey/roster',
     'njit|Lacrosse':'https://njithighlanders.com/sports/mens-lacrosse/roster',
     'njit|Soccer':['https://njithighlanders.com/sports/womens-soccer/roster','https://njithighlanders.com/sports/mens-soccer/roster'],
-    'njit|Swimming & Diving':['https://njithighlanders.com/sports/womens-swimming-and-diving/roster','https://njithighlanders.com/sports/mens-swimming-and-diving/roster'],
+    'njit|Swimming & Diving':'https://njithighlanders.com/sports/mens-swimming-and-diving/roster',
     'njit|Tennis':['https://njithighlanders.com/sports/womens-tennis/roster','https://njithighlanders.com/sports/mens-tennis/roster'],
     'njit|Track & Field':['https://njithighlanders.com/sports/womens-track-and-field/roster','https://njithighlanders.com/sports/mens-track-and-field/roster'],
-    'njit|Volleyball':'https://njithighlanders.com/sports/womens-volleyball/roster'
+    'njit|Volleyball':['https://njithighlanders.com/sports/womens-volleyball/roster','https://njithighlanders.com/sports/mens-volleyball/roster']
   }
 };
 
@@ -64,10 +62,10 @@ const njitToday=sidearmToday('America/New_York');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // NJIT's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const NJIT_TFRRS_TEAMS={Women:null,Men:null};
+export const NJIT_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NJ_college_f_New_Jersey_Institute_Technolog.html',Men:'https://www.tfrrs.org/teams/xc/NJ_college_m_New_Jersey_Institute_Technolog.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -166,7 +164,8 @@ export function createNjitHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
       }
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling')return mergeMeetDays(games);
+      // So does bowling (Bryant's Penguin Classic, Oct 16-18).
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -391,5 +390,5 @@ export function createNjitHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

@@ -63,10 +63,10 @@ const ualbanyToday=sidearmToday('America/New_York');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // UAlbany's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const UALBANY_TFRRS_TEAMS={Women:null,Men:null};
+export const UALBANY_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NY_college_f_Albany.html',Men:'https://www.tfrrs.org/teams/xc/NY_college_m_Albany.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -165,7 +165,8 @@ export function createUalbanyHandlers({makeEvent,recapMatchesEvent,eventType=()=
       }
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling')return mergeMeetDays(games);
+      // So does bowling (Bryant's Penguin Classic, Oct 16-18).
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -341,8 +342,8 @@ export function createUalbanyHandlers({makeEvent,recapMatchesEvent,eventType=()=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (football plays in the CAA, as the page marks it); the page data marks their league games.
+      const league={'Football':'CAA'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
@@ -390,5 +391,5 @@ export function createUalbanyHandlers({makeEvent,recapMatchesEvent,eventType=()=
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

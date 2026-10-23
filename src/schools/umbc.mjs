@@ -57,7 +57,7 @@ const umbcToday=sidearmToday('America/New_York');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // UMBC's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
 export const UMBC_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/MD_college_f_UMBC.html',Men:'https://www.tfrrs.org/teams/xc/MD_college_m_UMBC.html'};
@@ -159,7 +159,8 @@ export function createUmbcHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
       }
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling')return mergeMeetDays(games);
+      // So does bowling (Bryant's Penguin Classic, Oct 16-18).
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -220,8 +221,10 @@ export function createUmbcHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
       // Montana women's page, Sep 11; the men's page and the story name the
       // "WSU Cougar Classic") takes its name from the story's address
       // ("...-at-wsu-cougar-classic").
+      // Or a story address ending in the meet's name ("Virginia": "...-at-
+      // panorama-farms-invitational", Oct 16).
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
-      if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
+      if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&(/\b(?:State|University)$/.test(opponent)||/-(?:invitational|invite|classic)$/.test(story[1])))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
@@ -384,5 +387,5 @@ export function createUmbcHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

@@ -169,9 +169,9 @@ const NOT_SPONSORED={
   // The America East (2026-27: UAlbany, Binghamton, Bryant, Maine, New
   // Hampshire, NJIT, UMass Lowell, UMBC, Vermont) sponsors basketball,
   // baseball, softball, soccer, volleyball, cross country, track, swimming,
-  // field hockey and lacrosse: no football (CAA), hockey (Hockey East),
-  // wrestling, rowing or golf.
-  'America East':new Set(['Football','Hockey','Wrestling','Rowing','Golf','Gymnastics','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon','Tennis']),
+  // tennis, field hockey and lacrosse: no football (CAA), hockey (Hockey
+  // East), wrestling, rowing or golf.
+  'America East':new Set(['Football','Hockey','Wrestling','Rowing','Golf','Gymnastics','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The UAC (2026-27: Abilene Christian, Austin Peay, Central Arkansas,
   // Eastern Kentucky, Little Rock, North Alabama, Tarleton State, UT
   // Arlington, West Georgia; Austin Peay's volleyball conference games and

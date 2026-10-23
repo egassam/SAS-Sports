@@ -219,7 +219,7 @@ import {umassLowellSchool,createUmassLowellHandlers} from './schools/umass-lowel
 import {umbcSchool,createUmbcHandlers} from './schools/umbc.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.165.0-america-east-catalog';
+const VERSION='4.166.0-america-east';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
