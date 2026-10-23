@@ -4240,7 +4240,7 @@
     "name": "Austin Peay",
     "short_name": "Austin Peay",
     "state": "Tennessee",
-    "conference": "ASUN",
+    "conference": "UAC",
     "division": "NCAA Division I",
     "athletics_url": "https://letsgopeay.com",
     "aliases": [
@@ -4282,7 +4282,7 @@
     "name": "Central Arkansas",
     "short_name": "Central Arkansas",
     "state": "Arkansas",
-    "conference": "ASUN",
+    "conference": "UAC",
     "division": "NCAA Division I",
     "athletics_url": "https://ucasports.com",
     "aliases": [
@@ -4303,7 +4303,7 @@
     "name": "Eastern Kentucky",
     "short_name": "Eastern Kentucky",
     "state": "Kentucky",
-    "conference": "ASUN",
+    "conference": "UAC",
     "division": "NCAA Division I",
     "athletics_url": "https://ekusports.com",
     "aliases": [
@@ -4386,7 +4386,7 @@
     "name": "North Alabama",
     "short_name": "North Alabama",
     "state": "Alabama",
-    "conference": "ASUN",
+    "conference": "UAC",
     "division": "NCAA Division I",
     "athletics_url": "https://roarlions.com",
     "aliases": [
@@ -4469,7 +4469,7 @@
     "name": "West Georgia",
     "short_name": "West Georgia",
     "state": "Georgia",
-    "conference": "ASUN",
+    "conference": "UAC",
     "division": "NCAA Division I",
     "athletics_url": "https://uwgathletics.com",
     "aliases": [
@@ -4481,6 +4481,113 @@
       {
         "provider": "SIDEARM",
         "slug": "uwgathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "abilene-christian",
+    "name": "Abilene Christian",
+    "short_name": "Abilene Christian",
+    "state": "Texas",
+    "conference": "UAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://acusports.com",
+    "aliases": [
+      "Abilene Christian University",
+      "ACU",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "acusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "little-rock",
+    "name": "Little Rock",
+    "short_name": "Little Rock",
+    "state": "Arkansas",
+    "conference": "UAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lrtrojans.com",
+    "aliases": [
+      "University of Arkansas at Little Rock",
+      "UALR",
+      "Arkansas-Little Rock",
+      "Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lrtrojans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "tarleton-state",
+    "name": "Tarleton State",
+    "short_name": "Tarleton State",
+    "state": "Texas",
+    "conference": "UAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tarletonsports.com",
+    "aliases": [
+      "Tarleton State University",
+      "Tarleton",
+      "Texans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tarletonsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "ut-arlington",
+    "name": "UT Arlington",
+    "short_name": "UT Arlington",
+    "state": "Texas",
+    "conference": "UAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utamavs.com",
+    "aliases": [
+      "University of Texas at Arlington",
+      "UTA",
+      "Texas-Arlington",
+      "Mavericks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utamavs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "west-florida",
+    "name": "West Florida",
+    "short_name": "West Florida",
+    "state": "Florida",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goargos.com",
+    "aliases": [
+      "University of West Florida",
+      "UWF",
+      "Argonauts"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goargos",
         "provider_school_id": null
       }
     ]
