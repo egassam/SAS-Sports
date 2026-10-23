@@ -327,6 +327,14 @@
     "line": "#0e306e",
     "onAccent": "#ffffff"
   },
+  "charleston-southern": {
+    "primary": "#002649",
+    "secondary": "#A89968",
+    "panel": "#09111d",
+    "panelDark": "#05080f",
+    "line": "#0e233b",
+    "onAccent": "#ffffff"
+  },
   "charlotte": {
     "primary": "#046A38",
     "secondary": "#B3A369",
@@ -703,6 +711,14 @@
     "line": "#870e2e",
     "onAccent": "#ffffff"
   },
+  "gardner-webb": {
+    "primary": "#BB0000",
+    "secondary": "#000000",
+    "panel": "#32090c",
+    "panelDark": "#170507",
+    "line": "#750e13",
+    "onAccent": "#ffffff"
+  },
   "george-mason": {
     "primary": "#006633",
     "secondary": "#FFCC33",
@@ -765,6 +781,14 @@
     "panel": "#0f1916",
     "panelDark": "#070b0a",
     "line": "#374c43",
+    "onAccent": "#ffffff"
+  },
+  "high-point": {
+    "primary": "#330072",
+    "secondary": "#B9B9B9",
+    "panel": "#140926",
+    "panelDark": "#0a0513",
+    "line": "#2a0e52",
     "onAccent": "#ffffff"
   },
   "houston": {
@@ -1655,6 +1679,14 @@
     "line": "#273c30",
     "onAccent": "#ffffff"
   },
+  "presbyterian": {
+    "primary": "#003366",
+    "secondary": "#9D2235",
+    "panel": "#091423",
+    "panelDark": "#050a11",
+    "line": "#0e2a4b",
+    "onAccent": "#ffffff"
+  },
   "providence": {
     "primary": "#000000",
     "secondary": "#A2AAAD",
@@ -1677,6 +1709,14 @@
     "panel": "#0c101c",
     "panelDark": "#06080e",
     "line": "#162239",
+    "onAccent": "#ffffff"
+  },
+  "radford": {
+    "primary": "#C2011B",
+    "secondary": "#1D1D1B",
+    "panel": "#330912",
+    "panelDark": "#18050a",
+    "line": "#790f22",
     "onAccent": "#ffffff"
   },
   "real-salt-lake": {
@@ -2223,6 +2263,14 @@
     "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
+  "unc-asheville": {
+    "primary": "#003DA5",
+    "secondary": "#A7A8AA",
+    "panel": "#091631",
+    "panelDark": "#050b18",
+    "line": "#0e306e",
+    "onAccent": "#ffffff"
+  },
   "unlv": {
     "primary": "#CF0A2C",
     "secondary": "#666666",
@@ -2237,6 +2285,14 @@
     "panel": "#2a090c",
     "panelDark": "#140507",
     "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "usc-upstate": {
+    "primary": "#00703C",
+    "secondary": "#000000",
+    "panel": "#09211a",
+    "panelDark": "#05100d",
+    "line": "#0e4c34",
     "onAccent": "#ffffff"
   },
   "ut-arlington": {
@@ -2405,6 +2461,14 @@
     "panel": "#340b17",
     "panelDark": "#18060c",
     "line": "#7b152d",
+    "onAccent": "#ffffff"
+  },
+  "winthrop": {
+    "primary": "#872434",
+    "secondary": "#FFC72C",
+    "panel": "#261118",
+    "panelDark": "#12080c",
+    "line": "#592230",
     "onAccent": "#ffffff"
   },
   "wisconsin": {
