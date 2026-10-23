@@ -15,7 +15,7 @@ Each rule has a check in `tests/columbia-module.mjs` (generated page blocks) or 
 
 ## Athletes
 
-Roster cards, then official profiles, then the NIL marketplace linked from the official site: Opendorse (`columbia-lions`). Profile cards fill the remaining slots in Baseball, Cross Country, Fencing, Field Hockey, Golf, Lacrosse, Rowing, Soccer, Softball, Swimming & Diving, Tennis, Track & Field (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 23.
+Roster cards, then official profiles, then the NIL marketplace linked from the official site: Opendorse (`columbia-lions`). Profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Fencing, Field Hockey, Golf, Lacrosse, Rowing, Soccer, Softball, Swimming & Diving, Tennis, Track & Field (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 23.
 
 ## Open
 
