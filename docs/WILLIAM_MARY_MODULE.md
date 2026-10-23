@@ -6,7 +6,7 @@ Sports (13): Baseball, Basketball, Cross Country, Field Hockey, Football, Golf, 
 
 ## Rules
 
-- Football plays in the Patriot League (its page data marks the Patriot League games), as Richmond's; gymnastics names no league. TFRRS reads `William__Mary`.
+- Football plays in the Patriot League, as Richmond's: the older page shows the league only as a logo on its league games (1-3 on the page), read because the module names the league (`src/conference-games.mjs`); gymnastics names no league. TFRRS reads `William__Mary`.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the CAA sponsors football (football-only members count from the page's own marks) and lacrosse, with Fairfield a member in field hockey and men's lacrosse; it sponsors no wrestling, gymnastics, bowling, beach volleyball, equestrian or triathlon.
 - Shared CAA rules (`tests/caa-shared.mjs`): golf stories ("to lead the ... team to a seventh-place finish"), weekly honor stories never a meet's, TFRRS's shortened team names matched at onboarding, TFRRS meet names for host-named meets only where a module asks.

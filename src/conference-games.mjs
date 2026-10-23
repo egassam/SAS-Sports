@@ -237,7 +237,12 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
     const nuxt=/__NUXT_DATA__/.test(String(raw||'')),classic=!nuxt&&/<li\b[^>]*class="sidearm-schedule-game\s/.test(String(raw||''));
     const pageGames=nuxt||classic?sidearmScheduleGames(raw):[];
     const flagged=pageGames.filter(game=>typeof game.conference==='boolean');
-    const games=classic&&!flagged.some(game=>game.conference)?[]:flagged;
+    // A classic page that shows its league only as a logo marks its league
+    // games for a sport whose module names another league (William & Mary
+    // football's Patriot League, Oct 23); the membership conference's teams
+    // would count none of them.
+    const logos=classic&&!flagged.some(game=>game.conference)&&events.some(event=>event.conference_name)&&flagged.some(game=>game.conference_logo);
+    const games=logos?flagged.map(game=>({...game,conference:Boolean(game.conference_logo)})):classic&&!flagged.some(game=>game.conference)?[]:flagged;
     if(games.length){
       // The same page data marks exhibitions (type "S"), which records leave
       // out even when a card does not say so (Oklahoma State soccer at Tulsa,

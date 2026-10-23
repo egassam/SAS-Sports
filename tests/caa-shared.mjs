@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {golfStoryPlace} from '../src/sidearm-school-kit.mjs';
+import {createConferenceGames} from '../src/conference-games.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=path=>gunzipSync(readFileSync(new URL(`./fixtures/${path}`,import.meta.url))).toString('utf8');
 
@@ -33,5 +34,19 @@ assert.match(read('../src/conference-games.mjs'),/'CAA':\[\{names:\['fairfield'/
 // William & Mary football plays in the Patriot League (its page data marks
 // the Patriot League games), as Richmond's.
 assert.match(read('../src/schools/william-mary.mjs'),/const league=\{'Football':'Patriot League'\}\[sport\]/);
+// Its older page shows the league only as a logo: those rows are its league
+// games (1-3: Villanova, Lehigh, Fordham, Holy Cross), read because the module
+// names the league. Mutation: without the logo rule CAA membership counts none.
+{
+  const raw=fixture('william-mary-module/football-schedule.html.gz');
+  const game=(opponent,date)=>({sport:'Football',opponent,start_time:`${date}T18:00:00Z`,conference_name:'Patriot League'});
+  const events=[game('Villanova','2026-08-28'),game('Delaware State','2026-09-05'),game('Lehigh','2026-09-12'),game('Duke','2026-09-26')];
+  createConferenceGames({schools:[{id:'william-mary',name:'William & Mary',conference:'CAA'}]}).markConferenceGames(events,raw,{id:'william-mary',conference:'CAA'});
+  assert.deepEqual(events.map(event=>event.conference_game),[true,false,true,false]);
+  // A page with logos is read by membership where no module names a league.
+  const plain=[{sport:'Football',opponent:'Villanova',start_time:'2026-08-28T18:00:00Z'}];
+  createConferenceGames({schools:[{id:'william-mary',name:'William & Mary',conference:'CAA'}]}).markConferenceGames(plain,raw,{id:'william-mary',conference:'CAA'});
+  assert.notEqual(plain[0].conference_game,true);
+}
 
 console.log('CAA shared checks passed');
