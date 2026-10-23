@@ -88,6 +88,9 @@ if(oldNick&&newNick)out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l:l.replace(ne
 // port without it, and Delaware's "the Fightin' Blue Hens ... finish second"
 // went unread (Conference USA, Oct 22).
 if(newNick&&!new RegExp(`team:"\\(\\?:[^"]*\\b${escape(newNick)}\\b`).test(out))out=out.replace(/team:"\(\?:/,`team:"(?:${newNick.replace(/'/g,"\\'")}|`);
+// Its capitals too ("UWF Finishes Ninth in Tulane Classic", West Florida,
+// Sep 9): every catalog alias of two to five capitals.
+for(const short of (schools.find(s=>s.id===to)?.aliases||[]).filter(w=>/^[A-Z]{2,5}$/.test(w)))if(!new RegExp(`team:"\\(\\?:[^"]*\\b${short}\\b`).test(out))out=out.replace(/team:"\(\?:/,`team:"(?:${short}|`);
 // A name with an apostrophe ("St. John's", Oct 21) is escaped in code: every
 // later step imports the module, and the bare quote ended its string.
 if(b.name.includes("'"))out=out.split('\n').map(l=>/^\s*\/\//.test(l)?l.split(`${b.name}'s`).join(b.name):l.split(b.name).join(b.name.replace(/'/g,"\\'"))).join('\n');

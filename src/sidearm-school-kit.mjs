@@ -583,6 +583,10 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // "The Davidson men's golf team concluded ... with a fifth-place finish".
     const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
+    // The team winning the tournament: "the Argos won their first tournament
+    // by winning The Velvet Classic" (West Florida, Sep 15). "She won the
+    // event" is a player's.
+    if(new RegExp(`\\b${team}\\s+(?:won|captured|claimed)\\s+(?:the|their)(?:\\s+first)?\\s+(?:team\\s+title|tournament|event)\\b`,'i').test(sentence))return'1st';
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
     // "the Bears ended the tournament in 3rd place" (Central Arkansas, Sep 16);

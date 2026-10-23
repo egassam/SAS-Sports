@@ -19,6 +19,13 @@ assert.equal(golfStoryPlace(fixture('central-arkansas-module/story-2026-9-16-men
 // "finishing the final round in 17th place" (North Alabama, Diamante).
 assert.equal(golfStoryPlace(fixture('north-alabama-module/story-2026-10-20-womens-golf-womens-golf-closes-play-at-d.html.gz'),{team:"(?:Lions|North Alabama|(?:Men's|Women's) Golf)"}),'17th');
 
+// "the Argos won their first tournament by winning The Velvet Classic" (West
+// Florida); the story calls the team "UWF" and "Argos".
+const uwf="(?:UWF|Argos|Argonauts|West Florida|(?:Men's|Women's) Golf)";
+assert.equal(golfStoryPlace(fixture('west-florida-module/recap-2026-9-15-womens-golf-argos-set-record-in-first-di.html.gz'),{team:uwf}),'1st');
+assert.equal(golfStoryPlace(fixture('west-florida-module/recap-2026-9-9-womens-golf-uwf-finishes-ninth-in-tulane.html.gz'),{team:uwf}),'9th');
+assert.equal(golfStoryPlace('<p>She won the event by five strokes.</p>',{team:uwf}),null);
+
 // The archive reader (createArchiveStory), served from saved pages: an
 // archive the browser fills (ucasports.com) lists no stories, so the sport's
 // home page is read; the older template's story text is read; the schedule's
@@ -54,6 +61,10 @@ const fixtures=read('../scripts/fetch-school-fixtures.mjs');
 assert.match(fixtures,/\\bGeneral Schedule\\b/);
 assert.match(fixtures,/save\(`\$\{slug\}-home\.html\.gz`,home\.body\)/);
 assert.match(read('../scripts/port-handlers.mjs'),/Leagues: none ported/);
+// A port's golf pattern takes the school's capitals (UWF); TFRRS names are
+// tried from hyphenated aliases (TX_college_f_Texas_Arlington).
+assert.match(read('../scripts/port-handlers.mjs'),/\/\^\[A-Z\]\{2,5\}\$\/\.test\(w\)/);
+assert.match(read('../scripts/start-schools.mjs'),/const hyphenated=/);
 assert.match(read('../scripts/survey-school.mjs'),/-home\.html\.gz/);
 
 console.log('ASUN shared checks passed');

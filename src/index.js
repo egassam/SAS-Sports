@@ -211,7 +211,7 @@ import {utArlingtonSchool,createUtArlingtonHandlers} from './schools/ut-arlingto
 import {westFloridaSchool,createWestFloridaHandlers} from './schools/west-florida.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.162.0-asun-uac';
+const VERSION='4.163.0-asun-uac';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

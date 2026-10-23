@@ -366,7 +366,7 @@ export function createWestFloridaHandlers({makeEvent,recapMatchesEvent,eventType
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Argonauts|West Florida|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:UWF|Argos|Argonauts|West Florida|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),
