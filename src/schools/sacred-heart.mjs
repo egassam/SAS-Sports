@@ -27,12 +27,16 @@ export const sacredHeartSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Bowling','Cross Country','Fencing','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
+  // Sacred Heart's /sports/womens-lightweight-rowing/ is its own team, and
+  // /sports/wwrest/ (women's wrestling) and /sports/wrestling/ (men's) name
+  // none in the address (their titles, Oct 23).
+  teamLabels:{'/sports/womens-lightweight-rowing/schedule':"Women's Lightweight",'/sports/wwrest/schedule':"Women's",'/sports/wrestling/schedule':"Men's"},
   verifiedInstagrams:{},
   scheduleUrls:{
     'sacred-heart|Baseball':'https://sacredheartpioneers.com/sports/baseball/schedule',
     'sacred-heart|Basketball':['https://sacredheartpioneers.com/sports/mens-basketball/schedule','https://sacredheartpioneers.com/sports/womens-basketball/schedule'],
-    'sacred-heart|Bowling':['https://sacredheartpioneers.com/sports/womens-bowling/schedule','https://sacredheartpioneers.com/sports/mens-bowling/schedule'],
+    'sacred-heart|Bowling':'https://sacredheartpioneers.com/sports/womens-bowling/schedule',
     'sacred-heart|Cross Country':['https://sacredheartpioneers.com/sports/womens-cross-country/schedule','https://sacredheartpioneers.com/sports/mens-cross-country/schedule'],
     'sacred-heart|Equestrian':'https://sacredheartpioneers.com/sports/equestrian/schedule',
     'sacred-heart|Fencing':['https://sacredheartpioneers.com/sports/womens-fencing/schedule','https://sacredheartpioneers.com/sports/mens-fencing/schedule'],
@@ -41,19 +45,19 @@ export const sacredHeartSchool={
     'sacred-heart|Golf':['https://sacredheartpioneers.com/sports/womens-golf/schedule','https://sacredheartpioneers.com/sports/mens-golf/schedule'],
     'sacred-heart|Hockey':['https://sacredheartpioneers.com/sports/mens-ice-hockey/schedule','https://sacredheartpioneers.com/sports/womens-ice-hockey/schedule'],
     'sacred-heart|Lacrosse':['https://sacredheartpioneers.com/sports/womens-lacrosse/schedule','https://sacredheartpioneers.com/sports/mens-lacrosse/schedule'],
-    'sacred-heart|Rowing':'https://sacredheartpioneers.com/sports/womens-rowing/schedule',
+    'sacred-heart|Rowing':['https://sacredheartpioneers.com/sports/womens-rowing/schedule','https://sacredheartpioneers.com/sports/womens-lightweight-rowing/schedule'],
     'sacred-heart|Soccer':['https://sacredheartpioneers.com/sports/womens-soccer/schedule','https://sacredheartpioneers.com/sports/mens-soccer/schedule'],
     'sacred-heart|Softball':'https://sacredheartpioneers.com/sports/softball/schedule',
     'sacred-heart|Swimming & Diving':'https://sacredheartpioneers.com/sports/womens-swimming-and-diving/schedule',
     'sacred-heart|Tennis':['https://sacredheartpioneers.com/sports/womens-tennis/schedule','https://sacredheartpioneers.com/sports/mens-tennis/schedule'],
     'sacred-heart|Track & Field':['https://sacredheartpioneers.com/sports/womens-track-and-field/schedule','https://sacredheartpioneers.com/sports/mens-track-and-field/schedule'],
-    'sacred-heart|Volleyball':'https://sacredheartpioneers.com/sports/womens-volleyball/schedule',
-    'sacred-heart|Wrestling':'https://sacredheartpioneers.com/sports/wrestling/schedule'
+    'sacred-heart|Volleyball':['https://sacredheartpioneers.com/sports/womens-volleyball/schedule','https://sacredheartpioneers.com/sports/mens-volleyball/schedule'],
+    'sacred-heart|Wrestling':['https://sacredheartpioneers.com/sports/wrestling/schedule','https://sacredheartpioneers.com/sports/wwrest/schedule']
   },
   rosterUrls:{
     'sacred-heart|Baseball':'https://sacredheartpioneers.com/sports/baseball/roster',
     'sacred-heart|Basketball':['https://sacredheartpioneers.com/sports/mens-basketball/roster','https://sacredheartpioneers.com/sports/womens-basketball/roster'],
-    'sacred-heart|Bowling':['https://sacredheartpioneers.com/sports/womens-bowling/roster','https://sacredheartpioneers.com/sports/mens-bowling/roster'],
+    'sacred-heart|Bowling':'https://sacredheartpioneers.com/sports/womens-bowling/roster',
     'sacred-heart|Cross Country':['https://sacredheartpioneers.com/sports/womens-cross-country/roster','https://sacredheartpioneers.com/sports/mens-cross-country/roster'],
     'sacred-heart|Equestrian':'https://sacredheartpioneers.com/sports/equestrian/roster',
     'sacred-heart|Fencing':['https://sacredheartpioneers.com/sports/womens-fencing/roster','https://sacredheartpioneers.com/sports/mens-fencing/roster'],
@@ -62,14 +66,14 @@ export const sacredHeartSchool={
     'sacred-heart|Golf':['https://sacredheartpioneers.com/sports/womens-golf/roster','https://sacredheartpioneers.com/sports/mens-golf/roster'],
     'sacred-heart|Hockey':['https://sacredheartpioneers.com/sports/mens-ice-hockey/roster','https://sacredheartpioneers.com/sports/womens-ice-hockey/roster'],
     'sacred-heart|Lacrosse':['https://sacredheartpioneers.com/sports/womens-lacrosse/roster','https://sacredheartpioneers.com/sports/mens-lacrosse/roster'],
-    'sacred-heart|Rowing':'https://sacredheartpioneers.com/sports/womens-rowing/roster',
+    'sacred-heart|Rowing':['https://sacredheartpioneers.com/sports/womens-rowing/roster','https://sacredheartpioneers.com/sports/womens-lightweight-rowing/roster'],
     'sacred-heart|Soccer':['https://sacredheartpioneers.com/sports/womens-soccer/roster','https://sacredheartpioneers.com/sports/mens-soccer/roster'],
     'sacred-heart|Softball':'https://sacredheartpioneers.com/sports/softball/roster',
     'sacred-heart|Swimming & Diving':'https://sacredheartpioneers.com/sports/womens-swimming-and-diving/roster',
     'sacred-heart|Tennis':['https://sacredheartpioneers.com/sports/womens-tennis/roster','https://sacredheartpioneers.com/sports/mens-tennis/roster'],
     'sacred-heart|Track & Field':['https://sacredheartpioneers.com/sports/womens-track-and-field/roster','https://sacredheartpioneers.com/sports/mens-track-and-field/roster'],
-    'sacred-heart|Volleyball':'https://sacredheartpioneers.com/sports/womens-volleyball/roster',
-    'sacred-heart|Wrestling':'https://sacredheartpioneers.com/sports/wrestling/roster'
+    'sacred-heart|Volleyball':['https://sacredheartpioneers.com/sports/womens-volleyball/roster','https://sacredheartpioneers.com/sports/mens-volleyball/roster'],
+    'sacred-heart|Wrestling':['https://sacredheartpioneers.com/sports/wrestling/roster','https://sacredheartpioneers.com/sports/wwrest/roster']
   }
 };
 
@@ -358,9 +362,9 @@ export function createSacredHeartHandlers({makeEvent,recapMatchesEvent,eventType
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+    afterEvent(event,{sport,game,games,url}){
+      // Sports in other leagues, as the page data marks them: football in the CAA, field hockey and bowling in the NEC, men's hockey in Atlantic Hockey and women's in the NEWHA, wrestling in the EIWA, equestrian in the NCEA (fencing names no league).
+      const league=sport==='Hockey'?(/^\/sports\/womens-/.test(url?.pathname||'')?'NEWHA':'Atlantic Hockey America'):{'Football':'CAA','Field Hockey':'NEC','Bowling':'NEC','Wrestling':'EIWA','Equestrian':'NCEA'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

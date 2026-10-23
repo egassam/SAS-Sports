@@ -24,15 +24,15 @@ export const sienaSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Lacrosse','Soccer','Swimming & Diving','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
-    'siena|Acrobatics & Tumbling':['https://sienasaints.com/sports/acrobatics-tumbling/schedule','https://sienasaints.com/sports/acrobatics-and-tumbling/schedule'],
+    'siena|Acrobatics & Tumbling':'https://sienasaints.com/sports/acrobatics-tumbling/schedule',
     'siena|Baseball':'https://sienasaints.com/sports/baseball/schedule',
     'siena|Basketball':['https://sienasaints.com/sports/mens-basketball/schedule','https://sienasaints.com/sports/womens-basketball/schedule'],
     'siena|Cross Country':'https://sienasaints.com/sports/cross-country/schedule',
     'siena|Golf':['https://sienasaints.com/sports/womens-golf/schedule','https://sienasaints.com/sports/mens-golf/schedule'],
-    'siena|Lacrosse':['https://sienasaints.com/sports/womens-lacrosse/schedule','https://sienasaints.com/sports/mens-lacrosse/schedule','https://sienasaints.com/sports/lacrosse/schedule'],
+    'siena|Lacrosse':['https://sienasaints.com/sports/womens-lacrosse/schedule','https://sienasaints.com/sports/mens-lacrosse/schedule'],
     'siena|Soccer':['https://sienasaints.com/sports/womens-soccer/schedule','https://sienasaints.com/sports/mens-soccer/schedule'],
     'siena|Softball':'https://sienasaints.com/sports/softball/schedule',
     'siena|Swimming & Diving':'https://sienasaints.com/sports/womens-swimming-and-diving/schedule',
@@ -41,12 +41,12 @@ export const sienaSchool={
     'siena|Water Polo':'https://sienasaints.com/sports/womens-water-polo/schedule'
   },
   rosterUrls:{
-    'siena|Acrobatics & Tumbling':['https://sienasaints.com/sports/acrobatics-tumbling/roster','https://sienasaints.com/sports/acrobatics-and-tumbling/roster'],
+    'siena|Acrobatics & Tumbling':'https://sienasaints.com/sports/acrobatics-tumbling/roster',
     'siena|Baseball':'https://sienasaints.com/sports/baseball/roster',
     'siena|Basketball':['https://sienasaints.com/sports/mens-basketball/roster','https://sienasaints.com/sports/womens-basketball/roster'],
     'siena|Cross Country':'https://sienasaints.com/sports/cross-country/roster',
     'siena|Golf':['https://sienasaints.com/sports/womens-golf/roster','https://sienasaints.com/sports/mens-golf/roster'],
-    'siena|Lacrosse':['https://sienasaints.com/sports/womens-lacrosse/roster','https://sienasaints.com/sports/mens-lacrosse/roster','https://sienasaints.com/sports/lacrosse/roster'],
+    'siena|Lacrosse':['https://sienasaints.com/sports/womens-lacrosse/roster','https://sienasaints.com/sports/mens-lacrosse/roster'],
     'siena|Soccer':['https://sienasaints.com/sports/womens-soccer/roster','https://sienasaints.com/sports/mens-soccer/roster'],
     'siena|Softball':'https://sienasaints.com/sports/softball/roster',
     'siena|Swimming & Diving':'https://sienasaints.com/sports/womens-swimming-and-diving/roster',
@@ -342,8 +342,8 @@ export function createSienaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: acrobatics and tumbling names no league.
+      const league=null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
@@ -369,7 +369,16 @@ export function createSienaHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // Acrobatics and tumbling's season is not published (Oct 23): its menu
+  // address answers with the homepage, which holds no schedule data (the
+  // reader answers null). A published season titles the page "... Schedule"
+  // (North Alabama's rule).
+  const readSchedule=(...args)=>{
+    const unpublished=args[2]==='Acrobatics & Tumbling'&&!/<title>[^<]*\bSchedule\b/i.test(String(args[0]||''));
+    const events=parseSchedule(...args)??(unpublished?[]:null);
+    if((args[2]==='Track & Field'||unpublished)&&Array.isArray(events)&&!events.length)trackEmptied.add(events);
+    return events;
+  };
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Saints|Siena|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),

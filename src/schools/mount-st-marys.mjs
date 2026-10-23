@@ -34,7 +34,7 @@ export const mountStMarysSchool={
     'mount-st-marys|Lacrosse':['https://mountathletics.com/sports/womens-lacrosse/schedule','https://mountathletics.com/sports/mens-lacrosse/schedule'],
     'mount-st-marys|Soccer':['https://mountathletics.com/sports/womens-soccer/schedule','https://mountathletics.com/sports/mens-soccer/schedule'],
     'mount-st-marys|Softball':'https://mountathletics.com/sports/softball/schedule',
-    'mount-st-marys|Swimming & Diving':['https://mountathletics.com/sports/womens-swimming-and-diving/schedule','https://mountathletics.com/sports/mens-swimming-and-diving/schedule','https://mountathletics.com/sports/swimming-and-diving/schedule'],
+    'mount-st-marys|Swimming & Diving':['https://mountathletics.com/sports/womens-swimming-and-diving/schedule','https://mountathletics.com/sports/mens-swimming-and-diving/schedule'],
     'mount-st-marys|Tennis':['https://mountathletics.com/sports/womens-tennis/schedule','https://mountathletics.com/sports/mens-tennis/schedule'],
     'mount-st-marys|Track & Field':'https://mountathletics.com/sports/track-and-field/schedule',
     'mount-st-marys|Water Polo':['https://mountathletics.com/sports/womens-water-polo/schedule','https://mountathletics.com/sports/mens-water-polo/schedule']
@@ -48,7 +48,7 @@ export const mountStMarysSchool={
     'mount-st-marys|Lacrosse':['https://mountathletics.com/sports/womens-lacrosse/roster','https://mountathletics.com/sports/mens-lacrosse/roster'],
     'mount-st-marys|Soccer':['https://mountathletics.com/sports/womens-soccer/roster','https://mountathletics.com/sports/mens-soccer/roster'],
     'mount-st-marys|Softball':'https://mountathletics.com/sports/softball/roster',
-    'mount-st-marys|Swimming & Diving':['https://mountathletics.com/sports/womens-swimming-and-diving/roster','https://mountathletics.com/sports/mens-swimming-and-diving/roster','https://mountathletics.com/sports/swimming-and-diving/roster'],
+    'mount-st-marys|Swimming & Diving':['https://mountathletics.com/sports/womens-swimming-and-diving/roster','https://mountathletics.com/sports/mens-swimming-and-diving/roster'],
     'mount-st-marys|Tennis':['https://mountathletics.com/sports/womens-tennis/roster','https://mountathletics.com/sports/mens-tennis/roster'],
     'mount-st-marys|Track & Field':'https://mountathletics.com/sports/track-and-field/roster',
     'mount-st-marys|Water Polo':['https://mountathletics.com/sports/womens-water-polo/roster','https://mountathletics.com/sports/mens-water-polo/roster']
@@ -251,7 +251,9 @@ export function createMountStMarysHandlers({makeEvent,recapMatchesEvent,eventTyp
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // The MAAC's tournaments are named "Metro Championship (First Round)",
+    // "Metro Basketball Championships": events, "at".
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|^(?:\d{4} )?metro\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis
@@ -330,6 +332,12 @@ export function createMountStMarysHandlers({makeEvent,recapMatchesEvent,eventTyp
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
+      // Bowling writes its match record, then its place in words or figures
+      // ("8-1, Third Place", Bud Whitman Memorial; "10-3, 8th Place").
+      if(sport==='Bowling'){
+        const m=text.match(/^(\d{1,2}-\d{1,2}(?:-\d{1,2})?),\s*(?:(T-?)?(\d+)(?:st|nd|rd|th)|([a-z]+))\s+place$/i),word=m?.[4]&&PLACE_WORDS.indexOf(m[4].toLowerCase());
+        if(m&&(m[3]||word>=0)){const value=`${m[2]?'T':''}${ordinal(m[3]||word+1)} (${m[1]})`;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
+      }
       writeMeetPlaces(event,{text,schoolName:'Mount St. Mary\'s',ordinal});
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
@@ -340,9 +348,9 @@ export function createMountStMarysHandlers({makeEvent,recapMatchesEvent,eventTyp
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+    afterEvent(event,{sport,game,games,url}){
+      // Sports in other leagues, as the page data marks them: men's water polo in the MAWPC (women's water polo is a Metro sport); bowling names no league.
+      const league=sport==='Water Polo'&&/^\/sports\/mens-/.test(url?.pathname||'')?'MAWPC':null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

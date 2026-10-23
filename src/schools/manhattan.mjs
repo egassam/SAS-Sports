@@ -44,7 +44,7 @@ export const manhattanSchool={
     'manhattan|Softball':'https://gojaspers.com/sports/softball/schedule',
     'manhattan|Swimming & Diving':['https://gojaspers.com/sports/womens-swimming-and-diving/schedule','https://gojaspers.com/sports/mens-swimming-and-diving/schedule'],
     'manhattan|Track & Field':['https://gojaspers.com/sports/womens-track-and-field/schedule','https://gojaspers.com/sports/mens-track-and-field/schedule'],
-    'manhattan|Volleyball':'https://gojaspers.com/sports/womens-volleyball/schedule'
+    'manhattan|Volleyball':['https://gojaspers.com/sports/womens-volleyball/schedule','https://gojaspers.com/sports/mens-volleyball/schedule']
   },
   rosterUrls:{
     'manhattan|Acrobatics & Tumbling':'https://gojaspers.com/sports/acrobatics-tumbling/roster',
@@ -57,7 +57,7 @@ export const manhattanSchool={
     'manhattan|Softball':'https://gojaspers.com/sports/softball/roster',
     'manhattan|Swimming & Diving':['https://gojaspers.com/sports/womens-swimming-and-diving/roster','https://gojaspers.com/sports/mens-swimming-and-diving/roster'],
     'manhattan|Track & Field':['https://gojaspers.com/sports/womens-track-and-field/roster','https://gojaspers.com/sports/mens-track-and-field/roster'],
-    'manhattan|Volleyball':'https://gojaspers.com/sports/womens-volleyball/roster'
+    'manhattan|Volleyball':['https://gojaspers.com/sports/womens-volleyball/roster','https://gojaspers.com/sports/mens-volleyball/roster']
   }
 };
 
@@ -257,7 +257,9 @@ export function createManhattanHandlers({makeEvent,recapMatchesEvent,eventType=(
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // The MAAC's tournaments are named "Metro Championship (First Round)",
+    // "Metro Basketball Championships": events, "at".
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|^(?:\d{4} )?metro\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis
@@ -347,8 +349,8 @@ export function createManhattanHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: acrobatics and tumbling names no league.
+      const league=null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

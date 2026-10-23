@@ -41,7 +41,7 @@ export const merrimackSchool={
     'merrimack|Swimming & Diving':'https://merrimackathletics.com/sports/womens-swimming-and-diving/schedule',
     'merrimack|Tennis':['https://merrimackathletics.com/sports/womens-tennis/schedule','https://merrimackathletics.com/sports/mens-tennis/schedule'],
     'merrimack|Track & Field':['https://merrimackathletics.com/sports/womens-track-and-field/schedule','https://merrimackathletics.com/sports/mens-track-and-field/schedule'],
-    'merrimack|Volleyball':'https://merrimackathletics.com/sports/womens-volleyball/schedule'
+    'merrimack|Volleyball':['https://merrimackathletics.com/sports/womens-volleyball/schedule','https://merrimackathletics.com/sports/mens-volleyball/schedule']
   },
   rosterUrls:{
     'merrimack|Baseball':'https://merrimackathletics.com/sports/baseball/roster',
@@ -58,7 +58,7 @@ export const merrimackSchool={
     'merrimack|Swimming & Diving':'https://merrimackathletics.com/sports/womens-swimming-and-diving/roster',
     'merrimack|Tennis':['https://merrimackathletics.com/sports/womens-tennis/roster','https://merrimackathletics.com/sports/mens-tennis/roster'],
     'merrimack|Track & Field':['https://merrimackathletics.com/sports/womens-track-and-field/roster','https://merrimackathletics.com/sports/mens-track-and-field/roster'],
-    'merrimack|Volleyball':'https://merrimackathletics.com/sports/womens-volleyball/roster'
+    'merrimack|Volleyball':['https://merrimackathletics.com/sports/womens-volleyball/roster','https://merrimackathletics.com/sports/mens-volleyball/roster']
   }
 };
 
@@ -348,8 +348,8 @@ export function createMerrimackHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: field hockey in the NEC, hockey in Hockey East (football names no league).
+      const league={'Field Hockey':'NEC','Hockey':'Hockey East'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

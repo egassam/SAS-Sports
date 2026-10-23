@@ -29,7 +29,7 @@ export const niagaraSchool={
   scheduleUrls:{
     'niagara|Baseball':'https://purpleeagles.com/sports/baseball/schedule',
     'niagara|Basketball':['https://purpleeagles.com/sports/mens-basketball/schedule','https://purpleeagles.com/sports/womens-basketball/schedule'],
-    'niagara|Bowling':'https://purpleeagles.com/sports/bowling/schedule',
+    'niagara|Bowling':'https://purpleeagles.com/sports/womens-bowling/schedule',
     'niagara|Cross Country':['https://purpleeagles.com/sports/womens-cross-country/schedule','https://purpleeagles.com/sports/mens-cross-country/schedule'],
     'niagara|Golf':['https://purpleeagles.com/sports/womens-golf/schedule','https://purpleeagles.com/sports/mens-golf/schedule'],
     'niagara|Hockey':'https://purpleeagles.com/sports/mens-ice-hockey/schedule',
@@ -44,7 +44,7 @@ export const niagaraSchool={
   rosterUrls:{
     'niagara|Baseball':'https://purpleeagles.com/sports/baseball/roster',
     'niagara|Basketball':['https://purpleeagles.com/sports/mens-basketball/roster','https://purpleeagles.com/sports/womens-basketball/roster'],
-    'niagara|Bowling':'https://purpleeagles.com/sports/bowling/roster',
+    'niagara|Bowling':'https://purpleeagles.com/sports/womens-bowling/roster',
     'niagara|Cross Country':['https://purpleeagles.com/sports/womens-cross-country/roster','https://purpleeagles.com/sports/mens-cross-country/roster'],
     'niagara|Golf':['https://purpleeagles.com/sports/womens-golf/roster','https://purpleeagles.com/sports/mens-golf/roster'],
     'niagara|Hockey':'https://purpleeagles.com/sports/mens-ice-hockey/roster',
@@ -344,8 +344,8 @@ export function createNiagaraHandlers({makeEvent,recapMatchesEvent,eventType=()=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: bowling in the NEC, hockey in Atlantic Hockey.
+      const league={'Bowling':'NEC','Hockey':'Atlantic Hockey America'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

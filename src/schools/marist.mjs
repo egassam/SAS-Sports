@@ -32,7 +32,7 @@ export const maristSchool={
     'marist|Cross Country':['https://goredfoxes.com/sports/womens-cross-country/schedule','https://goredfoxes.com/sports/mens-cross-country/schedule'],
     'marist|Football':'https://goredfoxes.com/sports/football/schedule',
     'marist|Lacrosse':['https://goredfoxes.com/sports/womens-lacrosse/schedule','https://goredfoxes.com/sports/mens-lacrosse/schedule'],
-    'marist|Rowing':'https://goredfoxes.com/sports/womens-rowing/schedule',
+    'marist|Rowing':['https://goredfoxes.com/sports/womens-rowing/schedule','https://goredfoxes.com/sports/mens-rowing/schedule'],
     'marist|Soccer':['https://goredfoxes.com/sports/womens-soccer/schedule','https://goredfoxes.com/sports/mens-soccer/schedule'],
     'marist|Softball':'https://goredfoxes.com/sports/softball/schedule',
     'marist|Swimming & Diving':['https://goredfoxes.com/sports/womens-swimming-and-diving/schedule','https://goredfoxes.com/sports/mens-swimming-and-diving/schedule'],
@@ -47,7 +47,7 @@ export const maristSchool={
     'marist|Cross Country':['https://goredfoxes.com/sports/womens-cross-country/roster','https://goredfoxes.com/sports/mens-cross-country/roster'],
     'marist|Football':'https://goredfoxes.com/sports/football/roster',
     'marist|Lacrosse':['https://goredfoxes.com/sports/womens-lacrosse/roster','https://goredfoxes.com/sports/mens-lacrosse/roster'],
-    'marist|Rowing':'https://goredfoxes.com/sports/womens-rowing/roster',
+    'marist|Rowing':['https://goredfoxes.com/sports/womens-rowing/roster','https://goredfoxes.com/sports/mens-rowing/roster'],
     'marist|Soccer':['https://goredfoxes.com/sports/womens-soccer/roster','https://goredfoxes.com/sports/mens-soccer/roster'],
     'marist|Softball':'https://goredfoxes.com/sports/softball/roster',
     'marist|Swimming & Diving':['https://goredfoxes.com/sports/womens-swimming-and-diving/roster','https://goredfoxes.com/sports/mens-swimming-and-diving/roster'],
@@ -344,8 +344,8 @@ export function createMaristHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: football in the Pioneer Football League.
+      const league={'Football':'Pioneer Football League'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

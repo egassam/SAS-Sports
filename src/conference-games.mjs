@@ -65,7 +65,7 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'cleveland-state':['cleveland st','csu vikings'],'detroit-mercy':['detroit','udm'],'green-bay':['uw green bay','wisconsin green bay','uwgb'],'iu-indy':['iupui','iu indianapolis','indiana university indianapolis'],milwaukee:['uwm','uw milwaukee','wisconsin milwaukee'],'northern-kentucky':['nku','northern ky'],oakland:['oakland university'],'purdue-fort-wayne':['pfw','fort wayne','purdue fw'],'robert-morris':['rmu'],'wright-state':['wright st'],'youngstown-state':['youngstown st','ysu'],'northern-illinois':['niu','n illinois'],
   // Ivy League opponents write "Pennsylvania", "UPenn".
   penn:['pennsylvania','upenn','university of pennsylvania'],brown:['brown university'],harvard:['harvard university'],yale:['yale university'],princeton:['princeton university'],columbia:['columbia university'],cornell:['cornell university'],dartmouth:['dartmouth college'],
-  // MAAC opponents write "Mount Saint Mary's", "St. Peter's", "SHU", "QU".
+  // Metro Conference (MAAC) opponents write "Mount Saint Mary's", "St. Peter's", "SHU", "QU".
   'mount-st-marys':['mount saint marys','mount st marys','the mount','msmu'],'saint-peters':['st peters','saint peters'],'sacred-heart':['shu'],quinnipiac:['qu'],canisius:['canisius college'],iona:['iona college'],manhattan:['manhattan college'],marist:['marist college'],niagara:['niagara university'],siena:['siena college'],rider:['rider university'],merrimack:['merrimack college'],fairfield:['fairfield university']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
@@ -189,14 +189,15 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country, track,
   // swimming, field hockey, lacrosse and rowing: no wrestling (Campbell,
   // Drexel, Hofstra in other leagues), gymnastics or hockey.
-  // The MAAC (2026-27: Canisius, Fairfield, Iona, Manhattan, Marist,
+  // The Metro Conference (the MAAC's name from 2026-27, as its members'
+  // pages mark it: Canisius, Fairfield, Iona, Manhattan, Marist,
   // Merrimack, Mount St. Mary's, Niagara, Quinnipiac, Rider, Sacred Heart,
   // Saint Peter's, Siena) sponsors basketball, baseball, softball, soccer,
   // volleyball, golf, tennis, cross country, track, swimming, lacrosse,
   // rowing and women's water polo: no football (Marist, Merrimack, Sacred
-  // Heart in other leagues), wrestling (Rider's), hockey, fencing or
-  // gymnastics.
-  'MAAC':new Set(['Football','Wrestling','Hockey','Fencing','Gymnastics','Rifle','Bowling','Beach Volleyball','Equestrian','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // Heart in other leagues), field hockey (the NEC's and the CAA's),
+  // wrestling (Rider's), hockey, fencing or gymnastics.
+  'Metro Conference':new Set(['Football','Wrestling','Hockey','Fencing','Gymnastics','Field Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Ivy League (Brown, Columbia, Cornell, Dartmouth, Harvard, Penn,
   // Princeton, Yale) sponsors nearly every sport, rowing, lacrosse, field
   // hockey, fencing and wrestling (its pages mark the Ivy duals) among them;
