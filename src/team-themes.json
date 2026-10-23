@@ -159,6 +159,14 @@
     "line": "#3d745f",
     "onAccent": "#ffffff"
   },
+  "belmont": {
+    "primary": "#0E2042",
+    "secondary": "#C8102E",
+    "panel": "#0c101b",
+    "panelDark": "#06080e",
+    "line": "#162037",
+    "onAccent": "#ffffff"
+  },
   "boise-state": {
     "primary": "#0033A0",
     "secondary": "#D64309",
@@ -559,6 +567,14 @@
     "line": "#2f8a5a",
     "onAccent": "#ffffff"
   },
+  "evansville": {
+    "primary": "#4F2D7F",
+    "secondary": "#F26F21",
+    "panel": "#1a1228",
+    "panelDark": "#0c0914",
+    "line": "#3a2759",
+    "onAccent": "#ffffff"
+  },
   "fau": {
     "primary": "#003366",
     "secondary": "#CC0000",
@@ -743,6 +759,14 @@
     "line": "#19253c",
     "onAccent": "#ffffff"
   },
+  "illinois-state": {
+    "primary": "#CE1126",
+    "secondary": "#1D1D1B",
+    "panel": "#360c15",
+    "panelDark": "#19060b",
+    "line": "#801828",
+    "onAccent": "#ffffff"
+  },
   "imsa-pilot-challenge": {
     "primary": "#27509B",
     "secondary": "#FCE500",
@@ -765,6 +789,14 @@
     "panel": "#2a090c",
     "panelDark": "#140507",
     "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "indiana-state": {
+    "primary": "#00669A",
+    "secondary": "#231F20",
+    "panel": "#091f2e",
+    "panelDark": "#050f17",
+    "line": "#0e4768",
     "onAccent": "#ffffff"
   },
   "indianapolis-colts": {
@@ -1167,6 +1199,14 @@
     "line": "#0e2d53",
     "onAccent": "#ffffff"
   },
+  "murray-state": {
+    "primary": "#002148",
+    "secondary": "#ECAC00",
+    "panel": "#09101c",
+    "panelDark": "#05080e",
+    "line": "#0e213b",
+    "onAccent": "#ffffff"
+  },
   "nascar-cup-series": {
     "primary": "#007AC2",
     "secondary": "#FFD659",
@@ -1309,6 +1349,14 @@
     "panel": "#091623",
     "panelDark": "#050b11",
     "line": "#0f2f4a",
+    "onAccent": "#ffffff"
+  },
+  "northern-iowa": {
+    "primary": "#4B116F",
+    "secondary": "#FFCC00",
+    "panel": "#190c25",
+    "panelDark": "#0c0612",
+    "line": "#381850",
     "onAccent": "#ffffff"
   },
   "northwestern": {
@@ -1735,6 +1783,14 @@
     "line": "#0e473a",
     "onAccent": "#ffffff"
   },
+  "southern-illinois": {
+    "primary": "#720000",
+    "secondary": "#000000",
+    "panel": "#22090c",
+    "panelDark": "#100507",
+    "line": "#4d0e13",
+    "onAccent": "#ffffff"
+  },
   "southern-miss": {
     "primary": "#000000",
     "secondary": "#FFAB00",
@@ -2069,6 +2125,14 @@
     "panel": "#0b101b",
     "panelDark": "#06080e",
     "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "valparaiso": {
+    "primary": "#613318",
+    "secondary": "#FFCC00",
+    "panel": "#1e1412",
+    "panelDark": "#0e0a0a",
+    "line": "#442a20",
     "onAccent": "#ffffff"
   },
   "vancouver-whitecaps": {
