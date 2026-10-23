@@ -81,6 +81,23 @@ const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
 const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}],
   // CAA's outside member in field hockey and men's lacrosse: Fairfield (the
   // members' conference schedules, Oct 23).
+  // The NEC's outside members (their and the members' schedules, Oct 23):
+  // football Duquesne, Robert Morris, Merrimack; field hockey Merrimack,
+  // Quinnipiac, Rider, Sacred Heart; soccer Howard and Delaware State
+  // (women's); baseball Coppin State, Delaware State, UMES, Norfolk State;
+  // women's lacrosse Delaware State; bowling Niagara, Sacred Heart.
+  'NEC':[{names:['duquesne','duquesne university'],id:'duquesne',teams:{'Football':/\/sports\/football\//}},
+    {names:['robert morris','robert morris university','rmu'],id:'robert-morris',teams:{'Football':/\/sports\/football\//}},
+    {names:['merrimack','merrimack college'],id:'merrimack',teams:{'Football':/\/sports\/football\//,'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}},
+    {names:['quinnipiac','quinnipiac university'],id:'quinnipiac',teams:{'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}},
+    {names:['rider','rider university'],id:'rider',teams:{'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}},
+    {names:['sacred heart','sacred heart university','shu'],id:'sacred-heart',teams:{'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//,'Bowling':/\/sports\/(?:womens-bowling|bowling|wbowl)\//}},
+    {names:['howard','howard university'],id:'howard',teams:{'Soccer':/\/sports\/(?:womens-soccer|wsoc|mens-soccer|msoc)\//}},
+    {names:['delaware state','delaware state university','del state'],id:'delaware-state',teams:{'Soccer':/\/sports\/(?:womens-soccer|wsoc)\//,'Baseball':/\/sports\/baseball\//,'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},
+    {names:['coppin state','coppin state university'],id:'coppin-state',teams:{'Baseball':/\/sports\/baseball\//}},
+    {names:['maryland eastern shore','umes','university of maryland eastern shore'],id:'maryland-eastern-shore',teams:{'Baseball':/\/sports\/baseball\//}},
+    {names:['norfolk state','norfolk state university'],id:'norfolk-state',teams:{'Baseball':/\/sports\/baseball\//}},
+    {names:['niagara','niagara university'],id:'niagara',teams:{'Bowling':/\/sports\/(?:womens-bowling|bowling|wbowl)\//}}],
   'CAA':[{names:['fairfield','fairfield university'],id:'fairfield',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//,'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}}],
   // Big South women's lacrosse's outside members (Gardner-Webb's, Radford's
   // and Winthrop's conference schedules, Oct 23): Wofford, Mercer, Furman.

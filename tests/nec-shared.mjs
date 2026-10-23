@@ -2,6 +2,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {golfPlacing} from '../src/sidearm-school-kit.mjs';
+import {createConferenceGames} from '../src/conference-games.mjs';
+import {gunzipSync} from 'node:zlib';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 
 // Cross country places: "4th - 115 points" (Chicago State) and the points
@@ -22,5 +24,18 @@ assert.match(read('../src/schools/stonehill.mjs'),/opponent='Bryant Invitational
 const liu=read('../src/schools/liu.mjs');
 assert.match(liu,/teamLabels:\{'\/sports\/mrow\/schedule':"Men's"/);
 assert.match(liu,/\/\^\\\/sports\\\/mwpolo\\\/\/\.test\(url\?\.pathname\|\|''\)\?'NWPC':'Metro Conference'/);
+
+// The NEC's outside members count in its records: Wagner football's page
+// (no marks) plays Robert Morris (Aug 29) and LIU (Oct 17) in the league,
+// California (Sep 19) outside it. Mutation: without the affiliates the app
+// counted 0-2 against the page's 0-3.
+{
+  const schools=JSON.parse(read('../src/schools.json'));
+  const raw=gunzipSync(readFileSync(new URL('./fixtures/wagner-module/football-schedule.html.gz',import.meta.url))).toString('utf8');
+  const game=(opponent,date)=>({sport:'Football',opponent,start_time:`${date}T17:00:00Z`});
+  const events=[game('Robert Morris','2026-08-29'),game('California','2026-09-19'),game('LIU','2026-10-17')];
+  createConferenceGames({schools}).markConferenceGames(events,raw,schools.find(s=>s.id==='wagner'),'https://wagnerathletics.com/sports/football/schedule');
+  assert.deepEqual(events.map(event=>event.conference_game),[true,false,true]);
+}
 
 console.log('NEC shared checks passed');
