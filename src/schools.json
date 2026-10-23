@@ -4593,6 +4593,190 @@
     ]
   },
   {
+    "id": "ualbany",
+    "name": "UAlbany",
+    "short_name": "UAlbany",
+    "state": "New York",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ualbanysports.com",
+    "aliases": [
+      "University at Albany",
+      "Albany",
+      "Great Danes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ualbanysports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "binghamton",
+    "name": "Binghamton",
+    "short_name": "Binghamton",
+    "state": "New York",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://binghamtonbearcats.com",
+    "aliases": [
+      "Binghamton University",
+      "Bearcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "binghamtonbearcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bryant",
+    "name": "Bryant",
+    "short_name": "Bryant",
+    "state": "Rhode Island",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bryantbulldogs.com",
+    "aliases": [
+      "Bryant University",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bryantbulldogs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "maine",
+    "name": "Maine",
+    "short_name": "Maine",
+    "state": "Maine",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goblackbears.com",
+    "aliases": [
+      "University of Maine",
+      "Black Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goblackbears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "new-hampshire",
+    "name": "New Hampshire",
+    "short_name": "New Hampshire",
+    "state": "New Hampshire",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://unhwildcats.com",
+    "aliases": [
+      "University of New Hampshire",
+      "UNH",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "unhwildcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "njit",
+    "name": "NJIT",
+    "short_name": "NJIT",
+    "state": "New Jersey",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://njithighlanders.com",
+    "aliases": [
+      "New Jersey Institute of Technology",
+      "Highlanders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "njithighlanders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "umass-lowell",
+    "name": "UMass Lowell",
+    "short_name": "UMass Lowell",
+    "state": "Massachusetts",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goriverhawks.com",
+    "aliases": [
+      "University of Massachusetts Lowell",
+      "UML",
+      "River Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goriverhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "umbc",
+    "name": "UMBC",
+    "short_name": "UMBC",
+    "state": "Maryland",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://umbcretrievers.com",
+    "aliases": [
+      "University of Maryland, Baltimore County",
+      "Retrievers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "umbcretrievers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "vermont",
+    "name": "Vermont",
+    "short_name": "Vermont",
+    "state": "Vermont",
+    "conference": "America East",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uvmathletics.com",
+    "aliases": [
+      "University of Vermont",
+      "UVM",
+      "Catamounts"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uvmathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
