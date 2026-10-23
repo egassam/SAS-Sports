@@ -19,7 +19,8 @@
 // (scripts/port-wmt.mjs; --wmt-from=, default nebraska) and goes on to the
 // fixtures, athletes and survey like any other; one whose /website-api/sports
 // answers goes on the shared JSON-API kit (scripts/port-wmt-api.mjs).
-import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync,readdirSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
 import {spawn} from 'node:child_process';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
@@ -73,15 +74,22 @@ async function tfrrsFromMeets(school,moduleText,st){
   const base=process.env.SAS_SPORTS_BASE_URL,key=process.env.SAS_SOURCE_KEY;
   const get=async url=>{try{const r=base&&key&&!/tfrrs\.org/.test(url)?await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)}):await fetch(url,{signal:AbortSignal.timeout(20000)});return r.ok?await r.text():''}catch{return''}};
   const meets=new Set();for(const page of pages)for(const m of (await get(page)).matchAll(/https?:\/\/(?:www\.)?tfrrs\.org\/results\/xc\/\d+[^"'\s<]*/g))meets.add(m[0]);
-  const words=new Set([school.name,school.short_name,...(school.aliases||[]).slice(0,-1)].join(' ').toLowerCase().split(/[^a-z]+/).filter(w=>w.length>2&&!['the','university','college','and'].includes(w)));
+  // Words of the school's names, "&" dropped ("A&T" -> "at"); TFRRS shortens
+  // some (N_Carolina_AT, Col_of_Charleston, William__Mary: Oct 23).
+  const words=new Set([school.name,school.short_name,...(school.aliases||[]).slice(0,-1)].join(' ').replace(/&/g,'').toLowerCase().split(/[^a-z]+/).filter(w=>w.length>=2&&!['the','of','university','and'].includes(w)));
+  const SHORT={n:'north',s:'south',e:'east',w:'west',col:'college',st:'state',u:'university'};
+  // Every part names one of the school's words, and the parts name every word
+  // of one of its names (NC A&T is not NC_college_f_North_Carolina_St: "St"
+  // is a word of "North Carolina A&T State University", "A&T" is in no part).
+  const nameWords=[school.name,school.short_name,...(school.aliases||[]).slice(0,-1)].map(n=>n.replace(/&/g,'').toLowerCase().split(/[^a-z]+/).filter(w=>w.length>=2&&!['the','of','and'].includes(w)));
+  const covers=(part,word)=>word.startsWith(SHORT[part]||part)||Boolean(SHORT[part])&&word===part;
+  const fits=name=>{const parts=name.toLowerCase().split(/[_.]+/).filter(w=>w&&w!=='of');if(!parts.some(part=>part.length>2))return 0;if(!parts.every(part=>[...words].some(word=>covers(part,word))))return 0;return nameWords.some(list=>list.length&&list.every(word=>parts.some(part=>covers(part,word))))?parts.length:0;};
   let best=null;
-  for(const meet of [...meets].slice(0,3)){
-    for(const [,name] of (await get(meet)).matchAll(new RegExp(`teams\\/xc\\/${st}_college_f_([A-Za-z_.]+)\\.html`,'g'))){
-      const parts=name.toLowerCase().split(/[_.]+/).filter(w=>w.length>2),score=parts.filter(part=>[...words].some(word=>word.startsWith(part))).length;
-      if(score&&score===parts.length&&(!best||score>best.score))best={name,score};
-    }
-    if(best)break;
-  }
+  const consider=html=>{for(const [,name] of String(html).matchAll(new RegExp(`teams\\/xc\\/${st}_college_f_([A-Za-z_.]+)\\.html`,'g'))){const score=fits(name);if(score&&(!best||score>best.score))best={name,score};}};
+  for(const meet of [...meets].slice(0,3)){consider(await get(meet));if(best)break;}
+  // Then the TFRRS meets the repository already saved (a school's own
+  // schedule may link none).
+  if(!best)for(const dir of readdirSync(new URL('tests/fixtures/',root)).filter(d=>d.endsWith('-module')))for(const file of readdirSync(new URL(`tests/fixtures/${dir}/`,root)).filter(f=>/^tfrrs-\d+\.html\.gz$/.test(f)))consider(gunzipSync(readFileSync(new URL(`tests/fixtures/${dir}/${file}`,root))).toString('utf8'));
   return best?{Women:`https://www.tfrrs.org/teams/xc/${st}_college_f_${best.name}.html`,Men:`https://www.tfrrs.org/teams/xc/${st}_college_m_${best.name}.html`}:null;
 }
 

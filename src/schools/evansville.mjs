@@ -385,5 +385,5 @@ export function createEvansvilleHandlers({makeEvent,recapMatchesEvent,eventType=
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Bowling'||event.sport==='Triathlon')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

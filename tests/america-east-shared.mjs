@@ -30,7 +30,7 @@ assert.match(start,/matchAll\(\/"currentTeams":\\\["\(\[\^"\]\+\)"\/g\)/);
 // (NJIT). Evansville sponsors neither sport, so its output is unchanged.
 const evansville=read('../src/schools/evansville.mjs');
 assert.match(evansville,/sport==='Wrestling'\|\|sport==='Bowling'\)return mergeMeetDays\(games\)/);
-assert.match(evansville,/event\.sport==='Bowling'\)&&event\.headline==='Completed'/);
+assert.match(evansville,/event\.sport==='Bowling'\|\|event\.sport==='Triathlon'\)&&event\.headline==='Completed'/);
 assert.match(evansville,/alumn\(\?:i\|ae\) meet/);
 
 console.log('America East shared checks passed');

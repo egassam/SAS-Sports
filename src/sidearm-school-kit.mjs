@@ -314,7 +314,7 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       for(const path of [...paths].sort((x,y)=>day(y)-day(x)).slice(0,4)){
         // A weekly award story names the meet too ("Norman Named UAC Golfer of
         // the Week" for the Sandestin, Central Arkansas, Sep 17): never its story.
-        if(/-of-the-(?:week|month)$/i.test(path))continue;
+        if(/-of-the-(?:week|month)$|-weekly-honors?$/i.test(path))continue;
         const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
         const text=storyText(raw).toLowerCase();
         if(!words.every(word=>text.includes(word)))continue;
@@ -354,7 +354,9 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
 // "Virginia" is TFRRS's "Panorama Farms Invitational") is the team's only
 // meet that day when the schedule's team places confirm it (the check
 // below); onlyMeetThatDay:true takes it without places too.
-export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay='checked',decodeHtml,ordinal,fetch,headers}){
+// The words that make a name an event's, not a school's.
+const HOST_EVENT_WORD=/\b(?:invitational|invite|classic|open|opener|championships?|meet|run|race|challenge|festival|showcase|jamboree|xc|cross country|throwdown|shootout|preview|gold|twilight|dual|tri|relays?|series|cup|fling|stampede|chase|derby)\b/i;
+export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay='checked',hostMeetName=false,decodeHtml,ordinal,fetch,headers}){
   const download=downloader(fetch,headers);
   const matches=event=>event?.school_id===id&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   async function attach(event){
@@ -400,7 +402,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       event.highlight_state='official_recap_results';event.highlight_status=null;
       return event;
     }
-    const races=[];let resultsUrl=null;
+    const races=[];let resultsUrl=null,resultsPage=null;
     for(const url of pages){
       const page=await download(url);if(!page)return unavailable(failed);
       for(const name of names){
@@ -408,7 +410,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
         for(const race of found)if(!races.some(other=>other.group===race.group))races.push(race);
         if(found.length)break;
       }
-      resultsUrl??=url;
+      resultsUrl??=url;resultsPage??=page;
     }
     if(!races.length||!orderTfrrsRaces(races,event.headline))return unavailable(failed);
     const rows=[],headline=[],lines=[];
@@ -432,6 +434,13 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
     // The source link stays on the school's site; the TFRRS page is kept
     // beside it (not result_url: that starts the generic TFRRS enrichment).
     event.results_source_url=resultsUrl;
+    // hostMeetName (a module whose schedule names meets only by their host:
+    // NC A&T's "Elon", "Catawba College", Sep 4-26): such a meet takes TFRRS's
+    // name for it ("Friday Night Lights Elon XC Opener"); a name with an event
+    // word keeps the school's. Off by default: other schools' own names
+    // ("Battle for New Orleans", "Pre Nationals") are kept.
+    const tfrrsName=decodeHtml((String(resultsPage||'').match(/<title>\s*TFRRS\s*\|\s*([^<]+?)\s*-\s*Meet Results/i)||[])[1]||'').trim();
+    if(hostMeetName&&tfrrsName&&event.opponent&&!HOST_EVENT_WORD.test(event.opponent)&&HOST_EVENT_WORD.test(tfrrsName)){const old=event.opponent;event.opponent=tfrrsName;if(event.title)event.title=event.title.replace(` at ${old}`,` at ${tfrrsName}`).replace(` vs ${old}`,` at ${tfrrsName}`);}
     event.source={...event.source,name:event.recap_url?'Official athletics meet recap; results from TFRRS':'Official athletics schedule; results from TFRRS',url:event.recap_url||event.source?.url};
     for(const race of races){const [leader]=race.runners;if(leader)lines.push(`${leader.participant} led ${schoolName} in the ${race.group.replace(/^\w+/,word=>word.toLowerCase())}, finishing ${leader.result.replace(' \u00b7 ',' in ')}.`);}
     for(let i=1;lines.length<4&&races.some(race=>race.runners[i]);i++)for(const race of races){const runner=race.runners[i];if(runner&&lines.length<4)lines.push(`${runner.participant} finished ${runner.result.replace(' \u00b7 ',' in ')} in the ${race.group.replace(/^\w+/,word=>word.toLowerCase())}.`);}
@@ -570,7 +579,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // Flyer Invitational on Tuesday, placing 10th").
     // ... unless it led them to the team's place: "Powell led the Patriots to
     // a fifth-place finish in the 13-team field" (George Mason, Sep 22).
-    const ledTo=sentence.match(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    // "... to lead the Monmouth University men's golf team to a seventh-place
+    // finish" (Monmouth, Oct 21): a few words may follow the team's name.
+    const ledTo=sentence.match(new RegExp(`\\b(?:paced|led|leads?|leading)\\s+(?:the\\s+)?${team}(?:\\s+[A-Za-z'’]+){0,4}?\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(ledTo&&placeOf(ledTo[2]))return`${ledTo[1]?'T':''}${placeOf(ledTo[2])}`;
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
     // A standing after an earlier round is not the final place (Northern
