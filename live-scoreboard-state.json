@@ -5363,9 +5363,528 @@
   },
   "west-florida|Volleyball": {
    "state": "off"
+  },
+  "ualbany|Baseball": {
+   "state": "off"
+  },
+  "ualbany|Basketball": {
+   "state": "off"
+  },
+  "ualbany|Field Hockey": {
+   "state": "off"
+  },
+  "ualbany|Football": {
+   "state": "off"
+  },
+  "ualbany|Lacrosse": {
+   "state": "off"
+  },
+  "ualbany|Soccer": {
+   "state": "off"
+  },
+  "ualbany|Softball": {
+   "state": "off"
+  },
+  "ualbany|Volleyball": {
+   "state": "off"
+  },
+  "binghamton|Baseball": {
+   "state": "off"
+  },
+  "binghamton|Basketball": {
+   "state": "off"
+  },
+  "binghamton|Lacrosse": {
+   "state": "off"
+  },
+  "binghamton|Soccer": {
+   "state": "off"
+  },
+  "binghamton|Softball": {
+   "state": "off"
+  },
+  "binghamton|Volleyball": {
+   "state": "off"
+  },
+  "bryant|Baseball": {
+   "state": "off"
+  },
+  "bryant|Basketball": {
+   "state": "off"
+  },
+  "bryant|Field Hockey": {
+   "state": "off"
+  },
+  "bryant|Football": {
+   "state": "off"
+  },
+  "bryant|Lacrosse": {
+   "state": "off"
+  },
+  "bryant|Soccer": {
+   "state": "off"
+  },
+  "bryant|Softball": {
+   "state": "off"
+  },
+  "bryant|Volleyball": {
+   "state": "off"
+  },
+  "maine|Baseball": {
+   "state": "off"
+  },
+  "maine|Basketball": {
+   "state": "off"
+  },
+  "maine|Field Hockey": {
+   "state": "off"
+  },
+  "maine|Football": {
+   "state": "off"
+  },
+  "maine|Hockey": {
+   "state": "off"
+  },
+  "maine|Soccer": {
+   "state": "off"
+  },
+  "maine|Softball": {
+   "state": "off"
+  },
+  "new-hampshire|Basketball": {
+   "state": "off"
+  },
+  "new-hampshire|Field Hockey": {
+   "state": "off"
+  },
+  "new-hampshire|Football": {
+   "state": "off"
+  },
+  "new-hampshire|Hockey": {
+   "state": "off"
+  },
+  "new-hampshire|Lacrosse": {
+   "state": "off"
+  },
+  "new-hampshire|Soccer": {
+   "state": "off"
+  },
+  "new-hampshire|Volleyball": {
+   "state": "off"
+  },
+  "njit|Baseball": {
+   "state": "off"
+  },
+  "njit|Basketball": {
+   "state": "off"
+  },
+  "njit|Hockey": {
+   "state": "off"
+  },
+  "njit|Lacrosse": {
+   "state": "off"
+  },
+  "njit|Soccer": {
+   "state": "off"
+  },
+  "njit|Volleyball": {
+   "state": "off"
+  },
+  "umass-lowell|Baseball": {
+   "state": "off"
+  },
+  "umass-lowell|Basketball": {
+   "state": "off"
+  },
+  "umass-lowell|Field Hockey": {
+   "state": "off"
+  },
+  "umass-lowell|Hockey": {
+   "state": "off"
+  },
+  "umass-lowell|Lacrosse": {
+   "state": "off"
+  },
+  "umass-lowell|Soccer": {
+   "state": "off"
+  },
+  "umass-lowell|Softball": {
+   "state": "off"
+  },
+  "umbc|Baseball": {
+   "state": "off"
+  },
+  "umbc|Basketball": {
+   "state": "off"
+  },
+  "umbc|Lacrosse": {
+   "state": "off"
+  },
+  "umbc|Soccer": {
+   "state": "off"
+  },
+  "umbc|Softball": {
+   "state": "off"
+  },
+  "umbc|Volleyball": {
+   "state": "off"
+  },
+  "charleston-southern|Baseball": {
+   "state": "off"
+  },
+  "charleston-southern|Basketball": {
+   "state": "off"
+  },
+  "charleston-southern|Football": {
+   "state": "off"
+  },
+  "charleston-southern|Soccer": {
+   "state": "off"
+  },
+  "charleston-southern|Softball": {
+   "state": "off"
+  },
+  "charleston-southern|Volleyball": {
+   "state": "off"
+  },
+  "gardner-webb|Baseball": {
+   "state": "off"
+  },
+  "gardner-webb|Basketball": {
+   "state": "off"
+  },
+  "gardner-webb|Football": {
+   "state": "off"
+  },
+  "gardner-webb|Lacrosse": {
+   "state": "off"
+  },
+  "gardner-webb|Soccer": {
+   "state": "off"
+  },
+  "gardner-webb|Softball": {
+   "state": "off"
+  },
+  "gardner-webb|Volleyball": {
+   "state": "off"
+  },
+  "high-point|Baseball": {
+   "state": "off"
+  },
+  "high-point|Basketball": {
+   "state": "off"
+  },
+  "high-point|Lacrosse": {
+   "state": "off"
+  },
+  "high-point|Soccer": {
+   "state": "off"
+  },
+  "high-point|Volleyball": {
+   "state": "off"
+  },
+  "presbyterian|Baseball": {
+   "state": "off"
+  },
+  "presbyterian|Basketball": {
+   "state": "off"
+  },
+  "presbyterian|Football": {
+   "state": "off"
+  },
+  "presbyterian|Lacrosse": {
+   "state": "off"
+  },
+  "presbyterian|Soccer": {
+   "state": "off"
+  },
+  "presbyterian|Softball": {
+   "state": "off"
+  },
+  "presbyterian|Volleyball": {
+   "state": "off"
+  },
+  "radford|Baseball": {
+   "state": "off"
+  },
+  "radford|Basketball": {
+   "state": "off"
+  },
+  "radford|Field Hockey": {
+   "state": "off"
+  },
+  "radford|Lacrosse": {
+   "state": "off"
+  },
+  "radford|Soccer": {
+   "state": "off"
+  },
+  "radford|Softball": {
+   "state": "off"
+  },
+  "radford|Volleyball": {
+   "state": "off"
+  },
+  "unc-asheville|Baseball": {
+   "state": "off"
+  },
+  "unc-asheville|Basketball": {
+   "state": "off"
+  },
+  "unc-asheville|Soccer": {
+   "state": "off"
+  },
+  "unc-asheville|Volleyball": {
+   "state": "off"
+  },
+  "usc-upstate|Baseball": {
+   "state": "off"
+  },
+  "usc-upstate|Basketball": {
+   "state": "off"
+  },
+  "usc-upstate|Soccer": {
+   "state": "off"
+  },
+  "usc-upstate|Softball": {
+   "state": "off"
+  },
+  "usc-upstate|Volleyball": {
+   "state": "off"
+  },
+  "winthrop|Baseball": {
+   "state": "off"
+  },
+  "winthrop|Basketball": {
+   "state": "off"
+  },
+  "winthrop|Lacrosse": {
+   "state": "off"
+  },
+  "winthrop|Soccer": {
+   "state": "off"
+  },
+  "winthrop|Softball": {
+   "state": "off"
+  },
+  "winthrop|Volleyball": {
+   "state": "off"
+  },
+  "campbell|Baseball": {
+   "state": "off"
+  },
+  "campbell|Basketball": {
+   "state": "off"
+  },
+  "campbell|Football": {
+   "state": "off"
+  },
+  "campbell|Lacrosse": {
+   "state": "off"
+  },
+  "campbell|Soccer": {
+   "state": "off"
+  },
+  "campbell|Softball": {
+   "state": "off"
+  },
+  "campbell|Volleyball": {
+   "state": "off"
+  },
+  "charleston|Baseball": {
+   "state": "off"
+  },
+  "charleston|Basketball": {
+   "state": "off"
+  },
+  "charleston|Soccer": {
+   "state": "off"
+  },
+  "charleston|Softball": {
+   "state": "off"
+  },
+  "charleston|Volleyball": {
+   "state": "off"
+  },
+  "drexel|Basketball": {
+   "state": "off"
+  },
+  "drexel|Field Hockey": {
+   "state": "off"
+  },
+  "drexel|Lacrosse": {
+   "state": "off"
+  },
+  "drexel|Soccer": {
+   "state": "off"
+  },
+  "drexel|Softball": {
+   "state": "off"
+  },
+  "elon|Baseball": {
+   "state": "off"
+  },
+  "elon|Basketball": {
+   "state": "off"
+  },
+  "elon|Football": {
+   "state": "off"
+  },
+  "elon|Lacrosse": {
+   "state": "off"
+  },
+  "elon|Soccer": {
+   "state": "off"
+  },
+  "elon|Softball": {
+   "state": "off"
+  },
+  "elon|Volleyball": {
+   "state": "off"
+  },
+  "hampton|Basketball": {
+   "state": "off"
+  },
+  "hampton|Football": {
+   "state": "off"
+  },
+  "hampton|Lacrosse": {
+   "state": "off"
+  },
+  "hampton|Soccer": {
+   "state": "off"
+  },
+  "hampton|Softball": {
+   "state": "off"
+  },
+  "hampton|Volleyball": {
+   "state": "off"
+  },
+  "hofstra|Baseball": {
+   "state": "off"
+  },
+  "hofstra|Basketball": {
+   "state": "off"
+  },
+  "hofstra|Field Hockey": {
+   "state": "off"
+  },
+  "hofstra|Lacrosse": {
+   "state": "off"
+  },
+  "hofstra|Soccer": {
+   "state": "off"
+  },
+  "hofstra|Softball": {
+   "state": "off"
+  },
+  "hofstra|Volleyball": {
+   "state": "off"
+  },
+  "monmouth|Baseball": {
+   "state": "off"
+  },
+  "monmouth|Basketball": {
+   "state": "off"
+  },
+  "monmouth|Field Hockey": {
+   "state": "off"
+  },
+  "monmouth|Football": {
+   "state": "off"
+  },
+  "monmouth|Lacrosse": {
+   "state": "off"
+  },
+  "monmouth|Soccer": {
+   "state": "off"
+  },
+  "monmouth|Softball": {
+   "state": "off"
+  },
+  "nc-at|Baseball": {
+   "state": "off"
+  },
+  "nc-at|Basketball": {
+   "state": "off"
+  },
+  "nc-at|Football": {
+   "state": "off"
+  },
+  "nc-at|Softball": {
+   "state": "off"
+  },
+  "nc-at|Volleyball": {
+   "state": "off"
+  },
+  "stony-brook|Baseball": {
+   "state": "off"
+  },
+  "stony-brook|Basketball": {
+   "state": "off"
+  },
+  "stony-brook|Football": {
+   "state": "off"
+  },
+  "stony-brook|Lacrosse": {
+   "state": "off"
+  },
+  "stony-brook|Soccer": {
+   "state": "off"
+  },
+  "stony-brook|Softball": {
+   "state": "off"
+  },
+  "stony-brook|Volleyball": {
+   "state": "off"
+  },
+  "towson|Baseball": {
+   "state": "off"
+  },
+  "towson|Basketball": {
+   "state": "off"
+  },
+  "towson|Field Hockey": {
+   "state": "off"
+  },
+  "towson|Football": {
+   "state": "off"
+  },
+  "towson|Lacrosse": {
+   "state": "off"
+  },
+  "towson|Soccer": {
+   "state": "off"
+  },
+  "towson|Softball": {
+   "state": "off"
+  },
+  "towson|Volleyball": {
+   "state": "off"
+  },
+  "william-mary|Baseball": {
+   "state": "off"
+  },
+  "william-mary|Basketball": {
+   "state": "off"
+  },
+  "william-mary|Field Hockey": {
+   "state": "off"
+  },
+  "william-mary|Football": {
+   "state": "off"
+  },
+  "william-mary|Lacrosse": {
+   "state": "off"
+  },
+  "william-mary|Soccer": {
+   "state": "off"
+  },
+  "william-mary|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.164.0-asun-uac",
- "updated_at": "2026-10-23T07:27:27.575Z",
+ "version": "4.174.0-caa",
+ "updated_at": "2026-10-23T12:50:02.467Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

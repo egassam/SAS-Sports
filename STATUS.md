@@ -77,6 +77,12 @@
 | belmont | Soccer | ⚪ off (waiting) |  |
 | belmont | Softball | ⚪ off (waiting) |  |
 | belmont | Volleyball | ⚪ off (waiting) |  |
+| binghamton | Baseball | ⚪ off (waiting) |  |
+| binghamton | Basketball | ⚪ off (waiting) |  |
+| binghamton | Lacrosse | ⚪ off (waiting) |  |
+| binghamton | Soccer | ⚪ off (waiting) |  |
+| binghamton | Softball | ⚪ off (waiting) |  |
+| binghamton | Volleyball | ⚪ off (waiting) |  |
 | boise-state | Basketball | ⚪ off (waiting) |  |
 | boise-state | Football | ⚪ off (waiting) |  |
 | boise-state | Softball | ⚪ off (waiting) |  |
@@ -94,6 +100,14 @@
 | bowling-green | Soccer | ⚪ off (waiting) |  |
 | bowling-green | Softball | ⚪ off (waiting) |  |
 | bowling-green | Volleyball | ⚪ off (waiting) |  |
+| bryant | Baseball | ⚪ off (waiting) |  |
+| bryant | Basketball | ⚪ off (waiting) |  |
+| bryant | Field Hockey | ⚪ off (waiting) |  |
+| bryant | Football | ⚪ off (waiting) |  |
+| bryant | Lacrosse | ⚪ off (waiting) |  |
+| bryant | Soccer | ⚪ off (waiting) |  |
+| bryant | Softball | ⚪ off (waiting) |  |
+| bryant | Volleyball | ⚪ off (waiting) |  |
 | buffalo | Basketball | ⚪ off (waiting) |  |
 | buffalo | Football | ⚪ off (waiting) |  |
 | buffalo | Soccer | ⚪ off (waiting) |  |
@@ -126,6 +140,13 @@
 | california | Lacrosse | ⚪ off (waiting) |  |
 | california | Softball | ⚪ off (waiting) |  |
 | california | Water Polo | ⚪ off (waiting) |  |
+| campbell | Baseball | ⚪ off (waiting) |  |
+| campbell | Basketball | ⚪ off (waiting) |  |
+| campbell | Football | ⚪ off (waiting) |  |
+| campbell | Lacrosse | ⚪ off (waiting) |  |
+| campbell | Soccer | ⚪ off (waiting) |  |
+| campbell | Softball | ⚪ off (waiting) |  |
+| campbell | Volleyball | ⚪ off (waiting) |  |
 | central-arkansas | Baseball | ⚪ off (waiting) |  |
 | central-arkansas | Basketball | ⚪ off (waiting) |  |
 | central-arkansas | Football | ⚪ off (waiting) |  |
@@ -140,6 +161,17 @@
 | central-michigan | Soccer | ⚪ off (waiting) |  |
 | central-michigan | Softball | ⚪ off (waiting) |  |
 | central-michigan | Volleyball | ⚪ off (waiting) |  |
+| charleston | Baseball | ⚪ off (waiting) |  |
+| charleston | Basketball | ⚪ off (waiting) |  |
+| charleston | Soccer | ⚪ off (waiting) |  |
+| charleston | Softball | ⚪ off (waiting) |  |
+| charleston | Volleyball | ⚪ off (waiting) |  |
+| charleston-southern | Baseball | ⚪ off (waiting) |  |
+| charleston-southern | Basketball | ⚪ off (waiting) |  |
+| charleston-southern | Football | ⚪ off (waiting) |  |
+| charleston-southern | Soccer | ⚪ off (waiting) |  |
+| charleston-southern | Softball | ⚪ off (waiting) |  |
+| charleston-southern | Volleyball | ⚪ off (waiting) |  |
 | charlotte | Baseball | ⚪ off (waiting) |  |
 | charlotte | Basketball | ⚪ off (waiting) |  |
 | charlotte | Football | ⚪ off (waiting) |  |
@@ -203,6 +235,11 @@
 | depaul | Soccer | ⚪ off (waiting) |  |
 | depaul | Softball | ⚪ off (waiting) |  |
 | depaul | Volleyball | ⚪ off (waiting) |  |
+| drexel | Basketball | ⚪ off (waiting) |  |
+| drexel | Field Hockey | ⚪ off (waiting) |  |
+| drexel | Lacrosse | ⚪ off (waiting) |  |
+| drexel | Soccer | ⚪ off (waiting) |  |
+| drexel | Softball | ⚪ off (waiting) |  |
 | duke | Baseball | ⚪ off (waiting) |  |
 | duke | Basketball | ⚪ off (waiting) |  |
 | duke | Lacrosse | ⚪ off (waiting) |  |
@@ -230,6 +267,13 @@
 | eastern-michigan | Soccer | ⚪ off (waiting) |  |
 | eastern-washington | Basketball | ⚪ off (waiting) |  |
 | eastern-washington | Football | ⚪ off (waiting) |  |
+| elon | Baseball | ⚪ off (waiting) |  |
+| elon | Basketball | ⚪ off (waiting) |  |
+| elon | Football | ⚪ off (waiting) |  |
+| elon | Lacrosse | ⚪ off (waiting) |  |
+| elon | Soccer | ⚪ off (waiting) |  |
+| elon | Softball | ⚪ off (waiting) |  |
+| elon | Volleyball | ⚪ off (waiting) |  |
 | evansville | Baseball | ⚪ off (waiting) |  |
 | evansville | Basketball | ⚪ off (waiting) |  |
 | evansville | Soccer | ⚪ off (waiting) |  |
@@ -265,6 +309,13 @@
 | fresno-state | Football | ⚪ off (waiting) |  |
 | fresno-state | Softball | ⚪ off (waiting) |  |
 | fresno-state | Water Polo | ⚪ off (waiting) |  |
+| gardner-webb | Baseball | ⚪ off (waiting) |  |
+| gardner-webb | Basketball | ⚪ off (waiting) |  |
+| gardner-webb | Football | ⚪ off (waiting) |  |
+| gardner-webb | Lacrosse | ⚪ off (waiting) |  |
+| gardner-webb | Soccer | ⚪ off (waiting) |  |
+| gardner-webb | Softball | ⚪ off (waiting) |  |
+| gardner-webb | Volleyball | ⚪ off (waiting) |  |
 | george-mason | Baseball | ⚪ off (waiting) |  |
 | george-mason | Basketball | ⚪ off (waiting) |  |
 | george-mason | Lacrosse | ⚪ off (waiting) |  |
@@ -296,6 +347,24 @@
 | grand-canyon | Basketball | ⚪ off (waiting) |  |
 | grand-canyon | Soccer | ⚪ off (waiting) |  |
 | grand-canyon | Softball | ⚪ off (waiting) |  |
+| hampton | Basketball | ⚪ off (waiting) |  |
+| hampton | Football | ⚪ off (waiting) |  |
+| hampton | Lacrosse | ⚪ off (waiting) |  |
+| hampton | Soccer | ⚪ off (waiting) |  |
+| hampton | Softball | ⚪ off (waiting) |  |
+| hampton | Volleyball | ⚪ off (waiting) |  |
+| high-point | Baseball | ⚪ off (waiting) |  |
+| high-point | Basketball | ⚪ off (waiting) |  |
+| high-point | Lacrosse | ⚪ off (waiting) |  |
+| high-point | Soccer | ⚪ off (waiting) |  |
+| high-point | Volleyball | ⚪ off (waiting) |  |
+| hofstra | Baseball | ⚪ off (waiting) |  |
+| hofstra | Basketball | ⚪ off (waiting) |  |
+| hofstra | Field Hockey | ⚪ off (waiting) |  |
+| hofstra | Lacrosse | ⚪ off (waiting) |  |
+| hofstra | Soccer | ⚪ off (waiting) |  |
+| hofstra | Softball | ⚪ off (waiting) |  |
+| hofstra | Volleyball | ⚪ off (waiting) |  |
 | houston | Baseball | ⚪ off (waiting) |  |
 | houston | Basketball | ⚪ off (waiting) |  |
 | houston | Softball | ⚪ off (waiting) |  |
@@ -408,6 +477,13 @@
 | lsu | Baseball | ⚪ off (waiting) |  |
 | lsu | Basketball | ⚪ off (waiting) |  |
 | lsu | Softball | ⚪ off (waiting) |  |
+| maine | Baseball | ⚪ off (waiting) |  |
+| maine | Basketball | ⚪ off (waiting) |  |
+| maine | Field Hockey | ⚪ off (waiting) |  |
+| maine | Football | ⚪ off (waiting) |  |
+| maine | Hockey | ⚪ off (waiting) |  |
+| maine | Soccer | ⚪ off (waiting) |  |
+| maine | Softball | ⚪ off (waiting) |  |
 | marquette | Basketball | ⚪ off (waiting) |  |
 | marquette | Lacrosse | ⚪ off (waiting) |  |
 | marquette | Volleyball | ⚪ off (waiting) |  |
@@ -463,6 +539,13 @@
 | missouri-state | Football | ⚪ off (waiting) |  |
 | missouri-state | Softball | ⚪ off (waiting) |  |
 | missouri-state | Volleyball | ⚪ off (waiting) |  |
+| monmouth | Baseball | ⚪ off (waiting) |  |
+| monmouth | Basketball | ⚪ off (waiting) |  |
+| monmouth | Field Hockey | ⚪ off (waiting) |  |
+| monmouth | Football | ⚪ off (waiting) |  |
+| monmouth | Lacrosse | ⚪ off (waiting) |  |
+| monmouth | Soccer | ⚪ off (waiting) |  |
+| monmouth | Softball | ⚪ off (waiting) |  |
 | montana | Basketball | ⚪ off (waiting) |  |
 | montana | Football | ⚪ off (waiting) |  |
 | montana | Softball | ⚪ off (waiting) |  |
@@ -474,6 +557,11 @@
 | murray-state | Soccer | ⚪ off (waiting) |  |
 | murray-state | Softball | ⚪ off (waiting) |  |
 | murray-state | Volleyball | ⚪ off (waiting) |  |
+| nc-at | Baseball | ⚪ off (waiting) |  |
+| nc-at | Basketball | ⚪ off (waiting) |  |
+| nc-at | Football | ⚪ off (waiting) |  |
+| nc-at | Softball | ⚪ off (waiting) |  |
+| nc-at | Volleyball | ⚪ off (waiting) |  |
 | nc-state | Baseball | ⚪ off (waiting) |  |
 | nc-state | Basketball | ⚪ off (waiting) |  |
 | nc-state | Football | ⚪ off (waiting) |  |
@@ -481,12 +569,25 @@
 | nebraska | Baseball | ⚪ off (waiting) |  |
 | nebraska | Basketball | ⚪ off (waiting) |  |
 | nebraska | Softball | ⚪ off (waiting) |  |
+| new-hampshire | Basketball | ⚪ off (waiting) |  |
+| new-hampshire | Field Hockey | ⚪ off (waiting) |  |
+| new-hampshire | Football | ⚪ off (waiting) |  |
+| new-hampshire | Hockey | ⚪ off (waiting) |  |
+| new-hampshire | Lacrosse | ⚪ off (waiting) |  |
+| new-hampshire | Soccer | ⚪ off (waiting) |  |
+| new-hampshire | Volleyball | ⚪ off (waiting) |  |
 | new-mexico | Baseball | ⚪ off (waiting) |  |
 | new-mexico | Basketball | ⚪ off (waiting) |  |
 | new-mexico | Football | ⚪ off (waiting) |  |
 | new-mexico | Soccer | ⚪ off (waiting) |  |
 | new-mexico | Softball | ⚪ off (waiting) |  |
 | new-mexico | Volleyball | ⚪ off (waiting) |  |
+| njit | Baseball | ⚪ off (waiting) |  |
+| njit | Basketball | ⚪ off (waiting) |  |
+| njit | Hockey | ⚪ off (waiting) |  |
+| njit | Lacrosse | ⚪ off (waiting) |  |
+| njit | Soccer | ⚪ off (waiting) |  |
+| njit | Volleyball | ⚪ off (waiting) |  |
 | north-alabama | Baseball | ⚪ off (waiting) |  |
 | north-alabama | Basketball | ⚪ off (waiting) |  |
 | north-alabama | Football | ⚪ off (waiting) |  |
@@ -591,6 +692,13 @@
 | portland-state | Soccer | ⚪ off (waiting) |  |
 | portland-state | Softball | ⚪ off (waiting) |  |
 | portland-state | Volleyball | ⚪ off (waiting) |  |
+| presbyterian | Baseball | ⚪ off (waiting) |  |
+| presbyterian | Basketball | ⚪ off (waiting) |  |
+| presbyterian | Football | ⚪ off (waiting) |  |
+| presbyterian | Lacrosse | ⚪ off (waiting) |  |
+| presbyterian | Soccer | ⚪ off (waiting) |  |
+| presbyterian | Softball | ⚪ off (waiting) |  |
+| presbyterian | Volleyball | ⚪ off (waiting) |  |
 | providence | Basketball | ⚪ off (waiting) |  |
 | providence | Field Hockey | ⚪ off (waiting) |  |
 | providence | Hockey | ⚪ off (waiting) |  |
@@ -607,6 +715,13 @@
 | queens | Soccer | ⚪ off (waiting) |  |
 | queens | Softball | ⚪ off (waiting) |  |
 | queens | Volleyball | ⚪ off (waiting) |  |
+| radford | Baseball | ⚪ off (waiting) |  |
+| radford | Basketball | ⚪ off (waiting) |  |
+| radford | Field Hockey | ⚪ off (waiting) |  |
+| radford | Lacrosse | ⚪ off (waiting) |  |
+| radford | Soccer | ⚪ off (waiting) |  |
+| radford | Softball | ⚪ off (waiting) |  |
+| radford | Volleyball | ⚪ off (waiting) |  |
 | rhode-island | Baseball | ⚪ off (waiting) |  |
 | rhode-island | Basketball | ⚪ off (waiting) |  |
 | rhode-island | Football | ⚪ off (waiting) |  |
@@ -727,6 +842,13 @@
 | stanford | Lacrosse | ⚪ off (waiting) |  |
 | stanford | Softball | ⚪ off (waiting) |  |
 | stanford | Water Polo | ⚪ off (waiting) |  |
+| stony-brook | Baseball | ⚪ off (waiting) |  |
+| stony-brook | Basketball | ⚪ off (waiting) |  |
+| stony-brook | Football | ⚪ off (waiting) |  |
+| stony-brook | Lacrosse | ⚪ off (waiting) |  |
+| stony-brook | Soccer | ⚪ off (waiting) |  |
+| stony-brook | Softball | ⚪ off (waiting) |  |
+| stony-brook | Volleyball | ⚪ off (waiting) |  |
 | syracuse | Basketball | ⚪ off (waiting) |  |
 | syracuse | Field Hockey | ⚪ off (waiting) |  |
 | syracuse | Lacrosse | ⚪ off (waiting) |  |
@@ -762,6 +884,14 @@
 | toledo | Soccer | ⚪ off (waiting) |  |
 | toledo | Softball | ⚪ off (waiting) |  |
 | toledo | Volleyball | ⚪ off (waiting) |  |
+| towson | Baseball | ⚪ off (waiting) |  |
+| towson | Basketball | ⚪ off (waiting) |  |
+| towson | Field Hockey | ⚪ off (waiting) |  |
+| towson | Football | ⚪ off (waiting) |  |
+| towson | Lacrosse | ⚪ off (waiting) |  |
+| towson | Soccer | ⚪ off (waiting) |  |
+| towson | Softball | ⚪ off (waiting) |  |
+| towson | Volleyball | ⚪ off (waiting) |  |
 | troy | Baseball | ⚪ off (waiting) |  |
 | troy | Basketball | ⚪ off (waiting) |  |
 | troy | Football | ⚪ off (waiting) |  |
@@ -780,6 +910,14 @@
 | uab | Football | ⚪ off (waiting) |  |
 | uab | Softball | ⚪ off (waiting) |  |
 | uab | Volleyball | ⚪ off (waiting) |  |
+| ualbany | Baseball | ⚪ off (waiting) |  |
+| ualbany | Basketball | ⚪ off (waiting) |  |
+| ualbany | Field Hockey | ⚪ off (waiting) |  |
+| ualbany | Football | ⚪ off (waiting) |  |
+| ualbany | Lacrosse | ⚪ off (waiting) |  |
+| ualbany | Soccer | ⚪ off (waiting) |  |
+| ualbany | Softball | ⚪ off (waiting) |  |
+| ualbany | Volleyball | ⚪ off (waiting) |  |
 | uc-davis | Baseball | ⚪ off (waiting) |  |
 | uc-davis | Basketball | ⚪ off (waiting) |  |
 | uc-davis | Field Hockey | ⚪ off (waiting) |  |
@@ -839,6 +977,23 @@
 | umass | Lacrosse | ⚪ off (waiting) |  |
 | umass | Soccer | ⚪ off (waiting) |  |
 | umass | Softball | ⚪ off (waiting) |  |
+| umass-lowell | Baseball | ⚪ off (waiting) |  |
+| umass-lowell | Basketball | ⚪ off (waiting) |  |
+| umass-lowell | Field Hockey | ⚪ off (waiting) |  |
+| umass-lowell | Hockey | ⚪ off (waiting) |  |
+| umass-lowell | Lacrosse | ⚪ off (waiting) |  |
+| umass-lowell | Soccer | ⚪ off (waiting) |  |
+| umass-lowell | Softball | ⚪ off (waiting) |  |
+| umbc | Baseball | ⚪ off (waiting) |  |
+| umbc | Basketball | ⚪ off (waiting) |  |
+| umbc | Lacrosse | ⚪ off (waiting) |  |
+| umbc | Soccer | ⚪ off (waiting) |  |
+| umbc | Softball | ⚪ off (waiting) |  |
+| umbc | Volleyball | ⚪ off (waiting) |  |
+| unc-asheville | Baseball | ⚪ off (waiting) |  |
+| unc-asheville | Basketball | ⚪ off (waiting) |  |
+| unc-asheville | Soccer | ⚪ off (waiting) |  |
+| unc-asheville | Volleyball | ⚪ off (waiting) |  |
 | unlv | Baseball | ⚪ off (waiting) |  |
 | unlv | Basketball | ⚪ off (waiting) |  |
 | unlv | Football | ⚪ off (waiting) |  |
@@ -850,6 +1005,11 @@
 | usc | Football | ⚪ off (waiting) |  |
 | usc | Lacrosse | ⚪ off (waiting) |  |
 | usc | Water Polo | ⚪ off (waiting) |  |
+| usc-upstate | Baseball | ⚪ off (waiting) |  |
+| usc-upstate | Basketball | ⚪ off (waiting) |  |
+| usc-upstate | Soccer | ⚪ off (waiting) |  |
+| usc-upstate | Softball | ⚪ off (waiting) |  |
+| usc-upstate | Volleyball | ⚪ off (waiting) |  |
 | ut-arlington | Baseball | ⚪ off (waiting) |  |
 | ut-arlington | Basketball | ⚪ off (waiting) |  |
 | ut-arlington | Softball | ⚪ off (waiting) |  |
@@ -931,6 +1091,19 @@
 | western-kentucky | Football | ⚪ off (waiting) |  |
 | western-kentucky | Softball | ⚪ off (waiting) |  |
 | western-kentucky | Volleyball | ⚪ off (waiting) |  |
+| william-mary | Baseball | ⚪ off (waiting) |  |
+| william-mary | Basketball | ⚪ off (waiting) |  |
+| william-mary | Field Hockey | ⚪ off (waiting) |  |
+| william-mary | Football | ⚪ off (waiting) |  |
+| william-mary | Lacrosse | ⚪ off (waiting) |  |
+| william-mary | Soccer | ⚪ off (waiting) |  |
+| william-mary | Volleyball | ⚪ off (waiting) |  |
+| winthrop | Baseball | ⚪ off (waiting) |  |
+| winthrop | Basketball | ⚪ off (waiting) |  |
+| winthrop | Lacrosse | ⚪ off (waiting) |  |
+| winthrop | Soccer | ⚪ off (waiting) |  |
+| winthrop | Softball | ⚪ off (waiting) |  |
+| winthrop | Volleyball | ⚪ off (waiting) |  |
 | wisconsin | Basketball | ⚪ off (waiting) |  |
 | wisconsin | Hockey | ⚪ off (waiting) | final W, 12-1 (live phase not observed 2×; waits for the next game) |
 | wisconsin | Softball | ⚪ off (waiting) |  |
@@ -1213,4 +1386,4 @@
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 | xavier | Soccer | ✅ off (passed) | Women's · Xavier at Marquette · 2026-10-22T01:43:47.431Z |
 
-Done 275/1212; on 0; off 932; failing 5.
+Done 275/1385; on 0; off 1105; failing 5.
