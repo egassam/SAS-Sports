@@ -22,6 +22,9 @@ export const chicagoStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Chicago State's tennis rosters publish portraits for few players (Oct 23).
+  portraitlessProfileSports:new Set(['Tennis']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{

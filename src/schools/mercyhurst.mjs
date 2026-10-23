@@ -24,6 +24,9 @@ export const mercyhurstSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Mercyhurst's bowling roster publishes no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Bowling']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Water Polo','Wrestling']),
   // Mercyhurst's /sports/mens-rowing/ is men's lightweight rowing and /sports/wrestling/ men's (their titles, Oct 23).
   teamLabels:{'/sports/mens-rowing/schedule':"Men's Lightweight",'/sports/wrestling/schedule':"Men's"},

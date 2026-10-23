@@ -23,6 +23,9 @@ export const wagnerSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Wagner's bowling roster publishes portraits for few bowlers (Oct 23).
+  portraitlessProfileSports:new Set(['Bowling']),
   combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Lacrosse','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'wagner|Golf|Izabella Sokolovic':'https://www.instagram.com/izi1006/',
