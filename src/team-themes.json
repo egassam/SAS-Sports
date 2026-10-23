@@ -127,6 +127,14 @@
     "line": "#0e7036",
     "onAccent": "#ffffff"
   },
+  "austin-peay": {
+    "primary": "#C8102E",
+    "secondary": "#000000",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
   "ball-state": {
     "primary": "#BA0C2F",
     "secondary": "#000000",
@@ -157,6 +165,14 @@
     "panel": "#153027",
     "panelDark": "#091610",
     "line": "#3d745f",
+    "onAccent": "#ffffff"
+  },
+  "bellarmine": {
+    "primary": "#A6192E",
+    "secondary": "#53565A",
+    "panel": "#2d0e17",
+    "panelDark": "#15070c",
+    "line": "#6a1c2c",
     "onAccent": "#ffffff"
   },
   "belmont": {
@@ -261,6 +277,14 @@
     "panel": "#092434",
     "panelDark": "#050f16",
     "line": "#296587",
+    "onAccent": "#ffffff"
+  },
+  "central-arkansas": {
+    "primary": "#4F2D7F",
+    "secondary": "#A7A8AA",
+    "panel": "#1a1228",
+    "panelDark": "#0c0914",
+    "line": "#3a2759",
     "onAccent": "#ffffff"
   },
   "central-michigan": {
@@ -541,6 +565,14 @@
     "panel": "#1c122b",
     "panelDark": "#0d0915",
     "line": "#3f265f",
+    "onAccent": "#ffffff"
+  },
+  "eastern-kentucky": {
+    "primary": "#861F41",
+    "secondary": "#B2B4B2",
+    "panel": "#260f1b",
+    "panelDark": "#12080e",
+    "line": "#581f37",
     "onAccent": "#ffffff"
   },
   "eastern-michigan": {
@@ -831,6 +863,14 @@
     "line": "#884352",
     "onAccent": "#ffffff"
   },
+  "jacksonville": {
+    "primary": "#00573F",
+    "secondary": "#A2AAAD",
+    "panel": "#091c1a",
+    "panelDark": "#050d0e",
+    "line": "#0e3e36",
+    "onAccent": "#ffffff"
+  },
   "jacksonville-jaguars": {
     "primary": "#007487",
     "secondary": "#D7A22A",
@@ -941,6 +981,14 @@
     "panel": "#091222",
     "panelDark": "#050911",
     "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
+  "lipscomb": {
+    "primary": "#3F2A56",
+    "secondary": "#EAAA00",
+    "panel": "#16121f",
+    "panelDark": "#0b0910",
+    "line": "#312642",
     "onAccent": "#ffffff"
   },
   "lmu": {
@@ -1319,6 +1367,14 @@
     "line": "#19223b",
     "onAccent": "#ffffff"
   },
+  "north-alabama": {
+    "primary": "#46166B",
+    "secondary": "#DB9F11",
+    "panel": "#180d24",
+    "panelDark": "#0c0712",
+    "line": "#351b4e",
+    "onAccent": "#ffffff"
+  },
   "north-carolina": {
     "primary": "#7BAFD4",
     "secondary": "#13294B",
@@ -1326,6 +1382,14 @@
     "panelDark": "#11161c",
     "line": "#526f88",
     "onAccent": "#13294B"
+  },
+  "north-florida": {
+    "primary": "#002D72",
+    "secondary": "#A7A8AA",
+    "panel": "#091226",
+    "panelDark": "#050913",
+    "line": "#0e2752",
+    "onAccent": "#ffffff"
   },
   "north-texas": {
     "primary": "#00853E",
@@ -1557,6 +1621,14 @@
     "panel": "#09090c",
     "panelDark": "#050507",
     "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "queens": {
+    "primary": "#0E2346",
+    "secondary": "#C99700",
+    "panel": "#0c101c",
+    "panelDark": "#06080e",
+    "line": "#162239",
     "onAccent": "#ffffff"
   },
   "real-salt-lake": {
@@ -2213,6 +2285,14 @@
     "panel": "#191023",
     "panelDark": "#0c0811",
     "line": "#37224a",
+    "onAccent": "#ffffff"
+  },
+  "west-georgia": {
+    "primary": "#0033A1",
+    "secondary": "#C8102E",
+    "panel": "#091430",
+    "panelDark": "#050a17",
+    "line": "#0e2a6b",
     "onAccent": "#ffffff"
   },
   "west-virginia": {
