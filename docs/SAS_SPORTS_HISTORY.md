@@ -3189,3 +3189,19 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - PR #408 merged as `a4b1ae1`; production `4.174.0-caa` verified about 11:34 UTC (`verify:prod --sports=all` 387 checks, none failed).
 - Next: Horizon, Ivy, MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
 
+## October 23, 2026 — Horizon League (ten schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize" (continued from the CAA). The user asked mid-session "How much is left?" (answer: ten conferences after the Horizon League) and "How many schools are on the block list now?" (32).
+
+- Catalog: the eleven listed 2026-27 members plus Northern Illinois. NIU was found when Detroit Mercy's and Wright State's soccer pages marked it as a league opponent; it joined from the MAC, with football in the Mountain West. Northern Kentucky (nkunorse.com) and Oakland (goldengrizzlies.com) answered Imperva's "Too many redirects" at about 11:58, 12:17 and 12:36 UTC: added to `docs/BLOCKED_SCHOOLS.md`.
+- Preview: the 4.175.0 build was replaced by the earlier handoff build, which finished after it; a version bump (4.175.1) redeployed it.
+- Built with `start-schools` (ported from Evansville): Cleveland State, Detroit Mercy, Green Bay, IU Indianapolis, Milwaukee, Northern Illinois, Purdue Fort Wayne, Robert Morris, Wright State, Youngstown State.
+- Routes from the menus and page titles. Robert Morris's generic `cross-country` (2024), `hockey`, `soccer`, `wrestling` addresses were the homepage or past seasons; Robert Morris golf is men's only and track women's only (2013-14 pages); Cleveland State golf is men's only (women's 2024-25). Youngstown State reads `xc`, `track`, `swim` (generic addresses are the "@season" template). Purdue Fort Wayne men's volleyball and Green Bay Nordic skiing were added.
+- Leagues from page marks, per team page where they differ: NEC men's and MAC women's lacrosse (Detroit Mercy, Robert Morris), NEC football and Atlantic Hockey (Robert Morris), Missouri Valley Football (Youngstown State), MIVA men's volleyball (Purdue Fort Wayne), Mountain West football and Pac-12 wrestling (Northern Illinois), NEC lacrosse (Cleveland State).
+- Formats: bowling places with the record first ("1-2 / 4th of 18 Teams" -> "4th of 18 (1-2)", shared golfPlacing, mutation-tested; the survey of every school matched main); Cleveland State fencing meets read each team's duals record; fencing championships and Youngstown State's bowling days (grouped by the page's opponent record: the Nov 20 title reads "Jersey Jamboreee") merge into one meet; NIU's host-named golf tournament reads as the Redbird Invitational.
+- Records: `compare-records` matches every live page, except Purdue Fort Wayne men's volleyball (the page's record is the finished spring 2026 season, which the season rule leaves out) and Wright State women's soccer (the Oct 22 win at Oakland comes from the live scoreboard before the page posts it).
+- Athletes: 54 sports use profile cards; Purdue Fort Wayne baseball, softball and tennis are off the athlete list (empty template rosters); Cleveland State track lets profiles without portraits fill. `validate-schools --athletes-only`: 93 checks passed.
+- Checks: `test:release` passed. `verify:preview --sports=all`: 291 checks, none failed (96 sports at 36/36 refreshes; XC 18/20 and 26/21). Fencing and bowling were re-gated after the merge fix. Checked by eye: Cleveland State fencing, Youngstown State bowling.
+- PR #409 merged as `b71db2c`; production `4.180.0-horizon` verified about 13:23 UTC (`verify:prod --sports=all` 291 checks, none failed).
+- Next: Ivy, MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+
