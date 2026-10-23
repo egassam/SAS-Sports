@@ -24,6 +24,9 @@ export const merrimackSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Merrimack's golf and rowing rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Golf','Rowing']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   verifiedInstagrams:{},
   scheduleUrls:{

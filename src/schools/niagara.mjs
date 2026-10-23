@@ -24,6 +24,9 @@ export const niagaraSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Niagara's tennis rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Tennis']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{

@@ -23,6 +23,9 @@ export const mountStMarysSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Mount St. Mary's water polo rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Water Polo']),
   combinedSports:new Set(['Basketball','Golf','Lacrosse','Soccer','Swimming & Diving','Tennis','Water Polo']),
   verifiedInstagrams:{},
   scheduleUrls:{

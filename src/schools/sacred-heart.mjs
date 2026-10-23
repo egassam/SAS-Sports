@@ -27,6 +27,9 @@ export const sacredHeartSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Sacred Heart's baseball roster publishes portraits for few players (Oct 23).
+  portraitlessProfileSports:new Set(['Baseball']),
   combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
   // Sacred Heart's /sports/womens-lightweight-rowing/ is its own team, and
   // /sports/wwrest/ (women's wrestling) and /sports/wrestling/ (men's) name
