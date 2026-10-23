@@ -27,29 +27,29 @@ export const winthropSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Lacrosse','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'winthrop|Baseball':'https://winthropeagles.com/sports/baseball/schedule',
-    'winthrop|Basketball':['https://winthropeagles.com/sports/mens-basketball/schedule','https://winthropeagles.com/sports/womens-basketball/schedule','https://winthropeagles.com/sports/basketball/schedule'],
-    'winthrop|Cross Country':'https://winthropeagles.com/sports/cross-country/schedule',
-    'winthrop|Golf':['https://winthropeagles.com/sports/womens-golf/schedule','https://winthropeagles.com/sports/mens-golf/schedule','https://winthropeagles.com/sports/golf/schedule'],
-    'winthrop|Lacrosse':['https://winthropeagles.com/sports/womens-lacrosse/schedule','https://winthropeagles.com/sports/mens-lacrosse/schedule'],
-    'winthrop|Soccer':['https://winthropeagles.com/sports/womens-soccer/schedule','https://winthropeagles.com/sports/soccer/schedule','https://winthropeagles.com/sports/mens-soccer/schedule'],
+    'winthrop|Basketball':['https://winthropeagles.com/sports/mens-basketball/schedule','https://winthropeagles.com/sports/womens-basketball/schedule'],
+    'winthrop|Cross Country':['https://winthropeagles.com/sports/womens-cross-country/schedule','https://winthropeagles.com/sports/mens-cross-country/schedule'],
+    'winthrop|Golf':['https://winthropeagles.com/sports/womens-golf/schedule','https://winthropeagles.com/sports/mens-golf/schedule'],
+    'winthrop|Lacrosse':'https://winthropeagles.com/sports/womens-lacrosse/schedule',
+    'winthrop|Soccer':['https://winthropeagles.com/sports/womens-soccer/schedule','https://winthropeagles.com/sports/mens-soccer/schedule'],
     'winthrop|Softball':'https://winthropeagles.com/sports/softball/schedule',
-    'winthrop|Track & Field':'https://winthropeagles.com/sports/track-and-field/schedule',
-    'winthrop|Volleyball':['https://winthropeagles.com/sports/womens-volleyball/schedule','https://winthropeagles.com/sports/volleyball/schedule']
+    'winthrop|Track & Field':['https://winthropeagles.com/sports/womens-track-and-field/schedule','https://winthropeagles.com/sports/mens-track-and-field/schedule'],
+    'winthrop|Volleyball':'https://winthropeagles.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'winthrop|Baseball':'https://winthropeagles.com/sports/baseball/roster',
-    'winthrop|Basketball':['https://winthropeagles.com/sports/mens-basketball/roster','https://winthropeagles.com/sports/womens-basketball/roster','https://winthropeagles.com/sports/basketball/roster'],
-    'winthrop|Cross Country':'https://winthropeagles.com/sports/cross-country/roster',
-    'winthrop|Golf':['https://winthropeagles.com/sports/womens-golf/roster','https://winthropeagles.com/sports/mens-golf/roster','https://winthropeagles.com/sports/golf/roster'],
-    'winthrop|Lacrosse':['https://winthropeagles.com/sports/womens-lacrosse/roster','https://winthropeagles.com/sports/mens-lacrosse/roster'],
-    'winthrop|Soccer':['https://winthropeagles.com/sports/womens-soccer/roster','https://winthropeagles.com/sports/soccer/roster','https://winthropeagles.com/sports/mens-soccer/roster'],
+    'winthrop|Basketball':['https://winthropeagles.com/sports/mens-basketball/roster','https://winthropeagles.com/sports/womens-basketball/roster'],
+    'winthrop|Cross Country':['https://winthropeagles.com/sports/womens-cross-country/roster','https://winthropeagles.com/sports/mens-cross-country/roster'],
+    'winthrop|Golf':['https://winthropeagles.com/sports/womens-golf/roster','https://winthropeagles.com/sports/mens-golf/roster'],
+    'winthrop|Lacrosse':'https://winthropeagles.com/sports/womens-lacrosse/roster',
+    'winthrop|Soccer':['https://winthropeagles.com/sports/womens-soccer/roster','https://winthropeagles.com/sports/mens-soccer/roster'],
     'winthrop|Softball':'https://winthropeagles.com/sports/softball/roster',
-    'winthrop|Track & Field':'https://winthropeagles.com/sports/track-and-field/roster',
-    'winthrop|Volleyball':['https://winthropeagles.com/sports/womens-volleyball/roster','https://winthropeagles.com/sports/volleyball/roster']
+    'winthrop|Track & Field':['https://winthropeagles.com/sports/womens-track-and-field/roster','https://winthropeagles.com/sports/mens-track-and-field/roster'],
+    'winthrop|Volleyball':'https://winthropeagles.com/sports/womens-volleyball/roster'
   }
 };
 

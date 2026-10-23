@@ -24,7 +24,7 @@ export const charlestonSouthernSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'charleston-southern|Cross Country|Taylar White':'https://www.instagram.com/taylar.white/',
     'charleston-southern|Cross Country|Sarah McCartney':'https://www.instagram.com/_sarahtmccartney_/',
@@ -39,7 +39,7 @@ export const charlestonSouthernSchool={
   scheduleUrls:{
     'charleston-southern|Baseball':'https://csusports.com/sports/baseball/schedule',
     'charleston-southern|Basketball':['https://csusports.com/sports/mens-basketball/schedule','https://csusports.com/sports/womens-basketball/schedule'],
-    'charleston-southern|Cross Country':'https://csusports.com/sports/cross-country/schedule',
+    'charleston-southern|Cross Country':['https://csusports.com/sports/mens-cross-country/schedule','https://csusports.com/sports/womens-cross-country/schedule'],
     'charleston-southern|Football':'https://csusports.com/sports/football/schedule',
     'charleston-southern|Golf':['https://csusports.com/sports/womens-golf/schedule','https://csusports.com/sports/mens-golf/schedule'],
     'charleston-southern|Soccer':'https://csusports.com/sports/womens-soccer/schedule',
@@ -51,7 +51,7 @@ export const charlestonSouthernSchool={
   rosterUrls:{
     'charleston-southern|Baseball':'https://csusports.com/sports/baseball/roster',
     'charleston-southern|Basketball':['https://csusports.com/sports/mens-basketball/roster','https://csusports.com/sports/womens-basketball/roster'],
-    'charleston-southern|Cross Country':'https://csusports.com/sports/cross-country/roster',
+    'charleston-southern|Cross Country':['https://csusports.com/sports/mens-cross-country/roster','https://csusports.com/sports/womens-cross-country/roster'],
     'charleston-southern|Football':'https://csusports.com/sports/football/roster',
     'charleston-southern|Golf':['https://csusports.com/sports/womens-golf/roster','https://csusports.com/sports/mens-golf/roster'],
     'charleston-southern|Soccer':'https://csusports.com/sports/womens-soccer/roster',
@@ -348,8 +348,8 @@ export function createCharlestonSouthernHandlers({makeEvent,recapMatchesEvent,ev
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (football plays in the Big South-OVC association, as the page marks it); the page data marks their league games.
+      const league={'Football':'Big South-OVC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

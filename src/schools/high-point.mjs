@@ -339,7 +339,7 @@ export function createHighPointHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues (rowing and men's lacrosse name no league); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;

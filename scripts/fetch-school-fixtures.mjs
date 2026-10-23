@@ -96,7 +96,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     // University Athletics", Oct 19: no 404): no games and no "Schedule" title.
     // SIDEARM's "2026-27 General Schedule" for a generic address (Central
     // Arkansas's `basketball`, `soccer`, Oct 23) is no team's page either.
-    if(!games.length&&title&&(!/schedule/i.test(title)||/\bGeneral Schedule\b/i.test(title))){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
+    // It is never a team's page, even when it lists games (Winthrop's "2018
+    // General Schedule", Oct 23).
+    if(title&&(!games.length&&!/schedule/i.test(title)||/\bGeneral Schedule\b/i.test(title))){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
     if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
     titles.add(title);kept=true;

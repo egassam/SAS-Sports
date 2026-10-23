@@ -24,7 +24,9 @@ export const presbyterianSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Tennis']),
+  // Men's wrestling is the unlabeled `wrestling` page (Oct 23).
+  teamLabels:{'/sports/wrestling/schedule':"Men's"},
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Tennis','Wrestling']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'presbyterian|Acrobatics & Tumbling':'https://gobluehose.com/sports/acrobatics-tumbling/schedule',
@@ -38,7 +40,7 @@ export const presbyterianSchool={
     'presbyterian|Softball':'https://gobluehose.com/sports/softball/schedule',
     'presbyterian|Tennis':['https://gobluehose.com/sports/womens-tennis/schedule','https://gobluehose.com/sports/mens-tennis/schedule'],
     'presbyterian|Volleyball':'https://gobluehose.com/sports/womens-volleyball/schedule',
-    'presbyterian|Wrestling':'https://gobluehose.com/sports/wrestling/schedule'
+    'presbyterian|Wrestling':['https://gobluehose.com/sports/wrestling/schedule','https://gobluehose.com/sports/womens-wrestling/schedule']
   },
   rosterUrls:{
     'presbyterian|Acrobatics & Tumbling':'https://gobluehose.com/sports/acrobatics-tumbling/roster',
@@ -52,7 +54,7 @@ export const presbyterianSchool={
     'presbyterian|Softball':'https://gobluehose.com/sports/softball/roster',
     'presbyterian|Tennis':['https://gobluehose.com/sports/womens-tennis/roster','https://gobluehose.com/sports/mens-tennis/roster'],
     'presbyterian|Volleyball':'https://gobluehose.com/sports/womens-volleyball/roster',
-    'presbyterian|Wrestling':'https://gobluehose.com/sports/wrestling/roster'
+    'presbyterian|Wrestling':['https://gobluehose.com/sports/wrestling/roster','https://gobluehose.com/sports/womens-wrestling/roster']
   }
 };
 
@@ -342,8 +344,8 @@ export function createPresbyterianHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (football plays in the Pioneer Football League and wrestling in the SoCon, as the page marks them; acrobatics and tumbling names no league); the page data marks their league games.
+      const league={'Football':'Pioneer Football League','Wrestling':'SoCon'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

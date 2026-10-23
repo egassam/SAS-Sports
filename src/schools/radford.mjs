@@ -10,7 +10,7 @@ export const radfordSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Field Hockey','Golf','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Field Hockey','Golf','Lacrosse','Soccer','Softball','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,7 @@ export const radfordSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Soccer','Track & Field']),
   verifiedInstagrams:{
     'radford|Baseball|Brady Powell':'https://www.instagram.com/bradypowell_/',
     'radford|Baseball|Noah Toole':'https://www.instagram.com/noah_toole/',
@@ -39,9 +39,6 @@ export const radfordSchool={
     'radford|Softball|Myla Russell':'https://www.instagram.com/smashin_fashion2020/',
     'radford|Softball|Morgan Cooper':'https://www.instagram.com/morganpcooper1/',
     'radford|Softball|Abby Bossler':'https://www.instagram.com/abbybossler/',
-    'radford|Tennis|Natalia Reimer':'https://www.instagram.com/nati.reimer/',
-    'radford|Tennis|Michaela Stephens':'https://www.instagram.com/michaela_unstoppable/',
-    'radford|Tennis|Rachel Ekanem':'https://www.instagram.com/rachel.ekanem/'
   },
   scheduleUrls:{
     'radford|Baseball':'https://radfordathletics.com/sports/baseball/schedule',
@@ -52,9 +49,7 @@ export const radfordSchool={
     'radford|Lacrosse':'https://radfordathletics.com/sports/womens-lacrosse/schedule',
     'radford|Soccer':['https://radfordathletics.com/sports/womens-soccer/schedule','https://radfordathletics.com/sports/mens-soccer/schedule'],
     'radford|Softball':'https://radfordathletics.com/sports/softball/schedule',
-    'radford|Swimming & Diving':'https://radfordathletics.com/sports/womens-swimming-and-diving/schedule',
-    'radford|Tennis':['https://radfordathletics.com/sports/womens-tennis/schedule','https://radfordathletics.com/sports/mens-tennis/schedule'],
-    'radford|Track & Field':'https://radfordathletics.com/sports/track-and-field/schedule',
+    'radford|Track & Field':['https://radfordathletics.com/sports/womens-track-and-field/schedule','https://radfordathletics.com/sports/mens-track-and-field/schedule'],
     'radford|Volleyball':'https://radfordathletics.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -66,9 +61,7 @@ export const radfordSchool={
     'radford|Lacrosse':'https://radfordathletics.com/sports/womens-lacrosse/roster',
     'radford|Soccer':['https://radfordathletics.com/sports/womens-soccer/roster','https://radfordathletics.com/sports/mens-soccer/roster'],
     'radford|Softball':'https://radfordathletics.com/sports/softball/roster',
-    'radford|Swimming & Diving':'https://radfordathletics.com/sports/womens-swimming-and-diving/roster',
-    'radford|Tennis':['https://radfordathletics.com/sports/womens-tennis/roster','https://radfordathletics.com/sports/mens-tennis/roster'],
-    'radford|Track & Field':'https://radfordathletics.com/sports/track-and-field/roster',
+    'radford|Track & Field':['https://radfordathletics.com/sports/womens-track-and-field/roster','https://radfordathletics.com/sports/mens-track-and-field/roster'],
     'radford|Volleyball':'https://radfordathletics.com/sports/womens-volleyball/roster'
   }
 };
@@ -359,7 +352,7 @@ export function createRadfordHandlers({makeEvent,recapMatchesEvent,eventType=()=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues (field hockey names no league); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
