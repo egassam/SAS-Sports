@@ -189,7 +189,7 @@ import {saintJosephsSchool,createSaintJosephsHandlers} from './schools/saint-jos
 import {saintLouisSchool,createSaintLouisHandlers} from './schools/saint-louis.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.154.0-atlantic-10';
+const VERSION='4.155.0-atlantic-10';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4047,6 +4047,10 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   if(events.length)return{events,source_url:successful[0]?.url||null,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null,official_failed:officialFailed,scoreboard_reads:scoreboardReads};
   // The official page was read and publishes no events for this sport yet.
   if(emptySchedule)return{events:[],source_url:emptySchedule.url,source_urls:[emptySchedule.url],fetched_at:now.toISOString(),live_source_used:true,error:null};
+  // The official page was read and every event on it was dropped by the
+  // listing rules (George Mason tennis, Oct 23: six past tournaments, none
+  // with a story): an empty schedule, not a failed source.
+  if(successful.length)return{events:[],source_url:successful[0].url,source_urls:[...new Set(successful.map(x=>x.url))],fetched_at:now.toISOString(),live_source_used:true,error:null};
   return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:errors.slice(-6).join('; ')||'No live source available'};
 }
 function feedCacheKey(url,school,sport){const key=new URL('/__sas_cache/feed',url.origin);key.searchParams.set('school',school);key.searchParams.set('sport',sport);key.searchParams.set('feed_cache',VERSION);return new Request(key.toString(),{method:'GET'});}
