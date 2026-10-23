@@ -3679,7 +3679,24 @@
    "state": "off"
   },
   "ball-state|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.302Z",
+   "last_detail": "live 3-3 · 61:00 - OT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ball-state|Field Hockey||2026-10-23|1",
+    "title": "Ball State vs Ohio",
+    "started_seen": "2026-10-23T17:36:34.288Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.288Z",
+     "2026-10-23T17:37:38.393Z",
+     "2026-10-23T17:39:03.520Z",
+     "2026-10-23T17:40:27.256Z",
+     "2026-10-23T17:41:50.622Z",
+     "2026-10-23T17:43:53.997Z",
+     "2026-10-23T17:44:57.302Z"
+    ],
+    "final_ok": false
+   }
   },
   "ball-state|Football": {
    "state": "off"
@@ -3784,7 +3801,24 @@
    "state": "off"
   },
   "kent-state|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.349Z",
+   "last_detail": "live 0-2 · 25:00 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kent-state|Field Hockey||2026-10-23|1",
+    "title": "Kent State at Miami (Oh)",
+    "started_seen": "2026-10-23T17:36:34.139Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.139Z",
+     "2026-10-23T17:37:38.394Z",
+     "2026-10-23T17:39:03.603Z",
+     "2026-10-23T17:40:25.824Z",
+     "2026-10-23T17:41:51.511Z",
+     "2026-10-23T17:43:54.782Z",
+     "2026-10-23T17:44:57.349Z"
+    ],
+    "final_ok": false
+   }
   },
   "kent-state|Football": {
    "state": "off"
@@ -3814,7 +3848,24 @@
    "state": "off"
   },
   "miami-oh|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.380Z",
+   "last_detail": "live 2-0 · 25:00 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "miami-oh|Field Hockey||2026-10-23|1",
+    "title": "Miami (OH) vs Kent State",
+    "started_seen": "2026-10-23T17:36:34.605Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.605Z",
+     "2026-10-23T17:37:38.422Z",
+     "2026-10-23T17:39:01.641Z",
+     "2026-10-23T17:40:26.391Z",
+     "2026-10-23T17:42:19.592Z",
+     "2026-10-23T17:43:33.848Z",
+     "2026-10-23T17:44:57.380Z"
+    ],
+    "final_ok": false
+   }
   },
   "miami-oh|Football": {
    "state": "off"
@@ -3838,7 +3889,24 @@
    "state": "off"
   },
   "ohio|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.426Z",
+   "last_detail": "live 3-3 · 61:00 - OT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ohio|Field Hockey||2026-10-23|1",
+    "title": "Ohio at BALL STATE",
+    "started_seen": "2026-10-23T17:36:34.447Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.447Z",
+     "2026-10-23T17:37:38.640Z",
+     "2026-10-23T17:39:01.667Z",
+     "2026-10-23T17:40:26.343Z",
+     "2026-10-23T17:41:52.097Z",
+     "2026-10-23T17:43:34.940Z",
+     "2026-10-23T17:44:57.426Z"
+    ],
+    "final_ok": false
+   }
   },
   "ohio|Football": {
    "state": "off"
@@ -4135,7 +4203,24 @@
    "state": "off"
   },
   "charlotte|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:58.250Z",
+   "last_detail": "live 7-10 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "charlotte|Volleyball||2026-10-23|1",
+    "title": "Charlotte vs Temple",
+    "started_seen": "2026-10-23T17:36:35.641Z",
+    "live_passes": [
+     "2026-10-23T17:36:35.641Z",
+     "2026-10-23T17:37:59.543Z",
+     "2026-10-23T17:39:23.711Z",
+     "2026-10-23T17:40:46.201Z",
+     "2026-10-23T17:41:51.746Z",
+     "2026-10-23T17:43:34.387Z",
+     "2026-10-23T17:44:58.250Z"
+    ],
+    "final_ok": false
+   }
   },
   "east-carolina|Baseball": {
    "state": "off"
@@ -4315,7 +4400,24 @@
    "verified_detail": "final W, 1-0"
   },
   "temple|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.412Z",
+   "last_detail": "live 10-7 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "temple|Volleyball||2026-10-23|1",
+    "title": "Temple at Charlotte",
+    "started_seen": "2026-10-23T17:36:33.902Z",
+    "live_passes": [
+     "2026-10-23T17:36:33.902Z",
+     "2026-10-23T17:37:59.559Z",
+     "2026-10-23T17:39:22.369Z",
+     "2026-10-23T17:40:47.865Z",
+     "2026-10-23T17:42:31.375Z",
+     "2026-10-23T17:43:54.912Z",
+     "2026-10-23T17:44:57.412Z"
+    ],
+    "final_ok": false
+   }
   },
   "tulane|Baseball": {
    "state": "off"
@@ -5371,7 +5473,24 @@
    "state": "off"
   },
   "ualbany|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.426Z",
+   "last_detail": "live 3-2 · 56:00 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ualbany|Field Hockey||2026-10-23|1",
+    "title": "UAlbany at New Hampshire",
+    "started_seen": "2026-10-23T17:36:34.038Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.038Z",
+     "2026-10-23T17:37:38.424Z",
+     "2026-10-23T17:39:01.849Z",
+     "2026-10-23T17:40:26.263Z",
+     "2026-10-23T17:41:50.576Z",
+     "2026-10-23T17:43:55.251Z",
+     "2026-10-23T17:44:57.426Z"
+    ],
+    "final_ok": false
+   }
   },
   "ualbany|Football": {
    "state": "off"
@@ -5455,7 +5574,24 @@
    "state": "off"
   },
   "new-hampshire|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-23T17:44:57.256Z",
+   "last_detail": "live 2-3 · 56:00 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "new-hampshire|Field Hockey||2026-10-23|1",
+    "title": "New Hampshire vs UAlbany",
+    "started_seen": "2026-10-23T17:36:34.391Z",
+    "live_passes": [
+     "2026-10-23T17:36:34.391Z",
+     "2026-10-23T17:37:38.378Z",
+     "2026-10-23T17:39:01.746Z",
+     "2026-10-23T17:40:26.372Z",
+     "2026-10-23T17:41:50.607Z",
+     "2026-10-23T17:43:54.242Z",
+     "2026-10-23T17:44:57.256Z"
+    ],
+    "final_ok": false
+   }
   },
   "new-hampshire|Football": {
    "state": "off"
@@ -5882,9 +6018,537 @@
   },
   "william-mary|Volleyball": {
    "state": "off"
+  },
+  "cleveland-state|Basketball": {
+   "state": "off"
+  },
+  "cleveland-state|Lacrosse": {
+   "state": "off"
+  },
+  "cleveland-state|Soccer": {
+   "state": "off"
+  },
+  "cleveland-state|Volleyball": {
+   "state": "off"
+  },
+  "detroit-mercy|Basketball": {
+   "state": "off"
+  },
+  "detroit-mercy|Lacrosse": {
+   "state": "off"
+  },
+  "detroit-mercy|Soccer": {
+   "state": "off"
+  },
+  "detroit-mercy|Softball": {
+   "state": "off"
+  },
+  "green-bay|Basketball": {
+   "state": "off"
+  },
+  "green-bay|Soccer": {
+   "state": "off"
+  },
+  "green-bay|Softball": {
+   "state": "off"
+  },
+  "green-bay|Volleyball": {
+   "state": "off"
+  },
+  "iu-indy|Basketball": {
+   "state": "off"
+  },
+  "iu-indy|Soccer": {
+   "state": "off"
+  },
+  "iu-indy|Softball": {
+   "state": "off"
+  },
+  "iu-indy|Volleyball": {
+   "state": "off"
+  },
+  "milwaukee|Baseball": {
+   "state": "off"
+  },
+  "milwaukee|Basketball": {
+   "state": "off"
+  },
+  "milwaukee|Soccer": {
+   "state": "off"
+  },
+  "milwaukee|Volleyball": {
+   "state": "off"
+  },
+  "purdue-fort-wayne|Baseball": {
+   "state": "off"
+  },
+  "purdue-fort-wayne|Basketball": {
+   "state": "off"
+  },
+  "purdue-fort-wayne|Soccer": {
+   "state": "off"
+  },
+  "purdue-fort-wayne|Softball": {
+   "state": "off"
+  },
+  "purdue-fort-wayne|Volleyball": {
+   "state": "off"
+  },
+  "robert-morris|Basketball": {
+   "state": "off"
+  },
+  "robert-morris|Football": {
+   "state": "off"
+  },
+  "robert-morris|Hockey": {
+   "state": "off"
+  },
+  "robert-morris|Lacrosse": {
+   "state": "off"
+  },
+  "robert-morris|Soccer": {
+   "state": "off"
+  },
+  "robert-morris|Softball": {
+   "state": "off"
+  },
+  "robert-morris|Volleyball": {
+   "state": "off"
+  },
+  "wright-state|Baseball": {
+   "state": "off"
+  },
+  "wright-state|Basketball": {
+   "state": "off"
+  },
+  "wright-state|Soccer": {
+   "state": "off"
+  },
+  "wright-state|Volleyball": {
+   "state": "off"
+  },
+  "youngstown-state|Baseball": {
+   "state": "off"
+  },
+  "youngstown-state|Basketball": {
+   "state": "off"
+  },
+  "youngstown-state|Football": {
+   "state": "off"
+  },
+  "youngstown-state|Lacrosse": {
+   "state": "off"
+  },
+  "youngstown-state|Soccer": {
+   "state": "off"
+  },
+  "youngstown-state|Softball": {
+   "state": "off"
+  },
+  "youngstown-state|Volleyball": {
+   "state": "off"
+  },
+  "northern-illinois|Baseball": {
+   "state": "off"
+  },
+  "northern-illinois|Basketball": {
+   "state": "off"
+  },
+  "northern-illinois|Football": {
+   "state": "off"
+  },
+  "northern-illinois|Soccer": {
+   "state": "off"
+  },
+  "northern-illinois|Softball": {
+   "state": "off"
+  },
+  "northern-illinois|Volleyball": {
+   "state": "off"
+  },
+  "brown|Baseball": {
+   "state": "off"
+  },
+  "brown|Basketball": {
+   "state": "off"
+  },
+  "brown|Field Hockey": {
+   "state": "off"
+  },
+  "brown|Football": {
+   "state": "off"
+  },
+  "brown|Hockey": {
+   "state": "off"
+  },
+  "brown|Lacrosse": {
+   "state": "off"
+  },
+  "brown|Soccer": {
+   "state": "off"
+  },
+  "brown|Softball": {
+   "state": "off"
+  },
+  "brown|Volleyball": {
+   "state": "off"
+  },
+  "columbia|Baseball": {
+   "state": "off"
+  },
+  "columbia|Basketball": {
+   "state": "off"
+  },
+  "columbia|Field Hockey": {
+   "state": "off"
+  },
+  "columbia|Football": {
+   "state": "off"
+  },
+  "columbia|Lacrosse": {
+   "state": "off"
+  },
+  "columbia|Soccer": {
+   "state": "off"
+  },
+  "columbia|Softball": {
+   "state": "off"
+  },
+  "columbia|Volleyball": {
+   "state": "off"
+  },
+  "cornell|Baseball": {
+   "state": "off"
+  },
+  "cornell|Basketball": {
+   "state": "off"
+  },
+  "cornell|Field Hockey": {
+   "state": "off"
+  },
+  "cornell|Football": {
+   "state": "off"
+  },
+  "cornell|Hockey": {
+   "state": "off"
+  },
+  "cornell|Lacrosse": {
+   "state": "off"
+  },
+  "cornell|Soccer": {
+   "state": "off"
+  },
+  "cornell|Softball": {
+   "state": "off"
+  },
+  "cornell|Volleyball": {
+   "state": "off"
+  },
+  "dartmouth|Baseball": {
+   "state": "off"
+  },
+  "dartmouth|Basketball": {
+   "state": "off"
+  },
+  "dartmouth|Field Hockey": {
+   "state": "off"
+  },
+  "dartmouth|Football": {
+   "state": "off"
+  },
+  "dartmouth|Hockey": {
+   "state": "off"
+  },
+  "dartmouth|Lacrosse": {
+   "state": "off"
+  },
+  "dartmouth|Soccer": {
+   "state": "off"
+  },
+  "dartmouth|Softball": {
+   "state": "off"
+  },
+  "dartmouth|Volleyball": {
+   "state": "off"
+  },
+  "penn|Baseball": {
+   "state": "off"
+  },
+  "penn|Basketball": {
+   "state": "off"
+  },
+  "penn|Field Hockey": {
+   "state": "off"
+  },
+  "penn|Football": {
+   "state": "off"
+  },
+  "penn|Lacrosse": {
+   "state": "off"
+  },
+  "penn|Soccer": {
+   "state": "off"
+  },
+  "penn|Softball": {
+   "state": "off"
+  },
+  "penn|Volleyball": {
+   "state": "off"
+  },
+  "princeton|Baseball": {
+   "state": "off"
+  },
+  "princeton|Basketball": {
+   "state": "off"
+  },
+  "princeton|Field Hockey": {
+   "state": "off"
+  },
+  "princeton|Football": {
+   "state": "off"
+  },
+  "princeton|Hockey": {
+   "state": "off"
+  },
+  "princeton|Lacrosse": {
+   "state": "off"
+  },
+  "princeton|Soccer": {
+   "state": "off"
+  },
+  "princeton|Softball": {
+   "state": "off"
+  },
+  "princeton|Volleyball": {
+   "state": "off"
+  },
+  "princeton|Water Polo": {
+   "state": "off"
+  },
+  "fairfield|Baseball": {
+   "state": "off"
+  },
+  "fairfield|Basketball": {
+   "state": "off"
+  },
+  "fairfield|Field Hockey": {
+   "state": "off"
+  },
+  "fairfield|Lacrosse": {
+   "state": "off"
+  },
+  "fairfield|Soccer": {
+   "state": "off"
+  },
+  "fairfield|Softball": {
+   "state": "off"
+  },
+  "fairfield|Volleyball": {
+   "state": "off"
+  },
+  "manhattan|Baseball": {
+   "state": "off"
+  },
+  "manhattan|Basketball": {
+   "state": "off"
+  },
+  "manhattan|Lacrosse": {
+   "state": "off"
+  },
+  "manhattan|Soccer": {
+   "state": "off"
+  },
+  "manhattan|Softball": {
+   "state": "off"
+  },
+  "manhattan|Volleyball": {
+   "state": "off"
+  },
+  "marist|Baseball": {
+   "state": "off"
+  },
+  "marist|Basketball": {
+   "state": "off"
+  },
+  "marist|Football": {
+   "state": "off"
+  },
+  "marist|Lacrosse": {
+   "state": "off"
+  },
+  "marist|Soccer": {
+   "state": "off"
+  },
+  "marist|Softball": {
+   "state": "off"
+  },
+  "marist|Volleyball": {
+   "state": "off"
+  },
+  "marist|Water Polo": {
+   "state": "off"
+  },
+  "merrimack|Baseball": {
+   "state": "off"
+  },
+  "merrimack|Basketball": {
+   "state": "off"
+  },
+  "merrimack|Field Hockey": {
+   "state": "off"
+  },
+  "merrimack|Football": {
+   "state": "off"
+  },
+  "merrimack|Hockey": {
+   "state": "off"
+  },
+  "merrimack|Lacrosse": {
+   "state": "off"
+  },
+  "merrimack|Soccer": {
+   "state": "off"
+  },
+  "merrimack|Softball": {
+   "state": "off"
+  },
+  "merrimack|Volleyball": {
+   "state": "off"
+  },
+  "mount-st-marys|Baseball": {
+   "state": "off"
+  },
+  "mount-st-marys|Basketball": {
+   "state": "off"
+  },
+  "mount-st-marys|Lacrosse": {
+   "state": "off"
+  },
+  "mount-st-marys|Soccer": {
+   "state": "off"
+  },
+  "mount-st-marys|Softball": {
+   "state": "off"
+  },
+  "mount-st-marys|Water Polo": {
+   "state": "off"
+  },
+  "niagara|Baseball": {
+   "state": "off"
+  },
+  "niagara|Basketball": {
+   "state": "off"
+  },
+  "niagara|Hockey": {
+   "state": "off"
+  },
+  "niagara|Lacrosse": {
+   "state": "off"
+  },
+  "niagara|Soccer": {
+   "state": "off"
+  },
+  "niagara|Softball": {
+   "state": "off"
+  },
+  "niagara|Volleyball": {
+   "state": "off"
+  },
+  "quinnipiac|Baseball": {
+   "state": "off"
+  },
+  "quinnipiac|Basketball": {
+   "state": "off"
+  },
+  "quinnipiac|Field Hockey": {
+   "state": "off"
+  },
+  "quinnipiac|Hockey": {
+   "state": "off"
+  },
+  "quinnipiac|Lacrosse": {
+   "state": "off"
+  },
+  "quinnipiac|Soccer": {
+   "state": "off"
+  },
+  "quinnipiac|Softball": {
+   "state": "off"
+  },
+  "quinnipiac|Volleyball": {
+   "state": "off"
+  },
+  "rider|Baseball": {
+   "state": "off"
+  },
+  "rider|Basketball": {
+   "state": "off"
+  },
+  "rider|Field Hockey": {
+   "state": "off"
+  },
+  "rider|Lacrosse": {
+   "state": "off"
+  },
+  "rider|Soccer": {
+   "state": "off"
+  },
+  "rider|Softball": {
+   "state": "off"
+  },
+  "rider|Volleyball": {
+   "state": "off"
+  },
+  "sacred-heart|Baseball": {
+   "state": "off"
+  },
+  "sacred-heart|Basketball": {
+   "state": "off"
+  },
+  "sacred-heart|Field Hockey": {
+   "state": "off"
+  },
+  "sacred-heart|Football": {
+   "state": "off"
+  },
+  "sacred-heart|Hockey": {
+   "state": "off"
+  },
+  "sacred-heart|Lacrosse": {
+   "state": "off"
+  },
+  "sacred-heart|Soccer": {
+   "state": "off"
+  },
+  "sacred-heart|Softball": {
+   "state": "off"
+  },
+  "sacred-heart|Volleyball": {
+   "state": "off"
+  },
+  "siena|Baseball": {
+   "state": "off"
+  },
+  "siena|Basketball": {
+   "state": "off"
+  },
+  "siena|Lacrosse": {
+   "state": "off"
+  },
+  "siena|Soccer": {
+   "state": "off"
+  },
+  "siena|Softball": {
+   "state": "off"
+  },
+  "siena|Volleyball": {
+   "state": "off"
+  },
+  "siena|Water Polo": {
+   "state": "off"
   }
  },
- "version": "4.174.0-caa",
- "updated_at": "2026-10-23T12:50:02.467Z",
+ "version": "4.183.0-ivy",
+ "updated_at": "2026-10-23T17:44:58.253Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
