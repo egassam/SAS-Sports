@@ -36,8 +36,10 @@ const run=(id,step,cmd)=>new Promise(done=>{
 });
 const started=Date.now(),clock=()=>`${Math.round((Date.now()-started)/1000)}s`;
 
-const STATES={Alabama:'AL',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC',Tennessee:'TN',Texas:'TX',Utah:'UT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'};
-async function tfrrsTeams(school){
+// Every state (Oct 23: Maine, New Hampshire and Vermont were missing, and
+// their TFRRS pages were never tried).
+const STATES={Alabama:'AL',Alaska:'AK',Arizona:'AZ',Arkansas:'AR',California:'CA',Colorado:'CO',Connecticut:'CT',Delaware:'DE','District of Columbia':'DC',Florida:'FL',Georgia:'GA',Hawaii:'HI',Idaho:'ID',Illinois:'IL',Indiana:'IN',Iowa:'IA',Kansas:'KS',Kentucky:'KY',Louisiana:'LA',Maine:'ME',Maryland:'MD',Massachusetts:'MA',Michigan:'MI',Minnesota:'MN',Mississippi:'MS',Missouri:'MO',Montana:'MT',Nebraska:'NE',Nevada:'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND',Ohio:'OH',Oklahoma:'OK',Oregon:'OR',Pennsylvania:'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD',Tennessee:'TN',Texas:'TX',Utah:'UT',Vermont:'VT',Virginia:'VA',Washington:'WA','West Virginia':'WV',Wisconsin:'WI',Wyoming:'WY'};
+async function tfrrsTeams(school,moduleText=''){
   // TFRRS can name the team by its institution, "State" cut to "St"
   // (NC State: NC_college_f_North_Carolina_St, from "North Carolina State
   // University").
@@ -51,14 +53,36 @@ async function tfrrsTeams(school){
   // A hyphenated alias names the team too (UT Arlington:
   // TX_college_f_Texas_Arlington from "Texas-Arlington").
   const hyphenated=(school.aliases||[]).filter(n=>/^[A-Z][a-z]+-[A-Z][a-z]+/.test(n));
-  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  // A one-word alias other than the mascot (UAlbany: NY_college_f_Albany).
+  const single=(school.aliases||[]).slice(0,-1).filter(n=>/^[A-Z][a-z]+$/.test(n));
+  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated,...single].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   // An apostrophe is dropped (Saint Joseph's: PA_college_f_St_Josephs_PA);
   // a university can carry "_U" (Saint Louis: MO_college_f_St_Louis_U).
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`,`${name}_U`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;
     try{const r=await fetch(url('f'),{signal:AbortSignal.timeout(20000)});if(r.ok&&/Cross Country/i.test(await r.text()))return{Women:url('f'),Men:url('m')};}catch{}
   }
-  return null;
+  return tfrrsFromMeets(school,moduleText,st);
+}
+// No address answered (NJIT, Oct 23: TFRRS writes NJ_college_f_New_Jersey_
+// Institute_Technolog): the TFRRS meets the school's own cross country
+// schedule links list every team's page; the one in the school's state whose
+// words best match its names (a truncated word counts) is taken.
+async function tfrrsFromMeets(school,moduleText,st){
+  const pages=[...new Set((String(moduleText).match(/'[^']*\|Cross Country':(?:\[[^\]]*\]|'[^']*')/)?.[0]||'').match(/https:[^']+\/schedule/g)||[])];
+  const base=process.env.SAS_SPORTS_BASE_URL,key=process.env.SAS_SOURCE_KEY;
+  const get=async url=>{try{const r=base&&key&&!/tfrrs\.org/.test(url)?await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)}):await fetch(url,{signal:AbortSignal.timeout(20000)});return r.ok?await r.text():''}catch{return''}};
+  const meets=new Set();for(const page of pages)for(const m of (await get(page)).matchAll(/https?:\/\/(?:www\.)?tfrrs\.org\/results\/xc\/\d+[^"'\s<]*/g))meets.add(m[0]);
+  const words=new Set([school.name,school.short_name,...(school.aliases||[]).slice(0,-1)].join(' ').toLowerCase().split(/[^a-z]+/).filter(w=>w.length>2&&!['the','university','college','and'].includes(w)));
+  let best=null;
+  for(const meet of [...meets].slice(0,3)){
+    for(const [,name] of (await get(meet)).matchAll(new RegExp(`teams\\/xc\\/${st}_college_f_([A-Za-z_.]+)\\.html`,'g'))){
+      const parts=name.toLowerCase().split(/[_.]+/).filter(w=>w.length>2),score=parts.filter(part=>[...words].some(word=>word.startsWith(part))).length;
+      if(score&&score===parts.length&&(!best||score>best.score))best={name,score};
+    }
+    if(best)break;
+  }
+  return best?{Women:`https://www.tfrrs.org/teams/xc/${st}_college_f_${best.name}.html`,Men:`https://www.tfrrs.org/teams/xc/${st}_college_m_${best.name}.html`}:null;
 }
 
 const schools=JSON.parse(read('src/schools.json')),ready=[],notes=[];
@@ -98,7 +122,7 @@ const sponsored=JSON.parse(read('src/sponsored-sports.json'));
 await Promise.all(ready.map(async school=>{
   const file=new URL(`src/schools/${school.id}.mjs`,root);let text=readFileSync(file,'utf8');
   text=text.replace('pageDataSports:new Set([]),',`pageDataSports:new Set([${sponsored[school.id].map(s=>`'${s}'`).join(',')}]),`);
-  const teams=sponsored[school.id].includes('Cross Country')?await tfrrsTeams(school):null;
+  const teams=sponsored[school.id].includes('Cross Country')?await tfrrsTeams(school,text):null;
   if(teams)text=text.replace(/(_TFRRS_TEAMS=)\{Women:null,Men:null\};/,`$1{Women:'${teams.Women}',Men:'${teams.Men}'};`);
   else if(sponsored[school.id].includes('Cross Country'))notes.push(`${school.id}: TFRRS team page not found by address; find it on a conference meet page (Big Ten: /results/xc/27246) and pass --tfrrs-f/--tfrrs-m`);
   // Both team pages of a sport the nav links twice (add-school's "team
@@ -119,7 +143,10 @@ await Promise.all(ready.map(async school=>{
   // An Opendorse marketplace also needs its team name, read from the
   // marketplace page ("Washington State Cougars").
   if(nil?.[1]==='opendorse'&&!text.includes('opendorse:{')){
-    let team=null;try{const r=await fetch(`https://opendorse.com/${nil[2]}`,{signal:AbortSignal.timeout(20000)});const names=[...(await r.text()).matchAll(/"name":"([^"]+)"/g)].map(m=>m[1]).filter(n=>n.startsWith(school.short_name)||n.startsWith(school.name));team=names.sort((a,b)=>names.filter(x=>x===b).length-names.filter(x=>x===a).length)[0]||null;}catch{}
+    // The team the marketplace's athletes list first, the most common
+    // (Oct 23: a name match missed Bryant's and gave UMass Lowell's as "UMass
+    // Lowell River Hawks "; Opendorse writes "Massachusetts Lowell River Hawks").
+    let team=null;try{const r=await fetch(`https://opendorse.com/${nil[2]}`,{signal:AbortSignal.timeout(20000)});const counts=new Map();for(const [,name] of (await r.text()).matchAll(/"currentTeams":\["([^"]+)"/g))counts.set(name.trim(),(counts.get(name.trim())||0)+1);team=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]||null;}catch{}
     if(team)text=text.replace(`  id:'${school.id}',\n`,`  id:'${school.id}',\n  // The school's Opendorse marketplace, its official NIL marketplace (linked\n  // from ${new URL(school.athletics_url).hostname}): athlete Instagram for a sport still short of three (src/opendorse.mjs).\n  opendorse:{marketplace:'${nil[2]}',team:'${team.replace(/'/g,"\\'")}'},\n`);
     else notes.push(`${school.id}: Opendorse marketplace ${nil[2]}: add opendorse:{marketplace:'${nil[2]}',team:'<its team name>'} (Colorado State's)`);
   }

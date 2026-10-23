@@ -191,6 +191,14 @@
     "line": "#162037",
     "onAccent": "#ffffff"
   },
+  "binghamton": {
+    "primary": "#005A43",
+    "secondary": "#A2AAAD",
+    "panel": "#091c1b",
+    "panelDark": "#050e0e",
+    "line": "#0e4038",
+    "onAccent": "#ffffff"
+  },
   "boise-state": {
     "primary": "#0033A0",
     "secondary": "#D64309",
@@ -221,6 +229,14 @@
     "panel": "#401a0c",
     "panelDark": "#1e0d07",
     "line": "#9a3a13",
+    "onAccent": "#ffffff"
+  },
+  "bryant": {
+    "primary": "#000000",
+    "secondary": "#C99700",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
   "buffalo": {
@@ -1079,6 +1095,14 @@
     "line": "#6b4b9a",
     "onAccent": "#ffffff"
   },
+  "maine": {
+    "primary": "#003263",
+    "secondary": "#B0D7FF",
+    "panel": "#091422",
+    "panelDark": "#050a11",
+    "line": "#0e2a49",
+    "onAccent": "#ffffff"
+  },
   "manhattan-ks": {
     "primary": "#28306C",
     "secondary": "#FFFFFF",
@@ -1311,6 +1335,14 @@
     "line": "#0f214b",
     "onAccent": "#ffffff"
   },
+  "new-hampshire": {
+    "primary": "#041E42",
+    "secondary": "#BBBCBC",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
   "new-mexico": {
     "primary": "#BA0C2F",
     "secondary": "#A7A8AA",
@@ -1373,6 +1405,14 @@
     "panel": "#0d111c",
     "panelDark": "#06080e",
     "line": "#19223b",
+    "onAccent": "#ffffff"
+  },
+  "njit": {
+    "primary": "#D22630",
+    "secondary": "#071D49",
+    "panel": "#371117",
+    "panelDark": "#1a080c",
+    "line": "#82232d",
     "onAccent": "#ffffff"
   },
   "north-alabama": {
@@ -2079,6 +2119,14 @@
     "line": "#1f4940",
     "onAccent": "#ffffff"
   },
+  "ualbany": {
+    "primary": "#46166B",
+    "secondary": "#EEB211",
+    "panel": "#180d24",
+    "panelDark": "#0c0712",
+    "line": "#351b4e",
+    "onAccent": "#ffffff"
+  },
   "uc-davis": {
     "primary": "#022851",
     "secondary": "#FFBF00",
@@ -2157,6 +2205,22 @@
     "panel": "#270f13",
     "panelDark": "#12070a",
     "line": "#591e22",
+    "onAccent": "#ffffff"
+  },
+  "umass-lowell": {
+    "primary": "#0067B1",
+    "secondary": "#C8102E",
+    "panel": "#091f33",
+    "panelDark": "#050f19",
+    "line": "#0e4774",
+    "onAccent": "#ffffff"
+  },
+  "umbc": {
+    "primary": "#000000",
+    "secondary": "#FDB515",
+    "panel": "#09090c",
+    "panelDark": "#050507",
+    "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
   "unlv": {

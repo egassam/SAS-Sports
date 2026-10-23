@@ -236,6 +236,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "binghamton": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "boise-state": [
     "Basketball",
     "Beach Volleyball",
@@ -279,6 +293,23 @@
     "Golf",
     "Gymnastics",
     "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "bryant": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
     "Soccer",
     "Softball",
     "Swimming & Diving",
@@ -1313,6 +1344,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "maine": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field"
+  ],
   "manhattan-ks": [
     "Cross Country",
     "Football",
@@ -1610,6 +1653,20 @@
   "new-england-revolution": [
     "Soccer"
   ],
+  "new-hampshire": [
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Skiing",
+    "Soccer",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "new-mexico": [
     "Baseball",
     "Basketball",
@@ -1643,6 +1700,19 @@
   ],
   "new-york-yankees": [
     "Baseball"
+  ],
+  "njit": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "north-alabama": [
     "Baseball",
@@ -2596,6 +2666,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "ualbany": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
   "uc-davis": [
     "Baseball",
     "Basketball",
@@ -2738,6 +2822,27 @@
     "Swimming & Diving",
     "Tennis",
     "Track & Field"
+  ],
+  "umass-lowell": [
+    "Baseball",
+    "Basketball",
+    "Field Hockey",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Track & Field"
+  ],
+  "umbc": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
   ],
   "unlv": [
     "Baseball",
