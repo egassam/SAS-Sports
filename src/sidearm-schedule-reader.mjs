@@ -71,7 +71,10 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
   function parseSchedule(raw,school,sport,sourceUrl,now){
     if(school?.id!==id||!sports.has(sport))return null;
     let url;try{url=new URL(sourceUrl);}catch{return null;}
-    if(url.hostname!==host||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
+    // A site may answer from its www host (scsuathletics.com redirects to
+    // www.scsuathletics.com, Oct 23): the same site.
+    const bare=name=>String(name||'').toLowerCase().replace(/^www\./,'');
+    if(bare(url.hostname)!==bare(host)||!/^\/sports\/[^/]+\/schedule\/?$/.test(url.pathname))return null;
     const pageGames=sidearmScheduleGames(raw);
     // A season published with no events yet ("2027 Stunt Schedule", Pacific
     // and UC Davis, Oct 22) or SIDEARM's empty "@season @sport" template is a

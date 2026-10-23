@@ -66,7 +66,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // Ivy League opponents write "Pennsylvania", "UPenn".
   penn:['pennsylvania','upenn','university of pennsylvania'],brown:['brown university'],harvard:['harvard university'],yale:['yale university'],princeton:['princeton university'],columbia:['columbia university'],cornell:['cornell university'],dartmouth:['dartmouth college'],
   // Metro Conference (MAAC) opponents write "Mount Saint Mary's", "St. Peter's", "SHU", "QU".
-  'mount-st-marys':['mount saint marys','mount st marys','the mount','msmu'],'saint-peters':['st peters','saint peters'],'sacred-heart':['shu'],quinnipiac:['qu'],canisius:['canisius college'],iona:['iona college'],manhattan:['manhattan college'],marist:['marist college'],niagara:['niagara university'],siena:['siena college'],rider:['rider university'],merrimack:['merrimack college'],fairfield:['fairfield university']};
+  'mount-st-marys':['mount saint marys','mount st marys','the mount','msmu'],'saint-peters':['st peters','saint peters'],'sacred-heart':['shu'],quinnipiac:['qu'],canisius:['canisius college'],iona:['iona college'],manhattan:['manhattan college'],marist:['marist college'],niagara:['niagara university'],siena:['siena college'],rider:['rider university'],merrimack:['merrimack college'],fairfield:['fairfield university'],
+  // MEAC opponents write "UMES", "NCCU", "SC State", "DSU", "NSU".
+  'maryland-eastern-shore':['umes','md eastern shore','maryland eastern shore'],'nc-central':['nccu','n c central','nc central'],'south-carolina-state':['sc state','s c state','south carolina st'],'delaware-state':['del state','delaware st'],'norfolk-state':['norfolk st'],'morgan-state':['morgan st'],'coppin-state':['coppin st'],howard:['howard university']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -189,6 +191,14 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country, track,
   // swimming, field hockey, lacrosse and rowing: no wrestling (Campbell,
   // Drexel, Hofstra in other leagues), gymnastics or hockey.
+  // The MEAC (2026-27: Coppin State, Delaware State, Howard, Maryland
+  // Eastern Shore, Morgan State, Norfolk State, North Carolina Central, South
+  // Carolina State) sponsors football, basketball, softball, volleyball,
+  // women's soccer, bowling, tennis, cross country and track: no baseball
+  // (its members play in the NEC, as their pages mark it), lacrosse,
+  // swimming, wrestling, hockey, rowing or field hockey (modules name the
+  // leagues).
+  'MEAC':new Set(['Baseball','Lacrosse','Swimming & Diving','Wrestling','Hockey','Rowing','Field Hockey','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Metro Conference (the MAAC's name from 2026-27, as its members'
   // pages mark it: Canisius, Fairfield, Iona, Manhattan, Marist,
   // Merrimack, Mount St. Mary's, Niagara, Quinnipiac, Rider, Sacred Heart,

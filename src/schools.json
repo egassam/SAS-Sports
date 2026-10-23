@@ -5899,6 +5899,172 @@
     ]
   },
   {
+    "id": "coppin-state",
+    "name": "Coppin State",
+    "short_name": "Coppin State",
+    "state": "Maryland",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://coppinstatesports.com",
+    "aliases": [
+      "Coppin State University",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "coppinstatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "delaware-state",
+    "name": "Delaware State",
+    "short_name": "Delaware State",
+    "state": "Delaware",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://dsuhornets.com",
+    "aliases": [
+      "Delaware State University",
+      "DSU",
+      "Hornets"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "dsuhornets",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "howard",
+    "name": "Howard",
+    "short_name": "Howard",
+    "state": "District of Columbia",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hubison.com",
+    "aliases": [
+      "Howard University",
+      "Bison"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hubison",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "maryland-eastern-shore",
+    "name": "Maryland Eastern Shore",
+    "short_name": "UMES",
+    "state": "Maryland",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://umeshawksports.com",
+    "aliases": [
+      "University of Maryland Eastern Shore",
+      "UMES",
+      "Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "umeshawksports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "morgan-state",
+    "name": "Morgan State",
+    "short_name": "Morgan State",
+    "state": "Maryland",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://morganstatebears.com",
+    "aliases": [
+      "Morgan State University",
+      "Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "morganstatebears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "norfolk-state",
+    "name": "Norfolk State",
+    "short_name": "Norfolk State",
+    "state": "Virginia",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nsuspartans.com",
+    "aliases": [
+      "Norfolk State University",
+      "NSU",
+      "Spartans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nsuspartans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "nc-central",
+    "name": "North Carolina Central",
+    "short_name": "NC Central",
+    "state": "North Carolina",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nccueaglepride.com",
+    "aliases": [
+      "North Carolina Central University",
+      "NCCU",
+      "N.C. Central",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nccueaglepride",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "south-carolina-state",
+    "name": "South Carolina State",
+    "short_name": "SC State",
+    "state": "South Carolina",
+    "conference": "MEAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://scsuathletics.com",
+    "aliases": [
+      "South Carolina State University",
+      "S.C. State",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "scsuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

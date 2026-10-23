@@ -519,6 +519,14 @@
     "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
+  "coppin-state": {
+    "primary": "#003DA5",
+    "secondary": "#FFC72C",
+    "panel": "#091631",
+    "panelDark": "#050b18",
+    "line": "#0e306e",
+    "onAccent": "#ffffff"
+  },
   "cornell": {
     "primary": "#B31B1B",
     "secondary": "#FFFFFF",
@@ -589,6 +597,14 @@
     "panel": "#091b2f",
     "panelDark": "#050d17",
     "line": "#0e3c6a",
+    "onAccent": "#ffffff"
+  },
+  "delaware-state": {
+    "primary": "#C8102E",
+    "secondary": "#00A3E0",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
     "onAccent": "#ffffff"
   },
   "denver": {
@@ -1295,6 +1311,14 @@
     "line": "#8a2e35",
     "onAccent": "#ffffff"
   },
+  "maryland-eastern-shore": {
+    "primary": "#862633",
+    "secondary": "#9EA2A2",
+    "panel": "#261118",
+    "panelDark": "#12080c",
+    "line": "#58232f",
+    "onAccent": "#ffffff"
+  },
   "memphis": {
     "primary": "#003087",
     "secondary": "#898D8D",
@@ -1463,6 +1487,14 @@
     "line": "#0e2d53",
     "onAccent": "#ffffff"
   },
+  "morgan-state": {
+    "primary": "#003DA5",
+    "secondary": "#F47920",
+    "panel": "#091631",
+    "panelDark": "#050b18",
+    "line": "#0e306e",
+    "onAccent": "#ffffff"
+  },
   "mount-st-marys": {
     "primary": "#00205B",
     "secondary": "#FFFFFF",
@@ -1501,6 +1533,14 @@
     "panel": "#09182a",
     "panelDark": "#050c14",
     "line": "#0e355c",
+    "onAccent": "#ffffff"
+  },
+  "nc-central": {
+    "primary": "#880029",
+    "secondary": "#808080",
+    "panel": "#270916",
+    "panelDark": "#12050b",
+    "line": "#590e29",
     "onAccent": "#ffffff"
   },
   "nc-state": {
@@ -1621,6 +1661,14 @@
     "panel": "#371117",
     "panelDark": "#1a080c",
     "line": "#82232d",
+    "onAccent": "#ffffff"
+  },
+  "norfolk-state": {
+    "primary": "#007A53",
+    "secondary": "#F1B434",
+    "panel": "#09231f",
+    "panelDark": "#051110",
+    "line": "#0e5241",
     "onAccent": "#ffffff"
   },
   "north-alabama": {
@@ -2189,6 +2237,14 @@
     "panel": "#22090f",
     "panelDark": "#100508",
     "line": "#4e0e18",
+    "onAccent": "#ffffff"
+  },
+  "south-carolina-state": {
+    "primary": "#862633",
+    "secondary": "#002B5C",
+    "panel": "#261118",
+    "panelDark": "#12080c",
+    "line": "#58232f",
     "onAccent": "#ffffff"
   },
   "south-florida": {
