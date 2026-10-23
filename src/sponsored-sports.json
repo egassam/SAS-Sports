@@ -300,6 +300,26 @@
     "Track & Field",
     "Volleyball"
   ],
+  "brown": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "bryant": [
     "Baseball",
     "Basketball",
@@ -601,8 +621,47 @@
     "Track & Field",
     "Volleyball"
   ],
+  "columbia": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "columbus-crew": [
     "Soccer"
+  ],
+  "cornell": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "creighton": [
     "Baseball",
@@ -643,6 +702,24 @@
   ],
   "dallas-cowboys": [
     "Football"
+  ],
+  "dartmouth": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "davidson": [
     "Baseball",
@@ -1081,6 +1158,7 @@
     "Triathlon",
     "Volleyball"
   ],
+  "harvard": [],
   "high-point": [
     "Baseball",
     "Basketball",
@@ -2187,6 +2265,25 @@
     "Volleyball",
     "Water Polo"
   ],
+  "penn": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "penn-state": [
     "Baseball",
     "Basketball",
@@ -2285,6 +2382,26 @@
     "Softball",
     "Tennis",
     "Volleyball",
+    "Wrestling"
+  ],
+  "princeton": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo",
     "Wrestling"
   ],
   "providence": [
