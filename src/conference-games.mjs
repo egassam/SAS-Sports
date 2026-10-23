@@ -57,7 +57,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // America East opponents write "Albany", "UNH", "UML", "UVM".
   ualbany:['albany','university at albany','albany ny'],'new-hampshire':['unh'],'umass-lowell':['uml','massachusetts lowell'],vermont:['uvm'],umbc:['maryland baltimore county'],njit:['new jersey tech'],
   // Big South opponents write "CSU", "Gardner Webb", "HPU", "PC", "UNCA", "Upstate".
-  'charleston-southern':['charleston so','charleston southern university'],'gardner-webb':['gardner webb','gwu'],'high-point':['hpu'],presbyterian:['presbyterian college'],'unc-asheville':['unca','unc asheville','north carolina asheville'],'usc-upstate':['upstate','south carolina upstate'],winthrop:['winthrop university']};
+  'charleston-southern':['charleston so','charleston southern university'],'gardner-webb':['gardner webb','gwu'],'high-point':['hpu'],presbyterian:['presbyterian college'],'unc-asheville':['unca','unc asheville','north carolina asheville'],'usc-upstate':['upstate','south carolina upstate'],winthrop:['winthrop university'],
+  // CAA opponents write "CofC", "College of Charleston", "N.C. A&T", "UNCW", "W&M".
+  charleston:['cofc','college of charleston'],'nc-at':['n c a t','nc a t','north carolina a t','ncat'],uncw:['unc wilmington','north carolina wilmington'],'william-mary':['w m','william and mary','william mary'],'stony-brook':['stony brook university'],hofstra:['hofstra university']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -171,6 +173,13 @@ const NOT_SPONSORED={
   // sponsors basketball, baseball, softball, soccer, volleyball, beach
   // volleyball, golf, tennis, cross country, track and women's lacrosse: no
   // football, swimming, rowing, wrestling or gymnastics.
+  // The CAA (2026-27: Campbell, Charleston, Drexel, Elon, Hampton, Hofstra,
+  // Monmouth, North Carolina A&T, Northeastern, Stony Brook, Towson, UNC
+  // Wilmington, William & Mary) sponsors football (CAA Football), basketball,
+  // baseball, softball, soccer, volleyball, golf, tennis, cross country, track,
+  // swimming, field hockey, lacrosse and rowing: no wrestling (Campbell,
+  // Drexel, Hofstra in other leagues), gymnastics or hockey.
+  'CAA':new Set(['Wrestling','Gymnastics','Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Big South (2026-27: Charleston Southern, Gardner-Webb, High Point,
   // Longwood, Presbyterian, Radford, UNC Asheville, USC Upstate, Winthrop)
   // sponsors basketball, baseball, softball, soccer, volleyball, golf, tennis,

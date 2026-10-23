@@ -227,7 +227,7 @@ import {uscUpstateSchool,createUscUpstateHandlers} from './schools/usc-upstate.m
 import {winthropSchool,createWinthropHandlers} from './schools/winthrop.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.170.0-big-south';
+const VERSION='4.171.0-caa-catalog';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

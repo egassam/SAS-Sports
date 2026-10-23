@@ -4962,6 +4962,270 @@
     ]
   },
   {
+    "id": "campbell",
+    "name": "Campbell",
+    "short_name": "Campbell",
+    "state": "North Carolina",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gocamels.com",
+    "aliases": [
+      "Campbell University",
+      "Fighting Camels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gocamels",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "charleston",
+    "name": "Charleston",
+    "short_name": "Charleston",
+    "state": "South Carolina",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://cofcsports.com",
+    "aliases": [
+      "College of Charleston",
+      "CofC",
+      "Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "cofcsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "drexel",
+    "name": "Drexel",
+    "short_name": "Drexel",
+    "state": "Pennsylvania",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://drexeldragons.com",
+    "aliases": [
+      "Drexel University",
+      "Dragons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "drexeldragons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "elon",
+    "name": "Elon",
+    "short_name": "Elon",
+    "state": "North Carolina",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://elonphoenix.com",
+    "aliases": [
+      "Elon University",
+      "Phoenix"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "elonphoenix",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "hampton",
+    "name": "Hampton",
+    "short_name": "Hampton",
+    "state": "Virginia",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hamptonpirates.com",
+    "aliases": [
+      "Hampton University",
+      "Pirates"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hamptonpirates",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "hofstra",
+    "name": "Hofstra",
+    "short_name": "Hofstra",
+    "state": "New York",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gohofstra.com",
+    "aliases": [
+      "Hofstra University",
+      "Pride"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gohofstra",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "monmouth",
+    "name": "Monmouth",
+    "short_name": "Monmouth",
+    "state": "New Jersey",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://monmouthhawks.com",
+    "aliases": [
+      "Monmouth University",
+      "Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "monmouthhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "nc-at",
+    "name": "North Carolina A&T",
+    "short_name": "NC A&T",
+    "state": "North Carolina",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ncataggies.com",
+    "aliases": [
+      "North Carolina A&T State University",
+      "N.C. A&T",
+      "Aggies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ncataggies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northeastern",
+    "name": "Northeastern",
+    "short_name": "Northeastern",
+    "state": "Massachusetts",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nuhuskies.com",
+    "aliases": [
+      "Northeastern University",
+      "Huskies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nuhuskies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "stony-brook",
+    "name": "Stony Brook",
+    "short_name": "Stony Brook",
+    "state": "New York",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://stonybrookathletics.com",
+    "aliases": [
+      "Stony Brook University",
+      "Seawolves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "stonybrookathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "towson",
+    "name": "Towson",
+    "short_name": "Towson",
+    "state": "Maryland",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://towsontigers.com",
+    "aliases": [
+      "Towson University",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "towsontigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "uncw",
+    "name": "UNC Wilmington",
+    "short_name": "UNCW",
+    "state": "North Carolina",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uncwsports.com",
+    "aliases": [
+      "University of North Carolina Wilmington",
+      "UNC Wilmington",
+      "Seahawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uncwsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "william-mary",
+    "name": "William & Mary",
+    "short_name": "William & Mary",
+    "state": "Virginia",
+    "conference": "CAA",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tribeathletics.com",
+    "aliases": [
+      "College of William & Mary",
+      "W&M",
+      "Tribe"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tribeathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
