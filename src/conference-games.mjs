@@ -70,7 +70,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // MEAC opponents write "UMES", "NCCU", "SC State", "DSU", "NSU".
   'maryland-eastern-shore':['umes','md eastern shore','maryland eastern shore'],'nc-central':['nccu','n c central','nc central'],'south-carolina-state':['sc state','s c state','south carolina st'],'delaware-state':['del state','delaware st'],'norfolk-state':['norfolk st'],'morgan-state':['morgan st'],'coppin-state':['coppin st'],howard:['howard university'],
   // NEC opponents write "Central Conn. State", "FDU", "Long Island", "UNH" is not New Haven.
-  'central-connecticut':['central connecticut state','central conn state','central conn','ccsu'],'chicago-state':['chicago st'],fdu:['fairleigh dickinson university','fdu'],'le-moyne':['le moyne college','lemoyne'],liu:['long island','long island university','liu brooklyn','liu sharks'],mercyhurst:['mercyhurst university'],'new-haven':['university of new haven','new haven chargers'],stonehill:['stonehill college'],wagner:['wagner college']};
+  'central-connecticut':['central connecticut state','central conn state','central conn','ccsu'],'chicago-state':['chicago st'],fdu:['fairleigh dickinson university','fdu'],'le-moyne':['le moyne college','lemoyne'],liu:['long island','long island university','liu brooklyn','liu sharks'],mercyhurst:['mercyhurst university'],'new-haven':['university of new haven','new haven chargers'],stonehill:['stonehill college'],wagner:['wagner college'],
+  // OVC opponents write "EIU", "SEMO", "SIU Edwardsville", "USI", "UTM", "WIU", "Tennessee St.".
+  'eastern-illinois':['eiu','eastern ill','eastern illinois university'],lindenwood:['lindenwood university'],'morehead-state':['morehead st','morehead'],siue:['siu edwardsville','southern illinois edwardsville','siu e'],'southeast-missouri':['semo','southeast missouri state','se missouri','southeast mo'],'southern-indiana':['usi','southern indiana'],'tennessee-state':['tennessee st'],'tennessee-tech':['tenn tech','tennessee tech'],'ut-martin':['utm','tennessee martin','ut martin'],'western-illinois':['wiu','western ill']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -98,6 +100,10 @@ const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rai
     {names:['maryland eastern shore','umes','university of maryland eastern shore'],id:'maryland-eastern-shore',teams:{'Baseball':/\/sports\/baseball\//}},
     {names:['norfolk state','norfolk state university'],id:'norfolk-state',teams:{'Baseball':/\/sports\/baseball\//}},
     {names:['niagara','niagara university'],id:'niagara',teams:{'Bowling':/\/sports\/(?:womens-bowling|bowling|wbowl)\//}}],
+  // OVC football is the Big South-OVC association: Charleston Southern and
+  // Gardner-Webb count (the members' pages mark them, Oct 23).
+  'OVC':[{names:['charleston southern','charleston southern university','charleston so'],id:'charleston-southern',teams:{'Football':/\/sports\/football\//}},
+    {names:['gardner webb','gardner webb university'],id:'gardner-webb',teams:{'Football':/\/sports\/football\//}}],
   'CAA':[{names:['fairfield','fairfield university'],id:'fairfield',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//,'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}}],
   // Big South women's lacrosse's outside members (Gardner-Webb's, Radford's
   // and Winthrop's conference schedules, Oct 23): Wofford, Mercer, Furman.
@@ -216,6 +222,14 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country,
   // track, swimming, lacrosse, field hockey and bowling: no hockey, wrestling
   // or rowing (modules name those leagues).
+  // The OVC (2026-27: Eastern Illinois, Lindenwood, Morehead State, SIUE,
+  // Southeast Missouri, Southern Indiana, Tennessee State, Tennessee Tech, UT
+  // Martin, Western Illinois; Little Rock left for the UAC) sponsors
+  // football (with the Big South), basketball, baseball, softball, soccer,
+  // volleyball, beach volleyball, golf, tennis, cross country, track and
+  // rifle: no swimming, wrestling, hockey, lacrosse, gymnastics or bowling
+  // (modules name those leagues).
+  'OVC':new Set(['Swimming & Diving','Wrestling','Hockey','Lacrosse','Gymnastics','Bowling','Rowing','Field Hockey','Water Polo','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'NEC':new Set(['Hockey','Wrestling','Rowing','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The MEAC (2026-27: Coppin State, Delaware State, Howard, Maryland
   // Eastern Shore, Morgan State, Norfolk State, North Carolina Central, South

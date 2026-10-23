@@ -898,6 +898,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "eastern-illinois": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "eastern-kentucky": [
     "Baseball",
     "Basketball",
@@ -1543,6 +1556,22 @@
     "Track & Field",
     "Volleyball"
   ],
+  "lindenwood": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "lipscomb": [
     "Baseball",
     "Basketball",
@@ -2015,6 +2044,19 @@
     "Golf",
     "Skiing",
     "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "morehead-state": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rifle",
+    "Soccer",
+    "Softball",
     "Track & Field",
     "Volleyball"
   ],
@@ -3021,6 +3063,18 @@
     "Volleyball",
     "Water Polo"
   ],
+  "siue": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "smu": [
     "Basketball",
     "Cross Country",
@@ -3085,6 +3139,19 @@
     "Track & Field",
     "Volleyball"
   ],
+  "southeast-missouri": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "southern-illinois": [
     "Baseball",
     "Basketball",
@@ -3094,6 +3161,18 @@
     "Soccer",
     "Softball",
     "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "southern-indiana": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
     "Track & Field",
     "Volleyball"
   ],
@@ -3268,6 +3347,17 @@
     "Soccer",
     "Softball",
     "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "tennessee-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Softball",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -3645,6 +3735,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "ut-martin": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Rifle",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
   "utah": [
     "Baseball",
     "Basketball",
@@ -3884,6 +3989,19 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "western-illinois": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "western-kentucky": [
     "Baseball",
