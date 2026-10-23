@@ -3237,4 +3237,5 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - Deploys: the 4.186.0 preview build failed with no log (bundle 0.51 MB gzipped; startup about 200 ms locally, unchanged from main); 4.186.1 deployed the same code. The first gate had two Sacred Heart timeouts; the rerun on 4.187.0 had 402 checks, none failed. `test:release` passed on `75f1091`.
 - PR #411 merged as `bef82f9`. Production still served `4.183.0-ivy` about 20 minutes later (17:46 UTC), so the production build of the merge apparently failed. Production was unchanged, not wrong. This docs PR's merge rebuilds `main`.
 - Next: MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+- Production follow-up: the docs PR #412 merged as `4800656` and rebuilt `main`; production served `4.187.0-metro` by 18:09 UTC. `verify:prod --sports=all` for the ten schools: 401 of 402 passed. The one miss, Sacred Heart track (a 60 s read), passed 3/3 twice on reruns, with forced refreshes at 0.5-1.2 s. Manhattan High football passed 3/3 with 7 results. XC 18/20 and 26/21.
 
