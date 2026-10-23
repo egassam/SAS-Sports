@@ -197,7 +197,7 @@ import {valparaisoSchool,createValparaisoHandlers} from './schools/valparaiso.mj
 import {belmontSchool,createBelmontHandlers} from './schools/belmont.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.157.0-missouri-valley';
+const VERSION='4.158.0-missouri-valley';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

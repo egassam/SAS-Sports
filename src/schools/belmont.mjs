@@ -377,7 +377,14 @@ export function createBelmontHandlers({makeEvent,recapMatchesEvent,eventType=()=
   // STUNT (added Sept 2025, no season published, Oct 23): its schedule
   // address answers with the homepage, not a schedule page. A published season
   // titles the page "<year> Stunt Schedule" and the shared reader takes over.
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(Array.isArray(events)&&!events.length&&(args[2]==='Track & Field'||args[2]==='STUNT'&&!/<title>[^<]*\bSchedule\b/i.test(String(args[0]||''))))trackEmptied.add(events);return events;};
+  const readSchedule=(...args)=>{
+    const homepage=args[2]==='STUNT'&&!/<title>[^<]*\bSchedule\b/i.test(String(args[0]||''));
+    // The homepage holds no schedule data: the reader answers null, which
+    // would hand the page to the shared parsers.
+    const events=parseSchedule(...args)??(homepage?[]:null);
+    if(Array.isArray(events)&&!events.length&&(args[2]==='Track & Field'||homepage))trackEmptied.add(events);
+    return events;
+  };
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Bruins|Belmont|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
