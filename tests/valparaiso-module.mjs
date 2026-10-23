@@ -149,37 +149,16 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensbowling=parse("Bowling","womens-bowling");
   assert.deepEqual(v_womensbowling.map(line),[
- "Final Oct 16 Valparaiso at Penguin Classic (Youngstown State) | 9th of 18 (2-3)",
- "Final Oct 17 Valparaiso at Penguin Classic (Youngstown State) | 11th of 18 (4-6)",
- "Final Oct 18 Valparaiso at Penguin Classic (Youngstown State) | 11th of 18 (6-7)",
+ "Final Oct 16 Valparaiso at Penguin Classic (Youngstown State) | 11th of 18 (6-7)",
  "Today Oct 23 Valparaiso at Warhawk Classic (UW-Whitewater) | ",
- "Upcoming Oct 24 Valparaiso at Warhawk Classic (UW-Whitewater) | ",
- "Upcoming Oct 25 Valparaiso at Warhawk Classic (UW-Whitewater) | ",
  "Upcoming Nov 6 Valparaiso at Bulldog Classic (Louisiana Tech) | ",
- "Upcoming Nov 7 Valparaiso at Bulldog Classic (Louisiana Tech) | ",
- "Upcoming Nov 8 Valparaiso at Bulldog Classic (Louisiana Tech) | ",
  "Upcoming Nov 13 Valparaiso at Bearcat Invitational (McKendree) | ",
- "Upcoming Nov 14 Valparaiso at Bearcat Invitational (McKendree) | ",
- "Upcoming Nov 15 Valparaiso at Bearcat Invitational (McKendree) | ",
  "Upcoming Jan 15 Valparaiso at Northeast Classic (Sacred Heart) | ",
- "Upcoming Jan 16 Valparaiso at Northeast Classic (Sacred Heart) | ",
- "Upcoming Jan 17 Valparaiso at Northeast Classic (Sacred Heart) | ",
  "Upcoming Jan 23 Valparaiso at Viking Classic (Augustana) | ",
- "Upcoming Jan 24 Valparaiso at Viking Classic (Augustana) | ",
  "Upcoming Feb 5 Valparaiso at Flyer Classic (Lewis) | ",
- "Upcoming Feb 6 Valparaiso at Flyer Classic (Lewis) | ",
- "Upcoming Feb 7 Valparaiso at Flyer Classic (Lewis) | ",
  "Upcoming Feb 19 Valparaiso at Big Red Invitational (Nebraska) | ",
- "Upcoming Feb 20 Valparaiso at Big Red Invitational (Nebraska) | ",
- "Upcoming Feb 21 Valparaiso at Big Red Invitational (Nebraska) | ",
  "Upcoming Mar 5 Valparaiso at Music City Classic (Vanderbilt) | ",
- "Upcoming Mar 6 Valparaiso at Music City Classic (Vanderbilt) | ",
- "Upcoming Mar 7 Valparaiso at Music City Classic (Vanderbilt) | ",
- "Upcoming Mar 17 Valparaiso at Conference USA Championship | ",
- "Upcoming Mar 18 Valparaiso at Conference USA Championship | ",
- "Upcoming Mar 19 Valparaiso at Conference USA Championship | ",
- "Upcoming Mar 20 Valparaiso at Conference USA Championship | ",
- "Upcoming Mar 21 Valparaiso at Conference USA Championship | "
+ "Upcoming Mar 17 Valparaiso at Conference USA Championship | "
 ]);
   const v_menscrosscountry=parse("Cross Country","mens-cross-country");
   assert.deepEqual(v_menscrosscountry.map(line),[

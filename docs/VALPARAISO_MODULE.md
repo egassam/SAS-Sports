@@ -6,7 +6,7 @@ Sports (12): Baseball, Basketball, Bowling, Cross Country, Football, Golf, Socce
 
 ## Rules
 
-- Football plays in the Pioneer Football League; bowling names no league. Bowling reads `womens-bowling`, cross country and track the team pages (the generic addresses are the homepage). Men's soccer and men's tennis are not in the menu (the 2019-20 pages are past programs; tennis is a club): soccer and tennis read the women's pages. Bowling places carry the match record ("9th/18 (2-3)" reads "9th of 18 (2-3)").
+- Football plays in the Pioneer Football League; bowling names no league. Bowling reads `womens-bowling`, cross country and track the team pages (the generic addresses are the homepage). Men's soccer and men's tennis are not in the menu (the 2019-20 pages are past programs; tennis is a club): soccer and tennis read the women's pages. Bowling places carry the match record ("9th/18 (2-3)" reads "9th of 18 (2-3)"). The page lists each day of a bowling event; the days are one event (Penguin Classic, Oct 16-18), whose result is the last day's standing ("11th of 18 (6-7)").
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Shared Missouri Valley rules (`tests/missouri-valley-shared.mjs`): golf duals told by their story, bowling places with a match record, classic tournament headers cut at " | ", splash pages without the splash link; the Missouri Valley sponsors no football, gymnastics, wrestling, rifle, bowling, beach volleyball, rowing or STUNT.
 

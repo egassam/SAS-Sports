@@ -164,8 +164,10 @@ export function createValparaisoHandlers({makeEvent,recapMatchesEvent,eventType=
         }));
       }
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
-      // Sep 18-20): one event from its first to its last day.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling')return mergeMeetDays(games);
+      // Sep 18-20): one event from its first to its last day. So does bowling
+      // ("Penguin Classic (Youngstown State)", Oct 16-18); the last day's
+      // standing is the result.
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
