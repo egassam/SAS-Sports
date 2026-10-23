@@ -68,7 +68,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // Metro Conference (MAAC) opponents write "Mount Saint Mary's", "St. Peter's", "SHU", "QU".
   'mount-st-marys':['mount saint marys','mount st marys','the mount','msmu'],'saint-peters':['st peters','saint peters'],'sacred-heart':['shu'],quinnipiac:['qu'],canisius:['canisius college'],iona:['iona college'],manhattan:['manhattan college'],marist:['marist college'],niagara:['niagara university'],siena:['siena college'],rider:['rider university'],merrimack:['merrimack college'],fairfield:['fairfield university'],
   // MEAC opponents write "UMES", "NCCU", "SC State", "DSU", "NSU".
-  'maryland-eastern-shore':['umes','md eastern shore','maryland eastern shore'],'nc-central':['nccu','n c central','nc central'],'south-carolina-state':['sc state','s c state','south carolina st'],'delaware-state':['del state','delaware st'],'norfolk-state':['norfolk st'],'morgan-state':['morgan st'],'coppin-state':['coppin st'],howard:['howard university']};
+  'maryland-eastern-shore':['umes','md eastern shore','maryland eastern shore'],'nc-central':['nccu','n c central','nc central'],'south-carolina-state':['sc state','s c state','south carolina st'],'delaware-state':['del state','delaware st'],'norfolk-state':['norfolk st'],'morgan-state':['morgan st'],'coppin-state':['coppin st'],howard:['howard university'],
+  // NEC opponents write "Central Conn. State", "FDU", "Long Island", "UNH" is not New Haven.
+  'central-connecticut':['central connecticut state','central conn state','central conn','ccsu'],'chicago-state':['chicago st'],fdu:['fairleigh dickinson university','fdu'],'le-moyne':['le moyne college','lemoyne'],liu:['long island','long island university','liu brooklyn','liu sharks'],mercyhurst:['mercyhurst university'],'new-haven':['university of new haven','new haven chargers'],stonehill:['stonehill college'],wagner:['wagner college']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -191,6 +193,13 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country, track,
   // swimming, field hockey, lacrosse and rowing: no wrestling (Campbell,
   // Drexel, Hofstra in other leagues), gymnastics or hockey.
+  // The NEC (2026-27: Central Connecticut, Chicago State, Fairleigh
+  // Dickinson, Le Moyne, LIU, Mercyhurst, New Haven, Stonehill, Wagner;
+  // Saint Francis left for Division III) sponsors football, basketball,
+  // baseball, softball, soccer, volleyball, golf, tennis, cross country,
+  // track, swimming, lacrosse, field hockey and bowling: no hockey, wrestling
+  // or rowing (modules name those leagues).
+  'NEC':new Set(['Hockey','Wrestling','Rowing','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The MEAC (2026-27: Coppin State, Delaware State, Howard, Maryland
   // Eastern Shore, Morgan State, Norfolk State, North Carolina Central, South
   // Carolina State) sponsors football, basketball, softball, volleyball,

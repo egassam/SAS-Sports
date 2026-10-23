@@ -271,7 +271,7 @@ import {ncCentralSchool,createNcCentralHandlers} from './schools/nc-central.mjs'
 import {southCarolinaStateSchool,createSouthCarolinaStateHandlers} from './schools/south-carolina-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.192.0-meac';
+const VERSION='4.193.0-nec';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
