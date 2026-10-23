@@ -643,6 +643,17 @@
   "columbus-crew": [
     "Soccer"
   ],
+  "coppin-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "cornell": [
     "Baseball",
     "Basketball",
@@ -757,6 +768,22 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "delaware-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Triathlon",
+    "Volleyball",
+    "Wrestling"
   ],
   "denver": [
     "Basketball",
@@ -1683,6 +1710,15 @@
     "Volleyball",
     "Wrestling"
   ],
+  "maryland-eastern-shore": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Softball",
+    "Volleyball"
+  ],
   "memphis": [
     "Baseball",
     "Basketball",
@@ -1913,6 +1949,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "morgan-state": [
+    "Acrobatics & Tumbling",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "mount-st-marys": [
     "Baseball",
     "Basketball",
@@ -1954,6 +2002,16 @@
     "Baseball",
     "Basketball",
     "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "nc-central": [
+    "Basketball",
     "Cross Country",
     "Football",
     "Golf",
@@ -2073,6 +2131,18 @@
     "Lacrosse",
     "Soccer",
     "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "norfolk-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -2904,6 +2974,17 @@
     "Soccer",
     "Softball",
     "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "south-carolina-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
     "Tennis",
     "Track & Field",
     "Volleyball"
