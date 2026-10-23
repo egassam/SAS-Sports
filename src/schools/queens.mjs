@@ -347,7 +347,7 @@ export function createQueensHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
+      // Sports in other leagues (the ASUN sponsors no field hockey, men's lacrosse, swimming or triathlon; their leagues are not named yet); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
@@ -396,5 +396,7 @@ export function createQueensHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     // A past rowing, cross country or swimming meet with no result line, story or
     // TFRRS race (NC State's Dill Family Foundation Invitational (cross country, Oct 2): none in the schedule, archive or TFRRS)
     // is not listed either.
-    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving')&&event.headline==='Completed'&&!event.meet_results_verified)};
+    // Triathlon races publish no team result or story (four fall races, Oct
+    // 23): a past race without one is not listed, as a storyless meet.
+    isTennisWithoutStory:event=>converted(event)&&event.status==='Final'&&!event.recap_url&&(event.sport==='Tennis'||(event.sport==='Rowing'||event.sport==='Cross Country'||event.sport==='Swimming & Diving'||event.sport==='Triathlon')&&event.headline==='Completed'&&!event.meet_results_verified)};
 }

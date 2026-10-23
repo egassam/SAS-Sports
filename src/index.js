@@ -207,7 +207,7 @@ import {queensSchool,createQueensHandlers} from './schools/queens.mjs';
 import {westGeorgiaSchool,createWestGeorgiaHandlers} from './schools/west-georgia.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.160.0-asun-catalog';
+const VERSION='4.161.0-asun';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

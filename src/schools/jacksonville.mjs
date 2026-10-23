@@ -10,7 +10,7 @@ export const jacksonvilleSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Beach Volleyball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Softball','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Beach Volleyball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Softball','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -45,10 +45,9 @@ export const jacksonvilleSchool={
     'jacksonville|Golf':['https://judolphins.com/sports/womens-golf/schedule','https://judolphins.com/sports/mens-golf/schedule'],
     'jacksonville|Hockey':'https://judolphins.com/sports/hockey/schedule',
     'jacksonville|Lacrosse':['https://judolphins.com/sports/womens-lacrosse/schedule','https://judolphins.com/sports/mens-lacrosse/schedule'],
-    'jacksonville|Rowing':'https://judolphins.com/sports/womens-rowing/schedule',
+    'jacksonville|Rowing':['https://judolphins.com/sports/womens-rowing/schedule','https://judolphins.com/sports/mens-rowing/schedule'],
     'jacksonville|Soccer':['https://judolphins.com/sports/womens-soccer/schedule','https://judolphins.com/sports/mens-soccer/schedule'],
     'jacksonville|Softball':'https://judolphins.com/sports/softball/schedule',
-    'jacksonville|Tennis':'https://judolphins.com/sports/womens-tennis/schedule',
     'jacksonville|Track & Field':'https://judolphins.com/sports/womens-track-and-field/schedule',
     'jacksonville|Volleyball':'https://judolphins.com/sports/womens-volleyball/schedule'
   },
@@ -60,10 +59,9 @@ export const jacksonvilleSchool={
     'jacksonville|Golf':['https://judolphins.com/sports/womens-golf/roster','https://judolphins.com/sports/mens-golf/roster'],
     'jacksonville|Hockey':'https://judolphins.com/sports/hockey/roster',
     'jacksonville|Lacrosse':['https://judolphins.com/sports/womens-lacrosse/roster','https://judolphins.com/sports/mens-lacrosse/roster'],
-    'jacksonville|Rowing':'https://judolphins.com/sports/womens-rowing/roster',
+    'jacksonville|Rowing':['https://judolphins.com/sports/womens-rowing/roster','https://judolphins.com/sports/mens-rowing/roster'],
     'jacksonville|Soccer':['https://judolphins.com/sports/womens-soccer/roster','https://judolphins.com/sports/mens-soccer/roster'],
     'jacksonville|Softball':'https://judolphins.com/sports/softball/roster',
-    'jacksonville|Tennis':'https://judolphins.com/sports/womens-tennis/roster',
     'jacksonville|Track & Field':'https://judolphins.com/sports/womens-track-and-field/roster',
     'jacksonville|Volleyball':'https://judolphins.com/sports/womens-volleyball/roster'
   }
@@ -354,7 +352,7 @@ export function createJacksonvilleHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
+      // Sports in other leagues (the ASUN sponsors no hockey, rowing or men's lacrosse; their leagues are not named yet); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;

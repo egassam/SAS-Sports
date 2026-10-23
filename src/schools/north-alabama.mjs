@@ -342,8 +342,8 @@ export function createNorthAlabamaHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (the ASUN sponsors no football); the page data marks their league games.
+      const league={'Football':'United Athletic Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
@@ -369,7 +369,15 @@ export function createNorthAlabamaHandlers({makeEvent,recapMatchesEvent,eventTyp
   // Track & Field shares cross country's page: while that page lists only
   // fall meets, track's schedule is validly empty (not a failed source).
   const trackEmptied=new WeakSet();
-  const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
+  // Track's 2027 schedule is not published (Oct 23): its address answers
+  // with the site's "UNA Game Day" page, which holds no schedule data (the
+  // reader answers null). A published season titles the page "... Schedule".
+  const readSchedule=(...args)=>{
+    const unpublished=args[2]==='Track & Field'&&!/<title>[^<]*\bSchedule\b/i.test(String(args[0]||''));
+    const events=parseSchedule(...args)??(unpublished?[]:null);
+    if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);
+    return events;
+  };
   // A golf final whose card gives no place takes it from its final story.
   const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Lions|North Alabama|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),

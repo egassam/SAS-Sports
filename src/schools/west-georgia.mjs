@@ -10,7 +10,7 @@ export const westGeorgiaSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -45,7 +45,6 @@ export const westGeorgiaSchool={
     'west-georgia|Golf':['https://uwgathletics.com/sports/womens-golf/schedule','https://uwgathletics.com/sports/mens-golf/schedule'],
     'west-georgia|Soccer':'https://uwgathletics.com/sports/womens-soccer/schedule',
     'west-georgia|Softball':'https://uwgathletics.com/sports/softball/schedule',
-    'west-georgia|Tennis':'https://uwgathletics.com/sports/womens-tennis/schedule',
     'west-georgia|Track & Field':['https://uwgathletics.com/sports/womens-track-and-field/schedule','https://uwgathletics.com/sports/mens-track-and-field/schedule'],
     'west-georgia|Volleyball':'https://uwgathletics.com/sports/womens-volleyball/schedule'
   },
@@ -57,7 +56,6 @@ export const westGeorgiaSchool={
     'west-georgia|Golf':['https://uwgathletics.com/sports/womens-golf/roster','https://uwgathletics.com/sports/mens-golf/roster'],
     'west-georgia|Soccer':'https://uwgathletics.com/sports/womens-soccer/roster',
     'west-georgia|Softball':'https://uwgathletics.com/sports/softball/roster',
-    'west-georgia|Tennis':'https://uwgathletics.com/sports/womens-tennis/roster',
     'west-georgia|Track & Field':['https://uwgathletics.com/sports/womens-track-and-field/roster','https://uwgathletics.com/sports/mens-track-and-field/roster'],
     'west-georgia|Volleyball':'https://uwgathletics.com/sports/womens-volleyball/roster'
   }
@@ -348,8 +346,8 @@ export function createWestGeorgiaHandlers({makeEvent,recapMatchesEvent,eventType
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (the ASUN sponsors no football); the page data marks their league games.
+      const league={'Football':'United Athletic Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

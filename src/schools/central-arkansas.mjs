@@ -24,7 +24,9 @@ export const centralArkansasSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  // Men's cross country is the unlabeled `cross-country` page (Oct 23).
+  teamLabels:{'/sports/cross-country/schedule':"Men's"},
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'central-arkansas|Softball|Jade Carnahan':'https://www.instagram.com/jadecarnahan/',
     'central-arkansas|Softball|Jaleigh White':'https://www.instagram.com/jaleighwhite_/',
@@ -32,29 +34,29 @@ export const centralArkansasSchool={
   },
   scheduleUrls:{
     'central-arkansas|Baseball':'https://ucasports.com/sports/baseball/schedule',
-    'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/schedule','https://ucasports.com/sports/womens-basketball/schedule','https://ucasports.com/sports/basketball/schedule'],
+    'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/schedule','https://ucasports.com/sports/womens-basketball/schedule'],
     'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/beach-volleyball/schedule',
-    'central-arkansas|Cross Country':'https://ucasports.com/sports/cross-country/schedule',
+    'central-arkansas|Cross Country':['https://ucasports.com/sports/womens-cross-country/schedule','https://ucasports.com/sports/cross-country/schedule'],
     'central-arkansas|Football':'https://ucasports.com/sports/football/schedule',
-    'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/schedule','https://ucasports.com/sports/mens-golf/schedule','https://ucasports.com/sports/golf/schedule'],
-    'central-arkansas|STUNT':'https://ucasports.com/sports/stunt/schedule',
-    'central-arkansas|Soccer':['https://ucasports.com/sports/womens-soccer/schedule','https://ucasports.com/sports/soccer/schedule','https://ucasports.com/sports/mens-soccer/schedule'],
+    'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/schedule','https://ucasports.com/sports/mens-golf/schedule'],
+    'central-arkansas|Soccer':['https://ucasports.com/sports/womens-soccer/schedule','https://ucasports.com/sports/mens-soccer/schedule'],
     'central-arkansas|Softball':'https://ucasports.com/sports/softball/schedule',
-    'central-arkansas|Track & Field':'https://ucasports.com/sports/track-and-field/schedule',
-    'central-arkansas|Volleyball':['https://ucasports.com/sports/womens-volleyball/schedule','https://ucasports.com/sports/volleyball/schedule']
+    'central-arkansas|STUNT':'https://ucasports.com/sports/stunt/schedule',
+    'central-arkansas|Track & Field':['https://ucasports.com/sports/womens-track-and-field/schedule','https://ucasports.com/sports/mens-track-and-field/schedule'],
+    'central-arkansas|Volleyball':'https://ucasports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'central-arkansas|Baseball':'https://ucasports.com/sports/baseball/roster',
-    'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/roster','https://ucasports.com/sports/womens-basketball/roster','https://ucasports.com/sports/basketball/roster'],
+    'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/roster','https://ucasports.com/sports/womens-basketball/roster'],
     'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/beach-volleyball/roster',
-    'central-arkansas|Cross Country':'https://ucasports.com/sports/cross-country/roster',
+    'central-arkansas|Cross Country':['https://ucasports.com/sports/womens-cross-country/roster','https://ucasports.com/sports/cross-country/roster'],
     'central-arkansas|Football':'https://ucasports.com/sports/football/roster',
-    'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/roster','https://ucasports.com/sports/mens-golf/roster','https://ucasports.com/sports/golf/roster'],
-    'central-arkansas|STUNT':'https://ucasports.com/sports/stunt/roster',
-    'central-arkansas|Soccer':['https://ucasports.com/sports/womens-soccer/roster','https://ucasports.com/sports/soccer/roster','https://ucasports.com/sports/mens-soccer/roster'],
+    'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/roster','https://ucasports.com/sports/mens-golf/roster'],
+    'central-arkansas|Soccer':['https://ucasports.com/sports/womens-soccer/roster','https://ucasports.com/sports/mens-soccer/roster'],
     'central-arkansas|Softball':'https://ucasports.com/sports/softball/roster',
-    'central-arkansas|Track & Field':'https://ucasports.com/sports/track-and-field/roster',
-    'central-arkansas|Volleyball':['https://ucasports.com/sports/womens-volleyball/roster','https://ucasports.com/sports/volleyball/roster']
+    'central-arkansas|STUNT':'https://ucasports.com/sports/stunt/roster',
+    'central-arkansas|Track & Field':['https://ucasports.com/sports/womens-track-and-field/roster','https://ucasports.com/sports/mens-track-and-field/roster'],
+    'central-arkansas|Volleyball':'https://ucasports.com/sports/womens-volleyball/roster'
   }
 };
 
@@ -343,8 +345,8 @@ export function createCentralArkansasHandlers({makeEvent,recapMatchesEvent,event
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (the ASUN sponsors neither football nor STUNT; STUNT names no league); the page data marks their league games.
+      const league={'Football':'United Athletic Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

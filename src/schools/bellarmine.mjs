@@ -35,7 +35,7 @@ export const bellarmineSchool={
     'bellarmine|Lacrosse':'https://athletics.bellarmine.edu/sports/mens-lacrosse/schedule',
     'bellarmine|Soccer':['https://athletics.bellarmine.edu/sports/womens-soccer/schedule','https://athletics.bellarmine.edu/sports/mens-soccer/schedule'],
     'bellarmine|Softball':'https://athletics.bellarmine.edu/sports/softball/schedule',
-    'bellarmine|Swimming & Diving':'https://athletics.bellarmine.edu/sports/womens-swimming-and-diving/schedule',
+    'bellarmine|Swimming & Diving':['https://athletics.bellarmine.edu/sports/womens-swimming/schedule','https://athletics.bellarmine.edu/sports/mens-swimming/schedule'],
     'bellarmine|Tennis':['https://athletics.bellarmine.edu/sports/womens-tennis/schedule','https://athletics.bellarmine.edu/sports/mens-tennis/schedule'],
     'bellarmine|Track & Field':['https://athletics.bellarmine.edu/sports/womens-track-and-field/schedule','https://athletics.bellarmine.edu/sports/mens-track-and-field/schedule'],
     'bellarmine|Volleyball':'https://athletics.bellarmine.edu/sports/womens-volleyball/schedule',
@@ -50,7 +50,7 @@ export const bellarmineSchool={
     'bellarmine|Lacrosse':'https://athletics.bellarmine.edu/sports/mens-lacrosse/roster',
     'bellarmine|Soccer':['https://athletics.bellarmine.edu/sports/womens-soccer/roster','https://athletics.bellarmine.edu/sports/mens-soccer/roster'],
     'bellarmine|Softball':'https://athletics.bellarmine.edu/sports/softball/roster',
-    'bellarmine|Swimming & Diving':'https://athletics.bellarmine.edu/sports/womens-swimming-and-diving/roster',
+    'bellarmine|Swimming & Diving':['https://athletics.bellarmine.edu/sports/womens-swimming/roster','https://athletics.bellarmine.edu/sports/mens-swimming/roster'],
     'bellarmine|Tennis':['https://athletics.bellarmine.edu/sports/womens-tennis/roster','https://athletics.bellarmine.edu/sports/mens-tennis/roster'],
     'bellarmine|Track & Field':['https://athletics.bellarmine.edu/sports/womens-track-and-field/roster','https://athletics.bellarmine.edu/sports/mens-track-and-field/roster'],
     'bellarmine|Volleyball':'https://athletics.bellarmine.edu/sports/womens-volleyball/roster',
@@ -343,7 +343,7 @@ export function createBellarmineHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
+      // Sports in other leagues (the ASUN sponsors no field hockey, men's lacrosse, swimming or wrestling; their leagues are not named yet); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
