@@ -1591,6 +1591,14 @@
     "line": "#0f2f4a",
     "onAccent": "#ffffff"
   },
+  "northern-illinois": {
+    "primary": "#BA0C2F",
+    "secondary": "#000000",
+    "panel": "#320b17",
+    "panelDark": "#17060c",
+    "line": "#75152d",
+    "onAccent": "#ffffff"
+  },
   "northern-iowa": {
     "primary": "#4B116F",
     "secondary": "#FFCC00",
