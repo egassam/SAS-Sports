@@ -24,6 +24,9 @@ export const brownSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Brown's lacrosse and track rosters publish almost no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Lacrosse','Track & Field']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'brown|Basketball|Adrian Uchidiuno':'https://www.instagram.com/yb.adrian/',

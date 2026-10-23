@@ -254,7 +254,7 @@ import {pennSchool,createPennHandlers} from './schools/penn.mjs';
 import {princetonSchool,createPrincetonHandlers} from './schools/princeton.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.182.0-ivy';
+const VERSION='4.182.1-ivy';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
