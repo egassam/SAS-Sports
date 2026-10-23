@@ -25,6 +25,9 @@ export const westernIllinoisSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field']),
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Western Illinois's 2027 baseball and softball rosters publish no player portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Baseball','Softball']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'western-illinois|Baseball':'https://goleathernecks.com/sports/baseball/schedule',

@@ -100,10 +100,6 @@ const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rai
     {names:['maryland eastern shore','umes','university of maryland eastern shore'],id:'maryland-eastern-shore',teams:{'Baseball':/\/sports\/baseball\//}},
     {names:['norfolk state','norfolk state university'],id:'norfolk-state',teams:{'Baseball':/\/sports\/baseball\//}},
     {names:['niagara','niagara university'],id:'niagara',teams:{'Bowling':/\/sports\/(?:womens-bowling|bowling|wbowl)\//}}],
-  // OVC football is the Big South-OVC association: Charleston Southern and
-  // Gardner-Webb count (the members' pages mark them, Oct 23).
-  'OVC':[{names:['charleston southern','charleston southern university','charleston so'],id:'charleston-southern',teams:{'Football':/\/sports\/football\//}},
-    {names:['gardner webb','gardner webb university'],id:'gardner-webb',teams:{'Football':/\/sports\/football\//}}],
   'CAA':[{names:['fairfield','fairfield university'],id:'fairfield',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//,'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}}],
   // Big South women's lacrosse's outside members (Gardner-Webb's, Radford's
   // and Winthrop's conference schedules, Oct 23): Wofford, Mercer, Furman.

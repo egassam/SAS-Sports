@@ -25,6 +25,9 @@ export const moreheadStateSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field']),
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Morehead State's 2027 baseball and beach volleyball rosters publish no player portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Baseball','Beach Volleyball']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'morehead-state|Baseball':'https://msueagles.com/sports/baseball/schedule',
@@ -54,6 +57,9 @@ export const moreheadStateSchool={
   }
 };
 
+// The Pioneer Football League's teams (2026), as Morehead State's football
+// page writes them.
+const PFL=/^(?:Butler|Davidson|Dayton|Drake|Marist|Presbyterian|San Diego|St\. Thomas(?: \(MN\))?|Stetson|Valparaiso)$/i;
 const HOST='msueagles.com';
 // Morehead State's calendar day.
 const moreheadStateToday=sidearmToday('America/New_York');
@@ -122,7 +128,16 @@ export function createMoreheadStateHandlers({makeEvent,recapMatchesEvent,eventTy
     id:'morehead-state',host:HOST,sports:moreheadStateSchool.pageDataSports,squadSports:moreheadStateSchool.combinedSports,
     today:moreheadStateToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // The page writes a score winner first ("L", 3-0, volleyball at Eastern
+    // Kentucky, Aug 22): the team's score follows its result letter. An
+    // "Exhibition Match" tournament (Aug 21-22) is an exhibition, out of
+    // the record as on the page.
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>{
+      const result=game.result,mine=Number(result?.team_score),theirs=Number(result?.opponent_score);
+      const turned=String(result?.team_score||'').trim()!==''&&String(result?.opponent_score||'').trim()!==''&&(result.status==='L'&&mine>theirs||result.status==='W'&&mine<theirs);
+      const exhibition=/^exhibition\b/i.test(String(game.tournament?.title||'').trim());
+      return turned||exhibition?{...game,...(exhibition?{type:'S',tournament:null}:{}),...(turned?{result:{...result,team_score:result.opponent_score,opponent_score:result.team_score}}:{})}:game;
+    }),
     merge(sport,games){
       // Cross country is on the men's and women's track pages ("Track &
       // Field/Cross Country"), as at Miami (OH): the fall meets
@@ -340,9 +355,13 @@ export function createMoreheadStateHandlers({makeEvent,recapMatchesEvent,eventTy
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Football plays in the Pioneer Football League; its page marks no
+      // league games, so its PFL opponents are counted here: the page's 0-3
+      // (Valparaiso, Dayton, Davidson, Oct 23), which the OVC's membership
+      // would not count (it counted Western Illinois).
+      const league={'Football':'Pioneer Football League'}[sport];
       if(league)event.conference_name=league;
+      if(sport==='Football'&&event.opponent&&game?.type!=='S')event.conference_game=PFL.test(withoutRanking(event.opponent).trim())&&!/\b(?:tournament|championships?|playoffs?)\b/i.test(event.opponent);
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));
