@@ -146,6 +146,9 @@ await Promise.all(ready.map(async school=>{
     else notes.push(`${id}: pin these (12 links or fewer; lines in ${athletes.log}): ${few.join(', ')}`);
   }
   const pruned=fixtures.text.match(/--prune: .*/);if(pruned)notes.push(`${id}: ${pruned[0]}`);
+  // A sport left with no schedule page (Oct 23: three schools' cross country
+  // and track routes were the homepage, and nothing said so).
+  for(const line of fixtures.text.split('\n').filter(l=>/NO SCHEDULE PAGE/.test(l)))notes.push(`${id}: ${line.trim()}`);
   const survey=await run(id,'survey',['scripts/survey-school.mjs',`--school=${id}`]);
   const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME|FORMAT:/.test(l));
   notes.push(`${id}: survey ${survey.log}${gates.length?` — ${gates.length} GATE:\n    ${gates.join('\n    ')}`:' — no GATE'}`);

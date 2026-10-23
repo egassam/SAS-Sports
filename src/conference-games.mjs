@@ -46,7 +46,10 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // Atlantic 10 opponents write "GW", "Bonnies", "St. Joseph's" (its "St."
   // reads as "State" here), "SLU", "URI", "Loyola (Ill.)", "Mason".
   'george-washington':['gw','george washington'],'st-bonaventure':['bonnies'],'saint-josephs':['state joseph s','st joseph s','saint joseph s'],
-  'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth']};
+  'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth'],
+  // Missouri Valley opponents write "Illinois St.", "SIU", "UNI", "Valpo",
+  // "Southern Ill.", "Murray St.", "Illinois-Chicago".
+  'illinois-state':['illinois st'],'southern-illinois':['siu','southern ill'],'northern-iowa':['uni'],valparaiso:['valpo'],uic:['illinois chicago'],'murray-state':['murray st'],'indiana-state':['indiana st']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -138,7 +141,14 @@ const NOT_SPONSORED={
   // basketball, baseball, softball, soccer, volleyball, golf, tennis, cross
   // country, track, swimming, rowing, field hockey and women's lacrosse: no
   // football, wrestling, gymnastics, hockey or water polo.
-  'Atlantic 10':new Set(['Football','Gymnastics','Wrestling','Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
+  'Atlantic 10':new Set(['Football','Gymnastics','Wrestling','Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  // The Missouri Valley (2026-27: Belmont, Bradley, Drake, Evansville,
+  // Illinois State, Indiana State, Murray State, Northern Iowa, Southern
+  // Illinois, UIC, Valparaiso) sponsors basketball, baseball, softball,
+  // soccer, volleyball, golf, tennis, cross country, track and swimming: no
+  // football (the Missouri Valley Football Conference is its own league),
+  // wrestling, gymnastics, hockey, rowing or lacrosse.
+  'Missouri Valley':new Set(['Football','Gymnastics','Wrestling','Hockey','Rowing','Lacrosse','Field Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 
 // membersOf(conference): the conference's catalog entries (the Worker loads

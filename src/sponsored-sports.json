@@ -183,6 +183,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "belmont": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "boise-state": [
     "Basketball",
     "Beach Volleyball",
@@ -643,6 +655,17 @@
     "Volleyball",
     "Wrestling"
   ],
+  "evansville": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "fau": [
     "Baseball",
     "Basketball",
@@ -885,6 +908,20 @@
     "Volleyball",
     "Wrestling"
   ],
+  "illinois-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "imsa-pilot-challenge": [
     "Auto Racing"
   ],
@@ -907,6 +944,18 @@
     "Volleyball",
     "Water Polo",
     "Wrestling"
+  ],
+  "indiana-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
   ],
   "indianapolis-colts": [
     "Football"
@@ -1407,6 +1456,23 @@
     "Track & Field",
     "Volleyball"
   ],
+  "murray-state": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rifle",
+    "Rowing",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "nascar-cup-series": [
     "Auto Racing"
   ],
@@ -1537,6 +1603,19 @@
     "Soccer",
     "Softball",
     "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "northern-iowa": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
     "Track & Field",
     "Volleyball",
     "Wrestling"
@@ -2108,6 +2187,18 @@
     "Track & Field",
     "Volleyball"
   ],
+  "southern-illinois": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "southern-miss": [
     "Baseball",
     "Basketball",
@@ -2591,6 +2682,20 @@
     "Golf",
     "Soccer",
     "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "valparaiso": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"

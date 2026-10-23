@@ -53,7 +53,9 @@ export function discoverLinks(html,base){
 // A SIDEARM splash homepage (an ad screen that links only /index.aspx and
 // /splash.aspx?skip=true: gorunners.com and ucsbgauchos.com, Oct 22) carries
 // no menu; onboarding reads a sport page's menu instead.
-export function isSidearmSplash(html){return /splash\.aspx\?skip=true/.test(String(html||''))&&!/href="[^"]*\/sports\/[a-z-]+/.test(String(html||''));}
+// Also a SIDEARM page with no sport links at all (belmontbruins.com, Oct 23:
+// a 75th-anniversary landing page without the splash.aspx link).
+export function isSidearmSplash(html){const text=String(html||'');return(/splash\.aspx\?skip=true/.test(text)||/sidearm/i.test(text))&&!/href="[^"]*\/sports\/[a-z-]+/.test(text);}
 
 export function inferSport(url){
   const value=String(url||'').toLowerCase();
