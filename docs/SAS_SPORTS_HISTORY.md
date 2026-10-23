@@ -3222,3 +3222,19 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - Lesson: never push while a gate runs; start the gate only after the version is live and no other push is pending.
 - Next: MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
 
+## October 23, 2026 — Metro Conference (MAAC, ten schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize" (continued from the Ivy League). The user asked again mid-session "How much is left?" (answer: eight conferences after this one).
+
+- Catalog: the thirteen members. The members' 2026-27 pages name the league "Metro Conference" ("METRO"); only last spring's pages say "MAAC", so the catalog uses "Metro Conference". Canisius (gogriffs.com), Iona (ionagaels.com; icgaels.com redirects there) and Saint Peter's (saintpeterspeacocks.com) answered Imperva's "Too many redirects" at about 14:59, 15:18 and 15:37 UTC: added to `docs/BLOCKED_SCHOOLS.md`.
+- Built with `start-schools` (ported from Evansville): Fairfield, Manhattan, Marist, Merrimack, Mount St. Mary's, Niagara, Quinnipiac, Rider, Sacred Heart, Siena.
+- Routes: men's rowing (Fairfield, Marist), men's volleyball (Manhattan, Merrimack, Sacred Heart), team swimming pages (Mount St. Mary's), Sacred Heart women's lightweight rowing and women's wrestling (`wwrest`, labelled), and Siena's lacrosse team pages (the generic address is the homepage). Sacred Heart bowling is women's only (`mens-bowling` is a 2020-21 women's page). Siena acrobatics' address answers with the homepage and reads as an empty schedule (North Alabama's rule).
+- Leagues from page marks, per team page where they differ: CAA (Fairfield field hockey and men's lacrosse, Sacred Heart football), NEC (field hockey at Merrimack, Quinnipiac, Rider and Sacred Heart; bowling at Niagara and Sacred Heart), Hockey East (Merrimack), Atlantic Hockey (Niagara, Sacred Heart men), NEWHA (Sacred Heart women), ECAC Hockey (Quinnipiac), EIWA (Sacred Heart wrestling), MAC (Rider wrestling), MAWPC (Mount St. Mary's men's water polo), Pioneer (Marist football), NCEA (Sacred Heart equestrian). Field hockey is not a Metro sport.
+- Formats: "Metro ..." tournaments are "at" events (Manhattan, Mount St. Mary's); Mount St. Mary's bowling "8-1, Third Place" -> "3rd (8-1)"; a bare "PRESEASON" promotion is an exhibition (shared; Merrimack hockey and field hockey; no other saved page has one; the survey of every school matched main).
+- Records: `compare-records` 63 match; men's volleyball and women's water polo pages show the finished spring 2026 seasons. Merrimack hockey matched once preseason games were exhibitions.
+- Athletes: profile cards; portrait-less profiles fill Merrimack golf and rowing, Mount St. Mary's water polo, Niagara tennis and Sacred Heart baseball; Manhattan and Siena acrobatics rosters answer 404 (off the athlete list). 131 checks passed.
+- Shared fix: `scoreboardTeamMatchesSchool` never matches a high or middle school. Manhattan High School ("Manhattan") had taken the Manhattan Jaspers on the college boards (`tests/scoreboard-match.mjs`); Manhattan High's football still reads (7 results).
+- Deploys: the 4.186.0 preview build failed with no log (bundle 0.51 MB gzipped; startup about 200 ms locally, unchanged from main); 4.186.1 deployed the same code. The first gate had two Sacred Heart timeouts; the rerun on 4.187.0 had 402 checks, none failed. `test:release` passed on `75f1091`.
+- PR #411 merged as `bef82f9`. Production still served `4.183.0-ivy` about 20 minutes later (17:46 UTC), so the production build of the merge apparently failed. Production was unchanged, not wrong. This docs PR's merge rebuilds `main`.
+- Next: MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+
