@@ -331,9 +331,10 @@ export function createDetroitMercyHandlers({makeEvent,recapMatchesEvent,eventTyp
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+    afterEvent(event,{sport,game,games,url}){
+      // Sports in other leagues, as the page data marks them: men's lacrosse
+      // in the NEC, women's in the MAC (fencing names no league).
+      const league=sport==='Lacrosse'?(/^\/sports\/womens-/.test(url?.pathname||'')?'MAC':'NEC'):null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

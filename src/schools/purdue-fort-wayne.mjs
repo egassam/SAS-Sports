@@ -342,9 +342,10 @@ export function createPurdueFortWayneHandlers({makeEvent,recapMatchesEvent,event
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+    afterEvent(event,{sport,game,games,url}){
+      // Men's volleyball plays in the MIVA, as the page data marks it (women's
+      // volleyball is a Horizon League sport).
+      const league=sport==='Volleyball'&&/^\/sports\/mens-volleyball\//.test(url?.pathname||'')?'MIVA':null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

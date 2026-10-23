@@ -259,6 +259,18 @@ export function createClevelandStateHandlers({makeEvent,recapMatchesEvent,eventT
     // Swimming dual scores may carry a half point.
     score:/^\d+(?:\.\d+)?$/,
     result(event,{sport,result,meet,final,scored}){
+      // A fencing meet's record per team over its duals ("Men: 3-2 | Women:
+      // 3-2", Ohio State Duals, Oct 4): women first, as K-State's meets.
+      if(final&&!scored&&sport==='Fencing'){
+        const text=String(result.postscore_info||result.prescore_info||'').replace(/\s+/g,' ').trim();
+        const teams=[...text.matchAll(/\b(Men|Women)(?:'s)?:\s*(\d{1,2}-\d{1,2})\b/gi)].map(m=>({team:/^w/i.test(m[1])?'Women':'Men',value:m[2]})).sort((a,b)=>a.team<b.team?1:-1);
+        if(teams.length&&text.replace(/\b(?:Men|Women)(?:'s)?:\s*\d{1,2}-\d{1,2}\b/gi,'').replace(/[\s|,;/]+/g,'')===''){
+          event.event_type='MEET';
+          event.results=teams.map(({team,value})=>({group:`${team}'s Team`,participant:'Cleveland State team',result:value}));
+          event.headline=teams.map(({team,value})=>`${team}'s team: ${value}`).join(' / ');
+          event.result_count=event.results.length;return;
+        }
+      }
       if(final&&!scored&&sport==='Swimming & Diving'){
         const text=String(result.postscore_info||result.prescore_info||'').replace(/\s+/g,' ').trim();
         // A dual per team ("Women: W, 253-33 | Men: M, 248-41"): the scores
@@ -339,8 +351,9 @@ export function createClevelandStateHandlers({makeEvent,recapMatchesEvent,eventT
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues: men's lacrosse plays in the NEC (fencing
+      // names no league); the page data marks their league games.
+      const league={'Lacrosse':'NEC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

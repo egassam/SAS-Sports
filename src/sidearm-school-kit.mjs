@@ -155,8 +155,12 @@ export function golfPlacing(text){
   if(squads.length&&squads.every(([,,inner])=>pointsPlace(inner))&&String(text).replace(/([A-Z][A-Za-z]+)\s*\(([^()]+)\)/g,'').replace(/[\s•·,/]+/g,'')==='')return squads.map(([,name,inner])=>`${name} team: ${pointsPlace(inner)}`).join(' / ');
   // Valparaiso's bowling adds its match record: "9th/18 (2-3)" -> "9th of 18
   // (2-3)".
-  const record=(String(text||'').match(/\s*(\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\))\s*$/)||[])[1]||'';
-  if(record)text=String(text).replace(/\s*\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\)\s*$/,'');
+  // Youngstown State writes the record first: "1-2 / 4th of 18 Teams" ->
+  // "4th of 18 (1-2)".
+  const leading=String(text||'').match(/^\s*(\d{1,2}-\d{1,2}(?:-\d{1,2})?)\s*\/\s*(?=T?-?\d+(?:st|nd|rd|th)\b)/i);
+  if(leading)text=String(text).slice(leading[0].length);
+  const record=leading?`(${leading[1]})`:(String(text||'').match(/\s*(\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\))\s*$/)||[])[1]||'';
+  if(record&&!leading)text=String(text).replace(/\s*\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\)\s*$/,'');
   text=String(text||'').trim().replace(/\s*\(\d{2,4}(?:\s*[-=]\s*\d{2,4})*(?:,\s*(?:[+-]\d+|E|even))?\)(?=\s*(?:\/|of\b|$))/gi,'').trim();
   const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
   if(!m)return null;

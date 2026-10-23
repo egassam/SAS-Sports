@@ -247,7 +247,7 @@ import {wrightStateSchool,createWrightStateHandlers} from './schools/wright-stat
 import {youngstownStateSchool,createYoungstownStateHandlers} from './schools/youngstown-state.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.175.1-horizon';
+const VERSION='4.176.0-horizon';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

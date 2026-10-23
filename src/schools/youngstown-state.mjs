@@ -344,8 +344,10 @@ export function createYoungstownStateHandlers({makeEvent,recapMatchesEvent,event
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: football in the
+      // Missouri Valley Football Conference, women's lacrosse in the MAC
+      // (bowling names no league).
+      const league={'Football':'Missouri Valley Football Conference','Lacrosse':'MAC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

@@ -345,7 +345,7 @@ export function createIuIndyHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues (every IU Indianapolis sport is a Horizon League sport); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
