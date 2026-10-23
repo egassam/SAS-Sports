@@ -497,34 +497,44 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // The team's place can come late (Portland State's Sun Mountain story
   // tells the medalist first: "The Vikings finished third" at 2,100
   // characters).
-  const lead=story.slice(Math.max(0,story.search(/\b[A-Z][A-Z .,']{3,}(?:,\s*[A-Z][a-z]+\.?)?(?:\s*\([^)]{3,30}\))?\s+[-–—]\s/))).slice(0,3000);
+  // A dateline may end in a double hyphen ("Fairfax, Va. --", George Mason).
+  const lead=story.slice(Math.max(0,story.search(/\b[A-Z][A-Z .,']{3,}(?:,\s*[A-Z][a-z]+\.?)?(?:\s*\([^)]{3,30}\))?\s+(?:[-–—]|--)\s/))).slice(0,3000);
   const placeOf=token=>{const tied=/^T-?\d/i.test(token),word=PLACE_NAMES.indexOf(token.toLowerCase())+1,digits=(token.match(/^(?:T-?)?(\d+)(?:st|nd|rd|th)$/i)||[])[1],n=word||Number(digits);if(!n)return null;const suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${tied?'T':''}${n}${suffix}`;};
   const word='((?:T-?)?\\d+(?:st|nd|rd|th)|first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)';
   const title=meta('title').replace(/[‘’]/g,"'");
+  // A headline may name the team as just "Golf" ("Golf Finishes 11th in
+  // Season Opener", "Golf Reigns Supreme at The Goat, Claims Team Title":
+  // George Washington, Sep 13 and 20).
+  const head=`(?:${team}|(?:Men's |Women's )?Golf)`;
   // "Broncos Capture Bomb Darts Birds Collegiate ..." (Santa Clara, Sep 8).
-  if(new RegExp(`\\b${team}\\s+(?:Wins?|Captures?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
+  if(new RegExp(`\\b${head}\\s+(?:Wins?|Captures?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
   // "Demon Deacons Open Season with Team Title at ANNIKA Intercollegiate";
   // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
-  if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
-  if(new RegExp(`\\b${team}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
+  if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
+  if(new RegExp(`\\b${head}\\b[^|]*?\\bRunner-?Up\\b`,'i').test(title))return'2nd';
   // "Bobcats Repeat as Yellowstone Intercollegiate Team Champions" (Montana
   // State, Sep 22).
-  if(new RegExp(`\\b${team}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
-  const heading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
+  if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
+  const heading=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
   // "Cajuns Finish Tied For 11th at Argent Financial Classic", "Bulldogs
-  // Close 2026 at The Clerico Tie for Seventh" (Louisiana, Louisiana Tech).
-  const tiedHeading=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b(?:Finish(?:es)?\\s+)?Tied?\\s+For\\s+${word}\\b`,'i'));
+  // Close 2026 at The Clerico Tie for Seventh" (Louisiana, Louisiana Tech);
+  // "Ohio Women's Golf Ties For Fourth at Butler Invitational" (Oct 6).
+  const tiedHeading=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b(?:Finish(?:es)?\\s+)?Tie[sd]?\\s+For\\s+${word}\\b`,'i'));
   if(tiedHeading&&placeOf(tiedHeading[1]))return`T${placeOf(tiedHeading[1]).replace(/^T/,'')}`;
   // "Women's Golf Opens Season with Fourth-Place Finish at ..." (St. John's),
   // "Golden Eagles Close Fall With Fifth-Place Finish" (Marquette, Oct 19).
-  const placeFinish=title.match(new RegExp(`\\b${team}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
+  const placeFinish=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b${word}[- ]Place\\s+Finish\\b`,'i'));
   if(placeFinish&&placeOf(placeFinish[1]))return placeOf(placeFinish[1]);
   // The summary ends before the story starts, whatever its last character.
   for(const sentence of `${meta('description')}. ${lead}`.split(/(?<=\.)\s+/)){
     // A player who "paced the Musketeers" places herself, not the team
     // (Xavier's Flyer Invitational, Oct 20: "... paced the Musketeers at the
     // Flyer Invitational on Tuesday, placing 10th").
+    // ... unless it led them to the team's place: "Powell led the Patriots to
+    // a fifth-place finish in the 13-team field" (George Mason, Sep 22).
+    const ledTo=sentence.match(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    if(ledTo&&placeOf(ledTo[2]))return`${ledTo[1]?'T':''}${placeOf(ledTo[2])}`;
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
     // A standing after an earlier round is not the final place (Northern
     // Arizona's McGuire story: "NAU was +9 after the first round, which was
@@ -543,12 +553,17 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // A move on the final day: "As a team, Cal Poly slipped from fifth to
     // eighth during the final round" (Saint Mary's Invitational, Oct 21).
     // "As a team, the Broncos tied for the low round of the day ... to
-    // secure a third-place finish" (Santa Clara, Canadian Collegiate, Sep 15).
-    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    // secure a third-place finish" (Santa Clara, Canadian Collegiate, Sep 15);
+    // "The Davidson men's golf team concluded ... with a fifth-place finish".
+    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
-    const m=sentence.match(new RegExp(`(?:\\b${team}\\b|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    // The team's possessive before a best score names a player's ("Olivia
+    // Kury delivered the Hawks' lowest score ... to finish tied for 81st",
+    // Saint Joseph's; "Luebbers was Ohio's top finisher, finishing ... tied for
+    // 6th", Ohio); "The Lumberjacks' three-day total" is the team's.
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b(?!['’]s?\\s+(?:lowest|best|top|low|leading)\\b)|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
@@ -571,7 +586,10 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
     let raw=null;try{const response=await fetch(event.recap_url,{headers,redirect:'follow',signal:AbortSignal.timeout(6500)});raw=response.ok?await response.text():null;}catch{}
     // A tournament named for individuals (Xavier's "Raider Individual", Oct
     // 12-13) has no team place either.
-    const place=raw&&golfStoryPlace(raw,{team,decode:decodeHtml})||(raw&&/\bIndividuals?\b/.test(event.opponent||'')?'No team score (individuals only)':null);
+    // It comes first: a story covering two events names the other's team
+    // place (Eastern Michigan's Shepherd's Rock Individual beside the
+    // Nemacolin, Oct 5).
+    const place=raw&&(/\bIndividuals?\b/.test(event.opponent||'')?'No team score (individuals only)':golfStoryPlace(raw,{team,decode:decodeHtml}));
     if(place){event.headline=place;event.results=[{label:'Result',value:place}];event.result_count=1;}
     return event;
   }

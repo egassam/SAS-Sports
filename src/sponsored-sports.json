@@ -495,6 +495,21 @@
   "dallas-cowboys": [
     "Football"
   ],
+  "davidson": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "dc-united": [
     "Soccer"
   ],
@@ -564,6 +579,22 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "duquesne": [
+    "Acrobatics & Tumbling",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Triathlon",
+    "Volleyball"
   ],
   "east-carolina": [
     "Baseball",
@@ -676,6 +707,21 @@
     "Track & Field",
     "Volleyball"
   ],
+  "fordham": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
   "formula-1": [
     "Auto Racing"
   ],
@@ -691,6 +737,36 @@
     "Swimming & Diving",
     "Tennis",
     "Track & Field",
+    "Volleyball",
+    "Water Polo"
+  ],
+  "george-mason": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "george-washington": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
     "Volleyball",
     "Water Polo"
   ],
@@ -966,6 +1042,21 @@
   ],
   "la-galaxy": [
     "Soccer"
+  ],
+  "la-salle": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Swimming & Diving",
+    "Track & Field",
+    "Triathlon",
+    "Water Polo"
   ],
   "lafc": [
     "Soccer"
@@ -1736,6 +1827,21 @@
   "real-salt-lake": [
     "Soccer"
   ],
+  "rhode-island": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "rice": [
     "Baseball",
     "Basketball",
@@ -1747,6 +1853,19 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "richmond": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field"
   ],
   "rutgers": [
     "Baseball",
@@ -1778,6 +1897,30 @@
     "Soccer",
     "Softball",
     "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "saint-josephs": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field"
+  ],
+  "saint-louis": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Track & Field",
     "Volleyball"
   ],
