@@ -930,6 +930,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "fairfield": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball"
+  ],
   "fau": [
     "Baseball",
     "Basketball",
@@ -1593,6 +1607,19 @@
     "Swimming & Diving",
     "Track & Field"
   ],
+  "manhattan": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
   "manhattan-ks": [
     "Cross Country",
     "Football",
@@ -1600,6 +1627,21 @@
     "Soccer",
     "Tennis",
     "Volleyball"
+  ],
+  "marist": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "marquette": [
     "Basketball",
@@ -1650,6 +1692,23 @@
     "Rifle",
     "Soccer",
     "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "merrimack": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -1854,6 +1913,20 @@
     "Track & Field",
     "Volleyball"
   ],
+  "mount-st-marys": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Water Polo"
+  ],
   "murray-state": [
     "Baseball",
     "Basketball",
@@ -1975,6 +2048,21 @@
   ],
   "new-york-yankees": [
     "Baseball"
+  ],
+  "niagara": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "njit": [
     "Baseball",
@@ -2459,6 +2547,21 @@
     "Triathlon",
     "Volleyball"
   ],
+  "quinnipiac": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "radford": [
     "Baseball",
     "Basketball",
@@ -2514,6 +2617,21 @@
     "Tennis",
     "Track & Field"
   ],
+  "rider": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "robert-morris": [
     "Basketball",
     "Cross Country",
@@ -2559,6 +2677,27 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "sacred-heart": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Equestrian",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "saint-josephs": [
     "Baseball",
@@ -2714,6 +2853,20 @@
     "Swimming & Diving",
     "Tennis",
     "Volleyball"
+  ],
+  "siena": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Volleyball",
+    "Water Polo"
   ],
   "smu": [
     "Basketball",
