@@ -26,7 +26,10 @@ export const southCarolinaStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis']),
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // SC State's basketball rosters publish no player portraits (coaches and sponsors only) (Oct 23).
+  portraitlessProfileSports:new Set(['Basketball']),
+  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'south-carolina-state|Basketball':['https://scsuathletics.com/sports/mens-basketball/schedule','https://scsuathletics.com/sports/womens-basketball/schedule'],
@@ -36,7 +39,7 @@ export const southCarolinaStateSchool={
     'south-carolina-state|Soccer':'https://scsuathletics.com/sports/womens-soccer/schedule',
     'south-carolina-state|Softball':'https://scsuathletics.com/sports/softball/schedule',
     'south-carolina-state|Tennis':['https://scsuathletics.com/sports/womens-tennis/schedule','https://scsuathletics.com/sports/mens-tennis/schedule'],
-    'south-carolina-state|Track & Field':'https://scsuathletics.com/sports/mens-track-and-field/schedule',
+    'south-carolina-state|Track & Field':['https://scsuathletics.com/sports/womens-track-and-field/schedule','https://scsuathletics.com/sports/mens-track-and-field/schedule'],
     'south-carolina-state|Volleyball':'https://scsuathletics.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -47,7 +50,7 @@ export const southCarolinaStateSchool={
     'south-carolina-state|Soccer':'https://scsuathletics.com/sports/womens-soccer/roster',
     'south-carolina-state|Softball':'https://scsuathletics.com/sports/softball/roster',
     'south-carolina-state|Tennis':['https://scsuathletics.com/sports/womens-tennis/roster','https://scsuathletics.com/sports/mens-tennis/roster'],
-    'south-carolina-state|Track & Field':'https://scsuathletics.com/sports/mens-track-and-field/roster',
+    'south-carolina-state|Track & Field':'https://scsuathletics.com/sports/womens-track-and-field/roster',
     'south-carolina-state|Volleyball':'https://scsuathletics.com/sports/womens-volleyball/roster'
   }
 };

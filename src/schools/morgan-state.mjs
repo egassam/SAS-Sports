@@ -22,6 +22,9 @@ export const morganStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Morgan State's wrestling roster publishes no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Wrestling']),
   combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'morgan-state|Basketball|Matar Wade':'https://www.instagram.com/thereal.mak/',

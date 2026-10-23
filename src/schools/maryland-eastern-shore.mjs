@@ -23,6 +23,9 @@ export const marylandEasternShoreSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // UMES's 2027 baseball and softball rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Baseball','Softball']),
   combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field','Volleyball']),
   // UMES's outdoor track pages are /sports/wot/ and /sports/mot/ (their titles, Oct 23).
   teamLabels:{'/sports/wot/schedule':"Women's",'/sports/mot/schedule':"Men's"},
