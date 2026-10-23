@@ -210,7 +210,9 @@
     "start-schools": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/start-schools.mjs",
     "fetch-school-fixtures": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/fetch-school-fixtures.mjs",
     "survey-school": "node scripts/survey-school.mjs",
-    "screenshot-school": "node scripts/screenshot-school.mjs"
+    "screenshot-school": "node scripts/screenshot-school.mjs",
+    "compare-records": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/compare-records.mjs",
+    "set-sport-routes": "node scripts/set-sport-routes.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
