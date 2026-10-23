@@ -60,6 +60,9 @@ export const delawareStateSchool={
   }
 };
 
+// The NEC's women's soccer teams (2026-27), as Delaware State's opponents
+// write them.
+const NEC_SOCCER=/^(?:Central Connecticut(?: State)?|CCSU|Chicago State|Fairleigh Dickinson|FDU|LIU|Le Moyne|Mercyhurst|Stonehill|Wagner|Saint Francis(?: \(PA\))?|Howard)$/i;
 const HOST='dsuhornets.com';
 // Delaware State's calendar day.
 const delawareStateToday=sidearmToday('America/New_York');
@@ -347,8 +350,12 @@ export function createDelawareStateHandlers({makeEvent,recapMatchesEvent,eventTy
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
       // Sports in other leagues, as the page data marks them: baseball and women's lacrosse in the NEC (equestrian, triathlon and women's wrestling name no league).
-      const league={'Baseball':'NEC','Lacrosse':'NEC'}[sport];
+      const league={'Baseball':'NEC','Lacrosse':'NEC','Soccer':'NEC'}[sport];
       if(league)event.conference_name=league;
+      // Women's soccer plays in the NEC too, but its page marks no league
+      // games: the page's 0-7 is its NEC opponents (Oct 23), which the MEAC's
+      // membership would not count (Air Force hockey's rule).
+      if(sport==='Soccer'&&event.opponent&&game?.type!=='S')event.conference_game=NEC_SOCCER.test(withoutRanking(event.opponent).trim())&&!/\b(?:tournament|championships?)\b/i.test(event.opponent);
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));

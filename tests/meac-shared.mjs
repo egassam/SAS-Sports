@@ -19,4 +19,10 @@ assert.match(umes,/games=games\.filter\(game=>!\/\^DNP\$\/i\.test/);
 assert.match(umes,/createTeamTfrrsMeetResults\(\{id:'maryland-eastern-shore',schoolName:'Maryland Eastern Shore',hostMeetName:true,/);
 assert.match(umes,/teamLabels:\{'\/sports\/wot\/schedule':"Women's",'\/sports\/mot\/schedule':"Men's"\}/);
 
+// A site answering from its www host is the same site (SC State's
+// schedules redirect to www.scsuathletics.com: no events were read).
+assert.match(read('../src/sidearm-schedule-reader.mjs'),/const bare=name=>String\(name\|\|''\)\.toLowerCase\(\)\.replace\(\/\^www\\\.\/,''\);\n\s*if\(bare\(url\.hostname\)!==bare\(host\)/);
+// Delaware State women's soccer counts its NEC opponents (the page marks none).
+assert.match(read('../src/schools/delaware-state.mjs'),/if\(sport==='Soccer'&&event\.opponent&&game\?\.type!=='S'\)event\.conference_game=NEC_SOCCER\.test/);
+
 console.log('MEAC shared checks passed');
