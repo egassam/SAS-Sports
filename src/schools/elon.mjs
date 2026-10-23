@@ -45,7 +45,7 @@ export const elonSchool={
   rosterUrls:{
     'elon|Baseball':'https://elonphoenix.com/sports/baseball/roster',
     'elon|Basketball':['https://elonphoenix.com/sports/mens-basketball/roster','https://elonphoenix.com/sports/womens-basketball/roster'],
-    'elon|Cross Country':'https://elonphoenix.com/sports/cross-country/roster',
+    'elon|Cross Country':['https://elonphoenix.com/sports/womens-cross-country/roster','https://elonphoenix.com/sports/mens-cross-country/roster'],
     'elon|Football':'https://elonphoenix.com/sports/football/roster',
     'elon|Golf':['https://elonphoenix.com/sports/womens-golf/roster','https://elonphoenix.com/sports/mens-golf/roster'],
     'elon|Lacrosse':'https://elonphoenix.com/sports/womens-lacrosse/roster',

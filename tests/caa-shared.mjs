@@ -30,4 +30,8 @@ assert.match(start,/\/\^tfrrs-\\d\+\\\.html\\\.gz\$\//);
 // Fairfield is a CAA member in field hockey and men's lacrosse.
 assert.match(read('../src/conference-games.mjs'),/'CAA':\[\{names:\['fairfield'/);
 
+// William & Mary football plays in the Patriot League (its page data marks
+// the Patriot League games), as Richmond's.
+assert.match(read('../src/schools/william-mary.mjs'),/const league=\{'Football':'Patriot League'\}\[sport\]/);
+
 console.log('CAA shared checks passed');

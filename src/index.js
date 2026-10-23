@@ -238,7 +238,7 @@ import {towsonSchool,createTowsonHandlers} from './schools/towson.mjs';
 import {williamMarySchool,createWilliamMaryHandlers} from './schools/william-mary.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.172.0-caa';
+const VERSION='4.173.0-caa';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
