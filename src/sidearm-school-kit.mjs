@@ -12,6 +12,7 @@
 //   writeMeetPlaces(event,{...})      the K-State meet headline and rows from those places
 //   golfPlacing(text)                 "t-10th of 12" -> "T10th of 12"
 //   golfMatchPlay(text)               "defeated X, 3-2; lost to Y, 3.5-1.5" -> "Match play: 1-1" and one row per match
+//   golfStoryMatchPlay(raw,{team})    a golf dual's story ("X defeated the Purple Aces 9 ½ - 4 ½") -> "Match play: 0-1", "L, 4.5-9.5"
 //   doubleheaderNumber()              gameNumber setting: Game 1 / Game 2
 //   createRecapMatcher({...})         own recap: opponent and date; others must name the opponent in the headline
 //   createArchiveStory({...})         a final with no linked story takes one from /sports/<slug>/archives
@@ -143,11 +144,15 @@ export function golfPlacing(text){
   // the field in brackets: "4th (9 Teams)"; Coastal Carolina adds the rounds:
   // "1st of 16 (280-277-204=835)"; ULM the total inside: "T-3rd (844) / 15";
   // UC Davis the score to par too: "7th Of 17 (286-299-296 - 881, +17)".
+  // Valparaiso's bowling adds its match record: "9th/18 (2-3)" -> "9th of 18
+  // (2-3)".
+  const record=(String(text||'').match(/\s*(\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\))\s*$/)||[])[1]||'';
+  if(record)text=String(text).replace(/\s*\(\d{1,2}-\d{1,2}(?:-\d{1,2})?\)\s*$/,'');
   text=String(text||'').trim().replace(/\s*\(\d{2,4}(?:\s*[-=]\s*\d{2,4})*(?:,\s*(?:[+-]\d+|E|even))?\)(?=\s*(?:\/|of\b|$))/gi,'').trim();
   const m=String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)?\s*(?:\/|of|out of)\s*(\d+)(?:\s+teams)?\.?$/i)||String(text||'').trim().match(/^(T-?)?(\d+)(st|nd|rd|th)\s*\((\d+)\s+teams\)$/i);
   if(!m)return null;
   const n=Number(m[2]),suffix=m[3]?m[3].toLowerCase():n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';
-  return`${m[1]?'T':''}${m[2]}${suffix} of ${m[4]}`;
+  return`${m[1]?'T':''}${m[2]}${suffix} of ${m[4]}${record?` ${record}`:''}`;
 }
 
 // A golf card's own place when it carries the team's scores beside it (MAC,
@@ -574,6 +579,20 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // "five golfers compete as individuals").
   return/\bindividuals?[- ]only\b|\bcompete[sd]?\s+as\s+individuals\b/i.test(`${title} ${lead}`)?'No team score (individuals only)':null;
 }
+// A golf dual told by its story ("The Screaming Eagles defeated the Purple
+// Aces 9 ½ - 4 ½", Evansville's Battle of the Expressway, Oct 22): the
+// match play headline golfMatchPlay writes and one "Result" row (the event
+// names no opponent), the school's points first. `team` is the module's golf story pattern; null when the story tells
+// no such score.
+export function golfStoryMatchPlay(raw,{team,decode=value=>String(value||'')}){
+  const text=decode(String(raw||'').replace(/<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+  const points='(\\d+(?:\\s*½|\\.5)?|½)',number=value=>Number(String(value).replace(/\s*½/,'.5').replace(/^\.5$/,'0.5'));
+  const won=text.match(new RegExp(`\\b(?:the )?${team} (?:defeated|beat|topped|edged) (?:the )?[A-Z][^.]{0,60}? ${points}\\s*[-–]\\s*${points}`));
+  const lost=!won&&text.match(new RegExp(`\\b(?:defeated|beat|topped|edged) (?:the )?${team},? ${points}\\s*[-–]\\s*${points}`));
+  const hit=won||lost;if(!hit)return null;
+  const [a,b]=hit.slice(-2).map(number),outcome=a===b?'T':won?'W':'L',[mine,theirs]=outcome==='L'?[Math.min(a,b),Math.max(a,b)]:[Math.max(a,b),Math.min(a,b)];
+  return{headline:`Match play: ${outcome==='W'?1:0}-${outcome==='L'?1:0}${outcome==='T'?'-1':''}`,results:[{label:'Result',value:`${outcome}, ${mine}-${theirs}`}]};
+}
 // A golf final whose card publishes no place takes it from its final story;
 // a story dated before the last round is not final (the tournament then has
 // no published result and is not listed: isGolfWithoutStory).
@@ -591,6 +610,7 @@ export function createGolfStoryPlace({host,team,converted,decodeHtml,fetch,heade
     // Nemacolin, Oct 5).
     const place=raw&&(/\bIndividuals?\b/.test(event.opponent||'')?'No team score (individuals only)':golfStoryPlace(raw,{team,decode:decodeHtml}));
     if(place){event.headline=place;event.results=[{label:'Result',value:place}];event.result_count=1;}
+    else{const dual=raw&&golfStoryMatchPlay(raw,{team,decode:decodeHtml});if(dual){event.headline=dual.headline;event.results=dual.results;event.result_count=dual.results.length;}}
     return event;
   }
   return{isGolfAwaitingPlace,attachGolfPlace,isGolfWithoutStory:event=>converted(event)&&event.sport==='Golf'&&event.status==='Final'&&!event.recap_url&&event.headline==='Completed'};

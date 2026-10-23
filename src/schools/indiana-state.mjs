@@ -24,7 +24,7 @@ export const indianaStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  combinedSports:new Set(['Basketball']),
   verifiedInstagrams:{
     'indiana-state|Golf|Rosalie DiNunzio':'https://www.instagram.com/rosiedinunzio_golf/',
     'indiana-state|Golf|Gabby Cone':'https://www.instagram.com/gabbyycone/',
@@ -35,27 +35,27 @@ export const indianaStateSchool={
   },
   scheduleUrls:{
     'indiana-state|Baseball':'https://gosycamores.com/sports/baseball/schedule',
-    'indiana-state|Basketball':['https://gosycamores.com/sports/mens-basketball/schedule','https://gosycamores.com/sports/womens-basketball/schedule','https://gosycamores.com/sports/basketball/schedule'],
+    'indiana-state|Basketball':['https://gosycamores.com/sports/mens-basketball/schedule','https://gosycamores.com/sports/womens-basketball/schedule'],
     'indiana-state|Cross Country':'https://gosycamores.com/sports/cross-country/schedule',
     'indiana-state|Football':'https://gosycamores.com/sports/football/schedule',
-    'indiana-state|Golf':['https://gosycamores.com/sports/womens-golf/schedule','https://gosycamores.com/sports/mens-golf/schedule'],
-    'indiana-state|Soccer':['https://gosycamores.com/sports/womens-soccer/schedule','https://gosycamores.com/sports/soccer/schedule'],
+    'indiana-state|Golf':'https://gosycamores.com/sports/womens-golf/schedule',
+    'indiana-state|Soccer':'https://gosycamores.com/sports/womens-soccer/schedule',
     'indiana-state|Softball':'https://gosycamores.com/sports/softball/schedule',
-    'indiana-state|Swimming & Diving':['https://gosycamores.com/sports/womens-swimming-and-diving/schedule','https://gosycamores.com/sports/mens-swimming-and-diving/schedule'],
-    'indiana-state|Track & Field':['https://gosycamores.com/sports/track-and-field/schedule','https://gosycamores.com/sports/track-field/schedule'],
-    'indiana-state|Volleyball':['https://gosycamores.com/sports/womens-volleyball/schedule','https://gosycamores.com/sports/volleyball/schedule']
+    'indiana-state|Swimming & Diving':'https://gosycamores.com/sports/womens-swimming-and-diving/schedule',
+    'indiana-state|Track & Field':'https://gosycamores.com/sports/track-and-field/schedule',
+    'indiana-state|Volleyball':'https://gosycamores.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'indiana-state|Baseball':'https://gosycamores.com/sports/baseball/roster',
-    'indiana-state|Basketball':['https://gosycamores.com/sports/mens-basketball/roster','https://gosycamores.com/sports/womens-basketball/roster','https://gosycamores.com/sports/basketball/roster'],
+    'indiana-state|Basketball':['https://gosycamores.com/sports/mens-basketball/roster','https://gosycamores.com/sports/womens-basketball/roster'],
     'indiana-state|Cross Country':'https://gosycamores.com/sports/cross-country/roster',
     'indiana-state|Football':'https://gosycamores.com/sports/football/roster',
-    'indiana-state|Golf':['https://gosycamores.com/sports/womens-golf/roster','https://gosycamores.com/sports/mens-golf/roster'],
-    'indiana-state|Soccer':['https://gosycamores.com/sports/womens-soccer/roster','https://gosycamores.com/sports/soccer/roster'],
+    'indiana-state|Golf':'https://gosycamores.com/sports/womens-golf/roster',
+    'indiana-state|Soccer':'https://gosycamores.com/sports/womens-soccer/roster',
     'indiana-state|Softball':'https://gosycamores.com/sports/softball/roster',
-    'indiana-state|Swimming & Diving':['https://gosycamores.com/sports/womens-swimming-and-diving/roster','https://gosycamores.com/sports/mens-swimming-and-diving/roster'],
-    'indiana-state|Track & Field':['https://gosycamores.com/sports/track-and-field/roster','https://gosycamores.com/sports/track-field/roster'],
-    'indiana-state|Volleyball':['https://gosycamores.com/sports/womens-volleyball/roster','https://gosycamores.com/sports/volleyball/roster']
+    'indiana-state|Swimming & Diving':'https://gosycamores.com/sports/womens-swimming-and-diving/roster',
+    'indiana-state|Track & Field':'https://gosycamores.com/sports/track-and-field/roster',
+    'indiana-state|Volleyball':'https://gosycamores.com/sports/womens-volleyball/roster'
   }
 };
 
@@ -344,9 +344,8 @@ export function createIndianaStateHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (the Atlantic 10 sponsors neither football nor
-      // water polo); the page data marks their league games.
-      const league={'Football':'Patriot League'}[sport];
+      // Sports in other leagues (the Missouri Valley sponsors no football); the page data marks their league games.
+      const league={'Football':'Missouri Valley Football Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

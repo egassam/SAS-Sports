@@ -194,9 +194,10 @@ import {murrayStateSchool,createMurrayStateHandlers} from './schools/murray-stat
 import {northernIowaSchool,createNorthernIowaHandlers} from './schools/northern-iowa.mjs';
 import {southernIllinoisSchool,createSouthernIllinoisHandlers} from './schools/southern-illinois.mjs';
 import {valparaisoSchool,createValparaisoHandlers} from './schools/valparaiso.mjs';
+import {belmontSchool,createBelmontHandlers} from './schools/belmont.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.156.0-missouri-valley-catalog';
+const VERSION='4.157.0-missouri-valley';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -1486,6 +1487,14 @@ const SCHOOL_MODULES=[
     // (kit createGolfStoryPlace, when the handlers spread it).
     results:[{matches:event=>valparaisoHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>valparaisoHandlers.attachGolfPlace(event)}],
     feed:async(events,sport)=>{await Promise.all(events.filter(valparaisoHandlers.isFinalWithoutStory).map(event=>valparaisoHandlers.attachArchiveStory(event)));if(sport==='Golf'&&valparaisoHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(valparaisoHandlers.isGolfAwaitingPlace).map(event=>valparaisoHandlers.attachGolfPlace(event)));return events.filter(event=>!valparaisoHandlers.isTennisWithoutStory(event)&&!valparaisoHandlers.isGolfWithoutStory?.(event));}}
+  ,{school:belmontSchool,parseSchedule:(...args)=>belmontHandlers.parseSchedule(...args),isEmptySchedule:(events,parsed)=>belmontHandlers.isEmptySchedule(parsed),matchesRecap:(...args)=>belmontHandlers.matchesRecap(...args),crossCountry:{matches:event=>belmontHandlers.isCrossCountry(event),attach:event=>belmontHandlers.attachMeetResults(event)},
+    // Finals the schedule links no story for take theirs from the sport's
+    // archive.
+    beforeHighlights:async event=>{if(belmontHandlers.isFinalWithoutStory(event))await belmontHandlers.attachArchiveStory(event);},
+    // A golf final whose card gives no place takes it from its final story
+    // (kit createGolfStoryPlace, when the handlers spread it).
+    results:[{matches:event=>belmontHandlers.isGolfAwaitingPlace?.(event)??false,attach:event=>belmontHandlers.attachGolfPlace(event)}],
+    feed:async(events,sport)=>{await Promise.all(events.filter(belmontHandlers.isFinalWithoutStory).map(event=>belmontHandlers.attachArchiveStory(event)));if(sport==='Golf'&&belmontHandlers.isGolfAwaitingPlace)await Promise.all(events.filter(belmontHandlers.isGolfAwaitingPlace).map(event=>belmontHandlers.attachGolfPlace(event)));return events.filter(event=>!belmontHandlers.isTennisWithoutStory(event)&&!belmontHandlers.isGolfWithoutStory?.(event));}}
 ];
 const schoolModule=id=>SCHOOL_MODULES.find(entry=>entry.school.id===id)||null;
 // One map of a school-data field across every module (keys are 'school|Sport').
@@ -1825,6 +1834,7 @@ const murrayStateHandlers=createMurrayStateHandlers({makeEvent,recapMatchesEvent
 const northernIowaHandlers=createNorthernIowaHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const southernIllinoisHandlers=createSouthernIllinoisHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 const valparaisoHandlers=createValparaisoHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
+const belmontHandlers=createBelmontHandlers({makeEvent,recapMatchesEvent,eventType,decodeHtml,ordinal,fetch:(...args)=>sourceFetch(...args),headers:HEADERS});
 function decodeHtml(s){if(s==null)return'';return String(s).replace(/&#(\d+);/g,(_,n)=>String.fromCharCode(Number(n))).replace(/&#x([0-9a-f]+);/gi,(_,n)=>String.fromCharCode(parseInt(n,16))).replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&quot;/gi,'"').replace(/&#39;|&apos;/gi,"'").replace(/&lt;/gi,'<').replace(/&gt;/gi,'>')
   // Accented letters by name (calbears.com, Oct 14: "Ko&ccaron;anas").
   .replace(/&([A-Za-z])(acute|grave|circ|uml|tilde|caron|cedil|ring);/g,(_,letter,mark)=>(letter+{acute:'\u0301',grave:'\u0300',circ:'\u0302',uml:'\u0308',tilde:'\u0303',caron:'\u030C',cedil:'\u0327',ring:'\u030A'}[mark]).normalize('NFC'));}

@@ -76,7 +76,7 @@ const TEAM_CODES={Basketball:['wbball','mbball'],'Cross Country':['wcross','mcro
 const perSport=await mapLimit(sports,6,async sport=>{
   const summary=[];
   const titles=new Set();
-  let kept=false,template=null;
+  let kept=false,template=null,generic=null;
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||apiSlug(url);
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
@@ -94,7 +94,7 @@ const perSport=await mapLimit(sports,6,async sport=>{
     if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);template??=url;continue}
     // A missing team page answered with the site's generic page ("Utah State
     // University Athletics", Oct 19: no 404): no games and no "Schedule" title.
-    if(!games.length&&title&&!/schedule/i.test(title)){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);continue}
+    if(!games.length&&title&&!/schedule/i.test(title)){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
     if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
     titles.add(title);kept=true;
@@ -164,12 +164,17 @@ const perSport=await mapLimit(sports,6,async sport=>{
   // generic page is the template and the season is on the team pages
   // (`womens-cross-country`, `mens-cross-country`), as at Boston College and
   // Wisconsin. --prune moves the sport to them.
+  // A generic page that is the homepage (Evansville, Belmont and Valparaiso
+  // cross country and track, Oct 23: the season is on the team pages, which
+  // the scaffold never tried) is treated as the template is.
+  const notPublished=Boolean(template);
+  if(!kept&&!template&&generic)template=generic;
   if(!kept&&template){
     const base=new URL(template).pathname.match(/^\/sports?\/(?:(?:wo)?mens-)?([^/]+)\/schedule/)[1],teams=[];
-    for(const team of ['womens','mens']){
-      const url=template.replace(/\/sports?\/[^/]+\/schedule/,`/sports/${team}-${base}/schedule`);if(url===template)continue;
+    for(const team of ['womens','mens'])for(const name of /^track/.test(base)?[...new Set([base,'track-and-field','track-field'])]:[base]){
+      const url=template.replace(/\/sports?\/[^/]+\/schedule/,`/sports/${team}-${name}/schedule`);if(url===template)continue;
       const page=await download(url),title=(page.body?.match(/<title>([^<]*)/)||[])[1]?.trim()||'';
-      if(page.body&&title&&!/@season\b/.test(title)&&sidearmScheduleGames(page.body).length){save(`${team}-${base}-schedule.html.gz`,page.body);teams.push(url);}
+      if(page.body&&title&&!/@season\b/.test(title)&&sidearmScheduleGames(page.body).length){save(`${team}-${name}-schedule.html.gz`,page.body);teams.push(url);break}
     }
     // A site whose menu links each team by its code (ohiobobcats.com, Oct 22:
     // `/sports/mbball`, `/sports/wcross`; the generic and team pages are all
@@ -182,6 +187,7 @@ const perSport=await mapLimit(sports,6,async sport=>{
     }
     if(teams.some(u=>/\/sports\/[mw][a-z]+\/schedule$/.test(new URL(u).pathname)&&teams.length>1))summary.push(`${sport}: label the team code pages in teamLabels (${teams.map(u=>new URL(u).pathname).join(', ')})`);
     if(teams.length){dropped.push(template);teamRoutes.push({sport,template,teams});summary.push(`${sport}: the season is on the team pages ${teams.map(u=>new URL(u).pathname).join(', ')}${args.includes('--prune')?' (routes moved; fixtures fetched again)':' — use them (--prune moves the routes)'}`);}
+    else if(!notPublished){dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: NO SCHEDULE PAGE among the routes (${new URL(template).pathname} is not one) — set the route from the site's menu (scripts/set-sport-routes.mjs)`);}
     else{dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
   }
   return summary;

@@ -183,7 +183,18 @@
     "Track & Field",
     "Volleyball"
   ],
-  "belmont": [],
+  "belmont": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "boise-state": [
     "Basketball",
     "Beach Volleyball",

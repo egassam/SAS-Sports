@@ -24,12 +24,12 @@ export const evansvilleSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'evansville|Baseball':'https://gopurpleaces.com/sports/baseball/schedule',
     'evansville|Basketball':['https://gopurpleaces.com/sports/mens-basketball/schedule','https://gopurpleaces.com/sports/womens-basketball/schedule'],
-    'evansville|Cross Country':'https://gopurpleaces.com/sports/cross-country/schedule',
+    'evansville|Cross Country':['https://gopurpleaces.com/sports/womens-cross-country/schedule','https://gopurpleaces.com/sports/mens-cross-country/schedule'],
     'evansville|Golf':['https://gopurpleaces.com/sports/womens-golf/schedule','https://gopurpleaces.com/sports/mens-golf/schedule'],
     'evansville|Soccer':['https://gopurpleaces.com/sports/womens-soccer/schedule','https://gopurpleaces.com/sports/mens-soccer/schedule'],
     'evansville|Softball':'https://gopurpleaces.com/sports/softball/schedule',
@@ -40,7 +40,7 @@ export const evansvilleSchool={
   rosterUrls:{
     'evansville|Baseball':'https://gopurpleaces.com/sports/baseball/roster',
     'evansville|Basketball':['https://gopurpleaces.com/sports/mens-basketball/roster','https://gopurpleaces.com/sports/womens-basketball/roster'],
-    'evansville|Cross Country':'https://gopurpleaces.com/sports/cross-country/roster',
+    'evansville|Cross Country':['https://gopurpleaces.com/sports/womens-cross-country/roster','https://gopurpleaces.com/sports/mens-cross-country/roster'],
     'evansville|Golf':['https://gopurpleaces.com/sports/womens-golf/roster','https://gopurpleaces.com/sports/mens-golf/roster'],
     'evansville|Soccer':['https://gopurpleaces.com/sports/womens-soccer/roster','https://gopurpleaces.com/sports/mens-soccer/roster'],
     'evansville|Softball':'https://gopurpleaces.com/sports/softball/roster',
@@ -335,9 +335,8 @@ export function createEvansvilleHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (the Atlantic 10 sponsors neither football nor
-      // water polo); the page data marks their league games.
-      const league={'Football':'Patriot League'}[sport];
+      // Sports in other leagues (every Evansville sport is a Missouri Valley sport); the page data marks their league games.
+      const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

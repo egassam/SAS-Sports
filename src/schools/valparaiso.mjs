@@ -24,34 +24,34 @@ export const valparaisoSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'valparaiso|Baseball':'https://valpoathletics.com/sports/baseball/schedule',
     'valparaiso|Basketball':['https://valpoathletics.com/sports/mens-basketball/schedule','https://valpoathletics.com/sports/womens-basketball/schedule'],
-    'valparaiso|Bowling':'https://valpoathletics.com/sports/bowling/schedule',
-    'valparaiso|Cross Country':'https://valpoathletics.com/sports/cross-country/schedule',
+    'valparaiso|Bowling':'https://valpoathletics.com/sports/womens-bowling/schedule',
+    'valparaiso|Cross Country':['https://valpoathletics.com/sports/mens-cross-country/schedule','https://valpoathletics.com/sports/womens-cross-country/schedule'],
     'valparaiso|Football':'https://valpoathletics.com/sports/football/schedule',
     'valparaiso|Golf':['https://valpoathletics.com/sports/womens-golf/schedule','https://valpoathletics.com/sports/mens-golf/schedule'],
-    'valparaiso|Soccer':['https://valpoathletics.com/sports/womens-soccer/schedule','https://valpoathletics.com/sports/mens-soccer/schedule'],
+    'valparaiso|Soccer':'https://valpoathletics.com/sports/womens-soccer/schedule',
     'valparaiso|Softball':'https://valpoathletics.com/sports/softball/schedule',
     'valparaiso|Swimming & Diving':['https://valpoathletics.com/sports/womens-swimming-and-diving/schedule','https://valpoathletics.com/sports/mens-swimming-and-diving/schedule'],
-    'valparaiso|Tennis':['https://valpoathletics.com/sports/womens-tennis/schedule','https://valpoathletics.com/sports/mens-tennis/schedule'],
-    'valparaiso|Track & Field':'https://valpoathletics.com/sports/track-field/schedule',
+    'valparaiso|Tennis':'https://valpoathletics.com/sports/womens-tennis/schedule',
+    'valparaiso|Track & Field':['https://valpoathletics.com/sports/mens-track-and-field/schedule','https://valpoathletics.com/sports/womens-track-and-field/schedule'],
     'valparaiso|Volleyball':'https://valpoathletics.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'valparaiso|Baseball':'https://valpoathletics.com/sports/baseball/roster',
     'valparaiso|Basketball':['https://valpoathletics.com/sports/mens-basketball/roster','https://valpoathletics.com/sports/womens-basketball/roster'],
-    'valparaiso|Bowling':'https://valpoathletics.com/sports/bowling/roster',
-    'valparaiso|Cross Country':'https://valpoathletics.com/sports/cross-country/roster',
+    'valparaiso|Bowling':'https://valpoathletics.com/sports/womens-bowling/roster',
+    'valparaiso|Cross Country':['https://valpoathletics.com/sports/mens-cross-country/roster','https://valpoathletics.com/sports/womens-cross-country/roster'],
     'valparaiso|Football':'https://valpoathletics.com/sports/football/roster',
     'valparaiso|Golf':['https://valpoathletics.com/sports/womens-golf/roster','https://valpoathletics.com/sports/mens-golf/roster'],
-    'valparaiso|Soccer':['https://valpoathletics.com/sports/womens-soccer/roster','https://valpoathletics.com/sports/mens-soccer/roster'],
+    'valparaiso|Soccer':'https://valpoathletics.com/sports/womens-soccer/roster',
     'valparaiso|Softball':'https://valpoathletics.com/sports/softball/roster',
     'valparaiso|Swimming & Diving':['https://valpoathletics.com/sports/womens-swimming-and-diving/roster','https://valpoathletics.com/sports/mens-swimming-and-diving/roster'],
-    'valparaiso|Tennis':['https://valpoathletics.com/sports/womens-tennis/roster','https://valpoathletics.com/sports/mens-tennis/roster'],
-    'valparaiso|Track & Field':'https://valpoathletics.com/sports/track-field/roster',
+    'valparaiso|Tennis':'https://valpoathletics.com/sports/womens-tennis/roster',
+    'valparaiso|Track & Field':['https://valpoathletics.com/sports/mens-track-and-field/roster','https://valpoathletics.com/sports/womens-track-and-field/roster'],
     'valparaiso|Volleyball':'https://valpoathletics.com/sports/womens-volleyball/roster'
   }
 };
@@ -341,9 +341,8 @@ export function createValparaisoHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (the Atlantic 10 sponsors neither football nor
-      // water polo); the page data marks their league games.
-      const league={'Football':'Patriot League'}[sport];
+      // Sports in other leagues (the Missouri Valley sponsors neither football nor bowling; bowling names no league); the page data marks their league games.
+      const league={'Football':'Pioneer Football League'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

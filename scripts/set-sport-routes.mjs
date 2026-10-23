@@ -43,7 +43,10 @@ write('src/sponsored-sports.json',JSON.stringify(sponsored,null,2)+'\n');
 write('tests/certified-schools.json',read('tests/certified-schools.json').split('\n').map(line=>{
   if(!line.trim().startsWith(`{"id":"${id}"`))return line;
   const trail=line.trimEnd().endsWith(',')?',':'',o=JSON.parse(line.trim().replace(/,$/,''));
-  for(const field of ['athlete_sports','critical_sports','athlete_profile_fallback_sports'])if(o[field])o[field]=o[field].filter(s=>s!==sport);
+  // A set keeps the sport's critical and profile-card marks (Oct 23: the
+  // first version dropped Cross Country, Soccer and Volleyball from four
+  // schools' critical_sports).
+  for(const field of op==='remove'?['athlete_sports','critical_sports','athlete_profile_fallback_sports']:['athlete_sports'])if(o[field])o[field]=o[field].filter(s=>s!==sport);
   delete o.athlete_minimums[sport];
   if(op==='set'){o.athlete_sports=[...o.athlete_sports,sport].sort();o.athlete_minimums[sport]=3;o.athlete_minimums=Object.fromEntries(Object.entries(o.athlete_minimums).sort());}
   return line.match(/^\s*/)[0]+JSON.stringify(o)+trail;

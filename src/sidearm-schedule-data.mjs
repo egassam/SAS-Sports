@@ -177,7 +177,10 @@ export function classicHtmlScheduleGames(raw){
   const tournaments=[];
   for(const m of text.matchAll(/<div\b[^>]*class="sidearm-schedule-tournament\b[^"]*"[^>]*>/gi)){
     const end=elementEnd(text,m.index,'div'),block=text.slice(m.index,end);
-    const title=htmlText((block.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)||[])[1]||'');
+    // Illinois State's golf headers add the course and town after bars
+    // ("Purdue Fall Invitational | Kampen-Cosler Course | West Lafayette,
+    // Ind.", Oct 23): the name is the first part.
+    const title=htmlText((block.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)||[])[1]||'').split(/\s+\|\s+/)[0].trim();
     if(title&&!SEASON_BLOCK.test(title))tournaments.push([m.index,end,title]);
   }
   const games=[],seen=new Set();

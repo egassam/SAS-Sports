@@ -24,7 +24,7 @@ export const murrayStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving']),
   verifiedInstagrams:{
     'murray-state|Baseball|Sloan Barrett':'https://www.instagram.com/sloan.barrett/',
     'murray-state|Baseball|Jake Slade':'https://www.instagram.com/j.slade15/',
@@ -33,34 +33,34 @@ export const murrayStateSchool={
   scheduleUrls:{
     'murray-state|Baseball':'https://goracers.com/sports/baseball/schedule',
     'murray-state|Basketball':['https://goracers.com/sports/mens-basketball/schedule','https://goracers.com/sports/womens-basketball/schedule'],
-    'murray-state|Beach Volleyball':'https://goracers.com/sports/beach-volleyball/schedule',
+    'murray-state|Beach Volleyball':'https://goracers.com/sports/bvb/schedule',
     'murray-state|Bowling':'https://goracers.com/sports/bowling/schedule',
     'murray-state|Cross Country':['https://goracers.com/sports/womens-cross-country/schedule','https://goracers.com/sports/mens-cross-country/schedule'],
     'murray-state|Football':'https://goracers.com/sports/football/schedule',
     'murray-state|Golf':['https://goracers.com/sports/womens-golf/schedule','https://goracers.com/sports/mens-golf/schedule'],
     'murray-state|Rifle':'https://goracers.com/sports/rifle/schedule',
-    'murray-state|Rowing':'https://goracers.com/sports/womens-rowing/schedule',
-    'murray-state|STUNT':'https://goracers.com/sports/stunt/schedule',
+    'murray-state|Rowing':'https://goracers.com/sports/rowing/schedule',
     'murray-state|Soccer':'https://goracers.com/sports/womens-soccer/schedule',
     'murray-state|Softball':'https://goracers.com/sports/softball/schedule',
-    'murray-state|Tennis':['https://goracers.com/sports/womens-tennis/schedule','https://goracers.com/sports/mens-tennis/schedule'],
+    'murray-state|STUNT':'https://goracers.com/sports/stunt/schedule',
+    'murray-state|Tennis':'https://goracers.com/sports/womens-tennis/schedule',
     'murray-state|Track & Field':'https://goracers.com/sports/womens-track-and-field/schedule',
     'murray-state|Volleyball':'https://goracers.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'murray-state|Baseball':'https://goracers.com/sports/baseball/roster',
     'murray-state|Basketball':['https://goracers.com/sports/mens-basketball/roster','https://goracers.com/sports/womens-basketball/roster'],
-    'murray-state|Beach Volleyball':'https://goracers.com/sports/beach-volleyball/roster',
+    'murray-state|Beach Volleyball':'https://goracers.com/sports/bvb/roster',
     'murray-state|Bowling':'https://goracers.com/sports/bowling/roster',
     'murray-state|Cross Country':['https://goracers.com/sports/womens-cross-country/roster','https://goracers.com/sports/mens-cross-country/roster'],
     'murray-state|Football':'https://goracers.com/sports/football/roster',
     'murray-state|Golf':['https://goracers.com/sports/womens-golf/roster','https://goracers.com/sports/mens-golf/roster'],
     'murray-state|Rifle':'https://goracers.com/sports/rifle/roster',
-    'murray-state|Rowing':'https://goracers.com/sports/womens-rowing/roster',
-    'murray-state|STUNT':'https://goracers.com/sports/stunt/roster',
+    'murray-state|Rowing':'https://goracers.com/sports/rowing/roster',
     'murray-state|Soccer':'https://goracers.com/sports/womens-soccer/roster',
     'murray-state|Softball':'https://goracers.com/sports/softball/roster',
-    'murray-state|Tennis':['https://goracers.com/sports/womens-tennis/roster','https://goracers.com/sports/mens-tennis/roster'],
+    'murray-state|STUNT':'https://goracers.com/sports/stunt/roster',
+    'murray-state|Tennis':'https://goracers.com/sports/womens-tennis/roster',
     'murray-state|Track & Field':'https://goracers.com/sports/womens-track-and-field/roster',
     'murray-state|Volleyball':'https://goracers.com/sports/womens-volleyball/roster'
   }
@@ -239,6 +239,9 @@ export function createMurrayStateHandlers({makeEvent,recapMatchesEvent,eventType
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // Pre-Nationals (Terre Haute, Oct 16) is named by its host, Indiana
+      // State; its story names the Under Armour Pre-National Invitational.
+      if(sport==='Cross Country'&&/^Indiana State(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='10')opponent='Under Armour Pre-National Invitational';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -351,9 +354,8 @@ export function createMurrayStateHandlers({makeEvent,recapMatchesEvent,eventType
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (the Atlantic 10 sponsors neither football nor
-      // water polo); the page data marks their league games.
-      const league={'Football':'Patriot League'}[sport];
+      // Sports in other leagues (the Missouri Valley sponsors neither football nor rifle; beach volleyball, bowling, rowing and STUNT name no league); the page data marks their league games.
+      const league={'Football':'Missouri Valley Football Conference','Rifle':'Ohio Valley Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

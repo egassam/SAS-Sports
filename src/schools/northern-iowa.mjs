@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const northernIowaSchool={
   id:'northern-iowa',
+  // UNI's official site links its NIL marketplace (Opendorse, Oct 23):
+  // athlete Instagram for a sport still short of three (src/opendorse.mjs).
+  opendorse:{marketplace:'uni-panthers',team:'UNI Panthers'},
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
@@ -64,7 +67,9 @@ const northernIowaToday=sidearmToday('America/Chicago');
 // baseball's "Fall World Series" (Oct 30-Nov 2), softball's "Battle Series",
 // swimming's "Alumni Meet" (Xavier, Sep 19) and "Pentathlon" (Northern
 // Arizona's own, Sep 18).
-const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
+// Also left out: the USATF national championships, an open meet for
+// individuals, not a college team's (Jul 23-26, no result or story).
+const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumni meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$|\busatf\b/i;
 // Northern Iowa's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
 export const NORTHERN_IOWA_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/IA_college_f_Northern_Iowa.html',Men:'https://www.tfrrs.org/teams/xc/IA_college_m_Northern_Iowa.html'};
@@ -342,9 +347,8 @@ export function createNorthernIowaHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (the Atlantic 10 sponsors neither football nor
-      // water polo); the page data marks their league games.
-      const league={'Football':'Patriot League'}[sport];
+      // Sports in other leagues (the Missouri Valley sponsors neither football nor wrestling); the page data marks their league games.
+      const league={'Football':'Missouri Valley Football Conference','Wrestling':'Big 12'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
