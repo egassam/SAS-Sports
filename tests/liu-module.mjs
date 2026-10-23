@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',liuSchool.scheduleUrls],['roster',liuSchool
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'liuathletics.com',`${key} must stay on liuathletics.com`);
   }
 }
-const parity={"Acrobatics & Tumbling":{"schedule":["https://liuathletics.com/sports/acrobatics-and-tumbling/schedule"],"roster":["https://liuathletics.com/sports/acrobatics-and-tumbling/roster"],"combined":false},"Baseball":{"schedule":["https://liuathletics.com/sports/baseball/schedule"],"roster":["https://liuathletics.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://liuathletics.com/sports/mens-basketball/schedule"],"roster":["https://liuathletics.com/sports/mens-basketball/roster"],"combined":true},"Bowling":{"schedule":["https://liuathletics.com/sports/womens-bowling/schedule"],"roster":["https://liuathletics.com/sports/womens-bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://liuathletics.com/sports/womens-cross-country/schedule","https://liuathletics.com/sports/mens-cross-country/schedule"],"roster":["https://liuathletics.com/sports/womens-cross-country/roster","https://liuathletics.com/sports/mens-cross-country/roster"],"combined":true},"Equestrian":{"schedule":["https://liuathletics.com/sports/equestrian/schedule"],"roster":["https://liuathletics.com/sports/equestrian/roster"],"combined":false},"Fencing":{"schedule":["https://liuathletics.com/sports/womens-fencing/schedule","https://liuathletics.com/sports/mens-fencing/schedule"],"roster":["https://liuathletics.com/sports/womens-fencing/roster","https://liuathletics.com/sports/mens-fencing/roster"],"combined":true},"Field Hockey":{"schedule":["https://liuathletics.com/sports/field-hockey/schedule"],"roster":["https://liuathletics.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://liuathletics.com/sports/football/schedule"],"roster":["https://liuathletics.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://liuathletics.com/sports/womens-golf/schedule"],"roster":["https://liuathletics.com/sports/womens-golf/roster"],"combined":false},"Gymnastics":{"schedule":["https://liuathletics.com/sports/womens-gymnastics/schedule"],"roster":["https://liuathletics.com/sports/womens-gymnastics/roster"],"combined":false},"Hockey":{"schedule":["https://liuathletics.com/sports/mens-ice-hockey/schedule"],"roster":["https://liuathletics.com/sports/mens-ice-hockey/roster"],"combined":true},"Lacrosse":{"schedule":["https://liuathletics.com/sports/womens-lacrosse/schedule"],"roster":["https://liuathletics.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://liuathletics.com/sports/womens-rowing/schedule"],"roster":["https://liuathletics.com/sports/womens-rowing/roster"],"combined":true},"Soccer":{"schedule":["https://liuathletics.com/sports/womens-soccer/schedule"],"roster":["https://liuathletics.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://liuathletics.com/sports/softball/schedule"],"roster":["https://liuathletics.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://liuathletics.com/sports/womens-swimming-and-diving/schedule"],"roster":["https://liuathletics.com/sports/womens-swimming-and-diving/roster"],"combined":true},"Tennis":{"schedule":["https://liuathletics.com/sports/womens-tennis/schedule"],"roster":["https://liuathletics.com/sports/womens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://liuathletics.com/sports/womens-track-and-field/schedule","https://liuathletics.com/sports/mens-track-and-field/schedule"],"roster":["https://liuathletics.com/sports/womens-track-and-field/roster","https://liuathletics.com/sports/mens-track-and-field/roster"],"combined":true},"Volleyball":{"schedule":["https://liuathletics.com/sports/womens-volleyball/schedule"],"roster":["https://liuathletics.com/sports/womens-volleyball/roster"],"combined":true},"Water Polo":{"schedule":["https://liuathletics.com/sports/womens-water-polo/schedule"],"roster":["https://liuathletics.com/sports/womens-water-polo/roster"],"combined":true}};
+const parity={"Acrobatics & Tumbling":{"schedule":["https://liuathletics.com/sports/acrobatics-and-tumbling/schedule"],"roster":["https://liuathletics.com/sports/acrobatics-and-tumbling/roster"],"combined":false},"Baseball":{"schedule":["https://liuathletics.com/sports/baseball/schedule"],"roster":["https://liuathletics.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://liuathletics.com/sports/mens-basketball/schedule"],"roster":["https://liuathletics.com/sports/mens-basketball/roster"],"combined":true},"Bowling":{"schedule":["https://liuathletics.com/sports/womens-bowling/schedule"],"roster":["https://liuathletics.com/sports/womens-bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://liuathletics.com/sports/womens-cross-country/schedule","https://liuathletics.com/sports/mens-cross-country/schedule"],"roster":["https://liuathletics.com/sports/womens-cross-country/roster","https://liuathletics.com/sports/mens-cross-country/roster"],"combined":true},"Equestrian":{"schedule":["https://liuathletics.com/sports/equestrian/schedule"],"roster":["https://liuathletics.com/sports/equestrian/roster"],"combined":false},"Fencing":{"schedule":["https://liuathletics.com/sports/womens-fencing/schedule","https://liuathletics.com/sports/mens-fencing/schedule"],"roster":["https://liuathletics.com/sports/womens-fencing/roster","https://liuathletics.com/sports/mens-fencing/roster"],"combined":true},"Field Hockey":{"schedule":["https://liuathletics.com/sports/field-hockey/schedule"],"roster":["https://liuathletics.com/sports/field-hockey/roster"],"combined":false},"Football":{"schedule":["https://liuathletics.com/sports/football/schedule"],"roster":["https://liuathletics.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://liuathletics.com/sports/womens-golf/schedule"],"roster":["https://liuathletics.com/sports/womens-golf/roster"],"combined":false},"Gymnastics":{"schedule":["https://liuathletics.com/sports/womens-gymnastics/schedule"],"roster":["https://liuathletics.com/sports/womens-gymnastics/roster"],"combined":false},"Hockey":{"schedule":["https://liuathletics.com/sports/mens-ice-hockey/schedule","https://liuathletics.com/sports/womens-ice-hockey/schedule"],"roster":["https://liuathletics.com/sports/mens-ice-hockey/roster","https://liuathletics.com/sports/womens-ice-hockey/roster"],"combined":true},"Lacrosse":{"schedule":["https://liuathletics.com/sports/womens-lacrosse/schedule"],"roster":["https://liuathletics.com/sports/womens-lacrosse/roster"],"combined":false},"Rowing":{"schedule":["https://liuathletics.com/sports/womens-rowing/schedule","https://liuathletics.com/sports/mrow/schedule"],"roster":["https://liuathletics.com/sports/womens-rowing/roster","https://liuathletics.com/sports/mrow/roster"],"combined":true},"Soccer":{"schedule":["https://liuathletics.com/sports/womens-soccer/schedule"],"roster":["https://liuathletics.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://liuathletics.com/sports/softball/schedule"],"roster":["https://liuathletics.com/sports/softball/roster"],"combined":false},"Swimming & Diving":{"schedule":["https://liuathletics.com/sports/womens-swimming-and-diving/schedule","https://liuathletics.com/sports/mswim/schedule"],"roster":["https://liuathletics.com/sports/womens-swimming-and-diving/roster","https://liuathletics.com/sports/mswim/roster"],"combined":true},"Tennis":{"schedule":["https://liuathletics.com/sports/womens-tennis/schedule","https://liuathletics.com/sports/mten/schedule"],"roster":["https://liuathletics.com/sports/womens-tennis/roster","https://liuathletics.com/sports/mten/roster"],"combined":true},"Track & Field":{"schedule":["https://liuathletics.com/sports/womens-track-and-field/schedule","https://liuathletics.com/sports/mens-track-and-field/schedule"],"roster":["https://liuathletics.com/sports/womens-track-and-field/roster","https://liuathletics.com/sports/mens-track-and-field/roster"],"combined":true},"Volleyball":{"schedule":["https://liuathletics.com/sports/womens-volleyball/schedule","https://liuathletics.com/sports/mvb/schedule"],"roster":["https://liuathletics.com/sports/womens-volleyball/roster","https://liuathletics.com/sports/mvb/roster"],"combined":true},"Water Polo":{"schedule":["https://liuathletics.com/sports/womens-water-polo/schedule","https://liuathletics.com/sports/mwpolo/schedule"],"roster":["https://liuathletics.com/sports/womens-water-polo/roster","https://liuathletics.com/sports/mwpolo/roster"],"combined":true}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -240,10 +240,52 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Mar 6 Men's · LIU vs UCHC Playoff Game 2 | ",
  "Upcoming Mar 7 Men's · LIU vs UCHC Playoff Game 3 | "
 ]);
+  const v_womensicehockey=parse("Hockey","womens-ice-hockey");
+  assert.deepEqual(v_womensicehockey.map(line),[
+ "Final Oct 2 Women's · LIU vs New Hampshire | L, 2-5",
+ "Final Oct 3 Women's · LIU vs New Hampshire | L, 0-3",
+ "Final Oct 9 Women's · LIU at Post | W, 3-0",
+ "Final Oct 10 Women's · LIU vs Post | T, 1-1",
+ "Final Oct 16 Women's · LIU at Sacred Heart | L, 1-6",
+ "Final Oct 17 Women's · LIU vs Sacred Heart | W, 2-0",
+ "Today Oct 23, 3:00 PM Women's · LIU vs Delaware | ",
+ "Upcoming Oct 24, 2:00 PM Women's · LIU vs Delaware | ",
+ "Upcoming Oct 30, 3:00 PM Women's · LIU vs Saint Michael's | ",
+ "Upcoming Oct 31, 2:00 PM Women's · LIU vs Saint Michael's | ",
+ "Upcoming Nov 6, 3:00 PM Women's · LIU vs Assumption | ",
+ "Upcoming Nov 7, 2:00 PM Women's · LIU vs Assumption | ",
+ "Upcoming Nov 13, 5:00 PM Women's · LIU at Stonehill | ",
+ "Upcoming Nov 14, 2:00 PM Women's · LIU at Stonehill | ",
+ "Upcoming Nov 20 Women's · LIU at Franklin Pierce | ",
+ "Upcoming Nov 21 Women's · LIU at Franklin Pierce | ",
+ "Upcoming Dec 2, 1:00 PM Women's · LIU vs Saint Anselm | ",
+ "Upcoming Dec 3, 1:00 PM Women's · LIU vs Saint Anselm | ",
+ "Upcoming Jan 2, 6:00 PM Women's · LIU at Harvard | ",
+ "Upcoming Jan 3, 3:00 PM Women's · LIU at Harvard | ",
+ "Upcoming Jan 8, 2:00 PM Women's · LIU at Sacred Heart | ",
+ "Upcoming Jan 9, 7:30 PM Women's · LIU vs Sacred Heart | ",
+ "Upcoming Jan 14, 1:00 PM Women's · LIU at Post | ",
+ "Upcoming Jan 15, 3:00 PM Women's · LIU vs Post | ",
+ "Upcoming Jan 22, 7:20 PM Women's · LIU at Saint Michael's | ",
+ "Upcoming Jan 23, 3:00 PM Women's · LIU at Saint Michael's | ",
+ "Upcoming Jan 29 Women's · LIU at Assumption | ",
+ "Upcoming Jan 30 Women's · LIU at Assumption | ",
+ "Upcoming Feb 5, 3:00 PM Women's · LIU vs Stonehill | ",
+ "Upcoming Feb 6, 2:00 PM Women's · LIU vs Stonehill | ",
+ "Upcoming Feb 12, 3:00 PM Women's · LIU vs Franklin Pierce | ",
+ "Upcoming Feb 13, 2:00 PM Women's · LIU vs Franklin Pierce | ",
+ "Upcoming Feb 19 Women's · LIU at Saint Anselm | ",
+ "Upcoming Feb 20 Women's · LIU at Saint Anselm | ",
+ "Upcoming Feb 26 Women's · LIU at NEWHA Tournament - Quarterfinals | ",
+ "Upcoming Mar 3 Women's · LIU at NEWHA Tournament - Semifinals | ",
+ "Upcoming Mar 6 Women's · LIU at NEWHA Tournament - Championship | "
+]);
   const v_womenslacrosse=parse("Lacrosse","womens-lacrosse");
   assert.deepEqual(v_womenslacrosse.map(line),[]);
   const v_womensrowing=parse("Rowing","womens-rowing");
   assert.deepEqual(v_womensrowing.map(line),[]);
+  const v_mrow=parse("Rowing","mrow");
+  assert.deepEqual(v_mrow.map(line),[]);
   const v_womenssoccer=parse("Soccer","womens-soccer");
   assert.deepEqual(v_womenssoccer.map(line),[
  "Final Aug 13 LIU at Iona | L, 0-3",
@@ -281,10 +323,29 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Jan 29, 5:00 PM Women's · LIU at Wagner College | ",
  "Upcoming Feb 17 Women's · LIU at NEC Championship | "
 ]);
+  const v_mswim=parse("Swimming & Diving","mswim");
+  assert.deepEqual(v_mswim.map(line),[
+ "Final Oct 17 Men's · LIU vs Manhattan | W, 189-71",
+ "Upcoming Oct 30, 5:00 PM Men's · LIU vs Saint Peter's | ",
+ "Upcoming Nov 7, 11:00 AM Men's · LIU vs Wagner College | ",
+ "Upcoming Dec 4 Men's · LIU at ECAC | ",
+ "Upcoming Jan 15, 4:00 PM Men's · LIU at Bridgeport | ",
+ "Upcoming Jan 15, 4:00 PM Men's · LIU at Sacred Heart | ",
+ "Upcoming Jan 23 Men's · LIU at Monmouth | ",
+ "Upcoming Jan 23 Men's · LIU at Saint Peter's | ",
+ "Upcoming Jan 29, 5:00 PM Men's · LIU at Wagner College | ",
+ "Upcoming Feb 17 Men's · LIU at NEC Championship | "
+]);
   const v_womenstennis=parse("Tennis","womens-tennis");
   assert.deepEqual(v_womenstennis.map(line),[
  "Final Sep 25 Women's · LIU at Binghamton Championships | Completed",
  "Final Oct 15 Women's · LIU at ITA Regional Tournament | Completed"
+]);
+  const v_mten=parse("Tennis","mten");
+  assert.deepEqual(v_mten.map(line),[
+ "Final Sep 25 Men's · LIU at Binghamton Championships | Completed",
+ "Final Oct 2 Men's · LIU at Army | Completed",
+ "Final Oct 15 Men's · LIU at ITA Regional Tournament | Completed"
 ]);
   const v_womenstrackandfield=parse("Track & Field","womens-track-and-field");
   assert.deepEqual(v_womenstrackandfield.map(line),[]);
@@ -319,8 +380,43 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Nov 14, 1:00 PM Women's · LIU at Mercyhurst | ",
  "Upcoming Nov 20 Women's · LIU at NEC Tournament | "
 ]);
+  const v_mvb=parse("Volleyball","mvb");
+  assert.deepEqual(v_mvb.map(line),[]);
   const v_womenswaterpolo=parse("Water Polo","womens-water-polo");
   assert.deepEqual(v_womenswaterpolo.map(line),[]);
+  const v_mwpolo=parse("Water Polo","mwpolo");
+  assert.deepEqual(v_mwpolo.map(line),[
+ "Final Aug 29 Men's · LIU vs Wagner | W, 16-15",
+ "Final Aug 29 Men's · LIU vs Gannon | W, 14-13",
+ "Final Aug 30 Men's · LIU vs Connecticut College | W, 19-7",
+ "Final Aug 30 Men's · LIU vs Air Force | L, 16-18",
+ "Final Sep 5 Men's · LIU vs George Washington | L, 13-14",
+ "Final Sep 5 Men's · LIU vs Chapman | W, 19-12",
+ "Final Sep 11 Men's · LIU vs Mount St. Mary's (Md.) | L, 10-13",
+ "Final Sep 11 Men's · LIU vs San Jose State | L, 10-22",
+ "Final Sep 12 Men's · LIU vs Navy | L, 8-22",
+ "Final Sep 20 Men's · LIU vs Mount St. Mary's (Md.) | W, 16-13",
+ "Final Sep 20 Men's · LIU at Bucknell | L, 9-17",
+ "Final Sep 30 Men's · LIU at Iona | W, 14-13",
+ "Final Oct 3 Men's · LIU vs MIT | L, 9-11",
+ "Final Oct 3 Men's · LIU vs Brown | L, 10-16",
+ "Final Oct 4 Men's · LIU vs Harvard | L, 14-18",
+ "Final Oct 10 Men's · LIU vs Princeton | L, 12-15",
+ "Final Oct 14 Men's · LIU vs Iona | W, 14-10",
+ "Upcoming Oct 22, 7:00 PM Men's · LIU at Diablo Valley | ",
+ "Today Oct 23, 5:00 PM Men's · LIU at Santa Clara | ",
+ "Today Oct 23, 9:00 PM Men's · LIU at West Valley | ",
+ "Upcoming Oct 24, 4:00 PM Men's · LIU vs Fresno Pacific | ",
+ "Upcoming Oct 24, 8:00 PM Men's · LIU vs UC Merced | ",
+ "Upcoming Oct 26, 1:00 PM Men's · LIU vs Cuesta | ",
+ "Upcoming Oct 26, 5:20 PM Men's · LIU vs UC Merced | ",
+ "Upcoming Oct 26, 7:00 PM Men's · LIU vs La Verne | ",
+ "Upcoming Oct 31, 4:00 PM Men's · LIU at Princeton | ",
+ "Upcoming Nov 7, 9:00 AM Men's · LIU at MIT | ",
+ "Upcoming Nov 7, 4:00 PM Men's · LIU at Harvard | ",
+ "Upcoming Nov 8, 10:00 AM Men's · LIU at Brown | ",
+ "Upcoming Nov 20 Men's · LIU at NWPC Tournament | "
+]);
   ownRecapsOnly(v_acrobaticsandtumbling,"Acrobatics & Tumbling acrobatics-and-tumbling");
   ownRecapsOnly(v_baseball,"Baseball baseball");
   ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
@@ -335,16 +431,22 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_womensgolf,"Golf womens-golf");
   ownRecapsOnly(v_womensgymnastics,"Gymnastics womens-gymnastics");
   ownRecapsOnly(v_mensicehockey,"Hockey mens-ice-hockey");
+  ownRecapsOnly(v_womensicehockey,"Hockey womens-ice-hockey");
   ownRecapsOnly(v_womenslacrosse,"Lacrosse womens-lacrosse");
   ownRecapsOnly(v_womensrowing,"Rowing womens-rowing");
+  ownRecapsOnly(v_mrow,"Rowing mrow");
   ownRecapsOnly(v_womenssoccer,"Soccer womens-soccer");
   ownRecapsOnly(v_softball,"Softball softball");
   ownRecapsOnly(v_womensswimminganddiving,"Swimming & Diving womens-swimming-and-diving");
+  ownRecapsOnly(v_mswim,"Swimming & Diving mswim");
   ownRecapsOnly(v_womenstennis,"Tennis womens-tennis");
+  ownRecapsOnly(v_mten,"Tennis mten");
   ownRecapsOnly(v_womenstrackandfield,"Track & Field womens-track-and-field");
   ownRecapsOnly(v_menstrackandfield,"Track & Field mens-track-and-field");
   ownRecapsOnly(v_womensvolleyball,"Volleyball womens-volleyball");
+  ownRecapsOnly(v_mvb,"Volleyball mvb");
   ownRecapsOnly(v_womenswaterpolo,"Water Polo womens-water-polo");
+  ownRecapsOnly(v_mwpolo,"Water Polo mwpolo");
 }
 // END generated
 

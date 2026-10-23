@@ -69,16 +69,16 @@ export const liuSchool={
     'liu|Football':'https://liuathletics.com/sports/football/schedule',
     'liu|Golf':'https://liuathletics.com/sports/womens-golf/schedule',
     'liu|Gymnastics':'https://liuathletics.com/sports/womens-gymnastics/schedule',
-    'liu|Hockey':'https://liuathletics.com/sports/mens-ice-hockey/schedule',
+    'liu|Hockey':['https://liuathletics.com/sports/mens-ice-hockey/schedule','https://liuathletics.com/sports/womens-ice-hockey/schedule'],
     'liu|Lacrosse':'https://liuathletics.com/sports/womens-lacrosse/schedule',
-    'liu|Rowing':'https://liuathletics.com/sports/womens-rowing/schedule',
+    'liu|Rowing':['https://liuathletics.com/sports/womens-rowing/schedule','https://liuathletics.com/sports/mrow/schedule'],
     'liu|Soccer':'https://liuathletics.com/sports/womens-soccer/schedule',
     'liu|Softball':'https://liuathletics.com/sports/softball/schedule',
-    'liu|Swimming & Diving':'https://liuathletics.com/sports/womens-swimming-and-diving/schedule',
-    'liu|Tennis':'https://liuathletics.com/sports/womens-tennis/schedule',
+    'liu|Swimming & Diving':['https://liuathletics.com/sports/womens-swimming-and-diving/schedule','https://liuathletics.com/sports/mswim/schedule'],
+    'liu|Tennis':['https://liuathletics.com/sports/womens-tennis/schedule','https://liuathletics.com/sports/mten/schedule'],
     'liu|Track & Field':['https://liuathletics.com/sports/womens-track-and-field/schedule','https://liuathletics.com/sports/mens-track-and-field/schedule'],
-    'liu|Volleyball':'https://liuathletics.com/sports/womens-volleyball/schedule',
-    'liu|Water Polo':'https://liuathletics.com/sports/womens-water-polo/schedule'
+    'liu|Volleyball':['https://liuathletics.com/sports/womens-volleyball/schedule','https://liuathletics.com/sports/mvb/schedule'],
+    'liu|Water Polo':['https://liuathletics.com/sports/womens-water-polo/schedule','https://liuathletics.com/sports/mwpolo/schedule']
   },
   rosterUrls:{
     'liu|Acrobatics & Tumbling':'https://liuathletics.com/sports/acrobatics-and-tumbling/roster',
@@ -92,16 +92,16 @@ export const liuSchool={
     'liu|Football':'https://liuathletics.com/sports/football/roster',
     'liu|Golf':'https://liuathletics.com/sports/womens-golf/roster',
     'liu|Gymnastics':'https://liuathletics.com/sports/womens-gymnastics/roster',
-    'liu|Hockey':'https://liuathletics.com/sports/mens-ice-hockey/roster',
+    'liu|Hockey':['https://liuathletics.com/sports/mens-ice-hockey/roster','https://liuathletics.com/sports/womens-ice-hockey/roster'],
     'liu|Lacrosse':'https://liuathletics.com/sports/womens-lacrosse/roster',
-    'liu|Rowing':'https://liuathletics.com/sports/womens-rowing/roster',
+    'liu|Rowing':['https://liuathletics.com/sports/womens-rowing/roster','https://liuathletics.com/sports/mrow/roster'],
     'liu|Soccer':'https://liuathletics.com/sports/womens-soccer/roster',
     'liu|Softball':'https://liuathletics.com/sports/softball/roster',
-    'liu|Swimming & Diving':'https://liuathletics.com/sports/womens-swimming-and-diving/roster',
-    'liu|Tennis':'https://liuathletics.com/sports/womens-tennis/roster',
+    'liu|Swimming & Diving':['https://liuathletics.com/sports/womens-swimming-and-diving/roster','https://liuathletics.com/sports/mswim/roster'],
+    'liu|Tennis':['https://liuathletics.com/sports/womens-tennis/roster','https://liuathletics.com/sports/mten/roster'],
     'liu|Track & Field':['https://liuathletics.com/sports/womens-track-and-field/roster','https://liuathletics.com/sports/mens-track-and-field/roster'],
-    'liu|Volleyball':'https://liuathletics.com/sports/womens-volleyball/roster',
-    'liu|Water Polo':'https://liuathletics.com/sports/womens-water-polo/roster'
+    'liu|Volleyball':['https://liuathletics.com/sports/womens-volleyball/roster','https://liuathletics.com/sports/mvb/roster'],
+    'liu|Water Polo':['https://liuathletics.com/sports/womens-water-polo/roster','https://liuathletics.com/sports/mwpolo/roster']
   }
 };
 

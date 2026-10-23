@@ -40,7 +40,7 @@ const seasonStart=`${Number(today.slice(5,7))>=7?today.slice(0,4):Number(today.s
 // Today's routes, exactly as the Worker computes them.
 const source=read('src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports:sponsored,rosterSocialInstagrams,extractText:()=>{throw Error('no PDFs')},fetch:()=>{throw Error('no network')}};
-const worker=Function(...Object.keys(deps),source+';return {candidateUrls,parseHtml};')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {candidateUrls,parseHtml,teamLabelForSource};')(...Object.values(deps));
 
 const key=process.env.SAS_SOURCE_KEY,base=(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
 const blocked=new Set();
@@ -99,9 +99,14 @@ const perSport=await mapLimit(sports,6,async sport=>{
     // It is never a team's page, even when it lists games (Winthrop's "2018
     // General Schedule", Oct 23).
     if(title&&(!games.length&&!/schedule/i.test(title)||/\bGeneral Schedule\b/i.test(title))){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
-    // A second address for the same page ("wsoc" for "womens-soccer").
-    if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
-    titles.add(title);kept=true;
+    // A second address for the same page ("wsoc" for "womens-soccer"): the
+    // same title, team and games. A site whose every title is its name ("Long
+    // Island University Athletics", Oct 23) still has its team pages, and a
+    // men's page listing the women's meets (LIU's mswim) is its own team's.
+    const team=(()=>{try{return worker.teamLabelForSource(school,sport,url)||''}catch{return''}})();
+    const pageKey=`${title}\n${team}\n${games.map(g=>`${String(g.date).slice(0,10)} ${g.opponent?.title||''}`).join('|')}`;
+    if(title&&titles.has(pageKey)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
+    titles.add(pageKey);kept=true;
     const finals=current.filter(g=>g.result&&(g.result.status||g.result.prescore_info||g.result.postscore_info)&&String(g.date).slice(0,10)<=today);
     let stories=0,missing=0;
     await Promise.all(finals.map(async game=>{

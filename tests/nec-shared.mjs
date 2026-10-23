@@ -38,4 +38,8 @@ assert.match(liu,/\/\^\\\/sports\\\/mwpolo\\\/\/\.test\(url\?\.pathname\|\|''\)\
   assert.deepEqual(events.map(event=>event.conference_game),[true,false,true]);
 }
 
+// The fixtures keep a team page whose title is the site's name (LIU): two
+// addresses are one page only with the same title, team and games.
+assert.match(read('../scripts/fetch-school-fixtures.mjs'),/const pageKey=`\$\{title\}\\n\$\{team\}\\n\$\{games\.map/);
+
 console.log('NEC shared checks passed');

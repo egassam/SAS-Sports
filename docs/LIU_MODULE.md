@@ -6,7 +6,7 @@ Sports (21): Acrobatics & Tumbling, Baseball, Basketball, Bowling, Cross Country
 
 ## Rules
 
-- Gymnastics plays in the EAGL, men's water polo in the NWPC and women's in the Metro Conference, and women's hockey in the NEWHA (named per team page). Men's hockey, equestrian, fencing and rowing name no league. The men's pages use short codes (`mrow`, `mswim`, `mten`, `mvb`, `mwpolo`), labelled by `teamLabels`. Women's water polo's 2026 record is the past spring season.
+- Gymnastics plays in the EAGL, men's water polo in the NWPC and women's in the Metro Conference, and women's hockey in the NEWHA (named per team page). Men's hockey, equestrian, fencing and rowing name no league. The men's pages use short codes (`mrow`, `mswim`, `mten`, `mvb`, `mwpolo`), labelled by `teamLabels`; every LIU page title is the site's name, so the fixtures tell pages apart by team and games, not by title. Women's water polo's 2026 record is the past spring season.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the NEC (2026-27; Saint Francis left for Division III) sponsors football, basketball, baseball, softball, soccer, volleyball, golf, tennis, cross country, track, swimming, lacrosse, field hockey and bowling, but no hockey, wrestling or rowing. Its outside members count in its records (`AFFILIATES` in `src/conference-games.mjs`): football Duquesne, Robert Morris, Merrimack; field hockey Merrimack, Quinnipiac, Rider, Sacred Heart; soccer Howard and Delaware State; baseball Coppin State, Delaware State, UMES, Norfolk State; women's lacrosse Delaware State; bowling Niagara, Sacred Heart.
 - Shared NEC rules (`tests/nec-shared.mjs`): cross country place forms, host names after a bar, outside members in the records.
