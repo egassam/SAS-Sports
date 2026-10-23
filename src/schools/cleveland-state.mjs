@@ -10,6 +10,9 @@ export const clevelandStateSchool={
   // The school's INFLCR Exchange, its official NIL marketplace (linked from
   // csuvikings.com): athlete Instagram for a sport still short of three (src/inflcr.mjs).
   inflcr:{school:'cleveland-state-university'},
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Cleveland State's track roster publishes portraits for few athletes (Oct 23).
+  portraitlessProfileSports:new Set(['Track & Field']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
