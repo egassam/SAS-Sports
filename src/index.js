@@ -264,7 +264,7 @@ import {sacredHeartSchool,createSacredHeartHandlers} from './schools/sacred-hear
 import {sienaSchool,createSienaHandlers} from './schools/siena.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.186.1-metro';
+const VERSION='4.187.0-metro';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4584,6 +4584,9 @@ function scoreboardTeamMatchesSchool(team,school){
   //   Oklahoma State's and Mississippi State's aliases matched them.
   // - No nickname alone ("Wildcats" is K-State, Kentucky, Arizona and more). A
   //   team whose ESPN name is its school (soccer's "Arizona") still matches.
+  // - ESPN's boards carry no high or middle school: Manhattan High School
+  //   ("Manhattan") never takes the Manhattan Jaspers (Oct 23).
+  if(school?.level==='high-school'||school?.level==='middle-school')return false;
   const nicknames=new Set([team?.name===team?.location?null:team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
   const wanted=[school.name,school.short_name,...(school.aliases||[])].filter(name=>!/^[A-Z&]{2,5}$/.test(String(name||''))||name===school.short_name).map(normalizedTeamName).filter(x=>x.length>=2&&!nicknames.has(x));
   const names=[team?.location,team?.displayName,team?.shortDisplayName].map(normalizedTeamName).filter(Boolean);
