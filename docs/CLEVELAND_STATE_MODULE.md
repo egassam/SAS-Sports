@@ -6,7 +6,7 @@ Sports (10): Basketball, Cross Country, Fencing, Golf, Lacrosse, Soccer, Swimmin
 
 ## Rules
 
-- Men's lacrosse plays in the NEC, as the page marks it; fencing names no league. Fencing meets read each team's record over the duals ("Men: 3-2 | Women: 3-2" reads "Women's team: 3-2 / Men's team: 3-2"). Golf is men's only (the women's page is 2024-25); cross country and track are women's only; the track roster publishes portraits for few athletes, so profiles without one fill the slots (`portraitlessProfileSports`). Wrestling's latest page is 2024-25 and it is not in the menu.
+- Men's lacrosse plays in the NEC, as the page marks it; fencing names no league. A fencing championship listed once per day is one meet. Fencing meets read each team's record over the duals ("Men: 3-2 | Women: 3-2" reads "Women's team: 3-2 / Men's team: 3-2"). Golf is men's only (the women's page is 2024-25); cross country and track are women's only; the track roster publishes portraits for few athletes, so profiles without one fill the slots (`portraitlessProfileSports`). Wrestling's latest page is 2024-25 and it is not in the menu.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the Horizon League (2026-27, with Northern Illinois from the MAC) sponsors basketball, baseball, softball, soccer, volleyball, golf, tennis, cross country, track and swimming, but no football, lacrosse, wrestling, hockey or rowing.
 - Shared Horizon League rules (`tests/horizon-shared.mjs`): bowling places with the record first, leagues named per team page (lacrosse, volleyball).

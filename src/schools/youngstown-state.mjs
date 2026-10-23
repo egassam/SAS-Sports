@@ -168,6 +168,9 @@ export function createYoungstownStateHandlers({makeEvent,recapMatchesEvent,event
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
+      // A day's title can carry a typo ("Jersey Jamboreee", Nov 20; "Jersey
+      // Jamboree", Nov 21-22): bowling days share the page's opponent record.
+      if(sport==='Bowling')return mergeMeetDays(games,{name:game=>game.opponent?.id!=null?`opponent ${game.opponent.id} ${game.opponent.location||''}`:String(game.opponent?.title||'').toLowerCase()});
       if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);

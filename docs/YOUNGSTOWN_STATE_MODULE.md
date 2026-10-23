@@ -6,7 +6,7 @@ Sports (13): Baseball, Basketball, Bowling, Cross Country, Football, Golf, Lacro
 
 ## Rules
 
-- Football plays in the Missouri Valley Football Conference and women's lacrosse in the MAC, as the pages mark them; bowling names no league. Cross country, track and swimming read the menu's `xc`, `track` and `swim` pages (the generic addresses are SIDEARM's "@season" template). Bowling places carry the match record first ("1-2 / 4th of 18 Teams" reads "4th of 18 (1-2)").
+- Football plays in the Missouri Valley Football Conference and women's lacrosse in the MAC, as the pages mark them; bowling names no league. Cross country, track and swimming read the menu's `xc`, `track` and `swim` pages (the generic addresses are SIDEARM's "@season" template). Bowling days are grouped by the page's opponent record (the Nov 20 day of the Jersey Jamboree is titled "Jersey Jamboreee"). Bowling places carry the match record first ("1-2 / 4th of 18 Teams" reads "4th of 18 (1-2)").
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the Horizon League (2026-27, with Northern Illinois from the MAC) sponsors basketball, baseball, softball, soccer, volleyball, golf, tennis, cross country, track and swimming, but no football, lacrosse, wrestling, hockey or rowing.
 - Shared Horizon League rules (`tests/horizon-shared.mjs`): bowling places with the record first, leagues named per team page (lacrosse, volleyball).

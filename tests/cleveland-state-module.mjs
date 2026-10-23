@@ -158,7 +158,6 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Jan 17 Cleveland State at JHU Invitational | ",
  "Upcoming Jan 30 Cleveland State at Schiller Duals | ",
  "Upcoming Feb 20 Cleveland State at Central Collegiate Fencing Conference Championship | ",
- "Upcoming Feb 21 Cleveland State at Central Collegiate Fencing Conference Championship | ",
  "Upcoming Mar 14 Cleveland State at NCAA Regionals | ",
  "Upcoming Mar 25 Cleveland State at NCAA Nationals | "
 ]);

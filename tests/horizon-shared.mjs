@@ -23,4 +23,11 @@ assert.match(read('../src/schools/youngstown-state.mjs'),/'Football':'Missouri V
 // rowing.
 assert.match(read('../src/conference-games.mjs'),/'Horizon League':new Set\(\['Football','Lacrosse','Field Hockey','Wrestling','Gymnastics','Hockey','Rowing'/);
 
+// Multi-day meets are one event: fencing championships (Cleveland State,
+// Detroit Mercy), and Youngstown State's bowling days by the page's opponent
+// record (the Nov 20 title reads "Jersey Jamboreee").
+for(const id of ['cleveland-state','detroit-mercy'])
+  assert.match(read(`../src/schools/${id}.mjs`),/sport==='Bowling'\|\|sport==='Fencing'\)return mergeMeetDays\(games\)/);
+assert.match(read('../src/schools/youngstown-state.mjs'),/if\(sport==='Bowling'\)return mergeMeetDays\(games,\{name:game=>game\.opponent\?\.id!=null/);
+
 console.log('Horizon League shared checks passed');

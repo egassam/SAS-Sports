@@ -156,7 +156,6 @@ void [parse,line,ownRecapsOnly,live];
  "Final Oct 16 Youngstown State at Chelsea Gilliam Penguin Classic | 4th of 18 (1-2)",
  "Upcoming Oct 30 Youngstown State at Destination Orlando | ",
  "Upcoming Nov 20 Youngstown State at Jersey Jamboreee | ",
- "Upcoming Nov 21 Youngstown State at Jersey Jamboree | ",
  "Upcoming Jan 15 Youngstown State at Northeast Classic | ",
  "Upcoming Jan 22 Youngstown State at PVAMU Invitational | ",
  "Upcoming Feb 5 Youngstown State at Flyer Classic | ",

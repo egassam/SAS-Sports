@@ -166,7 +166,9 @@ export function createClevelandStateHandlers({makeEvent,recapMatchesEvent,eventT
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      // A fencing championship lists each day (Central Collegiate Fencing
+      // Conference Championship, Feb 20-21): one meet.
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling'||sport==='Fencing')return mergeMeetDays(games);
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
