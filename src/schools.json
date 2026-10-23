@@ -5637,6 +5637,268 @@
     ]
   },
   {
+    "id": "canisius",
+    "name": "Canisius",
+    "short_name": "Canisius",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gogriffs.com",
+    "aliases": [
+      "Canisius University",
+      "Golden Griffins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gogriffs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fairfield",
+    "name": "Fairfield",
+    "short_name": "Fairfield",
+    "state": "Connecticut",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fairfieldstags.com",
+    "aliases": [
+      "Fairfield University",
+      "Stags"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fairfieldstags",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "iona",
+    "name": "Iona",
+    "short_name": "Iona",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ionagaels.com",
+    "aliases": [
+      "Iona University",
+      "Gaels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ionagaels",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "manhattan",
+    "name": "Manhattan",
+    "short_name": "Manhattan",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gojaspers.com",
+    "aliases": [
+      "Manhattan University",
+      "Jaspers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gojaspers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "marist",
+    "name": "Marist",
+    "short_name": "Marist",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goredfoxes.com",
+    "aliases": [
+      "Marist University",
+      "Red Foxes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goredfoxes",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "merrimack",
+    "name": "Merrimack",
+    "short_name": "Merrimack",
+    "state": "Massachusetts",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://merrimackathletics.com",
+    "aliases": [
+      "Merrimack College",
+      "Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "merrimackathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "mount-st-marys",
+    "name": "Mount St. Mary's",
+    "short_name": "Mount St. Mary's",
+    "state": "Maryland",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://mountathletics.com",
+    "aliases": [
+      "Mount St. Mary's University",
+      "The Mount",
+      "Mountaineers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "mountathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "niagara",
+    "name": "Niagara",
+    "short_name": "Niagara",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://purpleeagles.com",
+    "aliases": [
+      "Niagara University",
+      "Purple Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "purpleeagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "quinnipiac",
+    "name": "Quinnipiac",
+    "short_name": "Quinnipiac",
+    "state": "Connecticut",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobobcats.com",
+    "aliases": [
+      "Quinnipiac University",
+      "Bobcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobobcats",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "rider",
+    "name": "Rider",
+    "short_name": "Rider",
+    "state": "New Jersey",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobroncs.com",
+    "aliases": [
+      "Rider University",
+      "Broncs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobroncs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "sacred-heart",
+    "name": "Sacred Heart",
+    "short_name": "Sacred Heart",
+    "state": "Connecticut",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://sacredheartpioneers.com",
+    "aliases": [
+      "Sacred Heart University",
+      "SHU",
+      "Pioneers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "sacredheartpioneers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "saint-peters",
+    "name": "Saint Peter's",
+    "short_name": "Saint Peter's",
+    "state": "New Jersey",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://saintpeterspeacocks.com",
+    "aliases": [
+      "Saint Peter's University",
+      "Peacocks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "saintpeterspeacocks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "siena",
+    "name": "Siena",
+    "short_name": "Siena",
+    "state": "New York",
+    "conference": "MAAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://sienasaints.com",
+    "aliases": [
+      "Siena University",
+      "Saints"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "sienasaints",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
