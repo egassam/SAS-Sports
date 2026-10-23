@@ -62,7 +62,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   charleston:['cofc','college of charleston'],'nc-at':['n c a t','nc a t','north carolina a t','ncat'],uncw:['unc wilmington','north carolina wilmington'],'william-mary':['w m','william and mary','william mary'],'stony-brook':['stony brook university'],hofstra:['hofstra university'],
   // Horizon League opponents write "Cleveland St.", "Detroit", "UW-Green Bay",
   // "IUPUI", "UWM", "NKU", "PFW", "RMU", "Wright St.", "YSU", "NIU".
-  'cleveland-state':['cleveland st','csu vikings'],'detroit-mercy':['detroit','udm'],'green-bay':['uw green bay','wisconsin green bay','uwgb'],'iu-indy':['iupui','iu indianapolis','indiana university indianapolis'],milwaukee:['uwm','uw milwaukee','wisconsin milwaukee'],'northern-kentucky':['nku','northern ky'],oakland:['oakland university'],'purdue-fort-wayne':['pfw','fort wayne','purdue fw'],'robert-morris':['rmu'],'wright-state':['wright st'],'youngstown-state':['youngstown st','ysu'],'northern-illinois':['niu','n illinois']};
+  'cleveland-state':['cleveland st','csu vikings'],'detroit-mercy':['detroit','udm'],'green-bay':['uw green bay','wisconsin green bay','uwgb'],'iu-indy':['iupui','iu indianapolis','indiana university indianapolis'],milwaukee:['uwm','uw milwaukee','wisconsin milwaukee'],'northern-kentucky':['nku','northern ky'],oakland:['oakland university'],'purdue-fort-wayne':['pfw','fort wayne','purdue fw'],'robert-morris':['rmu'],'wright-state':['wright st'],'youngstown-state':['youngstown st','ysu'],'northern-illinois':['niu','n illinois'],
+  // Ivy League opponents write "Pennsylvania", "UPenn".
+  penn:['pennsylvania','upenn','university of pennsylvania'],brown:['brown university'],harvard:['harvard university'],yale:['yale university'],princeton:['princeton university'],columbia:['columbia university'],cornell:['cornell university'],dartmouth:['dartmouth college']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -185,6 +187,12 @@ const NOT_SPONSORED={
   // baseball, softball, soccer, volleyball, golf, tennis, cross country, track,
   // swimming, field hockey, lacrosse and rowing: no wrestling (Campbell,
   // Drexel, Hofstra in other leagues), gymnastics or hockey.
+  // The Ivy League (Brown, Columbia, Cornell, Dartmouth, Harvard, Penn,
+  // Princeton, Yale) sponsors nearly every sport, hockey, rowing, lacrosse,
+  // field hockey, wrestling (EIWA members score Ivy duals) and fencing
+  // among them: no bowling, beach volleyball, rifle, skiing, water polo,
+  // equestrian, STUNT, acrobatics or triathlon.
+  'Ivy League':new Set(['Rifle','Bowling','Beach Volleyball','Equestrian','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Horizon League (2026-27: Cleveland State, Detroit Mercy, Green Bay,
   // IU Indianapolis, Milwaukee, Northern Illinois (from the MAC; its
   // football in the Mountain West), Northern Kentucky, Oakland, Purdue Fort

@@ -5476,6 +5476,167 @@
     ]
   },
   {
+    "id": "brown",
+    "name": "Brown",
+    "short_name": "Brown",
+    "state": "Rhode Island",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://brownbears.com",
+    "aliases": [
+      "Brown University",
+      "Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "brownbears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "columbia",
+    "name": "Columbia",
+    "short_name": "Columbia",
+    "state": "New York",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gocolumbialions.com",
+    "aliases": [
+      "Columbia University",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gocolumbialions",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "cornell",
+    "name": "Cornell",
+    "short_name": "Cornell",
+    "state": "New York",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://cornellbigred.com",
+    "aliases": [
+      "Cornell University",
+      "Big Red"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "cornellbigred",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "dartmouth",
+    "name": "Dartmouth",
+    "short_name": "Dartmouth",
+    "state": "New Hampshire",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://dartmouthsports.com",
+    "aliases": [
+      "Dartmouth College",
+      "Big Green"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "dartmouthsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "harvard",
+    "name": "Harvard",
+    "short_name": "Harvard",
+    "state": "Massachusetts",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gocrimson.com",
+    "aliases": [
+      "Harvard University",
+      "Crimson"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gocrimson",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "penn",
+    "name": "Penn",
+    "short_name": "Penn",
+    "state": "Pennsylvania",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://pennathletics.com",
+    "aliases": [
+      "University of Pennsylvania",
+      "Pennsylvania",
+      "Quakers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "pennathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "princeton",
+    "name": "Princeton",
+    "short_name": "Princeton",
+    "state": "New Jersey",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goprincetontigers.com",
+    "aliases": [
+      "Princeton University",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goprincetontigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "yale",
+    "name": "Yale",
+    "short_name": "Yale",
+    "state": "Connecticut",
+    "conference": "Ivy League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://yalebulldogs.com",
+    "aliases": [
+      "Yale University",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "yalebulldogs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
