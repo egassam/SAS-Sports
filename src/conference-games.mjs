@@ -49,7 +49,10 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth'],
   // Missouri Valley opponents write "Illinois St.", "SIU", "UNI", "Valpo",
   // "Southern Ill.", "Murray St.", "Illinois-Chicago".
-  'illinois-state':['illinois st'],'southern-illinois':['siu','southern ill'],'northern-iowa':['uni'],valparaiso:['valpo'],uic:['illinois chicago'],'murray-state':['murray st'],'indiana-state':['indiana st']};
+  'illinois-state':['illinois st'],'southern-illinois':['siu','southern ill'],'northern-iowa':['uni'],valparaiso:['valpo'],uic:['illinois chicago'],'murray-state':['murray st'],'indiana-state':['indiana st'],
+  // ASUN opponents write "APSU", "Central Ark.", "EKU", "Florida Gulf Coast",
+  // "UNA", "North Fla.", "Queens (N.C.)", "UWG".
+  'austin-peay':['apsu','austin peay state'],'central-arkansas':['uca','central ark'],'eastern-kentucky':['eku','eastern ky'],fgcu:['florida gulf coast','fla gulf coast'],jacksonville:['ju'],'north-alabama':['una','north ala'],'north-florida':['unf','north fla'],queens:['queens nc','queens n c','queens university of charlotte'],'west-georgia':['uwg','west ga']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -148,6 +151,13 @@ const NOT_SPONSORED={
   // soccer, volleyball, golf, tennis, cross country, track and swimming: no
   // football (the Missouri Valley Football Conference is its own league),
   // wrestling, gymnastics, hockey, rowing or lacrosse.
+  // The ASUN (2026-27: Austin Peay, Bellarmine, Central Arkansas, Eastern
+  // Kentucky, FGCU, Jacksonville, Lipscomb, North Alabama, North Florida,
+  // Queens, Stetson, West Georgia) sponsors basketball, baseball, softball,
+  // soccer, volleyball, beach volleyball, golf, tennis, cross country, track
+  // and women's lacrosse: no football (the United Athletic Conference),
+  // swimming, rowing, wrestling or gymnastics.
+  'ASUN':new Set(['Football','Swimming & Diving','Rowing','Gymnastics','Wrestling','Hockey','Field Hockey','Water Polo','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Missouri Valley':new Set(['Football','Gymnastics','Wrestling','Hockey','Rowing','Lacrosse','Field Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 

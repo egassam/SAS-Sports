@@ -4236,6 +4236,256 @@
     ]
   },
   {
+    "id": "austin-peay",
+    "name": "Austin Peay",
+    "short_name": "Austin Peay",
+    "state": "Tennessee",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://letsgopeay.com",
+    "aliases": [
+      "Austin Peay State University",
+      "APSU",
+      "Austin Peay State",
+      "Governors"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "letsgopeay",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bellarmine",
+    "name": "Bellarmine",
+    "short_name": "Bellarmine",
+    "state": "Kentucky",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://athletics.bellarmine.edu",
+    "aliases": [
+      "Bellarmine University",
+      "Knights"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "athletics-bellarmine",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "central-arkansas",
+    "name": "Central Arkansas",
+    "short_name": "Central Arkansas",
+    "state": "Arkansas",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ucasports.com",
+    "aliases": [
+      "University of Central Arkansas",
+      "UCA",
+      "Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ucasports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "eastern-kentucky",
+    "name": "Eastern Kentucky",
+    "short_name": "Eastern Kentucky",
+    "state": "Kentucky",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ekusports.com",
+    "aliases": [
+      "Eastern Kentucky University",
+      "EKU",
+      "Colonels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ekusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fgcu",
+    "name": "FGCU",
+    "short_name": "FGCU",
+    "state": "Florida",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fgcuathletics.com",
+    "aliases": [
+      "Florida Gulf Coast",
+      "Florida Gulf Coast University",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fgcuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "jacksonville",
+    "name": "Jacksonville",
+    "short_name": "Jacksonville",
+    "state": "Florida",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://judolphins.com",
+    "aliases": [
+      "Jacksonville University",
+      "JU",
+      "Dolphins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "judolphins",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lipscomb",
+    "name": "Lipscomb",
+    "short_name": "Lipscomb",
+    "state": "Tennessee",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lipscombsports.com",
+    "aliases": [
+      "Lipscomb University",
+      "Bisons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lipscombsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "north-alabama",
+    "name": "North Alabama",
+    "short_name": "North Alabama",
+    "state": "Alabama",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://roarlions.com",
+    "aliases": [
+      "University of North Alabama",
+      "UNA",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "roarlions",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "north-florida",
+    "name": "North Florida",
+    "short_name": "North Florida",
+    "state": "Florida",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://unfospreys.com",
+    "aliases": [
+      "University of North Florida",
+      "UNF",
+      "Ospreys"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "unfospreys",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "queens",
+    "name": "Queens",
+    "short_name": "Queens",
+    "state": "North Carolina",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://queensathletics.com",
+    "aliases": [
+      "Queens University of Charlotte",
+      "Queens (N.C.)",
+      "Royals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "queensathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "stetson",
+    "name": "Stetson",
+    "short_name": "Stetson",
+    "state": "Florida",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gohatters.com",
+    "aliases": [
+      "Stetson University",
+      "Hatters"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gohatters",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "west-georgia",
+    "name": "West Georgia",
+    "short_name": "West Georgia",
+    "state": "Georgia",
+    "conference": "ASUN",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uwgathletics.com",
+    "aliases": [
+      "University of West Georgia",
+      "UWG",
+      "Wolves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uwgathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
