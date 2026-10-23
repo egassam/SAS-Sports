@@ -146,10 +146,10 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
   assert.deepEqual(v_womenscrosscountry.map(line),[
- "Final Sep 4 Women's · Eastern Michigan at Jeff Drenth Memorial | 3rd - 62 Points",
- "Final Sep 18 Women's · Eastern Michigan at George Dales Invitational | 7th - 163 Points",
- "Final Oct 2 Women's · Eastern Michigan at Joe Piane Invitational | 5th - 186 Points",
- "Final Oct 16 Women's · Eastern Michigan at Pre-National Invitational | 9th - 252 Points",
+ "Final Sep 4 Women's · Eastern Michigan at Jeff Drenth Memorial | 3rd · 62 pts",
+ "Final Sep 18 Women's · Eastern Michigan at George Dales Invitational | 7th · 163 pts",
+ "Final Oct 2 Women's · Eastern Michigan at Joe Piane Invitational | 5th · 186 pts",
+ "Final Oct 16 Women's · Eastern Michigan at Pre-National Invitational | 9th · 252 pts",
  "Upcoming Oct 23, 5:00 PM Women's · Eastern Michigan at EMU Fall Classic | ",
  "Upcoming Oct 30, 11:00 AM Women's · Eastern Michigan at MAC Championships | ",
  "Upcoming Nov 13, 10:00 AM Women's · Eastern Michigan at NCAA Great Lakes Regional | ",
@@ -158,9 +158,9 @@ void [parse,line,ownRecapsOnly,live];
   const v_menscrosscountry=parse("Cross Country","mens-cross-country");
   assert.deepEqual(v_menscrosscountry.map(line),[
  "Final Sep 4 Men's · Eastern Michigan at Jeff Drenth Memorial | Completed",
- "Final Sep 11 Men's · Eastern Michigan at Spartan Invitational | 6th - 184 Points",
- "Final Oct 2 Men's · Eastern Michigan at Joe Piane Invitational | 10th - 286 Points",
- "Final Oct 16 Men's · Eastern Michigan at Pre-National Invitational | 35th - 977 Points",
+ "Final Sep 11 Men's · Eastern Michigan at Spartan Invitational | 6th · 184 pts",
+ "Final Oct 2 Men's · Eastern Michigan at Joe Piane Invitational | 10th · 286 pts",
+ "Final Oct 16 Men's · Eastern Michigan at Pre-National Invitational | 35th · 977 pts",
  "Upcoming Oct 23, 4:30 PM Men's · Eastern Michigan at EMU Fall Classic | ",
  "Upcoming Oct 30, 12:00 PM Men's · Eastern Michigan at MAC Championships | ",
  "Upcoming Nov 13, 11:00 AM Men's · Eastern Michigan at NCAA Great Lakes Regional | ",

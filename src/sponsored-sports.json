@@ -524,6 +524,17 @@
   "chicago-fire": [
     "Soccer"
   ],
+  "chicago-state": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Tennis",
+    "Track & Field",
+    "Triathlon",
+    "Volleyball"
+  ],
   "chicago-white-sox": [
     "Baseball"
   ],
@@ -1503,6 +1514,20 @@
   "las-vegas-raiders": [
     "Football"
   ],
+  "le-moyne": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "liberty": [
     "Baseball",
     "Basketball",
@@ -1528,6 +1553,29 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "liu": [
+    "Acrobatics & Tumbling",
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Equestrian",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo"
   ],
   "lmu": [
     "Baseball",
@@ -1732,6 +1780,26 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "mercyhurst": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "STUNT",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo",
+    "Wrestling"
   ],
   "merrimack": [
     "Baseball",
@@ -2071,6 +2139,20 @@
     "Skiing",
     "Soccer",
     "Swimming & Diving",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "new-haven": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
     "Track & Field",
     "Volleyball"
   ],
@@ -3082,6 +3164,23 @@
     "Water Polo",
     "Wrestling"
   ],
+  "stonehill": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "stony-brook": [
     "Baseball",
     "Basketball",
@@ -3672,6 +3771,23 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "wagner": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Triathlon"
   ],
   "wake-forest": [
     "Baseball",

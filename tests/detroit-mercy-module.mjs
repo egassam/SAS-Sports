@@ -141,18 +141,18 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
   assert.deepEqual(v_womenscrosscountry.map(line),[
- "Final Sep 18 Women's · Detroit Mercy at National Catholic Championships (hosted by Notre Dame at Burke Memorial Golf Course) | 5th - 163 points",
- "Final Oct 3 Women's · Detroit Mercy at Swags Louisville Cross Country Classic (at EP “Tom” Sawyer Park) | 1st - 54 points",
- "Final Oct 17 Women's · Detroit Mercy at Canisius Alumni Classic (hosted by Canisius At Delaware Park Golf Course) | 1st - 45 Points",
+ "Final Sep 18 Women's · Detroit Mercy at National Catholic Championships (hosted by Notre Dame at Burke Memorial Golf Course) | 5th · 163 pts",
+ "Final Oct 3 Women's · Detroit Mercy at Swags Louisville Cross Country Classic (at EP “Tom” Sawyer Park) | 1st · 54 pts",
+ "Final Oct 17 Women's · Detroit Mercy at Canisius Alumni Classic (hosted by Canisius At Delaware Park Golf Course) | 1st · 45 pts",
  "Upcoming Oct 31, 11:00 AM Women's · Detroit Mercy at Horizon League Championship (hosted by Robert Morris at Youthtowne Fields) | ",
  "Upcoming Nov 13 Women's · Detroit Mercy at NCAA Great Lakes Regionals (hosted by Michigan State at Forest Akers East Golf Course) | ",
  "Upcoming Nov 21 Women's · Detroit Mercy at NCAA Division I Championships (hosted by Indiana State at LaVern Gibson Championship XC Course) | "
 ]);
   const v_menscrosscountry=parse("Cross Country","mens-cross-country");
   assert.deepEqual(v_menscrosscountry.map(line),[
- "Final Sep 18 Men's · Detroit Mercy at National Catholic Championships (hosted by Notre Dame at Burke Memorial Golf Course) | 5th - 147 points",
- "Final Oct 3 Men's · Detroit Mercy at Swags Louisville Cross Country Classic (at EP “Tom” Sawyer Park) | 9th - 291 Points",
- "Final Oct 17 Men's · Detroit Mercy at Canisius Alumni Classic (hosted by Canisius At Delaware Park Golf Course) | T2nd - 71 Points",
+ "Final Sep 18 Men's · Detroit Mercy at National Catholic Championships (hosted by Notre Dame at Burke Memorial Golf Course) | 5th · 147 pts",
+ "Final Oct 3 Men's · Detroit Mercy at Swags Louisville Cross Country Classic (at EP “Tom” Sawyer Park) | 9th · 291 pts",
+ "Final Oct 17 Men's · Detroit Mercy at Canisius Alumni Classic (hosted by Canisius At Delaware Park Golf Course) | T2nd · 71 pts",
  "Upcoming Oct 31, 11:00 AM Men's · Detroit Mercy at Horizon League Championship (hosted by Robert Morris at Youthtowne Fields) | ",
  "Upcoming Nov 13 Men's · Detroit Mercy at NCAA Great Lakes Regionals (hosted by Michigan State at Forest Akers East Golf Course) | ",
  "Upcoming Nov 21 Men's · Detroit Mercy at NCAA Division I Championships (hosted by Indiana State at LaVern Gibson Championship XC Course) | "

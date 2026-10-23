@@ -6065,6 +6065,189 @@
     ]
   },
   {
+    "id": "central-connecticut",
+    "name": "Central Connecticut",
+    "short_name": "CCSU",
+    "state": "Connecticut",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ccsubluedevils.com",
+    "aliases": [
+      "Central Connecticut State University",
+      "CCSU",
+      "Blue Devils"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ccsubluedevils",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "chicago-state",
+    "name": "Chicago State",
+    "short_name": "Chicago State",
+    "state": "Illinois",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gocsucougars.com",
+    "aliases": [
+      "Chicago State University",
+      "Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gocsucougars",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "fdu",
+    "name": "Fairleigh Dickinson",
+    "short_name": "FDU",
+    "state": "New Jersey",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fduknights.com",
+    "aliases": [
+      "Fairleigh Dickinson University",
+      "FDU",
+      "Knights"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fduknights",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "le-moyne",
+    "name": "Le Moyne",
+    "short_name": "Le Moyne",
+    "state": "New York",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lemoynedolphins.com",
+    "aliases": [
+      "Le Moyne College",
+      "Dolphins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lemoynedolphins",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "liu",
+    "name": "LIU",
+    "short_name": "LIU",
+    "state": "New York",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://liuathletics.com",
+    "aliases": [
+      "Long Island University",
+      "LIU Sharks",
+      "Sharks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "liuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "mercyhurst",
+    "name": "Mercyhurst",
+    "short_name": "Mercyhurst",
+    "state": "Pennsylvania",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hurstathletics.com",
+    "aliases": [
+      "Mercyhurst University",
+      "Lakers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hurstathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "new-haven",
+    "name": "New Haven",
+    "short_name": "New Haven",
+    "state": "Connecticut",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://newhavenchargers.com",
+    "aliases": [
+      "University of New Haven",
+      "Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "newhavenchargers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "stonehill",
+    "name": "Stonehill",
+    "short_name": "Stonehill",
+    "state": "Massachusetts",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://stonehillskyhawks.com",
+    "aliases": [
+      "Stonehill College",
+      "Skyhawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "stonehillskyhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wagner",
+    "name": "Wagner",
+    "short_name": "Wagner",
+    "state": "New York",
+    "conference": "NEC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://wagnerathletics.com",
+    "aliases": [
+      "Wagner College",
+      "Seahawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "wagnerathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

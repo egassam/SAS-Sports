@@ -3239,3 +3239,18 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - Next: MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
 - Production follow-up: the docs PR #412 merged as `4800656` and rebuilt `main`; production served `4.187.0-metro` by 18:09 UTC. `verify:prod --sports=all` for the ten schools: 401 of 402 passed. The one miss, Sacred Heart track (a 60 s read), passed 3/3 twice on reruns, with forced refreshes at 0.5-1.2 s. Manhattan High football passed 3/3 with 7 results. XC 18/20 and 26/21.
 
+## October 23, 2026 — MEAC (seven schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize" (continued from the Metro Conference).
+
+- Catalog: the eight MEAC schools (UMES's site is umeshawksports.com; easternshorehawks.com redirects there). Howard (hubison.com) answered Imperva's "Too many redirects" at about 18:15, 18:35 and 18:54 UTC: added to `docs/BLOCKED_SCHOOLS.md`.
+- Built with `start-schools` (ported from Evansville): Coppin State, Delaware State, Maryland Eastern Shore, Morgan State, Norfolk State, North Carolina Central, South Carolina State.
+- South Carolina State read no schedule live: its pages redirect to www.scsuathletics.com, and the shared reader compared hosts exactly. The reader now treats a `www.` host as the same site. Through the Worker's diagnostic, no other module's source lands on `www.` (247 checked).
+- Leagues: the MEAC sponsors no baseball (Coppin State, Delaware State, UMES and Norfolk State baseball pages mark NEC games); Delaware State women's lacrosse is NEC and Morgan State wrestling EIWA. Delaware State women's soccer plays in the NEC, but its page marks no league games: the module counts its NEC opponents (0-7, as the page states).
+- Routes: UMES cross country team pages and track (indoor and outdoor; `wot` and `mot` labelled), Norfolk State women's bowling (the others are a 2020-21 General Schedule), South Carolina State women's golf (men's page 2009) and track (women's roster; the men's roster answers 404).
+- Formats: UMES drops a team that did not race ("DNP"; the men at the Salisbury Fall Classic) and takes TFRRS's names for host-named meets ("Delaware State University Sting Invite"). NC Central ignores a story headline in a result line ("Aaron Alukunyang Wins adidas Challenge, Stays Unbeaten"). South Carolina State drops the conference asterisk from opponents ("Norfolk State*"). NC Central golf finals whose stories give individual results only read "Completed".
+- Athletes: profile cards; portrait-less profiles for South Carolina State basketball (only coach and sponsor images), UMES baseball and softball, Morgan State wrestling; NC Central softball is off the athlete list (its 2027 roster lists no players). 67 checks passed.
+- Checks: `compare-records` matches every page after the fixes. Preview gate on 4.191.0: 205 checks, with two UMES single misses (volleyball, track) that passed 36/36 on rerun. South Carolina State was re-gated on 4.192.0 after the asterisk fix (30 checks). `test:release` passed on `94d70c1`. Checked by eye: South Carolina State football.
+- PR #413 merged as `579003c`; production `4.192.0-meac` verified about 19:52 UTC (`verify:prod --sports=all` 207 checks, none failed).
+- Next: NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+
