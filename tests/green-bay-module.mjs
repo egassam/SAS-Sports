@@ -24,7 +24,7 @@ const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/green-bay-module
 // Module ownership: every sponsored sport has explicit greenbayphoenix.com routes, exactly
 // the candidates production used before the module (route parity).
 const sports=sponsoredSports['green-bay'];
-assert.equal(sports.length,7);
+assert.equal(sports.length,8);
 for(const [name,map] of [['schedule',greenBaySchool.scheduleUrls],['roster',greenBaySchool.rosterUrls]]){
   for(const [key,value] of Object.entries(map)){
     assert.ok(key.startsWith('green-bay|'),'module keys must carry the exact school identity');

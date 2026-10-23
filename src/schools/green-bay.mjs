@@ -10,7 +10,7 @@ export const greenBaySchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Basketball','Cross Country','Golf','Soccer','Softball','Swimming & Diving','Volleyball']),
+  pageDataSports:new Set(['Basketball','Cross Country','Golf','Skiing','Soccer','Softball','Swimming & Diving','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -29,6 +29,7 @@ export const greenBaySchool={
     'green-bay|Basketball':['https://greenbayphoenix.com/sports/mens-basketball/schedule','https://greenbayphoenix.com/sports/womens-basketball/schedule'],
     'green-bay|Cross Country':'https://greenbayphoenix.com/sports/cross-country/schedule',
     'green-bay|Golf':['https://greenbayphoenix.com/sports/womens-golf/schedule','https://greenbayphoenix.com/sports/mens-golf/schedule'],
+    'green-bay|Skiing':'https://greenbayphoenix.com/sports/nordic-skiing/schedule',
     'green-bay|Soccer':['https://greenbayphoenix.com/sports/womens-soccer/schedule','https://greenbayphoenix.com/sports/mens-soccer/schedule'],
     'green-bay|Softball':'https://greenbayphoenix.com/sports/softball/schedule',
     'green-bay|Swimming & Diving':'https://greenbayphoenix.com/sports/swimming-and-diving/schedule',
@@ -38,6 +39,7 @@ export const greenBaySchool={
     'green-bay|Basketball':['https://greenbayphoenix.com/sports/mens-basketball/roster','https://greenbayphoenix.com/sports/womens-basketball/roster'],
     'green-bay|Cross Country':'https://greenbayphoenix.com/sports/cross-country/roster',
     'green-bay|Golf':['https://greenbayphoenix.com/sports/womens-golf/roster','https://greenbayphoenix.com/sports/mens-golf/roster'],
+    'green-bay|Skiing':'https://greenbayphoenix.com/sports/nordic-skiing/roster',
     'green-bay|Soccer':['https://greenbayphoenix.com/sports/womens-soccer/roster','https://greenbayphoenix.com/sports/mens-soccer/roster'],
     'green-bay|Softball':'https://greenbayphoenix.com/sports/softball/roster',
     'green-bay|Swimming & Diving':'https://greenbayphoenix.com/sports/swimming-and-diving/roster',

@@ -25,13 +25,13 @@ export const clevelandStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Soccer','Swimming & Diving','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'cleveland-state|Basketball':['https://csuvikings.com/sports/mens-basketball/schedule','https://csuvikings.com/sports/womens-basketball/schedule'],
     'cleveland-state|Cross Country':'https://csuvikings.com/sports/womens-cross-country/schedule',
     'cleveland-state|Fencing':'https://csuvikings.com/sports/mens-fencing/schedule',
-    'cleveland-state|Golf':['https://csuvikings.com/sports/womens-golf/schedule','https://csuvikings.com/sports/mens-golf/schedule'],
+    'cleveland-state|Golf':'https://csuvikings.com/sports/mens-golf/schedule',
     'cleveland-state|Lacrosse':'https://csuvikings.com/sports/mens-lacrosse/schedule',
     'cleveland-state|Soccer':['https://csuvikings.com/sports/womens-soccer/schedule','https://csuvikings.com/sports/mens-soccer/schedule'],
     'cleveland-state|Swimming & Diving':['https://csuvikings.com/sports/womens-swimming-and-diving/schedule','https://csuvikings.com/sports/mens-swimming-and-diving/schedule'],
@@ -43,7 +43,7 @@ export const clevelandStateSchool={
     'cleveland-state|Basketball':['https://csuvikings.com/sports/mens-basketball/roster','https://csuvikings.com/sports/womens-basketball/roster'],
     'cleveland-state|Cross Country':'https://csuvikings.com/sports/womens-cross-country/roster',
     'cleveland-state|Fencing':'https://csuvikings.com/sports/mens-fencing/roster',
-    'cleveland-state|Golf':['https://csuvikings.com/sports/womens-golf/roster','https://csuvikings.com/sports/mens-golf/roster'],
+    'cleveland-state|Golf':'https://csuvikings.com/sports/mens-golf/roster',
     'cleveland-state|Lacrosse':'https://csuvikings.com/sports/mens-lacrosse/roster',
     'cleveland-state|Soccer':['https://csuvikings.com/sports/womens-soccer/roster','https://csuvikings.com/sports/mens-soccer/roster'],
     'cleveland-state|Swimming & Diving':['https://csuvikings.com/sports/womens-swimming-and-diving/roster','https://csuvikings.com/sports/mens-swimming-and-diving/roster'],

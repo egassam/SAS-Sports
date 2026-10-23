@@ -10,7 +10,7 @@ export const robertMorrisSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Basketball','Cross Country','Football','Golf','Hockey','Lacrosse','Rowing','Soccer','Softball','Track & Field','Volleyball','Wrestling']),
+  pageDataSports:new Set(['Basketball','Cross Country','Football','Golf','Hockey','Lacrosse','Rowing','Soccer','Softball','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -23,7 +23,7 @@ export const robertMorrisSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Lacrosse','Swimming & Diving','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Hockey','Lacrosse','Soccer','Swimming & Diving']),
   verifiedInstagrams:{
     'robert-morris|Golf|Jace Lancaster':'https://www.instagram.com/jace_lancaster/',
     'robert-morris|Golf|Tanner Cardwell':'https://www.instagram.com/tannercardwell/',
@@ -31,31 +31,29 @@ export const robertMorrisSchool={
   },
   scheduleUrls:{
     'robert-morris|Basketball':['https://rmucolonials.com/sports/mens-basketball/schedule','https://rmucolonials.com/sports/womens-basketball/schedule'],
-    'robert-morris|Cross Country':'https://rmucolonials.com/sports/cross-country/schedule',
+    'robert-morris|Cross Country':['https://rmucolonials.com/sports/womens-cross-country/schedule','https://rmucolonials.com/sports/mens-cross-country/schedule'],
     'robert-morris|Football':'https://rmucolonials.com/sports/football/schedule',
-    'robert-morris|Golf':['https://rmucolonials.com/sports/womens-golf/schedule','https://rmucolonials.com/sports/mens-golf/schedule'],
-    'robert-morris|Hockey':['https://rmucolonials.com/sports/mens-ice-hockey/schedule','https://rmucolonials.com/sports/womens-ice-hockey/schedule','https://rmucolonials.com/sports/ice-hockey/schedule','https://rmucolonials.com/sports/hockey/schedule'],
+    'robert-morris|Golf':'https://rmucolonials.com/sports/mens-golf/schedule',
+    'robert-morris|Hockey':['https://rmucolonials.com/sports/mens-ice-hockey/schedule','https://rmucolonials.com/sports/womens-ice-hockey/schedule'],
     'robert-morris|Lacrosse':['https://rmucolonials.com/sports/womens-lacrosse/schedule','https://rmucolonials.com/sports/mens-lacrosse/schedule'],
     'robert-morris|Rowing':'https://rmucolonials.com/sports/rowing/schedule',
-    'robert-morris|Soccer':['https://rmucolonials.com/sports/womens-soccer/schedule','https://rmucolonials.com/sports/wsoc/schedule','https://rmucolonials.com/sports/soccer/schedule','https://rmucolonials.com/sports/mens-soccer/schedule'],
+    'robert-morris|Soccer':['https://rmucolonials.com/sports/womens-soccer/schedule','https://rmucolonials.com/sports/mens-soccer/schedule'],
     'robert-morris|Softball':'https://rmucolonials.com/sports/softball/schedule',
-    'robert-morris|Track & Field':['https://rmucolonials.com/sports/womens-track-and-field/schedule','https://rmucolonials.com/sports/mens-track-and-field/schedule'],
-    'robert-morris|Volleyball':'https://rmucolonials.com/sports/womens-volleyball/schedule',
-    'robert-morris|Wrestling':'https://rmucolonials.com/sports/wrestling/schedule'
+    'robert-morris|Track & Field':'https://rmucolonials.com/sports/womens-track-and-field/schedule',
+    'robert-morris|Volleyball':'https://rmucolonials.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'robert-morris|Basketball':['https://rmucolonials.com/sports/mens-basketball/roster','https://rmucolonials.com/sports/womens-basketball/roster'],
-    'robert-morris|Cross Country':'https://rmucolonials.com/sports/cross-country/roster',
+    'robert-morris|Cross Country':['https://rmucolonials.com/sports/womens-cross-country/roster','https://rmucolonials.com/sports/mens-cross-country/roster'],
     'robert-morris|Football':'https://rmucolonials.com/sports/football/roster',
-    'robert-morris|Golf':['https://rmucolonials.com/sports/womens-golf/roster','https://rmucolonials.com/sports/mens-golf/roster'],
-    'robert-morris|Hockey':['https://rmucolonials.com/sports/mens-ice-hockey/roster','https://rmucolonials.com/sports/womens-ice-hockey/roster','https://rmucolonials.com/sports/ice-hockey/roster','https://rmucolonials.com/sports/hockey/roster'],
+    'robert-morris|Golf':'https://rmucolonials.com/sports/mens-golf/roster',
+    'robert-morris|Hockey':['https://rmucolonials.com/sports/mens-ice-hockey/roster','https://rmucolonials.com/sports/womens-ice-hockey/roster'],
     'robert-morris|Lacrosse':['https://rmucolonials.com/sports/womens-lacrosse/roster','https://rmucolonials.com/sports/mens-lacrosse/roster'],
     'robert-morris|Rowing':'https://rmucolonials.com/sports/rowing/roster',
-    'robert-morris|Soccer':['https://rmucolonials.com/sports/womens-soccer/roster','https://rmucolonials.com/sports/wsoc/roster','https://rmucolonials.com/sports/soccer/roster','https://rmucolonials.com/sports/mens-soccer/roster'],
+    'robert-morris|Soccer':['https://rmucolonials.com/sports/womens-soccer/roster','https://rmucolonials.com/sports/mens-soccer/roster'],
     'robert-morris|Softball':'https://rmucolonials.com/sports/softball/roster',
-    'robert-morris|Track & Field':['https://rmucolonials.com/sports/womens-track-and-field/roster','https://rmucolonials.com/sports/mens-track-and-field/roster'],
-    'robert-morris|Volleyball':'https://rmucolonials.com/sports/womens-volleyball/roster',
-    'robert-morris|Wrestling':'https://rmucolonials.com/sports/wrestling/roster'
+    'robert-morris|Track & Field':'https://rmucolonials.com/sports/womens-track-and-field/roster',
+    'robert-morris|Volleyball':'https://rmucolonials.com/sports/womens-volleyball/roster'
   }
 };
 

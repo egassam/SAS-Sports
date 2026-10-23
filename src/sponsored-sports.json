@@ -1060,6 +1060,7 @@
     "Basketball",
     "Cross Country",
     "Golf",
+    "Skiing",
     "Soccer",
     "Softball",
     "Swimming & Diving",
@@ -2392,8 +2393,7 @@
     "Soccer",
     "Softball",
     "Track & Field",
-    "Volleyball",
-    "Wrestling"
+    "Volleyball"
   ],
   "rutgers": [
     "Baseball",

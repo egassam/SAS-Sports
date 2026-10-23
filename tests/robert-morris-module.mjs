@@ -24,7 +24,7 @@ const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/robert-morris-mo
 // Module ownership: every sponsored sport has explicit rmucolonials.com routes, exactly
 // the candidates production used before the module (route parity).
 const sports=sponsoredSports['robert-morris'];
-assert.equal(sports.length,12);
+assert.equal(sports.length,11);
 for(const [name,map] of [['schedule',robertMorrisSchool.scheduleUrls],['roster',robertMorrisSchool.rosterUrls]]){
   for(const [key,value] of Object.entries(map)){
     assert.ok(key.startsWith('robert-morris|'),'module keys must carry the exact school identity');

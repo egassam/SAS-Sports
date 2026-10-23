@@ -24,36 +24,36 @@ export const youngstownStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Golf','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'youngstown-state|Baseball':'https://ysusports.com/sports/baseball/schedule',
     'youngstown-state|Basketball':['https://ysusports.com/sports/mens-basketball/schedule','https://ysusports.com/sports/womens-basketball/schedule'],
     'youngstown-state|Bowling':'https://ysusports.com/sports/womens-bowling/schedule',
-    'youngstown-state|Cross Country':'https://ysusports.com/sports/cross-country/schedule',
+    'youngstown-state|Cross Country':'https://ysusports.com/sports/xc/schedule',
     'youngstown-state|Football':'https://ysusports.com/sports/football/schedule',
     'youngstown-state|Golf':['https://ysusports.com/sports/womens-golf/schedule','https://ysusports.com/sports/mens-golf/schedule'],
     'youngstown-state|Lacrosse':'https://ysusports.com/sports/womens-lacrosse/schedule',
     'youngstown-state|Soccer':'https://ysusports.com/sports/womens-soccer/schedule',
     'youngstown-state|Softball':'https://ysusports.com/sports/softball/schedule',
-    'youngstown-state|Swimming & Diving':'https://ysusports.com/sports/womens-swimming-and-diving/schedule',
+    'youngstown-state|Swimming & Diving':'https://ysusports.com/sports/swim/schedule',
     'youngstown-state|Tennis':['https://ysusports.com/sports/womens-tennis/schedule','https://ysusports.com/sports/mens-tennis/schedule'],
-    'youngstown-state|Track & Field':'https://ysusports.com/sports/track-and-field/schedule',
+    'youngstown-state|Track & Field':'https://ysusports.com/sports/track/schedule',
     'youngstown-state|Volleyball':'https://ysusports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'youngstown-state|Baseball':'https://ysusports.com/sports/baseball/roster',
     'youngstown-state|Basketball':['https://ysusports.com/sports/mens-basketball/roster','https://ysusports.com/sports/womens-basketball/roster'],
     'youngstown-state|Bowling':'https://ysusports.com/sports/womens-bowling/roster',
-    'youngstown-state|Cross Country':'https://ysusports.com/sports/cross-country/roster',
+    'youngstown-state|Cross Country':'https://ysusports.com/sports/xc/roster',
     'youngstown-state|Football':'https://ysusports.com/sports/football/roster',
     'youngstown-state|Golf':['https://ysusports.com/sports/womens-golf/roster','https://ysusports.com/sports/mens-golf/roster'],
     'youngstown-state|Lacrosse':'https://ysusports.com/sports/womens-lacrosse/roster',
     'youngstown-state|Soccer':'https://ysusports.com/sports/womens-soccer/roster',
     'youngstown-state|Softball':'https://ysusports.com/sports/softball/roster',
-    'youngstown-state|Swimming & Diving':'https://ysusports.com/sports/womens-swimming-and-diving/roster',
+    'youngstown-state|Swimming & Diving':'https://ysusports.com/sports/swim/roster',
     'youngstown-state|Tennis':['https://ysusports.com/sports/womens-tennis/roster','https://ysusports.com/sports/mens-tennis/roster'],
-    'youngstown-state|Track & Field':'https://ysusports.com/sports/track-and-field/roster',
+    'youngstown-state|Track & Field':'https://ysusports.com/sports/track/roster',
     'youngstown-state|Volleyball':'https://ysusports.com/sports/womens-volleyball/roster'
   }
 };

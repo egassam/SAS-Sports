@@ -24,7 +24,7 @@ export const purdueFortWayneSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Soccer','Swimming & Diving','Track & Field','Volleyball']),
   verifiedInstagrams:{
     'purdue-fort-wayne|Basketball|Chris Morgan':'https://www.instagram.com/chrismorgan13/',
     'purdue-fort-wayne|Basketball|Mason Shrout':'https://www.instagram.com/masonshrout/',
@@ -42,7 +42,7 @@ export const purdueFortWayneSchool={
     'purdue-fort-wayne|Softball':'https://gomastodons.com/sports/softball/schedule',
     'purdue-fort-wayne|Tennis':'https://gomastodons.com/sports/womens-tennis/schedule',
     'purdue-fort-wayne|Track & Field':['https://gomastodons.com/sports/womens-track-and-field/schedule','https://gomastodons.com/sports/mens-track-and-field/schedule'],
-    'purdue-fort-wayne|Volleyball':'https://gomastodons.com/sports/womens-volleyball/schedule'
+    'purdue-fort-wayne|Volleyball':['https://gomastodons.com/sports/womens-volleyball/schedule','https://gomastodons.com/sports/mens-volleyball/schedule']
   },
   rosterUrls:{
     'purdue-fort-wayne|Baseball':'https://gomastodons.com/sports/baseball/roster',
@@ -53,7 +53,7 @@ export const purdueFortWayneSchool={
     'purdue-fort-wayne|Softball':'https://gomastodons.com/sports/softball/roster',
     'purdue-fort-wayne|Tennis':'https://gomastodons.com/sports/womens-tennis/roster',
     'purdue-fort-wayne|Track & Field':['https://gomastodons.com/sports/womens-track-and-field/roster','https://gomastodons.com/sports/mens-track-and-field/roster'],
-    'purdue-fort-wayne|Volleyball':'https://gomastodons.com/sports/womens-volleyball/roster'
+    'purdue-fort-wayne|Volleyball':['https://gomastodons.com/sports/womens-volleyball/roster','https://gomastodons.com/sports/mens-volleyball/roster']
   }
 };
 
