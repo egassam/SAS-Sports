@@ -68,6 +68,9 @@ const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
 // beach volleyball and women's water polo (bigwest.org, Jul 1, 2026). The
 // team is told by its schedule page.
 const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}],
+  // CAA's outside member in field hockey and men's lacrosse: Fairfield (the
+  // members' conference schedules, Oct 23).
+  'CAA':[{names:['fairfield','fairfield university'],id:'fairfield',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//,'Field Hockey':/\/sports\/(?:field-hockey|fhockey)\//}}],
   // Big South women's lacrosse's outside members (Gardner-Webb's, Radford's
   // and Winthrop's conference schedules, Oct 23): Wofford, Mercer, Furman.
   'Big South':[{names:['wofford','wofford college'],id:'wofford',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['mercer','mercer university'],id:'mercer',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['furman','furman university'],id:'furman',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}}],

@@ -27,7 +27,7 @@ export const stonyBrookSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Lacrosse','Soccer','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'stony-brook|Baseball|Hunter Colagrande':'https://www.instagram.com/hcola_2/',
     'stony-brook|Baseball|Chris Carson':'https://www.instagram.com/chris_carson444/',
@@ -50,7 +50,7 @@ export const stonyBrookSchool={
     'stony-brook|Soccer':['https://stonybrookathletics.com/sports/womens-soccer/schedule','https://stonybrookathletics.com/sports/mens-soccer/schedule'],
     'stony-brook|Softball':'https://stonybrookathletics.com/sports/softball/schedule',
     'stony-brook|Swimming & Diving':'https://stonybrookathletics.com/sports/womens-swimming-and-diving/schedule',
-    'stony-brook|Tennis':['https://stonybrookathletics.com/sports/womens-tennis/schedule','https://stonybrookathletics.com/sports/mens-tennis/schedule'],
+    'stony-brook|Tennis':'https://stonybrookathletics.com/sports/womens-tennis/schedule',
     'stony-brook|Track & Field':['https://stonybrookathletics.com/sports/womens-track-and-field/schedule','https://stonybrookathletics.com/sports/mens-track-and-field/schedule'],
     'stony-brook|Volleyball':'https://stonybrookathletics.com/sports/womens-volleyball/schedule'
   },
@@ -63,7 +63,7 @@ export const stonyBrookSchool={
     'stony-brook|Soccer':['https://stonybrookathletics.com/sports/womens-soccer/roster','https://stonybrookathletics.com/sports/mens-soccer/roster'],
     'stony-brook|Softball':'https://stonybrookathletics.com/sports/softball/roster',
     'stony-brook|Swimming & Diving':'https://stonybrookathletics.com/sports/womens-swimming-and-diving/roster',
-    'stony-brook|Tennis':['https://stonybrookathletics.com/sports/womens-tennis/roster','https://stonybrookathletics.com/sports/mens-tennis/roster'],
+    'stony-brook|Tennis':'https://stonybrookathletics.com/sports/womens-tennis/roster',
     'stony-brook|Track & Field':['https://stonybrookathletics.com/sports/womens-track-and-field/roster','https://stonybrookathletics.com/sports/mens-track-and-field/roster'],
     'stony-brook|Volleyball':'https://stonybrookathletics.com/sports/womens-volleyball/roster'
   }

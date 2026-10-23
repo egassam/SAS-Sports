@@ -63,7 +63,7 @@ const ncAtToday=sidearmToday('America/New_York');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // North Carolina A&T's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const NC_AT_TFRRS_TEAMS={Women:null,Men:null};
+export const NC_AT_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/NC_college_f_N_Carolina_AT.html',Men:'https://www.tfrrs.org/teams/xc/NC_college_m_N_Carolina_AT.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -339,7 +339,7 @@ export function createNcAtHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues (bowling names no league); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
@@ -357,7 +357,9 @@ export function createNcAtHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
   // Jamboree), and the swimming schedule links none; each is in the archive.
   const archive=createArchiveStory({id:'nc-at',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,skipStory:path=>/\/this-week-in-/.test(path)});
   // Each team's cross country page is its own event (Florida State's split).
-  const crossCountry=createTeamTfrrsMeetResults({id:'nc-at',schoolName:'North Carolina A&T',
+  // The schedule names cross country meets by their hosts ("Elon"): TFRRS's
+  // meet names are used (hostMeetName).
+  const crossCountry=createTeamTfrrsMeetResults({id:'nc-at',schoolName:'North Carolina A&T',hostMeetName:true,
     teams:NC_AT_TFRRS_TEAMS,
     // TFRRS names the host's meet its own way ("WSU Cougar Classic"): the
     // only meet that day is the school's.

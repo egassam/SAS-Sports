@@ -64,7 +64,7 @@ const charlestonToday=sidearmToday('America/New_York');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Charleston's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const CHARLESTON_TFRRS_TEAMS={Women:null,Men:null};
+export const CHARLESTON_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/SC_college_f_Col_of_Charleston.html',Men:'https://www.tfrrs.org/teams/xc/SC_college_m_Col_of_Charleston.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -250,7 +250,9 @@ export function createCharlestonHandlers({makeEvent,recapMatchesEvent,eventType=
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // An event-named game ("Big 5 Classic", Drexel women's basketball, Dec 6;
+    // Charleston's equestrian "IHSA Regionals", "IHSA Zones") is "at" (Saint Joseph's rule).
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|\bclassic$|^big 5\b|^IHSA\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis
@@ -340,7 +342,7 @@ export function createCharlestonHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues (equestrian and beach volleyball name no league; sailing is not a sport the app lists); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;

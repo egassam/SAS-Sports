@@ -24,7 +24,7 @@ export const towsonSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Lacrosse','Soccer','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Golf','Lacrosse','Swimming & Diving']),
   verifiedInstagrams:{
     'towson|Basketball|Ryan Skerry':'https://www.instagram.com/rskerry22/',
     'towson|Basketball|Chike Ndefo':'https://www.instagram.com/nextup_ndefo/',
@@ -39,7 +39,7 @@ export const towsonSchool={
     'towson|Golf':['https://towsontigers.com/sports/womens-golf/schedule','https://towsontigers.com/sports/mens-golf/schedule'],
     'towson|Gymnastics':'https://towsontigers.com/sports/womens-gymnastics/schedule',
     'towson|Lacrosse':['https://towsontigers.com/sports/womens-lacrosse/schedule','https://towsontigers.com/sports/mens-lacrosse/schedule'],
-    'towson|Soccer':['https://towsontigers.com/sports/womens-soccer/schedule','https://towsontigers.com/sports/mens-soccer/schedule'],
+    'towson|Soccer':'https://towsontigers.com/sports/womens-soccer/schedule',
     'towson|Softball':'https://towsontigers.com/sports/softball/schedule',
     'towson|Swimming & Diving':['https://towsontigers.com/sports/womens-swimming-and-diving/schedule','https://towsontigers.com/sports/mens-swimming-and-diving/schedule'],
     'towson|Tennis':'https://towsontigers.com/sports/womens-tennis/schedule',
@@ -55,7 +55,7 @@ export const towsonSchool={
     'towson|Golf':['https://towsontigers.com/sports/womens-golf/roster','https://towsontigers.com/sports/mens-golf/roster'],
     'towson|Gymnastics':'https://towsontigers.com/sports/womens-gymnastics/roster',
     'towson|Lacrosse':['https://towsontigers.com/sports/womens-lacrosse/roster','https://towsontigers.com/sports/mens-lacrosse/roster'],
-    'towson|Soccer':['https://towsontigers.com/sports/womens-soccer/roster','https://towsontigers.com/sports/mens-soccer/roster'],
+    'towson|Soccer':'https://towsontigers.com/sports/womens-soccer/roster',
     'towson|Softball':'https://towsontigers.com/sports/softball/roster',
     'towson|Swimming & Diving':['https://towsontigers.com/sports/womens-swimming-and-diving/roster','https://towsontigers.com/sports/mens-swimming-and-diving/roster'],
     'towson|Tennis':'https://towsontigers.com/sports/womens-tennis/roster',
@@ -350,8 +350,8 @@ export function createTowsonHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (gymnastics plays in the EAGL, as the page marks it); the page data marks their league games.
+      const league={'Gymnastics':'EAGL'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

@@ -22,14 +22,14 @@ export const drexelSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Lacrosse','Soccer','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'drexel|Basketball':['https://drexeldragons.com/sports/mens-basketball/schedule','https://drexeldragons.com/sports/womens-basketball/schedule'],
     'drexel|Field Hockey':'https://drexeldragons.com/sports/field-hockey/schedule',
     'drexel|Golf':'https://drexeldragons.com/sports/mens-golf/schedule',
     'drexel|Lacrosse':['https://drexeldragons.com/sports/womens-lacrosse/schedule','https://drexeldragons.com/sports/mens-lacrosse/schedule'],
-    'drexel|Rowing':'https://drexeldragons.com/sports/womens-rowing/schedule',
+    'drexel|Rowing':['https://drexeldragons.com/sports/womens-crew/schedule','https://drexeldragons.com/sports/mens-crew/schedule'],
     'drexel|Soccer':['https://drexeldragons.com/sports/womens-soccer/schedule','https://drexeldragons.com/sports/mens-soccer/schedule'],
     'drexel|Softball':'https://drexeldragons.com/sports/softball/schedule',
     'drexel|Swimming & Diving':['https://drexeldragons.com/sports/womens-swimming-and-diving/schedule','https://drexeldragons.com/sports/mens-swimming-and-diving/schedule'],
@@ -41,7 +41,7 @@ export const drexelSchool={
     'drexel|Field Hockey':'https://drexeldragons.com/sports/field-hockey/roster',
     'drexel|Golf':'https://drexeldragons.com/sports/mens-golf/roster',
     'drexel|Lacrosse':['https://drexeldragons.com/sports/womens-lacrosse/roster','https://drexeldragons.com/sports/mens-lacrosse/roster'],
-    'drexel|Rowing':'https://drexeldragons.com/sports/womens-rowing/roster',
+    'drexel|Rowing':['https://drexeldragons.com/sports/womens-crew/roster','https://drexeldragons.com/sports/mens-crew/roster'],
     'drexel|Soccer':['https://drexeldragons.com/sports/womens-soccer/roster','https://drexeldragons.com/sports/mens-soccer/roster'],
     'drexel|Softball':'https://drexeldragons.com/sports/softball/roster',
     'drexel|Swimming & Diving':['https://drexeldragons.com/sports/womens-swimming-and-diving/roster','https://drexeldragons.com/sports/mens-swimming-and-diving/roster'],
@@ -246,7 +246,9 @@ export function createDrexelHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // An event-named game ("Big 5 Classic", Drexel women's basketball, Dec 6;
+    // Charleston's equestrian "IHSA Regionals", "IHSA Zones") is "at" (Saint Joseph's rule).
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|\bclassic$|^big 5\b|^IHSA\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis
@@ -336,8 +338,8 @@ export function createDrexelHandlers({makeEvent,recapMatchesEvent,eventType=()=>
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (wrestling plays in the EIWA, as the page marks it; squash is not a sport the app lists); the page data marks their league games.
+      const league={'Wrestling':'EIWA'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
