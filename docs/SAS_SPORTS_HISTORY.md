@@ -3171,3 +3171,21 @@ Visual validation follow-up (4.116.1): corrected selector specificity found in t
 - **Records:** equal to each live page except Radford women's soccer: a "Declared Conference Forfeit" (page type X) the page counts in its conference record but not its overall. **Athletes:** all checks pass with profile cards.
 - **Published:** PR #407 merged as `15b9e88` (CI green). `test:release` passed on `5e128e2`. Preview gate 240 checks; production `4.170.0-big-south` (about 09:44 UTC): `verify:prod --sports=all` 240 checks, none failed; XC 18/20 and 26/21.
 
+## October 23, 2026 — CAA (eleven schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize" (continued from the Big South).
+
+- Catalog: the thirteen 2026-27 CAA schools. Northeastern (nuhuskies.com) and UNC Wilmington (uncwsports.com) answered Imperva's "Too many redirects" (502) at about 09:47, 10:07 and 10:27 UTC (homepage and volleyball schedule): added to `docs/BLOCKED_SCHOOLS.md`, kept in the catalog, not built.
+- Built with `start-schools` (ported from Evansville): Campbell, Charleston, Drexel, Elon, Hampton, Hofstra, Monmouth, NC A&T, Stony Brook, Towson, William & Mary.
+- Onboarding: TFRRS candidates now match TFRRS's shortened names (`N_Carolina_AT`, `Col_of_Charleston`, `William__Mary`), must cover one of the school's names (NC State's `North_Carolina_St` is not NC A&T), and are read from the repository's saved TFRRS meets.
+- `createTfrrsMeetResults({hostMeetName})`: a schedule meet named by its host takes TFRRS's meet name. It is opt-in (NC A&T only), because turning it on everywhere renamed about twenty schools' official meet names.
+- Golf: "to lead the ... team to a seventh-place finish" (Monmouth, Blue Hen Intercollegiate). Weekly honor stories are never a meet's story.
+- Routes: Drexel rowing reads the crew pages; Stony Brook tennis and Towson soccer are women's only; Elon cross country reads the combined schedule with the `womens-`/`mens-cross-country` rosters (the combined roster answers 404).
+- Leagues from page marks: Campbell wrestling SoCon, Drexel and Hofstra wrestling EIWA, Towson gymnastics EAGL, Monmouth bowling NEC, William & Mary football Patriot League. Fairfield is a CAA affiliate in field hockey and men's lacrosse. Drexel's Big 5 and Charleston's IHSA events read "at"; Hampton's storyless triathlon races are not listed.
+- Conference marks: W&M's older football page shows the Patriot League only as a logo in a `div` (the shared parser read text `span`s), so the app counted 0-0 by CAA membership against the page's 1-3. Reading logos everywhere would have switched about 65 saved pages at 12 verified schools from membership to page marks, so the rule applies only where a module names the sport's league (`conference_logo`, src/conference-games.mjs). That covers W&M football and Utah Valley wrestling (Big 12; no duals yet; gated 36/36). Mutation-tested in `tests/caa-shared.mjs`.
+- Athletes: 67 sports where the official sources publish too few Instagram links use profile cards (`athlete_profile_fallback_sports`). Towson baseball is off the athlete list (the 2026 roster lists coaches only). Hampton basketball's third link comes from INFLCR within the NIL lookup's time budget; one cached read missed it (shared behavior, not changed).
+- An earlier Evansville edit (Triathlon in the storyless-meet list) needed the America East test's regex updated.
+- Checks: `npm test` and `test:release` passed (`0b57635`). `compare-records` matches every live page. `verify:preview --sports=all`: 387 checks, none failed (128 sports at 36/36 refreshes, XC 18/20 and 26/21). Checked by eye: W&M football, NC A&T cross country, Monmouth golf.
+- PR #408 merged as `a4b1ae1`; production `4.174.0-caa` verified about 11:34 UTC (`verify:prod --sports=all` 387 checks, none failed).
+- Next: Horizon, Ivy, MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+
