@@ -260,10 +260,15 @@ const downloader=(fetch,headers)=>async url=>{try{const response=await fetch(url
 // "#ForBoston Files" video series names the opponent and score a day later).
 export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=new Set(),volleyballSets=false,volleyballSetScores=false,meetDaysAfter=1,meetDaysBefore={},skipStory=()=>false}){
   const download=downloader(fetch,headers);
-  const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
+  // The older story template has no id="story-..." block: its text is
+  // "sidearm-story-template-text" (ucasports.com, Oct 23).
+  const storyText=raw=>decodeHtml((String(raw).match(/<div\b[^>]*id=["']story-[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||String(raw).match(/<div\b[^>]*class=["']sidearm-story-template-text\b[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0]||'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const isMeet=event=>event?.school_id===id&&event.event_type==='MEET'&&meetSports.has(event.sport)&&event.status==='Final'&&!event.recap_url;
   const needsStory=event=>isMeet(event)||event?.school_id===id&&(event.event_type==='GAME'||event.event_type==='DUAL')&&event.status==='Final'&&!event.recap_url&&/^\d+$/.test(String(event.school_score??''))&&/^\d+$/.test(String(event.opponent_score??''));
-  const MEET_WORDS=/^(?:the|and|invitational|invite|meet|open|classic|championships?|teams?|only)$/i;
+  // "Intercollegiate" is a meet word too: the schedule's "Diamante
+  // Intercollegiate" is its story's "Diamante Invitational" (Central Arkansas,
+  // Oct 20).
+  const MEET_WORDS=/^(?:the|and|invitational|intercollegiate|invite|meet|open|classic|championships?|teams?|only)$/i;
   const schedulePath=new RegExp(`^https://${host.replace(/\./g,'\\.')}/sports/([a-z-]+)/schedule`);
   async function attachArchiveStory(event){
     if(!needsStory(event))return event;
@@ -273,7 +278,13 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
     const span=isMeet(event)?Math.max(0,Math.round((Date.parse(`${String(event.end_time||event.start_time).slice(0,10)}T00:00:00Z`)-first)/86400000)):0;
     const before=isMeet(event)?meetDaysBefore[event.sport]||0:0;
     const days=Array.from({length:before+span+1+(isMeet(event)?meetDaysAfter:1)},(_,offset)=>new Date(first+(offset-before)*86400000)).map(day=>`/news/${day.getUTCFullYear()}/${day.getUTCMonth()+1}/${day.getUTCDate()}/`);
-    const paths=[...new Set(listing.replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day))&&!skipStory(path));
+    const dated=text=>[...new Set(String(text||'').replace(/\\u002F/gi,'/').match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])].filter(path=>days.some(day=>path.startsWith(day))&&!skipStory(path));
+    // An archive the browser fills from a service (ucasports.com, Oct 23:
+    // `services/archives.ashx`, which refuses the app; Eastern Kentucky's links
+    // only the ticket page) holds none of the event's days: the sport's home
+    // page lists its recent stories.
+    let paths=dated(listing);
+    if(!paths.length)paths=dated(await download(`https://${host}/sports/${slug}`));
     if(isMeet(event)){
       // Every word that tells the meet apart ("Roy Griak") is in the story.
       const words=String(event.opponent||'').replace(/\s*\(.*?\)\s*/g,' ').toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.test(word));
@@ -292,6 +303,9 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
       // the first match had taken the second day's story).
       let named=null,titled=null,titledDay=0;
       for(const path of [...paths].sort((x,y)=>day(y)-day(x)).slice(0,4)){
+        // A weekly award story names the meet too ("Norman Named UAC Golfer of
+        // the Week" for the Sandestin, Central Arkansas, Sep 17): never its story.
+        if(/-of-the-(?:week|month)$/i.test(path))continue;
         const url=`https://${host}${path}`,raw=await download(url);if(!raw)continue;
         const text=storyText(raw).toLowerCase();
         if(!words.every(word=>text.includes(word)))continue;
@@ -490,7 +504,12 @@ const PLACE_NAMES=['first','second','third','fourth','fifth','sixth','seventh','
 export function golfStoryPlace(raw,{team,decode=s=>s}){
   // The content runs to its own closing quote ("North Carolina's ..." keeps its apostrophe).
   const meta=name=>decode((String(raw).match(new RegExp(`<meta\\b[^>]*property=["']og:${name}["'][^>]*content=(["'])([\\s\\S]*?)\\1`,'i'))||[])[2]||'');
-  const body=decode(String(raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ')
+  // The older story template's text block is the story (ucasports.com, Oct
+  // 23: a dateline "Conway, Ark.-" in lower case, the menus first).
+  const block=String(raw).match(/<div\b[^>]*class=["']sidearm-story-template-text\b[\s\S]*?(?=<div\b[^>]*class=["'][^"']*related|$)/i)?.[0];
+  // Its headline ("Bears Finish in 4th at the GMAC Invitational") stays the
+  // story's first sentence.
+  const body=decode(String(block?`<h1>${meta('title')}.</h1> ${block}`:raw).replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ')
     // A place's suffix in superscript reads "12 th" (Montana State, Oct 20).
     .replace(/\b(\d+) (st|nd|rd|th)\b/g,'$1$2');
   // The story starts at its dateline after the byline; a story without one
@@ -544,7 +563,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // A standing after an earlier round is not the final place (Northern
     // Arizona's McGuire story: "NAU was +9 after the first round, which was
     // good for a tie for seventh"; they finished seventh).
-    if(/\bafter\s+(?:the\s+)?(?:first|second|opening|1st|2nd)\s+round\b|\bafter\s+(?:day|round)\s+(?:one|two|1|2)\b/i.test(sentence))continue;
+    // So is one going into the last round ("Going into the Final Round the
+    // Bears were tied for 2nd place"; Central Arkansas finished 3rd, Sep 16).
+    if(/\bafter\s+(?:the\s+)?(?:first|second|opening|1st|2nd)\s+round\b|\bafter\s+(?:day|round)\s+(?:one|two|1|2)\b|\b(?:going|heading)\s+into\s+(?:the\s+)?(?:final|last)\s+(?:round|day)\b|\bentering\s+(?:the\s+)?(?:final|last)\s+(?:round|day)\b/i.test(sentence))continue;
     // A statistic's rank is no place ("its 153 pars were tied for 10th").
     if(/\b(?:pars|birdies|eagles|bogeys|par-[345]s)\b/i.test(sentence))continue;
     // "to place eighth", "climb two spots into a tie for third" (North Carolina);
@@ -562,13 +583,20 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // "The Davidson men's golf team concluded ... with a fifth-place finish".
     const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
+    // The team winning the tournament: "the Argos won their first tournament
+    // by winning The Velvet Classic" (West Florida, Sep 15). "She won the
+    // event" is a player's.
+    if(new RegExp(`\\b${team}\\s+(?:won|captured|claimed)\\s+(?:the|their)(?:\\s+first)?\\s+(?:team\\s+title|tournament|event)\\b`,'i').test(sentence))return'1st';
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
+    // "the Bears ended the tournament in 3rd place" (Central Arkansas, Sep 16);
+    // "concluded play ... finishing the final round in 17th place" (North
+    // Alabama, Diamante, Oct 20).
     // The team's possessive before a best score names a player's ("Olivia
     // Kury delivered the Hawks' lowest score ... to finish tied for 81st",
     // Saint Joseph's; "Luebbers was Ohio's top finisher, finishing ... tied for
     // 6th", Ohio); "The Lumberjacks' three-day total" is the team's.
-    const m=sentence.match(new RegExp(`(?:\\b${team}\\b(?!['’]s?\\s+(?:lowest|best|top|low|leading)\\b)|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+tournament\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b(?!['’]s?\\s+(?:lowest|best|top|low|leading)\\b)|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|ended(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+(?:tournament|event|final\\s+round)\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
     if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".

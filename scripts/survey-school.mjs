@@ -38,6 +38,9 @@ const fixtureFile=url=>{
   // "recap-2026-9-15-WGOLF"): both names are tried.
   if(news){const short=(news[4].match(/^[A-Za-z0-9-]+/)||[''])[0].slice(0,40);return[...new Set([`story-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${news[4].slice(0,40)}.html.gz`,`recap-${news[1]}-${news[2]}-${news[3]}-${short}.html.gz`])];}
   if(archive)return[`${archive[1]}-archives.html.gz`];
+  // A sport's home page, read when its archive lists no stories (Central
+  // Arkansas).
+  const home=pathname.match(/^\/sports\/([^/]+)\/?$/);if(home)return[`${home[1]}-home.html.gz`];
   if(hostname.endsWith('tfrrs.org')&&tfrrs)return[`tfrrs-${tfrrs[1]}.html.gz`];
   if(hostname.endsWith('tfrrs.org')&&team)return[`tfrrs-team-${team[1]}.html.gz`];
   return[];

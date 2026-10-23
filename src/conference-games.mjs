@@ -49,7 +49,11 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'saint-louis':['slu'],'rhode-island':['uri'],'loyola-chicago':['loyola ill','loyola il'],'george-mason':['mason'],'vcu':['virginia commonwealth'],
   // Missouri Valley opponents write "Illinois St.", "SIU", "UNI", "Valpo",
   // "Southern Ill.", "Murray St.", "Illinois-Chicago".
-  'illinois-state':['illinois st'],'southern-illinois':['siu','southern ill'],'northern-iowa':['uni'],valparaiso:['valpo'],uic:['illinois chicago'],'murray-state':['murray st'],'indiana-state':['indiana st']};
+  'illinois-state':['illinois st'],'southern-illinois':['siu','southern ill'],'northern-iowa':['uni'],valparaiso:['valpo'],uic:['illinois chicago'],'murray-state':['murray st'],'indiana-state':['indiana st'],
+  // ASUN and UAC opponents write "APSU", "Central Ark.", "EKU", "Florida
+  // Gulf Coast", "UNA", "North Fla.", "Queens (N.C.)", "UWG", "ACU", "UALR",
+  // "UTA", "UWF".
+  'austin-peay':['apsu','austin peay state'],'central-arkansas':['uca','central ark'],'eastern-kentucky':['eku','eastern ky'],fgcu:['florida gulf coast','fla gulf coast'],jacksonville:['ju'],'north-alabama':['una','north ala'],'north-florida':['unf','north fla'],queens:['queens nc','queens n c','queens university of charlotte'],'west-georgia':['uwg','west ga'],'abilene-christian':['acu'],'little-rock':['ualr','arkansas little rock'],'tarleton-state':['tarleton'],'ut-arlington':['uta','texas arlington'],'west-florida':['uwf','west fla']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -57,7 +61,14 @@ const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
 // (Mountain West since 2026) stays in the Big West for men's volleyball,
 // beach volleyball and women's water polo (bigwest.org, Jul 1, 2026). The
 // team is told by its schedule page.
-const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}]};
+const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rainbow wahine'],id:'hawaii',teams:{'Volleyball':/\/sports\/(?:mens-volleyball|mvball)\//,'Beach Volleyball':/./,'Water Polo':/\/sports\/(?:womens-water-polo|wwpolo)\//}}],
+  // ASUN lacrosse's outside members (Queens's and Bellarmine's conference
+  // schedules, Oct 23): men's Air Force, Utah, Mercer; women's Kennesaw State,
+  // Austin Peay (UAC), Lindenwood, Coastal Carolina, Delaware, Liberty.
+  // UAC football's outside member: West Florida (ASUN), Austin Peay's and its
+  // own conference schedules, Oct 23.
+  'UAC':[{names:['west florida','uwf','university of west florida'],id:'west-florida',teams:{'Football':/\/sports\/football\//}}],
+  'ASUN':[{names:['air force', 'air force academy'],id:'air-force',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['utah', 'university of utah'],id:'utah',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['mercer', 'mercer university'],id:'mercer',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['kennesaw state', 'kennesaw state university'],id:'kennesaw-state',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['austin peay', 'austin peay university', 'austin peay state university', 'apsu'],id:'austin-peay',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['lindenwood', 'lindenwood university'],id:'lindenwood',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['coastal carolina', 'coastal carolina university'],id:'coastal-carolina',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['delaware', 'university of delaware'],id:'delaware',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['liberty', 'liberty university'],id:'liberty',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}}]};
 
 // Sports a conference does not sponsor (2026-27). A team in one plays no
 // conference schedule or plays in another league (Ole Miss and West Virginia
@@ -148,6 +159,18 @@ const NOT_SPONSORED={
   // soccer, volleyball, golf, tennis, cross country, track and swimming: no
   // football (the Missouri Valley Football Conference is its own league),
   // wrestling, gymnastics, hockey, rowing or lacrosse.
+  // The ASUN (2026-27: Bellarmine, FGCU, Jacksonville, Lipscomb, North
+  // Florida, Queens, Stetson, West Florida; its conference schedules, Oct 23)
+  // sponsors basketball, baseball, softball, soccer, volleyball, beach
+  // volleyball, golf, tennis, cross country, track and women's lacrosse: no
+  // football, swimming, rowing, wrestling or gymnastics.
+  // The UAC (2026-27: Abilene Christian, Austin Peay, Central Arkansas,
+  // Eastern Kentucky, Little Rock, North Alabama, Tarleton State, UT
+  // Arlington, West Georgia; Austin Peay's volleyball conference games and
+  // Central Arkansas's golf stories, Oct 23) sponsors football and the
+  // ASUN's other sports; its beach volleyball and lacrosse are not confirmed.
+  'UAC':new Set(['Swimming & Diving','Rowing','Lacrosse','Beach Volleyball','Gymnastics','Wrestling','Hockey','Field Hockey','Water Polo','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
+  'ASUN':new Set(['Football','Swimming & Diving','Rowing','Gymnastics','Wrestling','Hockey','Field Hockey','Water Polo','Rifle','Bowling','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Missouri Valley':new Set(['Football','Gymnastics','Wrestling','Hockey','Rowing','Lacrosse','Field Hockey','Water Polo','Rifle','Bowling','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon'])
 };
 

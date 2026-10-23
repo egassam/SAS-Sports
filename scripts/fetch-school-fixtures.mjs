@@ -76,7 +76,7 @@ const TEAM_CODES={Basketball:['wbball','mbball'],'Cross Country':['wcross','mcro
 const perSport=await mapLimit(sports,6,async sport=>{
   const summary=[];
   const titles=new Set();
-  let kept=false,template=null,generic=null;
+  let kept=false,template=null,generic=null;const droppedBefore=dropped.length;
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||apiSlug(url);
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
@@ -94,7 +94,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     if(/@season\b/.test(title)){summary.push(`${sport}: ${slug} — SIDEARM's empty template; drop it from the routes`);dropped.push(url);template??=url;continue}
     // A missing team page answered with the site's generic page ("Utah State
     // University Athletics", Oct 19: no 404): no games and no "Schedule" title.
-    if(!games.length&&title&&!/schedule/i.test(title)){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
+    // SIDEARM's "2026-27 General Schedule" for a generic address (Central
+    // Arkansas's `basketball`, `soccer`, Oct 23) is no team's page either.
+    if(!games.length&&title&&(!/schedule/i.test(title)||/\bGeneral Schedule\b/i.test(title))){summary.push(`${sport}: ${slug} — not a schedule page ("${title.replace(/ - .*$/,'')}"); drop it from the routes`);dropped.push(url);generic??=url;continue}
     // A second address for the same page ("wsoc" for "womens-soccer").
     if(title&&titles.has(title)){summary.push(`${sport}: ${slug} — the same page as an earlier route ("${title}"); drop it from the routes`);dropped.push(url);continue}
     titles.add(title);kept=true;
@@ -117,8 +119,14 @@ const perSport=await mapLimit(sports,6,async sport=>{
     // Nebraska); it is saved under the same name.
     if((missing||unlinked.length)&&!have(`${slug}-archives.html.gz`)){let list=await download(`https://${new URL(url).hostname}/sports/${slug}/archives`);if(!list.body)list=await download(`https://${new URL(url).hostname}/sports/${slug}/news`);if(list.body)save(`${slug}-archives.html.gz`,list.body)}
     let meetStories=0;
+    // An archive filled by the browser (Central Arkansas, Oct 23; Eastern
+    // Kentucky's links only the ticket page) lists none of a past meet's days:
+    // the sport's home page does (createArchiveStory reads it too).
+    const archived=name=>gunzipSync(readFileSync(new URL(name,dir))).toString('utf8').replace(/\\u002F/gi,'/');
+    const inDays=(text,game)=>{const first=Date.parse(`${String(game.date).slice(0,10)}T00:00:00Z`),last=Date.parse(`${lastDay(game)}T00:00:00Z`)+86400000;return(text.match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[]).some(path=>{const [y,m,d]=path.split('/').slice(2);const day=Date.UTC(+y,+m-1,+d);return day>=first&&day<=last;});};
+    if(unlinked.length&&have(`${slug}-archives.html.gz`)&&!unlinked.every(game=>inDays(archived(`${slug}-archives.html.gz`),game))&&!have(`${slug}-home.html.gz`)){const home=await download(`https://${new URL(url).hostname}/sports/${slug}`);if(home.body)save(`${slug}-home.html.gz`,home.body)}
     if(unlinked.length&&have(`${slug}-archives.html.gz`)){
-      const listing=gunzipSync(readFileSync(new URL(`${slug}-archives.html.gz`,dir))).toString('utf8').replace(/\\u002F/gi,'/');
+      const listing=archived(`${slug}-archives.html.gz`)+(have(`${slug}-home.html.gz`)?archived(`${slug}-home.html.gz`):'');
       const paths=[...new Set(listing.match(/\/news\/\d{4}\/\d{1,2}\/\d{1,2}\/[A-Za-z0-9-]+/g)||[])];
       for(const game of unlinked){
         const first=Date.parse(`${String(game.date).slice(0,10)}T00:00:00Z`),last=Date.parse(`${lastDay(game)}T00:00:00Z`)+86400000;
@@ -187,7 +195,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     }
     if(teams.some(u=>/\/sports\/[mw][a-z]+\/schedule$/.test(new URL(u).pathname)&&teams.length>1))summary.push(`${sport}: label the team code pages in teamLabels (${teams.map(u=>new URL(u).pathname).join(', ')})`);
     if(teams.length){dropped.push(template);teamRoutes.push({sport,template,teams});summary.push(`${sport}: the season is on the team pages ${teams.map(u=>new URL(u).pathname).join(', ')}${args.includes('--prune')?' (routes moved; fixtures fetched again)':' — use them (--prune moves the routes)'}`);}
-    else if(!notPublished){dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: NO SCHEDULE PAGE among the routes (${new URL(template).pathname} is not one) — set the route from the site's menu (scripts/set-sport-routes.mjs)`);}
+    // Every route stays (North Alabama's men's track roster, Oct 23, went
+    // with its schedule address).
+    else if(!notPublished){dropped.splice(droppedBefore);summary.push(`${sport}: NO SCHEDULE PAGE among the routes (${new URL(template).pathname} is not one) — set the route from the site's menu (scripts/set-sport-routes.mjs)`);}
     else{dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
   }
   return summary;

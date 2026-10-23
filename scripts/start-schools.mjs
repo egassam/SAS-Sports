@@ -48,7 +48,10 @@ async function tfrrsTeams(school){
   // TFRRS also shortens "International" (FIU: FL_college_f_Florida_Intl)
   // and "Saint" (Saint Mary's: CA_college_f_St_Marys_CA).
   const others=[school.short_name,school.name,...(school.aliases||[])].filter(n=>/\b(?:State|International|Saint)\b/.test(n)).map(n=>n.replace(/\bState\b/g,'St').replace(/\bInternational\b/g,'Intl').replace(/\bSaint\b/g,'St'));
-  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  // A hyphenated alias names the team too (UT Arlington:
+  // TX_college_f_Texas_Arlington from "Texas-Arlington").
+  const hyphenated=(school.aliases||[]).filter(n=>/^[A-Z][a-z]+-[A-Z][a-z]+/.test(n));
+  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   // An apostrophe is dropped (Saint Joseph's: PA_college_f_St_Josephs_PA);
   // a university can carry "_U" (Saint Louis: MO_college_f_St_Louis_U).
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`,`${name}_U`]){
