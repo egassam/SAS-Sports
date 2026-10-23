@@ -4777,6 +4777,191 @@
     ]
   },
   {
+    "id": "charleston-southern",
+    "name": "Charleston Southern",
+    "short_name": "Charleston Southern",
+    "state": "South Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://csusports.com",
+    "aliases": [
+      "Charleston Southern University",
+      "CSU",
+      "Buccaneers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "csusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "gardner-webb",
+    "name": "Gardner-Webb",
+    "short_name": "Gardner-Webb",
+    "state": "North Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gwusports.com",
+    "aliases": [
+      "Gardner-Webb University",
+      "Runnin' Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gwusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "high-point",
+    "name": "High Point",
+    "short_name": "High Point",
+    "state": "North Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://highpointpanthers.com",
+    "aliases": [
+      "High Point University",
+      "HPU",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "highpointpanthers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "longwood",
+    "name": "Longwood",
+    "short_name": "Longwood",
+    "state": "Virginia",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://longwoodlancers.com",
+    "aliases": [
+      "Longwood University",
+      "Lancers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "longwoodlancers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "presbyterian",
+    "name": "Presbyterian",
+    "short_name": "Presbyterian",
+    "state": "South Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobluehose.com",
+    "aliases": [
+      "Presbyterian College",
+      "PC",
+      "Blue Hose"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobluehose",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "radford",
+    "name": "Radford",
+    "short_name": "Radford",
+    "state": "Virginia",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://radfordathletics.com",
+    "aliases": [
+      "Radford University",
+      "Highlanders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "radfordathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "unc-asheville",
+    "name": "UNC Asheville",
+    "short_name": "UNC Asheville",
+    "state": "North Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uncabulldogs.com",
+    "aliases": [
+      "University of North Carolina Asheville",
+      "UNCA",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uncabulldogs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "usc-upstate",
+    "name": "USC Upstate",
+    "short_name": "USC Upstate",
+    "state": "South Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://upstatespartans.com",
+    "aliases": [
+      "University of South Carolina Upstate",
+      "Upstate",
+      "Spartans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "upstatespartans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "winthrop",
+    "name": "Winthrop",
+    "short_name": "Winthrop",
+    "state": "South Carolina",
+    "conference": "Big South",
+    "division": "NCAA Division I",
+    "athletics_url": "https://winthropeagles.com",
+    "aliases": [
+      "Winthrop University",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "winthropeagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
