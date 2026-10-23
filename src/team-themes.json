@@ -719,6 +719,14 @@
     "line": "#3a2759",
     "onAccent": "#ffffff"
   },
+  "fairfield": {
+    "primary": "#C8102E",
+    "secondary": "#000000",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
   "fau": {
     "primary": "#003366",
     "secondary": "#CC0000",
@@ -1239,12 +1247,28 @@
     "line": "#0e2a49",
     "onAccent": "#ffffff"
   },
+  "manhattan": {
+    "primary": "#00703C",
+    "secondary": "#FFFFFF",
+    "panel": "#09211a",
+    "panelDark": "#05100d",
+    "line": "#0e4c34",
+    "onAccent": "#ffffff"
+  },
   "manhattan-ks": {
     "primary": "#28306C",
     "secondary": "#FFFFFF",
     "panel": "#181d3a",
     "panelDark": "#0b0e1d",
     "line": "#4a5290",
+    "onAccent": "#ffffff"
+  },
+  "marist": {
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
     "onAccent": "#ffffff"
   },
   "marquette": {
@@ -1277,6 +1301,14 @@
     "panel": "#09132a",
     "panelDark": "#050915",
     "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
+  "merrimack": {
+    "primary": "#003768",
+    "secondary": "#F2A900",
+    "panel": "#091523",
+    "panelDark": "#050a12",
+    "line": "#0e2d4c",
     "onAccent": "#ffffff"
   },
   "miami": {
@@ -1431,6 +1463,14 @@
     "line": "#0e2d53",
     "onAccent": "#ffffff"
   },
+  "mount-st-marys": {
+    "primary": "#00205B",
+    "secondary": "#FFFFFF",
+    "panel": "#091021",
+    "panelDark": "#050810",
+    "line": "#0e2045",
+    "onAccent": "#ffffff"
+  },
   "murray-state": {
     "primary": "#002148",
     "secondary": "#ECAC00",
@@ -1565,6 +1605,14 @@
     "panel": "#0d111c",
     "panelDark": "#06080e",
     "line": "#19223b",
+    "onAccent": "#ffffff"
+  },
+  "niagara": {
+    "primary": "#5F2A82",
+    "secondary": "#FFFFFF",
+    "panel": "#1d1229",
+    "panelDark": "#0e0914",
+    "line": "#43265a",
     "onAccent": "#ffffff"
   },
   "njit": {
@@ -1879,6 +1927,14 @@
     "line": "#162239",
     "onAccent": "#ffffff"
   },
+  "quinnipiac": {
+    "primary": "#0C2340",
+    "secondary": "#FFB81C",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
+    "onAccent": "#ffffff"
+  },
   "radford": {
     "primary": "#C2011B",
     "secondary": "#1D1D1B",
@@ -1919,6 +1975,14 @@
     "line": "#630e13",
     "onAccent": "#ffffff"
   },
+  "rider": {
+    "primary": "#9D2235",
+    "secondary": "#000000",
+    "panel": "#2b1018",
+    "panelDark": "#14080d",
+    "line": "#652130",
+    "onAccent": "#ffffff"
+  },
   "robert-morris": {
     "primary": "#14234B",
     "secondary": "#A6192E",
@@ -1941,6 +2005,14 @@
     "panel": "#091515",
     "panelDark": "#050a0b",
     "line": "#112e28",
+    "onAccent": "#ffffff"
+  },
+  "sacred-heart": {
+    "primary": "#CE1141",
+    "secondary": "#9EA2A2",
+    "panel": "#360c1b",
+    "panelDark": "#19060e",
+    "line": "#801837",
     "onAccent": "#ffffff"
   },
   "saint-josephs": {
@@ -2085,6 +2157,14 @@
     "panel": "#09182a",
     "panelDark": "#050b15",
     "line": "#0e345e",
+    "onAccent": "#ffffff"
+  },
+  "siena": {
+    "primary": "#006A4E",
+    "secondary": "#FFC72C",
+    "panel": "#09201e",
+    "panelDark": "#050f0f",
+    "line": "#0e493e",
     "onAccent": "#ffffff"
   },
   "smu": {

@@ -3205,3 +3205,20 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - PR #409 merged as `b71db2c`; production `4.180.0-horizon` verified about 13:23 UTC (`verify:prod --sports=all` 291 checks, none failed).
 - Next: Ivy, MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
 
+## October 23, 2026 — Ivy League (six schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize" (continued from the Horizon League).
+
+- Catalog: the eight Ivy schools. Yale (yalebulldogs.com) answered Imperva's "Too many redirects" at about 13:28, 13:47 and 14:05 UTC. Harvard (gocrimson.com) answered with Imperva's JavaScript challenge page (`_Incapsula_Resource`, 212 bytes) at about 13:34, 13:52 and 14:11 UTC. Both were added to `docs/BLOCKED_SCHOOLS.md`.
+- `add-school` had written empty sports, theme and certification entries for Harvard, which failed `test:release` ("Harvard has no protected athlete sport"). The entries were removed, and `add-school` now writes nothing for a site with no sports or a challenge page.
+- Built with `start-schools` (ported from Evansville): Brown, Columbia, Cornell, Dartmouth, Penn, Princeton.
+- Rowing: the scaffold kept only women's rowing. Every team page is now read and labelled where the address names no team: Cornell `rowing` = Men's Heavyweight and `mens-rowing` = Men's Lightweight; Dartmouth `mens-rowing` = Heavyweight and `rowing` = Lightweight; Penn `mens-rowing` = Heavyweight and `mens-crew` = Lightweight; Columbia and Princeton `mens-rowing` = Heavyweight; Brown reads `womens-crew` and `mens-crew`. Princeton men's volleyball and Dartmouth skiing (`alpine-skiing`, 2025-26) were added.
+- Leagues: wrestling is an Ivy sport (the pages mark the Ivy duals; it was first put in the not-sponsored set, then taken out); hockey is ECAC Hockey's; Brown and Penn gymnastics are in the Gymnastics East Conference; Princeton water polo is in the CWPA.
+- Formats: rankings without a number ("#--/RV Dartmouth College", shared `withoutRanking`, mutation-tested; the survey of every school matched main); Cornell rowing boat places ("V8: 10th of 19", "4th out of 48th" -> "4th of 48"; the survey accepts boat labels); Penn's Big 5 Classic is an "at" event.
+- Athletes: profile cards where the official sources publish too few Instagram links. Brown lacrosse and track let profiles without portraits fill. Columbia basketball's Opendorse links arrive only within the NIL lookup's time budget, so it is on the profile-card list.
+- Tests: the catalog test used "Ivy League" as a group the catalog lacks; it now uses "Pac-10".
+- Checks: the first preview gate ran while a push redeployed the preview (17 single refresh misses); the rerun on 4.183.0-ivy had 321 checks, none failed. `compare-records`: 50 match; Princeton men's volleyball and women's water polo pages show the finished spring 2026 seasons. `test:release` passed on `1c5fab6`. Checked by eye: Cornell rowing.
+- PR #410 merged as `d76e7df`; production `4.183.0-ivy` verified about 14:54 UTC (`verify:prod --sports=all` 321 checks, none failed).
+- Lesson: never push while a gate runs; start the gate only after the version is live and no other push is pending.
+- Next: MAAC, MEAC, NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
+
