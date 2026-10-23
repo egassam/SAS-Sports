@@ -399,6 +399,14 @@
     "line": "#537f96",
     "onAccent": "#0b0b10"
   },
+  "chicago-state": {
+    "primary": "#006747",
+    "secondary": "#FFFFFF",
+    "panel": "#091f1c",
+    "panelDark": "#050f0e",
+    "line": "#0e473a",
+    "onAccent": "#ffffff"
+  },
   "chicago-white-sox": {
     "primary": "#000000",
     "secondary": "#C4CED4",
@@ -1159,6 +1167,14 @@
     "line": "#65686c",
     "onAccent": "#ffffff"
   },
+  "le-moyne": {
+    "primary": "#00573F",
+    "secondary": "#FFC72C",
+    "panel": "#091c1a",
+    "panelDark": "#050d0e",
+    "line": "#0e3e36",
+    "onAccent": "#ffffff"
+  },
   "liberty": {
     "primary": "#002D62",
     "secondary": "#C41230",
@@ -1174,6 +1190,14 @@
     "panelDark": "#0b0910",
     "line": "#312642",
     "onAccent": "#ffffff"
+  },
+  "liu": {
+    "primary": "#69B3E7",
+    "secondary": "#FFC72C",
+    "panel": "#20303f",
+    "panelDark": "#0f161e",
+    "line": "#487192",
+    "onAccent": "#000000"
   },
   "lmu": {
     "primary": "#8A1538",
@@ -1325,6 +1349,14 @@
     "panel": "#09132a",
     "panelDark": "#050915",
     "line": "#0e295d",
+    "onAccent": "#ffffff"
+  },
+  "mercyhurst": {
+    "primary": "#00205B",
+    "secondary": "#00843D",
+    "panel": "#091021",
+    "panelDark": "#050810",
+    "line": "#0e2045",
     "onAccent": "#ffffff"
   },
   "merrimack": {
@@ -1581,6 +1613,14 @@
     "panel": "#090f1b",
     "panelDark": "#05080e",
     "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
+  "new-haven": {
+    "primary": "#002D72",
+    "secondary": "#FFC72C",
+    "panel": "#091226",
+    "panelDark": "#050913",
+    "line": "#0e2752",
     "onAccent": "#ffffff"
   },
   "new-mexico": {
@@ -2319,6 +2359,14 @@
     "line": "#5b1a1e",
     "onAccent": "#ffffff"
   },
+  "stonehill": {
+    "primary": "#2F2A7A",
+    "secondary": "#FFFFFF",
+    "panel": "#131227",
+    "panelDark": "#090913",
+    "line": "#282656",
+    "onAccent": "#ffffff"
+  },
   "stony-brook": {
     "primary": "#990000",
     "secondary": "#BBBBBB",
@@ -2709,6 +2757,14 @@
     "panel": "#1e0917",
     "panelDark": "#0e050c",
     "line": "#450e2e",
+    "onAccent": "#ffffff"
+  },
+  "wagner": {
+    "primary": "#00483A",
+    "secondary": "#FFFFFF",
+    "panel": "#091819",
+    "panelDark": "#050c0d",
+    "line": "#0e3633",
     "onAccent": "#ffffff"
   },
   "wake-forest": {
