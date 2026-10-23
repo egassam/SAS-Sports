@@ -447,6 +447,14 @@
     "line": "#0e2646",
     "onAccent": "#ffffff"
   },
+  "cleveland-state": {
+    "primary": "#006A4D",
+    "secondary": "#FFFFFF",
+    "panel": "#09201d",
+    "panelDark": "#050f0f",
+    "line": "#0e493d",
+    "onAccent": "#ffffff"
+  },
   "coastal-carolina": {
     "primary": "#006F71",
     "secondary": "#A27752",
@@ -581,6 +589,14 @@
     "panel": "#092130",
     "panelDark": "#050e14",
     "line": "#295e7e",
+    "onAccent": "#ffffff"
+  },
+  "detroit-mercy": {
+    "primary": "#A5093E",
+    "secondary": "#002D72",
+    "panel": "#2d0b1a",
+    "panelDark": "#15050d",
+    "line": "#691335",
     "onAccent": "#ffffff"
   },
   "detroit-tigers": {
@@ -807,6 +823,14 @@
     "line": "#3c2267",
     "onAccent": "#ffffff"
   },
+  "green-bay": {
+    "primary": "#006F44",
+    "secondary": "#FFFFFF",
+    "panel": "#09211b",
+    "panelDark": "#05100e",
+    "line": "#0e4b38",
+    "onAccent": "#ffffff"
+  },
   "green-bay-packers": {
     "primary": "#204E32",
     "secondary": "#FFB612",
@@ -957,6 +981,14 @@
     "panel": "#351820",
     "panelDark": "#170a0e",
     "line": "#884352",
+    "onAccent": "#ffffff"
+  },
+  "iu-indy": {
+    "primary": "#990000",
+    "secondary": "#EEB211",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
     "onAccent": "#ffffff"
   },
   "jacksonville": {
@@ -1271,6 +1303,14 @@
     "line": "#0e4783",
     "onAccent": "#ffffff"
   },
+  "milwaukee": {
+    "primary": "#FFBD00",
+    "secondary": "#000000",
+    "panel": "#41320c",
+    "panelDark": "#1e1707",
+    "line": "#9b7613",
+    "onAccent": "#000000"
+  },
   "milwaukee-brewers": {
     "primary": "#13294B",
     "secondary": "#FFC72C",
@@ -1551,6 +1591,14 @@
     "line": "#0f2f4a",
     "onAccent": "#ffffff"
   },
+  "northern-illinois": {
+    "primary": "#BA0C2F",
+    "secondary": "#000000",
+    "panel": "#320b17",
+    "panelDark": "#17060c",
+    "line": "#75152d",
+    "onAccent": "#ffffff"
+  },
   "northern-iowa": {
     "primary": "#4B116F",
     "secondary": "#FFCC00",
@@ -1767,6 +1815,14 @@
     "line": "#0e0e13",
     "onAccent": "#ffffff"
   },
+  "purdue-fort-wayne": {
+    "primary": "#002D62",
+    "secondary": "#C69214",
+    "panel": "#091222",
+    "panelDark": "#050911",
+    "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
   "queens": {
     "primary": "#0E2346",
     "secondary": "#C99700",
@@ -1813,6 +1869,14 @@
     "panel": "#2a090c",
     "panelDark": "#140507",
     "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "robert-morris": {
+    "primary": "#14234B",
+    "secondary": "#A6192E",
+    "panel": "#0d101d",
+    "panelDark": "#07080f",
+    "line": "#19223c",
     "onAccent": "#ffffff"
   },
   "rutgers": {
@@ -2567,12 +2631,28 @@
     "line": "#7b111a",
     "onAccent": "#ffffff"
   },
+  "wright-state": {
+    "primary": "#007A33",
+    "secondary": "#CBA052",
+    "panel": "#092318",
+    "panelDark": "#05110c",
+    "line": "#0e522f",
+    "onAccent": "#ffffff"
+  },
   "xavier": {
     "primary": "#0C2340",
     "secondary": "#9EA2A2",
     "panel": "#0b101b",
     "panelDark": "#06080e",
     "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "youngstown-state": {
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
     "onAccent": "#ffffff"
   }
 }

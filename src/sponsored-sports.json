@@ -546,6 +546,18 @@
   "cleveland-guardians": [
     "Baseball"
   ],
+  "cleveland-state": [
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "coastal-carolina": [
     "Baseball",
     "Basketball",
@@ -695,6 +707,16 @@
   ],
   "detroit-lions": [
     "Football"
+  ],
+  "detroit-mercy": [
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Track & Field"
   ],
   "detroit-tigers": [
     "Baseball"
@@ -1034,6 +1056,16 @@
     "Track & Field",
     "Volleyball"
   ],
+  "green-bay": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Skiing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Volleyball"
+  ],
   "green-bay-packers": [
     "Football"
   ],
@@ -1206,6 +1238,17 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "iu-indy": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "jacksonville": [
     "Baseball",
@@ -1615,6 +1658,16 @@
     "Track & Field",
     "Volleyball"
   ],
+  "milwaukee": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "milwaukee-brewers": [
     "Baseball"
   ],
@@ -1938,6 +1991,20 @@
     "Volleyball",
     "Wrestling"
   ],
+  "northern-illinois": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "northern-iowa": [
     "Basketball",
     "Cross Country",
@@ -2248,6 +2315,17 @@
     "Volleyball",
     "Wrestling"
   ],
+  "purdue-fort-wayne": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "queens": [
     "Baseball",
     "Basketball",
@@ -2317,6 +2395,19 @@
     "Swimming & Diving",
     "Tennis",
     "Track & Field"
+  ],
+  "robert-morris": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
   ],
   "rutgers": [
     "Baseball",
@@ -3378,12 +3469,37 @@
     "Volleyball",
     "Wrestling"
   ],
+  "wright-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Track & Field",
+    "Volleyball"
+  ],
   "xavier": [
     "Baseball",
     "Basketball",
     "Cross Country",
     "Golf",
     "Soccer",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "youngstown-state": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
     "Swimming & Diving",
     "Tennis",
     "Track & Field",

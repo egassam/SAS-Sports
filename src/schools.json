@@ -5226,6 +5226,256 @@
     ]
   },
   {
+    "id": "cleveland-state",
+    "name": "Cleveland State",
+    "short_name": "Cleveland State",
+    "state": "Ohio",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://csuvikings.com",
+    "aliases": [
+      "Cleveland State University",
+      "CSU",
+      "Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "csuvikings",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "detroit-mercy",
+    "name": "Detroit Mercy",
+    "short_name": "Detroit Mercy",
+    "state": "Michigan",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://detroittitans.com",
+    "aliases": [
+      "University of Detroit Mercy",
+      "Detroit",
+      "Titans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "detroittitans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "green-bay",
+    "name": "Green Bay",
+    "short_name": "Green Bay",
+    "state": "Wisconsin",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://greenbayphoenix.com",
+    "aliases": [
+      "University of Wisconsin-Green Bay",
+      "UW-Green Bay",
+      "Phoenix"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "greenbayphoenix",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "iu-indy",
+    "name": "IU Indianapolis",
+    "short_name": "IU Indy",
+    "state": "Indiana",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://iuindyjags.com",
+    "aliases": [
+      "Indiana University Indianapolis",
+      "IUPUI",
+      "Jaguars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "iuindyjags",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "milwaukee",
+    "name": "Milwaukee",
+    "short_name": "Milwaukee",
+    "state": "Wisconsin",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://mkepanthers.com",
+    "aliases": [
+      "University of Wisconsin-Milwaukee",
+      "UW-Milwaukee",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "mkepanthers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northern-kentucky",
+    "name": "Northern Kentucky",
+    "short_name": "NKU",
+    "state": "Kentucky",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nkunorse.com",
+    "aliases": [
+      "Northern Kentucky University",
+      "NKU",
+      "Norse"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nkunorse",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "oakland",
+    "name": "Oakland",
+    "short_name": "Oakland",
+    "state": "Michigan",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goldengrizzlies.com",
+    "aliases": [
+      "Oakland University",
+      "Golden Grizzlies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goldengrizzlies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "purdue-fort-wayne",
+    "name": "Purdue Fort Wayne",
+    "short_name": "Purdue FW",
+    "state": "Indiana",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gomastodons.com",
+    "aliases": [
+      "Purdue University Fort Wayne",
+      "PFW",
+      "Mastodons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gomastodons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "robert-morris",
+    "name": "Robert Morris",
+    "short_name": "Robert Morris",
+    "state": "Pennsylvania",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://rmucolonials.com",
+    "aliases": [
+      "Robert Morris University",
+      "RMU",
+      "Colonials"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "rmucolonials",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wright-state",
+    "name": "Wright State",
+    "short_name": "Wright State",
+    "state": "Ohio",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://wsuraiders.com",
+    "aliases": [
+      "Wright State University",
+      "Raiders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "wsuraiders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "youngstown-state",
+    "name": "Youngstown State",
+    "short_name": "Youngstown State",
+    "state": "Ohio",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ysusports.com",
+    "aliases": [
+      "Youngstown State University",
+      "YSU",
+      "Penguins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ysusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northern-illinois",
+    "name": "Northern Illinois",
+    "short_name": "NIU",
+    "state": "Illinois",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://niuhuskies.com",
+    "aliases": [
+      "Northern Illinois University",
+      "NIU",
+      "Huskies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "niuhuskies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
