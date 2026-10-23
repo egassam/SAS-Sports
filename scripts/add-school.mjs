@@ -61,6 +61,10 @@ if(found.has('Football')&&via){const home=await page(`${base}/`).catch(()=>null)
 const sports=(value('sports')?.split(',').map(s=>s.trim())||[...found]).sort();
 console.log(`${school.name} (${base}, read ${via}): ${publisher} (wmt ${wmt}, sidearm ${sidearm} markers)`);
 console.log(`sports (${sports.length}): ${sports.join(', ')}`);
+// A site that answers with a bot challenge (Imperva's `_Incapsula_Resource`
+// page: gocrimson.com, Oct 23) or lists no sport is not written: it belongs
+// in docs/BLOCKED_SCHOOLS.md after three spaced checks.
+if(!sports.length){console.error(/_Incapsula_Resource/.test(html)?`${id}: the site answers with Imperva's challenge page (blocked?); nothing written`:`${id}: no sports found; nothing written`);process.exit(1)}
 // A sport whose nav links both a men's and a women's page (Gonzaga and
 // Oregon State rowing, Oct 18: the scaffold wrote only the women's page).
 // scripts/start-schools.mjs reads this line and combines the two.

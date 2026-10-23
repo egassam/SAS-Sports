@@ -111,7 +111,7 @@ assert.deepEqual(middle.entries.map(e=>e.id),['anthony-ms-ks','eisenhower-ms-ks'
 const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});
 assert.equal(big12.entries.length,16);assert.equal(big12.entries[0].id,cards.find(c=>c.conference==='Big 12').id);
 // A group or city the level does not have reads as "All", not as empty.
-const stale=await catalogMenu(stores[1],{level:'college',group:'Ivy League'});
+const stale=await catalogMenu(stores[1],{level:'college',group:'Pac-10'});
 assert.equal(stale.group,'');assert.equal(stale.entries.length,cards.filter(c=>c.level==='college').length);
 assert.equal((await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Topeka'})).middle,'');
 assert.equal((await catalogMenu(stores[1],{level:'moon'})).level,'college');

@@ -231,6 +231,14 @@
     "line": "#9a3a13",
     "onAccent": "#ffffff"
   },
+  "brown": {
+    "primary": "#4E3629",
+    "secondary": "#ED1C24",
+    "panel": "#1a1416",
+    "panelDark": "#0c0a0b",
+    "line": "#392c29",
+    "onAccent": "#ffffff"
+  },
   "bryant": {
     "primary": "#000000",
     "secondary": "#C99700",
@@ -495,12 +503,28 @@
     "line": "#1f392b",
     "onAccent": "#ffffff"
   },
+  "columbia": {
+    "primary": "#75AADB",
+    "secondary": "#002B7F",
+    "panel": "#222e3d",
+    "panelDark": "#10161d",
+    "line": "#4f6c8b",
+    "onAccent": "#000000"
+  },
   "columbus-crew": {
     "primary": "#000000",
     "secondary": "#FEDD00",
     "panel": "#09090c",
     "panelDark": "#050507",
     "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "cornell": {
+    "primary": "#B31B1B",
+    "secondary": "#FFFFFF",
+    "panel": "#300f12",
+    "panelDark": "#16070a",
+    "line": "#711d22",
     "onAccent": "#ffffff"
   },
   "creighton": {
@@ -533,6 +557,14 @@
     "panel": "#09121e",
     "panelDark": "#05080d",
     "line": "#293c55",
+    "onAccent": "#ffffff"
+  },
+  "dartmouth": {
+    "primary": "#00693E",
+    "secondary": "#FFFFFF",
+    "panel": "#09201a",
+    "panelDark": "#050f0d",
+    "line": "#0e4835",
     "onAccent": "#ffffff"
   },
   "davidson": {
@@ -1703,6 +1735,14 @@
     "line": "#955125",
     "onAccent": "#ffffff"
   },
+  "penn": {
+    "primary": "#011F5B",
+    "secondary": "#990000",
+    "panel": "#090f21",
+    "panelDark": "#050810",
+    "line": "#0f1f45",
+    "onAccent": "#ffffff"
+  },
   "penn-state": {
     "primary": "#041E42",
     "secondary": "#1E407C",
@@ -1798,6 +1838,14 @@
     "panelDark": "#050a11",
     "line": "#0e2a4b",
     "onAccent": "#ffffff"
+  },
+  "princeton": {
+    "primary": "#E77500",
+    "secondary": "#000000",
+    "panel": "#3b220c",
+    "panelDark": "#1c1007",
+    "line": "#8d4f13",
+    "onAccent": "#000000"
   },
   "providence": {
     "primary": "#000000",
