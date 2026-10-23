@@ -10,7 +10,7 @@ export const dartmouthSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Equestrian','Field Hockey','Football','Golf','Hockey','Lacrosse','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Equestrian','Field Hockey','Football','Golf','Hockey','Lacrosse','Rowing','Skiing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -25,6 +25,8 @@ export const dartmouthSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  // Dartmouth's /sports/mens-rowing/ is men's heavyweight rowing and /sports/rowing/ men's lightweight (their titles, Oct 23).
+  teamLabels:{'/sports/mens-rowing/schedule':"Men's Heavyweight",'/sports/rowing/schedule':"Men's Lightweight"},
   verifiedInstagrams:{
     'dartmouth|Lacrosse|K.J. Edwards':'https://www.instagram.com/kj._.19/',
     'dartmouth|Volleyball|Maddie LaFata':'https://www.instagram.com/madeline.lafata/',
@@ -40,7 +42,8 @@ export const dartmouthSchool={
     'dartmouth|Golf':['https://dartmouthsports.com/sports/womens-golf/schedule','https://dartmouthsports.com/sports/mens-golf/schedule'],
     'dartmouth|Hockey':['https://dartmouthsports.com/sports/mens-ice-hockey/schedule','https://dartmouthsports.com/sports/womens-ice-hockey/schedule'],
     'dartmouth|Lacrosse':['https://dartmouthsports.com/sports/womens-lacrosse/schedule','https://dartmouthsports.com/sports/mens-lacrosse/schedule'],
-    'dartmouth|Rowing':['https://dartmouthsports.com/sports/womens-rowing/schedule','https://dartmouthsports.com/sports/rowing/schedule'],
+    'dartmouth|Rowing':['https://dartmouthsports.com/sports/womens-rowing/schedule','https://dartmouthsports.com/sports/mens-rowing/schedule','https://dartmouthsports.com/sports/rowing/schedule'],
+    'dartmouth|Skiing':'https://dartmouthsports.com/sports/alpine-skiing/schedule',
     'dartmouth|Soccer':['https://dartmouthsports.com/sports/womens-soccer/schedule','https://dartmouthsports.com/sports/mens-soccer/schedule'],
     'dartmouth|Softball':'https://dartmouthsports.com/sports/softball/schedule',
     'dartmouth|Swimming & Diving':['https://dartmouthsports.com/sports/womens-swimming-and-diving/schedule','https://dartmouthsports.com/sports/mens-swimming-and-diving/schedule'],
@@ -58,7 +61,8 @@ export const dartmouthSchool={
     'dartmouth|Golf':['https://dartmouthsports.com/sports/womens-golf/roster','https://dartmouthsports.com/sports/mens-golf/roster'],
     'dartmouth|Hockey':['https://dartmouthsports.com/sports/mens-ice-hockey/roster','https://dartmouthsports.com/sports/womens-ice-hockey/roster'],
     'dartmouth|Lacrosse':['https://dartmouthsports.com/sports/womens-lacrosse/roster','https://dartmouthsports.com/sports/mens-lacrosse/roster'],
-    'dartmouth|Rowing':['https://dartmouthsports.com/sports/womens-rowing/roster','https://dartmouthsports.com/sports/rowing/roster'],
+    'dartmouth|Rowing':['https://dartmouthsports.com/sports/womens-rowing/roster','https://dartmouthsports.com/sports/mens-rowing/roster','https://dartmouthsports.com/sports/rowing/roster'],
+    'dartmouth|Skiing':'https://dartmouthsports.com/sports/alpine-skiing/roster',
     'dartmouth|Soccer':['https://dartmouthsports.com/sports/womens-soccer/roster','https://dartmouthsports.com/sports/mens-soccer/roster'],
     'dartmouth|Softball':'https://dartmouthsports.com/sports/softball/roster',
     'dartmouth|Swimming & Diving':['https://dartmouthsports.com/sports/womens-swimming-and-diving/roster','https://dartmouthsports.com/sports/mens-swimming-and-diving/roster'],
@@ -354,8 +358,8 @@ export function createDartmouthHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: hockey in ECAC Hockey; equestrian, rowing and skiing name no league.
+      const league={'Hockey':'ECAC Hockey'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

@@ -28,6 +28,8 @@ export const cornellSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  // Cornell's /sports/rowing/ is men's heavyweight rowing and /sports/mens-rowing/ men's lightweight (their titles, Oct 23).
+  teamLabels:{'/sports/rowing/schedule':"Men's Heavyweight",'/sports/mens-rowing/schedule':"Men's Lightweight"},
   verifiedInstagrams:{
     'cornell|Field Hockey|Rease Coleman':'https://www.instagram.com/reasecolemann/',
     'cornell|Gymnastics|Macy Armstrong':'https://www.instagram.com/macy_ann/',
@@ -50,7 +52,7 @@ export const cornellSchool={
     'cornell|Gymnastics':'https://cornellbigred.com/sports/womens-gymnastics/schedule',
     'cornell|Hockey':['https://cornellbigred.com/sports/mens-ice-hockey/schedule','https://cornellbigred.com/sports/womens-ice-hockey/schedule'],
     'cornell|Lacrosse':['https://cornellbigred.com/sports/womens-lacrosse/schedule','https://cornellbigred.com/sports/mens-lacrosse/schedule'],
-    'cornell|Rowing':['https://cornellbigred.com/sports/womens-rowing/schedule','https://cornellbigred.com/sports/rowing/schedule'],
+    'cornell|Rowing':['https://cornellbigred.com/sports/womens-rowing/schedule','https://cornellbigred.com/sports/rowing/schedule','https://cornellbigred.com/sports/mens-rowing/schedule'],
     'cornell|Soccer':['https://cornellbigred.com/sports/womens-soccer/schedule','https://cornellbigred.com/sports/mens-soccer/schedule'],
     'cornell|Softball':'https://cornellbigred.com/sports/softball/schedule',
     'cornell|Swimming & Diving':['https://cornellbigred.com/sports/womens-swimming-and-diving/schedule','https://cornellbigred.com/sports/mens-swimming-and-diving/schedule'],
@@ -71,7 +73,7 @@ export const cornellSchool={
     'cornell|Gymnastics':'https://cornellbigred.com/sports/womens-gymnastics/roster',
     'cornell|Hockey':['https://cornellbigred.com/sports/mens-ice-hockey/roster','https://cornellbigred.com/sports/womens-ice-hockey/roster'],
     'cornell|Lacrosse':['https://cornellbigred.com/sports/womens-lacrosse/roster','https://cornellbigred.com/sports/mens-lacrosse/roster'],
-    'cornell|Rowing':['https://cornellbigred.com/sports/womens-rowing/roster','https://cornellbigred.com/sports/rowing/roster'],
+    'cornell|Rowing':['https://cornellbigred.com/sports/womens-rowing/roster','https://cornellbigred.com/sports/rowing/roster','https://cornellbigred.com/sports/mens-rowing/roster'],
     'cornell|Soccer':['https://cornellbigred.com/sports/womens-soccer/roster','https://cornellbigred.com/sports/mens-soccer/roster'],
     'cornell|Softball':'https://cornellbigred.com/sports/softball/roster',
     'cornell|Swimming & Diving':['https://cornellbigred.com/sports/womens-swimming-and-diving/roster','https://cornellbigred.com/sports/mens-swimming-and-diving/roster'],
@@ -357,6 +359,12 @@ export function createCornellHandlers({makeEvent,recapMatchesEvent,eventType=()=
         event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;
         return;
       }
+      // Rowing cards name the boat ("V8: 10th out of 19") and can write the
+      // field as a place ("4th out of 48th"; Head of the Charles, Oct 17-18).
+      if(sport==='Rowing'){
+        const boat=text.match(/^(\d?V\d\+?):\s*(.+)$/i),place=golfPlacing((boat?boat[2]:text).replace(/\bout of (\d+)(?:st|nd|rd|th)\b/i,'out of $1'));
+        if(place){const value=boat?`${boat[1].toUpperCase()}: ${place}`:place;event.headline=value;event.results=[{label:'Result',value}];event.result_count=1;return;}
+      }
       writeMeetPlaces(event,{text,schoolName:'Cornell',ordinal});
       // A tennis note that is a sentence ("Bulldogs earn 2 Singles, 1 Doubles
       // Win") is not a result; the story tells it.
@@ -368,8 +376,8 @@ export function createCornellHandlers({makeEvent,recapMatchesEvent,eventType=()=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: hockey in ECAC Hockey; equestrian, gymnastics and rowing name no league.
+      const league={'Hockey':'ECAC Hockey'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

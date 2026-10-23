@@ -28,6 +28,8 @@ export const pennSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  // Penn's /sports/mens-rowing/ is men's heavyweight rowing and /sports/mens-crew/ men's lightweight (their titles, Oct 23).
+  teamLabels:{'/sports/mens-rowing/schedule':"Men's Heavyweight",'/sports/mens-crew/schedule':"Men's Lightweight"},
   verifiedInstagrams:{
     'penn|Basketball|AJ Levine':'https://www.instagram.com/_ajlevine/',
     'penn|Basketball|Augustus Gerhart':'https://www.instagram.com/augustus_gerhart/',
@@ -70,7 +72,7 @@ export const pennSchool={
     'penn|Golf':['https://pennathletics.com/sports/womens-golf/schedule','https://pennathletics.com/sports/mens-golf/schedule'],
     'penn|Gymnastics':'https://pennathletics.com/sports/womens-gymnastics/schedule',
     'penn|Lacrosse':['https://pennathletics.com/sports/womens-lacrosse/schedule','https://pennathletics.com/sports/mens-lacrosse/schedule'],
-    'penn|Rowing':'https://pennathletics.com/sports/womens-rowing/schedule',
+    'penn|Rowing':['https://pennathletics.com/sports/womens-rowing/schedule','https://pennathletics.com/sports/mens-rowing/schedule','https://pennathletics.com/sports/mens-crew/schedule'],
     'penn|Soccer':['https://pennathletics.com/sports/womens-soccer/schedule','https://pennathletics.com/sports/mens-soccer/schedule'],
     'penn|Softball':'https://pennathletics.com/sports/softball/schedule',
     'penn|Swimming & Diving':['https://pennathletics.com/sports/womens-swimming-and-diving/schedule','https://pennathletics.com/sports/mens-swimming-and-diving/schedule'],
@@ -89,7 +91,7 @@ export const pennSchool={
     'penn|Golf':['https://pennathletics.com/sports/womens-golf/roster','https://pennathletics.com/sports/mens-golf/roster'],
     'penn|Gymnastics':'https://pennathletics.com/sports/womens-gymnastics/roster',
     'penn|Lacrosse':['https://pennathletics.com/sports/womens-lacrosse/roster','https://pennathletics.com/sports/mens-lacrosse/roster'],
-    'penn|Rowing':'https://pennathletics.com/sports/womens-rowing/roster',
+    'penn|Rowing':['https://pennathletics.com/sports/womens-rowing/roster','https://pennathletics.com/sports/mens-rowing/roster','https://pennathletics.com/sports/mens-crew/roster'],
     'penn|Soccer':['https://pennathletics.com/sports/womens-soccer/roster','https://pennathletics.com/sports/mens-soccer/roster'],
     'penn|Softball':'https://pennathletics.com/sports/softball/roster',
     'penn|Swimming & Diving':['https://pennathletics.com/sports/womens-swimming-and-diving/roster','https://pennathletics.com/sports/mens-swimming-and-diving/roster'],
@@ -296,7 +298,8 @@ export function createPennHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     // A game the page names by its tournament, the opponents not yet drawn
     // ("CBU Classic", Cal Baptist softball, Feb 19), and a bracket's final
     // ("American Conference Final") are "at".
-    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
+    // The Big 5 Classic (Dec 6) is an event, "at" (Drexel's rule).
+    relation:(sport,game,meet)=>meet||tournamentNamedGame(game)||game.location_indicator==='N'&&/\bchampionship$/i.test(String(game.opponent?.title||'').trim())||/\bconference\b|\b(?:quarter|semi)-?finals?\b|\bplay-in\b|\btournament\b|^(?:first|second|third) round\b|^championship$|\bchampionship game\b|^big 5\b/i.test(game.opponent?.title||'')||eventType(sport)!=='GAME'&&(/\b(?:invitational|invite|championships?|classic|league)\b|^ITF\b|^head of\b/i.test(game.opponent?.title||'')||/^at\s/i.test(game.opponent?.title||''))||game.tbd_bracket||/^NCAA\b/.test(game.opponent?.title||'')||isConferenceTournament(game)||isOpenChampionship(game)||isNeutralChampionship(game)||isEventNamedGame(game)||bracketRound(game)?'at':sidearmRelation(game),
     // A department story ("general-the-flight-report", Eastern Washington's
     // podcast linked as the Washington game's recap) is no game's recap.
     // The weekly department roundup ("this-week-in-rocket-athletics", men's tennis
@@ -386,8 +389,8 @@ export function createPennHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: gymnastics in the Gymnastics East Conference; rowing names no league.
+      const league={'Gymnastics':'Gymnastics East Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

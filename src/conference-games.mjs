@@ -189,11 +189,11 @@ const NOT_SPONSORED={
   // Drexel, Hofstra in other leagues), gymnastics or hockey.
   // The Ivy League (Brown, Columbia, Cornell, Dartmouth, Harvard, Penn,
   // Princeton, Yale) sponsors nearly every sport, rowing, lacrosse, field
-  // hockey and fencing among them; its hockey teams play in ECAC Hockey and
-  // its wrestlers in the EIWA (modules name those leagues); no bowling,
+  // hockey, fencing and wrestling (its pages mark the Ivy duals) among them;
+  // its hockey teams play in ECAC Hockey (modules name it); no bowling,
   // beach volleyball, rifle, skiing, water polo, equestrian, STUNT,
   // acrobatics or triathlon.
-  'Ivy League':new Set(['Hockey','Wrestling','Rifle','Bowling','Beach Volleyball','Equestrian','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
+  'Ivy League':new Set(['Hockey','Rifle','Bowling','Beach Volleyball','Equestrian','Skiing','Water Polo','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The Horizon League (2026-27: Cleveland State, Detroit Mercy, Green Bay,
   // IU Indianapolis, Milwaukee, Northern Illinois (from the MAC; its
   // football in the Mountain West), Northern Kentucky, Oakland, Purdue Fort

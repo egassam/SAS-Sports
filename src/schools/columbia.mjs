@@ -28,6 +28,8 @@ export const columbiaSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Rowing','Soccer','Swimming & Diving','Tennis']),
+  // Columbia's /sports/mens-rowing/ is heavyweight rowing (its title, Oct 23).
+  teamLabels:{'/sports/mens-rowing/schedule':"Men's Heavyweight"},
   verifiedInstagrams:{},
   scheduleUrls:{
     'columbia|Baseball':'https://gocolumbialions.com/sports/baseball/schedule',
@@ -38,7 +40,7 @@ export const columbiaSchool={
     'columbia|Football':'https://gocolumbialions.com/sports/football/schedule',
     'columbia|Golf':['https://gocolumbialions.com/sports/womens-golf/schedule','https://gocolumbialions.com/sports/mens-golf/schedule'],
     'columbia|Lacrosse':'https://gocolumbialions.com/sports/womens-lacrosse/schedule',
-    'columbia|Rowing':'https://gocolumbialions.com/sports/womens-rowing/schedule',
+    'columbia|Rowing':['https://gocolumbialions.com/sports/womens-rowing/schedule','https://gocolumbialions.com/sports/mens-rowing/schedule'],
     'columbia|Soccer':['https://gocolumbialions.com/sports/womens-soccer/schedule','https://gocolumbialions.com/sports/mens-soccer/schedule'],
     'columbia|Softball':'https://gocolumbialions.com/sports/softball/schedule',
     'columbia|Swimming & Diving':['https://gocolumbialions.com/sports/womens-swimming-and-diving/schedule','https://gocolumbialions.com/sports/mens-swimming-and-diving/schedule'],
@@ -56,7 +58,7 @@ export const columbiaSchool={
     'columbia|Football':'https://gocolumbialions.com/sports/football/roster',
     'columbia|Golf':['https://gocolumbialions.com/sports/womens-golf/roster','https://gocolumbialions.com/sports/mens-golf/roster'],
     'columbia|Lacrosse':'https://gocolumbialions.com/sports/womens-lacrosse/roster',
-    'columbia|Rowing':'https://gocolumbialions.com/sports/womens-rowing/roster',
+    'columbia|Rowing':['https://gocolumbialions.com/sports/womens-rowing/roster','https://gocolumbialions.com/sports/mens-rowing/roster'],
     'columbia|Soccer':['https://gocolumbialions.com/sports/womens-soccer/roster','https://gocolumbialions.com/sports/mens-soccer/roster'],
     'columbia|Softball':'https://gocolumbialions.com/sports/softball/roster',
     'columbia|Swimming & Diving':['https://gocolumbialions.com/sports/womens-swimming-and-diving/roster','https://gocolumbialions.com/sports/mens-swimming-and-diving/roster'],
@@ -353,7 +355,7 @@ export function createColumbiaHandlers({makeEvent,recapMatchesEvent,eventType=()
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
+      // Sports in other leagues, as the page data marks them: rowing names no league.
       const league={}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;

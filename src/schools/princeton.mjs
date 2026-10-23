@@ -25,6 +25,8 @@ export const princetonSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Volleyball','Water Polo']),
+  // Princeton's /sports/mens-rowing/ is heavyweight rowing (its title, Oct 23).
+  teamLabels:{'/sports/mens-rowing/schedule':"Men's Heavyweight"},
   verifiedInstagrams:{
     'princeton|Baseball|Jay Mentink':'https://www.instagram.com/tinky.jay/',
     'princeton|Football|Torian Roberts':'https://www.instagram.com/torianroberts/',
@@ -47,13 +49,13 @@ export const princetonSchool={
     'princeton|Golf':['https://goprincetontigers.com/sports/womens-golf/schedule','https://goprincetontigers.com/sports/mens-golf/schedule'],
     'princeton|Hockey':['https://goprincetontigers.com/sports/mens-ice-hockey/schedule','https://goprincetontigers.com/sports/womens-ice-hockey/schedule'],
     'princeton|Lacrosse':['https://goprincetontigers.com/sports/womens-lacrosse/schedule','https://goprincetontigers.com/sports/mens-lacrosse/schedule'],
-    'princeton|Rowing':'https://goprincetontigers.com/sports/womens-rowing/schedule',
+    'princeton|Rowing':['https://goprincetontigers.com/sports/womens-rowing/schedule','https://goprincetontigers.com/sports/mens-rowing/schedule'],
     'princeton|Soccer':['https://goprincetontigers.com/sports/womens-soccer/schedule','https://goprincetontigers.com/sports/mens-soccer/schedule'],
     'princeton|Softball':'https://goprincetontigers.com/sports/softball/schedule',
     'princeton|Swimming & Diving':['https://goprincetontigers.com/sports/womens-swimming-and-diving/schedule','https://goprincetontigers.com/sports/mens-swimming-and-diving/schedule'],
     'princeton|Tennis':['https://goprincetontigers.com/sports/womens-tennis/schedule','https://goprincetontigers.com/sports/mens-tennis/schedule'],
     'princeton|Track & Field':['https://goprincetontigers.com/sports/womens-track-and-field/schedule','https://goprincetontigers.com/sports/mens-track-and-field/schedule'],
-    'princeton|Volleyball':'https://goprincetontigers.com/sports/womens-volleyball/schedule',
+    'princeton|Volleyball':['https://goprincetontigers.com/sports/womens-volleyball/schedule','https://goprincetontigers.com/sports/mens-volleyball/schedule'],
     'princeton|Water Polo':['https://goprincetontigers.com/sports/womens-water-polo/schedule','https://goprincetontigers.com/sports/mens-water-polo/schedule'],
     'princeton|Wrestling':'https://goprincetontigers.com/sports/wrestling/schedule'
   },
@@ -67,13 +69,13 @@ export const princetonSchool={
     'princeton|Golf':['https://goprincetontigers.com/sports/womens-golf/roster','https://goprincetontigers.com/sports/mens-golf/roster'],
     'princeton|Hockey':['https://goprincetontigers.com/sports/mens-ice-hockey/roster','https://goprincetontigers.com/sports/womens-ice-hockey/roster'],
     'princeton|Lacrosse':['https://goprincetontigers.com/sports/womens-lacrosse/roster','https://goprincetontigers.com/sports/mens-lacrosse/roster'],
-    'princeton|Rowing':'https://goprincetontigers.com/sports/womens-rowing/roster',
+    'princeton|Rowing':['https://goprincetontigers.com/sports/womens-rowing/roster','https://goprincetontigers.com/sports/mens-rowing/roster'],
     'princeton|Soccer':['https://goprincetontigers.com/sports/womens-soccer/roster','https://goprincetontigers.com/sports/mens-soccer/roster'],
     'princeton|Softball':'https://goprincetontigers.com/sports/softball/roster',
     'princeton|Swimming & Diving':['https://goprincetontigers.com/sports/womens-swimming-and-diving/roster','https://goprincetontigers.com/sports/mens-swimming-and-diving/roster'],
     'princeton|Tennis':['https://goprincetontigers.com/sports/womens-tennis/roster','https://goprincetontigers.com/sports/mens-tennis/roster'],
     'princeton|Track & Field':['https://goprincetontigers.com/sports/womens-track-and-field/roster','https://goprincetontigers.com/sports/mens-track-and-field/roster'],
-    'princeton|Volleyball':'https://goprincetontigers.com/sports/womens-volleyball/roster',
+    'princeton|Volleyball':['https://goprincetontigers.com/sports/womens-volleyball/roster','https://goprincetontigers.com/sports/mens-volleyball/roster'],
     'princeton|Water Polo':['https://goprincetontigers.com/sports/womens-water-polo/roster','https://goprincetontigers.com/sports/mens-water-polo/roster'],
     'princeton|Wrestling':'https://goprincetontigers.com/sports/wrestling/roster'
   }
@@ -365,8 +367,8 @@ export function createPrincetonHandlers({makeEvent,recapMatchesEvent,eventType=(
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: hockey in ECAC Hockey, water polo in the CWPA; rowing names no league.
+      const league={'Hockey':'ECAC Hockey','Water Polo':'CWPA'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

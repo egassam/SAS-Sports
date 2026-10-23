@@ -10,7 +10,7 @@ export const brownSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Equestrian','Fencing','Field Hockey','Football','Golf','Gymnastics','Hockey','Lacrosse','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
+  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Equestrian','Fencing','Field Hockey','Football','Golf','Gymnastics','Hockey','Lacrosse','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -24,7 +24,7 @@ export const brownSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'brown|Basketball|Adrian Uchidiuno':'https://www.instagram.com/yb.adrian/',
     'brown|Basketball|Luke Paragon':'https://www.instagram.com/luke.paragon/',
@@ -43,6 +43,7 @@ export const brownSchool={
     'brown|Gymnastics':'https://brownbears.com/sports/womens-gymnastics/schedule',
     'brown|Hockey':['https://brownbears.com/sports/mens-ice-hockey/schedule','https://brownbears.com/sports/womens-ice-hockey/schedule'],
     'brown|Lacrosse':['https://brownbears.com/sports/womens-lacrosse/schedule','https://brownbears.com/sports/mens-lacrosse/schedule'],
+    'brown|Rowing':['https://brownbears.com/sports/womens-crew/schedule','https://brownbears.com/sports/mens-crew/schedule'],
     'brown|Soccer':['https://brownbears.com/sports/womens-soccer/schedule','https://brownbears.com/sports/mens-soccer/schedule'],
     'brown|Softball':'https://brownbears.com/sports/softball/schedule',
     'brown|Swimming & Diving':['https://brownbears.com/sports/womens-swimming-and-diving/schedule','https://brownbears.com/sports/mens-swimming-and-diving/schedule'],
@@ -63,6 +64,7 @@ export const brownSchool={
     'brown|Gymnastics':'https://brownbears.com/sports/womens-gymnastics/roster',
     'brown|Hockey':['https://brownbears.com/sports/mens-ice-hockey/roster','https://brownbears.com/sports/womens-ice-hockey/roster'],
     'brown|Lacrosse':['https://brownbears.com/sports/womens-lacrosse/roster','https://brownbears.com/sports/mens-lacrosse/roster'],
+    'brown|Rowing':['https://brownbears.com/sports/womens-crew/roster','https://brownbears.com/sports/mens-crew/roster'],
     'brown|Soccer':['https://brownbears.com/sports/womens-soccer/roster','https://brownbears.com/sports/mens-soccer/roster'],
     'brown|Softball':'https://brownbears.com/sports/softball/roster',
     'brown|Swimming & Diving':['https://brownbears.com/sports/womens-swimming-and-diving/roster','https://brownbears.com/sports/mens-swimming-and-diving/roster'],
@@ -359,8 +361,8 @@ export function createBrownHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: hockey in ECAC Hockey, gymnastics in the Gymnastics East Conference; equestrian and rowing name no league.
+      const league={'Hockey':'ECAC Hockey','Gymnastics':'Gymnastics East Conference'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
