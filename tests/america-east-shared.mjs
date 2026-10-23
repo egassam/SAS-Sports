@@ -21,6 +21,9 @@ const start=read('../scripts/start-schools.mjs');
 for(const state of ["Maine:'ME'","'New Hampshire':'NH'","Vermont:'VT'","Alaska:'AK'","'North Dakota':'ND'"])assert.ok(start.includes(state),state);
 assert.match(start,/const single=\(school\.aliases\|\|\[\]\)\.slice\(0,-1\)/);
 assert.match(start,/return tfrrsFromMeets\(school,moduleText,st\);/);
+// The Opendorse team is the one the marketplace's athletes list most
+// ("Massachusetts Lowell River Hawks", not a name guessed from the school's).
+assert.match(start,/matchAll\(\/"currentTeams":\\\["\(\[\^"\]\+\)"\/g\)/);
 
 // The port source (Evansville) carries the rules new modules need: bowling
 // days merged and storyless bowling left out (Bryant), alumnae meets internal

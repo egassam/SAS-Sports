@@ -52,7 +52,9 @@ for(const id of ids){
     const page=pageRecord(await livePage(id,slug)??gunzipSync(readFileSync(new URL(file,dir))).toString('utf8'));
     if(!page){console.log(`-    ${id} ${slug}: the page publishes no record`);continue}
     const list=await records(id,sport),label=/^womens/.test(slug)?"Women's":/^mens/.test(slug)?"Men's":null;
-    const rec=list.find(r=>label&&r.team_label===label)||(list.length===1?list[0]:list.find(r=>!r.team_label));
+    // A team's page matches only that team's record (NJIT, Oct 23: the
+    // women's 1-19 was compared with the men's page).
+    const rec=label?list.find(r=>r.team_label===label)||(list.length===1&&!list[0].team_label?list[0]:null):list.length===1?list[0]:list.find(r=>!r.team_label);
     const app=rec?{overall:[rec.wins,rec.losses,rec.ties],conference:[rec.conference?.wins||0,rec.conference?.losses||0,rec.conference?.ties||0]}:null;
     // A season not begun: the page's 0-0 and the app's no record agree.
     const same=!app&&zero(page)||app&&page.overall.join()===app.overall.join()&&page.conference.join()===app.conference.join();

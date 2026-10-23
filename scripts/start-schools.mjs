@@ -143,7 +143,10 @@ await Promise.all(ready.map(async school=>{
   // An Opendorse marketplace also needs its team name, read from the
   // marketplace page ("Washington State Cougars").
   if(nil?.[1]==='opendorse'&&!text.includes('opendorse:{')){
-    let team=null;try{const r=await fetch(`https://opendorse.com/${nil[2]}`,{signal:AbortSignal.timeout(20000)});const names=[...(await r.text()).matchAll(/"name":"([^"]+)"/g)].map(m=>m[1]).filter(n=>n.startsWith(school.short_name)||n.startsWith(school.name));team=names.sort((a,b)=>names.filter(x=>x===b).length-names.filter(x=>x===a).length)[0]||null;}catch{}
+    // The team the marketplace's athletes list first, the most common
+    // (Oct 23: a name match missed Bryant's and gave UMass Lowell's as "UMass
+    // Lowell River Hawks "; Opendorse writes "Massachusetts Lowell River Hawks").
+    let team=null;try{const r=await fetch(`https://opendorse.com/${nil[2]}`,{signal:AbortSignal.timeout(20000)});const counts=new Map();for(const [,name] of (await r.text()).matchAll(/"currentTeams":\["([^"]+)"/g))counts.set(name.trim(),(counts.get(name.trim())||0)+1);team=[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]||null;}catch{}
     if(team)text=text.replace(`  id:'${school.id}',\n`,`  id:'${school.id}',\n  // The school's Opendorse marketplace, its official NIL marketplace (linked\n  // from ${new URL(school.athletics_url).hostname}): athlete Instagram for a sport still short of three (src/opendorse.mjs).\n  opendorse:{marketplace:'${nil[2]}',team:'${team.replace(/'/g,"\\'")}'},\n`);
     else notes.push(`${school.id}: Opendorse marketplace ${nil[2]}: add opendorse:{marketplace:'${nil[2]}',team:'<its team name>'} (Colorado State's)`);
   }

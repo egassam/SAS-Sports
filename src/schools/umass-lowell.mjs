@@ -9,7 +9,10 @@ export const umassLowellSchool={
   id:'umass-lowell',
   // The school's Opendorse marketplace, its official NIL marketplace (linked
   // from goriverhawks.com): athlete Instagram for a sport still short of three (src/opendorse.mjs).
-  opendorse:{marketplace:'umass-lowell-riverhawks',team:'UMass Lowell River Hawks '},
+  opendorse:{marketplace:'umass-lowell-riverhawks',team:'Massachusetts Lowell River Hawks'},
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // UMass Lowell's 2027 lacrosse rosters publish two portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Lacrosse']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.

@@ -10,6 +10,9 @@ export const binghamtonSchool={
   // The school's Opendorse marketplace, its official NIL marketplace (linked
   // from binghamtonbearcats.com): athlete Instagram for a sport still short of three (src/opendorse.mjs).
   opendorse:{marketplace:'binghamton-bearcats',team:'Binghamton Bearcats'},
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Binghamton's 2027 lacrosse rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Lacrosse']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
