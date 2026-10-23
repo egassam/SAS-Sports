@@ -264,7 +264,7 @@ import {sacredHeartSchool,createSacredHeartHandlers} from './schools/sacred-hear
 import {sienaSchool,createSienaHandlers} from './schools/siena.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.186.0-metro';
+const VERSION='4.186.1-metro';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
