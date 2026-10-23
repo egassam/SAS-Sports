@@ -295,6 +295,14 @@
     "line": "#0e2a49",
     "onAccent": "#ffffff"
   },
+  "campbell": {
+    "primary": "#FF7F00",
+    "secondary": "#000000",
+    "panel": "#41250c",
+    "panelDark": "#1e1107",
+    "line": "#9b5413",
+    "onAccent": "#ffffff"
+  },
   "carolina-panthers": {
     "primary": "#0085CA",
     "secondary": "#000000",
@@ -325,6 +333,14 @@
     "panel": "#091631",
     "panelDark": "#050b18",
     "line": "#0e306e",
+    "onAccent": "#ffffff"
+  },
+  "charleston": {
+    "primary": "#800000",
+    "secondary": "#C4A548",
+    "panel": "#25090c",
+    "panelDark": "#110507",
+    "line": "#550e13",
     "onAccent": "#ffffff"
   },
   "charleston-southern": {
@@ -575,6 +591,14 @@
     "line": "#142136",
     "onAccent": "#ffffff"
   },
+  "drexel": {
+    "primary": "#07294D",
+    "secondary": "#FFC600",
+    "panel": "#0a121d",
+    "panelDark": "#05090f",
+    "line": "#12253d",
+    "onAccent": "#ffffff"
+  },
   "duke": {
     "primary": "#003087",
     "secondary": "#FFFFFF",
@@ -629,6 +653,14 @@
     "panel": "#10301f",
     "panelDark": "#07160e",
     "line": "#2f8a5a",
+    "onAccent": "#ffffff"
+  },
+  "elon": {
+    "primary": "#73000A",
+    "secondary": "#B59A57",
+    "panel": "#22090f",
+    "panelDark": "#100508",
+    "line": "#4e0e18",
     "onAccent": "#ffffff"
   },
   "evansville": {
@@ -783,12 +815,28 @@
     "line": "#374c43",
     "onAccent": "#ffffff"
   },
+  "hampton": {
+    "primary": "#0067AC",
+    "secondary": "#A2AAAD",
+    "panel": "#091f32",
+    "panelDark": "#050f18",
+    "line": "#0e4772",
+    "onAccent": "#ffffff"
+  },
   "high-point": {
     "primary": "#330072",
     "secondary": "#B9B9B9",
     "panel": "#140926",
     "panelDark": "#0a0513",
     "line": "#2a0e52",
+    "onAccent": "#ffffff"
+  },
+  "hofstra": {
+    "primary": "#00338D",
+    "secondary": "#FFC72C",
+    "panel": "#09142c",
+    "panelDark": "#050a15",
+    "line": "#0e2a60",
     "onAccent": "#ffffff"
   },
   "houston": {
@@ -1287,6 +1335,14 @@
     "line": "#420e18",
     "onAccent": "#ffffff"
   },
+  "monmouth": {
+    "primary": "#002D62",
+    "secondary": "#A2AAAD",
+    "panel": "#091222",
+    "panelDark": "#050911",
+    "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
   "montana": {
     "primary": "#70002E",
     "secondary": "#999999",
@@ -1326,6 +1382,14 @@
     "panelDark": "#1c1c0d",
     "line": "#908e33",
     "onAccent": "#0b0b10"
+  },
+  "nc-at": {
+    "primary": "#004684",
+    "secondary": "#FDB927",
+    "panel": "#09182a",
+    "panelDark": "#050c14",
+    "line": "#0e355c",
+    "onAccent": "#ffffff"
   },
   "nc-state": {
     "primary": "#CC0000",
@@ -2007,6 +2071,14 @@
     "line": "#5b1a1e",
     "onAccent": "#ffffff"
   },
+  "stony-brook": {
+    "primary": "#990000",
+    "secondary": "#BBBBBB",
+    "panel": "#2a090c",
+    "panelDark": "#140507",
+    "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
   "syracuse": {
     "primary": "#F76900",
     "secondary": "#000E54",
@@ -2126,6 +2198,14 @@
     "panelDark": "#16070c",
     "line": "#6c1c2b",
     "onAccent": "#ffffff"
+  },
+  "towson": {
+    "primary": "#FFBB00",
+    "secondary": "#000000",
+    "panel": "#41320c",
+    "panelDark": "#1e1707",
+    "line": "#9b7513",
+    "onAccent": "#000000"
   },
   "troy": {
     "primary": "#8A2432",
@@ -2461,6 +2541,14 @@
     "panel": "#340b17",
     "panelDark": "#18060c",
     "line": "#7b152d",
+    "onAccent": "#ffffff"
+  },
+  "william-mary": {
+    "primary": "#115740",
+    "secondary": "#B9975B",
+    "panel": "#0c1c1b",
+    "panelDark": "#060d0e",
+    "line": "#183e36",
     "onAccent": "#ffffff"
   },
   "winthrop": {

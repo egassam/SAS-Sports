@@ -404,6 +404,21 @@
     "Volleyball",
     "Water Polo"
   ],
+  "campbell": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "carolina-panthers": [
     "Football"
   ],
@@ -437,6 +452,19 @@
   ],
   "cf-montreal": [
     "Soccer"
+  ],
+  "charleston": [
+    "Baseball",
+    "Basketball",
+    "Beach Volleyball",
+    "Cross Country",
+    "Equestrian",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "charleston-southern": [
     "Baseball",
@@ -671,6 +699,18 @@
   "detroit-tigers": [
     "Baseball"
   ],
+  "drexel": [
+    "Basketball",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Wrestling"
+  ],
   "duke": [
     "Baseball",
     "Basketball",
@@ -764,6 +804,19 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "elon": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "evansville": [
     "Baseball",
@@ -984,6 +1037,18 @@
   "green-bay-packers": [
     "Football"
   ],
+  "hampton": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Triathlon",
+    "Volleyball"
+  ],
   "high-point": [
     "Baseball",
     "Basketball",
@@ -994,6 +1059,19 @@
     "Soccer",
     "Track & Field",
     "Volleyball"
+  ],
+  "hofstra": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
   ],
   "houston": [
     "Baseball",
@@ -1607,6 +1685,22 @@
     "Track & Field",
     "Volleyball"
   ],
+  "monmouth": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field"
+  ],
   "montana": [
     "Basketball",
     "Cross Country",
@@ -1650,6 +1744,18 @@
   ],
   "nashville-sc": [
     "Soccer"
+  ],
+  "nc-at": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "nc-state": [
     "Baseball",
@@ -2532,6 +2638,19 @@
     "Water Polo",
     "Wrestling"
   ],
+  "stony-brook": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "syracuse": [
     "Basketball",
     "Cross Country",
@@ -2676,6 +2795,22 @@
   ],
   "toronto-fc": [
     "Soccer"
+  ],
+  "towson": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "troy": [
     "Baseball",
@@ -3198,6 +3333,21 @@
     "Golf",
     "Soccer",
     "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "william-mary": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"
