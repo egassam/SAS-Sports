@@ -24,13 +24,13 @@ export const leMoyneSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Lacrosse','Soccer','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'le-moyne|Baseball':'https://lemoynedolphins.com/sports/baseball/schedule',
     'le-moyne|Basketball':['https://lemoynedolphins.com/sports/mens-basketball/schedule','https://lemoynedolphins.com/sports/womens-basketball/schedule'],
     'le-moyne|Bowling':'https://lemoynedolphins.com/sports/womens-bowling/schedule',
-    'le-moyne|Cross Country':'https://lemoynedolphins.com/sports/cross-country/schedule',
+    'le-moyne|Cross Country':['https://lemoynedolphins.com/sports/womens-cross-country/schedule','https://lemoynedolphins.com/sports/mens-cross-country/schedule'],
     'le-moyne|Golf':['https://lemoynedolphins.com/sports/womens-golf/schedule','https://lemoynedolphins.com/sports/mens-golf/schedule'],
     'le-moyne|Lacrosse':['https://lemoynedolphins.com/sports/womens-lacrosse/schedule','https://lemoynedolphins.com/sports/mens-lacrosse/schedule'],
     'le-moyne|Soccer':['https://lemoynedolphins.com/sports/womens-soccer/schedule','https://lemoynedolphins.com/sports/mens-soccer/schedule'],
@@ -44,7 +44,7 @@ export const leMoyneSchool={
     'le-moyne|Baseball':'https://lemoynedolphins.com/sports/baseball/roster',
     'le-moyne|Basketball':['https://lemoynedolphins.com/sports/mens-basketball/roster','https://lemoynedolphins.com/sports/womens-basketball/roster'],
     'le-moyne|Bowling':'https://lemoynedolphins.com/sports/womens-bowling/roster',
-    'le-moyne|Cross Country':'https://lemoynedolphins.com/sports/cross-country/roster',
+    'le-moyne|Cross Country':['https://lemoynedolphins.com/sports/womens-cross-country/roster','https://lemoynedolphins.com/sports/mens-cross-country/roster'],
     'le-moyne|Golf':['https://lemoynedolphins.com/sports/womens-golf/roster','https://lemoynedolphins.com/sports/mens-golf/roster'],
     'le-moyne|Lacrosse':['https://lemoynedolphins.com/sports/womens-lacrosse/roster','https://lemoynedolphins.com/sports/mens-lacrosse/roster'],
     'le-moyne|Soccer':['https://lemoynedolphins.com/sports/womens-soccer/roster','https://lemoynedolphins.com/sports/mens-soccer/roster'],
@@ -230,6 +230,9 @@ export function createLeMoyneHandlers({makeEvent,recapMatchesEvent,eventType=()=
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // A meet names its host after a bar ("Harry Lang Invitational |
+      // Colgate", Sep 5): the name is the first part.
+      opponent=String(opponent).split(/\s+\|\s+/)[0];
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -342,8 +345,8 @@ export function createLeMoyneHandlers({makeEvent,recapMatchesEvent,eventType=()=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: every Le Moyne sport is an NEC sport.
+      const league=null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

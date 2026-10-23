@@ -222,6 +222,11 @@ export function createChicagoStateHandlers({makeEvent,recapMatchesEvent,eventTyp
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // Golf tournaments named by their hosts take their stories' names: Central
+      // Michigan's (Sep 6-7) is the A-Ga-Ming Invitational, Chicago State's own
+      // (Oct 5-6) the Windy City Classic.
+      if(sport==='Golf'&&/^Central Michigan(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='09')opponent='A-Ga-Ming Invitational';
+      if(sport==='Golf'&&/^Chicago State(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='10')opponent='Windy City Classic';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },
@@ -334,8 +339,8 @@ export function createChicagoStateHandlers({makeEvent,recapMatchesEvent,eventTyp
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: triathlon names no league.
+      const league=null;
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

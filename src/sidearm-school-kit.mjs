@@ -145,12 +145,16 @@ export function golfPlacing(text){
   // "1st of 16 (280-277-204=835)"; ULM the total inside: "T-3rd (844) / 15";
   // UC Davis the score to par too: "7th Of 17 (286-299-296 - 881, +17)".
   // A cross country place with its points: "2nd, 52 points" (UAlbany), "1st
-  // place, 36 points" (New Hampshire) -> "2nd · 52 pts" (a bare "12th, 323" may
-  // be a golf total);
+  // place, 36 points" (New Hampshire), "4th - 115 points" (Chicago State) ->
+  // "2nd · 52 pts" (a bare "12th, 323" may be a golf total);
   // two teams: "Gold (6th place, 177 points) • Navy (3rd place, 96 points)"
   // -> "Gold team: 6th · 177 pts / Navy team: 3rd · 96 pts" (Oct 23).
-  const pointsPlace=value=>{const m=String(value).trim().match(/^(T-?)?(\d+)(?:st|nd|rd|th)(?:(\s+place),\s*(\d+(?:\.\d+)?)(?:\s*(?:points|pts))?|,\s*(\d+(?:\.\d+)?)\s*(?:points|pts))$/i);if(!m)return null;const n=Number(m[2]),suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${m[1]?'T':''}${n}${suffix} · ${m[4]||m[5]} pts`;};
+  const pointsPlace=value=>{const m=String(value).trim().match(/^(T-?)?(\d+)(?:st|nd|rd|th)(?:(\s+place),\s*(\d+(?:\.\d+)?)(?:\s*(?:points|pts))?|(?:,|\s+-)\s*(\d+(?:\.\d+)?)\s*(?:points|pts))$/i);if(!m)return null;const n=Number(m[2]),suffix=n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th';return`${m[1]?'T':''}${n}${suffix} · ${m[4]||m[5]} pts`;};
   if(pointsPlace(text))return pointsPlace(text);
+  // Le Moyne writes the points first and the place in its field: "261
+  // Points | 9th of 16" -> "9th of 16 · 261 pts".
+  const pointsFirst=String(text||'').trim().match(/^(\d+(?:\.\d+)?)\s*points?\s*\|\s*(T-?)?(\d+)(st|nd|rd|th)\s+of\s+(\d+)$/i);
+  if(pointsFirst)return`${pointsFirst[2]?'T':''}${pointsFirst[3]}${pointsFirst[4].toLowerCase()} of ${pointsFirst[5]} \u00b7 ${pointsFirst[1]} pts`;
   const squads=[...String(text||'').matchAll(/([A-Z][A-Za-z]+)\s*\(([^()]+)\)/g)];
   if(squads.length&&squads.every(([,,inner])=>pointsPlace(inner))&&String(text).replace(/([A-Z][A-Za-z]+)\s*\(([^()]+)\)/g,'').replace(/[\s•·,/]+/g,'')==='')return squads.map(([,name,inner])=>`${name} team: ${pointsPlace(inner)}`).join(' / ');
   // Valparaiso's bowling adds its match record: "9th/18 (2-3)" -> "9th of 18

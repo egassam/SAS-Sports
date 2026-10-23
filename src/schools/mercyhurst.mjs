@@ -24,7 +24,9 @@ export const mercyhurstSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Hockey','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Water Polo']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Lacrosse','Rowing','Soccer','Swimming & Diving','Tennis','Track & Field','Water Polo','Wrestling']),
+  // Mercyhurst's /sports/mens-rowing/ is men's lightweight rowing and /sports/wrestling/ men's (their titles, Oct 23).
+  teamLabels:{'/sports/mens-rowing/schedule':"Men's Lightweight",'/sports/wrestling/schedule':"Men's"},
   verifiedInstagrams:{},
   scheduleUrls:{
     'mercyhurst|Baseball':'https://hurstathletics.com/sports/baseball/schedule',
@@ -34,17 +36,17 @@ export const mercyhurstSchool={
     'mercyhurst|Field Hockey':'https://hurstathletics.com/sports/field-hockey/schedule',
     'mercyhurst|Football':'https://hurstathletics.com/sports/football/schedule',
     'mercyhurst|Golf':['https://hurstathletics.com/sports/womens-golf/schedule','https://hurstathletics.com/sports/mens-golf/schedule'],
-    'mercyhurst|Hockey':['https://hurstathletics.com/sports/mens-ice-hockey/schedule','https://hurstathletics.com/sports/womens-ice-hockey/schedule'],
+    'mercyhurst|Hockey':'https://hurstathletics.com/sports/womens-ice-hockey/schedule',
     'mercyhurst|Lacrosse':['https://hurstathletics.com/sports/womens-lacrosse/schedule','https://hurstathletics.com/sports/mens-lacrosse/schedule'],
-    'mercyhurst|Rowing':'https://hurstathletics.com/sports/womens-rowing/schedule',
-    'mercyhurst|STUNT':'https://hurstathletics.com/sports/stunt/schedule',
+    'mercyhurst|Rowing':['https://hurstathletics.com/sports/womens-rowing/schedule','https://hurstathletics.com/sports/mens-rowing/schedule'],
     'mercyhurst|Soccer':['https://hurstathletics.com/sports/womens-soccer/schedule','https://hurstathletics.com/sports/mens-soccer/schedule'],
     'mercyhurst|Softball':'https://hurstathletics.com/sports/softball/schedule',
+    'mercyhurst|STUNT':'https://hurstathletics.com/sports/stunt/schedule',
     'mercyhurst|Tennis':['https://hurstathletics.com/sports/womens-tennis/schedule','https://hurstathletics.com/sports/mens-tennis/schedule'],
     'mercyhurst|Track & Field':['https://hurstathletics.com/sports/womens-track-and-field/schedule','https://hurstathletics.com/sports/mens-track-and-field/schedule'],
     'mercyhurst|Volleyball':'https://hurstathletics.com/sports/womens-volleyball/schedule',
     'mercyhurst|Water Polo':['https://hurstathletics.com/sports/womens-water-polo/schedule','https://hurstathletics.com/sports/mens-water-polo/schedule'],
-    'mercyhurst|Wrestling':'https://hurstathletics.com/sports/wrestling/schedule'
+    'mercyhurst|Wrestling':['https://hurstathletics.com/sports/wrestling/schedule','https://hurstathletics.com/sports/womens-wrestling/schedule']
   },
   rosterUrls:{
     'mercyhurst|Baseball':'https://hurstathletics.com/sports/baseball/roster',
@@ -54,17 +56,17 @@ export const mercyhurstSchool={
     'mercyhurst|Field Hockey':'https://hurstathletics.com/sports/field-hockey/roster',
     'mercyhurst|Football':'https://hurstathletics.com/sports/football/roster',
     'mercyhurst|Golf':['https://hurstathletics.com/sports/womens-golf/roster','https://hurstathletics.com/sports/mens-golf/roster'],
-    'mercyhurst|Hockey':['https://hurstathletics.com/sports/mens-ice-hockey/roster','https://hurstathletics.com/sports/womens-ice-hockey/roster'],
+    'mercyhurst|Hockey':'https://hurstathletics.com/sports/womens-ice-hockey/roster',
     'mercyhurst|Lacrosse':['https://hurstathletics.com/sports/womens-lacrosse/roster','https://hurstathletics.com/sports/mens-lacrosse/roster'],
-    'mercyhurst|Rowing':'https://hurstathletics.com/sports/womens-rowing/roster',
-    'mercyhurst|STUNT':'https://hurstathletics.com/sports/stunt/roster',
+    'mercyhurst|Rowing':['https://hurstathletics.com/sports/womens-rowing/roster','https://hurstathletics.com/sports/mens-rowing/roster'],
     'mercyhurst|Soccer':['https://hurstathletics.com/sports/womens-soccer/roster','https://hurstathletics.com/sports/mens-soccer/roster'],
     'mercyhurst|Softball':'https://hurstathletics.com/sports/softball/roster',
+    'mercyhurst|STUNT':'https://hurstathletics.com/sports/stunt/roster',
     'mercyhurst|Tennis':['https://hurstathletics.com/sports/womens-tennis/roster','https://hurstathletics.com/sports/mens-tennis/roster'],
     'mercyhurst|Track & Field':['https://hurstathletics.com/sports/womens-track-and-field/roster','https://hurstathletics.com/sports/mens-track-and-field/roster'],
     'mercyhurst|Volleyball':'https://hurstathletics.com/sports/womens-volleyball/roster',
     'mercyhurst|Water Polo':['https://hurstathletics.com/sports/womens-water-polo/roster','https://hurstathletics.com/sports/mens-water-polo/roster'],
-    'mercyhurst|Wrestling':'https://hurstathletics.com/sports/wrestling/roster'
+    'mercyhurst|Wrestling':['https://hurstathletics.com/sports/wrestling/roster','https://hurstathletics.com/sports/womens-wrestling/roster']
   }
 };
 
@@ -354,8 +356,8 @@ export function createMercyhurstHandlers({makeEvent,recapMatchesEvent,eventType=
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues, as the page data marks them: women's hockey in Atlantic Hockey America, STUNT in the MAWC (rowing, water polo and wrestling name no league).
+      const league={'Hockey':'Atlantic Hockey America','STUNT':'MAWC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

@@ -278,7 +278,7 @@ import {stonehillSchool,createStonehillHandlers} from './schools/stonehill.mjs';
 import {wagnerSchool,createWagnerHandlers} from './schools/wagner.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.193.0-nec';
+const VERSION='4.194.0-nec';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

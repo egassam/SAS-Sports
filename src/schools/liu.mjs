@@ -24,7 +24,9 @@ export const liuSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Fencing','Rowing','Swimming & Diving','Track & Field','Volleyball']),
+  combinedSports:new Set(['Basketball','Cross Country','Fencing','Hockey','Rowing','Swimming & Diving','Tennis','Track & Field','Volleyball','Water Polo']),
+  // LIU's men's pages are short codes (mrow, mswim, mten, mvb, mwpolo), Oct 23.
+  teamLabels:{'/sports/mrow/schedule':"Men's",'/sports/mswim/schedule':"Men's",'/sports/mten/schedule':"Men's",'/sports/mvb/schedule':"Men's",'/sports/mwpolo/schedule':"Men's"},
   verifiedInstagrams:{
     'liu|Acrobatics & Tumbling|Long Island University Athletics':'https://www.instagram.com/lila.renee8ally.wright17/',
     'liu|Acrobatics & Tumbling|Long Island University Athletics':'https://www.instagram.com/jguardi04_ally.wright17/',
@@ -388,9 +390,9 @@ export function createLiuHandlers({makeEvent,recapMatchesEvent,eventType=()=>'GA
     onRecap:(event,href,{sport})=>{if(sport==='Golf')event.final_story=href;},
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
-    afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+    afterEvent(event,{sport,game,games,url}){
+      // Sports in other leagues, as the page data marks them: gymnastics in the EAGL, men's water polo in the NWPC and women's in the Metro Conference, women's hockey in the NEWHA (men's hockey, equestrian, fencing and rowing name no league).
+      const league=sport==='Water Polo'?(/^\/sports\/mwpolo\//.test(url?.pathname||'')?'NWPC':'Metro Conference'):sport==='Hockey'&&/^\/sports\/womens-/.test(url?.pathname||'')?'NEWHA':{'Gymnastics':'EAGL'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
