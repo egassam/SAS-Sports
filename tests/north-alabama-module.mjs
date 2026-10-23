@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',northAlabamaSchool.scheduleUrls],['roster',
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'roarlions.com',`${key} must stay on roarlions.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://roarlions.com/sports/baseball/schedule"],"roster":["https://roarlions.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://roarlions.com/sports/mens-basketball/schedule","https://roarlions.com/sports/womens-basketball/schedule"],"roster":["https://roarlions.com/sports/mens-basketball/roster","https://roarlions.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://roarlions.com/sports/womens-beach-volleyball/schedule"],"roster":["https://roarlions.com/sports/womens-beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://roarlions.com/sports/womens-cross-country/schedule","https://roarlions.com/sports/mens-cross-country/schedule"],"roster":["https://roarlions.com/sports/womens-cross-country/roster","https://roarlions.com/sports/mens-cross-country/roster"],"combined":true},"Football":{"schedule":["https://roarlions.com/sports/football/schedule"],"roster":["https://roarlions.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://roarlions.com/sports/womens-golf/schedule","https://roarlions.com/sports/mens-golf/schedule"],"roster":["https://roarlions.com/sports/womens-golf/roster","https://roarlions.com/sports/mens-golf/roster"],"combined":true},"Soccer":{"schedule":["https://roarlions.com/sports/womens-soccer/schedule"],"roster":["https://roarlions.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://roarlions.com/sports/softball/schedule"],"roster":["https://roarlions.com/sports/softball/roster"],"combined":false},"Tennis":{"schedule":["https://roarlions.com/sports/womens-tennis/schedule","https://roarlions.com/sports/mens-tennis/schedule"],"roster":["https://roarlions.com/sports/womens-tennis/roster","https://roarlions.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://roarlions.com/sports/track-and-field/schedule"],"roster":["https://roarlions.com/sports/track-and-field/roster"],"combined":false},"Volleyball":{"schedule":["https://roarlions.com/sports/wvball/schedule"],"roster":["https://roarlions.com/sports/wvball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://roarlions.com/sports/baseball/schedule"],"roster":["https://roarlions.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://roarlions.com/sports/mens-basketball/schedule","https://roarlions.com/sports/womens-basketball/schedule"],"roster":["https://roarlions.com/sports/mens-basketball/roster","https://roarlions.com/sports/womens-basketball/roster"],"combined":true},"Beach Volleyball":{"schedule":["https://roarlions.com/sports/womens-beach-volleyball/schedule"],"roster":["https://roarlions.com/sports/womens-beach-volleyball/roster"],"combined":false},"Cross Country":{"schedule":["https://roarlions.com/sports/womens-cross-country/schedule","https://roarlions.com/sports/mens-cross-country/schedule"],"roster":["https://roarlions.com/sports/womens-cross-country/roster","https://roarlions.com/sports/mens-cross-country/roster"],"combined":true},"Football":{"schedule":["https://roarlions.com/sports/football/schedule"],"roster":["https://roarlions.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://roarlions.com/sports/womens-golf/schedule","https://roarlions.com/sports/mens-golf/schedule"],"roster":["https://roarlions.com/sports/womens-golf/roster","https://roarlions.com/sports/mens-golf/roster"],"combined":true},"Soccer":{"schedule":["https://roarlions.com/sports/womens-soccer/schedule"],"roster":["https://roarlions.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://roarlions.com/sports/softball/schedule"],"roster":["https://roarlions.com/sports/softball/roster"],"combined":false},"Tennis":{"schedule":["https://roarlions.com/sports/womens-tennis/schedule","https://roarlions.com/sports/mens-tennis/schedule"],"roster":["https://roarlions.com/sports/womens-tennis/roster","https://roarlions.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://roarlions.com/sports/womens-track-and-field/schedule","https://roarlions.com/sports/mens-track/schedule"],"roster":["https://roarlions.com/sports/womens-track-and-field/roster","https://roarlions.com/sports/mens-track/roster"],"combined":true},"Volleyball":{"schedule":["https://roarlions.com/sports/wvball/schedule"],"roster":["https://roarlions.com/sports/wvball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -259,8 +259,10 @@ void [parse,line,ownRecapsOnly,live];
  "Upcoming Nov 13 Men's · North Alabama at PTT Ole Miss | ",
  "Upcoming Nov 13 Men's · North Alabama at ITA Conference Championship | "
 ]);
-  const v_trackandfield=parse("Track & Field","track-and-field");
-  assert.deepEqual(v_trackandfield.map(line),[]);
+  const v_womenstrackandfield=parse("Track & Field","womens-track-and-field");
+  assert.deepEqual(v_womenstrackandfield.map(line),[]);
+  const v_menstrack=parse("Track & Field","mens-track");
+  assert.deepEqual(v_menstrack.map(line),[]);
   const v_wvball=parse("Volleyball","wvball");
   assert.deepEqual(v_wvball.map(line),[
  "Final Aug 28 North Alabama vs Alabama State | W, 3-0",
@@ -307,7 +309,8 @@ void [parse,line,ownRecapsOnly,live];
   ownRecapsOnly(v_softball,"Softball softball");
   ownRecapsOnly(v_womenstennis,"Tennis womens-tennis");
   ownRecapsOnly(v_menstennis,"Tennis mens-tennis");
-  ownRecapsOnly(v_trackandfield,"Track & Field track-and-field");
+  ownRecapsOnly(v_womenstrackandfield,"Track & Field womens-track-and-field");
+  ownRecapsOnly(v_menstrack,"Track & Field mens-track");
   ownRecapsOnly(v_wvball,"Volleyball wvball");
 }
 // END generated

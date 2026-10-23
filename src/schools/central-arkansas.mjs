@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const centralArkansasSchool={
   id:'central-arkansas',
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Central Arkansas's 2027 baseball roster and profiles publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Baseball']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
@@ -35,7 +38,7 @@ export const centralArkansasSchool={
   scheduleUrls:{
     'central-arkansas|Baseball':'https://ucasports.com/sports/baseball/schedule',
     'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/schedule','https://ucasports.com/sports/womens-basketball/schedule'],
-    'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/beach-volleyball/schedule',
+    'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/womens-beach-volleyball/schedule',
     'central-arkansas|Cross Country':['https://ucasports.com/sports/womens-cross-country/schedule','https://ucasports.com/sports/cross-country/schedule'],
     'central-arkansas|Football':'https://ucasports.com/sports/football/schedule',
     'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/schedule','https://ucasports.com/sports/mens-golf/schedule'],
@@ -48,7 +51,7 @@ export const centralArkansasSchool={
   rosterUrls:{
     'central-arkansas|Baseball':'https://ucasports.com/sports/baseball/roster',
     'central-arkansas|Basketball':['https://ucasports.com/sports/mens-basketball/roster','https://ucasports.com/sports/womens-basketball/roster'],
-    'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/beach-volleyball/roster',
+    'central-arkansas|Beach Volleyball':'https://ucasports.com/sports/womens-beach-volleyball/roster',
     'central-arkansas|Cross Country':['https://ucasports.com/sports/womens-cross-country/roster','https://ucasports.com/sports/cross-country/roster'],
     'central-arkansas|Football':'https://ucasports.com/sports/football/roster',
     'central-arkansas|Golf':['https://ucasports.com/sports/womens-golf/roster','https://ucasports.com/sports/mens-golf/roster'],

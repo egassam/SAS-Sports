@@ -41,8 +41,11 @@ Checked through the branch preview's `/api/source` (the same network as producti
 | Bradley | Missouri Valley | bradleybraves.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
 | Drake | Missouri Valley | godrakebulldogs.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
 | UIC | Missouri Valley | uicflames.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
+| FGCU | ASUN | fgcuathletics.com | Oct 23, 2026 | Oct 23 (about 02:52, 03:11 and 03:30 UTC: homepage and volleyball schedule) | |
+| Stetson | ASUN | gohatters.com | Oct 23, 2026 | Oct 23 (about 02:52, 03:11 and 03:30 UTC: homepage and volleyball schedule) | |
+| Little Rock | UAC | lrtrojans.com | Oct 23, 2026 | Oct 23 (about 03:21 UTC) | Not Imperva: lrtrojans.com's robots.txt reads `User-agent: *` / `Disallow: /`, and the Worker honors robots.txt (`x-sas-source: robots-disallowed`). The direct page answers 200. Recheck when the site changes its robots.txt. |
 
-The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked. Twelve of the thirteen American schools read (Oct 22, about 20:05 UTC); Wichita State is blocked. Eight of the eleven Missouri Valley schools read (Oct 23, about 01:47 UTC); Bradley, Drake and UIC are blocked.
+The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked. Twelve of the thirteen American schools read (Oct 22, about 20:05 UTC); Wichita State is blocked. Eight of the eleven Missouri Valley schools read (Oct 23, about 01:47 UTC); Bradley, Drake and UIC are blocked. Six of the eight ASUN schools read (Oct 23, about 02:52 UTC); FGCU and Stetson are blocked. Eight of the nine UAC schools read; Little Rock disallows every robot.
 
 Not blocked, for contrast: many SIDEARM sites behind Imperva answer the build sandbox with 403 but let the Worker read them (Ohio State, Louisville, Creighton, Marquette, UConn, Xavier, Montana State, Northern Arizona and others). Those are built normally through the private source route.
 

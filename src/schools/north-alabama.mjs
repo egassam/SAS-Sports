@@ -10,6 +10,9 @@ export const northAlabamaSchool={
   // The school's INFLCR Exchange, its official NIL marketplace (linked from
   // roarlions.com): athlete Instagram for a sport still short of three (src/inflcr.mjs).
   inflcr:{school:'university-of-north-alabama'},
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // North Alabama's basketball, beach volleyball, tennis and track rosters publish no portraits (Oct 23).
+  portraitlessProfileSports:new Set(['Basketball','Beach Volleyball','Tennis','Track & Field']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
@@ -27,7 +30,7 @@ export const northAlabamaSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'north-alabama|Baseball':'https://roarlions.com/sports/baseball/schedule',
@@ -39,7 +42,7 @@ export const northAlabamaSchool={
     'north-alabama|Soccer':'https://roarlions.com/sports/womens-soccer/schedule',
     'north-alabama|Softball':'https://roarlions.com/sports/softball/schedule',
     'north-alabama|Tennis':['https://roarlions.com/sports/womens-tennis/schedule','https://roarlions.com/sports/mens-tennis/schedule'],
-    'north-alabama|Track & Field':'https://roarlions.com/sports/track-and-field/schedule',
+    'north-alabama|Track & Field':['https://roarlions.com/sports/womens-track-and-field/schedule','https://roarlions.com/sports/mens-track/schedule'],
     'north-alabama|Volleyball':'https://roarlions.com/sports/wvball/schedule'
   },
   rosterUrls:{
@@ -52,7 +55,7 @@ export const northAlabamaSchool={
     'north-alabama|Soccer':'https://roarlions.com/sports/womens-soccer/roster',
     'north-alabama|Softball':'https://roarlions.com/sports/softball/roster',
     'north-alabama|Tennis':['https://roarlions.com/sports/womens-tennis/roster','https://roarlions.com/sports/mens-tennis/roster'],
-    'north-alabama|Track & Field':'https://roarlions.com/sports/track-and-field/roster',
+    'north-alabama|Track & Field':['https://roarlions.com/sports/womens-track-and-field/roster','https://roarlions.com/sports/mens-track/roster'],
     'north-alabama|Volleyball':'https://roarlions.com/sports/wvball/roster'
   }
 };

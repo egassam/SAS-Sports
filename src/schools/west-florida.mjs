@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const westFloridaSchool={
   id:'west-florida',
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // West Florida's tennis profiles share one site image (Oct 23).
+  portraitlessProfileSports:new Set(['Tennis']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
@@ -337,8 +340,9 @@ export function createWestFloridaHandlers({makeEvent,recapMatchesEvent,eventType
     tennisNeedsStory:false,
     // A meet keeps a story another meet also links only when the story names it.
     afterEvent(event,{sport,game,games}){
-      // Sports in other leagues (none named yet); the page data marks their league games.
-      const league={}[sport];
+      // Sports in other leagues (football plays in the UAC, whose games the page
+      // marks; swimming names no league); the page data marks their league games.
+      const league={'Football':'UAC'}[sport];
       if(league)event.conference_name=league;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;

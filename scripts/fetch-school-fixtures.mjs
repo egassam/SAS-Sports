@@ -76,7 +76,7 @@ const TEAM_CODES={Basketball:['wbball','mbball'],'Cross Country':['wcross','mcro
 const perSport=await mapLimit(sports,6,async sport=>{
   const summary=[];
   const titles=new Set();
-  let kept=false,template=null,generic=null;
+  let kept=false,template=null,generic=null;const droppedBefore=dropped.length;
   for(const url of worker.candidateUrls(school,sport)){
     const path=new URL(url).pathname,slug=(path.match(/^\/sports?\/([^/]+)\/schedule/)||[])[1]||apiSlug(url);
     if(!slug){summary.push(`${sport}: ${url} is not a schedule page (homepage?) — drop it from the routes`);dropped.push(url);continue}
@@ -195,7 +195,9 @@ const perSport=await mapLimit(sports,6,async sport=>{
     }
     if(teams.some(u=>/\/sports\/[mw][a-z]+\/schedule$/.test(new URL(u).pathname)&&teams.length>1))summary.push(`${sport}: label the team code pages in teamLabels (${teams.map(u=>new URL(u).pathname).join(', ')})`);
     if(teams.length){dropped.push(template);teamRoutes.push({sport,template,teams});summary.push(`${sport}: the season is on the team pages ${teams.map(u=>new URL(u).pathname).join(', ')}${args.includes('--prune')?' (routes moved; fixtures fetched again)':' — use them (--prune moves the routes)'}`);}
-    else if(!notPublished){dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: NO SCHEDULE PAGE among the routes (${new URL(template).pathname} is not one) — set the route from the site's menu (scripts/set-sport-routes.mjs)`);}
+    // Every route stays (North Alabama's men's track roster, Oct 23, went
+    // with its schedule address).
+    else if(!notPublished){dropped.splice(droppedBefore);summary.push(`${sport}: NO SCHEDULE PAGE among the routes (${new URL(template).pathname} is not one) — set the route from the site's menu (scripts/set-sport-routes.mjs)`);}
     else{dropped.splice(dropped.indexOf(template),1);summary.push(`${sport}: kept ${new URL(template).pathname} (not published yet; fills when published)`);}
   }
   return summary;

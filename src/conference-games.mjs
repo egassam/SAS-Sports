@@ -65,6 +65,9 @@ const AFFILIATES={'Big West':[{names:['hawaii','hawai i','rainbow warriors','rai
   // ASUN lacrosse's outside members (Queens's and Bellarmine's conference
   // schedules, Oct 23): men's Air Force, Utah, Mercer; women's Kennesaw State,
   // Austin Peay (UAC), Lindenwood, Coastal Carolina, Delaware, Liberty.
+  // UAC football's outside member: West Florida (ASUN), Austin Peay's and its
+  // own conference schedules, Oct 23.
+  'UAC':[{names:['west florida','uwf','university of west florida'],id:'west-florida',teams:{'Football':/\/sports\/football\//}}],
   'ASUN':[{names:['air force', 'air force academy'],id:'air-force',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['utah', 'university of utah'],id:'utah',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['mercer', 'mercer university'],id:'mercer',teams:{'Lacrosse':/\/sports\/(?:mens-lacrosse|mlax)\//}},{names:['kennesaw state', 'kennesaw state university'],id:'kennesaw-state',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['austin peay', 'austin peay university', 'austin peay state university', 'apsu'],id:'austin-peay',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['lindenwood', 'lindenwood university'],id:'lindenwood',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['coastal carolina', 'coastal carolina university'],id:'coastal-carolina',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['delaware', 'university of delaware'],id:'delaware',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}},{names:['liberty', 'liberty university'],id:'liberty',teams:{'Lacrosse':/\/sports\/(?:womens-lacrosse|wlax)\//}}]};
 
 // Sports a conference does not sponsor (2026-27). A team in one plays no
