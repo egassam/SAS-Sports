@@ -25,4 +25,8 @@ assert.match(read('../src/sidearm-schedule-reader.mjs'),/const bare=name=>String
 // Delaware State women's soccer counts its NEC opponents (the page marks none).
 assert.match(read('../src/schools/delaware-state.mjs'),/if\(sport==='Soccer'&&event\.opponent&&game\?\.type!=='S'\)event\.conference_game=NEC_SOCCER\.test/);
 
+// SC State marks MEAC games with an asterisk on the opponent ("Norfolk
+// State*"): not part of the name.
+assert.match(read('../src/schools/south-carolina-state.mjs'),/opponent=String\(opponent\)\.replace\(\/\\s\*\\\*\+\$\/,''\);/);
+
 console.log('MEAC shared checks passed');

@@ -170,11 +170,11 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 26 SC State at Bethune-Cookman | W, 31-21",
  "Final Oct 3 SC State vs The Citadel | L, 31-34",
  "Final Oct 10 SC State at Charleston Southern | L, 39-49",
- "Upcoming Oct 24, 1:30 PM SC State vs Norfolk State* | ",
- "Upcoming Oct 29, 7:00 PM SC State at Morgan State* | ",
- "Upcoming Nov 5, 7:30 PM SC State at Howard* | ",
- "Upcoming Nov 14, 1:30 PM SC State vs North Carolina Central* | ",
- "Upcoming Nov 21, 1:30 PM SC State vs Delaware State* | "
+ "Upcoming Oct 24, 1:30 PM SC State vs Norfolk State | ",
+ "Upcoming Oct 29, 7:00 PM SC State at Morgan State | ",
+ "Upcoming Nov 5, 7:30 PM SC State at Howard | ",
+ "Upcoming Nov 14, 1:30 PM SC State vs North Carolina Central | ",
+ "Upcoming Nov 21, 1:30 PM SC State vs Delaware State | "
 ]);
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[]);

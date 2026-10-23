@@ -229,6 +229,9 @@ export function createSouthCarolinaStateHandlers({makeEvent,recapMatchesEvent,ev
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // The page marks MEAC games with an asterisk ("Norfolk State*"): not
+      // part of the name (membership counts the league's games).
+      opponent=String(opponent).replace(/\s*\*+$/,'');
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },

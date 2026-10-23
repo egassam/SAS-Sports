@@ -6,7 +6,7 @@ Sports (9): Basketball, Cross Country, Football, Golf, Soccer, Softball, Tennis,
 
 ## Rules
 
-- Every South Carolina State sport is a MEAC sport. The site answers from www.scsuathletics.com, which the shared reader treats as the same site. Golf is women's only (the men's page is 2009). Track reads the women's (2025) and men's (2026-27) schedules; its roster is the women's (the men's answers 404). The basketball rosters publish no player portraits, so profiles without one fill the slots.
+- Every South Carolina State sport is a MEAC sport. The site answers from www.scsuathletics.com, which the shared reader treats as the same site. Golf is women's only (the men's page is 2009). Track reads the women's (2025) and men's (2026-27) schedules; its roster is the women's (the men's answers 404). The basketball rosters publish no player portraits, so profiles without one fill the slots. The page marks MEAC games with an asterisk on the opponent ("Norfolk State*"), dropped from the name.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the MEAC sponsors football, basketball, softball, volleyball, women's soccer, bowling, tennis, cross country and track, but no baseball (its members play in the NEC, as their pages mark it), lacrosse, swimming, wrestling, hockey, rowing or field hockey.
 - Shared MEAC rules (`tests/meac-shared.mjs`): NEC baseball, a site's www host, story headlines in result lines, teams that did not race.
