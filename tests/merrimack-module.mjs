@@ -215,7 +215,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_mensicehockey=parse("Hockey","mens-ice-hockey");
   assert.deepEqual(v_mensicehockey.map(line),[
- "Final Oct 2 Men's · Merrimack at Sacred Heart | W, 3-1",
+ "Final Oct 2 Men's · Merrimack at Sacred Heart (Exhibition) | W, 3-1",
  "Final Oct 3 Men's · Merrimack at Quinnipiac | L, 3-6",
  "Final Oct 8 Men's · Merrimack vs New Hampshire | T, 3-3",
  "Final Oct 16 Men's · Merrimack vs Minnesota State University, Mankato | W, 4-3",
@@ -253,7 +253,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_womensicehockey=parse("Hockey","womens-ice-hockey");
   assert.deepEqual(v_womensicehockey.map(line),[
- "Final Sep 19 Women's · Merrimack vs Stonehill College | W, 7-1",
+ "Final Sep 19 Women's · Merrimack vs Stonehill College (Exhibition) | W, 7-1",
  "Final Sep 24 Women's · Merrimack vs Lindenwood | L, 2-3",
  "Final Sep 25 Women's · Merrimack vs Lindenwood | W, 3-0",
  "Final Oct 2 Women's · Merrimack vs Union College | L, 2-4",

@@ -156,7 +156,10 @@ function elementEnd(text,start,tag){
 // A promotion line that makes the game an exhibition.
 const CONFERENCE_CELL=/<span\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*[^<\s]/;
 const CONFERENCE_LOGO=/<div\b[^>]*class="sidearm-schedule-game-conference[\s"][^>]*>\s*<span\b[^>]*>\s*<img\b/;
-const EXHIBITION_PROMOTION=/^(?:exhibition\b|exh\.?$|(?:pre-?season\s+)?friendly\b|scrimmage\b)/i;
+// A bare "PRESEASON" promotion is an exhibition too (Merrimack hockey's
+// openers, Oct 2 and Sep 19: the page's record leaves them out); "Preseason
+// NIT" is not.
+const EXHIBITION_PROMOTION=/^(?:exhibition\b|exh\.?$|(?:pre-?season\s+)?friendly\b|scrimmage\b|pre-?season$)/i;
 function classBlock(html,name,tag='[a-z][a-z0-9]*'){
   const open=new RegExp(`<(${tag})\\b[^>]*\\bclass="${name}(?:\\s[^"]*)?"[^>]*>`,'i').exec(html);
   if(!open)return'';

@@ -2,6 +2,8 @@
 // name, as its members' pages mark it), Oct 23.
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {sidearmScheduleGames} from '../src/sidearm-schedule-data.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const catalog=JSON.parse(read('../src/schools.json'));
 
@@ -24,5 +26,12 @@ assert.match(read('../src/schools/sacred-heart.mjs'),/\?'NEWHA':'Atlantic Hockey
 // Siena's acrobatics season is unpublished: its address answers with the
 // homepage, read as an empty schedule (North Alabama's rule).
 assert.match(read('../src/schools/siena.mjs'),/const unpublished=args\[2\]==='Acrobatics & Tumbling'/);
+
+// A bare "PRESEASON" promotion is an exhibition (Merrimack hockey's
+// openers; the page's record leaves them out). Mutation: without it the app
+// counts one win more than the page.
+const merrimack=file=>sidearmScheduleGames(gunzipSync(readFileSync(new URL(`./fixtures/merrimack-module/${file}`,import.meta.url))).toString('utf8'));
+assert.deepEqual(merrimack('mens-ice-hockey-schedule.html.gz').filter(game=>game.type==='S').map(game=>game.opponent.title),['Sacred Heart University']);
+assert.deepEqual(merrimack('womens-ice-hockey-schedule.html.gz').filter(game=>game.type==='S').map(game=>game.opponent.title),['Stonehill College']);
 
 console.log('Metro Conference shared checks passed');
