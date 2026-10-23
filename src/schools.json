@@ -5455,6 +5455,27 @@
     ]
   },
   {
+    "id": "northern-illinois",
+    "name": "Northern Illinois",
+    "short_name": "NIU",
+    "state": "Illinois",
+    "conference": "Horizon League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://niuhuskies.com",
+    "aliases": [
+      "Northern Illinois University",
+      "NIU",
+      "Huskies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "niuhuskies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",
