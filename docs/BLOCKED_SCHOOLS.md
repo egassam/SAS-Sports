@@ -38,8 +38,11 @@ Checked through the branch preview's `/api/source` (the same network as producti
 | Loyola Chicago | Atlantic 10 | loyolaramblers.com | Oct 22, 2026 | Oct 22 (about 23:21, 23:36 and 23:47 UTC) | |
 | VCU | Atlantic 10 | vcuathletics.com | Oct 22, 2026 | Oct 22 (about 23:21, 23:36 and 23:47 UTC) | |
 | St. Bonaventure | Atlantic 10 | gobonnies.sbu.edu | Oct 22, 2026 | Oct 22 (about 23:21, 23:36 and 23:47 UTC) | Not Imperva's loop: the Worker gets HTTP 525 (Cloudflare could not complete a TLS handshake with the site) and the build sandbox's direct request gets no connection; the other ten Atlantic 10 schools read normally |
+| Bradley | Missouri Valley | bradleybraves.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
+| Drake | Missouri Valley | godrakebulldogs.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
+| UIC | Missouri Valley | uicflames.com | Oct 23, 2026 | Oct 23 (about 01:47, 02:07 and 02:27 UTC: homepage and volleyball schedule) | |
 
-The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked. Twelve of the thirteen American schools read (Oct 22, about 20:05 UTC); Wichita State is blocked.
+The twelve Big West schools (Oct 22, about 15:50 UTC) all read: none blocked. Twelve of the thirteen American schools read (Oct 22, about 20:05 UTC); Wichita State is blocked. Eight of the eleven Missouri Valley schools read (Oct 23, about 01:47 UTC); Bradley, Drake and UIC are blocked.
 
 Not blocked, for contrast: many SIDEARM sites behind Imperva answer the build sandbox with 403 but let the Worker read them (Ohio State, Louisville, Creighton, Marquette, UConn, Xavier, Montana State, Northern Arizona and others). Those are built normally through the private source route.
 
