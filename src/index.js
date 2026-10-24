@@ -303,7 +303,7 @@ import {vmiSchool,createVmiHandlers} from './schools/vmi.mjs';
 import {westernCarolinaSchool,createWesternCarolinaHandlers} from './schools/western-carolina.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.207.4-socon';
+const VERSION='4.208.0-southland';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

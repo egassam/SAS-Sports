@@ -9299,5 +9299,257 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "east-texas-am",
+    "name": "East Texas A&M",
+    "short_name": "East Texas A&M",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lionathletics.com",
+    "aliases": [
+      "East Texas A&M University",
+      "Texas A&M-Commerce",
+      "ETAMU",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lionathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "houston-christian",
+    "name": "Houston Christian",
+    "short_name": "Houston Christian",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://hcuhuskies.com",
+    "aliases": [
+      "Houston Christian University",
+      "HCU",
+      "Huskies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "hcuhuskies",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "incarnate-word",
+    "name": "Incarnate Word",
+    "short_name": "UIW",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uiwcardinals.com",
+    "aliases": [
+      "University of the Incarnate Word",
+      "UIW",
+      "Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uiwcardinals",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lamar",
+    "name": "Lamar",
+    "short_name": "Lamar",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lamarcardinals.com",
+    "aliases": [
+      "Lamar University",
+      "Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lamarcardinals",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "mcneese",
+    "name": "McNeese",
+    "short_name": "McNeese",
+    "state": "Louisiana",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://mcneesesports.com",
+    "aliases": [
+      "McNeese State University",
+      "McNeese State",
+      "Cowboys"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "mcneesesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "new-orleans",
+    "name": "New Orleans",
+    "short_name": "UNO",
+    "state": "Louisiana",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://unoprivateers.com",
+    "aliases": [
+      "University of New Orleans",
+      "UNO",
+      "Privateers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "unoprivateers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "nicholls",
+    "name": "Nicholls",
+    "short_name": "Nicholls",
+    "state": "Louisiana",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://geauxcolonels.com",
+    "aliases": [
+      "Nicholls State University",
+      "Nicholls State",
+      "Colonels"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "geauxcolonels",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northwestern-state",
+    "name": "Northwestern State",
+    "short_name": "NSU",
+    "state": "Louisiana",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://nsudemons.com",
+    "aliases": [
+      "Northwestern State University",
+      "Northwestern State (La.)",
+      "Demons"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "nsudemons",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southeastern-louisiana",
+    "name": "Southeastern Louisiana",
+    "short_name": "Southeastern",
+    "state": "Louisiana",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lionsports.net",
+    "aliases": [
+      "Southeastern Louisiana University",
+      "SLU",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lionsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "stephen-f-austin",
+    "name": "Stephen F. Austin",
+    "short_name": "SFA",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://sfajacks.com",
+    "aliases": [
+      "Stephen F. Austin State University",
+      "SFA",
+      "Lumberjacks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "sfajacks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "texas-am-corpus-christi",
+    "name": "Texas A&M-Corpus Christi",
+    "short_name": "Corpus Christi",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goislanders.com",
+    "aliases": [
+      "Texas A&M University-Corpus Christi",
+      "TAMUCC",
+      "Islanders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goislanders",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "utrgv",
+    "name": "UT Rio Grande Valley",
+    "short_name": "UTRGV",
+    "state": "Texas",
+    "conference": "Southland Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goutrgv.com",
+    "aliases": [
+      "The University of Texas Rio Grande Valley",
+      "UTRGV",
+      "Vaqueros"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goutrgv",
+        "provider_school_id": null
+      }
+    ]
   }
 ]
