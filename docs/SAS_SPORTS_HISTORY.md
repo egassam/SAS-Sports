@@ -3285,3 +3285,21 @@ Request: "Continue with adding two more conferences. Learn and optimize" (the fi
 - PR #415 merged as `395c2e2`; production `4.202.0-ovc` verified about 00:52 UTC Oct 24 (303 checks, none failed; Evansville golf passed; XC 18/20 and 26/21).
 - Lesson: one VERSION bump missed (the line had moved); bump by matching the line's text, not its number.
 - Next: Patriot League, then SoCon, Southland, Summit, SWAC.
+
+## October 24, 2026 — Patriot League (eight schools)
+
+Request: "Continue with adding two more conferences. Learn and optimize" (the second of the two, after the OVC).
+
+- Catalog: the ten Patriot League members. Colgate (colgateathletics.com) and Navy (navysports.com) answered Imperva's "Too many redirects" at about 00:59, 01:14 and 01:33 UTC: added to `docs/BLOCKED_SCHOOLS.md` (43 schools there now). No member's robots.txt disallows every robot.
+- Built with `start-schools` (ported from Evansville): American, Army, Boston University, Bucknell, Holy Cross, Lafayette, Lehigh, Loyola Maryland.
+- Routes: Army cross country gendered pages (the generic is 2023); Bucknell men's crew added; Lafayette swimming combined page (the men's address is 2018-19); Lehigh gendered swimming (the generic is 2009-10), men's rowing labelled (`rowing`), club hockey (ACHA) removed.
+- Conference: the Patriot League sponsors football, basketball, baseball, softball, soccer, volleyball, field hockey, lacrosse, golf, tennis, cross country, track, swimming and women's rowing. Every page marks its league games (the Nuxt pages too), so no affiliates were added. Leagues from the pages' names: Army football (American), hockey (Atlantic Hockey America), rifle (GARC), wrestling (EIWA), gymnastics (ECAC); EIWA wrestling at American, Bucknell, Lehigh; Hockey East at BU and Holy Cross women (AHA men); Bucknell water polo MAWPC (men) and CWPA (women).
+- Army: the men's Star Meet dual at Navy is written winner first ("L", 19-42; the lower score wins), now turned to "L, 42-19" (done in `merge`, which receives the sport; `listed` does not). Page type "X" is an exhibition (Royal Military College hockey). The Army Invitational's six unscored tennis sessions read as one tournament. The Commander-In-Chief's Cup golf story headline "Golf Claims ..." now reads 1st (shared `golfStoryPlace`; "Claims Third Place" and "Claims Medalist" still read nothing).
+- Formats: Bucknell water polo drops "(DIII)"; Lafayette's swimming "Winter Training Trip" is not listed. Bucknell's cross country home dual with Lafayette and Army's at Navy read as duals ("vs"/"at" the opponent).
+- Existing schools: with Bucknell and Lehigh in the catalog, the all-school survey flagged two host-named meets: Stonehill's Paul Short Run and Mount St. Mary's Bucknell Invitational now read by name (tests regenerated with their own clocks; each re-gated 36/36). No other existing school changed.
+- `compare-records`: Army hockey (app 3-1 with Oct 23 at Quinnipiac, page record not yet updated) and American women's soccer (the Oct 23 Navy result, matched once the page caught up) differed only by results the pages had not counted yet; Bucknell women's water polo's page is the finished spring season.
+- Athletes: profile-card fallbacks; Lafayette's 2026-27 track roster has no athlete portraits (portrait-less). 107/107 pass.
+- Checks: `npm test` passed (twice; the second after the kit change). Preview gate on 4.206.0-patriot: 324 checks, none failed. Checked by eye: Army hockey and cross country, Bucknell water polo, Holy Cross hockey. `test:release` passed on `f0946cc`; CI green.
+- PR #416 merged as `2c769bf`; production `4.206.0-patriot` verified about 03:04 UTC (324 checks, none failed; Stonehill cross country and Mount St. Mary's golf passed; XC 18/20 and 26/21).
+- User note during the session: "KSTATE basketball is not showing the live game ... It may not be live on anything." The men's exhibition vs Missouri (Oct 23, 7 p.m. CT) is on no live source: ESPN's college basketball scoreboard lists no games for Oct 23-24 (the season opens in November), and kstatesports.com links only tickets. The app shows it at the right time, marked as an exhibition, and reads the result when the page posts it. No change made.
+- Next: SoCon, Southland, Summit, SWAC.
