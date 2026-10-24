@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {createConferenceGames} from '../src/conference-games.mjs';
+import {golfStoryPlace} from '../src/sidearm-school-kit.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json'));
 const page=(id,slug)=>gunzipSync(readFileSync(new URL(`./fixtures/${id}-module/${slug}-schedule.html.gz`,import.meta.url))).toString('utf8');
@@ -31,6 +32,16 @@ assert.match(army,/result\.status==='L'&&mine<theirs\|\|result\.status==='W'&&mi
 assert.match(army,/game\.type==='X'\?\{\.\.\.game,type:'S'\}:game/);
 assert.match(army,/opponent:\{\.\.\.game\.opponent,title:String\(game\.tournament\.title\)\.trim\(\)\},tournament:null/);
 assert.match(army,/\{'Football':'American','Hockey':'Atlantic Hockey America','Rifle':'GARC','Wrestling':'EIWA','Gymnastics':'ECAC'\}\[sport\]/);
+
+// A golf headline that "Claims" a cup is a win (Army's Commander-In-Chief's
+// Cup, Oct 14); a claimed place or medal is not.
+{
+  const story=title=>`<html><head><meta property="og:title" content="${title}"></head><body><p>WEST POINT, N.Y. – The team played.</p></body></html>`;
+  const team="(?:Black Knights|Army|(?:Men's|Women's) Golf)";
+  assert.equal(golfStoryPlace(story("Golf Claims Commander-In-Chief's Cup at Oakmont"),{team}),'1st');
+  assert.equal(golfStoryPlace(story('Golf Claims Third Place at Rutgers'),{team}),null);
+  assert.equal(golfStoryPlace(story('Golf Claims Medalist Honors at Oakmont'),{team}),null);
+}
 
 // Leagues per team page; names and trips.
 assert.match(read('../src/schools/bucknell.mjs'),/mens-water-polo\\\/\/\.test\(url\?\.pathname\|\|''\)\?'MAWPC':'CWPA'/);

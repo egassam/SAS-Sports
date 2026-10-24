@@ -556,8 +556,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // Season Opener", "Golf Reigns Supreme at The Goat, Claims Team Title":
   // George Washington, Sep 13 and 20).
   const head=`(?:${team}|(?:Men's |Women's )?Golf)`;
-  // "Broncos Capture Bomb Darts Birds Collegiate ..." (Santa Clara, Sep 8).
-  if(new RegExp(`\\b${head}\\s+(?:Wins?|Captures?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
+  // "Broncos Capture Bomb Darts Birds Collegiate ..." (Santa Clara, Sep 8);
+  // "Golf Claims Commander-In-Chief's Cup at Oakmont" (Army, Oct 14).
+  if(new RegExp(`\\b${head}\\s+(?:Wins?|Captures?|Claims?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
   // "Demon Deacons Open Season with Team Title at ANNIKA Intercollegiate";
   // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
   if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
