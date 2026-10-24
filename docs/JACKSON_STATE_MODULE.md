@@ -18,7 +18,7 @@ Each rule has a check in `tests/jackson-state-module.mjs` (generated page blocks
 
 ## Athletes
 
-ATHLETES_jackson-state
+Roster cards, then official profiles, then the school's NIL marketplace (Opendorse (`jacksonstate-tigers`)). Instagram pins from the official rosters fill Golf and Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Football, Soccer, Softball, Tennis, Track & Field (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

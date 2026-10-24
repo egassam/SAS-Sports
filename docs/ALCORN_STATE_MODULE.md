@@ -16,7 +16,7 @@ Each rule has a check in `tests/alcorn-state-module.mjs` (generated page blocks)
 
 ## Athletes
 
-ATHLETES_alcorn-state
+Roster cards, then official profiles (no NIL marketplace linked from the site). The official rosters link no athlete Instagram; profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Football, Soccer, Softball, Tennis, Track & Field, Volleyball (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

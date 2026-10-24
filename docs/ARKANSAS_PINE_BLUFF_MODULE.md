@@ -17,7 +17,7 @@ Each rule has a check in `tests/arkansas-pine-bluff-module.mjs` (generated page 
 
 ## Athletes
 
-ATHLETES_arkansas-pine-bluff
+Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Softball and Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Football, Golf, Soccer, Track & Field, Volleyball (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The cross country rosters (2025) publish no portraits: profiles fill with initials (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

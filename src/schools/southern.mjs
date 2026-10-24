@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const southernSchool={
   id:'southern',
+  // Profiles without a published portrait fill the slots (the page shows
+  // initials): these rosters publish portraits for few athletes (Oct 24).
+  portraitlessProfileSports:new Set(['Golf','Track & Field']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
@@ -361,6 +364,11 @@ export function createSouthernHandlers({makeEvent,recapMatchesEvent,eventType=()
       // Sports in other leagues (none named yet); the page data marks their league games.
       const league={}[sport];
       if(league)event.conference_name=league;
+      // The Birmingham Football Classic (Alabama State vs Southern, Aug 29)
+      // opens the season outside the SWAC: both schools' records leave it
+      // out (Alabama State 2-2, Southern 1-2 in the SWAC, Oct 24). The Magic
+      // City Classic is a league game.
+      if(sport==='Football'&&/^birmingham football classic$/i.test(String(game.tournament?.title||'').trim()))event.conference_game=false;
       if(eventType(sport)!=='MEET'||!event.recap_url)return;
       const path=new URL(event.recap_url).pathname,linked=other=>other!==game&&other.result?.recap?.url&&new URL(other.result.recap.url,event.recap_url).pathname===path;
       const words=withoutRanking(game.opponent?.title).toLowerCase().split(/[^a-z0-9]+/).filter(word=>word.length>=3&&!MEET_WORDS.has(word));

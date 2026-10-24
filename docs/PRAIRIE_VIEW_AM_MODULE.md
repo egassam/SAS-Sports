@@ -18,7 +18,7 @@ Each rule has a check in `tests/prairie-view-am-module.mjs` (generated page bloc
 
 ## Athletes
 
-ATHLETES_prairie-view-am
+Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Basketball and Volleyball; profile cards fill the remaining slots in Baseball, Bowling, Cross Country, Football, Golf, Soccer, Softball, Track & Field (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The bowling roster publishes portraits for few athletes (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

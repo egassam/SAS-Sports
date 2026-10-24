@@ -16,7 +16,7 @@ Each rule has a check in `tests/bethune-cookman-module.mjs` (generated page bloc
 
 ## Athletes
 
-ATHLETES_bethune-cookman
+Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Baseball, Basketball, Cross Country, Football, Softball, Tennis, Track & Field and Volleyball; profile cards fill the remaining slots in Cross Country, Golf (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

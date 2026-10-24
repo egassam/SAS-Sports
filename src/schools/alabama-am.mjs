@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const alabamaAmSchool={
   id:'alabama-am',
+  // Profiles without a published portrait fill the slots (the page shows
+  // initials): these rosters publish portraits for few athletes (Oct 24).
+  portraitlessProfileSports:new Set(['Baseball','Bowling','Softball']),
   // The school's INFLCR Exchange, its official NIL marketplace (linked from
   // aamusports.com): athlete Instagram for a sport still short of three (src/inflcr.mjs).
   inflcr:{school:'alabama-am-university'},

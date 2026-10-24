@@ -7,6 +7,9 @@ import {sidearmStartTimeText,mergeTournamentRounds,mergeMeetDays,mergeTbaBracket
 // scripts/scaffold-school.mjs); each sport is then corrected and verified.
 export const arkansasPineBluffSchool={
   id:'arkansas-pine-bluff',
+  // Profiles without a published portrait fill the slots (the page shows
+  // initials): these rosters publish portraits for few athletes (Oct 24).
+  portraitlessProfileSports:new Set(['Cross Country']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.

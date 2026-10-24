@@ -13,12 +13,13 @@ Sports (11): Baseball, Basketball, Bowling, Cross Country, Football, Golf, Socce
 - Routes were set from the site's menu (`scripts/audit-routes.mjs`, `scripts/set-sport-routes.mjs`).
 - Volleyball matches before the last Friday of August are exhibitions (from the Southland port).
 - Conference: the SWAC (2026-27: Alabama A&M, Alabama State, Alcorn State, Bethune-Cookman, Florida A&M, Jackson State, Mississippi Valley State, Arkansas-Pine Bluff, Grambling State, Prairie View A&M, Southern, Texas Southern; Grambling State and Texas Southern are blocked, `docs/BLOCKED_SCHOOLS.md`) sponsors football, basketball, baseball, softball, volleyball, women's soccer, bowling, golf, tennis, cross country and track, but no swimming, wrestling, lacrosse or hockey; the members' pages mark their league games, and opponents are matched by the names they write ("AAMU", "Alcorn", "B-CU", "FAMU", "MVSU", "UAPB", "Arkansas - Pine Bluff", "Grambling", "Prairie View", "Southern (La.)"; "JSU" and "TSU" are not used, since they are also Jacksonville State and Tennessee State).
+- The Birmingham Football Classic (Alabama State vs Southern, Aug 29) is outside the SWAC: both schools' records leave it out (Southern 1-2 in the SWAC, Oct 24).
 
 Each rule has a check in `tests/southern-module.mjs` (generated page blocks) or `tests/swac-shared.mjs`.
 
 ## Athletes
 
-ATHLETES_southern
+Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Soccer, Softball and Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Football, Golf, Tennis, Track & Field (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The golf and track rosters publish portraits for few athletes (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

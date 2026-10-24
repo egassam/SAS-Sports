@@ -17,7 +17,7 @@ Each rule has a check in `tests/mississippi-valley-state-module.mjs` (generated 
 
 ## Athletes
 
-ATHLETES_mississippi-valley-state
+Roster cards, then official profiles (no NIL marketplace linked from the site). The official rosters link no athlete Instagram; profile cards fill the remaining slots in Basketball, Cross Country, Football, Tennis, Track & Field, Volleyball (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Baseball and Softball are off the athlete list: their 2027 rosters list coaches only (Oct 24), as at Indiana State and Oregon; they return when players are published. Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

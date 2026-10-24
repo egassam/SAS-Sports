@@ -74,4 +74,9 @@ for(const id of ['alabama-am','alabama-state','florida-am','jackson-state','prai
   assert.deepEqual(['Southern finished fifth','the Jags placed','Southern Miss won','Texas Southern finished'].map(text=>named.test(text)),[true,true,false,false]);
 }
 
+// The Birmingham Football Classic (Alabama State vs Southern, Aug 29) is
+// outside the SWAC in both schools' records.
+for(const id of ['alabama-state','southern'])
+  assert.match(read(`../src/schools/${id}.mjs`),/sport==='Football'&&\/\^birmingham football classic\$\/i\.test\(String\(game\.tournament\?\.title\|\|''\)\.trim\(\)\)\)event\.conference_game=false/);
+
 console.log('SWAC shared checks passed');

@@ -19,9 +19,11 @@ Each rule has a check in `tests/alabama-am-module.mjs` (generated page blocks) o
 
 ## Athletes
 
-ATHLETES_alabama-am
+Roster cards, then official profiles, then the school's NIL marketplace (InFLCR (`alabama-am-university`)). Instagram pins from the official rosters fill Baseball, Basketball, Soccer, Softball and Volleyball; profile cards fill the remaining slots in Baseball, Bowling, Cross Country, Football, Golf, Softball, Tennis, Track & Field (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Baseball, Bowling and Softball rosters publish portraits for few athletes: those profiles fill with initials (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
+
+- Volleyball's page header reads "Conf 8-2" (Oct 24); its rows show nine SWAC matches (7-2) and mark none as conference games, so the app reads 7-2 by membership. The page's header is the source's own count.
 
 - Sports whose 2026-27 season is not yet published fill when it is.
 - First live cards not yet observed.

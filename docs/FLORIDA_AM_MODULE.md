@@ -17,7 +17,7 @@ Each rule has a check in `tests/florida-am-module.mjs` (generated page blocks) o
 
 ## Athletes
 
-ATHLETES_florida-am
+Roster cards, then official profiles, then the school's NIL marketplace (InFLCR (`florida-am-university`)). Instagram pins from the official rosters fill Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Golf, Softball, Tennis, Track & Field, Volleyball (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 
