@@ -1606,6 +1606,16 @@
     "Track & Field",
     "Volleyball"
   ],
+  "kansas-city": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "kansas-city-chiefs": [
     "Football"
   ],
@@ -2562,6 +2572,18 @@
     "Volleyball",
     "Wrestling"
   ],
+  "north-dakota-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "north-florida": [
     "Baseball",
     "Basketball",
@@ -2767,6 +2789,19 @@
     "Rifle",
     "Soccer",
     "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "omaha": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
     "Tennis",
     "Track & Field",
     "Volleyball"
@@ -3407,6 +3442,33 @@
     "Track & Field",
     "Volleyball"
   ],
+  "south-dakota": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Triathlon",
+    "Volleyball"
+  ],
+  "south-dakota-state": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Equestrian",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "south-florida": [
     "Baseball",
     "Basketball",
@@ -3515,6 +3577,20 @@
   ],
   "st-louis-city": [
     "Soccer"
+  ],
+  "st-thomas": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
   ],
   "stanford": [
     "Baseball",

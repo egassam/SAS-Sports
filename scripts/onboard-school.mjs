@@ -57,6 +57,23 @@ export function discoverLinks(html,base){
 // a 75th-anniversary landing page without the splash.aspx link).
 export function isSidearmSplash(html){const text=String(html||'');return(/splash\.aspx\?skip=true/.test(text)||/sidearm/i.test(text))&&!/href="[^"]*\/sports\/[a-z-]+/.test(text);}
 
+// A combined sport whose team pages are named by code (`wcross`/`mcross`,
+// `mswim`) needs each page's team named in the module's teamLabels (Oct 24:
+// St. Thomas's and Omaha's pages read unlabeled, and per-team cross country
+// listed both teams' races on each); gendered slugs (`womens-golf`) are read
+// by the Worker. Returns the module text with the labels written.
+export function labelCodedTeamPages(text){
+  const combined=new Set(((text.match(/combinedSports:new Set\(\[([^\]]*)\]\)/)||[])[1]||'').split(',').map(s=>s.trim().replace(/^'|'$/g,'')).filter(Boolean));
+  const block=(text.match(/scheduleUrls:\{\n([\s\S]*?)\n  \}/)||[])[1]||'';
+  const codeTeam=slug=>/^(?:mens|womens)-/.test(slug)?null:(slug.match(/^([mw])[a-z]{2,}$/)||[])[1];
+  const coded=[...block.matchAll(/'[^|]+\|([^']+)':\[([^\]]*)\]/g)].filter(([,sport])=>combined.has(sport)).flatMap(([,,list])=>[...list.matchAll(/\/sports\/([^/]+)\/schedule/g)].map(m=>m[1])).filter(codeTeam);
+  if(!coded.length)return text;
+  const entries=coded.map(slug=>`'/sports/${slug}/schedule':${codeTeam(slug)==='w'?`"Women's"`:`"Men's"`}`);
+  const existing=text.match(/  teamLabels:\{([^}]*)\},\n/);
+  if(existing){const kept=existing[1].split(/,(?=')/).filter(e=>e&&!coded.some(slug=>e.startsWith(`'/sports/${slug}/schedule'`)));return text.replace(existing[0],`  teamLabels:{${[...kept,...entries].join(',')}},\n`);}
+  return text.replace(/(  combinedSports:new Set\(\[[^\]]*\]\),\n)/,`$1  // The site names team pages by code: each page's team.\n  teamLabels:{${entries.join(',')}},\n`);
+}
+
 export function inferSport(url){
   const value=String(url||'').toLowerCase();
   for(const [sport,slugs] of Object.entries(SPORT_SLUGS)){

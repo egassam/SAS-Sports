@@ -8,10 +8,12 @@
 // homepage, an old season or SIDEARM's empty template).
 //   node scripts/set-sport-routes.mjs <id> set "<Sport>" <slug>[,<slug>...]
 //   node scripts/set-sport-routes.mjs <id> remove "<Sport>"
-// Two slugs make the sport combined (labeled by team). Fetch the new pages
+// Two slugs make the sport combined (labeled by team; code slugs such as
+// `wcross` get teamLabels). Fetch the new pages
 // after (scripts/fetch-school-fixtures.mjs --sports=) and regenerate the
 // module's tests.
 import {readFileSync,writeFileSync} from 'node:fs';
+import {labelCodedTeamPages} from './onboard-school.mjs';
 
 const [id,op,sport,slugList]=process.argv.slice(2);
 if(!id||!['set','remove'].includes(op)||!sport||op==='set'&&!slugList){console.error('usage: set-sport-routes.mjs <id> (set <Sport> <slug>[,<slug>] | remove <Sport>)');process.exit(2)}
@@ -35,6 +37,7 @@ if(op==='remove')mod=mod.split('\n').filter(l=>!l.trim().startsWith(`'${id}|${sp
 const setOf=(text,name,update)=>text.replace(new RegExp(`${name}:new Set\\(\\[([^\\]]*)\\]\\)`),(all,list)=>{const items=new Set(list.split(',').map(x=>x.trim().replace(/^'|'$/g,'')).filter(Boolean));update(items);return`${name}:new Set([${[...items].sort().map(x=>`'${x}'`).join(',')}])`;});
 mod=setOf(mod,'pageDataSports',items=>op==='remove'?items.delete(sport):items.add(sport));
 mod=setOf(mod,'combinedSports',items=>slugs.length>1?items.add(sport):items.delete(sport));
+mod=labelCodedTeamPages(mod);
 write(`src/schools/${id}.mjs`,mod);
 const sponsored=JSON.parse(read('src/sponsored-sports.json'));
 sponsored[id]=[...new Set(op==='remove'?sponsored[id].filter(s=>s!==sport):[...sponsored[id],sport])].sort();

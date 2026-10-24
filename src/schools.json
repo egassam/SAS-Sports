@@ -9552,5 +9552,177 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "kansas-city",
+    "name": "Kansas City",
+    "short_name": "Kansas City",
+    "state": "Missouri",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://kcroos.com",
+    "aliases": [
+      "University of Missouri-Kansas City",
+      "UMKC",
+      "Kansas City Roos",
+      "Roos"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "kcroos",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "north-dakota",
+    "name": "North Dakota",
+    "short_name": "North Dakota",
+    "state": "North Dakota",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://fightinghawks.com",
+    "aliases": [
+      "University of North Dakota",
+      "UND",
+      "Fighting Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "fightinghawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "north-dakota-state",
+    "name": "North Dakota State",
+    "short_name": "North Dakota State",
+    "state": "North Dakota",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gobison.com",
+    "aliases": [
+      "North Dakota State University",
+      "NDSU",
+      "Bison"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gobison",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "omaha",
+    "name": "Omaha",
+    "short_name": "Omaha",
+    "state": "Nebraska",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://omahamavs.com",
+    "aliases": [
+      "University of Nebraska Omaha",
+      "Nebraska Omaha",
+      "UNO",
+      "Mavericks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "omahamavs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "oral-roberts",
+    "name": "Oral Roberts",
+    "short_name": "Oral Roberts",
+    "state": "Oklahoma",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://oruathletics.com",
+    "aliases": [
+      "Oral Roberts University",
+      "ORU",
+      "Golden Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "oruathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "south-dakota",
+    "name": "South Dakota",
+    "short_name": "South Dakota",
+    "state": "South Dakota",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goyotes.com",
+    "aliases": [
+      "University of South Dakota",
+      "USD",
+      "Coyotes"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goyotes",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "south-dakota-state",
+    "name": "South Dakota State",
+    "short_name": "South Dakota State",
+    "state": "South Dakota",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gojacks.com",
+    "aliases": [
+      "South Dakota State University",
+      "SDSU",
+      "Jackrabbits"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gojacks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "st-thomas",
+    "name": "St. Thomas",
+    "short_name": "St. Thomas",
+    "state": "Minnesota",
+    "conference": "Summit League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tommiesports.com",
+    "aliases": [
+      "University of St. Thomas",
+      "St. Thomas (MN)",
+      "St. Thomas (Minn.)",
+      "Saint Thomas",
+      "Tommies"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tommiesports",
+        "provider_school_id": null
+      }
+    ]
   }
 ]

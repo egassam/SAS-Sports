@@ -27,6 +27,10 @@ function pageRecord(raw){
   const m=text(raw).match(/Overall\s*(\d+)-(\d+)(?:-(\d+))?.{0,80}?Conf(?:erence)?\s*(\d+)-(\d+)(?:-(\d+))?/);
   return m?{overall:[m[1],m[2],m[3]||0].map(Number),conference:[m[4],m[5],m[6]||0].map(Number)}:null;
 }
+const moduleText=id=>readFileSync(new URL(`../src/schools/${id}.mjs`,import.meta.url),'utf8');
+const moduleSport=(id,slug)=>{const block=(moduleText(id).match(/scheduleUrls:\{\n([\s\S]*?)\n  \}/)||[])[1]||'';const hit=[...block.matchAll(/'[^|]+\|([^']+)':(\[[^\]]*\]|'[^']*')/g)].find(([,,list])=>list.includes(`/sports/${slug}/schedule`));return hit?.[1]||null};
+const moduleLabel=(id,slug)=>(moduleText(id).match(new RegExp(`'/sports/${slug}/schedule':"((?:Wo)?[Mm]en's)"`))||[])[1]||null;
+const GAME_SPORTS=new Set(Object.values(SPORTS));
 const feeds=new Map();
 async function records(id,sport){
   const key=`${id}|${sport}`;
@@ -48,10 +52,13 @@ for(const id of ids){
   const dir=new URL(`../tests/fixtures/${id}-module/`,import.meta.url);
   if(!existsSync(dir)){console.log(`${id}: no fixtures`);continue}
   for(const file of readdirSync(dir).filter(f=>f.endsWith('-schedule.html.gz')).sort()){
-    const slug=file.replace(/-schedule\.html\.gz$/,''),sport=SPORTS[slug];if(!sport)continue;
+    // A page named by code (St. Thomas's `wsoc`, `mhockey`) takes its sport
+    // from the module's routes and its team from teamLabels (Oct 24: they
+    // were skipped).
+    const slug=file.replace(/-schedule\.html\.gz$/,''),sport=SPORTS[slug]||moduleSport(id,slug);if(!sport||!GAME_SPORTS.has(sport))continue;
     const page=pageRecord(await livePage(id,slug)??gunzipSync(readFileSync(new URL(file,dir))).toString('utf8'));
     if(!page){console.log(`-    ${id} ${slug}: the page publishes no record`);continue}
-    const list=await records(id,sport),label=/^womens/.test(slug)?"Women's":/^mens/.test(slug)?"Men's":null;
+    const list=await records(id,sport),label=/^womens/.test(slug)?"Women's":/^mens/.test(slug)?"Men's":moduleLabel(id,slug);
     // A team's page matches only that team's record (NJIT, Oct 23: the
     // women's 1-19 was compared with the men's page).
     const rec=label?list.find(r=>r.team_label===label)||(list.length===1&&!list[0].team_label?list[0]:null):list.length===1?list[0]:list.find(r=>!r.team_label);
