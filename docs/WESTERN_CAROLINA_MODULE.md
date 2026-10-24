@@ -14,7 +14,7 @@ Each rule has a check in `tests/western-carolina-module.mjs` (generated page blo
 
 ## Athletes
 
-Roster cards, then official profiles. Profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Football, Golf, Soccer, Softball, Tennis, Track & Field, Volleyball (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
+Roster cards, then official profiles. Profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Football, Golf, Soccer, Softball, Tennis, Track & Field, Volleyball (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`); the tennis roster's portraits load lazily with no alt text, so its profiles fill without portraits (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 

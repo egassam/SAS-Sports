@@ -25,6 +25,9 @@ export const westernCarolinaSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf']),
+  // The tennis roster's portraits load lazily with no alt text; its
+  // profiles fill the athlete slots.
+  portraitlessProfileSports:new Set(['Tennis']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'western-carolina|Baseball':'https://catamountsports.com/sports/baseball/schedule',
