@@ -59,6 +59,17 @@
     "Track & Field",
     "Volleyball"
   ],
+  "american": [
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
   "anthony-ms-ks": [
     "Cross Country",
     "Football",
@@ -129,6 +140,24 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "army": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Hockey",
+    "Lacrosse",
+    "Rifle",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "athletics": [
     "Baseball"
@@ -285,6 +314,20 @@
   "boston-red-sox": [
     "Baseball"
   ],
+  "boston-university": [
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field"
+  ],
   "bowling-green": [
     "Baseball",
     "Basketball",
@@ -337,6 +380,24 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "bucknell": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Water Polo",
+    "Wrestling"
   ],
   "buffalo": [
     "Basketball",
@@ -1249,6 +1310,23 @@
     "Volleyball",
     "Wrestling"
   ],
+  "holy-cross": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Hockey",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "houston": [
     "Baseball",
     "Basketball",
@@ -1521,6 +1599,22 @@
     "Triathlon",
     "Water Polo"
   ],
+  "lafayette": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
   "lafc": [
     "Soccer"
   ],
@@ -1540,6 +1634,23 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "lehigh": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Field Hockey",
+    "Football",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ],
   "liberty": [
     "Baseball",
@@ -1679,6 +1790,18 @@
     "Rowing",
     "Soccer",
     "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "loyola-maryland": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Lacrosse",
+    "Rowing",
+    "Soccer",
     "Swimming & Diving",
     "Tennis",
     "Track & Field",
