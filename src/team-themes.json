@@ -31,6 +31,14 @@
     "line": "#824052",
     "onAccent": "#ffffff"
   },
+  "american": {
+    "primary": "#C8102E",
+    "secondary": "#002D72",
+    "panel": "#350c17",
+    "panelDark": "#19060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
   "anthony-ms-ks": {
     "primary": "#613384",
     "secondary": "#FFFFFF",
@@ -86,6 +94,14 @@
     "panelDark": "#19050c",
     "line": "#7f132d",
     "onAccent": "#ffffff"
+  },
+  "army": {
+    "primary": "#D3BC8D",
+    "secondary": "#000000",
+    "panel": "#37322c",
+    "panelDark": "#1a1715",
+    "line": "#827660",
+    "onAccent": "#000000"
   },
   "athletics": {
     "primary": "#003831",
@@ -223,6 +239,14 @@
     "line": "#162642",
     "onAccent": "#ffffff"
   },
+  "boston-university": {
+    "primary": "#CC0000",
+    "secondary": "#FFFFFF",
+    "panel": "#35090c",
+    "panelDark": "#190507",
+    "line": "#7f0e13",
+    "onAccent": "#ffffff"
+  },
   "bowling-green": {
     "primary": "#FE5000",
     "secondary": "#4F2C1D",
@@ -245,6 +269,14 @@
     "panel": "#09090c",
     "panelDark": "#050507",
     "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "bucknell": {
+    "primary": "#003865",
+    "secondary": "#E87722",
+    "panel": "#091523",
+    "panelDark": "#050a11",
+    "line": "#0e2d4a",
     "onAccent": "#ffffff"
   },
   "buffalo": {
@@ -935,6 +967,14 @@
     "line": "#0e2a60",
     "onAccent": "#ffffff"
   },
+  "holy-cross": {
+    "primary": "#602D89",
+    "secondary": "#FFFFFF",
+    "panel": "#1e122b",
+    "panelDark": "#0e0915",
+    "line": "#43275e",
+    "onAccent": "#ffffff"
+  },
   "houston": {
     "primary": "#C8102E",
     "secondary": "#FFFFFF",
@@ -1159,6 +1199,14 @@
     "line": "#0e2942",
     "onAccent": "#ffffff"
   },
+  "lafayette": {
+    "primary": "#98002E",
+    "secondary": "#FFFFFF",
+    "panel": "#2a0917",
+    "panelDark": "#14050c",
+    "line": "#620e2c",
+    "onAccent": "#ffffff"
+  },
   "lafc": {
     "primary": "#000000",
     "secondary": "#C7A36F",
@@ -1181,6 +1229,14 @@
     "panel": "#091c1a",
     "panelDark": "#050d0e",
     "line": "#0e3e36",
+    "onAccent": "#ffffff"
+  },
+  "lehigh": {
+    "primary": "#653818",
+    "secondary": "#FFFFFF",
+    "panel": "#1f1512",
+    "panelDark": "#0f0a0a",
+    "line": "#462d20",
     "onAccent": "#ffffff"
   },
   "liberty": {
@@ -1285,6 +1341,14 @@
     "panel": "#2f090c",
     "panelDark": "#160507",
     "line": "#6e0e13",
+    "onAccent": "#ffffff"
+  },
+  "loyola-maryland": {
+    "primary": "#00694E",
+    "secondary": "#A5A7A8",
+    "panel": "#09201e",
+    "panelDark": "#050f0f",
+    "line": "#0e483e",
     "onAccent": "#ffffff"
   },
   "lsu": {

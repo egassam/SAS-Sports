@@ -6,7 +6,7 @@ Sports (15): Baseball, Basketball, Cross Country, Equestrian, Field Hockey, Foot
 
 ## Rules
 
-- Women's hockey plays in the NEWHA (named on its own page); men's hockey and equestrian name no league. Golf is women's only (the men's address answers with the homepage). Bryant's cross country meet reads as the Bryant Invitational (its story).
+- Women's hockey plays in the NEWHA (named on its own page); men's hockey and equestrian name no league. Golf is women's only (the men's address answers with the homepage). Bryant's cross country meet reads as the Bryant Invitational and Lehigh's as the Paul Short Run (their stories; Oct 24 for Lehigh).
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the NEC (2026-27; Saint Francis left for Division III) sponsors football, basketball, baseball, softball, soccer, volleyball, golf, tennis, cross country, track, swimming, lacrosse, field hockey and bowling, but no hockey, wrestling or rowing. Its outside members count in its records (`AFFILIATES` in `src/conference-games.mjs`): football Duquesne, Robert Morris, Merrimack; field hockey Merrimack, Quinnipiac, Rider, Sacred Heart; soccer Howard and Delaware State; baseball Coppin State, Delaware State, UMES, Norfolk State; women's lacrosse Delaware State; bowling Niagara, Sacred Heart.
 - Shared NEC rules (`tests/nec-shared.mjs`): cross country place forms, host names after a bar, outside members in the records.

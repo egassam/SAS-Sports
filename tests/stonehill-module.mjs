@@ -157,7 +157,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_menscrosscountry.map(line),[
  "Final Sep 12 Men's · Stonehill at Bryant Invitational | Completed",
  "Final Sep 19 Men's · Stonehill at UMass Dartmouth | 1st of 32",
- "Final Oct 2 Men's · Stonehill at Lehigh | 22nd of 35",
+ "Final Oct 2 Men's · Stonehill at Paul Short Run | 22nd of 35",
  "Final Oct 9 Men's · Stonehill at New England Championships | 2nd of 18",
  "Today Oct 23, 5:00 PM Men's · Stonehill at Brown | ",
  "Upcoming Oct 31 Men's · Stonehill at NEC Championship | ",

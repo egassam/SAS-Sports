@@ -6456,6 +6456,210 @@
     ]
   },
   {
+    "id": "american",
+    "name": "American",
+    "short_name": "American",
+    "state": "District of Columbia",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://aueagles.com",
+    "aliases": [
+      "American University",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "aueagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "army",
+    "name": "Army",
+    "short_name": "Army",
+    "state": "New York",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goarmywestpoint.com",
+    "aliases": [
+      "Army West Point",
+      "United States Military Academy",
+      "Black Knights"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goarmywestpoint",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "boston-university",
+    "name": "Boston University",
+    "short_name": "BU",
+    "state": "Massachusetts",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goterriers.com",
+    "aliases": [
+      "Boston University",
+      "BU",
+      "Terriers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goterriers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bucknell",
+    "name": "Bucknell",
+    "short_name": "Bucknell",
+    "state": "Pennsylvania",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bucknellbison.com",
+    "aliases": [
+      "Bucknell University",
+      "Bison"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bucknellbison",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "colgate",
+    "name": "Colgate",
+    "short_name": "Colgate",
+    "state": "New York",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://colgateathletics.com",
+    "aliases": [
+      "Colgate University",
+      "Raiders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "colgateathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "holy-cross",
+    "name": "Holy Cross",
+    "short_name": "Holy Cross",
+    "state": "Massachusetts",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goholycross.com",
+    "aliases": [
+      "College of the Holy Cross",
+      "Crusaders"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goholycross",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lafayette",
+    "name": "Lafayette",
+    "short_name": "Lafayette",
+    "state": "Pennsylvania",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goleopards.com",
+    "aliases": [
+      "Lafayette College",
+      "Leopards"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goleopards",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lehigh",
+    "name": "Lehigh",
+    "short_name": "Lehigh",
+    "state": "Pennsylvania",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lehighsports.com",
+    "aliases": [
+      "Lehigh University",
+      "Mountain Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lehighsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "loyola-maryland",
+    "name": "Loyola Maryland",
+    "short_name": "Loyola Maryland",
+    "state": "Maryland",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://loyolagreyhounds.com",
+    "aliases": [
+      "Loyola University Maryland",
+      "Loyola (MD)",
+      "Greyhounds"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "loyolagreyhounds",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "navy",
+    "name": "Navy",
+    "short_name": "Navy",
+    "state": "Maryland",
+    "conference": "Patriot League",
+    "division": "NCAA Division I",
+    "athletics_url": "https://navysports.com",
+    "aliases": [
+      "Naval Academy",
+      "United States Naval Academy",
+      "Midshipmen"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "navysports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

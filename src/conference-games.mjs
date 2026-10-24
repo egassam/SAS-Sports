@@ -72,7 +72,9 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // NEC opponents write "Central Conn. State", "FDU", "Long Island", "UNH" is not New Haven.
   'central-connecticut':['central connecticut state','central conn state','central conn','ccsu'],'chicago-state':['chicago st'],fdu:['fairleigh dickinson university','fdu'],'le-moyne':['le moyne college','lemoyne'],liu:['long island','long island university','liu brooklyn','liu sharks'],mercyhurst:['mercyhurst university'],'new-haven':['university of new haven','new haven chargers'],stonehill:['stonehill college'],wagner:['wagner college'],
   // OVC opponents write "EIU", "SEMO", "SIU Edwardsville", "USI", "UTM", "WIU", "Tennessee St.".
-  'eastern-illinois':['eiu','eastern ill','eastern illinois university'],lindenwood:['lindenwood university'],'morehead-state':['morehead st','morehead'],siue:['siu edwardsville','southern illinois edwardsville','siu e'],'southeast-missouri':['semo','southeast missouri state','se missouri','southeast mo'],'southern-indiana':['usi','southern indiana'],'tennessee-state':['tennessee st'],'tennessee-tech':['tenn tech','tennessee tech'],'ut-martin':['utm','tennessee martin','ut martin'],'western-illinois':['wiu','western ill']};
+  'eastern-illinois':['eiu','eastern ill','eastern illinois university'],lindenwood:['lindenwood university'],'morehead-state':['morehead st','morehead'],siue:['siu edwardsville','southern illinois edwardsville','siu e'],'southeast-missouri':['semo','southeast missouri state','se missouri','southeast mo'],'southern-indiana':['usi','southern indiana'],'tennessee-state':['tennessee st'],'tennessee-tech':['tenn tech','tennessee tech'],'ut-martin':['utm','tennessee martin','ut martin'],'western-illinois':['wiu','western ill'],
+  // Patriot League opponents write "BU", "Loyola (Md.)", "Army West Point", "Navy".
+  american:['american university','american u'],army:['army west point','army black knights'],'boston-university':['bu','boston u','boston univ'],bucknell:['bucknell university'],colgate:['colgate university'],'holy-cross':['holy cross','college of the holy cross'],lafayette:['lafayette college'],lehigh:['lehigh university'],'loyola-maryland':['loyola md','loyola maryland','loyola university maryland','loyola'],navy:['naval academy','us naval academy']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -225,6 +227,14 @@ const NOT_SPONSORED={
   // volleyball, beach volleyball, golf, tennis, cross country, track and
   // rifle: no swimming, wrestling, hockey, lacrosse, gymnastics or bowling
   // (modules name those leagues).
+  // The Patriot League (2026-27: American, Army, Boston University,
+  // Bucknell, Colgate, Holy Cross, Lafayette, Lehigh, Loyola Maryland, Navy)
+  // sponsors football, basketball, baseball, softball, soccer, volleyball,
+  // field hockey, lacrosse, golf, tennis, cross country, track, swimming and
+  // women's rowing: no wrestling, hockey, gymnastics, rifle, water polo or
+  // fencing (modules name those leagues; Army's and Navy's football plays in
+  // the American).
+  'Patriot League':new Set(['Wrestling','Hockey','Gymnastics','Rifle','Water Polo','Fencing','Bowling','Beach Volleyball','Equestrian','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'OVC':new Set(['Swimming & Diving','Wrestling','Hockey','Lacrosse','Gymnastics','Bowling','Rowing','Field Hockey','Water Polo','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'NEC':new Set(['Hockey','Wrestling','Rowing','Gymnastics','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   // The MEAC (2026-27: Coppin State, Delaware State, Howard, Maryland
