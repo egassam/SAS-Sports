@@ -9407,7 +9407,7 @@
   },
   {
     "id": "new-orleans",
-    "name": "New Orleans",
+    "name": "LSU New Orleans",
     "short_name": "UNO",
     "state": "Louisiana",
     "conference": "Southland Conference",
@@ -9415,6 +9415,7 @@
     "athletics_url": "https://privateersports.com",
     "aliases": [
       "University of New Orleans",
+      "New Orleans",
       "UNO",
       "Privateers"
     ],

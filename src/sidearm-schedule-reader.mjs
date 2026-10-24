@@ -38,7 +38,19 @@ export const sidearmToday=timeZone=>now=>new Intl.DateTimeFormat('en-CA',{timeZo
 // State") are SMU's.
 // "NR/RV Chattanooga" (The Citadel, Oct 24): unranked in one poll, receiving
 // votes in the other.
-export const withoutRanking=title=>String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\s?(?:\d+|RV|--)(?:\/#?(?:\d+|RV|--))?|No\.\s*\d+(?:\/\d+)?|[[(](?:\d+|RV)(?:\/(?:\d+|RV))?[\])]|NR\/(?:RV|\d+)|RV)\s+/i,'');
+// "RV/RV UTRGV" (Nicholls football, Sep 12): receiving votes in both polls.
+export const withoutRanking=title=>String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\s?(?:\d+|RV|--)(?:\/#?(?:\d+|RV|--))?|No\.\s*\d+(?:\/\d+)?|[[(](?:\d+|RV)(?:\/(?:\d+|RV))?[\])]|(?:NR|RV)\/(?:RV|NR|\d+)|RV)\s+/i,'');
+
+// The page data names a ranking apart from the opponent ("prefix"), and the
+// Southland's pages write it without "#": "17/21 Mercer", "RV/NR McNeese
+// State", "15 Abilene Christian", "#4/2/2 Stephen F. Austin" (three polls);
+// UTRGV writes "(RP) Houston Christian" (Oct 24). A prefix of that shape is
+// cut from the title; any other prefix ("a", "#3 Seed") stays.
+export const withoutOpponentPrefix=(title,prefix)=>{
+  const text=String(title||''),mark=String(prefix||'').trim();
+  if(!mark||!text.startsWith(`${mark} `)||!/^(?:#?(?:T?\d+|RV|NR|-+)(?:\/#?(?:T?\d+|RV|NR|-+)){0,2}|\([A-Z]{1,3}\))$/i.test(mark))return text;
+  return text.slice(mark.length+1);
+};
 
 // H: home, A: away; a neutral site keeps the page's own vs./at.
 export const sidearmRelation=game=>game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';

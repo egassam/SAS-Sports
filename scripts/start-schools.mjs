@@ -15,16 +15,18 @@
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/start-schools.mjs --from=oklahoma --log-dir=<dir> \
 //     iowa=#FFCD00,#000000,#07111f maryland=#E03A3E,#FFD520,#ffffff
+// --resume goes on from the TFRRS step for schools a stopped run already
+// wrote (their modules and registrations are kept).
 // A WMT site is ported from a converted WMT card reader instead
 // (scripts/port-wmt.mjs; --wmt-from=, default nebraska) and goes on to the
 // fixtures, athletes and survey like any other; one whose /website-api/sports
 // answers goes on the shared JSON-API kit (scripts/port-wmt-api.mjs).
-import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync,readdirSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync,readdirSync,existsSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {spawn} from 'node:child_process';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
-const from=value('from')||'oklahoma',wmtFrom=value('wmt-from')||'nebraska',logDir=value('log-dir');
+const resume=args.includes('--resume'),from=value('from')||'oklahoma',wmtFrom=value('wmt-from')||'nebraska',logDir=value('log-dir');
 const targets=args.filter(a=>!a.startsWith('--')).map(a=>{const [id,theme]=a.split('=');return{id,theme}});
 if(!targets.length||!logDir||targets.some(t=>!t.theme)){console.error('usage: node scripts/start-schools.mjs --from=<converted SIDEARM id> --log-dir=<dir> <id>=<primary>,<secondary>,<onAccent> ...');process.exit(2)}
 mkdirSync(logDir,{recursive:true});
@@ -36,6 +38,11 @@ const run=(id,step,cmd)=>new Promise(done=>{
   child.on('close',code=>{closeSync(fd);done({code,log,text:readFileSync(log,'utf8').split('\n').filter(l=>!/Warning|Reparsing|type.*module|trace-warnings/.test(l)).join('\n')})});
 });
 const started=Date.now(),clock=()=>`${Math.round((Date.now()-started)/1000)}s`;
+// A fetch through the proxy can leave Node with no handle that keeps it
+// running (AbortSignal.timeout's timer does not): on Oct 24 the TFRRS step
+// ended the process silently (exit 13, unsettled await) with one school
+// half-written. A held interval keeps it alive until the run says done.
+const keepAlive=setInterval(()=>{},60000);
 
 // Every state (Oct 23: Maine, New Hampshire and Vermont were missing, and
 // their TFRRS pages were never tried).
@@ -59,11 +66,16 @@ async function tfrrsTeams(school,moduleText=''){
   // A name that starts with the state can carry it shortened (VMI, Oct 24:
   // VA_college_f_Va_Military_Institute from "Virginia Military Institute").
   const stateShort=(school.aliases||[]).filter(n=>school.state&&n.startsWith(`${school.state} `)).map(n=>`${STATES[school.state][0]}${STATES[school.state][1].toLowerCase()}${n.slice(school.state.length)}`);
-  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated,...single,...stateShort].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  const st=STATES[school.state],all=[school.short_name,school.name,...institutions,...others,...hyphenated,...single,...stateShort];
+  // TFRRS keeps a closing "A&M" (Oct 24: TX_college_f_East_Texas_A&M,
+  // where Texas A&M-Corpus Christi is Texas_AM_CC)
+  // and shortens a compass word that starts a name (SE_Louisiana).
+  const names=[...all.map(n=>n.replace(/&/g,'')),...all.filter(n=>/A&M$/.test(n)),...all.filter(n=>/^(?:South|North)(?:east|west)ern /.test(n)).map(n=>n.replace(/^(South|North)(east|west)ern/,(m,a,b)=>a[0]+b[0].toUpperCase()))].map(n=>n.replace(/['’]/g,'').replace(/[^\w&]+/g,'_').replace(/^_|_$/g,''));
   // An apostrophe is dropped (Saint Joseph's: PA_college_f_St_Josephs_PA);
   // a university can carry "_U" (Saint Louis: MO_college_f_St_Louis_U).
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`,`${name}_U`]){
     const url=g=>`https://www.tfrrs.org/teams/xc/${st}_college_${g}_${tail}.html`;
+    if(tail.includes('&')&&!tail.endsWith('A&M'))continue;
     try{const r=await fetch(url('f'),{signal:AbortSignal.timeout(20000)});if(r.ok&&/Cross Country/i.test(await r.text()))return{Women:url('f'),Men:url('m')};}catch{}
   }
   return tfrrsFromMeets(school,moduleText,st);
@@ -99,6 +111,9 @@ async function tfrrsFromMeets(school,moduleText,st){
 const schools=JSON.parse(read('src/schools.json')),ready=[],notes=[];
 for(const {id,theme} of targets){
   const school=schools.find(s=>s.id===id);if(!school){notes.push(`${id}: not in src/schools.json`);continue}
+  // --resume: the module is already written and registered (a run that
+  // stopped part way); setup's later steps run again, nothing is added twice.
+  if(resume&&existsSync(new URL(`src/schools/${id}.mjs`,root))&&read('src/index.js').includes(`./schools/${id}.mjs'`)){notes.push(`${id}: resumed (module kept)`);ready.push(school);continue}
   const add=await run(id,'add',['scripts/add-school.mjs',`--school=${id}`,`--theme=${theme}`,'--write']);
   console.log(`[${clock()}] ${id}: ${add.text.split('\n').slice(0,2).join(' · ')}`);
   if(add.code){notes.push(`${id}: add-school failed (${add.log})`);continue}
@@ -133,7 +148,10 @@ const sponsored=JSON.parse(read('src/sponsored-sports.json'));
 await Promise.all(ready.map(async school=>{
   const file=new URL(`src/schools/${school.id}.mjs`,root);let text=readFileSync(file,'utf8');
   text=text.replace('pageDataSports:new Set([]),',`pageDataSports:new Set([${sponsored[school.id].map(s=>`'${s}'`).join(',')}]),`);
-  const teams=sponsored[school.id].includes('Cross Country')?await tfrrsTeams(school,text):null;
+  // A module that already names its TFRRS pages (by hand, or a resumed run)
+  // keeps them.
+  const known=text.match(/_TFRRS_TEAMS=\{Women:'([^']+)',Men:'([^']+)'\};/);
+  const teams=known?{Women:known[1],Men:known[2]}:sponsored[school.id].includes('Cross Country')?await tfrrsTeams(school,text):null;
   if(teams)text=text.replace(/(_TFRRS_TEAMS=)\{Women:null,Men:null\};/,`$1{Women:'${teams.Women}',Men:'${teams.Men}'};`);
   else if(sponsored[school.id].includes('Cross Country'))notes.push(`${school.id}: TFRRS team page not found by address; find it on a conference meet page (Big Ten: /results/xc/27246) and pass --tfrrs-f/--tfrrs-m`);
   // Both team pages of a sport the nav links twice (add-school's "team
@@ -208,3 +226,4 @@ for(const school of ready){
 }
 
 console.log(`[${clock()}] done\n${notes.map(n=>`- ${n}`).join('\n')}`);
+clearInterval(keepAlive);
