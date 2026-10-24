@@ -111,12 +111,12 @@ void [parse,line,ownRecapsOnly,live];
   const v_womensbasketball=parse("Basketball","womens-basketball");
   assert.deepEqual(v_womensbasketball.map(line),[
  "Upcoming Oct 28, 7:00 PM Women's · Radford vs Southern Virginia (Exhibition) | ",
- "Upcoming Nov 2, 12:00 PM Women's · Radford at RV/RV Clemson | ",
+ "Upcoming Nov 2, 12:00 PM Women's · Radford at Clemson | ",
  "Upcoming Nov 4, 7:00 PM Women's · Radford vs Bluefield | ",
  "Upcoming Nov 7, 3:00 PM Women's · Radford at Eastern Kentucky | ",
  "Upcoming Nov 11, 6:00 PM Women's · Radford at Campbell | ",
  "Upcoming Nov 16, 11:00 AM Women's · Radford vs Ferrum | ",
- "Upcoming Nov 19, 7:00 PM Women's · Radford at RV/RV Tennessee | ",
+ "Upcoming Nov 19, 7:00 PM Women's · Radford at Tennessee | ",
  "Upcoming Nov 23, 6:30 PM Women's · Radford at Furman | ",
  "Upcoming Nov 29, 2:00 PM Women's · Radford vs Norfolk State | ",
  "Upcoming Dec 2, 7:00 PM Women's · Radford vs ETSU | ",

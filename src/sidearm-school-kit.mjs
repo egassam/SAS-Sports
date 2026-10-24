@@ -558,7 +558,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   const head=`(?:${team}|(?:Men's |Women's )?Golf)`;
   // "Broncos Capture Bomb Darts Birds Collegiate ..." (Santa Clara, Sep 8);
   // "Golf Claims Commander-In-Chief's Cup at Oakmont" (Army, Oct 14).
-  if(new RegExp(`\\b${head}\\s+(?:Wins?|Captures?|Claims?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))`,'i').test(title))return'1st';
+  // "Men's Golf Claims Fourth at Bayou City Collegiate" (UTRGV, Sep 22) is a
+  // place, read below.
+  if(new RegExp(`\\b${head}\\s+(?:Wins?|Captures?|Claims?)\\b(?!\\s+(?:\\w+[- ]){0,2}(?:place|spot|individual|medal))(?!\\s+(?:\\d+(?:st|nd|rd|th)|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth)\\b)`,'i').test(title))return'1st';
   // "Demon Deacons Open Season with Team Title at ANNIKA Intercollegiate";
   // "Wake Forest Finishes Runner-Up at Stephens Cup" (Wake Forest, Oct 15).
   if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Title\\b`,'i').test(title))return'1st';
@@ -566,7 +568,7 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
   // "Bobcats Repeat as Yellowstone Intercollegiate Team Champions" (Montana
   // State, Sep 22).
   if(new RegExp(`\\b${head}\\b[^|]*?\\bTeam Champions?\\b`,'i').test(title))return'1st';
-  const heading=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?)\\s+${word}\\b`,'i'));
+  const heading=title.match(new RegExp(`\\b${head}\\b[^|]*?\\b(?:Finish(?:es)?|Place[sd]?|Claims?)\\s+${word}\\b`,'i'));
   if(heading&&placeOf(heading[1]))return placeOf(heading[1]);
   // A results block: "Place (Winthrop): 16th (896/+44)", "T-8th of 15", the
   // headline's "Eagles 4th at UNCG Collegiate" too (Winthrop, Sep 29-Oct 20).
@@ -614,7 +616,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // "As a team, the Broncos tied for the low round of the day ... to
     // secure a third-place finish" (Santa Clara, Canadian Collegiate, Sep 15);
     // "The Davidson men's golf team concluded ... with a fifth-place finish".
-    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    // "The LSU New Orleans golf team ... shot a 909, good for a 14th-place
+    // finish" (Argent Financial Classic, Sep 29).
+    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with|good for)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
     // The team winning the tournament: "the Argos won their first tournament
     // by winning The Velvet Classic" (West Florida, Sep 15). "She won the
@@ -622,6 +626,11 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     if(new RegExp(`\\b${team}\\s+(?:won|captured|claimed)\\s+(?:the|their)(?:\\s+first)?\\s+(?:team\\s+title|tournament|event)\\b`,'i').test(sentence))return'1st';
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
+    // "The HCU men's golf team closed out ..., tying for 10th place"
+    // (Sandestin, Sep 16): the golf team's own sentence; "led the way for the
+    // Vikings, tying for 32nd" is a player's (Portland State).
+    const tying=sentence.match(new RegExp(`\\b${team}\\s+(?:(?:men's|women's)\\s+)?golf team\\b[^.]*?\\btying for\\s+${word}\\b`,'i'));
+    if(tying&&placeOf(tying[1]))return`T${placeOf(tying[1]).replace(/^T/,'')}`;
     // "the Bears ended the tournament in 3rd place" (Central Arkansas, Sep 16);
     // "concluded play ... finishing the final round in 17th place" (North
     // Alabama, Diamante, Oct 20).

@@ -76,7 +76,15 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // Patriot League opponents write "BU", "Loyola (Md.)", "Army West Point", "Navy".
   american:['american university','american u'],army:['army west point','army black knights'],'boston-university':['bu','boston u','boston univ'],bucknell:['bucknell university'],colgate:['colgate university'],'holy-cross':['holy cross','college of the holy cross'],lafayette:['lafayette college'],lehigh:['lehigh university'],'loyola-maryland':['loyola md','loyola maryland','loyola university maryland','loyola'],navy:['naval academy','us naval academy'],
   // SoCon opponents write "UTC", "ETSU", "UNCG", "WCU", "The Citadel".
-  chattanooga:['utc','ut chattanooga','tennessee chattanooga'],citadel:['the citadel'],'east-tennessee-state':['etsu','east tennessee st','east tenn state','east tenn st'],furman:['furman university'],mercer:['mercer university'],samford:['samford university'],'unc-greensboro':['uncg','unc greensboro','nc greensboro'],vmi:['virginia military','virginia military institute'],'western-carolina':['wcu','western caro'],wofford:['wofford college']};
+  chattanooga:['utc','ut chattanooga','tennessee chattanooga'],citadel:['the citadel'],'east-tennessee-state':['etsu','east tennessee st','east tenn state','east tenn st'],furman:['furman university'],mercer:['mercer university'],samford:['samford university'],'unc-greensboro':['uncg','unc greensboro','nc greensboro'],vmi:['virginia military','virginia military institute'],'western-carolina':['wcu','western caro'],wofford:['wofford college'],
+  // Southland opponents write "HCU", "UIW", "SFA", "NSU", "SLU", "UNO",
+  // "LSU New Orleans", "McNeese State", "Texas A&M - Corpus Christi", "UTRGV".
+  'east-texas-am':['east texas a and m','east texas am','etamu','texas a and m commerce','tamu commerce'],'houston-christian':['hcu','houston christian university','houston baptist'],
+  'incarnate-word':['uiw','university of the incarnate word'],lamar:['lamar university'],mcneese:['mcneese state','mcneese state university'],
+  'new-orleans':['uno','new orleans','lsu new orleans','lsu of new orleans','university of new orleans'],nicholls:['nicholls state','nicholls state university'],
+  'northwestern-state':['nsu','northwestern state la','northwestern la','northwestern state university'],'southeastern-louisiana':['slu','southeastern','southeastern la','se louisiana','selu'],
+  'stephen-f-austin':['sfa','stephen f austin state','sfasu'],'texas-am-corpus-christi':['tamucc','texas a and m corpus christi','a and m corpus christi','corpus christi','tamu cc','tamu corpus christi'],
+  utrgv:['ut rio grande valley','texas rio grande valley','rio grande valley']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -242,6 +250,13 @@ const NOT_SPONSORED={
   // soccer, volleyball, golf, tennis, cross country, track and wrestling: no
   // swimming, lacrosse, water polo or beach volleyball (modules name those
   // leagues).
+  // The Southland Conference (2026-27: East Texas A&M, Houston Christian,
+  // Incarnate Word, Lamar, McNeese, LSU New Orleans, Nicholls, Northwestern
+  // State, Southeastern Louisiana, Stephen F. Austin, Texas A&M-Corpus
+  // Christi, UTRGV) sponsors football, basketball, baseball, softball,
+  // soccer, volleyball, beach volleyball, golf, tennis, cross country and
+  // track: no swimming, fencing or bowling (modules name those leagues).
+  'Southland Conference':new Set(['Swimming & Diving','Wrestling','Lacrosse','Water Polo','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Rifle','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Southern Conference':new Set(['Swimming & Diving','Lacrosse','Water Polo','Beach Volleyball','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Patriot League':new Set(['Wrestling','Hockey','Gymnastics','Rifle','Water Polo','Fencing','Bowling','Beach Volleyball','Equestrian','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'OVC':new Set(['Swimming & Diving','Wrestling','Hockey','Lacrosse','Gymnastics','Bowling','Rowing','Field Hockey','Water Polo','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),

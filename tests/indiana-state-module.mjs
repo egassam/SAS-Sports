@@ -158,7 +158,7 @@ void [parse,line,ownRecapsOnly,live];
 ]);
   const v_football=parse("Football","football");
   assert.deepEqual(v_football.map(line),[
- "Final Aug 29 Indiana State vs RV/RV SEMO | L, 23-21",
+ "Final Aug 29 Indiana State vs SEMO | L, 23-21",
  "Final Sep 4 Indiana State at Purdue | L, 44-19",
  "Final Sep 12 Indiana State at Eastern Illinois | W, 42-35",
  "Final Sep 19 Indiana State vs Valparaiso | W, 39-16",

@@ -201,8 +201,12 @@ export function classicHtmlScheduleGames(raw){
     const timeText=htmlText(classBlock(row,'sidearm-schedule-game-time'))||spanTexts(dates).find(t=>/^\d{1,2}(?::\d{2})?\s*[ap]\.?\s*m\.?\b|^TB[AD]\b/i.test(t))||'';
     const clock=timeText.match(/^(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\.?/i);
     const hour=clock?Number(clock[1])%12+(clock[3].toLowerCase()==='p'?12:0):0,minute=clock?Number(clock[2]||0):0;
-    const opponent=htmlText(classBlock(row,'sidearm-schedule-game-opponent-name'));
+    const nameBlock=classBlock(row,'sidearm-schedule-game-opponent-name'),opponent=htmlText(nameBlock);
     if(!opponent)continue;
+    // A ranking in its own span before the name ("<span>17/21</span> Mercer",
+    // East Texas A&M football, Oct 24) is the row's prefix, as the page data
+    // names it (withoutOpponentPrefix).
+    const prefix=htmlText((nameBlock.match(/^[\s\S]*?<span\b[^>]*>([\s\S]*?)<\/span>/i)||[])[1]||'');
     const atVs=htmlText((row.match(/<span\b[^>]*class="sidearm-schedule-game-(?:away|home)"[^>]*>([\s\S]*?)<\/span>/i)||[])[1]||'').toLowerCase();
     const parts=spanTexts(classBlock(row,'sidearm-schedule-game-result')).filter(Boolean);
     const statusAt=parts.findIndex(t=>/^[WLT],?$/i.test(t)),scoreAt=parts.findIndex(t=>/^\d+\s*-\s*\d+$/.test(t));
@@ -226,7 +230,7 @@ export function classicHtmlScheduleGames(raw){
     games.push({id:id?Number(id):null,date:`${firstDay}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00`,
       enddate:lastDay&&lastDay>firstDay?`${lastDay}T00:00:00`:null,time:clock?`${hour%12||12}:${String(minute).padStart(2,'0')} ${hour>=12?'PM':'AM'}`:(timeText.match(/^TB[AD]/i)||[''])[0].toUpperCase(),
       location_indicator:/\ssidearm-schedule-home-game\s/.test(classes)?'H':/\ssidearm-schedule-away-game\s/.test(classes)?'A':/\ssidearm-schedule-neutral-game\s/.test(classes)?'N':'',
-      at_vs:atVs==='at'?'at':'vs',opponent:{title:opponent},tournament:tournament?{title:tournament[2]}:null,
+      at_vs:atVs==='at'?'at':'vs',opponent:{title:opponent,...(prefix&&opponent.startsWith(`${prefix} `)?{prefix}:{})},tournament:tournament?{title:tournament[2]}:null,
       result,noplay_text:noplay,type:/\sexhibition\s/i.test(classes)||/\((?:exh\.?|exhibition)\)\s*$/i.test(opponent)||EXHIBITION_PROMOTION.test(promotion)?'S':'',conference:CONFERENCE_CELL.test(row),...(CONFERENCE_LOGO.test(row)?{conference_logo:true}:{}),
         // The row's promotion line ("Pac-12 Crossover", Utah Valley men's
         // soccer at Cal Poly, Oct 14: a series with another league).

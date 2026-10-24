@@ -169,7 +169,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_football.map(line),[
  "Final Aug 27 Charleston Southern at Lindenwood | L, 17-20",
  "Final Sep 5 Charleston Southern at Georgia Southern | L, 0-31",
- "Final Sep 12 Charleston Southern at RV/RV The Citadel | W, 26-20",
+ "Final Sep 12 Charleston Southern at The Citadel | W, 26-20",
  "Final Sep 19 Charleston Southern vs Point | W, 65-0",
  "Final Oct 3 Charleston Southern vs Gardner-Webb | L, 10-12",
  "Final Oct 10 Charleston Southern vs / #21 South Carolina State | W, 49-39",

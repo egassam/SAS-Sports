@@ -751,6 +751,14 @@
     "line": "#111f37",
     "onAccent": "#ffffff"
   },
+  "east-texas-am": {
+    "primary": "#00386C",
+    "secondary": "#FFC333",
+    "panel": "#091524",
+    "panelDark": "#050a12",
+    "line": "#0e2d4e",
+    "onAccent": "#ffffff"
+  },
   "eastern-illinois": {
     "primary": "#004B83",
     "secondary": "#A5A7A8",
@@ -1015,6 +1023,14 @@
     "line": "#0e2749",
     "onAccent": "#ffffff"
   },
+  "houston-christian": {
+    "primary": "#00539B",
+    "secondary": "#F58025",
+    "panel": "#091b2f",
+    "panelDark": "#050d17",
+    "line": "#0e3c68",
+    "onAccent": "#ffffff"
+  },
   "houston-dynamo": {
     "primary": "#FF6B00",
     "secondary": "#101820",
@@ -1069,6 +1085,14 @@
     "panel": "#2a0d10",
     "panelDark": "#130607",
     "line": "#7a2a2e",
+    "onAccent": "#ffffff"
+  },
+  "incarnate-word": {
+    "primary": "#CB2C30",
+    "secondary": "#000000",
+    "panel": "#351217",
+    "panelDark": "#19090c",
+    "line": "#7e272d",
     "onAccent": "#ffffff"
   },
   "indiana": {
@@ -1237,6 +1261,14 @@
     "panel": "#09090c",
     "panelDark": "#050507",
     "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "lamar": {
+    "primary": "#EE1C25",
+    "secondary": "#000000",
+    "panel": "#3d0f15",
+    "panelDark": "#1c070b",
+    "line": "#911e27",
     "onAccent": "#ffffff"
   },
   "las-vegas-raiders": {
@@ -1445,6 +1477,14 @@
     "panel": "#261118",
     "panelDark": "#12080c",
     "line": "#58232f",
+    "onAccent": "#ffffff"
+  },
+  "mcneese": {
+    "primary": "#00529B",
+    "secondary": "#FFD204",
+    "panel": "#091b2f",
+    "panelDark": "#050d17",
+    "line": "#0e3c68",
     "onAccent": "#ffffff"
   },
   "memphis": {
@@ -1751,6 +1791,14 @@
     "line": "#75152d",
     "onAccent": "#ffffff"
   },
+  "new-orleans": {
+    "primary": "#003399",
+    "secondary": "#A7A9AC",
+    "panel": "#09142e",
+    "panelDark": "#050a17",
+    "line": "#0e2a67",
+    "onAccent": "#ffffff"
+  },
   "new-orleans-saints": {
     "primary": "#D3BC8D",
     "secondary": "#000000",
@@ -1813,6 +1861,14 @@
     "panel": "#1d1229",
     "panelDark": "#0e0914",
     "line": "#43265a",
+    "onAccent": "#ffffff"
+  },
+  "nicholls": {
+    "primary": "#C41230",
+    "secondary": "#A2AAAD",
+    "panel": "#340d17",
+    "panelDark": "#18060c",
+    "line": "#7a182d",
     "onAccent": "#ffffff"
   },
   "njit": {
@@ -1901,6 +1957,14 @@
     "panel": "#1a122a",
     "panelDark": "#0c0914",
     "line": "#39265c",
+    "onAccent": "#ffffff"
+  },
+  "northwestern-state": {
+    "primary": "#492F92",
+    "secondary": "#F58220",
+    "panel": "#19132d",
+    "panelDark": "#0c0916",
+    "line": "#372863",
     "onAccent": "#ffffff"
   },
   "notre-dame": {
@@ -2439,6 +2503,14 @@
     "line": "#7c172c",
     "onAccent": "#ffffff"
   },
+  "southeastern-louisiana": {
+    "primary": "#006341",
+    "secondary": "#EEB111",
+    "panel": "#091e1b",
+    "panelDark": "#050e0e",
+    "line": "#0e4537",
+    "onAccent": "#ffffff"
+  },
   "southern-illinois": {
     "primary": "#720000",
     "secondary": "#000000",
@@ -2509,6 +2581,14 @@
     "panel": "#270d11",
     "panelDark": "#130709",
     "line": "#5b1a1e",
+    "onAccent": "#ffffff"
+  },
+  "stephen-f-austin": {
+    "primary": "#5F259F",
+    "secondary": "#A7A8AA",
+    "panel": "#1d112f",
+    "panelDark": "#0e0817",
+    "line": "#43236a",
     "onAccent": "#ffffff"
   },
   "stonehill": {
@@ -2885,6 +2965,14 @@
     "panel": "#090f1b",
     "panelDark": "#05080e",
     "line": "#111f37",
+    "onAccent": "#ffffff"
+  },
+  "utrgv": {
+    "primary": "#F05023",
+    "secondary": "#646469",
+    "panel": "#3d1a14",
+    "panelDark": "#1d0d0b",
+    "line": "#923a26",
     "onAccent": "#ffffff"
   },
   "utsa": {
