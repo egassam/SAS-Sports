@@ -25,6 +25,9 @@ export const mcneeseSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Track & Field']),
+  // The 2026-27 rosters of these sports publish few athlete portraits (Oct
+  // 24); their profiles fill the athlete slots.
+  portraitlessProfileSports:new Set(['Track & Field']),
   verifiedInstagrams:{
     'mcneese|Football|Teshaun Ryals-Wilson':'https://www.instagram.com/cantguardtayy14/'
   },

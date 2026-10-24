@@ -28,6 +28,9 @@ export const lamarSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
+  // The 2026-27 rosters of these sports publish few athlete portraits (Oct
+  // 24); their profiles fill the athlete slots.
+  portraitlessProfileSports:new Set(['Baseball']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'lamar|Baseball':'https://lamarcardinals.com/sports/baseball/schedule',
