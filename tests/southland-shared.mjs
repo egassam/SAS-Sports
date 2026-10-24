@@ -16,6 +16,7 @@ assert.equal(withoutOpponentPrefix('17/21 Mercer','17/21'),'Mercer');
 assert.equal(withoutOpponentPrefix('RV/NR McNeese State','RV/NR'),'McNeese State');
 assert.equal(withoutOpponentPrefix('#4/2/2 Stephen F. Austin','#4/2/2'),'Stephen F. Austin');
 assert.equal(withoutOpponentPrefix('(RP) Houston Christian','(RP)'),'Houston Christian');
+assert.equal(withoutOpponentPrefix('RP/#25 Southeastern','RP/#25'),'Southeastern');
 assert.equal(withoutOpponentPrefix('#3 Seed Kansas','#3 Seed'),'#3 Seed Kansas');
 assert.equal(withoutOpponentPrefix('Mercer',null),'Mercer');
 // A classic row's ranking span is that prefix (East Texas A&M football).
@@ -71,6 +72,9 @@ for(const id of ids){
 }
 // A pairs qualifier with no result line or story is not listed.
 for(const id of ['houston-christian','mcneese','new-orleans','nicholls','southeastern-louisiana','stephen-f-austin'])assert.match(read(`../src/schools/${id}.mjs`),/event\.sport==='Beach Volleyball'\|\|event\.sport==='Rowing'/,id);
+
+// UTRGV writes scores winner first: the team's score follows its letter.
+assert.match(read('../src/schools/utrgv.mjs'),/result\.status==='L'&&mine>theirs\|\|result\.status==='W'&&mine<theirs/);
 
 // Setup: --resume, a held interval against a silent exit, TFRRS names that
 // keep a closing "A&M" or shorten a compass word (SE_Louisiana).

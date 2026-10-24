@@ -7,6 +7,7 @@ Sports (10): Baseball, Basketball, Cross Country, Football, Golf, Soccer, Swimmi
 ## Rules
 
 - TFRRS still names the team `Texas_Pan_American` (set by hand; found on the 2025 Southland championship results).
+- The pages write every score winner first ("L", 41-16 at UIW): the team's score is put after its result letter (Morehead State's rule).
 - Women's swimming only (no Southland swimming: no conference record).
 - "Men's Golf Claims Fourth" reads 4th (shared `golfStoryPlace`).
 - Rankings written without "#" ("17/21 Mercer", "RV/RV UTRGV", "#4/2/2 Stephen F. Austin", "(RP) Houston Christian") are cut from opponent names (the page data's prefix, `withoutOpponentPrefix`).

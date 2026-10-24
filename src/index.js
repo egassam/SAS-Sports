@@ -314,7 +314,7 @@ import {stephenFAustinSchool,createStephenFAustinHandlers} from './schools/steph
 import {utrgvSchool,createUtrgvHandlers} from './schools/utrgv.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.208.5-southland';
+const VERSION='4.208.6-southland';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

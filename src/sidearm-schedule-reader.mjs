@@ -44,11 +44,11 @@ export const withoutRanking=title=>String(title||'').replace(/\s+/g,' ').trim().
 // The page data names a ranking apart from the opponent ("prefix"), and the
 // Southland's pages write it without "#": "17/21 Mercer", "RV/NR McNeese
 // State", "15 Abilene Christian", "#4/2/2 Stephen F. Austin" (three polls);
-// UTRGV writes "(RP) Houston Christian" (Oct 24). A prefix of that shape is
+// UTRGV writes "(RP) Houston Christian" and "RP/#25 Southeastern" (Oct 24). A prefix of that shape is
 // cut from the title; any other prefix ("a", "#3 Seed") stays.
 export const withoutOpponentPrefix=(title,prefix)=>{
   const text=String(title||''),mark=String(prefix||'').trim();
-  if(!mark||!text.startsWith(`${mark} `)||!/^(?:#?(?:T?\d+|RV|NR|-+)(?:\/#?(?:T?\d+|RV|NR|-+)){0,2}|\([A-Z]{1,3}\))$/i.test(mark))return text;
+  if(!mark||!text.startsWith(`${mark} `)||!/^(?:#?(?:T?\d+|RV|NR|RP|-+)(?:\/#?(?:T?\d+|RV|NR|RP|-+)){0,2}|\([A-Z]{1,3}\))$/i.test(mark))return text;
   return text.slice(mark.length+1);
 };
 

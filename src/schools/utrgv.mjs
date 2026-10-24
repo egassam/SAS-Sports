@@ -136,7 +136,14 @@ export function createUtrgvHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
     id:'utrgv',host:HOST,sports:utrgvSchool.pageDataSports,squadSports:utrgvSchool.combinedSports,
     today:utrgvToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // The page writes a score winner first ("L", 41-16, football at UIW, Oct
+    // 17; every sport): the team's score follows its result letter
+    // (Morehead State's rule).
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>{
+      const result=game.result,mine=Number(result?.team_score),theirs=Number(result?.opponent_score);
+      const turned=String(result?.team_score||'').trim()!==''&&String(result?.opponent_score||'').trim()!==''&&(result.status==='L'&&mine>theirs||result.status==='W'&&mine<theirs);
+      return turned?{...game,result:{...result,team_score:result.opponent_score,opponent_score:result.team_score}}:game;
+    }),
     merge(sport,games){
       if(sport==='Volleyball')games=games.map(game=>game.type||!beforeVolleyballSeason(game.date)?game:{...game,type:'S'});
       // Cross country is on the men's and women's track pages ("Track &
