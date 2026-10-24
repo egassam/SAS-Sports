@@ -9,7 +9,7 @@ export const southernSchool={
   id:'southern',
   // Profiles without a published portrait fill the slots (the page shows
   // initials): these rosters publish portraits for few athletes (Oct 24).
-  portraitlessProfileSports:new Set(['Golf','Track & Field']),
+  portraitlessProfileSports:new Set(['Golf']),
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.

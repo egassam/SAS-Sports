@@ -19,7 +19,7 @@ Each rule has a check in `tests/southern-module.mjs` (generated page blocks) or 
 
 ## Athletes
 
-Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Soccer, Softball and Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Football, Golf, Tennis, Track & Field (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The golf and track rosters publish portraits for few athletes (`portraitlessProfileSports`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
+Roster cards, then official profiles (no NIL marketplace linked from the site). Instagram pins from the official rosters fill Soccer, Softball and Volleyball; profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Football, Golf, Tennis (`athlete_profile_fallback_sports` in `tests/certified-schools.json`). The golf roster publishes portraits for few athletes (`portraitlessProfileSports`). Track & Field is off the athlete list: its 2027 roster lists no athletes yet (Oct 24; the 2026 roster has 60); it returns when they are published. Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 
