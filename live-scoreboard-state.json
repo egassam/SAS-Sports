@@ -1955,7 +1955,7 @@
   },
   "virginia|Field Hockey": {
    "state": "failing",
-   "last_check": "2026-10-24T07:22:12.703Z",
+   "last_check": "2026-10-24T16:04:51.947Z",
    "last_detail": "result reads \"L, 1-0\", ESPN final L, 0-1",
    "game": {
     "key": "virginia|Field Hockey||2026-10-23|1",
@@ -1972,9 +1972,9 @@
     "final_ok": false,
     "final_due": "2026-10-23T23:49:08.804Z"
    },
-   "failures": 12,
+   "failures": 18,
    "last_failure": {
-    "at": "2026-10-24T07:22:12.703Z",
+    "at": "2026-10-24T16:04:51.947Z",
     "game": "Virginia vs Louisville",
     "detail": "result reads \"L, 1-0\", ESPN final L, 0-1"
    }
@@ -4092,7 +4092,18 @@
    "state": "off"
   },
   "toledo|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-24T16:04:12.749Z",
+   "last_detail": "live 0-0 · 14:54 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "toledo|Football||2026-10-24|1",
+    "title": "Toledo vs W Michigan",
+    "started_seen": "2026-10-24T16:04:12.749Z",
+    "live_passes": [
+     "2026-10-24T16:04:12.749Z"
+    ],
+    "final_ok": false
+   }
   },
   "toledo|Soccer": {
    "state": "off"
@@ -5488,7 +5499,7 @@
   },
   "indiana-state|Volleyball": {
    "state": "failing",
-   "last_check": "2026-10-24T07:22:12.670Z",
+   "last_check": "2026-10-24T16:04:52.103Z",
    "last_detail": "result reads \"L, 3-0\", ESPN final L, 0-3",
    "game": {
     "key": "indiana-state|Volleyball||2026-10-23|1",
@@ -5505,9 +5516,9 @@
     "final_ok": false,
     "final_due": "2026-10-24T02:14:26.721Z"
    },
-   "failures": 6,
+   "failures": 12,
    "last_failure": {
-    "at": "2026-10-24T07:22:12.670Z",
+    "at": "2026-10-24T16:04:52.103Z",
     "game": "Indiana State at UIC",
     "detail": "result reads \"L, 3-0\", ESPN final L, 0-3"
    }
@@ -7022,7 +7033,23 @@
    "state": "off"
   },
   "merrimack|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-24T16:04:32.084Z",
+   "last_detail": "live 1-0 · HT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "merrimack|Soccer|Women's|2026-10-24|1",
+    "title": "Women's · Merrimack at Niagara",
+    "started_seen": "2026-10-24T15:55:34.544Z",
+    "live_passes": [
+     "2026-10-24T15:55:34.544Z",
+     "2026-10-24T15:57:37.794Z",
+     "2026-10-24T15:59:00.253Z",
+     "2026-10-24T16:01:04.375Z",
+     "2026-10-24T16:02:28.168Z",
+     "2026-10-24T16:04:32.084Z"
+    ],
+    "final_ok": false
+   }
   },
   "merrimack|Softball": {
    "state": "off"
@@ -7076,7 +7103,23 @@
    "state": "off"
   },
   "niagara|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-24T16:04:31.751Z",
+   "last_detail": "live 0-1 · HT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "niagara|Soccer|Women's|2026-10-24|1",
+    "title": "Women's · Niagara vs Merrimack",
+    "started_seen": "2026-10-24T15:55:33.125Z",
+    "live_passes": [
+     "2026-10-24T15:55:33.125Z",
+     "2026-10-24T15:57:37.106Z",
+     "2026-10-24T15:59:00.401Z",
+     "2026-10-24T16:01:03.590Z",
+     "2026-10-24T16:02:29.349Z",
+     "2026-10-24T16:04:31.751Z"
+    ],
+    "final_ok": false
+   }
   },
   "niagara|Softball": {
    "state": "off"
@@ -7908,9 +7951,147 @@
   },
   "loyola-maryland|Volleyball": {
    "state": "off"
+  },
+  "chattanooga|Basketball": {
+   "state": "off"
+  },
+  "chattanooga|Football": {
+   "state": "off"
+  },
+  "chattanooga|Soccer": {
+   "state": "off"
+  },
+  "chattanooga|Softball": {
+   "state": "off"
+  },
+  "chattanooga|Volleyball": {
+   "state": "off"
+  },
+  "citadel|Baseball": {
+   "state": "off"
+  },
+  "citadel|Basketball": {
+   "state": "off"
+  },
+  "citadel|Football": {
+   "state": "off"
+  },
+  "citadel|Soccer": {
+   "state": "off"
+  },
+  "citadel|Volleyball": {
+   "state": "off"
+  },
+  "east-tennessee-state|Baseball": {
+   "state": "off"
+  },
+  "east-tennessee-state|Basketball": {
+   "state": "off"
+  },
+  "east-tennessee-state|Football": {
+   "state": "off"
+  },
+  "east-tennessee-state|Soccer": {
+   "state": "off"
+  },
+  "east-tennessee-state|Softball": {
+   "state": "off"
+  },
+  "east-tennessee-state|Volleyball": {
+   "state": "off"
+  },
+  "mercer|Baseball": {
+   "state": "off"
+  },
+  "mercer|Basketball": {
+   "state": "off"
+  },
+  "mercer|Football": {
+   "state": "off"
+  },
+  "mercer|Lacrosse": {
+   "state": "off"
+  },
+  "mercer|Soccer": {
+   "state": "off"
+  },
+  "mercer|Softball": {
+   "state": "off"
+  },
+  "mercer|Volleyball": {
+   "state": "off"
+  },
+  "samford|Baseball": {
+   "state": "off"
+  },
+  "samford|Basketball": {
+   "state": "off"
+  },
+  "samford|Football": {
+   "state": "off"
+  },
+  "samford|Soccer": {
+   "state": "off"
+  },
+  "samford|Softball": {
+   "state": "off"
+  },
+  "samford|Volleyball": {
+   "state": "off"
+  },
+  "unc-greensboro|Baseball": {
+   "state": "off"
+  },
+  "unc-greensboro|Basketball": {
+   "state": "off"
+  },
+  "unc-greensboro|Soccer": {
+   "state": "off"
+  },
+  "unc-greensboro|Softball": {
+   "state": "off"
+  },
+  "unc-greensboro|Volleyball": {
+   "state": "off"
+  },
+  "vmi|Baseball": {
+   "state": "off"
+  },
+  "vmi|Basketball": {
+   "state": "off"
+  },
+  "vmi|Football": {
+   "state": "off"
+  },
+  "vmi|Lacrosse": {
+   "state": "off"
+  },
+  "vmi|Soccer": {
+   "state": "off"
+  },
+  "vmi|Water Polo": {
+   "state": "off"
+  },
+  "western-carolina|Baseball": {
+   "state": "off"
+  },
+  "western-carolina|Basketball": {
+   "state": "off"
+  },
+  "western-carolina|Football": {
+   "state": "off"
+  },
+  "western-carolina|Soccer": {
+   "state": "off"
+  },
+  "western-carolina|Softball": {
+   "state": "off"
+  },
+  "western-carolina|Volleyball": {
+   "state": "off"
   }
  },
- "version": "4.206.0-patriot",
- "updated_at": "2026-10-24T07:22:12.710Z",
+ "version": "4.207.4-socon",
+ "updated_at": "2026-10-24T16:04:52.108Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
