@@ -22,7 +22,8 @@ assert.deepEqual(sidearmScheduleGames(page.replace(/\bvar\s+schedule_id\s*=\s*\d
 const big=(school,name)=>gunzipSync(readFileSync(new URL(`./fixtures/${school}-module/${name}-schedule.html.gz`,import.meta.url))).toString('utf8');
 const ewu=sidearmScheduleGames(big('eastern-washington','football'));
 assert.equal(ewu.length,12);
-assert.deepEqual(ewu[0],{id:6130,date:'2026-08-29T14:00:00',enddate:null,time:'2:00 PM',location_indicator:'A',at_vs:'at',opponent:{title:'#24/25 Northern Arizona'},tournament:null,
+// The ranking span before the name is kept as the prefix (Southland, Oct 24).
+assert.deepEqual(ewu[0],{id:6130,date:'2026-08-29T14:00:00',enddate:null,time:'2:00 PM',location_indicator:'A',at_vs:'at',opponent:{title:'#24/25 Northern Arizona',prefix:'#24/25'},tournament:null,
   result:{status:'L',team_score:'27',opponent_score:'34',prescore_info:'',postscore_info:'',recap:{url:'/news/2026/8/29/football-eagles-miss-upset-bid-over-lumberjacks-in-season-opener.aspx'}},noplay_text:'',type:'',conference:true});
 // A non-conference game has no conference mark (Northern Iowa, Sep 5).
 assert.equal(ewu[1].conference,false);
