@@ -287,7 +287,7 @@ import {utMartinSchool,createUtMartinHandlers} from './schools/ut-martin.mjs';
 import {westernIllinoisSchool,createWesternIllinoisHandlers} from './schools/western-illinois.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.202.0-ovc';
+const VERSION='4.203.0-patriot';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
