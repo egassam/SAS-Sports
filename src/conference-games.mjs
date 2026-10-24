@@ -84,7 +84,13 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   'new-orleans':['uno','new orleans','lsu new orleans','lsu of new orleans','university of new orleans'],nicholls:['nicholls state','nicholls state university'],
   'northwestern-state':['nsu','northwestern state la','northwestern la','northwestern state university'],'southeastern-louisiana':['slu','southeastern','southeastern la','se louisiana','selu'],
   'stephen-f-austin':['sfa','stephen f austin state','sfasu'],'texas-am-corpus-christi':['tamucc','texas a and m corpus christi','a and m corpus christi','corpus christi','tamu cc','tamu corpus christi'],
-  utrgv:['ut rio grande valley','texas rio grande valley','rio grande valley']};
+  utrgv:['ut rio grande valley','texas rio grande valley','rio grande valley'],
+  // Summit League opponents write "UMKC", "UND", "NDSU", "Omaha" or
+  // "Nebraska Omaha", "ORU", "USD", "SDSU", "St. Thomas (Minn.)" (its "St."
+  // reads as "State" here).
+  'kansas-city':['umkc','kansas city','missouri kansas city','kc roos'],'north-dakota':['und','north dakota university'],'north-dakota-state':['ndsu','north dakota st'],
+  omaha:['nebraska omaha','uno','neb omaha','omaha mavericks'],'oral-roberts':['oru'],'south-dakota':['usd','south dakota university'],'south-dakota-state':['sdsu','south dakota st','s dakota state'],
+  'st-thomas':['saint thomas','state thomas minn','state thomas mn','state thomas minnesota','saint thomas mn','ust']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -256,6 +262,12 @@ const NOT_SPONSORED={
   // Christi, UTRGV) sponsors football, basketball, baseball, softball,
   // soccer, volleyball, beach volleyball, golf, tennis, cross country and
   // track: no swimming, fencing or bowling (modules name those leagues).
+  // The Summit League (2026-27: Kansas City, North Dakota, North Dakota
+  // State, Omaha, Oral Roberts, South Dakota, South Dakota State, St.
+  // Thomas) sponsors basketball, baseball, softball, soccer, volleyball,
+  // golf, tennis, cross country, track and swimming: no football, wrestling
+  // or hockey (modules name those leagues).
+  'Summit League':new Set(['Football','Wrestling','Hockey','Lacrosse','Gymnastics','Bowling','Rowing','Field Hockey','Water Polo','Beach Volleyball','Rifle','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Southland Conference':new Set(['Swimming & Diving','Wrestling','Lacrosse','Water Polo','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Rifle','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Southern Conference':new Set(['Swimming & Diving','Lacrosse','Water Polo','Beach Volleyball','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Patriot League':new Set(['Wrestling','Hockey','Gymnastics','Rifle','Water Polo','Fencing','Bowling','Beach Volleyball','Equestrian','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),

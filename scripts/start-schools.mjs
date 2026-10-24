@@ -24,6 +24,7 @@
 import {readFileSync,writeFileSync,mkdirSync,openSync,closeSync,readdirSync,existsSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {spawn} from 'node:child_process';
+import {labelCodedTeamPages} from './onboard-school.mjs';
 
 const args=process.argv.slice(2),value=name=>{const hit=args.find(x=>x.startsWith(`--${name}=`));return hit?hit.slice(name.length+3):null};
 const resume=args.includes('--resume'),from=value('from')||'oklahoma',wmtFrom=value('wmt-from')||'nebraska',logDir=value('log-dir');
@@ -208,6 +209,7 @@ await Promise.all(ready.map(async school=>{
   // A sport left with no schedule page (Oct 23: three schools' cross country
   // and track routes were the homepage, and nothing said so).
   for(const line of fixtures.text.split('\n').filter(l=>/NO SCHEDULE PAGE/.test(l)))notes.push(`${id}: ${line.trim()}`);
+  {const file=new URL(`src/schools/${id}.mjs`,root),text=readFileSync(file,'utf8'),labeled=labelCodedTeamPages(text);if(labeled!==text){writeFileSync(file,labeled);notes.push(`${id}: teamLabels written for code-named team pages`);}}
   const survey=await run(id,'survey',['scripts/survey-school.mjs',`--school=${id}`]);
   const gates=survey.text.split('\n').filter(l=>/GATE|ODD NAME|FORMAT:/.test(l));
   notes.push(`${id}: survey ${survey.log}${gates.length?` — ${gates.length} GATE:\n    ${gates.join('\n    ')}`:' — no GATE'}`);

@@ -191,7 +191,9 @@ export function golfCardPlace(text){
   if(spelled>=0)return place(word[1],spelled+1);
   const player=card.match(/^(T-?)?(\d{1,2})(?:st|nd|rd|th)?\s*\/\s*(\d{1,2})\s*;\s*[^;]+,\s*T?-?\d{1,3}(?:st|nd|rd|th)?$/i);
   if(player&&Number(player[2])<=Number(player[3]))return place(player[1],player[2],player[3]);
-  const first=card.match(/^\d{3,4}\s*\/\s*(T-?)?(\d{1,2})(?:st|nd|rd|th)?$/i);
+  // The score first, with or without its par ("911 (+47) / 1st", Omaha's
+  // Big O Classic, Oct 12-13; "875 (+23) / 9th").
+  const first=card.match(/^\d{3,4}(?:\s*\((?:[+\-]\d{1,3}|E)\))?\s*\/\s*(T-?)?(\d{1,2})(?:st|nd|rd|th)?$/i);
   if(first)return place(first[1],first[2]);
   const m=card.match(/^(T-?)?(\d{1,2})(?:st|nd|rd|th)?(?:\s*(?:\/|of|out of)\s*(\d{1,2})(?:\s*teams)?)?(?=[\s,(\/\-\u2013\u2014]|$)(.*)$/i);
   if(!m||!scores.test(m[4])||!/\d{3,4}/.test(m[4])&&!m[3])return null;
