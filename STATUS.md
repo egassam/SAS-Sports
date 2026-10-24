@@ -1,5 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
+| indiana-state | Volleyball | ❌ failing | Indiana State at UIC: result reads "L, 3-0", ESPN final L, 0-3 |
 | liu | Volleyball | ❌ failing | LIU at FDU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | merrimack | Volleyball | ❌ failing | Merrimack vs Saint Peter's: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
@@ -14,31 +15,6 @@
 | san-diego-state | Soccer | ❌ failing | San Diego State at Washington St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Wake Forest: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| air-force | Football | 🔴 on | live 3-14 · 8:40 - 2nd · ball: school (2nd & 7 at WYO 28) · official_schedule+live_scoreboard |
-| air-force | Hockey | 🔴 on | live 0-2 · 14:56 - 2nd · official_schedule+live_scoreboard |
-| boston-college | Hockey | 🔴 on | ESPN shows Boston College at Denver live (13:07 - 2nd) but the app has no live card (it is in results) |
-| cal-baptist | Volleyball | 🔴 on | live 22-25 · End of 2nd · Sets 1-1 · official_schedule+live_scoreboard |
-| cal-state-fullerton | Volleyball | 🔴 on | live 3-3 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
-| csu-bakersfield | Volleyball | 🔴 on | live 25-22 · End of 2nd · Sets 2-0 · official_schedule+live_scoreboard |
-| csun | Volleyball | 🔴 on | live 22-25 · End of 2nd · Sets 0-2 · official_schedule+live_scoreboard |
-| denver | Hockey | 🔴 on | live 2-0 · 13:07 - 2nd · official_schedule+live_scoreboard |
-| eastern-illinois | Soccer | 🔴 on | live 1-2 · 89' · official_schedule+live_scoreboard |
-| indiana-state | Volleyball | 🔴 on | result reads "L, 3-0", ESPN final L, 0-3 |
-| lindenwood | Hockey | 🔴 on | ESPN shows Lindenwood vs Omaha live (7:27 - 3rd) but the app has no live card (it is in results) |
-| lindenwood | Soccer | 🔴 on | live 2-1 · 89' · official_schedule+live_scoreboard |
-| long-beach-state | Volleyball | 🔴 on | live 3-4 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
-| maine | Hockey | 🔴 on | final W, 3-0 not in the app's results |
-| new-mexico | Volleyball | 🔴 on | live 3-2 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard |
-| providence | Hockey | 🔴 on | result reads "L, 1-5", ESPN final W, 3-0 |
-| quinnipiac | Hockey | 🔴 on | result reads "W, 4-2", ESPN final L, 3-4 |
-| san-jose-state | Volleyball | 🔴 on | live 2-3 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
-| tulsa | Football | 🔴 on | live 14-20 · Halftime · official_schedule+live_scoreboard |
-| uc-irvine | Volleyball | 🔴 on | live 23-25 · End of 2nd · Sets 0-2 · official_schedule+live_scoreboard |
-| uc-riverside | Volleyball | 🔴 on | live 25-22 · End of 2nd · Sets 1-1 · official_schedule+live_scoreboard |
-| uc-san-diego | Volleyball | 🔴 on | live 25-23 · End of 2nd · Sets 2-0 · official_schedule+live_scoreboard |
-| uconn | Football | 🔴 on | live 35-9 · 3:04 - 4th · official_schedule+live_scoreboard |
-| umass | Football | 🔴 on | live 9-34 · 3:04 - 4th · official_schedule+live_scoreboard |
-| washington | Volleyball | 🔴 on | live 25-25 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -60,6 +36,11 @@
 | alabama | Baseball | ⚪ off (waiting) |  |
 | alabama | Basketball | ⚪ off (waiting) |  |
 | alabama | Softball | ⚪ off (waiting) |  |
+| american | Basketball | ⚪ off (waiting) |  |
+| american | Field Hockey | ⚪ off (waiting) |  |
+| american | Lacrosse | ⚪ off (waiting) |  |
+| american | Soccer | ⚪ off (waiting) |  |
+| american | Volleyball | ⚪ off (waiting) |  |
 | arizona | Baseball | ⚪ off (waiting) |  |
 | arizona | Basketball | ⚪ off (waiting) |  |
 | arizona | Football | ⚪ off (waiting) | final W, 52-31 (live phase not observed 2×; waits for the next game) |
@@ -76,6 +57,14 @@
 | arkansas-state | Basketball | ⚪ off (waiting) |  |
 | arkansas-state | Football | ⚪ off (waiting) |  |
 | arkansas-state | Soccer | ⚪ off (waiting) |  |
+| army | Baseball | ⚪ off (waiting) |  |
+| army | Basketball | ⚪ off (waiting) |  |
+| army | Football | ⚪ off (waiting) |  |
+| army | Hockey | ⚪ off (waiting) |  |
+| army | Lacrosse | ⚪ off (waiting) |  |
+| army | Soccer | ⚪ off (waiting) |  |
+| army | Softball | ⚪ off (waiting) |  |
+| army | Volleyball | ⚪ off (waiting) |  |
 | auburn | Baseball | ⚪ off (waiting) |  |
 | auburn | Basketball | ⚪ off (waiting) |  |
 | auburn | Softball | ⚪ off (waiting) |  |
@@ -118,8 +107,15 @@
 | boise-state | Volleyball | ⚪ off (waiting) |  |
 | boston-college | Baseball | ⚪ off (waiting) |  |
 | boston-college | Basketball | ⚪ off (waiting) |  |
+| boston-college | Hockey | ⚪ off (waiting) | final L, 2-5 (live phase not observed 2×; waits for the next game) |
 | boston-college | Lacrosse | ⚪ off (waiting) |  |
 | boston-college | Softball | ⚪ off (waiting) |  |
+| boston-university | Basketball | ⚪ off (waiting) |  |
+| boston-university | Field Hockey | ⚪ off (waiting) |  |
+| boston-university | Hockey | ⚪ off (waiting) |  |
+| boston-university | Lacrosse | ⚪ off (waiting) |  |
+| boston-university | Soccer | ⚪ off (waiting) |  |
+| boston-university | Softball | ⚪ off (waiting) |  |
 | bowling-green | Baseball | ⚪ off (waiting) |  |
 | bowling-green | Basketball | ⚪ off (waiting) |  |
 | bowling-green | Football | ⚪ off (waiting) |  |
@@ -141,6 +137,15 @@
 | bryant | Soccer | ⚪ off (waiting) |  |
 | bryant | Softball | ⚪ off (waiting) |  |
 | bryant | Volleyball | ⚪ off (waiting) |  |
+| bucknell | Baseball | ⚪ off (waiting) |  |
+| bucknell | Basketball | ⚪ off (waiting) |  |
+| bucknell | Field Hockey | ⚪ off (waiting) |  |
+| bucknell | Football | ⚪ off (waiting) |  |
+| bucknell | Lacrosse | ⚪ off (waiting) |  |
+| bucknell | Soccer | ⚪ off (waiting) |  |
+| bucknell | Softball | ⚪ off (waiting) |  |
+| bucknell | Volleyball | ⚪ off (waiting) |  |
+| bucknell | Water Polo | ⚪ off (waiting) |  |
 | buffalo | Basketball | ⚪ off (waiting) |  |
 | buffalo | Football | ⚪ off (waiting) |  |
 | buffalo | Soccer | ⚪ off (waiting) |  |
@@ -432,6 +437,15 @@
 | hofstra | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Soccer | ⚪ off (waiting) |  |
 | hofstra | Softball | ⚪ off (waiting) |  |
+| holy-cross | Baseball | ⚪ off (waiting) |  |
+| holy-cross | Basketball | ⚪ off (waiting) |  |
+| holy-cross | Field Hockey | ⚪ off (waiting) |  |
+| holy-cross | Football | ⚪ off (waiting) |  |
+| holy-cross | Hockey | ⚪ off (waiting) |  |
+| holy-cross | Lacrosse | ⚪ off (waiting) |  |
+| holy-cross | Soccer | ⚪ off (waiting) |  |
+| holy-cross | Softball | ⚪ off (waiting) |  |
+| holy-cross | Volleyball | ⚪ off (waiting) |  |
 | houston | Baseball | ⚪ off (waiting) |  |
 | houston | Basketball | ⚪ off (waiting) |  |
 | houston | Softball | ⚪ off (waiting) |  |
@@ -501,11 +515,27 @@
 | la-salle | Lacrosse | ⚪ off (waiting) |  |
 | la-salle | Soccer | ⚪ off (waiting) |  |
 | la-salle | Water Polo | ⚪ off (waiting) |  |
+| lafayette | Baseball | ⚪ off (waiting) |  |
+| lafayette | Basketball | ⚪ off (waiting) |  |
+| lafayette | Field Hockey | ⚪ off (waiting) |  |
+| lafayette | Football | ⚪ off (waiting) |  |
+| lafayette | Lacrosse | ⚪ off (waiting) |  |
+| lafayette | Soccer | ⚪ off (waiting) |  |
+| lafayette | Softball | ⚪ off (waiting) |  |
+| lafayette | Volleyball | ⚪ off (waiting) |  |
 | le-moyne | Baseball | ⚪ off (waiting) |  |
 | le-moyne | Basketball | ⚪ off (waiting) |  |
 | le-moyne | Lacrosse | ⚪ off (waiting) |  |
 | le-moyne | Soccer | ⚪ off (waiting) |  |
 | le-moyne | Softball | ⚪ off (waiting) |  |
+| lehigh | Baseball | ⚪ off (waiting) |  |
+| lehigh | Basketball | ⚪ off (waiting) |  |
+| lehigh | Field Hockey | ⚪ off (waiting) |  |
+| lehigh | Football | ⚪ off (waiting) |  |
+| lehigh | Lacrosse | ⚪ off (waiting) |  |
+| lehigh | Soccer | ⚪ off (waiting) |  |
+| lehigh | Softball | ⚪ off (waiting) |  |
+| lehigh | Volleyball | ⚪ off (waiting) |  |
 | liberty | Baseball | ⚪ off (waiting) |  |
 | liberty | Basketball | ⚪ off (waiting) |  |
 | liberty | Field Hockey | ⚪ off (waiting) |  |
@@ -515,6 +545,7 @@
 | lindenwood | Baseball | ⚪ off (waiting) |  |
 | lindenwood | Basketball | ⚪ off (waiting) |  |
 | lindenwood | Football | ⚪ off (waiting) |  |
+| lindenwood | Hockey | ⚪ off (waiting) | final L, 4-7 (live phase not observed 2×; waits for the next game) |
 | lindenwood | Lacrosse | ⚪ off (waiting) |  |
 | lindenwood | Softball | ⚪ off (waiting) |  |
 | lindenwood | Volleyball | ⚪ off (waiting) |  |
@@ -553,12 +584,17 @@
 | louisville | Basketball | ⚪ off (waiting) |  |
 | louisville | Lacrosse | ⚪ off (waiting) |  |
 | louisville | Softball | ⚪ off (waiting) |  |
+| loyola-maryland | Basketball | ⚪ off (waiting) |  |
+| loyola-maryland | Lacrosse | ⚪ off (waiting) |  |
+| loyola-maryland | Soccer | ⚪ off (waiting) |  |
+| loyola-maryland | Volleyball | ⚪ off (waiting) |  |
 | lsu | Baseball | ⚪ off (waiting) |  |
 | lsu | Basketball | ⚪ off (waiting) |  |
 | lsu | Softball | ⚪ off (waiting) |  |
 | maine | Baseball | ⚪ off (waiting) |  |
 | maine | Basketball | ⚪ off (waiting) |  |
 | maine | Football | ⚪ off (waiting) |  |
+| maine | Hockey | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
 | maine | Soccer | ⚪ off (waiting) |  |
 | maine | Softball | ⚪ off (waiting) |  |
 | manhattan | Baseball | ⚪ off (waiting) |  |
@@ -852,6 +888,7 @@
 | princeton | Water Polo | ⚪ off (waiting) |  |
 | providence | Basketball | ⚪ off (waiting) |  |
 | providence | Field Hockey | ⚪ off (waiting) |  |
+| providence | Hockey | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
 | providence | Lacrosse | ⚪ off (waiting) |  |
 | providence | Softball | ⚪ off (waiting) |  |
 | purdue | Baseball | ⚪ off (waiting) |  |
@@ -870,6 +907,7 @@
 | quinnipiac | Baseball | ⚪ off (waiting) |  |
 | quinnipiac | Basketball | ⚪ off (waiting) |  |
 | quinnipiac | Field Hockey | ⚪ off (waiting) |  |
+| quinnipiac | Hockey | ⚪ off (waiting) | final L, 3-4 (live phase not observed 2×; waits for the next game) |
 | quinnipiac | Lacrosse | ⚪ off (waiting) |  |
 | quinnipiac | Soccer | ⚪ off (waiting) |  |
 | quinnipiac | Softball | ⚪ off (waiting) |  |
@@ -1320,6 +1358,8 @@
 | youngstown-state | Soccer | ⚪ off (waiting) |  |
 | youngstown-state | Softball | ⚪ off (waiting) |  |
 | youngstown-state | Volleyball | ⚪ off (waiting) |  |
+| air-force | Football | ✅ off (passed) | Air Force at Wyoming · 2026-10-24T07:12:59.797Z |
+| air-force | Hockey | ✅ off (passed) | Air Force at Colorado College · 2026-10-24T07:12:58.698Z |
 | akron | Volleyball | ✅ off (passed) | Akron at Ball State · 2026-10-24T01:59:34.519Z |
 | alabama | Football | ✅ off (passed) | Alabama vs Georgia · 2026-10-11T06:38:16.684Z |
 | alabama | Soccer | ✅ off (passed) | Alabama vs Georgia · 2026-10-16T04:55:14.970Z |
@@ -1353,6 +1393,8 @@
 | byu | Football | ✅ off (passed) | BYU vs Notre Dame · 2026-10-18T06:34:58.890Z |
 | byu | Soccer | ✅ off (passed) | BYU at Cincinnati · 2026-10-13T07:02:12.716Z |
 | byu | Volleyball | ✅ off (passed) | BYU vs West Virginia · 2026-10-11T06:38:17.001Z |
+| cal-baptist | Volleyball | ✅ off (passed) | Cal Baptist at UC Riverside · 2026-10-24T07:12:58.482Z |
+| cal-state-fullerton | Volleyball | ✅ off (passed) | Cal State Fullerton at Long Beach St · 2026-10-24T07:12:58.259Z |
 | california | Field Hockey | ✅ off (passed) | Cal at UC Davis · 2026-10-18T22:34:28.480Z |
 | california | Soccer | ✅ off (passed) | Men's · Cal vs NC State · 2026-10-19T00:29:39.551Z |
 | california | Volleyball | ✅ off (passed) | Cal vs Wake Forest · 2026-10-18T22:34:29.668Z |
@@ -1377,10 +1419,13 @@
 | cornell | Field Hockey | ✅ off (passed) | Cornell at Dartmouth · 2026-10-23T20:45:48.433Z |
 | creighton | Soccer | ✅ off (passed) | Women's · Creighton vs UConn · 2026-10-22T01:43:48.911Z |
 | creighton | Volleyball | ✅ off (passed) | Creighton vs UConn · 2026-10-23T07:27:20.445Z |
+| csu-bakersfield | Volleyball | ✅ off (passed) | CSU Bakersfield at CSU Northridge · 2026-10-24T07:13:01.121Z |
+| csun | Volleyball | ✅ off (passed) | Women's · CSUN vs Bakersfield · 2026-10-24T07:13:00.154Z |
 | dartmouth | Field Hockey | ✅ off (passed) | Dartmouth vs Cornell · 2026-10-23T20:45:48.699Z |
 | davidson | Volleyball | ✅ off (passed) | Davidson vs Rhode Island · 2026-10-24T01:59:37.212Z |
 | delaware | Hockey | ✅ off (passed) | Delaware at Long Island University · 2026-10-23T23:34:14.013Z |
 | delaware-state | Volleyball | ✅ off (passed) | Delaware State at NC Central · 2026-10-24T01:59:34.814Z |
+| denver | Hockey | ✅ off (passed) | Denver vs Boston College · 2026-10-24T07:12:58.702Z |
 | denver | Volleyball | ✅ off (passed) | Denver at Saint Mary's · 2026-10-23T07:27:21.002Z |
 | drexel | Field Hockey | ✅ off (passed) | Drexel vs NORTHEASTERN · 2026-10-23T20:45:48.378Z |
 | duke | Field Hockey | ✅ off (passed) | Duke at Louisville · 2026-10-17T19:30:44.770Z |
@@ -1390,6 +1435,7 @@
 | east-carolina | Football | ✅ off (passed) | East Carolina at Memphis · 2026-10-23T07:27:20.229Z |
 | east-carolina | Soccer | ✅ off (passed) | East Carolina vs North Texas · 2026-10-23T02:02:21.727Z |
 | east-carolina | Volleyball | ✅ off (passed) | East Carolina vs Wichita St · 2026-10-24T01:59:33.807Z |
+| eastern-illinois | Soccer | ✅ off (passed) | Men's · Eastern Illinois at Lindenwood · 2026-10-24T07:12:59.886Z |
 | eastern-michigan | Volleyball | ✅ off (passed) | Eastern Michigan at Kent State · 2026-10-23T02:02:21.411Z |
 | eastern-washington | Soccer | ✅ off (passed) | Eastern Washington vs Southern Utah · 2026-10-23T02:02:22.056Z |
 | eastern-washington | Volleyball | ✅ off (passed) | Eastern Washington at Southern Utah · 2026-10-23T07:27:20.106Z |
@@ -1461,8 +1507,10 @@
 | le-moyne | Volleyball | ✅ off (passed) | Le Moyne at Chicago St · 2026-10-24T01:59:33.628Z |
 | liberty | Football | ✅ off (passed) | Liberty at Kennesaw St · 2026-10-23T07:27:20.307Z |
 | liberty | Volleyball | ✅ off (passed) | Liberty vs Sam Houston · 2026-10-23T23:39:30.001Z |
+| lindenwood | Soccer | ✅ off (passed) | Men's · Lindenwood vs E Illinois · 2026-10-24T07:12:57.969Z |
 | lipscomb | Volleyball | ✅ off (passed) | Lipscomb vs FGCU · 2026-10-24T01:59:34.979Z |
 | lmu | Volleyball | ✅ off (passed) | LMU vs Santa Clara · 2026-10-23T07:27:20.358Z |
+| long-beach-state | Volleyball | ✅ off (passed) | Women's · Long Beach State vs Fullerton · 2026-10-24T07:13:00.230Z |
 | louisiana | Soccer | ✅ off (passed) | Louisiana at UL Monroe · 2026-10-23T07:27:20.178Z |
 | louisiana | Volleyball | ✅ off (passed) | Louisiana at App State · 2026-10-24T01:59:34.266Z |
 | louisiana-tech | Soccer | ✅ off (passed) | Louisiana Tech vs Old Dominion · 2026-10-23T07:27:20.330Z |
@@ -1527,6 +1575,7 @@
 | nebraska | Volleyball | ✅ off (passed) | Nebraska vs Wisconsin · 2026-10-11T00:55:13.656Z |
 | new-hampshire | Field Hockey | ✅ off (passed) | New Hampshire vs UAlbany · 2026-10-23T20:40:17.052Z |
 | new-haven | Volleyball | ✅ off (passed) | New Haven vs Stonehill · 2026-10-24T01:59:34.162Z |
+| new-mexico | Volleyball | ✅ off (passed) | New Mexico vs San José St · 2026-10-24T07:12:58.248Z |
 | niagara | Hockey | ✅ off (passed) | Niagara vs Union · 2026-10-24T01:59:33.816Z |
 | niagara | Volleyball | ✅ off (passed) | Niagara at Siena · 2026-10-24T01:59:33.671Z |
 | norfolk-state | Volleyball | ✅ off (passed) | Norfolk State at Morgan St · 2026-10-23T23:39:29.843Z |
@@ -1599,6 +1648,7 @@
 | sam-houston | Soccer | ✅ off (passed) | Sam Houston vs FIU · 2026-10-23T07:27:21.757Z |
 | sam-houston | Volleyball | ✅ off (passed) | Sam Houston at Liberty · 2026-10-23T23:39:29.330Z |
 | san-francisco | Volleyball | ✅ off (passed) | San Francisco at Pepperdine · 2026-10-23T07:27:20.900Z |
+| san-jose-state | Volleyball | ✅ off (passed) | San Jose State at New Mexico · 2026-10-24T07:12:58.386Z |
 | santa-clara | Volleyball | ✅ off (passed) | Santa Clara at LMU · 2026-10-23T07:27:20.094Z |
 | seton-hall | Soccer | ✅ off (passed) | Women's · Seton Hall vs Villanova · 2026-10-22T01:43:47.157Z |
 | seton-hall | Volleyball | ✅ off (passed) | Seton Hall at Georgetown · 2026-10-24T01:59:34.048Z |
@@ -1646,21 +1696,27 @@
 | toledo | Volleyball | ✅ off (passed) | Toledo vs Ohio · 2026-10-23T23:38:05.282Z |
 | troy | Volleyball | ✅ off (passed) | Troy vs South Alabama · 2026-10-23T02:02:23.473Z |
 | tulane | Volleyball | ✅ off (passed) | Tulane vs Tulsa · 2026-10-24T02:06:59.985Z |
+| tulsa | Football | ✅ off (passed) | Tulsa vs Army · 2026-10-24T07:12:58.784Z |
 | tulsa | Soccer | ✅ off (passed) | Men's · Tulsa vs Charlotte · 2026-10-23T07:27:21.985Z |
 | tulsa | Volleyball | ✅ off (passed) | Tulsa at Tulane · 2026-10-24T02:07:00.360Z |
 | uab | Soccer | ✅ off (passed) | Women's · UAB vs Tulsa · 2026-10-23T02:07:51.409Z |
 | uab | Volleyball | ✅ off (passed) | UAB at UTSA · 2026-10-24T01:59:34.534Z |
 | ualbany | Field Hockey | ✅ off (passed) | UAlbany at New Hampshire · 2026-10-23T20:40:16.087Z |
+| uc-irvine | Volleyball | ✅ off (passed) | Women's · UC Irvine at UC San Diego · 2026-10-24T07:12:58.577Z |
+| uc-riverside | Volleyball | ✅ off (passed) | UC Riverside vs CA Baptist · 2026-10-24T07:13:01.059Z |
+| uc-san-diego | Volleyball | ✅ off (passed) | Women's · UC San Diego vs UC Irvine · 2026-10-24T07:12:57.517Z |
 | ucf | Soccer | ✅ off (passed) | Women's · UCF vs Oklahoma St · 2026-10-11T22:23:42.554Z |
 | ucf | Volleyball | ✅ off (passed) | UCF vs Kansas · 2026-10-11T22:23:41.697Z |
 | ucla | Football | ✅ off (passed) | UCLA vs Wisconsin · 2026-10-18T06:34:59.253Z |
 | ucla | Soccer | ✅ off (passed) | Men's · UCLA at Wisconsin · 2026-10-17T06:14:53.774Z |
 | ucla | Volleyball | ✅ off (passed) | UCLA vs Ohio State · 2026-10-19T00:36:49.716Z |
 | uconn | Field Hockey | ✅ off (passed) | UConn at Old Dominion · 2026-10-23T20:45:48.991Z |
+| uconn | Football | ✅ off (passed) | UConn vs UMass · 2026-10-24T07:12:59.728Z |
 | uconn | Soccer | ✅ off (passed) | Women's · UConn at Creighton · 2026-10-22T01:43:47.777Z |
 | uconn | Volleyball | ✅ off (passed) | UConn at Creighton · 2026-10-23T07:27:20.949Z |
 | ulm | Soccer | ✅ off (passed) | ULM vs Louisiana · 2026-10-23T07:27:27.499Z |
 | ulm | Volleyball | ✅ off (passed) | ULM vs Louisiana Tech · 2026-10-24T01:59:33.751Z |
+| umass | Football | ✅ off (passed) | UMass at UConn · 2026-10-24T07:12:57.697Z |
 | umass-lowell | Field Hockey | ✅ off (passed) | UMass Lowell vs Maine · 2026-10-23T23:34:14.407Z |
 | umass-lowell | Hockey | ✅ off (passed) | UMass Lowell vs Providence · 2026-10-24T01:59:34.538Z |
 | unc-asheville | Volleyball | ✅ off (passed) | UNC Asheville at High Point · 2026-10-24T01:59:41.243Z |
@@ -1687,6 +1743,7 @@
 | wake-forest | Volleyball | ✅ off (passed) | Wake Forest at California · 2026-10-18T22:34:28.163Z |
 | washington | Football | ✅ off (passed) | Washington at Purdue · 2026-10-17T06:14:53.186Z |
 | washington | Soccer | ✅ off (passed) | Women's · Washington at Minnesota · 2026-10-23T02:07:51.429Z |
+| washington | Volleyball | ✅ off (passed) | Washington at Wisconsin · 2026-10-24T07:12:57.528Z |
 | washington-state | Soccer | ✅ off (passed) | Washington State vs San Diego St · 2026-10-23T02:02:21.290Z |
 | weber-state | Volleyball | ✅ off (passed) | Weber State vs Montana St · 2026-10-23T07:27:21.279Z |
 | west-florida | Volleyball | ✅ off (passed) | West Florida at North Florida · 2026-10-24T01:59:33.723Z |
@@ -1702,4 +1759,4 @@
 | wisconsin | Volleyball | ✅ off (passed) | Wisconsin vs Maryland · 2026-10-17T01:43:18.724Z |
 | xavier | Soccer | ✅ off (passed) | Women's · Xavier at Marquette · 2026-10-22T01:43:47.431Z |
 
-Done 381/1701; on 25; off 1281; failing 14.
+Done 400/1758; on 0; off 1343; failing 15.
