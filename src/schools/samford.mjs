@@ -25,6 +25,8 @@ export const samfordSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Tennis']),
+  // The tennis rosters publish no athlete portraits.
+  portraitlessProfileSports:new Set(['Tennis']),
   verifiedInstagrams:{
     'samford|Basketball|Caleb Harrison':'https://www.instagram.com/caleb_harrison23/',
     'samford|Basketball|Corey Brown':'https://www.instagram.com/coreyjbs/',

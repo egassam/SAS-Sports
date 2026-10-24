@@ -40,7 +40,7 @@ export const eastTennesseeStateSchool={
     'east-tennessee-state|Softball':'https://etsubucs.com/sports/softball/schedule',
     'east-tennessee-state|Tennis':['https://etsubucs.com/sports/womens-tennis/schedule','https://etsubucs.com/sports/mens-tennis/schedule'],
     'east-tennessee-state|Track & Field':['https://etsubucs.com/sports/womens-track-and-field/schedule','https://etsubucs.com/sports/mens-track-and-field/schedule'],
-    'east-tennessee-state|Triathlon':'https://etsubucs.com/sports/triathlon/schedule',
+    'east-tennessee-state|Triathlon':'https://etsubucs.com/sports/womens-triathlon/schedule',
     'east-tennessee-state|Volleyball':'https://etsubucs.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
@@ -53,7 +53,7 @@ export const eastTennesseeStateSchool={
     'east-tennessee-state|Softball':'https://etsubucs.com/sports/softball/roster',
     'east-tennessee-state|Tennis':['https://etsubucs.com/sports/womens-tennis/roster','https://etsubucs.com/sports/mens-tennis/roster'],
     'east-tennessee-state|Track & Field':['https://etsubucs.com/sports/womens-track-and-field/roster','https://etsubucs.com/sports/mens-track-and-field/roster'],
-    'east-tennessee-state|Triathlon':'https://etsubucs.com/sports/triathlon/roster',
+    'east-tennessee-state|Triathlon':'https://etsubucs.com/sports/womens-triathlon/roster',
     'east-tennessee-state|Volleyball':'https://etsubucs.com/sports/womens-volleyball/roster'
   }
 };
