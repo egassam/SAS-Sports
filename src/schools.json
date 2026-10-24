@@ -9412,7 +9412,7 @@
     "state": "Louisiana",
     "conference": "Southland Conference",
     "division": "NCAA Division I",
-    "athletics_url": "https://unoprivateers.com",
+    "athletics_url": "https://privateersports.com",
     "aliases": [
       "University of New Orleans",
       "UNO",
@@ -9421,7 +9421,7 @@
     "providers": [
       {
         "provider": "SIDEARM",
-        "slug": "unoprivateers",
+        "slug": "privateersports",
         "provider_school_id": null
       }
     ]
