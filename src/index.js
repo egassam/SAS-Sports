@@ -320,7 +320,7 @@ import {southDakotaStateSchool,createSouthDakotaStateHandlers} from './schools/s
 import {stThomasSchool,createStThomasHandlers} from './schools/st-thomas.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.209.1-summit';
+const VERSION='4.209.2-summit';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

@@ -24,6 +24,8 @@ export const southDakotaSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Golf','Swimming & Diving']),
+  // The track roster publishes few portraits (Oct 24: no athlete read).
+  portraitlessProfileSports:new Set(['Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'south-dakota|Basketball':['https://goyotes.com/sports/mens-basketball/schedule','https://goyotes.com/sports/womens-basketball/schedule'],
