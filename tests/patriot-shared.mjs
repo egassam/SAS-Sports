@@ -34,12 +34,14 @@ assert.match(army,/opponent:\{\.\.\.game\.opponent,title:String\(game\.tournamen
 assert.match(army,/\{'Football':'American','Hockey':'Atlantic Hockey America','Rifle':'GARC','Wrestling':'EIWA','Gymnastics':'ECAC'\}\[sport\]/);
 
 // A golf headline that "Claims" a cup is a win (Army's Commander-In-Chief's
-// Cup, Oct 14); a claimed place or medal is not.
+// Cup, Oct 14); a claimed place or medal is not a win.
 {
   const story=title=>`<html><head><meta property="og:title" content="${title}"></head><body><p>WEST POINT, N.Y. – The team played.</p></body></html>`;
   const team="(?:Black Knights|Army|(?:Men's|Women's) Golf)";
   assert.equal(golfStoryPlace(story("Golf Claims Commander-In-Chief's Cup at Oakmont"),{team}),'1st');
-  assert.equal(golfStoryPlace(story('Golf Claims Third Place at Rutgers'),{team}),null);
+  // A claimed place is that place (since the Southland, Oct 24: "Men's Golf
+  // Claims Fourth", UTRGV).
+  assert.equal(golfStoryPlace(story('Golf Claims Third Place at Rutgers'),{team}),'3rd');
   assert.equal(golfStoryPlace(story('Golf Claims Medalist Honors at Oakmont'),{team}),null);
 }
 
