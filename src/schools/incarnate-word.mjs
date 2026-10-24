@@ -28,6 +28,9 @@ export const incarnateWordSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Fencing','Golf','Soccer','Swimming & Diving','Tennis','Track & Field']),
+  // The 2026-27 baseball roster publishes few athlete portraits (Oct 24);
+  // its profiles fill the slots INFLCR leaves (two athletes there).
+  portraitlessProfileSports:new Set(['Baseball']),
   verifiedInstagrams:{
     'incarnate-word|Softball|Jaisy Caceres':'https://www.instagram.com/jaisy.evette/',
     'incarnate-word|Softball|Dominique Guerra':'https://www.instagram.com/dommmm.3/',

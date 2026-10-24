@@ -18,7 +18,7 @@ Each rule has a check in `tests/incarnate-word-module.mjs` (generated page block
 
 ## Athletes
 
-Roster cards, then official profiles, then the school's NIL marketplace where one is wired. Profile cards fill the remaining slots in Basketball, Cross Country, Fencing, Football, Golf, Soccer, Swimming & Diving, Tennis, Track & Field, Volleyball (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
+Roster cards, then official profiles, then the school's NIL marketplace where one is wired. Baseball shows the two athletes INFLCR links and a roster profile (its 2026-27 roster has few portraits: `portraitlessProfileSports`). Profile cards fill the remaining slots in Baseball, Basketball, Cross Country, Fencing, Football, Golf, Soccer, Swimming & Diving, Tennis, Track & Field, Volleyball (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 24.
 
 ## Open
 
