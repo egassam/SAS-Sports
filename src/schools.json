@@ -6248,6 +6248,214 @@
     ]
   },
   {
+    "id": "eastern-illinois",
+    "name": "Eastern Illinois",
+    "short_name": "Eastern Illinois",
+    "state": "Illinois",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://eiupanthers.com",
+    "aliases": [
+      "Eastern Illinois University",
+      "EIU",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "eiupanthers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "lindenwood",
+    "name": "Lindenwood",
+    "short_name": "Lindenwood",
+    "state": "Missouri",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://lindenwoodlions.com",
+    "aliases": [
+      "Lindenwood University",
+      "Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "lindenwoodlions",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "morehead-state",
+    "name": "Morehead State",
+    "short_name": "Morehead State",
+    "state": "Kentucky",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://msueagles.com",
+    "aliases": [
+      "Morehead State University",
+      "Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "msueagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "siue",
+    "name": "SIUE",
+    "short_name": "SIUE",
+    "state": "Illinois",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://siuecougars.com",
+    "aliases": [
+      "Southern Illinois University Edwardsville",
+      "SIU Edwardsville",
+      "Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "siuecougars",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southeast-missouri",
+    "name": "Southeast Missouri",
+    "short_name": "SEMO",
+    "state": "Missouri",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://semoredhawks.com",
+    "aliases": [
+      "Southeast Missouri State University",
+      "SEMO",
+      "Southeast Missouri State",
+      "Redhawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "semoredhawks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southern-indiana",
+    "name": "Southern Indiana",
+    "short_name": "USI",
+    "state": "Indiana",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://usiscreamingeagles.com",
+    "aliases": [
+      "University of Southern Indiana",
+      "USI",
+      "Screaming Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "usiscreamingeagles",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "tennessee-state",
+    "name": "Tennessee State",
+    "short_name": "Tennessee State",
+    "state": "Tennessee",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tsutigers.com",
+    "aliases": [
+      "Tennessee State University",
+      "TSU",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tsutigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "tennessee-tech",
+    "name": "Tennessee Tech",
+    "short_name": "Tennessee Tech",
+    "state": "Tennessee",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://ttusports.com",
+    "aliases": [
+      "Tennessee Technological University",
+      "Golden Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "ttusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "ut-martin",
+    "name": "UT Martin",
+    "short_name": "UT Martin",
+    "state": "Tennessee",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://utmsports.com",
+    "aliases": [
+      "University of Tennessee at Martin",
+      "UTM",
+      "Skyhawks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "utmsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "western-illinois",
+    "name": "Western Illinois",
+    "short_name": "Western Illinois",
+    "state": "Illinois",
+    "conference": "OVC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://goleathernecks.com",
+    "aliases": [
+      "Western Illinois University",
+      "WIU",
+      "Leathernecks"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "goleathernecks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "manhattan-ks",
     "name": "Manhattan High School",
     "short_name": "Manhattan",

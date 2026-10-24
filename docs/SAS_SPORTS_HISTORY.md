@@ -3254,3 +3254,18 @@ Request: "Can we finish the rest of the conferences? Learn and optimize" (contin
 - PR #413 merged as `579003c`; production `4.192.0-meac` verified about 19:52 UTC (`verify:prod --sports=all` 207 checks, none failed).
 - Next: NEC, OVC, Patriot, SoCon, Southland, Summit, SWAC.
 
+
+## October 23, 2026 — NEC (seven schools)
+
+Request: "Can we finish the rest of the conferences? Learn and optimize"; paused at "Get to a stopping point and take a break. You're making to many mistakes. Need to clear your head" and "End session"; resumed with "Continue with adding two more conferences. Learn and optimize".
+
+- Catalog: Chicago State, Le Moyne, LIU, Mercyhurst, New Haven, Stonehill, Wagner. Saint Francis is left out: its own pages place it in the Presidents' Athletic Conference (Division III). Central Connecticut (CloudFront 403 "Request blocked", to curl as well) and Fairleigh Dickinson (Imperva "Too many redirects") failed at 19:56, 20:15 and 20:34 UTC: added to `docs/BLOCKED_SCHOOLS.md`.
+- Affiliates counted in NEC records: football Duquesne, Robert Morris, Merrimack; field hockey Merrimack, Quinnipiac, Rider, Sacred Heart; soccer Howard and Delaware State (women); baseball Coppin State, Delaware State, UMES, Norfolk State; women's lacrosse Delaware State; bowling Niagara, Sacred Heart. Wagner football counts 0-3, as its page does.
+- Shared: cross country "4th - 115 points" reads "4th · 115 pts" and "261 Points | 9th of 16" reads "9th of 16 · 261 pts". This changed Detroit Mercy's and Eastern Michigan's cards, and their module tests failed in CI (guardrails red on `6db6ce6`); the tests were regenerated and both schools re-gated (36/36). Lesson: run the full `npm test` after any shared change.
+- Fixture tool: `--prune` had dropped LIU's men's team pages (every LIU page has the site's title). Pages now count as the same only when title, team and games all match; LIU routes restored and re-gated. A variable clash in that edit crashed the script silently; `node --check` now follows script edits.
+- Routes: LIU men's short-code pages and women's hockey; Mercyhurst women's hockey, lightweight rowing and women's wrestling; Le Moyne cross country team pages.
+- Leagues from page marks: EAGL, NWPC, Metro water polo, NEWHA, Atlantic Hockey America, MAWC STUNT. Host-named meets take their stories' names; Le Moyne's "| host" suffix is cut.
+- Athletes: profile cards; portrait-less profiles for Chicago State tennis, Mercyhurst bowling and Wagner bowling; Wagner baseball off the list (2027 roster lists no players).
+- Checks: `compare-records` matches every page except LIU and Mercyhurst women's water polo (finished spring 2026 seasons). Preview gate on 4.198.0-nec: 309 checks, none failed. `test:release` passed on `adecf39`; CI green.
+- PR #414 merged as `2ee184f`; production `4.198.0-nec` verified about 22:50 UTC (`verify:prod --sports=all` 309 checks, none failed; Detroit Mercy and Eastern Michigan cross country passed; XC 18/20 and 26/21).
+- Next: OVC, Patriot, SoCon, Southland, Summit, SWAC.
