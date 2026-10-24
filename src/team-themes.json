@@ -407,6 +407,14 @@
     "line": "#0e5882",
     "onAccent": "#ffffff"
   },
+  "chattanooga": {
+    "primary": "#00386B",
+    "secondary": "#E0AA0F",
+    "panel": "#091524",
+    "panelDark": "#050a12",
+    "line": "#0e2d4e",
+    "onAccent": "#ffffff"
+  },
   "chicago-bears": {
     "primary": "#0B1C3A",
     "secondary": "#E64100",
@@ -469,6 +477,14 @@
     "panel": "#340913",
     "panelDark": "#18050a",
     "line": "#7b0f24",
+    "onAccent": "#ffffff"
+  },
+  "citadel": {
+    "primary": "#3975B7",
+    "secondary": "#0A2240",
+    "panel": "#152235",
+    "panelDark": "#0a101a",
+    "line": "#2e4f78",
     "onAccent": "#ffffff"
   },
   "clemson": {
@@ -725,6 +741,14 @@
     "panel": "#1c122b",
     "panelDark": "#0d0915",
     "line": "#3f265f",
+    "onAccent": "#ffffff"
+  },
+  "east-tennessee-state": {
+    "primary": "#041E42",
+    "secondary": "#FFC72C",
+    "panel": "#090f1b",
+    "panelDark": "#05080e",
+    "line": "#111f37",
     "onAccent": "#ffffff"
   },
   "eastern-illinois": {
@@ -1430,6 +1454,14 @@
     "panelDark": "#050915",
     "line": "#0e295d",
     "onAccent": "#ffffff"
+  },
+  "mercer": {
+    "primary": "#F76800",
+    "secondary": "#000000",
+    "panel": "#3f1f0c",
+    "panelDark": "#1d0f07",
+    "line": "#964813",
+    "onAccent": "#000000"
   },
   "mercyhurst": {
     "primary": "#00205B",
@@ -2223,6 +2255,14 @@
     "line": "#964813",
     "onAccent": "#ffffff"
   },
+  "samford": {
+    "primary": "#0C2340",
+    "secondary": "#C8102E",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
+    "onAccent": "#ffffff"
+  },
   "san-diego-fc": {
     "primary": "#697A7C",
     "secondary": "#F89E1A",
@@ -2767,6 +2807,14 @@
     "line": "#0e306e",
     "onAccent": "#ffffff"
   },
+  "unc-greensboro": {
+    "primary": "#0F2044",
+    "secondary": "#FFB71B",
+    "panel": "#0c101b",
+    "panelDark": "#06080e",
+    "line": "#172038",
+    "onAccent": "#ffffff"
+  },
   "unlv": {
     "primary": "#CF0A2C",
     "secondary": "#666666",
@@ -2887,6 +2935,14 @@
     "line": "#450e2e",
     "onAccent": "#ffffff"
   },
+  "vmi": {
+    "primary": "#AE122A",
+    "secondary": "#FFD619",
+    "panel": "#2f0d16",
+    "panelDark": "#16060b",
+    "line": "#6e182a",
+    "onAccent": "#ffffff"
+  },
   "wagner": {
     "primary": "#00483A",
     "secondary": "#FFFFFF",
@@ -2965,6 +3021,14 @@
     "panel": "#11243a",
     "panelDark": "#080f1d",
     "line": "#3a6087",
+    "onAccent": "#ffffff"
+  },
+  "western-carolina": {
+    "primary": "#592C88",
+    "secondary": "#C1A875",
+    "panel": "#1c122a",
+    "panelDark": "#0d0915",
+    "line": "#3f275e",
     "onAccent": "#ffffff"
   },
   "western-illinois": {
