@@ -36,7 +36,9 @@ export const sidearmToday=timeZone=>now=>new Intl.DateTimeFormat('en-CA',{timeZo
 // Xavier", "(RV) Miami") are Michigan State's; "#9/#10 Ole Miss" (two polls, each marked) is
 // Louisville's; "#RV Weber State" is Idaho State's; two polls in brackets ("[23/RV] Louisville", "[RV/RV] Florida
 // State") are SMU's.
-export const withoutRanking=title=>String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\s?(?:\d+|RV|--)(?:\/#?(?:\d+|RV|--))?|No\.\s*\d+(?:\/\d+)?|[[(](?:\d+|RV)(?:\/(?:\d+|RV))?[\])]|RV)\s+/i,'');
+// "NR/RV Chattanooga" (The Citadel, Oct 24): unranked in one poll, receiving
+// votes in the other.
+export const withoutRanking=title=>String(title||'').replace(/\s+/g,' ').trim().replace(/^(?:#\s?(?:\d+|RV|--)(?:\/#?(?:\d+|RV|--))?|No\.\s*\d+(?:\/\d+)?|[[(](?:\d+|RV)(?:\/(?:\d+|RV))?[\])]|NR\/(?:RV|\d+)|RV)\s+/i,'');
 
 // H: home, A: away; a neutral site keeps the page's own vs./at.
 export const sidearmRelation=game=>game.location_indicator==='A'?'at':game.location_indicator==='H'?'vs':String(game.at_vs||'vs').toLowerCase()==='at'?'at':'vs';

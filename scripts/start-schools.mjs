@@ -56,7 +56,10 @@ async function tfrrsTeams(school,moduleText=''){
   const hyphenated=(school.aliases||[]).filter(n=>/^[A-Z][a-z]+-[A-Z][a-z]+/.test(n));
   // A one-word alias other than the mascot (UAlbany: NY_college_f_Albany).
   const single=(school.aliases||[]).slice(0,-1).filter(n=>/^[A-Z][a-z]+$/.test(n));
-  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated,...single].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
+  // A name that starts with the state can carry it shortened (VMI, Oct 24:
+  // VA_college_f_Va_Military_Institute from "Virginia Military Institute").
+  const stateShort=(school.aliases||[]).filter(n=>school.state&&n.startsWith(`${school.state} `)).map(n=>`${STATES[school.state][0]}${STATES[school.state][1].toLowerCase()}${n.slice(school.state.length)}`);
+  const st=STATES[school.state],names=[school.short_name,school.name,...institutions,...others,...hyphenated,...single,...stateShort].map(n=>n.replace(/&/g,'').replace(/['’]/g,'').replace(/\W+/g,'_').replace(/^_|_$/g,''));
   // An apostrophe is dropped (Saint Joseph's: PA_college_f_St_Josephs_PA);
   // a university can carry "_U" (Saint Louis: MO_college_f_St_Louis_U).
   for(const name of [...new Set(names)])for(const tail of [name,`${name}_${st}`,`${name}_U`]){
