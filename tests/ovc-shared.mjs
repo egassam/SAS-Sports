@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {withoutRanking} from '../src/sidearm-schedule-reader.mjs';
+import {golfStoryMatchPlay} from '../src/sidearm-school-kit.mjs';
 import {createConferenceGames} from '../src/conference-games.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 
@@ -41,6 +42,11 @@ assert.match(read('../src/schools/tennessee-state.mjs'),/opponent=String\(oppone
 assert.match(read('../src/schools/ut-martin.mjs'),/\/\^\(\?:Smallbore\|Air Rifle\)\$\/i/);
 assert.match(read('../src/schools/southeast-missouri.mjs'),/opponent='Bradley Pink Classic'/);
 assert.match(read('../src/schools/western-illinois.mjs'),/schoolName:'Western Illinois',hostMeetName:true,/);
+
+// A golf dual's story naming its opponent at length (Southern Indiana's
+// Battle of the Expressway, Oct 22); Evansville's story still reads.
+assert.deepEqual(golfStoryMatchPlay("<p>EVANSVILLE, Ind. – University of Southern Indiana Men's and Women's Golf topped the University of Evansville in the head-to-head Battle of the Expressway Thursday, winning 9.5-4.5.</p>",{team:"(?:USI|Screaming Eagles|Southern Indiana|(?:Men's|Women's) Golf)"}),{headline:'Match play: 1-0',results:[{label:'Result',value:'W, 9.5-4.5'}]});
+assert.deepEqual(golfStoryMatchPlay('<p>The Screaming Eagles defeated the Purple Aces 9 ½ - 4 ½ on Thursday.</p>',{team:'(?:Purple Aces|Evansville)'}),{headline:'Match play: 0-1',results:[{label:'Result',value:'L, 4.5-9.5'}]});
 
 // Lindenwood's other leagues per team page; SIUE wrestling in the MAC.
 const lindenwood=read('../src/schools/lindenwood.mjs');

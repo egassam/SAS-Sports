@@ -6,7 +6,7 @@ Sports (9): Basketball, Cross Country, Football, Golf, Hockey, Softball, Tennis,
 
 ## Rules
 
-- Hockey (men's, new for 2026-27) names no league; its schedule and roster are not yet published, so it reads empty and is off the athlete list. Cross country meets name their host after a bar ("Legacy Series Invite | Alabama A&M", cut at the bar).
+- Hockey (men's, new for 2026-27) names no league; its schedule and roster are not yet published, so it reads empty and is off the athlete list. Cross country meets name their host after a bar ("Legacy Series Invite | Alabama A&M", cut at the bar). The golf rosters publish portraits for few golfers, so profiles without one fill the slots.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the OVC (2026-27: Eastern Illinois, Lindenwood, Morehead State, SIUE, Southeast Missouri, Southern Indiana, Tennessee State, Tennessee Tech, UT Martin, Western Illinois; Little Rock left for the UAC) sponsors football (the Big South-OVC association, whose Charleston Southern and Gardner-Webb games the members' pages mark), basketball, baseball, softball, soccer, volleyball, beach volleyball, golf, tennis, cross country, track and rifle, but no swimming, wrestling, hockey, lacrosse, gymnastics or bowling.
 

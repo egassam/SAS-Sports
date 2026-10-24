@@ -23,6 +23,9 @@ export const tennesseeStateSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis','Track & Field']),
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Tennessee State's golf rosters publish portraits for few golfers (Oct 23).
+  portraitlessProfileSports:new Set(['Golf']),
   verifiedInstagrams:{
     'tennessee-state|Basketball|Jayden Jones':'https://www.instagram.com/officials.jay_/',
     'tennessee-state|Basketball|Damon Howard Jr.':'https://www.instagram.com/duwii.damon/',

@@ -644,12 +644,15 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
 // A golf dual told by its story ("The Screaming Eagles defeated the Purple
 // Aces 9 ½ - 4 ½", Evansville's Battle of the Expressway, Oct 22): the
 // match play headline golfMatchPlay writes and one "Result" row (the event
-// names no opponent), the school's points first. `team` is the module's golf story pattern; null when the story tells
+// names no opponent), the school's points first. USI's story of the same
+// dual names its opponent at length ("topped the University of Evansville in
+// the head-to-head Battle of the Expressway Thursday, winning 9.5-4.5").
+// `team` is the module's golf story pattern; null when the story tells
 // no such score.
 export function golfStoryMatchPlay(raw,{team,decode=value=>String(value||'')}){
   const text=decode(String(raw||'').replace(/<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ');
   const points='(\\d+(?:\\s*½|\\.5)?|½)',number=value=>Number(String(value).replace(/\s*½/,'.5').replace(/^\.5$/,'0.5'));
-  const won=text.match(new RegExp(`\\b(?:the )?${team} (?:defeated|beat|topped|edged) (?:the )?[A-Z][^.]{0,60}? ${points}\\s*[-–]\\s*${points}`));
+  const won=text.match(new RegExp(`\\b(?:the )?${team} (?:defeated|beat|topped|edged) (?:the )?[A-Z][^.]{0,100}? ${points}\\s*[-–]\\s*${points}`));
   const lost=!won&&text.match(new RegExp(`\\b(?:defeated|beat|topped|edged) (?:the )?${team},? ${points}\\s*[-–]\\s*${points}`));
   const hit=won||lost;if(!hit)return null;
   const [a,b]=hit.slice(-2).map(number),outcome=a===b?'T':won?'W':'L',[mine,theirs]=outcome==='L'?[Math.min(a,b),Math.max(a,b)]:[Math.max(a,b),Math.min(a,b)];
