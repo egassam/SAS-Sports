@@ -203,7 +203,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Sep 14 Men's · Mount St. Mary's at Joe Feaganes Marshall Invitational | 11th",
  "Final Sep 21 Men's · Mount St. Mary's at River Run Collegiate | 13th",
  "Final Oct 5 Men's · Mount St. Mary's at Testudo Cup | 14th",
- "Final Oct 13 Men's · Mount St. Mary's at Bucknell | 18th",
+ "Final Oct 13 Men's · Mount St. Mary's at Bucknell Invitational | 18th",
  "Today Oct 23 Men's · Mount St. Mary's at Fripp Island Invitational | "
 ]);
   const v_womenslacrosse=parse("Lacrosse","womens-lacrosse");

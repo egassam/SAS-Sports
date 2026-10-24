@@ -239,6 +239,8 @@ export function createStonehillHandlers({makeEvent,recapMatchesEvent,eventType=(
       // Bryant's cross country meet (Sep 12) is the Bryant Invitational (its
       // story).
       if(sport==='Cross Country'&&/^Bryant(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='09')opponent='Bryant Invitational';
+      // Lehigh's meet (Oct 2) is the Paul Short Run (its story).
+      if(sport==='Cross Country'&&/^Lehigh(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='10')opponent='Paul Short Run';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },

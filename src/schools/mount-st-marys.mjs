@@ -232,6 +232,9 @@ export function createMountStMarysHandlers({makeEvent,recapMatchesEvent,eventTyp
       const story=String(game.result?.recap?.url||'').match(/-at-([a-z0-9-]+?)(?:\.aspx)?$/);
       if(sport==='Cross Country'&&story&&!EVENT_NAME.test(opponent)&&!/\b(?:twilight|jamboree|xc|run|race|festival|opener)\b/i.test(opponent)&&/\b(?:State|University)$/.test(opponent))
         opponent=story[1].split('-').map(word=>word.length<=3&&!/^(?:at|of|the|and)$/.test(word)?word.toUpperCase():word[0].toUpperCase()+word.slice(1)).join(' ');
+      // Bucknell's golf tournament (Oct 12-13) is the Bucknell Invitational
+      // (its story).
+      if(sport==='Golf'&&/^Bucknell(?: University)?$/i.test(opponent)&&String(game.date).slice(5,7)==='10')opponent='Bucknell Invitational';
       // "University of Kentucky", "Southern Methodist University": the short name.
       return institutionShortName(opponent);
     },

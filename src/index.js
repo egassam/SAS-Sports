@@ -295,7 +295,7 @@ import {lehighSchool,createLehighHandlers} from './schools/lehigh.mjs';
 import {loyolaMarylandSchool,createLoyolaMarylandHandlers} from './schools/loyola-maryland.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.204.0-patriot';
+const VERSION='4.205.0-patriot';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

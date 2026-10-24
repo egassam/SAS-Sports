@@ -132,7 +132,9 @@ export function createArmyHandlers({makeEvent,recapMatchesEvent,eventType=()=>'G
     id:'army',host:HOST,sports:armySchool.pageDataSports,squadSports:armySchool.combinedSports,
     today:armyToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // Page-data type "X" is an exhibition (hockey's Royal Military College
+    // game, Oct 11, which the page's 2-1 leaves out).
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>game.type==='X'?{...game,type:'S'}:game),
     merge(sport,games){
       // A cross country dual's score is written winner first when Army
       // loses ("L", 19-42, men's Star Meet at Navy, Oct 17): the lower score

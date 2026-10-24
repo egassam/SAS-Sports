@@ -25,6 +25,9 @@ export const lafayetteSchool={
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
   combinedSports:new Set(['Basketball','Lacrosse','Soccer','Tennis']),
+  // Profiles without a portrait fill the slots (the page shows initials):
+  // Lafayette's 2026-27 track roster publishes no athlete portraits (Oct 24).
+  portraitlessProfileSports:new Set(['Track & Field']),
   verifiedInstagrams:{
     'lafayette|Softball|Jocelyn O\'Keeffe':'https://www.instagram.com/okeeffejoc10/',
     'lafayette|Softball|Caroline Hall':'https://www.instagram.com/car0linehall_/',

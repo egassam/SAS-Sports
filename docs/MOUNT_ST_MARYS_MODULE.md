@@ -6,7 +6,7 @@ Sports (12): Baseball, Basketball, Bowling, Cross Country, Golf, Lacrosse, Socce
 
 ## Rules
 
-- Men's water polo plays in the MAWPC (named on its own page); women's water polo is a Metro sport (its 2026 record is the past spring season). Swimming reads the team pages. Bowling places carry the match record first ("8-1, Third Place" reads "3rd (8-1)"); the page lists each bowling match as its own row. The Metro's tournaments are events, "at". The water polo rosters publish no portraits, so profiles without one fill the slots.
+- Men's water polo plays in the MAWPC (named on its own page); women's water polo is a Metro sport (its 2026 record is the past spring season). Swimming reads the team pages. Bowling places carry the match record first ("8-1, Third Place" reads "3rd (8-1)"); the page lists each bowling match as its own row. The Metro's tournaments are events, "at". Bucknell's golf tournament (Oct 12-13) reads as the Bucknell Invitational (its story; Oct 24). The water polo rosters publish no portraits, so profiles without one fill the slots.
 - Routes were set from the site's menu (`scripts/set-sport-routes.mjs`).
 - Conference: the Metro Conference (the MAAC's name from 2026-27, as its members' pages mark it; last spring's pages still say "MAAC") sponsors basketball, baseball, softball, soccer, volleyball, golf, tennis, cross country, track, swimming, lacrosse, rowing and women's water polo, but no football, field hockey, wrestling, hockey, fencing or gymnastics.
 - Shared Metro rules (`tests/metro-shared.mjs`): the league's current name, its "Metro ..." tournaments as events, a bare "PRESEASON" promotion as an exhibition, leagues named per team page.
