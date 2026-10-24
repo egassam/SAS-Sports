@@ -626,17 +626,20 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     if(new RegExp(`\\b${team}\\s+(?:won|captured|claimed)\\s+(?:the|their)(?:\\s+first)?\\s+(?:team\\s+title|tournament|event)\\b`,'i').test(sentence))return'1st';
     const moved=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:slipped|slid|fell|dropped|moved|climbed|jumped|rose|surged)\\s+(?:back\\s+|up\\s+)?from\\s+${word}\\s+to\\s+${word}\\b`,'i'));
     if(moved&&placeOf(moved[2]))return placeOf(moved[2]);
+    // "The HCU men's golf team closed out ..., tying for 10th place"
+    // (Sandestin, Sep 16): the golf team's own sentence; "led the way for the
+    // Vikings, tying for 32nd" is a player's (Portland State).
+    const tying=sentence.match(new RegExp(`\\b${team}\\s+(?:(?:men's|women's)\\s+)?golf team\\b[^.]*?\\btying for\\s+${word}\\b`,'i'));
+    if(tying&&placeOf(tying[1]))return`T${placeOf(tying[1]).replace(/^T/,'')}`;
     // "the Bears ended the tournament in 3rd place" (Central Arkansas, Sep 16);
-    // "The HCU men's golf team closed out ... tying for 10th place" (Sandestin,
-    // Sep 16).
     // "concluded play ... finishing the final round in 17th place" (North
     // Alabama, Diamante, Oct 20).
     // The team's possessive before a best score names a player's ("Olivia
     // Kury delivered the Hawks' lowest score ... to finish tied for 81st",
     // Saint Joseph's; "Luebbers was Ohio's top finisher, finishing ... tied for
     // 6th", Ohio); "The Lumberjacks' three-day total" is the team's.
-    const m=sentence.match(new RegExp(`(?:\\b${team}\\b(?!['’]s?\\s+(?:lowest|best|top|low|leading)\\b)|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|ended(?:\\s+in)?|tied (?:them\\s+)?for|tying for|a tie for)\\s+(?:the\\s+(?:tournament|event|final\\s+round)\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
-    if(m&&placeOf(m[2]))return`${/\bt(?:ie|ying)/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
+    const m=sentence.match(new RegExp(`(?:\\b${team}\\b(?!['’]s?\\s+(?:lowest|best|top|low|leading)\\b)|\\b(?:[Tt]he|golf) team\\b(?!\\s*(?:scor|lead|best|['’]s|-)))[^.]*?\\b(placing|placed|to place|taking|took|finish(?:ed|ing)?(?:\\s+in)?|ended(?:\\s+in)?|tied (?:them\\s+)?for|a tie for)\\s+(?:the\\s+(?:tournament|event|final\\s+round)\\s+in\\s+|them\\s+)?${word}\\b`,'i'));
+    if(m&&placeOf(m[2]))return`${/\btie/i.test(m[1])&&!/^T-?\d/i.test(m[2])?'T':''}${placeOf(m[2])}`;
   }
   // A headline crediting players: "Round Of The Day Leads UNC To 4th-Place Finish".
   const led=title.match(new RegExp(`\\bLeads?\\s+${team}\\s+To\\s+${word}\\b`,'i'));

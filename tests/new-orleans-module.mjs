@@ -188,8 +188,8 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_trackandfield.map(line),[]);
   const v_womensvolleyball=parse("Volleyball","womens-volleyball");
   assert.deepEqual(v_womensvolleyball.map(line),[
- "Final Aug 15 UNO vs Xavier (La.) | W, 3-0",
- "Final Aug 22 UNO vs Dillard | W, 3-0",
+ "Final Aug 15 UNO vs Xavier (La.) (Exhibition) | W, 3-0",
+ "Final Aug 22 UNO vs Dillard (Exhibition) | W, 3-0",
  "Final Aug 28 UNO vs Alcorn State | W, 3-0",
  "Final Aug 29 UNO vs Stonehill | L, 1-3",
  "Final Aug 29 UNO vs Oral Roberts | L, 2-3",

@@ -75,7 +75,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_mensbasketball.map(line),[
  "Final Oct 20 Men's · Western Carolina at Appalachian State (Exhibition) | W, 83-76",
  "Upcoming Oct 26, 6:00 PM Men's · Western Carolina vs USC Upstate (Exhibition) | ",
- "Upcoming Nov 2, 7:00 PM Men's · Western Carolina at RV/RV North Carolina | ",
+ "Upcoming Nov 2, 7:00 PM Men's · Western Carolina at North Carolina | ",
  "Upcoming Nov 7, 5:30 PM Men's · Western Carolina at UNC Asheville | ",
  "Upcoming Nov 11, 6:00 PM Men's · Western Carolina vs Virginia University of Lynchburg | ",
  "Upcoming Nov 14, 7:00 PM Men's · Western Carolina vs Lipscomb | ",

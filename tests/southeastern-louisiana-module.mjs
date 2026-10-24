@@ -256,8 +256,8 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_menstrackandfield.map(line),[]);
   const v_womensvolleyball=parse("Volleyball","womens-volleyball");
   assert.deepEqual(v_womensvolleyball.map(line),[
- "Final Aug 13 Southeastern vs Xavier (La.) | W, 3-0",
- "Final Aug 19 Southeastern vs Tulane | L, 2-3",
+ "Final Aug 13 Southeastern vs Xavier (La.) (Exhibition) | W, 3-0",
+ "Final Aug 19 Southeastern vs Tulane (Exhibition) | L, 2-3",
  "Final Aug 28 Southeastern at Ole Miss | L, 2-3",
  "Final Aug 29 Southeastern vs LMU | L, 0-3",
  "Final Aug 30 Southeastern vs Northern Arizona | L, 1-3",

@@ -93,6 +93,11 @@ const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b
 // tournament title (Xavier's "Fall Season").
 const EVENT_NAME=/\b(?:tourn\w*|championships?|invit\w*|invite|regionals?|classic|open|ITA|NCAA|cup|duals?|circuit|meet|series|qualifier)\b/i;
 // Big Sky sites file events under "2026 Fall Schedule", "Indoor Season".
+// A volleyball match before the season's first date (the last Friday of
+// August) is an exhibition: Southeastern Louisiana's Xavier (La.) and Tulane
+// matches (Aug 13, 19) are not in its 11-11 page record, and LSU New Orleans
+// and Northwestern State call theirs scrimmages and exhibitions (Oct 24).
+const beforeVolleyballSeason=date=>{const year=Number(String(date).slice(0,4));if(!year)return false;const friday=31-((new Date(Date.UTC(year,7,31)).getUTCDay()+2)%7);return String(date).slice(0,10)<`${year}-08-${String(friday).padStart(2,'0')}`;};
 // A season with the sport's name is no tournament either: NSU's "Fall Tennis
 // Schedule", SFA's "Fall Golf" (Oct 24).
 const SEASON_TITLE=/^(?:\d{4}(?:-\d{2,4})?\s+)?(?:fall|spring|winter|summer|indoor|outdoor)(?:\s+(?:tennis|golf))?(?:\s+(?:season|schedule))?$/i;
@@ -128,6 +133,7 @@ export function createNewOrleansHandlers({makeEvent,recapMatchesEvent,eventType=
     // A "next event" widget repeats a game without its details.
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
+      if(sport==='Volleyball')games=games.map(game=>game.type||!beforeVolleyballSeason(game.date)?game:{...game,type:'S'});
       // Cross country is on the men's and women's track pages ("Track &
       // Field/Cross Country"), as at Miami (OH): the fall meets
       // (August-November) are cross country, the rest track.

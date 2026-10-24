@@ -230,7 +230,7 @@ void [parse,line,ownRecapsOnly,live];
   assert.deepEqual(v_menstrackandfield.map(line),[]);
   const v_womensvolleyball=parse("Volleyball","womens-volleyball");
   assert.deepEqual(v_womensvolleyball.map(line),[
- "Final Aug 21 NSU vs Alcorn State | W, 4-0",
+ "Final Aug 21 NSU vs Alcorn State (Exhibition) | W, 4-0",
  "Final Aug 28 NSU at West Georgia | L, 0-3",
  "Final Aug 29 NSU vs Presbyterian College | L, 0-3",
  "Final Aug 29 NSU vs Grambling | W, 3-1",
