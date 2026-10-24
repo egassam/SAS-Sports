@@ -26,6 +26,15 @@ assert.deepEqual(schools.filter(s=>s.conference==='SWAC').map(s=>s.id).sort(),me
   assert.deepEqual(events.map(event=>event.conference_game),[true,true,true,true,true,true,true,false,false,false,false,false]);
 }
 
+// A bowling invitational's matches against members are no league matches
+// (Southern, Alabama State, Jackson State, Le Moyne and Norfolk State all
+// read "Conf 0-0" after them).
+{
+  const southern=schools.find(s=>s.id==='southern'),events=[{sport:'Bowling',opponent:'Jackson State',start_time:'2026-10-10T18:00:00Z'},{sport:'Bowling',opponent:'Alabama A&M',start_time:'2026-10-10T19:00:00Z'}];
+  createConferenceGames({schools}).markConferenceGames(events,'',southern,'https://gojagsports.com/sports/womens-bowling/schedule');
+  assert.deepEqual(events.map(event=>event.conference_game),[false,false]);
+}
+
 // Golf stories that tell the team's place in the SWAC's words: "opened the
 // 2026-27 season with a 11th-place performance" (Alabama State, The Velvet)
 // and "She helped pace the team to an 11th-place finish overall" (Jackson

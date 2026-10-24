@@ -406,6 +406,10 @@ export function createConferenceGames({schools=[],membersOf=conference=>schools.
     const crossover=pageGames.filter(game=>/\bcrossover\b/i.test(game.promotion||''));
     for(const event of events){
       if(typeof event.conference_game==='boolean'||!event.opponent)continue;
+      // A bowling invitational's matches against members are not league
+      // matches: Southern, Alabama State and Jackson State read "Conf 0-0"
+      // after the Colonial Lanes Classic (Oct 9-11) against four SWAC teams.
+      if(event.sport==='Bowling'){event.conference_game=false;continue;}
       if(event.start_time&&crossover.some(game=>day(game.date)===day(event.start_time)&&words(game.opponent?.title)===words(event.opponent))){event.conference_game=false;continue;}
       const opponent=words(event.opponent),path=(()=>{try{return new URL(sourceUrl).pathname}catch{return''}})();
       const affiliate=(AFFILIATES[school.conference]||[]).find(a=>a.names.includes(opponent)&&a.teams[event.sport]?.test(path));
