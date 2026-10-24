@@ -9724,5 +9724,269 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "alabama-am",
+    "name": "Alabama A&M",
+    "short_name": "Alabama A&M",
+    "state": "Alabama",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://aamusports.com",
+    "aliases": [
+      "Alabama A&M University",
+      "AAMU",
+      "Alabama A&M Bulldogs",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "aamusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "alabama-state",
+    "name": "Alabama State",
+    "short_name": "Alabama State",
+    "state": "Alabama",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bamastatesports.com",
+    "aliases": [
+      "Alabama State University",
+      "ASU Hornets",
+      "Alabama St.",
+      "Hornets"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bamastatesports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "alcorn-state",
+    "name": "Alcorn State",
+    "short_name": "Alcorn State",
+    "state": "Mississippi",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://alcornsports.com",
+    "aliases": [
+      "Alcorn State University",
+      "Alcorn",
+      "Alcorn St.",
+      "Braves"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "alcornsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "bethune-cookman",
+    "name": "Bethune-Cookman",
+    "short_name": "Bethune-Cookman",
+    "state": "Florida",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://bcuathletics.com",
+    "aliases": [
+      "Bethune-Cookman University",
+      "B-CU",
+      "Bethune Cookman",
+      "Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "bcuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "florida-am",
+    "name": "Florida A&M",
+    "short_name": "Florida A&M",
+    "state": "Florida",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://famuathletics.com",
+    "aliases": [
+      "Florida A&M University",
+      "FAMU",
+      "Florida A&M Rattlers",
+      "Rattlers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "famuathletics",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "jackson-state",
+    "name": "Jackson State",
+    "short_name": "Jackson State",
+    "state": "Mississippi",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gojsutigers.com",
+    "aliases": [
+      "Jackson State University",
+      "JSU",
+      "Jackson St.",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gojsutigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "mississippi-valley-state",
+    "name": "Mississippi Valley State",
+    "short_name": "Mississippi Valley State",
+    "state": "Mississippi",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://mvsusports.com",
+    "aliases": [
+      "Mississippi Valley State University",
+      "MVSU",
+      "Mississippi Valley St.",
+      "Delta Devils"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "mvsusports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "arkansas-pine-bluff",
+    "name": "Arkansas-Pine Bluff",
+    "short_name": "Arkansas-Pine Bluff",
+    "state": "Arkansas",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uapblionsroar.com",
+    "aliases": [
+      "University of Arkansas at Pine Bluff",
+      "UAPB",
+      "Arkansas Pine Bluff",
+      "Golden Lions"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uapblionsroar",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "grambling-state",
+    "name": "Grambling State",
+    "short_name": "Grambling State",
+    "state": "Louisiana",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gsutigers.com",
+    "aliases": [
+      "Grambling State University",
+      "Grambling",
+      "Grambling St.",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gsutigers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "prairie-view-am",
+    "name": "Prairie View A&M",
+    "short_name": "Prairie View A&M",
+    "state": "Texas",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://pvpanthers.com",
+    "aliases": [
+      "Prairie View A&M University",
+      "PVAMU",
+      "Prairie View",
+      "Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "pvpanthers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "southern",
+    "name": "Southern",
+    "short_name": "Southern",
+    "state": "Louisiana",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gojagsports.com",
+    "aliases": [
+      "Southern University",
+      "Southern University and A&M College",
+      "Southern U.",
+      "Jaguars"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gojagsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "texas-southern",
+    "name": "Texas Southern",
+    "short_name": "Texas Southern",
+    "state": "Texas",
+    "conference": "SWAC",
+    "division": "NCAA Division I",
+    "athletics_url": "https://tsusports.com",
+    "aliases": [
+      "Texas Southern University",
+      "TSU",
+      "Texas Southern Tigers",
+      "Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "tsusports",
+        "provider_school_id": null
+      }
+    ]
   }
 ]
