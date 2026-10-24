@@ -23,7 +23,7 @@ export const bethuneCookmanSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Swimming & Diving']),
   verifiedInstagrams:{
     'bethune-cookman|Baseball|Michael Rodriguez':'https://www.instagram.com/brizzymichael/',
     'bethune-cookman|Baseball|Sergio Rivera':'https://www.instagram.com/sergiorivera20/',
@@ -53,9 +53,9 @@ export const bethuneCookmanSchool={
     'bethune-cookman|Basketball':['https://bcuathletics.com/sports/mens-basketball/schedule','https://bcuathletics.com/sports/womens-basketball/schedule'],
     'bethune-cookman|Cross Country':'https://bcuathletics.com/sports/cross-country/schedule',
     'bethune-cookman|Football':'https://bcuathletics.com/sports/football/schedule',
-    'bethune-cookman|Golf':['https://bcuathletics.com/sports/womens-golf/schedule','https://bcuathletics.com/sports/mens-golf/schedule'],
+    'bethune-cookman|Golf':'https://bcuathletics.com/sports/womens-golf/schedule',
     'bethune-cookman|Softball':'https://bcuathletics.com/sports/softball/schedule',
-    'bethune-cookman|Tennis':['https://bcuathletics.com/sports/womens-tennis/schedule','https://bcuathletics.com/sports/mens-tennis/schedule'],
+    'bethune-cookman|Tennis':'https://bcuathletics.com/sports/womens-tennis/schedule',
     'bethune-cookman|Track & Field':'https://bcuathletics.com/sports/track-and-field/schedule',
     'bethune-cookman|Volleyball':'https://bcuathletics.com/sports/womens-volleyball/schedule'
   },
@@ -64,9 +64,9 @@ export const bethuneCookmanSchool={
     'bethune-cookman|Basketball':['https://bcuathletics.com/sports/mens-basketball/roster','https://bcuathletics.com/sports/womens-basketball/roster'],
     'bethune-cookman|Cross Country':'https://bcuathletics.com/sports/cross-country/roster',
     'bethune-cookman|Football':'https://bcuathletics.com/sports/football/roster',
-    'bethune-cookman|Golf':['https://bcuathletics.com/sports/womens-golf/roster','https://bcuathletics.com/sports/mens-golf/roster'],
+    'bethune-cookman|Golf':'https://bcuathletics.com/sports/womens-golf/roster',
     'bethune-cookman|Softball':'https://bcuathletics.com/sports/softball/roster',
-    'bethune-cookman|Tennis':['https://bcuathletics.com/sports/womens-tennis/roster','https://bcuathletics.com/sports/mens-tennis/roster'],
+    'bethune-cookman|Tennis':'https://bcuathletics.com/sports/womens-tennis/roster',
     'bethune-cookman|Track & Field':'https://bcuathletics.com/sports/track-and-field/roster',
     'bethune-cookman|Volleyball':'https://bcuathletics.com/sports/womens-volleyball/roster'
   }
@@ -190,7 +190,7 @@ export function createBethuneCookmanHandlers({makeEvent,recapMatchesEvent,eventT
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -395,7 +395,7 @@ export function createBethuneCookmanHandlers({makeEvent,recapMatchesEvent,eventT
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Wildcats|Bethune-Cookman|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Wildcats|Bethune-Cookman|B-CU|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

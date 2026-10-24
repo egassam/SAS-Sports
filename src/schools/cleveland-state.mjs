@@ -168,7 +168,7 @@ export function createClevelandStateHandlers({makeEvent,recapMatchesEvent,eventT
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
       // A fencing championship lists each day (Central Collegiate Fencing
       // Conference Championship, Feb 20-21): one meet.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling'||sport==='Fencing')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling'||sport==='Fencing')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

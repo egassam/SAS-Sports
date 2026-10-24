@@ -69,10 +69,18 @@ const dayLabelled=game=>DAY_LABEL.test(String(game.opponent?.title||'').trim())&
 // Shootout Day #1" (Utah Tech, Oct 2-3).
 const DAY_SUFFIX=/\s+(?:[-–]\s+day\s+(?:\d+|one|two|three|four|five|six|seven)|day\s+#\d+)$/i;
 const meetDayName=game=>dayLabelled(game)?String(game.tournament.title).trim():withoutRanking(game.opponent?.title).replace(DAY_SUFFIX,'');
-export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase()}={}){
+// Two scored matches against one opponent are two matches, not one meet's
+// days: a bowling tournament lists each match ("#8 Sam Houston", 928-1122
+// on Oct 9 and 0-4 in the Oct 11 bracket: Alabama State's Tulane Colonial
+// Invite read only the second, under the tournament's name).
+const scoredMatch=game=>{const r=game.result||{};return /^\d+(?:\.\d+)?$/.test(String(r.team_score??'').trim())&&/^\d+(?:\.\d+)?$/.test(String(r.opponent_score??'').trim())&&!dayLabelled(game)&&!DAY_SUFFIX.test(String(game.opponent?.title||''));};
+// matches: the sport lists matches (bowling); a meet's days and tournament
+// rounds (tennis, swimming: George Mason's Richmond Invitational standing
+// after day one is no dual) merge as before.
+export function mergeMeetDays(games,{name=game=>meetDayName(game).toLowerCase(),matches=false}={}){
   const groups=[];
   for(const game of games){
-    const key=name(game),previous=groups.find(group=>group.key===key&&dayGap(group.at(-1),game)>=0&&dayGap(group.at(-1),game)<=3);
+    const key=name(game),previous=groups.find(group=>group.key===key&&dayGap(group.at(-1),game)>=0&&dayGap(group.at(-1),game)<=3&&!(matches&&scoredMatch(group.at(-1))&&scoredMatch(game)));
     if(key&&previous){previous.push(game);continue;}
     const group=[game];group.key=key;groups.push(group);
   }
@@ -388,7 +396,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       // Riverside Invitational" is the "UCR XC Invite") is the team's only
       // meet that day.
       const checked=/\b(?:Men|Women)'s team: T?\d/.test(String(event.headline||''));
-      const url=findTfrrsMeet(listing,{decodeHtml,date,name:meetName(event)})||(onlyMeetThatDay===true||onlyMeetThatDay==='checked'&&checked?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
+      const url=findTfrrsMeet(listing,{decodeHtml,date,end:String(event.end_time||'').slice(0,10)||undefined,name:meetName(event)})||(onlyMeetThatDay===true||onlyMeetThatDay==='checked'&&checked?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
       if(url)pages.add(url);
     }
     if(!pages.size){
@@ -594,7 +602,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // a fifth-place finish in the 13-team field" (George Mason, Sep 22).
     // "... to lead the Monmouth University men's golf team to a seventh-place
     // finish" (Monmouth, Oct 21): a few words may follow the team's name.
-    const ledTo=sentence.match(new RegExp(`\\b(?:paced|led|leads?|leading)\\s+(?:the\\s+)?${team}(?:\\s+[A-Za-z'’]+){0,4}?\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    // "She helped pace the team to an 11th-place finish overall" (Jackson
+    // State, Tulane Classic, Sep 9) names the team without its name.
+    const ledTo=sentence.match(new RegExp(`\\b(?:paced|pace|led|leads?|leading)\\s+(?:the\\s+)?(?:${team}|team)(?:\\s+[A-Za-z'’]+){0,4}?\\s+to\\s+an?\\s+(?:(tie for)\\s+)?${word}[- ]place\\s+finish`,'i'));
     if(ledTo&&placeOf(ledTo[2]))return`${ledTo[1]?'T':''}${placeOf(ledTo[2])}`;
     if(new RegExp(`\\b(?:paced|led)\\s+(?:the\\s+)?${team}\\b`,'i').test(sentence))continue;
     // A standing after an earlier round is not the final place (Northern
@@ -620,7 +630,9 @@ export function golfStoryPlace(raw,{team,decode=s=>s}){
     // "The Davidson men's golf team concluded ... with a fifth-place finish".
     // "The LSU New Orleans golf team ... shot a 909, good for a 14th-place
     // finish" (Argent Financial Classic, Sep 29).
-    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with|good for)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+finish`,'i'));
+    // "The Alabama State University women's golf team opened the 2026-27
+    // season with a 11th-place performance at The Velvet" (Sep 15).
+    const secured=sentence.match(new RegExp(`\\b${team}\\b[^.]*?\\b(?:(?:secure|earn|claim|post|record|notch)(?:s|ed|ing)?|with|good for)\\s+an?\\s+(?:(tie[d]? for|share of)\\s+)?${word}[- ]place\\s+(?:finish|performance|showing)`,'i'));
     if(secured&&placeOf(secured[2]))return`${secured[1]?'T':''}${placeOf(secured[2])}`;
     // The team winning the tournament: "the Argos won their first tournament
     // by winning The Velvet Classic" (West Florida, Sep 15). "She won the

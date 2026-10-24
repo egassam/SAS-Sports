@@ -171,7 +171,7 @@ export function createYoungstownStateHandlers({makeEvent,recapMatchesEvent,event
       // A day's title can carry a typo ("Jersey Jamboreee", Nov 20; "Jersey
       // Jamboree", Nov 21-22): bowling days share the page's opponent record.
       if(sport==='Bowling')return mergeMeetDays(games,{name:game=>game.opponent?.id!=null?`opponent ${game.opponent.id} ${game.opponent.location||''}`:String(game.opponent?.title||'').toLowerCase()});
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

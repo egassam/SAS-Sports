@@ -167,7 +167,7 @@ export function createValparaisoHandlers({makeEvent,recapMatchesEvent,eventType=
       // Sep 18-20): one event from its first to its last day. So does bowling
       // ("Penguin Classic (Youngstown State)", Oct 16-18); the last day's
       // standing is the result.
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

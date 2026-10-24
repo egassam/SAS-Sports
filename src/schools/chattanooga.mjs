@@ -178,7 +178,7 @@ export function createChattanoogaHandlers({makeEvent,recapMatchesEvent,eventType
       // "Southern Scuffle Finals", "Southern Conference Championships -
       // Finals"): one tournament under its own name.
       if(sport==='Wrestling')return mergeMeetDays(games.map(game=>{const title=String(game.opponent?.title||'').trim(),name=title.replace(/\s+(?:[-\u2013]\s+)?(?:Day\s+\d+|Finals)$/i,'');return name&&name!==title?{...game,opponent:{...game.opponent,title:name}}:game;}));
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

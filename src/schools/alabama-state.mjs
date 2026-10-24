@@ -24,7 +24,7 @@ export const alabamaStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Bowling','Cross Country','Golf','Swimming & Diving','Tennis']),
+  combinedSports:new Set(['Basketball','Cross Country','Golf','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{
     'alabama-state|Baseball|Alex Espaillat':'https://www.instagram.com/alexespaillat141/',
     'alabama-state|Baseball|Jacob Loeffler':'https://www.instagram.com/loeffler.jacob/',
@@ -46,27 +46,27 @@ export const alabamaStateSchool={
   scheduleUrls:{
     'alabama-state|Baseball':'https://bamastatesports.com/sports/baseball/schedule',
     'alabama-state|Basketball':['https://bamastatesports.com/sports/mens-basketball/schedule','https://bamastatesports.com/sports/womens-basketball/schedule'],
-    'alabama-state|Bowling':['https://bamastatesports.com/sports/womens-bowling/schedule','https://bamastatesports.com/sports/mens-bowling/schedule'],
+    'alabama-state|Bowling':'https://bamastatesports.com/sports/womens-bowling/schedule',
     'alabama-state|Cross Country':['https://bamastatesports.com/sports/womens-cross-country/schedule','https://bamastatesports.com/sports/mens-cross-country/schedule'],
     'alabama-state|Football':'https://bamastatesports.com/sports/football/schedule',
     'alabama-state|Golf':['https://bamastatesports.com/sports/womens-golf/schedule','https://bamastatesports.com/sports/mens-golf/schedule'],
     'alabama-state|Soccer':'https://bamastatesports.com/sports/womens-soccer/schedule',
     'alabama-state|Softball':'https://bamastatesports.com/sports/softball/schedule',
     'alabama-state|Tennis':['https://bamastatesports.com/sports/womens-tennis/schedule','https://bamastatesports.com/sports/mens-tennis/schedule'],
-    'alabama-state|Track & Field':'https://bamastatesports.com/sports/track-and-field/schedule',
+    'alabama-state|Track & Field':['https://bamastatesports.com/sports/mens-track-and-field/schedule','https://bamastatesports.com/sports/womens-track-and-field/schedule'],
     'alabama-state|Volleyball':'https://bamastatesports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'alabama-state|Baseball':'https://bamastatesports.com/sports/baseball/roster',
     'alabama-state|Basketball':['https://bamastatesports.com/sports/mens-basketball/roster','https://bamastatesports.com/sports/womens-basketball/roster'],
-    'alabama-state|Bowling':['https://bamastatesports.com/sports/womens-bowling/roster','https://bamastatesports.com/sports/mens-bowling/roster'],
+    'alabama-state|Bowling':'https://bamastatesports.com/sports/womens-bowling/roster',
     'alabama-state|Cross Country':['https://bamastatesports.com/sports/womens-cross-country/roster','https://bamastatesports.com/sports/mens-cross-country/roster'],
     'alabama-state|Football':'https://bamastatesports.com/sports/football/roster',
     'alabama-state|Golf':['https://bamastatesports.com/sports/womens-golf/roster','https://bamastatesports.com/sports/mens-golf/roster'],
     'alabama-state|Soccer':'https://bamastatesports.com/sports/womens-soccer/roster',
     'alabama-state|Softball':'https://bamastatesports.com/sports/softball/roster',
     'alabama-state|Tennis':['https://bamastatesports.com/sports/womens-tennis/roster','https://bamastatesports.com/sports/mens-tennis/roster'],
-    'alabama-state|Track & Field':'https://bamastatesports.com/sports/track-and-field/roster',
+    'alabama-state|Track & Field':['https://bamastatesports.com/sports/mens-track-and-field/roster','https://bamastatesports.com/sports/womens-track-and-field/roster'],
     'alabama-state|Volleyball':'https://bamastatesports.com/sports/womens-volleyball/roster'
   }
 };
@@ -189,7 +189,7 @@ export function createAlabamaStateHandlers({makeEvent,recapMatchesEvent,eventTyp
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

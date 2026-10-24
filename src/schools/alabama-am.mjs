@@ -13,7 +13,7 @@ export const alabamaAmSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -27,7 +27,7 @@ export const alabamaAmSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis']),
   verifiedInstagrams:{
     'alabama-am|Baseball|Jose Valerio':'https://www.instagram.com/jose_valerioo_/',
     'alabama-am|Baseball|Anthony Mateo':'https://www.instagram.com/anthony_mateo5/',
@@ -45,25 +45,27 @@ export const alabamaAmSchool={
   scheduleUrls:{
     'alabama-am|Baseball':'https://aamusports.com/sports/baseball/schedule',
     'alabama-am|Basketball':['https://aamusports.com/sports/mens-basketball/schedule','https://aamusports.com/sports/womens-basketball/schedule'],
+    'alabama-am|Bowling':'https://aamusports.com/sports/bowl/schedule',
     'alabama-am|Cross Country':['https://aamusports.com/sports/womens-cross-country/schedule','https://aamusports.com/sports/mens-cross-country/schedule'],
     'alabama-am|Football':'https://aamusports.com/sports/football/schedule',
     'alabama-am|Golf':'https://aamusports.com/sports/mens-golf/schedule',
     'alabama-am|Soccer':'https://aamusports.com/sports/womens-soccer/schedule',
     'alabama-am|Softball':'https://aamusports.com/sports/softball/schedule',
     'alabama-am|Tennis':['https://aamusports.com/sports/womens-tennis/schedule','https://aamusports.com/sports/mens-tennis/schedule'],
-    'alabama-am|Track & Field':['https://aamusports.com/sports/womens-track-and-field/schedule','https://aamusports.com/sports/mens-track-and-field/schedule'],
+    'alabama-am|Track & Field':'https://aamusports.com/sports/mens-track-and-field/schedule',
     'alabama-am|Volleyball':'https://aamusports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'alabama-am|Baseball':'https://aamusports.com/sports/baseball/roster',
     'alabama-am|Basketball':['https://aamusports.com/sports/mens-basketball/roster','https://aamusports.com/sports/womens-basketball/roster'],
+    'alabama-am|Bowling':'https://aamusports.com/sports/bowl/roster',
     'alabama-am|Cross Country':['https://aamusports.com/sports/womens-cross-country/roster','https://aamusports.com/sports/mens-cross-country/roster'],
     'alabama-am|Football':'https://aamusports.com/sports/football/roster',
     'alabama-am|Golf':'https://aamusports.com/sports/mens-golf/roster',
     'alabama-am|Soccer':'https://aamusports.com/sports/womens-soccer/roster',
     'alabama-am|Softball':'https://aamusports.com/sports/softball/roster',
     'alabama-am|Tennis':['https://aamusports.com/sports/womens-tennis/roster','https://aamusports.com/sports/mens-tennis/roster'],
-    'alabama-am|Track & Field':['https://aamusports.com/sports/womens-track-and-field/roster','https://aamusports.com/sports/mens-track-and-field/roster'],
+    'alabama-am|Track & Field':'https://aamusports.com/sports/mens-track-and-field/roster',
     'alabama-am|Volleyball':'https://aamusports.com/sports/womens-volleyball/roster'
   }
 };
@@ -143,7 +145,14 @@ export function createAlabamaAmHandlers({makeEvent,recapMatchesEvent,eventType=(
     id:'alabama-am',host:HOST,sports:alabamaAmSchool.pageDataSports,squadSports:alabamaAmSchool.combinedSports,
     today:alabamaAmToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // The page writes a score winner first ("L", 31-24, football vs Howard,
+    // Aug 29; every sport): the team's score follows its result letter
+    // (UTRGV's rule).
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>{
+      const result=game.result,mine=Number(result?.team_score),theirs=Number(result?.opponent_score);
+      const turned=String(result?.team_score||'').trim()!==''&&String(result?.opponent_score||'').trim()!==''&&(result.status==='L'&&mine>theirs||result.status==='W'&&mine<theirs);
+      return turned?{...game,result:{...result,team_score:result.opponent_score,opponent_score:result.team_score}}:game;
+    }),
     merge(sport,games){
       if(sport==='Volleyball')games=games.map(game=>game.type||!beforeVolleyballSeason(game.date)?game:{...game,type:'S'});
       // Cross country is on the men's and women's track pages ("Track &
@@ -186,7 +195,7 @@ export function createAlabamaAmHandlers({makeEvent,recapMatchesEvent,eventType=(
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

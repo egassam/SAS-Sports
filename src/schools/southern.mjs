@@ -10,7 +10,7 @@ export const southernSchool={
   // Sports whose official schedule this module reads itself, from the
   // SIDEARM page data (see the reader below). Every other sport keeps the
   // shared parsers. Add a sport only with its fixture tests.
-  pageDataSports:new Set(['Baseball','Basketball','Bowling','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
+  pageDataSports:new Set(['Baseball','Basketball','Bowling','Cross Country','Football','Golf','Soccer','Softball','Tennis','Track & Field','Volleyball']),
   // Live game state from an independent scoreboard, per sport; the official
   // schedule stays the results source of record. Football uses the shared
   // default (ESPN's FBS group).
@@ -40,6 +40,7 @@ export const southernSchool={
     'southern|Baseball':'https://gojagsports.com/sports/baseball/schedule',
     'southern|Basketball':['https://gojagsports.com/sports/mens-basketball/schedule','https://gojagsports.com/sports/womens-basketball/schedule'],
     'southern|Bowling':'https://gojagsports.com/sports/womens-bowling/schedule',
+    'southern|Cross Country':'https://gojagsports.com/sports/combined-cross-country/schedule',
     'southern|Football':'https://gojagsports.com/sports/football/schedule',
     'southern|Golf':['https://gojagsports.com/sports/womens-golf/schedule','https://gojagsports.com/sports/mens-golf/schedule'],
     'southern|Soccer':'https://gojagsports.com/sports/womens-soccer/schedule',
@@ -52,6 +53,7 @@ export const southernSchool={
     'southern|Baseball':'https://gojagsports.com/sports/baseball/roster',
     'southern|Basketball':['https://gojagsports.com/sports/mens-basketball/roster','https://gojagsports.com/sports/womens-basketball/roster'],
     'southern|Bowling':'https://gojagsports.com/sports/womens-bowling/roster',
+    'southern|Cross Country':'https://gojagsports.com/sports/combined-cross-country/roster',
     'southern|Football':'https://gojagsports.com/sports/football/roster',
     'southern|Golf':['https://gojagsports.com/sports/womens-golf/roster','https://gojagsports.com/sports/mens-golf/roster'],
     'southern|Soccer':'https://gojagsports.com/sports/womens-soccer/roster',
@@ -72,7 +74,7 @@ const southernToday=sidearmToday('America/Chicago');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Southern's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const SOUTHERN_TFRRS_TEAMS={Women:null,Men:null};
+export const SOUTHERN_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/LA_college_f_Southern.html',Men:'https://www.tfrrs.org/teams/xc/LA_college_m_Southern.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -180,7 +182,7 @@ export function createSouthernHandlers({makeEvent,recapMatchesEvent,eventType=()
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -385,7 +387,10 @@ export function createSouthernHandlers({makeEvent,recapMatchesEvent,eventType=()
   const trackEmptied=new WeakSet();
   const readSchedule=(...args)=>{const events=parseSchedule(...args);if(args[2]==='Track & Field'&&Array.isArray(events)&&!events.length)trackEmptied.add(events);return events;};
   // A golf final whose card gives no place takes it from its final story.
-  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Jaguars|Southern|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
+  // "Southern" alone is also the start of other schools' names in a story
+  // ("finishing just behind Southern Miss"), or the end of one (Texas
+  // Southern).
+  const golfStory=createGolfStoryPlace({host:HOST,team:"(?:Jaguars|Jags|(?<!Texas |Georgia |Charleston )Southern(?! Miss| Utah| Illinois| Indiana| Methodist| California| Cal)|(?:Men's|Women's) Golf)",converted,decodeHtml,fetch,headers});
   return{...golfStory,parseSchedule:readSchedule,isEmptySchedule:events=>isEmptySchedule(events)||trackEmptied.has(events),
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),
     isFinalWithoutStory:event=>converted(event)&&archive.needsStory(event),

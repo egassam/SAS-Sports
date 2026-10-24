@@ -23,27 +23,27 @@ export const mississippiValleyStateSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Swimming & Diving']),
+  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
   verifiedInstagrams:{},
   scheduleUrls:{
     'mississippi-valley-state|Baseball':'https://mvsusports.com/sports/baseball/schedule',
-    'mississippi-valley-state|Basketball':['https://mvsusports.com/sports/mens-basketball/schedule','https://mvsusports.com/sports/womens-basketball/schedule','https://mvsusports.com/sports/basketball/schedule'],
-    'mississippi-valley-state|Cross Country':'https://mvsusports.com/sports/cross-country/schedule',
+    'mississippi-valley-state|Basketball':['https://mvsusports.com/sports/mens-basketball/schedule','https://mvsusports.com/sports/womens-basketball/schedule'],
+    'mississippi-valley-state|Cross Country':['https://mvsusports.com/sports/mens-cross-country/schedule','https://mvsusports.com/sports/womens-cross-country/schedule'],
     'mississippi-valley-state|Football':'https://mvsusports.com/sports/football/schedule',
     'mississippi-valley-state|Softball':'https://mvsusports.com/sports/softball/schedule',
-    'mississippi-valley-state|Tennis':['https://mvsusports.com/sports/womens-tennis/schedule','https://mvsusports.com/sports/mens-tennis/schedule','https://mvsusports.com/sports/tennis/schedule'],
-    'mississippi-valley-state|Track & Field':['https://mvsusports.com/sports/track-and-field/schedule','https://mvsusports.com/sports/track-field/schedule'],
-    'mississippi-valley-state|Volleyball':['https://mvsusports.com/sports/womens-volleyball/schedule','https://mvsusports.com/sports/volleyball/schedule']
+    'mississippi-valley-state|Tennis':['https://mvsusports.com/sports/mens-tennis/schedule','https://mvsusports.com/sports/womens-tennis/schedule'],
+    'mississippi-valley-state|Track & Field':['https://mvsusports.com/sports/mens-track-and-field/schedule','https://mvsusports.com/sports/womens-track-and-field/schedule'],
+    'mississippi-valley-state|Volleyball':'https://mvsusports.com/sports/womens-volleyball/schedule'
   },
   rosterUrls:{
     'mississippi-valley-state|Baseball':'https://mvsusports.com/sports/baseball/roster',
-    'mississippi-valley-state|Basketball':['https://mvsusports.com/sports/mens-basketball/roster','https://mvsusports.com/sports/womens-basketball/roster','https://mvsusports.com/sports/basketball/roster'],
-    'mississippi-valley-state|Cross Country':'https://mvsusports.com/sports/cross-country/roster',
+    'mississippi-valley-state|Basketball':['https://mvsusports.com/sports/mens-basketball/roster','https://mvsusports.com/sports/womens-basketball/roster'],
+    'mississippi-valley-state|Cross Country':['https://mvsusports.com/sports/mens-cross-country/roster','https://mvsusports.com/sports/womens-cross-country/roster'],
     'mississippi-valley-state|Football':'https://mvsusports.com/sports/football/roster',
     'mississippi-valley-state|Softball':'https://mvsusports.com/sports/softball/roster',
-    'mississippi-valley-state|Tennis':['https://mvsusports.com/sports/womens-tennis/roster','https://mvsusports.com/sports/mens-tennis/roster','https://mvsusports.com/sports/tennis/roster'],
-    'mississippi-valley-state|Track & Field':['https://mvsusports.com/sports/track-and-field/roster','https://mvsusports.com/sports/track-field/roster'],
-    'mississippi-valley-state|Volleyball':['https://mvsusports.com/sports/womens-volleyball/roster','https://mvsusports.com/sports/volleyball/roster']
+    'mississippi-valley-state|Tennis':['https://mvsusports.com/sports/mens-tennis/roster','https://mvsusports.com/sports/womens-tennis/roster'],
+    'mississippi-valley-state|Track & Field':['https://mvsusports.com/sports/mens-track-and-field/roster','https://mvsusports.com/sports/womens-track-and-field/roster'],
+    'mississippi-valley-state|Volleyball':'https://mvsusports.com/sports/womens-volleyball/roster'
   }
 };
 
@@ -57,7 +57,7 @@ const mississippiValleyStateToday=sidearmToday('America/Chicago');
 const INTERNAL=/\bscrimmage\b|\bintrasquad\b|\balumn(?:i|ae) meet\b|\bwrestle[- ]?offs?\b|\bfall world series\b|\bbattle series\b|^pentathlon$/i;
 // Mississippi Valley State's TFRRS cross country team pages; set them to read complete races
 // (scripts/fetch-school-fixtures.mjs --tfrrs-f= --tfrrs-m= saves them).
-export const MISSISSIPPI_VALLEY_STATE_TFRRS_TEAMS={Women:null,Men:null};
+export const MISSISSIPPI_VALLEY_STATE_TFRRS_TEAMS={Women:'https://www.tfrrs.org/teams/xc/MS_college_f_Mississippi_Valley.html',Men:'https://www.tfrrs.org/teams/xc/MS_college_m_Mississippi_Valley.html'};
 // Places the schedule writes as words ("First Place").
 const PLACE_WORDS=['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth'];
 // Words every meet name shares; they do not tell two meets apart.
@@ -165,7 +165,7 @@ export function createMississippiValleyStateHandlers({makeEvent,recapMatchesEven
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;

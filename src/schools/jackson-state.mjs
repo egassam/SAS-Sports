@@ -95,7 +95,10 @@ const isConferenceTournament=game=>game.type==='P'&&Boolean(String(game.tourname
 const isNeutralChampionship=game=>game.location_indicator==='N'&&String(game.enddate||'').slice(0,10)>String(game.date).slice(0,10);
 // A neutral postseason game named after its round ("NCAA Championship
 // Semifinals" in the "NCAA Tournament Final Four") is "at".
-const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
+// The page may name the league's tournament by the league alone ("SWAC" in
+// the "SWAC Tournament": volleyball Nov 20, basketball Mar 8).
+const leagueNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return opponent.length>=3&&String(game.tournament?.title||'').trim().startsWith(`${opponent} `);};
+const tournamentNamedGame=game=>{const opponent=String(game.opponent?.title||'').trim();return Boolean(opponent)&&(opponent===String(game.tournament?.title||'').trim()||leagueNamedGame(game)||/^(?:american(?: conference)?|atlantic 10|a-10)\b.*\bfinals?$/i.test(opponent));};
 const isEventNamedGame=game=>game.type==='P'&&game.location_indicator==='N'&&/\b(?:semifinals?|finals?|championship|tournament|rounds?)\b/i.test(game.opponent?.title||'');
 // An opponent that names an event, not a team; a season used as a
 // tournament title (Xavier's "Fall Season").
@@ -142,6 +145,19 @@ export function createJacksonStateHandlers({makeEvent,recapMatchesEvent,eventTyp
     listed:games=>games.filter(game=>game.type!=='upcoming'),
     merge(sport,games){
       if(sport==='Volleyball')games=games.map(game=>game.type||!beforeVolleyballSeason(game.date)?game:{...game,type:'S'});
+      // The women's basketball page data dates its January-March games a
+      // year early ("2026-01-02" for the page's "Jan 2 (Sat)" at Alcorn
+      // State, Oct 24): an unplayed game dated before the season's first
+      // game (August or later) is in the next year.
+      if(sport==='Basketball'){
+        const opening=games.map(game=>String(game.date||'')).filter(date=>Number(date.slice(5,7))>=8).sort()[0];
+        if(opening)games=games.map(game=>{
+          const date=String(game.date||'');
+          if(!date||date>=opening||Number(date.slice(5,7))>=8||String(game.result?.status||'').trim())return game;
+          const next=value=>`${Number(String(value).slice(0,4))+1}${String(value).slice(4)}`,moved=next(date);
+          return moved>opening?{...game,date:moved,...(game.enddate?{enddate:next(game.enddate)}:{})}:game;
+        });
+      }
       // Cross country is on the men's and women's track pages ("Track &
       // Field/Cross Country"), as at Miami (OH): the fall meets
       // (August-November) are cross country, the rest track.
@@ -182,7 +198,7 @@ export function createJacksonStateHandlers({makeEvent,recapMatchesEvent,eventTyp
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
@@ -195,6 +211,7 @@ export function createJacksonStateHandlers({makeEvent,recapMatchesEvent,eventTyp
       // Two polls: "#1/1 Ohio State", "#19/14 TCU"; unranked in one: "#-/22 Texas".
       opponent=opponent.replace(/^#(?:T?\d+|RV|-)\/(?:T?\d+|RV|-)\s+/i,'');
       if(bracketName(game))return bracketName(game);
+      if(leagueNamedGame(game))return String(game.tournament.title).trim();
       // The tennis pages list players' pro events ("W75 Templeton", "W15
       // Nashville", "Columbia Futures 15K", "ITF Berkley W50"): not the team's.
       if(/^ITF\b|^[WM]\d{2,3}\b|\bFutures\b/i.test(opponent))return'';

@@ -32,7 +32,7 @@ for(const [name,map] of [['schedule',jacksonStateSchool.scheduleUrls],['roster',
     for(const url of [].concat(value))assert.equal(new URL(url).hostname.replace(/^www\./,''),'gojsutigers.com',`${key} must stay on gojsutigers.com`);
   }
 }
-const parity={"Baseball":{"schedule":["https://gojsutigers.com/sports/baseball/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://gojsutigers.com/sports/mens-basketball/schedule","https://gojsutigers.com/sports/womens-basketball/schedule","https://gojsutigers.com/sports/basketball/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/mens-basketball/roster","https://gojsutigers.com/sports/womens-basketball/roster","https://gojsutigers.com/sports/basketball/roster"],"combined":true},"Bowling":{"schedule":["https://gojsutigers.com/sports/bowling/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://gojsutigers.com/sports/cross-country/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/cross-country/roster"],"combined":false},"Football":{"schedule":["https://gojsutigers.com/sports/football/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://gojsutigers.com/sports/womens-golf/schedule","https://gojsutigers.com/sports/mens-golf/schedule","https://gojsutigers.com/sports/golf/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/womens-golf/roster","https://gojsutigers.com/sports/mens-golf/roster","https://gojsutigers.com/sports/golf/roster"],"combined":false},"Soccer":{"schedule":["https://gojsutigers.com/sports/womens-soccer/schedule","https://gojsutigers.com/sports/wsoc/schedule","https://gojsutigers.com/sports/soccer/schedule","https://gojsutigers.com/sports/mens-soccer/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/womens-soccer/roster","https://gojsutigers.com/sports/wsoc/roster","https://gojsutigers.com/sports/soccer/roster","https://gojsutigers.com/sports/mens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://gojsutigers.com/sports/softball/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/softball/roster"],"combined":false},"Tennis":{"schedule":["https://gojsutigers.com/sports/womens-tennis/schedule","https://gojsutigers.com/sports/mens-tennis/schedule","https://gojsutigers.com/sports/tennis/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/womens-tennis/roster","https://gojsutigers.com/sports/mens-tennis/roster","https://gojsutigers.com/sports/tennis/roster"],"combined":false},"Track & Field":{"schedule":["https://gojsutigers.com/sports/track-and-field/schedule","https://gojsutigers.com/sports/track-field/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/track-and-field/roster","https://gojsutigers.com/sports/track-field/roster"],"combined":false},"Volleyball":{"schedule":["https://gojsutigers.com/sports/womens-volleyball/schedule","https://gojsutigers.com/sports/wvball/schedule","https://gojsutigers.com/sports/volleyball/schedule","https://gojsutigers.com/"],"roster":["https://gojsutigers.com/sports/womens-volleyball/roster","https://gojsutigers.com/sports/wvball/roster","https://gojsutigers.com/sports/volleyball/roster"],"combined":false}};
+const parity={"Baseball":{"schedule":["https://gojsutigers.com/sports/baseball/schedule"],"roster":["https://gojsutigers.com/sports/baseball/roster"],"combined":false},"Basketball":{"schedule":["https://gojsutigers.com/sports/mens-basketball/schedule","https://gojsutigers.com/sports/womens-basketball/schedule"],"roster":["https://gojsutigers.com/sports/mens-basketball/roster","https://gojsutigers.com/sports/womens-basketball/roster"],"combined":true},"Bowling":{"schedule":["https://gojsutigers.com/sports/womens-bowling/schedule"],"roster":["https://gojsutigers.com/sports/womens-bowling/roster"],"combined":false},"Cross Country":{"schedule":["https://gojsutigers.com/sports/womens-cross-country/schedule","https://gojsutigers.com/sports/mens-cross-country/schedule"],"roster":["https://gojsutigers.com/sports/womens-cross-country/roster","https://gojsutigers.com/sports/mens-cross-country/roster"],"combined":true},"Football":{"schedule":["https://gojsutigers.com/sports/football/schedule"],"roster":["https://gojsutigers.com/sports/football/roster"],"combined":false},"Golf":{"schedule":["https://gojsutigers.com/sports/womens-golf/schedule","https://gojsutigers.com/sports/mens-golf/schedule"],"roster":["https://gojsutigers.com/sports/womens-golf/roster","https://gojsutigers.com/sports/mens-golf/roster"],"combined":true},"Soccer":{"schedule":["https://gojsutigers.com/sports/womens-soccer/schedule"],"roster":["https://gojsutigers.com/sports/womens-soccer/roster"],"combined":false},"Softball":{"schedule":["https://gojsutigers.com/sports/softball/schedule"],"roster":["https://gojsutigers.com/sports/softball/roster"],"combined":false},"Tennis":{"schedule":["https://gojsutigers.com/sports/womens-tennis/schedule","https://gojsutigers.com/sports/mens-tennis/schedule"],"roster":["https://gojsutigers.com/sports/womens-tennis/roster","https://gojsutigers.com/sports/mens-tennis/roster"],"combined":true},"Track & Field":{"schedule":["https://gojsutigers.com/sports/womens-track-and-field/schedule","https://gojsutigers.com/sports/mens-track-and-field/schedule"],"roster":["https://gojsutigers.com/sports/womens-track-and-field/roster","https://gojsutigers.com/sports/mens-track-and-field/roster"],"combined":true},"Volleyball":{"schedule":["https://gojsutigers.com/sports/womens-volleyball/schedule"],"roster":["https://gojsutigers.com/sports/womens-volleyball/roster"],"combined":false}};
 for(const sport of sports){
   assert.deepEqual(worker.candidateUrls(school,sport),parity[sport].schedule,`${sport} schedule routes must match route parity (update this table when a sport is corrected)`);
   assert.deepEqual(worker.rosterUrls(school,sport),parity[sport].roster,`${sport} roster routes must match route parity`);
@@ -65,6 +65,290 @@ function live(sport,payloadFile,events,at,expected){
   assert.equal(reconciled.length,events.length,`${sport}: the scoreboard joins the official card; no second card`);
 }
 void [parse,line,ownRecapsOnly,live];
+
+// BEGIN generated (scripts/generate-module-tests.mjs --school=jackson-state)
+// Every sport in K-State's results format, as the official pages publish it.
+{
+  const v_baseball=parse("Baseball","baseball");
+  assert.deepEqual(v_baseball.map(line),[]);
+  const v_mensbasketball=parse("Basketball","mens-basketball");
+  assert.deepEqual(v_mensbasketball.map(line),[
+ "Upcoming Nov 2, 6:00 PM Men's · Jackson State at Texas Tech | ",
+ "Upcoming Nov 5, 6:30 PM Men's · Jackson State at Tulane | ",
+ "Upcoming Nov 9, 6:30 PM Men's · Jackson State at Mississippi State | ",
+ "Upcoming Nov 11, 7:00 PM Men's · Jackson State at Southern Miss | ",
+ "Upcoming Nov 14, 2:30 PM Men's · Jackson State at Winthrop | ",
+ "Upcoming Nov 18, 11:00 AM Men's · Jackson State at Baylor | ",
+ "Upcoming Nov 25, 2:00 PM Men's · Jackson State at Oklahoma State | ",
+ "Upcoming Dec 2, 11:00 AM Men's · Jackson State at Memphis | ",
+ "Upcoming Dec 8, 7:00 PM Men's · Jackson State at Texas | ",
+ "Upcoming Dec 15 Men's · Jackson State at Tulsa | ",
+ "Upcoming Dec 17, 8:00 PM Men's · Jackson State at Oklahoma | ",
+ "Upcoming Dec 20, 2:00 PM Men's · Jackson State at Saint Louis | ",
+ "Upcoming Dec 22, 2:00 PM Men's · Jackson State at Louisiana Tech | ",
+ "Upcoming Dec 28, 6:00 PM Men's · Jackson State at Ole Miss | ",
+ "Upcoming Jan 2, 3:00 PM Men's · Jackson State at Alcorn State | ",
+ "Upcoming Jan 9, 2:30 PM Men's · Jackson State vs Alabama State | ",
+ "Upcoming Jan 11, 7:00 PM Men's · Jackson State vs Alabama A&M | ",
+ "Upcoming Jan 16 Men's · Jackson State at Prairie View A&M | ",
+ "Upcoming Jan 18 Men's · Jackson State at Texas Southern | ",
+ "Upcoming Jan 23, 2:30 PM Men's · Jackson State vs Bethune-Cookman | ",
+ "Upcoming Jan 25, 7:00 PM Men's · Jackson State vs Florida A&M | ",
+ "Upcoming Jan 30 Men's · Jackson State at Grambling State | ",
+ "Upcoming Feb 1 Men's · Jackson State at Southern | ",
+ "Upcoming Feb 6, 2:30 PM Men's · Jackson State vs Mississippi Valley State | ",
+ "Upcoming Feb 8, 7:00 PM Men's · Jackson State vs Arkansas-Pine Bluff | ",
+ "Upcoming Feb 13, 4:00 PM Men's · Jackson State at Florida A&M | ",
+ "Upcoming Feb 15 Men's · Jackson State at Bethune-Cookman | ",
+ "Upcoming Feb 20, 3:00 PM Men's · Jackson State vs Alcorn State | ",
+ "Upcoming Feb 25, 7:00 PM Men's · Jackson State vs Prairie View A&M | ",
+ "Upcoming Feb 27, 3:00 PM Men's · Jackson State vs Texas Southern | ",
+ "Upcoming Mar 2 Men's · Jackson State at Arkansas-Pine Bluff | ",
+ "Upcoming Mar 4 Men's · Jackson State at Mississippi Valley State | "
+]);
+  const v_womensbasketball=parse("Basketball","womens-basketball");
+  assert.deepEqual(v_womensbasketball.map(line),[
+ "Upcoming Nov 2 Women's · Jackson State at Arizona State | ",
+ "Upcoming Nov 4 Women's · Jackson State at Grand Canyon | ",
+ "Upcoming Nov 9 Women's · Jackson State vs Mississippi University for Women | ",
+ "Upcoming Nov 12 Women's · Jackson State at Southern Miss | ",
+ "Upcoming Nov 17 Women's · Jackson State at Arkansas State | ",
+ "Upcoming Nov 23 Women's · Jackson State at North Alabama | ",
+ "Upcoming Nov 29, 4:00 PM Women's · Jackson State at Louisiana | ",
+ "Upcoming Dec 11 Women's · Jackson State at Northwestern State | ",
+ "Upcoming Dec 17 Women's · Jackson State at Auburn | ",
+ "Upcoming Dec 19 Women's · Jackson State at UAB | ",
+ "Upcoming Dec 28 Women's · Jackson State at Mississippi State | ",
+ "Upcoming Jan 2 Women's · Jackson State at Alcorn State | ",
+ "Upcoming Jan 7, 6:00 PM Women's · Jackson State vs Alabama A&M | ",
+ "Upcoming Jan 9, 12:00 PM Women's · Jackson State vs Alabama State | ",
+ "Upcoming Jan 14 Women's · Jackson State at Texas Southern | ",
+ "Upcoming Jan 16 Women's · Jackson State at Prairie View A&M | ",
+ "Upcoming Jan 21, 6:00 PM Women's · Jackson State vs Florida A&M | ",
+ "Upcoming Jan 23, 12:00 PM Women's · Jackson State vs Bethune-Cookman | ",
+ "Upcoming Jan 28 Women's · Jackson State at Southern | ",
+ "Upcoming Jan 30 Women's · Jackson State at Grambling State | ",
+ "Upcoming Feb 4, 6:00 PM Women's · Jackson State vs Arkansas-Pine Bluff | ",
+ "Upcoming Feb 6, 12:00 PM Women's · Jackson State vs Mississippi Valley State | ",
+ "Upcoming Feb 11 Women's · Jackson State at Bethune-Cookman | ",
+ "Upcoming Feb 13 Women's · Jackson State at Florida A&M | ",
+ "Upcoming Feb 20, 1:00 PM Women's · Jackson State vs Alcorn State | ",
+ "Upcoming Feb 25, 5:00 PM Women's · Jackson State vs Prairie View A&M | ",
+ "Upcoming Feb 27, 1:00 PM Women's · Jackson State vs Texas Southern | ",
+ "Upcoming Mar 2 Women's · Jackson State at Arkansas-Pine Bluff | ",
+ "Upcoming Mar 4 Women's · Jackson State at Mississippi Valley State | ",
+ "Upcoming Mar 8 Women's · Jackson State at SWAC Tournament | "
+]);
+  const v_womensbowling=parse("Bowling","womens-bowling");
+  assert.deepEqual(v_womensbowling.map(line),[
+ "Final Oct 9 Jackson State vs Prairie View A&M | W, 829-733",
+ "Final Oct 9 Jackson State vs Oklahoma Christian | W, 832-796",
+ "Final Oct 9 Jackson State vs Sam Houston | L, 842-920",
+ "Final Oct 9 Jackson State vs Louisiana Tech | L, 894-961",
+ "Final Oct 9 Jackson State vs Texas Southern | W, 883-791",
+ "Final Oct 10 Jackson State vs Alabama State | L, 881-948",
+ "Final Oct 10 Jackson State vs Southern | L, 860-897",
+ "Final Oct 10 Jackson State vs UAB | W, 893-875",
+ "Final Oct 10 Jackson State at Tulane | L, 919-1007",
+ "Final Oct 10 Jackson State vs North Carolina A&T State | L, 783-969",
+ "Final Oct 11 Jackson State vs Emmanuel (Ga.) (Game 1) | L, 1205-1214",
+ "Final Oct 11 Jackson State vs Texas Southern | W, 1203-1128",
+ "Final Oct 11 Jackson State vs Emmanuel (Ga.) (Game 2) | W, 1017-1010",
+ "Upcoming Nov 6 Jackson State at Bulldog Classic | ",
+ "Upcoming Nov 13 Jackson State at Track Kat Klash | ",
+ "Upcoming Jan 15 Jackson State at SWAC West Roundup | ",
+ "Upcoming Jan 22 Jackson State at Prairie View Invitational | ",
+ "Upcoming Jan 29 Jackson State at Hammer Saints Invite | ",
+ "Upcoming Feb 5 Jackson State at SWAC East Roundup | ",
+ "Upcoming Feb 12 Jackson State at TNBA Open | ",
+ "Upcoming Mar 5 Jackson State at Music City Classic | ",
+ "Upcoming Mar 19 Jackson State at SWAC Championships | "
+]);
+  const v_womenscrosscountry=parse("Cross Country","womens-cross-country");
+  assert.deepEqual(v_womenscrosscountry.map(line),[
+ "Final Sep 4 Women's · Jackson State at MC Season Opener | Completed",
+ "Final Sep 25 Women's · Jackson State at ULM Cross Country Invitational | Completed",
+ "Final Oct 3 Women's · Jackson State at Nicholls XC Invitational | Completed",
+ "Final Oct 16 Women's · Jackson State at Watson Cross Country Classic | Completed",
+ "Upcoming Oct 27 Women's · Jackson State at SWAC Championships | "
+]);
+  const v_menscrosscountry=parse("Cross Country","mens-cross-country");
+  assert.deepEqual(v_menscrosscountry.map(line),[
+ "Final Sep 4 Men's · Jackson State at MC Season Opener | Completed",
+ "Final Sep 25 Men's · Jackson State at ULM Cross Country Invitational | Completed",
+ "Final Oct 3 Men's · Jackson State at Nicholls XC Invitational | Completed",
+ "Final Oct 16 Men's · Jackson State at Watson Cross Country Classic | Completed",
+ "Upcoming Oct 27 Men's · Jackson State at SWAC Championships | "
+]);
+  const v_football=parse("Football","football");
+  assert.deepEqual(v_football.map(line),[
+ "Final Aug 29 Jackson State at Tennessee State | W, 26-24",
+ "Final Sep 5 Jackson State vs Edward Waters | W, 66-14",
+ "Final Sep 19 Jackson State vs Tuskegee | W, 41-7",
+ "Final Sep 26 Jackson State vs Southern | W, 35-17",
+ "Final Oct 3 Jackson State vs Alabama A&M | W, 31-28",
+ "Final Oct 10 Jackson State at Grambling State | L, 38-45",
+ "Final Oct 17 Jackson State vs Florida A&M | W, 27-17",
+ "Final Oct 24 Jackson State at Bethune-Cookman | L, 21-24",
+ "Upcoming Nov 7, 2:00 PM Jackson State vs Mississippi Valley State | ",
+ "Upcoming Nov 14, 2:00 PM Jackson State at Alabama State | ",
+ "Upcoming Nov 21, 2:00 PM Jackson State at Alcorn State | "
+]);
+  const v_womensgolf=parse("Golf","womens-golf");
+  assert.deepEqual(v_womensgolf.map(line),[
+ "Final Sep 8 Women's · Jackson State at Tulane Classic | Completed",
+ "Final Sep 21 Women's · Jackson State at Thomas W. Dortch Jr. HBCU Golf Classic | Completed",
+ "Upcoming Oct 26 Women's · Jackson State at The Judson | ",
+ "Upcoming Nov 2 Women's · Jackson State at Tiger Fall Classic | ",
+ "Upcoming Nov 8 Women's · Jackson State at SWAC Fall Preview | ",
+ "Upcoming Feb 15 Women's · Jackson State at TheeILove Intercollegiate | ",
+ "Upcoming Mar 8 Women's · Jackson State at Lady Bison Invitational | ",
+ "Upcoming Mar 16 Women's · Jackson State at ASU Spring Classic | ",
+ "Upcoming Mar 29 Women's · Jackson State at National Women's Collegiate Golf Championship | ",
+ "Upcoming Apr 5 Women's · Jackson State at Brickyard Collegiate | ",
+ "Upcoming Apr 12 Women's · Jackson State at SWAC Championships | "
+]);
+  const v_mensgolf=parse("Golf","mens-golf");
+  assert.deepEqual(v_mensgolf.map(line),[
+ "Final Sep 7 Men's · Jackson State at TheeILove Intercollegiate | Completed",
+ "Final Sep 14 Men's · Jackson State at Magicians on the Green | Completed",
+ "Final Sep 21 Men's · Jackson State at Thomas W. Dortch Jr. HBCU Golf Classic | Completed",
+ "Upcoming Nov 2 Men's · Jackson State at Tiger Fall Classic | ",
+ "Upcoming Nov 8 Men's · Jackson State at SWAC Fall Preview | ",
+ "Upcoming Mar 16 Men's · Jackson State at ASU Spring Classic | ",
+ "Upcoming Mar 23 Men's · Jackson State at AAMU Invitational | ",
+ "Upcoming Apr 5 Men's · Jackson State at Robinson Invitational | ",
+ "Upcoming Apr 12 Men's · Jackson State at SWAC Championships | "
+]);
+  const v_womenssoccer=parse("Soccer","womens-soccer");
+  assert.deepEqual(v_womenssoccer.map(line),[
+ "Final Aug 12 Jackson State vs Mercer | L, 1-2",
+ "Final Aug 15 Jackson State vs Abilene Christian | L, 1-3",
+ "Final Aug 20 Jackson State at McNeese State | L, 0-2",
+ "Final Aug 23 Jackson State at ULM | L, 1-5",
+ "Final Sep 4 Jackson State at Arkansas | L, 0-5",
+ "Final Sep 7 Jackson State vs Delta State | W, 5-1",
+ "Final Sep 13 Jackson State at Stephen F. Austin | L, 2-4",
+ "Final Sep 18 Jackson State vs Austin Peay | W, 3-1",
+ "Final Sep 20 Jackson State vs Middle Tennessee | W, 4-1",
+ "Final Sep 27 Jackson State vs Southern | W, 3-0",
+ "Final Oct 8 Jackson State at Grambling State | W, 2-1",
+ "Final Oct 11 Jackson State at Arkansas-Pine Bluff | W, 6-0",
+ "Final Oct 18 Jackson State vs Alabama A&M | W, 5-0",
+ "Final Oct 22 Jackson State vs Alcorn State | T, 2-2",
+ "Upcoming Oct 25, 12:00 PM Jackson State at Prairie View A&M | ",
+ "Upcoming Nov 1, 1:00 PM Jackson State at Alabama State | ",
+ "Upcoming Nov 5, 3:00 PM Jackson State vs Texas Southern | ",
+ "Upcoming Nov 12 Jackson State at SWAC Tournament | "
+]);
+  const v_softball=parse("Softball","softball");
+  assert.deepEqual(v_softball.map(line),[]);
+  const v_womenstennis=parse("Tennis","womens-tennis");
+  assert.deepEqual(v_womenstennis.map(line),[
+ "Final Sep 11 Women's · Jackson State at JSU Tiger Invite | Completed",
+ "Final Sep 17 Women's · Jackson State at HBCU Fall Individual Championship | Completed",
+ "Final Oct 19 Women's · Jackson State at SWAC Fall Individual Championship | Completed",
+ "Upcoming Jan 16 Women's · Jackson State vs Houston | ",
+ "Upcoming Jan 22 Women's · Jackson State at Texas A&M - Corpus Christi | ",
+ "Upcoming Jan 24, 11:00 AM Women's · Jackson State at Sam Houston | ",
+ "Upcoming Jan 31, 12:00 PM Women's · Jackson State vs Xavier University of Louisiana (La.) | ",
+ "Upcoming Jan 31, 4:00 PM Women's · Jackson State vs Copiah-Lincoln Community College | ",
+ "Upcoming Feb 2, 11:00 AM Women's · Jackson State at Mississippi Christian | ",
+ "Upcoming Feb 6, 12:00 PM Women's · Jackson State vs McNeese State | ",
+ "Upcoming Feb 7, 12:00 PM Women's · Jackson State vs Southeast Missouri State | ",
+ "Upcoming Feb 7, 4:00 PM Women's · Jackson State vs Southwest Mississippi Community College | ",
+ "Upcoming Feb 13, 11:00 AM Women's · Jackson State at New Orleans | ",
+ "Upcoming Feb 21, 3:00 PM Women's · Jackson State at Mississippi State | ",
+ "Upcoming Feb 25, 2:00 PM Women's · Jackson State at Southeastern Louisiana | ",
+ "Upcoming Mar 4 Women's · Jackson State vs Bethune-Cookman | ",
+ "Upcoming Mar 5 Women's · Jackson State vs Alabama State | ",
+ "Upcoming Mar 7 Women's · Jackson State vs Southern | ",
+ "Upcoming Mar 9, 2:00 PM Women's · Jackson State at Southern Mississippi | ",
+ "Upcoming Mar 20, 1:00 PM Women's · Jackson State vs Dillard (La.) | ",
+ "Upcoming Mar 25, 11:00 AM Women's · Jackson State vs Florida A&M | ",
+ "Upcoming Mar 26 Women's · Jackson State vs Mississippi Valley State | ",
+ "Upcoming Mar 27 Women's · Jackson State vs Grambling State | ",
+ "Upcoming Mar 28 Women's · Jackson State vs Alabama A&M | ",
+ "Upcoming Apr 2, 11:00 AM Women's · Jackson State at Alcorn State | ",
+ "Upcoming Apr 10, 10:00 AM Women's · Jackson State vs West Florida | ",
+ "Upcoming Apr 16 Women's · Jackson State at SWAC Tournament | "
+]);
+  const v_menstennis=parse("Tennis","mens-tennis");
+  assert.deepEqual(v_menstennis.map(line),[
+ "Final Sep 11 Men's · Jackson State at JSU Tiger Invite | Completed",
+ "Final Sep 17 Men's · Jackson State at HBCU Fall Individual Championship | Completed",
+ "Final Oct 19 Men's · Jackson State at SWAC Fall Individual Championship | Completed",
+ "Upcoming Jan 17, 4:00 PM Men's · Jackson State at Mississippi State | ",
+ "Upcoming Jan 22 Men's · Jackson State at Texas A&M - Corpus Christi | ",
+ "Upcoming Jan 31, 12:00 PM Men's · Jackson State vs XULA | ",
+ "Upcoming Jan 31, 4:00 PM Men's · Jackson State vs Copiah-Lincoln Community College | ",
+ "Upcoming Feb 2, 2:00 PM Men's · Jackson State at Mississippi Christian | ",
+ "Upcoming Feb 5, 12:00 PM Men's · Jackson State vs UTRGV | ",
+ "Upcoming Feb 7, 4:00 PM Men's · Jackson State vs Southwest Mississippi Community College | ",
+ "Upcoming Feb 13, 11:00 AM Men's · Jackson State at New Orleans | ",
+ "Upcoming Feb 16, 1:00 PM Men's · Jackson State vs TroY | ",
+ "Upcoming Feb 26 Men's · Jackson State vs Incarnate Word | ",
+ "Upcoming Feb 28, 3:30 PM Men's · Jackson State at Memphis | ",
+ "Upcoming Mar 5 Men's · Jackson State vs Alabama State | ",
+ "Upcoming Mar 7 Men's · Jackson State at Southern | ",
+ "Upcoming Mar 9, 2:00 PM Men's · Jackson State at Southern Miss | ",
+ "Upcoming Mar 16, 2:00 PM Men's · Jackson State vs Lamar | ",
+ "Upcoming Mar 20, 1:00 PM Men's · Jackson State vs Dillard | ",
+ "Upcoming Mar 26 Men's · Jackson State vs Mississippi Valley State | ",
+ "Upcoming Mar 28 Men's · Jackson State vs Alabama A&M | ",
+ "Upcoming Apr 2 Men's · Jackson State at Alcorn State | ",
+ "Upcoming Apr 10 Men's · Jackson State vs West Florida | ",
+ "Upcoming Apr 16 Men's · Jackson State at SWAC Tournament | "
+]);
+  const v_womenstrackandfield=parse("Track & Field","womens-track-and-field");
+  assert.deepEqual(v_womenstrackandfield.map(line),[]);
+  const v_menstrackandfield=parse("Track & Field","mens-track-and-field");
+  assert.deepEqual(v_menstrackandfield.map(line),[]);
+  const v_womensvolleyball=parse("Volleyball","womens-volleyball");
+  assert.deepEqual(v_womensvolleyball.map(line),[
+ "Final Aug 28 Jackson State vs Kansas City | L, 0-3",
+ "Final Aug 28 Jackson State at Austin Peay | W, 3-2",
+ "Final Aug 29 Jackson State vs UT-Martin | W, 3-1",
+ "Final Sep 4 Jackson State at North Alabama Tournament | L, 0-3",
+ "Final Sep 4 Jackson State vs UT Martin | W, 3-0",
+ "Final Sep 5 Jackson State vs Chattanooga | L, 2-3",
+ "Final Sep 8 Jackson State at Northwestern State | L, 1-3",
+ "Final Sep 11 Jackson State vs Houston Christian | W, 3-2",
+ "Final Sep 12 Jackson State vs Lamar | L, 0-3",
+ "Final Sep 12 Jackson State at Southern Miss Invitational | L, 0-3",
+ "Final Sep 18 Jackson State vs UT Arlington | L, 0-3",
+ "Final Sep 18 Jackson State vs Mississippi State | L, 0-3",
+ "Final Sep 19 Jackson State at Louisiana | L, 1-3",
+ "Final Sep 25 Jackson State vs Prairie View A&M | W, 3-2",
+ "Final Sep 27 Jackson State vs Texas Southern | W, 3-1",
+ "Final Sep 30 Jackson State at Mississippi Valley State | W, 3-0",
+ "Final Oct 2 Jackson State vs Bethune-Cookman | L, 1-3",
+ "Final Oct 4 Jackson State vs Florida A&M | L, 1-3",
+ "Final Oct 9 Jackson State at Alcorn State | W, 3-2",
+ "Final Oct 11 Jackson State at Southern | W, 3-1",
+ "Final Oct 16 Jackson State at Alabama A&M | L, 0-3",
+ "Final Oct 18 Jackson State at Alabama State | L, 1-3",
+ "Upcoming Oct 30, 6:00 PM Jackson State vs Grambling State | ",
+ "Upcoming Nov 1, 12:00 PM Jackson State vs Arkansas-Pine Bluff | ",
+ "Upcoming Nov 4, 6:00 PM Jackson State vs Mississippi Valley State | ",
+ "Upcoming Nov 6, 6:00 PM Jackson State vs Alabama A&M | ",
+ "Upcoming Nov 8, 12:00 PM Jackson State vs Alabama State | ",
+ "Upcoming Nov 13, 6:00 PM Jackson State at Bethune-Cookman | ",
+ "Upcoming Nov 15, 12:00 PM Jackson State at Florida A&M | ",
+ "Upcoming Nov 20 Jackson State at SWAC Tournament | "
+]);
+  ownRecapsOnly(v_baseball,"Baseball baseball");
+  ownRecapsOnly(v_mensbasketball,"Basketball mens-basketball");
+  ownRecapsOnly(v_womensbasketball,"Basketball womens-basketball");
+  ownRecapsOnly(v_womensbowling,"Bowling womens-bowling");
+  ownRecapsOnly(v_football,"Football football");
+  ownRecapsOnly(v_womenssoccer,"Soccer womens-soccer");
+  ownRecapsOnly(v_softball,"Softball softball");
+  ownRecapsOnly(v_womenstrackandfield,"Track & Field womens-track-and-field");
+  ownRecapsOnly(v_menstrackandfield,"Track & Field mens-track-and-field");
+  ownRecapsOnly(v_womensvolleyball,"Volleyball womens-volleyball");
+}
+// END generated
 
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log("Jackson State module checks passed");

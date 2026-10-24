@@ -90,7 +90,18 @@ const EXTRA_NAMES={kstate:['k state','kansas state'],ucf:['central florida'],byu
   // reads as "State" here).
   'kansas-city':['umkc','kansas city','missouri kansas city','kc roos'],'north-dakota':['und','north dakota university'],'north-dakota-state':['ndsu','north dakota st'],
   omaha:['nebraska omaha','uno','neb omaha','omaha mavericks'],'oral-roberts':['oru'],'south-dakota':['usd','south dakota university'],'south-dakota-state':['sdsu','south dakota st','s dakota state'],
-  'st-thomas':['saint thomas','state thomas minn','state thomas mn','state thomas minnesota','saint thomas mn','ust']};
+  'st-thomas':['saint thomas','state thomas minn','state thomas mn','state thomas minnesota','saint thomas mn','ust'],
+  // SWAC opponents write "AAMU", "Alcorn", "B-CU", "FAMU", "MVSU" or
+  // "Mississippi Valley", "UAPB" or "Arkansas - Pine Bluff", "Grambling",
+  // "Prairie View", "Southern (La.)", and UAPB adds "Univ." to each. "JSU"
+  // and "TSU" are also Jacksonville State and Tennessee State, both regular
+  // SWAC opponents: not names here.
+  'alabama-am':['aamu','alabama a and m univ'],'alabama-state':['alabama state univ','bama state'],'alcorn-state':['alcorn','alcorn state univ'],
+  'bethune-cookman':['b cu','bcu','bethune cookman univ'],'florida-am':['famu','florida a and m univ'],'jackson-state':['jackson state univ'],
+  'mississippi-valley-state':['mississippi valley','mvsu','miss valley state','mississippi valley state univ'],
+  'arkansas-pine-bluff':['uapb','ark pine bluff','ua pine bluff','arkansas pine bluff univ'],
+  'grambling-state':['grambling','grambling state univ'],'prairie-view-am':['prairie view','pvamu','prairie view a and m univ'],
+  southern:['southern university','southern la','southern u','southern univ','southern baton rouge'],'texas-southern':['texas southern univ']};
 // A member that plays a sport outside the conference: Notre Dame football is
 // independent of the ACC (Miami's Nov 7 game at Notre Dame is non-conference).
 const OUTSIDE={ACC:{Football:new Set(['notre-dame'])}};
@@ -267,6 +278,13 @@ const NOT_SPONSORED={
   // Thomas) sponsors basketball, baseball, softball, soccer, volleyball,
   // golf, tennis, cross country, track and swimming: no football, wrestling
   // or hockey (modules name those leagues).
+  // The SWAC (2026-27: Alabama A&M, Alabama State, Alcorn State,
+  // Bethune-Cookman, Florida A&M, Jackson State, Mississippi Valley State,
+  // Arkansas-Pine Bluff, Grambling State, Prairie View A&M, Southern, Texas
+  // Southern) sponsors football, basketball, baseball, softball, volleyball,
+  // women's soccer, bowling, golf, tennis, cross country and track: no
+  // swimming, wrestling, lacrosse or hockey.
+  'SWAC':new Set(['Swimming & Diving','Wrestling','Hockey','Lacrosse','Gymnastics','Rowing','Field Hockey','Water Polo','Rifle','Beach Volleyball','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Summit League':new Set(['Football','Wrestling','Hockey','Lacrosse','Gymnastics','Bowling','Rowing','Field Hockey','Water Polo','Beach Volleyball','Rifle','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Southland Conference':new Set(['Swimming & Diving','Wrestling','Lacrosse','Water Polo','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Rifle','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),
   'Southern Conference':new Set(['Swimming & Diving','Lacrosse','Water Polo','Beach Volleyball','Hockey','Gymnastics','Bowling','Rowing','Field Hockey','Equestrian','Fencing','Skiing','Acrobatics & Tumbling','STUNT','Triathlon']),

@@ -26,7 +26,7 @@ export const floridaAmSchool={
   },
   // Men's and women's teams publish separate pages; both are shown, labeled
   // by team.
-  combinedSports:new Set(['Basketball','Cross Country','Swimming & Diving','Tennis','Track & Field']),
+  combinedSports:new Set(['Basketball','Swimming & Diving','Track & Field']),
   verifiedInstagrams:{
     'florida-am|Volleyball|Iyonnie Sanford':'https://www.instagram.com/iyonni3/'
   },
@@ -34,11 +34,11 @@ export const floridaAmSchool={
     'florida-am|Baseball':'https://famuathletics.com/sports/baseball/schedule',
     'florida-am|Basketball':['https://famuathletics.com/sports/mens-basketball/schedule','https://famuathletics.com/sports/womens-basketball/schedule'],
     'florida-am|Bowling':'https://famuathletics.com/sports/womens-bowling/schedule',
-    'florida-am|Cross Country':['https://famuathletics.com/sports/womens-cross-country/schedule','https://famuathletics.com/sports/mens-cross-country/schedule'],
+    'florida-am|Cross Country':'https://famuathletics.com/sports/womens-cross-country/schedule',
     'florida-am|Football':'https://famuathletics.com/sports/football/schedule',
     'florida-am|Golf':'https://famuathletics.com/sports/mens-golf/schedule',
     'florida-am|Softball':'https://famuathletics.com/sports/softball/schedule',
-    'florida-am|Tennis':['https://famuathletics.com/sports/womens-tennis/schedule','https://famuathletics.com/sports/mens-tennis/schedule'],
+    'florida-am|Tennis':'https://famuathletics.com/sports/womens-tennis/schedule',
     'florida-am|Track & Field':['https://famuathletics.com/sports/womens-track-and-field/schedule','https://famuathletics.com/sports/mens-track-and-field/schedule'],
     'florida-am|Volleyball':'https://famuathletics.com/sports/womens-volleyball/schedule'
   },
@@ -46,11 +46,11 @@ export const floridaAmSchool={
     'florida-am|Baseball':'https://famuathletics.com/sports/baseball/roster',
     'florida-am|Basketball':['https://famuathletics.com/sports/mens-basketball/roster','https://famuathletics.com/sports/womens-basketball/roster'],
     'florida-am|Bowling':'https://famuathletics.com/sports/womens-bowling/roster',
-    'florida-am|Cross Country':['https://famuathletics.com/sports/womens-cross-country/roster','https://famuathletics.com/sports/mens-cross-country/roster'],
+    'florida-am|Cross Country':'https://famuathletics.com/sports/womens-cross-country/roster',
     'florida-am|Football':'https://famuathletics.com/sports/football/roster',
     'florida-am|Golf':'https://famuathletics.com/sports/mens-golf/roster',
     'florida-am|Softball':'https://famuathletics.com/sports/softball/roster',
-    'florida-am|Tennis':['https://famuathletics.com/sports/womens-tennis/roster','https://famuathletics.com/sports/mens-tennis/roster'],
+    'florida-am|Tennis':'https://famuathletics.com/sports/womens-tennis/roster',
     'florida-am|Track & Field':['https://famuathletics.com/sports/womens-track-and-field/roster','https://famuathletics.com/sports/mens-track-and-field/roster'],
     'florida-am|Volleyball':'https://famuathletics.com/sports/womens-volleyball/roster'
   }
@@ -174,7 +174,7 @@ export function createFloridaAmHandlers({makeEvent,recapMatchesEvent,eventType=(
       // Tennis and wrestling list a tournament once per day ("UTR Charleston",
       // Sep 18-20): one event from its first to its last day.
       // So does bowling (Bryant's Penguin Classic, Oct 16-18).
-      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games);
+      if(sport==='Swimming & Diving'||sport==='Track & Field'||sport==='Tennis'||sport==='Wrestling'||sport==='Bowling')return mergeMeetDays(games,{matches:sport==='Bowling'});
       // Bracket rounds with no opponent yet: one event per tournament.
       if(sport==='Basketball')return mergeTbaBracket(games);
       return games;
