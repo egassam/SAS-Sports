@@ -9095,5 +9095,209 @@
         "provider_school_id": "26"
       }
     ]
+  },
+  {
+    "id": "chattanooga",
+    "name": "Chattanooga",
+    "short_name": "Chattanooga",
+    "state": "Tennessee",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://gomocs.com",
+    "aliases": [
+      "University of Tennessee at Chattanooga",
+      "UTC",
+      "Mocs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "gomocs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "citadel",
+    "name": "The Citadel",
+    "short_name": "Citadel",
+    "state": "South Carolina",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://citadelsports.com",
+    "aliases": [
+      "The Citadel, The Military College of South Carolina",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "citadelsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "east-tennessee-state",
+    "name": "East Tennessee State",
+    "short_name": "ETSU",
+    "state": "Tennessee",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://etsubucs.com",
+    "aliases": [
+      "East Tennessee State University",
+      "ETSU",
+      "Buccaneers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "etsubucs",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "furman",
+    "name": "Furman",
+    "short_name": "Furman",
+    "state": "South Carolina",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://furmanpaladins.com",
+    "aliases": [
+      "Furman University",
+      "Paladins"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "furmanpaladins",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "mercer",
+    "name": "Mercer",
+    "short_name": "Mercer",
+    "state": "Georgia",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://mercerbears.com",
+    "aliases": [
+      "Mercer University",
+      "Bears"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "mercerbears",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "samford",
+    "name": "Samford",
+    "short_name": "Samford",
+    "state": "Alabama",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://samfordsports.com",
+    "aliases": [
+      "Samford University",
+      "Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "samfordsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "unc-greensboro",
+    "name": "UNC Greensboro",
+    "short_name": "UNCG",
+    "state": "North Carolina",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://uncgspartans.com",
+    "aliases": [
+      "University of North Carolina at Greensboro",
+      "UNCG",
+      "Spartans"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "uncgspartans",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "vmi",
+    "name": "VMI",
+    "short_name": "VMI",
+    "state": "Virginia",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://vmikeydets.com",
+    "aliases": [
+      "Virginia Military Institute",
+      "Keydets"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "vmikeydets",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "western-carolina",
+    "name": "Western Carolina",
+    "short_name": "Western Carolina",
+    "state": "North Carolina",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://catamountsports.com",
+    "aliases": [
+      "Western Carolina University",
+      "WCU",
+      "Catamounts"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "catamountsports",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wofford",
+    "name": "Wofford",
+    "short_name": "Wofford",
+    "state": "South Carolina",
+    "conference": "Southern Conference",
+    "division": "NCAA Division I",
+    "athletics_url": "https://woffordterriers.com",
+    "aliases": [
+      "Wofford College",
+      "Terriers"
+    ],
+    "providers": [
+      {
+        "provider": "SIDEARM",
+        "slug": "woffordterriers",
+        "provider_school_id": null
+      }
+    ]
   }
 ]
