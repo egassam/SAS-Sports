@@ -341,6 +341,7 @@ try{
   const amsVb=await msFeed('anthony-ms-ks','Volleyball');
   assert.ok(amsVb.results.length>0&&amsVb.results.every(e=>e.headline==='No score posted'&&e.no_result_posted&&e.school_score==null),'the season is over and no scores were published');
   assert.deepEqual(amsVb.records,[],'games without a score count in no record');
+  assert.deepEqual(amsVb.results[0].results,[{label:'Score',value:'Not posted yet'}]);
   const ike=await msFeed('eisenhower-ms-ks','Basketball');
   assert.deepEqual(ike.upcoming.slice(0,3).map(line),['Upcoming Oct 29, 4:15 PM 7th Girls · Eisenhower vs Rock Creek | ','Upcoming Oct 29, 4:15 PM 8th Girls · Eisenhower vs Rock Creek | ','Upcoming Nov 3, 4:30 PM 7th Girls · Eisenhower at Wamego | ']);
   assert.ok(ike.upcoming.some(e=>e.team_label==='7th Boys'&&/Wamego/.test(e.title)),'boys basketball is in the same sport');

@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.220.0-hs-rules';
+const VERSION='4.221.0-hs-rules';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4026,7 +4026,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   const noResult=eventType(sport)==='GAME'?'No score posted':'No results posted';
   const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:unscored?noResult:(results?.headline||null);
   const dateText=highSchoolDateText(date),title=`${team?`${team} · `:''}${school.short_name} ${relation} ${opponent}`;
-  const rows=scored?[{label:'Result',value:headline}]:unscored?[{label:'Result',value:`Played · ${noResult.toLowerCase()} by the school or any results source`}]:(results?.rows||[]);
+  const rows=scored?[{label:'Result',value:headline}]:unscored?[{label:eventType(sport)==='GAME'?'Score':'Results',value:'Not posted yet'}]:(results?.rows||[]);
   const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;

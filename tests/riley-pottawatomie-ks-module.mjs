@@ -30,6 +30,7 @@ for(const m of modules){
 }
 assert.equal(schools.find(s=>s.id==='flint-hills-christian-ks').county,'Pottawatomie County','3905 Green Valley Rd is east of the Big Blue');
 assert.ok(read('../public/index.html').includes("'Football','Flag Football'"),'Wamego girls flag football has a sport');
+assert.ok(read('../public/index.html').includes('if(e.no_result_posted)return \'<span class="status-badge played">Played</span>\''),'a game played with no score posted reads PLAYED, not FINAL');
 
 // Bound: Wamego's own events of an act and level; home flags; finals; the
 // placeholders beside real entries.

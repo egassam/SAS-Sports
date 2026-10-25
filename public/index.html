@@ -341,7 +341,9 @@ function applyCurrentSchoolTheme(){
 }
 function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
-function badge(e){const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
+// A middle or high school game played with no score posted is not a final
+// with a result: it reads PLAYED (AGENTS.md 5c).
+function badge(e){if(e.no_result_posted)return '<span class="status-badge played">Played</span>';const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
 // Live games: a scoreboard card that stands out (red LIVE pill and clock,
 // one row per team with its score, the trailing side dimmed). The side that
 // scored since the last refresh flashes once.
