@@ -274,9 +274,9 @@ const LIVE_REFRESH_MS=15*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=
 // Each team's colors come with its catalog card (src/team-themes.json, user,
 // October 16: catalog step 1); this is the SAS default.
 const SAS_THEME={primary:'#7cf7c4',secondary:'#42d3ff',panel:'#11243a',panelDark:'#081524',line:'#29435f',onAccent:'#07111f'};
-const BOOTSTRAP_SPORTS=['Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
+const BOOTSTRAP_SPORTS=['Football','Flag Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
 const AUTO_SEASON_WINDOWS={
-  'Football':[[8,1]],'Volleyball':[[8,12]],'Soccer':[[8,12]],'Cross Country':[[8,11]],
+  'Football':[[8,1]],'Flag Football':[[8,11]],'Volleyball':[[8,12]],'Soccer':[[8,12]],'Cross Country':[[8,11]],
   'Basketball':[[10,4]],'Swimming & Diving':[[9,3]],'Wrestling':[[10,3]],
   'Tennis':[[9,11],[1,5]],'Golf':[[8,11],[2,6]],'Track & Field':[[12,6]],
   'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]],'Auto Racing':[[2,11]]
@@ -341,7 +341,9 @@ function applyCurrentSchoolTheme(){
 }
 function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
 function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
-function badge(e){const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
+// A middle or high school game played with no score posted is not a final
+// with a result: it reads PLAYED (AGENTS.md 5c).
+function badge(e){if(e.no_result_posted)return '<span class="status-badge played">Played</span>';const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
 // Live games: a scoreboard card that stands out (red LIVE pill and clock,
 // one row per team with its score, the trailing side dimmed). The side that
 // scored since the last refresh flashes once.

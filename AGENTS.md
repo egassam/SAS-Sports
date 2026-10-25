@@ -18,6 +18,11 @@ The user wants one school-module project per conversation.
 
 5b. **Blocked schools go in `docs/BLOCKED_SCHOOLS.md` (user, October 22, 2026: "Add them all into their own MD file and add any more schools that we get into that file").** When a school's official site refuses the app (for example Imperva's "Too many redirects" on `/api/source` after spaced retries), add it to that file's table in the same session, with the dates, the rounds checked and the exact answer. Leave it out of the build (user, October 19), keep its catalog entry, and never route around the block. If it later answers, move it to the file's "No longer blocked" section and build it.
 
+5c. **Middle and high schools have their own rules (user, October 25, 2026: "We may need a new rule for middle school and high school. I don't think the current rules will work for them", then "Go with 1", "Go with 1", "Go with 2").** They replace 5a and K-State's listing rule for `level` `high-school` and `middle-school` only; college keeps its rules.
+   - **Played without a score:** a past game or meet no source has a result for is listed as played ("No score posted"; a meet "No results posted") and takes its score when MaxPreps, Bound, a timer, Prep.Golf, TennisReporting or SAS Scorer posts one. Placeholders for rounds never reached (playoff rounds, "TBD", a state meet the team may not have qualified for) are not listed.
+   - **Complete:** a school is complete when every sport reads the school's schedule and every result source that exists for it is connected, tested and verified on the preview and in production, and merged. Results nobody publishes are recorded in the module doc as "not published" (with the sources checked), not as open items. No featured athletes (minors).
+   - **Merge gate:** 3 forced refreshes per sport (not 36), plus the results-format and expanded-view checks and the K-State and KU XC baselines (`npm run verify:preview -- --branch=<branch> --school=<ids> --sports=all --refreshes=3`); production as in item 6.
+
 6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
    - **Code PRs:**
      - `npm run test:release` passes locally on the final commit (it runs every test in `npm test`, plus the checks and isolation).
@@ -25,7 +30,7 @@ The user wants one school-module project per conversation.
      - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows every changed sport in K-State's results format.
      - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
      - The change is the work the user asked for in this session (since October 16, 2026, it need not stay within one school: shared code, pro leagues and several entries are covered when every check here passes for every entry the change touches).
-     - On that preview, 36 forced refreshes (`refresh=1`) of each changed sport all return HTTP 200, with no Cloudflare 1102 or 503 errors.
+     - On that preview, 36 forced refreshes (`refresh=1`) of each changed sport all return HTTP 200, with no Cloudflare 1102 or 503 errors. Middle and high schools: 3 forced refreshes (item 5c).
      - `npm run verify:preview -- --branch=<branch> --school=<id> --sports="<changed sports>"` runs the XC, refresh, results-format and expanded-view checks above in one command; the page itself is still checked by eye.
    - **Docs-only PRs:** CI is green and the PR has no merge conflict.
 

@@ -105,9 +105,11 @@ assert.deepEqual(levels.map(l=>l.count),['middle-school','high-school','college'
 const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
 assert.deepEqual(pro.middles,['Formula 1','IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
 const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
-assert.deepEqual(kansas.middles,['Riley County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');assert.deepEqual(kansas.entries.map(e=>e.id),['manhattan-ks']);
+assert.deepEqual(kansas.middles,['Pottawatomie County','Riley County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');
+const rileyHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Riley County'});assert.deepEqual(rileyHs.entries.map(e=>e.id),['manhattan-ks','riley-county-ks','blue-valley-randolph-ks']);
+const pottHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Pottawatomie County'});assert.deepEqual(pottHs.entries.map(e=>e.id),['wamego-ks','rock-creek-ks','st-marys-ks','onaga-ks','flint-hills-christian-ks','st-marys-academy-ks']);
 const middle=await catalogMenu(stores[1],{level:'middle-school',group:'Kansas',middle:'Riley County'});
-assert.deepEqual(middle.entries.map(e=>e.id),['anthony-ms-ks','eisenhower-ms-ks']);
+assert.deepEqual(middle.entries.map(e=>e.id),['anthony-ms-ks','eisenhower-ms-ks','riley-county-ms-ks','blue-valley-randolph-ms-ks','manhattan-catholic-ks']);
 const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});
 assert.equal(big12.entries.length,16);assert.equal(big12.entries[0].id,cards.find(c=>c.conference==='Big 12').id);
 // A group or city the level does not have reads as "All", not as empty.

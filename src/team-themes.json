@@ -3310,5 +3310,141 @@
     "panelDark": "#19060c",
     "line": "#7c172c",
     "onAccent": "#ffffff"
+  },
+  "riley-county-ks": {
+    "primary": "#034CB2",
+    "secondary": "#FFFFFF",
+    "panel": "#012250",
+    "panelDark": "#010f24",
+    "line": "#4279c5",
+    "onAccent": "#ffffff"
+  },
+  "blue-valley-randolph-ks": {
+    "primary": "#244778",
+    "secondary": "#B1A381",
+    "panel": "#102036",
+    "panelDark": "#070e18",
+    "line": "#5b759a",
+    "onAccent": "#ffffff"
+  },
+  "wamego-ks": {
+    "primary": "#CC0022",
+    "secondary": "#FFFFFF",
+    "panel": "#5c000f",
+    "panelDark": "#290007",
+    "line": "#d94059",
+    "onAccent": "#ffffff"
+  },
+  "rock-creek-ks": {
+    "primary": "#2B2B2B",
+    "secondary": "#A3A3A3",
+    "panel": "#131313",
+    "panelDark": "#090909",
+    "line": "#606060",
+    "onAccent": "#ffffff"
+  },
+  "st-marys-ks": {
+    "primary": "#0061B0",
+    "secondary": "#C8CACB",
+    "panel": "#002c4f",
+    "panelDark": "#001323",
+    "line": "#4088c4",
+    "onAccent": "#ffffff"
+  },
+  "onaga-ks": {
+    "primary": "#E8590C",
+    "secondary": "#FFFFFF",
+    "panel": "#682805",
+    "panelDark": "#2e1202",
+    "line": "#ee8249",
+    "onAccent": "#ffffff"
+  },
+  "flint-hills-christian-ks": {
+    "primary": "#00824B",
+    "secondary": "#FFFFFF",
+    "panel": "#003a22",
+    "panelDark": "#001a0f",
+    "line": "#40a178",
+    "onAccent": "#ffffff"
+  },
+  "st-marys-academy-ks": {
+    "primary": "#002653",
+    "secondary": "#C71227",
+    "panel": "#001125",
+    "panelDark": "#000811",
+    "line": "#405c7e",
+    "onAccent": "#ffffff"
+  },
+  "riley-county-ms-ks": {
+    "primary": "#034CB2",
+    "secondary": "#FFFFFF",
+    "panel": "#012250",
+    "panelDark": "#010f24",
+    "line": "#4279c5",
+    "onAccent": "#ffffff"
+  },
+  "blue-valley-randolph-ms-ks": {
+    "primary": "#244778",
+    "secondary": "#B1A381",
+    "panel": "#102036",
+    "panelDark": "#070e18",
+    "line": "#5b759a",
+    "onAccent": "#ffffff"
+  },
+  "wamego-ms-ks": {
+    "primary": "#CC0022",
+    "secondary": "#FFFFFF",
+    "panel": "#5c000f",
+    "panelDark": "#290007",
+    "line": "#d94059",
+    "onAccent": "#ffffff"
+  },
+  "rock-creek-ms-ks": {
+    "primary": "#2B2B2B",
+    "secondary": "#A3A3A3",
+    "panel": "#131313",
+    "panelDark": "#090909",
+    "line": "#606060",
+    "onAccent": "#ffffff"
+  },
+  "st-marys-jh-ks": {
+    "primary": "#0061B0",
+    "secondary": "#C8CACB",
+    "panel": "#002c4f",
+    "panelDark": "#001323",
+    "line": "#4088c4",
+    "onAccent": "#ffffff"
+  },
+  "onaga-ms-ks": {
+    "primary": "#E8590C",
+    "secondary": "#FFFFFF",
+    "panel": "#682805",
+    "panelDark": "#2e1202",
+    "line": "#ee8249",
+    "onAccent": "#ffffff"
+  },
+  "flint-hills-christian-ms-ks": {
+    "primary": "#00824B",
+    "secondary": "#FFFFFF",
+    "panel": "#003a22",
+    "panelDark": "#001a0f",
+    "line": "#40a178",
+    "onAccent": "#ffffff"
+  },
+  "manhattan-catholic-ks": {
+    "primary": "#C8102E",
+    "secondary": "#FFFFFF",
+    "panel": "#5a0715",
+    "panelDark": "#280309",
+    "line": "#d64c62",
+    "onAccent": "#ffffff"
+  },
+  "st-marys-academy-jh-ks": {
+    "primary": "#002653",
+    "secondary": "#C71227",
+    "panel": "#001125",
+    "panelDark": "#000811",
+    "line": "#405c7e",
+    "onAccent": "#ffffff"
   }
 }

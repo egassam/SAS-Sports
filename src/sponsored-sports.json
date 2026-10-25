@@ -4641,5 +4641,147 @@
     "Tennis",
     "Track & Field",
     "Volleyball"
+  ],
+  "riley-county-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "blue-valley-randolph-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "wamego-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Flag Football",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "rock-creek-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-marys-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "onaga-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "flint-hills-christian-ks": [
+    "Basketball",
+    "Cross Country",
+    "Golf",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "st-marys-academy-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Wrestling"
+  ],
+  "riley-county-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "blue-valley-randolph-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "wamego-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "rock-creek-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-marys-jh-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "onaga-ms-ks": [
+    "Basketball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "flint-hills-christian-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "manhattan-catholic-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "st-marys-academy-jh-ks": [
+    "Basketball"
   ]
 }
