@@ -13,6 +13,8 @@ Sports (13): Baseball, Basketball, Bowling, Cross Country, Golf, Hockey, Lacross
 
 Each rule has a check in `tests/niagara-module.mjs` (generated page blocks) or `tests/metro-shared.mjs`. Game-sport records on the preview equal each live page's own (`npm run compare-records`, Oct 23); spring 2026 records (men's volleyball, women's water polo) are finished seasons, which the season rule leaves out.
 
+- A score written winner first beside its result letter reads by the letter (bowling vs Maryland Eastern Shore, Oct 18: "L", 4-3 reads "L, 3-4"; UTRGV's rule, Oct 25).
+
 ## Athletes
 
 Roster cards, then official profiles. Profile cards fill the remaining slots in Baseball, Basketball, Bowling, Cross Country, Golf, Hockey, Lacrosse, Soccer, Softball, Swimming & Diving, Tennis, Track & Field, Volleyball (the official sources publish no further athlete Instagram; `athlete_profile_fallback_sports` in `tests/certified-schools.json`). Checked with `validate-schools --athletes-only` on the preview, Oct 23.

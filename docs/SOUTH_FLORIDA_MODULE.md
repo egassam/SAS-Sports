@@ -10,6 +10,8 @@ Sports (11): Baseball, Basketball, Cross Country, Football, Golf, Lacrosse, Socc
 
 Each rule has a check in `tests/south-florida-module.mjs` (generated page blocks) or `tests/american-shared.mjs`; each new shared rule was mutated and its test failed. Every football, volleyball, soccer and field hockey record on the preview equals the page's own `schedule-record` (overall and conference, Oct 22).
 
+- A golf tournament with no card place that shares its story with a same-day tournament that has one is an individuals-only entry (the Eckerd Invitational, Sep 21-22: one player, "Holly McLean played in the 2026 Eckerd Invitational"; the team placed 7th at the Canadian Collegiate): "No team score (individuals only)" (Oct 25).
+
 ## Athletes
 
 Roster cards, then official profiles, then the NIL marketplace: none linked. Every sport shows three athletes with verified Instagram. Checked with `validate-schools --athletes-only` on the preview, Oct 22.

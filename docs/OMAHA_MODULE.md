@@ -25,3 +25,4 @@ Roster cards, then official profiles, then the school's NIL marketplace where on
 - Sports whose 2026-27 season is not yet published fill when it is.
 - First live cards not yet observed.
 - The men's golf card for the Wildcat Classic (Sep 14-15) reads 7th; its story says eighth. The card is the source of record.
+- The first forced refresh after the 4.209.2 deploy hung 60 s for basketball and golf (Oct 24); after the 4.214.0 deploy (Oct 25) the first refreshes took 2.9 s and 6.9 s (golf reads its stories): not reproduced.

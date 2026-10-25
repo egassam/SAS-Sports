@@ -148,6 +148,14 @@ export function createSouthFloridaHandlers({makeEvent,recapMatchesEvent,eventTyp
         // A season is no tournament (Xavier's "Fall Season").
         // Women's golf names the course after the tournament ("Cougar Classic
         // (Yeamans Hall Club)"): the tournament is the name before it.
+        // A tournament some players play as individuals while the team plays
+        // another the same days links the team's story and publishes no place
+        // (the Eckerd Invitational, Sep 21-22: "Holly McLean played in the
+        // 2026 Eckerd Invitational"; the team placed seventh at the Canadian
+        // Collegiate): it has no team score.
+        const story=game=>String(game.result?.recap?.url||game.result?.recap||'');
+        const placed=game=>Boolean(String(game.result?.prescore_info||game.result?.postscore_info||'').trim());
+        games=games.map(game=>!placed(game)&&story(game)&&games.some(other=>other!==game&&placed(other)&&story(other)===story(game)&&String(other.date).slice(0,10)===String(game.date).slice(0,10))?{...game,result:{...game.result,prescore_info:'No team score (individuals only)'}}:game);
         const named=games.map(game=>{const title=String(game.tournament?.title||'').trim().replace(/\s*\([^)]*\)$/,'').replace(SEASON_TITLE,'');return{...game,tournament:{...game.tournament,title:title||String(game.opponent?.title||'').trim()}};});
         // Match play (the NB3 Matchplay, Sep 29-30) lists one card per match
         // with its points: the tournament reads as its matches.

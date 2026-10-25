@@ -11,7 +11,7 @@ Texas was added to the app and converted on October 8, 2026, together with Texas
 | Football | `football` | 4 finals, each with its story; record 4-0 (SEC 1-0); ESPN live score |
 | Volleyball | `womens-volleyball` | 12 finals, each with its story; 7-5 (3-1); ESPN live score |
 | Soccer | `womens-soccer` | 12 finals, each with its story; 7-2-3 (2-1-2); ESPN live score |
-| Cross Country | `track-and-field` (fall meets) | 4 finals; both teams' places and points from TFRRS (`TX_college_f_Texas`, `TX_college_m_Texas`); Chile Pepper (not yet on TFRRS) shows the schedule's places |
+| Cross Country | `track-and-field` (fall meets) | 4 finals; both teams' places and points from TFRRS (`TX_college_f_Texas`, `TX_college_m_Texas`); Chile Pepper Festival (Oct 3) from its TFRRS meet page, named in the module (`meets`): TFRRS lists Texas's runners there but not on its team pages (women 6th · 197 pts, men 1st · 64 pts, Oct 25) |
 | Golf | `mens-golf`, `womens-golf` | Labeled. Place in the field and team score (`T2nd of 14`, `839`); Stephens Cup match play as games |
 | Tennis | `mens-tennis`, `womens-tennis` | Labeled. ITA All-American with its story; the players' ITF pro events left out |
 | Swimming & Diving | `mens-swimming-and-diving`, `womens-swimming-and-diving` | Labeled; Dust Off Your Boots with each team's story |

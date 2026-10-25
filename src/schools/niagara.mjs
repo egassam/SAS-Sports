@@ -129,7 +129,14 @@ export function createNiagaraHandlers({makeEvent,recapMatchesEvent,eventType=()=
     id:'niagara',host:HOST,sports:niagaraSchool.pageDataSports,squadSports:niagaraSchool.combinedSports,
     today:niagaraToday,
     // A "next event" widget repeats a game without its details.
-    listed:games=>games.filter(game=>game.type!=='upcoming'),
+    // A score may be written winner first beside its result letter (bowling
+    // vs Maryland Eastern Shore, Oct 18: "L", 4-3; UMES's page has UMES
+    // winning): the letter decides (UTRGV's rule).
+    listed:games=>games.filter(game=>game.type!=='upcoming').map(game=>{
+      const result=game.result,mine=Number(result?.team_score),theirs=Number(result?.opponent_score);
+      const turned=String(result?.team_score||'').trim()!==''&&String(result?.opponent_score||'').trim()!==''&&(result.status==='L'&&mine>theirs||result.status==='W'&&mine<theirs);
+      return turned?{...game,result:{...result,team_score:result.opponent_score,opponent_score:result.team_score}}:game;
+    }),
     merge(sport,games){
       // Cross country is on the men's and women's track pages ("Track &
       // Field/Cross Country"), as at Miami (OH): the fall meets

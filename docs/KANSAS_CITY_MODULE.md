@@ -22,4 +22,4 @@ Roster cards, then official profiles, then the school's NIL marketplace where on
 
 - Sports whose 2026-27 season is not yet published fill when it is (softball and track list last season only).
 - First live cards not yet observed.
-- The women's tennis page dates one entry "Sep 25 (Fri) - Oct 26 (Mon)" at Omaha with no result or story (Omaha's own page lists its Omaha/Creighton Invite on Oct 24): the event reads as the official page dates it until the page is corrected.
+- The women's tennis page dates one entry "Sep 25 (Fri) - Oct 26 (Mon)" at Omaha with no result or story (Omaha's own page lists its Omaha/Creighton Invite on Oct 24): the event reads as the official page dates it until the page is corrected. Checked again Oct 25: still on the page; Omaha's Oct 24 story names South Dakota, Creighton and Northern Iowa, not Kansas City, so no official source gives the right date. With no result it leaves the list after Oct 26 (K-State's rule).

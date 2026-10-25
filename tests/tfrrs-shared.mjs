@@ -104,4 +104,28 @@ assert.deepEqual(parseTfrrsResults(page('pre-nationals'),{decodeHtml,ordinal,tea
   assert.equal(event.results.filter(r=>r.group==="Men's race").length,9);
 }
 
+// A meet whose results list the team's runners without linking them to its
+// team pages (the Chile Pepper XC Festival, Oct 2-3: Texas and Mississippi
+// State) is named by the module for the schedule's day (`meets`); a team
+// may have several TFRRS names ("Miss State", "Mississippi State").
+// Mutation: without `meets`, "No results ... on TFRRS yet".
+{
+  const fixture=(id,name)=>gunzipSync(readFileSync(new URL(`./fixtures/${id}-module/${name}.html.gz`,import.meta.url))).toString();
+  const CHILE='https://www.tfrrs.org/results/xc/28826/Chile_Pepper_XC_Festival';
+  for(const [id,name,teams,team,headline,want] of [
+    ['texas','Texas',{Women:'https://www.tfrrs.org/teams/xc/TX_college_f_Texas.html',Men:'https://www.tfrrs.org/teams/xc/TX_college_m_Texas.html'},'Texas',"Women's team: 6th / Men's team: 1st","Women's team: 6th · 197 pts / Men's team: 1st · 64 pts"],
+    ['mississippi-state','Mississippi State',{Women:'https://www.tfrrs.org/teams/xc/MS_college_f_Mississippi_St.html',Men:null},['Miss State','Mississippi State'],'2nd',"Women's team: 2nd · 83 pts"]]){
+    const own=new Map([[teams.Women,'tfrrs-team-f'],[teams.Men,'tfrrs-team-m'],[CHILE,'tfrrs-28826']]);
+    const read=async url=>{const file=own.get(String(url));return file?new Response(fixture(id,file)):new Response('',{status:404})};
+    const xc=createTfrrsMeetResults({id,schoolName:name,tfrrsTeam:team,teams,meets:{'2026-10-03':CHILE},decodeHtml,ordinal,fetch:read});
+    const event=meet(id,'Chile Pepper Festival','2026-10-03',headline);
+    await xc.attach(event);
+    assert.equal(event.headline,want);
+    const bare=createTfrrsMeetResults({id,schoolName:name,tfrrsTeam:team,teams,decodeHtml,ordinal,fetch:read});
+    const missing=meet(id,'Chile Pepper Festival','2026-10-03',headline);
+    await bare.attach(missing);
+    assert.equal(missing.meet_results_verified,false);
+  }
+}
+
 console.log('Shared TFRRS checks passed (plural names, TFRRS team names, named races, only meet that day when confirmed)');
