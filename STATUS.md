@@ -21,6 +21,26 @@
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Wake Forest: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| alcorn-state | Volleyball | 🔴 on | live 8-19 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| american | Field Hockey | 🔴 on | live 0-0 · 8:08 - 1st · official_schedule+live_scoreboard |
+| bellarmine | Field Hockey | 🔴 on | live 0-0 · 9:39 - 1st · official_schedule+live_scoreboard |
+| bethune-cookman | Volleyball | 🔴 on | live 15-12 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| binghamton | Soccer | 🔴 on | live 0-1 · 17' · official_schedule+live_scoreboard |
+| dartmouth | Soccer | 🔴 on | live 0-1 · 13' · official_schedule+live_scoreboard |
+| drexel | Soccer | 🔴 on | live 0-0 · 15' · official_schedule+live_scoreboard |
+| florida-am | Volleyball | 🔴 on | live 19-8 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| holy-cross | Field Hockey | 🔴 on | live 0-0 · 8:08 - 1st · official_schedule+live_scoreboard |
+| james-madison | Field Hockey | 🔴 on | live 0-1 · 13:45 - 1st · official_schedule+live_scoreboard |
+| lafayette | Field Hockey | 🔴 on | live 0-0 · End of 1st · official_schedule+live_scoreboard |
+| maine | Soccer | 🔴 on | live 1-0 · 17' · official_schedule+live_scoreboard |
+| new-haven | Field Hockey | 🔴 on | live 0-0 · 8:27 - 1st · official_schedule+live_scoreboard |
+| new-haven | Soccer | 🔴 on | live 1-1 · 60' · official_schedule+live_scoreboard |
+| providence | Field Hockey | 🔴 on | live 1-0 · 8:06 - 1st · official_schedule+live_scoreboard |
+| quinnipiac | Field Hockey | 🔴 on | live 0-0 · 13:18 - 1st · official_schedule+live_scoreboard |
+| south-carolina-state | Volleyball | 🔴 on | live 15-21 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| southern | Volleyball | 🔴 on | live 12-15 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| stonehill | Field Hockey | 🔴 on | live 0-0 · 8:04 - 1st · official_schedule+live_scoreboard |
+| towson | Field Hockey | 🔴 on | live 4-0 · 54:09 - 4th · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -54,9 +74,7 @@
 | alcorn-state | Football | ⚪ off (waiting) |  |
 | alcorn-state | Soccer | ⚪ off (waiting) |  |
 | alcorn-state | Softball | ⚪ off (waiting) |  |
-| alcorn-state | Volleyball | ⚪ off (waiting) |  |
 | american | Basketball | ⚪ off (waiting) |  |
-| american | Field Hockey | ⚪ off (waiting) |  |
 | american | Lacrosse | ⚪ off (waiting) |  |
 | arizona | Baseball | ⚪ off (waiting) |  |
 | arizona | Basketball | ⚪ off (waiting) |  |
@@ -102,7 +120,6 @@
 | baylor | Softball | ⚪ off (waiting) |  |
 | bellarmine | Baseball | ⚪ off (waiting) |  |
 | bellarmine | Basketball | ⚪ off (waiting) |  |
-| bellarmine | Field Hockey | ⚪ off (waiting) |  |
 | bellarmine | Lacrosse | ⚪ off (waiting) |  |
 | bellarmine | Softball | ⚪ off (waiting) |  |
 | belmont | Baseball | ⚪ off (waiting) |  |
@@ -114,11 +131,9 @@
 | bethune-cookman | Basketball | ⚪ off (waiting) |  |
 | bethune-cookman | Football | ⚪ off (waiting) |  |
 | bethune-cookman | Softball | ⚪ off (waiting) |  |
-| bethune-cookman | Volleyball | ⚪ off (waiting) |  |
 | binghamton | Baseball | ⚪ off (waiting) |  |
 | binghamton | Basketball | ⚪ off (waiting) |  |
 | binghamton | Lacrosse | ⚪ off (waiting) |  |
-| binghamton | Soccer | ⚪ off (waiting) |  |
 | binghamton | Softball | ⚪ off (waiting) |  |
 | binghamton | Volleyball | ⚪ off (waiting) |  |
 | boise-state | Basketball | ⚪ off (waiting) |  |
@@ -274,7 +289,6 @@
 | dartmouth | Football | ⚪ off (waiting) |  |
 | dartmouth | Hockey | ⚪ off (waiting) | final L, 1-2 (live phase not observed 2×; waits for the next game) |
 | dartmouth | Lacrosse | ⚪ off (waiting) |  |
-| dartmouth | Soccer | ⚪ off (waiting) |  |
 | dartmouth | Softball | ⚪ off (waiting) |  |
 | davidson | Baseball | ⚪ off (waiting) |  |
 | davidson | Basketball | ⚪ off (waiting) |  |
@@ -303,7 +317,6 @@
 | detroit-mercy | Softball | ⚪ off (waiting) |  |
 | drexel | Basketball | ⚪ off (waiting) |  |
 | drexel | Lacrosse | ⚪ off (waiting) |  |
-| drexel | Soccer | ⚪ off (waiting) |  |
 | drexel | Softball | ⚪ off (waiting) |  |
 | duke | Baseball | ⚪ off (waiting) |  |
 | duke | Basketball | ⚪ off (waiting) |  |
@@ -368,7 +381,6 @@
 | florida-am | Basketball | ⚪ off (waiting) |  |
 | florida-am | Football | ⚪ off (waiting) |  |
 | florida-am | Softball | ⚪ off (waiting) |  |
-| florida-am | Volleyball | ⚪ off (waiting) |  |
 | florida-state | Baseball | ⚪ off (waiting) |  |
 | florida-state | Basketball | ⚪ off (waiting) |  |
 | florida-state | Lacrosse | ⚪ off (waiting) |  |
@@ -432,7 +444,6 @@
 | hofstra | Softball | ⚪ off (waiting) |  |
 | holy-cross | Baseball | ⚪ off (waiting) |  |
 | holy-cross | Basketball | ⚪ off (waiting) |  |
-| holy-cross | Field Hockey | ⚪ off (waiting) |  |
 | holy-cross | Football | ⚪ off (waiting) |  |
 | holy-cross | Hockey | ⚪ off (waiting) | final L, 3-4 (live phase not observed 2×; waits for the next game) |
 | holy-cross | Lacrosse | ⚪ off (waiting) |  |
@@ -496,7 +507,6 @@
 | jacksonville-state | Softball | ⚪ off (waiting) |  |
 | james-madison | Baseball | ⚪ off (waiting) |  |
 | james-madison | Basketball | ⚪ off (waiting) |  |
-| james-madison | Field Hockey | ⚪ off (waiting) |  |
 | james-madison | Lacrosse | ⚪ off (waiting) |  |
 | james-madison | Softball | ⚪ off (waiting) |  |
 | kansas | Baseball | ⚪ off (waiting) |  |
@@ -522,7 +532,6 @@
 | la-salle | Water Polo | ⚪ off (waiting) |  |
 | lafayette | Baseball | ⚪ off (waiting) |  |
 | lafayette | Basketball | ⚪ off (waiting) |  |
-| lafayette | Field Hockey | ⚪ off (waiting) |  |
 | lafayette | Football | ⚪ off (waiting) |  |
 | lafayette | Lacrosse | ⚪ off (waiting) |  |
 | lafayette | Softball | ⚪ off (waiting) |  |
@@ -597,7 +606,6 @@
 | maine | Basketball | ⚪ off (waiting) |  |
 | maine | Football | ⚪ off (waiting) |  |
 | maine | Hockey | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
-| maine | Soccer | ⚪ off (waiting) |  |
 | maine | Softball | ⚪ off (waiting) |  |
 | manhattan | Baseball | ⚪ off (waiting) |  |
 | manhattan | Basketball | ⚪ off (waiting) |  |
@@ -745,10 +753,8 @@
 | new-hampshire | Volleyball | ⚪ off (waiting) |  |
 | new-haven | Baseball | ⚪ off (waiting) |  |
 | new-haven | Basketball | ⚪ off (waiting) |  |
-| new-haven | Field Hockey | ⚪ off (waiting) |  |
 | new-haven | Football | ⚪ off (waiting) |  |
 | new-haven | Lacrosse | ⚪ off (waiting) |  |
-| new-haven | Soccer | ⚪ off (waiting) |  |
 | new-haven | Softball | ⚪ off (waiting) |  |
 | new-mexico | Baseball | ⚪ off (waiting) |  |
 | new-mexico | Basketball | ⚪ off (waiting) |  |
@@ -905,7 +911,6 @@
 | princeton | Softball | ⚪ off (waiting) |  |
 | princeton | Water Polo | ⚪ off (waiting) |  |
 | providence | Basketball | ⚪ off (waiting) |  |
-| providence | Field Hockey | ⚪ off (waiting) |  |
 | providence | Hockey | ⚪ off (waiting) | final W, 5-2 (live phase not observed 2×; waits for the next game) |
 | providence | Lacrosse | ⚪ off (waiting) |  |
 | providence | Softball | ⚪ off (waiting) |  |
@@ -924,7 +929,6 @@
 | queens | Softball | ⚪ off (waiting) |  |
 | quinnipiac | Baseball | ⚪ off (waiting) |  |
 | quinnipiac | Basketball | ⚪ off (waiting) |  |
-| quinnipiac | Field Hockey | ⚪ off (waiting) |  |
 | quinnipiac | Hockey | ⚪ off (waiting) | final L, 3-4 (live phase not observed 2×; waits for the next game) |
 | quinnipiac | Lacrosse | ⚪ off (waiting) |  |
 | quinnipiac | Softball | ⚪ off (waiting) |  |
@@ -1035,7 +1039,6 @@
 | south-carolina-state | Football | ⚪ off (waiting) |  |
 | south-carolina-state | Soccer | ⚪ off (waiting) |  |
 | south-carolina-state | Softball | ⚪ off (waiting) |  |
-| south-carolina-state | Volleyball | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
 | south-dakota | Basketball | ⚪ off (waiting) |  |
 | south-dakota | Football | ⚪ off (waiting) |  |
 | south-dakota | Soccer | ⚪ off (waiting) |  |
@@ -1069,7 +1072,6 @@
 | southern | Football | ⚪ off (waiting) |  |
 | southern | Soccer | ⚪ off (waiting) |  |
 | southern | Softball | ⚪ off (waiting) |  |
-| southern | Volleyball | ⚪ off (waiting) |  |
 | southern-illinois | Baseball | ⚪ off (waiting) |  |
 | southern-illinois | Basketball | ⚪ off (waiting) |  |
 | southern-illinois | Football | ⚪ off (waiting) |  |
@@ -1109,7 +1111,6 @@
 | stephen-f-austin | Volleyball | ⚪ off (waiting) |  |
 | stonehill | Baseball | ⚪ off (waiting) |  |
 | stonehill | Basketball | ⚪ off (waiting) |  |
-| stonehill | Field Hockey | ⚪ off (waiting) |  |
 | stonehill | Football | ⚪ off (waiting) |  |
 | stonehill | Hockey | ⚪ off (waiting) | final L, 3-5 (live phase not observed 2×; waits for the next game) |
 | stonehill | Lacrosse | ⚪ off (waiting) |  |
@@ -1157,7 +1158,6 @@
 | toledo | Softball | ⚪ off (waiting) |  |
 | towson | Baseball | ⚪ off (waiting) |  |
 | towson | Basketball | ⚪ off (waiting) |  |
-| towson | Field Hockey | ⚪ off (waiting) |  |
 | towson | Football | ⚪ off (waiting) |  |
 | towson | Lacrosse | ⚪ off (waiting) |  |
 | towson | Soccer | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 583/1956; on 0; off 1352; failing 21.
+Done 583/1956; on 20; off 1332; failing 21.
