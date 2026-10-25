@@ -23,7 +23,9 @@ export const LETSGORUN_MEETPRO={
     '2026-09-15':['2026_Clay_Center_XC_Invitational'],
     '2026-09-29':['2026_Rock_Creek_Cross_Country_Invitational'],
     '2026-10-02':['2026_Centennial_League_Middle_School_XC_Championships']
-  }
+  },
+  // Trial track meets for the live reader: {date, folder, name, schools}.
+  trials:[]
 };
 
 export const manhattanKsSchool={
