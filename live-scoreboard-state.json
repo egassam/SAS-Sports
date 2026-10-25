@@ -2687,15 +2687,9 @@
   },
   "virginia-tech|Soccer": {
    "state": "failing",
-   "last_check": "2026-10-25T21:56:39.440Z",
-   "last_detail": "the game is live and also still in upcoming (scoreboard not joined to the official schedule)",
-   "game": {
-    "key": "virginia-tech|Soccer||2026-10-25|1",
-    "title": "Virginia Tech vs Clemson",
-    "started_seen": "2026-10-25T21:48:16.964Z",
-    "live_passes": [],
-    "final_ok": false
-   },
+   "last_check": "2026-10-25T23:38:55.550Z",
+   "last_detail": "final T, 1-1 (live phase not observed 2×; waits for the next game)",
+   "game": null,
    "failures": 21,
    "last_failure": {
     "at": "2026-10-25T21:56:39.440Z",
@@ -5926,26 +5920,13 @@
    "state": "off"
   },
   "rhode-island|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-25T21:56:39.398Z",
-   "last_detail": "live 0-1 · 79' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "rhode-island|Soccer|Men's|2026-10-25|1",
-    "title": "Men's · Rhode Island at George Mason",
-    "started_seen": "2026-10-25T21:48:20.093Z",
-    "live_passes": [
-     "2026-10-25T21:48:20.093Z",
-     "2026-10-25T21:49:25.043Z",
-     "2026-10-25T21:50:26.757Z",
-     "2026-10-25T21:51:29.744Z",
-     "2026-10-25T21:52:32.346Z",
-     "2026-10-25T21:53:34.064Z",
-     "2026-10-25T21:54:35.926Z",
-     "2026-10-25T21:55:37.150Z",
-     "2026-10-25T21:56:39.398Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-25T23:38:56.430Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-10-25T23:38:56.430Z",
+   "verified_game": "Men's · Rhode Island at George Mason",
+   "verified_detail": "final L, 0-1"
   },
   "rhode-island|Softball": {
    "state": "off"
@@ -6737,26 +6718,13 @@
    "state": "off"
   },
   "bryant|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-25T21:56:40.027Z",
-   "last_detail": "live 1-0 · 83' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "bryant|Soccer|Men's|2026-10-25|1",
-    "title": "Men's · Bryant vs Binghamton",
-    "started_seen": "2026-10-25T21:48:17.354Z",
-    "live_passes": [
-     "2026-10-25T21:48:17.354Z",
-     "2026-10-25T21:49:25.143Z",
-     "2026-10-25T21:50:26.734Z",
-     "2026-10-25T21:51:30.640Z",
-     "2026-10-25T21:52:31.943Z",
-     "2026-10-25T21:53:33.604Z",
-     "2026-10-25T21:54:35.222Z",
-     "2026-10-25T21:55:37.632Z",
-     "2026-10-25T21:56:40.027Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-25T23:38:59.060Z",
+   "last_detail": "final W, 1-0",
+   "game": null,
+   "verified_at": "2026-10-25T23:38:59.060Z",
+   "verified_game": "Men's · Bryant vs Binghamton",
+   "verified_detail": "final W, 1-0"
   },
   "bryant|Softball": {
    "state": "off"
@@ -9477,7 +9445,26 @@
    "state": "off"
   },
   "houston-christian|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-25T23:47:13.914Z",
+   "last_detail": "live 0-1 · 34' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "houston-christian|Soccer|Men's|2026-10-25|1",
+    "title": "Men's · Houston Christian at Incarnate Word",
+    "started_seen": "2026-10-25T23:39:00.218Z",
+    "live_passes": [
+     "2026-10-25T23:39:00.218Z",
+     "2026-10-25T23:40:02.113Z",
+     "2026-10-25T23:41:03.736Z",
+     "2026-10-25T23:42:05.216Z",
+     "2026-10-25T23:43:06.123Z",
+     "2026-10-25T23:44:09.495Z",
+     "2026-10-25T23:45:10.549Z",
+     "2026-10-25T23:46:12.300Z",
+     "2026-10-25T23:47:13.914Z"
+    ],
+    "final_ok": false
+   }
   },
   "houston-christian|Softball": {
    "state": "off"
@@ -9525,7 +9512,26 @@
    "state": "off"
   },
   "lamar|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-25T23:47:13.508Z",
+   "last_detail": "live 1-0 · 69' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lamar|Soccer||2026-10-25|1",
+    "title": "Lamar at SE Louisiana",
+    "started_seen": "2026-10-25T23:38:55.564Z",
+    "live_passes": [
+     "2026-10-25T23:38:55.564Z",
+     "2026-10-25T23:40:01.425Z",
+     "2026-10-25T23:41:03.671Z",
+     "2026-10-25T23:42:05.195Z",
+     "2026-10-25T23:43:06.638Z",
+     "2026-10-25T23:44:09.103Z",
+     "2026-10-25T23:45:11.033Z",
+     "2026-10-25T23:46:12.331Z",
+     "2026-10-25T23:47:13.508Z"
+    ],
+    "final_ok": false
+   }
   },
   "lamar|Softball": {
    "state": "off"
@@ -10066,6 +10072,6 @@
   }
  },
  "version": "4.222.1-meetpro-track",
- "updated_at": "2026-10-25T21:56:40.033Z",
+ "updated_at": "2026-10-25T23:47:13.920Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

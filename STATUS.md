@@ -21,8 +21,8 @@
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Clemson: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| bryant | Soccer | 🔴 on | live 1-0 · 83' · official_schedule+live_scoreboard |
-| rhode-island | Soccer | 🔴 on | live 0-1 · 79' · official_schedule+live_scoreboard |
+| houston-christian | Soccer | 🔴 on | live 0-1 · 34' · official_schedule+live_scoreboard |
+| lamar | Soccer | 🔴 on | live 1-0 · 69' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -419,7 +419,6 @@
 | houston-christian | Baseball | ⚪ off (waiting) |  |
 | houston-christian | Basketball | ⚪ off (waiting) |  |
 | houston-christian | Football | ⚪ off (waiting) |  |
-| houston-christian | Soccer | ⚪ off (waiting) |  |
 | houston-christian | Softball | ⚪ off (waiting) |  |
 | houston-christian | Volleyball | ⚪ off (waiting) |  |
 | idaho-state | Basketball | ⚪ off (waiting) |  |
@@ -498,7 +497,6 @@
 | lamar | Baseball | ⚪ off (waiting) |  |
 | lamar | Basketball | ⚪ off (waiting) |  |
 | lamar | Football | ⚪ off (waiting) |  |
-| lamar | Soccer | ⚪ off (waiting) |  |
 | lamar | Softball | ⚪ off (waiting) |  |
 | lamar | Volleyball | ⚪ off (waiting) |  |
 | le-moyne | Baseball | ⚪ off (waiting) |  |
@@ -1377,6 +1375,7 @@
 | brown | Field Hockey | ✅ off (passed) | Brown at Princeton · 2026-10-23T23:34:16.426Z |
 | brown | Soccer | ✅ off (passed) | Men's · Brown vs Princeton · 2026-10-24T23:24:11.588Z |
 | brown | Volleyball | ✅ off (passed) | Brown at Yale · 2026-10-24T23:24:09.492Z |
+| bryant | Soccer | ✅ off (passed) | Men's · Bryant vs Binghamton · 2026-10-25T23:38:59.060Z |
 | bryant | Volleyball | ✅ off (passed) | Bryant at UMBC · 2026-10-24T21:15:46.890Z |
 | bucknell | Soccer | ✅ off (passed) | Women's · Bucknell vs Army · 2026-10-24T21:15:41.473Z |
 | bucknell | Volleyball | ✅ off (passed) | Bucknell vs Lehigh · 2026-10-24T23:24:10.198Z |
@@ -1756,6 +1755,7 @@
 | quinnipiac | Soccer | ✅ off (passed) | Men's · Quinnipiac vs Mount St Marys · 2026-10-24T21:15:42.932Z |
 | radford | Soccer | ✅ off (passed) | Men's · Radford at High Point · 2026-10-25T01:30:06.961Z |
 | radford | Volleyball | ✅ off (passed) | Radford vs SC Upstate · 2026-10-24T01:59:34.190Z |
+| rhode-island | Soccer | ✅ off (passed) | Men's · Rhode Island at George Mason · 2026-10-25T23:38:56.430Z |
 | rhode-island | Volleyball | ✅ off (passed) | Rhode Island at Davidson · 2026-10-24T01:59:33.417Z |
 | rice | Football | ✅ off (passed) | Rice at FAU · 2026-10-24T21:15:40.379Z |
 | rice | Soccer | ✅ off (passed) | Rice at South Florida · 2026-10-23T02:02:22.447Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 648/1956; on 2; off 1285; failing 21.
+Done 650/1956; on 2; off 1283; failing 21.
