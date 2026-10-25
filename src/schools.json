@@ -9988,5 +9988,487 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "riley-county-ks",
+    "name": "Riley County High School",
+    "short_name": "Riley County",
+    "state": "Kansas",
+    "city": "Riley",
+    "county": "Riley County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd378.org",
+    "aliases": [
+      "Riley County",
+      "RCHS",
+      "Riley County Falcons",
+      "USD 378"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rileycountyhs",
+        "provider_school_id": "h2025020404520421139a7c22372f045"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/riley/riley-county-falcons",
+        "provider_school_id": "5cdb37b2-ad68-43ee-96f4-0f48d54919fa"
+      }
+    ]
+  },
+  {
+    "id": "blue-valley-randolph-ks",
+    "name": "Blue Valley High School",
+    "short_name": "Blue Valley",
+    "state": "Kansas",
+    "city": "Randolph",
+    "county": "Riley County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd384.org",
+    "aliases": [
+      "Blue Valley Randolph",
+      "Blue Valley Rams",
+      "BVHS",
+      "USD 384"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/bluevalleyhs",
+        "provider_school_id": "h2025020404515532406c584bcd3f640"
+      },
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "151215",
+        "provider_school_id": null
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/randolph/blue-valley-rams",
+        "provider_school_id": "adf57bf4-2b09-4fdf-8fe7-867907f0ea03"
+      }
+    ]
+  },
+  {
+    "id": "wamego-ks",
+    "name": "Wamego High School",
+    "short_name": "Wamego",
+    "state": "Kansas",
+    "city": "Wamego",
+    "county": "Pottawatomie County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd320.com",
+    "aliases": [
+      "Wamego",
+      "WHS",
+      "Wamego Red Raiders",
+      "USD 320"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wamegohs",
+        "provider_school_id": "h202502040452088515ce32279a6bd46"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/wamego/wamego-red-raiders",
+        "provider_school_id": "85994f3a-51f3-45de-8eb1-88106d80733b"
+      }
+    ]
+  },
+  {
+    "id": "rock-creek-ks",
+    "name": "Rock Creek High School",
+    "short_name": "Rock Creek",
+    "state": "Kansas",
+    "city": "St. George",
+    "county": "Pottawatomie County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd323.org",
+    "aliases": [
+      "Rock Creek",
+      "Rock Creek Mustangs",
+      "RCHS",
+      "USD 323"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rockcreekhs",
+        "provider_school_id": "h2025020404520445615614e419a374c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/st-george/rock-creek-mustangs",
+        "provider_school_id": "96110ea0-a0ac-4f8d-b7b3-49a4b725e38f"
+      }
+    ]
+  },
+  {
+    "id": "st-marys-ks",
+    "name": "St. Marys Junior/Senior High School",
+    "short_name": "St. Marys",
+    "state": "Kansas",
+    "city": "St. Marys",
+    "county": "Pottawatomie County",
+    "conference": "Big East League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.kawvalley.k12.ks.us",
+    "aliases": [
+      "St. Marys",
+      "St. Marys Bears",
+      "Saint Marys",
+      "USD 321"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stmaryshs",
+        "provider_school_id": "h20250204045205533eddae2a4d03e42"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/st-marys/st-marys-bears",
+        "provider_school_id": "0f0ebc9e-4330-405a-a173-f298b055973a"
+      }
+    ]
+  },
+  {
+    "id": "onaga-ks",
+    "name": "Onaga High School",
+    "short_name": "Onaga",
+    "state": "Kansas",
+    "city": "Onaga",
+    "county": "Pottawatomie County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd322.org",
+    "aliases": [
+      "Onaga",
+      "Onaga Buffaloes",
+      "USD 322"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/onagahs",
+        "provider_school_id": "h20250204045201797b1e73ae8e3d04d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/onaga/onaga-buffaloes",
+        "provider_school_id": "1572292e-afd2-444a-bed6-45b5b3f4b17d"
+      }
+    ]
+  },
+  {
+    "id": "flint-hills-christian-ks",
+    "name": "Flint Hills Christian School",
+    "short_name": "Flint Hills Christian",
+    "state": "Kansas",
+    "city": "Manhattan",
+    "county": "Pottawatomie County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private",
+    "athletics_url": "https://flinthillschristianschool.com",
+    "aliases": [
+      "Flint Hills Christian",
+      "FHCS",
+      "Flinthills Christian",
+      "FH Christian",
+      "Flint Hills Christian Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fhchristian",
+        "provider_school_id": "h20250204045158323369ba76e1ac34e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/manhattan/flint-hills-christian-warriors",
+        "provider_school_id": "3450c0af-ce38-4aa7-88c7-b1b19f49cac3"
+      }
+    ]
+  },
+  {
+    "id": "st-marys-academy-ks",
+    "name": "St. Mary's Academy",
+    "short_name": "St. Mary's Academy",
+    "state": "Kansas",
+    "city": "St. Marys",
+    "county": "Pottawatomie County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private (not a KSHSAA member)",
+    "athletics_url": "https://beta.gobound.com/ks/schools/saintmarysacademy",
+    "aliases": [
+      "St. Mary's Academy",
+      "Saint Mary's Academy",
+      "SMA",
+      "St. Mary's Academy Crusaders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/saintmarysacademy",
+        "provider_school_id": "h2025020404520561456ac772684c34f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/st-marys/st-marys-academy-crusaders",
+        "provider_school_id": "72046133-0241-43db-a9b8-71b3f3b6ae10"
+      }
+    ]
+  },
+  {
+    "id": "riley-county-ms-ks",
+    "name": "Riley County Middle School",
+    "short_name": "Riley County",
+    "state": "Kansas",
+    "city": "Riley",
+    "county": "Riley County",
+    "conference": "Big East League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/rcmsks",
+    "aliases": [
+      "Riley County Middle School",
+      "Riley County MS",
+      "Riley County Grade School"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rcmsks",
+        "provider_school_id": "h20251014075040360c6677198a0a040"
+      }
+    ]
+  },
+  {
+    "id": "blue-valley-randolph-ms-ks",
+    "name": "Blue Valley Junior High",
+    "short_name": "Blue Valley",
+    "state": "Kansas",
+    "city": "Randolph",
+    "county": "Riley County",
+    "conference": "Blue Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd384.org",
+    "aliases": [
+      "Blue Valley Middle School",
+      "Blue Valley Junior High",
+      "Blue Valley Randolph MS"
+    ],
+    "providers": [
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "151215",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wamego-ms-ks",
+    "name": "Wamego Middle School",
+    "short_name": "Wamego",
+    "state": "Kansas",
+    "city": "Wamego",
+    "county": "Pottawatomie County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd320.com",
+    "aliases": [
+      "Wamego Middle School",
+      "Wamego MS",
+      "WMS"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wamegoms",
+        "provider_school_id": "h20250612075742474f79cb40e4a7f40"
+      }
+    ]
+  },
+  {
+    "id": "rock-creek-ms-ks",
+    "name": "Rock Creek Middle School",
+    "short_name": "Rock Creek",
+    "state": "Kansas",
+    "city": "St. George",
+    "county": "Pottawatomie County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd323.org",
+    "aliases": [
+      "Rock Creek Middle School",
+      "Rock Creek MS"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rockcreekms",
+        "provider_school_id": "h20260103125538297053dfabf06614f"
+      }
+    ]
+  },
+  {
+    "id": "st-marys-jh-ks",
+    "name": "St. Marys Junior High",
+    "short_name": "St. Marys",
+    "state": "Kansas",
+    "city": "St. Marys",
+    "county": "Pottawatomie County",
+    "conference": "Big East League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.kawvalley.k12.ks.us",
+    "aliases": [
+      "St. Marys Junior High",
+      "St. Marys Middle School",
+      "St. Marys JH"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stmaryshs",
+        "provider_school_id": "h20250204045205533eddae2a4d03e42"
+      }
+    ]
+  },
+  {
+    "id": "onaga-ms-ks",
+    "name": "Onaga Middle School",
+    "short_name": "Onaga",
+    "state": "Kansas",
+    "city": "Onaga",
+    "county": "Pottawatomie County",
+    "conference": "Twin Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd322.org",
+    "aliases": [
+      "Onaga Middle School",
+      "Onaga MS",
+      "Onaga Junior High"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/onagahs",
+        "provider_school_id": "h20250204045201797b1e73ae8e3d04d"
+      }
+    ]
+  },
+  {
+    "id": "flint-hills-christian-ms-ks",
+    "name": "Flint Hills Christian Middle School",
+    "short_name": "Flint Hills Christian",
+    "state": "Kansas",
+    "city": "Manhattan",
+    "county": "Pottawatomie County",
+    "conference": "Independent",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://flinthillschristianschool.com",
+    "aliases": [
+      "Flint Hills Christian Middle School",
+      "FHCS Middle School",
+      "FH Christian MS"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fhchristian",
+        "provider_school_id": "h20250204045158323369ba76e1ac34e"
+      }
+    ]
+  },
+  {
+    "id": "manhattan-catholic-ks",
+    "name": "Manhattan Catholic Schools (Luckey)",
+    "short_name": "Manhattan Catholic",
+    "state": "Kansas",
+    "city": "Manhattan",
+    "county": "Riley County",
+    "conference": "Blue Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.manhattancatholicschools.org",
+    "aliases": [
+      "Manhattan Catholic",
+      "Manhattan Catholic Schools",
+      "Luckey",
+      "Manhattan Catholic Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "PARENTSQUARE_CALENDAR",
+        "slug": "152066",
+        "provider_school_id": null
+      },
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/manhattancatholicschool",
+        "provider_school_id": "h2026061204145230421eeb83e43974f"
+      }
+    ]
+  },
+  {
+    "id": "st-marys-academy-jh-ks",
+    "name": "St. Mary's Academy Junior High",
+    "short_name": "St. Mary's Academy",
+    "state": "Kansas",
+    "city": "St. Marys",
+    "county": "Pottawatomie County",
+    "conference": "Independent",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/saintmarysacademy",
+    "aliases": [
+      "St. Mary's Academy Junior High",
+      "SMA Junior High"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/saintmarysacademy",
+        "provider_school_id": "h2025020404520561456ac772684c34f"
+      }
+    ]
   }
 ]

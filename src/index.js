@@ -56,6 +56,7 @@ import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
+import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
@@ -330,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.215.0-open-items';
+const VERSION='4.216.0-riley-pottawatomie';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -3982,7 +3983,7 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 // High schools (src/high-school.mjs): the school's calendar is the schedule
 // and MaxPreps the scores. Each high school's module names its calendar, its
 // MaxPreps team pages and the varsity teams of each sport.
-const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool];
+const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
 // Middle schools have their own level (October 21) and the same readers.
 const isHighSchool=school=>school?.level==='high-school'||school?.level==='middle-school';
@@ -4168,7 +4169,10 @@ async function prepGolfResultsFor(school,module,team,game,read=meetProReader()){
   const sameDay=varsity.filter(t=>dayOf(t)===gameDay),named=varsity.filter(t=>Math.abs(dayOf(t)-gameDay)<=86400000&&words.some(w=>key(t.name).includes(w)));
   const pick=sameDay.length===1?sameDay[0]:named.length===1?named[0]:null;if(!pick)return null;
   const url=`${PREP_GOLF}tournaments/results/${pick.id}`,{teams,players}=prepGolfResults(await read(url,SOURCE_TTL.document)||'');
-  const placed=teams.filter(t=>t.place),own=players.filter(p=>p.school===config.code);
+  // Two schools Prep.Golf gives one code (Riley County and Rock Creek, "RC")
+  // cannot be told apart when both played: the golfers are not listed then.
+  const shared=config.sharesCodeWith&&teams.some(t=>nameKey(t.name)===nameKey(config.sharesCodeWith));
+  const placed=teams.filter(t=>t.place),own=shared?[]:players.filter(p=>p.school===config.code);
   const field=placed.length?` of ${placed.length}`:'';
   const rows=[{group:`${team.label} Varsity`,participant:`${school.short_name} team`,result:`${pick.place}${field} · ${pick.score}`},
     ...own.map(p=>({group:`${team.label} Varsity`,participant:p.name,result:`${/^\d/.test(p.place||'')?ORDINAL(Number(p.place)):p.place||'–'} · ${p.total}${p.to_par?` (${p.to_par})`:''}${p.rounds.length>1?` · ${p.rounds.join('-')}`:''}${p.qualified?' · Qualified for State':''}`}))];
@@ -4217,7 +4221,7 @@ function boundEntryResults(school,module,team,game){
 async function fetchHighSchool(school,sport,now,aiTargetId=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
-  const year=highSchoolYear(now,school),calendarUrl=module.calendar?`${module.calendar.url}?start_date=${year.start}&end_date=${year.end}`:null;
+  const year=highSchoolYear(now,school),calendarUrl=module.calendar?`${module.calendar.url}${module.calendar.url.includes('?')?'&':'?'}start_date=${year.start}&end_date=${year.end}`:null;
   let payload=null;
   if(calendarUrl){
     // A failed read serves the last copy read (up to a day old): the school's
@@ -4225,7 +4229,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     // forced refreshes of Manhattan football and volleyball (Oct 16).
     const calendarResponse=await sourceFetch(calendarUrl,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});
     if(!calendarResponse.ok)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: HTTP ${calendarResponse.status}`};
-    try{payload=JSON.parse(await calendarResponse.text())}catch{}
+    // A schedule kept as a sheet (Flint Hills Christian) is read by its module.
+    try{const text=await calendarResponse.text();payload=module.calendar.read?module.calendar.read(text):JSON.parse(text)}catch{}
     if(!payload)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${calendarUrl}: not a calendar`};
   }
   const timeZone=schoolTimeZone(school),sourceUrl=calendarUrl?calendarUrl.split('?')[0]:module.bound.page,sourceName=calendarUrl?'Official school calendar':'Bound (school schedule)';
@@ -4262,7 +4267,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
         if(event)events.push(event);
       }
       const inMaxPreps=game=>finals.some(c=>c.date===game.date&&namesCompatible(c.opponent,game.name));
-      const gameRelation=game=>game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':'vs';
+      // "Tournament at Wakefield" names its place: "Blue Valley · Tournament at Wakefield".
+      const gameRelation=game=>game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
       for(const game of games.filter(g=>g.final&&g.date<=today&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
         if(event)events.push(event);
@@ -4290,7 +4296,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       // Northwest there).
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
       // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
-      const relation=named?(game.site==='HOME'?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
+      const relation=named?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null)||(game.teams&&game.date<today?boundEntryResults(school,module,team,game):null);
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,now});
       if(event)events.push(event);

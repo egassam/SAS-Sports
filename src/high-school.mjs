@@ -60,7 +60,7 @@ export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null}){
 // A calendar name that is an event, not an opponent: tournaments, invitationals,
 // league and state rounds, multi-team days ("MHS TRI", "Manhattan Quad").
 export function isNamedEvent(name){
-  return /\b(?:invit(?:e|ational)?|tourn(?:ament|\.)?|classic|festival|regionals?|sub-?state|state|league|quad|tri|triangular|dual|meet|relays|showcase|jamboree|scrimmage|centennial|championships?)\b/i.test(name);
+  return /\b(?:invit(?:e|ational)?|tourn(?:ament|\.)?|classic|festival|regionals?|sectionals?|playoffs?|sub-?state|state|league|quad|tri|triangular|dual|meet|relays|showcase|jamboree|scrimmage|centennial|championships?)\b/i.test(name);
 }
 
 function nextData(html){
@@ -446,4 +446,112 @@ export function boundTeamPlace(entry,{lowWins=true}={}){
   const scored=entry.teams.filter(t=>t.score>0);if(!(own.score>0)||scored.length<2)return null;
   const place=1+scored.filter(t=>lowWins?t.score<own.score:t.score>own.score).length;
   return{place,teams:scored.length,score:own.score,tied:scored.filter(t=>t.score===own.score).length>1};
+}
+
+// --- Calendars typed by hand without a fixed form (Blue Valley USD 384:
+// "HS Football- Home vs. Canton-Galva", "MS/HS Cross Country- Abilene Meet at
+// Great Life Golf & Fitness", "Time Change!! HS FB @Clifton Clyde (Away)";
+// Manhattan Catholic: "Volleyball Away Game at Valley Heights", "XC @ Clay
+// Center", "Basketball vs Washington Co."). `levels` are the title prefixes
+// the school's teams take ("HS", "MS"; "MS/HS" counts for both); a school
+// whose titles carry none passes `levels:[null]`. The team reads
+// "<level> <sport>" ("HS Volleyball") or the sport alone.
+const FREE_SPORTS=[[/^(?:volley ?ball|vb)\b/i,'Volleyball'],[/^(?:football|fb)\b/i,'Football'],[/^(?:(girls|boys)\s+)?(?:basketball|bb)\b/i,'Basketball'],[/^(?:cross country|xc)\b/i,'Cross Country'],[/^track(?: (?:&|and) field)?\b/i,'Track & Field'],[/^wrestling\b/i,'Wrestling'],[/^golf\b/i,'Golf']];
+const FREE_SKIP=/practice|picture|photo|first day|rain date|banquet|parent meeting|signup|sign up|physicals?|tryout|scrimmage|eligibility/i;
+const FREE_LOWER_ONLY=s=>/\b(?:JV|C Team|B Team)\b/i.test(s)&&!/\bvarsity\b|\bA Team\b/i.test(s);
+const FREE_NOISE=/\b(?:C Team|JV|B Team),\s*|time change!*|\(change of start time\)|\(theme[^)]*\)|\[[^\]]*\]|-?\s*homecoming\b|-?\s*senior night.*$|\bstarting at .*$|\(tentative\)|\(?\b(?:varsity\/jv|varsity|v)\b\)?/gi;
+export function parseFreeTitle(title,{level=null,abbreviations={},home=null}={}){
+  const homeName=home||/^$/;
+  let s=clean(title).replace(/\[[^\]]*\]/g,' ').replace(/\bVarsity(?=[A-Z])/g,'Varsity ').trim();
+  if(FREE_SKIP.test(s)||FREE_LOWER_ONLY(s))return null;
+  let titleLevel=null;
+  const lv=s.match(/^(MS\/HS|HS\/MS|HS|MS)\b\s*/i);
+  if(lv){titleLevel=lv[1].toUpperCase();s=s.slice(lv[0].length);}
+  if(level&&!(titleLevel===level||(titleLevel&&titleLevel.includes('/')&&titleLevel.split('/').includes(level))))return null;
+  if(!level&&titleLevel)return null;
+  // A league or event word may come before the sport ("BVL Basketball Tournament @ Hanover").
+  const lead=s.match(/^((?:BVL|TVL|NCKL|MEL)\s+)(?=(?:volley|basket|bb|vb|football|track|cross|xc|golf|wrestling))/);
+  const leadWord=lead?lead[1].trim():'';if(lead)s=s.slice(lead[0].length);
+  let sport=null,gender=null;
+  for(const [re,name] of FREE_SPORTS){const m=s.match(re);if(m){sport=name;gender=m[1]?m[1][0].toUpperCase()+m[1].slice(1).toLowerCase():null;s=s.slice(m[0].length);break;}}
+  if(!sport)return null;
+  let rest=s.replace(/^\s*[-–:]\s*/,'').replace(FREE_NOISE,' ').replace(/\s+/g,' ').replace(/^[\s,:-]+|[\s,:-]+$/g,'').trim();
+  if(leadWord)rest=`${leadWord} ${rest}`.trim();
+  if(!rest)return null;
+  // Only the first part of "Game at Blue Valley vs Bennington / C game ...".
+  rest=rest.split(/\s+\/\s+/)[0].trim();
+  let site=null;
+  if(/\(home\)|\bat home\b|^home\b/i.test(rest))site='HOME';
+  else if(/\(away\)|^away\b/i.test(rest))site='AWAY';
+  rest=rest.replace(/\((?:home|away)\)/gi,' ').replace(/\bat home\b/gi,' ').replace(/^(?:home|away)\s+(?:game\s+)?/i,'').replace(/^game\s+/i,'').replace(/\s+/g,' ').trim();
+  const expand=x=>Object.entries(abbreviations).reduce((t,[k,v])=>t.replace(new RegExp(`(^|[^A-Za-z])${k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}(?![A-Za-z])`,'g'),`$1${v}`),clean(x)).replace(/\s+/g,' ').trim();
+  const opponent=x=>x.split(/\s+-\s*|-\s+/)[0].replace(/\s*\([^)]*\)?/g,'').trim();
+  // Notes in brackets ("(A Team Only)", "(Parents Night)", "(WaCo & BV)").
+  rest=expand(rest.replace(/\s*\([^)]*\)?/g,' ').replace(/\s+/g,' ').trim()).replace(/^dual\s+/i,'');
+  let name;
+  const at=rest.match(/^(?:@|at)\s*(.+?)(?:\s+(?:vs\.?|versus)\s+(.+))?$/i),vs=rest.match(/^(?:vs\.?|versus)\s*(.+)$/i);
+  if(vs&&!isNamedEvent(vs[1])){name=opponent(vs[1]);site=site||'HOME';}
+  else if(at&&!isNamedEvent(at[1])){name=at[2]?`${opponent(at[1])} & ${opponent(at[2])}`:opponent(at[1]);site=site||(homeName.test(at[1])?'HOME':'AWAY');}
+  else{
+    // An event: "Abilene Meet at Great Life Golf & Fitness", "Varsity
+    // Tournament at Wakefield", "Regionals @BVHS", "Tri vs Clifton-Clyde &
+    // Frankfort", "@Wamego - 1A State".
+    const lead=rest.match(/^(?:@|at)\s*(.+?)\s+-\s+(.+)$/i);
+    name=lead?`${lead[2]} at ${lead[1]}`:rest.replace(/\s*@\s*/g,' at ').replace(/\s+-\s+/g,' ');
+    const place=name.match(/\bat\s+([^]+?)\s*$/i);
+    if(!site&&place)site=homeName.test(place[1].trim())?'HOME':'AWAY';
+    if(!isNamedEvent(name))name=`${name} event`;
+  }
+  name=name.replace(/\s*-\s*$/,'').trim();
+  if(!name||/^tbd$/i.test(name))return null;
+  const team=[level,gender,sport].filter(Boolean).join(' ');
+  return{team,name,site};
+}
+
+// --- A season schedule kept as a Google Sheet (Flint Hills Christian: its
+// athletics page links "2026-2027 Athletics Calendars"; the sheet's CSV export
+// is read). Blocks sit side by side: a heading "HS Volleyball Schedule 2026",
+// a header row (Date, Opponent or Meet, Location, Start time, Details), then
+// rows to the first blank one. Each row becomes a calendar entry titled
+// "<prefix> <block> - <opponent or meet> - HOME|AWAY", read like a
+// ParentSquare calendar. Teams in brackets ("(MS, JV, V)", "(Boys A, B)")
+// decide the level: a high school block keeps rows naming V (or none), a
+// middle school block rows naming A or MS (or none).
+export function parseCsv(text){
+  const rows=[];let row=[],cellText='',quoted=false;
+  const s=String(text||'');
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(quoted){if(c==='"'){if(s[i+1]==='"'){cellText+='"';i++;}else quoted=false;}else cellText+=c;continue;}
+    if(c==='"')quoted=true;else if(c===','){row.push(cellText);cellText='';}else if(c==='\n'||c==='\r'){if(c==='\r'&&s[i+1]==='\n')i++;row.push(cellText);rows.push(row);row=[];cellText='';}else cellText+=c;
+  }
+  if(cellText||row.length){row.push(cellText);rows.push(row);}
+  return rows;
+}
+const sheetDate=(text,season)=>{const m=clean(text).match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);if(!m)return null;const y=m[3].length===2?2000+Number(m[3]):Number(m[3]);return`${y}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;};
+// "5:30/6:30 PM", "4/5/6/7:30 PM", "6/7:30pm": the last time is varsity's.
+const sheetTime=text=>{const s=clean(text).toLowerCase();const ap=(s.match(/([ap])\.?m\b/)||[])[1];if(!ap)return null;const last=s.replace(/\s*[ap]\.?m\b.*$/,'').split('/').pop().trim();const m=last.match(/^(\d{1,2})(?::(\d\d))?$/);if(!m)return null;let h=Number(m[1])%12;if(ap==='p')h+=12;return`${String(h).padStart(2,'0')}:${m[2]||'00'}`;};
+export function sheetCalendar(text,{prefix,home=/^(?:fhcs)\b/i,abbreviations={}}){
+  const rows=parseCsv(text),events=[];
+  for(let r=0;r<rows.length;r++)for(let c=0;c<rows[r].length;c++){
+    const head=clean(rows[r][c]).match(/^(HS|MS)\s+(.+?)\s+Schedule\b/i);if(!head)continue;
+    const level=head[1].toUpperCase(),block=`${level} ${head[2]}`;
+    for(let i=r+2;i<rows.length;i++){
+      const cells=rows[i].slice(c,c+5).map(clean);
+      if(!cells[0])break;
+      const date=sheetDate(cells[0]);if(!date)continue;
+      let name=cells[1],away=/^@\s*/.test(name),host=/^\w+ host\s*-\s*/i.test(name)&&home.test(name);name=name.replace(/^@\s*/,'').replace(/^\w+ host\s*-\s*/i,'');
+      const teams=(name.match(/\(([^)]*)\)/g)||[]).join(' ');
+      name=expandAbbreviations(name.replace(/\s*\([^)]*\)/g,'').replace(/\?+/g,''),abbreviations).trim();
+      if(teams){
+        const t=teams.replace(/[()]/g,' ');
+        if(level==='HS'&&!/\bV\b|varsity|\bHS\b|\bgirls\b|\bboys\b/i.test(t))continue;
+        if(level==='MS'&&!/\bA\b|\bMS\b|\bgirls\b|\bboys\b/i.test(t))continue;
+      }
+      const site=away?'AWAY':host||home.test(cells[2])?'HOME':cells[2]?'AWAY':'';
+      const time=sheetTime(cells[3]);
+      events.push({id:`${block}|${date}|${name}`,title:`${prefix} ${block} - ${name}${site?` - ${site}`:''}`,start_date:date,start_time:time?`${time}:00`:'00:00:00',end_date:date,all_day:!time,address:cells[2]||''});
+    }
+  }
+  return{events};
 }
