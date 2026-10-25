@@ -60,7 +60,7 @@ export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null}){
 // A calendar name that is an event, not an opponent: tournaments, invitationals,
 // league and state rounds, multi-team days ("MHS TRI", "Manhattan Quad").
 export function isNamedEvent(name){
-  return /\b(?:invit(?:e|ational)?|tourn(?:ament|\.)?|classic|festival|regionals?|sectionals?|playoffs?|sub-?state|state|league|quad|tri|triangular|dual|meet|relays|showcase|jamboree|scrimmage|centennial|championships?)\b/i.test(name);
+  return /\b(?:invit(?:e|ational)?|tourn(?:ament|\.)?|classic|festival|regionals?|sectionals?|playoffs?|sub-?state|state|league|quad|tri|triangular|duals?|meet|relays|showcase|jamboree|scrimmage|centennial|championships?)\b/i.test(name);
 }
 
 function nextData(html){
@@ -354,7 +354,8 @@ export const BOUND_ACTS={
   'Boys Swim & Dive':['h202502030938188603c9b78ae239440'],
   'Girls Swim & Dive':['h20250203093741419ebeeaaea4d334b'],
   'Boys Bowling':['h2025020309290453437b9dd49bc8547'],
-  'Girls Bowling':['h2025020309282609707834e4a23b649']
+  'Girls Bowling':['h2025020309282609707834e4a23b649'],
+  'Unified Bowling':['h202502030923461926d26d4c97b4e40']
 };
 export const boundEventsUrl=(school,{start,end,act})=>`${BOUND_API}${school}/events?startDate=${start}&endDate=${end}&includePractices=false&ticket=false&idAct=${act}`;
 // Titles Bound gives an event whose host typed none ("Event") or a placeholder.
@@ -456,19 +457,21 @@ export function boundTeamPlace(entry,{lowWins=true}={}){
 // the school's teams take ("HS", "MS"; "MS/HS" counts for both); a school
 // whose titles carry none passes `levels:[null]`. The team reads
 // "<level> <sport>" ("HS Volleyball") or the sport alone.
-const FREE_SPORTS=[[/^(?:volley ?ball|vb)\b/i,'Volleyball'],[/^(?:football|fb)\b/i,'Football'],[/^(?:(girls|boys)\s+)?(?:basketball|bb)\b/i,'Basketball'],[/^(?:cross country|xc)\b/i,'Cross Country'],[/^track(?: (?:&|and) field)?\b/i,'Track & Field'],[/^wrestling\b/i,'Wrestling'],[/^golf\b/i,'Golf']];
-const FREE_SKIP=/practice|picture|photo|first day|rain date|banquet|parent meeting|signup|sign up|physicals?|tryout|scrimmage|eligibility/i;
+const FREE_SPORTS=[[/^(?:volley ?ball|vb)\b/i,'Volleyball'],[/^(?:football|fb)\b/i,'Football'],[/^(?:(girls|boys)\s+)?(?:basketball|bb)\b/i,'Basketball'],[/^(?:cross country|xc|cc)\b/i,'Cross Country'],[/^track(?: (?:&|and) field)?\b/i,'Track & Field'],[/^(?:(girls|boys)\s+)?(?:wrestling|wr)\b/i,'Wrestling'],[/^golf\b/i,'Golf'],[/^baseball\s*\/\s*softball\b/i,'Baseball/Softball'],[/^baseball\b/i,'Baseball'],[/^softball\b/i,'Softball']];
+const FREE_SKIP=/cancel+ed|postponed|practice|picture|photo|first day|rain date|banquet|parent meeting|signup|sign up|physicals?|tryout|scrimmage|eligibility/i;
 const FREE_LOWER_ONLY=s=>/\b(?:JV|C Team|B Team)\b/i.test(s)&&!/\bvarsity\b|\bA Team\b/i.test(s);
 const FREE_NOISE=/\b(?:C Team|JV|B Team),\s*|time change!*|\(change of start time\)|\(theme[^)]*\)|\[[^\]]*\]|-?\s*homecoming\b|-?\s*senior night.*$|\bstarting at .*$|\(tentative\)|\(?\b(?:varsity\/jv|varsity|v)\b\)?/gi;
 export function parseFreeTitle(title,{level=null,abbreviations={},home=null}={}){
   const homeName=home||/^$/;
-  let s=clean(title).replace(/\[[^\]]*\]/g,' ').replace(/\bVarsity(?=[A-Z])/g,'Varsity ').trim();
+  let s=clean(title).replace(/\[[^\]]*\]/g,' ').replace(/\bVarsity(?=[A-Z])/g,'Varsity ').replace(/^(?:time change|change|update|updated|new time|rescheduled)\s*!*\s*:?\s*/i,'').trim();
   if(FREE_SKIP.test(s)||FREE_LOWER_ONLY(s))return null;
   let titleLevel=null;
-  const lv=s.match(/^(MS\/HS|HS\/MS|HS|MS)\b\s*/i);
-  if(lv){titleLevel=lv[1].toUpperCase();s=s.slice(lv[0].length);}
+  const lv=s.match(/^(MS\/HS|HS\/MS|HS|MS|JH)\b\s*/i);
+  // Onaga writes its junior high "JH".
+  if(lv){titleLevel=lv[1].toUpperCase().replace('JH','MS');s=s.slice(lv[0].length);}
   if(level&&!(titleLevel===level||(titleLevel&&titleLevel.includes('/')&&titleLevel.split('/').includes(level))))return null;
   if(!level&&titleLevel)return null;
+  s=s.replace(/^varsity\s+/i,'');
   // A league or event word may come before the sport ("BVL Basketball Tournament @ Hanover").
   const lead=s.match(/^((?:BVL|TVL|NCKL|MEL)\s+)(?=(?:volley|basket|bb|vb|football|track|cross|xc|golf|wrestling))/);
   const leadWord=lead?lead[1].trim():'';if(lead)s=s.slice(lead[0].length);
@@ -552,6 +555,19 @@ export function sheetCalendar(text,{prefix,home=/^(?:fhcs)\b/i,abbreviations={}}
       const time=sheetTime(cells[3]);
       events.push({id:`${block}|${date}|${name}`,title:`${prefix} ${block} - ${name}${site?` - ${site}`:''}`,start_date:date,start_time:time?`${time}:00`:'00:00:00',end_date:date,all_day:!time,address:cells[2]||''});
     }
+  }
+  return{events};
+}
+
+// Apptegy (Thrillshare) district calendars (Onaga USD 322: "HS Basketball @
+// Northern Heights", "JH Boys Wrestling at Doniphan West"): the coming events
+// in pages of 100, as ParentSquare-shaped entries for `calendarEvents`.
+export function apptegyCalendar(payloads){
+  const events=[];
+  for(const p of payloads)for(const e of p?.events||[]){
+    const start=String(e.start_at||''),end=String(e.end_at||'');
+    if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(start))continue;
+    events.push({id:e.id,title:e.title,start_date:start.slice(0,10),start_time:e.all_day?'00:00:00':start.slice(11,19),end_date:end.slice(0,10)||start.slice(0,10),all_day:!!e.all_day,address:e.location||''});
   }
   return{events};
 }

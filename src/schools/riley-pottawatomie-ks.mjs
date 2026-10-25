@@ -34,7 +34,7 @@ function boundHighSchool({has,meetTeam,tennis,maxpreps:mp=true}){
   if(has.includes('Baseball'))sports.Baseball=[game('Baseball','baseball')];
   if(has.includes('Softball'))sports.Softball=[game('Softball','softball')];
   // Varsity races only (the junior varsity and middle school races share the day).
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:meetTeam,races:/\bvarsity\b/i,exclude:/junior|\bJV\b/i}}];
+  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:meetTeam,races:/\bvarsity\b/i,exclude:/junior varsity/i}}];
   if(has.includes('Golf'))sports.Golf=['Girls','Boys'].filter(g=>has.includes(`${g} Golf`)).map(g=>({...on(`${g} Golf`),meet:true,label:g}));
   if(has.includes('Tennis'))sports.Tennis=['Girls','Boys'].filter(g=>has.includes(`${g} Tennis`)).map(g=>({...on(`${g} Tennis`),meet:true,label:g,...(tennis?{tennisReporting:{stateId:23,genderId:g==='Girls'?2:1,school:tennis}}:{})}));
   if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`),meet:true,label:g}));
@@ -88,7 +88,7 @@ export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:u
     Football:[{calendar:/^HS Football$/,maxpreps:'football'}],
     Volleyball:[{calendar:/^HS Volleyball$/,maxpreps:'volleyball',matches:true}],
     Basketball:[{calendar:/^HS Basketball$/,maxpreps:'basketball/girls',label:'Girls',matches:true},{calendar:/^HS Basketball$/,maxpreps:'basketball',label:'Boys',matches:true}],
-    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',races:/\bvarsity\b/i,exclude:/junior|\bJV\b/i}}],
+    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',races:/\bvarsity\b/i,exclude:/junior varsity/i}}],
     'Track & Field':[{calendar:/^HS Track & Field$/,meet:true}]
   }};
 export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calendar:usd384('MS'),meetPro:LETSGORUN_MEETPRO,
@@ -124,12 +124,22 @@ export const stMarysJhKsSchool={id:'st-marys-jh-ks',bound:ST_MARYS,meetPro:LETSG
   sports:boundMiddleSchool({has:['Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:"St. Mary's"})};
 
 // Onaga (USD 322): one Bound school for the high school and middle school.
+// Onaga enters part of its season on Bound; its district calendar (Apptegy:
+// "HS Basketball @ Northern Heights", "JH Boys Wrestling at Doniphan West")
+// adds the coming dates Bound lacks.
 const ONAGA=bound('h20250204045201797b1e73ae8e3d04d','onagahs');
-export const onagaKsSchool={id:'onaga-ks',bound:ONAGA,
+const ONAGA_ABBREVIATIONS={TVL:'Twin Valley League',OTL:'Old Trail League',SPPS:'Sts. Peter & Paul',ACCMS:'Atchison County Community MS'};
+const onagaCalendar=level=>({url:'https://thrillshare-cmsv2.services.thrillshare.com/api/v4/o/2099/cms/events',pages:4,parse:title=>parseFreeTitle(title,{level,abbreviations:ONAGA_ABBREVIATIONS,home:/^(?:onaga|home)$/i})});
+// The calendar's teams for each sport ("Baseball/Softball" days count for both).
+const withUpcoming=(sports,level,map)=>{for(const [sport,teams] of Object.entries(sports))for(const team of teams){const re=map[sport];if(re)team.upcoming=typeof re==='function'?re(team):re;}return sports;};
+const genderTeam=sport=>team=>new RegExp(`^${team.boundSchedule.level===VARSITY?'HS':'MS'} (?:${team.label?.match(/Girls|Boys/)?.[0]||'(?:Girls|Boys)'} )?${sport}$`);
+export const onagaKsSchool={id:'onaga-ks',bound:ONAGA,upcoming:onagaCalendar('HS'),
   maxpreps:maxpreps('1572292e-afd2-444a-bed6-45b5b3f4b17d','onaga/onaga-buffaloes'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:303,code:'ONA'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Softball','Cross Country','Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'})};
-export const onagaMsKsSchool={id:'onaga-ms-ks',bound:ONAGA,
-  sports:boundMiddleSchool({has:['Volleyball','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'})};
+  sports:withUpcoming(boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'}),'HS',
+    {Football:/^HS Football$/,Volleyball:/^HS Volleyball$/,Basketball:genderTeam('Basketball'),Baseball:/^HS Baseball(?:\/Softball)?$/,Softball:/^HS (?:Baseball\/)?Softball$/,'Cross Country':/^HS Cross Country$/,Golf:/^HS Golf$/,Wrestling:genderTeam('Wrestling'),'Track & Field':/^HS Track & Field$/})};
+export const onagaMsKsSchool={id:'onaga-ms-ks',bound:ONAGA,upcoming:onagaCalendar('MS'),
+  sports:withUpcoming(boundMiddleSchool({has:['Volleyball','Basketball','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'}),'MS',
+    {Volleyball:team=>team.label?null:/^MS Volleyball$/,Basketball:team=>/^(?:Girls|Boys)$/.test(team.label||'')?new RegExp(`^MS (?:${team.label} )?Basketball$`):null,Wrestling:genderTeam('Wrestling'),'Track & Field':/^MS Track & Field$/})};
 
 // Flint Hills Christian School (Manhattan, east of the Big Blue: Pottawatomie
 // County). Its athletics page links a Google Sheet with every team's season
@@ -142,7 +152,7 @@ export const flintHillsChristianKsSchool={id:'flint-hills-christian-ks',calendar
     Volleyball:[{calendar:/^HS Volleyball$/,maxpreps:'volleyball',matches:true}],
     // The sheet lists one basketball schedule for both teams.
     Basketball:[{calendar:/^HS Basketball$/,maxpreps:'basketball/girls',label:'Girls',matches:true},{calendar:/^HS Basketball$/,maxpreps:'basketball',label:'Boys',matches:true}],
-    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Flinthills Christian',races:/\bvarsity\b/i,exclude:/junior|\bJV\b/i}}],
+    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Flinthills Christian',races:/\bvarsity\b/i,exclude:/junior varsity/i}}],
     Golf:[{calendar:/^HS Golf$/,meet:true,label:'Boys'}],
     'Track & Field':[{calendar:/^HS Track$/,meet:true}]
   }};
