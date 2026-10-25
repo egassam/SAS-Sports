@@ -38,7 +38,8 @@ Checked and not added: Archangel Gabriel Catholic School (Manhattan; no athletic
 - **LetsGoRun Timing (MeetPro):** cross country team places and every runner (Clay Center, Rock Creek, Wamego, NCKL and Blue Valley League middle school meets...). Team names vary by meet ("Flinthills Christian", "FH Christian MS", "Luckey" for Manhattan Catholic, "Rock Creek MS", "Wamego Middle School").
 - **Prep.Golf:** Wamego (school 124, code WAM; 2026 4A girls state champions), Rock Creek (119, RC), Riley County (177, RC), St. Marys (186, STM), Onaga (303, ONA), Flint Hills Christian (347, FHC), St. Mary's Academy (366, SMA). Riley County and Rock Creek share the code RC: when both played a tournament the golfers are not listed (team places still are).
 - **TennisReporting:** Wamego HS (4A regional at McPherson, 4A state).
-- **Not usable:** Athletic.net (403), MileSplit (members only), KSHSAA's site (no machine-readable directory; robots Crawl-delay 30).
+- **Apptegy (Onaga USD 322):** `thrillshare-cmsv2.services.thrillshare.com/api/v4/o/2099/cms/events?page_no=<n>&page_size=100` (coming events only; `per_page` is ignored, 20 a page). Onaga enters part of its season on Bound (6 varsity basketball dates); its calendar adds the rest ("HS Basketball @ Northern Heights", "JH Boys Wrestling at Doniphan West"), for coming dates only.
+- **Not usable:** Athletic.net (403), MileSplit (members only), KSHSAA's site (no machine-readable directory; robots Crawl-delay 30), Trackwrestling (406, as for Manhattan).
 
 ## Rules
 
@@ -48,6 +49,18 @@ Checked and not added: Archangel Gabriel Catholic School (Manhattan; no athletic
 - Game sports: MaxPreps finals, then Bound finals MaxPreps lacks, then the coming games and tournament days.
 - K-State's rule: a past game or meet with no published result is not listed.
 
+## State on October 25 (preview 4.218.0)
+
+All 108 school-sports answer on the preview. Fall results: football and volleyball finals from MaxPreps for all eight high schools (Wamego football 6-1, NCKL 4-0; Riley County 6-2; Blue Valley 3-5; St. Marys 2-6; Onaga 5-3; St. Mary's Academy 7-2; volleyball records 7-26 to 32-9); Wamego girls flag football 4-0 from Bound; St. Mary's Academy boys soccer 8-9-1; Wamego girls golf (2026 4A state champions) 12 finals from Prep.Golf, Rock Creek 6, St. Marys 3; Wamego girls tennis regional and state from TennisReporting; middle school cross country from LetsGoRun (Rock Creek MS, Wamego MS, Flint Hills Christian MS, Manhattan Catholic, Blue Valley, St. Marys); a few middle school finals the schools entered on Bound. Winter and spring sports list their coming games and meets.
+
 ## Limitations
 
-(Filled from the verification run below.)
+- **Past events without a published result are not listed** (K-State's rule). Most middle school games have no score anywhere (as at Anthony and Eisenhower); a school can enter finals on Bound or use SAS Scorer.
+- **Cross country and track results** come only from LetsGoRun Timing's MeetPro pages. Meets timed by others (Riley County's, Onaga's, St. Marys' and most high school invitationals) have no published results and are not listed. LetsGoRun's track meets use MeetPro's event pages (a different layout from cross country); reading them is the first job of the spring season (fixtures: the 2026 Rock Creek MS and Wabaunsee invitationals).
+- **Wrestling, bowling and track** list their coming meets; no source publishes their team results (Trackwrestling refuses robots).
+- **Riley County and Rock Creek share Prep.Golf's code RC**: their golfers are not listed for a tournament both played.
+- **Riley County golf** (fall 2026) is not on Prep.Golf with a team place (fewer than four players): not listed.
+- **Bound placeholders**: playoff rounds a school entered ahead ("Regional Football", "TBD") show until the school's season ends; a home flag on a state day is not trusted (shown neutral).
+- **Blue Valley and Manhattan Catholic titles are typed by hand**; a new form of title may need a parser rule. Flint Hills Christian's sheet lists one basketball schedule for both teams (shown for each).
+- **Flint Hills Christian football** plays with the Manhattan C.H.I.E.F. homeschool program (not on the school's sheet): not listed. St. Mary's Academy has no site that answers (smac.edu 403); Bound is its only schedule.
+- **Records** count MaxPreps finals and Bound finals; MaxPreps can list a match twice when both coaches enter it (Wamego–Rock Creek volleyball, Oct 13).
