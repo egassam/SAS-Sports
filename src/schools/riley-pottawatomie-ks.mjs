@@ -129,7 +129,7 @@ export const stMarysJhKsSchool={id:'st-marys-jh-ks',bound:ST_MARYS,meetPro:LETSG
 // adds the coming dates Bound lacks.
 const ONAGA=bound('h20250204045201797b1e73ae8e3d04d','onagahs');
 const ONAGA_ABBREVIATIONS={TVL:'Twin Valley League',OTL:'Old Trail League',SPPS:'Sts. Peter & Paul',ACCMS:'Atchison County Community MS'};
-const onagaCalendar=level=>({url:'https://thrillshare-cmsv2.services.thrillshare.com/api/v4/o/2099/cms/events',pages:4,parse:title=>parseFreeTitle(title,{level,abbreviations:ONAGA_ABBREVIATIONS,home:/^(?:onaga|home)$/i})});
+const onagaCalendar=level=>({url:'https://thrillshare-cmsv2.services.thrillshare.com/api/v4/o/2099/cms/events',pages:3,parse:title=>parseFreeTitle(title,{level,abbreviations:ONAGA_ABBREVIATIONS,home:/^(?:onaga|home)$/i})});
 // The calendar's teams for each sport ("Baseball/Softball" days count for both).
 const withUpcoming=(sports,level,map)=>{for(const [sport,teams] of Object.entries(sports))for(const team of teams){const re=map[sport];if(re)team.upcoming=typeof re==='function'?re(team):re;}return sports;};
 const genderTeam=sport=>team=>new RegExp(`^${team.boundSchedule.level===VARSITY?'HS':'MS'} (?:${team.label?.match(/Girls|Boys/)?.[0]||'(?:Girls|Boys)'} )?${sport}$`);
@@ -145,7 +145,7 @@ export const onagaMsKsSchool={id:'onaga-ms-ks',bound:ONAGA,upcoming:onagaCalenda
 // County). Its athletics page links a Google Sheet with every team's season
 // ("2026-2027 Athletics Calendars"); MaxPreps holds its scores.
 const FHCS_SHEET='https://docs.google.com/spreadsheets/d/1LxkYCULrsl0J_D5bw7sX9hxGAwD1gs5wC1yUx1N6qcs/export?format=csv';
-const fhcsCalendar={url:FHCS_SHEET,prefix:'FHCS',read:text=>sheetCalendar(text,{prefix:'FHCS',abbreviations:{MHK:'Manhattan'}})};
+const fhcsCalendar={url:FHCS_SHEET,prefix:'FHCS',read:text=>sheetCalendar(text,{prefix:'FHCS',abbreviations:{MHK:'Manhattan',Lucky:'Luckey'}})};
 export const flintHillsChristianKsSchool={id:'flint-hills-christian-ks',calendar:fhcsCalendar,
   maxpreps:maxpreps('3450c0af-ce38-4aa7-88c7-b1b19f49cac3','manhattan/flint-hills-christian-warriors'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:347,code:'FHC'},
   sports:{

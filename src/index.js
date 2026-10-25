@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.217.0-riley-pottawatomie';
+const VERSION='4.218.0-riley-pottawatomie';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4245,8 +4245,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
   if(module.upcoming&&teams.some(team=>team.upcoming)){
     const pages=[];
     for(let page=1;page<=(module.upcoming.pages||3);page++){
-      const url=`${module.upcoming.url}?page_no=${page}&per_page=100`;
-      try{const r=await sourceFetch(url,{headers:{'Accept':'application/json'}},{ttl:SOURCE_TTL.listing,staleOnError:true});if(!r.ok)break;const json=JSON.parse(await r.text());pages.push(json);sources.push(url);if((json.events||[]).length<100)break;}catch{break}
+      // Apptegy pages by `page_size` (`per_page` is ignored: 20 a page).
+      const url=`${module.upcoming.url}?page_no=${page}&page_size=100`;
+      try{const r=await sourceFetch(url,{headers:{'Accept':'application/json'}},{ttl:SOURCE_TTL.listing,staleOnError:true});if(!r.ok)break;const json=JSON.parse(await r.text()),list=json.events||[];pages.push(json);sources.push(url);if(list.length<100||String(list.at(-1)?.start_at||'').slice(0,10)>year.end)break;}catch{break}
     }
     upcomingPayload=apptegyCalendar(pages);
   }
