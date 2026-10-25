@@ -53,6 +53,13 @@ assert.equal(xc.find(g=>g.date==='2026-10-15').name,'Great Life Golf Course meet
 const golf=boundDedupe(boundSchedule([wamego],{school:W,acts:['Girls Golf'],level:VARSITY,timeZone:TZ}),{meet:true});
 assert.deepEqual(boundTeamPlace(golf.find(g=>g.date==='2026-09-22')),{place:8,teams:8,score:351,tied:false},'BVSW Varsity Golf: 8th of the 8 teams with a score entered on Bound (low wins)');
 
+// An event filed under the wrong act is not that sport's (Bound: Wamego's
+// "Flag Football Triangular" of Sep 14 filed as girls' wrestling).
+const misfiled=[{Title:'Flag Football Triangular',IDEvent:'g1',Events:[{RecordID:'r1',RecordType:'comp',Title:'Flag Football Triangular',ActName:'Girls Wrestling',IDAct:BOUND_ACTS['Girls Wrestling'][0],LevelDisplay:'Varsity',StartDateTime:'2026-09-14T21:00:00.000Z',EndDateTime:'2026-09-14T23:00:00.000Z',Teams:[{Name:'Wamego',HostSchoolID:W,HomeFlag:true,Score:0}],VenueLocationsDisplay:''}]},{Title:'Wamego Red Raider Classic',IDEvent:'g2',Events:[{RecordID:'r2',RecordType:'comp',Title:'Wamego Red Raider Classic',ActName:'Girls Wrestling',IDAct:BOUND_ACTS['Girls Wrestling'][0],LevelDisplay:'Varsity',StartDateTime:'2026-12-05T15:00:00.000Z',EndDateTime:'2026-12-05T22:00:00.000Z',Teams:[{Name:'Wamego',HostSchoolID:W,HomeFlag:true,Score:0}],VenueLocationsDisplay:'Wamego High School'}]}];
+assert.deepEqual(boundSchedule([misfiled],{school:W,acts:['Girls Wrestling'],level:VARSITY,timeZone:TZ}).map(g=>g.name),['Wamego Red Raider Classic']);
+const xcAtGolfCourse=boundSchedule([wamego],{school:W,acts:['Girls Cross Country','Boys Cross Country'],level:VARSITY,timeZone:TZ});
+assert.ok(xcAtGolfCourse.some(g=>/Wamego Country Club|Great Life Golf/.test(g.address||'')),'a cross country meet at a golf course is still cross country');
+
 // Middle school levels: the grade's A team is the grade; B teams are not listed.
 const rcms=JSON.parse(fixture('bound-rock-creek-ms-2026-10-25.json.gz'));
 const [seventh]=rockCreekMsKsSchool.sports.Volleyball;

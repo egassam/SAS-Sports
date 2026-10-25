@@ -358,6 +358,14 @@ export const BOUND_ACTS={
   'Unified Bowling':['h202502030923461926d26d4c97b4e40']
 };
 export const boundEventsUrl=(school,{start,end,act})=>`${BOUND_API}${school}/events?startDate=${start}&endDate=${end}&includePractices=false&ticket=false&idAct=${act}`;
+const SPORT_WORDS=[['football',/\bfootball\b/i],['volleyball',/\bvolleyball\b/i],['basketball',/\bbasketball\b/i],['soccer',/\bsoccer\b/i],['baseball',/\bbaseball\b/i],['softball',/\bsoftball\b/i],['cross country',/\bcross country\b|\bxc\b/i],['golf',/\bgolf\b/i],['tennis',/\btennis\b/i],['track',/\btrack\b/i],['wrestling',/\bwrestling\b/i],['swim',/\bswim/i],['bowling',/\bbowling\b/i]];
+function namesOtherSport(title,act){
+  const named=SPORT_WORDS.filter(([,re])=>re.test(title)).map(([w])=>w);
+  if(!named.length)return false;
+  const own=SPORT_WORDS.filter(([,re])=>re.test(String(act||''))).map(([w])=>w);
+  // "Flag Football" is football; a golf course or a track venue in a title is not a sport.
+  return own.length>0&&!named.some(w=>own.includes(w))&&!(own.includes('cross country')&&named.every(w=>w==='golf'||w==='track'));
+}
 // Titles Bound gives an event whose host typed none ("Event") or a placeholder.
 const GENERIC_TITLE=/^(?:(?:event|meet|game|match|tbd|tba|tournament|7th|8th|grade|varsity|jv|junior varsity|junior high|middle school|ms|hs|boys|girls|a|b|c|team|volleyball|football|basketball|cross country|golf|tennis|wrestling|track|field|&|and|soccer|baseball|softball|bowling)\s*)*$/i;
 // The school's events of one act and level, as calendar entries: the date and
@@ -371,6 +379,9 @@ export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'})
     if(!(ids.has(e.IDAct)||(e.IDActs||[]).some(id=>ids.has(id))))continue;
     if(!level.test(clean(e.LevelDisplay)))continue;
     const own=(e.Teams||[]).find(t=>t.HostSchoolID===school||(t.CoopSchoolIDs||[]).includes(school));if(!own)continue;
+    // An event filed under the wrong act ("Flag Football Triangular" as
+    // Wamego girls' wrestling, Sep 14): its title names another sport.
+    if(namesOtherSport(`${group.Title||''} ${e.Title||''}`,e.ActName))continue;
     seen.add(e.RecordID);
     const start=localParts(e.StartDateTime,timeZone);if(!start)continue;
     const end=localParts(e.EndDateTime,timeZone);

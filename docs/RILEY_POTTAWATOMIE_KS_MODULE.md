@@ -60,6 +60,7 @@ All 108 school-sports answer on the preview. Fall results: football and volleyba
 - **Wrestling, bowling and track** list their coming meets; no source publishes their team results (Trackwrestling refuses robots).
 - **Riley County and Rock Creek share Prep.Golf's code RC**: their golfers are not listed for a tournament both played.
 - **Riley County golf** (fall 2026) is not on Prep.Golf with a team place (fewer than four players): not listed.
+- **Bound entry errors**: an event filed under the wrong act (Wamego's "Flag Football Triangular" of Sep 14 filed as girls' wrestling) is skipped when its title names another sport.
 - **Bound placeholders**: playoff rounds a school entered ahead ("Regional Football", "TBD") show until the school's season ends; a home flag on a state day is not trusted (shown neutral).
 - **Blue Valley and Manhattan Catholic titles are typed by hand**; a new form of title may need a parser rule. Flint Hills Christian's sheet lists one basketball schedule for both teams (shown for each).
 - **Flint Hills Christian football** plays with the Manhattan C.H.I.E.F. homeschool program (not on the school's sheet): not listed. St. Mary's Academy has no site that answers (smac.edu 403); Bound is its only schedule.
