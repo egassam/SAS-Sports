@@ -3385,4 +3385,4 @@ Request: "Finish up with swac conference. Learn and optimize" (the handoff's nex
 - Tests: `tests/swac-shared.mjs`, generated module tests; every new rule mutated and a test failed (two redundant aliases removed). `npm test` passed; `test:release` passed on `598e39d`; CI green.
 - Checked by eye (screenshots): Alabama A&M football and every sport's header, Southern bowling, Jackson State golf.
 - Preview gate on 4.214.0-swac: `verify:preview --sports=all` for the ten schools, 300 checks passed (every sport 36/36 forced refreshes, results in K-State's form, expanded views; XC 18/20 and 26/21); the existing sports the shared changes touched, 3/3 each: cross country at 20 schools and bowling at 8 (168 checks passed).
-- PR #424: merged under the standing rule; production result in the next entry line.
+- PR #424 merged as `3744db1` under the standing rule; production `4.214.0-swac` served about 00:34 UTC Oct 25 and was verified about 00:37 (`verify:prod --sports=all` for the ten schools: 300 checks passed; XC 18/20 and 26/21); Arkansas cross country (TFRRS ranges) and NC A&T bowling (matches) 3/3 with expanded views in production.
