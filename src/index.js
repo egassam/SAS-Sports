@@ -53,7 +53,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.221.0-hs-rules';
+const VERSION='4.222.0-meetpro-track';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4149,6 +4149,7 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader()){
   }
   for(const folder of folders){
     const html=await page(folder);if(!html)continue;
+    if(own.track){const r=await meetProTrackResultsFor(school,config,own,folder,html,read);if(r)return r;continue;}
     const races=meetProResults(html,own.team).filter(r=>(!own.races||own.races.test(r.race))&&!(own.exclude&&own.exclude.test(r.race)));
     if(!races.length)continue;
     // Meets name races their own way ("7th Boys Two Mile Run 7th Grade Boys",
@@ -4165,6 +4166,58 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader()){
     return{rows,headline:headline.join(' · ')||`${races.reduce((n,r)=>n+r.runners.length,0)} runners`,highlights,url:`${config.base}${folder}/`,label:'View full results (LetsGoRun Timing)',note:'Results as posted by LetsGoRun Timing (MeetPro).'};
   }
   return null;
+}
+// Track and field from the same timer (October 25): a meet's index gives the
+// team scores and links one page per event (40 to 90 a meet); each event's
+// final round gives the school's placers. One refresh reads at most
+// MEETPRO_TRACK_PAGES event pages for all of a feed's meets (each page is
+// kept 6 h, so later refreshes read none); a meet past that budget shows its
+// team scores only.
+const MEETPRO_TRACK_PAGES=300;
+async function meetProTrackResultsFor(school,config,own,folder,html,read){
+  const index=meetProTrackIndex(html),teams=new Set([].concat(own.team).map(meetProTrackTeam)),isOurs=name=>teams.has(meetProTrackTeam(name));
+  const keep=division=>!(own.exclude&&own.exclude.test(division||''));
+  // A middle school reads a meet run by grade, never a high school meet.
+  if(own.meetHas&&![...index.events,...index.tables].some(e=>own.meetHas.test(e.division||'')))return null;
+  const place=(row,rows)=>`${rows.filter(r=>r.place===row.place).length>1?'T':''}${ORDINAL(row.place)}`;
+  // An event with no gender ("4X100 Thrower's Relay", listed twice) is not read.
+  const events=index.events.filter(e=>e.sex&&keep(e.division));
+  read.trackPages??=MEETPRO_TRACK_PAGES;
+  const readEvents=events.length<=read.trackPages;
+  if(readEvents)read.trackPages-=events.length;
+  const pages=readEvents?await Promise.all(events.map(e=>read(`${config.base}${folder}/${e.page}`,SOURCE_TTL.document))):[];
+  const groups=new Map(),group=name=>{if(!groups.has(name))groups.set(name,{team:[],marks:[],wins:[]});return groups.get(name);};
+  for(const table of index.tables.filter(t=>keep(t.division))){
+    const mine=table.rows.find(r=>isOurs(r.team));
+    if(mine)group(table.group).team.push({place:mine.place,shown:place(mine,table.rows),teams:table.rows.length,points:mine.points});
+  }
+  let athletes=0;
+  for(const [i,e] of events.entries()){
+    const page=pages[i]&&meetProTrackEvent(pages[i]);if(!page)continue;
+    const g=group(meetProTrackGroup(e.sex,e.division)),field=page.rows.length;
+    for(const row of page.rows.filter(r=>isOurs(r.team))){
+      const who=row.relay?`${e.event}${row.squad&&row.squad!=='A'?` ${row.squad}`:''} (${row.relay.join(', ')})`:`${row.athlete}${row.year?` (${row.year})`:''}`;
+      g.marks.push({participant:who,result:`${row.relay?'':`${e.event} · `}${place(row,page.rows)} of ${field}${row.mark?` · ${row.mark}`:''}`});
+      if(!row.relay)athletes++;
+      if(row.place===1)g.wins.push(row.relay?`${e.event}${row.mark?` (${row.mark})`:''}`:`${row.athlete} (${e.event}${row.mark?`, ${row.mark}`:''})`);
+    }
+  }
+  // Grades in order, girls before boys, a class before the whole meet.
+  const rank=name=>[Number((name.match(/^(\d+)/)||[])[1]||99),/Girls/.test(name)?0:/Boys/.test(name)?1:2,/^(?:\d+\w*\s+)?(?:Girls|Boys|Mixed)$/.test(name)?1:0];
+  const order=[...groups].sort(([a],[b])=>{const x=rank(a),y=rank(b);return x[0]-y[0]||x[1]-y[1]||x[2]-y[2];});
+  const rows=[],headline=[],highlights=[];
+  for(const [name,g] of order){
+    if(!g.team.length&&!g.marks.length)continue;
+    for(const t of g.team){rows.push({group:name,participant:`${school.short_name} team`,result:`${t.shown} of ${t.teams}${t.points?` · ${t.points} pts`:''}`});headline.push(`${name} ${t.shown} of ${t.teams}`);}
+    rows.push(...g.marks.map(m=>({group:name,...m})));
+    const t=g.team[0],team=t?`${school.short_name} ${t.shown==='1st'?'won the team title':`placed ${t.shown} of ${t.teams}`}${t.points?` with ${t.points} points`:''}`:'';
+    const wins=g.wins.length?`${g.wins.length===1?'event win':`${g.wins.length} event wins`}: ${g.wins.join('; ')}`:'';
+    if(team||wins)highlights.push(`${name}: ${[team,wins].filter(Boolean).join('; ')}.`);
+  }
+  if(!rows.length)return null;
+  const wins=[...groups.values()].reduce((n,g)=>n+g.wins.length,0);
+  return{rows,headline:headline.join(' · ')||`${athletes} athletes${wins?` · ${wins} event win${wins===1?'':'s'}`:''}`,highlights,url:`${config.base}${folder}/`,label:'View full results (LetsGoRun Timing)',
+    note:readEvents?'Results as posted by LetsGoRun Timing (MeetPro).':'Team scores as posted by LetsGoRun Timing (MeetPro); event results on the timer\'s page.'};
 }
 // Golf from Prep.Golf (October 21): the school page lists each tournament's
 // place and score; the tournament's page gives the team table and every

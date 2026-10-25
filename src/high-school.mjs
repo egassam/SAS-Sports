@@ -234,6 +234,65 @@ export function meetProResults(html,team){
   return races;
 }
 
+// Track and field on MeetPro: the meet's index lists every event with a link
+// to its results page (results_<id>.html) and, when the meet is scored, the
+// team scores (div#scores: "7th Grade  Female Teams", "Class 3A/4A  Male
+// Teams"). Each event page holds its rounds (prelims, then finals); a row
+// gives place, athlete ("GEYER, Roman"), year, team and time or mark; a relay
+// row gives the team, squad, time and its four runners.
+// One school across meets: "Riley Co", "St. Mary's", "St Marys".
+export const meetProTrackTeam=name=>meetProTeam(String(name||'').replace(/['’.]/g,'')).replace(/\bco\b/g,'county');
+const TRACK_SEX=[[/^(?:girls|women'?s?|female)\b/i,'Girls'],[/^(?:boys|men'?s?|male)\b/i,'Boys'],[/^mixed\b/i,'Mixed']];
+// A group for an event or a team table: "7th Girls", "Girls Class 3A/4A", "Boys".
+export function meetProTrackGroup(sex,division){
+  const d=clean(division),grade=d.match(/\b(\d{1,2})(?:st|nd|rd|th)\s+grade\b/i);
+  if(grade)return`${ORD(Number(grade[1]))} ${sex}`;
+  const rest=d.replace(/\b(?:girls|boys|women'?s?|men'?s?|female|male)\b/gi,' ').replace(/\s+/g,' ').trim();
+  return rest?`${sex} ${rest}`:sex;
+}
+const ORD=n=>`${n}${n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th'}`;
+// "Boys 3200 Meters (7th Grade Boys)" → {sex:'Boys', event:'3200 Meters', division:'7th Grade Boys'}.
+export function meetProTrackEventName(title){
+  let t=clean(String(title||'').replace(/<[^>]+>/g,' ')).replace(/^#\d+\s+/,'').replace(/\s+Results$/i,''),division='';
+  const paren=t.match(/\s*\(([^)]*)\)\s*$/);if(paren){division=paren[1];t=t.slice(0,paren.index);}
+  // "7th Grade Girls Thrower's Relay (7th Grade)": the grade before the gender.
+  const grade=t.match(/^(\d{1,2}(?:st|nd|rd|th)\s+grade)\s+/i);if(grade){t=t.slice(grade[0].length);division||=grade[1];}
+  const sex=TRACK_SEX.find(([re])=>re.test(t));
+  return{sex:sex?sex[1]:null,event:sex?t.replace(sex[0],'').trim():t,division:clean(division)};
+}
+export function meetProTrackIndex(html){
+  const text=String(html||''),[main,scores='']=text.split(/<div id="scores">/);
+  const events=[];
+  for(const m of main.matchAll(/<tr>([\s\S]*?)<\/tr>/g)){
+    const name=cell(m[1],'event'),link=m[1].match(/href='(results_\d+\.html)/);
+    if(name&&link&&!events.some(e=>e.page===link[1]))events.push({...meetProTrackEventName(name),title:name,page:link[1]});
+  }
+  const tables=[];
+  for(const part of scores.split(/<h3 class="team-scores-hdr">/).slice(1)){
+    const header=clean(part.slice(0,part.indexOf('</h3>')).replace(/<[^>]+>/g,' ')),m=header.match(/^(.*?)\s*\b(Female|Male|Mixed)\s+Teams$/i);
+    if(!m)continue;
+    const sex=TRACK_SEX.find(([re])=>re.test(m[2]))[1];
+    const rows=[...part.matchAll(/<tr>(?=\s*<td class="place")([\s\S]*?)<\/tr>/g)].map(r=>({place:Number(cell(r[1],'place')),team:cell(r[1],'team'),points:cell(r[1],'points')})).filter(r=>r.place&&r.team);
+    if(rows.length)tables.push({sex,division:m[1],group:meetProTrackGroup(sex,m[1]),rows});
+  }
+  return{name:(meetProName(text)||'').replace(/\s*\|\s*MeetPro\b.*$/i,''),date:meetProDate(text),events,tables};
+}
+// An event page: its final round (or the last round run) and every placed row.
+export function meetProTrackEvent(html){
+  const text=String(html||''),title=(text.match(/<h3 class="event-results-hdr">([\s\S]*?)<\/h3>/)||[])[1]||'';
+  const rounds=text.split(/<h4 class="round-results-hdr">/).slice(1).map(r=>({name:clean(r.slice(0,r.indexOf('</h4>'))),body:r}));
+  const round=rounds.find(r=>/^finals?$/i.test(r.name))||rounds.at(-1);
+  const rows=[];
+  if(round)for(const chunk of round.body.split(/<td class="place">/).slice(1)){
+    const place=Number(clean(chunk.slice(0,chunk.indexOf('</td>'))));if(!place)continue;
+    const row=`<td class="place">${chunk}`,relay=[1,2,3,4].map(n=>{const m=row.match(new RegExp(`<td class="relay-athlete-${n}"[^>]*>[\\s\\S]*?<td[^>]*>([\\s\\S]*?)</td>`));return m?clean(m[1].replace(/<[^>]+>/g,' ')):null;}).filter(Boolean);
+    const mark=cell(row,'time')||cell(row,'mark'),english=cell(row,'english');
+    rows.push({place,athlete:cell(row,'athlete')?displayName(cell(row,'athlete')):null,year:cell(row,'year'),team:cell(row,'team'),squad:cell(row,'squad'),
+      mark:/^\d+(?:\.\d+)?m$/i.test(mark||'')&&english?english:mark,points:cell(row,'points'),relay:relay.length?relay.map(n=>displayName(n)):null});
+  }
+  return{...meetProTrackEventName(title),round:round?.name||null,rows};
+}
+
 // --- Golf: Prep.Golf (ks.prep.golf), where Kansas coaches and KSHSAA post
 // tournament results (user, October 21: "look for alternate websites for
 // getting official results"). robots.txt allows every page.

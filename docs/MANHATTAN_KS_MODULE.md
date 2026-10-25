@@ -50,7 +50,7 @@ User, October 9: "My timer friend also does middle schools so let's add the Manh
 
 - Titles are typed by hand ("7th VB @SH", "8h Girls BB @ Washburn Rural"); `parseMiddleSchoolTitle` in `src/high-school.mjs` reads them, and `USD383_ABBREVIATIONS` (`src/schools/manhattan-ks-middle.mjs`) expands the league short names (SH, WRN, JC, EMS, AMS, FR, LWMS...). B-team days, scrimmages, tryouts, practices and pictures are not games.
 - Teams are the grades (7th, 8th; 7th Girls, 8th Boys in basketball).
-- **Results:** cross country from the same LetsGoRun MeetPro pages (every grade race; JV races left out; team names vary by meet: "Anthony", "Anthony Middle School", "Anthony7G"). Anthony: 5 meets, Eisenhower: 4 (Sep 8 to Oct 2). No site publishes middle school game scores; past games are not listed (K-State's rule).
+- **Results:** cross country from the same LetsGoRun MeetPro pages (every grade race; JV races left out; team names vary by meet: "Anthony", "Anthony Middle School", "Anthony7G"). Anthony: 5 meets, Eisenhower: 4 (Sep 8 to Oct 2). Track and field from the timer's MeetPro track meets (October 25; meets run by grade only; "Susan B Anthony" and "Eisenhower" at the 2026 Fort Riley/Junction City invitational, "Anthony" and "Eisenhower" at the Washburn Rural Relays; reader and its limits in `RILEY_POTTAWATOMIE_KS_MODULE.md`). No site publishes middle school game scores; past games are not listed (K-State's rule).
 
 ## Other sources checked (October 21)
 
