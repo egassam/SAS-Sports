@@ -29,7 +29,8 @@ assert.match(start,/matchAll\(\/"currentTeams":\\\["\(\[\^"\]\+\)"\/g\)/);
 // days merged and storyless bowling left out (Bryant), alumnae meets internal
 // (NJIT). Evansville sponsors neither sport, so its output is unchanged.
 const evansville=read('../src/schools/evansville.mjs');
-assert.match(evansville,/sport==='Wrestling'\|\|sport==='Bowling'\)return mergeMeetDays\(games\)/);
+// Bowling keeps each scored match (SWAC, Oct 24: matches).
+assert.match(evansville,/sport==='Wrestling'\|\|sport==='Bowling'\)return mergeMeetDays\(games,\{matches:sport==='Bowling'\}\)/);
 assert.match(evansville,/event\.sport==='Bowling'\|\|event\.sport==='Triathlon'\)&&event\.headline==='Completed'/);
 assert.match(evansville,/alumn\(\?:i\|ae\) meet/);
 

@@ -165,7 +165,7 @@ const perSport=await mapLimit(sports,6,async sport=>{
         for(const game of current.filter(g=>String(g.date).slice(0,10)<today)){
           // The only meet that day too (a module's onlyMeetThatDay: Fresno State's
           // "Riverside Invitational" is TFRRS's "UCR XC Invite - 45th Annual").
-          const tfrrsDecode=s=>String(s).replace(/&amp;/g,'&'),meet=findTfrrsMeet(listing.body,{decodeHtml:tfrrsDecode,date:String(game.date).slice(0,10),name:game.opponent?.title})||onlyTfrrsMeetOn(listing.body,{decodeHtml:tfrrsDecode,date:String(game.date).slice(0,10)});
+          const tfrrsDecode=s=>String(s).replace(/&amp;/g,'&'),meet=findTfrrsMeet(listing.body,{decodeHtml:tfrrsDecode,date:String(game.date).slice(0,10),end:game.enddate?String(game.enddate).slice(0,10):undefined,name:game.opponent?.title})||onlyTfrrsMeetOn(listing.body,{decodeHtml:tfrrsDecode,date:String(game.date).slice(0,10)});
           const number=meet&&(meet.match(/\/results\/xc\/(\d+)/)||[])[1];
           if(number&&!have(`tfrrs-${number}.html.gz`)){const page=await download(meet);if(page.body){save(`tfrrs-${number}.html.gz`,page.body);summary.push(`  TFRRS ${game.opponent?.title}: ${meet}`)}}
         }

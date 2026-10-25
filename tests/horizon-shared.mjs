@@ -27,7 +27,7 @@ assert.match(read('../src/conference-games.mjs'),/'Horizon League':new Set\(\['F
 // Detroit Mercy), and Youngstown State's bowling days by the page's opponent
 // record (the Nov 20 title reads "Jersey Jamboreee").
 for(const id of ['cleveland-state','detroit-mercy'])
-  assert.match(read(`../src/schools/${id}.mjs`),/sport==='Bowling'\|\|sport==='Fencing'\)return mergeMeetDays\(games\)/);
+  assert.match(read(`../src/schools/${id}.mjs`),/sport==='Bowling'\|\|sport==='Fencing'\)return mergeMeetDays\(games,\{matches:sport==='Bowling'\}\)/);
 assert.match(read('../src/schools/youngstown-state.mjs'),/if\(sport==='Bowling'\)return mergeMeetDays\(games,\{name:game=>game\.opponent\?\.id!=null/);
 
 console.log('Horizon League shared checks passed');

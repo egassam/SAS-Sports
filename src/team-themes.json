@@ -31,6 +31,30 @@
     "line": "#824052",
     "onAccent": "#ffffff"
   },
+  "alabama-am": {
+    "primary": "#660000",
+    "secondary": "#FFFFFF",
+    "panel": "#1f090c",
+    "panelDark": "#0f0507",
+    "line": "#470e13",
+    "onAccent": "#ffffff"
+  },
+  "alabama-state": {
+    "primary": "#C99700",
+    "secondary": "#000000",
+    "panel": "#352a0c",
+    "panelDark": "#191407",
+    "line": "#7d6113",
+    "onAccent": "#000000"
+  },
+  "alcorn-state": {
+    "primary": "#46166B",
+    "secondary": "#E9A900",
+    "panel": "#180d24",
+    "panelDark": "#0c0712",
+    "line": "#351b4e",
+    "onAccent": "#ffffff"
+  },
   "american": {
     "primary": "#C8102E",
     "secondary": "#002D72",
@@ -86,6 +110,14 @@
     "panelDark": "#14080d",
     "line": "#652130",
     "onAccent": "#ffffff"
+  },
+  "arkansas-pine-bluff": {
+    "primary": "#F2A900",
+    "secondary": "#000000",
+    "panel": "#3e2e0c",
+    "panelDark": "#1d1507",
+    "line": "#946b13",
+    "onAccent": "#000000"
   },
   "arkansas-state": {
     "primary": "#CC092F",
@@ -205,6 +237,14 @@
     "panel": "#0c101b",
     "panelDark": "#06080e",
     "line": "#162037",
+    "onAccent": "#ffffff"
+  },
+  "bethune-cookman": {
+    "primary": "#6F263D",
+    "secondary": "#F2A900",
+    "panel": "#21111a",
+    "panelDark": "#10080d",
+    "line": "#4b2334",
     "onAccent": "#ffffff"
   },
   "binghamton": {
@@ -863,6 +903,14 @@
     "line": "#3654a0",
     "onAccent": "#ffffff"
   },
+  "florida-am": {
+    "primary": "#F47321",
+    "secondary": "#00843D",
+    "panel": "#3e2214",
+    "panelDark": "#1d100b",
+    "line": "#954e25",
+    "onAccent": "#ffffff"
+  },
   "florida-state": {
     "primary": "#782F40",
     "secondary": "#CEB888",
@@ -1149,6 +1197,14 @@
     "panel": "#2a090c",
     "panelDark": "#140507",
     "line": "#630e13",
+    "onAccent": "#ffffff"
+  },
+  "jackson-state": {
+    "primary": "#002147",
+    "secondary": "#8A8D8F",
+    "panel": "#09101c",
+    "panelDark": "#05080e",
+    "line": "#0e213a",
     "onAccent": "#ffffff"
   },
   "jacksonville": {
@@ -1637,6 +1693,14 @@
     "panel": "#2e1010",
     "panelDark": "#140707",
     "line": "#7a3a3a",
+    "onAccent": "#ffffff"
+  },
+  "mississippi-valley-state": {
+    "primary": "#005A2B",
+    "secondary": "#D22630",
+    "panel": "#091c16",
+    "panelDark": "#050e0c",
+    "line": "#0e402b",
     "onAccent": "#ffffff"
   },
   "missouri": {
@@ -2175,6 +2239,14 @@
     "line": "#273c30",
     "onAccent": "#ffffff"
   },
+  "prairie-view-am": {
+    "primary": "#4F2683",
+    "secondary": "#FDB927",
+    "panel": "#1a1129",
+    "panelDark": "#0c0814",
+    "line": "#3a235b",
+    "onAccent": "#ffffff"
+  },
   "presbyterian": {
     "primary": "#003366",
     "secondary": "#9D2235",
@@ -2549,6 +2621,14 @@
     "panel": "#091e1b",
     "panelDark": "#050e0e",
     "line": "#0e4537",
+    "onAccent": "#ffffff"
+  },
+  "southern": {
+    "primary": "#0072CE",
+    "secondary": "#FDB913",
+    "panel": "#09223a",
+    "panelDark": "#05101c",
+    "line": "#0e4d84",
     "onAccent": "#ffffff"
   },
   "southern-illinois": {

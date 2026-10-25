@@ -14,7 +14,24 @@ export const tfrrsCells=(decodeHtml,tr)=>[...tr.matchAll(/<t[dh]\b[^>]*>([\s\S]*
 // (match:'any'). match:'all' needs every long word of the card's name
 // ("Southern Showcase" in "Southern Showcase (University/College)").
 const GENERIC=new Set(['classic','challenge','invitational','invite','championships','championship','meet','cross','country','open','college','university']);
-export function findTfrrsMeet(raw,{decodeHtml,date,name,match='any'}){
+// The days a team page's date cell covers: one day ("October 16, 2026"), or
+// a two-day meet ("October 2- 3, 2026", the Chile Pepper XC Festival:
+// Arkansas-Pine Bluff's Oct 2-3 meet never matched; "Oct 30-Nov 1, 2026").
+export function tfrrsDays(day){
+  const text=String(day||'').replace(/\s*-\s*/g,'-').trim();
+  const range=text.match(/^([A-Za-z]+)\.? (\d{1,2})-(?:([A-Za-z]+)\.? )?(\d{1,2}),? (\d{4})$/);
+  const iso=value=>{const t=Date.parse(`${value} 12:00 UTC`);return Number.isNaN(t)?null:new Date(t).toISOString().slice(0,10)};
+  if(!range){const one=iso(text);return one?[one]:[]}
+  const [,month,first,lastMonth,last,year]=range,from=iso(`${month} ${first}, ${year}`),to=iso(`${lastMonth||month} ${last}, ${year}`);
+  if(!from||!to||to<from)return[];
+  const days=[];for(let t=Date.parse(`${from}T12:00:00Z`);days.length<7&&new Date(t).toISOString().slice(0,10)<=to;t+=86400000)days.push(new Date(t).toISOString().slice(0,10));
+  return days;
+}
+
+// end: the schedule's last day of a two-day meet, which TFRRS may date by
+// (the Watson Collegiate XC Classic, Oct 15-16 on uapblionsroar.com, Oct 16
+// on TFRRS); only a meet whose name matches is taken on it.
+export function findTfrrsMeet(raw,{decodeHtml,date,end,name,match='any'}){
   const words=match==='all'
     ?value=>tfrrsText(decodeHtml,value).toLowerCase().replace(/^the\s+/,'').replace(/[^a-z0-9]+/g,' ').trim().split(' ').filter(word=>word.length>=4)
     // A plural and its singular are one word ("Pre-Nationals" on the
@@ -24,8 +41,8 @@ export function findTfrrsMeet(raw,{decodeHtml,date,name,match='any'}){
   for(const tr of String(raw||'').matchAll(/<tr\b[\s\S]*?<\/tr>/gi)){
     const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
     if(!link)continue;
-    const [day,meet]=tfrrsCells(decodeHtml,tr[0]);
-    if(Date.parse(`${day} 12:00 UTC`)!==Date.parse(`${date} 12:00 UTC`))continue;
+    const [day,meet]=tfrrsCells(decodeHtml,tr[0]),days=tfrrsDays(day);
+    if(!days.includes(date)&&!(end&&end!==date&&days.includes(end)))continue;
     const have=new Set(words(meet));
     const found=match==='all'?wanted.length&&wanted.every(word=>have.has(word)):wanted.some(word=>have.has(word));
     if(found)return new URL(link[1],'https://www.tfrrs.org').href;
@@ -40,7 +57,7 @@ export function onlyTfrrsMeetOn(raw,{decodeHtml,date}){
     const link=tr[0].match(/href=["']((?:https:\/\/www\.tfrrs\.org)?\/results\/xc\/\d+\/[^"']*)["']/i);
     if(!link)continue;
     const [day]=tfrrsCells(decodeHtml,tr[0]);
-    if(Date.parse(`${day} 12:00 UTC`)===Date.parse(`${date} 12:00 UTC`))found.push(new URL(link[1],'https://www.tfrrs.org').href);
+    if(tfrrsDays(day).includes(date))found.push(new URL(link[1],'https://www.tfrrs.org').href);
   }
   return new Set(found).size===1?found[0]:null;
 }
