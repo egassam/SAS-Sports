@@ -58,7 +58,7 @@ const requests=[];
 const fetch=async url=>{const key=String(url);requests.push(key);const body=pages.get(key);if(body==null)return{ok:false,status:404,url:key,headers:new Headers(),text:async()=>''};return{ok:true,status:200,url:key,headers:new Headers({'content-type':'text/html'}),text:async()=>body};};
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {meetProResultsFor,meetProReader,MEETPRO_TRACK_PAGES}')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {meetProResultsFor,meetProReader,MEETPRO_TRACK_PAGES,MEETPRO_LIVE_TTL,highSchoolEvent,fetchLive,groupEvents}')(...Object.values(deps));
 const school=id=>schools.find(s=>s.id===id);
 const track=async(module,date,name,read=worker.meetProReader())=>worker.meetProResultsFor(school(module.id),module,module.sports['Track & Field'][0],{date,name},read);
 const line=r=>`${r.group} | ${r.participant} | ${r.result}`;
@@ -132,5 +132,68 @@ const line=r=>`${r.group} | ${r.participant} | ${r.result}`;
   assert.ok(r.rows.every(x=>x.participant==='Riley County team'));
   assert.match(r.note,/Team scores/);
   assert.equal(worker.MEETPRO_TRACK_PAGES,300);
+}
+// Live (the meet's day): halfway through Rock Creek, as the timer's live
+// list (results.json) had it. Only the heats finished by then are linked.
+{
+  const MID='2026_Mid_Meet_Test',full=meets['2026_Rock_Creek_MS_Invitational'],heats=JSON.parse(full['results.json']);
+  const cut=[...heats].map(h=>h.r).sort((a,b)=>a-b)[Math.floor(heats.length/2)],done=heats.filter(h=>h.r<=cut);
+  const posted=new Set(done.map(h=>`results_${h.event_id}.html`));
+  const index=full[''].replace(/<a href='(results_\d+\.html)#round_1'>Results<\/a>/g,(m,page)=>posted.has(page)?m:'&nbsp;').replace(/<div id="scores">[\s\S]*$/,'');
+  pages.set(`${BASE}${MID}/`,index);pages.set(`${BASE}${MID}/results.json`,JSON.stringify(done));
+  for(const page of posted)pages.set(`${BASE}${MID}/${page}`,full[page]);
+  const read=worker.meetProReader(),ttls=[];
+  const spy=(url,ttl)=>{ttls.push([url,ttl]);return read(url,ttl);};
+  const r=await worker.meetProResultsFor(school(rileyCountyMsKsSchool.id),rileyCountyMsKsSchool,rileyCountyMsKsSchool.sports['Track & Field'][0],{date:'2026-04-07',name:'Trial',meetProFolder:MID},spy,true);
+  assert.equal(r.live,true);
+  assert.equal(r.live_label,`${posted.size} of 72 events posted`);
+  assert.ok(posted.size>20&&posted.size<60);
+  assert.ok(ttls.every(([,ttl])=>ttl===worker.MEETPRO_LIVE_TTL),'every page is read again after a minute');
+  assert.ok(ttls.some(([url])=>url.endsWith('/results.json')));
+  assert.ok(r.latest.length>0&&r.latest.length<=5);
+  // The latest result is from the last event finished that Riley County placed in.
+  const order=[...done].sort((a,b)=>b.r-a.r).map(h=>`results_${h.event_id}.html`);
+  const first=order.find(page=>meetProTrackEvent(full[page]).rows.some(x=>meetProTrackTeam(x.team)==='riley county'));
+  const ev=meetProTrackEvent(full[first]);
+  assert.equal(r.latest[0].group,meetProTrackGroup(ev.sex,ev.division));
+  assert.ok(r.latest[0].result.includes(ev.event)||/Relay/.test(ev.event));
+  // No team scores yet: the headline counts athletes.
+  assert.match(r.headline,/^\d+ athletes/);
+  // The day's card is LIVE; the next day it is Final.
+  const event=now=>worker.highSchoolEvent({school:school('riley-county-ms-ks'),sport:'Track & Field',team:null,date:'2026-04-07',time:'15:30',opponent:'Rock Creek MS Invitational',relation:'at',named:true,results:r,sourceUrl:'https://beta.gobound.com/ks/schools/rcmsks/calendar',now:new Date(now)});
+  const live=event('2026-04-07T21:00:00Z');
+  assert.deepEqual([live.status,live.meet_live,live.recency_label,live.live_score_source],['Live',true,r.live_label,'LetsGoRun Timing (MeetPro)']);
+  assert.equal(live.live_latest,r.latest);
+  assert.equal(event('2026-04-08T15:00:00Z').status,'Final');
+  // Not live before anything is posted: a meet of the day with no result.
+  assert.equal(worker.highSchoolEvent({school:school('riley-county-ms-ks'),sport:'Track & Field',team:null,date:'2026-04-07',time:'15:30',opponent:'Rock Creek MS Invitational',relation:'at',named:true,results:null,sourceUrl:'x',now:new Date('2026-04-07T21:00:00Z')}).status,'Today');
+  // A finished meet read on a later day is not live.
+  const done2=await track(rileyCountyMsKsSchool,'2026-04-07','Rock Creek MS Invitational');
+  assert.equal(done2.live,undefined);
+}
+// Trial meets join the schools' schedules (none configured now): Flint Hills
+// Christian MS on its own sheet's schedule, with the half-run Rock Creek meet
+// as a trial on Oct 25 (2:00 PM in Kansas): the card is LIVE.
+{
+  const {LETSGORUN_MEETPRO}=await import('../src/schools/manhattan-ks.mjs');
+  assert.deepEqual(LETSGORUN_MEETPRO.trials,[]);
+  pages.set(`${flintHillsChristianMsKsSchool.calendar.url}&start_date=2026-07-01&end_date=2027-06-30`,read('./fixtures/riley-pottawatomie-ks/fhcs-sheet-2026-10-25.csv'));
+  LETSGORUN_MEETPRO.trials.push({date:'2026-10-25',time:'15:30',folder:'2026_Mid_Meet_Test',name:'LetsGoRun live trial',schools:['flint-hills-christian-ms-ks']});
+  const RealDate=Date,at=new RealDate('2026-10-25T19:00:00Z');
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
+  try{
+    const feed=await worker.fetchLive('flint-hills-christian-ms-ks','Track & Field');
+    assert.equal(feed.error,null);
+    const [group]=worker.groupEvents(feed.events,at);
+    assert.equal(group.live.length,1);
+    const [e]=group.live;
+    assert.deepEqual([e.status,e.title,e.meet_live,e.recap_url],['Live','Flint Hills Christian at LetsGoRun live trial',true,`${BASE}2026_Mid_Meet_Test/`]);
+    assert.match(e.recency_label,/^\d+ of 72 events posted$/);
+    assert.ok(group.upcoming.every(x=>!/trial/.test(x.title)),'the trial is not also upcoming');
+    // Another school's schedule does not get the trial.
+    const other=await worker.fetchLive('riley-county-ms-ks','Track & Field');
+    assert.ok(!other.events.some(x=>/trial/.test(x.title)));
+  }finally{globalThis.Date=RealDate;LETSGORUN_MEETPRO.trials.length=0;}
+  assert.ok(read('../public/index.html').includes("e.event_type==='RACE'||e.meet_live?raceLiveCard(e)"),'a live meet shows as a meet, not a scoreboard');
 }
 console.log('meetpro-track: ok');

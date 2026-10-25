@@ -53,7 +53,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.222.0-meetpro-track';
+const VERSION='4.222.1-meetpro-track';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4017,7 +4017,8 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   let status,unscored=false;
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
-  else if(lastDay>=today)status='Today';
+  // A track meet under way with results posted reads live (LetsGoRun).
+  else if(lastDay>=today)status=results?.live&&results.rows?.length?'Live':'Today';
   else if(results?.rows?.length)status='Final';
   // A playoff game round may never have been reached; a meet's regional or
   // sub-state is run by every team, its state meet only by qualifiers.
@@ -4030,6 +4031,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
+  if(status==='Live'){event.meet_live=true;event.recency_label=results.live_label;event.live_latest=results.latest;event.live_score_source='LetsGoRun Timing (MeetPro)';event.highlight_status='Live: results as LetsGoRun Timing posts them (MeetPro).';}
   if(scored){
     event.score_source=contest.source==='bound'?{name:'Bound (score entered by the school)',url:contest.source_url||null,bound:true}:{name:'MaxPreps (score reported by the team)',url:contest.game_url||null};
     if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='View MaxPreps game page';}
@@ -4136,12 +4138,16 @@ const MEETPRO_TIMEOUT_MS=10000;
 function meetProReader(memo=new Map()){
   return(url,ttl)=>{if(!memo.has(url))memo.set(url,sourceFetch(url,{signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS)},{ttl}).then(r=>r.ok?r.text():null).catch(()=>null));return memo.get(url);};
 }
-async function meetProResultsFor(school,module,team,game,read=meetProReader()){
+// On a meet's day (`live`) the timer's pages are read again after a minute
+// (track; the page polls the feed every 15 s while a card is live).
+const MEETPRO_LIVE_TTL=60;
+async function meetProResultsFor(school,module,team,game,read=meetProReader(),live=false){
   const config=module.meetPro,own=team.meetPro;if(!config||!own)return null;
-  const page=folder=>read(`${config.base}${folder}/`,SOURCE_TTL.document);
-  let folders=[...(config.folders?.[game.date]||[])];
+  live=live&&!!own.track;
+  const page=folder=>read(`${config.base}${folder}/`,live?MEETPRO_LIVE_TTL:SOURCE_TTL.document);
+  let folders=[...(game.meetProFolder?[game.meetProFolder]:[]),...(config.folders?.[game.date]||[])];
   if(!folders.length&&config.listing){
-    const listing=await read(config.listing,SOURCE_TTL.listing)||'';
+    const listing=await read(config.listing,live?SOURCE_TTL.schedule:SOURCE_TTL.listing)||'';
     const known=new Set(Object.values(config.folders||{}).flat()),words=nameKey(game.name).split(' ').filter(w=>w.length>2&&!/^(?:invite|invitational|meet|home|event|park|state|the)$/.test(w));
     const ranked=meetProLinks(listing).filter(f=>f.startsWith(game.date.slice(0,4)+'_')&&!known.has(f)).map(f=>({f,hits:words.filter(w=>nameKey(f.replace(/_/g,' ')).split(' ').includes(w)).length})).filter(x=>x.hits).sort((a,b)=>b.hits-a.hits).slice(0,3);
     const pages=await Promise.all(ranked.map(({f})=>page(f)));
@@ -4149,7 +4155,7 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader()){
   }
   for(const folder of folders){
     const html=await page(folder);if(!html)continue;
-    if(own.track){const r=await meetProTrackResultsFor(school,config,own,folder,html,read);if(r)return r;continue;}
+    if(own.track){const r=await meetProTrackResultsFor(school,config,own,folder,html,read,live);if(r)return r;continue;}
     const races=meetProResults(html,own.team).filter(r=>(!own.races||own.races.test(r.race))&&!(own.exclude&&own.exclude.test(r.race)));
     if(!races.length)continue;
     // Meets name races their own way ("7th Boys Two Mile Run 7th Grade Boys",
@@ -4174,7 +4180,7 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader()){
 // kept 6 h, so later refreshes read none); a meet past that budget shows its
 // team scores only.
 const MEETPRO_TRACK_PAGES=300;
-async function meetProTrackResultsFor(school,config,own,folder,html,read){
+async function meetProTrackResultsFor(school,config,own,folder,html,read,live=false){
   const index=meetProTrackIndex(html),teams=new Set([].concat(own.team).map(meetProTrackTeam)),isOurs=name=>teams.has(meetProTrackTeam(name));
   const keep=division=>!(own.exclude&&own.exclude.test(division||''));
   // A middle school reads a meet run by grade, never a high school meet.
@@ -4185,7 +4191,9 @@ async function meetProTrackResultsFor(school,config,own,folder,html,read){
   read.trackPages??=MEETPRO_TRACK_PAGES;
   const readEvents=events.length<=read.trackPages;
   if(readEvents)read.trackPages-=events.length;
-  const pages=readEvents?await Promise.all(events.map(e=>read(`${config.base}${folder}/${e.page}`,SOURCE_TTL.document))):[];
+  const ttl=live?MEETPRO_LIVE_TTL:SOURCE_TTL.document;
+  const [pages,recent]=await Promise.all([readEvents?Promise.all(events.map(e=>read(`${config.base}${folder}/${e.page}`,ttl))):[],live?read(`${config.base}${folder}/results.json`,ttl).then(meetProTrackRecent):[]]);
+  const latest=[];
   const groups=new Map(),group=name=>{if(!groups.has(name))groups.set(name,{team:[],marks:[],wins:[]});return groups.get(name);};
   for(const table of index.tables.filter(t=>keep(t.division))){
     const mine=table.rows.find(r=>isOurs(r.team));
@@ -4198,6 +4206,7 @@ async function meetProTrackResultsFor(school,config,own,folder,html,read){
     for(const row of page.rows.filter(r=>isOurs(r.team))){
       const who=row.relay?`${e.event}${row.squad&&row.squad!=='A'?` ${row.squad}`:''} (${row.relay.join(', ')})`:`${row.athlete}${row.year?` (${row.year})`:''}`;
       g.marks.push({participant:who,result:`${row.relay?'':`${e.event} · `}${place(row,page.rows)} of ${field}${row.mark?` · ${row.mark}`:''}`});
+      if(live)latest.push({page:e.page,group:meetProTrackGroup(e.sex,e.division),...g.marks.at(-1)});
       if(!row.relay)athletes++;
       if(row.place===1)g.wins.push(row.relay?`${e.event}${row.mark?` (${row.mark})`:''}`:`${row.athlete} (${e.event}${row.mark?`, ${row.mark}`:''})`);
     }
@@ -4216,7 +4225,11 @@ async function meetProTrackResultsFor(school,config,own,folder,html,read){
   }
   if(!rows.length)return null;
   const wins=[...groups.values()].reduce((n,g)=>n+g.wins.length,0);
-  return{rows,headline:headline.join(' · ')||`${athletes} athletes${wins?` · ${wins} event win${wins===1?'':'s'}`:''}`,highlights,url:`${config.base}${folder}/`,label:'View full results (LetsGoRun Timing)',
+  // Live: the events posted so far, and the school's latest results first
+  // (the order heats finished in results.json; the program's order without it).
+  const liveFields=live?{live:true,live_label:`${index.events.length} of ${index.scheduled||index.events.length} events posted`,
+    latest:latest.map((x,i)=>({...x,rank:recent.indexOf(x.page)<0?recent.length+events.length-i:recent.indexOf(x.page)})).sort((a,b)=>a.rank-b.rank).slice(0,5).map(({group,participant,result})=>({group,participant,result}))}:{};
+  return{...liveFields,rows,headline:headline.join(' · ')||`${athletes} athletes${wins?` · ${wins} event win${wins===1?'':'s'}`:''}`,highlights,url:`${config.base}${folder}/`,label:'View full results (LetsGoRun Timing)',
     note:readEvents?'Results as posted by LetsGoRun Timing (MeetPro).':'Team scores as posted by LetsGoRun Timing (MeetPro); event results on the timer\'s page.'};
 }
 // Golf from Prep.Golf (October 21): the school page lists each tournament's
@@ -4326,6 +4339,14 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       const extra=calendarEvents(upcomingPayload,{team:team.upcoming,parse:module.upcoming.parse,timeZone}).filter(g=>g.date>=today&&!games.some(x=>x.date===g.date&&(team.meet||!x.h2h&&x.h2h!=null||namesCompatible(x.name,g.name))));
       if(extra.length){games.push(...extra);games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));}
     }
+    // A trial meet the timer runs to test the live reader (module
+    // `meetPro.trials`: date, folder, name, schools) joins its schools' track
+    // schedule for that day.
+    if(team.meetPro?.track)for(const trial of module.meetPro?.trials||[]){
+      if(!trial.schools?.includes(school.id)||!trial.date||games.some(g=>g.date===trial.date&&g.meetProFolder===trial.folder))continue;
+      games.push({date:trial.date,time:trial.time||null,end_date:null,name:trial.name,site:trial.site||'AWAY',meetProFolder:trial.folder,calendar_id:`trial|${trial.folder}`});
+      games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));
+    }
     let contests=[];
     if(team.maxpreps){
       const url=`${module.maxpreps.base}${team.maxpreps}/schedule/`;
@@ -4371,7 +4392,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     }
     // Results for every past game at once (each source read in parallel).
     const bound=team.bound||team.boundMeet?await boundFinalsFor(school,module,new Date(today).toISOString().slice(0,10)):[];
-    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
+    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):team.meetPro?meetProResultsFor(school,module,team,game,read,(game.end_date||game.date)>=today):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
     for(const [index,game] of games.entries()){
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name);
       let contest=named?null:matchContest(game,contests,used);

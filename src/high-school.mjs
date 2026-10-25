@@ -262,9 +262,11 @@ export function meetProTrackEventName(title){
 }
 export function meetProTrackIndex(html){
   const text=String(html||''),[main,scores='']=text.split(/<div id="scores">/);
-  const events=[];
+  // Every event on the program; those with results link their page.
+  const events=[];let scheduled=0;
   for(const m of main.matchAll(/<tr>([\s\S]*?)<\/tr>/g)){
     const name=cell(m[1],'event'),link=m[1].match(/href='(results_\d+\.html)/);
+    if(name)scheduled++;
     if(name&&link&&!events.some(e=>e.page===link[1]))events.push({...meetProTrackEventName(name),title:name,page:link[1]});
   }
   const tables=[];
@@ -275,7 +277,15 @@ export function meetProTrackIndex(html){
     const rows=[...part.matchAll(/<tr>(?=\s*<td class="place")([\s\S]*?)<\/tr>/g)].map(r=>({place:Number(cell(r[1],'place')),team:cell(r[1],'team'),points:cell(r[1],'points')})).filter(r=>r.place&&r.team);
     if(rows.length)tables.push({sex,division:m[1],group:meetProTrackGroup(sex,m[1]),rows});
   }
-  return{name:(meetProName(text)||'').replace(/\s*\|\s*MeetPro\b.*$/i,''),date:meetProDate(text),events,tables};
+  return{name:(meetProName(text)||'').replace(/\s*\|\s*MeetPro\b.*$/i,''),date:meetProDate(text),events,scheduled,tables};
+}
+// The meet's live list (results.json, which the index polls every 5 s): each
+// finished heat, latest first ("r" grows as heats finish). Pages by recency.
+export function meetProTrackRecent(json){
+  let list=json;if(typeof list==='string')try{list=JSON.parse(list)}catch{list=null}
+  const latest=new Map();
+  for(const h of Array.isArray(list)?list:[]){const page=`results_${h.event_id}.html`,r=Number(h.r)||0;if(!latest.has(page)||latest.get(page)<r)latest.set(page,r);}
+  return[...latest].sort((a,b)=>b[1]-a[1]).map(([page])=>page);
 }
 // An event page: its final round (or the last round run) and every placed row.
 export function meetProTrackEvent(html){
