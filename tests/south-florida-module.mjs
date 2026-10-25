@@ -183,7 +183,7 @@ void [parse,line,ownRecapsOnly,live];
   const v_womensgolf=parse("Golf","womens-golf");
   assert.deepEqual(v_womensgolf.map(line),[
  "Final Sep 21 Women's · USF at Canadian Collegiate Invitational | 7th of 11",
- "Final Sep 21 Women's · USF at Eckerd Invitational | Completed",
+ "Final Sep 21 Women's · USF at Eckerd Invitational | No team score (individuals only)",
  "Final Oct 4 Women's · USF at Mercedes Benz Intercollegiate | 4th of 15",
  "Upcoming Oct 23 Women's · USF at Landfall Invitational | ",
  "Upcoming Feb 1 Women's · USF at PDI Intercollegiate at UCF | ",

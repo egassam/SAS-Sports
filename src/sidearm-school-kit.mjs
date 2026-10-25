@@ -374,7 +374,11 @@ export function createArchiveStory({id,host,decodeHtml,fetch,headers,meetSports=
 // below); onlyMeetThatDay:true takes it without places too.
 // The words that make a name an event's, not a school's.
 const HOST_EVENT_WORD=/\b(?:invitational|invite|classic|open|opener|championships?|meet|run|race|challenge|festival|showcase|jamboree|xc|cross country|throwdown|shootout|preview|gold|twilight|dual|tri|relays?|series|cup|fling|stampede|chase|derby)\b/i;
-export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay='checked',hostMeetName=false,decodeHtml,ordinal,fetch,headers}){
+// meets: TFRRS meet pages a module names by the schedule's day, for a meet
+// whose results list the school's runners without linking them to its team
+// pages (the Chile Pepper XC Festival, Oct 2-3: Texas and Mississippi State
+// are in the results, not on their team pages).
+export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams,meetName=event=>event.opponent,onlyMeetThatDay='checked',hostMeetName=false,meets={},decodeHtml,ordinal,fetch,headers}){
   const download=downloader(fetch,headers);
   const matches=event=>event?.school_id===id&&event.sport==='Cross Country'&&event.event_type==='MEET'&&event.status==='Final';
   async function attach(event){
@@ -385,7 +389,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       return event;
     };
     const failed='Official race results could not be loaded. Open the official recap.';
-    const date=String(event.start_time).slice(0,10),pages=new Set(),names=new Set([tfrrsTeam]);
+    const date=String(event.start_time).slice(0,10),pages=new Set(),names=new Set([tfrrsTeam].flat());
     for(const team of ['Women','Men']){
       if(!teams[team])continue;
       const listing=await download(teams[team]);if(!listing)continue;
@@ -399,6 +403,7 @@ export function createTfrrsMeetResults({id,schoolName,tfrrsTeam=schoolName,teams
       const url=findTfrrsMeet(listing,{decodeHtml,date,end:String(event.end_time||'').slice(0,10)||undefined,name:meetName(event)})||(onlyMeetThatDay===true||onlyMeetThatDay==='checked'&&checked?onlyTfrrsMeetOn(listing,{decodeHtml,date}):null);
       if(url)pages.add(url);
     }
+    if(!pages.size&&meets[date])pages.add(meets[date]);
     if(!pages.size){
       // No TFRRS meet (Montana's LC State Invite, Oct 17, an NAIA host): the
       // official story's own results lists, when it publishes them.

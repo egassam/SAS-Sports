@@ -11,7 +11,7 @@ Mississippi State was added to the app and converted on October 7-8, 2026, toget
 | Football | `football` | 5 finals, each with its story (the site reuses its "Game Day" addresses for recaps); record 4-1 (SEC 2-1) as published; ESPN live score |
 | Volleyball | `womens-volleyball` | 14 finals, each with its story (two from the archive); 11-3 (1-2) as published; ESPN live score |
 | Soccer | `womens-soccer` | 12 finals, each with its story; 7-1-4 (1-0-4) as published; the cancelled Arkansas State match is left out; ESPN live score |
-| Cross Country | `cross-country` | Women only. Southern Showcase confirmed by TFRRS (`Women's team: 5th · 163 pts`); the Chile Pepper Festival (Oct 3) shows the schedule's `2nd` until TFRRS publishes it |
+| Cross Country | `cross-country` | Women only. Southern Showcase confirmed by TFRRS (`Women's team: 5th · 163 pts`); the Chile Pepper Festival (Oct 3) from its TFRRS meet page, named in the module (`meets`; TFRRS lists the runners as "Mississippi State", not on the team page): `Women's team: 2nd · 83 pts` (Oct 25) |
 | Golf | `mens-golf`, `womens-golf` | Labeled. One event per tournament with its final place (`T6th`, `1st`); each final has its story (the Cullan Brown's from the archive) |
 | Tennis | `mens-tennis`, `womens-tennis` | Labeled. Tournaments take their story from the schedule or archive; one without a story (Milwaukee Classic, two ITF pro events) is left out of the feed |
 | Softball | `softball` | Fall exhibitions read `(Exhibition)` and count in no record; ESPN live scores |
@@ -35,7 +35,6 @@ Certification lists all 10 sports (minimum 3). On October 7 every roster and pro
 
 ## Limitations
 
-- Chile Pepper Festival cross country team points wait on TFRRS.
 - Track & Field, Baseball and Basketball fill as their seasons start or are published.
 - No live card observed yet (volleyball vs Georgia Oct 9).
 

@@ -244,8 +244,12 @@ export function createMississippiStateHandlers({makeEvent,recapMatchesEvent,even
   // Jamboree), and the swimming schedule links none; each is in the archive.
   const archive=createArchiveStory({id:'mississippi-state',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true,volleyballSetScores:true});
   const crossCountry=createTfrrsMeetResults({id:'mississippi-state',schoolName:'Mississippi State',
-    // TFRRS names the team "Miss State".
-    tfrrsTeam:'Miss State',teams:MISSISSIPPI_STATE_TFRRS_TEAMS,
+    // The Chile Pepper XC Festival (Oct 2-3) lists the team's runners but
+    // not on its TFRRS team pages.
+    meets:{'2026-10-03':'https://www.tfrrs.org/results/xc/28826/Chile_Pepper_XC_Festival'},
+    // TFRRS names the team "Miss State"; the Chile Pepper results write
+    // "Mississippi State".
+    tfrrsTeam:['Miss State','Mississippi State'],teams:MISSISSIPPI_STATE_TFRRS_TEAMS,
     decodeHtml,ordinal,fetch,headers});
   return{parseSchedule,isEmptySchedule,
     matchesRecap:(raw,event,url)=>converted(event)?kitRecap(raw,event,url):recapMatchesEvent(raw,event,url),

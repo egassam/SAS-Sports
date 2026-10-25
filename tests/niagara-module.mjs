@@ -162,7 +162,7 @@ void [parse,line,ownRecapsOnly,live];
  "Final Oct 17 Niagara at Valparaiso | W, 986-941",
  "Final Oct 17 Niagara at Arkansas State | L, 977-1043",
  "Final Oct 17 Niagara at Mount St. Mary's | L, 926-971",
- "Final Oct 18 Niagara at Maryland Eastern Shore (Game 1) | L, 4-3",
+ "Final Oct 18 Niagara at Maryland Eastern Shore (Game 1) | L, 3-4",
  "Final Oct 18 Niagara at Duquesne | W, 4-0",
  "Final Oct 18 Niagara at Maryland Eastern Shore (Game 2) | L, 2-4",
  "Upcoming Oct 24 Niagara at NU Fall Open | ",

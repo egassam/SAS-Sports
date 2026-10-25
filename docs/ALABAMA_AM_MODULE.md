@@ -23,7 +23,7 @@ Roster cards, then official profiles, then the school's NIL marketplace (InFLCR 
 
 ## Open
 
-- Volleyball's page header reads "Conf 8-2" (Oct 24); its rows show nine SWAC matches (7-2) and mark none as conference games, so the app reads 7-2 by membership. The page's header is the source's own count.
+- Volleyball's page header reads "Conf 8-2" (Oct 24); its rows show nine SWAC matches (7-2) and mark none as conference games, so the app reads 7-2 by membership. The page's header is the source's own count. Checked again Oct 25 (still 8-2 over the same rows); swac.org's standings refuse the request (403), so no official source settles it.
 
 - Sports whose 2026-27 season is not yet published fill when it is.
 - First live cards not yet observed.

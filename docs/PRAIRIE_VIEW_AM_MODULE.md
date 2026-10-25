@@ -7,7 +7,7 @@ Sports (10): Baseball, Basketball, Bowling, Cross Country, Football, Golf, Socce
 ## Rules
 
 - A neutral game named for a championship is "at" it, plural too ("SWAC Championships", men's basketball).
-- The bowling page dates its Colonial Lanes Classic matches Oct 2-4 as away matches; the other schools' pages date them Oct 9-11 at a neutral site. Read as published.
+- The bowling page dates its Colonial Lanes Classic matches Oct 2-4 as away matches; the other schools' pages date them Oct 9-11 at a neutral site. Read as published (still so Oct 25).
 - Golf stories for the Red Raider Invitational and the Bayou City Collegiate give no team place ("Completed"); three past women's tournaments (Bradley Coyote Classic, Big O Classic, Hawaii) have no result or story yet and are not listed.
 - Bowling lists each match of a tournament with its own score; two matches against one opponent stay two matches (shared `mergeMeetDays` with `matches`, Oct 24). An invitational match against a SWAC member is no league match (the pages read "Conf 0-0"; shared `conference-games`).
 - Routes were set from the site's menu (`scripts/audit-routes.mjs`, `scripts/set-sport-routes.mjs`).

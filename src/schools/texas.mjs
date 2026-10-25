@@ -279,6 +279,9 @@ export function createTexasHandlers({makeEvent,recapMatchesEvent,eventType=()=>'
   // Jamboree), and the swimming schedule links none; each is in the archive.
   const archive=createArchiveStory({id:'texas',host:HOST,decodeHtml,fetch,headers,meetSports:new Set(['Cross Country','Golf','Swimming & Diving','Tennis']),volleyballSets:true});
   const crossCountry=createTfrrsMeetResults({id:'texas',schoolName:'Texas',
+    // The Chile Pepper XC Festival (Oct 2-3) lists the team's runners but
+    // not on its TFRRS team pages.
+    meets:{'2026-10-03':'https://www.tfrrs.org/results/xc/28826/Chile_Pepper_XC_Festival'},
     teams:TEXAS_TFRRS_TEAMS,
     decodeHtml,ordinal,fetch,headers});
   // Track & Field shares cross country's page: while that page lists only
