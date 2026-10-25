@@ -3994,23 +3994,13 @@
    "state": "off"
   },
   "unlv|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-25T06:55:04.296Z",
-   "last_detail": "live 23-23 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "unlv|Volleyball||2026-10-24|1",
-    "title": "UNLV at Hawai'i",
-    "started_seen": "2026-10-25T06:46:01.245Z",
-    "live_passes": [
-     "2026-10-25T06:46:01.245Z",
-     "2026-10-25T06:48:15.127Z",
-     "2026-10-25T06:49:56.815Z",
-     "2026-10-25T06:51:38.309Z",
-     "2026-10-25T06:53:21.146Z",
-     "2026-10-25T06:55:04.296Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-25T12:07:20.509Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-10-25T12:07:20.509Z",
+   "verified_game": "UNLV at Hawai'i",
+   "verified_detail": "final L, 0-3"
   },
   "utep|Basketball": {
    "state": "off"
@@ -7392,7 +7382,7 @@
   },
   "robert-morris|Hockey": {
    "state": "failing",
-   "last_check": "2026-10-25T06:55:24.425Z",
+   "last_check": "2026-10-25T12:16:37.311Z",
    "last_detail": "result reads \"L, 1-2\", ESPN final L, 1-5",
    "game": {
     "key": "robert-morris|Hockey||2026-10-24|1",
@@ -7402,9 +7392,9 @@
     "final_ok": false,
     "final_due": "2026-10-24T21:30:35.266Z"
    },
-   "failures": 12,
+   "failures": 18,
    "last_failure": {
-    "at": "2026-10-25T06:55:24.425Z",
+    "at": "2026-10-25T12:16:37.311Z",
     "game": "Robert Morris at Bentley",
     "detail": "result reads \"L, 1-2\", ESPN final L, 1-5"
    }
@@ -9649,6 +9639,6 @@
   }
  },
  "version": "4.215.0-open-items",
- "updated_at": "2026-10-25T06:55:24.430Z",
+ "updated_at": "2026-10-25T12:16:37.316Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

@@ -21,7 +21,6 @@
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Wake Forest: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| unlv | Volleyball | 🔴 on | live 23-23 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1897,6 +1896,7 @@
 | unc-asheville | Soccer | ✅ off (passed) | Men's · UNC Asheville vs SC Upstate · 2026-10-24T21:15:41.485Z |
 | unc-asheville | Volleyball | ✅ off (passed) | UNC Asheville at High Point · 2026-10-24T01:59:41.243Z |
 | unc-greensboro | Soccer | ✅ off (passed) | Men's · UNCG at Wofford · 2026-10-25T01:30:06.157Z |
+| unlv | Volleyball | ✅ off (passed) | UNLV at Hawai'i · 2026-10-25T12:07:20.509Z |
 | usc | Football | ✅ off (passed) | USC at Wisconsin · 2026-10-25T06:45:59.527Z |
 | usc | Soccer | ✅ off (passed) | USC at Northwestern · 2026-10-17T21:44:24.750Z |
 | usc | Volleyball | ✅ off (passed) | USC vs Penn State · 2026-10-18T01:31:23.379Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 582/1956; on 1; off 1352; failing 21.
+Done 583/1956; on 0; off 1352; failing 21.
