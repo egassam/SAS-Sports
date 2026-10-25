@@ -205,16 +205,16 @@ try{
   const feed=async sport=>{const r=await worker.fetchLive('manhattan-ks',sport);assert.equal(r.error,null,sport);return worker.groupEvents(r.events,at)[0];};
   const lines=g=>({results:g.results.map(line),upcoming:g.upcoming.map(line),records:g.records.map(r=>`${r.team_label||''} ${r.text}${r.conference?` · ${r.conference.name} ${r.conference.text}`:''}`.trim())});
   // Cross country and golf: meets are named for the host; a past meet with no
-  // published result is not listed (K-State's rule), so only coming meets show
-  // until results are published. Midnight means no time was set.
+  // published result reads "No results posted" (middle and high school rule,
+  // October 25). Midnight means no time was set.
   // Cross country: results from the timer's MeetPro pages (LetsGoRun
   // Timing), varsity races only; meets without published results are not
   // listed. Midnight means no time was set.
   const xcGroup=await feed('Cross Country'),xc=lines(xcGroup);
   // Rim Rock (Sep 26) was timed by someone else: its team places come from
   // Bound, where the school entered them (October 21).
-  assert.deepEqual(xc.results,['Final Sep 26, 8:15 AM Manhattan at Rim Rock | Girls 1st of 10 · Boys 7th of 10','Final Sep 5, 8:15 AM Manhattan · Manhattan Invite | Boys 2nd of 11 · Girls 1st of 5'],'the Manhattan Invitational (LetsGoRun) and Rim Rock (Bound); the other four past meets have no published result');
-  const rimRock=xcGroup.results[0];
+  assert.deepEqual(xc.results,['Final Oct 3, 9:00 AM Manhattan at Baldwin Invite | No results posted','Final Sep 26, 8:15 AM Manhattan at Rim Rock | Girls 1st of 10 · Boys 7th of 10','Final Sep 23, 5:45 PM Manhattan at Olathe North | No results posted','Final Sep 19 Manhattan at Missouri Southern Stampede | No results posted','Final Sep 12, 9:00 AM Manhattan at Emporia Invite | No results posted','Final Sep 5, 8:15 AM Manhattan · Manhattan Invite | Boys 2nd of 11 · Girls 1st of 5'],'the Manhattan Invitational (LetsGoRun) and Rim Rock (Bound) have results; the other four meets read as played with no results posted (middle and high school rule, Oct 25)');
+  const rimRock=xcGroup.results.find(e=>/Rim Rock/.test(e.title));
   assert.deepEqual(rimRock.results.map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Girls Varsity | Manhattan team | 1st of 10 · 90 pts','Boys Varsity | Manhattan team | 7th of 10 · 238 pts']);
   assert.deepEqual([rimRock.recap_label,rimRock.recap_url,rimRock.highlight_status],['View on Bound','https://beta.gobound.com/ks/schools/manhattanhs/scores','Team scores as entered on Bound by the school.']);
   assert.equal(rimRock.highlights[0],'Girls Varsity: Manhattan won the team title with 90 pts.');
@@ -235,9 +235,9 @@ try{
   {
     const golfGroup=await feed('Golf'),golf=lines(golfGroup);
     assert.deepEqual(golf.results,[
-      'Final Oct 5, 1:00 PM Girls · Manhattan · Manhattan Invite | 3rd of 12 · 338 (+50)',
+      'Final Oct 5, 1:00 PM Girls · Manhattan · Manhattan Invite | 3rd of 12 · 338 (+50)','Final Oct 1, 1:00 PM Girls · Manhattan at Blue Valley Northwest | No results posted',
       'Final Sep 30, 9:00 AM Girls · Manhattan at Lawrence Invite | 7th of 24 · 345 (+57)',
-      'Final Sep 28, 1:00 PM Girls · Manhattan at Centennial League | 1st of 5 · 346 (+58)',
+      'Final Sep 28, 1:00 PM Girls · Manhattan at Centennial League | 1st of 5 · 346 (+58)','Final Sep 24, 1:00 PM Girls · Manhattan at Salina Central | No results posted',
       'Final Sep 22, 11:00 AM Girls · Manhattan at BV Southwest - Sycamore Ridge | 7th of 12 · 346 (+58)',
       'Final Sep 16, 11:00 AM Girls · Manhattan at Washburn Rural Invite | 5th of 11 · 360 (+80)',
       'Final Aug 24, 1:00 PM Girls · Manhattan at Blue Valley Southwest | 4th of 10 · 348 (+60)']);
@@ -260,7 +260,7 @@ try{
 
   // Soccer: boys in the fall (girls in the spring), records by team.
   const soccerGroup=await feed('Soccer'),soccer=lines(soccerGroup);
-  assert.equal(soccer.results.length,10);
+  assert.equal(soccer.results.length,11);
   assert.equal(soccer.results[0],'Final Oct 8, 6:15 PM Boys · Manhattan at Washburn Rural | L, 0-5');
   // The calendar names the tournament host (Blue Valley West); MaxPreps the opponent.
   assert.ok(soccer.results.includes('Final Sep 3, 6:00 PM Boys · Manhattan at Blue Valley Northwest | T, 0-0'));
@@ -268,9 +268,10 @@ try{
   assert.ok(soccer.results.includes('Final Sep 8, 8:00 PM Boys · Manhattan vs Lawrence Free State | L, 2-4'));
   // MaxPreps has no score for Sep 1 at Blue Valley West: the school entered
   // it on Bound (October 21). Bound's Sep 5 tournament entry (six teams, no
-  // scores) gives nothing, so that game stays unlisted.
+  // scores) gives nothing: that game reads as played, no score posted.
   assert.ok(soccer.results.includes('Final Sep 1, 8:00 PM Boys · Manhattan at Blue Valley West | L, 0-5'));
-  assert.ok(!soccer.results.some(r=>r.startsWith('Final Sep 5')));
+  assert.ok(soccer.results.includes('Final Sep 5, 9:00 AM Boys · Manhattan at Blue Valley West | No score posted'));
+  assert.ok(!soccer.results.some(r=>/Sep 8.*No score/.test(r)),'the Lawrence Free State game is MaxPreps\' final, not a second, unscored game');
   const sep1=soccerGroup.results.find(e=>e.start_time.startsWith('2026-09-01'));
   assert.deepEqual([sep1.score_source.name,sep1.recap_label,sep1.maxpreps_url],['Bound (score entered by the school)','View on Bound',undefined]);
   assert.deepEqual(soccer.records,['Boys 3-6-1 · Centennial League 2-2']);
@@ -292,7 +293,8 @@ try{
   // Volleyball: every match from MaxPreps (triangulars, tournaments);
   // placeholders without results are not matches.
   const vb=lines(await feed('Volleyball'));
-  assert.equal(vb.results.length,28);
+  // The Aug 25 jamboree at Rock Creek has no score anywhere: played, no score posted.
+  assert.equal(vb.results.length,29);assert.ok(vb.results.includes('Final Aug 25, 4:00 PM Manhattan at Jamboree - Rock Creek | No score posted'));
   assert.deepEqual(vb.records,['21-7 · Centennial League 9-1']);
     assert.ok(!vb.results.some(x=>/T, 0-0/.test(x)),'pool placeholders are not results');
   assert.deepEqual(vb.upcoming,['Upcoming Oct 10, 9:00 AM Manhattan · Manhattan Invite | ','Upcoming Oct 15, 5:00 PM Manhattan at Maize South TRI | ','Upcoming Oct 20, 5:00 PM Manhattan at St. Thomas Aquinas HS | ','Upcoming Oct 24 Manhattan at Sub State | ','Upcoming Oct 30 Manhattan at 6A State Tourn. | ']);
@@ -302,7 +304,7 @@ try{
   const topeka=await expand('Soccer',(await feed('Soccer')).results.at(-1));
   assert.deepEqual(topeka.highlights,['Manhattan lost to Topeka High 2-1 on the road in a Centennial League game.','The teams were tied 1-1 at halftime.']);
   assert.deepEqual(topeka.game_stats.map(x=>`${x.label}: ${x.value}`),['1st half: Manhattan 1 · Topeka High 1','2nd half: Manhattan 0 · Topeka High 1']);
-  const carroll=await expand('Volleyball',(await feed('Volleyball')).results.at(-1));
+  const carroll=await expand('Volleyball',(await feed('Volleyball')).results.find(e=>/Bishop Carroll/.test(e.title)));
   assert.deepEqual(carroll.highlights,['Manhattan beat Bishop Carroll 2-0 in a tournament match.','Set scores: 25-15, 25-17.']);
   assert.deepEqual(carroll.game_stats.map(x=>`${x.label}: ${x.value}`),['Set 1: Manhattan 25 · Bishop Carroll 15','Set 2: Manhattan 25 · Bishop Carroll 17']);
 
@@ -326,14 +328,19 @@ try{
   assert.equal(regional.recap_label,'View TennisReporting bracket');
   assert.equal(line(tennis.upcoming[1]),'Upcoming Oct 16, 8:00 AM Girls · Manhattan at 6A State Tourn. | ');
   assert.ok(!requests.some(r=>/event\/974\b/.test(r)&&/host/.test(r)),'the other Oct 9 event has no Manhattan host');
-  // Past invitationals TennisReporting does not carry are not listed.
-  assert.deepEqual(tennis.results,[]);
+  // Past invitationals TennisReporting does not carry read as played, no
+  // results posted (middle and high school rule, October 25).
+  assert.deepEqual(tennis.results.map(e=>`${e.display_time} ${e.title} | ${e.headline}`),["Oct 5, 9:00 AM Girls · Manhattan at Centennial League | No results posted","Oct 1, 3:00 PM Girls · Manhattan · Manhattan Quad | No results posted","Sep 29, 9:00 AM Girls · Manhattan at Topeka West Invite | No results posted","Sep 28, 1:30 PM Girls · Manhattan at Emporia Invite | No results posted","Sep 22, 9:00 AM Girls · Manhattan at Washburn Rural Invite | No results posted","Sep 21, 3:00 PM Girls · Manhattan at Varsity Quad | No results posted","Sep 12, 9:00 AM Girls · Manhattan at Emporia Invite | No results posted","Sep 9, 3:00 PM Girls · Manhattan at Seaman Invite | No results posted","Sep 3, 9:00 AM Girls · Manhattan at Junction City Quad | No results posted"]);
 
   // Middle schools: schedules only (no source publishes their scores), so a
-  // past game is not listed; grades are the teams.
+  // past game reads as played with no score; grades are the teams.
   const msFeed=async(id,sport)=>{const r=await worker.fetchLive(id,sport);assert.equal(r.error,null,`${id} ${sport}`);return worker.groupEvents(r.events,at)[0]||null;};
   assert.deepEqual((await msFeed('anthony-ms-ks','Football')).upcoming.map(line),['Upcoming Oct 13, 4:15 PM 7th · Anthony vs Junction City | ','Upcoming Oct 13, 4:30 PM 8th · Anthony at Junction City | ']);
-  assert.equal(await msFeed('anthony-ms-ks','Volleyball'),null,'the season is over and no scores were published');
+  // No source publishes middle school scores: past games read as played, no
+  // score posted (middle and high school rule, October 25).
+  const amsVb=await msFeed('anthony-ms-ks','Volleyball');
+  assert.ok(amsVb.results.length>0&&amsVb.results.every(e=>e.headline==='No score posted'&&e.no_result_posted&&e.school_score==null),'the season is over and no scores were published');
+  assert.deepEqual(amsVb.records,[],'games without a score count in no record');
   const ike=await msFeed('eisenhower-ms-ks','Basketball');
   assert.deepEqual(ike.upcoming.slice(0,3).map(line),['Upcoming Oct 29, 4:15 PM 7th Girls · Eisenhower vs Rock Creek | ','Upcoming Oct 29, 4:15 PM 8th Girls · Eisenhower vs Rock Creek | ','Upcoming Nov 3, 4:30 PM 7th Girls · Eisenhower at Wamego | ']);
   assert.ok(ike.upcoming.some(e=>e.team_label==='7th Boys'&&/Wamego/.test(e.title)),'boys basketball is in the same sport');
@@ -348,6 +355,8 @@ try{
   assert.deepEqual(amsXc.results.map(line),[
     'Final Oct 2, 2:00 PM Anthony at Milford State Park | 7th Girls 1st of 5 · 7th Boys 1st of 8 · 8th Girls 1st of 4 · 8th Boys 1st of 6',
     'Final Sep 29, 4:00 PM Anthony at Rock Creek H. S. | 7th Boys 1st of 6 · 7th Girls 1st of 5 · 8th Boys 1st of 5 · 8th Girls 1st of 1',
+    'Final Sep 22, 4:00 PM Anthony at McPherson- Wall Park | No results posted',
+    'Final Sep 18, 10:00 AM Anthony at Warner Park | No results posted',
     'Final Sep 15, 4:00 PM Anthony at Clay Center | 7th Girls 1st of 5 · 7th Boys 1st of 8 · 8th Girls 1st of 3 · 8th Boys 1st of 6',
     'Final Sep 10, 4:30 PM Anthony at Milford State Park | 7th Girls 1st of 7 · 7th Boys 1st of 9 · 8th Girls 1st of 4 · 8th Boys 1st of 10',
     'Final Sep 8, 9:00 AM Anthony at Wamego M.S. | 7th Boys 1st of 6 · 7th Girls 1st of 3 · 8th Boys 1st of 4 · 8th Girls 1st of 3'
@@ -356,9 +365,9 @@ try{
   const emsXc=await msFeed('eisenhower-ms-ks','Cross Country');
   assert.deepEqual(emsXc.results.map(line),[
     'Final Oct 2, 2:00 PM Eisenhower at Milford Stare Park League Tournament | 7th Boys 6th of 8 · 8th Boys 2nd of 6',
-    'Final Sep 29, 4:00 PM Eisenhower at Rock Creek | 7th Boys 3rd of 6 · 8th Boys 2nd of 5',
+    'Final Sep 29, 4:00 PM Eisenhower at Rock Creek | 7th Boys 3rd of 6 · 8th Boys 2nd of 5','Final Sep 22, 4:00 PM Eisenhower at Clay Center | No results posted','Final Sep 18, 2:00 PM Eisenhower · Home event | No results posted',
     'Final Sep 15, 4:00 PM Eisenhower at Clay Center | 7th Boys 3rd of 8 · 8th Boys 3rd of 6',
-    'Final Sep 10, 4:30 PM Eisenhower at Fort Riley | 7th Boys 7th of 9 · 8th Boys 6th of 10'
+    'Final Sep 10, 4:30 PM Eisenhower at Fort Riley | 7th Boys 7th of 9 · 8th Boys 6th of 10','Final Sep 2, 4:00 PM Eisenhower at Wamego | No results posted'
   ]);
   const rockCreek=emsXc.results.find(e=>/Rock Creek/.test(e.title));
   assert.ok(!rockCreek.results.some(x=>/Aurora Adams/.test(x.participant)),'middle school JV races are left out (at Rock Creek Aurora Adams ran the JV race)');

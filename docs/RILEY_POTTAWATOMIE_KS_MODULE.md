@@ -47,7 +47,7 @@ Checked and not added: Archangel Gabriel Catholic School (Manhattan; no athletic
 - Blue Valley and Manhattan Catholic titles are typed by hand (`parseFreeTitle`): "HS Football- Home vs. Canton-Galva", "MS/HS Cross Country- Abilene Meet at Great Life Golf & Fitness" (counts for both), "Volleyball Away Game at Valley Heights", "XC @ Clay Center". Practices, photos, first days, rain dates and JV/C-team-only entries are not games. Manhattan Catholic's calendar is fed from Google in UTC; its times are read in Kansas time.
 - Flint Hills Christian's sheet (`sheetCalendar`): blocks "HS Volleyball Schedule 2026" side by side; "@" marks an away game, the location FHCS a home one; bracketed teams decide the level ("(MS, JV, V)", "(HS & MS)"); the last of several times is varsity's.
 - Game sports: MaxPreps finals, then Bound finals MaxPreps lacks, then the coming games and tournament days.
-- K-State's rule: a past game or meet with no published result is not listed.
+- Middle and high school rule (user, October 25; `AGENTS.md` 5c): a past game or meet no source has a result for is listed as played, "No score posted" (a meet: "No results posted"), and takes its score when one is posted. Playoff rounds never reached, "TBD" and state meets the team may not have reached are not listed. Such games count in no record.
 
 ## State on October 25 (preview 4.218.0)
 
@@ -55,8 +55,8 @@ All 108 school-sports answer on the preview. Fall results: football and volleyba
 
 ## Limitations
 
-- **Past events without a published result are not listed** (K-State's rule). Most middle school games have no score anywhere (as at Anthony and Eisenhower); a school can enter finals on Bound or use SAS Scorer.
-- **Cross country and track results** come only from LetsGoRun Timing's MeetPro pages. Meets timed by others (Riley County's, Onaga's, St. Marys' and most high school invitationals) have no published results and are not listed. LetsGoRun's track meets use MeetPro's event pages (a different layout from cross country); reading them is the first job of the spring season (fixtures: the 2026 Rock Creek MS and Wabaunsee invitationals).
+- **Not published** (recorded per `AGENTS.md` 5c, not open items): most middle school game scores (as at Anthony and Eisenhower; they read "No score posted" until a school enters finals on Bound or uses SAS Scorer).
+- **Cross country and track results** come only from LetsGoRun Timing's MeetPro pages. Meets timed by others (Riley County's, Onaga's, St. Marys' and most high school invitationals) publish no results and read "No results posted". LetsGoRun's track meets use MeetPro's event pages (a different layout from cross country); reading them is the first job of the spring season (fixtures: the 2026 Rock Creek MS and Wabaunsee invitationals).
 - **Wrestling, bowling and track** list their coming meets; no source publishes their team results (Trackwrestling refuses robots).
 - **Riley County and Rock Creek share Prep.Golf's code RC**: their golfers are not listed for a tournament both played.
 - **Riley County golf** (fall 2026) is not on Prep.Golf with a team place (fewer than four players): not listed.

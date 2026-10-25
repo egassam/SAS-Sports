@@ -26,7 +26,7 @@ County, not city, since October 21 (user: "I've decided to place the schools by 
 
 ## Sports
 
-Rule for every sport (K-State's): a past game or meet with no published result is not listed; it appears when MaxPreps, TennisReporting or a meet's results publish it. Coming games and meets always show.
+Rule for every sport (since October 25, `AGENTS.md` 5c, replacing K-State's): a past game or meet with no published result reads as played, "No score posted" ("No results posted" for a meet), and takes its result when MaxPreps, Bound, TennisReporting, a timer or Prep.Golf publishes it. Coming games and meets always show.
 
 | Sport | Results source | State on Oct 9 |
 | --- | --- | --- |

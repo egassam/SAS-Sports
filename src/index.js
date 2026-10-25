@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.218.0-riley-pottawatomie';
+const VERSION='4.219.0-hs-rules';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4002,20 +4002,31 @@ function matchContest(game,contests,used){
   const key=nameKey(game.name),words=new Set(key.split(' '));
   return day.find(c=>nameKey(c.opponent)===key)||day.find(c=>c.opponent&&nameKey(c.opponent).split(' ').every(w=>words.has(w)))||null;
 }
-// A past game or meet with no published result is not listed (K-State's
-// rule); it appears once MaxPreps, TennisReporting or a meet's results have it.
-function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',now}){
+// Middle and high schools (user, October 25: "We may need a new rule for
+// middle school and high school", then "Go with 1"): a past game or meet no
+// source has a result for is listed as played, "No score posted" (a meet:
+// "No results posted"), and takes its score when MaxPreps, Bound, a timer,
+// Prep.Golf, TennisReporting or SAS Scorer posts one. K-State's rule (not
+// listed) stays for college. A placeholder the school's schedule held for a
+// round it never reached (a playoff round, "TBD") is not a game played.
+const HIGH_SCHOOL_PLACEHOLDER=/^(?:tbd|tba|regionals?|sectionals?|sub-?state|state|playoffs?|(?:1st|2nd|first|second) round|quarter-?finals?|semi-?finals?|finals?)\b|\b(?:regional|sub-?state|state|playoff|postseason)\b.*\b(?:football|volleyball|basketball|baseball|softball|tourney|tournament|round)\b|\bpostseason\b|^\d?a? ?(?:regionals?|sub-?state|state)\b/i;
+const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim());
+function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,now}){
   const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
-  let status;
+  let status,unscored=false;
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
   else if(lastDay>=today)status='Today';
   else if(results?.rows?.length)status='Final';
-  else return null;
-  const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:(results?.headline||null);
+  // A playoff game round may never have been reached; a meet's regional or
+  // sub-state is run by every team, its state meet only by qualifiers.
+  else if(placeholder||(eventType(sport)==='GAME'?isHighSchoolPlaceholder(opponent):/(?<!sub-?)\bstate\b/i.test(opponent)))return null;
+  else{status='Final';unscored=true;}
+  const noResult=eventType(sport)==='GAME'?'No score posted':'No results posted';
+  const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:unscored?noResult:(results?.headline||null);
   const dateText=highSchoolDateText(date),title=`${team?`${team} · `:''}${school.short_name} ${relation} ${opponent}`;
-  const rows=scored?[{label:'Result',value:headline}]:(results?.rows||[]);
+  const rows=scored?[{label:'Result',value:headline}]:unscored?[{label:'Result',value:`Played · ${noResult.toLowerCase()} by the school or any results source`}]:(results?.rows||[]);
   const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
@@ -4032,6 +4043,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
     event.highlights=results.highlights;event.highlights_verified=true;event.highlight_status=results.note;
     event.meet_results_verified=true;
   }
+  if(unscored){event.no_result_posted=true;event.highlight_status='Played; no score or result has been posted by MaxPreps, Bound, a timer or the school.';}
   if(contest?.stream_url)event.stream_url=contest.stream_url;
   if(contest&&contest.source!=='bound')event.maxpreps_url=contest.game_url||null;
   return event;
@@ -4291,6 +4303,13 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
         if(event)events.push(event);
       }
+      // Played with no score anywhere (a game MaxPreps and Bound lack; a
+      // tournament day with no match posted): "No score posted".
+      const finalDays=new Set(finals.map(c=>c.date));
+      for(const game of games.filter(g=>g.date<today&&!g.final&&!inMaxPreps(g)&&(g.h2h||!finalDays.has(g.date)))){
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,placeholder:game.teams?.length===1,now});
+        if(event)events.push(event);
+      }
       for(const game of games.filter(g=>g.date>=today&&!g.final&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,now});
         if(event)events.push(event);
@@ -4317,14 +4336,19 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       // A dual on Bound names the opponent: "Rock Creek vs Abilene".
       const relation=game.h2h?(game.site==='AWAY'?'at':'vs'):named?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null)||(game.teams&&game.date<today?boundEntryResults(school,module,team,game):null);
-      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,now});
+      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
       if(event)events.push(event);
     }
     // A scored game the calendar does not list (a playoff game added after
     // the calendar was printed) is shown from MaxPreps alone.
     for(const contest of contests.filter(c=>!used.has(c)&&c.result&&c.opponent&&c.score!=null)){
       const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:false,contest,sourceUrl:contest.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,now});
-      if(event)events.push(event);
+      if(!event)continue;
+      // Its calendar game (matched to another contest of the day, or with
+      // the time moved) then reads as played without a score: it is this one.
+      const twin=events.findIndex(e=>e.no_result_posted&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&namesCompatible(e.opponent,contest.opponent));
+      if(twin>=0)events.splice(twin,1);
+      events.push(event);
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
