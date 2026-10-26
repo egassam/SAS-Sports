@@ -9445,26 +9445,13 @@
    "state": "off"
   },
   "houston-christian|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-25T23:47:13.914Z",
-   "last_detail": "live 0-1 · 34' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "houston-christian|Soccer|Men's|2026-10-25|1",
-    "title": "Men's · Houston Christian at Incarnate Word",
-    "started_seen": "2026-10-25T23:39:00.218Z",
-    "live_passes": [
-     "2026-10-25T23:39:00.218Z",
-     "2026-10-25T23:40:02.113Z",
-     "2026-10-25T23:41:03.736Z",
-     "2026-10-25T23:42:05.216Z",
-     "2026-10-25T23:43:06.123Z",
-     "2026-10-25T23:44:09.495Z",
-     "2026-10-25T23:45:10.549Z",
-     "2026-10-25T23:46:12.300Z",
-     "2026-10-25T23:47:13.914Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-26T01:45:51.800Z",
+   "last_detail": "final W, 5-2",
+   "game": null,
+   "verified_at": "2026-10-26T01:45:51.800Z",
+   "verified_game": "Men's · Houston Christian at Incarnate Word",
+   "verified_detail": "final W, 5-2"
   },
   "houston-christian|Softball": {
    "state": "off"
@@ -9512,26 +9499,13 @@
    "state": "off"
   },
   "lamar|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-25T23:47:13.508Z",
-   "last_detail": "live 1-0 · 69' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "lamar|Soccer||2026-10-25|1",
-    "title": "Lamar at SE Louisiana",
-    "started_seen": "2026-10-25T23:38:55.564Z",
-    "live_passes": [
-     "2026-10-25T23:38:55.564Z",
-     "2026-10-25T23:40:01.425Z",
-     "2026-10-25T23:41:03.671Z",
-     "2026-10-25T23:42:05.195Z",
-     "2026-10-25T23:43:06.638Z",
-     "2026-10-25T23:44:09.103Z",
-     "2026-10-25T23:45:11.033Z",
-     "2026-10-25T23:46:12.331Z",
-     "2026-10-25T23:47:13.508Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-26T01:46:00.229Z",
+   "last_detail": "final W, 1-0",
+   "game": null,
+   "verified_at": "2026-10-26T01:46:00.229Z",
+   "verified_game": "Lamar at SE Louisiana",
+   "verified_detail": "final W, 1-0"
   },
   "lamar|Softball": {
    "state": "off"
@@ -10072,6 +10046,6 @@
   }
  },
  "version": "4.222.1-meetpro-track",
- "updated_at": "2026-10-25T23:47:13.920Z",
+ "updated_at": "2026-10-26T01:46:00.235Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

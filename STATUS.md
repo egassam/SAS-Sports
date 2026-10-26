@@ -21,8 +21,6 @@
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Clemson: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| houston-christian | Soccer | 🔴 on | live 0-1 · 34' · official_schedule+live_scoreboard |
-| lamar | Soccer | 🔴 on | live 1-0 · 69' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1515,6 +1513,7 @@
 | houston | Football | ✅ off (passed) | Houston at Kansas St · 2026-10-11T00:49:40.506Z |
 | houston | Soccer | ✅ off (passed) | Houston at Cincinnati · 2026-10-17T01:39:26.021Z |
 | houston | Volleyball | ✅ off (passed) | Houston vs UCF · 2026-10-17T06:14:54.291Z |
+| houston-christian | Soccer | ✅ off (passed) | Men's · Houston Christian at Incarnate Word · 2026-10-26T01:45:51.800Z |
 | idaho-state | Volleyball | ✅ off (passed) | Idaho State vs Montana · 2026-10-23T07:27:21.904Z |
 | illinois | Football | ✅ off (passed) | Illinois at Michigan St · 2026-10-11T00:49:40.789Z |
 | illinois | Soccer | ✅ off (passed) | Illinois vs Northwestern · 2026-10-23T02:02:21.992Z |
@@ -1564,6 +1563,7 @@
 | lafayette | Field Hockey | ✅ off (passed) | Lafayette vs Brown · 2026-10-25T19:08:47.456Z |
 | lafayette | Soccer | ✅ off (passed) | Men's · Lafayette at American · 2026-10-24T21:15:40.870Z |
 | lafayette | Volleyball | ✅ off (passed) | Lafayette at Bucknell · 2026-10-25T21:48:16.745Z |
+| lamar | Soccer | ✅ off (passed) | Lamar at SE Louisiana · 2026-10-26T01:46:00.229Z |
 | le-moyne | Volleyball | ✅ off (passed) | Le Moyne at Chicago St · 2026-10-24T01:59:33.628Z |
 | lehigh | Soccer | ✅ off (passed) | Men's · Lehigh vs Boston U · 2026-10-24T23:24:12.396Z |
 | lehigh | Volleyball | ✅ off (passed) | Lehigh at Bucknell · 2026-10-24T23:24:13.212Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 650/1956; on 2; off 1283; failing 21.
+Done 652/1956; on 0; off 1283; failing 21.
