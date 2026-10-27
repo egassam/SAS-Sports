@@ -1,26 +1,36 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | george-mason | Volleyball | ❌ failing | George Mason at Saint Louis: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| indiana-state | Volleyball | ❌ failing | Indiana State at UIC: result reads "L, 3-0", ESPN final L, 0-3 |
 | liu | Volleyball | ❌ failing | LIU at FDU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | manhattan | Volleyball | ❌ failing | Manhattan at Sacred Heart: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| merrimack | Volleyball | ❌ failing | Merrimack vs Rider: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| merrimack | Volleyball | ❌ failing | Merrimack vs Quinnipiac: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | pacific | Volleyball | ❌ failing | Pacific vs Denver: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | pepperdine | Volleyball | ❌ failing | Pepperdine vs Santa Clara: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| purdue-fort-wayne | Volleyball | ❌ failing | Purdue FW at Green Bay: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| purdue-fort-wayne | Volleyball | ❌ failing | Purdue FW vs Wright St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | queens | Volleyball | ❌ failing | Queens at North Florida: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | robert-morris | Hockey | ❌ failing | Robert Morris at Bentley: result reads "L, 1-2", ESPN final L, 1-5 |
-| sacred-heart | Volleyball | ❌ failing | Sacred Heart vs Manhattan: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-jose-state | Soccer | ❌ failing | San Jose State at Air Force: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | seattle-u | Soccer | ❌ failing | Seattle U vs LMU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Clemson: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| arkansas-pine-bluff | Volleyball | 🔴 on | live 12-21 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| bucknell | Field Hockey | 🔴 on | live 1-1 · 45:00 - 4th · official_schedule+live_scoreboard |
+| central-arkansas | Volleyball | 🔴 on | live 14-16 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| chattanooga | Volleyball | 🔴 on | live 23-15 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard |
+| delaware | Football | 🔴 on | live 7-7 · 5:09 - 1st · ball: opponent (2nd & 4 at DEL 21) · official_schedule+live_scoreboard |
+| indiana-state | Volleyball | 🔴 on | live 24-20 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard |
+| marist | Volleyball | 🔴 on | live 15-11 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| mercer | Volleyball | 🔴 on | live 15-25 · End of 3rd · Sets 2-1 · official_schedule+live_scoreboard |
+| quinnipiac | Volleyball | 🔴 on | live 22-11 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| unc-greensboro | Volleyball | 🔴 on | live 3-1 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
+| western-kentucky | Football | 🔴 on | live 7-7 · 5:09 - 1st · ball: school (2nd & 4 at DEL 21) · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -67,7 +77,6 @@
 | arkansas-pine-bluff | Basketball | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Football | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Softball | ⚪ off (waiting) |  |
-| arkansas-pine-bluff | Volleyball | ⚪ off (waiting) |  |
 | arkansas-state | Baseball | ⚪ off (waiting) |  |
 | arkansas-state | Basketball | ⚪ off (waiting) |  |
 | army | Baseball | ⚪ off (waiting) |  |
@@ -135,7 +144,6 @@
 | bryant | Softball | ⚪ off (waiting) |  |
 | bucknell | Baseball | ⚪ off (waiting) |  |
 | bucknell | Basketball | ⚪ off (waiting) |  |
-| bucknell | Field Hockey | ⚪ off (waiting) |  |
 | bucknell | Football | ⚪ off (waiting) |  |
 | bucknell | Lacrosse | ⚪ off (waiting) |  |
 | bucknell | Softball | ⚪ off (waiting) |  |
@@ -173,7 +181,6 @@
 | central-arkansas | Basketball | ⚪ off (waiting) |  |
 | central-arkansas | Football | ⚪ off (waiting) |  |
 | central-arkansas | Softball | ⚪ off (waiting) |  |
-| central-arkansas | Volleyball | ⚪ off (waiting) |  |
 | central-michigan | Baseball | ⚪ off (waiting) |  |
 | central-michigan | Basketball | ⚪ off (waiting) |  |
 | central-michigan | Field Hockey | ⚪ off (waiting) |  |
@@ -198,7 +205,6 @@
 | chattanooga | Football | ⚪ off (waiting) |  |
 | chattanooga | Soccer | ⚪ off (waiting) |  |
 | chattanooga | Softball | ⚪ off (waiting) |  |
-| chattanooga | Volleyball | ⚪ off (waiting) |  |
 | chicago-state | Basketball | ⚪ off (waiting) |  |
 | chicago-state | Football | ⚪ off (waiting) |  |
 | chicago-state | Soccer | ⚪ off (waiting) | final L, 0-4 (live phase not observed 2×; waits for the next game) |
@@ -209,7 +215,6 @@
 | citadel | Basketball | ⚪ off (waiting) |  |
 | citadel | Football | ⚪ off (waiting) |  |
 | citadel | Soccer | ⚪ off (waiting) |  |
-| citadel | Volleyball | ⚪ off (waiting) |  |
 | clemson | Baseball | ⚪ off (waiting) |  |
 | clemson | Basketball | ⚪ off (waiting) |  |
 | clemson | Lacrosse | ⚪ off (waiting) |  |
@@ -265,7 +270,6 @@
 | delaware | Baseball | ⚪ off (waiting) |  |
 | delaware | Basketball | ⚪ off (waiting) |  |
 | delaware | Field Hockey | ⚪ off (waiting) |  |
-| delaware | Football | ⚪ off (waiting) |  |
 | delaware | Lacrosse | ⚪ off (waiting) |  |
 | delaware | Softball | ⚪ off (waiting) |  |
 | delaware | Volleyball | ⚪ off (waiting) |  |
@@ -570,7 +574,6 @@
 | marist | Football | ⚪ off (waiting) |  |
 | marist | Lacrosse | ⚪ off (waiting) |  |
 | marist | Softball | ⚪ off (waiting) |  |
-| marist | Volleyball | ⚪ off (waiting) |  |
 | marist | Water Polo | ⚪ off (waiting) |  |
 | marquette | Basketball | ⚪ off (waiting) |  |
 | marquette | Lacrosse | ⚪ off (waiting) |  |
@@ -598,7 +601,6 @@
 | mercer | Football | ⚪ off (waiting) |  |
 | mercer | Lacrosse | ⚪ off (waiting) |  |
 | mercer | Softball | ⚪ off (waiting) |  |
-| mercer | Volleyball | ⚪ off (waiting) |  |
 | mercyhurst | Baseball | ⚪ off (waiting) |  |
 | mercyhurst | Basketball | ⚪ off (waiting) |  |
 | mercyhurst | Field Hockey | ⚪ off (waiting) |  |
@@ -873,7 +875,6 @@
 | quinnipiac | Hockey | ⚪ off (waiting) | final L, 3-4 (live phase not observed 2×; waits for the next game) |
 | quinnipiac | Lacrosse | ⚪ off (waiting) |  |
 | quinnipiac | Softball | ⚪ off (waiting) |  |
-| quinnipiac | Volleyball | ⚪ off (waiting) |  |
 | radford | Baseball | ⚪ off (waiting) |  |
 | radford | Basketball | ⚪ off (waiting) |  |
 | radford | Field Hockey | ⚪ off (waiting) |  |
@@ -1174,7 +1175,6 @@
 | unc-greensboro | Baseball | ⚪ off (waiting) |  |
 | unc-greensboro | Basketball | ⚪ off (waiting) |  |
 | unc-greensboro | Softball | ⚪ off (waiting) |  |
-| unc-greensboro | Volleyball | ⚪ off (waiting) |  |
 | unlv | Baseball | ⚪ off (waiting) |  |
 | unlv | Basketball | ⚪ off (waiting) |  |
 | unlv | Football | ⚪ off (waiting) |  |
@@ -1272,7 +1272,6 @@
 | western-carolina | Football | ⚪ off (waiting) |  |
 | western-carolina | Soccer | ⚪ off (waiting) |  |
 | western-carolina | Softball | ⚪ off (waiting) |  |
-| western-carolina | Volleyball | ⚪ off (waiting) |  |
 | western-illinois | Baseball | ⚪ off (waiting) |  |
 | western-illinois | Basketball | ⚪ off (waiting) |  |
 | western-illinois | Football | ⚪ off (waiting) |  |
@@ -1280,7 +1279,6 @@
 | western-illinois | Volleyball | ⚪ off (waiting) |  |
 | western-kentucky | Baseball | ⚪ off (waiting) |  |
 | western-kentucky | Basketball | ⚪ off (waiting) |  |
-| western-kentucky | Football | ⚪ off (waiting) |  |
 | western-kentucky | Softball | ⚪ off (waiting) |  |
 | william-mary | Baseball | ⚪ off (waiting) |  |
 | william-mary | Basketball | ⚪ off (waiting) |  |
@@ -1404,6 +1402,7 @@
 | cincinnati | Football | ✅ off (passed) | Cincinnati at West Virginia · 2026-10-17T19:37:55.140Z |
 | cincinnati | Soccer | ✅ off (passed) | Cincinnati vs BYU · 2026-10-13T07:02:12.366Z |
 | cincinnati | Volleyball | ✅ off (passed) | Cincinnati vs Iowa State · 2026-10-11T22:23:41.881Z |
+| citadel | Volleyball | ✅ off (passed) | The Citadel at Furman · 2026-10-27T23:24:53.036Z |
 | clemson | Football | ✅ off (passed) | Clemson vs Charleston So · 2026-10-17T19:30:43.516Z |
 | clemson | Soccer | ✅ off (passed) | Women's · Clemson vs North Carolina · 2026-10-16T04:55:15.568Z |
 | clemson | Volleyball | ✅ off (passed) | Clemson vs Boston College · 2026-10-17T01:39:25.518Z |
@@ -1941,6 +1940,7 @@
 | west-virginia | Football | ✅ off (passed) | WVU vs Cincinnati · 2026-10-17T19:37:55.186Z |
 | west-virginia | Soccer | ✅ off (passed) | WVU vs UCF · 2026-10-16T23:47:53.900Z |
 | west-virginia | Volleyball | ✅ off (passed) | WVU at BYU · 2026-10-11T06:38:17.159Z |
+| western-carolina | Volleyball | ✅ off (passed) | Western Carolina vs Wofford · 2026-10-27T23:20:47.569Z |
 | western-illinois | Soccer | ✅ off (passed) | Men's · Western Illinois at Rio Grande · 2026-10-25T06:46:07.205Z |
 | western-kentucky | Soccer | ✅ off (passed) | WKU vs Jacksonville St · 2026-10-23T02:02:21.907Z |
 | western-kentucky | Volleyball | ✅ off (passed) | WKU vs Kennesaw St · 2026-10-24T01:59:35.472Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 652/1956; on 0; off 1283; failing 21.
+Done 654/1956; on 11; off 1271; failing 20.
