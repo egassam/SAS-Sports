@@ -3496,3 +3496,23 @@ Request: "Work through the open items" (after the SWAC).
 
 **Built:** `NEUTRAL_THEME` (slate grays) and `applyTheme`; `applyCurrentSchoolTheme` uses it while `homeView`, and `applyHomeView` re-applies the theme on entering or leaving Home; live badges stay red; a team's page keeps its colors. Checked in Chromium (production data): Home slate gray with five favorites and three live games under Everywhere; the K-State chip → College, K-State purple. Version `4.225.1-home-neutral`.
 
+**Merged (PR #438):** the Workers Builds check on `cb313d8` failed in 0 s (18:09:57) while the preview already served `4.225.1-home-neutral`; the agent commented on the PR and asked; user: "Merge it anyway". `test:release` passed on `cb313d8`; guardrails and certification-matrix green; preview gate 69 checks. Merged as `1f53185`; the production build of `main` succeeded; production `verify:prod --version=4.225.1-home-neutral` 69 checks, XC 18/20 and 26/21, Home in Chromium (about 18:41 UTC).
+
+## October 28, 2026 — Cloudflare build failure emails
+
+**Asked:** user: "Fix the Cloudflare build failures so the emails stop".
+
+**Found:** Workers Builds checks on the last 40 pull-request heads: 38 success, 2 failure, both Oct 28 and both the agent's: #433's first head `48d7b7d` (pushed right after a force-push of `main`'s state to the same branch) and #438's `cb313d8` (pushed on top of a docs commit whose build was still running). Both reported failure with start and end in the same second; the code was fine (the preview served `cb313d8`'s version; `wrangler deploy --dry-run` bundles 12.4 MB / 1.38 MB gzip with no errors once `npm ci` has installed `unpdf`). Cloudflare's changelog (Jul 24, 2026): Workers Builds skips a queued build when a newer build for the same trigger is queued; overlapping pushes are the pattern. The build logs are on Cloudflare's dashboard only (the MCP tools here have no builds API). No repository setting causes it.
+
+**Fixed:** the agent's process: "One push per build" in the handoff's Working notes (no push while the branch's build runs; no force-push of a branch with an open PR; wait for the preview to serve the pushed version). The earlier GitHub Actions failure emails (live scoreboard tester, certification) were fixed in #432.
+
+**Optional for the user:** Cloudflare dashboard → Notifications can limit Workers Builds failure emails (for example to the production branch).
+
+## October 28, 2026 — Favorite chips in team colors
+
+**Asked:** user: "Let's make the favorites buttons the team colors throughout the entire app. Tune them down some so they're not so obnoxious."
+
+**Found:** every My Teams chip took the viewed team's primary from the generic `button:not(.ghost,.tab)` rule (all purple on K-State's page).
+
+**Built:** `chipColors(item)` puts the chip's own catalog colors (`--chip` primary, `--chip-edge` secondary; only #rgb/#rrggbb) on each chip; `.favorite-teams .favorite-team` mixes the primary 35% into the dark panel with a 45% secondary edge, the viewed team's chip 60% with an 80% edge and a soft ring; a team without colors (Manhattan High School) stays neutral. Checked in Chromium with seven favorites on Home and on K-State's page. Version `4.225.2-team-chips`.
+

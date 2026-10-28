@@ -327,6 +327,8 @@ contains(worker,/const url=`\$\{ESPN_SITE\}\$\{board\.path\}\/scoreboard\?\$\{sc
 contains(page,/apiFetch\('\/live\/now',1,/,'Home must read the shared live board');
 contains(page,/'Live now · Everywhere'/,'Home must show every live game below the viewer\'s own');
 contains(page,/if\(homeView\)return applyTheme\('home',NEUTRAL_THEME\)/,'Home must use neutral colors, not a team\'s');
+contains(page,/style="\$\{chipColors\(item\)\}"/,'Each favorite chip must wear its own team\'s colors');
+contains(page,/\.favorite-teams \.favorite-team\{background:color-mix\(in srgb,var\(--chip,#29435f\) 35%/,'Favorite chips must be muted team colors');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');
