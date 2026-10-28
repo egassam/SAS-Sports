@@ -4519,26 +4519,13 @@
    "state": "off"
   },
   "cal-baptist|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-28T02:34:33.482Z",
-   "last_detail": "live 1-0 · 23' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "cal-baptist|Soccer|Men's|2026-10-27|1",
-    "title": "Men's · Cal Baptist at Santa Barbara",
-    "started_seen": "2026-10-28T02:25:42.186Z",
-    "live_passes": [
-     "2026-10-28T02:25:42.186Z",
-     "2026-10-28T02:27:01.870Z",
-     "2026-10-28T02:28:03.063Z",
-     "2026-10-28T02:29:05.434Z",
-     "2026-10-28T02:30:27.079Z",
-     "2026-10-28T02:31:28.307Z",
-     "2026-10-28T02:32:29.562Z",
-     "2026-10-28T02:33:31.521Z",
-     "2026-10-28T02:34:33.482Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-28T08:55:42.509Z",
+   "last_detail": "final W, 4-1",
+   "game": null,
+   "verified_at": "2026-10-28T08:55:42.509Z",
+   "verified_game": "Men's · Cal Baptist at Santa Barbara",
+   "verified_detail": "final W, 4-1"
   },
   "cal-baptist|Softball": {
    "state": "off"
@@ -5420,26 +5407,13 @@
    "state": "off"
   },
   "missouri-state|Football": {
-   "state": "on",
-   "last_check": "2026-10-28T02:34:34.347Z",
-   "last_detail": "live 10-3 · 1:58 - 3rd · ball: school (1st & 10 at SHSU 45) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "missouri-state|Football||2026-10-27|1",
-    "title": "Missouri State vs Sam Houston",
-    "started_seen": "2026-10-28T02:25:42.240Z",
-    "live_passes": [
-     "2026-10-28T02:25:42.240Z",
-     "2026-10-28T02:27:00.705Z",
-     "2026-10-28T02:28:02.981Z",
-     "2026-10-28T02:29:05.386Z",
-     "2026-10-28T02:30:06.411Z",
-     "2026-10-28T02:31:28.283Z",
-     "2026-10-28T02:32:29.838Z",
-     "2026-10-28T02:33:31.421Z",
-     "2026-10-28T02:34:34.347Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-28T08:55:47.520Z",
+   "last_detail": "final W, 24-3",
+   "game": null,
+   "verified_at": "2026-10-28T08:55:47.520Z",
+   "verified_game": "Missouri State vs Sam Houston",
+   "verified_detail": "final W, 24-3"
   },
   "missouri-state|Soccer": {
    "state": "done",
@@ -5463,26 +5437,13 @@
    "state": "off"
   },
   "sam-houston|Football": {
-   "state": "on",
-   "last_check": "2026-10-28T02:34:33.472Z",
-   "last_detail": "live 3-10 · 1:58 - 3rd · ball: opponent (1st & 10 at SHSU 45) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "sam-houston|Football||2026-10-27|1",
-    "title": "Sam Houston at Missouri St",
-    "started_seen": "2026-10-28T02:25:42.507Z",
-    "live_passes": [
-     "2026-10-28T02:25:42.507Z",
-     "2026-10-28T02:27:00.507Z",
-     "2026-10-28T02:28:04.404Z",
-     "2026-10-28T02:29:05.449Z",
-     "2026-10-28T02:30:06.436Z",
-     "2026-10-28T02:31:28.281Z",
-     "2026-10-28T02:32:30.597Z",
-     "2026-10-28T02:33:32.412Z",
-     "2026-10-28T02:34:33.472Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-28T08:55:41.656Z",
+   "last_detail": "final L, 3-24",
+   "game": null,
+   "verified_at": "2026-10-28T08:55:41.656Z",
+   "verified_game": "Sam Houston at Missouri St",
+   "verified_detail": "final L, 3-24"
   },
   "sam-houston|Soccer": {
    "state": "done",
@@ -10114,33 +10075,13 @@
    "state": "off"
   },
   "arkansas-pine-bluff|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-28T02:34:33.478Z",
-   "last_detail": "live 12-25 · End of 4th · Sets 0-4 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "arkansas-pine-bluff|Volleyball||2026-10-27|1",
-    "title": "Arkansas-Pine Bluff vs Louisiana Tech",
-    "started_seen": "2026-10-27T23:16:40.413Z",
-    "live_passes": [
-     "2026-10-27T23:16:40.413Z",
-     "2026-10-27T23:18:04.739Z",
-     "2026-10-27T23:19:05.507Z",
-     "2026-10-27T23:20:46.862Z",
-     "2026-10-27T23:22:08.415Z",
-     "2026-10-27T23:23:31.346Z",
-     "2026-10-27T23:24:52.966Z",
-     "2026-10-28T02:25:59.546Z",
-     "2026-10-28T02:27:00.580Z",
-     "2026-10-28T02:28:03.078Z",
-     "2026-10-28T02:29:05.456Z",
-     "2026-10-28T02:30:06.349Z",
-     "2026-10-28T02:31:28.238Z",
-     "2026-10-28T02:32:29.447Z",
-     "2026-10-28T02:33:31.483Z",
-     "2026-10-28T02:34:33.478Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-28T08:55:51.022Z",
+   "last_detail": "final L, 1-3",
+   "game": null,
+   "verified_at": "2026-10-28T08:55:51.022Z",
+   "verified_game": "Arkansas-Pine Bluff vs Louisiana Tech",
+   "verified_detail": "final L, 1-3"
   },
   "prairie-view-am|Baseball": {
    "state": "off"
@@ -10198,6 +10139,6 @@
   }
  },
  "version": "4.222.1-meetpro-track",
- "updated_at": "2026-10-28T02:34:34.351Z",
+ "updated_at": "2026-10-28T08:55:51.028Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

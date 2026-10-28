@@ -20,10 +20,6 @@
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Clemson: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| arkansas-pine-bluff | Volleyball | 🔴 on | live 12-25 · End of 4th · Sets 0-4 · official_schedule+live_scoreboard |
-| cal-baptist | Soccer | 🔴 on | live 1-0 · 23' · official_schedule+live_scoreboard |
-| missouri-state | Football | 🔴 on | live 10-3 · 1:58 - 3rd · ball: school (1st & 10 at SHSU 45) · official_schedule+live_scoreboard |
-| sam-houston | Football | 🔴 on | live 3-10 · 1:58 - 3rd · ball: opponent (1st & 10 at SHSU 45) · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1322,6 +1318,7 @@
 | arkansas | Soccer | ✅ off (passed) | Arkansas at LSU · 2026-10-10T07:23:28.884Z |
 | arkansas | Volleyball | ✅ off (passed) | Arkansas vs Texas · 2026-10-10T07:23:28.893Z |
 | arkansas-pine-bluff | Soccer | ✅ off (passed) | Arkansas-Pine Bluff vs Alabama A&M · 2026-10-25T21:48:21.050Z |
+| arkansas-pine-bluff | Volleyball | ✅ off (passed) | Arkansas-Pine Bluff vs Louisiana Tech · 2026-10-28T08:55:51.022Z |
 | arkansas-state | Football | ✅ off (passed) | Arkansas State vs Georgia St · 2026-10-25T06:45:59.570Z |
 | arkansas-state | Soccer | ✅ off (passed) | Arkansas State at Troy · 2026-10-25T21:48:16.887Z |
 | arkansas-state | Volleyball | ✅ off (passed) | Arkansas State at Southern Miss · 2026-10-23T02:02:22.431Z |
@@ -1372,6 +1369,7 @@
 | byu | Football | ✅ off (passed) | BYU vs Notre Dame · 2026-10-18T06:34:58.890Z |
 | byu | Soccer | ✅ off (passed) | BYU at Cincinnati · 2026-10-13T07:02:12.716Z |
 | byu | Volleyball | ✅ off (passed) | BYU vs West Virginia · 2026-10-11T06:38:17.001Z |
+| cal-baptist | Soccer | ✅ off (passed) | Men's · Cal Baptist at Santa Barbara · 2026-10-28T08:55:42.509Z |
 | cal-baptist | Volleyball | ✅ off (passed) | Cal Baptist at UC Riverside · 2026-10-24T07:12:58.482Z |
 | cal-poly | Soccer | ✅ off (passed) | Men's · Cal Poly at Gonzaga · 2026-10-25T06:46:00.910Z |
 | cal-state-fullerton | Soccer | ✅ off (passed) | Women's · Cal State Fullerton vs UC San Diego · 2026-10-25T01:30:05.794Z |
@@ -1635,6 +1633,7 @@
 | missouri | Football | ✅ off (passed) | Missouri at Ole Miss · 2026-10-17T23:31:04.296Z |
 | missouri | Soccer | ✅ off (passed) | Missouri at Ole Miss · 2026-10-16T04:55:15.245Z |
 | missouri | Volleyball | ✅ off (passed) | Missouri vs Florida · 2026-10-10T07:23:30.142Z |
+| missouri-state | Football | ✅ off (passed) | Missouri State vs Sam Houston · 2026-10-28T08:55:47.520Z |
 | missouri-state | Soccer | ✅ off (passed) | Men's · Missouri State vs Bradley · 2026-10-23T07:27:20.315Z |
 | monmouth | Field Hockey | ✅ off (passed) | Monmouth vs Fairfield · 2026-10-23T23:34:13.874Z |
 | monmouth | Soccer | ✅ off (passed) | Men's · Monmouth vs Stony Brook · 2026-10-24T21:15:41.017Z |
@@ -1776,6 +1775,7 @@
 | saint-louis | Volleyball | ✅ off (passed) | Saint Louis vs George Mason · 2026-10-24T21:15:40.116Z |
 | saint-marys | Soccer | ✅ off (passed) | Women's · Saint Mary's at Santa Clara · 2026-10-24T23:24:12.301Z |
 | saint-marys | Volleyball | ✅ off (passed) | Saint Mary's vs Denver · 2026-10-23T07:27:20.577Z |
+| sam-houston | Football | ✅ off (passed) | Sam Houston at Missouri St · 2026-10-28T08:55:41.656Z |
 | sam-houston | Soccer | ✅ off (passed) | Sam Houston vs FIU · 2026-10-23T07:27:21.757Z |
 | sam-houston | Volleyball | ✅ off (passed) | Sam Houston at Liberty · 2026-10-23T23:39:29.330Z |
 | samford | Volleyball | ✅ off (passed) | Samford vs Tennessee Tech · 2026-10-24T23:24:11.923Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 664/1956; on 4; off 1268; failing 20.
+Done 668/1956; on 0; off 1268; failing 20.
