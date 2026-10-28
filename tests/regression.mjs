@@ -319,8 +319,13 @@ contains(page,/let homeView=!new URLSearchParams\(location\.search\)\.get\('scho
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
-contains(page,/homeSection\('Live now',live,'live'\)\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now, then Today, then Coming up');
+contains(page,/homeSection\(mine,live,'live'\)\+everywhereHtml\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now (my teams, then everywhere), then Today, then Coming up');
 contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
+// Live now · Everywhere (PR 2): one shared endpoint, never per-school ESPN reads.
+contains(worker,/if\(url\.pathname==='\/live\/now'\)\{[\s\S]{0,300}max-age=60/,'/live/now must be cached a minute for every visitor');
+contains(worker,/const url=`\$\{ESPN_SITE\}\$\{board\.path\}\/scoreboard\?\$\{scoreboardQuery\(board\)\}`/,'/live/now must read each ESPN board once, for every school');
+contains(page,/apiFetch\('\/live\/now',1,/,'Home must read the shared live board');
+contains(page,/'Live now · Everywhere'/,'Home must show every live game below the viewer\'s own');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');

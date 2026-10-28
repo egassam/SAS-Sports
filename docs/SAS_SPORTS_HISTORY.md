@@ -3476,3 +3476,13 @@ Request: "Work through the open items" (after the SWAC).
 
 **Verified locally (Chromium, production data, the local page at the production origin):** the user's seven favorites: Home with no menus, Today (Florida tennis, Florida women's basketball exhibition) and Coming up with every team-sport's next game (Steelers and Chiefs included; Orioles and Royals have none, season over); Chiefs chip → Pro, Chiefs page; Home → back; College → College menus; no favorites → the message; `?school=kansas` → Kansas's page.
 
+**Verified (Home level, PR #436):** `test:release` passed on `be5e330`; CI green; preview gate K-State and KU all sports 69 checks (3 refreshes), XC 18/20 and 26/21; Home on the preview in Chromium (seven favorites, Chiefs chip, Home, College). Merged as `ab61631`; production `verify:prod --version=4.224.0-home-level` 69 checks, XC 18/20 and 26/21, Home with the seven favorites in Chromium (about 17:36 UTC).
+
+## October 28, 2026 — Home PR 2: Live now · Everywhere
+
+**Asked:** user: "Start PR 2 for all schools' live games" (the plan's second part: favorites, then all events).
+
+**Built:** Worker `/live/now` (`liveNowBoards`, `liveNowGames`, `liveNow`): the in-season boards (college football, the default college boards plus men's soccer, and the NFL, MLB and MLS boards of the catalog's pro teams; 14 boards in late October), each read once through `readJson` (30 s source cache); live games only; a college board's teams matched to college schools that sponsor the sport (an index of names, then `scoreboardTeamMatchesSchool`), a pro board's to the league's own teams by ESPN abbreviation or id (the Chiefs' "Kansas City" is never the college Kansas City); one card per game, named by the home side when it is in the catalog; the answer cached 60 s per location (`/__sas_cache/live-now`). Page: Home reads `/live/now` with its feeds and on each live refresh; a favorite's game on the board (either side, by name) joins Live now · My Teams (tagged with the favorite) unless the team's own feed has it live; the rest is Live now · Everywhere, smaller sports first, then college before pro, then start time, 30 shown and "Show all N live games"; the expanded view opens from a board card; no favorites: Everywhere above the how-to. `tests/live-now.mjs` (October boards; Oct 8 soccer and Oct 3 football payloads; an NFL sample) in `npm test` and `test:release`.
+
+**Checked locally (Chromium; the page at the production origin; `/live/now` answered from the stored Oct 8 soccer and Oct 3 football payloads and the NFL sample):** favorites K-State and Steelers: My Teams K-State soccer and the Steelers at the Chiefs (tagged Steelers), Everywhere South Dakota soccer, Houston and KU football, Cowboys; no favorites: all six under Everywhere.
+
