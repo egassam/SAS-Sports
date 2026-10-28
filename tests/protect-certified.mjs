@@ -42,6 +42,9 @@ for(const [schoolIndex,protectedSchool] of manifest.schools.entries()){
   assert.ok(protectedSchool.official_hosts.includes(catalogHost),`${protectedSchool.name} official domain changed without recertification`);
   assert.ok(Array.isArray(sponsored[protectedSchool.id]),`${protectedSchool.name} is missing its authoritative sponsored-sports guard`);
   assert.ok(themes[protectedSchool.id]?.primary,`${protectedSchool.name} has no team colors in src/team-themes.json`);
+  // The isolation check reads each school's first critical sport (Pacific's
+  // empty list asked for sport "undefined" on Oct 25).
+  assert.ok(protectedSchool.critical_sports.length,`${protectedSchool.name} has no critical sports`);
   for(const sport of protectedSchool.critical_sports)assert.ok(sponsored[protectedSchool.id].includes(sport),`${protectedSchool.name} ${sport} is certified but absent from its sponsored-sports guard`);
   for(const sport of protectedSchool.critical_sports){
     const source=schoolModuleSource[protectedSchool.id]||worker;

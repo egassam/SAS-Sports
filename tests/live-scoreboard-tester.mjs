@@ -45,6 +45,17 @@ for(const [name,f] of [
 ]){const r=checkCard(f,[game],now);assert.deepEqual([r.ok,r.lag],[false,true],name)}
 // An unlabeled ESPN game matches a card carrying the school's one label.
 assert.ok(checkCard(feed({live:[{...card,team_label:"Women's"}]}),[game],now).ok);
+// A board's team from its path: the same day's other team is not this game
+// (Robert Morris hockey, Oct 24: the women's final was read as the men's).
+{
+  const hockey={...game,sport:'Hockey',team_label:undefined,live_score_source:'https://site.api.espn.com/apis/site/v2/sports/hockey/mens-college-hockey/scoreboard',status:'Final',school_score:'1',opponent_score:'5',headline:'L, 1-5'};
+  const hockeyFeed=cards=>({status:200,body:[{sport:'Hockey',live:[],results:cards,upcoming:[],other:[]}],fetchedAt:now.toISOString()});
+  const menCard={...hockey,team_label:"Men's",results:[{label:'Result',value:'L, 1-5'}]},womenCard={...hockey,team_label:"Women's",headline:'L, 1-2',results:[{label:'Result',value:'L, 1-2'}]};
+  assert.ok(checkCard(hockeyFeed([womenCard,menCard]),[hockey],now).ok);
+  const soccer={...game,sport:'Soccer',team_label:undefined,live_score_source:'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.ncaa.w.1/scoreboard'};
+  const soccerFeed={status:200,body:[{sport:'Soccer',live:[{...card,sport:'Soccer',team_label:"Women's"}],results:[],upcoming:[{...card,sport:'Soccer',status:'Today',team_label:"Men's"}],other:[]}],fetchedAt:now.toISOString()};
+  const r=checkCard(soccerFeed,[soccer],now);assert.ok(r.ok,r.detail);
+}
 // Matching the second ESPN reading (the score moved during the read) is current.
 assert.ok(checkCard(feed({live:[{...card,school_score:'3'}]}),[game,{...game,school_score:'3'}],now).ok);
 // Broken, not lag: a duplicate card, or the scoreboard not joined to the schedule.

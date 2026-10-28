@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.222.1-meetpro-track';
+const VERSION='4.222.2-scoreboard-labels';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5409,6 +5409,9 @@ function scoreboardTeamMatchesSchool(team,school){
   const names=[team?.location,team?.displayName,team?.shortDisplayName].map(normalizedTeamName).filter(Boolean);
   return wanted.some(x=>names.includes(x));
 }
+// The team a board without a team label is for, from its ESPN path: the
+// women's volleyball board or soccer's "usa.ncaa.w.1" is the "Women's" game.
+function scoreboardBoardLabel(url){const path=String(url||'');return/\/womens-|\.w\.\d/.test(path)?"Women's":/\/mens-|\.m\.\d/.test(path)?"Men's":null}
 function scoreboardDateKey(value){const n=Date.parse(value||'');return Number.isFinite(n)?new Date(n).toISOString().slice(0,10):''}
 function scoreboardDates(now){
   return[-1,0,1].map(offset=>{const d=new Date(now);d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10).replaceAll('-','')});
@@ -5553,7 +5556,12 @@ function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=fals
     // A default board carries no team; a school that labels its one team
     // (KU's soccer and volleyball read "Women's") takes that label.
     const labels=new Set(scheduleEvents.filter(event=>event.sport===score.sport).map(event=>event.team_label||null));
-    const label=score.team_label||(score.join_only&&labels.size===1?[...labels][0]:null);
+    // A module's own board without a label joins the same way (Sacred Heart
+    // volleyball, Oct 27: its schedule reads "Women's", the board none, and
+    // the game showed live and still upcoming). With both teams on the
+    // schedule, the board's path names the team (Old Dominion soccer).
+    const boardLabel=scoreboardBoardLabel(score.live_score_source);
+    const label=score.team_label||(labels.size===1?[...labels][0]:labels.has(boardLabel)?boardLabel:null);
     const sameDay=index=>{const event=events[index];return index<scheduleEvents.length&&!joined.has(index)&&event.sport===score.sport&&scoreboardDateKey(event.start_time)===day&&(event.team_label||null)===label;};
     // A doubleheader game joins the official game with its number; any other
     // score joins the first official game that day no other score has taken.
