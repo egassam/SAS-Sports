@@ -3468,3 +3468,11 @@ Request: "Work through the open items" (after the SWAC).
 
 **Open:** PR 2 (all schools' live games); a live game can only be seen on the home screen during a real game (to watch on the next game day).
 
+## October 28, 2026 — Home becomes its own level (PR #436)
+
+**Asked:** user, with a phone screenshot of the PR #435 home screen (seven favorites: K-State, Florida, Manhattan High School, Steelers, Chiefs, Orioles, Royals): "We should add a home next to middle school that will house the home info. That way it's not confusing like now. The home screen shouldn't show league, schools and sports boxes. It should only show live and upcoming events for every level from middle school to professional."
+
+**Built (`public/index.html`):** `homeView` (on unless the address names a team with `?school=`), a Home button first in the level switch; `body.home-view` hides the finder (level menus, team, sport), the Favorite button and "Live from the field"; Home reads the favorites only (every level); a My Teams chip opens that team in its own level; a level button leaves Home; a team page with no sport chosen reads that team's in-season sports ("All in-season sports · live and today"). Coming up is no longer capped at 12 (the seven-team test lost the Steelers' and Chiefs' games); feeds four at a time (45 s to 25 s for 25 sports on a first visit); the status names the team on a team page. No favorites: "No favorite teams yet..." with how to add one. The screenshot's Florida tennis "Today · In progress · Oct 26" is right: tournaments Oct 26–Nov 1 under way.
+
+**Verified locally (Chromium, production data, the local page at the production origin):** the user's seven favorites: Home with no menus, Today (Florida tennis, Florida women's basketball exhibition) and Coming up with every team-sport's next game (Steelers and Chiefs included; Orioles and Royals have none, season over); Chiefs chip → Pro, Chiefs page; Home → back; College → College menus; no favorites → the message; `?school=kansas` → Kansas's page.
+
