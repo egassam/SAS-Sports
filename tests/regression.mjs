@@ -311,14 +311,19 @@ contains(page,/function loadFeaturedAthletes\(/,'Home screen athlete loading mus
 contains(page,/sas-athletes:v3:\$\{schoolId\}:\$\{g\.sport\}/,'Verified athletes must be cached per school and sport with a versioned key for instant, safe switching');
 contains(page,/const AUTO_SEASON_WINDOWS=/,'Automatic season windows must drive the All sports view');
 contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports must be derived from the current date');
-contains(page,/const requested=chosen\?\[chosen\]:\['Cross Country'\]/,'Homepage must automatically load only Cross Country');
+// Home screen (user, Oct 28): live games of the selected and favorite teams,
+// favorites in order, smaller sports first; then today; then coming up.
+contains(page,/if\(!chosen\)\{[^\n]*await loadHome\(/,'With no sport chosen the home screen must load the teams\' live and today games');
+contains(page,/function homeTeams\(\)\{const id=school\.value;return\[\.\.\.new Set\(\[id,\.\.\.favoriteSchoolIds\(\)\]/,'The home screen must read the selected team, then the favorites in order');
+contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
+contains(page,/homeSection\('Live now',live,'live'\)\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now, then Today, then Coming up');
+contains(page,/inBatches\(requested,2,/,'Home feeds must load two at a time');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');
 contains(page,/Number\(active\.has\(b\)\)-Number\(active\.has\(a\)\)/,'In-season sports must sort above out-of-season sports');
 contains(page,/SCHOOL_SPORTS\[s\.id\]=s\.sponsored_sports/,'Each team must load only the sports its catalog card lists');
 assert.deepEqual(JSON.parse(readFileSync(new URL('../src/sponsored-sports.json',import.meta.url),'utf8')).kstate.slice(0,3),['Baseball','Basketball','Cross Country'],'K-State must load only sports it sponsors');
-contains(page,/\['Cross Country'\]\.filter\(sp=>!SCHOOL_SPORTS\[id\]/,'Homepage loading must skip Cross Country when a school does not sponsor it');
 contains(page,/if\(!chosen&&SCHOOL_SPORTS\[id\]\)/,'Sponsored sports must remain visible while waiting for a new schedule');
 contains(page,/\|\|\(g\.featured_athletes\|\|\[\]\)\.length/,'A sport with verified athletes must remain visible without current events');
 assert.ok(page.indexOf("'Cross Country'")<page.indexOf("'Football'",page.indexOf('HOME_SPORT_PRIORITY')),'Cross Country must rank ahead of Football on the homepage');

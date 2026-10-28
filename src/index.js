@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.222.3-wmt-winner-first';
+const VERSION='4.223.0-home-my-teams';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
