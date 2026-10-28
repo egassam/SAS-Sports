@@ -205,6 +205,8 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .preview-individual-result strong{white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:560px){.preview-team-result{gap:8px}.preview-team-result strong{font-size:17px}.preview-group-title{font-size:12px}}
 .home-view .finder,.home-view #favorite,.home-view #fieldLive{display:none!important}.home-view .action-row{grid-template-columns:1fr auto}
+.favorite-teams .favorite-team{background:color-mix(in srgb,var(--chip,#29435f) 35%,#0b1622);color:#eef3f8;border:1.5px solid color-mix(in srgb,var(--chip-edge,#29435f) 45%,transparent);box-shadow:none;font-weight:800}
+.favorite-teams .favorite-team.active{background:color-mix(in srgb,var(--chip,#29435f) 60%,#0b1622);border-color:color-mix(in srgb,var(--chip-edge,#29435f) 80%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,#fff 35%,transparent)}
 .show-all-live{display:block;width:100%;margin:10px 0 2px}
 .home-tag{color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin:10px 2px 4px}.home-tag b{color:#f8fafc}
 </style>
@@ -671,6 +673,11 @@ function render(groups){
   // the event window.
   bindFeedCards();
 }
+// Each favorite chip wears its own team's colors, muted (user, October 28:
+// "make the favorites buttons the team colors throughout the entire app.
+// Tune them down some so they're not so obnoxious"). Only #rgb/#rrggbb from
+// the catalog card reach the style attribute.
+function chipColors(item){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=item?.theme||{},primary=hex(t.primary),edge=hex(t.secondary)||primary;return primary?`--chip:${primary};--chip-edge:${edge}`:''}
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
@@ -679,7 +686,7 @@ function updateFavorite(){
   favorite.setAttribute('aria-pressed',String(on));
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
-  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value&&!homeView?'active':''}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
+  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value&&!homeView?'active':''}" style="${chipColors(item)}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
   favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value&&!homeView)return;const item=catalogEntry(id);if(!item)return;homeView=false;applyHomeView();activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSchoolControls(id).then(()=>{populateSportFilter();loadFeed(false)})}));
 }
 // Levels of play. College is live; high school and professional teams are

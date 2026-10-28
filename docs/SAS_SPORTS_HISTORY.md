@@ -3508,3 +3508,11 @@ Request: "Work through the open items" (after the SWAC).
 
 **Optional for the user:** Cloudflare dashboard → Notifications can limit Workers Builds failure emails (for example to the production branch).
 
+## October 28, 2026 — Favorite chips in team colors
+
+**Asked:** user: "Let's make the favorites buttons the team colors throughout the entire app. Tune them down some so they're not so obnoxious."
+
+**Found:** every My Teams chip took the viewed team's primary from the generic `button:not(.ghost,.tab)` rule (all purple on K-State's page).
+
+**Built:** `chipColors(item)` puts the chip's own catalog colors (`--chip` primary, `--chip-edge` secondary; only #rgb/#rrggbb) on each chip; `.favorite-teams .favorite-team` mixes the primary 35% into the dark panel with a 45% secondary edge, the viewed team's chip 60% with an 80% edge and a soft ring; a team without colors (Manhattan High School) stays neutral. Checked in Chromium with seven favorites on Home and on K-State's page. Version `4.225.2-team-chips`.
+
