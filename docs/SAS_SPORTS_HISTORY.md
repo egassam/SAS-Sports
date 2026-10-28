@@ -3486,3 +3486,7 @@ Request: "Work through the open items" (after the SWAC).
 
 **Checked locally (Chromium; the page at the production origin; `/live/now` answered from the stored Oct 8 soccer and Oct 3 football payloads and the NFL sample):** favorites K-State and Steelers: My Teams K-State soccer and the Steelers at the Chiefs (tagged Steelers), Everywhere South Dakota soccer, Houston and KU football, Cowboys; no favorites: all six under Everywhere.
 
+**Verified (PR #437):** `test:release` passed on `11074f7`; CI green; preview: `/live/now` read all 14 boards (one live game, West Florida women's soccer), gate K-State and KU all sports 69 checks (3 refreshes), XC 18/20 and 26/21, Home in Chromium (favorites K-State and Steelers: Everywhere West Florida; no favorites: Everywhere above the how-to). The Cache API answers on production (a second feed read came back `fresh` at the same location, ARN); each location keeps its own copy. Merged as `bdb67d4`; production `verify:prod --version=4.225.0-live-everywhere` 69 checks, XC 18/20 and 26/21, `/live/now` 14/14 boards (West Florida and Quinnipiac soccer live), Home in Chromium (about 18:04 UTC).
+
+**Open:** a favorite's live game on the home screen is to be seen during a real game; high and middle schools appear only through favorites (no ESPN board).
+
