@@ -276,6 +276,9 @@ function updateDemo(){
 const LIVE_REFRESH_MS=15*1000, IDLE_REFRESH_MS=5*60*1000, REFRESH_LOADER_MIN_MS=1500;
 // Each team's colors come with its catalog card (src/team-themes.json, user,
 // October 16: catalog step 1); this is the SAS default.
+// Home belongs to no team (user, October 28: "We should make the home screen
+// colors neutral"): slate grays; a team's own page keeps its colors.
+const NEUTRAL_THEME={primary:'#94a3b8',secondary:'#cbd5e1',panel:'#1e293b',panelDark:'#0f172a',line:'#334155',onAccent:'#0f172a'};
 const SAS_THEME={primary:'#7cf7c4',secondary:'#42d3ff',panel:'#11243a',panelDark:'#081524',line:'#29435f',onAccent:'#07111f'};
 const BOOTSTRAP_SPORTS=['Football','Flag Football','Volleyball','Soccer','Cross Country','Basketball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Baseball','Softball','Lacrosse','Field Hockey','Hockey','Gymnastics','Beach Volleyball','Water Polo','Fencing','Bowling','Equestrian','Rifle','Skiing','Triathlon','Acrobatics & Tumbling','STUNT',"Men's Volleyball"];
 const AUTO_SEASON_WINDOWS={
@@ -325,12 +328,16 @@ function favoriteSchoolIds(){
 }
 function saveFavoriteSchoolIds(ids){localStorage.setItem('sas-sports-favorites',JSON.stringify([...new Set(ids)]));localStorage.removeItem('sas-sports-favorite')}
 function applyCurrentSchoolTheme(){
+  if(homeView)return applyTheme('home',NEUTRAL_THEME);
   const themeId=school.value||savedSchool()||'sas';
   // The card's colors; before the card arrives, the colors this device last
   // showed for the team (no flash of the default colors on load).
   let theme=catalogEntry(themeId)?.theme;
   try{if(theme)localStorage.setItem('sas-theme:v1',JSON.stringify({id:themeId,theme}));else{const saved=JSON.parse(localStorage.getItem('sas-theme:v1')||'null');if(saved?.id===themeId)theme=saved.theme}}catch{}
-  theme=theme||SAS_THEME;const root=document.documentElement;
+  applyTheme(themeId,theme||SAS_THEME);
+}
+function applyTheme(themeId,theme){
+  const root=document.documentElement;
   root.dataset.teamTheme=themeId;
   root.style.setProperty('--team-primary',theme.primary);
   root.style.setProperty('--team-secondary',theme.secondary);
@@ -529,7 +536,7 @@ const EVERYWHERE_SHOWN=30;
 // school to professional"): the favorites of every level, with no menus. A
 // link to one team (?school=) opens that team instead.
 let homeView=!new URLSearchParams(location.search).get('school');
-function applyHomeView(){document.body.classList.toggle('home-view',homeView);if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
+function applyHomeView(){document.body.classList.toggle('home-view',homeView);applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
 function homeMode(){return homeView||!sportFilter.value}
 // Home: the favorites, in their order. A team's own page with no sport
 // chosen: that team alone.

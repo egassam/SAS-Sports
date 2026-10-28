@@ -3490,3 +3490,9 @@ Request: "Work through the open items" (after the SWAC).
 
 **Open:** a favorite's live game on the home screen is to be seen during a real game; high and middle schools appear only through favorites (no ESPN board).
 
+## October 28, 2026 — Home colors neutral
+
+**Asked:** user: "We should make the home screen colors neutral" (Home took the selected school's colors: K-State purple in the user's screenshot).
+
+**Built:** `NEUTRAL_THEME` (slate grays) and `applyTheme`; `applyCurrentSchoolTheme` uses it while `homeView`, and `applyHomeView` re-applies the theme on entering or leaving Home; live badges stay red; a team's page keeps its colors. Checked in Chromium (production data): Home slate gray with five favorites and three live games under Everywhere; the K-State chip → College, K-State purple. Version `4.225.1-home-neutral`.
+
