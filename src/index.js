@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.224.0-home-level';
+const VERSION='4.225.0-live-everywhere';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5549,6 +5549,58 @@ async function fetchLiveScoreboards(school,sport,now,reads=[],dates=scoreboardDa
   }
   return mergeEvents([found]);
 }
+// Every live game the app can name, from every level ESPN publishes a board
+// for (user, October 28: home screen "favorites and then all events"; PR 2).
+// Each board is read once for all schools, never once per school (ESPN
+// refused per-school volume on Oct 10): college boards are matched to college
+// catalog schools that sponsor the sport (scoreboardTeamMatchesSchool), pro
+// boards to the league's own teams by ESPN abbreviation or id. A game names
+// one team: the home side when it is in the catalog, else the away side.
+// Boards out of season are not read. High and middle schools have no board.
+const LIVE_NOW_COLLEGE_BOARDS=[
+  {path:'football/college-football',sport:'Football'},
+  ...Object.entries(DEFAULT_SCOREBOARDS).flatMap(([sport,boards])=>boards.map(board=>({path:board.path,sport,team_label:board.team_label||scoreboardBoardLabel(`/${board.path}/`)}))),
+  {path:'soccer/usa.ncaa.m.1',sport:'Soccer',team_label:"Men's"}
+].map(board=>({...board,level:'college'}));
+function liveNowBoards(now=new Date()){
+  const month=now.getUTCMonth()+1,pro=new Map();
+  for(const school of schools){if(school.level!=='pro')continue;const config=proTeam(school.id);if(config?.kind==='espn-team'&&!pro.has(config.espn.path))pro.set(config.espn.path,{path:config.espn.path,sport:config.sport,level:'pro'});}
+  return[...LIVE_NOW_COLLEGE_BOARDS,...pro.values()].filter(board=>inSeason(board.sport,month,board.level==='pro'));
+}
+function liveNowGames(boards,now=new Date()){
+  const games=[],seen=new Set();
+  const college=schools.filter(school=>(school.level||'college')==='college');
+  const index=new Map();
+  for(const school of college)for(const name of [school.name,school.short_name,...(school.aliases||[])]){const key=normalizedTeamName(name);if(key.length<2)continue;if(!index.has(key))index.set(key,[]);index.get(key).push(school);}
+  const collegeMatch=(team,sport)=>{
+    const found=new Set();
+    for(const name of [team?.location,team?.displayName,team?.shortDisplayName])for(const school of index.get(normalizedTeamName(name))||[])found.add(school);
+    return[...found].find(school=>(sponsoredSports[school.id]||school.sponsored_sports||[]).includes(sport)&&scoreboardTeamMatchesSchool(team,school))||null;
+  };
+  const proMatch=(team,path)=>schools.find(school=>{if(school.level!=='pro')return false;const config=proTeam(school.id);if(config?.kind!=='espn-team'||config.espn.path!==path)return false;return config.espn.id!=null?String(config.espn.id)===String(team?.id):String(config.espn.team||'').toLowerCase()===String(team?.abbreviation||'').toLowerCase();})||null;
+  for(const {board,payload,url} of boards){
+    for(const item of payload?.events||[]){
+      const competition=item?.competitions?.[0],state=String(competition?.status?.type?.state||item?.status?.type?.state||'').toLowerCase();
+      if(state!=='in'||seen.has(`${board.path}|${item.id}`))continue;
+      const sides=[...(competition?.competitors||[])].sort((a,b)=>(a.homeAway==='home'?0:1)-(b.homeAway==='home'?0:1));
+      let school=null;
+      for(const side of sides){school=board.level==='pro'?proMatch(side.team,board.path):collegeMatch(side.team,board.sport);if(school)break;}
+      if(!school)continue;
+      seen.add(`${board.path}|${item.id}`);
+      const provider={path:board.path,team_label:board.team_label||undefined,sourceName:'Live scoreboard'};
+      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id)});
+    }
+  }
+  return games;
+}
+async function liveNow(now=new Date()){
+  const boards=liveNowBoards(now),reads=await Promise.all(boards.map(async board=>{
+    const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}`;
+    const payload=await readJson(url,30);
+    return{board,payload,url,ok:Boolean(payload)};
+  }));
+  return{fetched_at:now.toISOString(),games:liveNowGames(reads.filter(read=>read.ok),now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
+}
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
   const events=scheduleEvents.slice(),joined=new Set();
   for(const score of scoreEvents){
@@ -5831,6 +5883,15 @@ export default{
       // own device cache and the store above handle reuse).
       stored.headers.set('cache-control','no-store, no-cache, must-revalidate');
       return stored;
+    }
+    // Every live game, shared by every visitor for a minute at each location.
+    if(url.pathname==='/live/now'){
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/live-now?v=${VERSION}`,url.origin).toString());
+      const cached=await cache.match(key);if(cached)return cached;
+      const response=json(await liveNow(new Date()));
+      response.headers.set('cache-control','public, max-age=60');
+      ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
     }
     if(url.pathname==='/live/feed/grouped'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
