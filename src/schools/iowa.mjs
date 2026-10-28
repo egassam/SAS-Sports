@@ -6,6 +6,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // reader: schedule-item-team headings, the venue on the date box).
 export const iowaSchool={
   id:'iowa',
+  // Rewritten finals (a winner-first score, Oct 28) store their expanded
+  // views again.
+  highlightRevision:1,
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Cross Country','Field Hockey','Football','Golf','Gymnastics','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
@@ -305,6 +308,10 @@ export function createIowaHandlers({makeEvent,visibleText,absoluteUrl,recapMatch
       if(/^(?:cancel+ed|postponed)\b/i.test(slot))continue;
       // "W Win 3-1"; Texas A&M's "W, Win 3-1".
       const result=slot.match(/^([WLT]),?\s+(?:Win|Loss|Tie)\s+(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\b/i);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       let opponent=name;
       const round=meet?roundOf(name):null,xc=sport==='Cross Country'?teamOf(name):null;
       if(round)opponent=round;

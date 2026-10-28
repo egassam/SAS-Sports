@@ -198,6 +198,10 @@ export function createCincinnatiHandlers({makeEvent,visibleText,absoluteUrl,reca
       if(!opponent||!divider&&!meet)continue;
       const slot=field(block,/schedule-event-item__result[^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i);
       const result=meet?null:slot.match(/^([WLT])\s+(?:Win|Loss|Tie)\s+(\d+)\s*-\s*(\d+)\b/i);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       // "11:00 PM EDT": the published Eastern time (games and swimming dual
       // meets); "TBA", "All Day" or an empty slot with the time-tba date class
       // is the date alone.

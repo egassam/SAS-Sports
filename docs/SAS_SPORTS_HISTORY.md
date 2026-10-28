@@ -3443,3 +3443,12 @@ Request: "Work through the open items" (after the SWAC).
 **Verified:** `test:release` passed on `6cb234b`. CI green (guardrails, certification-matrix, Workers build), no conflict. Preview `4.222.2-scoreboard-labels`: `verify:preview --refreshes=3` for the 20 changed school-sports, 120 checks passed, XC 18/20 and 26/21; Virginia vs Louisville read L, 0-1. Merged as `817c616`; production `verify:prod --version=4.222.2-scoreboard-labels` for the same 20, 120 checks passed, XC 18/20 and 26/21 (about 15:09 UTC).
 
 **Open:** the tester's failing rows stay until each sport's next game passes live (no game was live during the session); WMT modules without the winner-first swap (Auburn, Clemson, Iowa, LSU, Miami, Missouri, Nebraska, Northwestern); men's soccer at schools whose module names only the women's board has no live score.
+
+## October 28, 2026 — WMT winner-first scores (PR #433)
+
+**Asked:** user: "Fix the other WMT schools' winner-first scores too" (after #432 fixed Virginia's shootout "L 1-0").
+
+**Found:** 17 WMT readers (`schedule-event-item-result__label`, Arizona State's grid label) took the score as written: Arizona State, Auburn, BYU, Cincinnati, Clemson, Iowa, LSU, Miami, Missouri, Nebraska, Northwestern, Penn State, Purdue, Texas A&M, UCF, UCLA, Vanderbilt (Georgia Tech and Virginia already swapped). A scan of production feeds (every sponsored sport but cross country and golf, 1,136 finals) found two finals whose letter contradicted the score: Iowa football at Minnesota, Oct 24 ("L, 13-10") and Nebraska men's basketball vs Saint Louis, exhibition, Oct 9 ("L, 79-74"). The official pages parsed with the fix read L, 10-13 and L, 74-79.
+
+**Built:** the swap after each reader's result match, skipped for cross country and golf (the lower score wins: a dual's "W 20-35" is right as written); Iowa and Nebraska `highlightRevision:1`; `tests/regression.mjs` checks each of the 17 readers. Version `4.222.3-wmt-winner-first`. PR #433 also carries the #432 handoff commit, whose first Workers build failed (the log is on Cloudflare's dashboard only; all earlier builds green).
+

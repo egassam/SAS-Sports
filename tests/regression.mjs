@@ -349,6 +349,10 @@ contains(worker,/provider\.path\}\/scoreboard\?\$\{scoreboardQuery\(provider\)\}
 contains(worker,/state===['"]in['"]\?['"]Live['"]:['"]Final['"]/,'In-progress games must become Live');
 contains(worker,/event\.school_score=ours\.score/,'Live scores must update the selected school');
 contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconcile onto official schedule events');
+// WMT result cards may write a score winner first ("L 1-0" SO, Virginia field
+// hockey; "L 13-10", Iowa football at Minnesota): every WMT reader takes it
+// from its own side, except where the lower score wins.
+for(const id of ['arizona-state','auburn','byu','cincinnati','clemson','iowa','lsu','miami','missouri','nebraska','northwestern','penn-state','purdue','texas-am','ucf','ucla','vanderbilt'])contains(readFileSync(new URL(`../src/schools/${id}.mjs`,import.meta.url),'utf8'),/!\/\^\(\?:Cross Country\|Golf\)\$\/\.test\(sport\)&&\(\/\^W\/i\.test\(result\[1\]\)/,`${id}: a winner-first WMT score must read from the team's side`);
 contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
 contains(worker,/schoolModule\(school\?\.id\)\?\.school\.liveScoreboards\?\.\[sport\]/,'School scoreboards must be explicitly configured per sport, in the school module');
 contains(worker,/\{school:kstateSchool\}/,'K-State must be registered in SCHOOL_MODULES (its scoreboards live in its module)');

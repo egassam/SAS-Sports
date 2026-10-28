@@ -156,6 +156,10 @@ export function createArizonaStateHandlers({makeEvent,visibleText,scheduleYearFo
       if(!opponent||/\bintrasquad\b|\bscrimmage\b/i.test(opponent))continue;
       const completed=/schedule-event-item--completed/i.test(opening);
       const result=field(block,/schedule-event-grid-result__label[^>]*>([\s\S]*?)<\/strong>\s*<!---->/i).match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       const timeText=field(block,/schedule-event-grid-date__time[^>]*>([\s\S]*?)<\/strong>/i).replace(/\s*\([A-Z]{2,4}\)\s*$/,'');
       const year=yearFor(month,day);
       // July-December belong to the season's first year, January-June to its second.
