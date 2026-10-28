@@ -314,10 +314,13 @@ contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports mus
 // Home screen (user, Oct 28): live games of the selected and favorite teams,
 // favorites in order, smaller sports first; then today; then coming up.
 contains(page,/if\(!chosen\)\{[^\n]*await loadHome\(/,'With no sport chosen the home screen must load the teams\' live and today games');
-contains(page,/function homeTeams\(\)\{const id=school\.value;return\[\.\.\.new Set\(\[id,\.\.\.favoriteSchoolIds\(\)\]/,'The home screen must read the selected team, then the favorites in order');
+contains(page,/function homeTeams\(\)\{return homeView\?favoriteSchoolIds\(\):\[school\.value\]/,'Home must read the favorites in order; a team page with no sport, that team');
+contains(page,/let homeView=!new URLSearchParams\(location\.search\)\.get\('school'\)/,'The app must open on Home unless a link names a team');
+contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
+contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
 contains(page,/homeSection\('Live now',live,'live'\)\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now, then Today, then Coming up');
-contains(page,/inBatches\(requested,2,/,'Home feeds must load two at a time');
+contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
 contains(page,/const HOME_SPORT_PRIORITY=\['Cross Country','Soccer','Volleyball'/,'Homepage must prioritize smaller fall sports');
 contains(page,/HOME_SPORT_PRIORITY\.indexOf\(a\)-HOME_SPORT_PRIORITY\.indexOf\(b\)/,'Automatic in-season sports must use the smaller-sports-first order');
 contains(page,/● In season · /,'In-season sports must include a color-independent text label in the sport dropdown');
