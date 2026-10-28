@@ -3452,3 +3452,5 @@ Request: "Work through the open items" (after the SWAC).
 
 **Built:** the swap after each reader's result match, skipped for cross country and golf (the lower score wins: a dual's "W 20-35" is right as written); Iowa and Nebraska `highlightRevision:1`; `tests/regression.mjs` checks each of the 17 readers. Version `4.222.3-wmt-winner-first`. PR #433 also carries the #432 handoff commit, whose first Workers build failed (the log is on Cloudflare's dashboard only; all earlier builds green).
 
+**Verified (WMT winner-first, PR #433):** `test:release` passed on `8fead92`; CI green (guardrails, certification-matrix, Workers build, which succeeded on this head); preview gate Iowa Football and Nebraska Basketball, 12 checks (3 refreshes at the user's request), XC 18/20 and 26/21; preview vs production, 1,363 finals of the 17 schools: only the two intended finals changed. Merged as `344982e`; production `verify:prod --version=4.222.3-wmt-winner-first` for Iowa Football and Nebraska Basketball 6/6 each, XC 18/20 and 26/21 (about 16:05 UTC); the finals read L, 10-13 and L, 74-79.
+
