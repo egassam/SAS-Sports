@@ -233,6 +233,27 @@ export function meetProResults(html,team){
   }
   return races;
 }
+// Cross country on AthleticLIVE (live.letsgorun.com, October 28): the timer
+// posts a meet's races there with live results on the day. Each document is
+// JSON in short keys: the meet (`xcp`: its races), a race's results (`r`:
+// place `p`, time `m`, athlete `a` with name `n`, year `y` and team `t.n`),
+// its team scores (`ms`: place `p`, team `tn`, score `sc`) and its entries
+// (`en`). Names come in capitals ("Jack MCCARTHY"). The same shape as
+// `meetProResults`, plus `entered` and `updated`.
+export const ATHLETIC_LIVE_DOCS='https://athleticlive.blob.core.windows.net/$web/';
+export function athleticLiveXcRaces(meet,races,team){
+  const teams=new Set([].concat(team).map(meetProTrackTeam)),isOurs=name=>teams.has(meetProTrackTeam(name));
+  const out=[];
+  for(const [i,race] of (meet?.xcp||[]).entries()){
+    const doc=races[i]||{},placed=(doc.results?.r||[]).filter(r=>Number(r.p)>0&&r.m).sort((a,b)=>Number(a.p)-Number(b.p));
+    const runners=placed.filter(r=>isOurs(r.a?.t?.n)).map(r=>({place:Number(r.p),athlete:displayName(r.a.n).replace(/\bMc([a-z])/g,(_,c)=>`Mc${c.toUpperCase()}`),year:r.a.y||'',team:r.a.t.n,time:r.m}));
+    const entered=(doc.entries?.en||[]).filter(r=>isOurs(r.a?.t?.n)).length;
+    if(!runners.length&&!entered)continue;
+    const scores=doc.score?.ms||[],mine=scores.find(s=>isOurs(s.tn));
+    out.push({race:race.n,team:mine?{place:Number(mine.p),team:mine.tn,score:mine.sc!=null?String(mine.sc):''}:null,teams:scores.length,runners,field:placed.length,entered,entries:(doc.entries?.en||[]).length,updated:doc.results?.ua||null});
+  }
+  return out;
+}
 
 // Track and field on MeetPro: the meet's index lists every event with a link
 // to its results page (results_<id>.html) and, when the meet is scored, the

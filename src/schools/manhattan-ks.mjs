@@ -25,7 +25,16 @@ export const LETSGORUN_MEETPRO={
     '2026-10-02':['2026_Centennial_League_Middle_School_XC_Championships']
   },
   // Trial track meets for the live reader: {date, folder, name, schools}.
-  trials:[]
+  trials:[],
+  // Meets the timer posts to AthleticLIVE (live.letsgorun.com), live on the
+  // day: `meet` is the AthleticLIVE id; `schools` gives each school's team
+  // names there. User, October 28: "Results: live.letsgorun.com/meets/79638
+  // ... Host school: Flint Hills Christian School" (run at Warner Memorial
+  // Park, Manhattan; the 2025 meet, id 58501, wrote "St Mary's Academy").
+  athleticLive:[
+    {date:'2026-10-31',time:'09:45',meet:79638,sport:'Cross Country',name:'Kansas Approved Schools State X-C Championships',exclude:/\bkids\b/i,
+      schools:{'flint-hills-christian-ks':['Flint Hills Christian'],'st-marys-academy-ks':["St Mary's Academy","St Mary's"]}}
+  ]
 };
 
 export const manhattanKsSchool={
