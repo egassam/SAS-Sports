@@ -205,8 +205,8 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .preview-individual-result strong{white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:560px){.preview-team-result{gap:8px}.preview-team-result strong{font-size:17px}.preview-group-title{font-size:12px}}
 .home-view .finder,.home-view #favorite,.home-view #fieldLive{display:none!important}.home-view .action-row{grid-template-columns:1fr auto}
-.favorite-teams .favorite-team{background:color-mix(in srgb,var(--chip,#29435f) 35%,#0b1622);color:#eef3f8;border:1.5px solid color-mix(in srgb,var(--chip-edge,#29435f) 45%,transparent);box-shadow:none;font-weight:800}
-.favorite-teams .favorite-team.active{background:color-mix(in srgb,var(--chip,#29435f) 60%,#0b1622);border-color:color-mix(in srgb,var(--chip-edge,#29435f) 80%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,#fff 35%,transparent)}
+.favorite-teams .favorite-team{background:color-mix(in srgb,var(--chip,#29435f) 80%,#0b1622);color:var(--chip-ink,#eef3f8);border:1.5px solid color-mix(in srgb,var(--chip-edge,#29435f) 70%,transparent);box-shadow:none;font-weight:800}
+.favorite-teams .favorite-team.active{background:var(--chip,#29435f);border-color:var(--chip-edge,#29435f);box-shadow:0 0 0 2px color-mix(in srgb,#fff 60%,transparent)}
 .show-all-live{display:block;width:100%;margin:10px 0 2px}
 .home-tag{color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin:10px 2px 4px}.home-tag b{color:#f8fafc}
 </style>
@@ -588,7 +588,7 @@ function homeSections(groups){
   if(currentView==='upcoming')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='upcoming'),coming};
   return{live,everywhere,todays,coming};
 }
-function homeItem(x,kind){return`<div class="home-item"><div class="home-tag"><b>${esc(x.school)}</b> · ${esc(x.sport)}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
+function homeItem(x,kind){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}><div class="home-tag"><b>${esc(x.school)}</b> · ${esc(x.sport)}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 function homeSection(title,items,kind){if(!items.length)return'';return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 function renderHome(groups){
   const {live,everywhere,todays,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
@@ -605,7 +605,7 @@ function renderHome(groups){
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
 }
 function bindFeedCards(){
-  feed.querySelectorAll('[data-event-id]').forEach(el=>el.addEventListener('click',ev=>{if(ev.target.closest('.live-more details'))return;openEvent(el.dataset.eventId)}));
+  feed.querySelectorAll('[data-event-id]').forEach(el=>el.addEventListener('click',ev=>{if(ev.target.closest('.live-more details'))return;const team=homeView&&el.closest('[data-open-team]');if(team){openTeam(team.dataset.openTeam,team.dataset.openSport);return}openEvent(el.dataset.eventId)}));
   feed.querySelectorAll('.live-card[data-event-id] .live-more details').forEach(d=>{const key=d.closest('[data-event-id]').dataset.eventId+'|'+d.querySelector('summary').textContent.replace(/\s*\(\d+\)$/,'');if(openLiveDetails.has(key))d.open=true;d.addEventListener('toggle',()=>{d.open?openLiveDetails.add(key):openLiveDetails.delete(key)})});
 }
 // One team-sport's grouped feed, or its last good copy when the rebuild fails.
@@ -677,7 +677,15 @@ function render(groups){
 // "make the favorites buttons the team colors throughout the entire app.
 // Tune them down some so they're not so obnoxious"). Only #rgb/#rrggbb from
 // the catalog card reach the style attribute.
-function chipColors(item){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=item?.theme||{},primary=hex(t.primary),edge=hex(t.secondary)||primary;return primary?`--chip:${primary};--chip-edge:${edge}`:''}
+// Opens a team's own page (a favorite chip; a live game on Home, with its
+// sport: user, October 28: "the live games on the home page should go to that
+// teams page if you click on them").
+function openTeam(id,sport=''){if(!id)return;homeView=false;applyHomeView();activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSchoolControls(id).then(()=>{populateSportFilter();if(sport&&[...sportFilter.options].some(o=>o.value===sport))sportFilter.value=sport;loadFeed(false);window.scrollTo({top:0})})}
+// A chip wears the color the team is known by (user, October 28: "Orioles
+// button is not orange"): the primary, or the secondary when the primary is
+// near black or gray (Steelers gold, Giants orange; Raiders silver); text dark
+// on a light chip.
+function chipColors(item){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=item?.theme||{},primary=hex(t.primary),secondary=hex(t.secondary);if(!primary)return'';const rgb=v=>{const h=v.length===4?v.slice(1).replace(/./g,c=>c+c):v.slice(1);return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)},light=v=>{const c=rgb(v);return(Math.max(...c)+Math.min(...c))/2>=.12},vivid=v=>{if(!v)return false;const c=rgb(v),hi=Math.max(...c),lo=Math.min(...c),l=(hi+lo)/2;return l>=.12&&l<=.9&&(hi-lo)/(1-Math.abs(2*l-1)||1)>=.3},main=vivid(primary)?primary:vivid(secondary)?secondary:light(primary)||!secondary?primary:secondary,edge=main===primary?secondary||primary:primary,lum=rgb(main).map(c=>c<=.03928?c/12.92:((c+.055)/1.055)**2.4).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);return`--chip:${main};--chip-edge:${edge};--chip-ink:${lum>.3?'#10161f':'#fff'}`}
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
@@ -687,7 +695,7 @@ function updateFavorite(){
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
   favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value&&!homeView?'active':''}" style="${chipColors(item)}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
-  favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value&&!homeView)return;const item=catalogEntry(id);if(!item)return;homeView=false;applyHomeView();activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSchoolControls(id).then(()=>{populateSportFilter();loadFeed(false)})}));
+  favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value&&!homeView)return;openTeam(id)}));
 }
 // Levels of play. College is live; high school and professional teams are
 // added later, each with its own grouping (state, league) and team wording.
