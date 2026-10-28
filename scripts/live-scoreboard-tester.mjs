@@ -39,7 +39,7 @@ const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF')},fetch:()=>{throw Error('The tester reads ESPN itself')}};
-export const worker=Function(...Object.keys(deps),source+';return {VERSION,SCHOOL_MODULES,liveScoreboardProviders,parseScoreboardPayload,scoreboardTeamMatchesSchool,scoreboardQuery,scoreboardDates,scoreboardDateKey};')(...Object.values(deps));
+export const worker=Function(...Object.keys(deps),source+';return {VERSION,SCHOOL_MODULES,liveScoreboardProviders,parseScoreboardPayload,scoreboardTeamMatchesSchool,scoreboardQuery,scoreboardDates,scoreboardDateKey,scoreboardBoardLabel};')(...Object.values(deps));
 
 export const LIVE_POLLS=2,LIVE_SPACING_MS=60*1000,MAX_FEED_AGE_MS=90*1000,FINAL_GRACE_MS=15*60*1000,GAME_FORGET_MS=12*60*60*1000;
 const sportKey=(school,sport)=>`${school}|${sport}`;
@@ -102,8 +102,12 @@ export function scoreboardGames(watched,payloads,now){
   return {games:[...unique.values()],nextStart};
 }
 
-// A default board carries no team: the card may carry the school's one label (KU's "Women's").
-const sameGame=(card,game)=>(!game.team_label||card.team_label===game.team_label)&&worker.scoreboardDateKey(card.start_time)===worker.scoreboardDateKey(game.start_time)&&(!game.game_number||card.game_number===game.game_number);
+// A board without a team label names its team by its path (women's
+// volleyball, soccer's "usa.ncaa.w.1"): Robert Morris's women's hockey final
+// on the same day was read as the men's game (Oct 24). A card without a label
+// is the school's one team (KU's "Women's" reads either way).
+const gameLabel=game=>game.team_label||worker.scoreboardBoardLabel(game.live_score_source);
+const sameGame=(card,game)=>(!gameLabel(game)||!card.team_label||card.team_label===gameLabel(game))&&worker.scoreboardDateKey(card.start_time)===worker.scoreboardDateKey(game.start_time)&&(!game.game_number||card.game_number===game.game_number);
 const scoreOf=x=>`${x.school_score??''}-${x.opponent_score??''}`;
 
 // Checks one game against the app's group. `expected` holds one or two ESPN

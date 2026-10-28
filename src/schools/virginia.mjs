@@ -6,6 +6,9 @@ import {createTfrrsMeetResults} from '../sidearm-school-kit.mjs';
 // reader: src/schools/purdue.mjs; scripts/port-wmt.mjs).
 export const virginiaSchool={
   id:'virginia',
+  // Rewritten finals (field hockey's shootout vs Louisville, Oct 23) store
+  // their expanded views again.
+  highlightRevision:1,
   // Sports whose official schedule cards this module reads itself. Every
   // other sport keeps the shared parsers.
   cardSports:new Set(['Baseball','Basketball','Cross Country','Field Hockey','Football','Golf','Lacrosse','Rowing','Soccer','Softball','Swimming & Diving','Tennis','Track & Field','Volleyball','Wrestling']),
@@ -336,6 +339,9 @@ export function createVirginiaHandlers({makeEvent,visibleText,absoluteUrl,recapM
       if(/^(?:cancel+ed|postponed)\b/i.test(slot))continue;
       // "W Win 3-1"; Texas A&M's "W, Win 3-1".
       const result=slot.match(/^([WLT]),?\s+(?:Win|Loss|Tie)\s+(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\b/i);
+      // A shootout score is written winner first ("L 1-0" SO, field hockey vs
+      // Louisville, Oct 23): the score is the team's after its result letter.
+      if(result&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       let opponent=name;
       const round=meet?roundOf(name):null,xc=sport==='Cross Country'?teamOf(name):null;
       if(round)opponent=round;
