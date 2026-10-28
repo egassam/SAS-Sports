@@ -588,7 +588,7 @@ function homeSections(groups){
   if(currentView==='upcoming')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='upcoming'),coming};
   return{live,everywhere,todays,coming};
 }
-function homeItem(x,kind){return`<div class="home-item"${kind==='live'&&catalogEntry(x.school_id)?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}><div class="home-tag"><b>${esc(x.school)}</b> · ${esc(x.sport)}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
+function homeItem(x,kind){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}><div class="home-tag"><b>${esc(x.school)}</b> · ${esc(x.sport)}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 function homeSection(title,items,kind){if(!items.length)return'';return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 function renderHome(groups){
   const {live,everywhere,todays,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
@@ -680,7 +680,7 @@ function render(groups){
 // Opens a team's own page (a favorite chip; a live game on Home, with its
 // sport: user, October 28: "the live games on the home page should go to that
 // teams page if you click on them").
-function openTeam(id,sport=''){if(!catalogEntry(id))return;homeView=false;applyHomeView();activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSchoolControls(id).then(()=>{populateSportFilter();if(sport&&[...sportFilter.options].some(o=>o.value===sport))sportFilter.value=sport;loadFeed(false);window.scrollTo({top:0})})}
+function openTeam(id,sport=''){if(!id)return;homeView=false;applyHomeView();activeFeedController?.abort();feedGeneration++;sportFilter.value='';currentGroups=[];populateSchoolControls(id).then(()=>{populateSportFilter();if(sport&&[...sportFilter.options].some(o=>o.value===sport))sportFilter.value=sport;loadFeed(false);window.scrollTo({top:0})})}
 // A chip wears the color the team is known by (user, October 28: "Orioles
 // button is not orange"): the primary, or the secondary when the primary is
 // near black or gray (Steelers gold, Giants orange; Raiders silver); text dark
