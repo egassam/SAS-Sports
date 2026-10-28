@@ -174,6 +174,10 @@ export function createByuHandlers({makeEvent,visibleText,absoluteUrl,recapMatche
       // "Alumni Meet".
       if(eventType(sport)!=='GAME'&&(/\b(?:intra|inter)squad\b|\bscrimmage\b|\balumni\b/i.test(opponent)||/\svs\.?\s/i.test(opponent)))continue;
       const result=field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/div>/i).match(/^([WLT])\s+(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/i);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       const clock=field(block,/schedule-event-date__clock[^>]*>([\s\S]*?)<\/time>/i).replace(/\s+[A-Z]{2,4}$/,'');
       // Meets publish a team finish as text ("1st - 19 points").
       const meet=eventType(sport)!=='GAME';

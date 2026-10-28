@@ -268,6 +268,10 @@ export function createUcfHandlers({makeEvent,visibleText,absoluteUrl,eventType,d
       if(/\bscrimmage\b|\bintrasquad\b|\svs\.?\s/i.test(opponent)||eventType(sport)==='GAME'&&/\bblack (?:&|and) gold\b/i.test(opponent))continue;
       const slot=field(block,/class=["']schedule-event-item-result["'][^>]*>([\s\S]*?)<div\b[^>]*schedule-event-item__dashboard-link/i)||field(block,/schedule-event-item-result__label[^>]*>([\s\S]*?)<\/(?:strong|div)>/i);
       const result=slot.match(/^([WLT])\b(?:\s+(?:Win|Loss|Tie))?\s+(\d+)\s*-\s*(\d+)$/i);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       const clock=result?'':(slot.match(/^\d{1,2}:\d{2}\s*[AP]M\b/i)||[''])[0];
       // Preseason exhibitions publish "Completed" with no score, and a
       // postponed game has no result or new date; neither is a K-State-style

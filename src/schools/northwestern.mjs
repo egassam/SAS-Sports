@@ -278,6 +278,10 @@ export function createNorthwesternHandlers({makeEvent,visibleText,absoluteUrl,re
       // Northwestern's men's swimming writes whole points with a decimal ("W
       // Win 187.0-130.0", Miami (OH), Oct 3): "187-130".
       const result=slot.match(/^([WLT]),?\s+(?:Win|Loss|Tie)\s+(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\b/i)?.map((part,i)=>i>=2?part.replace(/\.0+$/,''):part);
+      // A score written winner first ("L 1-0" SO, Virginia field hockey,
+      // Oct 23) is the team's after its result letter. Cross country and golf
+      // keep theirs: the lower score wins.
+      if(result&&!/^(?:Cross Country|Golf)$/.test(sport)&&(/^W/i.test(result[1])?Number(result[2])<Number(result[3]):/^L/i.test(result[1])&&Number(result[2])>Number(result[3])))[result[2],result[3]]=[result[3],result[2]];
       let opponent=name;
       const round=meet?roundOf(name):null,xc=sport==='Cross Country'?teamOf(name):null;
       if(round)opponent=round;
