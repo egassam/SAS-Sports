@@ -3516,3 +3516,23 @@ Request: "Work through the open items" (after the SWAC).
 
 **Built:** `chipColors(item)` puts the chip's own catalog colors (`--chip` primary, `--chip-edge` secondary; only #rgb/#rrggbb) on each chip; `.favorite-teams .favorite-team` mixes the primary 35% into the dark panel with a 45% secondary edge, the viewed team's chip 60% with an 80% edge and a soft ring; a team without colors (Manhattan High School) stays neutral. Checked in Chromium with seven favorites on Home and on K-State's page. Version `4.225.2-team-chips`.
 
+## October 28, 2026 — KAS state cross country from AthleticLIVE (PR #440)
+
+**Asked:** user: "Here's my friends info you requested. Results: https://live.letsgorun.com/meets/79638. Date: Saturday, Oct. 31, 9:45 a.m. Host school: Flint Hills Christian School. Event name: Kansas Approved Schools State X-C Championships" (the trial meet with the timer that the track reader's handoff left open).
+
+**Found:** live.letsgorun.com is AthleticLIVE (athletic.net's live results app, an Angular page). Its bundle names the data store: public JSON documents at `athleticlive.blob.core.windows.net/$web/<index>/_doc/<id>` in short keys. The meet is `live_results_meet_list/_doc/79638` (`xcp`: Boys 5000 Meters 2940219, Girls 5000 Meters 2940220, Kids 1 Mile Run 2940221; Warner Memorial Park; licensed to MeetPro, timed by LetsGoRun). Results are in `ind_res_list/_doc/<race>`, team scores in `xc_score_report/_doc/xcSR|<race>` and entries in `ind_ent_list/_doc/<race>`. The timer's meets are listed by `search.athletic.live/letsgoruntiming_meet_list/_search`: 13, among them the 2025 KAS State X-C Championship (58501, Nov 1, 2025, full results and team scores). Entries on Oct 28: Flint Hills Christian 7 boys and 8 girls; "St Mary's" 8 boys. These are St. Mary's Academy, since the 2025 meet wrote "St Mary's Academy" with Owen Gresham and Jack McCarthy. Flint Hills Christian's sheet lists "KASC State" Oct 31 at 10:00; St. Mary's Academy's Bound page does not list the meet.
+
+**Built (PR #440):** `athleticLiveXcRaces` (`src/high-school.mjs`) and `athleticLiveResultsFor` (`src/index.js`). They return the same rows as MeetPro cross country, through the shared `xcRaceSummary`. `LETSGORUN_MEETPRO.athleticLive` holds the date, time, meet id, sport, kids' race excluded and each school's team names. The meet joins the school's meet that day, taking the meet's 9:45 over the sheet's 10:00, or is added when the schedule lacks it. On the day every document is read again after 60 s. With finishers posted the card reads LIVE ("Boys: 45 of 83 finished · Girls: not started") and shows the school's five latest finishers. It goes Final the next day. Names come in capitals; "Mc" is capitalized. Test: `tests/athletic-live-xc.mjs`, built from the 2025 and 2026 documents, with a half-run replay through the feed for both schools.
+
+**Verified:** `test:release` passed on both commits. Preview `4.226.1`: 39 checks for the two schools (`--sports=all --refreshes=3`), XC 18/20 and 26/21; St. Mary's Academy cross country checked by eye. CI green. Merged as `bdd9246` under the standing rule. Production `4.226.1-athleticlive-xc`: 39 checks passed about 21:28 UTC, XC 18/20 and 26/21.
+
+**Open:** the meet itself on Oct 31 (first live run against real data). Other AthleticLIVE meets are not looked up; each must be listed in the module.
+
+## October 28, 2026 — Chips in known colors; Home live games open the team
+
+**Asked:** user (during the meet work): "The favorite buttons colors need some love. Orioles button is not orange. Also the live games on the home page should go to that teams page if you click on them."
+
+**Found:** the Orioles' catalog primary is orange (#DF4601). The chip mixed only 35% of it into the dark panel, which read as brown. Teams with a near-black primary (Steelers, Giants, Raiders, White Sox) read as black chips. A Home live card opened the event's expanded view.
+
+**Built:** `chipColors` picks the team's known color: the primary when it is vivid (lightness at least 0.12, saturation at least 0.3); else a vivid secondary (Steelers gold, Giants orange); else the lighter of the two (Raiders and White Sox silver). The edge is the other color. Text is dark on a light chip (relative luminance above 0.3). The chip is an 80% mix, or solid for the team being viewed. `openTeam(id, sport)` (shared with the chips) opens a team's page; a card in Home's Live now sections opens its team with that sport. Version `4.227.0-team-chips-live-click`.
+
