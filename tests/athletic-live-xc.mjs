@@ -111,6 +111,7 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     const [e]=group.live;
     assert.deepEqual([e.status,e.title,e.meet_live,e.recap_url,e.live_score_source],['Live','Flint Hills Christian at KASC State',true,'https://live.letsgorun.com/meets/79638','LetsGoRun Timing (AthleticLIVE)']);
     assert.equal(e.recency_label,'Boys: 45 of 71 finished · Girls: not started');
+    assert.equal(e.display_time,'Oct 31, 9:45 AM','the meet\'s start, not the sheet\'s 10:00');
     assert.equal(e.live_latest.length,3);
     assert.ok(!group.upcoming.some(x=>x.start_time.startsWith('2026-10-31')),'one card for the day');
     const sma=await worker.fetchLive('st-marys-academy-ks','Cross Country');

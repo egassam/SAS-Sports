@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.226.0-athleticlive-xc';
+const VERSION='4.226.1-athleticlive-xc';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4380,7 +4380,8 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     if(team.meetPro&&!team.meetPro.track)for(const meet of module.meetPro?.athleticLive||[]){
       if(meet.sport!==sport||!meet.schools?.[school.id])continue;
       const day=games.find(g=>g.date===meet.date);
-      if(day){day.athleticLive=meet;continue;}
+      // The meet's start (user: "Saturday, Oct. 31, 9:45 a.m.") over the sheet's 10:00.
+      if(day){day.athleticLive=meet;if(meet.time)day.time=meet.time;continue;}
       games.push({date:meet.date,time:meet.time||null,end_date:null,name:meet.name,site:meet.site||'AWAY',athleticLive:meet,calendar_id:`athleticlive|${meet.meet}`});
       games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));
     }
