@@ -92,7 +92,10 @@ export function maxprepsContests(html,schoolId){
     // "won their away conference game"; "non-conference" is not.
     const conference=summary?/\b(?:home|away|neutral)?\s*conference\b/i.test(summary)&&!/non-conference/i.test(summary):null;
     const tournament=summary?/\btournament\b/i.test(summary):false;
-    out.push({start,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament});
+    // The team row's home/away type: 0 home, 1 away, 2 neutral (it agrees
+    // with every game summary on Manhattan's 2026 pages).
+    const site=own[11]===0?'HOME':own[11]===1?'AWAY':own[11]===2?'NEUTRAL':null;
+    out.push({start,site,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament});
   }
   return out;
 }
