@@ -7,6 +7,7 @@ import {rosterSocialInstagrams} from './roster-socials.js';
 import {OPENDORSE_PROFILE,opendorseSlug,opendorseInstagram} from './opendorse.mjs';
 import {INFLCR_SCHOOLS,inflcrInstagram} from './inflcr.mjs';
 import {extractText} from 'unpdf';
+import {golfStoryPlace} from './sidearm-school-kit.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
 import {utahSchool,createUtahHandlers} from './schools/utah.mjs';
@@ -332,7 +333,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.230.0-kas-schools';
+const VERSION='4.231.2-completed-stories';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -3656,7 +3657,9 @@ function parsedSourceDate(dateText,timeText){
   if(month==null)return null;
   let hour=12,minute=0,hasTime=false;
   if(timeText){
-    const t=String(timeText).replace(/\./g,'').trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
+    // A zone after the clock ("7 p.m. CT", KU, Oct 29) is the school's own:
+    // every KU time read TBA without it. "Noon" is 12 p.m.
+    const t=String(timeText).replace(/\./g,'').trim().replace(/\s+\(?(?:[ECMP][SD]?T|AK[SD]?T|H[SD]?T|local)\)?$/i,'').replace(/^noon$/i,'12 pm').match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
     if(t){hour=Number(t[1])%12+(t[3].toLowerCase()==='pm'?12:0);minute=Number(t[2]||0);hasTime=true;}
   }
   return{year:Number(m[3]),month,day:Number(m[2]),hour,minute,hasTime};
@@ -5706,6 +5709,59 @@ function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=fals
   }
   return events;
 }
+// A final whose only result is "Completed" (1,615 college rows at 260
+// schools, Oct 29: tennis and swimming invitationals, golf, rowing) takes it
+// from its official story: a golf team place, a dual's score, else the
+// story's headline ("Spartan Men's Tennis Finishes Trip to Louisville
+// Classic"). One with no story, result page or box score is not listed.
+const isBareCompleted=event=>event.status==='Final'&&event.headline==='Completed'&&(event.results||[]).every(row=>row.value==='Completed'&&!row.participant);
+function storyHeadline(raw,school){
+  const meta=name=>decodeHtml((String(raw).match(new RegExp(`<meta\\b[^>]*(?:property|name)=["'](?:og|twitter):${name}["'][^>]*content=(["'])([\\s\\S]*?)\\1`,'i'))||[])[2]||'');
+  let title=clean(meta('title')||decodeHtml((String(raw).match(/<title\b[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||''));
+  if(!title)return null;
+  // The site's name is cut: "... | Sun Devils", "WTEN | ... - SMC California
+  // Athletics", "... - University at Buffalo", "... - Army West Point".
+  const names=[school.name,school.short_name,...(school.aliases||[])].filter(Boolean);
+  title=title.split(/\s+\|\s+/).sort((a,b)=>b.length-a.length)[0];
+  const tail=title.match(/\s+[-–—]\s+([^-–—]+)$/);
+  if(tail&&(/\b(?:Athletics?|Sports|University|College|West Point)\b/i.test(tail[1])||names.some(name=>tail[1].toLowerCase().includes(name.toLowerCase()))))title=title.slice(0,tail.index);
+  title=clean(title);
+  if(!title||title.length<12||names.some(name=>title.toLowerCase()===name.toLowerCase()))return null;
+  return title;
+}
+function storyDualScore(text,school){
+  const team=[school.name,school.short_name,...(school.aliases||[])].filter(Boolean).map(name=>name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+  const m=text.match(new RegExp(`\\b(?:${team})\\b[^.]{0,80}?\\b(defeats?|defeated|tops?|topped|beats?|beat|downs?|downed|falls?|fell|drops?|dropped)\\b[^.]{0,80}?\\b(\\d{2,3}(?:\\.\\d)?)\\s*[-–]\\s*(\\d{2,3}(?:\\.\\d)?)\\b`,'i'));
+  if(!m)return null;
+  const [a,b]=[Number(m[2]),Number(m[3])],won=!/^(?:fall|fell|drop)/i.test(m[1]);
+  if(a===b)return null;
+  return{outcome:won?'W':'L',mine:String(won?Math.max(a,b):Math.min(a,b)),theirs:String(won?Math.min(a,b):Math.max(a,b))};
+}
+async function completedFromStories(events,school){
+  const team=`(?:${[school.name,school.short_name,...(school.aliases||[])].filter(Boolean).map(name=>name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')}|(?:Men's |Women's )?(?:Golf|Team))`;
+  await Promise.all(events.filter(event=>isBareCompleted(event)&&event.recap_url).map(async event=>{
+    let raw=null;try{const response=await sourceFetch(event.recap_url,{headers:HEADERS,redirect:'follow',signal:AbortSignal.timeout(6500)});raw=response.ok?await response.text():null;}catch{}
+    if(!raw||!isBareCompleted(event))return;
+    // The expanded view's own check: a story that is not this event's is
+    // dropped there (ASU's SMU Classic, Oct 29), so the card does not use it.
+    let matched=false;try{matched=(schoolModule(event.school_id)?.matchesRecap||recapMatchesEvent)(raw,event,event.recap_url);}catch{}
+    if(!matched){delete event.recap_url;delete event.recap_title;return;}
+    const title=storyHeadline(raw,school);
+    // A story of the other team ("Men's Tennis ..." for the women's event).
+    const other=event.team_label==="Women's"?/\bMen['’]s\b/i:event.team_label==="Men's"?/\bWomen['’]s\b/i:null;
+    const own=!(other&&title&&other.test(title)&&!/\b(?:Men['’]s (?:and|&) Women['’]s|Women['’]s (?:and|&) Men['’]s)\b/i.test(title));
+    const place=own&&event.sport==='Golf'&&!/\bIndividuals?\b/.test(event.opponent||'')?golfStoryPlace(raw,{team,decode:decodeHtml}):null;
+    const summary=decodeHtml((String(raw).match(/<meta\b[^>]*(?:property|name)=["'](?:og:)?description["'][^>]*content=(["'])([\s\S]*?)\1/i)||[])[2]||'').split(/(?<=\.)\s/)[0];
+    const dual=own&&!place&&event.event_type==='DUAL'&&title?storyDualScore(`${title}. ${summary}`,school):null;
+    if(place){event.headline=place;event.results=[{label:'Result',value:place}];}
+    else if(dual){event.school_score=dual.mine;event.opponent_score=dual.theirs;event.headline=`${dual.outcome}, ${dual.mine}-${dual.theirs}`;event.results=[{label:'Result',value:event.headline}];}
+    else if(own&&title){event.headline=title;event.results=[{label:'Recap',value:title}];}
+    // The other team's story is not this event's.
+    else if(!own){delete event.recap_url;delete event.recap_title;}
+    event.result_count=event.results.length;
+  }));
+  return events.filter(event=>!(isBareCompleted(event)&&!event.recap_url&&!event.result_url&&!event.box_score_url));
+}
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
@@ -5743,6 +5799,10 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // One story for one tennis tournament (archive stories included), Sun Belt
   // Oct 22; a tournament left without one is not listed (K-State's rule).
   if(sport==='Tennis'){const had=new Set(events.filter(event=>event.recap_url));oneTournamentPerStory(events);events=events.filter(event=>!(had.has(event)&&!event.recap_url&&event.event_type==='MEET'&&event.status==='Final'));}
+  // A final that still reads only "Completed" (Oct 29, user: "fix the ones
+  // that just say completed"): its story gives the result, else it is not
+  // listed (K-State's rule).
+  events=await completedFromStories(events,school);
   // The independent scoreboard: for the official schedule's games under way,
   // or for the last three days when the official page failed (a stale or
   // failed school page must not suppress a live football/basketball score).

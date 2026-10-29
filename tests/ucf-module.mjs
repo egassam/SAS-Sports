@@ -408,7 +408,12 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the card 
   const item=await worker.fetchUrl(mensUrl,school,'Tennis',now);
   assert.equal(item.empty_schedule,true);
   const live=await worker.fetchLive('ucf','Tennis');
-  assert.deepEqual([live.events.length,live.error],[6,null]);
+  // fetchLive runs on the real clock: a tournament after the capture that is
+  // past now without a story is not listed (K-State's rule, Oct 29).
+  const listed=women.length?worker.parseHtml(fixture('womens-tennis-schedule.html.gz'),school,'Tennis',womensUrl,now):[];
+  assert.equal(listed.length,6);assert.equal(live.error,null);
+  assert.ok(listed.every(e=>live.events.some(x=>x.opponent===e.opponent)||e.start_time.slice(0,10)>=now.toISOString().slice(0,10)&&!e.recap_url));
+  assert.ok(live.events.length>=listed.filter(e=>e.start_time.slice(0,10)<now.toISOString().slice(0,10)).length);
 }
 
 // Rowing: production tried /sports/womens-rowing/ (404) and fell back to the
