@@ -48,7 +48,7 @@ const requests=[];
 const fetch=async url=>{const key=String(url);requests.push(key);let body=pages.get(key);if(body==null&&/gobound\.com/.test(key))body='[]';if(body==null)return{ok:false,status:404,url:key,headers:new Headers(),text:async()=>''};return{ok:true,status:200,url:key,headers:new Headers({'content-type':'application/json'}),text:async()=>body,json:async()=>JSON.parse(body)};};
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const worker=Function(...Object.keys(deps),source+';return {athleticLiveResultsFor,meetProReader,MEETPRO_LIVE_TTL,fetchLive,groupEvents}')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {athleticLiveResultsFor,meetProReader,MEETPRO_LIVE_TTL,fetchLive,groupEvents,featuredMeets}')(...Object.values(deps));
 const school=id=>schools.find(s=>s.id===id);
 const line=r=>`${r.group} | ${r.participant} | ${r.result}`;
 const last={...meet,meet:58501,date:'2025-11-01'};
@@ -134,5 +134,16 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     const e=group.results.find(x=>x.start_time.startsWith('2026-10-31'));
     assert.deepEqual([e.status,e.headline,e.meet_live],['Final','Boys 6th of 7 · Girls 4th of 6',undefined]);
   }finally{globalThis.Date=RealDate;restore();}
+}
+// Home shows the meet to everyone (user, October 28: "Show it on Home even if
+// not starred"): /live/now names it from a week before its day through the
+// day after.
+{
+  const at=iso=>worker.featuredMeets(new Date(iso)).map(f=>`${f.school_id}|${f.sport}`);
+  assert.deepEqual(at('2026-10-28T23:00:00Z'),['flint-hills-christian-ks|Cross Country','st-marys-academy-ks|Cross Country']);
+  assert.deepEqual(at('2026-11-01T23:00:00Z'),['flint-hills-christian-ks|Cross Country','st-marys-academy-ks|Cross Country'],'the day after: its results');
+  assert.deepEqual(at('2026-10-23T23:00:00Z'),[],'more than a week before');
+  assert.deepEqual(at('2026-11-02T06:00:00Z'),[],'two days after');
+  assert.ok(read('../src/index.js').includes('featured:featuredMeets(now),'),'/live/now carries the featured meets');
 }
 console.log('athletic-live-xc: ok');

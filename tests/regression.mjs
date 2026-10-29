@@ -327,6 +327,8 @@ contains(worker,/const url=`\$\{ESPN_SITE\}\$\{board\.path\}\/scoreboard\?\$\{sc
 contains(page,/apiFetch\('\/live\/now',1,/,'Home must read the shared live board');
 contains(page,/'Live now · Everywhere'/,'Home must show every live game below the viewer\'s own');
 contains(page,/if\(homeView\)return applyTheme\('home',NEUTRAL_THEME\)/,'Home must use neutral colors, not a team\'s');
+contains(page,/if\(homeView\)for\(const p of featuredPairs\)if\(!pairs\.some/,'Home must load the featured meets, starred or not');
+contains(page,/const featured=Array\.isArray\(d\?\.featured\)/,'Home must take the featured meets from /live/now');
 contains(page,/const team=homeView&&el\.closest\('\[data-open-team\]'\);if\(team\)\{openTeam\(team\.dataset\.openTeam,team\.dataset\.openSport\)/,'A live game on Home must open its team\'s page');
 contains(page,/style="\$\{chipColors\(item\)\}"/,'Each favorite chip must wear its own team\'s colors');
 contains(page,/\.favorite-teams \.favorite-team\{background:color-mix\(in srgb,var\(--chip,#29435f\) 80%/,'Favorite chips must read in the team\'s own color');
