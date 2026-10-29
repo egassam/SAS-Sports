@@ -504,5 +504,16 @@ assert.equal(worker.floridaHandlers.parseSchedule(fixture('football-schedule.htm
   recapFixtures.clear();requests.length=0;
 }
 
+// Pro events the players enter on their own are not the team's (user, Oct 29:
+// "Please check these tennis results": "Florida at M25 Las Vegas" and "W35
+// Norman, OK" read Today). ITA events, duals and "ITF Sectionals" stay.
+{
+  const ev=(opponent,id)=>({id,school_id:'florida',school:'Florida',sport:'Tennis',title:`Men's · Florida at ${opponent}`,opponent,status:'Upcoming',start_time:'2026-11-03T12:00:00.000Z'});
+  const pro=['M25 Las Vegas','University of Arkansas M15 Open','W35 Norman, OK','ITF Norman W35','ITF M15 Lexington','ATP M15 Lexington','WTA 125 Queretaro','Sioux Falls Challenger','UTR PTT Boca Raton','UTR Pro Fall Slam Chapel Hill'];
+  const team=['ITA Sectionals','ITF Sectionals','Georgia','UTR Charleston','Bedford Cup'];
+  const g=worker.groupEvents([...pro,...team].map((o,i)=>ev(o,'t'+i)),new Date('2026-10-29T15:00:00Z'))[0];
+  assert.deepEqual(g.upcoming.map(e=>e.opponent),team,'only the team\'s events are listed');
+}
+
 assert.equal(requests.length,0,'no unexpected network requests');
 console.log('Florida module checks passed');
