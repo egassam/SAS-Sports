@@ -155,12 +155,16 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .hero{padding:12px 14px;border-radius:18px}
 .hero .level-switch{margin-bottom:8px}
 .hero .level{min-height:40px;padding:6px 12px;font-size:14px}
+/* Phone: the five levels fit a 390 px screen (Pro ran 3 px past it). */
+@media(max-width:560px){.hero .level-switch{gap:2px;padding:3px}.hero .level{min-width:0;padding:6px 4px;font-size:13px}}
 .hero .finder,.hero .finder.has-city{max-width:none}
 .hero select{min-height:44px;padding:8px 10px;font-size:16px}
 .hero .action-row{grid-template-columns:minmax(0,1fr) auto 44px;gap:6px;margin-top:8px}
 .hero .action-row #search{grid-column:auto;min-width:0;min-height:44px;padding:8px 10px;font-size:16px}
 #refresh{width:44px;min-width:44px;height:44px;padding:0}
-.hero .favorite{width:auto;min-width:0;height:44px;padding:0 10px;font-size:13px;white-space:nowrap}
+/* Favorite: a small button beside search (user, October 29: "Make the
+   favorite teams button smaller") */
+.hero .favorite{width:auto;min-width:0;height:34px;align-self:center;padding:0 9px;font-size:12px;white-space:nowrap}
 #refresh{font-size:26px;line-height:1}
 .hero .tabs{margin-top:8px;gap:4px}
 .hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
@@ -242,7 +246,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 </div>
 <div class="shell">
 <header class="brandbar">
-  <div class="brand"><div class="mark">SAS</div><div><h1>SAS Sports</h1><p>Every school. Every sport. Results first.</p></div></div>
+  <div class="brand"><div class="mark">SAS</div><div><h1>SAS Sports</h1><p>Middle school to the pros. Live.</p></div></div>
   <div class="pill"><span class="live-dot"></span>Web Test v2.1 Live</div>
 </header>
 <section class="hero">
@@ -255,7 +259,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
   </div>
   <div class="action-row">
     <input id="search" type="search" placeholder="Search events…" aria-label="Search events">
-    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school" aria-pressed="false">☆ Favorite team</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
+    <button id="favorite" class="ghost favorite" title="Favorite this school" aria-label="Favorite this school" aria-pressed="false">☆ Favorite</button><button id="refresh" title="Refresh results" aria-label="Refresh results">↻</button>
   </div>
   <div id="favoriteTeams" class="favorite-teams" aria-label="Favorite teams"></div>
   <div class="tabs" id="tabs">
@@ -645,7 +649,7 @@ function renderHome(groups){
   sportNav.innerHTML=chips.map(([title])=>`<a class="sport-chip" href="#home-${slug(title)}">${esc(title)}</a>`).join('');
   const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
   const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',shown,'live').replace(/<\/section>$/,everywhere.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllLive">Show all ${everywhere.length} live games</button></section>`:'</section>'):'';
-  const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite team: its live and upcoming games will show first.</div>':'';
+  const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>':'';
   if(noFavorites&&!todays.length&&!coming.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
   if(!chips.length){feed.innerHTML=`<div class="empty">${homeLoading?`Loading ${esc(names.join(', '))}…`:`No live, today or upcoming games for ${esc(names.join(', '))} right now.${homeView?' Tap a team above for its full schedule and results.':' Pick a sport above to see its full schedule and results.'}`}</div>`;return}
   feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming')+noFavorites;
@@ -688,6 +692,9 @@ async function loadHome(forceRefresh,automatic,generation,signal){
     const featured=Array.isArray(d?.featured)?d.featured.map(f=>[f.school_id,f.sport]):[];
     const fresh=featured.filter(p=>!byPair.has(key(p))&&!pairs.some(q=>key(q)===key(p)));
     featuredPairs=featured;try{localStorage.setItem('sas-featured',JSON.stringify(featured))}catch{}
+    // A featured school's catalog card gives its time zone (without it the
+    // meet's 9:45 read TBA) and its colors.
+    ensureEntries(featured.map(p=>p[0])).then(()=>{if(generation===feedGeneration&&homeView)show()});
     show();
     for(const [id,sp] of fresh)fetchTeamSport(id,sp,false,signal).then(({groups})=>{if(generation!==feedGeneration||!homeView)return;const g=Array.isArray(groups)?groups.find(x=>x.sport===sp)||groups[0]:null;if(g){byPair.set(key([id,sp]),g);show()}}).catch(()=>{});}).catch(()=>{});
   let ok=0,saved=0,failed=0;
@@ -744,7 +751,7 @@ function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
   const team=catalogEntry(school.value)?.name||'this team';
-  favorite.textContent=on?'★ Favorited':'☆ Favorite team'; favorite.classList.toggle('on',on);
+  favorite.textContent=on?'★ Favorited':'☆ Favorite'; favorite.classList.toggle('on',on);
   favorite.setAttribute('aria-pressed',String(on));
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
@@ -886,7 +893,7 @@ async function apiFetch(path, attempts=4,{signal,transientOnly=false}={}){
 async function loadSchools(){
   // The saved team and the favorites first (their names fill "My teams"),
   // then the saved team's menus.
-  await ensureEntries([savedSchool(),...favoriteSchoolIds()]);
+  await ensureEntries([savedSchool(),...favoriteSchoolIds(),...featuredPairs.map(p=>p[0])]);
   try{await populateSchoolControls()}
   catch(err){status.textContent='Could not load the team menus; reconnecting to the SAS Sports backend…';throw err}
   // The team's own sports as soon as its card is known (not the generic list
