@@ -33,7 +33,10 @@ export const LETSGORUN_MEETPRO={
   // Park, Manhattan; the 2025 meet, id 58501, wrote "St Mary's Academy").
   athleticLive:[
     {date:'2026-10-31',time:'09:45',meet:79638,sport:'Cross Country',name:'Kansas Approved Schools State X-C Championships',exclude:/\bkids\b/i,
-      schools:{'flint-hills-christian-ks':['Flint Hills Christian'],'st-marys-academy-ks':["St Mary's Academy","St Mary's"]}}
+      schools:{'flint-hills-christian-ks':['Flint Hills Christian'],'st-marys-academy-ks':["St Mary's Academy","St Mary's"],
+        // The 2025 meet's names for the four added October 29 (src/schools/kas-ks.mjs).
+        'christ-prep-ks':['Christ Preparatory Academy','Christ Prep Academy','Christ Prep'],'veritas-christian-ks':['Veritas Christian School','Veritas Christian'],
+        'kc-metro-academy-ks':['KC Metro Academy','Metro Academy'],'kickapoo-nation-ks':['Kickapoo Nation','Kickapoo Nation School']}}
   ]
 };
 

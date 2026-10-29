@@ -20,7 +20,7 @@ const src=path=>docs[path]?._source;
 // The configured meet: the user's details.
 const [meet]=LETSGORUN_MEETPRO.athleticLive;
 assert.deepEqual([meet.date,meet.time,meet.meet,meet.sport,meet.name],['2026-10-31','09:45',79638,'Cross Country','Kansas Approved Schools State X-C Championships']);
-assert.deepEqual(Object.keys(meet.schools),['flint-hills-christian-ks','st-marys-academy-ks']);
+assert.deepEqual(Object.keys(meet.schools),['flint-hills-christian-ks','st-marys-academy-ks','christ-prep-ks','veritas-christian-ks','kc-metro-academy-ks','kickapoo-nation-ks']);
 assert.deepEqual(src('live_results_meet_list/_doc/79638').xcp.map(r=>r.n),['Boys 5000 Meters','Girls 5000 Meters','Kids 1 Mile Run']);
 
 // The parser: the 2025 meet, the school's runners and team place.
@@ -53,6 +53,15 @@ const school=id=>schools.find(s=>s.id===id);
 const line=r=>`${r.group} | ${r.participant} | ${r.result}`;
 const last={...meet,meet:58501,date:'2025-11-01'};
 
+// The four teams added October 29 (src/schools/kas-ks.mjs) read the same
+// meet: Christ Prep won both 2025 races; a team with no score lists its runners.
+{
+  const r=async id=>(await worker.athleticLiveResultsFor(school(id),last,{date:last.date},worker.meetProReader())).headline;
+  assert.equal(await r('christ-prep-ks'),'Boys 1st of 7 · Girls 1st of 6');
+  assert.equal(await r('kc-metro-academy-ks'),'Girls 6th of 6');
+  assert.equal(await r('veritas-christian-ks'),'6 runners');
+  assert.equal(await r('kickapoo-nation-ks'),'1 runner');
+}
 // A finished meet: team places, every runner, the timer's page.
 {
   const r=await worker.athleticLiveResultsFor(school('flint-hills-christian-ks'),last,{date:last.date},worker.meetProReader());
@@ -140,8 +149,9 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
 // day after.
 {
   const at=iso=>worker.featuredMeets(new Date(iso)).map(f=>`${f.school_id}|${f.sport}`);
-  assert.deepEqual(at('2026-10-28T23:00:00Z'),['flint-hills-christian-ks|Cross Country','st-marys-academy-ks|Cross Country']);
-  assert.deepEqual(at('2026-11-01T23:00:00Z'),['flint-hills-christian-ks|Cross Country','st-marys-academy-ks|Cross Country'],'the day after: its results');
+  const KAS_TEAMS=['flint-hills-christian-ks','st-marys-academy-ks','christ-prep-ks','veritas-christian-ks','kc-metro-academy-ks','kickapoo-nation-ks'].map(id=>`${id}|Cross Country`);
+  assert.deepEqual(at('2026-10-28T23:00:00Z'),KAS_TEAMS);
+  assert.deepEqual(at('2026-11-01T23:00:00Z'),KAS_TEAMS,'the day after: its results');
   assert.deepEqual(at('2026-10-23T23:00:00Z'),[],'more than a week before');
   assert.deepEqual(at('2026-11-02T06:00:00Z'),[],'two days after');
   assert.ok(read('../src/index.js').includes('featured:featuredMeets(now),'),'/live/now carries the featured meets');

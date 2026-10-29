@@ -10243,6 +10243,108 @@
     ]
   },
   {
+    "id": "christ-prep-ks",
+    "name": "Christ Preparatory Academy",
+    "short_name": "Christ Prep",
+    "state": "Kansas",
+    "city": "Lenexa",
+    "county": "Johnson County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private (Kansas Approved Schools)",
+    "athletics_url": "https://www.maxpreps.com/ks/lenexa/christ-prep-academy-patriots/",
+    "aliases": [
+      "Christ Prep Academy",
+      "Christ Prep",
+      "CPA",
+      "Christ Preparatory Academy Patriots"
+    ],
+    "providers": [
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lenexa/christ-prep-academy-patriots",
+        "provider_school_id": "af82426a-4cb2-4171-9f57-4caba0094406"
+      }
+    ]
+  },
+  {
+    "id": "veritas-christian-ks",
+    "name": "Veritas Christian School",
+    "short_name": "Veritas Christian",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private (Kansas Approved Schools)",
+    "athletics_url": "https://www.maxpreps.com/ks/lawrence/veritas-christian-eagles/",
+    "aliases": [
+      "Veritas Christian",
+      "Veritas",
+      "Veritas Christian Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lawrence/veritas-christian-eagles",
+        "provider_school_id": "6536123d-e7cf-4910-87fa-1f4736215249"
+      }
+    ]
+  },
+  {
+    "id": "kickapoo-nation-ks",
+    "name": "Kickapoo Nation School",
+    "short_name": "Kickapoo Nation",
+    "state": "Kansas",
+    "city": "Powhattan",
+    "county": "Brown County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private (Kansas Approved Schools)",
+    "athletics_url": "https://www.maxpreps.com/ks/powhattan/kickapoo-nation-warriors/",
+    "aliases": [
+      "Kickapoo Nation",
+      "Kickapoo Nation Warriors",
+      "KNS"
+    ],
+    "providers": [
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/powhattan/kickapoo-nation-warriors",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "kc-metro-academy-ks",
+    "name": "KC Metro Academy",
+    "short_name": "KC Metro Academy",
+    "state": "Kansas",
+    "city": "Olathe",
+    "county": "Johnson County",
+    "conference": "Independent",
+    "classification": "Private",
+    "level": "high-school",
+    "division": "Private (Kansas Approved Schools)",
+    "athletics_url": "https://www.maxpreps.com/ks/shawnee-mission/metro-academy-mavericks/",
+    "aliases": [
+      "Metro Academy",
+      "Metro Academy Mavericks",
+      "KC Metro Academy Mavericks",
+      "KC Metro Mavs"
+    ],
+    "providers": [
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/shawnee-mission/metro-academy-mavericks",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
     "id": "riley-county-ms-ks",
     "name": "Riley County Middle School",
     "short_name": "Riley County",
