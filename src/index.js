@@ -333,7 +333,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.231.2-completed-stories';
+const VERSION='4.232.0-swim-scores';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5737,6 +5737,121 @@ function storyDualScore(text,school){
   if(a===b)return null;
   return{outcome:won?'W':'L',mine:String(won?Math.max(a,b):Math.min(a,b)),theirs:String(won?Math.min(a,b):Math.max(a,b))};
 }
+// A swimming dual's scores in its story's text (Oct 29, user: "It doesn't
+// show completed anymore but it doesn't show a score"): "The women's team
+// earned a 188-112 victory over the RedHawks, while the men's team fell
+// 135-165" (Cincinnati at Miami (OH)). Only a clause that says who won
+// counts; a running score ("lead Delaware 122-64") or a date ("Nov. 15-16")
+// does not. When the other school is the clause's subject ("No. 3 Florida
+// men won 176-117", Virginia's story) the outcome is theirs.
+// The opponent's own catalog entry: its name as written first ("Miami (OH)"
+// is Miami University, the RedHawks, not Miami's Hurricanes), then the
+// catalog's opponent rule; a pro team never.
+async function storyRivalSchool(event,school){
+  const written=String(event.opponent||'').trim().toLowerCase();
+  const exact=schools.find(candidate=>candidate.id!==school.id&&!isPro(candidate)&&[candidate.name,candidate.short_name,...(candidate.aliases||[])].some(label=>String(label||'').toLowerCase()===written));
+  if(exact)return exact;
+  const found=await opponentSchoolFor(event,school).catch(()=>null);
+  return found&&!isPro(found)?found:null;
+}
+function storyBodyDuals(text,event,school,rivalSchool=null){
+  const esc=value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const ours=new RegExp(`\\b(?:${[school.name,school.short_name,...(school.aliases||[])].filter(Boolean).map(esc).join('|')})\\b`,'gi');
+  // The other school by its catalog names ("the RedHawks", "FSU"), else by
+  // the opponent as written: a word of it would match another school
+  // ("Florida" in North Florida's 153-123 beside FSU's 206-72).
+  const ownNames=[school.name,school.short_name,...(school.aliases||[])].filter(Boolean).map(name=>name.toLowerCase());
+  const written=clean(String(event.opponent||'').replace(/\([^)]*\)/g,' ')),rivalNames=(rivalSchool?[rivalSchool.name,rivalSchool.short_name,...(rivalSchool.aliases||[])]:[written]).filter(name=>name&&name.length>=3&&!ownNames.includes(name.toLowerCase()));
+  // One opponent only: a story of a tri-meet or an invitational gives each
+  // pairing's score, or a meet total (TCU's 169-130 was read for both Incarnate
+  // Word and Texas A&M; Auburn's 593-197 total).
+  if(!rivalNames.length||/\s(?:and|&)\s|[\/,]|\b(?:invit\w*|invite|classic|tri[- ]?(?:meet|dual)s?|duals|championships?|relays|cup|open|quad)\b/i.test(event.opponent||''))return[];
+  // Not inside another school's name ("North Florida" for Florida).
+  const theirs=new RegExp(`(?<![A-Z][\\w.&'’-]*\\s)\\b(?:${[...new Set([...rivalNames,...(rivalSchool&&written&&!ownNames.includes(written.toLowerCase())?[written]:[])])].map(esc).join('|')})\\b(?!\\s+[A-Z])`,'g');
+  const win=/\b(?:victory|victories|win|wins|won|winning|defeat(?:s|ed|ing)?|beat|beats|beating|topped|tops|topping|downed|downs|swept|sweeps?)\b/i,loss=/\b(?:fell|falls?|falling|lost|loses?|lose|losing|trailed|trails?|dropped|drops?|dropping|loss|defeated by)\b/i;
+  const found=[];
+  // "No. 10 Florida" and "Nov. 7" do not end a sentence.
+  for(const sentence of String(text).slice(0,5000).split(/(?<=[.!?])(?<!\b(?:No|Nos|Jan|Feb|Mar|Apr|Aug|Sept?|Oct|Nov|Dec|vs|St|Mt|Ft)\.)\s+/)){
+  // "..., while the men's team fell 135-165": a later clause naming no team
+  // keeps the opponent of the clause before it.
+  let named=false;
+  for(const clause of sentence.split(/,\s*(?:while|and|but|as)\s+|;\s*|\s+(?:while|but)\s+/i)){
+    // Big invitational totals carry a comma ("1,135.5-382"); a part of one
+    // is not a score.
+    for(const m of clause.matchAll(/(?<![\d.,])(\d{1,3}(?:,\d{3})?(?:\.5)?)\s*[-–]\s*(\d{1,3}(?:,\d{3})?(?:\.5)?)(?![\d.,]*\d)/g)){
+      const a=Number(m[1].replace(',','')),b=Number(m[2].replace(',','')),before=clause.slice(0,m.index);
+      // The opponent is named beside this score: "a 593-197 win over George
+      // Washington", "fell 238-59 to UMBC and 184-103 to American", "beat
+      // Indiana State 259-94", "FSU (206-72)", "No. 3 Florida men won 176-117".
+      const near=[...clause.matchAll(new RegExp(theirs.source,'g'))].some(x=>{
+        if(x.index>m.index)return/^\s*(?:[\w-]+\s+){0,2}?(?:over|against|to|versus|vs\.?)\s+(?:the\s+)?(?:(?:No\.|#)\s*\d+\s+)?(?:host\s+)?$/i.test(clause.slice(m.index+m[0].length,x.index));
+        const gap=clause.slice(x.index+x[0].length,m.index);
+        return gap.length<=45&&!/\d\s*[-–]\s*\d|\band\b|\b(?:to|over|against)\s/i.test(gap);
+      });
+      if(!near&&!(named&&!/[A-Z]/.test(clause.replace(/\b(?:Men|Women)['’]?s?\b/g,''))))continue;
+      named=true;
+      if(a===b||a+b<60||Math.min(a,b)<10||/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)[a-z]*\.?\s*$/i.test(before))continue;
+      // The outcome is the result word nearest before the score ("fell
+      // 238-59", "topping the Gaels 158-87"), else just after it ("a 188-112
+      // victory"); its subject is the school named in the words before it.
+      const words=[...clause.matchAll(new RegExp(`${loss.source}|${win.source}`,'gi'))];
+      const verb=[...words].reverse().find(x=>x.index<m.index)||words.find(x=>x.index>m.index&&x.index-m.index<=40);
+      if(!verb)continue;
+      const won=!loss.test(verb[0])&&!/^defeated by$/i.test(verb[0]);
+      const prior=clause.slice(0,m.index),cut=Math.max(0,...[...prior.matchAll(/\d+(?:\.5)?\s*[-–]\s*\d+(?:\.5)?/g)].map(x=>x.index+x[0].length));
+      // The team named since the last score, else the clause's own ("The
+      // women's team beat Indiana State 259-94 and Missouri State 270-83").
+      const gendersSince=[...prior.slice(cut).matchAll(/\b(women|men)(?:['’]s)?\b/gi)],genders=gendersSince.length?gendersSince:[...prior.matchAll(/\b(women|men)(?:['’]s)?\b/gi)];
+      // "a combined men's and women's team tally" is the whole team's.
+      const both=/\bmen['’]?s?\b[^.]{0,20}\bwomen['’]?s?\b|\bwomen['’]?s?\b[^.]{0,20}\bmen['’]?s?\b/i.test(prior.slice(cut));
+      const team=!both&&genders.length?(genders.at(-1)[1].toLowerCase()==='women'?'Women':'Men'):null;
+      const head=clause.slice(Math.max(cut,verb.index-40),verb.index);
+      const lastOurs=Math.max(-1,...[...head.matchAll(ours)].map(x=>x.index)),lastTheirs=Math.max(-1,...[...head.matchAll(new RegExp(theirs.source,'g'))].map(x=>x.index));
+      const ourWin=lastTheirs>lastOurs?!won:won;
+      if(found.some(x=>x.team===team))continue;
+      const [high,low]=a>b?[m[1],m[2]]:[m[2],m[1]];
+      found.push({team,outcome:ourWin?'W':'L',mine:(ourWin?high:low).replace(',',''),theirs:(ourWin?low:high).replace(',','')});
+    }
+    // "with the women's squad scoring 192 points to Emory's 105" (Georgia
+    // Tech): the first total is the subject's.
+    const points=clause.match(/\b(women|men)(?:['’]s)?\b[^\d]{0,40}?\b(\d{2,3}(?:\.5)?) points to ([A-Z][\w.'’ -]{1,40}?)['’]s? (\d{2,3}(?:\.5)?)\b/i);
+    if(points&&new RegExp(theirs.source,'').test(points[3])&&Number(points[2])!==Number(points[4])){
+      const team=points[1].toLowerCase()==='women'?'Women':'Men';
+      if(!found.some(x=>x.team===team))found.push({team,outcome:Number(points[2])>Number(points[4])?'W':'L',mine:points[2],theirs:points[4]});
+    }
+  }
+  }
+  return found;
+}
+// A results table in the story: event, athlete, score or time, place
+// (Florida's diving meet with Miami, Oct 16: no team score, two divers per
+// event; the women's events an exhibition). A heading "Men's Results" or
+// "Women's Results" just before a table names its team.
+function storyResultTables(raw,teamLabel){
+  const cellText=html=>decodeHtml(String(html).replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
+  const rows=[];let last=0;
+  for(const table of String(raw).matchAll(/<table\b[\s\S]*?<\/table>/gi)){
+    const before=cellText(String(raw).slice(Math.max(last,table.index-400),table.index)).slice(-120);last=table.index+table[0].length;
+    const named=before.match(/\b(Men|Women)['’]s\b(?![\s\S]*\b(?:Men|Women)['’]s\b)/i)?.[1];
+    if(teamLabel&&named&&`${named[0].toUpperCase()}${named.slice(1).toLowerCase()}'s`!==teamLabel)continue;
+    const trs=[...table[0].matchAll(/<tr\b[\s\S]*?<\/tr>/gi)].map(tr=>[...tr[0].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map(cell=>cell[1].split(/<br\s*\/?>/i).map(cellText).filter(Boolean)));
+    if(trs.length<2)continue;
+    const head=trs[0].map(cell=>(cell[0]||'').toLowerCase()),find=re=>head.findIndex(text=>re.test(text));
+    const at={event:find(/^event$/),name:find(/^(?:diver|swimmer|name|athlete|player|competitor|rower|fencer|shooter|bowler|golfer)s?$/),score:find(/^(?:score|time|points|total|mark)$/),place:find(/^(?:place|pl\.?|finish|rank)$/)};
+    if(at.name<0||at.place<0)continue;
+    for(const cells of trs.slice(1)){
+      const names=cells[at.name]||[],group=at.event>=0?cells[at.event]?.join(' '):null;
+      names.forEach((participant,k)=>{
+        const mark=at.score>=0?cells[at.score]?.[k]:null,raw=cells[at.place]?.[k]||'',place=/^\d+$/.test(raw)?ordinal(raw):/^EXH/i.test(raw)?'Exhibition':raw;
+        if(participant&&place)rows.push({group:group||undefined,participant,result:[mark,place].filter(Boolean).join(' · '),place});
+      });
+    }
+  }
+  if(!rows.length)return null;
+  const placed=rows.filter(row=>/^\d+(?:st|nd|rd|th)$/.test(row.place)).sort((a,b)=>parseInt(a.place)-parseInt(b.place));
+  const headline=placed.length?`${placed[0].place} · ${placed[0].participant}${placed[0].group?` (${placed[0].group})`:''}`:rows.every(row=>row.place==='Exhibition')?'Exhibition':null;
+  return headline?{headline,results:rows.slice(0,40).map(({place,...row})=>row)}:null;
+}
 async function completedFromStories(events,school){
   const team=`(?:${[school.name,school.short_name,...(school.aliases||[])].filter(Boolean).map(name=>name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')}|(?:Men's |Women's )?(?:Golf|Team))`;
   await Promise.all(events.filter(event=>isBareCompleted(event)&&event.recap_url).map(async event=>{
@@ -5753,7 +5868,15 @@ async function completedFromStories(events,school){
     const place=own&&event.sport==='Golf'&&!/\bIndividuals?\b/.test(event.opponent||'')?golfStoryPlace(raw,{team,decode:decodeHtml}):null;
     const summary=decodeHtml((String(raw).match(/<meta\b[^>]*(?:property|name)=["'](?:og:)?description["'][^>]*content=(["'])([\s\S]*?)\1/i)||[])[2]||'').split(/(?<=\.)\s/)[0];
     const dual=own&&!place&&event.event_type==='DUAL'&&title?storyDualScore(`${title}. ${summary}`,school):null;
+    const duals=own&&!place&&!dual&&event.sport==='Swimming & Diving'?storyBodyDuals(recapArticleText(raw),event,school,await storyRivalSchool(event,school)):[];
+    const label=event.team_label==="Women's"?'Women':event.team_label==="Men's"?'Men':null;
+    const mineDual=label?duals.find(x=>x.team===label)||(duals.length===1&&!duals[0].team?duals[0]:null):duals.length===1&&!duals[0].team?duals[0]:null;
+    const bothDuals=!label&&!mineDual&&duals.length&&duals.every(x=>x.team)?duals:null;
+    const table=!place&&!dual&&!mineDual&&!bothDuals?storyResultTables(raw,event.team_label):null;
     if(place){event.headline=place;event.results=[{label:'Result',value:place}];}
+    else if(mineDual){event.school_score=mineDual.mine;event.opponent_score=mineDual.theirs;event.headline=`${mineDual.outcome}, ${mineDual.mine}-${mineDual.theirs}`;event.results=[{label:'Result',value:event.headline}];}
+    else if(bothDuals){const name=school.short_name||school.name;event.results=bothDuals.map(x=>({group:`${x.team}'s Team`,participant:`${name} team`,result:`${x.outcome}, ${x.mine}-${x.theirs}`}));event.headline=bothDuals.map(x=>`${x.team}'s team: ${x.outcome}, ${x.mine}-${x.theirs}`).join(' / ');}
+    else if(table){event.headline=table.headline;event.results=table.results;}
     else if(dual){event.school_score=dual.mine;event.opponent_score=dual.theirs;event.headline=`${dual.outcome}, ${dual.mine}-${dual.theirs}`;event.results=[{label:'Result',value:event.headline}];}
     else if(own&&title){event.headline=title;event.results=[{label:'Recap',value:title}];}
     // The other team's story is not this event's.
