@@ -31,6 +31,8 @@ for(const [key,value] of Object.entries(kansasSchool.scheduleUrls)){
     byPath.set(path,events);
   }
 }
+// Published clocks carry KU's zone ("7 p.m. CT"); they were read as TBA.
+assert.ok(byPath.get('football').some(e=>/\d:\d{2} [AP]M$/.test(e.display_time)),'KU kickoff times keep their clock');
 assert.equal(kansasScheduleData('malformed'),null);
 assert.equal(kansasScheduleData('<script id="__NUXT_DATA__">[null]</script>'),null);
 const xc=byPath.get('cross-country');

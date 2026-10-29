@@ -3656,7 +3656,9 @@ function parsedSourceDate(dateText,timeText){
   if(month==null)return null;
   let hour=12,minute=0,hasTime=false;
   if(timeText){
-    const t=String(timeText).replace(/\./g,'').trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
+    // A zone after the clock ("7 p.m. CT", KU, Oct 29) is the school's own:
+    // every KU time read TBA without it. "Noon" is 12 p.m.
+    const t=String(timeText).replace(/\./g,'').trim().replace(/\s+\(?(?:[ECMP][SD]?T|AK[SD]?T|H[SD]?T|local)\)?$/i,'').replace(/^noon$/i,'12 pm').match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
     if(t){hour=Number(t[1])%12+(t[3].toLowerCase()==='pm'?12:0);minute=Number(t[2]||0);hasTime=true;}
   }
   return{year:Number(m[3]),month,day:Number(m[2]),hour,minute,hasTime};
