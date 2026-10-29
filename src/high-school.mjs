@@ -260,38 +260,100 @@ export function athleticLiveXcRaces(meet,races,team){
 
 // Cross country on MileSplit Live (milesplit.live/meets/<id>; user, October
 // 29: "If that database that they publish is going to be the live that
-// anybody can see then it's perfectly fine"). The public live page reads the
+// anybody can see then it's perfectly fine", then "Can we fill in other cross
+// country meets from milesplit now?"). The public live page reads the
 // timer's results from MileSplit's Firestore database, which answers anyone
-// without a key: a meet's races (`events`: number, name), its runners
-// (`entries`: event, athlete's names, grade and team, result place and time,
-// no place until finished) and each race's team scores (`teamScores`:
-// eventNo, team, place, points). Documents come as Firestore REST JSON.
-// The same shape as `athleticLiveXcRaces`, without `entries` (a team's list
-// names its alternates, who do not run).
-export const MILESPLIT_LIVE_DOCS='https://firestore.googleapis.com/v1/projects/milesplit-live-results/databases/(default)/documents/meets/';
+// without a key. Kansas meets of every timer are there (LetsGoRun, Midwest
+// Timing, Ticker, Heartland, Goddard, ...): a meet (`meets/<id>`: name, day,
+// venue, timer, and `teams` by the meet's code with MileSplit's team id), its
+// races (`events`: number, name, sex, division "Varsity"/"JV"/"Race A"), its
+// runners (`entries`: race, athlete's names, grade and team code, place and
+// time once finished) and each race's team scores (`teamScores`: eventNo,
+// each team's code, place and points). Team names are cut to 30 characters
+// ("Randolph Blue Valley High Scho") and two schools share a name (Blue
+// Valley, Randolph and Stilwell), so a school is found by its MileSplit team
+// id, then by the meet's code for it.
+export const MILESPLIT_LIVE_ROOT='https://firestore.googleapis.com/v1/projects/milesplit-live-results/databases/(default)/documents';
 const firestoreValue=v=>{
   const [type,value]=Object.entries(v||{})[0]||[];
   if(type==='mapValue')return Object.fromEntries(Object.entries(value.fields||{}).map(([k,x])=>[k,firestoreValue(x)]));
   if(type==='arrayValue')return(value.values||[]).map(firestoreValue);
   return type==='nullValue'?null:value;
 };
-export const firestoreDocs=json=>(json?.documents||[]).map(d=>({...firestoreValue({mapValue:d}),id:String(d.name||'').split('/').pop(),updated:d.updateTime||null}));
-// "6A Girls 5k Run (6A)" → "6A Girls 5k Run".
-export const milesplitLiveRace=name=>clean(String(name||'').replace(/\s*\([^)]*\)\s*$/,''));
-export function milesplitLiveXcRaces(events,entries,teamScores,team){
-  const teams=new Set([].concat(team).map(meetProTrackTeam)),isOurs=name=>teams.has(meetProTrackTeam(name));
-  // Pages read a minute apart can repeat a runner across their boundary.
-  entries=[...new Map(entries.map(e=>[e.id,e])).values()];
+const firestoreDoc=d=>({...firestoreValue({mapValue:d}),id:String(d.name||'').split('/').pop(),updated:d.updateTime||null});
+// A list (`{documents}`) or a query's answer (`[{document}]`).
+export const firestoreDocs=json=>(Array.isArray(json)?json.map(r=>r?.document).filter(d=>d?.fields):json?.documents||[]).map(firestoreDoc);
+// A query on one collection: equality filters (a list: any of them), the
+// fields to return.
+export function firestoreQuery(collection,where,fields,limit=500){
+  const value=v=>typeof v==='number'?{integerValue:String(v)}:{stringValue:String(v)};
+  const filters=Object.entries(where).map(([field,v])=>Array.isArray(v)?{fieldFilter:{field:{fieldPath:field},op:'IN',value:{arrayValue:{values:v.map(value)}}}}:{fieldFilter:{field:{fieldPath:field},op:'EQUAL',value:value(v)}});
+  return JSON.stringify({structuredQuery:{from:[{collectionId:collection}],where:filters.length===1?filters[0]:{compositeFilter:{op:'AND',filters}},select:{fields:fields.map(f=>({fieldPath:f}))},limit}});
+}
+// The meet's code and name for a MileSplit team id ("BVLY", "Randolph Blue
+// Valley High School" for 36605). Runners can carry another code and a
+// shorter name (MeetPro meets: "MAN" for "MANH", "Flinthills Christian" for
+// "Flinthills Christian High School"; names cut to 30 characters), so they
+// are found by any of `milesplitTeamNames`.
+export function milesplitTeamCode(meet,team){
+  const hit=Object.entries(meet?.teams||{}).find(([,t])=>String(t?.id)===String(team));
+  return hit?{code:hit[0].trim(),name:clean(hit[1].name||'')}:null;
+}
+export const milesplitTeamNames=name=>[...new Set([name,name.slice(0,30),name.replace(/\s+(?:High School|HS|Jr\.?\/Sr\.? High(?: School)?)$/i,'')].map(clean).filter(Boolean))];
+// The day's meet a calendar entry names: one with the school in it whose
+// name, venue or city shares a word with the entry ("Baldwin Invite" is the
+// "Maple Leaf XC Classic" at Baldwin City; "Regional" is a KSHSAA
+// "Sub-State"). None when nothing matches: Manhattan's "Haskell Invite" day
+// also lists its runners at the Salina Invitational.
+const MEET_WORDS=new Set('and the meet meets invite invitational invitationals xc cross country classic high school schools varsity junior run race races championship championships league golf course club park state kshsaa jv hs'.split(' '));
+const meetWords=s=>new Set(String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w.length>=3&&!MEET_WORDS.has(w)&&!/^\d/.test(w)));
+export function milesplitMeetFor(meets,team,name){
+  const want=meetWords(name),regional=/\bregionals?\b|\bsub-?state\b/i.test(name||'');
+  let best=null;
+  for(const meet of meets){
+    if(meet.season&&meet.season!=='CC')continue;
+    const ours=milesplitTeamCode(meet,team);if(!ours)continue;
+    const have=meetWords(`${meet.name} ${meet.venue?.name||''} ${meet.venue?.city||''}`);
+    const score=[...want].filter(w=>have.has(w)).length+(regional&&/\bsub-?state\b|\bregionals?\b/i.test(meet.name||'')?1:0);
+    if(score&&(!best||score>best.score))best={id:meet.id,...ours,meet:meet.name,timer:meet.timingCompany?.name||null,score};
+  }
+  return best;
+}
+// The varsity race of each sex the school ran. Races named for a level
+// ("Junior Varsity", "JV", "C Team", "7th Grade", "Girls 2 Mile Run (Middle
+// School)", "(Combined)" results) are left out; of two left for one sex the
+// one named Varsity, else the first run (Ticker Timing names both "5k Run").
+const SEX_LABEL={F:'Girls',M:'Boys'};
+const NOT_VARSITY=/\bjunior varsity\b|\bjv\b|\bgrade\b|middle school|\bcombined\b|two mile|\b2 miles?\b|0\.99|\bc team\b|'c' team|\bc 5k\b|^(?:boys|girls) c\b|\bc and\b|\bopen\b/i;
+const raceText=e=>`${e.name||''} ${e.division?.name||''}`;
+const isVarsity=e=>/\bvarsity\b/i.test(raceText(e))&&!/\bjunior varsity\b/i.test(raceText(e));
+export function milesplitVarsityRaces(events,ours){
+  const ran=new Set(ours.map(e=>String(e.event)));
   const out=[];
-  for(const event of [...events].sort((a,b)=>Number(a.number)-Number(b.number))){
-    const all=entries.filter(e=>String(e.event)===String(event.number)),placed=all.filter(e=>Number(e.result?.place)>0&&e.result?.text).sort((a,b)=>Number(a.result.place)-Number(b.result.place));
-    const ours=all.filter(e=>isOurs(e.athlete?.team?.name));
-    if(!ours.length)continue;
-    const runners=placed.filter(e=>isOurs(e.athlete?.team?.name)).map(e=>({place:Number(e.result.place),athlete:clean(`${e.athlete.firstName||''} ${e.athlete.lastName||''}`),year:HYTEK_GRADE[e.athlete.grade]||'',team:e.athlete.team.name,time:e.result.text}));
-    const scores=Object.values(teamScores.find(s=>String(s.eventNo)===String(event.number))?.scores||{}).filter(s=>Number(s.place)>0),mine=scores.find(s=>isOurs(s.team?.name));
-    out.push({race:milesplitLiveRace(event.name),team:mine?{place:Number(mine.place),team:mine.team.name,score:mine.points!=null?String(mine.points):''}:null,teams:scores.length,runners,field:placed.length,entered:ours.length,updated:ours.map(e=>e.updated||'').sort().at(-1)||null});
+  for(const sex of ['F','M']){
+    const races=events.filter(e=>e.gender?.sex===sex&&ran.has(String(e.number))&&(isVarsity(e)||!NOT_VARSITY.test(raceText(e)))).sort((a,b)=>Number(a.number)-Number(b.number));
+    const race=races.find(isVarsity)||races[0];if(race)out.push(race);
   }
   return out;
+}
+// "• 5 Kilometers (3.11 Miles)" → "Girls 5 Kilometers"; "6A Girls 5k Run (6A)" → "6A Girls 5k Run".
+export const milesplitRaceName=e=>{const name=clean(String(e.name||'').replace(/^[•·\s]+/,'').replace(/\s*\([^)]*\)\s*$/,''));return/\b(?:girls?|boys?|women'?s?|men'?s?)\b/i.test(name)?name:clean(`${SEX_LABEL[e.gender?.sex]||''} ${name}`);};
+// A race's team scores, by code: [{code, place, points}].
+export const milesplitTeamScores=doc=>Object.values(doc?.scores||{}).filter(s=>Number(s.place)>0).map(s=>({code:String(s.team?.abbreviation||'').trim(),name:s.team?.name||'',place:Number(s.place),points:s.points!=null?String(s.points):''}));
+// The school's races in `athleticLiveXcRaces`' shape (without `entries`: a
+// team's list names its alternates, who do not run). `finishers` and
+// `scores` are by race number; a race can have several score tables (JV
+// teams scored apart, Rim Rock's 25-team table beside an empty one): the one
+// that scores the school.
+export function milesplitLiveXcRaces(races,ours,finishers,scores,team){
+  const codes=new Set([team.code,...ours.map(e=>String(e.athlete?.team?.abbreviation||'').trim())].filter(Boolean)),names=new Set(milesplitTeamNames(team.name||''));
+  return races.map(event=>{
+    const mine=ours.filter(e=>String(e.event)===String(event.number));
+    const runners=mine.filter(e=>Number(e.result?.place)>0&&e.result?.text).sort((a,b)=>Number(a.result.place)-Number(b.result.place)).map(e=>({place:Number(e.result.place),athlete:clean(`${e.athlete?.firstName||''} ${e.athlete?.lastName||''}`),year:HYTEK_GRADE[e.athlete?.grade]||'',team:e.athlete?.team?.name||team.name,time:e.result.text}));
+    const find=table=>table.find(s=>codes.has(s.code))||table.find(s=>names.has(clean(s.name)));
+    const table=(scores.get(String(event.number))||[]).find(find)||[],own=find(table);
+    return{race:milesplitRaceName(event),team:own?{place:own.place,team:own.name,score:own.points}:null,teams:table.length,runners,field:finishers.get(String(event.number))||0,entered:mine.length,updated:mine.map(e=>e.updated||'').sort().at(-1)||null};
+  });
 }
 
 // Midwest Timing & Results (midwesttiming.com, KSHSAA's state cross country
