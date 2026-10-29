@@ -13,12 +13,13 @@ const pages=new Map();
 const fetch=async url=>{url=String(url?.url||url);return pages.has(url)?new Response(pages.get(url),{headers:{'content-type':'text/html'}}):new Response('',{status:404});};
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
 const w=Function(...Object.keys(deps),source+';return {completedFromStories,storyHeadline,parsedSourceDate,formatSourceDate,catalogSchool};')(...Object.values(deps));
-const story=(title,body='')=>`<html><head><meta property="og:title" content="${title}"><meta property="og:description" content="${body}"></head><body><p>${body}</p></body></html>`;
+const story=(title,body='')=>`<html><head><meta property="og:title" content="${title}"><meta property="og:description" content="${body}"></head><body><section><div><div id="storyPageContentBody"><p>${body}</p></div></div></section></body></html>`;
 const final=(sport,opponent,url,extra={})=>({status:'Final',sport,opponent,event_type:sport==='Golf'?'MEET':'DUAL',headline:'Completed',results:[{label:'Result',value:'Completed'}],result_count:1,recap_url:url,...extra});
 const asu=w.catalogSchool('arizona-state'),base='https://thesundevils.com/news/2026/10/';
 pages.set(base+'golf',story('Champions in Hawaii: Women&#39;s golf captures Nanea Invitational title over Stanford and UCLA - Arizona State University Athletics'));
 pages.set(base+'tennis',story('WTEN | Sun Devils Reach Doubles Final at ITA Regionals - Arizona State University Athletics'));
-pages.set(base+'swim',story('Sun Devils Top Utah 180-120 in Dual Opener'));
+pages.set(base+'swim',story('Sun Devils Top Utah 180-120 in Dual Opener','ASU Swimming & Diving opened its season against Utah.'));
+pages.set(base+'other',story('Sun Devils Sweep Weekend at Kinlen Invite','ASU tennis went 9-1 at the Kinlen.'));
 pages.set(base+'men',story('Men&#8217;s Tennis Wraps Up Fall at Battle of the Bay'));
 const events=await w.completedFromStories([
   final('Golf','Nanea Invitational',base+'golf',{team_label:"Women's"}),
@@ -26,13 +27,15 @@ const events=await w.completedFromStories([
   final('Swimming & Diving','Utah',base+'swim'),
   final('Tennis','Battle of the Bay',base+'men',{team_label:"Women's"}),
   final('Tennis','Kinlen Invite',undefined),
+  final('Tennis','Bedford Cup',base+'other',{team_label:"Women's"}),
   final('Tennis','Box score only',undefined,{box_score_url:'https://thesundevils.com/boxscore/1'}),
 ],asu);
 assert.deepEqual(events.map(e=>e.headline),['1st','Sun Devils Reach Doubles Final at ITA Regionals','W, 180-120','Completed']);
 assert.deepEqual(events[2].results,[{label:'Result',value:'W, 180-120'}]);
 assert.equal(events[2].school_score,'180');
 assert.deepEqual(events[1].results,[{label:'Recap',value:'Sun Devils Reach Doubles Final at ITA Regionals'}]);
-// The men's story is not the women's event's: with no story it is left out,
+// The men's story is not the women's event's, nor is a story of another
+// tournament (the expanded view's own check): with no story it is left out,
 // as is one with nothing published; a box score keeps an event.
 assert.equal(events.length,4);assert.equal(events[3].opponent,'Box score only');
 assert.equal(w.storyHeadline(story('Bulls Show Promise at Penn State Invitational - University at Buffalo'),w.catalogSchool('buffalo')||asu),'Bulls Show Promise at Penn State Invitational');

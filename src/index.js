@@ -333,7 +333,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.231.0-completed-stories';
+const VERSION='4.231.1-completed-stories';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5742,6 +5742,10 @@ async function completedFromStories(events,school){
   await Promise.all(events.filter(event=>isBareCompleted(event)&&event.recap_url).map(async event=>{
     let raw=null;try{const response=await sourceFetch(event.recap_url,{headers:HEADERS,redirect:'follow',signal:AbortSignal.timeout(6500)});raw=response.ok?await response.text():null;}catch{}
     if(!raw||!isBareCompleted(event))return;
+    // The expanded view's own check: a story that is not this event's is
+    // dropped there (ASU's SMU Classic, Oct 29), so the card does not use it.
+    let matched=false;try{matched=(schoolModule(event.school_id)?.matchesRecap||recapMatchesEvent)(raw,event,event.recap_url);}catch{}
+    if(!matched){delete event.recap_url;delete event.recap_title;return;}
     const title=storyHeadline(raw,school);
     // A story of the other team ("Men's Tennis ..." for the women's event).
     const other=event.team_label==="Women's"?/\bMen['’]s\b/i:event.team_label==="Men's"?/\bWomen['’]s\b/i:null;
