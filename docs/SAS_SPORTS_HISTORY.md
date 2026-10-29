@@ -3645,3 +3645,31 @@ Request: "Work through the open items" (after the SWAC).
 - Stories that name the opponent only by an abbreviation the catalog lacks ("NKU" for "Northern Ky.") or far from the score keep the Recap line (Cincinnati vs NKU, Lafayette's women).
 - Florida's schedule and Virginia's story disagree on the Oct 17 dual (Florida's page: 144-117 and 57-205; Virginia's story: 176-117 and 205-89). The app shows each school's own page.
 
+
+
+## October 29, 2026 — Manhattan High School: 6A state cross country meet (Midwest Timing & Results)
+
+**Asked:** "Can we look for the Manhattan high School State meet live." Then, after the findings: "Do 1 and 2 with the understanding that I would prefer live if I can get in contact with them. merge when everything passes".
+
+**Found:**
+- **The meet:** KSHSAA's state sites API (`kshsaa-api.kshsaa.org/playoff-sites/state-sites/state/cross%20country/60`) gives 6A at Rim Rock Farm, Lawrence, Oct 31, host Free State. The state schedule PDF gives 6A girls 10:00 a.m. and 6A boys 11:45 a.m.; gates open 9:00.
+- **Qualified:** KSHSAA's 6A qualifier PDF lists 10 Manhattan boys and 10 girls, both teams 1st at the 6A Sub-State Manhattan (MileSplit meet 788036).
+- **Timer:** Midwest Timing & Results (`midwesttiming.com/statexc`, "KSHSAA State Championship · Official Timing Partner"): RFID splits at 1 and 2 miles and the finish. Its "Live Results" buttons go only to MileSplit 787763 (PRO members only; already "not usable" in our docs).
+- **Results page:** `/results/<year>` is a server-rendered table (date, meet, place, results PDF in public Supabase storage, MileSplit link). The Oct 24 sub-state PDFs were posted about an hour after the races, as Hy-Tek text. The 2025 state PDF (3-5-6A) was scanned images, created Nov 2 (the day after). The 3A Fredonia sub-state PDF is another layout. Manhattan's own sub-state is not on Midwest Timing's list.
+- **Refused:** capturing the results page's Supabase API key with a browser was refused by the permission classifier as website access circumvention. The reader uses only the served HTML and the linked PDFs.
+
+**Built (PR #456, merged `a4d6c75`, `4.233.0-midwest-timing-xc`):**
+- `src/high-school.mjs`: `midwestTimingMeets` (results table rows; "Oct 24", "11/2/24", "12/5 - 12/6/25") and `hytekXcResults` (each event's finishers and Team Scores; team names cut to the column matched by prefix; a grade before the team read as FR/SO/JR/SR).
+- `src/index.js`: `midwestTimingResultsFor` (list by date and place, PDF through unpdf, 12 MB cap; an unreadable PDF gives "Results posted (PDF)"). `midwestTimingSchedule` adds the race times and site as rows with the MileSplit link until results post. `highSchoolEvent` takes `schedule`; a state meet with one is listed after the day even with no results ("No results posted").
+- `src/schools/manhattan-ks.mjs`: `midwestTiming` entry (Oct 31, Lawrence row, races, site, MileSplit page, "Manhattan High School"). The calendar's "State Meet" 9:30 reads as "KSHSAA 6A State Championship" at 10:00.
+
+**Verified:**
+- `tests/midwest-timing-xc.mjs` (real 2026 results page, the 5A Great Bend sub-state PDF text; Manhattan run on Salina Central's rows renamed): before, on the day, posted, unreadable and never posted. Field size 59 checked against pdftotext. `tests/manhattan-ks-module.mjs` expectation updated.
+- `test:release` passed on `cb37ddb`; CI green.
+- Preview: `verify:preview` Manhattan XC 3/3, 9/9 expanded views, XC 18/20 and 26/21; screenshot shows the upcoming card with both race times.
+- Production: `verify:prod` passed on the second run (the first hit an edge still serving 4.232.0 mid-rollout).
+
+**Open:**
+- Watch Oct 31: the results page every 2 minutes, then the PDF. If it is scanned again, the card shows the link only.
+- The user may ask Midwest Timing for a public live link (or an AthleticLIVE feed).
+- Other qualifiers (Riley/Pottawatomie schools at Wamego's 1A/2A/4A site) are not wired.
