@@ -10314,7 +10314,7 @@
       {
         "provider": "MAXPREPS",
         "slug": "ks/powhattan/kickapoo-nation-warriors",
-        "provider_school_id": null
+        "provider_school_id": "3be5f852-3499-475e-ac78-05905c8f9350"
       }
     ]
   },
@@ -10340,7 +10340,7 @@
       {
         "provider": "MAXPREPS",
         "slug": "ks/shawnee-mission/metro-academy-mavericks",
-        "provider_school_id": null
+        "provider_school_id": "ce052af2-158f-4d16-9723-ed5ee19ae16d"
       }
     ]
   },

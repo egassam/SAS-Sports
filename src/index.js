@@ -332,7 +332,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.229.2-header-tuning';
+const VERSION='4.230.0-kas-schools';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4086,6 +4086,9 @@ function highSchoolHighlights(event,box){
 // the school played away. When the sentence names the opponent first, the
 // opponent's "away" is the school's home game.
 function contestRelation(contest,school){
+  // MaxPreps' own home/away type first: the summary names the school as
+  // MaxPreps does ("Christ Prep Academy"), not always as the app does.
+  if(contest.site)return contest.site==='AWAY'?'at':'vs';
   const m=String(contest.summary||'').match(/^On [\d/]+, the (.+?) varsity .*?\btheir (home|away|neutral)\b/i);
   if(!m||m[2].toLowerCase()==='neutral')return'vs';
   const ours=nameKey(m[1])===nameKey(school.short_name);
@@ -4461,7 +4464,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     // opponent is a tournament's unfilled slot.
     if(maxprepsOnly)for(const contest of contests.filter(c=>!used.has(c)&&c.opponent&&!(c.result&&c.score!=null))){
       used.add(contest);
-      const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contest.site==='AWAY'?'at':contest.site?'vs':contestRelation(contest,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName,now});
+      const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName,now});
       if(event)events.push(event);
     }
     // A scored game the calendar does not list (a playoff game added after

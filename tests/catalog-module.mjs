@@ -105,9 +105,11 @@ assert.deepEqual(levels.map(l=>l.count),['middle-school','high-school','college'
 const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
 assert.deepEqual(pro.middles,['Formula 1','IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
 const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
-assert.deepEqual(kansas.middles,['Pottawatomie County','Riley County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');
+assert.deepEqual(kansas.middles,['Brown County','Douglas County','Johnson County','Pottawatomie County','Riley County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');
 const rileyHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Riley County'});assert.deepEqual(rileyHs.entries.map(e=>e.id),['manhattan-ks','riley-county-ks','blue-valley-randolph-ks']);
 const pottHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Pottawatomie County'});assert.deepEqual(pottHs.entries.map(e=>e.id),['wamego-ks','rock-creek-ks','st-marys-ks','onaga-ks','flint-hills-christian-ks','st-marys-academy-ks']);
+// The KAS state meet's other teams (October 29): one county each, Johnson two.
+const johnsonHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Johnson County'});assert.deepEqual(johnsonHs.entries.map(e=>e.id).sort(),['christ-prep-ks','kc-metro-academy-ks']);
 const middle=await catalogMenu(stores[1],{level:'middle-school',group:'Kansas',middle:'Riley County'});
 assert.deepEqual(middle.entries.map(e=>e.id),['anthony-ms-ks','eisenhower-ms-ks','riley-county-ms-ks','blue-valley-randolph-ms-ks','manhattan-catholic-ks']);
 const big12=await catalogMenu(stores[1],{level:'college',group:'Big 12'});

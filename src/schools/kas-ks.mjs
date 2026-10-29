@@ -21,10 +21,10 @@ export const christPrepKsSchool={id:'christ-prep-ks',
   maxpreps:maxpreps('af82426a-4cb2-4171-9f57-4caba0094406','lenexa/christ-prep-academy-patriots'),meetPro:LETSGORUN_MEETPRO,
   sports:{
     Football:[{maxpreps:'football'}],
-    Volleyball:[{maxpreps:'volleyball',label:'Girls'},{maxpreps:'volleyball/boys',label:'Boys'}],
+    Volleyball:[{maxpreps:'volleyball'}],
+    // Boys in the fall, girls in the spring.
     Soccer:[{maxpreps:'soccer',label:'Boys'},{maxpreps:'soccer/girls/spring',label:'Girls'}],
     Basketball:[{maxpreps:'basketball/girls',label:'Girls'},{maxpreps:'basketball',label:'Boys'}],
-    Baseball:[{maxpreps:'baseball'}],
     'Cross Country':xc('Christ Preparatory Academy')
   }};
 
@@ -34,27 +34,24 @@ export const veritasChristianKsSchool={id:'veritas-christian-ks',
   sports:{
     Volleyball:[{maxpreps:'volleyball'}],
     Basketball:[{maxpreps:'basketball/girls',label:'Girls'},{maxpreps:'basketball',label:'Boys'}],
-    Baseball:[{maxpreps:'baseball'}],
     'Cross Country':xc('Veritas Christian School')
   }};
 
-// Kickapoo Nation School (Powhattan, Brown County; the Warriors).
+// Kickapoo Nation School (Powhattan, Brown County; the Warriors). Its
+// MaxPreps teams list no 2026-27 game and its own events page last listed
+// golf in spring 2025: the state meet is all it publishes (October 29).
 export const kickapooNationKsSchool={id:'kickapoo-nation-ks',
-  maxpreps:maxpreps('KICKAPOO_ID','powhattan/kickapoo-nation-warriors'),meetPro:LETSGORUN_MEETPRO,
-  sports:{
-    Volleyball:[{maxpreps:'volleyball'}],
-    Basketball:[{maxpreps:'basketball/girls',label:'Girls'},{maxpreps:'basketball',label:'Boys'}],
-    Baseball:[{maxpreps:'baseball'}],
-    'Cross Country':xc('Kickapoo Nation')
-  }};
+  maxpreps:maxpreps('3be5f852-3499-475e-ac78-05905c8f9350','powhattan/kickapoo-nation-warriors'),meetPro:LETSGORUN_MEETPRO,
+  sports:{'Cross Country':xc('Kickapoo Nation')}};
 
 // KC Metro Academy (the Metro Academy Mavericks: a homeschool sports
 // program in the Kansas City area, Johnson County; MaxPreps "Shawnee Mission").
 export const kcMetroAcademyKsSchool={id:'kc-metro-academy-ks',
-  maxpreps:maxpreps('METRO_ID','shawnee-mission/metro-academy-mavericks'),meetPro:LETSGORUN_MEETPRO,
+  maxpreps:maxpreps('ce052af2-158f-4d16-9723-ed5ee19ae16d','shawnee-mission/metro-academy-mavericks'),meetPro:LETSGORUN_MEETPRO,
   sports:{
     Volleyball:[{maxpreps:'volleyball'}],
-    Basketball:[{maxpreps:'basketball/girls',label:'Girls'},{maxpreps:'basketball',label:'Boys'}],
+    // Boys only: the girls' MaxPreps team lists no game.
+    Basketball:[{maxpreps:'basketball',label:'Boys'}],
     'Cross Country':xc('KC Metro Academy')
   }};
 

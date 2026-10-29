@@ -3446,5 +3446,37 @@
     "panelDark": "#000811",
     "line": "#405c7e",
     "onAccent": "#ffffff"
+  },
+  "christ-prep-ks": {
+    "primary": "#CC0022",
+    "secondary": "#FFFFFF",
+    "panel": "#5c000f",
+    "panelDark": "#290007",
+    "line": "#d94059",
+    "onAccent": "#ffffff"
+  },
+  "veritas-christian-ks": {
+    "primary": "#022C66",
+    "secondary": "#C8880A",
+    "panel": "#01142e",
+    "panelDark": "#000914",
+    "line": "#41618c",
+    "onAccent": "#ffffff"
+  },
+  "kickapoo-nation-ks": {
+    "primary": "#8F0018",
+    "secondary": "#454444",
+    "panel": "#40000b",
+    "panelDark": "#1d0005",
+    "line": "#ab4052",
+    "onAccent": "#ffffff"
+  },
+  "kc-metro-academy-ks": {
+    "primary": "#CC0022",
+    "secondary": "#222222",
+    "panel": "#5c000f",
+    "panelDark": "#290007",
+    "line": "#d94059",
+    "onAccent": "#ffffff"
   }
 }
