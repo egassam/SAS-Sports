@@ -39,6 +39,44 @@ assert.deepEqual(events[1].results,[{label:'Recap',value:'Sun Devils Reach Doubl
 // as is one with nothing published; a box score keeps an event.
 assert.equal(events.length,4);assert.equal(events[3].opponent,'Box score only');
 assert.equal(w.storyHeadline(story('Bulls Show Promise at Penn State Invitational - University at Buffalo'),w.catalogSchool('buffalo')||asu),'Bulls Show Promise at Penn State Invitational');
+// A swimming dual's scores in its story's text, each tied to the opponent
+// named beside it (user, Oct 29: "it doesn't show a score").
+const article=(title,body)=>`<html><head><meta property="og:title" content="${title}"></head><body><script type="application/ld+json">${JSON.stringify({articleBody:`Swimming & Diving. ${body}`})}</script></body></html>`;
+const swim=(id,opponent,url,body,extra={})=>{pages.set(url,article(`${id} swimming meet against ${opponent}`,body));return final('Swimming & Diving',opponent,url,{school_id:id,...extra});};
+const cin=w.catalogSchool('cincinnati'),vmi=w.catalogSchool('vmi'),mizzou=w.catalogSchool('missouri'),uwf=w.catalogSchool('west-florida')||w.catalogSchool('cincinnati');
+const [split]=await w.completedFromStories([swim('cincinnati','Miami (OH)','https://gobearcats.com/news/2026/10/10/swim',"The women's team earned a 188-112 victory over the RedHawks, while the men's team fell 135-165. The Bearcats return Nov. 14-15.")],cin);
+assert.equal(split.headline,"Women's team: W, 188-112 / Men's team: L, 135-165");
+assert.deepEqual(split.results.map(r=>[r.group,r.result]),[["Women's Team",'W, 188-112'],["Men's Team",'L, 135-165']]);
+const vmiBody="The VMI men earned a split on the afternoon, defeating American 215-83 while falling to host UMBC 187.5-112.5. On the women's side, the Keydets fell 238-59 to UMBC and 184-103 to American.";
+const [umbc,american]=await w.completedFromStories([
+  swim('vmi','UMBC','https://vmikeydets.com/news/2026/10/3/umbc',vmiBody,{team_label:"Women's"}),
+  swim('vmi','American','https://vmikeydets.com/news/2026/10/3/american',vmiBody,{team_label:"Men's"}),
+],vmi);
+assert.deepEqual([umbc.headline,american.headline],['L, 59-238','W, 215-83']);
+assert.deepEqual([american.school_score,american.opponent_score],['215','83']);
+const mizzouBody="The women’s team beat Indiana State 259-94 and Missouri State 270-83 while the men’s team won 249-104 against Missouri State.";
+const [indiana,missouriState]=await w.completedFromStories([
+  swim('missouri','Indiana State','https://mutigers.com/news/2026/10/17/a',mizzouBody),
+  swim('missouri','Missouri State','https://mutigers.com/news/2026/10/17/b',mizzouBody),
+],mizzou);
+assert.equal(indiana.headline,"Women's team: W, 259-94");
+assert.equal(missouriState.headline,"Women's team: W, 270-83 / Men's team: W, 249-104");
+// Another school's score beside a like name is not this opponent's, and an
+// invitational's total is not a dual.
+const [fsu,invite]=await w.completedFromStories([
+  swim('cincinnati','Florida State','https://gobearcats.com/news/2026/10/23/fsu','The Bearcats beat Florida Gulf Coast (242-19) but lost to North Florida (153-123) and FSU (206-72).',{team_label:"Women's"}),
+  swim('cincinnati','Hannah Gibbons Invitational','https://gobearcats.com/news/2026/10/23/invite','The Bearcats won the Hannah Gibbons Invitational with 1,135.5 points, a 1,135.5-382 win.',{team_label:"Women's"}),
+],cin);
+assert.equal(fsu.headline,'L, 72-206');
+assert.equal(invite.results[0].label,'Recap');
+// A diving meet with no team score: its story's results table.
+const table=`<p><strong>Men's Results</strong></p><table><tr><td><strong>Event</strong></td><td><strong>Diver</strong></td><td><strong>Score</strong></td><td><strong>Place</strong></td></tr><tr><td>3-Meter</td><td>Miguel Tovar<br>Conor Gesing</td><td>390.30<br>366.60</td><td>1<br>3</td></tr></table><p><strong>Women's Results</strong></p><table><tr><td>Event</td><td>Diver</td><td>Score</td><td>Place</td></tr><tr><td>3-Meter (EXH)</td><td>Camyla Monroy</td><td>361.80</td><td>EXH</td></tr></table>`;
+pages.set('https://floridagators.com/news/2026/10/16/dive',`<html><head><meta property="og:title" content="Miguel Tovar Leads Gators to 3-Meter Victory Over Miami"></head><body><section><div><div id="storyPageContentBody"><p>Florida Swimming & Diving hosted Miami.</p>${table}</div></div></section></body></html>`);
+const uf=w.catalogSchool('florida'),dive=(label)=>final('Swimming & Diving','Miami (Diving)','https://floridagators.com/news/2026/10/16/dive',{school_id:'florida',team_label:label});
+const [men,women]=await w.completedFromStories([dive("Men's"),dive("Women's")],uf);
+assert.equal(men.headline,'1st · Miguel Tovar (3-Meter)');
+assert.deepEqual(men.results,[{group:'3-Meter',participant:'Miguel Tovar',result:'390.30 · 1st'},{group:'3-Meter',participant:'Conor Gesing',result:'366.60 · 3rd'}]);
+assert.equal(women.headline,'Exhibition');assert.deepEqual(women.results,[{group:'3-Meter (EXH)',participant:'Camyla Monroy',result:'361.80 · Exhibition'}]);
 // Published clocks with a zone.
 assert.equal(w.formatSourceDate('October 30, 2026','7 p.m. CT'),'Oct 30, 7:00 PM');
 assert.equal(w.formatSourceDate('November 1, 2026','12 p.m. CT'),'Nov 1, 12:00 PM');
