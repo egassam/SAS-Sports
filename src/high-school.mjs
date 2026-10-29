@@ -258,10 +258,46 @@ export function athleticLiveXcRaces(meet,races,team){
   return out;
 }
 
+// Cross country on MileSplit Live (milesplit.live/meets/<id>; user, October
+// 29: "If that database that they publish is going to be the live that
+// anybody can see then it's perfectly fine"). The public live page reads the
+// timer's results from MileSplit's Firestore database, which answers anyone
+// without a key: a meet's races (`events`: number, name), its runners
+// (`entries`: event, athlete's names, grade and team, result place and time,
+// no place until finished) and each race's team scores (`teamScores`:
+// eventNo, team, place, points). Documents come as Firestore REST JSON.
+// The same shape as `athleticLiveXcRaces`, without `entries` (a team's list
+// names its alternates, who do not run).
+export const MILESPLIT_LIVE_DOCS='https://firestore.googleapis.com/v1/projects/milesplit-live-results/databases/(default)/documents/meets/';
+const firestoreValue=v=>{
+  const [type,value]=Object.entries(v||{})[0]||[];
+  if(type==='mapValue')return Object.fromEntries(Object.entries(value.fields||{}).map(([k,x])=>[k,firestoreValue(x)]));
+  if(type==='arrayValue')return(value.values||[]).map(firestoreValue);
+  return type==='nullValue'?null:value;
+};
+export const firestoreDocs=json=>(json?.documents||[]).map(d=>({...firestoreValue({mapValue:d}),id:String(d.name||'').split('/').pop(),updated:d.updateTime||null}));
+// "6A Girls 5k Run (6A)" → "6A Girls 5k Run".
+export const milesplitLiveRace=name=>clean(String(name||'').replace(/\s*\([^)]*\)\s*$/,''));
+export function milesplitLiveXcRaces(events,entries,teamScores,team){
+  const teams=new Set([].concat(team).map(meetProTrackTeam)),isOurs=name=>teams.has(meetProTrackTeam(name));
+  // Pages read a minute apart can repeat a runner across their boundary.
+  entries=[...new Map(entries.map(e=>[e.id,e])).values()];
+  const out=[];
+  for(const event of [...events].sort((a,b)=>Number(a.number)-Number(b.number))){
+    const all=entries.filter(e=>String(e.event)===String(event.number)),placed=all.filter(e=>Number(e.result?.place)>0&&e.result?.text).sort((a,b)=>Number(a.result.place)-Number(b.result.place));
+    const ours=all.filter(e=>isOurs(e.athlete?.team?.name));
+    if(!ours.length)continue;
+    const runners=placed.filter(e=>isOurs(e.athlete?.team?.name)).map(e=>({place:Number(e.result.place),athlete:clean(`${e.athlete.firstName||''} ${e.athlete.lastName||''}`),year:HYTEK_GRADE[e.athlete.grade]||'',team:e.athlete.team.name,time:e.result.text}));
+    const scores=Object.values(teamScores.find(s=>String(s.eventNo)===String(event.number))?.scores||{}).filter(s=>Number(s.place)>0),mine=scores.find(s=>isOurs(s.team?.name));
+    out.push({race:milesplitLiveRace(event.name),team:mine?{place:Number(mine.place),team:mine.team.name,score:mine.points!=null?String(mine.points):''}:null,teams:scores.length,runners,field:placed.length,entered:ours.length,updated:ours.map(e=>e.updated||'').sort().at(-1)||null});
+  }
+  return out;
+}
+
 // Midwest Timing & Results (midwesttiming.com, KSHSAA's state cross country
 // timer; user, October 29: "Do 1 and 2 with the understanding that I would
 // prefer live if I can get in contact with them"). Its live results are on
-// MileSplit (members only); after each meet it lists a Hy-Tek results PDF on
+// MileSplit Live (above); after each meet it lists a Hy-Tek results PDF on
 // its own results page, one table row per meet: date ("Oct 24", "11/2/24",
 // "12/5 - 12/6/25"), meet, place, the PDF link and the MileSplit link.
 export const MIDWEST_TIMING_RESULTS='https://midwesttiming.com/results/';
