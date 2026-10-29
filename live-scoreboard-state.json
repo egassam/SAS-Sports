@@ -3979,10 +3979,26 @@
    "verified_detail": "final L, 13-28"
   },
   "san-jose-state|Soccer": {
-   "state": "failing",
-   "last_check": "2026-10-25T01:30:06.241Z",
-   "last_detail": "final L, 0-3 (live phase not observed 2×; waits for the next game)",
-   "game": null,
+   "state": "on",
+   "last_check": "2026-10-29T00:51:24.053Z",
+   "last_detail": "live 1-0 · 80' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "san-jose-state|Soccer||2026-10-28|1",
+    "title": "San Jose State vs UC Davis",
+    "started_seen": "2026-10-29T00:42:43.121Z",
+    "live_passes": [
+     "2026-10-29T00:42:43.121Z",
+     "2026-10-29T00:43:49.079Z",
+     "2026-10-29T00:45:10.957Z",
+     "2026-10-29T00:46:13.408Z",
+     "2026-10-29T00:47:16.670Z",
+     "2026-10-29T00:48:18.303Z",
+     "2026-10-29T00:49:20.542Z",
+     "2026-10-29T00:50:22.110Z",
+     "2026-10-29T00:51:24.053Z"
+    ],
+    "final_ok": false
+   },
    "failures": 5,
    "last_failure": {
     "at": "2026-10-24T23:31:46.783Z",
@@ -4633,7 +4649,26 @@
    "state": "off"
   },
   "long-beach-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-29T00:51:23.556Z",
+   "last_detail": "live 0-1 · 38' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "long-beach-state|Soccer||2026-10-28|1",
+    "title": "Long Beach State at Utah Valley",
+    "started_seen": "2026-10-29T00:42:43.789Z",
+    "live_passes": [
+     "2026-10-29T00:42:43.789Z",
+     "2026-10-29T00:43:48.954Z",
+     "2026-10-29T00:45:11.334Z",
+     "2026-10-29T00:46:12.774Z",
+     "2026-10-29T00:47:16.267Z",
+     "2026-10-29T00:48:18.092Z",
+     "2026-10-29T00:49:20.262Z",
+     "2026-10-29T00:50:22.113Z",
+     "2026-10-29T00:51:23.556Z"
+    ],
+    "final_ok": false
+   }
   },
   "long-beach-state|Softball": {
    "state": "off"
@@ -4771,10 +4806,26 @@
    "state": "off"
   },
   "utah-valley|Soccer": {
-   "state": "off",
-   "last_check": "2026-10-25T06:46:06.171Z",
-   "last_detail": "final W, 1-0 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-29T00:51:23.565Z",
+   "last_detail": "live 1-0 · 38' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "utah-valley|Soccer|Women's|2026-10-28|1",
+    "title": "Women's · Utah Valley vs Long Beach St",
+    "started_seen": "2026-10-29T00:42:47.236Z",
+    "live_passes": [
+     "2026-10-29T00:42:47.236Z",
+     "2026-10-29T00:43:48.084Z",
+     "2026-10-29T00:45:11.972Z",
+     "2026-10-29T00:46:14.560Z",
+     "2026-10-29T00:47:16.242Z",
+     "2026-10-29T00:48:19.446Z",
+     "2026-10-29T00:49:21.151Z",
+     "2026-10-29T00:50:22.778Z",
+     "2026-10-29T00:51:23.565Z"
+    ],
+    "final_ok": false
+   }
   },
   "utah-valley|Softball": {
    "state": "off"
@@ -5305,7 +5356,26 @@
    "state": "off"
   },
   "jacksonville-state|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-29T00:51:23.493Z",
+   "last_detail": "live 7-0 · 10:35 - 2nd · ball: school · official_schedule+live_scoreboard",
+   "game": {
+    "key": "jacksonville-state|Football||2026-10-28|1",
+    "title": "Jacksonville State at New Mexico St",
+    "started_seen": "2026-10-29T00:42:44.028Z",
+    "live_passes": [
+     "2026-10-29T00:42:44.028Z",
+     "2026-10-29T00:44:09.401Z",
+     "2026-10-29T00:45:10.625Z",
+     "2026-10-29T00:46:12.804Z",
+     "2026-10-29T00:47:16.147Z",
+     "2026-10-29T00:48:18.093Z",
+     "2026-10-29T00:49:20.147Z",
+     "2026-10-29T00:50:22.072Z",
+     "2026-10-29T00:51:23.493Z"
+    ],
+    "final_ok": false
+   }
   },
   "jacksonville-state|Soccer": {
    "state": "done",
@@ -5377,7 +5447,26 @@
    "state": "off"
   },
   "middle-tennessee|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-29T00:51:24.169Z",
+   "last_detail": "live 17-19 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "middle-tennessee|Football||2026-10-28|1",
+    "title": "Middle Tennessee vs Kennesaw St",
+    "started_seen": "2026-10-29T00:42:43.738Z",
+    "live_passes": [
+     "2026-10-29T00:42:43.738Z",
+     "2026-10-29T00:43:48.080Z",
+     "2026-10-29T00:45:10.604Z",
+     "2026-10-29T00:46:15.410Z",
+     "2026-10-29T00:47:16.200Z",
+     "2026-10-29T00:48:18.969Z",
+     "2026-10-29T00:49:20.180Z",
+     "2026-10-29T00:50:22.653Z",
+     "2026-10-29T00:51:24.169Z"
+    ],
+    "final_ok": false
+   }
   },
   "middle-tennessee|Soccer": {
    "state": "done",
@@ -6967,7 +7056,26 @@
    "state": "off"
   },
   "charleston-southern|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-29T00:51:23.559Z",
+   "last_detail": "live 1-6 · 81' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "charleston-southern|Soccer||2026-10-28|1",
+    "title": "Charleston Southern at High Point",
+    "started_seen": "2026-10-29T00:42:44.031Z",
+    "live_passes": [
+     "2026-10-29T00:42:44.031Z",
+     "2026-10-29T00:43:50.634Z",
+     "2026-10-29T00:45:10.608Z",
+     "2026-10-29T00:46:13.404Z",
+     "2026-10-29T00:47:17.127Z",
+     "2026-10-29T00:48:19.456Z",
+     "2026-10-29T00:49:21.027Z",
+     "2026-10-29T00:50:22.148Z",
+     "2026-10-29T00:51:23.559Z"
+    ],
+    "final_ok": false
+   }
   },
   "charleston-southern|Softball": {
    "state": "off"
@@ -8536,7 +8644,26 @@
    "state": "off"
   },
   "south-carolina-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-29T00:51:23.562Z",
+   "last_detail": "live 2-0 · 85' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-carolina-state|Soccer||2026-10-28|1",
+    "title": "SC State vs Allen",
+    "started_seen": "2026-10-29T00:42:44.181Z",
+    "live_passes": [
+     "2026-10-29T00:42:44.181Z",
+     "2026-10-29T00:43:48.067Z",
+     "2026-10-29T00:45:11.341Z",
+     "2026-10-29T00:46:13.731Z",
+     "2026-10-29T00:47:16.944Z",
+     "2026-10-29T00:48:18.086Z",
+     "2026-10-29T00:49:20.230Z",
+     "2026-10-29T00:50:22.707Z",
+     "2026-10-29T00:51:23.562Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-carolina-state|Softball": {
    "state": "off"
@@ -10138,7 +10265,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.222.1-meetpro-track",
- "updated_at": "2026-10-28T08:55:51.028Z",
+ "version": "4.228.0-home-featured-meets",
+ "updated_at": "2026-10-29T00:51:24.173Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

@@ -15,11 +15,17 @@
 | robert-morris | Hockey | ❌ failing | Robert Morris at Bentley: result reads "L, 1-2", ESPN final L, 1-5 |
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| san-jose-state | Soccer | ❌ failing | San Jose State at Air Force: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | seattle-u | Soccer | ❌ failing | Seattle U vs LMU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | st-thomas | Soccer | ❌ failing | St. Thomas vs Omaha: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | virginia-tech | Soccer | ❌ failing | Virginia Tech vs Clemson: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| charleston-southern | Soccer | 🔴 on | live 1-6 · 81' · official_schedule+live_scoreboard |
+| jacksonville-state | Football | 🔴 on | live 7-0 · 10:35 - 2nd · ball: school · official_schedule+live_scoreboard |
+| long-beach-state | Soccer | 🔴 on | live 0-1 · 38' · official_schedule+live_scoreboard |
+| middle-tennessee | Football | 🔴 on | live 17-19 · Halftime · official_schedule+live_scoreboard |
+| san-jose-state | Soccer | 🔴 on | live 1-0 · 80' · official_schedule+live_scoreboard |
+| south-carolina-state | Soccer | 🔴 on | live 2-0 · 85' · official_schedule+live_scoreboard |
+| utah-valley | Soccer | 🔴 on | live 1-0 · 38' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -182,7 +188,6 @@
 | charleston-southern | Baseball | ⚪ off (waiting) |  |
 | charleston-southern | Basketball | ⚪ off (waiting) |  |
 | charleston-southern | Football | ⚪ off (waiting) |  |
-| charleston-southern | Soccer | ⚪ off (waiting) |  |
 | charleston-southern | Softball | ⚪ off (waiting) |  |
 | charlotte | Baseball | ⚪ off (waiting) |  |
 | charlotte | Basketball | ⚪ off (waiting) |  |
@@ -453,7 +458,6 @@
 | jacksonville | Softball | ⚪ off (waiting) |  |
 | jacksonville-state | Baseball | ⚪ off (waiting) |  |
 | jacksonville-state | Basketball | ⚪ off (waiting) |  |
-| jacksonville-state | Football | ⚪ off (waiting) |  |
 | jacksonville-state | Softball | ⚪ off (waiting) |  |
 | james-madison | Baseball | ⚪ off (waiting) |  |
 | james-madison | Basketball | ⚪ off (waiting) |  |
@@ -530,7 +534,6 @@
 | lmu | Water Polo | ⚪ off (waiting) |  |
 | long-beach-state | Baseball | ⚪ off (waiting) |  |
 | long-beach-state | Basketball | ⚪ off (waiting) |  |
-| long-beach-state | Soccer | ⚪ off (waiting) |  |
 | long-beach-state | Softball | ⚪ off (waiting) |  |
 | long-beach-state | Water Polo | ⚪ off (waiting) |  |
 | louisiana | Baseball | ⚪ off (waiting) |  |
@@ -620,7 +623,6 @@
 | michigan-state | Softball | ⚪ off (waiting) |  |
 | middle-tennessee | Baseball | ⚪ off (waiting) |  |
 | middle-tennessee | Basketball | ⚪ off (waiting) |  |
-| middle-tennessee | Football | ⚪ off (waiting) |  |
 | middle-tennessee | Softball | ⚪ off (waiting) |  |
 | milwaukee | Baseball | ⚪ off (waiting) |  |
 | milwaukee | Basketball | ⚪ off (waiting) |  |
@@ -963,7 +965,6 @@
 | south-carolina | Softball | ⚪ off (waiting) |  |
 | south-carolina-state | Basketball | ⚪ off (waiting) |  |
 | south-carolina-state | Football | ⚪ off (waiting) |  |
-| south-carolina-state | Soccer | ⚪ off (waiting) |  |
 | south-carolina-state | Softball | ⚪ off (waiting) |  |
 | south-dakota | Basketball | ⚪ off (waiting) |  |
 | south-dakota | Football | ⚪ off (waiting) |  |
@@ -1193,7 +1194,6 @@
 | utah-tech | Softball | ⚪ off (waiting) |  |
 | utah-valley | Baseball | ⚪ off (waiting) |  |
 | utah-valley | Basketball | ⚪ off (waiting) |  |
-| utah-valley | Soccer | ⚪ off (waiting) | final W, 1-0 (live phase not observed 2×; waits for the next game) |
 | utah-valley | Softball | ⚪ off (waiting) |  |
 | utep | Basketball | ⚪ off (waiting) |  |
 | utep | Football | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 668/1956; on 0; off 1268; failing 20.
+Done 668/1956; on 7; off 1262; failing 19.
