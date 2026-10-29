@@ -38,7 +38,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .live-team+.live-team{border-top:1px solid rgba(255,255,255,.08)}
 .live-mono{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:12px;font-weight:950;letter-spacing:-.02em}
 .live-team.ours .live-mono{background:var(--team-primary,var(--accent2));color:var(--theme-on-accent,#07111f);border:2px solid var(--team-secondary,var(--accent))}
-.live-team.them .live-mono{background:#1a2d44;color:#d3e2f1;border:1px solid #31506f}
+.live-team.them .live-mono{background:var(--opp,#1a2d44);color:var(--opp-ink,#d3e2f1);border:1px solid var(--opp-edge,#31506f)}
 .live-name{min-width:0;font-size:17px;font-weight:900;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .live-name small{display:block;margin-top:2px;color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.1em;text-transform:uppercase}
 .live-pts{font-size:36px;font-weight:950;line-height:1;font-variant-numeric:tabular-nums;color:#fff;padding:2px 6px;border-radius:8px}
@@ -209,6 +209,30 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .favorite-teams .favorite-team.active{background:var(--chip,#29435f);border-color:var(--chip-edge,#29435f);box-shadow:0 0 0 2px color-mix(in srgb,#fff 60%,transparent)}
 .show-all-live{display:block;width:100%;margin:10px 0 2px}
 .home-tag{color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin:10px 2px 4px}.home-tag b{color:#f8fafc}
+/* Home's live games: small boards, three across (two on a phone), sports
+   A to Z, each in its team's colors (user, October 29). The full
+   board (line score, leaders, stats) is on the team's page, one tap away. */
+.home-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:stretch}
+@media(max-width:860px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+.home-tag-sport{color:color-mix(in srgb,var(--team-primary) 45%,#fff)}
+/* Coming up: one heading per day, then a slim row per game (time, sport,
+   matchup) with the team's color down its left edge (user, October 29). */
+.home-day{margin:14px 2px 6px;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#e2e8f0}.home-day:first-child{margin-top:2px}.home-day small{margin-left:8px;color:var(--muted);font-size:11px;letter-spacing:.04em}
+.home-row{display:grid;grid-template-columns:78px 112px minmax(0,1fr) auto;align-items:center;gap:10px;margin:4px 0;padding:9px 12px;border-radius:10px;background:#1f2731;border:1px solid #333e4c;border-left:4px solid var(--team-primary,#64748b);cursor:pointer;transition:background .12s}.home-row:hover{background:#26303c}
+.home-row-time{font-weight:900;font-size:13px;font-variant-numeric:tabular-nums;color:#f1f5f9;white-space:nowrap}.home-row-time.tba{color:var(--muted);font-weight:800}
+.home-row-sport{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--team-primary,#94a3b8) 45%,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-row-title{min-width:0;font-weight:850;font-size:14px;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-row-tv{font-size:11px;color:var(--muted);white-space:nowrap}
+@media(max-width:560px){.home-row{grid-template-columns:64px minmax(0,1fr);gap:2px 10px;padding:8px 10px}.home-row-time{grid-row:1/3;font-size:12px}.home-row-sport{font-size:10px}.home-row-title{grid-column:2;font-size:13px}.home-row-tv{display:none}}
+.home-grid .home-item{display:flex;flex-direction:column;min-width:0}.home-grid .home-item>.card{flex:1;margin:0}
+.home-grid .home-tag{margin:0 2px 4px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-grid .live-more,.home-grid .live-foot{display:none}
+.home-grid .live-head{padding:6px 10px;gap:6px}.home-grid .live-pill{font-size:9px;padding:3px 7px;gap:5px;letter-spacing:.1em}.home-grid .live-pill i{width:6px;height:6px}.home-grid .live-clock{font-size:11px}
+.home-grid .live-board{padding:2px 10px 4px}.home-grid .live-team{grid-template-columns:28px minmax(0,1fr) auto;gap:8px;padding:5px 0}
+.home-grid .live-mono{width:28px;height:28px;border-radius:8px;font-size:9px}.home-grid .live-name{font-size:14px}.home-grid .live-name small{font-size:9px;letter-spacing:.06em}.home-grid .live-pts{font-size:24px;padding:1px 4px}
+.home-grid .live-situation{padding:5px 10px;font-size:11px;gap:4px 8px}.home-grid .live-ball svg{width:18px;height:11px}
+.home-grid .live-card:not(.live-card-board){padding:0 0 8px}.home-grid .live-card:not(.live-card-board)>:not(.live-head){margin-left:10px;margin-right:10px}.home-grid .live-card .event-title{margin-top:7px;font-size:13px}
+@media(max-width:560px){.home-grid .live-name{font-size:13px}.home-grid .live-pts{font-size:21px}.home-grid .live-mono{width:24px;height:24px;font-size:8px}.home-grid .live-team{grid-template-columns:24px minmax(0,1fr) auto;gap:6px}.home-grid .live-head{padding:5px 8px}.home-grid .live-board{padding:2px 8px 3px}}
 </style>
 </head>
 <body>
@@ -352,7 +376,6 @@ function applyTheme(themeId,theme){
   document.body.style.background='';
 }
 function savedSchool(){return new URLSearchParams(location.search).get('school')||favoriteSchoolIds()[0]||localStorage.getItem('sas-sports-school')||'kstate'}
-function setUrlSchool(id){const u=new URL(location.href);u.searchParams.set('school',id);history.replaceState(null,'',u)}
 // A middle or high school game played with no score posted is not a final
 // with a result: it reads PLAYED (AGENTS.md 5c).
 function badge(e){if(e.no_result_posted)return '<span class="status-badge played">Played</span>';const x=(e.status||'').toLowerCase();return `<span class="status-badge ${x==='live'?'live':x==='final'?'final':''}">${esc(e.status||e.recency_label||'Event')}</span>`}
@@ -381,7 +404,8 @@ function liveCard(e){
   const holder=e.possession==='school'?ours:e.possession==='opponent'?theirs:'';
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%3200}ms" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
+  const opp=knownColors(e.opponent_colors);
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%3200}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
 }
 // Everything else the live board publishes (user, October 16: "update all
 // live cards to show all the data"): the score by period, timeouts, win
@@ -523,13 +547,14 @@ const openLiveDetails=new Set();
 // games ... in the order of their favorites, smaller sports, larger sports";
 // then "any sports that are live today and then upcoming games after that").
 // With no sport chosen, the selected team and the favorite teams are read
-// together: Live now (team order, then smaller sports first), Today (games of
+// together: Live now (sports A to Z, then team order), Today (games of
 // the day, by start time), Coming up (each team-sport's next game, soonest first). Choosing
 // a sport shows that sport of the selected team, as before.
 let homeLoading=false;
 // Live now · Everywhere (PR 2): every live game ESPN publishes for the
 // catalog (/live/now, one read of each board, cached a minute), below the
-// viewer's own live games, smaller sports first; 30 shown, then "Show all".
+// viewer's own live games, sports A to Z (user, October 29: "Organize them
+// by sport ABC order"); 30 shown, then "Show all".
 let everywhereGames=[],everywhereExpanded=false;
 // Meets Home shows to everyone, starred or not (user, October 28: "Show it on
 // Home even if not starred"): /live/now names them (the Kansas Approved
@@ -540,7 +565,9 @@ const EVERYWHERE_SHOWN=30;
 // ... The home screen shouldn't show league, schools and sports boxes. It
 // should only show live and upcoming events for every level from middle
 // school to professional"): the favorites of every level, with no menus. A
-// link to one team (?school=) opens that team instead.
+// link to one team (?school=) opens that team instead. Home is the landing
+// page (user, October 29): browsing a team no longer writes ?school= into the
+// address, so a reload, a restored tab or a saved shortcut opens Home.
 let homeView=!new URLSearchParams(location.search).get('school');
 function applyHomeView(){document.body.classList.toggle('home-view',homeView);applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
 function homeMode(){return homeView||!sportFilter.value}
@@ -582,8 +609,9 @@ function homeSections(groups){
   const favoriteOf=x=>teams.includes(x.school_id)?x.school_id:opponentTeam(x);
   const ownLive=events.filter(x=>x.bucket==='live'&&(!homeView||teams.includes(x.school_id))),featuredLive=homeView?events.filter(x=>x.bucket==='live'&&!teams.includes(x.school_id)):[];
   const fromBoards=allLive.filter(x=>{const id=favoriteOf(x);return id&&!ownLive.some(y=>y.sport===x.sport&&(y.school_id===id||y.school_id===x.school_id))}).map(x=>{if(teams.includes(x.school_id))return x;const id=favoriteOf(x);return{...x,school_id:id,school:catalogEntry(id)?.name||x.school}});
-  const live=[...ownLive,...fromBoards].sort(byTeam);
-  const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>sportRank(a.sport)-sportRank(b.sport)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
+  const bySport=(a,b)=>String(a.sport).localeCompare(String(b.sport));
+  const live=[...ownLive,...fromBoards].sort((a,b)=>bySport(a,b)||byTeam(a,b));
+  const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>bySport(a,b)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
   const todays=events.filter(x=>x.bucket!=='live'&&x.bucket!=='other'&&isToday(x)).sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
   const next=new Map();
   for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||'')).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
@@ -593,8 +621,22 @@ function homeSections(groups){
   if(currentView==='upcoming')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='upcoming'),coming};
   return{live,everywhere,todays,coming};
 }
-function homeItem(x,kind){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}><div class="home-tag"><b>${esc(x.school)}</b> · ${esc(x.sport)}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
-function homeSection(title,items,kind){if(!items.length)return'';return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+// A live card on Home wears its own team's colors (the page itself stays
+// neutral): the school's catalog colors, or those /live/now carries.
+function liveTeamVars(x){const c=knownColors(x.e.school_colors||catalogEntry(x.e.school_id)?.theme||catalogEntry(x.school_id)?.theme);return c?` style="--team-primary:${c.main};--team-secondary:${c.edge};--theme-on-accent:${c.ink}"`:''}
+function homeItem(x,kind,grid){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
+// Home's live games: one grid, sports A to Z, each box naming its sport.
+function homeLiveGrid(items){return`<div class="home-grid">${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
+// Coming up: the viewer's own day and clock where the school published a
+// time; a date-only event keeps the school's date and reads TBA, after the
+// day's timed games.
+function comingDay(x){const zone=schoolTimeZoneOf(x.e.school_id||x.school_id),t=zone&&x.e.start_time&&hasPublishedClock(x.e)?zonedWallClockToInstant(x.e.start_time,zone):NaN;const tz=viewerTimeZone?{timeZone:viewerTimeZone}:{};if(Number.isFinite(t))return{at:t,day:new Date(t).toLocaleDateString('en-CA',tz),time:new Date(t).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...tz})};const d=String(x.e.start_time||'').slice(0,10);return{at:Date.parse(`${d}T12:00:00Z`)||Infinity,day:d,time:null}}
+function dayHeading(day){const today=new Date().toLocaleDateString('en-CA',viewerTimeZone?{timeZone:viewerTimeZone}:{}),date=new Date(`${day}T12:00:00Z`);if(!Number.isFinite(date.getTime()))return'Date to be announced';const label=date.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}),diff=Math.round((date-new Date(`${today}T12:00:00Z`))/864e5);return diff===0?`Today<small>${label}</small>`:diff===1?`Tomorrow<small>${label}</small>`:label}
+function comingRows(items){
+  const rows=items.map(x=>({x,...comingDay(x)})).sort((a,b)=>a.day.localeCompare(b.day)||(a.time?a.at:Infinity)-(b.time?b.at:Infinity));let last=null;
+  return rows.map(({x,day,time})=>{const c=knownColors(catalogEntry(x.school_id)?.theme),head=day!==last?`<div class="home-day">${dayHeading(day)}</div>`:'';last=day;return`${head}<div class="home-row" data-event-id="${esc(x.e.id)}"${x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-time${time?'':' tba'}">${esc(time||'TBA')}</span><span class="home-row-sport">${esc(x.sport)}</span><span class="home-row-title">${esc(x.e.title)}</span>${x.e.broadcast?`<span class="home-row-tv">TV: ${esc(x.e.broadcast)}</span>`:'<span></span>'}</div>`}).join('');
+}
+function homeSection(title,items,kind){if(!items.length)return'';if(title==='Coming up')return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${comingRows(items)}</div></section>`;return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 function renderHome(groups){
   const {live,everywhere,todays,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
@@ -696,7 +738,8 @@ function openTeam(id,sport=''){if(!id)return;homeView=false;applyHomeView();acti
 // button is not orange"): the primary, or the secondary when the primary is
 // near black or gray (Steelers gold, Giants orange; Raiders silver); text dark
 // on a light chip.
-function chipColors(item){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=item?.theme||{},primary=hex(t.primary),secondary=hex(t.secondary);if(!primary)return'';const rgb=v=>{const h=v.length===4?v.slice(1).replace(/./g,c=>c+c):v.slice(1);return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)},light=v=>{const c=rgb(v);return(Math.max(...c)+Math.min(...c))/2>=.12},vivid=v=>{if(!v)return false;const c=rgb(v),hi=Math.max(...c),lo=Math.min(...c),l=(hi+lo)/2;return l>=.12&&l<=.9&&(hi-lo)/(1-Math.abs(2*l-1)||1)>=.3},main=vivid(primary)?primary:vivid(secondary)?secondary:light(primary)||!secondary?primary:secondary,edge=main===primary?secondary||primary:primary,lum=rgb(main).map(c=>c<=.03928?c/12.92:((c+.055)/1.055)**2.4).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);return`--chip:${main};--chip-edge:${edge};--chip-ink:${lum>.3?'#10161f':'#fff'}`}
+function knownColors(theme){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=theme||{},primary=hex(t.primary),secondary=hex(t.secondary);if(!primary)return null;const rgb=v=>{const h=v.length===4?v.slice(1).replace(/./g,c=>c+c):v.slice(1);return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)},light=v=>{const c=rgb(v);return(Math.max(...c)+Math.min(...c))/2>=.12},vivid=v=>{if(!v)return false;const c=rgb(v),hi=Math.max(...c),lo=Math.min(...c),l=(hi+lo)/2;return l>=.12&&l<=.9&&(hi-lo)/(1-Math.abs(2*l-1)||1)>=.3},main=vivid(primary)?primary:vivid(secondary)?secondary:light(primary)||!secondary?primary:secondary,edge=main===primary?secondary||primary:primary,lum=rgb(main).map(c=>c<=.03928?c/12.92:((c+.055)/1.055)**2.4).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);return{main,edge,ink:lum>.3?'#10161f':'#fff'}}
+function chipColors(item){const c=knownColors(item?.theme);return c?`--chip:${c.main};--chip-edge:${c.edge};--chip-ink:${c.ink}`:''}
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
@@ -917,7 +960,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
   try{
     updateFavorite();
     if(homeView){applyHomeView();status.textContent='Fetching live and upcoming games for your teams…';await loadHome(forceRefresh,automatic,generation,feedController.signal);return}
-    localStorage.setItem('sas-sports-school',id); setUrlSchool(id);
+    localStorage.setItem('sas-sports-school',id);
     const meta=catalogEntry(id); $('#schoolMeta').textContent=meta?[meta.name,meta.classification,meta.conference].filter(Boolean).join(' · '):'';
     if(!chosen){status.textContent='Fetching live and today\'s games…';await loadHome(forceRefresh,automatic,generation,feedController.signal);return}
     // With no sport chosen the home screen (loadHome) has answered above.

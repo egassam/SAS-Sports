@@ -78,7 +78,7 @@ assert.equal(live('byu'),undefined);
   const page=read('../public/index.html');
   const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
   const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
-  const liveCard=Function(`${line('const esc=')}\n${line('const lastLiveScores=')}\n${fn('liveSides')}\n${line('function monogram(')}\n${fn('liveMore')}\n${fn('liveCard')};return liveCard;`)();
+  const liveCard=Function(`${line('const esc=')}\n${line('function knownColors(')}\n${line('const lastLiveScores=')}\n${fn('liveSides')}\n${line('function monogram(')}\n${fn('liveMore')}\n${fn('liveCard')};return liveCard;`)();
   const base={id:'x',sport:'Football',title:'KU vs Middle Tennessee',opponent:'Middle Tennessee',school_score:'0',opponent_score:'0',recency_label:'10:50 - 1st',live_score_source:'https://site.api.espn.com/x'};
   const theirs=liveCard({...base,possession:'opponent',down_distance:'4th & 13 at KU 47',red_zone:false});
   const rows=theirs.split('<div class="live-team ').slice(1);
@@ -88,6 +88,9 @@ assert.equal(live('byu'),undefined);
   const ours=liveCard({...base,id:'y',possession:'school',down_distance:'1st & Goal at MTSU 4',red_zone:true});
   assert.ok(ours.split('<div class="live-team ')[1].startsWith('ours')&&ours.split('<div class="live-team ')[1].includes('live-ball'));
   assert.match(ours,/live-situation red-zone[^]*Red zone/);
+  // The opponent's side wears the opponent's ESPN colors (Oct 29); black reads as its alternate.
+  assert.match(liveCard({...base,id:'z',opponent_colors:{primary:'#000000',secondary:'#C60000'}}),/--opp:#C60000;--opp-edge:#000000;--opp-ink:#fff/);
+  assert.doesNotMatch(liveCard({...base,id:'w'}),/--opp:/);
   // The rest of the board: score by period with records, timeouts, win
   // probability, the last play and drive, the leaders.
   const full=liveCard({...base,id:'z',possession:'opponent',down_distance:'4th & 13 at KU 47',live_details:ku.live_details});

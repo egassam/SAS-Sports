@@ -316,11 +316,20 @@ contains(page,/function automaticSports\(date=new Date\(\)\)/,'Active sports mus
 contains(page,/if\(!chosen\)\{[^\n]*await loadHome\(/,'With no sport chosen the home screen must load the teams\' live and today games');
 contains(page,/function homeTeams\(\)\{return homeView\?favoriteSchoolIds\(\):\[school\.value\]/,'Home must read the favorites in order; a team page with no sport, that team');
 contains(page,/let homeView=!new URLSearchParams\(location\.search\)\.get\('school'\)/,'The app must open on Home unless a link names a team');
+assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not write ?school= into the address: Home is the landing page');
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
 contains(page,/homeSection\(mine,live,'live'\)\+everywhereHtml\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now (my teams, then everywhere), then Today, then Coming up');
 contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
+// Home's live boxes (user, Oct 29): small, three across, sports A to Z, team colors.
+contains(page,/const live=\[\.\.\.ownLive,\.\.\.fromBoards\]\.sort\(\(a,b\)=>bySport\(a,b\)\|\|byTeam\(a,b\)\)/,'My Teams live games must read sports A to Z');
+contains(page,/\.sort\(\(a,b\)=>bySport\(a,b\)\|\|levelRank/,'Everywhere live games must read sports A to Z');
+contains(page,/\.home-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'Home live boxes must sit three across');
+contains(page,/kind==='live'&&homeView\?liveTeamVars\(x\)/,'Each live box on Home must wear its team\'s colors');
+contains(page,/--opp:\$\{opp\.main\}/,'The opponent\'s side must wear the opponent\'s colors');
+contains(page,/if\(title==='Coming up'\)return[^\n]*comingRows\(items\)/,'Coming up must read as day headings with one slim row per game');
+contains(page,/class="home-row" data-event-id/,'Each coming game must be one row: time, sport, matchup');
 // Live now · Everywhere (PR 2): one shared endpoint, never per-school ESPN reads.
 contains(worker,/if\(url\.pathname==='\/live\/now'\)\{[\s\S]{0,300}max-age=60/,'/live/now must be cached a minute for every visitor');
 contains(worker,/const url=`\$\{ESPN_SITE\}\$\{board\.path\}\/scoreboard\?\$\{scoreboardQuery\(board\)\}`/,'/live/now must read each ESPN board once, for every school');
