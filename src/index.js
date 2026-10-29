@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.229.0-home-live-grid';
+const VERSION='4.229.1-tennis-pro-events';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4949,7 +4949,15 @@ function seasonRecords(results){
     return{...r,text:text(r),conference:games&&(name||conference)?{name:name||conference,...tally,text:text(tally)}:null};
   });
 }
-function groupEvents(events,now=new Date()){if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool)),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+// College tennis schedules also list the pro events their players enter on
+// their own: ITF "M25 Las Vegas", "W35 Norman, OK" and "University of Arkansas
+// M15 Open" (an ITF level anywhere in the name), ATP and WTA events,
+// Challengers, the UTR Pro Tennis Tour. They are not the team's (user, October
+// 29: "Please check these tennis results"; LSU's own rule since October 9).
+// "ITF Sectionals" (Ole Miss's spelling of the ITA Sectionals) stays.
+const PRO_TENNIS_EVENT=/^(?:#\d+\s+)?(?:(?:ATP|ITF|WTA)\b|UTR (?:Pro|PTT)\b)|\b[MW](?:15|25|35|50|60|75|80|100)\b|\bChallenger\b/i;
+const proTennisEvent=e=>e.sport==='Tennis'&&PRO_TENNIS_EVENT.test(e.opponent||'')&&!/\bSectionals?\b/i.test(e.opponent||'');
+function groupEvents(events,now=new Date()){events=events.filter(e=>!proTennisEvent(e));if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool)),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();

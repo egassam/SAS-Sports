@@ -549,8 +549,11 @@ assert.ok(requests.every(url=>finals.some(e=>e.recap_url===url)),'only the game 
     ["Men's · Arizona at Battle of the Bay",'Today',null,'Oct 1','2026-10-04T23:59:59Z']
   ],'tournaments in progress (Sep 28 - Oct 4, Oct 1 - 4) stay on the schedule as today\'s');
   const [group]=worker.groupEvents(tennis,now);
-  assert.deepEqual(group.upcoming.slice(0,2).map(e=>e.opponent),['University of Arkansas M15 Open','Battle of the Bay']);
-  assert.equal(group.results.length,4);
+  // The ITF events players enter on their own (M15 Fayetteville, W50
+  // Berkeley) are not the team's (Oct 29).
+  assert.deepEqual(group.upcoming.slice(0,1).map(e=>e.opponent),['Battle of the Bay']);
+  assert.ok(![...group.upcoming,...group.results].some(e=>/\b[MW](?:15|50)\b/.test(e.opponent)));
+  assert.equal(group.results.length,3);
   // The Kinlen story (Sep 14, the day after) names the tournament; it also
   // mentions the ITA All American Tournament, which is outside its dates.
   recapFixtures.set('https://arizonawildcats.com/sports/mens-tennis/archives',fixture('mens-tennis-archives.html.gz'));
