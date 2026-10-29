@@ -79,7 +79,14 @@ assert.equal(updatedEvents.find(e=>e.official_event_id==='20586').recap_url,upda
 // Combined feeds must include both teams; identical tournament names/dates cannot merge.
 for(const [sport,count] of [['Golf',26],['Basketball',70]]){
   const result=await worker.fetchLive('kansas',sport);
-  assert.equal(result.events.length,count);
+  // fetchLive runs on the real clock: a tournament after the fixtures'
+  // capture is past now with neither a place nor a story, and is not listed
+  // (K-State's rule, Oct 29).
+  const parsed=[...byPath.entries()].filter(([path])=>sport==='Golf'?/golf/.test(path):/basketball/.test(path)).flatMap(([,events])=>events);
+  assert.equal(parsed.length,count);
+  const unlisted=parsed.filter(e=>!result.events.some(x=>x.id===e.id));
+  assert.ok(unlisted.every(e=>sport==='Golf'&&e.start_time.slice(0,10)>=now.toISOString().slice(0,10)&&!e.recap_url),'only tournaments after the capture, without a story, are left out');
+  assert.equal(result.events.length+unlisted.length,count);
   // fetchLive runs on the real clock, but the fixtures were captured at \`now\`.
   // Only tournaments that had finished by then can carry reviewed placings; a
   // later one (Windon Memorial, Sep 28-29) correctly shows as Completed.
