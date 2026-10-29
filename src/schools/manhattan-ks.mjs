@@ -55,11 +55,13 @@ export const manhattanKsSchool={
   // October 29: "Do 1 and 2 with the understanding that I would prefer live
   // if I can get in contact with them"). Both teams qualified (6A Sub-State
   // Manhattan, KSHSAA's 6A qualifier list); races and site from KSHSAA's
-  // state schedule. `place` matches the row on Midwest Timing's results page.
+  // state schedule. `place` matches the row on Midwest Timing's results page;
+  // `milesplit` is the meet on MileSplit Live, where the timer posts live
+  // results (public; user, October 29: "create the reader").
   midwestTiming:[
     {date:'2026-10-31',sport:'Cross Country',name:'KSHSAA 6A State Championship',site:'Rim Rock Farm, Lawrence',place:/^Lawrence\b/i,
       races:[{label:'Girls',time:'10:00'},{label:'Boys',time:'11:45'}],
-      live:'https://ks.milesplit.com/meets/787763-kshsaa-state-championship-3a-5a-6a-2026/results',
+      milesplit:787763,live:'https://milesplit.live/meets/787763',
       schools:{'manhattan-ks':['Manhattan High School']}}
   ],
   maxpreps:{schoolId:'41006ce9-cfb3-492a-a951-d320637bc985',base:'https://www.maxpreps.com/ks/manhattan/manhattan-indians/'},

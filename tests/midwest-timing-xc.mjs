@@ -88,7 +88,7 @@ await at('2026-10-29T18:00:00Z',async t=>{
   assert.equal(e.display_time,'Oct 31, 10:00 AM','the first race, not the calendar\'s 9:30');
   assert.deepEqual(e.results.map(line),['Rim Rock Farm, Lawrence | Girls race | 10:00 AM','Rim Rock Farm, Lawrence | Boys race | 11:45 AM']);
   assert.equal(e.recap_url,state.live);
-  assert.equal(e.recap_label,'Live results on MileSplit (members only)');
+  assert.equal(e.recap_label,'Live results (MileSplit Live)');
   assert.ok(!e.meet_results_verified);
   assert.equal(group.upcoming.filter(x=>x.start_time.startsWith('2026-10-31')).length,1,'one card for the day');
   assert.ok(!requests.some(u=>u.startsWith(MIDWEST_TIMING_RESULTS)),'nothing read before the day');
