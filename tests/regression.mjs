@@ -338,6 +338,13 @@ contains(page,/'Live now · Everywhere'/,'Home must show every live game below t
 contains(page,/if\(homeView\)return applyTheme\('home',NEUTRAL_THEME\)/,'Home must use neutral colors, not a team\'s');
 contains(page,/if\(homeView\)for\(const p of featuredPairs\)if\(!pairs\.some/,'Home must load the featured meets, starred or not');
 contains(page,/const featured=Array\.isArray\(d\?\.featured\)/,'Home must take the featured meets from /live/now');
+// A featured school's catalog card gives its time zone: without it St. Mary's
+// Academy's 9:45 meet read TBA on Home (user, October 29).
+contains(page,/ensureEntries\(featured\.map\(p=>p\[0\]\)\)/,'Home must load the featured schools\' catalog cards');
+contains(page,/ensureEntries\(\[savedSchool\(\),\.\.\.favoriteSchoolIds\(\),\.\.\.featuredPairs\.map\(p=>p\[0\]\)\]\)/,'the saved featured schools\' cards load with the favorites');
+contains(page,/\.hero \.favorite\{[^}]*height:34px/,'the Favorite button is the small one (user, October 29)');
+contains(page,/@media\(max-width:560px\)\{\.hero \.level-switch\{gap:2px;padding:3px\}\.hero \.level\{min-width:0;padding:6px 4px;font-size:13px\}\}/,'the five levels fit a 390 px phone');
+contains(page,/<p>Middle school to the pros\. Live\.<\/p>/,'the header line names the app as it is now');
 contains(page,/const team=homeView&&el\.closest\('\[data-open-team\]'\);if\(team\)\{openTeam\(team\.dataset\.openTeam,team\.dataset\.openSport\)/,'A live game on Home must open its team\'s page');
 contains(page,/style="\$\{chipColors\(item\)\}"/,'Each favorite chip must wear its own team\'s colors');
 contains(page,/\.favorite-teams \.favorite-team\{background:color-mix\(in srgb,var\(--chip,#29435f\) 80%/,'Favorite chips must read in the team\'s own color');
@@ -415,7 +422,7 @@ contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The
 contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
 contains(page,/★ Favorited/,'Selected homepage team must have a clear favorite label');
-contains(page,/☆ Favorite team/,'Users must have a clear control for choosing a homepage team');
+contains(page,/>☆ Favorite<\/button>/,'Users must have a clear control for choosing a homepage team');
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
 
 // The selected sport's feed must survive a transient Worker failure. Cloudflare
