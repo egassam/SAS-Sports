@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.228.0-home-featured-meets';
+const VERSION='4.229.0-home-live-grid';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5532,6 +5532,9 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       const live=espnLiveDetails(competition,{ours,opponent,sport});
       if(live.possession){event.possession=live.possession;event.down_distance=live.down_distance;event.red_zone=live.red_zone;}
       if(live.live_details)event.live_details=live.live_details;
+      // The opponent's colors as ESPN publishes them, for its side of the card.
+      const espnHex=v=>/^[0-9a-f]{6}$/i.test(v||'')?`#${v}`:null,oppPrimary=espnHex(opponent.team?.color);
+      if(oppPrimary)event.opponent_colors={primary:oppPrimary,secondary:espnHex(opponent.team?.alternateColor)||oppPrimary};
     }else event.recency_label='Final';
     // Volleyball scores are sets won (0-0 during the first set). The live
     // headline adds the current set's points; a final reads like K-State's
@@ -5626,7 +5629,7 @@ function liveNowGames(boards,now=new Date()){
       if(!school)continue;
       seen.add(`${board.path}|${item.id}`);
       const provider={path:board.path,team_label:board.team_label||undefined,sourceName:'Live scoreboard'};
-      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id)});
+      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
     }
   }
   return games;

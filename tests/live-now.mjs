@@ -5,9 +5,9 @@ import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
-const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
+const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json')),teamThemes=JSON.parse(read('../src/team-themes.json'));
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
-const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF')},fetch:()=>{throw Error('Unexpected network request')}};
+const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,teamThemes,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF')},fetch:()=>{throw Error('Unexpected network request')}};
 const worker=Function(...Object.keys(deps),source+';return {liveNowBoards,liveNowGames};')(...Object.values(deps));
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/live/'+name,import.meta.url))).toString('utf8'));
 
@@ -27,6 +27,10 @@ assert.equal(ksu.length,1,'one card for one game');
 assert.equal(ksu[0].school_id,'kstate');assert.equal(ksu[0].status,'Live');assert.equal(ksu[0].team_label,"Women's");
 assert.ok(soccer.every(g=>g.status==='Live'&&g.level==='college'&&sponsoredSports[g.school_id].includes('Soccer')),'only live games of schools that play the sport');
 assert.equal(new Set(soccer.map(g=>g.espn_event_id)).size,soccer.length,'each game once');
+// Home colors each card (user, Oct 29: "The live boxes should have the team colors"):
+// the school's own colors, the opponent's as ESPN publishes them.
+assert.equal(ksu[0].school_colors.primary,teamThemes.kstate.primary,'the school\'s colors ride on the game');
+assert.match(ksu[0].opponent_colors?.primary||'',/^#[0-9a-f]{6}$/i,'the opponent\'s ESPN color rides on the game');
 
 // College football, Oct 3 (live payload): live games only, catalog schools only.
 const football=worker.liveNowGames([{board:{path:'football/college-football',sport:'Football',level:'college'},payload:fixture('football-espn-2026-10-03-live.json.gz'),url:'https://site.api.espn.com/y'}],new Date('2026-10-04T01:00:00Z'));
