@@ -218,7 +218,7 @@ try{
   assert.deepEqual(rimRock.results.map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Girls Varsity | Manhattan team | 1st of 10 · 90 pts','Boys Varsity | Manhattan team | 7th of 10 · 238 pts']);
   assert.deepEqual([rimRock.recap_label,rimRock.recap_url,rimRock.highlight_status],['View on Bound','https://beta.gobound.com/ks/schools/manhattanhs/scores','Team scores as entered on Bound by the school.']);
   assert.equal(rimRock.highlights[0],'Girls Varsity: Manhattan won the team title with 90 pts.');
-  assert.deepEqual(xc.upcoming,['Upcoming Oct 10 Manhattan at Haskell Invite | ','Upcoming Oct 17, 10:00 AM Manhattan at Centennial League JV/V | ','Upcoming Oct 24 Manhattan at Regional Meet - WARNER PARK | ','Upcoming Oct 31, 9:30 AM Manhattan at State Meet | ']);
+  assert.deepEqual(xc.upcoming,['Upcoming Oct 10 Manhattan at Haskell Invite | ','Upcoming Oct 17, 10:00 AM Manhattan at Centennial League JV/V | ','Upcoming Oct 24 Manhattan at Regional Meet - WARNER PARK | ','Upcoming Oct 31, 10:00 AM Manhattan at KSHSAA 6A State Championship | ']);
   const invite=xcGroup.results.find(e=>/Manhattan Invite/.test(e.title));
   assert.deepEqual(invite.results.slice(0,3).map(x=>`${x.group} | ${x.participant} | ${x.result}`),['Boys Varsity | Manhattan team | 2nd of 11 · 65 pts','Boys Varsity | Jaxon Wheeler (SO) | 3rd of 81 · 17:06.1','Boys Varsity | Benjamin Huser (SR) | 7th of 81 · 17:21.1']);
   assert.ok(invite.results.some(x=>x.participant==='Gabrielle Converse (SR)'&&x.result==='1st of 49 · 19:03.3'));

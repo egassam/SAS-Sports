@@ -258,6 +258,66 @@ export function athleticLiveXcRaces(meet,races,team){
   return out;
 }
 
+// Midwest Timing & Results (midwesttiming.com, KSHSAA's state cross country
+// timer; user, October 29: "Do 1 and 2 with the understanding that I would
+// prefer live if I can get in contact with them"). Its live results are on
+// MileSplit (members only); after each meet it lists a Hy-Tek results PDF on
+// its own results page, one table row per meet: date ("Oct 24", "11/2/24",
+// "12/5 - 12/6/25"), meet, place, the PDF link and the MileSplit link.
+export const MIDWEST_TIMING_RESULTS='https://midwesttiming.com/results/';
+const MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+export function midwestTimingMeets(html,year){
+  const text=s=>clean(String(s||'').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#x27;|&#39;/g,"'"));
+  const out=[];
+  for(const [,row] of String(html||'').matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)){
+    const cells=[...row.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(m=>m[1]);if(cells.length<4)continue;
+    const when=text(cells[0]);let m=when.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})\b/),month,day,y=year;
+    if(m){month=MONTHS[m[1].toLowerCase()];day=Number(m[2]);}
+    else if((m=when.match(/^(\d{1,2})\/(\d{1,2})\b/))){month=Number(m[1]);day=Number(m[2]);const yy=when.match(/\/(\d{2,4})\s*$/);if(yy)y=yy[1].length===2?`20${yy[1]}`:yy[1];}
+    if(!month||!day)continue;
+    const link=html=>(html.match(/href="([^"]+)"/)||[])[1]?.replace(/&amp;/g,'&')||null;
+    const pdf=link(cells[3]);
+    out.push({date:`${y}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`,name:text(cells[1]),place:text(cells[2]),pdf:pdf&&/\.pdf(?:$|\?)/i.test(pdf)?pdf:null,milesplit:link(cells[4]||'')});
+  }
+  return out;
+}
+// A Hy-Tek Meet Manager cross country PDF, as text (one line per row): each
+// "Event N <race>" lists its finishers ("1 Claassen, Ava Kapaun Mt. C
+// 16:50.93 1", with the grade before the team when entered), then "Team
+// Scores" ("1 Kapaun Mt. Carmel High Sc 45 1 5 7 15 17 18 22"). Team names
+// are cut to the column ("Salina Centr"): a name is the school's when it
+// starts one of the school's names. The same shape as `meetProResults`.
+const hytekKey=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const HYTEK_GRADE={9:'FR',10:'SO',11:'JR',12:'SR'};
+export function hytekXcResults(text,team){
+  const names=[].concat(team).map(hytekKey).filter(Boolean);
+  const isOurs=cut=>{const k=hytekKey(cut);return k.length>=Math.min(8,...names.map(n=>n.length))&&names.some(n=>n.startsWith(k));};
+  const races=new Map();let race=null,section=null;
+  for(const raw of String(text||'').split(/\r?\n/)){
+    const line=clean(raw);if(!line)continue;
+    let m=line.match(/^\.*\s*Event\s+\d+\s+(.+)$/i);
+    if(m){const name=clean(m[1]);if(name!==race?.name){if(!races.has(name))races.set(name,{name,runners:[],field:0,teams:[]});race=races.get(name);section='ind';}continue;}
+    if(!race)continue;
+    if(/^Team Scores$/i.test(line)){section='team';continue;}
+    if(section==='team'){
+      m=line.match(/^(\d+)\s+(.+?)\s+(\d+)((?:\s+\d+){1,9})$/);
+      if(m)race.teams.push({place:Number(m[1]),team:m[2],score:m[3]});
+      continue;
+    }
+    m=line.match(/^(\d+)\s+(.+?)\s+(\d{1,2}:\d{2}(?::\d{2})?\.\d{1,2})(?:\s+\d+)?$/);if(!m||!m[2].includes(','))continue;
+    race.field++;
+    // "Last, First [grade] Team": the longest ending that starts a name of ours.
+    const words=m[2].split(' '),comma=words.findIndex(w=>w.includes(','));
+    for(let k=comma+2;k<words.length;k++){
+      if(!isOurs(words.slice(k).join(' ')))continue;
+      const who=words.slice(0,k),grade=/^(?:\d{1,2}|FR|SO|JR|SR)$/i.test(who.at(-1))?who.pop():'';
+      race.runners.push({place:Number(m[1]),athlete:displayName(who.join(' ')),year:HYTEK_GRADE[grade]||grade.toUpperCase(),team:words.slice(k).join(' '),time:m[3]});
+      break;
+    }
+  }
+  return[...races.values()].filter(r=>r.runners.length).map(r=>({race:r.name,team:r.teams.find(t=>isOurs(t.team))||null,teams:r.teams.length,runners:r.runners,field:r.field}));
+}
+
 // Track and field on MeetPro: the meet's index lists every event with a link
 // to its results page (results_<id>.html) and, when the meet is scored, the
 // team scores (div#scores: "7th Grade  Female Teams", "Class 3A/4A  Male
@@ -333,7 +393,6 @@ export function meetProTrackEvent(html){
 export const PREP_GOLF='https://ks.prep.golf/';
 const cellText=html=>clean(String(html||"").replace(/<[^>]+>/g," "));
 const tableRows=html=>[...String(html||'').matchAll(/<tr\b([^>]*)>([\s\S]*?)<\/tr>/g)].map(m=>({attrs:m[1],cells:[...m[2].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(c=>c[1])}));
-const MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
 // The school page: each tournament of the season (girls, then boys), with the
 // team's place and score: "4th", "687 (+111)".
 export function prepGolfTournaments(html){

@@ -51,6 +51,17 @@ export const manhattanKsSchool={
   // meets no timer or Prep.Golf page covers (`bound`, `boundMeet` below).
   bound:{school:'h20250204045200696bcbb2cc6f78a4e',page:'https://beta.gobound.com/ks/schools/manhattanhs/scores'},
   meetPro:LETSGORUN_MEETPRO,
+  // KSHSAA state cross country, timed by Midwest Timing & Results (user,
+  // October 29: "Do 1 and 2 with the understanding that I would prefer live
+  // if I can get in contact with them"). Both teams qualified (6A Sub-State
+  // Manhattan, KSHSAA's 6A qualifier list); races and site from KSHSAA's
+  // state schedule. `place` matches the row on Midwest Timing's results page.
+  midwestTiming:[
+    {date:'2026-10-31',sport:'Cross Country',name:'KSHSAA 6A State Championship',site:'Rim Rock Farm, Lawrence',place:/^Lawrence\b/i,
+      races:[{label:'Girls',time:'10:00'},{label:'Boys',time:'11:45'}],
+      live:'https://ks.milesplit.com/meets/787763-kshsaa-state-championship-3a-5a-6a-2026/results',
+      schools:{'manhattan-ks':['Manhattan High School']}}
+  ],
   maxpreps:{schoolId:'41006ce9-cfb3-492a-a951-d320637bc985',base:'https://www.maxpreps.com/ks/manhattan/manhattan-indians/'},
   // Each sport: its varsity teams. `calendar` matches the team words of a
   // calendar title; `maxpreps` is the team's MaxPreps path; `label` is the
