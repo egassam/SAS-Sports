@@ -331,7 +331,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.227.1-team-chips-live-click';
+const VERSION='4.228.0-home-featured-meets';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5631,13 +5631,26 @@ function liveNowGames(boards,now=new Date()){
   }
   return games;
 }
+// Meets Home shows to everyone (user, October 28: "Show it on Home even if
+// not starred"): each AthleticLIVE meet the modules list, for every school it
+// names, from a week before its day through the day after.
+const FEATURED_MEET_DAYS=[7,1];
+function featuredMeets(now=new Date()){
+  const out=[],seen=new Set();
+  for(const module of HIGH_SCHOOL_MODULES)for(const meet of module.meetPro?.athleticLive||[]){
+    const day=Date.parse(`${meet.date}T00:00:00Z`);
+    if(!(now.getTime()>=day-FEATURED_MEET_DAYS[0]*864e5&&now.getTime()<day+(FEATURED_MEET_DAYS[1]+1)*864e5))continue;
+    for(const id of Object.keys(meet.schools||{})){const key=`${id}|${meet.sport}`;if(seen.has(key)||!catalogSchool(id))continue;seen.add(key);out.push({school_id:id,sport:meet.sport,name:meet.name,date:meet.date});}
+  }
+  return out;
+}
 async function liveNow(now=new Date()){
   const boards=liveNowBoards(now),reads=await Promise.all(boards.map(async board=>{
     const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}`;
     const payload=await readJson(url,30);
     return{board,payload,url,ok:Boolean(payload)};
   }));
-  return{fetched_at:now.toISOString(),games:liveNowGames(reads.filter(read=>read.ok),now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
+  return{fetched_at:now.toISOString(),games:liveNowGames(reads.filter(read=>read.ok),now),featured:featuredMeets(now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
 }
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
   const events=scheduleEvents.slice(),joined=new Set();

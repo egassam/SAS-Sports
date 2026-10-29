@@ -531,6 +531,10 @@ let homeLoading=false;
 // catalog (/live/now, one read of each board, cached a minute), below the
 // viewer's own live games, smaller sports first; 30 shown, then "Show all".
 let everywhereGames=[],everywhereExpanded=false;
+// Meets Home shows to everyone, starred or not (user, October 28: "Show it on
+// Home even if not starred"): /live/now names them (the Kansas Approved
+// Schools state cross country meet); kept on this device for the next load.
+let featuredPairs=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-featured')||'[]');return Array.isArray(v)?v.filter(p=>Array.isArray(p)&&p.length===2):[]}catch{return[]}})();
 const EVERYWHERE_SHOWN=30;
 // Home is its own level (user, October 28: "add a home next to middle school
 // ... The home screen shouldn't show league, schools and sports boxes. It
@@ -550,6 +554,7 @@ function homePairs(){
     const sports=sponsored?active.filter(sp=>sponsored.includes(sp)):[];
     for(const sp of sports.length?sports:[homeSport(id)])pairs.push([id,sp]);
   }
+  if(homeView)for(const p of featuredPairs)if(!pairs.some(q=>q[0]===p[0]&&q[1]===p[1]))pairs.push(p);
   return pairs;
 }
 function schoolToday(id){try{const zone=schoolTimeZoneOf(id);return new Intl.DateTimeFormat('en-CA',{timeZone:zone||undefined,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}catch{return new Date().toISOString().slice(0,10)}}
@@ -575,10 +580,10 @@ function homeSections(groups){
   // live, and never shows under Everywhere.
   const allLive=homeView?everywhereGames.map(e=>({e,bucket:'live',school:e.school,sport:e.sport,school_id:e.school_id})).filter(x=>!q||`${x.e.title} ${x.school} ${x.sport}`.toLowerCase().includes(q)):[];
   const favoriteOf=x=>teams.includes(x.school_id)?x.school_id:opponentTeam(x);
-  const ownLive=events.filter(x=>x.bucket==='live');
+  const ownLive=events.filter(x=>x.bucket==='live'&&(!homeView||teams.includes(x.school_id))),featuredLive=homeView?events.filter(x=>x.bucket==='live'&&!teams.includes(x.school_id)):[];
   const fromBoards=allLive.filter(x=>{const id=favoriteOf(x);return id&&!ownLive.some(y=>y.sport===x.sport&&(y.school_id===id||y.school_id===x.school_id))}).map(x=>{if(teams.includes(x.school_id))return x;const id=favoriteOf(x);return{...x,school_id:id,school:catalogEntry(id)?.name||x.school}});
   const live=[...ownLive,...fromBoards].sort(byTeam);
-  const everywhere=allLive.filter(x=>!favoriteOf(x)).sort((a,b)=>sportRank(a.sport)-sportRank(b.sport)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
+  const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>sportRank(a.sport)-sportRank(b.sport)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
   const todays=events.filter(x=>x.bucket!=='live'&&x.bucket!=='other'&&isToday(x)).sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
   const next=new Map();
   for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||'')).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
@@ -599,9 +604,9 @@ function renderHome(groups){
   const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
   const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',shown,'live').replace(/<\/section>$/,everywhere.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllLive">Show all ${everywhere.length} live games</button></section>`:'</section>'):'';
   const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite team: its live and upcoming games will show first.</div>':'';
-  if(noFavorites){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
+  if(noFavorites&&!todays.length&&!coming.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
   if(!chips.length){feed.innerHTML=`<div class="empty">${homeLoading?`Loading ${esc(names.join(', '))}…`:`No live, today or upcoming games for ${esc(names.join(', '))} right now.${homeView?' Tap a team above for its full schedule and results.':' Pick a sport above to see its full schedule and results.'}`}</div>`;return}
-  feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming');
+  feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming')+noFavorites;
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
 }
 function bindFeedCards(){
@@ -634,9 +639,15 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   const requested=automatic&&hasLiveEvents()?pairs.filter(p=>busy.has(key(p))):pairs;
   const byPair=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
   if(!currentGroups.length)for(const [id,sp] of pairs){try{const copy=JSON.parse(localStorage.getItem(`sas-feed:${id}|${sp}`)||'null');if(copy&&Array.isArray(copy.groups)&&Date.now()-Date.parse(copy.at)<=SAVED_FEED_MS)for(const g of copy.groups)byPair.set(key([id,sp]),{...g,saved_at:copy.at})}catch{}}
-  const show=()=>{currentGroups=pairs.map(p=>byPair.get(key(p))).filter(Boolean);updateDemo()};
+  const show=()=>{currentGroups=homePairs().map(p=>byPair.get(key(p))).filter(Boolean);updateDemo()};
   homeLoading=true;show();
-  if(homeView)apiFetch('/live/now',1,{signal,transientOnly:true}).then(r=>r.json()).then(d=>{if(generation!==feedGeneration||!homeView)return;everywhereGames=Array.isArray(d?.games)?d.games:[];show()}).catch(()=>{});
+  if(homeView)apiFetch('/live/now',1,{signal,transientOnly:true}).then(r=>r.json()).then(d=>{if(generation!==feedGeneration||!homeView)return;everywhereGames=Array.isArray(d?.games)?d.games:[];
+    // New featured meets load like a favorite's sport.
+    const featured=Array.isArray(d?.featured)?d.featured.map(f=>[f.school_id,f.sport]):[];
+    const fresh=featured.filter(p=>!byPair.has(key(p))&&!pairs.some(q=>key(q)===key(p)));
+    featuredPairs=featured;try{localStorage.setItem('sas-featured',JSON.stringify(featured))}catch{}
+    show();
+    for(const [id,sp] of fresh)fetchTeamSport(id,sp,false,signal).then(({groups})=>{if(generation!==feedGeneration||!homeView)return;const g=Array.isArray(groups)?groups.find(x=>x.sport===sp)||groups[0]:null;if(g){byPair.set(key([id,sp]),g);show()}}).catch(()=>{});}).catch(()=>{});
   let ok=0,saved=0,failed=0;
   await inBatches(requested,4,async ([id,sp])=>{
     try{
