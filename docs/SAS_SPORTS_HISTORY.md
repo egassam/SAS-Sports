@@ -3560,3 +3560,15 @@ Request: "Work through the open items" (after the SWAC).
 
 **Open:** none for this work. Noted: the level switch overflows a 390 px phone by 3 px (before this change). `main`'s certification run at 01:10 UTC Oct 29 read failure (not investigated this session).
 
+## October 29, 2026 — Tennis: players' pro events left out
+
+**Asked:** user: "Please check these tennis results", with a Home screenshot showing "Men's · Florida at M25 Las Vegas" and "Women's · Florida at W35 Norman, OK" under Today ("In progress · Oct 26").
+
+**Found:** Florida's tennis schedules list the ITF/UTR pro events its players enter on their own (M25 Las Vegas, W35 Norman, W35 Bakersfield as a Final with no result, M25 Harlingen, W35 Orlando, UTR Pro Fall Slam, UTR PTT Boca Raton). A scan of production's tennis feeds for all 268 tennis schools found 50 such events at 23 schools (Florida 7, Ole Miss 6, TCU 5, ASU 5, Mississippi State 3, Grand Canyon 3, and others; Texas, TCU, Tennessee and Oklahoma list ATP Challengers). LSU's module already dropped ATP/ITF names (#282, Oct 9).
+
+**Built (PR #447):** `PRO_TENNIS_EVENT`/`proTennisEvent` before `groupEvents` (`src/index.js`), which filters them first for every school: an opponent starting with ATP, ITF, WTA, "UTR Pro" or "UTR PTT", or naming an ITF level (M/W 15, 25, 35, 50, 60, 75, 80, 100) or a Challenger, except "Sectionals" (Ole Miss lists the ITA Sectionals as "ITF Sectionals"). Tests: `tests/florida-module.mjs` (pro names out; ITA, Sectionals, duals and UTR Charleston kept); `tests/arizona-module.mjs` updated ("University of Arkansas M15 Open" and "W50 Berkeley" are ITF events, so results 4 → 3).
+
+**Verified:** `test:release` passed. Preview `4.229.1`: `verify:preview` Florida and Arizona tennis (36/36 refreshes each, expanded views 6/6 and 4/4, XC 18/20 and 26/21); rescan of all 268 tennis schools on the preview found only Ole Miss "ITF Sectionals" (kept on purpose). CI green (guardrails, certification-matrix). Merged as `f6852f5` under the standing rule. Production about 04:06 UTC: `verify:prod --school=florida --sports=Tennis` passed; Florida's feed lists ITA events, the NCAA championship and duals only.
+
+**Open:** none. Saved copies built before the deploy can show the old list until their next rebuild.
+
