@@ -3673,3 +3673,30 @@ Request: "Work through the open items" (after the SWAC).
 - Watch Oct 31: the results page every 2 minutes, then the PDF. If it is scanned again, the card shows the link only.
 - The user may ask Midwest Timing for a public live link (or an AthleticLIVE feed).
 - Other qualifiers (Riley/Pottawatomie schools at Wamego's 1A/2A/4A site) are not wired.
+
+
+## October 29, 2026 — Manhattan High School: state XC live results from MileSplit Live
+
+**Asked:** "Are you sure that you're reading milesplit.com correctly? Because I can just go out of any web browser and access the live results". Then, after the explanation: "Wouldn't there publish database be what's going to be live for anybody to see?" and "If that database that they publish is going to be the live that anybody can see then it's perfectly fine. So create the raider to read it".
+
+**Found:**
+- The earlier "members only" note was wrong. `ks.milesplit.com/meets/787763` is public; only the formatted results pages (`/results/<id>/formatted`) send visitors to Join/Log in. Last year's meet page (698496) linked a public live page, `milesplit.live/meets/698496`; this year's is `milesplit.live/meets/787763`.
+- `milesplit.live` is an Angular app. The server sends no results; the browser reads Firestore (project `milesplit-live-results`): `meets/<id>` with `events`, `entries`, `teamScores`.
+- The first direct read was refused by the permission classifier (website access circumvention); the user then approved it. A plain read answers with no key or login (no API key is used or taken from scripts). `listCollectionIds` is 403 (admin only); collection names come from the app's code.
+- `meets/787763` is 404 (not set up yet). The 2025 meet: 6 races, 794 runners (an unmasked paging run returned 3 repeated across page boundaries), team scores per race (`<division>_<sex>_<race>`). Manhattan 2025: girls 6A champions, 61 points, 1st of 12; boys 7th of 12, 166.
+- Sizes: runners about 1.2 MB a page unmasked, 330 KB masked; the full team scores list 2.4 MB, one race's sheet about 340 KB.
+
+**Built (PR #458, merged `e4e545b`, `4.234.0-milesplit-live-xc`):**
+- `src/high-school.mjs`: `firestoreDocs`, `milesplitLiveRace`, `milesplitLiveXcRaces` (AthleticLIVE's shape; runners deduplicated by document id; grade 9-12 as FR-SR; no `entries`, since team lists name alternates).
+- `src/index.js`: `milesplitLiveResultsFor` (masked reads: meet, races, runners 300 a page up to 10 pages, team scores of the school's races only; live TTL 60 s on the day), `xcLive` shared with AthleticLIVE, read before `midwestTimingResultsFor`. The schedule card's link reads "Live results (MileSplit Live)".
+- `src/schools/manhattan-ks.mjs`: `milesplit: 787763`, `live: https://milesplit.live/meets/787763`.
+- `tests/milesplit-live-xc.mjs` (fixture: the 2025 documents through the reader's own URLs, 46 KB gzipped); `tests/midwest-timing-xc.mjs` label updated; module doc updated.
+
+**Verified:**
+- `npm run test:release` passed on `88cd56a` (twice); CI green (guardrails, certification-matrix, Workers build).
+- Preview: `verify:preview` Manhattan XC 3/3, 9/9 expanded views, XC 18/20 and 26/21; screenshot shows the state card with both race times; the feed links `milesplit.live/meets/787763`.
+- Production: `verify:prod` passed (same counts), feed link checked.
+
+**Limits / open:**
+- The Worker's read from Cloudflare is not observed until the meet document exists (race day). `/api/source` needs a key this session lacks.
+- Watch Oct 31: Live card, then Final; the PDF is the fallback.
