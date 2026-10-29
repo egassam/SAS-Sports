@@ -3611,3 +3611,37 @@ Request: "Work through the open items" (after the SWAC).
 
 **Limits:** ASU tennis now lists no finals (its two fall stories fail the exact match). A first build after a deploy can show "Completed" where a story fetch timed out (6.5 s); the next rebuild fills it. Recap lines are the school's headline, sometimes about one player or one day.
 
+## October 29, 2026 — Swimming scores from the story (PR #454)
+
+**User** (screenshot of Florida swimming & diving after #452): "It doesn't show completed anymore but it doesn't show a score". The rows were Florida vs Miami (Diving), Oct 16, men's and women's, both showing the men's story headline as a Recap line.
+
+**Found:** the meet was diving only with no team score (the schedule's `result` is null), and the women's events were an exhibition. The story publishes a results table (Event, Diver, Score, Place) under "Men's Results" and "Women's Results". Among the 263 swimming Recap rows on production (174 schools) and the 80-story sample, many duals' stories give the scores in their text ("The women's team earned a 188-112 victory over the RedHawks, while the men's team fell 135-165").
+
+**Changes** (`src/index.js`):
+- `storyResultTables` reads an athlete results table. The headline is the best place ("1st · Miguel Tovar (3-Meter)"), or "Exhibition".
+- `storyBodyDuals` (Swimming & Diving) reads scores from the story text:
+  - A score counts only when the opponent is named beside it: "win over X", "fell 238-59 to X", "beat X 259-94", "X (206-72)". A later clause naming no team keeps the opponent of the clause before it.
+  - The opponent is found by its catalog names (`storyRivalSchool`: exact name first, so "Miami (OH)" is the RedHawks; never a pro team). A name inside another school's name doesn't count ("North Florida", "North Carolina State").
+  - The outcome comes from the result word nearest the score, and is inverted when the other school is named just before that word.
+  - The gender is the team named since the last score, else the clause's own; "men's and women's" is the combined team.
+  - Skipped: multi-team opponents (and, /, invitational, tri-meet, duals, championship, relays, cup, open), dates, scores under 10 or summing under 60, and comma totals ("1,135.5-382").
+  - Also read: "scoring 192 points to Emory's 105".
+- Sentence splitting no longer ends a sentence at "No." or a month abbreviation.
+
+**False matches found and fixed during the review:**
+- One score given to two events: TCU 169-130 (Incarnate Word and Texas A&M), Missouri (Missouri State and Indiana State), VMI (UMBC and American), Tulane (UNCW and North Carolina).
+- Auburn's 593-197 invitational total read as a dual.
+- West Florida got North Florida's 153-123 for FSU.
+- Virginia at UNCW: a combined men's-and-women's tally was given to the women.
+- Cal's men's 158-87 win read as a loss ("Saint Mary's" earlier in the sentence).
+- Binghamton's 1,135.5-382 read as 590-135.5.
+
+**Verified:**
+- `tests/completed-stories.mjs` extended (Cincinnati split, VMI, Missouri, FSU vs North Florida, an invitational, the Florida diving table). All 374 test files pass. `test:release` passed on `de30240`.
+- Preview `4.232.0-swim-scores`: `verify:preview` Florida, Cincinnati, Virginia Swimming & Diving 36/36 each, every result with a line, expanded views 8/8, 3/3, 6/6, XC 18/20 and 26/21. Chromium screenshot (390 px) of Florida: the divers' rows.
+- CI green; merged as `68f79eb` under the standing rule. Production `verify:prod` for the same three passed.
+
+**Limits:**
+- Stories that name the opponent only by an abbreviation the catalog lacks ("NKU" for "Northern Ky.") or far from the score keep the Recap line (Cincinnati vs NKU, Lafayette's women).
+- Florida's schedule and Virginia's story disagree on the Oct 17 dual (Florida's page: 144-117 and 57-205; Virginia's story: 176-117 and 205-89). The app shows each school's own page.
+
