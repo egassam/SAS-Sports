@@ -65,6 +65,10 @@ assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.c
 assert.ok(page.includes("const sectioned=!conf||level.id==='middle-school'||level.id==='high-school'||level.id==='pro';"));
 // One Sport box on Pro: the sport filter is hidden (a team plays one sport).
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
+// With the box hidden the team's one sport is always chosen, so a pro page
+// reads results and the whole schedule, not Home's next-game view (user,
+// October 30: "The pro sections isn't showing any results and only one upcoming").
+assert.ok(page.includes("if(!homeView&&currentLevel==='pro'&&!sportFilter.value&&ordered.length)sportFilter.value=ordered[0];"));
 // Worker: pro feeds skip the college season filter; no featured athletes.
 assert.ok(worker.includes('if(isPro(school))return fetchPro(school,sport,now,aiTargetId);'));
 assert.ok(worker.includes('if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason'));
