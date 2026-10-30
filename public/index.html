@@ -146,7 +146,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .spotlight-label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
 .spotlight-title{font-size:19px;font-weight:800;margin:6px 0 4px}
 .spotlight-meta{font-size:13px;color:var(--muted,#9aa7b8)}
-.spotlight-count{display:flex;gap:10px;margin-top:10px}
+.spotlight-count{display:flex;gap:10px;margin-top:10px;font-variant-numeric:tabular-nums}
 .spotlight-count div{background:rgba(0,0,0,.28);border-radius:10px;padding:6px 10px;text-align:center;min-width:54px}
 .spotlight-count b{display:block;font-size:20px}
 .spotlight-count span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#9aa7b8)}
@@ -471,13 +471,18 @@ function raceLiveCard(e){
 // The next game, meet or race of every team at every level, with a countdown
 // (user, October 30: "Can we give every team for all levels this upcoming
 // count down box?").
-function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;const ms=t-Date.now();if(ms<=0)return null;return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
+function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;return countdownAt(t)}
+function countdownAt(t){const ms=t-Date.now();if(ms<=0)return null;return{t,d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4),s:Math.floor(ms%6e4/1e3)}}
+// The countdown ticks every second (user, October 30: "Make the countdown
+// tick live every second"); at zero it reads "Starting now" until the next
+// refresh shows the game live.
+setInterval(()=>{for(const box of document.querySelectorAll('[data-countdown-at]')){const c=countdownAt(Number(box.dataset.countdownAt));if(!c){box.outerHTML='<div class="spotlight-note">Starting now</div>';continue}for(const b of box.querySelectorAll('[data-unit]')){const v=String(c[b.dataset.unit]);if(b.textContent!==v)b.textContent=v}}},1000);
 function spotlightCard(e){
   const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
   // A date with no published clock says so instead of showing no countdown
   // (user, October 30, Manhattan HS 6A state volleyball: "High school isn't
   // working").
-  const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:!hasPublishedClock(e)&&e.start_time?'<div class="spotlight-note">Start time not posted yet · the countdown starts when it is</div>':'';
+  const count=c?`<div class="spotlight-count" data-countdown-at="${c.t}"><div><b data-unit="d">${c.d}</b><span>days</span></div><div><b data-unit="h">${c.h}</b><span>hours</span></div><div><b data-unit="m">${c.m}</b><span>min</span></div><div><b data-unit="s">${c.s}</b><span>sec</span></div></div>`:!hasPublishedClock(e)&&e.start_time?'<div class="spotlight-note">Start time not posted yet · the countdown starts when it is</div>':'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
 // Keep the feed brief while separating divisions and emphasizing team finishes.
