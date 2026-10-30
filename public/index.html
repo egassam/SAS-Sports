@@ -472,7 +472,7 @@ function raceLiveCard(e){
 // count down box?").
 function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;const ms=t-Date.now();if(ms<=0)return null;return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
 function spotlightCard(e){
-  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':e.event_type==='MEET'?'Next meet':'Next game';
+  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
   const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
@@ -650,6 +650,17 @@ function comingRows(items){
   return rows.map(({x,day,time})=>{const c=knownColors(catalogEntry(x.school_id)?.theme),head=day!==last?`<div class="home-day">${dayHeading(day)}</div>`:'';last=day;return`${head}<div class="home-row" data-event-id="${esc(x.e.id)}"${x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-time${time?'':' tba'}">${esc(time||'TBA')}</span><span class="home-row-sport">${esc(x.sport)}</span><span class="home-row-title">${esc(x.e.title)}</span>${x.e.broadcast?`<span class="home-row-tv">TV: ${esc(x.e.broadcast)}</span>`:'<span></span>'}</div>`}).join('');
 }
 function homeSection(title,items,kind){if(!items.length)return'';if(title==='Coming up')return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${comingRows(items)}</div></section>`;return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+// The overview's countdown box: the soonest game, meet or race still to
+// start among the team's (or the favorites') schedules, named by team and
+// sport on Home.
+function nextUpBox(todays,coming){
+  if(currentView!=='all')return'';
+  const startOf=x=>{const e={...x.e,school_id:x.e.school_id||x.school_id},zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;return Number.isFinite(t)?t:Date.parse(`${String(e.start_time||'').slice(0,10)}T23:59:00Z`)};
+  const next=[...todays.filter(x=>x.bucket==='upcoming'),...coming].map(x=>({x,t:startOf(x)})).filter(({t})=>Number.isFinite(t)&&t>Date.now()).sort((a,b)=>a.t-b.t)[0]?.x;
+  if(!next)return'';
+  const box=spotlightCard({...next.e,school_id:next.e.school_id||next.school_id});
+  return`<div class="section next-up"${homeView&&next.school_id?` data-open-team="${esc(next.school_id)}" data-open-sport="${esc(next.sport)}"`:''}><div class="home-tag">${homeView?`<b>${esc(next.school)}</b> · `:''}${esc(next.sport)}</div>${box}</div>`;
+}
 function renderHome(groups){
   const {live,everywhere,todays,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
@@ -661,7 +672,10 @@ function renderHome(groups){
   const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>':'';
   if(noFavorites&&!todays.length&&!coming.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
   if(!chips.length){feed.innerHTML=`<div class="empty">${homeLoading?`Loading ${esc(names.join(', '))}…`:`No live, today or upcoming games for ${esc(names.join(', '))} right now.${homeView?' Tap a team above for its full schedule and results.':' Pick a sport above to see its full schedule and results.'}`}</div>`;return}
-  feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming')+noFavorites;
+  // The next game leads the overview too (a team page with no sport chosen,
+  // and Home): user, October 30, "I'm not seeing the count down boxes
+  // anywhere except pro".
+  feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming')+noFavorites;
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
 }
 function bindFeedCards(){
