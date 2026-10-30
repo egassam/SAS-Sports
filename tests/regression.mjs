@@ -423,7 +423,7 @@ contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the 
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
 // the favorites by level, with reorder and remove.
-contains(page,/<button class="my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');
+contains(page,/<button class="ghost my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');
 contains(page,/data-my-home>⌂ Home · all my teams<\/button>/,'The My Teams list must lead with Home');
 contains(page,/const groups=LEVELS\.map\(level=>\[level,favorites\.filter/,'My Teams must group favorites by level');
 contains(page,/data-move-up=.*data-move-down=.*data-remove-favorite=/,'Each favorite must move up, move down and be removed from the list');
