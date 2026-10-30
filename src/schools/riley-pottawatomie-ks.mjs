@@ -29,7 +29,7 @@ const HS_TRACK_EXCLUDE=/\bJV\b|junior varsity|fresh|frosh|soph|\bgrade\b|middle|
 
 // High school sports read from Bound. `has` lists the school's sports; each
 // takes its MaxPreps page (games), or its meet source.
-function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,maxpreps:mp=true}){
+function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true}){
   const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:path}:{}),...(label?{label}:{})});
   const sports={};
   if(has.includes('Football'))sports.Football=[game('Football','football')];
@@ -40,7 +40,8 @@ function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,maxpreps:mp=tru
   if(has.includes('Baseball'))sports.Baseball=[game('Baseball','baseball')];
   if(has.includes('Softball'))sports.Softball=[game('Softball','softball')];
   // Varsity races only (the junior varsity and middle school races share the day).
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:meetTeam,races:/\bvarsity\b/i,exclude:/junior varsity/i}}];
+  // Meets the timer posts only to MileSplit Live: the school's MileSplit team id.
+  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:meetTeam,races:/\bvarsity\b/i,exclude:/junior varsity/i},...(milesplit?{milesplit:{team:milesplit}}:{})}];
   if(has.includes('Golf'))sports.Golf=['Girls','Boys'].filter(g=>has.includes(`${g} Golf`)).map(g=>({...on(`${g} Golf`),meet:true,label:g}));
   if(has.includes('Tennis'))sports.Tennis=['Girls','Boys'].filter(g=>has.includes(`${g} Tennis`)).map(g=>({...on(`${g} Tennis`),meet:true,label:g,...(tennis?{tennisReporting:{stateId:23,genderId:g==='Girls'?2:1,school:tennis}}:{})}));
   if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`),meet:true,label:g}));
@@ -75,12 +76,27 @@ function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam}){
 
 // --- Riley County
 
+// KSHSAA state cross country, October 31 (KSHSAA's state sites and time
+// schedule; user, October 29: "Can we add other state of Kansas schools that
+// are going to be timed at this meet?"). Midwest Timing & Results times both
+// sites and posts live on MileSplit Live. A school's qualifiers come from its
+// October 24 sub-state on MileSplit Live: the top three teams and the top 15
+// runners (KSHSAA). `place` is the site's row on Midwest Timing's results
+// page; `schools` gives the names its results PDF prints.
+const STATE_XC_SITES={
+  lawrence:{site:'Rim Rock Farm, Lawrence',place:/^Lawrence\b/i,milesplit:787763,live:'https://milesplit.live/meets/787763'},
+  wamego:{site:'Wamego Country Club, Wamego',place:/^Wamego\b/i,milesplit:787762,live:'https://milesplit.live/meets/787762'}};
+const STATE_XC_TIMES={'1A':{Girls:'11:10',Boys:'12:55'},'2A':{Girls:'12:20',Boys:'10:35'},'3A':{Girls:'11:10',Boys:'12:55'},'4A':{Girls:'10:00',Boys:'11:45'}};
+const stateXc=(cls,id,names,sexes)=>({date:'2026-10-31',sport:'Cross Country',name:`KSHSAA ${cls} State Championship`,...STATE_XC_SITES[cls==='3A'?'lawrence':'wamego'],
+  races:sexes.map(label=>({label,time:STATE_XC_TIMES[cls][label]})).sort((a,b)=>a.time.localeCompare(b.time)),schools:{[id]:names}});
+
 export const rileyCountyKsSchool={id:'riley-county-ks',bound:bound('h2025020404520421139a7c22372f045','rileycountyhs'),
   maxpreps:maxpreps('5cdb37b2-ad68-43ee-96f4-0f48d54919fa','riley/riley-county-falcons'),meetPro:LETSGORUN_MEETPRO,
   // Prep.Golf gives Riley County's golfers the code RC, as it gives Rock
   // Creek's: when both play one tournament the golfers are not listed.
   prepGolf:{school:177,code:'RC',sharesCodeWith:'Rock Creek'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County'})};
+  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County',milesplit:21857}),
+  midwestTiming:[stateXc('3A','riley-county-ks',['Riley County High School'],['Girls','Boys'])]};
 export const rileyCountyMsKsSchool={id:'riley-county-ms-ks',bound:bound('h20251014075040360c6677198a0a040','rcmsks'),meetPro:LETSGORUN_MEETPRO,
   sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County'})};
 
@@ -95,9 +111,12 @@ export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:u
     Football:[{calendar:/^HS Football$/,maxpreps:'football'}],
     Volleyball:[{calendar:/^HS Volleyball$/,maxpreps:'volleyball',matches:true}],
     Basketball:[{calendar:/^HS Basketball$/,maxpreps:'basketball/girls',label:'Girls',matches:true},{calendar:/^HS Basketball$/,maxpreps:'basketball',label:'Boys',matches:true}],
-    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',races:/\bvarsity\b/i,exclude:/junior varsity/i}}],
+    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',races:/\bvarsity\b/i,exclude:/junior varsity/i},milesplit:{team:36605}}],
     'Track & Field':[{calendar:/^HS Track & Field$/,meet:true,meetPro:{team:'Blue Valley',track:true,exclude:HS_TRACK_EXCLUDE}}]
-  }};
+  },
+  // Titus Cobb 1st and Kory Fowler 15th, Samantha Gibson 13th at the 1A
+  // Cheney Lake sub-state (too few runners for a team score).
+  midwestTiming:[stateXc('1A','blue-valley-randolph-ks',['Randolph Blue Valley High School','Blue Valley High School'],['Girls','Boys'])]};
 export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calendar:usd384('MS'),meetPro:LETSGORUN_MEETPRO,
   sports:{
     Football:[{calendar:/^MS Football$/}],
@@ -111,13 +130,15 @@ export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calen
 
 export const wamegoKsSchool={id:'wamego-ks',bound:bound('h202502040452088515ce32279a6bd46','wamegohs'),
   maxpreps:maxpreps('85994f3a-51f3-45de-8eb1-88106d80733b','wamego/wamego-red-raiders'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:124,code:'WAM'},
-  sports:boundHighSchool({has:['Football','Flag Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'Wamego',tennis:'Wamego HS'})};
+  sports:boundHighSchool({has:['Football','Flag Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'Wamego',tennis:'Wamego HS',milesplit:21804}),
+  midwestTiming:[stateXc('4A','wamego-ks',['Wamego High School'],['Girls','Boys'])]};
 export const wamegoMsKsSchool={id:'wamego-ms-ks',bound:bound('h20250612075742474f79cb40e4a7f40','wamegoms'),meetPro:LETSGORUN_MEETPRO,
   sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf'],meetTeam:'Wamego Middle School'})};
 
 export const rockCreekKsSchool={id:'rock-creek-ks',bound:bound('h2025020404520445615614e419a374c','rockcreekhs'),
   maxpreps:maxpreps('96110ea0-a0ac-4f8d-b7b3-49a4b725e38f','st-george/rock-creek-mustangs'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:119,code:'RC',sharesCodeWith:'Riley County'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek'})};
+  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek',milesplit:21882}),
+  midwestTiming:[stateXc('4A','rock-creek-ks',['Rock Creek High School'],['Girls','Boys'])]};
 export const rockCreekMsKsSchool={id:'rock-creek-ms-ks',bound:bound('h20260103125538297053dfabf06614f','rockcreekms'),meetPro:LETSGORUN_MEETPRO,
   sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek MS'})};
 
@@ -126,7 +147,7 @@ export const rockCreekMsKsSchool={id:'rock-creek-ms-ks',bound:bound('h2026010312
 const ST_MARYS=bound('h20250204045205533eddae2a4d03e42','stmaryshs');
 export const stMarysKsSchool={id:'st-marys-ks',bound:ST_MARYS,
   maxpreps:maxpreps('0f0ebc9e-4330-405a-a173-f298b055973a','st-marys/st-marys-bears'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:186,code:'STM'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'St. Marys'})};
+  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'St. Marys',milesplit:25984})};
 export const stMarysJhKsSchool={id:'st-marys-jh-ks',bound:ST_MARYS,meetPro:LETSGORUN_MEETPRO,
   sports:boundMiddleSchool({has:['Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:"St. Mary's"})};
 
@@ -142,8 +163,10 @@ const withUpcoming=(sports,level,map)=>{for(const [sport,teams] of Object.entrie
 const genderTeam=sport=>team=>new RegExp(`^${team.boundSchedule.level===VARSITY?'HS':'MS'} (?:${team.label?.match(/Girls|Boys/)?.[0]||'(?:Girls|Boys)'} )?${sport}$`);
 export const onagaKsSchool={id:'onaga-ks',bound:ONAGA,upcoming:onagaCalendar('HS'),
   maxpreps:maxpreps('1572292e-afd2-444a-bed6-45b5b3f4b17d','onaga/onaga-buffaloes'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:303,code:'ONA'},
-  sports:withUpcoming(boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'}),'HS',
-    {Football:/^HS Football$/,Volleyball:/^HS Volleyball$/,Basketball:genderTeam('Basketball'),Baseball:/^HS Baseball(?:\/Softball)?$/,Softball:/^HS (?:Baseball\/)?Softball$/,'Cross Country':/^HS Cross Country$/,Golf:/^HS Golf$/,Wrestling:genderTeam('Wrestling'),'Track & Field':/^HS Track & Field$/})};
+  sports:withUpcoming(boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga',milesplit:22005}),'HS',
+    {Football:/^HS Football$/,Volleyball:/^HS Volleyball$/,Basketball:genderTeam('Basketball'),Baseball:/^HS Baseball(?:\/Softball)?$/,Softball:/^HS (?:Baseball\/)?Softball$/,'Cross Country':/^HS Cross Country$/,Golf:/^HS Golf$/,Wrestling:genderTeam('Wrestling'),'Track & Field':/^HS Track & Field$/}),
+  // Miken Wheeler, 5th at the 1A Cheney Lake sub-state (the team 4th).
+  midwestTiming:[stateXc('1A','onaga-ks',['Onaga High School'],['Boys'])]};
 export const onagaMsKsSchool={id:'onaga-ms-ks',bound:ONAGA,upcoming:onagaCalendar('MS'),meetPro:LETSGORUN_MEETPRO,
   sports:withUpcoming(boundMiddleSchool({has:['Volleyball','Basketball','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Onaga'}),'MS',
     {Volleyball:team=>team.label?null:/^MS Volleyball$/,Basketball:team=>/^(?:Girls|Boys)$/.test(team.label||'')?new RegExp(`^MS (?:${team.label} )?Basketball$`):null,Wrestling:genderTeam('Wrestling'),'Track & Field':/^MS Track & Field$/})};
@@ -160,7 +183,7 @@ export const flintHillsChristianKsSchool={id:'flint-hills-christian-ks',calendar
     Volleyball:[{calendar:/^HS Volleyball$/,maxpreps:'volleyball',matches:true}],
     // The sheet lists one basketball schedule for both teams.
     Basketball:[{calendar:/^HS Basketball$/,maxpreps:'basketball/girls',label:'Girls',matches:true},{calendar:/^HS Basketball$/,maxpreps:'basketball',label:'Boys',matches:true}],
-    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Flinthills Christian',races:/\bvarsity\b/i,exclude:/junior varsity/i}}],
+    'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Flinthills Christian',races:/\bvarsity\b/i,exclude:/junior varsity/i},milesplit:{team:25986}}],
     Golf:[{calendar:/^HS Golf$/,meet:true,label:'Boys'}],
     // Track meets write the school "Flinthills Christian", "Flint Hills
     // Christian" or "Flint Hills" (the 2026 Wabaunsee middle school meet: the
@@ -180,7 +203,7 @@ export const flintHillsChristianMsKsSchool={id:'flint-hills-christian-ms-ks',cal
 const SMA=bound('h2025020404520561456ac772684c34f','saintmarysacademy');
 export const stMarysAcademyKsSchool={id:'st-marys-academy-ks',bound:SMA,
   maxpreps:maxpreps('72046133-0241-43db-a9b8-71b3f3b6ae10','st-marys/st-marys-academy-crusaders'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:366,code:'SMA'},
-  sports:boundHighSchool({has:['Football','Soccer','Basketball','Baseball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Golf','Boys Golf'],meetTeam:"St. Mary's Academy"})};
+  sports:boundHighSchool({has:['Football','Soccer','Basketball','Baseball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Golf','Boys Golf'],meetTeam:"St. Mary's Academy",milesplit:41084})};
 export const stMarysAcademyJhKsSchool={id:'st-marys-academy-jh-ks',bound:SMA,
   sports:{Basketball:[{...on('Boys Basketball',grade('7th')),label:'7th Boys'},{...on('Boys Basketball',grade('8th')),label:'8th Boys'}]}};
 

@@ -77,7 +77,9 @@ export const manhattanKsSchool={
     Soccer:[{calendar:/^Varsity Boys Soccer$/i,maxpreps:'soccer',label:'Boys',bound:['Boys Soccer']},{calendar:/^Varsity Girls Soccer$/i,maxpreps:'soccer/girls',label:'Girls',bound:['Girls Soccer']}],
     Volleyball:[{calendar:/^Varsity Volleyball$/i,maxpreps:'volleyball',matches:true}],
     // Varsity races only (the JV and C races are run at the same meets).
-    'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team:'Manhattan',races:/\bvarsity\b/i,exclude:/junior/i},boundMeet:{acts:{Girls:'Girls Cross Country',Boys:'Boys Cross Country'},lowWins:true,unit:'pts'}}],
+    // MileSplit Live: Manhattan High School's MileSplit team id; its meets in
+    // Kansas and Missouri (the Southern Stampede at Joplin).
+    'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team:'Manhattan',races:/\bvarsity\b/i,exclude:/junior/i},milesplit:{team:21783,states:['KS','MO']},boundMeet:{acts:{Girls:'Girls Cross Country',Boys:'Boys Cross Country'},lowWins:true,unit:'pts'}}],
     Tennis:[{calendar:/^Varsity Girls Tennis$/i,meet:true,label:'Girls',tennisReporting:{stateId:23,genderId:2,school:'Manhattan HS'}},{calendar:/^Varsity Boys Tennis$/i,meet:true,label:'Boys',tennisReporting:{stateId:23,genderId:1,school:'Manhattan HS'}}],
     // Golf results from Prep.Golf (school 11; golfers' school code MAN).
     Golf:[{calendar:/^Varsity Girls Golf$/i,meet:true,label:'Girls',boundMeet:{acts:{Girls:'Girls Golf'},lowWins:true,unit:'strokes'}},{calendar:/^Varsity Boys Golf$/i,meet:true,label:'Boys',boundMeet:{acts:{Boys:'Boys Golf'},lowWins:true,unit:'strokes'}}]

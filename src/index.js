@@ -54,7 +54,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitLiveRace,firestoreDocs,MILESPLIT_LIVE_DOCS,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -333,7 +333,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.234.0-milesplit-live-xc';
+const VERSION='4.235.0-milesplit-xc-meets';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4146,7 +4146,8 @@ async function tennisReportingResults(school,team,game){
 // one refresh reads each page once (memo).
 const MEETPRO_TIMEOUT_MS=10000;
 function meetProReader(memo=new Map()){
-  return(url,ttl)=>{if(!memo.has(url))memo.set(url,sourceFetch(url,{signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS)},{ttl}).then(r=>r.ok?r.text():null).catch(()=>null));return memo.get(url);};
+  // A query sent as a POST (MileSplit Live) is one read per body.
+  return(url,ttl,body)=>{const key=body?`${url}#${body}`:url;if(!memo.has(key))memo.set(key,sourceFetch(url,{signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS),...(body?{method:'POST',body,headers:{'content-type':'application/json'}}:{})},{ttl}).then(r=>r.ok?r.text():null).catch(()=>null));return memo.get(key);};
 }
 // On a meet's day (`live`) the timer's pages are read again after a minute
 // (track; the page polls the feed every 15 s while a card is live).
@@ -4213,31 +4214,62 @@ function xcLive(out,all,races){
   out.latest=[...races].sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||''))).flatMap(r=>[...r.runners].reverse().map(x=>({group:sex(r.race),participant:`${x.athlete}${x.year?` (${x.year})`:''}`,result:`${ORDINAL(x.place)} of ${r.field} · ${x.time}`}))).slice(0,5);
   return out;
 }
-// Cross country on MileSplit Live (module `midwestTiming`, `milesplit`: the
-// meet's id; user, October 29: "create the reader"). Only the fields shown
-// are asked for: the meet and its races are a read each, its runners come
-// 300 a page (about 800 at the state meet), then the team scores of each race
-// the school ran (one document a race, `<division>_<sex>_<race>`). On the
-// meet's day each is read again after a minute. No meet document (not set up
-// yet) or no runner of the school: null.
-const MILESPLIT_LIVE_PAGES=10;
-const firestoreMask=(...fields)=>fields.map(f=>`mask.fieldPaths=${f}`).join('&');
-async function milesplitLiveResultsFor(school,meet,game,read,live=false){
-  const ttl=live?MEETPRO_LIVE_TTL:SOURCE_TTL.document,base=`${MILESPLIT_LIVE_DOCS}${meet.milesplit}`;
-  const doc=path=>read(`${base}${path}`,ttl).then(text=>{try{return text?JSON.parse(text):null}catch{return null}});
-  const [info,list]=await Promise.all([doc(`?${firestoreMask('name')}`),doc(`/events?pageSize=100&${firestoreMask('number','name','division.number','gender.sex')}`)]);
-  if(!info?.fields||!list)return null;
-  const events=firestoreDocs(list),entries=[];let token='';
-  for(let page=0;page<MILESPLIT_LIVE_PAGES;page++){
-    const json=await doc(`/entries?pageSize=300&${firestoreMask('event','athlete.firstName','athlete.lastName','athlete.grade','athlete.team.name','result.place','result.text')}${token?`&pageToken=${encodeURIComponent(token)}`:''}`);if(!json)break;
-    entries.push(...firestoreDocs(json));token=json.nextPageToken;if(!token)break;
+// Cross country on MileSplit Live (a team's `milesplit`: its MileSplit team
+// id; user, October 29: "create the reader", then "Can we fill in other
+// cross country meets from milesplit now?"). The meet is the state meet's
+// own (`meet`), else the one of the day in Kansas the calendar entry names
+// (one query a day, shared by every school). Then the school's runners (one
+// query by its code), the meet's races, and for each varsity race it ran
+// the places (one small query: the field) and the timer's team scores (its
+// tables, 60 KB to 1.4 MB at Rim Rock; each answer is summarized once per
+// copy of the Worker). On the meet's day each is read again after a minute,
+// the day's list after two (meets are added that morning). Null when the
+// school is not in a meet that day.
+const milesplitScoresMemo=new Map();
+async function milesplitLiveResultsFor(school,config,game,read,live=false){
+  if(!config?.team)return null;
+  const ttl=live?MEETPRO_LIVE_TTL:SOURCE_TTL.document,json=text=>{try{return text?JSON.parse(text):null}catch{return null}};
+  const get=(path,t=ttl)=>read(`${MILESPLIT_LIVE_ROOT}/${path}`,t).then(json);
+  const query=(path,body,t=ttl)=>read(`${MILESPLIT_LIVE_ROOT}${path}:runQuery`,t,body);
+  let meet;
+  if(config.meet){
+    const doc=await get(`meets/${config.meet}?mask.fieldPaths=name&mask.fieldPaths=teams&mask.fieldPaths=timingCompany.name`);
+    const [info]=firestoreDocs({documents:doc?.fields?[doc]:[]}),team=milesplitTeamCode(info,config.team);
+    meet=team&&{id:String(config.meet),...team,timer:info.timingCompany?.name||null};
+  }else{
+    const days=await Promise.all((config.states||['KS']).map(state=>query('',firestoreQuery('meets',{'venue.state':state,dateStart:game.date},['name','season','venue.name','venue.city','teams','timingCompany.name'],300),live?SOURCE_TTL.schedule:SOURCE_TTL.document).then(text=>firestoreDocs(json(text)||[]))));
+    meet=milesplitMeetFor(days.flat(),config.team,game.name);
   }
-  const ours=milesplitLiveXcRaces(events,entries,[],meet.schools[school.id]),ran=events.filter(e=>ours.some(r=>r.race===milesplitLiveRace(e.name)));
-  const scores=(await Promise.all(ran.map(e=>doc(`/teamScores/${e.division?.number}_${e.gender?.sex}_${e.number}`)))).filter(Boolean).flatMap(d=>firestoreDocs({documents:[d]}));
-  const all=milesplitLiveXcRaces(events,entries,scores,meet.schools[school.id]),races=all.filter(r=>r.runners.length);
+  if(!meet)return null;
+  const base=`/meets/${meet.id}`;
+  // The school's runners by the meet's code or by name (see `milesplitTeamCode`).
+  const runner=['event','athlete.firstName','athlete.lastName','athlete.grade','athlete.team.abbreviation','athlete.team.name','result.place','result.text'];
+  const [byCode,byName,list]=await Promise.all([query(base,firestoreQuery('entries',{'athlete.team.abbreviation':meet.code},runner)),query(base,firestoreQuery('entries',{'athlete.team.name':milesplitTeamNames(meet.name)},runner)),get(`meets/${meet.id}/events?pageSize=100&mask.fieldPaths=number&mask.fieldPaths=name&mask.fieldPaths=gender.sex&mask.fieldPaths=division.name`)]);
+  const ours=[...new Map([...firestoreDocs(json(byCode)||[]),...firestoreDocs(json(byName)||[])].map(e=>[e.id,e])).values()];
+  const races=milesplitVarsityRaces(firestoreDocs(list),ours);
   if(!races.length)return null;
-  const out={...xcRaceSummary(school,races),url:`https://milesplit.live/meets/${meet.milesplit}`,label:'View full results (MileSplit Live)',note:'Results as posted by Midwest Timing & Results on MileSplit Live.',source_name:'Midwest Timing & Results (MileSplit Live)'};
-  return live?xcLive(out,all,races):out;
+  const finishers=new Map(),scores=new Map();
+  await Promise.all(races.map(async race=>{
+    const n=Number(race.number),body=firestoreQuery('teamScores',{eventNo:n},['eventNo','scores'],20);
+    const [places,table]=await Promise.all([query(base,firestoreQuery('entries',{event:n},['result.place'],1000)),query(base,body)]);
+    finishers.set(String(n),firestoreDocs(json(places)||[]).filter(e=>Number(e.result?.place)>0).length);
+    // The race's tables ("6_F_2", "2_F_3"), not a split's ("5_F_3_1600 Meters").
+    const key=`${meet.id}|${body}|${table?.length}|${String(table||'').slice(-160)}`;
+    if(!milesplitScoresMemo.has(key)){
+      if(milesplitScoresMemo.size>200)milesplitScoresMemo.clear();
+      milesplitScoresMemo.set(key,firestoreDocs(json(table)||[]).filter(d=>/^\d+_[FMC]_\d+$/.test(d.id)).map(milesplitTeamScores));
+    }
+    scores.set(String(n),milesplitScoresMemo.get(key));
+  }));
+  const all=milesplitLiveXcRaces(races,ours,finishers,scores,meet),ran=all.filter(r=>r.runners.length);
+  if(!ran.length)return null;
+  // A race MileSplit has no team scores for (MeetPro meets) takes the team
+  // place the school entered on Bound (`config.teamPlaces`, by sex).
+  let bound=false;
+  for(const r of ran){const m=!r.team&&config.teamPlaces?.[/\bgirls?\b|\bwomen/i.test(r.race)?'Girls':'Boys'];if(m){r.team={place:m.place,team:school.short_name,score:String(m.score)};r.teams=m.teams;bound=true;}}
+  const timer=meet.timer||'the timer';
+  const out={...xcRaceSummary(school,ran),url:`https://milesplit.live/meets/${meet.id}`,label:'View full results (MileSplit Live)',note:`Results as posted by ${timer} on MileSplit Live${bound?'; team places as entered on Bound by the school':''}.`,source_name:`${timer} (MileSplit Live)`};
+  return live?xcLive(out,all,ran):out;
 }
 // Cross country timed by Midwest Timing & Results (module `midwestTiming`;
 // the KSHSAA state meets): its results page lists the meet's Hy-Tek PDF by
@@ -4510,7 +4542,12 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     }
     // Results for every past game at once (each source read in parallel).
     const bound=team.bound||team.boundMeet?await boundFinalsFor(school,module,new Date(today).toISOString().slice(0,10)):[];
-    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):game.athleticLive?athleticLiveResultsFor(school,game.athleticLive,game,read,(game.end_date||game.date)>=today).then(r=>r||meetProResultsFor(school,module,team,game,read)):game.midwestTiming?(game.midwestTiming.milesplit?milesplitLiveResultsFor(school,game.midwestTiming,game,read,(game.end_date||game.date)>=today):Promise.resolve(null)).then(r=>r||midwestTimingResultsFor(school,game.midwestTiming,game,read,(game.end_date||game.date)>=today)).then(r=>r||meetProResultsFor(school,module,team,game,read)):team.meetPro?meetProResultsFor(school,module,team,game,read,(game.end_date||game.date)>=today):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
+    // MileSplit Live (a cross country team's `milesplit`): the state meet
+    // the module names, else the meet of the day the calendar entry names,
+    // when the timer's own pages have none.
+    const teamPlaces=game=>team.boundMeet&&Object.fromEntries(Object.entries(team.boundMeet.acts).map(([label,act])=>[label,boundMeet(bound,{act,date:game.date,lowWins:team.boundMeet.lowWins})]).filter(([,m])=>m));
+    const mileSplit=game=>team.milesplit&&!team.meetPro?.track?milesplitLiveResultsFor(school,{...team.milesplit,meet:game.midwestTiming?.milesplit,teamPlaces:teamPlaces(game)},game,read,(game.end_date||game.date)>=today):Promise.resolve(null);
+    const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):game.athleticLive?athleticLiveResultsFor(school,game.athleticLive,game,read,(game.end_date||game.date)>=today).then(r=>r||meetProResultsFor(school,module,team,game,read)).then(r=>r||mileSplit(game)):game.midwestTiming?mileSplit(game).then(r=>r||midwestTimingResultsFor(school,game.midwestTiming,game,read,(game.end_date||game.date)>=today)).then(r=>r||meetProResultsFor(school,module,team,game,read)):team.meetPro?meetProResultsFor(school,module,team,game,read,(game.end_date||game.date)>=today).then(r=>r||mileSplit(game)):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
     for(const [index,game] of games.entries()){
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name);
       let contest=named?null:matchContest(game,contests,used);
