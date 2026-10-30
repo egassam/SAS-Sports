@@ -344,7 +344,7 @@ contains(page,/ensureEntries\(featured\.map\(p=>p\[0\]\)\)/,'Home must load the 
 contains(page,/ensureEntries\(\[savedSchool\(\),\.\.\.favoriteSchoolIds\(\),\.\.\.featuredPairs\.map\(p=>p\[0\]\)\]\)/,'the saved featured schools\' cards load with the favorites');
 contains(page,/\.hero \.favorite\{[^}]*height:34px/,'the Favorite button is the small one (user, October 29)');
 contains(page,/@media\(max-width:560px\)\{\.hero \.level-switch\{gap:2px;padding:3px\}\.hero \.level\{min-width:0;padding:6px 4px;font-size:13px\}\}/,'the five levels fit a 390 px phone');
-contains(page,/<p>Middle school to the pros\. Live\.<\/p>/,'the header line names the app as it is now');
+contains(page,/<p>Every sport\. Every level\. All live\.<\/p>/,'the header line is the slogan (user, October 30: "Every sport. Every Level. All live.")');
 contains(page,/const team=homeView&&el\.closest\('\[data-open-team\]'\);if\(team\)\{openTeam\(team\.dataset\.openTeam,team\.dataset\.openSport\)/,'A live game on Home must open its team\'s page');
 contains(page,/style="\$\{chipColors\(item\)\}"/,'Each favorite chip must wear its own team\'s colors');
 contains(page,/\.favorite-teams \.favorite-team\{background:color-mix\(in srgb,var\(--chip,#29435f\) 80%/,'Favorite chips must read in the team\'s own color');
