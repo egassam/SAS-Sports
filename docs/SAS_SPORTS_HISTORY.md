@@ -3700,3 +3700,19 @@ Request: "Work through the open items" (after the SWAC).
 **Limits / open:**
 - The Worker's read from Cloudflare is not observed until the meet document exists (race day). `/api/source` needs a key this session lacks.
 - Watch Oct 31: Live card, then Final; the PDF is the fallback.
+
+
+## October 29-30, 2026 — Cross country from MileSplit Live for every Kansas meet; state meet cards
+
+**Asked:** "Using what we learned. Can we fill in other cross country meets from milesplit now? Can we add other state of Kansas schools that are going to be timed at this meet?"
+
+**Found:**
+- MileSplit Live's Firestore holds Kansas meets of most timers (a `venue.state == KS` query on `meets`, as its own page runs). Per meet: `teams` by the meet's code with MileSplit's team id; runners carry the timer's code and name (MeetPro meets differ: "MAN"/"MANH", "FHCS"/"FHCH"; names cut to 30 characters). Team ids: Manhattan 21783, Riley County 21857, Randolph Blue Valley 36605 (Stilwell's Blue Valley High School 19036), Wamego 21804, Rock Creek 21882, St. Marys 25984, Onaga 22005, Flint Hills Christian 25986, St. Mary's Academy 41084.
+- A count of finishers per race needs a composite index MileSplit lacks; a places-only query per race is ~40 KB. Team scores computed from runners' `teamPoints` disagree with Hy-Tek meets' tables, so the timer's `teamScores` tables are read (a race can have several: JV teams, Rim Rock's 25-team table beside an empty one).
+- Sub-states (Oct 24): Wamego girls and boys 1st, Rock Creek girls and boys 2nd (4A Baldwin); Riley County boys 2nd, Kinley Henle 6th (3A Norton); Onaga boys 4th, Miken Wheeler 5th; Blue Valley's Titus Cobb 1st, Kory Fowler 15th, Samantha Gibson 13th (1A Cheney Lake). St. Marys' 2A sub-state is not on MileSplit Live. Rule: top three teams and top 15 runners (Hutchinson Post 2024, Ad Astra Radio); KSHSAA's own lists not found. State sites and times: KSHSAA API and `/Public/CrossCountry/PDF/Schedule.pdf`.
+
+**Built (PR #460, merged `69b0579`, `4.235.0-milesplit-xc-meets`):** general `milesplitLiveResultsFor` (by `config.meet` or by day + calendar name; POST queries cached per body through `meetProReader`), `milesplitMeetFor`, `milesplitVarsityRaces`, `milesplitTeamCode`/`milesplitTeamNames`, `milesplitLiveXcRaces`; Bound team place where MileSplit has none; team ids in both modules (Manhattan also searches Missouri: the Southern Stampede); `stateXc` entries for the qualifiers. Tests: `tests/milesplit-live-xc.mjs` on a recorded fixture (2025 state meet, Oct 10, Oct 3, Sep 26).
+
+**Verified:** `test:release` passed on `5a72f5a`; CI green; preview and production `verify` for the nine schools' XC (3/3, all expanded views), XC 18/20 and 26/21; Wamego's page checked by eye (state card with race times, filled meets).
+
+**Left unmatched or empty (from the sources):** Haskell Invite (MileSplit has Manhattan only at Salina that day), Wamego/Rock Creek "Great Life Golf Course meet" (the NCKL meet at Abilene CC Course), Rock Creek "Blue Jay Invitational" (Junction City's Bob Schmoekel Invitational), meets not on MileSplit Live (Big East League, Twin Valley League, Royal Valley, Sabetha, Horton...). Rim Rock class races have empty team tables (runners only). Middle schools not wired.
