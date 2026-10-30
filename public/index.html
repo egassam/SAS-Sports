@@ -150,6 +150,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .spotlight-count div{background:rgba(0,0,0,.28);border-radius:10px;padding:6px 10px;text-align:center;min-width:54px}
 .spotlight-count b{display:block;font-size:20px}
 .spotlight-count span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted,#9aa7b8)}
+.spotlight-note{margin-top:10px;font-size:12px;color:var(--muted,#9aa7b8);font-style:italic}
 
 /* Compact controls and results-first athlete portraits. */
 .hero{padding:12px 14px;border-radius:18px}
@@ -473,7 +474,10 @@ function raceLiveCard(e){
 function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;const ms=t-Date.now();if(ms<=0)return null;return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
 function spotlightCard(e){
   const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
-  const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:'';
+  // A date with no published clock says so instead of showing no countdown
+  // (user, October 30, Manhattan HS 6A state volleyball: "High school isn't
+  // working").
+  const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:!hasPublishedClock(e)&&e.start_time?'<div class="spotlight-note">Start time not posted yet · the countdown starts when it is</div>':'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
 // Keep the feed brief while separating divisions and emphasizing team finishes.
