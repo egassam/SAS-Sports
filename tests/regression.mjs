@@ -320,7 +320,7 @@ assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not wr
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
-contains(page,/homeSection\(mine,live,'live'\)\+everywhereHtml\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now (my teams, then everywhere), then Today, then Coming up');
+contains(page,/homeSection\(mine,live,'live'\)\+everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now (my teams, then everywhere), then Today, then Coming up');
 contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
 // Home's live boxes (user, Oct 29): small, three across, sports A to Z, team colors.
 contains(page,/const live=\[\.\.\.ownLive,\.\.\.fromBoards\]\.sort\(\(a,b\)=>bySport\(a,b\)\|\|byTeam\(a,b\)\)/,'My Teams live games must read sports A to Z');
@@ -421,6 +421,7 @@ contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Fa
 contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
 contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
+contains(page,/everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
 // the favorites by level, with reorder and remove.
 contains(page,/<button class="ghost my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');
