@@ -8008,10 +8008,25 @@
    "state": "off"
   },
   "dartmouth|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-25T01:30:09.161Z",
-   "last_detail": "final L, 1-2 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-30T16:27:52.552Z",
+   "last_detail": "live 0-1 · End of 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "dartmouth|Hockey||2026-10-30|1",
+    "title": "Dartmouth vs St. Lawrence",
+    "started_seen": "2026-10-30T16:19:15.122Z",
+    "live_passes": [
+     "2026-10-30T16:19:15.122Z",
+     "2026-10-30T16:20:18.045Z",
+     "2026-10-30T16:21:21.921Z",
+     "2026-10-30T16:22:41.851Z",
+     "2026-10-30T16:24:04.311Z",
+     "2026-10-30T16:25:06.416Z",
+     "2026-10-30T16:26:28.621Z",
+     "2026-10-30T16:27:52.552Z"
+    ],
+    "final_ok": false
+   }
   },
   "dartmouth|Lacrosse": {
    "state": "off"
@@ -8443,7 +8458,25 @@
    "state": "off"
   },
   "sacred-heart|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T16:27:51.104Z",
+   "last_detail": "live 5-0 · 14:11 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "sacred-heart|Field Hockey||2026-10-30|1",
+    "title": "Sacred Heart vs Mercyhurst",
+    "started_seen": "2026-10-30T16:19:15.831Z",
+    "live_passes": [
+     "2026-10-30T16:19:15.831Z",
+     "2026-10-30T16:20:18.964Z",
+     "2026-10-30T16:21:21.337Z",
+     "2026-10-30T16:23:01.972Z",
+     "2026-10-30T16:24:04.691Z",
+     "2026-10-30T16:25:07.365Z",
+     "2026-10-30T16:26:28.881Z",
+     "2026-10-30T16:27:51.104Z"
+    ],
+    "final_ok": false
+   }
   },
   "sacred-heart|Football": {
    "state": "off"
@@ -8761,7 +8794,25 @@
    "state": "off"
   },
   "mercyhurst|Field Hockey": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T16:27:50.888Z",
+   "last_detail": "live 0-5 · 14:11 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mercyhurst|Field Hockey||2026-10-30|1",
+    "title": "Mercyhurst at Sacred Heart",
+    "started_seen": "2026-10-30T16:19:14.479Z",
+    "live_passes": [
+     "2026-10-30T16:19:14.479Z",
+     "2026-10-30T16:20:19.019Z",
+     "2026-10-30T16:21:20.343Z",
+     "2026-10-30T16:22:42.254Z",
+     "2026-10-30T16:24:03.914Z",
+     "2026-10-30T16:25:06.577Z",
+     "2026-10-30T16:26:28.738Z",
+     "2026-10-30T16:27:50.888Z"
+    ],
+    "final_ok": false
+   }
   },
   "mercyhurst|Football": {
    "state": "off"
@@ -8935,7 +8986,25 @@
    "state": "off"
   },
   "eastern-illinois|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T16:28:11.313Z",
+   "last_detail": "live 18-24 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "eastern-illinois|Volleyball||2026-10-30|1",
+    "title": "Eastern Illinois at Morehead St",
+    "started_seen": "2026-10-30T16:19:14.304Z",
+    "live_passes": [
+     "2026-10-30T16:19:14.304Z",
+     "2026-10-30T16:20:18.344Z",
+     "2026-10-30T16:21:40.662Z",
+     "2026-10-30T16:23:02.697Z",
+     "2026-10-30T16:24:03.868Z",
+     "2026-10-30T16:25:06.797Z",
+     "2026-10-30T16:26:29.567Z",
+     "2026-10-30T16:28:11.313Z"
+    ],
+    "final_ok": false
+   }
   },
   "lindenwood|Baseball": {
    "state": "off"
@@ -8992,7 +9061,25 @@
    "state": "off"
   },
   "morehead-state|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T16:28:10.552Z",
+   "last_detail": "live 24-18 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "morehead-state|Volleyball||2026-10-30|1",
+    "title": "Morehead State vs E Illinois",
+    "started_seen": "2026-10-30T16:19:16.557Z",
+    "live_passes": [
+     "2026-10-30T16:19:16.557Z",
+     "2026-10-30T16:20:17.859Z",
+     "2026-10-30T16:21:21.874Z",
+     "2026-10-30T16:22:42.386Z",
+     "2026-10-30T16:24:03.900Z",
+     "2026-10-30T16:25:27.067Z",
+     "2026-10-30T16:26:49.248Z",
+     "2026-10-30T16:28:10.552Z"
+    ],
+    "final_ok": false
+   }
   },
   "siue|Baseball": {
    "state": "off"
@@ -10345,7 +10432,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.238.0-school-sports-audit",
- "updated_at": "2026-10-30T09:49:06.108Z",
+ "version": "4.243.1-slogan",
+ "updated_at": "2026-10-30T16:28:11.320Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

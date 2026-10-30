@@ -17,6 +17,11 @@
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | seattle-u | Soccer | ❌ failing | Seattle U vs LMU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
+| dartmouth | Hockey | 🔴 on | live 0-1 · End of 2nd · official_schedule+live_scoreboard |
+| eastern-illinois | Volleyball | 🔴 on | live 18-24 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| mercyhurst | Field Hockey | 🔴 on | live 0-5 · 14:11 - 1st · official_schedule+live_scoreboard |
+| morehead-state | Volleyball | 🔴 on | live 24-18 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
+| sacred-heart | Field Hockey | 🔴 on | live 5-0 · 14:11 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -241,7 +246,6 @@
 | dartmouth | Baseball | ⚪ off (waiting) |  |
 | dartmouth | Basketball | ⚪ off (waiting) |  |
 | dartmouth | Football | ⚪ off (waiting) |  |
-| dartmouth | Hockey | ⚪ off (waiting) | final L, 1-2 (live phase not observed 2×; waits for the next game) |
 | dartmouth | Lacrosse | ⚪ off (waiting) |  |
 | dartmouth | Softball | ⚪ off (waiting) |  |
 | davidson | Baseball | ⚪ off (waiting) |  |
@@ -293,7 +297,6 @@
 | eastern-illinois | Basketball | ⚪ off (waiting) |  |
 | eastern-illinois | Football | ⚪ off (waiting) |  |
 | eastern-illinois | Softball | ⚪ off (waiting) |  |
-| eastern-illinois | Volleyball | ⚪ off (waiting) |  |
 | eastern-kentucky | Baseball | ⚪ off (waiting) |  |
 | eastern-kentucky | Basketball | ⚪ off (waiting) |  |
 | eastern-kentucky | Football | ⚪ off (waiting) |  |
@@ -573,7 +576,6 @@
 | mercer | Softball | ⚪ off (waiting) |  |
 | mercyhurst | Baseball | ⚪ off (waiting) |  |
 | mercyhurst | Basketball | ⚪ off (waiting) |  |
-| mercyhurst | Field Hockey | ⚪ off (waiting) |  |
 | mercyhurst | Football | ⚪ off (waiting) |  |
 | mercyhurst | Lacrosse | ⚪ off (waiting) |  |
 | mercyhurst | Soccer | ⚪ off (waiting) |  |
@@ -639,7 +641,6 @@
 | morehead-state | Basketball | ⚪ off (waiting) |  |
 | morehead-state | Football | ⚪ off (waiting) |  |
 | morehead-state | Softball | ⚪ off (waiting) |  |
-| morehead-state | Volleyball | ⚪ off (waiting) |  |
 | morgan-state | Basketball | ⚪ off (waiting) |  |
 | morgan-state | Football | ⚪ off (waiting) |  |
 | morgan-state | Softball | ⚪ off (waiting) |  |
@@ -874,7 +875,6 @@
 | sacramento-state | Softball | ⚪ off (waiting) |  |
 | sacred-heart | Baseball | ⚪ off (waiting) |  |
 | sacred-heart | Basketball | ⚪ off (waiting) |  |
-| sacred-heart | Field Hockey | ⚪ off (waiting) |  |
 | sacred-heart | Football | ⚪ off (waiting) |  |
 | sacred-heart | Hockey | ⚪ off (waiting) | final W, 4-3 (live phase not observed 2×; waits for the next game) |
 | sacred-heart | Lacrosse | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 705/1956; on 0; off 1234; failing 17.
+Done 705/1956; on 5; off 1229; failing 17.
