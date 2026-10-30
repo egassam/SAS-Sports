@@ -3716,3 +3716,14 @@ Request: "Work through the open items" (after the SWAC).
 **Verified:** `test:release` passed on `5a72f5a`; CI green; preview and production `verify` for the nine schools' XC (3/3, all expanded views), XC 18/20 and 26/21; Wamego's page checked by eye (state card with race times, filled meets).
 
 **Left unmatched or empty (from the sources):** Haskell Invite (MileSplit has Manhattan only at Salina that day), Wamego/Rock Creek "Great Life Golf Course meet" (the NCKL meet at Abilene CC Course), Rock Creek "Blue Jay Invitational" (Junction City's Bob Schmoekel Invitational), meets not on MileSplit Live (Big East League, Twin Valley League, Royal Valley, Sabetha, Horton...). Rim Rock class races have empty team tables (runners only). Middle schools not wired.
+
+
+## October 30, 2026 — Pro team pages read results and the whole schedule again (PR #464)
+
+User: "The pro sections isn't showing any results and only one upcoming."
+
+**Diagnosis:** the feeds were fine (production `/live/feed/grouped` for the Bills had 6 results and 11 upcoming games). On the page, Pro hides the Sport box (a team plays one sport), so `sportFilter.value` stayed empty. Since the Home change (#436), `homeMode()` treats a team page with no sport chosen as Home's view: live games, today's games and Coming up (each sport's next game). So every pro team showed one Coming up row.
+
+**Fix:** at the end of `populateSportFilter` (`public/index.html`), when not on Home and the level is Pro, an empty choice takes the team's sport. Test in `tests/pro-sports-module.mjs`. Version `4.236.0-pro-team-pages`.
+
+**Tests:** the edited page served locally against the production API (Playwright): Bills and Chiefs show Next Game, Recent Results and Upcoming Schedule; Royals show Recent Results (season over); NASCAR Cup races show results; Home is unchanged. `npm run test:release` on the final commit. Preview: `verify:preview --school=buffalo-bills,kansas-city-chiefs,kansas-city-royals,sporting-kansas-city,nascar-cup-series --sports=all --refreshes=3` all PASS (3/3 refreshes; expanded views 6/6, 6/6, 162/162, 32/32, 38/38; XC 18/20 and 26/21); the preview page was checked in a browser.
