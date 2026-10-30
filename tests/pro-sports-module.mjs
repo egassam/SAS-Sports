@@ -267,8 +267,9 @@ assert.ok(worker.includes('const feeds=new Map(await Promise.all(finals.map(asyn
 assert.ok(worker.includes('if(!Array.isArray(list)||!list.some(r=>r.series_id===config.seriesId))return failed('),'an empty race list is a failed read');
 // The page: the next game or race leads (All view, nothing live) and is not
 // repeated in the upcoming list; race finals lead with the winner.
-// The next-game spotlight is for football; races keep the cross-country lists.
-assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]?.pro&&g.upcoming[0].event_type!=='RACE'&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
+// Every team at every level gets the countdown (user, October 30).
+assert.ok(page.includes("const spotlightOf=g=>(g.upcoming[0]&&!g.live.length&&currentView==='all')?g.upcoming[0]:null;"));
+assert.ok(page.includes("label=e.event_type==='RACE'?'Next race':e.event_type==='MEET'?'Next meet':'Next game';"));
 assert.ok(page.includes("section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')"));
 assert.ok(!page.includes('raceFinalCard'),'race finals use the shared result card');
 

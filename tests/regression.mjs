@@ -421,6 +421,12 @@ contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Fa
 contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
 contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
+// My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
+// the favorites by level, with reorder and remove.
+contains(page,/<button class="ghost my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');
+contains(page,/data-my-home>⌂ Home · all my teams<\/button>/,'The My Teams list must lead with Home');
+contains(page,/const groups=LEVELS\.map\(level=>\[level,favorites\.filter/,'My Teams must group favorites by level');
+contains(page,/data-move-up=.*data-move-down=.*data-remove-favorite=/,'Each favorite must move up, move down and be removed from the list');
 contains(page,/★ Favorited/,'Selected homepage team must have a clear favorite label');
 contains(page,/>☆ Favorite<\/button>/,'Users must have a clear control for choosing a homepage team');
 contains(page,/added to your SAS Sports homepage favorites/,'Favorite selection must provide confirmation');
