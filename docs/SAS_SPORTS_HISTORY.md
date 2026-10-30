@@ -3755,3 +3755,14 @@ User: "The pro sections isn't showing any results and only one upcoming."
 **Verified:** `test:release` passed on `6e4ea1d`; CI green; preview gate for every changed sport (3/3, all expanded views), XC 18/20 and 26/21; Anthony's basketball page checked by eye (53 games, first Nov 2 3:30 PM at Shawnee Heights); production `verify:prod` for the same sports and baselines. `npm run audit:sports`: every calendar school reads clean.
 
 **Open:** Anthony track when published (tennis is one AMS/EMS team on Eisenhower's calendar); Manhattan HS spring sports when published (the audit will report them).
+
+
+## October 30, 2026 — Countdown box at every level; My Teams dropdown
+
+**Asked:** user screenshot of the Bills page: "Can we give every team for all levels this upcoming count down box? Also we need to find a better way to organize the favorites. Maybe house them in a drop down menu? Any suggestions for that?" Offered four layouts (a grouped dropdown; one scrolling chip row; favorites inside the School menu; recent chips plus "+N more"); the user: "Go with option 1, the My Teams dropdown".
+
+**Built (PR #469, merged `bc342a9`, `4.240.0-my-teams-dropdown`):** `spotlightOf` no longer requires `pro` or excludes races: every level's next game, meet ("Next meet") or race leads the sport when nothing is live in the All view; `countdownParts` still needs a published clock, so date-only events show the box without days/hours/minutes (Manhattan HS girls basketball, Hays Tournament Dec 3). `#favoriteTeams` is now one `.my-teams-toggle` (team on screen, count) and a `.my-teams-panel`: Home, then favorites grouped by `LEVELS` in team colors (`chipColors`), each with move up/down among the same level (swapping places in `sas-sports-favorites`, which is Home's order) and remove. It closes on an outside tap (`composedPath`) or Escape. The toggle, Home and row buttons are `.ghost`, so the team theme doesn't paint them. Tests: `pro-sports-module.mjs` (spotlight), `regression.mjs` (dropdown, Home row, level groups, move/remove).
+
+**Verified:** `test:release` passed on `a5aef79` and on the final `bd7f537`; CI green; `verify:preview` K-State Football 36/36, Anthony + Manhattan HS all sports 3/3, Bills 3/3, XC 18/20 and 26/21; preview and production checked in Playwright at 390 px (countdowns for Anthony 7th girls basketball, Manhattan football, K-State football/XC, Bills; dropdown grouping, reorder, outside close, open team, Home). Production `verify:prod` same sports with `--version=4.240.0-my-teams-dropdown`: all passed.
+
+**Open:** none from this change.
