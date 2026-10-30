@@ -332,8 +332,9 @@ import {arkansasPineBluffSchool,createArkansasPineBluffHandlers} from './schools
 import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie-view-am.mjs';
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
+import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.243.1-slogan';
+const VERSION='4.244.0-college-xc-timer-links';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6033,6 +6034,9 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   // that just say completed"): its story gives the result, else it is not
   // listed (K-State's rule).
   events=await completedFromStories(events,school);
+  // A meet whose timer's live results may not be read (PrimeTime Timing):
+  // its day card carries the race times and the timer's page.
+  if(sport==='Cross Country')applyCollegeXcTimerMeets(events,school);
   // The independent scoreboard: for the official schedule's games under way,
   // or for the last three days when the official page failed (a stale or
   // failed school page must not suppress a live football/basketball score).
