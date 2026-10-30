@@ -472,7 +472,7 @@ function raceLiveCard(e){
 // count down box?").
 function countdownParts(e){const zone=schoolTimeZoneOf(e.school_id),t=zone&&e.start_time&&hasPublishedClock(e)?zonedWallClockToInstant(e.start_time,zone):NaN;if(!Number.isFinite(t))return null;const ms=t-Date.now();if(ms<=0)return null;return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
 function spotlightCard(e){
-  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':e.event_type==='MEET'?'Next meet':'Next game';
+  const c=countdownParts(e),label=e.event_type==='RACE'?'Next race':/tennis|beach volleyball/i.test(e.sport||'')?'Next match':e.event_type==='MEET'||e.event_type==='DUAL'?'Next meet':'Next game';
   const count=c?`<div class="spotlight-count"><div><b>${c.d}</b><span>days</span></div><div><b>${c.h}</b><span>hours</span></div><div><b>${c.m}</b><span>min</span></div></div>`:'';
   return`<div class="spotlight" data-event-id="${esc(e.id)}"><div class="spotlight-label">${label}</div><div class="spotlight-title">${esc(e.title)}</div><div class="spotlight-meta">${esc(eventTime(e)||'')}${e.event_type==='RACE'&&e.opponent?` · ${esc(e.opponent)}`:''}${e.broadcast?` · TV: ${esc(e.broadcast)}`:''}</div>${count}</div>`;
 }
