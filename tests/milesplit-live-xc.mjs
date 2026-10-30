@@ -30,7 +30,9 @@ assert.equal(JSON.parse(firestoreQuery('entries',{'athlete.team.name':['A','B']}
 // characters or drop "High School".
 {
   const riley=day('2026-10-10').find(m=>m.id==='780908');
-  assert.deepEqual(milesplitTeamCode(riley,36605),{code:'BVLY',name:'Randolph Blue Valley High School'});
+  const bv=milesplitTeamCode(riley,36605);
+  assert.deepEqual([bv.code,bv.name],['BVLY','Randolph Blue Valley High School']);
+  assert.ok(bv.others.includes('Riley County High School')&&!bv.others.includes(bv.name));
   assert.equal(milesplitTeamCode(riley,19036),null);
   assert.deepEqual(milesplitTeamNames('Randolph Blue Valley High School'),['Randolph Blue Valley High School','Randolph Blue Valley High Scho','Randolph Blue Valley']);
 }
@@ -45,6 +47,8 @@ assert.equal(JSON.parse(firestoreQuery('entries',{'athlete.team.name':['A','B']}
   assert.deepEqual([milesplitMeetFor(oct3,21783,'Baldwin Invite')].map(m=>[m.id,m.meet,m.timer]),[['775245','Maple Leaf XC Classic','Ticker Timing']]);
   const jc=milesplitMeetFor(oct3,25986,'Junction City');
   assert.deepEqual([jc.id,jc.code,jc.name],['772766','FHCH','Flinthills Christian High School']);
+  // A short name another team of the meet shortens to is not used.
+  assert.deepEqual(milesplitTeamNames('Wamego Middle School',['Wamego High School']),['Wamego Middle School','Wamego MS']);
   assert.equal(milesplitMeetFor([{id:'1',name:'KSHSAA 6A Sub-State Manhattan',season:'CC',venue:{city:'Manhattan',name:'Manhattan - Warner Park'},teams:{MANH:{id:'21783'}}}],21783,'Regional Meet - WARNER PARK').id,'1');
   assert.equal(milesplitMeetFor([{id:'1',name:'KSHSAA 4A Sub-State Baldwin',season:'CC',venue:{city:'Baldwin City'},teams:{WAME:{id:'21804'}}}],21804,'KSHSAA Regionals').id,'1');
   assert.equal(milesplitMeetFor([{id:'1',name:'Riley County Invitational',season:'Outdoor',teams:{RILE:{id:'21857'}}}],21857,'Riley County Invitational'),null,'track meets are not cross country');
@@ -131,6 +135,40 @@ const card=(id,team,date,name,extra={})=>worker.milesplitLiveResultsFor(school(i
   assert.equal(bound.headline,'Girls 1st of 10');
   assert.equal(bound.note,'Results as posted by Midwest Timing & Results on MileSplit Live; team places as entered on Bound by the school.');
   replay();
+}
+
+// Middle schools (user, October 30: "Let's do the middle schools"): every
+// race the school ran, both grades; a race run by girls and boys together is
+// read as two by the runners' sex, the whole race's places, the team table
+// of that sex; the grade from the division ("• 2 Miles", "7th Grade"); an
+// entry that names nothing takes the day's only meet with the school.
+{
+  const mixed=[{number:'1',name:'7th Grade Two Mile ',gender:{sex:'C'}},{number:'2',name:'8th Grade Two Mile ',gender:{sex:'C'}},{number:'3',name:'High School Girls',gender:{sex:'F'}},{number:'9',name:'Girls Blue (Combined)',gender:{sex:'F'}}];
+  const ran=[{event:'1',athlete:{sex:'m'}},{event:'2',athlete:{sex:'f'}},{event:'2',athlete:{sex:'m'}},{event:'3',athlete:{sex:'f'}},{event:'9',athlete:{sex:'f'}}];
+  const {milesplitMiddleSchoolRaces}=await import('../src/high-school.mjs');
+  assert.deepEqual(milesplitMiddleSchoolRaces(mixed,ran).map(e=>[e.number,milesplitRaceName(e)]),[['1','Boys 7th Grade Two Mile'],['2','Girls 8th Grade Two Mile'],['2','Boys 8th Grade Two Mile']]);
+  assert.equal(milesplitRaceName({name:'• 2 Miles (3.22 Kilometers)',gender:{sex:'F'},division:{name:'7th Grade'}}),'Girls 7th Grade 2 Miles');
+  assert.deepEqual(milesplitTeamNames('Eisenhower Middle School'),['Eisenhower Middle School','Eisenhower','Eisenhower MS']);
+  assert.equal(milesplitMeetFor(day('2026-09-18'),40690,'Home event').id,'772781');
+  assert.equal(milesplitMeetFor(day('2026-09-18'),40690,'Clay Center'),null);
+  const wamego=await card('wamego-ms-ks',39314,'2026-10-15','MS XC',{middle:true});
+  assert.equal(wamego.headline,'8th Girls 3rd of 4 · 8th Boys 2nd of 5');
+  assert.deepEqual(wamego.rows.slice(0,2).map(line),['7th Girls | Ashlynn Hermesch | 36th of 55 · 16:02.64','7th Boys | Eli Jager | 2nd of 55 · 12:30.42']);
+  assert.deepEqual(wamego.rows.slice(8,10).map(line),['8th Girls | Wamego team | 3rd of 4 · 41 pts','8th Girls | Myla McMurray | 18th of 62 · 13:07.48']);
+  const anthony=await card('anthony-ms-ks',40691,'2026-09-22','McPherson- Wall Park',{middle:true});
+  assert.equal(anthony.headline,'7th Girls 1st of 3 · 7th Boys 1st of 4 · 8th Boys 1st of 2');
+  const eisenhower=await card('eisenhower-ms-ks',40690,'2026-09-18','Home event',{middle:true});
+  assert.equal(eisenhower.headline,'21 runners');
+  assert.equal(eisenhower.rows[0].group,'7th Girls');
+  // A high school reads only its varsity races at the same meet.
+  assert.equal(await card('wamego-ms-ks',39314,'2026-10-15','MS XC'),null);
+  // Randolph's middle schoolers run the grade races under the high school's
+  // code: the middle school takes them (`also`), the high school does not.
+  const bvms=await card('blue-valley-randolph-ms-ks',41984,'2026-09-03','Abilene Meet at Great Life Golf & Fitness',{middle:true,also:[36605]});
+  assert.deepEqual(bvms.rows.map(r=>r.group),['7th Girls','7th Boys','7th Boys','8th Girls','8th Boys']);
+  const bvhs=await card('blue-valley-randolph-ks',36605,'2026-09-03','Abilene Meet at Great Life Golf & Fitness');
+  assert.deepEqual(bvhs.rows.map(r=>r.group),['Girls','Girls','Boys','Boys','Boys']);
+  assert.equal(await card('blue-valley-randolph-ms-ks',41984,'2026-09-03','Abilene Meet at Great Life Golf & Fitness',{middle:true}),null);
 }
 
 // Manhattan's state meet (the 2025 documents as the 2026 meet), in the feed.
