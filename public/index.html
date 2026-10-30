@@ -534,6 +534,10 @@ function populateSportFilter(groups=[]){
   const ordered=[...new Set(sponsored)].sort((a,b)=>Number(active.has(b))-Number(active.has(a))||priority(a)-priority(b)||a.localeCompare(b));
   sportFilter.innerHTML=`<option value="">All in-season sports · live and today</option>`+ordered.map(s=>`<option value="${esc(s)}">${active.has(s)?'● In season · ':''}${esc(s)}${available.has(s)?' · loaded':''}</option>`).join('');
   if(ordered.includes(selected))sportFilter.value=selected;
+  // A pro team or series plays one sport and its Sport box is hidden: that
+  // sport is always chosen, so its page reads results and the whole schedule
+  // instead of only its next game.
+  if(!homeView&&currentLevel==='pro'&&!sportFilter.value&&ordered.length)sportFilter.value=ordered[0];
 }
 function visibleGroup(g,q){
   const sportHit=(g.sport+' '+g.school).toLowerCase().includes(q);
