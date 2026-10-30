@@ -1915,10 +1915,25 @@
    "verified_detail": "final L, 7-17"
   },
   "wisconsin|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-17T21:44:24.838Z",
-   "last_detail": "final W, 12-1 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-30T21:04:06.009Z",
+   "last_detail": "live 2-1 · 0:14 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "wisconsin|Hockey||2026-10-30|1",
+    "title": "Wisconsin at St. Cloud State",
+    "started_seen": "2026-10-30T20:55:53.140Z",
+    "live_passes": [
+     "2026-10-30T20:55:53.140Z",
+     "2026-10-30T20:56:55.192Z",
+     "2026-10-30T20:58:38.137Z",
+     "2026-10-30T20:59:59.858Z",
+     "2026-10-30T21:01:01.599Z",
+     "2026-10-30T21:02:03.319Z",
+     "2026-10-30T21:03:04.657Z",
+     "2026-10-30T21:04:06.009Z"
+    ],
+    "final_ok": false
+   }
   },
   "wisconsin|Soccer": {
    "state": "done",
@@ -5428,7 +5443,25 @@
    "state": "off"
   },
   "liberty|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T21:04:05.953Z",
+   "last_detail": "live 5-0 · 88' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "liberty|Soccer|Men's|2026-10-30|1",
+    "title": "Men's · Liberty vs VMI",
+    "started_seen": "2026-10-30T20:55:53.761Z",
+    "live_passes": [
+     "2026-10-30T20:55:53.761Z",
+     "2026-10-30T20:56:55.153Z",
+     "2026-10-30T20:58:16.575Z",
+     "2026-10-30T20:59:40.006Z",
+     "2026-10-30T21:01:00.907Z",
+     "2026-10-30T21:02:03.324Z",
+     "2026-10-30T21:03:04.703Z",
+     "2026-10-30T21:04:05.953Z"
+    ],
+    "final_ok": false
+   }
   },
   "liberty|Softball": {
    "state": "off"
@@ -6109,7 +6142,13 @@
    "state": "off"
   },
   "saint-louis|Field Hockey": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-10-30T21:03:04.611Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-10-30T21:03:04.611Z",
+   "verified_game": "Saint Louis vs BALL STATE",
+   "verified_detail": "final L, 0-1"
   },
   "saint-louis|Soccer": {
    "state": "done",
@@ -7714,7 +7753,25 @@
    "state": "off"
   },
   "milwaukee|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-10-30T21:04:06.005Z",
+   "last_detail": "live 2-1 · 85' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "milwaukee|Soccer|Men's|2026-10-30|1",
+    "title": "Men's · Milwaukee at Detroit Mercy",
+    "started_seen": "2026-10-30T20:55:52.817Z",
+    "live_passes": [
+     "2026-10-30T20:55:52.817Z",
+     "2026-10-30T20:56:55.148Z",
+     "2026-10-30T20:58:16.643Z",
+     "2026-10-30T20:59:40.081Z",
+     "2026-10-30T21:01:01.365Z",
+     "2026-10-30T21:02:03.268Z",
+     "2026-10-30T21:03:04.712Z",
+     "2026-10-30T21:04:06.005Z"
+    ],
+    "final_ok": false
+   }
   },
   "milwaukee|Volleyball": {
    "state": "off"
@@ -7966,10 +8023,25 @@
    "state": "off"
   },
   "cornell|Hockey": {
-   "state": "off",
-   "last_check": "2026-10-24T23:24:10.720Z",
-   "last_detail": "final W, 5-3 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-10-30T21:04:05.811Z",
+   "last_detail": "live 4-4 · End of 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "cornell|Hockey||2026-10-30|1",
+    "title": "Cornell vs Union (NY)",
+    "started_seen": "2026-10-30T20:55:53.372Z",
+    "live_passes": [
+     "2026-10-30T20:55:53.372Z",
+     "2026-10-30T20:57:15.604Z",
+     "2026-10-30T20:58:36.922Z",
+     "2026-10-30T20:59:39.482Z",
+     "2026-10-30T21:01:01.028Z",
+     "2026-10-30T21:02:03.795Z",
+     "2026-10-30T21:03:04.645Z",
+     "2026-10-30T21:04:05.811Z"
+    ],
+    "final_ok": false
+   }
   },
   "cornell|Lacrosse": {
    "state": "off"
@@ -8008,25 +8080,13 @@
    "state": "off"
   },
   "dartmouth|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-30T16:27:52.552Z",
-   "last_detail": "live 0-1 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "dartmouth|Hockey||2026-10-30|1",
-    "title": "Dartmouth vs St. Lawrence",
-    "started_seen": "2026-10-30T16:19:15.122Z",
-    "live_passes": [
-     "2026-10-30T16:19:15.122Z",
-     "2026-10-30T16:20:18.045Z",
-     "2026-10-30T16:21:21.921Z",
-     "2026-10-30T16:22:41.851Z",
-     "2026-10-30T16:24:04.311Z",
-     "2026-10-30T16:25:06.416Z",
-     "2026-10-30T16:26:28.621Z",
-     "2026-10-30T16:27:52.552Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T20:55:54.207Z",
+   "last_detail": "final L, 0-2",
+   "game": null,
+   "verified_at": "2026-10-30T20:55:54.207Z",
+   "verified_game": "Dartmouth vs St. Lawrence",
+   "verified_detail": "final L, 0-2"
   },
   "dartmouth|Lacrosse": {
    "state": "off"
@@ -8458,25 +8518,13 @@
    "state": "off"
   },
   "sacred-heart|Field Hockey": {
-   "state": "on",
-   "last_check": "2026-10-30T16:27:51.104Z",
-   "last_detail": "live 5-0 · 14:11 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "sacred-heart|Field Hockey||2026-10-30|1",
-    "title": "Sacred Heart vs Mercyhurst",
-    "started_seen": "2026-10-30T16:19:15.831Z",
-    "live_passes": [
-     "2026-10-30T16:19:15.831Z",
-     "2026-10-30T16:20:18.964Z",
-     "2026-10-30T16:21:21.337Z",
-     "2026-10-30T16:23:01.972Z",
-     "2026-10-30T16:24:04.691Z",
-     "2026-10-30T16:25:07.365Z",
-     "2026-10-30T16:26:28.881Z",
-     "2026-10-30T16:27:51.104Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T20:55:52.341Z",
+   "last_detail": "final W, 15-0",
+   "game": null,
+   "verified_at": "2026-10-30T20:55:52.341Z",
+   "verified_game": "Sacred Heart vs Mercyhurst",
+   "verified_detail": "final W, 15-0"
   },
   "sacred-heart|Football": {
    "state": "off"
@@ -8794,25 +8842,13 @@
    "state": "off"
   },
   "mercyhurst|Field Hockey": {
-   "state": "on",
-   "last_check": "2026-10-30T16:27:50.888Z",
-   "last_detail": "live 0-5 · 14:11 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "mercyhurst|Field Hockey||2026-10-30|1",
-    "title": "Mercyhurst at Sacred Heart",
-    "started_seen": "2026-10-30T16:19:14.479Z",
-    "live_passes": [
-     "2026-10-30T16:19:14.479Z",
-     "2026-10-30T16:20:19.019Z",
-     "2026-10-30T16:21:20.343Z",
-     "2026-10-30T16:22:42.254Z",
-     "2026-10-30T16:24:03.914Z",
-     "2026-10-30T16:25:06.577Z",
-     "2026-10-30T16:26:28.738Z",
-     "2026-10-30T16:27:50.888Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T20:55:53.069Z",
+   "last_detail": "final L, 0-15",
+   "game": null,
+   "verified_at": "2026-10-30T20:55:53.069Z",
+   "verified_game": "Mercyhurst at Sacred Heart",
+   "verified_detail": "final L, 0-15"
   },
   "mercyhurst|Football": {
    "state": "off"
@@ -8986,25 +9022,13 @@
    "state": "off"
   },
   "eastern-illinois|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-30T16:28:11.313Z",
-   "last_detail": "live 18-24 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "eastern-illinois|Volleyball||2026-10-30|1",
-    "title": "Eastern Illinois at Morehead St",
-    "started_seen": "2026-10-30T16:19:14.304Z",
-    "live_passes": [
-     "2026-10-30T16:19:14.304Z",
-     "2026-10-30T16:20:18.344Z",
-     "2026-10-30T16:21:40.662Z",
-     "2026-10-30T16:23:02.697Z",
-     "2026-10-30T16:24:03.868Z",
-     "2026-10-30T16:25:06.797Z",
-     "2026-10-30T16:26:29.567Z",
-     "2026-10-30T16:28:11.313Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T20:55:52.851Z",
+   "last_detail": "final W, 3-2",
+   "game": null,
+   "verified_at": "2026-10-30T20:55:52.851Z",
+   "verified_game": "Eastern Illinois at Morehead St",
+   "verified_detail": "final W, 3-2"
   },
   "lindenwood|Baseball": {
    "state": "off"
@@ -9061,25 +9085,13 @@
    "state": "off"
   },
   "morehead-state|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-30T16:28:10.552Z",
-   "last_detail": "live 24-18 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "morehead-state|Volleyball||2026-10-30|1",
-    "title": "Morehead State vs E Illinois",
-    "started_seen": "2026-10-30T16:19:16.557Z",
-    "live_passes": [
-     "2026-10-30T16:19:16.557Z",
-     "2026-10-30T16:20:17.859Z",
-     "2026-10-30T16:21:21.874Z",
-     "2026-10-30T16:22:42.386Z",
-     "2026-10-30T16:24:03.900Z",
-     "2026-10-30T16:25:27.067Z",
-     "2026-10-30T16:26:49.248Z",
-     "2026-10-30T16:28:10.552Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T20:55:52.940Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-30T20:55:52.940Z",
+   "verified_game": "Morehead State vs E Illinois",
+   "verified_detail": "final L, 2-3"
   },
   "siue|Baseball": {
    "state": "off"
@@ -10432,7 +10444,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.243.1-slogan",
- "updated_at": "2026-10-30T16:28:11.320Z",
+ "version": "4.244.0-college-xc-timer-links",
+ "updated_at": "2026-10-30T21:04:06.014Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
