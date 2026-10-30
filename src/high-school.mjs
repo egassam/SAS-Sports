@@ -49,8 +49,12 @@ export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null}){
     // dates and times: they are read in the school's zone.
     const local=!e.all_day&&/^utc$/i.test(e.timezone||'')&&timeZone&&e.start_datetime?localParts(e.start_datetime,timeZone):null;
     const date=local?.date||String(e.start_date||'').slice(0,10);if(!/^\d{4}-\d\d-\d\d$/.test(date))continue;
-    // Midnight is the calendar's "no time set".
-    const clock=local?.time||String(e.start_time||'').slice(0,5),time=e.all_day||!clock||clock==='00:00'?null:clock;
+    // Midnight is the calendar's "no time set". No school game starts
+    // between 1 and 7 in the morning: such a time is the afternoon's typed
+    // without PM (Anthony's "7GBB@ SHMS" at "03:30", October 30).
+    let clock=local?.time||String(e.start_time||'').slice(0,5);
+    if(/^0[1-6]:\d\d$/.test(clock))clock=`${String(Number(clock.slice(0,2))+12)}${clock.slice(2)}`;
+    const time=e.all_day||!clock||clock==='00:00'?null:clock;
     const endDate=String(e.end_date||'').slice(0,10);
     out.push({date,time,end_date:endDate&&endDate>date?endDate:null,name:parsed.name,site:parsed.site,address:clean(e.address)||null,calendar_id:e.id||null});
   }

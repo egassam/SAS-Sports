@@ -58,4 +58,11 @@ assert.deepEqual(parseFreeTitle('BVL Basketball Tournament @ Hanover [Manhattan 
 for(const [module,titles] of [[anthonyMsSchool,['7GBB@ SHMS','BWR Dual vs EMS','7th VB @Emporia']],[manhattanKsSchool,['MHS Varsity Girls Basketball - Hays - HOME','MHS Varsity Girls Wrestling - Bonner Springs - AWAY','MHS Boys Swimming - Lansing Relay - AWAY','MHS Bowling - Hayden Invite - AWAY']],[eisenhowerMsSchool,['Tennis @ Emporia']]])
   assert.deepEqual(calendarSportsAudit(cal(titles),module,sponsored[module.id]).unlisted,[],module.id);
 
+// A game typed at "03:30" is 3:30 PM.
+{
+  const {calendarEvents}=await import('../src/high-school.mjs');
+  const games=calendarEvents({data:{events:[{title:'7GBB@ SHMS',start_date:'2026-11-02',start_time:'03:30:00'},{title:'8GBB v SHMS',start_date:'2026-11-02',start_time:'16:15:00'}]}},{team:/Girls Basketball/,parse:anthonyMsSchool.calendar.parse});
+  assert.deepEqual(games.map(g=>g.time),['15:30','16:15']);
+}
+
 console.log('school-sports-audit: ok');
