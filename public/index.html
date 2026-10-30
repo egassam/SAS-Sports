@@ -211,6 +211,8 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .home-view .finder,.home-view #favorite,.home-view #fieldLive{display:none!important}.home-view .action-row{grid-template-columns:1fr auto}
 .favorite-teams .favorite-team{background:color-mix(in srgb,var(--chip,#29435f) 80%,#0b1622);color:var(--chip-ink,#eef3f8);border:1.5px solid color-mix(in srgb,var(--chip-edge,#29435f) 70%,transparent);box-shadow:none;font-weight:800}
 .favorite-teams .favorite-team.active{background:var(--chip,#29435f);border-color:var(--chip-edge,#29435f);box-shadow:0 0 0 2px color-mix(in srgb,#fff 60%,transparent)}
+/* My Teams dropdown (user, October 30) */
+.favorite-teams{position:relative;display:block}.my-teams-toggle{display:flex;align-items:center;gap:8px;width:100%;max-width:420px;padding:9px 12px;background:#0a192a;color:#dce8f5;border:1px solid #29435f;font-size:13px;text-align:left}.my-teams-toggle>span:first-child{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}.my-teams-toggle b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.my-teams-count{background:#16304a;border-radius:999px;padding:1px 8px;font-size:11px}.my-teams-panel{position:absolute;z-index:15;left:0;top:calc(100% + 6px);width:min(420px,100%);max-height:60vh;overflow:auto;padding:8px;background:#0b192a;border:1px solid #29435f;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.6)}.my-teams-panel[hidden]{display:none}.my-teams-home{width:100%;text-align:left;background:#0a192a;color:#dce8f5;border:1px solid #29435f;padding:9px 11px;font-size:13px}.my-teams-home.active{border-color:var(--accent)}.my-teams-level{margin:10px 4px 4px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.my-team-row{display:flex;gap:5px;align-items:center;margin:4px 0}.my-team-row .favorite-team{flex:1;min-width:0;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:9px 11px;border-radius:12px;font-size:13px}.my-team-act{flex:none;width:34px;height:34px;padding:0;background:#0a192a;color:#cfe0f2;border:1px solid #29435f;border-radius:10px;font-size:13px}.my-team-act:disabled{opacity:.3;cursor:default}
 .show-all-live{display:block;width:100%;margin:10px 0 2px}
 .home-tag{color:var(--muted);font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;margin:10px 2px 4px}.home-tag b{color:#f8fafc}
 /* Home's live games: small boards, three across (two on a phone), sports
@@ -754,6 +756,10 @@ function openTeam(id,sport=''){if(!id)return;homeView=false;applyHomeView();acti
 // on a light chip.
 function knownColors(theme){const hex=v=>/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i.test(v||'')?v:null,t=theme||{},primary=hex(t.primary),secondary=hex(t.secondary);if(!primary)return null;const rgb=v=>{const h=v.length===4?v.slice(1).replace(/./g,c=>c+c):v.slice(1);return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16)/255)},light=v=>{const c=rgb(v);return(Math.max(...c)+Math.min(...c))/2>=.12},vivid=v=>{if(!v)return false;const c=rgb(v),hi=Math.max(...c),lo=Math.min(...c),l=(hi+lo)/2;return l>=.12&&l<=.9&&(hi-lo)/(1-Math.abs(2*l-1)||1)>=.3},main=vivid(primary)?primary:vivid(secondary)?secondary:light(primary)||!secondary?primary:secondary,edge=main===primary?secondary||primary:primary,lum=rgb(main).map(c=>c<=.03928?c/12.92:((c+.055)/1.055)**2.4).reduce((a,c,i)=>a+c*[.2126,.7152,.0722][i],0);return{main,edge,ink:lum>.3?'#10161f':'#fff'}}
 function chipColors(item){const c=knownColors(item?.theme);return c?`--chip:${c.main};--chip-edge:${c.edge};--chip-ink:${c.ink}`:''}
+let myTeamsOpen=false;
+// The My Teams list closes on a tap outside it or Escape.
+document.addEventListener('click',e=>{if(myTeamsOpen&&!e.composedPath().includes(favoriteTeams)){myTeamsOpen=false;updateFavorite()}});
+document.addEventListener('keydown',e=>{if(myTeamsOpen&&e.key==='Escape'){myTeamsOpen=false;updateFavorite();favoriteTeams.querySelector('.my-teams-toggle')?.focus()}});
 function updateFavorite(){
   const favorites=favoriteSchoolIds(); const on=favorites.includes(school.value);
   applyCurrentSchoolTheme();
@@ -762,8 +768,27 @@ function updateFavorite(){
   favorite.setAttribute('aria-pressed',String(on));
   favorite.title=on?`Remove ${team} from favorite teams`:`Add ${team} to favorite teams`;
   favorite.setAttribute('aria-label',favorite.title);
-  favoriteTeams.innerHTML=favorites.length?`<span class="favorite-teams-label">My Teams</span>${favorites.map(id=>{const item=catalogEntry(id);return item?`<button class="favorite-team ${id===school.value&&!homeView?'active':''}" style="${chipColors(item)}" data-favorite-school="${esc(id)}">★ ${esc(item.short_name||item.name)}</button>`:''}).join('')}`:'';
-  favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;if(id===school.value&&!homeView)return;openTeam(id)}));
+  // My Teams is one dropdown (user, October 30: "find a better way to
+  // organize the favorites ... house them in a drop down menu", then "Go with
+  // option 1"): the button names the team on screen and the count; the list
+  // holds Home, then the favorites by level, each in its own colors, with
+  // move up/down within its level and remove.
+  if(!favorites.length){favoriteTeams.innerHTML='';return}
+  const current=!homeView&&favorites.includes(school.value)?catalogEntry(school.value):null;
+  const levelOfId=id=>schoolLevel(catalogEntry(id));
+  const groups=LEVELS.map(level=>[level,favorites.filter(id=>catalogEntry(id)&&levelOfId(id)===level.id)]).filter(([,ids])=>ids.length);
+  const row=(id,ids,k)=>{const item=catalogEntry(id),name=esc(item.short_name||item.name);return`<div class="my-team-row"><button class="favorite-team ${id===school.value&&!homeView?'active':''}" style="${chipColors(item)}" data-favorite-school="${esc(id)}">★ ${name}</button><button class="my-team-act" data-move-up="${esc(id)}" aria-label="Move ${name} up" ${k?'':'disabled'}>↑</button><button class="my-team-act" data-move-down="${esc(id)}" aria-label="Move ${name} down" ${k<ids.length-1?'':'disabled'}>↓</button><button class="my-team-act" data-remove-favorite="${esc(id)}" aria-label="Remove ${name} from My Teams">✕</button></div>`};
+  favoriteTeams.innerHTML=`<button class="my-teams-toggle" aria-expanded="${myTeamsOpen}" aria-controls="myTeamsPanel"><span>★ My Teams</span><b>${current?esc(current.short_name||current.name):homeView?'Home':'Choose a team'}</b><span class="my-teams-count">${favorites.length}</span><span aria-hidden="true">▾</span></button><div class="my-teams-panel" id="myTeamsPanel" ${myTeamsOpen?'':'hidden'}><button class="my-teams-home ${homeView?'active':''}" data-my-home>⌂ Home · all my teams</button>${groups.map(([level,ids])=>`<div class="my-teams-level">${esc(level.label)}</div>${ids.map((id,k)=>row(id,ids,k)).join('')}`).join('')}</div>`;
+  const close=()=>{myTeamsOpen=false};
+  favoriteTeams.querySelector('.my-teams-toggle').addEventListener('click',()=>{myTeamsOpen=!myTeamsOpen;updateFavorite()});
+  favoriteTeams.querySelector('[data-my-home]').addEventListener('click',()=>{close();updateFavorite();$('#levelSwitch [data-home]')?.click()});
+  favoriteTeams.querySelectorAll('[data-favorite-school]').forEach(button=>button.addEventListener('click',()=>{const id=button.dataset.favoriteSchool;close();updateFavorite();if(id===school.value&&!homeView)return;openTeam(id)}));
+  // Moving swaps a team with its neighbor of the same level; Home reads the
+  // favorites in this order.
+  const move=(id,step)=>{const list=favoriteSchoolIds(),same=list.filter(x=>levelOfId(x)===levelOfId(id)),k=same.indexOf(id),other=same[k+step];if(!other)return;const a=list.indexOf(id),b=list.indexOf(other);[list[a],list[b]]=[list[b],list[a]];saveFavoriteSchoolIds(list);updateFavorite()};
+  favoriteTeams.querySelectorAll('[data-move-up]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.moveUp,-1)));
+  favoriteTeams.querySelectorAll('[data-move-down]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.moveDown,1)));
+  favoriteTeams.querySelectorAll('[data-remove-favorite]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.removeFavorite;saveFavoriteSchoolIds(favoriteSchoolIds().filter(x=>x!==id));updateFavorite();status.textContent=`${catalogEntry(id)?.name||'Team'} removed from your favorite teams.`}));
 }
 // Levels of play. College is live; high school and professional teams are
 // added later, each with its own grouping (state, league) and team wording.
