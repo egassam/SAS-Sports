@@ -420,6 +420,7 @@ contains(page,/function favoriteSchoolIds\(\)/,'Multiple favorite teams must be 
 contains(page,/JSON\.parse\(localStorage\.getItem\('sas-sports-favorites'\)/,'Favorite teams must persist on the device');
 contains(page,/const legacy=localStorage\.getItem\('sas-sports-favorite'\)/,'The original single favorite must migrate safely');
 contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the homepage startup selection');
+contains(page,/Start time not posted yet · the countdown starts when it is/,'A date-only next game must say its start time is not posted');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
 contains(page,/everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
