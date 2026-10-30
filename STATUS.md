@@ -17,9 +17,6 @@
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | seattle-u | Soccer | ❌ failing | Seattle U vs LMU: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| idaho-state | Soccer | 🔴 on | live 2-1 · 81' · official_schedule+live_scoreboard |
-| northern-arizona | Volleyball | 🔴 on | live 20-11 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard |
-| weber-state | Soccer | 🔴 on | live 2-1 · 81' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1478,6 +1475,7 @@
 | houston | Soccer | ✅ off (passed) | Houston at Cincinnati · 2026-10-17T01:39:26.021Z |
 | houston | Volleyball | ✅ off (passed) | Houston vs UCF · 2026-10-17T06:14:54.291Z |
 | houston-christian | Soccer | ✅ off (passed) | Men's · Houston Christian at Incarnate Word · 2026-10-26T01:45:51.800Z |
+| idaho-state | Soccer | ✅ off (passed) | Idaho State vs N Arizona · 2026-10-30T09:49:03.427Z |
 | idaho-state | Volleyball | ✅ off (passed) | Idaho State vs Montana · 2026-10-23T07:27:21.904Z |
 | illinois | Football | ✅ off (passed) | Illinois at Michigan St · 2026-10-11T00:49:40.789Z |
 | illinois | Soccer | ✅ off (passed) | Illinois vs Northwestern · 2026-10-23T02:02:21.992Z |
@@ -1662,6 +1660,7 @@
 | north-texas | Soccer | ✅ off (passed) | North Texas at East Carolina · 2026-10-23T02:02:22.807Z |
 | north-texas | Volleyball | ✅ off (passed) | North Texas vs Rice · 2026-10-24T01:59:35.397Z |
 | northern-arizona | Soccer | ✅ off (passed) | Northern Arizona vs Montana · 2026-10-23T07:27:21.895Z |
+| northern-arizona | Volleyball | ✅ off (passed) | Northern Arizona vs Idaho · 2026-10-30T09:49:03.784Z |
 | northern-colorado | Soccer | ✅ off (passed) | Northern Colorado vs Montana · 2026-10-25T21:48:16.206Z |
 | northern-colorado | Volleyball | ✅ off (passed) | Northern Colorado at Portland St · 2026-10-25T06:46:00.271Z |
 | northern-illinois | Football | ✅ off (passed) | NIU vs Hawai'i · 2026-10-24T23:24:10.972Z |
@@ -1930,6 +1929,7 @@
 | washington-state | Football | ✅ off (passed) | Washington State vs Boise St · 2026-10-25T01:30:05.545Z |
 | washington-state | Soccer | ✅ off (passed) | Washington State vs San Diego St · 2026-10-23T02:02:21.290Z |
 | washington-state | Volleyball | ✅ off (passed) | Washington State vs Texas St · 2026-10-24T21:15:40.459Z |
+| weber-state | Soccer | ✅ off (passed) | Weber State vs N Colorado · 2026-10-30T09:49:06.104Z |
 | weber-state | Volleyball | ✅ off (passed) | Weber State vs Montana St · 2026-10-23T07:27:21.279Z |
 | west-florida | Soccer | ✅ off (passed) | Men's · West Florida vs Jacksonville · 2026-10-24T23:24:10.487Z |
 | west-florida | Volleyball | ✅ off (passed) | West Florida at North Florida · 2026-10-24T01:59:33.723Z |
@@ -1957,4 +1957,4 @@
 | xavier | Volleyball | ✅ off (passed) | Xavier at DePaul · 2026-10-25T01:30:06.755Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 702/1956; on 3; off 1234; failing 17.
+Done 705/1956; on 0; off 1234; failing 17.

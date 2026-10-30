@@ -3241,24 +3241,13 @@
    "state": "off"
   },
   "idaho-state|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-30T02:58:56.116Z",
-   "last_detail": "live 2-1 · 81' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "idaho-state|Soccer||2026-10-29|1",
-    "title": "Idaho State vs N Arizona",
-    "started_seen": "2026-10-30T02:50:56.047Z",
-    "live_passes": [
-     "2026-10-30T02:50:56.047Z",
-     "2026-10-30T02:52:06.381Z",
-     "2026-10-30T02:53:28.426Z",
-     "2026-10-30T02:54:50.298Z",
-     "2026-10-30T02:56:12.082Z",
-     "2026-10-30T02:57:33.730Z",
-     "2026-10-30T02:58:56.116Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T09:49:03.427Z",
+   "last_detail": "final T, 2-2",
+   "game": null,
+   "verified_at": "2026-10-30T09:49:03.427Z",
+   "verified_game": "Idaho State vs N Arizona",
+   "verified_detail": "final T, 2-2"
   },
   "idaho-state|Softball": {
    "state": "off"
@@ -3312,24 +3301,13 @@
    "verified_detail": "final T, 1-1"
   },
   "northern-arizona|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-30T02:59:16.573Z",
-   "last_detail": "live 20-11 · 3rd Set · Sets 2-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "northern-arizona|Volleyball||2026-10-29|1",
-    "title": "Northern Arizona vs Idaho",
-    "started_seen": "2026-10-30T02:50:56.540Z",
-    "live_passes": [
-     "2026-10-30T02:50:56.540Z",
-     "2026-10-30T02:52:26.771Z",
-     "2026-10-30T02:53:48.869Z",
-     "2026-10-30T02:55:10.703Z",
-     "2026-10-30T02:56:32.468Z",
-     "2026-10-30T02:57:54.532Z",
-     "2026-10-30T02:59:16.573Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T09:49:03.784Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-30T09:49:03.784Z",
+   "verified_game": "Northern Arizona vs Idaho",
+   "verified_detail": "final W, 3-0"
   },
   "northern-colorado|Baseball": {
    "state": "off"
@@ -3395,24 +3373,13 @@
    "state": "off"
   },
   "weber-state|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-30T02:58:56.104Z",
-   "last_detail": "live 2-1 · 81' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "weber-state|Soccer||2026-10-29|1",
-    "title": "Weber State vs N Colorado",
-    "started_seen": "2026-10-30T02:50:59.407Z",
-    "live_passes": [
-     "2026-10-30T02:50:59.407Z",
-     "2026-10-30T02:52:06.424Z",
-     "2026-10-30T02:53:28.543Z",
-     "2026-10-30T02:54:50.294Z",
-     "2026-10-30T02:56:12.098Z",
-     "2026-10-30T02:57:33.717Z",
-     "2026-10-30T02:58:56.104Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-30T09:49:06.104Z",
+   "last_detail": "final W, 2-1",
+   "game": null,
+   "verified_at": "2026-10-30T09:49:06.104Z",
+   "verified_game": "Weber State vs N Colorado",
+   "verified_detail": "final W, 2-1"
   },
   "weber-state|Softball": {
    "state": "off"
@@ -10378,7 +10345,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.236.0-milesplit-ms-xc",
- "updated_at": "2026-10-30T02:59:16.578Z",
+ "version": "4.238.0-school-sports-audit",
+ "updated_at": "2026-10-30T09:49:06.108Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
