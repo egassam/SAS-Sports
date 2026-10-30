@@ -423,6 +423,7 @@ contains(page,/favoriteSchoolIds\(\)\[0\]/,'The first favorite team must be the 
 contains(page,/Start time not posted yet · the countdown starts when it is/,'A date-only next game must say its start time is not posted');
 contains(page,/setInterval\(\(\)=>\{for\(const box of document\.querySelectorAll\('\[data-countdown-at\]'\)\)/,'The countdown must tick every second');
 contains(page,/<b data-unit="s">\$\{c\.s\}<\/b><span>sec<\/span>/,'The countdown must show seconds');
+contains(page,/\.my-teams-toggle\{[^}]*border:2px solid var\(--warn,#ffd27a\)/,'The My Teams menu must stand out in the favorite gold (user, October 30)');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
 contains(page,/everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
