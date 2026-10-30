@@ -111,6 +111,9 @@ export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:u
     Football:[{calendar:/^HS Football$/,maxpreps:'football'}],
     Volleyball:[{calendar:/^HS Volleyball$/,maxpreps:'volleyball',matches:true}],
     Basketball:[{calendar:/^HS Basketball$/,maxpreps:'basketball/girls',label:'Girls',matches:true},{calendar:/^HS Basketball$/,maxpreps:'basketball',label:'Boys',matches:true}],
+    // Spring (on the calendar by October 30).
+    Baseball:[{calendar:/^HS Baseball$/,maxpreps:'baseball'}],
+    Softball:[{calendar:/^HS Softball$/,maxpreps:'softball'}],
     'Cross Country':[{calendar:/^HS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',races:/\bvarsity\b/i,exclude:/junior varsity/i},milesplit:{team:36605}}],
     'Track & Field':[{calendar:/^HS Track & Field$/,meet:true,meetPro:{team:'Blue Valley',track:true,exclude:HS_TRACK_EXCLUDE}}]
   },

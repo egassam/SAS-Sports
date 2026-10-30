@@ -28,3 +28,8 @@ jobs:
         with:
           node-version: 22
       - run: node tests/live-health.mjs ${{ inputs.schools && format('--schools={0}', inputs.schools) || '' }}
+      # Middle and high school calendars against the sports list (user,
+      # October 30: Anthony's girls basketball was missing): a season a
+      # school publishes that the app does not list fails this run.
+      - if: always()
+        run: node scripts/audit-school-sports.mjs

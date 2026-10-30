@@ -170,7 +170,7 @@ export function tennisTeamStanding(teamPoints,school){
 // "Cross Country @ HOME", "Boys Wrestling @ Fort Riley". The team reads
 // "<grade> [Boys|Girls] <sport>" or "[Boys|Girls] <sport>"; B-team days,
 // scrimmages, tryouts, practices and pictures are not games.
-const MS_SPORTS={vb:'Volleyball',volleyball:'Volleyball',fb:'Football',football:'Football',bb:'Basketball',basketball:'Basketball','cross country':'Cross Country',wrestling:'Wrestling',track:'Track & Field'};
+const MS_SPORTS={vb:'Volleyball',volleyball:'Volleyball',fb:'Football',football:'Football',bb:'Basketball',basketball:'Basketball','cross country':'Cross Country',wrestling:'Wrestling',track:'Track & Field',tennis:'Tennis'};
 export function expandAbbreviations(text,abbreviations={}){
   return clean(text).replace(/\b[A-Z]{2,5}\b/g,word=>abbreviations[word]||word).replace(/\s*\/\s*/g,' / ');
 }
@@ -179,7 +179,16 @@ export function parseMiddleSchoolTitle(title,{abbreviations={}}={}){
   if(/scrimmage|picture|tryout|practice|parent|\bbegin|\bJV\b|\bB[- ]?Team\b|\bB Tourn/i.test(s))return null;
   let m=s.match(/^(7th|8th|8h)(?:\s+grade)?\s+(?:(Boys|Girls)\s+)?(VB|Volleyball|FB|Football|BB|Basketball)\b\s*(.*)$/i),grade=null,gender=null,sport,rest;
   if(m){grade=m[1].toLowerCase()==='8h'?'8th':m[1].toLowerCase();gender=m[2]||null;sport=MS_SPORTS[m[3].toLowerCase()];rest=m[4];}
-  else{m=s.match(/^(?:(Boys|Girls)\s+)?(Cross Country|Wrestling|Track)\b\s*(.*)$/i);if(!m)return null;gender=m[1]||null;sport=MS_SPORTS[m[2].toLowerCase()];rest=m[3];}
+  else{
+    // "Tennis @ Emporia", "Varsity Tennis @ Smokey Valley", "AMS/EMS Varsity
+    // Tennis @ Cico Park" (the two schools' one spring tennis team); a meet
+    // named first: "Little Apple Grapple Wrestling @ MHS".
+    m=s.match(/^(?:[A-Z]{2,4}\/[A-Z]{2,4}\s+)?(?:Varsity\s+)?(?:(Boys|Girls)\s+)?(Cross Country|Wrestling|Track|Tennis)\b\s*(.*)$/i);
+    const named=!m&&s.match(/^(.+?)\s+(Wrestling|Track|Cross Country|Tennis)\s+(@.+)$/i);
+    if(m){gender=m[1]||null;sport=MS_SPORTS[m[2].toLowerCase()];rest=m[3];}
+    else if(named){sport=MS_SPORTS[named[2].toLowerCase()];rest=`${named[1]} ${named[3]}`;}
+    else return null;
+  }
   gender=gender&&gender[0].toUpperCase()+gender.slice(1).toLowerCase();
   const team=[grade,gender,sport].filter(Boolean).join(' ');
   rest=rest.trim();if(!rest)return null;
@@ -199,6 +208,38 @@ export function parseMiddleSchoolTitle(title,{abbreviations={}}={}){
   // "Cross Country @ HOME": a home meet with no opponent named.
   if(/^home$/i.test(name))name='Home event';
   return name?{team,name,site}:null;
+}
+
+// A school calendar against the app's sports list (user, October 30: "You
+// need to learn from this and optimize!", after Anthony's girls basketball
+// was missing: the school had published its winter teams and nothing
+// noticed). `unlisted`: sports the module reads that the list leaves out;
+// `unread`: sport teams on the calendar no sport of the module reads;
+// `unparsed`: titles in a sport's shorthand the title reader cannot read
+// ("7GBB@ SHMS"). Junior varsity, 9th grade and B teams are not listed.
+// `siblings`: modules reading the same calendar (Blue Valley's high school
+// and middle school): a title one of them reads is not unparsed.
+const AUDIT_SPORT_WORDS=/football|volleyball|soccer|basketball|wrestling|swim|diving|bowling|track|baseball|softball|golf|tennis|cross country|\b[78]?[GB]?(?:BB|WR|VB|FB|XC)\b/i;
+const UNLISTED_LEVEL=/\bjv\b|junior varsity|\b9th\b|freshm[ae]n|\b[bc][- ]team\b|\bB Tourn|picture|photos?\b|tryout|practice|scrimmage|banquet|meeting|camp\b|\bbegins?\b|postponed|cancel|rain date|scramble|\bvisit\b/i;
+// A postseason round the calendar names without the team ("Substate
+// Basketball", "1st Round FB Playoffs", "State VB @TBD") is not a title to read.
+const POSTSEASON=/\bsub-?state\b|\bsubstate\b|\bstate\b|\bplayoffs?\b|\bregionals?\b/i;
+export function calendarSportsAudit(payload,module,listed=[],siblings=[]){
+  const read=(m,title)=>m.calendar.parse?m.calendar.parse(title):parseCalendarTitle(title,m.calendar.prefix);
+  const unlisted=new Map(),unread=new Map(),unparsed=new Map(),add=(map,key)=>map.set(key,(map.get(key)||0)+1);
+  for(const e of payload?.data?.events||payload?.events||[]){
+    // `calendar.ignore`: titles the module knows are no team it lists.
+    const title=clean(e.title);if(UNLISTED_LEVEL.test(title)||module.calendar.ignore?.test(title))continue;
+    const parsed=read(module,title);
+    // Only a title naming a game or meet ("@", "vs", "at"); "8th Girls BB" alone names none.
+    if(!parsed?.team){if(AUDIT_SPORT_WORDS.test(title)&&/@|\bvs?\b\.?|\bat\b/i.test(title)&&!POSTSEASON.test(title)&&!siblings.some(m=>read(m,title)?.team))add(unparsed,title);continue;}
+    if(UNLISTED_LEVEL.test(parsed.team))continue;
+    const sport=Object.entries(module.sports).find(([,teams])=>teams.some(t=>t.calendar?.test(parsed.team)))?.[0];
+    if(sport){if(!listed.includes(sport))add(unlisted,sport);}
+    else if(AUDIT_SPORT_WORDS.test(parsed.team)&&!siblings.some(m=>Object.values(m.sports).some(teams=>teams.some(t=>t.calendar?.test(parsed.team)))))add(unread,parsed.team);
+  }
+  const list=map=>[...map].map(([name,events])=>({name,events}));
+  return{unlisted:list(unlisted),unread:list(unread),unparsed:list(unparsed)};
 }
 
 // MeetPro results (user, October 10: "Here is where my timer puts the cross
@@ -772,7 +813,7 @@ export function parseFreeTitle(title,{level=null,abbreviations={},home=null}={})
   if(!level&&titleLevel)return null;
   s=s.replace(/^varsity\s+/i,'');
   // A league or event word may come before the sport ("BVL Basketball Tournament @ Hanover").
-  const lead=s.match(/^((?:BVL|TVL|NCKL|MEL)\s+)(?=(?:volley|basket|bb|vb|football|track|cross|xc|golf|wrestling))/);
+  const lead=s.match(/^((?:BVL|TVL|NCKL|MEL)\s+)(?=(?:volley|basket|bb|vb|football|track|cross|xc|golf|wrestling))/i);
   const leadWord=lead?lead[1].trim():'';if(lead)s=s.slice(lead[0].length);
   let sport=null,gender=null;
   for(const [re,name] of FREE_SPORTS){const m=s.match(re);if(m){sport=name;gender=m[1]?m[1][0].toUpperCase()+m[1].slice(1).toLowerCase():null;s=s.slice(m[0].length);break;}}

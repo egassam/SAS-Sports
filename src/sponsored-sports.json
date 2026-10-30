@@ -108,9 +108,11 @@
     "Wrestling"
   ],
   "anthony-ms-ks": [
+    "Basketball",
     "Cross Country",
     "Football",
-    "Volleyball"
+    "Volleyball",
+    "Wrestling"
   ],
   "arizona": [
     "Baseball",
@@ -1121,6 +1123,7 @@
     "Basketball",
     "Cross Country",
     "Football",
+    "Tennis",
     "Track & Field",
     "Volleyball",
     "Wrestling"
@@ -2028,12 +2031,16 @@
     "Volleyball"
   ],
   "manhattan-ks": [
+    "Basketball",
+    "Bowling",
     "Cross Country",
     "Football",
     "Golf",
     "Soccer",
+    "Swimming & Diving",
     "Tennis",
-    "Volleyball"
+    "Volleyball",
+    "Wrestling"
   ],
   "marist": [
     "Baseball",
@@ -4654,9 +4661,11 @@
     "Wrestling"
   ],
   "blue-valley-randolph-ks": [
+    "Baseball",
     "Basketball",
     "Cross Country",
     "Football",
+    "Softball",
     "Track & Field",
     "Volleyball"
   ],

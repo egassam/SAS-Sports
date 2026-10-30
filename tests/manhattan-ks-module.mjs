@@ -34,7 +34,8 @@ assert.equal(school.conference,'Centennial League');
 // Intrasquad scrimmages are practice (an upcoming one is not listed either).
 for(const name of ['Inter Squad Scrimmage','Intrasquad','Intra-Squad Scrimmage'])assert.ok(manhattanKsSchool.skip.test(name),name);
 assert.ok(!manhattanKsSchool.skip.test('Junction City'));
-assert.deepEqual(sponsoredSports['manhattan-ks'],['Cross Country','Football','Golf','Soccer','Tennis','Volleyball']);
+// Winter added October 30 (basketball, wrestling, boys swimming, bowling).
+assert.deepEqual(sponsoredSports['manhattan-ks'],['Basketball','Bowling','Cross Country','Football','Golf','Soccer','Swimming & Diving','Tennis','Volleyball','Wrestling']);
 
 // Calendar titles.
 assert.deepEqual(parseCalendarTitle('MHS Varsity Football - Junction City - AWAY','MHS'),{team:'Varsity Football',name:'Junction City',site:'AWAY'});
@@ -70,7 +71,7 @@ assert.equal(ms('Boys Wrestling @ Fort Riley'),'Boys Wrestling | Fort Riley | AW
 assert.equal(ms('Track @ McPherson'),'Track & Field | McPherson | AWAY');
 for(const title of ['7th VB B Tourney @WR North','8th VB B Team Tournament at Shawnee Heights','8th Grade Football Scrimmage @ Bishop Stadium','Volleyball Team Pictures','Girls Basketball Tryouts Begin','Boys Wrestling Practice Begins','JV Track @ Junction City','8th Girls BB','Board of Education Meeting'])assert.equal(ms(title),null,title);
 for(const id of ['anthony-ms-ks','eisenhower-ms-ks']){const s=schools.find(x=>x.id===id);assert.equal(s.level,'middle-school');assert.equal(s.classification,'Middle School');assert.equal(s.state,'Kansas');}
-assert.deepEqual(sponsoredSports['eisenhower-ms-ks'],['Basketball','Cross Country','Football','Track & Field','Volleyball','Wrestling']);
+assert.deepEqual(sponsoredSports['eisenhower-ms-ks'],['Basketball','Cross Country','Football','Tennis','Track & Field','Volleyball','Wrestling']);
 
 // Varsity only: JV and 9th grade football are not read.
 const calendar=JSON.parse(fixture('calendar-2026-27.json'));
@@ -346,7 +347,9 @@ try{
   assert.deepEqual(ike.upcoming.slice(0,3).map(line),['Upcoming Oct 29, 4:15 PM 7th Girls · Eisenhower vs Rock Creek | ','Upcoming Oct 29, 4:15 PM 8th Girls · Eisenhower vs Rock Creek | ','Upcoming Nov 3, 4:30 PM 7th Girls · Eisenhower at Wamego | ']);
   assert.ok(ike.upcoming.some(e=>e.team_label==='7th Boys'&&/Wamego/.test(e.title)),'boys basketball is in the same sport');
   const wrestling=await msFeed('eisenhower-ms-ks','Wrestling');
-  assert.equal(line(wrestling.upcoming[0]),'Upcoming Nov 10, 4:30 PM Boys · Eisenhower · Home event | ');
+  // The Little Apple Grapple ("Little Apple Grapple Wrestling @ MHS", read since October 30).
+  assert.equal(line(wrestling.upcoming[0]),'Upcoming Nov 7, 9:00 AM Boys · Eisenhower at Manhattan Little Apple Grapple | ');
+  assert.equal(line(wrestling.upcoming[1]),'Upcoming Nov 10, 4:30 PM Boys · Eisenhower · Home event | ');
   assert.equal(wrestling.upcoming[0].event_type,'DUAL');
   assert.ok(wrestling.upcoming.some(e=>e.team_label==='Girls'));
   assert.ok((await msFeed('eisenhower-ms-ks','Track & Field')).upcoming.every(e=>e.event_type==='MEET'));

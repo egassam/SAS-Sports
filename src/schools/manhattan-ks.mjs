@@ -76,6 +76,12 @@ export const manhattanKsSchool={
     Football:[{calendar:/^Varsity Football$/i,maxpreps:'football',bound:['Football']}],
     Soccer:[{calendar:/^Varsity Boys Soccer$/i,maxpreps:'soccer',label:'Boys',bound:['Boys Soccer']},{calendar:/^Varsity Girls Soccer$/i,maxpreps:'soccer/girls',label:'Girls',bound:['Girls Soccer']}],
     Volleyball:[{calendar:/^Varsity Volleyball$/i,maxpreps:'volleyball',matches:true}],
+    // Winter (published October 30): basketball games from MaxPreps and
+    // Bound; wrestling, boys swimming and bowling meets.
+    Basketball:[{calendar:/^Varsity Girls Basketball$/i,maxpreps:'basketball/girls',label:'Girls',bound:['Girls Basketball']},{calendar:/^Varsity Boys Basketball$/i,maxpreps:'basketball',label:'Boys',bound:['Boys Basketball']}],
+    Wrestling:[{calendar:/^Varsity Girls Wrestling$/i,meet:true,label:'Girls'},{calendar:/^Varsity Boys Wrestling$/i,meet:true,label:'Boys'}],
+    'Swimming & Diving':[{calendar:/^Boys Swimming$/i,meet:true,label:'Boys'}],
+    Bowling:[{calendar:/^Bowling$/i,meet:true}],
     // Varsity races only (the JV and C races are run at the same meets).
     // MileSplit Live: Manhattan High School's MileSplit team id; its meets in
     // Kansas and Missouri (the Southern Stampede at Joplin).
