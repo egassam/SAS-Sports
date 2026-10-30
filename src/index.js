@@ -54,7 +54,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -333,7 +333,7 @@ import {prairieViewAmSchool,createPrairieViewAmHandlers} from './schools/prairie
 import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 
-const VERSION='4.236.0-pro-team-pages';
+const VERSION='4.237.0-pro-team-pages';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4235,21 +4235,22 @@ async function milesplitLiveResultsFor(school,config,game,read,live=false){
   if(config.meet){
     const doc=await get(`meets/${config.meet}?mask.fieldPaths=name&mask.fieldPaths=teams&mask.fieldPaths=timingCompany.name`);
     const [info]=firestoreDocs({documents:doc?.fields?[doc]:[]}),team=milesplitTeamCode(info,config.team);
-    meet=team&&{id:String(config.meet),...team,timer:info.timingCompany?.name||null};
+    meet=team&&{id:String(config.meet),...team,alsoCodes:(config.also||[]).map(id=>milesplitTeamCode(info,id)?.code).filter(Boolean),timer:info.timingCompany?.name||null};
   }else{
     const days=await Promise.all((config.states||['KS']).map(state=>query('',firestoreQuery('meets',{'venue.state':state,dateStart:game.date},['name','season','venue.name','venue.city','teams','timingCompany.name'],300),live?SOURCE_TTL.schedule:SOURCE_TTL.document).then(text=>firestoreDocs(json(text)||[]))));
-    meet=milesplitMeetFor(days.flat(),config.team,game.name);
+    meet=milesplitMeetFor(days.flat(),config.team,game.name,config.also);
   }
   if(!meet)return null;
   const base=`/meets/${meet.id}`;
   // The school's runners by the meet's code or by name (see `milesplitTeamCode`).
-  const runner=['event','athlete.firstName','athlete.lastName','athlete.grade','athlete.team.abbreviation','athlete.team.name','result.place','result.text'];
-  const [byCode,byName,list]=await Promise.all([query(base,firestoreQuery('entries',{'athlete.team.abbreviation':meet.code},runner)),query(base,firestoreQuery('entries',{'athlete.team.name':milesplitTeamNames(meet.name)},runner)),get(`meets/${meet.id}/events?pageSize=100&mask.fieldPaths=number&mask.fieldPaths=name&mask.fieldPaths=gender.sex&mask.fieldPaths=division.name`)]);
+  const runner=['event','athlete.firstName','athlete.lastName','athlete.grade','athlete.sex','athlete.team.abbreviation','athlete.team.name','result.place','result.text'];
+  const [byCode,byName,list]=await Promise.all([query(base,firestoreQuery('entries',{'athlete.team.abbreviation':meet.alsoCodes?.length?[meet.code,...meet.alsoCodes]:meet.code},runner)),query(base,firestoreQuery('entries',{'athlete.team.name':milesplitTeamNames(meet.name,meet.others)},runner)),get(`meets/${meet.id}/events?pageSize=100&mask.fieldPaths=number&mask.fieldPaths=name&mask.fieldPaths=gender.sex&mask.fieldPaths=division.name`)]);
   const ours=[...new Map([...firestoreDocs(json(byCode)||[]),...firestoreDocs(json(byName)||[])].map(e=>[e.id,e])).values()];
-  const races=milesplitVarsityRaces(firestoreDocs(list),ours);
+  // A middle school (`middle`) reads every race it ran, both grades.
+  const races=(config.middle?milesplitMiddleSchoolRaces:milesplitVarsityRaces)(firestoreDocs(list),ours);
   if(!races.length)return null;
   const finishers=new Map(),scores=new Map();
-  await Promise.all(races.map(async race=>{
+  await Promise.all([...new Map(races.map(r=>[r.number,r])).values()].map(async race=>{
     const n=Number(race.number),body=firestoreQuery('teamScores',{eventNo:n},['eventNo','scores'],20);
     const [places,table]=await Promise.all([query(base,firestoreQuery('entries',{event:n},['result.place'],1000)),query(base,body)]);
     finishers.set(String(n),firestoreDocs(json(places)||[]).filter(e=>Number(e.result?.place)>0).length);

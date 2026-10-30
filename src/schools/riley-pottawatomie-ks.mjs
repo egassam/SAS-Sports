@@ -58,7 +58,7 @@ function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpr
 const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
 const WHOLE=/^(?:Middle School|Junior High|JH)(?: A)?$/i;
 const ANY_MS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|Junior High|JH)(?: A(?:-Team)?)?$/i;
-function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam}){
+function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit}){
   const games=(acts,gender='')=>[
     {...on(acts,grade('7th')),label:`7th${gender?` ${gender}`:''}`},
     {...on(acts,grade('8th')),label:`8th${gender?` ${gender}`:''}`},
@@ -67,7 +67,7 @@ function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam}){
   if(has.includes('Football'))sports.Football=games('Football');
   if(has.includes('Volleyball'))sports.Volleyball=games('Volleyball');
   if(has.includes('Basketball'))sports.Basketball=[...games('Girls Basketball','Girls'),...games('Boys Basketball','Boys')];
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country'],ANY_MS),meet:true,meetPro:{team:meetTeam,exclude:/varsity|\bJV\b/i}}];
+  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country'],ANY_MS),meet:true,meetPro:{team:meetTeam,exclude:/varsity|\bJV\b/i},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}];
   if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`,ANY_MS),meet:true,label:g}));
   if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field'],ANY_MS),meet:true,meetPro:{team:trackTeam,track:true,meetHas:MS_TRACK}}];
   if(has.includes('Golf'))sports.Golf=[{...on(['Girls Golf','Boys Golf'],ANY_MS),meet:true}];
@@ -122,7 +122,7 @@ export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calen
     Football:[{calendar:/^MS Football$/}],
     Volleyball:[{calendar:/^MS Volleyball$/}],
     Basketball:[{calendar:/^MS Basketball$/}],
-    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',exclude:/varsity|\bJV\b/i}}],
+    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',exclude:/varsity|\bJV\b/i},milesplit:{team:41984,middle:true,also:[36605]}}],
     'Track & Field':[{calendar:/^MS Track & Field$/,meet:true,meetPro:{team:'Blue Valley',track:true,meetHas:MS_TRACK}}]
   }};
 
@@ -133,14 +133,14 @@ export const wamegoKsSchool={id:'wamego-ks',bound:bound('h202502040452088515ce32
   sports:boundHighSchool({has:['Football','Flag Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'Wamego',tennis:'Wamego HS',milesplit:21804}),
   midwestTiming:[stateXc('4A','wamego-ks',['Wamego High School'],['Girls','Boys'])]};
 export const wamegoMsKsSchool={id:'wamego-ms-ks',bound:bound('h20250612075742474f79cb40e4a7f40','wamegoms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf'],meetTeam:'Wamego Middle School'})};
+  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf'],meetTeam:'Wamego Middle School',milesplit:39314})};
 
 export const rockCreekKsSchool={id:'rock-creek-ks',bound:bound('h2025020404520445615614e419a374c','rockcreekhs'),
   maxpreps:maxpreps('96110ea0-a0ac-4f8d-b7b3-49a4b725e38f','st-george/rock-creek-mustangs'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:119,code:'RC',sharesCodeWith:'Riley County'},
   sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek',milesplit:21882}),
   midwestTiming:[stateXc('4A','rock-creek-ks',['Rock Creek High School'],['Girls','Boys'])]};
 export const rockCreekMsKsSchool={id:'rock-creek-ms-ks',bound:bound('h20260103125538297053dfabf06614f','rockcreekms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek MS'})};
+  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek MS',milesplit:39062})};
 
 // St. Marys Junior/Senior High (Kaw Valley USD 321): one Bound school for
 // both, the junior high's teams under grade levels.
@@ -149,7 +149,7 @@ export const stMarysKsSchool={id:'st-marys-ks',bound:ST_MARYS,
   maxpreps:maxpreps('0f0ebc9e-4330-405a-a173-f298b055973a','st-marys/st-marys-bears'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:186,code:'STM'},
   sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'St. Marys',milesplit:25984})};
 export const stMarysJhKsSchool={id:'st-marys-jh-ks',bound:ST_MARYS,meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:"St. Mary's"})};
+  sports:boundMiddleSchool({has:['Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:"St. Mary's",milesplit:41215})};
 
 // Onaga (USD 322): one Bound school for the high school and middle school.
 // Onaga enters part of its season on Bound; its district calendar (Apptegy:
@@ -194,7 +194,7 @@ export const flintHillsChristianMsKsSchool={id:'flint-hills-christian-ms-ks',cal
   sports:{
     Volleyball:[{calendar:/^MS Volleyball$/}],
     Basketball:[{calendar:/^MS Basketball$/}],
-    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'FH Christian MS',exclude:/varsity|\bJV\b/i}}],
+    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'FH Christian MS',exclude:/varsity|\bJV\b/i},milesplit:{team:51951,middle:true}}],
     'Track & Field':[{calendar:/^MS Track$/,meet:true,meetPro:{team:FHCS_TRACK,track:true,meetHas:MS_TRACK}}]
   }};
 
@@ -215,7 +215,7 @@ export const manhattanCatholicKsSchool={id:'manhattan-catholic-ks',
   sports:{
     Volleyball:[{calendar:/^Volleyball$/}],
     Basketball:[{calendar:/^Basketball$/}],
-    'Cross Country':[{calendar:/^Cross Country$/,meet:true,meetPro:{team:'Luckey',exclude:/varsity|\bJV\b/i}}],
+    'Cross Country':[{calendar:/^Cross Country$/,meet:true,meetPro:{team:'Luckey',exclude:/varsity|\bJV\b/i},milesplit:{team:47720,middle:true}}],
     'Track & Field':[{calendar:/^Track & Field$/,meet:true,meetPro:{team:['Luckey','Manhattan Catholic'],track:true,meetHas:MS_TRACK}}]
   }};
 

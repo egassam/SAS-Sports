@@ -296,28 +296,41 @@ export function firestoreQuery(collection,where,fields,limit=500){
 // "Flinthills Christian High School"; names cut to 30 characters), so they
 // are found by any of `milesplitTeamNames`.
 export function milesplitTeamCode(meet,team){
-  const hit=Object.entries(meet?.teams||{}).find(([,t])=>String(t?.id)===String(team));
-  return hit?{code:hit[0].trim(),name:clean(hit[1].name||'')}:null;
+  const teams=Object.entries(meet?.teams||{}),hit=teams.find(([,t])=>String(t?.id)===String(team));
+  return hit?{code:hit[0].trim(),name:clean(hit[1].name||''),others:teams.filter(t=>t!==hit).map(([,t])=>clean(t?.name||''))}:null;
 }
-export const milesplitTeamNames=name=>[...new Set([name,name.slice(0,30),name.replace(/\s+(?:High School|HS|Jr\.?\/Sr\.? High(?: School)?)$/i,'')].map(clean).filter(Boolean))];
+// Middle schools: "Eisenhower" or "Wamego MS" for "... Middle School". A
+// short name another team of the meet also shortens to ("Wamego" for Wamego
+// High School and Wamego Middle School) is not used.
+const teamNameForms=name=>[name,name.slice(0,30),name.replace(/\s+(?:High School|HS|Jr\.?\/Sr\.? High(?: School)?|Middle School|Junior High(?: School)?)$/i,''),name.replace(/\s+Middle School$/i,' MS'),name.replace(/\s+Junior High(?: School)?$/i,' JH')].map(clean).filter(Boolean);
+export function milesplitTeamNames(name,others=[]){
+  const taken=new Set(others.flatMap(teamNameForms));
+  return[...new Set(teamNameForms(name))].filter((n,i)=>i===0||!taken.has(n));
+}
 // The day's meet a calendar entry names: one with the school in it whose
 // name, venue or city shares a word with the entry ("Baldwin Invite" is the
 // "Maple Leaf XC Classic" at Baldwin City; "Regional" is a KSHSAA
 // "Sub-State"). None when nothing matches: Manhattan's "Haskell Invite" day
-// also lists its runners at the Salina Invitational.
-const MEET_WORDS=new Set('and the meet meets invite invitational invitationals xc cross country classic high school schools varsity junior run race races championship championships league golf course club park state kshsaa jv hs'.split(' '));
+// also lists its runners at the Salina Invitational. An entry that names
+// nothing ("MS XC Meet", "Home event") takes the day's only meet with the
+// school in it.
+const MEET_WORDS=new Set('and the meet meets invite invitational invitationals xc cross country classic high school schools varsity junior run race races championship championships league golf course club park state kshsaa jv hs home event'.split(' '));
 const meetWords=s=>new Set(String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w.length>=3&&!MEET_WORDS.has(w)&&!/^\d/.test(w)));
-export function milesplitMeetFor(meets,team,name){
+// `also`: team ids whose runners count as the school's (Randolph's middle
+// schoolers run the grade races under Blue Valley High School's code).
+export function milesplitMeetFor(meets,team,name,also=[]){
   const want=meetWords(name),regional=/\bregionals?\b|\bsub-?state\b/i.test(name||'');
-  let best=null;
+  let best=null,only=[];
   for(const meet of meets){
     if(meet.season&&meet.season!=='CC')continue;
-    const ours=milesplitTeamCode(meet,team);if(!ours)continue;
+    const own=milesplitTeamCode(meet,team);if(!own)continue;
+    const ours={...own,alsoCodes:also.map(id=>milesplitTeamCode(meet,id)?.code).filter(Boolean)};
+    only.push({id:meet.id,...ours,meet:meet.name,timer:meet.timingCompany?.name||null,score:0});
     const have=meetWords(`${meet.name} ${meet.venue?.name||''} ${meet.venue?.city||''}`);
     const score=[...want].filter(w=>have.has(w)).length+(regional&&/\bsub-?state\b|\bregionals?\b/i.test(meet.name||'')?1:0);
     if(score&&(!best||score>best.score))best={id:meet.id,...ours,meet:meet.name,timer:meet.timingCompany?.name||null,score};
   }
-  return best;
+  return best||(!want.size&&!regional&&only.length===1?only[0]:null);
 }
 // The varsity race of each sex the school ran. Races named for a level
 // ("Junior Varsity", "JV", "C Team", "7th Grade", "Girls 2 Mile Run (Middle
@@ -327,6 +340,23 @@ const SEX_LABEL={F:'Girls',M:'Boys'};
 const NOT_VARSITY=/\bjunior varsity\b|\bjv\b|\bgrade\b|middle school|\bcombined\b|two mile|\b2 miles?\b|0\.99|\bc team\b|'c' team|\bc 5k\b|^(?:boys|girls) c\b|\bc and\b|\bopen\b/i;
 const raceText=e=>`${e.name||''} ${e.division?.name||''}`;
 const isVarsity=e=>/\bvarsity\b/i.test(raceText(e))&&!/\bjunior varsity\b/i.test(raceText(e));
+// A middle school's races: every one it ran (7th and 8th grade), but no
+// high school race and no combined results. A race run by girls and boys
+// together ("7th Grade Two Mile", sex C) is read as two, one a sex, by the
+// runners' sex; its places are the whole race's.
+const HIGH_SCHOOL_RACE=/\bvarsity\b|\bjv\b|high school|\bhs\b|\bc team\b|'c' team/i,MIDDLE_SCHOOL_RACE=/\bgrade\b|middle|\bms\b|junior high|\bjh\b/i;
+export function milesplitMiddleSchoolRaces(events,ours){
+  const sexes=new Map();
+  for(const e of ours){const k=String(e.event);if(!sexes.has(k))sexes.set(k,new Set());const sex=String(e.athlete?.sex||'').toUpperCase();if(sex)sexes.get(k).add(sex);}
+  const out=[];
+  for(const e of [...events].sort((a,b)=>Number(a.number)-Number(b.number))){
+    const ran=sexes.get(String(e.number));if(!ran)continue;
+    const text=raceText(e);if(/\bcombined\b/i.test(text)||(HIGH_SCHOOL_RACE.test(text)&&!MIDDLE_SCHOOL_RACE.test(text)))continue;
+    if(e.gender?.sex==='F'||e.gender?.sex==='M')out.push(e);
+    else for(const sex of ['F','M'])if(ran.has(sex))out.push({...e,gender:{sex},mixed:true});
+  }
+  return out;
+}
 export function milesplitVarsityRaces(events,ours){
   const ran=new Set(ours.map(e=>String(e.event)));
   const out=[];
@@ -336,22 +366,30 @@ export function milesplitVarsityRaces(events,ours){
   }
   return out;
 }
-// "• 5 Kilometers (3.11 Miles)" → "Girls 5 Kilometers"; "6A Girls 5k Run (6A)" → "6A Girls 5k Run".
-export const milesplitRaceName=e=>{const name=clean(String(e.name||'').replace(/^[•·\s]+/,'').replace(/\s*\([^)]*\)\s*$/,''));return/\b(?:girls?|boys?|women'?s?|men'?s?)\b/i.test(name)?name:clean(`${SEX_LABEL[e.gender?.sex]||''} ${name}`);};
-// A race's team scores, by code: [{code, place, points}].
-export const milesplitTeamScores=doc=>Object.values(doc?.scores||{}).filter(s=>Number(s.place)>0).map(s=>({code:String(s.team?.abbreviation||'').trim(),name:s.team?.name||'',place:Number(s.place),points:s.points!=null?String(s.points):''}));
+// "• 5 Kilometers (3.11 Miles)" → "Girls 5 Kilometers"; "6A Girls 5k Run (6A)"
+// → "6A Girls 5k Run"; a grade named only as the division ("• 2 Miles",
+// "7th Grade") → "Girls 7th Grade 2 Miles".
+export const milesplitRaceName=e=>{
+  let name=clean(String(e.name||'').replace(/^[•·\s]+/,'').replace(/\s*\([^)]*\)\s*$/,''));
+  const grade=String(e.division?.name||'').match(/\b\d{1,2}(?:st|nd|rd|th)\s+grade\b/i);if(grade&&!/\bgrade\b/i.test(name))name=`${grade[0]} ${name}`;
+  return/\b(?:girls?|boys?|women'?s?|men'?s?)\b/i.test(name)&&!e.mixed?name:clean(`${SEX_LABEL[e.gender?.sex]||''} ${name}`);
+};
+// A race's team scores, by code: [{code, place, points}], with the table's
+// sex ("1_F_2": F).
+export const milesplitTeamScores=doc=>Object.assign(milesplitTeamRows(doc),{sex:String(doc?.id||'').split('_')[1]||null});
+const milesplitTeamRows=doc=>Object.values(doc?.scores||{}).filter(s=>Number(s.place)>0).map(s=>({code:String(s.team?.abbreviation||'').trim(),name:s.team?.name||'',place:Number(s.place),points:s.points!=null?String(s.points):''}));
 // The school's races in `athleticLiveXcRaces`' shape (without `entries`: a
 // team's list names its alternates, who do not run). `finishers` and
 // `scores` are by race number; a race can have several score tables (JV
 // teams scored apart, Rim Rock's 25-team table beside an empty one): the one
 // that scores the school.
 export function milesplitLiveXcRaces(races,ours,finishers,scores,team){
-  const codes=new Set([team.code,...ours.map(e=>String(e.athlete?.team?.abbreviation||'').trim())].filter(Boolean)),names=new Set(milesplitTeamNames(team.name||''));
+  const codes=new Set([team.code,...ours.map(e=>String(e.athlete?.team?.abbreviation||'').trim())].filter(Boolean)),names=new Set(milesplitTeamNames(team.name||'',team.others));
   return races.map(event=>{
-    const mine=ours.filter(e=>String(e.event)===String(event.number));
+    const sex=event.gender?.sex,mine=ours.filter(e=>String(e.event)===String(event.number)&&(!event.mixed||String(e.athlete?.sex||'').toUpperCase()===sex));
     const runners=mine.filter(e=>Number(e.result?.place)>0&&e.result?.text).sort((a,b)=>Number(a.result.place)-Number(b.result.place)).map(e=>({place:Number(e.result.place),athlete:clean(`${e.athlete?.firstName||''} ${e.athlete?.lastName||''}`),year:HYTEK_GRADE[e.athlete?.grade]||'',team:e.athlete?.team?.name||team.name,time:e.result.text}));
     const find=table=>table.find(s=>codes.has(s.code))||table.find(s=>names.has(clean(s.name)));
-    const table=(scores.get(String(event.number))||[]).find(find)||[],own=find(table);
+    const table=(scores.get(String(event.number))||[]).filter(t=>!t.sex||!sex||t.sex===sex).find(find)||[],own=find(table);
     return{race:milesplitRaceName(event),team:own?{place:own.place,team:own.name,score:own.points}:null,teams:table.length,runners,field:finishers.get(String(event.number))||0,entered:mine.length,updated:mine.map(e=>e.updated||'').sort().at(-1)||null};
   });
 }
