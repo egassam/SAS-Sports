@@ -939,3 +939,34 @@ export function apptegyCalendar(payloads){
   }
   return{events};
 }
+
+// A school's own broadcasts on YouTube, read with the owner's YouTube Data
+// API key (user, Oct 30: "it's in"): the channel's uploads playlist
+// (`playlistItems`) and each video's state (`videos`, snippet and
+// liveStreamingDetails). MHS Student Media titles each game by its date,
+// "261030 Manhattan High Varsity football playoff vs. Topeka High".
+export function youtubeVideos(playlist,details){
+  const byId=new Map((details?.items||[]).map(v=>[v.id,v]));
+  return(playlist?.items||[]).map(item=>{
+    const id=item?.snippet?.resourceId?.videoId||item?.contentDetails?.videoId;if(!id)return null;
+    const v=byId.get(id),s=v?.snippet||item.snippet||{},live=v?.liveStreamingDetails||{};
+    return{id,title:String(s.title||''),published:s.publishedAt||item.snippet?.publishedAt||null,state:s.liveBroadcastContent||'none',started:live.actualStartTime||live.scheduledStartTime||null,ended:live.actualEndTime||null};
+  }).filter(Boolean);
+}
+const YOUTUBE_SPORT_WORDS={Football:/\bfootball\b/i,Basketball:/\bbasketball\b|\bbball\b/i,Volleyball:/\bvolleyball\b|\bvball\b/i,Soccer:/\bsoccer\b/i,Wrestling:/\bwrestling\b/i,Baseball:/\bbaseball\b/i,Softball:/\bsoftball\b/i,'Swimming & Diving':/\bswim/i,'Cross Country':/\bcross[ -]country\b|\bxc\b/i,'Track & Field':/\btrack\b/i,Tennis:/\btennis\b/i,Golf:/\bgolf\b/i,Bowling:/\bbowling\b/i};
+// The video of one game: the date in the title ("261030") or the stream's
+// start day, the sport named, not a JV, freshman or C-team game, and the
+// team's girls or boys when the title names one.
+export function youtubeVideoFor(videos,{date,sport,team=null,timeZone='America/Chicago'}){
+  const word=YOUTUBE_SPORT_WORDS[sport];if(!word||!date)return null;
+  const tag=date.slice(2).replaceAll('-','');
+  const localDay=iso=>{if(!iso)return null;const d=new Date(iso);return Number.isNaN(d.getTime())?null:new Intl.DateTimeFormat('en-CA',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).format(d)};
+  const fits=v=>{
+    if(!word.test(v.title)||/\b(?:jv|junior varsity|freshm[ae]n|9th|c[- ]team|middle school)\b/i.test(v.title))return false;
+    const gender=/\bgirls?\b|\blady\b|\bwomen'?s\b/i.test(v.title)?'Girls':/\bboys?\b|\bmen'?s\b/i.test(v.title)?'Boys':null;
+    return!(gender&&team&&gender!==team);
+  };
+  const tagged=videos.filter(v=>new RegExp(`(?:^|\\D)${tag}(?:\\D|$)`).test(v.title)&&fits(v));
+  if(tagged.length)return tagged[0];
+  return videos.find(v=>fits(v)&&localDay(v.started||v.published)===date)||null;
+}

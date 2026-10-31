@@ -99,12 +99,17 @@ assert.equal(live('byu'),undefined);
   assert.match(full,/R\.Gagliano pass complete[^]*<small>Drive: 8 plays, 28 yards, 3:34<\/small>/);
   assert.match(full,/<span>Passing<\/span><strong>Roman Gagliano \(MTSU\), 3\/5, 12 YDS<\/strong>/);
   assert.ok(!liveCard({...base,id:'w'}).includes('live-more'),'nothing extra without details');
-  // The traveling glow: the card's delay follows the clock (the 15 s redraw
+  // The slow glow (user, Oct 30: the rotating light was "very irritating";
+  // "a very slow glow to dark"): one 8 s breath from dark to bright and back,
+  // nothing traveling; the card's delay follows the clock (the 15 s redraw
   // does not restart it), and reduced motion stops it.
   assert.match(theirs,/style="--sas-glow-delay:-\d+ms"/);
-  assert.match(page,/@property --sas-glow-angle/);
+  assert.ok(page.includes('--sas-glow-delay:-${Date.now()%8000}ms'),'the delay follows the 8 s cycle');
+  assert.match(page,/animation:sasGlow 8s ease-in-out infinite/);
+  assert.match(page,/@keyframes sasGlow\{0%,100%\{opacity:\.06\}50%\{opacity:\.7\}\}/);
+  assert.ok(!/conic-gradient\(from var\(--sas-glow-angle\)/.test(page),'no light travels around the card');
   assert.match(page,/@media\(prefers-reduced-motion:reduce\)\{[^}]*\.live-card-board::before,\.live-card-board::after\{animation:none\}\}/);
   const none=liveCard({...base,id:'z'});
   assert.ok(!none.includes('live-ball')&&!none.includes('live-situation'),'no possession: nothing drawn');
 }
-console.log('Live possession checks passed (real Oct 3 scoreboard: KU and UCF games; page draws the ball and down & distance; traveling glow)');
+console.log('Live possession checks passed (real Oct 3 scoreboard: KU and UCF games; page draws the ball and down & distance; slow glow)');
