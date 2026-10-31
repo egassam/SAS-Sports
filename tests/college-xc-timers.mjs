@@ -33,12 +33,28 @@ for(const [name,school,date] of [['American Conference Championships',american,'
   assert.ok(/^https:\/\/www\.pttiming\.com\/event\//.test(e.recap_url),name);
   assert.deepEqual(e.results,[],name);
 }
-// Left alone: regionals, another day, another conference's meet, a meet
-// already final, other sports' timers.
-for(const [name,school,date,status] of [['NCAA Midwest Regional',big12,'2026-11-13','Upcoming'],['NCAA Midwest Regional Championships',big12,'2026-11-21','Upcoming'],['NCAA South Central Regional Cross Country Championships',american,'2026-11-21','Upcoming'],['Big 12 Championship',big12,'2025-10-31','Upcoming'],['Big 12 Championship',american,'2026-10-31','Upcoming'],['American Conference Championships',big12,'2026-10-31','Upcoming'],['Big 12 Championship',big12,'2026-10-31','Final']]){
+// Left alone: regionals, another day, another conference's meet, other
+// sports' timers.
+for(const [name,school,date,status] of [['NCAA Midwest Regional',big12,'2026-11-13','Upcoming'],['NCAA Midwest Regional Championships',big12,'2026-11-21','Upcoming'],['NCAA South Central Regional Cross Country Championships',american,'2026-11-21','Upcoming'],['Big 12 Championship',big12,'2025-10-31','Upcoming'],['Big 12 Championship',american,'2026-10-31','Upcoming'],['American Conference Championships',big12,'2026-10-31','Upcoming']]){
   const [e]=applyCollegeXcTimerMeets([ev(name,`${date}T12:00:00.000Z`,{status})],school);
   assert.equal(e.recap_url,undefined,`${name} ${date} ${status}`);
   assert.deepEqual(e.results,[]);
+}
+// A final the school's schedule scored before its recap or TFRRS (October
+// 31, K-State: "W (15th) / M (10th) Oct 31 Final vs Cross Country Big 12
+// Championship", no link): K-State's team headline and the timer's results.
+{
+  const rows=[{group:"Women's Team",participant:'Kansas State team',result:'15th'},{group:"Men's Team",participant:'Kansas State team',result:'10th'}];
+  const [e]=applyCollegeXcTimerMeets([ev('Big 12 Championship','2026-10-31T12:00:00.000Z',{status:'Final',headline:'W (15th) / M (10th) Oct 31 Final vs Cross Country Big 12 Championship',results:rows,result_count:2})],big12);
+  assert.equal(e.headline,"Women's team: 15th / Men's team: 10th");
+  assert.deepEqual(e.results,rows,'the rows stay');
+  assert.equal(e.recap_url,'https://www.pttiming.com/event/fda0d982-abfd-43af-ae80-684ab8d21f62');
+  assert.equal(e.recap_label,'Full results (PrimeTime Timing)');
+  assert.match(e.highlight_status,/^Team places from the official schedule\. Runners and times appear here when the school's recap or TFRRS posts them/);
+  // With its recap (or TFRRS) the final is left as it is.
+  const recap={status:'Final',headline:"Women's team: 15th · 400 pts",recap_url:'https://www.kstatesports.com/news/x',results:[...rows,{group:"Women's 6K",participant:'A Runner',result:'40th · 21:00'}]};
+  const [r]=applyCollegeXcTimerMeets([ev('Big 12 Championship','2026-10-31T12:00:00.000Z',recap)],big12);
+  assert.deepEqual([r.headline,r.recap_url],[recap.headline,'https://www.kstatesports.com/news/x']);
 }
 // Nothing here reads PrimeTime: every meet links its public event page only.
 for(const m of COLLEGE_XC_TIMER_MEETS)assert.match(m.url,/^https:\/\/www\.pttiming\.com\/event\/[0-9a-f-]{36}$/);
