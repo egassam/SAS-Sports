@@ -132,6 +132,21 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     const other=await worker.fetchLive('riley-county-ks','Cross Country');
     assert.ok(!other.events.some(x=>/Approved Schools/.test(x.title)));
   }finally{globalThis.Date=RealDate;restore();}
+  // Race day before the first finisher (October 31: the timer's documents
+  // hold entries only): the card keeps the start time and the live link.
+  {
+    for(const to of Object.values(ids)){const doc=JSON.parse(pages.get(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/${to}`));doc._source.r=[];pages.set(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/${to}`,JSON.stringify(doc));pages.delete(`${ATHLETIC_LIVE_DOCS}xc_score_report/_doc/xcSR%7C${to}`);}
+    pages.set(`${ATHLETIC_LIVE_DOCS}live_results_meet_list/_doc/79638`,JSON.stringify(info));
+    const early=new RealDate('2026-10-31T14:50:00Z');
+    globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[early.getTime()]))}static now(){return early.getTime()}};
+    try{
+      const feed=await worker.fetchLive('flint-hills-christian-ks','Cross Country');
+      const e=feed.events.find(x=>x.start_time.startsWith('2026-10-31'));
+      assert.deepEqual([e.status,e.recap_url,e.recap_label],['Today','https://live.letsgorun.com/meets/79638','Live results (LetsGoRun Timing)']);
+      assert.deepEqual(e.results.map(line),['Warner Memorial Park, Manhattan | Races begin | 9:45 AM']);
+      assert.ok(/as runners finish/.test(e.highlight_status));
+    }finally{globalThis.Date=RealDate;restore();}
+  }
   // A day later with the full results: Final.
   const after=new RealDate('2026-11-01T15:00:00Z');
   for(const [from,to] of Object.entries(ids))for(const kind of ['ind_res_list/_doc/','xc_score_report/_doc/xcSR%7C'])pages.set(`${ATHLETIC_LIVE_DOCS}${kind}${to}`,pages.get(`${ATHLETIC_LIVE_DOCS}${kind}${from}`));
