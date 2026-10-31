@@ -30,7 +30,7 @@ Rule for every sport (since October 25, `AGENTS.md` 5c, replacing K-State's): a 
 
 | Sport | Results source | State on Oct 9 |
 | --- | --- | --- |
-| Football | MaxPreps scores, box score in the expanded view | 3-2, Centennial League 1-0 |
+| Football | MaxPreps scores, box score in the expanded view; live score and quarter while the team scores the game live on MaxPreps (Oct 30) | 3-2, Centennial League 1-0 |
 | Soccer (Boys fall, Girls spring) | MaxPreps; halves in the expanded view | Boys 3-5-1, league 2-2. The calendar names a tournament's host ("Blue Valley West"), so MaxPreps' opponent (Blue Valley Northwest) is shown when the names differ |
 | Volleyball | MaxPreps, every match (triangulars and tournaments list each match there; the calendar names only the day); sets in the expanded view | 21-7, league 9-1 |
 | Tennis (Girls fall, Boys spring) | TennisReporting draws (api.tennisreporting.com, the data behind its public bracket pages): the event found by date and the host site that lists "Manhattan HS"; every Manhattan entry's matches with names, rounds and scores, live during the day; team place once team points post | Oct 9 regional live (Matches 5-1 at 2 PM); 6A state Oct 16. Past invitationals (9) are not on TennisReporting and not listed |
@@ -64,7 +64,7 @@ User: "look for alternate websites for getting official results for all the spor
 
 ## Limitations
 
-- **No live scores.** No ESPN-style live feed exists for Kansas high schools; a game shows "Today" until MaxPreps has the final.
+- **Live scores only when the team scores the game live on MaxPreps** (since `4.245.0-maxpreps-live-scores`, Oct 30; user: "Can you find anything out there right now that has the Manhattan high School live for football?", then "Yes build it, merge when everything passes"). MaxPreps' team schedule (read every 2 minutes, the read the app already makes) marks a game its Scoretracker is scoring with "Live game is still in progress.", the period (`Q2`) and each team's running score. On game day the card goes Live ("2nd Quarter", 31-7 against Topeka in the 6A first round), as fresh as the team's scorekeeper enters it; the final replaces it. A live game the calendar lists only as a placeholder ("District - TBD") takes that card's place. A live flag left on after game day is ignored (the game reads "No score posted" until the final). No clock, quarter scores or possession: MaxPreps' schedule data has none, and no ESPN-style feed exists for Kansas high schools. Without live scoring on MaxPreps a game shows "Today" until the final is entered.
 - **Scores depend on coaches reporting to MaxPreps.** A past game without a reported score is not listed until it is reported.
 - **Meets without a results source:** golf meets not on Prep.Golf (or with no place posted) are not listed; cross country meets timed by someone other than LetsGoRun are not listed; tennis invitationals not on TennisReporting are not listed (MaxPreps has no contests for these Manhattan teams, checked Oct 9).
 - MaxPreps volleyball pages hold pool placeholders (0-0 ties, no result); those are not matches.
