@@ -54,7 +54,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.249.1-athleticlive-waiting-link';
+const VERSION='4.250.0-athleticlive-firebase-live';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4225,6 +4225,14 @@ async function athleticLiveResultsFor(school,meet,game,read,live=false){
     const [results,score,entries]=await Promise.all([doc(`ind_res_list/_doc/${race.i}`),doc(`xc_score_report/_doc/${encodeURIComponent(`xcSR|${race.i}`)}`),live?doc(`ind_ent_list/_doc/${race.i}`):null]);
     return{results,score,entries};
   }));
+  // On the day, a race whose document has no finishers yet takes them from
+  // the timer's live database (`athleticLiveFirebaseRaces`).
+  if(live&&docs.some(d=>!(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))){
+    const json=path=>read(`${ATHLETIC_LIVE_FIREBASE}meet_${meet.meet}/${path}.json`,ttl).then(text=>{try{return JSON.parse(text)}catch{return null}});
+    const [list,bySplit]=await Promise.all([json('liveRunEventList'),json('liveBySplit')]);
+    const fire=athleticLiveFirebaseRaces(list,bySplit);
+    (info.xcp||[]).forEach((race,i)=>{const f=fire[String(race.i)],d=docs[i];if(!f||(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))return;docs[i]={...d,results:{...(d.results||{}),r:f.results.r},score:d.score?.ms?.length?d.score:f.score};});
+  }
   const all=athleticLiveXcRaces(info,docs,meet.schools[school.id]).filter(r=>!(meet.exclude&&meet.exclude.test(r.race))),races=all.filter(r=>r.runners.length);
   if(!races.length)return null;
   const out={...xcRaceSummary(school,races),url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'View full results (LetsGoRun Timing)',note:'Results as posted by LetsGoRun Timing (AthleticLIVE).',source_name:'LetsGoRun Timing (AthleticLIVE)'};

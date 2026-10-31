@@ -10,7 +10,7 @@ import {gunzipSync} from 'node:zlib';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
-import {athleticLiveXcRaces,ATHLETIC_LIVE_DOCS} from '../src/high-school.mjs';
+import {athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces} from '../src/high-school.mjs';
 import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
 import {flintHillsChristianKsSchool} from '../src/schools/riley-pottawatomie-ks.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -157,6 +157,35 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     const [group]=worker.groupEvents(feed.events,after);
     const e=group.results.find(x=>x.start_time.startsWith('2026-10-31'));
     assert.deepEqual([e.status,e.headline,e.meet_live],['Final','Boys 6th of 7 · Girls 4th of 6',undefined]);
+  }finally{globalThis.Date=RealDate;restore();}
+}
+// October 31, 10:27 AM: the girls' race document still held no finishers
+// while the timer's live database had 58 (the real documents read then):
+// the card goes Live from the database. Flint Hills Christian's seven girls.
+{
+  const live=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/athletic-live/letsgorun-kas-state-xc-2026-live.json.gz',import.meta.url))).toString('utf8'));
+  const fire=athleticLiveFirebaseRaces(live.firebase['meet_79638/liveRunEventList.json'],live.firebase['meet_79638/liveBySplit.json']);
+  assert.deepEqual(Object.keys(fire),['2940220']);
+  assert.equal(fire['2940220'].results.r.length,58);
+  for(const [path,doc] of Object.entries(live.docs))pages.set(ATHLETIC_LIVE_DOCS+path,JSON.stringify(doc));
+  for(const [path,doc] of Object.entries(live.firebase))pages.set(ATHLETIC_LIVE_FIREBASE+path,JSON.stringify(doc));
+  const RealDate=Date,at=new RealDate('2026-10-31T15:27:00Z');
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
+  try{
+    const feed=await worker.fetchLive('flint-hills-christian-ks','Cross Country');
+    assert.equal(feed.error,null);
+    const [group]=worker.groupEvents(feed.events,at);
+    assert.equal(group.live.length,1,'Live from the timer\'s database');
+    const [e]=group.live;
+    assert.equal(e.recency_label,'Boys: not started · Girls: 58 of 64 finished');
+    assert.deepEqual(e.live_latest.map(line).slice(0,2),['Girls | Evy Ring (JR) | 54th of 58 · 28:39.75','Girls | Julianna Basel (JR) | 53rd of 58 · 28:20.88']);
+    assert.ok(e.live_latest.length===5);
+    const r=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),true);
+    assert.ok(r.rows.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+    // Not on a later day: the race documents alone.
+    const later=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),false);
+    assert.equal(later,null);
+    assert.ok(!requests.some(u=>u.startsWith(ATHLETIC_LIVE_FIREBASE)&&!u.endsWith('.json')&&!u.endsWith('robots.txt')),'only .json paths');
   }finally{globalThis.Date=RealDate;restore();}
 }
 // Home shows the meet to everyone (user, October 28: "Show it on Home even if
