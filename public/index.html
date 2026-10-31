@@ -102,14 +102,15 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
 .live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
 
-/* A glow travels around a live scoreboard's edge: a conic-gradient ring masked
-   to the border, its angle animated (browsers without @property show it still).
+/* A live scoreboard's edge glows slowly up and fades to dark (user, Oct 30:
+   the light rotating around every live card on the home page was "very
+   irritating"; "change it to a very slow glow to dark"). A ring in the team
+   color, masked to the border, with a soft blurred halo; one 8 s breath.
    The card sets --sas-glow-delay from the clock, so the 15 s refresh, which
    redraws the card, does not restart the glow. */
-@property --sas-glow-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
-.live-card-board::before,.live-card-board::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;padding:3px;background:conic-gradient(from var(--sas-glow-angle),transparent 0deg,transparent 200deg,color-mix(in srgb,var(--team-primary,var(--accent2)) 55%,transparent) 260deg,color-mix(in srgb,var(--team-primary,var(--accent2)) 60%,#fff) 320deg,#fff 345deg,transparent 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:sasGlow 3.2s linear infinite;animation-delay:var(--sas-glow-delay,0s)}
-.live-card-board::after{z-index:1;padding:14px;filter:blur(7px);opacity:.55}
-@keyframes sasGlow{to{--sas-glow-angle:360deg}}
+.live-card-board::before,.live-card-board::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;padding:2px;background:color-mix(in srgb,var(--team-primary,var(--accent2)) 70%,#fff);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.08;animation:sasGlow 8s ease-in-out infinite;animation-delay:var(--sas-glow-delay,0s)}
+.live-card-board::after{z-index:1;padding:12px;filter:blur(9px)}
+@keyframes sasGlow{0%,100%{opacity:.06}50%{opacity:.7}}
 @keyframes sasLive{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
 @keyframes sasScored{0%{background:color-mix(in srgb,var(--team-primary,var(--accent2)) 70%,transparent);transform:scale(1.12)}100%{background:transparent;transform:scale(1)}}
 @media(max-width:560px){.live-name{font-size:15px}.live-pts{font-size:30px}.live-mono{width:34px;height:34px}}
@@ -414,7 +415,7 @@ function liveCard(e){
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
   const opp=knownColors(e.opponent_colors);
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%3200}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%8000}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
 }
 // Everything else the live board publishes (user, October 16: "update all
 // live cards to show all the data"): the score by period, timeouts, win
