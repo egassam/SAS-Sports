@@ -420,6 +420,9 @@ try{
   // the key never shows in the feed's sources; a refused key falls back to
   // the channel live player.
   {
+    // The night of the game (the block read the real clock: it failed from
+    // October 31).
+    globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[night.getTime()]))}static now(){return night.getTime()}};
     const item=(id,title,at)=>({snippet:{resourceId:{videoId:id},title,publishedAt:at}});
     const playlist={items:[item('yixUf_Mtd1k','261030 Manhattan High Varsity football playoff vs. Topeka High','2026-10-30T23:40:00Z'),item('jvGame00001','261030 MHS JV football at Topeka','2026-10-30T21:00:00Z'),item('UChutmNK74k','261023 Manhattan High Varsity football senior night','2026-10-23T23:30:00Z')]};
     const details={items:[{id:'yixUf_Mtd1k',snippet:{title:playlist.items[0].snippet.title,liveBroadcastContent:'live'},liveStreamingDetails:{actualStartTime:'2026-10-30T23:45:00Z'}},{id:'jvGame00001',snippet:{title:playlist.items[1].snippet.title,liveBroadcastContent:'none'}},{id:'UChutmNK74k',snippet:{title:playlist.items[2].snippet.title,liveBroadcastContent:'none'},liveStreamingDetails:{actualStartTime:'2026-10-23T23:50:00Z',actualEndTime:'2026-10-24T02:30:00Z'}}]};

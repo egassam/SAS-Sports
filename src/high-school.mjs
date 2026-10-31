@@ -327,6 +327,28 @@ export function athleticLiveXcRaces(meet,races,team){
   return out;
 }
 
+// The timer's live database (October 31, KAS state meet: the race documents
+// above held no finishers while live.letsgorun.com showed the girls' race;
+// its page reads trackmeet-io.firebaseio.com, public like MileSplit Live,
+// robots.txt allows `.json`; user: "Yes, read it, it's public like
+// MileSplit"). `liveRunEventList` names each race on the course (`rui`) with
+// its race id (`mei`); `liveBySplit` holds each one's finishers
+// (`results.<rui>.split_final`: place `p`, time `m`, name `n`, year `y`,
+// team `tn`) and team scores (`teamResults.<rui>.split_final`: place `p`,
+// team `n`, points `pt`). Returned as the race documents' shape, by race id.
+export const ATHLETIC_LIVE_FIREBASE='https://trackmeet-io.firebaseio.com/';
+export function athleticLiveFirebaseRaces(list,bySplit){
+  const out={};
+  for(const [rui,race] of Object.entries(list||{})){
+    const id=String(race?.mei||'');if(!id)continue;
+    const finishers=Object.values(bySplit?.results?.[rui]?.split_final||{}).filter(r=>Number(r?.p)>0&&r.m);
+    if(!finishers.length)continue;
+    const teams=Object.values(bySplit?.teamResults?.[rui]?.split_final||{}).filter(t=>Number(t?.p)>0&&t.pt!=null);
+    out[id]={results:{r:finishers.map(r=>({p:Number(r.p),m:r.m,a:{n:r.n,y:r.y||'',t:{n:r.tn}}}))},score:teams.length?{ms:teams.map(t=>({p:Number(t.p),tn:t.n,sc:t.pt}))}:null};
+  }
+  return out;
+}
+
 // Cross country on MileSplit Live (milesplit.live/meets/<id>; user, October
 // 29: "If that database that they publish is going to be the live that
 // anybody can see then it's perfectly fine", then "Can we fill in other cross
