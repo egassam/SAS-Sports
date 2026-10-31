@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.251.0-live-before-finish';
+const VERSION='4.251.1-live-entered-only';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4255,6 +4255,9 @@ async function athleticLiveResultsFor(school,meet,game,read,live=false){
     (info.xcp||[]).forEach((race,i)=>{const f=fire[String(race.i)],d=docs[i];if(!f||(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))return;docs[i]={...d,results:{...(d.results||{}),r:f.results.r},score:d.score?.ms?.length?d.score:f.score};});
   }
   const all=athleticLiveXcRaces(info,docs,meet.schools[school.id]).filter(r=>!(meet.exclude&&meet.exclude.test(r.race))),races=all.filter(r=>r.runners.length);
+  // Entry lists posted without the school (October 31: Kickapoo Nation,
+  // not entered, read "Live · Races under way"): its card does not go live.
+  if(live&&game&&!all.length&&docs.some(d=>(d.entries?.en||[]).length))game.athleticLiveNotEntered=true;
   if(!races.length)return null;
   const out={...xcRaceSummary(school,races),url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'View full results (LetsGoRun Timing)',note:'Results as posted by LetsGoRun Timing (AthleticLIVE).',source_name:'LetsGoRun Timing (AthleticLIVE)'};
   return live?xcLive(out,all,races):out;
@@ -4353,7 +4356,8 @@ const clockText=time=>{const [h,m]=time.split(':').map(Number);return`${h%12||12
 // An AthleticLIVE meet before its first finisher (user, October 31: Flint
 // Hills Christian at the KAS state meet): the start time and the timer's
 // live page, as Manhattan's state card reads.
-function athleticLiveSchedule(meet){
+function athleticLiveSchedule(meet,notEntered=false){
+  if(notEntered)return{rows:[{group:meet.site||'Meet',participant:'Races begin',result:clockText(meet.time)}],starts:[],url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'Live results (LetsGoRun Timing)',note:"Not on the timer's entry lists for this meet."};
   return{rows:[{group:meet.site||'Meet',participant:'Races begin',result:clockText(meet.time)}],starts:[{label:'Races',time:meet.time}],url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'Live results (LetsGoRun Timing)',note:'LetsGoRun Timing posts live results on AthleticLIVE; they appear here as runners finish.'};
 }
 function midwestTimingSchedule(meet){
@@ -4626,7 +4630,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // A dual on Bound names the opponent: "Rock Creek vs Abilene".
       const relation=game.h2h?(game.site==='AWAY'?'at':'vs'):named?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null)||(game.teams&&game.date<today?boundEntryResults(school,module,team,game):null);
-      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,schedule:game.midwestTiming?midwestTimingSchedule(game.midwestTiming):game.athleticLive&&game.athleticLive.time&&game.date>=new Date(today).toISOString().slice(0,10)?athleticLiveSchedule(game.athleticLive):null,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
+      const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,schedule:game.midwestTiming?midwestTimingSchedule(game.midwestTiming):game.athleticLive&&game.athleticLive.time&&game.date>=new Date(today).toISOString().slice(0,10)?athleticLiveSchedule(game.athleticLive,game.athleticLiveNotEntered):null,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
       if(event)events.push(event);
     }
     // A MaxPreps-only school: its games without a score are its schedule
