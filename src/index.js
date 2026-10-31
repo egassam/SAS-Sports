@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.250.0-athleticlive-firebase-live';
+const VERSION='4.251.0-live-before-finish';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4034,6 +4034,24 @@ async function youtubeChannelVideos(tv,env,onAir){
     return{videos:youtubeVideos(playlist,info.ok?await info.json():null),read:info.ok?'ok':'ok (no live states)'};
   }catch{return{videos:null,read:'unreachable'}}
 }
+// A meet under way before its first finisher (user, October 31: "the live
+// boxes should show up before runners finish so we know something is
+// happening and it's working"): from its first race's start time on its day
+// the card reads LIVE with the race on the course, until results post; three
+// hours after the last start with none it reads Today again.
+const SCHEDULE_LIVE_HOURS=3;
+function scheduleUnderWay(schedule,date,now,school){
+  const starts=(schedule?.starts||[]).filter(r=>/^\d{1,2}:\d{2}$/.test(r.time||'')).map(r=>({...r,min:Number(r.time.split(':')[0])*60+Number(r.time.split(':')[1])})).sort((a,b)=>a.min-b.min);
+  if(!starts.length)return null;
+  const local=schoolNow(now||new Date(),school);
+  if(local.toISOString().slice(0,10)!==date)return null;
+  const min=local.getUTCHours()*60+local.getUTCMinutes();
+  if(min<starts[0].min||min>starts.at(-1).min+SCHEDULE_LIVE_HOURS*60)return null;
+  const begun=starts.filter(r=>r.min<=min),current=begun.at(-1),next=starts.find(r=>r.min>min);
+  const label=`${current.label==='Races'?'Races':`${current.label} race`} under way${next?` · ${next.label} ${clockText(next.time)}`:''}`;
+  const rows=(schedule.rows||[]).map(row=>{const start=starts.find(r=>row.participant===`${r.label} race`||(r.label==='Races'&&row.participant==='Races begin'));return start&&start.min<=min?{...row,participant:start.label==='Races'?'Races':row.participant,result:`Started ${clockText(start.time)}`}:row;});
+  return{label,rows};
+}
 function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,schedule=null,now}){
   const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
@@ -4048,6 +4066,8 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   // A meet with a `schedule` is one the school qualified for.
   else if(!schedule&&(placeholder||(eventType(sport)==='GAME'?isHighSchoolPlaceholder(opponent):/(?<!sub-?)\bstate\b/i.test(opponent))))return null;
   else{status='Final';unscored=true;}
+  const underWay=status==='Today'&&!results&&!contest?.live?scheduleUnderWay(schedule,date,now,school):null;
+  if(underWay)status='Live';
   const noResult=eventType(sport)==='GAME'?'No score posted':'No results posted';
   const headline=scored?`${result}, ${contest.score}-${contest.opponent_score}`:unscored?noResult:(results?.headline||null);
   const dateText=highSchoolDateText(date),title=`${team?`${team} · `:''}${school.short_name} ${relation} ${opponent}`;
@@ -4056,7 +4076,8 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
   // A game the team scores live on MaxPreps: the running score and period.
-  if(status==='Live'&&!results){
+  if(underWay){event.meet_live=true;event.priority_bucket='live';event.recency_label=underWay.label;event.live_latest=[];event.live_score_source=schedule.label?.replace(/^Live results \((.*)\)$/,'$1')||'Official live source';}
+  else if(status==='Live'&&!results){
     const live=contest.live,period=maxprepsPeriodLabel(live.period);
     Object.assign(event,{priority_bucket:'live',school_score:live.score!=null?String(live.score):null,opponent_score:live.opponent_score!=null?String(live.opponent_score):null,headline:period||'Live now',recency_label:period||'Live now',results:[],result_count:0,live_score_source:'MaxPreps (scored live by the team)',live_update_note:'Live score from MaxPreps · as the team enters it',highlight_status:'Live: the score as the team enters it on MaxPreps; the final replaces it.'});
     if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='Follow on MaxPreps';}
@@ -4076,7 +4097,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
     event.meet_results_verified=true;
   }
   // A meet still to run: its race times and the timer's live page.
-  if(schedule&&!results&&!scored&&!unscored){event.results=schedule.rows;event.result_count=schedule.rows.length;if(schedule.url){event.recap_url=schedule.url;event.recap_label=schedule.label;}event.highlight_status=schedule.note;}
+  if(schedule&&!results&&!scored&&!unscored){event.results=underWay?underWay.rows:schedule.rows;event.result_count=event.results.length;if(schedule.url){event.recap_url=schedule.url;event.recap_label=schedule.label;}event.highlight_status=underWay?`Live: ${underWay.label.split(' · ')[0].toLowerCase()}. ${schedule.note}`:schedule.note;}
   if(unscored){event.no_result_posted=true;event.highlight_status='Played; no score or result has been posted by MaxPreps, Bound, a timer or the school.';}
   if(contest?.stream_url)event.stream_url=contest.stream_url;
   if(contest&&contest.source!=='bound')event.maxpreps_url=contest.game_url||null;
@@ -4333,10 +4354,10 @@ const clockText=time=>{const [h,m]=time.split(':').map(Number);return`${h%12||12
 // Hills Christian at the KAS state meet): the start time and the timer's
 // live page, as Manhattan's state card reads.
 function athleticLiveSchedule(meet){
-  return{rows:[{group:meet.site||'Meet',participant:'Races begin',result:clockText(meet.time)}],url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'Live results (LetsGoRun Timing)',note:'LetsGoRun Timing posts live results on AthleticLIVE; they appear here as runners finish.'};
+  return{rows:[{group:meet.site||'Meet',participant:'Races begin',result:clockText(meet.time)}],starts:[{label:'Races',time:meet.time}],url:`https://live.letsgorun.com/meets/${meet.meet}`,label:'Live results (LetsGoRun Timing)',note:'LetsGoRun Timing posts live results on AthleticLIVE; they appear here as runners finish.'};
 }
 function midwestTimingSchedule(meet){
-  return{rows:meet.races.map(r=>({group:meet.site,participant:`${r.label} race`,result:clockText(r.time)})),url:meet.live,label:'Live results (MileSplit Live)',note:`Race times from KSHSAA. Midwest Timing & Results posts live results on MileSplit Live; they appear here as runners finish.`};
+  return{rows:meet.races.map(r=>({group:meet.site,participant:`${r.label} race`,result:clockText(r.time)})),starts:meet.races.map(r=>({label:r.label,time:r.time})),url:meet.live,label:'Live results (MileSplit Live)',note:`Race times from KSHSAA. Midwest Timing & Results posts live results on MileSplit Live; they appear here as runners finish.`};
 }
 // Track and field from the same timer (October 25): a meet's index gives the
 // team scores and links one page per event (40 to 90 a meet); each event's

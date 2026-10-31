@@ -100,10 +100,20 @@ await at('2026-10-31T16:00:00Z',async t=>{
   const ttls=[],base=worker.meetProReader(),readAt=(url,ttl)=>{ttls.push([url,ttl]);return base(url,ttl);};
   assert.equal(await worker.midwestTimingResultsFor(school,state,{date:state.date},readAt,true),null);
   assert.deepEqual(ttls,[[`${MIDWEST_TIMING_RESULTS}2026`,SOURCE_TTL.schedule]]);
-  const e=(await feed(t)).upcoming.concat((await feed(t)).results).find(x=>x.start_time.startsWith('2026-10-31'));
+  // 11:00 AM, after the girls' 10:00 start (user, October 31: "the live
+  // boxes should show up before runners finish"): LIVE, the girls' race
+  // under way, the boys' time next, the timer's live page.
+  const group=await feed(t),e=group.live.find(x=>x.start_time.startsWith('2026-10-31'));
+  assert.deepEqual([e.status,e.meet_live,e.recency_label],['Live',true,'Girls race under way · Boys 11:45 AM']);
+  assert.deepEqual(e.results.map(line),['Rim Rock Farm, Lawrence | Girls race | Started 10:00 AM','Rim Rock Farm, Lawrence | Boys race | 11:45 AM']);
+  assert.equal(e.recap_url,state.live);
+  assert.ok(!group.upcoming.concat(group.results).some(x=>x.start_time.startsWith('2026-10-31')),'one card');
+});
+// 9:30 AM: still to start.
+await at('2026-10-31T14:30:00Z',async t=>{
+  const e=(await feed(t)).upcoming.find(x=>x.start_time.startsWith('2026-10-31'));
   assert.equal(e.status,'Today');
   assert.equal(e.results.length,2);
-  assert.equal(e.recap_url,state.live);
 });
 
 // Posted: team places and every runner, from the timer's PDF.

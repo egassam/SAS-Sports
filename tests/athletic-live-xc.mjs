@@ -137,14 +137,28 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
   {
     for(const to of Object.values(ids)){const doc=JSON.parse(pages.get(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/${to}`));doc._source.r=[];pages.set(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/${to}`,JSON.stringify(doc));pages.delete(`${ATHLETIC_LIVE_DOCS}xc_score_report/_doc/xcSR%7C${to}`);}
     pages.set(`${ATHLETIC_LIVE_DOCS}live_results_meet_list/_doc/79638`,JSON.stringify(info));
-    const early=new RealDate('2026-10-31T14:50:00Z');
-    globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[early.getTime()]))}static now(){return early.getTime()}};
+    const at=iso=>{const t=new RealDate(iso);globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[t.getTime()]))}static now(){return t.getTime()}};return t;};
     try{
-      const feed=await worker.fetchLive('flint-hills-christian-ks','Cross Country');
-      const e=feed.events.find(x=>x.start_time.startsWith('2026-10-31'));
+      // 9:40 AM: still to start.
+      at('2026-10-31T14:40:00Z');
+      let e=(await worker.fetchLive('flint-hills-christian-ks','Cross Country')).events.find(x=>x.start_time.startsWith('2026-10-31'));
       assert.deepEqual([e.status,e.recap_url,e.recap_label],['Today','https://live.letsgorun.com/meets/79638','Live results (LetsGoRun Timing)']);
       assert.deepEqual(e.results.map(line),['Warner Memorial Park, Manhattan | Races begin | 9:45 AM']);
       assert.ok(/as runners finish/.test(e.highlight_status));
+      // 9:50 AM, no finisher yet (user, October 31: "the live boxes should
+      // show up before runners finish"): LIVE, races under way.
+      const t=at('2026-10-31T14:50:00Z');
+      const feed=await worker.fetchLive('flint-hills-christian-ks','Cross Country');
+      e=feed.events.find(x=>x.start_time.startsWith('2026-10-31'));
+      assert.deepEqual([e.status,e.meet_live,e.recency_label,e.recap_url],['Live',true,'Races under way','https://live.letsgorun.com/meets/79638']);
+      assert.deepEqual(e.results.map(line),['Warner Memorial Park, Manhattan | Races | Started 9:45 AM']);
+      assert.deepEqual(e.live_latest,[]);
+      const [group]=worker.groupEvents(feed.events,t);
+      assert.equal(group.live.length,1,'in the live box');
+      // 3 h after the start with nothing posted: Today again.
+      at('2026-10-31T17:50:00Z');
+      e=(await worker.fetchLive('flint-hills-christian-ks','Cross Country')).events.find(x=>x.start_time.startsWith('2026-10-31'));
+      assert.equal(e.status,'Today');
     }finally{globalThis.Date=RealDate;restore();}
   }
   // A day later with the full results: Final.

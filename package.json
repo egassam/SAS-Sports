@@ -345,6 +345,7 @@
     "test:arkansas-pine-bluff-module": "node tests/arkansas-pine-bluff-module.mjs",
     "test:prairie-view-am-module": "node tests/prairie-view-am-module.mjs",
     "test:southern-module": "node tests/southern-module.mjs",
+    "check:race-day": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/race-day-check.mjs",
     "verify:preview": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs",
     "audit:sports": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/audit-school-sports.mjs",
     "verify:prod": "NODE_USE_ENV_PROXY=1 node --disable-warning=UNDICI-EHPA scripts/verify-release.mjs --prod",

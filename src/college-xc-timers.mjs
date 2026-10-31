@@ -19,13 +19,26 @@ export const COLLEGE_XC_TIMER_MEETS=[
   {date:'2026-11-21',conference:null,name:/^NCAA\b(?!.*\bregion).*\bchampionships?\b/i,timer:PRIMETIME,url:'https://www.pttiming.com/event/e767dbdb-fe80-456d-b924-e817c559c1a1',site:'Terre Haute, IN',races:[]},
 ];
 
-// The meet's day card for each of the school's meets still to run.
+// The meet's day card for each of the school's meets still to run; and a
+// final the school's schedule has scored before its recap or TFRRS (October
+// 31, K-State at the Big 12: "W (15th) / M (10th) Oct 31 Final vs Cross
+// Country Big 12 Championship" with no link): K-State's team headline, the
+// timer's full results, and where runners will come from.
 export function applyCollegeXcTimerMeets(events,school,meets=COLLEGE_XC_TIMER_MEETS){
   for(const event of events){
-    if(event.status!=='Upcoming'&&event.status!=='Today')continue;
     const day=String(event.start_time||'').slice(0,10);
     const meet=meets.find(m=>m.date===day&&(!m.conference||m.conference===school?.conference)&&m.name.test(event.opponent||''));
     if(!meet)continue;
+    if(event.status==='Final'){
+      if(event.recap_url)continue;
+      const teams=(event.results||[]).filter(r=>/ team$/i.test(r.participant||''));
+      if(teams.length&&teams.length===(event.results||[]).length)event.headline=teams.map(r=>`${/^women/i.test(r.group)?"Women's":"Men's"} team: ${r.result}`).join(' / ');
+      event.recap_url=meet.url;
+      event.recap_label=`Full results (${meet.timer})`;
+      event.highlight_status=`${teams.length?'Team places from the official schedule. ':''}Runners and times appear here when the school's recap or TFRRS posts them; the full results are on ${meet.timer}'s site.`;
+      continue;
+    }
+    if(event.status!=='Upcoming'&&event.status!=='Today')continue;
     // A school listing each team on its own (BYU, FAU) shows that team's race.
     const races=meet.races.filter(r=>!event.team_label||r.team===event.team_label);
     event.results=races.map(r=>({group:meet.site,participant:`${r.label} race`,result:r.time}));
