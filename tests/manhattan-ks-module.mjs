@@ -140,6 +140,7 @@ try{
     'Upcoming Oct 23, 7:00 PM Manhattan vs Washburn Rural | ',
     'Upcoming Oct 30, 7:00 PM Manhattan at District - TBD | '
   ]);
+  assert.equal(group.upcoming[0].video,undefined,'no live player five hours before kickoff');
   assert.deepEqual(group.records,[{team_label:null,wins:3,losses:2,ties:0,conference:{name:'Centennial League',wins:1,losses:0,ties:0,text:'1-0'},text:'3-2'}]);
   const dodge=group.results[2];
   assert.equal(dodge.recap_url,contests[2].game_url);
@@ -410,6 +411,9 @@ try{
     assert.equal(game.live_update_note,'Live score from MaxPreps · as the team enters it');
     assert.ok(!group.upcoming.some(e=>/District - TBD/.test(e.title)),'the live game replaces the calendar placeholder');
     assert.ok(group.results.some(e=>e.headline==='W, 60-13'),'finals still read');
+    // The home game's live broadcast: MHS Student Media's YouTube live player.
+    assert.deepEqual(game.video,{kind:'youtube_live',embed_url:'https://www.youtube.com/embed/live_stream?channel=UCUviECSA-bWPb_ZJkcfwHpg',watch_url:'https://www.youtube.com/@mhsmentor/streams',source:'MHS Student Media (YouTube)'});
+    assert.ok(group.results.every(e=>!e.video),'finals carry no live player');
   }finally{globalThis.Date=RealDate;}
   // The next day an unfinished live flag is not a live game.
   const nextDay=new RealDate('2026-11-01T18:00:00Z');
@@ -420,6 +424,10 @@ try{
   }finally{globalThis.Date=RealDate;}
 }
 assert.ok(read('../public/index.html').includes("esc(e.live_update_note||(e.live_score_source?"),'a live card names how its score updates');
+{
+  const page=read('../public/index.html');
+  assert.ok(page.includes('<section id="videoDock" class="video-dock" hidden></section>')&&page.includes('function syncVideoDock(groups)')&&page.includes('  syncVideoDock(groups);\n  if(homeMode())return renderHome(groups);'),'the live player sits above the feed and survives redraws');
+}
 // A failed calendar or MaxPreps read serves the last copy (the school's site
 // answered Cloudflare with an intermittent 520; Oct 16, 3 of 8 refreshes blank).
 {const w=read('../src/index.js');

@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.245.0-maxpreps-live-scores';
+const VERSION='4.246.0-school-live-video';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4598,6 +4598,21 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       const twin=events.findIndex(e=>(e.no_result_posted||event.status==='Live'&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||event.status==='Live'&&(isHighSchoolPlaceholder(e.opponent)||/\btb[ad]\b/i.test(e.opponent))));
       if(twin>=0)events.splice(twin,1);
       events.push(event);
+    }
+  }
+  // The school's own live broadcast (module `youtube`): a game live or at
+  // kickoff time (half an hour before to four hours after) carries YouTube's
+  // channel live player. The app reads nothing from YouTube: its robots.txt
+  // and terms rule out reading the channel's pages and feeds.
+  const tv=module.youtube;
+  if(tv?.sports?.includes(sport)){
+    const local=schoolNow(now,school).getTime();
+    for(const e of events){
+      if(e.status!=='Live'&&e.status!=='Today')continue;
+      if(tv.home&&!/ vs /.test(e.title))continue;
+      const start=Date.parse(e.start_time);
+      if(e.status==='Today'&&!(Number.isFinite(start)&&local>=start-30*60e3&&local<=start+4*3600e3))continue;
+      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:`${tv.url}/streams`,source:`${tv.name} (YouTube)`};
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
