@@ -1483,24 +1483,13 @@
    "verified_detail": "final L, 13-41"
   },
   "minnesota|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.139Z",
-   "last_detail": "live 1-0 · End of 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "minnesota|Hockey||2026-10-30|1",
-    "title": "Minnesota vs Penn State",
-    "started_seen": "2026-10-31T00:37:25.914Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.914Z",
-     "2026-10-31T00:38:31.967Z",
-     "2026-10-31T00:39:55.284Z",
-     "2026-10-31T00:41:19.599Z",
-     "2026-10-31T00:42:43.657Z",
-     "2026-10-31T00:44:06.615Z",
-     "2026-10-31T00:45:28.139Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.489Z",
+   "last_detail": "final T, 1-1",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.489Z",
+   "verified_game": "Minnesota vs Penn State",
+   "verified_detail": "final T, 1-1"
   },
   "minnesota|Soccer": {
    "state": "done",
@@ -1689,24 +1678,13 @@
    "verified_detail": "final L, 23-31"
   },
   "penn-state|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.124Z",
-   "last_detail": "live 0-1 · End of 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "penn-state|Hockey||2026-10-30|1",
-    "title": "Penn State at Minnesota",
-    "started_seen": "2026-10-31T00:37:25.511Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.511Z",
-     "2026-10-31T00:38:32.450Z",
-     "2026-10-31T00:39:55.222Z",
-     "2026-10-31T00:41:19.441Z",
-     "2026-10-31T00:42:43.489Z",
-     "2026-10-31T00:44:06.243Z",
-     "2026-10-31T00:45:28.124Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:51.456Z",
+   "last_detail": "final T, 1-1",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:51.456Z",
+   "verified_game": "Penn State at Minnesota",
+   "verified_detail": "final T, 1-1"
   },
   "penn-state|Lacrosse": {
    "state": "off"
@@ -1943,32 +1921,13 @@
    "verified_detail": "final L, 7-17"
   },
   "wisconsin|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.085Z",
-   "last_detail": "live 2-0 · End of 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "wisconsin|Hockey||2026-10-30|1",
-    "title": "Wisconsin at St. Cloud State",
-    "started_seen": "2026-10-30T20:55:53.140Z",
-    "live_passes": [
-     "2026-10-30T20:55:53.140Z",
-     "2026-10-30T20:56:55.192Z",
-     "2026-10-30T20:58:38.137Z",
-     "2026-10-30T20:59:59.858Z",
-     "2026-10-30T21:01:01.599Z",
-     "2026-10-30T21:02:03.319Z",
-     "2026-10-30T21:03:04.657Z",
-     "2026-10-30T21:04:06.009Z",
-     "2026-10-31T00:37:24.801Z",
-     "2026-10-31T00:38:32.251Z",
-     "2026-10-31T00:39:55.279Z",
-     "2026-10-31T00:41:19.582Z",
-     "2026-10-31T00:42:43.963Z",
-     "2026-10-31T00:44:06.409Z",
-     "2026-10-31T00:45:28.085Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.687Z",
+   "last_detail": "final W, 7-1",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.687Z",
+   "verified_game": "Wisconsin at St. Cloud State",
+   "verified_detail": "final W, 7-1"
   },
   "wisconsin|Soccer": {
    "state": "done",
@@ -2100,24 +2059,13 @@
    "verified_detail": "final W, 27-21"
   },
   "boston-college|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.376Z",
-   "last_detail": "live 2-2 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "boston-college|Hockey||2026-10-30|1",
-    "title": "Boston College vs Northeastern",
-    "started_seen": "2026-10-31T00:37:24.797Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.797Z",
-     "2026-10-31T00:38:32.529Z",
-     "2026-10-31T00:39:55.858Z",
-     "2026-10-31T00:41:19.665Z",
-     "2026-10-31T00:42:44.633Z",
-     "2026-10-31T00:44:06.231Z",
-     "2026-10-31T00:45:28.376Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.408Z",
+   "last_detail": "final W, 3-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.408Z",
+   "verified_game": "Boston College vs Northeastern",
+   "verified_detail": "final W, 3-2"
   },
   "boston-college|Lacrosse": {
    "state": "off"
@@ -3089,24 +3037,13 @@
    "verified_detail": "final W, 4-3"
   },
   "providence|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.253Z",
-   "last_detail": "live 3-1 · End of 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "providence|Hockey||2026-10-30|1",
-    "title": "Providence at Maine",
-    "started_seen": "2026-10-31T00:37:24.953Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.953Z",
-     "2026-10-31T00:38:32.299Z",
-     "2026-10-31T00:39:55.452Z",
-     "2026-10-31T00:41:19.516Z",
-     "2026-10-31T00:42:43.611Z",
-     "2026-10-31T00:44:06.218Z",
-     "2026-10-31T00:45:28.253Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.278Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.278Z",
+   "verified_game": "Providence at Maine",
+   "verified_detail": "final W, 3-1"
   },
   "providence|Lacrosse": {
    "state": "off"
@@ -4984,24 +4921,13 @@
    "state": "off"
   },
   "charlotte|Football": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.240Z",
-   "last_detail": "live 24-14 · 0:03 - 2nd · ball: opponent · official_schedule+live_scoreboard",
-   "game": {
-    "key": "charlotte|Football||2026-10-30|1",
-    "title": "Charlotte vs Tulane",
-    "started_seen": "2026-10-31T00:37:23.959Z",
-    "live_passes": [
-     "2026-10-31T00:37:23.959Z",
-     "2026-10-31T00:38:32.153Z",
-     "2026-10-31T00:40:15.747Z",
-     "2026-10-31T00:41:19.648Z",
-     "2026-10-31T00:42:43.800Z",
-     "2026-10-31T00:44:06.165Z",
-     "2026-10-31T00:45:28.240Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:48.363Z",
+   "last_detail": "final L, 31-38",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:48.363Z",
+   "verified_game": "Charlotte vs Tulane",
+   "verified_detail": "final L, 31-38"
   },
   "charlotte|Lacrosse": {
    "state": "off"
@@ -5229,24 +5155,13 @@
    "state": "off"
   },
   "south-florida|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:48.856Z",
-   "last_detail": "live 11-17 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "south-florida|Volleyball||2026-10-30|1",
-    "title": "USF at Rice",
-    "started_seen": "2026-10-31T00:37:23.813Z",
-    "live_passes": [
-     "2026-10-31T00:37:23.813Z",
-     "2026-10-31T00:38:32.072Z",
-     "2026-10-31T00:40:16.676Z",
-     "2026-10-31T00:41:39.811Z",
-     "2026-10-31T00:43:04.583Z",
-     "2026-10-31T00:44:06.672Z",
-     "2026-10-31T00:45:48.856Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.257Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.257Z",
+   "verified_game": "USF at Rice",
+   "verified_detail": "final L, 0-3"
   },
   "temple|Basketball": {
    "state": "off"
@@ -5444,24 +5359,13 @@
    "state": "off"
   },
   "delaware|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:27.965Z",
-   "last_detail": "live 14-14 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "delaware|Volleyball||2026-10-30|1",
-    "title": "Delaware at New Mexico St",
-    "started_seen": "2026-10-31T00:37:25.431Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.431Z",
-     "2026-10-31T00:38:52.382Z",
-     "2026-10-31T00:40:16.746Z",
-     "2026-10-31T00:41:39.564Z",
-     "2026-10-31T00:43:03.863Z",
-     "2026-10-31T00:44:26.725Z",
-     "2026-10-31T00:45:27.965Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.532Z",
+   "last_detail": "final W, 3-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.532Z",
+   "verified_game": "Delaware at New Mexico St",
+   "verified_detail": "final W, 3-2"
   },
   "fiu|Baseball": {
    "state": "off"
@@ -5641,24 +5545,13 @@
    "state": "off"
   },
   "missouri-state|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.221Z",
-   "last_detail": "live 2-5 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "missouri-state|Volleyball||2026-10-30|1",
-    "title": "Missouri State vs MTSU",
-    "started_seen": "2026-10-31T00:37:25.608Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.608Z",
-     "2026-10-31T00:38:52.472Z",
-     "2026-10-31T00:39:55.313Z",
-     "2026-10-31T00:41:40.833Z",
-     "2026-10-31T00:42:43.573Z",
-     "2026-10-31T00:44:06.384Z",
-     "2026-10-31T00:45:28.221Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.401Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.401Z",
+   "verified_game": "Missouri State vs MTSU",
+   "verified_detail": "final L, 2-3"
   },
   "sam-houston|Baseball": {
    "state": "off"
@@ -7056,24 +6949,13 @@
    "state": "off"
   },
   "maine|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.110Z",
-   "last_detail": "live 1-6 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "maine|Hockey||2026-10-30|1",
-    "title": "Maine at Boston University",
-    "started_seen": "2026-10-31T00:37:24.935Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.935Z",
-     "2026-10-31T00:38:32.789Z",
-     "2026-10-31T00:39:55.342Z",
-     "2026-10-31T00:41:19.595Z",
-     "2026-10-31T00:42:44.006Z",
-     "2026-10-31T00:44:06.192Z",
-     "2026-10-31T00:45:28.110Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:55.487Z",
+   "last_detail": "final L, 2-7",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:55.487Z",
+   "verified_game": "Maine at Boston University",
+   "verified_detail": "final L, 2-7"
   },
   "maine|Soccer": {
    "state": "done",
@@ -7103,24 +6985,13 @@
    "state": "off"
   },
   "new-hampshire|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.244Z",
-   "last_detail": "live 1-2 · 18:07 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "new-hampshire|Hockey||2026-10-30|1",
-    "title": "New Hampshire at Vermont",
-    "started_seen": "2026-10-31T00:37:25.418Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.418Z",
-     "2026-10-31T00:38:32.433Z",
-     "2026-10-31T00:39:55.240Z",
-     "2026-10-31T00:41:19.726Z",
-     "2026-10-31T00:42:43.631Z",
-     "2026-10-31T00:44:06.568Z",
-     "2026-10-31T00:45:28.244Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.963Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.963Z",
+   "verified_game": "New Hampshire at Vermont",
+   "verified_detail": "final L, 2-3"
   },
   "new-hampshire|Lacrosse": {
    "state": "off"
@@ -7954,53 +7825,31 @@
    "state": "off"
   },
   "robert-morris|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.154Z",
-   "last_detail": "live 0-2 · 19:56 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "robert-morris|Hockey||2026-10-30|1",
-    "title": "Robert Morris vs Air Force",
-    "started_seen": "2026-10-31T00:37:24.955Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.955Z",
-     "2026-10-31T00:38:32.442Z",
-     "2026-10-31T00:39:55.250Z",
-     "2026-10-31T00:41:19.506Z",
-     "2026-10-31T00:42:43.699Z",
-     "2026-10-31T00:44:06.189Z",
-     "2026-10-31T00:45:28.154Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-10-31T06:18:53.533Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
    "failures": 18,
    "last_failure": {
     "at": "2026-10-25T12:16:37.311Z",
     "game": "Robert Morris at Bentley",
     "detail": "result reads \"L, 1-2\", ESPN final L, 1-5"
-   }
+   },
+   "verified_at": "2026-10-31T06:18:53.533Z",
+   "verified_game": "Robert Morris vs Air Force",
+   "verified_detail": "final L, 2-3"
   },
   "robert-morris|Lacrosse": {
    "state": "off"
   },
   "robert-morris|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.193Z",
-   "last_detail": "live 0-0 · 74' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "robert-morris|Soccer|Men's|2026-10-30|1",
-    "title": "Men's · Robert Morris at Cleveland St",
-    "started_seen": "2026-10-31T00:37:24.108Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.108Z",
-     "2026-10-31T00:38:33.177Z",
-     "2026-10-31T00:39:55.277Z",
-     "2026-10-31T00:41:19.808Z",
-     "2026-10-31T00:42:44.292Z",
-     "2026-10-31T00:44:06.982Z",
-     "2026-10-31T00:45:28.193Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.868Z",
+   "last_detail": "final T, 0-0",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.868Z",
+   "verified_game": "Men's · Robert Morris at Cleveland St",
+   "verified_detail": "final T, 0-0"
   },
   "robert-morris|Softball": {
    "state": "off"
@@ -8021,24 +7870,13 @@
    "state": "off"
   },
   "wright-state|Soccer": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.184Z",
-   "last_detail": "live 2-1 · 67' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "wright-state|Soccer|Men's|2026-10-30|1",
-    "title": "Men's · Wright State vs IU Indy",
-    "started_seen": "2026-10-31T00:37:26.523Z",
-    "live_passes": [
-     "2026-10-31T00:37:26.523Z",
-     "2026-10-31T00:38:33.182Z",
-     "2026-10-31T00:39:55.410Z",
-     "2026-10-31T00:41:19.393Z",
-     "2026-10-31T00:42:43.858Z",
-     "2026-10-31T00:44:06.987Z",
-     "2026-10-31T00:45:28.184Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:52.597Z",
+   "last_detail": "final T, 2-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:52.597Z",
+   "verified_game": "Men's · Wright State vs IU Indy",
+   "verified_detail": "final T, 2-2"
   },
   "wright-state|Volleyball": {
    "state": "done",
@@ -8131,24 +7969,13 @@
    "state": "off"
   },
   "brown|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.215Z",
-   "last_detail": "live 1-1 · 17:43 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "brown|Hockey||2026-10-30|1",
-    "title": "Brown at Yale",
-    "started_seen": "2026-10-31T00:37:26.285Z",
-    "live_passes": [
-     "2026-10-31T00:37:26.285Z",
-     "2026-10-31T00:38:32.547Z",
-     "2026-10-31T00:39:55.147Z",
-     "2026-10-31T00:41:19.909Z",
-     "2026-10-31T00:42:43.967Z",
-     "2026-10-31T00:44:06.241Z",
-     "2026-10-31T00:45:28.215Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.641Z",
+   "last_detail": "final L, 1-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.641Z",
+   "verified_game": "Brown at Yale",
+   "verified_detail": "final L, 1-2"
   },
   "brown|Lacrosse": {
    "state": "off"
@@ -8229,32 +8056,13 @@
    "state": "off"
   },
   "cornell|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.131Z",
-   "last_detail": "live 3-2 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "cornell|Hockey||2026-10-30|1",
-    "title": "Cornell vs Union (NY)",
-    "started_seen": "2026-10-30T20:55:53.372Z",
-    "live_passes": [
-     "2026-10-30T20:55:53.372Z",
-     "2026-10-30T20:57:15.604Z",
-     "2026-10-30T20:58:36.922Z",
-     "2026-10-30T20:59:39.482Z",
-     "2026-10-30T21:01:01.028Z",
-     "2026-10-30T21:02:03.795Z",
-     "2026-10-30T21:03:04.645Z",
-     "2026-10-30T21:04:05.811Z",
-     "2026-10-31T00:37:24.778Z",
-     "2026-10-31T00:38:32.289Z",
-     "2026-10-31T00:39:55.338Z",
-     "2026-10-31T00:41:20.174Z",
-     "2026-10-31T00:42:43.616Z",
-     "2026-10-31T00:44:06.222Z",
-     "2026-10-31T00:45:28.131Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.372Z",
+   "last_detail": "final W, 5-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.372Z",
+   "verified_game": "Cornell vs Union (NY)",
+   "verified_detail": "final W, 5-2"
   },
   "cornell|Lacrosse": {
    "state": "off"
@@ -8383,24 +8191,13 @@
    "state": "off"
   },
   "princeton|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.163Z",
-   "last_detail": "live 3-0 · 19:02 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "princeton|Hockey||2026-10-30|1",
-    "title": "Princeton at Stonehill",
-    "started_seen": "2026-10-31T00:37:24.805Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.805Z",
-     "2026-10-31T00:38:32.222Z",
-     "2026-10-31T00:39:55.266Z",
-     "2026-10-31T00:41:20.037Z",
-     "2026-10-31T00:42:43.612Z",
-     "2026-10-31T00:44:06.299Z",
-     "2026-10-31T00:45:28.163Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.556Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.556Z",
+   "verified_game": "Princeton at Stonehill",
+   "verified_detail": "final W, 3-0"
   },
   "princeton|Lacrosse": {
    "state": "off"
@@ -8559,24 +8356,13 @@
    "state": "off"
   },
   "merrimack|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.234Z",
-   "last_detail": "live 3-3 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "merrimack|Hockey||2026-10-30|1",
-    "title": "Merrimack vs UConn",
-    "started_seen": "2026-10-31T00:37:25.747Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.747Z",
-     "2026-10-31T00:38:32.552Z",
-     "2026-10-31T00:39:55.466Z",
-     "2026-10-31T00:41:19.588Z",
-     "2026-10-31T00:42:43.496Z",
-     "2026-10-31T00:44:06.569Z",
-     "2026-10-31T00:45:28.234Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:51.863Z",
+   "last_detail": "final W, 5-4",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:51.863Z",
+   "verified_game": "Merrimack vs UConn",
+   "verified_detail": "final W, 5-4"
   },
   "merrimack|Lacrosse": {
    "state": "off"
@@ -8771,24 +8557,13 @@
    "state": "off"
   },
   "sacred-heart|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.225Z",
-   "last_detail": "live 2-3 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "sacred-heart|Hockey||2026-10-30|1",
-    "title": "Sacred Heart at Cornell",
-    "started_seen": "2026-10-31T00:37:26.863Z",
-    "live_passes": [
-     "2026-10-31T00:37:26.863Z",
-     "2026-10-31T00:38:32.208Z",
-     "2026-10-31T00:39:55.440Z",
-     "2026-10-31T00:41:19.723Z",
-     "2026-10-31T00:42:43.718Z",
-     "2026-10-31T00:44:06.194Z",
-     "2026-10-31T00:45:28.225Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:54.303Z",
+   "last_detail": "final L, 2-5",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:54.303Z",
+   "verified_game": "Sacred Heart at Cornell",
+   "verified_detail": "final L, 2-5"
   },
   "sacred-heart|Lacrosse": {
    "state": "off"
@@ -9199,24 +8974,13 @@
    "state": "off"
   },
   "stonehill|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.013Z",
-   "last_detail": "live 0-3 · 19:02 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "stonehill|Hockey||2026-10-30|1",
-    "title": "Stonehill vs Princeton",
-    "started_seen": "2026-10-31T00:37:26.373Z",
-    "live_passes": [
-     "2026-10-31T00:37:26.373Z",
-     "2026-10-31T00:38:32.498Z",
-     "2026-10-31T00:39:55.298Z",
-     "2026-10-31T00:41:19.433Z",
-     "2026-10-31T00:42:43.669Z",
-     "2026-10-31T00:44:06.185Z",
-     "2026-10-31T00:45:28.013Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:19:01.894Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-10-31T06:19:01.894Z",
+   "verified_game": "Stonehill vs Princeton",
+   "verified_detail": "final L, 0-3"
   },
   "stonehill|Lacrosse": {
    "state": "off"
@@ -9558,24 +9322,13 @@
    "state": "off"
   },
   "army|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.158Z",
-   "last_detail": "live 1-0 · 18:06 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "army|Hockey||2026-10-30|1",
-    "title": "Army vs RIT",
-    "started_seen": "2026-10-31T00:37:24.775Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.775Z",
-     "2026-10-31T00:38:32.148Z",
-     "2026-10-31T00:39:55.256Z",
-     "2026-10-31T00:41:19.855Z",
-     "2026-10-31T00:42:43.913Z",
-     "2026-10-31T00:44:06.471Z",
-     "2026-10-31T00:45:28.158Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.291Z",
+   "last_detail": "final W, 2-0",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.291Z",
+   "verified_game": "Army vs RIT",
+   "verified_detail": "final W, 2-0"
   },
   "army|Lacrosse": {
    "state": "off"
@@ -9608,24 +9361,13 @@
    "state": "off"
   },
   "boston-university|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.160Z",
-   "last_detail": "live 6-1 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "boston-university|Hockey||2026-10-30|1",
-    "title": "BU vs Maine",
-    "started_seen": "2026-10-31T00:37:25.270Z",
-    "live_passes": [
-     "2026-10-31T00:37:25.270Z",
-     "2026-10-31T00:38:32.292Z",
-     "2026-10-31T00:39:55.419Z",
-     "2026-10-31T00:41:19.882Z",
-     "2026-10-31T00:42:43.769Z",
-     "2026-10-31T00:44:06.227Z",
-     "2026-10-31T00:45:28.160Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:49.905Z",
+   "last_detail": "final W, 7-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:49.905Z",
+   "verified_game": "BU vs Maine",
+   "verified_detail": "final W, 7-2"
   },
   "boston-university|Lacrosse": {
    "state": "off"
@@ -10474,24 +10216,13 @@
    "state": "off"
   },
   "st-thomas|Hockey": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:28.106Z",
-   "last_detail": "live 1-1 · End of 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "st-thomas|Hockey||2026-10-30|1",
-    "title": "St. Thomas at Miami (OH)",
-    "started_seen": "2026-10-31T00:37:24.895Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.895Z",
-     "2026-10-31T00:38:31.955Z",
-     "2026-10-31T00:39:55.395Z",
-     "2026-10-31T00:41:19.523Z",
-     "2026-10-31T00:42:43.493Z",
-     "2026-10-31T00:44:06.212Z",
-     "2026-10-31T00:45:28.106Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:55.503Z",
+   "last_detail": "final L, 1-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:55.503Z",
+   "verified_game": "St. Thomas at Miami (OH)",
+   "verified_detail": "final L, 1-2"
   },
   "st-thomas|Soccer": {
    "state": "done",
@@ -10662,24 +10393,13 @@
    "state": "off"
   },
   "jackson-state|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:48.472Z",
-   "last_detail": "live 1-2 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "jackson-state|Volleyball||2026-10-30|1",
-    "title": "Jackson State vs Grambling",
-    "started_seen": "2026-10-31T00:37:24.039Z",
-    "live_passes": [
-     "2026-10-31T00:37:24.039Z",
-     "2026-10-31T00:38:52.339Z",
-     "2026-10-31T00:40:15.967Z",
-     "2026-10-31T00:41:19.662Z",
-     "2026-10-31T00:42:43.625Z",
-     "2026-10-31T00:44:26.670Z",
-     "2026-10-31T00:45:48.472Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:55.264Z",
+   "last_detail": "final W, 3-2",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:55.264Z",
+   "verified_game": "Jackson State vs Grambling",
+   "verified_detail": "final W, 3-2"
   },
   "mississippi-valley-state|Baseball": {
    "state": "off"
@@ -10748,24 +10468,13 @@
    "state": "off"
   },
   "prairie-view-am|Volleyball": {
-   "state": "on",
-   "last_check": "2026-10-31T00:45:49.341Z",
-   "last_detail": "live 0-0 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "prairie-view-am|Volleyball||2026-10-30|1",
-    "title": "Prairie View A&M at Alcorn St",
-    "started_seen": "2026-10-31T00:37:28.873Z",
-    "live_passes": [
-     "2026-10-31T00:37:28.873Z",
-     "2026-10-31T00:38:52.758Z",
-     "2026-10-31T00:40:15.996Z",
-     "2026-10-31T00:41:39.896Z",
-     "2026-10-31T00:43:04.352Z",
-     "2026-10-31T00:44:06.447Z",
-     "2026-10-31T00:45:49.341Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-10-31T06:18:50.007Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-10-31T06:18:50.007Z",
+   "verified_game": "Prairie View A&M at Alcorn St",
+   "verified_detail": "final W, 3-1"
   },
   "southern|Baseball": {
    "state": "off"
@@ -10798,7 +10507,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.244.0-college-xc-timer-links",
- "updated_at": "2026-10-31T00:45:49.347Z",
+ "version": "4.249.0-game-day-final",
+ "updated_at": "2026-10-31T06:19:01.899Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
