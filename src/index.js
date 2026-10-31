@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.248.1-live-slow-glow';
+const VERSION='4.249.0-game-day-final';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4613,7 +4613,12 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // the time moved) then reads as played without a score: it is this one.
       // A live game takes the place of the day's game still to start, or of
       // the calendar's placeholder for the round ("District - TBD").
-      const twin=events.findIndex(e=>(e.no_result_posted||event.status==='Live'&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||event.status==='Live'&&(isHighSchoolPlaceholder(e.opponent)||/\btb[ad]\b/i.test(e.opponent))));
+      // A game live or final today also takes the place of the day's game
+      // still to start: the same opponent, or the calendar's placeholder for
+      // the round ("District - TBD"; Oct 30 it came back beside the 67-7
+      // final once the live card ended).
+      const played=event.status==='Live'||event.status==='Final';
+      const twin=events.findIndex(e=>(e.no_result_posted||played&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||played&&e.status==='Today'&&(isHighSchoolPlaceholder(e.opponent)||/\btb[ad]\b/i.test(e.opponent))));
       if(twin>=0)events.splice(twin,1);
       events.push(event);
     }
@@ -4635,7 +4640,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       const inWindow=()=>{const start=Date.parse(e.start_time);return Number.isFinite(start)&&local>=start-30*60e3&&local<=start+4*3600e3};
       if(e.status!=='Live'&&e.status!=='Today'&&e.status!=='Final')continue;
       const v=videos&&eventType(sport)==='GAME'?youtubeVideoFor(videos,{date:e.start_time.slice(0,10),sport,team:e.team_label||null,timeZone:schoolTimeZone(school)}):null;
-      if(v&&e.status==='Final'){if(v.state==='none')e.video={kind:'youtube',state:'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
+      // A final's video is its replay, whatever state YouTube still reports
+      // (Oct 30: the Topeka stream read "upcoming" after the 67-7 final).
+      if(v&&e.status==='Final'){e.video={kind:'youtube',state:'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
       if(e.status==='Final')continue;
       if(e.status==='Today'&&!inWindow()&&v?.state!=='live')continue;
       // A game under way plays the channel's live player unless YouTube says
