@@ -446,6 +446,13 @@ try{
     assert.deepEqual([rural.video.state,rural.video.video_id],['replay','UChutmNK74k'],'the final takes its replay');
     assert.ok(group.results.filter(e=>e!==rural).every(e=>!e.video),'games without a video have none (the JV game is not varsity)');
     assert.equal(apiReads.length,2,'two Data API reads: uploads and their live states');
+    // YouTube calls the game's video "upcoming" while it streams (Oct 30):
+    // the live home game keeps the channel's live player, linked to the video.
+    details.items[0].snippet.liveBroadcastContent='upcoming';
+    const d6={...deps,fetch:apiFetch},w6=Function(...Object.keys(d6),source+';return {fetchLive,groupEvents}')(...Object.values(d6));
+    const upcoming=w6.groupEvents((await w6.fetchLive('manhattan-ks','Football',env)).events,night)[0].live[0].video;
+    assert.deepEqual([upcoming.kind,upcoming.embed_url,upcoming.watch_url,upcoming.video_id],['youtube_live','https://www.youtube.com/embed/live_stream?channel=UCUviECSA-bWPb_ZJkcfwHpg','https://www.youtube.com/watch?v=yixUf_Mtd1k','yixUf_Mtd1k']);
+    details.items[0].snippet.liveBroadcastContent='live';
     refuse=true;
     const d5={...deps,fetch:apiFetch},w5=Function(...Object.keys(d5),source+';return {fetchLive,groupEvents}')(...Object.values(d5));
     const refused=await w5.fetchLive('manhattan-ks','Football',env);

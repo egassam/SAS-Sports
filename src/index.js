@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.248.0-live-slow-glow';
+const VERSION='4.248.1-live-slow-glow';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4638,9 +4638,14 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       if(v&&e.status==='Final'){if(v.state==='none')e.video={kind:'youtube',state:'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
       if(e.status==='Final')continue;
       if(e.status==='Today'&&!inWindow()&&v?.state!=='live')continue;
-      if(v){e.video={kind:'youtube',state:v.state==='live'?'live':v.state==='upcoming'?'upcoming':'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
-      if(!tv.sports?.includes(sport)||tv.home&&!/ vs /.test(e.title))continue;
-      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:`${tv.url}/streams`,source};
+      // A game under way plays the channel's live player unless YouTube says
+      // its own video is the live one (Oct 30: the Topeka stream, live for two
+      // hours, read "upcoming"; a stream restarted under a new video would
+      // leave a player on the old one dark).
+      const channelLive=tv.sports?.includes(sport)&&!(tv.home&&!/ vs /.test(e.title));
+      if(v&&(v.state==='live'||!channelLive)){e.video={kind:'youtube',state:v.state==='live'?'live':v.state==='upcoming'?'upcoming':'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
+      if(!channelLive)continue;
+      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:v?watch(v.id):`${tv.url}/streams`,source,...(v?{video_id:v.id,title:v.title}:{})};
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
