@@ -453,6 +453,32 @@ try{
     const upcoming=w6.groupEvents((await w6.fetchLive('manhattan-ks','Football',env)).events,night)[0].live[0].video;
     assert.deepEqual([upcoming.kind,upcoming.embed_url,upcoming.watch_url,upcoming.video_id],['youtube_live','https://www.youtube.com/embed/live_stream?channel=UCUviECSA-bWPb_ZJkcfwHpg','https://www.youtube.com/watch?v=yixUf_Mtd1k','yixUf_Mtd1k']);
     details.items[0].snippet.liveBroadcastContent='live';
+    // Later that night MaxPreps has the 67-7 final and YouTube still calls the
+    // stream "upcoming": the final takes its video as the replay, and the
+    // calendar's "District - TBD" stays gone (Oct 30 it came back beside the
+    // final once the live card ended).
+    {
+      const page=JSON.parse(liveHtml.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)[1]);
+      const game=page.props.pageProps.contests.find(c=>c[11]==='2026-10-30T19:00:00');
+      const rows=[game[0],game.slice(1).filter(x=>Array.isArray(x)&&x.length===32)].flat().filter(r=>Array.isArray(r)&&r.length>=32);
+      for(const r of rows){const own=r[1]===SCHOOL_ID;r[5]=own?'W':'L';r[6]=own?67:7;}
+      for(let i=0;i<game.length;i++)if(game[i]==='Live game is still in progress.')game[i]='';
+      const finalHtml=liveHtml.replace(/(<script id="__NEXT_DATA__"[^>]*>)[\s\S]*?(<\/script>)/,(_,a,b)=>a+JSON.stringify(page)+b);
+      assert.deepEqual(maxprepsContests(finalHtml,SCHOOL_ID).filter(c=>c.date==='2026-10-30').map(c=>[c.result,c.score,c.opponent_score,c.live??null]),[['W',67,7,null]]);
+      livePages.set(`${MAXPREPS}football/schedule/`,finalHtml);
+      details.items[0].snippet.liveBroadcastContent='upcoming';
+      const late=new RealDate('2026-10-31T02:12:00Z');
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[late.getTime()]))}static now(){return late.getTime()}};
+      const d7={...deps,fetch:apiFetch},w7=Function(...Object.keys(d7),source+';return {fetchLive,groupEvents}')(...Object.values(d7));
+      const [after]=w7.groupEvents((await w7.fetchLive('manhattan-ks','Football',env)).events,late);
+      const final=after.results.find(e=>e.start_time.startsWith('2026-10-30'));
+      assert.deepEqual([final.status,final.title,final.headline,final.video.state,final.video.video_id],['Final','Manhattan vs Topeka','W, 67-7','replay','yixUf_Mtd1k']);
+      assert.ok(!after.upcoming.some(e=>/District - TBD/.test(e.title)),'the placeholder does not come back beside the final');
+      assert.equal(after.live.length,0);
+      livePages.set(`${MAXPREPS}football/schedule/`,liveHtml);
+      details.items[0].snippet.liveBroadcastContent='live';
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[night.getTime()]))}static now(){return night.getTime()}};
+    }
     refuse=true;
     const d5={...deps,fetch:apiFetch},w5=Function(...Object.keys(d5),source+';return {fetchLive,groupEvents}')(...Object.values(d5));
     const refused=await w5.fetchLive('manhattan-ks','Football',env);
