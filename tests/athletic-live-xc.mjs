@@ -196,6 +196,10 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     assert.ok(e.live_latest.length===5);
     const r=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),true);
     assert.ok(r.rows.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+    // Kickapoo Nation is not on the 2026 entry lists: its card stays Today
+    // (it read "Live · Races under way" on October 31).
+    const kn=(await worker.fetchLive('kickapoo-nation-ks','Cross Country')).events.find(x=>x.start_time.startsWith('2026-10-31'));
+    assert.deepEqual([kn.status,kn.meet_live,kn.highlight_status],['Today',undefined,"Not on the timer's entry lists for this meet."]);
     // Not on a later day: the race documents alone.
     const later=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),false);
     assert.equal(later,null);
