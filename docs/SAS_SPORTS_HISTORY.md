@@ -3813,3 +3813,4 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 
 **Production check of #479.** Merged as `797055e` after `test:release` (exit 0 on `3c7e662`), CI green, and preview `verify:preview --refreshes=3` (Manhattan HS 33, 13 other MaxPreps high schools 255, XC 18/20 and 26/21; preview showed only the 67-7 final with its replay). Production served `4.249.0-game-day-final` at about 02:35 UTC: the Oct 30 game reads Final "Manhattan vs Topeka · W, 67-7" with replay `yixUf_Mtd1k`, no District - TBD card, record 7-2, five home finals with replays; `verify:prod` the same schools passed (33 and 255, XC 18/20 and 26/21).
 
+**Glow decision.** User: "The glow is good, keep it" (the 8 s dark-to-bright breath of `4.248.0`, live in production).
