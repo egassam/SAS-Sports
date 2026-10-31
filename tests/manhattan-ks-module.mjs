@@ -140,6 +140,7 @@ try{
     'Upcoming Oct 23, 7:00 PM Manhattan vs Washburn Rural | ',
     'Upcoming Oct 30, 7:00 PM Manhattan at District - TBD | '
   ]);
+  assert.equal(group.upcoming[0].video,undefined,'no live player five hours before kickoff');
   assert.deepEqual(group.records,[{team_label:null,wins:3,losses:2,ties:0,conference:{name:'Centennial League',wins:1,losses:0,ties:0,text:'1-0'},text:'3-2'}]);
   const dodge=group.results[2];
   assert.equal(dodge.recap_url,contests[2].game_url);
@@ -378,6 +379,55 @@ try{
   const athletesMs=await worker.handler.fetch(new Request('https://x.test/live/athletes?school=eisenhower-ms-ks&sport=Football'),{},{});
   assert.deepEqual(await athletesMs.json(),[]);
 }finally{globalThis.Date=RealDate;}
+// A game scored live on MaxPreps (Oct 30, 2026, 7:37 PM: Manhattan 31,
+// Topeka 7 in the 2nd quarter of the 6A first round): MaxPreps' running score
+// and period make a live card, which takes the place of the calendar's
+// "District - TBD" for the night.
+{
+  const liveHtml=fixture('maxpreps-football-schedule-live-2026-10-30.html');
+  const liveContests=maxprepsContests(liveHtml,SCHOOL_ID);
+  const topeka=liveContests.find(c=>c.date==='2026-10-30');
+  assert.deepEqual([topeka.opponent,topeka.result,topeka.score,topeka.site],['Topeka',null,null,'HOME']);
+  assert.deepEqual(topeka.live,{period:'Q2',score:31,opponent_score:7});
+  assert.ok(liveContests.filter(c=>c.date<'2026-10-30').every(c=>!c.live),'finals are not live');
+  assert.equal(liveContests.find(c=>c.date==='2026-10-15').score,60);
+  const livePages=new Map(pages);livePages.set(`${MAXPREPS}football/schedule/`,liveHtml);
+  const liveFetch=async(url,init={})=>{
+    if(String(url).startsWith('https://beta.gobound.com/'))return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'application/json'}),text:async()=>'[]',json:async()=>[]};
+    const body=livePages.get(String(url));if(body==null)throw Error(`Unexpected network request: ${url}`);
+    return{ok:true,status:200,url:String(url),headers:new Headers({'content-type':'text/html'}),text:async()=>body,json:async()=>JSON.parse(body)};
+  };
+  const d3={...deps,fetch:liveFetch},w3=Function(...Object.keys(d3),source+';return {fetchLive,groupEvents}')(...Object.values(d3));
+  const night=new RealDate('2026-10-31T00:37:00Z');
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[night.getTime()]))}static now(){return night.getTime()}};
+  try{
+    const feed=await w3.fetchLive('manhattan-ks','Football');
+    assert.equal(feed.error,null);
+    const [group]=w3.groupEvents(feed.events,night);
+    assert.equal(group.live.length,1);
+    const [game]=group.live;
+    assert.deepEqual([game.status,game.title,game.school_score,game.opponent_score,game.recency_label,game.priority_bucket],['Live','Manhattan vs Topeka','31','7','2nd Quarter','live']);
+    assert.equal(game.recap_url,topeka.game_url);
+    assert.equal(game.live_update_note,'Live score from MaxPreps · as the team enters it');
+    assert.ok(!group.upcoming.some(e=>/District - TBD/.test(e.title)),'the live game replaces the calendar placeholder');
+    assert.ok(group.results.some(e=>e.headline==='W, 60-13'),'finals still read');
+    // The home game's live broadcast: MHS Student Media's YouTube live player.
+    assert.deepEqual(game.video,{kind:'youtube_live',embed_url:'https://www.youtube.com/embed/live_stream?channel=UCUviECSA-bWPb_ZJkcfwHpg',watch_url:'https://www.youtube.com/@mhsmentor/streams',source:'MHS Student Media (YouTube)'});
+    assert.ok(group.results.every(e=>!e.video),'finals carry no live player');
+  }finally{globalThis.Date=RealDate;}
+  // The next day an unfinished live flag is not a live game.
+  const nextDay=new RealDate('2026-11-01T18:00:00Z');
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[nextDay.getTime()]))}static now(){return nextDay.getTime()}};
+  try{
+    const [group]=w3.groupEvents((await w3.fetchLive('manhattan-ks','Football')).events,nextDay);
+    assert.equal(group.live.length,0);
+  }finally{globalThis.Date=RealDate;}
+}
+assert.ok(read('../public/index.html').includes("esc(e.live_update_note||(e.live_score_source?"),'a live card names how its score updates');
+{
+  const page=read('../public/index.html');
+  assert.ok(page.includes('<section id="videoDock" class="video-dock" hidden></section>')&&page.includes('function syncVideoDock(groups)')&&page.includes('  syncVideoDock(groups);\n  if(homeMode())return renderHome(groups);'),'the live player sits above the feed and survives redraws');
+}
 // A failed calendar or MaxPreps read serves the last copy (the school's site
 // answered Cloudflare with an intermittent 520; Oct 16, 3 of 8 refreshes blank).
 {const w=read('../src/index.js');

@@ -98,6 +98,7 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 .race-team{color:var(--muted);font-size:12px;min-width:0;overflow-wrap:anywhere}
 .race-note{font-size:12px;font-weight:800;justify-self:end;white-space:nowrap}
 .race-note.out{color:#fca5a5}
+.video-dock{margin:12px 0 4px;border:1px solid #316a5b;border-radius:18px;overflow:hidden;background:#07111f}.video-head{display:flex;align-items:center;gap:10px;padding:10px 14px;font-size:13px}.video-frame{position:relative;aspect-ratio:16/9;background:#000}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.video-foot{display:flex;justify-content:space-between;gap:10px;padding:8px 14px 10px;color:var(--muted);font-size:11px}.live-video-note{padding:0 14px 8px;font-size:11px;color:#9ff2d3}
 .live-foot{display:flex;justify-content:space-between;gap:10px;padding:7px 14px 10px;color:var(--muted);font-size:11px;border-top:1px solid rgba(255,255,255,.06)}
 .live-card-board{max-width:680px}.section-label.live{color:#ff8f9a}.section-label.live::before{content:'';display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:#ff4d5e;vertical-align:1px;animation:sasLive 1.2s ease-in-out infinite}
 
@@ -276,6 +277,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 </section>
 <div id="demoPanel" class="demo-panel" hidden><strong>DEMO · Sample game, not a live score</strong><span id="demoStep">Sample score shown in the Live tab.</span><button id="demoAdvance" class="ghost" type="button">Show Final</button></div>
 <section id="fieldLive" class="field-live" hidden aria-live="polite"></section>
+<section id="videoDock" class="video-dock" hidden></section>
 <main id="feed" class="feed"></main>
 <div class="footer-note" id="timeZoneNote"></div><div class="footer-note">SAS Sports · school-first web test · live official-source refresh · v1.8 reconciliation engine</div>
 </div>
@@ -412,7 +414,7 @@ function liveCard(e){
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
   const opp=knownColors(e.opponent_colors);
-  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%3200}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_score_source?'Live score · updates every 15 s':'Official live source')}</span></div></article>`;
+  return `<article class="card live-card live-card-board" data-event-id="${esc(e.id)}" style="--sas-glow-delay:-${Date.now()%3200}ms${opp?`;--opp:${opp.main};--opp-edge:${opp.edge};--opp-ink:${opp.ink}`:''}" aria-label="${esc('Live: '+label)}"><div class="live-head"><span class="live-pill"><i></i>LIVE</span><span class="live-clock">${esc(clock)}</span></div><div class="live-board">${team('ours',ours,[e.team_label,away?'Away':'Home'].filter(Boolean).join(' · '),a,0)}${team('them',theirs,'',b,1)}</div>${situation}${liveMore(e,ours,theirs)}${e.video?.embed_url?`<div class="live-video-note">▶ Live video above · ${esc(e.video.source)}</div>`:''}<div class="live-foot"><span>${esc(String(e.title||'').startsWith('DEMO')?'Demo · sample score':e.sport)}</span><span>${esc(e.live_update_note||(e.live_score_source?'Live score · updates every 15 s':'Official live source'))}</span></div></article>`;
 }
 // Everything else the live board publishes (user, October 16: "update all
 // live cards to show all the data"): the score by period, timeouts, win
@@ -747,7 +749,19 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   const live=currentGroups.reduce((n,g)=>n+(g.live||[]).length,0);
   status.textContent=`${live?`LIVE AUTO-REFRESH ON · ${live} live`:homeView?'HOME':'LIVE SOURCE'} · ${homeView?`${homeTeams().length} team${homeTeams().length===1?'':'s'}`:esc(catalogEntry(school.value)?.name||school.value)} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${ok}/${requested.length} sports reached${saved?` · ${saved} from saved copies`:''}${failed?` · ${failed} unavailable`:''}`;
 }
+// A game's live broadcast (a school's own YouTube channel): one player
+// above the feed, kept while the feed redraws (a redraw would restart it),
+// changed only when another broadcast comes on, removed when none is on.
+function syncVideoDock(groups){
+  const dock=document.getElementById('videoDock');if(!dock)return;
+  const e=(groups||[]).flatMap(g=>[...(g.live||[]),...(g.upcoming||[])]).find(x=>x.video?.embed_url&&(x.status==='Live'||x.status==='Today'));
+  const src=e?.video.embed_url||'';
+  if(dock.dataset.src===src)return;
+  dock.dataset.src=src;dock.hidden=!src;
+  dock.innerHTML=src?`<div class="video-head"><span class="live-pill"><i></i>LIVE VIDEO</span><b>${esc(e.title)}</b></div><div class="video-frame"><iframe src="${esc(src)}" title="${esc(`${e.title} · ${e.video.source}`)}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="video-foot"><span>${esc(e.video.source)}</span><a class="official-link" href="${esc(e.video.watch_url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>`:'';
+}
 function render(groups){
+  syncVideoDock(groups);
   if(homeMode())return renderHome(groups);
   const q=search.value.trim().toLowerCase();
   const chosenSport=sportFilter.value;

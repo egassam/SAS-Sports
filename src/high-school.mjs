@@ -75,6 +75,21 @@ function nextData(html){
 const isTeamRow=row=>Array.isArray(row)&&typeof row[1]==='string'&&row.some(x=>typeof x==='string'&&/^https:\/\/www\.maxpreps\.com\/[a-z]{2}\//.test(x));
 const teamName=row=>row.find((x,i)=>i>=13&&typeof x==='string'&&x&&!/^https?:/.test(x))||'';
 
+const MAXPREPS_PERIOD=/^(?:Q[1-4]|[HP][1-4]|OT\d*|SO|Half(?:time)?|HT|(?:Top|Bot|Mid|End) \d{1,2}|S[1-5])$/i;
+// A live period as the card reads it: "Q2" is "2nd Quarter".
+export function maxprepsPeriodLabel(period){
+  if(!period)return null;
+  const ordinal=n=>`${n}${['th','st','nd','rd'][n]||'th'}`;
+  let m=period.match(/^Q([1-4])$/i);if(m)return`${ordinal(+m[1])} Quarter`;
+  if((m=period.match(/^H([12])$/i)))return`${ordinal(+m[1])} Half`;
+  if((m=period.match(/^P([1-4])$/i)))return`${ordinal(+m[1])} Period`;
+  if((m=period.match(/^S([1-5])$/i)))return`Set ${m[1]}`;
+  if((m=period.match(/^OT(\d*)$/i)))return m[1]&&m[1]!=='1'?`${ordinal(+m[1])} Overtime`:'Overtime';
+  if(/^(?:Half(?:time)?|HT)$/i.test(period))return'Halftime';
+  if(/^SO$/i.test(period))return'Shootout';
+  return period;
+}
+
 // Contests on a MaxPreps team schedule page, from the school's side.
 export function maxprepsContests(html,schoolId){
   const data=nextData(html),contests=data?.props?.pageProps?.contests;
@@ -99,7 +114,16 @@ export function maxprepsContests(html,schoolId){
     // The team row's home/away type: 0 home, 1 away, 2 neutral (it agrees
     // with every game summary on Manhattan's 2026 pages).
     const site=own[11]===0?'HOME':own[11]===1?'AWAY':own[11]===2?'NEUTRAL':null;
-    out.push({start,site,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament});
+    const contest={start,site,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament};
+    // A game the team scores live on MaxPreps (its Scoretracker): "Live game
+    // is still in progress.", the period at [25] ("Q2") and each team's
+    // running score at [30] of the contest's second team rows (Manhattan vs
+    // Topeka, Oct 30, 2026). The final replaces it once entered.
+    if(!result&&c.some(x=>typeof x==='string'&&/^live game is (?:still )?in progress/i.test(x))){
+      const rows=c.slice(1).filter(isTeamRow),running=id=>{const v=rows.find(r=>r[1]===id)?.[30];return Number.isFinite(v)?v:null};
+      contest.live={period:typeof c[25]==='string'&&MAXPREPS_PERIOD.test(c[25].trim())?c[25].trim():null,score:running(schoolId),opponent_score:opp?running(opp[1]):null};
+    }
+    out.push(contest);
   }
   return out;
 }

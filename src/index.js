@@ -54,7 +54,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.244.0-college-xc-timer-links';
+const VERSION='4.246.0-school-live-video';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4023,7 +4023,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
   // A track meet under way with results posted reads live (LetsGoRun).
-  else if(lastDay>=today)status=results?.live&&results.rows?.length?'Live':'Today';
+  else if(lastDay>=today)status=results?.live&&results.rows?.length||contest?.live?'Live':'Today';
   else if(results?.rows?.length)status='Final';
   // A playoff game round may never have been reached; a meet's regional or
   // sub-state is run by every team, its state meet only by qualifiers.
@@ -4037,7 +4037,13 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   const event={id:'live-'+slug(`${school.id}|${sport}|${team||''}|${dateText}|${opponent}|${status}`).slice(0,180),school_id:school.id,school:school.name,sport,event_type:eventType(sport),status,title,start_time:`${date}T${time||'12:00'}:00.000Z`,display_time:highSchoolDisplayTime(date,time),opponent,school_score:scored?String(contest.score):null,opponent_score:scored?String(contest.opponent_score):null,headline,team_summaries:[],results:rows,result_count:rows.length,source:{name:sourceName,url:sourceUrl,updated_at:now.toISOString()},has_more_results:false,enrichment_warning:null,priority_bucket:{Today:'today',Upcoming:'upcoming',Final:'recent_final'}[status],recency_label:{Today:'Today',Upcoming:'Upcoming',Final:'Final'}[status],last_verified_at:now.toISOString(),freshness_seconds:0,verification_state:'live_source',source_count:contest||results?2:1,conflicting_sources:false};
   if(endDate)event.end_time=`${endDate}T23:59:00.000Z`;
   if(team)event.team_label=team;
-  if(status==='Live'){event.meet_live=true;event.recency_label=results.live_label;event.live_latest=results.latest;const source=results.source_name||'LetsGoRun Timing (MeetPro)';event.live_score_source=source;event.highlight_status=`Live: results as ${source.replace(/ \((.*)\)$/,' posts them ($1)')}.`;}
+  // A game the team scores live on MaxPreps: the running score and period.
+  if(status==='Live'&&!results){
+    const live=contest.live,period=maxprepsPeriodLabel(live.period);
+    Object.assign(event,{priority_bucket:'live',school_score:live.score!=null?String(live.score):null,opponent_score:live.opponent_score!=null?String(live.opponent_score):null,headline:period||'Live now',recency_label:period||'Live now',results:[],result_count:0,live_score_source:'MaxPreps (scored live by the team)',live_update_note:'Live score from MaxPreps · as the team enters it',highlight_status:'Live: the score as the team enters it on MaxPreps; the final replaces it.'});
+    if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='Follow on MaxPreps';}
+  }
+  else if(status==='Live'){event.meet_live=true;event.recency_label=results.live_label;event.live_latest=results.latest;const source=results.source_name||'LetsGoRun Timing (MeetPro)';event.live_score_source=source;event.highlight_status=`Live: results as ${source.replace(/ \((.*)\)$/,' posts them ($1)')}.`;}
   if(scored){
     event.score_source=contest.source==='bound'?{name:'Bound (score entered by the school)',url:contest.source_url||null,bound:true}:{name:'MaxPreps (score reported by the team)',url:contest.game_url||null};
     if(contest.game_url){event.recap_url=contest.game_url;event.recap_label='View MaxPreps game page';}
@@ -4579,15 +4585,34 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       if(event)events.push(event);
     }
     // A scored game the calendar does not list (a playoff game added after
-    // the calendar was printed) is shown from MaxPreps alone.
-    for(const contest of contests.filter(c=>!used.has(c)&&c.result&&c.opponent&&c.score!=null)){
+    // the calendar was printed) is shown from MaxPreps alone; so is one being
+    // scored live today (Oct 30: the calendar's "District - TBD" was the 6A
+    // first round against Topeka on MaxPreps).
+    for(const contest of contests.filter(c=>!used.has(c)&&c.opponent&&(c.result&&c.score!=null||c.live&&c.date===today))){
       const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:false,contest,sourceUrl:contest.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,now});
       if(!event)continue;
       // Its calendar game (matched to another contest of the day, or with
       // the time moved) then reads as played without a score: it is this one.
-      const twin=events.findIndex(e=>e.no_result_posted&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&namesCompatible(e.opponent,contest.opponent));
+      // A live game takes the place of the day's game still to start, or of
+      // the calendar's placeholder for the round ("District - TBD").
+      const twin=events.findIndex(e=>(e.no_result_posted||event.status==='Live'&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||event.status==='Live'&&(isHighSchoolPlaceholder(e.opponent)||/\btb[ad]\b/i.test(e.opponent))));
       if(twin>=0)events.splice(twin,1);
       events.push(event);
+    }
+  }
+  // The school's own live broadcast (module `youtube`): a game live or at
+  // kickoff time (half an hour before to four hours after) carries YouTube's
+  // channel live player. The app reads nothing from YouTube: its robots.txt
+  // and terms rule out reading the channel's pages and feeds.
+  const tv=module.youtube;
+  if(tv?.sports?.includes(sport)){
+    const local=schoolNow(now,school).getTime();
+    for(const e of events){
+      if(e.status!=='Live'&&e.status!=='Today')continue;
+      if(tv.home&&!/ vs /.test(e.title))continue;
+      const start=Date.parse(e.start_time);
+      if(e.status==='Today'&&!(Number.isFinite(start)&&local>=start-30*60e3&&local<=start+4*3600e3))continue;
+      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:`${tv.url}/streams`,source:`${tv.name} (YouTube)`};
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);

@@ -47,6 +47,13 @@ export const manhattanKsSchool={
   // location that cannot rebuild serves the last feed built elsewhere (KV).
   globalSavedCopy:true,
   prepGolf:{school:11,code:'MAN'},
+  // Home football games broadcast live on the school's student media YouTube
+  // channel, MHS Student Media (@mhsmentor: "Manhattan High School's Student
+  // Media Channel"; Oct 30, "261030 Manhattan High Varsity football playoff
+  // vs. Topeka High"). User, Oct 30: "there is a live video broadcast from
+  // Manhattan high that's on YouTube. Can you find that and embed it". The
+  // card embeds YouTube's channel live player; nothing is read from YouTube.
+  youtube:{channel:'UCUviECSA-bWPb_ZJkcfwHpg',name:'MHS Student Media',url:'https://www.youtube.com/@mhsmentor',sports:['Football'],home:true},
   // Bound: the school's own finals, for games MaxPreps has no score for and
   // meets no timer or Prep.Golf page covers (`bound`, `boundMeet` below).
   bound:{school:'h20250204045200696bcbb2cc6f78a4e',page:'https://beta.gobound.com/ks/schools/manhattanhs/scores'},
