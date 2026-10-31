@@ -415,6 +415,45 @@ try{
     assert.deepEqual(game.video,{kind:'youtube_live',embed_url:'https://www.youtube.com/embed/live_stream?channel=UCUviECSA-bWPb_ZJkcfwHpg',watch_url:'https://www.youtube.com/@mhsmentor/streams',source:'MHS Student Media (YouTube)'});
     assert.ok(group.results.every(e=>!e.video),'finals carry no live player');
   }finally{globalThis.Date=RealDate;}
+  // With the owner's YouTube Data API key: each game's own video from MHS
+  // Student Media's uploads (live during the game, the replay on a final);
+  // the key never shows in the feed's sources; a refused key falls back to
+  // the channel live player.
+  {
+    const item=(id,title,at)=>({snippet:{resourceId:{videoId:id},title,publishedAt:at}});
+    const playlist={items:[item('yixUf_Mtd1k','261030 Manhattan High Varsity football playoff vs. Topeka High','2026-10-30T23:40:00Z'),item('jvGame00001','261030 MHS JV football at Topeka','2026-10-30T21:00:00Z'),item('UChutmNK74k','261023 Manhattan High Varsity football senior night','2026-10-23T23:30:00Z')]};
+    const details={items:[{id:'yixUf_Mtd1k',snippet:{title:playlist.items[0].snippet.title,liveBroadcastContent:'live'},liveStreamingDetails:{actualStartTime:'2026-10-30T23:45:00Z'}},{id:'jvGame00001',snippet:{title:playlist.items[1].snippet.title,liveBroadcastContent:'none'}},{id:'UChutmNK74k',snippet:{title:playlist.items[2].snippet.title,liveBroadcastContent:'none'},liveStreamingDetails:{actualStartTime:'2026-10-23T23:50:00Z',actualEndTime:'2026-10-24T02:30:00Z'}}]};
+    let refuse=false;const apiReads=[];
+    const apiFetch=async(url,init={})=>{
+      const u=String(url);
+      if(u.startsWith('https://www.googleapis.com/youtube/v3/')){
+        apiReads.push(u);
+        assert.ok(u.includes('key=test-key'),'the Data API is read with the key');
+        if(refuse)return{ok:false,status:403,url:u,headers:new Headers({'content-type':'application/json'}),text:async()=>'{}',json:async()=>({error:{errors:[{reason:'keyInvalid'}]}})};
+        const body=u.includes('/playlistItems?')?(assert.ok(u.includes('playlistId=UUUviECSA-bWPb_ZJkcfwHpg')),playlist):details;
+        return{ok:true,status:200,url:u,headers:new Headers({'content-type':'application/json'}),text:async()=>JSON.stringify(body),json:async()=>body};
+      }
+      return liveFetch(url,init);
+    };
+    const d4={...deps,fetch:apiFetch},w4=Function(...Object.keys(d4),source+';return {fetchLive,groupEvents}')(...Object.values(d4));
+    const env={YOUTUBE_API_KEY:'test-key'};
+    const feed=await w4.fetchLive('manhattan-ks','Football',env);
+    assert.deepEqual(feed.youtube,{channel:'MHS Student Media',read:'ok',videos:3});
+    assert.ok(!JSON.stringify(feed).includes('test-key'),'the key is never in the feed');
+    const [group]=w4.groupEvents(feed.events,night);
+    assert.deepEqual(group.live[0].video,{kind:'youtube',state:'live',video_id:'yixUf_Mtd1k',embed_url:'https://www.youtube.com/embed/yixUf_Mtd1k',watch_url:'https://www.youtube.com/watch?v=yixUf_Mtd1k',title:'261030 Manhattan High Varsity football playoff vs. Topeka High',source:'MHS Student Media (YouTube)'});
+    const rural=group.results.find(e=>/Washburn Rural/.test(e.title));
+    assert.deepEqual([rural.video.state,rural.video.video_id],['replay','UChutmNK74k'],'the final takes its replay');
+    assert.ok(group.results.filter(e=>e!==rural).every(e=>!e.video),'games without a video have none (the JV game is not varsity)');
+    assert.equal(apiReads.length,2,'two Data API reads: uploads and their live states');
+    refuse=true;
+    const d5={...deps,fetch:apiFetch},w5=Function(...Object.keys(d5),source+';return {fetchLive,groupEvents}')(...Object.values(d5));
+    const refused=await w5.fetchLive('manhattan-ks','Football',env);
+    assert.equal(refused.youtube.read,'HTTP 403 keyInvalid');
+    assert.equal(w5.groupEvents(refused.events,night)[0].live[0].video.kind,'youtube_live','a refused key falls back to the channel live player');
+    const noKey=await w5.fetchLive('manhattan-ks','Football');
+    assert.equal(noKey.youtube.read,'no key');
+  }
   // The next day an unfinished live flag is not a live game.
   const nextDay=new RealDate('2026-11-01T18:00:00Z');
   globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[nextDay.getTime()]))}static now(){return nextDay.getTime()}};

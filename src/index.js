@@ -54,7 +54,7 @@ import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs'
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.246.0-school-live-video';
+const VERSION='4.247.0-youtube-game-videos';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4016,6 +4016,24 @@ function matchContest(game,contests,used){
 // round it never reached (a playoff round, "TBD") is not a game played.
 const HIGH_SCHOOL_PLACEHOLDER=/^(?:tbd|tba|regionals?|sectionals?|sub-?state|state|playoffs?|(?:1st|2nd|first|second) round|quarter-?finals?|semi-?finals?|finals?)\b|\b(?:regional|sub-?state|state|playoff|postseason)\b.*\b(?:football|volleyball|basketball|baseball|softball|tourney|tournament|round)\b|\bpostseason\b|^\d?a? ?(?:regionals?|sub-?state|state)\b/i;
 const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim())||/(?<!sub[- ]?)\bstate\b/i.test(String(name||''));
+// A school channel's latest 50 uploads with each video's live state (two
+// Data API reads, 1 quota unit each, of the 10,000 a day): every 2 minutes
+// while the school has a game on, every 10 otherwise. The key stays out of
+// every URL the feed lists. No key or a refused read: null.
+async function youtubeChannelVideos(tv,env,onAir){
+  const key=env?.YOUTUBE_API_KEY;if(!key)return{videos:null,read:'no key'};
+  // A refusal names Google's reason (keyInvalid, quotaExceeded), never the key.
+  const refused=async r=>{let reason='';try{reason=(await r.json())?.error?.errors?.[0]?.reason||''}catch{}return{videos:null,read:`HTTP ${r.status}${reason?` ${reason}`:''}`}};
+  const api='https://www.googleapis.com/youtube/v3/',ttl=onAir?SOURCE_TTL.schedule:SOURCE_TTL.listing,init={headers:{Accept:'application/json'}};
+  try{
+    const list=await sourceFetch(`${api}playlistItems?part=snippet&maxResults=50&playlistId=UU${tv.channel.slice(2)}&key=${encodeURIComponent(key)}`,init,{ttl,staleOnError:true});
+    if(!list.ok)return refused(list);
+    const playlist=await list.json(),ids=(playlist.items||[]).map(i=>i?.snippet?.resourceId?.videoId).filter(Boolean);
+    if(!ids.length)return{videos:[],read:'ok'};
+    const info=await sourceFetch(`${api}videos?part=snippet,liveStreamingDetails&id=${ids.join(',')}&key=${encodeURIComponent(key)}`,init,{ttl,staleOnError:true});
+    return{videos:youtubeVideos(playlist,info.ok?await info.json():null),read:info.ok?'ok':'ok (no live states)'};
+  }catch{return{videos:null,read:'unreachable'}}
+}
 function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,schedule=null,now}){
   const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
@@ -4430,7 +4448,7 @@ function boundEntryResults(school,module,team,game){
   const place=`${m.tied?'T':''}${ORDINAL(m.place)}`,group=`${team.label?`${team.label} `:''}${/^varsity$/i.test(game.level)?'Varsity':game.level}`;
   return{rows:[{group,participant:`${school.short_name} team`,result:`${place} of ${m.teams}${m.score?` · ${m.score} ${unit}`:''}`}],headline:`${place} of ${m.teams}`,highlights:[`${group}: ${school.short_name} ${m.place===1&&!m.tied?'won the team title':`placed ${place} of ${m.teams}`}${m.score?` with ${m.score} ${unit}`:''}.`],url:module.bound.page,label:'View on Bound',note:'Team scores as entered on Bound by the schools.'};
 }
-async function fetchHighSchool(school,sport,now,aiTargetId=null){
+async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
   const year=highSchoolYear(now,school),calendarUrl=module.calendar?`${module.calendar.url}${module.calendar.url.includes('?')?'&':'?'}start_date=${year.start}&end_date=${year.end}`:null;
@@ -4600,19 +4618,29 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
       events.push(event);
     }
   }
-  // The school's own live broadcast (module `youtube`): a game live or at
-  // kickoff time (half an hour before to four hours after) carries YouTube's
-  // channel live player. The app reads nothing from YouTube: its robots.txt
-  // and terms rule out reading the channel's pages and feeds.
-  const tv=module.youtube;
-  if(tv?.sports?.includes(sport)){
-    const local=schoolNow(now,school).getTime();
+  // The school's own broadcasts (module `youtube`). With the owner's YouTube
+  // Data API key (Worker secret YOUTUBE_API_KEY, Oct 30) each game takes its
+  // own video from the channel's uploads: live during the game, the replay
+  // on the final. Without a key, or before the game's video is posted, a home
+  // game live or at kickoff time (half an hour before to four hours after)
+  // carries YouTube's channel live player. The app reads YouTube only through
+  // the Data API: its robots.txt and terms rule out its pages and feeds.
+  const tv=module.youtube;let youtube=null;
+  if(tv){
+    const local=schoolNow(now,school).getTime(),onAir=events.some(e=>e.status==='Live'||e.status==='Today');
+    const channel=await youtubeChannelVideos(tv,env,onAir),videos=channel.videos;
+    youtube={channel:tv.name,read:channel.read,videos:videos?.length??0};
+    const watch=id=>`https://www.youtube.com/watch?v=${id}`,source=`${tv.name} (YouTube)`;
     for(const e of events){
-      if(e.status!=='Live'&&e.status!=='Today')continue;
-      if(tv.home&&!/ vs /.test(e.title))continue;
-      const start=Date.parse(e.start_time);
-      if(e.status==='Today'&&!(Number.isFinite(start)&&local>=start-30*60e3&&local<=start+4*3600e3))continue;
-      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:`${tv.url}/streams`,source:`${tv.name} (YouTube)`};
+      const inWindow=()=>{const start=Date.parse(e.start_time);return Number.isFinite(start)&&local>=start-30*60e3&&local<=start+4*3600e3};
+      if(e.status!=='Live'&&e.status!=='Today'&&e.status!=='Final')continue;
+      const v=videos&&eventType(sport)==='GAME'?youtubeVideoFor(videos,{date:e.start_time.slice(0,10),sport,team:e.team_label||null,timeZone:schoolTimeZone(school)}):null;
+      if(v&&e.status==='Final'){if(v.state==='none')e.video={kind:'youtube',state:'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
+      if(e.status==='Final')continue;
+      if(e.status==='Today'&&!inWindow()&&v?.state!=='live')continue;
+      if(v){e.video={kind:'youtube',state:v.state==='live'?'live':v.state==='upcoming'?'upcoming':'replay',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:watch(v.id),title:v.title,source};continue;}
+      if(!tv.sports?.includes(sport)||tv.home&&!/ vs /.test(e.title))continue;
+      e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:`${tv.url}/streams`,source};
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
@@ -4624,7 +4652,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null){
     if(stats.length)target.game_stats=stats;
     target.highlight_status=target.score_source?.bound?'Score as entered on Bound by the school.':box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
   }
-  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing};
+  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(youtube?{youtube}:{})};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
@@ -6021,7 +6049,7 @@ async function completedFromStories(events,school){
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
-  if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId);
+  if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId,env);
   if(isPro(school))return fetchPro(school,sport,now,aiTargetId);
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   const scoreboardReads=[];
@@ -6315,7 +6343,7 @@ export default{
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[]});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.youtube?{youtube:result.youtube}:{})});}
     return env.ASSETS.fetch(request);
   }
 };
