@@ -3860,3 +3860,5 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 **Gate.** `npm run test:release` passed on `2ef235e7`. A first run failed `parse-budget` (551 ms against a 400 ms budget) only because extra test processes were competing for the one CPU; the clean run passed with the slowest at 179 ms. CI green. `verify:preview` on the six KAS schools, all sports: 3/3 refreshes, expanded views, XC 18/20 and 26/21. Home at 390 px in a browser showed no Oct 31 row. PR #487 merged as `bda5bfc`. Production `4.253.0-state-meet-next-day` verified with `verify:prod` on the same six schools: 75 PASS, XC 18/20 and 26/21. Production finals: Flint Hills Christian "Boys 9th of 9 · Girls 4th of 8", St. Mary's Academy "Boys 4th of 9", Christ Prep "Boys 2nd of 9 · Girls 1st of 8". Home shows no Oct 31 row.
 
 **Open.** Neutral college meet titles reading "vs" (user's decision).
+
+**Decision (user, November 1): "No"** to making neutral meet titles read "at" app-wide. Meet titles keep the school's own "vs"/"at".
