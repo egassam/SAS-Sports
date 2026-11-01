@@ -3565,26 +3565,13 @@
    "state": "off"
   },
   "georgia-southern|Football": {
-   "state": "on",
-   "last_check": "2026-10-31T23:57:55.088Z",
-   "last_detail": "live 10-0 · 0:27 - 2nd · ball: opponent · official_schedule+live_scoreboard",
-   "game": {
-    "key": "georgia-southern|Football||2026-10-31|1",
-    "title": "Georgia Southern vs App State",
-    "started_seen": "2026-10-31T23:49:40.697Z",
-    "live_passes": [
-     "2026-10-31T23:49:40.697Z",
-     "2026-10-31T23:50:46.579Z",
-     "2026-10-31T23:51:47.908Z",
-     "2026-10-31T23:52:48.997Z",
-     "2026-10-31T23:53:49.777Z",
-     "2026-10-31T23:54:51.259Z",
-     "2026-10-31T23:55:52.731Z",
-     "2026-10-31T23:56:53.574Z",
-     "2026-10-31T23:57:55.088Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-01T02:53:51.118Z",
+   "last_detail": "final W, 19-3",
+   "game": null,
+   "verified_at": "2026-11-01T02:53:51.118Z",
+   "verified_game": "Georgia Southern vs App State",
+   "verified_detail": "final W, 19-3"
   },
   "georgia-southern|Soccer": {
    "state": "done",
@@ -4145,7 +4132,25 @@
    "state": "off"
   },
   "unlv|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T03:02:12.930Z",
+   "last_detail": "live 10-14 · 0:53 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "unlv|Football||2026-10-31|1",
+    "title": "UNLV vs N Illinois",
+    "started_seen": "2026-11-01T02:53:46.384Z",
+    "live_passes": [
+     "2026-11-01T02:53:46.384Z",
+     "2026-11-01T02:54:54.292Z",
+     "2026-11-01T02:55:56.961Z",
+     "2026-11-01T02:57:19.150Z",
+     "2026-11-01T02:58:21.918Z",
+     "2026-11-01T02:59:26.564Z",
+     "2026-11-01T03:00:49.799Z",
+     "2026-11-01T03:02:12.930Z"
+    ],
+    "final_ok": false
+   }
   },
   "unlv|Soccer": {
    "state": "off"
@@ -5840,7 +5845,25 @@
    "state": "off"
   },
   "portland|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T03:01:52.035Z",
+   "last_detail": "live 2-1 · 44' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "portland|Soccer|Men's|2026-10-31|1",
+    "title": "Men's · Portland at Pacific",
+    "started_seen": "2026-11-01T02:53:49.363Z",
+    "live_passes": [
+     "2026-11-01T02:53:49.363Z",
+     "2026-11-01T02:54:53.525Z",
+     "2026-11-01T02:55:56.659Z",
+     "2026-11-01T02:56:59.486Z",
+     "2026-11-01T02:58:21.464Z",
+     "2026-11-01T02:59:26.574Z",
+     "2026-11-01T03:00:29.403Z",
+     "2026-11-01T03:01:52.035Z"
+    ],
+    "final_ok": false
+   }
   },
   "portland|Volleyball": {
    "state": "done",
@@ -9479,7 +9502,25 @@
    "state": "off"
   },
   "army|Football": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T03:01:52.295Z",
+   "last_detail": "live 22-42 · 5:37 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "army|Football||2026-10-31|1",
+    "title": "Army at Memphis",
+    "started_seen": "2026-11-01T02:53:46.376Z",
+    "live_passes": [
+     "2026-11-01T02:53:46.376Z",
+     "2026-11-01T02:54:54.047Z",
+     "2026-11-01T02:55:56.620Z",
+     "2026-11-01T02:56:59.424Z",
+     "2026-11-01T02:58:22.159Z",
+     "2026-11-01T02:59:26.552Z",
+     "2026-11-01T03:00:49.294Z",
+     "2026-11-01T03:01:52.295Z"
+    ],
+    "final_ok": false
+   }
   },
   "army|Hockey": {
    "state": "done",
@@ -10694,7 +10735,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.251.1-live-entered-only",
- "updated_at": "2026-10-31T23:57:55.094Z",
+ "version": "4.252.0-meet-final-on-day",
+ "updated_at": "2026-11-01T03:02:12.935Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

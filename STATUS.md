@@ -10,7 +10,9 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| georgia-southern | Football | 🔴 on | live 10-0 · 0:27 - 2nd · ball: opponent · official_schedule+live_scoreboard |
+| army | Football | 🔴 on | live 22-42 · 5:37 - 4th · official_schedule+live_scoreboard |
+| portland | Soccer | 🔴 on | live 2-1 · 44' · official_schedule+live_scoreboard |
+| unlv | Football | 🔴 on | live 10-14 · 0:53 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -60,7 +62,6 @@
 | arkansas-state | Basketball | ⚪ off (waiting) |  |
 | army | Baseball | ⚪ off (waiting) |  |
 | army | Basketball | ⚪ off (waiting) |  |
-| army | Football | ⚪ off (waiting) |  |
 | army | Lacrosse | ⚪ off (waiting) |  |
 | army | Softball | ⚪ off (waiting) |  |
 | auburn | Baseball | ⚪ off (waiting) |  |
@@ -753,7 +754,6 @@
 | pitt | Softball | ⚪ off (waiting) |  |
 | portland | Baseball | ⚪ off (waiting) |  |
 | portland | Basketball | ⚪ off (waiting) |  |
-| portland | Soccer | ⚪ off (waiting) |  |
 | portland-state | Basketball | ⚪ off (waiting) |  |
 | portland-state | Football | ⚪ off (waiting) |  |
 | portland-state | Softball | ⚪ off (waiting) |  |
@@ -1067,7 +1067,6 @@
 | unc-greensboro | Softball | ⚪ off (waiting) |  |
 | unlv | Baseball | ⚪ off (waiting) |  |
 | unlv | Basketball | ⚪ off (waiting) |  |
-| unlv | Football | ⚪ off (waiting) |  |
 | unlv | Soccer | ⚪ off (waiting) |  |
 | unlv | Softball | ⚪ off (waiting) |  |
 | usc | Baseball | ⚪ off (waiting) |  |
@@ -1400,6 +1399,7 @@
 | georgia | Football | ✅ off (passed) | Georgia at Alabama · 2026-10-11T06:38:16.769Z |
 | georgia | Soccer | ✅ off (passed) | Georgia at Alabama · 2026-10-16T04:55:15.062Z |
 | georgia | Volleyball | ✅ off (passed) | Georgia at Ole Miss · 2026-10-17T01:39:25.420Z |
+| georgia-southern | Football | ✅ off (passed) | Georgia Southern vs App State · 2026-11-01T02:53:51.118Z |
 | georgia-southern | Soccer | ✅ off (passed) | Men's · Georgia Southern vs West Virginia · 2026-10-25T21:48:23.698Z |
 | georgia-southern | Volleyball | ✅ off (passed) | Georgia Southern vs James Madison · 2026-10-24T01:59:35.089Z |
 | georgia-tech | Football | ✅ off (passed) | Georgia Tech at Virginia Tech · 2026-10-17T23:31:03.795Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 773/1956; on 1; off 1172; failing 10.
+Done 774/1956; on 3; off 1169; failing 10.
