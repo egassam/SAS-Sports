@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.251.1-live-entered-only';
+const VERSION='4.252.0-meet-final-on-day';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4052,6 +4052,14 @@ function scheduleUnderWay(schedule,date,now,school){
   const rows=(schedule.rows||[]).map(row=>{const start=starts.find(r=>row.participant===`${r.label} race`||(r.label==='Races'&&row.participant==='Races begin'));return start&&start.min<=min?{...row,participant:start.label==='Races'?'Races':row.participant,result:`Started ${clockText(start.time)}`}:row;});
   return{label,rows};
 }
+// The meet's time window is over: SCHEDULE_LIVE_HOURS after its last race's
+// start on its day.
+function scheduleOver(schedule,date,now,school){
+  const starts=(schedule?.starts||[]).map(r=>r.time).filter(t=>/^\d{1,2}:\d{2}$/.test(t||'')).map(t=>Number(t.split(':')[0])*60+Number(t.split(':')[1]));
+  if(!starts.length)return false;
+  const local=schoolNow(now||new Date(),school),day=local.toISOString().slice(0,10);
+  return day>date||day===date&&local.getUTCHours()*60+local.getUTCMinutes()>Math.max(...starts)+SCHEDULE_LIVE_HOURS*60;
+}
 function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,named,contest,results=null,sourceUrl,sourceName='Official school calendar',placeholder=false,schedule=null,now}){
   const today=schoolToday(now,school),day=Date.parse(`${date}T00:00:00Z`),lastDay=endDate?Date.parse(`${endDate}T00:00:00Z`):day;
   const result=contest?.result||null,scored=result&&contest.score!=null&&contest.opponent_score!=null;
@@ -4059,7 +4067,8 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
   // A track meet under way with results posted reads live (LetsGoRun).
-  else if(lastDay>=today)status=results?.live&&results.rows?.length||contest?.live?'Live':'Today';
+  // A meet over on its day (every race scored, quiet, or past its window) is Final.
+  else if(lastDay>=today)status=results?.rows?.length&&(results.done||results.live&&scheduleOver(schedule,date,now,school))?'Final':results?.live&&results.rows?.length||contest?.live?'Live':'Today';
   else if(results?.rows?.length)status='Final';
   // A playoff game round may never have been reached; a meet's regional or
   // sub-state is run by every team, its state meet only by qualifiers.
@@ -4252,7 +4261,9 @@ async function athleticLiveResultsFor(school,meet,game,read,live=false){
     const json=path=>read(`${ATHLETIC_LIVE_FIREBASE}meet_${meet.meet}/${path}.json`,ttl).then(text=>{try{return JSON.parse(text)}catch{return null}});
     const [list,bySplit]=await Promise.all([json('liveRunEventList'),json('liveBySplit')]);
     const fire=athleticLiveFirebaseRaces(list,bySplit);
-    (info.xcp||[]).forEach((race,i)=>{const f=fire[String(race.i)],d=docs[i];if(!f||(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))return;docs[i]={...d,results:{...(d.results||{}),r:f.results.r},score:d.score?.ms?.length?d.score:f.score};});
+    // The live database gives no update time (the document's is from before
+    // the race): the card ends by the meet's time window.
+    (info.xcp||[]).forEach((race,i)=>{const f=fire[String(race.i)],d=docs[i];if(!f||(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))return;docs[i]={...d,results:{...(d.results||{}),r:f.results.r,ua:null},score:d.score?.ms?.length?d.score:f.score};});
   }
   const all=athleticLiveXcRaces(info,docs,meet.schools[school.id]).filter(r=>!(meet.exclude&&meet.exclude.test(r.race))),races=all.filter(r=>r.runners.length);
   // Entry lists posted without the school (October 31: Kickapoo Nation,
@@ -4264,8 +4275,16 @@ async function athleticLiveResultsFor(school,meet,game,read,live=false){
 }
 // A meet in progress: "Girls: 40 of 83 finished · Boys: not started"; the
 // latest are the school's last finishers, the latest race first.
+// The meet is over for the school (user, October 31, 7:27 PM: "Manhattan
+// highschool cross country is still showing a live card", hours after both
+// races were scored): every race scored (`scoredDone`, MileSplit's team
+// scores), or every race run and nothing new for 45 minutes. `done` makes
+// the card Final on the day (`highSchoolEvent`).
+const XC_QUIET_MINUTES=45;
 function xcLive(out,all,races){
   const sex=race=>/\bgirls?\b/i.test(race)?'Girls':/\bboys?\b/i.test(race)?'Boys':race;
+  const latestUpdate=Math.max(0,...all.map(r=>Date.parse(r.updated||'')||0));
+  if(all.length&&(all.every(r=>r.scoredDone)||all.every(r=>r.runners.length)&&latestUpdate>0&&Date.now()-latestUpdate>XC_QUIET_MINUTES*6e4)){out.done=true;return out;}
   out.live=true;
   out.live_label=all.map(r=>`${sex(r.race)}: ${r.field?`${r.field}${r.entries?` of ${r.entries}`:''} finished`:'not started'}`).join(' · ');
   out.latest=[...races].sort((a,b)=>String(b.updated||'').localeCompare(String(a.updated||''))).flatMap(r=>[...r.runners].reverse().map(x=>({group:sex(r.race),participant:`${x.athlete}${x.year?` (${x.year})`:''}`,result:`${ORDINAL(x.place)} of ${r.field} · ${x.time}`}))).slice(0,5);
@@ -4320,6 +4339,8 @@ async function milesplitLiveResultsFor(school,config,game,read,live=false){
     scores.set(String(n),milesplitScoresMemo.get(key));
   }));
   const all=milesplitLiveXcRaces(races,ours,finishers,scores,meet),ran=all.filter(r=>r.runners.length);
+  // MileSplit scores a race once it is run: a scored race is over.
+  for(const r of all)r.scoredDone=r.teams>0&&r.field>0;
   if(!ran.length)return null;
   // A race MileSplit has no team scores for (MeetPro meets) takes the team
   // place the school entered on Bound (`config.teamPlaces`, by sex).

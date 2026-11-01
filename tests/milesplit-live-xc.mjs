@@ -221,8 +221,19 @@ await at('2026-10-31T16:30:00Z',async t=>{
   assert.equal(e.recency_label,'Girls: 97 finished · Boys: not started');
 });
 
-// Final, a day later: both races, before the timer's PDF.
+// Both races scored on the day (user, October 31, 7:27 PM: "Manhattan
+// highschool cross country is still showing a live card"): Final at once.
 replay();
+await at('2026-10-31T18:30:00Z',async t=>{
+  const r=await worker.milesplitLiveResultsFor(school('manhattan-ks'),config,{date:state.date},worker.meetProReader(),true);
+  assert.deepEqual([r.done,r.live],[true,undefined]);
+  const [group]=await feed(t);
+  assert.equal(group.live.length,0,'no live card');
+  const e=group.results.find(x=>x.start_time.startsWith('2026-10-31'));
+  assert.deepEqual([e.status,e.headline,e.meet_live],['Final','Girls 1st of 12 · Boys 7th of 12',undefined]);
+});
+
+// Final, a day later: both races, before the timer's PDF.
 await at('2026-11-01T15:00:00Z',async t=>{
   const r=await worker.milesplitLiveResultsFor(school('manhattan-ks'),config,{date:state.date},worker.meetProReader());
   assert.equal(r.headline,'Girls 1st of 12 · Boys 7th of 12');

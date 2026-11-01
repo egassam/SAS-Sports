@@ -82,6 +82,9 @@ const last={...meet,meet:58501,date:'2025-11-01'};
 // is read again after a minute; the school's latest finishers come first.
 const half=()=>{
   const boys=structuredClone(docs['ind_res_list/_doc/2153072']);boys._source.r=boys._source.r.slice(0,45);
+  // Posted five minutes before the replay's 10:30 AM (the 2025 document's own
+  // time would read as a meet long over).
+  boys._source.ua='2026-10-31T15:25:00Z';
   const girls=structuredClone(docs['ind_res_list/_doc/2153073']);girls._source.r=[];
   pages.set(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/2153072`,JSON.stringify(boys));pages.set(`${ATHLETIC_LIVE_DOCS}ind_res_list/_doc/2153073`,JSON.stringify(girls));
   pages.delete(`${ATHLETIC_LIVE_DOCS}xc_score_report/_doc/xcSR%7C2153072`);pages.delete(`${ATHLETIC_LIVE_DOCS}xc_score_report/_doc/xcSR%7C2153073`);
@@ -196,6 +199,19 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     assert.ok(e.live_latest.length===5);
     const r=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),true);
     assert.ok(r.rows.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+    // 12:50 PM, three hours after the start: the live database gives no
+    // update time, so the meet's window ends the live card (Final, places kept).
+    {
+      const late=new RealDate('2026-10-31T17:50:00Z');
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[late.getTime()]))}static now(){return late.getTime()}};
+      const feed2=await worker.fetchLive('flint-hills-christian-ks','Cross Country');
+      const [g]=worker.groupEvents(feed2.events,late);
+      assert.equal(g.live.length,0,'no live card after the window');
+      const f=g.results.find(x=>x.start_time.startsWith('2026-10-31'));
+      assert.deepEqual([f.status,f.meet_live],['Final',undefined]);
+      assert.ok(f.results.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
+    }
     // Kickapoo Nation is not on the 2026 entry lists: its card stays Today
     // (it read "Live · Races under way" on October 31).
     const kn=(await worker.fetchLive('kickapoo-nation-ks','Cross Country')).events.find(x=>x.start_time.startsWith('2026-10-31'));
