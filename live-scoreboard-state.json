@@ -2434,7 +2434,25 @@
    "state": "off"
   },
   "notre-dame|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T17:00:15.706Z",
+   "last_detail": "live 74-70 · 0:00 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "notre-dame|Basketball|Men's|2026-11-01|1",
+    "title": "Men's · Notre Dame at Villanova",
+    "started_seen": "2026-11-01T16:51:33.319Z",
+    "live_passes": [
+     "2026-11-01T16:51:33.319Z",
+     "2026-11-01T16:52:56.635Z",
+     "2026-11-01T16:54:20.303Z",
+     "2026-11-01T16:55:22.956Z",
+     "2026-11-01T16:56:45.406Z",
+     "2026-11-01T16:58:09.936Z",
+     "2026-11-01T16:59:12.818Z",
+     "2026-11-01T17:00:15.706Z"
+    ],
+    "final_ok": false
+   }
   },
   "notre-dame|Football": {
    "state": "done",
@@ -8938,10 +8956,25 @@
    "state": "off"
   },
   "chicago-state|Soccer": {
-   "state": "off",
-   "last_check": "2026-10-25T21:48:17.950Z",
-   "last_detail": "final L, 0-4 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-01T17:00:15.023Z",
+   "last_detail": "live 1-2 · HT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "chicago-state|Soccer|Women's|2026-11-01|1",
+    "title": "Women's · Chicago State at Howard",
+    "started_seen": "2026-11-01T16:51:33.307Z",
+    "live_passes": [
+     "2026-11-01T16:51:33.307Z",
+     "2026-11-01T16:52:36.184Z",
+     "2026-11-01T16:53:59.007Z",
+     "2026-11-01T16:55:22.424Z",
+     "2026-11-01T16:56:24.987Z",
+     "2026-11-01T16:57:47.571Z",
+     "2026-11-01T16:59:11.920Z",
+     "2026-11-01T17:00:15.023Z"
+    ],
+    "final_ok": false
+   }
   },
   "chicago-state|Volleyball": {
    "state": "done",
@@ -10700,6 +10733,6 @@
   }
  },
  "version": "4.252.1-stale-live-copies",
- "updated_at": "2026-11-01T10:17:24.828Z",
+ "updated_at": "2026-11-01T17:00:15.710Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

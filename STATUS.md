@@ -10,6 +10,8 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
+| chicago-state | Soccer | 🔴 on | live 1-2 · HT · official_schedule+live_scoreboard |
+| notre-dame | Basketball | 🔴 on | live 74-70 · 0:00 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -175,7 +177,6 @@
 | chattanooga | Softball | ⚪ off (waiting) |  |
 | chicago-state | Basketball | ⚪ off (waiting) |  |
 | chicago-state | Football | ⚪ off (waiting) |  |
-| chicago-state | Soccer | ⚪ off (waiting) | final L, 0-4 (live phase not observed 2×; waits for the next game) |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
 | cincinnati | Basketball | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
@@ -696,7 +697,6 @@
 | northwestern-state | Softball | ⚪ off (waiting) |  |
 | northwestern-state | Volleyball | ⚪ off (waiting) | final W, 3-2 (live phase not observed 2×; waits for the next game) |
 | notre-dame | Baseball | ⚪ off (waiting) |  |
-| notre-dame | Basketball | ⚪ off (waiting) |  |
 | notre-dame | Lacrosse | ⚪ off (waiting) |  |
 | notre-dame | Softball | ⚪ off (waiting) |  |
 | ohio | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 777/1956; on 0; off 1169; failing 10.
+Done 777/1956; on 2; off 1167; failing 10.
