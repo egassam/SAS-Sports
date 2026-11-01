@@ -328,6 +328,7 @@ contains(page,/\.sort\(\(a,b\)=>bySport\(a,b\)\|\|levelRank/,'Everywhere live ga
 contains(page,/\.home-grid\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/,'Home live boxes must sit three across');
 contains(page,/kind==='live'&&homeView\?liveTeamVars\(x\)/,'Each live box on Home must wear its team\'s colors');
 contains(page,/--opp:\$\{opp\.main\}/,'The opponent\'s side must wear the opponent\'s colors');
+contains(page,/bucket==='upcoming'&&!isToday\(x\)&&day\(x\)>\(today\.get\(x\.school_id\)\|\|schoolToday\(x\.school_id\)\)/,'Coming up must never list a day already past, a featured meet\'s school included (Nov 1: the KAS state meet of Oct 31 under Coming up)');
 contains(page,/if\(title==='Coming up'\)return[^\n]*comingRows\(items\)/,'Coming up must read as day headings with one slim row per game');
 contains(page,/class="home-row" data-event-id/,'Each coming game must be one row: time, sport, matchup');
 // Live now · Everywhere (PR 2): one shared endpoint, never per-school ESPN reads.

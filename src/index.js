@@ -334,7 +334,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.252.1-stale-live-copies';
+const VERSION='4.253.0-state-meet-next-day';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4255,9 +4255,11 @@ async function athleticLiveResultsFor(school,meet,game,read,live=false){
     const [results,score,entries]=await Promise.all([doc(`ind_res_list/_doc/${race.i}`),doc(`xc_score_report/_doc/${encodeURIComponent(`xcSR|${race.i}`)}`),live?doc(`ind_ent_list/_doc/${race.i}`):null]);
     return{results,score,entries};
   }));
-  // On the day, a race whose document has no finishers yet takes them from
-  // the timer's live database (`athleticLiveFirebaseRaces`).
-  if(live&&docs.some(d=>!(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))){
+  // A race whose document has no finishers takes them from the timer's live
+  // database (`athleticLiveFirebaseRaces`), on the day and after it: the KAS
+  // state meet's documents were still empty on November 1, so the meet lost
+  // its results and the state-meet rule hid it.
+  if(docs.some(d=>!(d.results?.r||[]).some(r=>Number(r.p)>0&&r.m))){
     const json=path=>read(`${ATHLETIC_LIVE_FIREBASE}meet_${meet.meet}/${path}.json`,ttl).then(text=>{try{return JSON.parse(text)}catch{return null}});
     const [list,bySplit]=await Promise.all([json('liveRunEventList'),json('liveBySplit')]);
     const fire=athleticLiveFirebaseRaces(list,bySplit);
