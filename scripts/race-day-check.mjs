@@ -18,7 +18,12 @@
 //   - on the day: each school's card in the app (status, live count, rows,
 //     live link) next to the timer's own finisher count, with LAG when the
 //     timer has finishers and the card does not.
-// Exit 1 on any FAIL or LAG.
+//   - after the races (user, October 31: "Create a rule and fix it", after
+//     Manhattan's card stayed Live hours after both races were scored):
+//     STUCK when a card is still Live 3 hours after the meet's last start,
+//     NOT ENTERED when a school missing from the timer's entry lists reads
+//     Live.
+// Exit 1 on any FAIL, LAG, STUCK or NOT ENTERED.
 import {readFileSync} from 'node:fs';
 import {meetProTrackTeam,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces} from '../src/high-school.mjs';
 
@@ -40,7 +45,17 @@ if(!expr)throw Error('HIGH_SCHOOL_MODULES not found in src/index.js');
 const MODULES=Function(...Object.keys(names),`return ${expr}`)(...Object.values(names));
 
 let bad=0;
-const say=(tag,text)=>{if(tag==='FAIL'||tag==='LAG')bad++;console.log(`${tag.padEnd(4)} ${text}`);};
+const say=(tag,text)=>{if(['FAIL','LAG','STUCK','NOT ENTERED'].includes(tag))bad++;console.log(`${tag.padEnd(4)} ${text}`);};
+// Minutes past the meet's last start in Kansas (negative before it).
+const LIVE_HOURS=3;
+const minutesPast=times=>{
+  const now=new Date(),day=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(now);
+  if(day!==date)return day>date?Infinity:-Infinity;
+  const [h,m]=new Intl.DateTimeFormat('en-GB',{timeZone:'America/Chicago',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(now).split(':').map(Number);
+  const last=Math.max(...times.filter(Boolean).map(t=>Number(t.split(':')[0])*60+Number(t.split(':')[1])));
+  return h*60+m-last;
+};
+const stuck=(e,times)=>e&&e.status==='Live'&&times.length&&minutesPast(times)>LIVE_HOURS*60;
 const get=async(url,tries=2)=>{for(let i=0;;i++){try{const r=await fetch(url,{signal:AbortSignal.timeout(90000)});return{status:r.status,text:await r.text()}}catch(e){if(i+1>=tries)return{status:0,text:String(e)}}}};
 const json=async url=>{const r=await get(url);try{return r.status===200?JSON.parse(r.text):null}catch{return null}};
 const placed=r=>(r||[]).filter(x=>Number(x.p)>0&&x.m).length;
@@ -87,7 +102,8 @@ for(const module of MODULES){
     for(const id of Object.keys(meet.schools)){
       const e=await card(id,meet.sport);
       const ran=docs.some(d=>(d.entries?.en||[]).some(x=>(meet.schools[id]||[]).some(n=>meetProTrackTeam(n)===meetProTrackTeam(x.a?.t?.n))));
-      say(e?.error?'FAIL':finished&&ran&&!started(e)?'LAG':'PASS',`${id} card: ${cardText(e)}`);
+      const tag=e?.error?'FAIL':!ran&&timerTeams.size&&e?.status==='Live'?'NOT ENTERED':stuck(e,[meet.time])?'STUCK':finished&&ran&&!started(e)?'LAG':'PASS';
+      say(tag,`${id} card: ${cardText(e)}`);
     }
   }
   for(const meet of module.midwestTiming||[]){
@@ -96,7 +112,7 @@ for(const module of MODULES){
     console.log(`\n${meet.name} (${meet.site}; MileSplit Live ${meet.milesplit||'none'})`);
     for(const id of Object.keys(meet.schools)){
       const e=await card(id,meet.sport);
-      say(e&&!e.error?'PASS':'FAIL',`${id} card: ${cardText(e)}`);
+      say(!e||e.error?'FAIL':stuck(e,meet.races.map(r=>r.time))?'STUCK':'PASS',`${id} card: ${cardText(e)}`);
     }
   }
 }
