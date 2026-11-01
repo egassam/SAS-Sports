@@ -10,8 +10,9 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| chicago-state | Soccer | 🔴 on | live 1-2 · HT · official_schedule+live_scoreboard |
-| notre-dame | Basketball | 🔴 on | live 74-70 · 0:00 - 2nd · official_schedule+live_scoreboard |
+| chicago-state | Soccer | 🔴 on | live 0-7 · 81' · official_schedule+live_scoreboard |
+| north-alabama | Soccer | 🔴 on | live 3-0 · 90' · official_schedule+live_scoreboard |
+| south-dakota-state | Soccer | 🔴 on | live 0-1 · 89' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -173,7 +174,6 @@
 | charlotte | Softball | ⚪ off (waiting) |  |
 | chattanooga | Basketball | ⚪ off (waiting) |  |
 | chattanooga | Football | ⚪ off (waiting) |  |
-| chattanooga | Soccer | ⚪ off (waiting) |  |
 | chattanooga | Softball | ⚪ off (waiting) |  |
 | chicago-state | Basketball | ⚪ off (waiting) |  |
 | chicago-state | Football | ⚪ off (waiting) |  |
@@ -183,7 +183,7 @@
 | citadel | Baseball | ⚪ off (waiting) |  |
 | citadel | Basketball | ⚪ off (waiting) |  |
 | citadel | Football | ⚪ off (waiting) |  |
-| citadel | Soccer | ⚪ off (waiting) |  |
+| citadel | Soccer | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | clemson | Baseball | ⚪ off (waiting) |  |
 | clemson | Basketball | ⚪ off (waiting) |  |
 | clemson | Lacrosse | ⚪ off (waiting) |  |
@@ -661,7 +661,6 @@
 | north-alabama | Baseball | ⚪ off (waiting) |  |
 | north-alabama | Basketball | ⚪ off (waiting) |  |
 | north-alabama | Football | ⚪ off (waiting) |  |
-| north-alabama | Soccer | ⚪ off (waiting) |  |
 | north-alabama | Softball | ⚪ off (waiting) |  |
 | north-carolina | Baseball | ⚪ off (waiting) |  |
 | north-carolina | Basketball | ⚪ off (waiting) |  |
@@ -889,7 +888,6 @@
 | south-dakota-state | Baseball | ⚪ off (waiting) |  |
 | south-dakota-state | Basketball | ⚪ off (waiting) |  |
 | south-dakota-state | Football | ⚪ off (waiting) |  |
-| south-dakota-state | Soccer | ⚪ off (waiting) |  |
 | south-dakota-state | Softball | ⚪ off (waiting) |  |
 | south-florida | Baseball | ⚪ off (waiting) |  |
 | south-florida | Basketball | ⚪ off (waiting) |  |
@@ -939,13 +937,13 @@
 | stephen-f-austin | Baseball | ⚪ off (waiting) |  |
 | stephen-f-austin | Basketball | ⚪ off (waiting) |  |
 | stephen-f-austin | Football | ⚪ off (waiting) |  |
-| stephen-f-austin | Soccer | ⚪ off (waiting) |  |
+| stephen-f-austin | Soccer | ⚪ off (waiting) | final W, 1-0 (live phase not observed 2×; waits for the next game) |
 | stephen-f-austin | Softball | ⚪ off (waiting) |  |
 | stonehill | Baseball | ⚪ off (waiting) |  |
 | stonehill | Basketball | ⚪ off (waiting) |  |
 | stonehill | Football | ⚪ off (waiting) |  |
 | stonehill | Lacrosse | ⚪ off (waiting) |  |
-| stonehill | Soccer | ⚪ off (waiting) |  |
+| stonehill | Soccer | ⚪ off (waiting) | final L, 1-2 (live phase not observed 2×; waits for the next game) |
 | stonehill | Softball | ⚪ off (waiting) |  |
 | stony-brook | Baseball | ⚪ off (waiting) |  |
 | stony-brook | Basketball | ⚪ off (waiting) |  |
@@ -1289,6 +1287,7 @@
 | charlotte | Football | ✅ off (passed) | Charlotte vs Tulane · 2026-10-31T06:18:48.363Z |
 | charlotte | Soccer | ✅ off (passed) | Men's · Charlotte at Tulsa · 2026-10-23T07:27:21.431Z |
 | charlotte | Volleyball | ✅ off (passed) | Charlotte vs Temple · 2026-10-23T20:40:15.724Z |
+| chattanooga | Soccer | ✅ off (passed) | Chattanooga at Mercer · 2026-11-01T21:08:44.335Z |
 | chattanooga | Volleyball | ✅ off (passed) | Chattanooga vs Tennessee Tech · 2026-10-28T02:25:42.001Z |
 | chicago-state | Volleyball | ✅ off (passed) | Chicago State vs Le Moyne · 2026-10-24T01:59:33.779Z |
 | cincinnati | Football | ✅ off (passed) | Cincinnati at West Virginia · 2026-10-17T19:37:55.140Z |
@@ -1638,6 +1637,7 @@
 | northwestern | Soccer | ✅ off (passed) | Men's · Northwestern vs Penn State · 2026-10-17T06:14:54.946Z |
 | northwestern | Volleyball | ✅ off (passed) | Northwestern at Maryland · 2026-10-11T06:38:16.590Z |
 | northwestern-state | Soccer | ✅ off (passed) | NSU vs Nicholls · 2026-10-25T21:48:17.519Z |
+| notre-dame | Basketball | ✅ off (passed) | Men's · Notre Dame at Villanova · 2026-11-01T21:03:21.582Z |
 | notre-dame | Football | ✅ off (passed) | Notre Dame at BYU · 2026-10-18T06:34:58.909Z |
 | notre-dame | Hockey | ✅ off (passed) | Notre Dame at Western Michigan · 2026-10-17T01:39:26.255Z |
 | notre-dame | Soccer | ✅ off (passed) | Women's · Notre Dame vs Pittsburgh · 2026-10-16T04:55:14.882Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 777/1956; on 2; off 1167; failing 10.
+Done 779/1956; on 3; off 1164; failing 10.

@@ -2434,25 +2434,13 @@
    "state": "off"
   },
   "notre-dame|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-01T17:00:15.706Z",
-   "last_detail": "live 74-70 · 0:00 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "notre-dame|Basketball|Men's|2026-11-01|1",
-    "title": "Men's · Notre Dame at Villanova",
-    "started_seen": "2026-11-01T16:51:33.319Z",
-    "live_passes": [
-     "2026-11-01T16:51:33.319Z",
-     "2026-11-01T16:52:56.635Z",
-     "2026-11-01T16:54:20.303Z",
-     "2026-11-01T16:55:22.956Z",
-     "2026-11-01T16:56:45.406Z",
-     "2026-11-01T16:58:09.936Z",
-     "2026-11-01T16:59:12.818Z",
-     "2026-11-01T17:00:15.706Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-01T21:03:21.582Z",
+   "last_detail": "final W, 74-72",
+   "game": null,
+   "verified_at": "2026-11-01T21:03:21.582Z",
+   "verified_game": "Men's · Notre Dame at Villanova",
+   "verified_detail": "final W, 74-72"
   },
   "notre-dame|Football": {
    "state": "done",
@@ -6760,7 +6748,24 @@
    "state": "off"
   },
   "north-alabama|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T21:12:16.231Z",
+   "last_detail": "live 3-0 · 90' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "north-alabama|Soccer||2026-11-01|1",
+    "title": "North Alabama vs West Georgia",
+    "started_seen": "2026-11-01T21:03:21.676Z",
+    "live_passes": [
+     "2026-11-01T21:03:21.676Z",
+     "2026-11-01T21:05:34.099Z",
+     "2026-11-01T21:07:39.179Z",
+     "2026-11-01T21:08:43.451Z",
+     "2026-11-01T21:10:07.952Z",
+     "2026-11-01T21:11:12.635Z",
+     "2026-11-01T21:12:16.231Z"
+    ],
+    "final_ok": false
+   }
   },
   "north-alabama|Softball": {
    "state": "off"
@@ -8957,21 +8962,20 @@
   },
   "chicago-state|Soccer": {
    "state": "on",
-   "last_check": "2026-11-01T17:00:15.023Z",
-   "last_detail": "live 1-2 · HT · official_schedule+live_scoreboard",
+   "last_check": "2026-11-01T21:12:17.054Z",
+   "last_detail": "live 0-7 · 81' · official_schedule+live_scoreboard",
    "game": {
-    "key": "chicago-state|Soccer|Women's|2026-11-01|1",
-    "title": "Women's · Chicago State at Howard",
-    "started_seen": "2026-11-01T16:51:33.307Z",
+    "key": "chicago-state|Soccer|Men's|2026-11-01|1",
+    "title": "Men's · Chicago State vs Long Island",
+    "started_seen": "2026-11-01T21:03:23.062Z",
     "live_passes": [
-     "2026-11-01T16:51:33.307Z",
-     "2026-11-01T16:52:36.184Z",
-     "2026-11-01T16:53:59.007Z",
-     "2026-11-01T16:55:22.424Z",
-     "2026-11-01T16:56:24.987Z",
-     "2026-11-01T16:57:47.571Z",
-     "2026-11-01T16:59:11.920Z",
-     "2026-11-01T17:00:15.023Z"
+     "2026-11-01T21:03:23.062Z",
+     "2026-11-01T21:05:32.687Z",
+     "2026-11-01T21:06:58.988Z",
+     "2026-11-01T21:08:44.093Z",
+     "2026-11-01T21:10:08.014Z",
+     "2026-11-01T21:11:13.324Z",
+     "2026-11-01T21:12:17.054Z"
     ],
     "final_ok": false
    }
@@ -9178,7 +9182,10 @@
    "state": "off"
   },
   "stonehill|Soccer": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-11-01T21:07:19.549Z",
+   "last_detail": "final L, 1-2 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "stonehill|Softball": {
    "state": "off"
@@ -9793,7 +9800,13 @@
    "state": "off"
   },
   "chattanooga|Soccer": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-01T21:08:44.335Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-11-01T21:08:44.335Z",
+   "verified_game": "Chattanooga at Mercer",
+   "verified_detail": "final L, 0-1"
   },
   "chattanooga|Softball": {
    "state": "off"
@@ -9817,7 +9830,10 @@
    "state": "off"
   },
   "citadel|Soccer": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-11-01T21:05:32.766Z",
+   "last_detail": "final L, 0-3 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "citadel|Volleyball": {
    "state": "done",
@@ -10249,7 +10265,10 @@
    "state": "off"
   },
   "stephen-f-austin|Soccer": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-11-01T21:05:53.203Z",
+   "last_detail": "final W, 1-0 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "stephen-f-austin|Softball": {
    "state": "off"
@@ -10417,7 +10436,24 @@
    "state": "off"
   },
   "south-dakota-state|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-01T21:12:16.806Z",
+   "last_detail": "live 0-1 · 89' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-dakota-state|Soccer||2026-11-01|1",
+    "title": "South Dakota State vs N Dakota St",
+    "started_seen": "2026-11-01T21:03:22.532Z",
+    "live_passes": [
+     "2026-11-01T21:03:22.532Z",
+     "2026-11-01T21:05:14.541Z",
+     "2026-11-01T21:06:59.891Z",
+     "2026-11-01T21:09:03.818Z",
+     "2026-11-01T21:10:08.700Z",
+     "2026-11-01T21:11:12.246Z",
+     "2026-11-01T21:12:16.806Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-dakota-state|Softball": {
    "state": "off"
@@ -10732,7 +10768,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.252.1-stale-live-copies",
- "updated_at": "2026-11-01T17:00:15.710Z",
+ "version": "4.253.0-state-meet-next-day",
+ "updated_at": "2026-11-01T21:12:17.060Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
