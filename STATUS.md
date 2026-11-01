@@ -10,9 +10,6 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| army | Football | 🔴 on | live 22-42 · 5:37 - 4th · official_schedule+live_scoreboard |
-| portland | Soccer | 🔴 on | live 2-1 · 44' · official_schedule+live_scoreboard |
-| unlv | Football | 🔴 on | live 10-14 · 0:53 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1217,6 +1214,7 @@
 | arkansas-state | Football | ✅ off (passed) | Arkansas State vs Georgia St · 2026-10-25T06:45:59.570Z |
 | arkansas-state | Soccer | ✅ off (passed) | Arkansas State at Troy · 2026-10-25T21:48:16.887Z |
 | arkansas-state | Volleyball | ✅ off (passed) | Arkansas State at Southern Miss · 2026-10-23T02:02:22.431Z |
+| army | Football | ✅ off (passed) | Army at Memphis · 2026-11-01T10:17:14.234Z |
 | army | Hockey | ✅ off (passed) | Army vs RIT · 2026-10-31T06:18:49.291Z |
 | army | Soccer | ✅ off (passed) | Women's · Army at Bucknell · 2026-10-24T21:15:40.519Z |
 | army | Volleyball | ✅ off (passed) | Army at Loyola MD · 2026-10-24T23:24:10.717Z |
@@ -1686,6 +1684,7 @@
 | pitt | Football | ✅ off (passed) | Pitt at Boston College · 2026-10-17T19:37:34.752Z |
 | pitt | Soccer | ✅ off (passed) | Women's · Pitt at Notre Dame · 2026-10-16T04:55:15.560Z |
 | pitt | Volleyball | ✅ off (passed) | Pitt vs Florida St · 2026-10-17T01:39:26.309Z |
+| portland | Soccer | ✅ off (passed) | Men's · Portland at Pacific · 2026-11-01T10:17:24.824Z |
 | portland | Volleyball | ✅ off (passed) | Portland vs Seattle U · 2026-10-24T23:24:10.247Z |
 | portland-state | Soccer | ✅ off (passed) | Portland State at N Arizona · 2026-10-25T21:48:22.861Z |
 | portland-state | Volleyball | ✅ off (passed) | Portland State vs N Colorado · 2026-10-25T06:45:59.980Z |
@@ -1882,6 +1881,7 @@
 | unc-asheville | Volleyball | ✅ off (passed) | UNC Asheville at High Point · 2026-10-24T01:59:41.243Z |
 | unc-greensboro | Soccer | ✅ off (passed) | Men's · UNCG at Wofford · 2026-10-25T01:30:06.157Z |
 | unc-greensboro | Volleyball | ✅ off (passed) | UNCG vs ETSU · 2026-10-28T02:25:41.442Z |
+| unlv | Football | ✅ off (passed) | UNLV vs N Illinois · 2026-11-01T10:17:13.727Z |
 | unlv | Volleyball | ✅ off (passed) | UNLV at Hawai'i · 2026-10-25T12:07:20.509Z |
 | usc | Football | ✅ off (passed) | USC at Wisconsin · 2026-10-25T06:45:59.527Z |
 | usc | Soccer | ✅ off (passed) | USC at Northwestern · 2026-10-17T21:44:24.750Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 774/1956; on 3; off 1169; failing 10.
+Done 777/1956; on 0; off 1169; failing 10.
