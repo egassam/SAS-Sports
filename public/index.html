@@ -655,7 +655,7 @@ function homeSections(groups){
   const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>bySport(a,b)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
   const todays=events.filter(x=>x.bucket!=='live'&&x.bucket!=='other'&&isToday(x)).sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
   const next=new Map();
-  for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||'')).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
+  for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||schoolToday(x.school_id))).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
   const coming=[...next.values()].sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
   if(currentView==='live')return{live,everywhere,todays:[],coming:[]};
   if(currentView==='results')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='results'),coming:[]};

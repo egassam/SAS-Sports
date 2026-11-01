@@ -216,9 +216,23 @@ const restore=()=>{for(const [path,doc] of Object.entries(docs))pages.set(ATHLET
     // (it read "Live · Races under way" on October 31).
     const kn=(await worker.fetchLive('kickapoo-nation-ks','Cross Country')).events.find(x=>x.start_time.startsWith('2026-10-31'));
     assert.deepEqual([kn.status,kn.meet_live,kn.highlight_status],['Today',undefined,"Not on the timer's entry lists for this meet."]);
-    // Not on a later day: the race documents alone.
+    // A later day too: the race documents were still empty on November 1,
+    // and without the database the meet lost its results and the state-meet
+    // rule hid it (user: "These are still incorrect"; Home listed it under
+    // Coming up from old copies).
     const later=await worker.athleticLiveResultsFor({id:'flint-hills-christian-ks',name:'Flint Hills Christian School'},meet,{date:meet.date},worker.meetProReader(),false);
-    assert.equal(later,null);
+    assert.ok(later.rows.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+    {
+      const nov1=new RealDate('2026-11-01T15:10:00Z');
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[nov1.getTime()]))}static now(){return nov1.getTime()}};
+      const [g]=worker.groupEvents((await worker.fetchLive('flint-hills-christian-ks','Cross Country')).events,nov1);
+      const f=g.results.find(x=>x.start_time.startsWith('2026-10-31'));
+      assert.ok(f&&f.status==='Final'&&!g.upcoming.some(x=>x.start_time.startsWith('2026-10-31')),'the state meet stays a Final the next day');
+      assert.ok(f.results.some(x=>line(x)==='Girls | Kelsey Brent (JR) | 6th of 58 · 20:29.92'));
+      // Kickapoo Nation never entered: no card the next day.
+      assert.ok(!(await worker.fetchLive('kickapoo-nation-ks','Cross Country')).events.some(x=>x.start_time.startsWith('2026-10-31')));
+      globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
+    }
     assert.ok(!requests.some(u=>u.startsWith(ATHLETIC_LIVE_FIREBASE)&&!u.endsWith('.json')&&!u.endsWith('robots.txt')),'only .json paths');
   }finally{globalThis.Date=RealDate;restore();}
 }
