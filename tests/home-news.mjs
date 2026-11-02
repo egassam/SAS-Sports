@@ -21,7 +21,8 @@ assert.equal(isStoryLink({recap_url:'https://espn.com/x/recap/_/gameId/1',recap_
 assert.equal(isStoryLink({recap_url:'https://bound.co/x',recap_label:'View on Bound'}),false,'a Bound page is not news');
 
 const picked=newsCandidates(groups,now);
-assert.deepEqual(picked.map(x=>x.e.id),['tcu','kansas','baylor'],'the three newest finals with a story, within three weeks');
+assert.deepEqual(picked.map(x=>x.e.id),['tcu','kansas'],'the newest finals with a story, within one week (Oct 25 is out)');
+assert.deepEqual(newsCandidates(groups,now,21).map(x=>x.e.id),['tcu','kansas','baylor'],'at most three per sport');
 
 const html=`<html><head><title>Ignored</title><meta property="og:title" content="K-State Falls in Four at No. 16 TCU - Kansas State University Athletics"><meta property="og:description" content="FORT WORTH &amp; more &#8211; the Wildcats fell."><meta property="og:image" content="/images/2026/11/1/tcu.jpg"><meta property="article:published_time" content="2026-11-01T22:10:00Z"></head></html>`;
 const page=storyFromHtml(html,'https://www.kstatesports.com/news/2026/11/1/volleyball-tcu');
@@ -53,5 +54,7 @@ for(const [title,kind] of [['Live now · My Teams','live'],['Recent results','re
 assert.ok(!/'Live now · Everywhere':\[/.test(index),'Live everywhere keeps the plain heading');
 assert.ok(index.includes('const fav=homeView&&FAV_BANNERS[title];'),'banners only on Home, not on a team page');
 for(const kind of ['live','today','results','upcoming','news'])assert.ok(index.includes(`.fav-banner.fav-${kind}{--fav:`),`${kind} has its own color`);
+
+assert.ok(index.includes('const NEWS_DAYS=7;')&&index.includes('inNewsWeek(n)'),'the page keeps one week of news, saved copies too');
 
 console.log('home-news: ok');
