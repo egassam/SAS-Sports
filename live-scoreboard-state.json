@@ -6748,24 +6748,13 @@
    "state": "off"
   },
   "north-alabama|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-01T21:12:16.231Z",
-   "last_detail": "live 3-0 · 90' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "north-alabama|Soccer||2026-11-01|1",
-    "title": "North Alabama vs West Georgia",
-    "started_seen": "2026-11-01T21:03:21.676Z",
-    "live_passes": [
-     "2026-11-01T21:03:21.676Z",
-     "2026-11-01T21:05:34.099Z",
-     "2026-11-01T21:07:39.179Z",
-     "2026-11-01T21:08:43.451Z",
-     "2026-11-01T21:10:07.952Z",
-     "2026-11-01T21:11:12.635Z",
-     "2026-11-01T21:12:16.231Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-02T00:41:01.459Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-11-02T00:41:01.459Z",
+   "verified_game": "North Alabama vs West Georgia",
+   "verified_detail": "final W, 3-0"
   },
   "north-alabama|Softball": {
    "state": "off"
@@ -8961,24 +8950,13 @@
    "state": "off"
   },
   "chicago-state|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-01T21:12:17.054Z",
-   "last_detail": "live 0-7 · 81' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "chicago-state|Soccer|Men's|2026-11-01|1",
-    "title": "Men's · Chicago State vs Long Island",
-    "started_seen": "2026-11-01T21:03:23.062Z",
-    "live_passes": [
-     "2026-11-01T21:03:23.062Z",
-     "2026-11-01T21:05:32.687Z",
-     "2026-11-01T21:06:58.988Z",
-     "2026-11-01T21:08:44.093Z",
-     "2026-11-01T21:10:08.014Z",
-     "2026-11-01T21:11:13.324Z",
-     "2026-11-01T21:12:17.054Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-02T00:41:03.555Z",
+   "last_detail": "final L, 0-8",
+   "game": null,
+   "verified_at": "2026-11-02T00:41:03.555Z",
+   "verified_game": "Men's · Chicago State vs Long Island",
+   "verified_detail": "final L, 0-8"
   },
   "chicago-state|Volleyball": {
    "state": "done",
@@ -10436,24 +10414,13 @@
    "state": "off"
   },
   "south-dakota-state|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-01T21:12:16.806Z",
-   "last_detail": "live 0-1 · 89' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "south-dakota-state|Soccer||2026-11-01|1",
-    "title": "South Dakota State vs N Dakota St",
-    "started_seen": "2026-11-01T21:03:22.532Z",
-    "live_passes": [
-     "2026-11-01T21:03:22.532Z",
-     "2026-11-01T21:05:14.541Z",
-     "2026-11-01T21:06:59.891Z",
-     "2026-11-01T21:09:03.818Z",
-     "2026-11-01T21:10:08.700Z",
-     "2026-11-01T21:11:12.246Z",
-     "2026-11-01T21:12:16.806Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-02T00:41:02.836Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-11-02T00:41:02.836Z",
+   "verified_game": "South Dakota State vs N Dakota St",
+   "verified_detail": "final L, 0-1"
   },
   "south-dakota-state|Softball": {
    "state": "off"
@@ -10769,6 +10736,6 @@
   }
  },
  "version": "4.253.0-state-meet-next-day",
- "updated_at": "2026-11-01T21:12:17.060Z",
+ "updated_at": "2026-11-02T00:41:03.560Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

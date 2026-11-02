@@ -10,9 +10,6 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| chicago-state | Soccer | 🔴 on | live 0-7 · 81' · official_schedule+live_scoreboard |
-| north-alabama | Soccer | 🔴 on | live 3-0 · 90' · official_schedule+live_scoreboard |
-| south-dakota-state | Soccer | 🔴 on | live 0-1 · 89' · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1289,6 +1286,7 @@
 | charlotte | Volleyball | ✅ off (passed) | Charlotte vs Temple · 2026-10-23T20:40:15.724Z |
 | chattanooga | Soccer | ✅ off (passed) | Chattanooga at Mercer · 2026-11-01T21:08:44.335Z |
 | chattanooga | Volleyball | ✅ off (passed) | Chattanooga vs Tennessee Tech · 2026-10-28T02:25:42.001Z |
+| chicago-state | Soccer | ✅ off (passed) | Men's · Chicago State vs Long Island · 2026-11-02T00:41:03.555Z |
 | chicago-state | Volleyball | ✅ off (passed) | Chicago State vs Le Moyne · 2026-10-24T01:59:33.779Z |
 | cincinnati | Football | ✅ off (passed) | Cincinnati at West Virginia · 2026-10-17T19:37:55.140Z |
 | cincinnati | Soccer | ✅ off (passed) | Cincinnati vs BYU · 2026-10-13T07:02:12.366Z |
@@ -1610,6 +1608,7 @@
 | nicholls | Volleyball | ✅ off (passed) | Nicholls at Incarnate Word · 2026-10-24T21:15:41.901Z |
 | njit | Soccer | ✅ off (passed) | Men's · NJIT at UMass Lowell · 2026-10-25T01:30:07.502Z |
 | norfolk-state | Volleyball | ✅ off (passed) | Norfolk State at Morgan St · 2026-10-23T23:39:29.843Z |
+| north-alabama | Soccer | ✅ off (passed) | North Alabama vs West Georgia · 2026-11-02T00:41:01.459Z |
 | north-alabama | Volleyball | ✅ off (passed) | North Alabama at UT Arlington · 2026-10-24T21:15:41.647Z |
 | north-carolina | Field Hockey | ✅ off (passed) | UNC vs Wake Forest · 2026-10-24T01:59:34.474Z |
 | north-carolina | Football | ✅ off (passed) | UNC at Duke · 2026-10-17T23:31:05.365Z |
@@ -1774,6 +1773,7 @@
 | south-carolina-state | Soccer | ✅ off (passed) | SC State vs Allen · 2026-10-29T06:33:50.075Z |
 | south-carolina-state | Volleyball | ✅ off (passed) | SC State vs Delaware St · 2026-10-25T19:08:42.152Z |
 | south-dakota | Soccer | ✅ off (passed) | South Dakota vs N Dakota St · 2026-10-30T02:50:57.390Z |
+| south-dakota-state | Soccer | ✅ off (passed) | South Dakota State vs N Dakota St · 2026-11-02T00:41:02.836Z |
 | south-dakota-state | Volleyball | ✅ off (passed) | South Dakota State vs Omaha · 2026-10-31T20:40:55.963Z |
 | south-florida | Football | ✅ off (passed) | USF vs UAB · 2026-10-31T20:40:55.208Z |
 | south-florida | Soccer | ✅ off (passed) | Women's · USF vs Rice · 2026-10-23T02:02:25.461Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 779/1956; on 3; off 1164; failing 10.
+Done 782/1956; on 0; off 1164; failing 10.
