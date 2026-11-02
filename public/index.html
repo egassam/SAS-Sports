@@ -171,6 +171,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 #refresh{font-size:26px;line-height:1}
 .hero .tabs{margin-top:8px;gap:4px}
 .hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
+/* Five view tabs (All, Live, Results, Upcoming, News) share one row on a phone. */
+@media(max-width:560px){.hero .tabs{flex-wrap:nowrap}.hero .tab{flex:1 1 auto;padding:8px 4px;white-space:nowrap}}
 .hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
 .sport-nav[hidden]{display:none}
 .featured{padding:12px 15px 15px;border-bottom:1px solid var(--line)}
@@ -860,7 +862,7 @@ function renderNews(){
   const stories=homeNews(),where=homeView?'your teams':sportFilter.value?`${catalogEntry(school.value)?.short_name||school.value} ${sportFilter.value}`:(catalogEntry(school.value)?.short_name||school.value);
   sportNav.hidden=true;sportNav.innerHTML='';
   if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last three weeks' results.`}</div>`;return}
-  feed.innerHTML=`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from ${esc(where)}'s recent games</div></div></div><div class="section">${newsCards(stories)}</div></section>`;
+  feed.innerHTML=`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from ${esc(where)}${/s$/i.test(where)?"'":"'s"} recent games</div></div></div><div class="section">${newsCards(stories)}</div></section>`;
 }
 function render(groups){
   syncVideoDock(groups);
