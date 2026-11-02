@@ -631,13 +631,18 @@ let newsByPair=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-news')||'{
 // The team-sports whose news is shown: Home's favorites (or the team's
 // sports when no sport is chosen), else the chosen sport alone.
 function newsPairs(){return homeMode()?homePairs().filter(([id])=>homeTeams().includes(id)):[[school.value,sportFilter.value]].filter(([id,sp])=>id&&sp)}
+// A story counts for the week by its game's date (or its own, when later);
+// copies saved on the device before the limit drop older ones.
+const inNewsWeek=n=>{const t=Math.max(Date.parse(n.event_date)||0,Date.parse(n.published)||0);return t>0&&Date.now()-t<=NEWS_DAYS*864e5+864e5};
 function homeNews(){
   const pairs=new Set(newsPairs().map(([id,sp])=>`${id}|${sp}`)),q=search.value.trim().toLowerCase(),seen=new Set();
-  return[...newsByPair].filter(([k])=>pairs.has(k)).flatMap(([,x])=>x.stories).filter(n=>n&&n.url&&!seen.has(n.url)&&seen.add(n.url)&&(!q||`${n.headline} ${n.school} ${n.sport}`.toLowerCase().includes(q))).sort((a,b)=>String(b.published||b.event_date).localeCompare(String(a.published||a.event_date)));
+  return[...newsByPair].filter(([k])=>pairs.has(k)).flatMap(([,x])=>x.stories).filter(n=>n&&n.url&&inNewsWeek(n)&&!seen.has(n.url)&&seen.add(n.url)&&(!q||`${n.headline} ${n.school} ${n.sport}`.toLowerCase().includes(q))).sort((a,b)=>String(b.published||b.event_date).localeCompare(String(a.published||a.event_date)));
 }
 // A team-sport is asked for news only when its feed has a final with a
-// story link in the last three weeks.
-const hasStory=g=>(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=21*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
+// story link in the last week (user, November 2: "Let's limit the news to
+// one week please").
+const NEWS_DAYS=7;
+const hasStory=g=>(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=NEWS_DAYS*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
 async function loadNews(generation,signal){
   const pairs=newsPairs(),key=([id,sp])=>`${id}|${sp}`,groupOf=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
   const wanted=pairs.filter(p=>hasStory(groupOf.get(key(p)))&&!(newsByPair.get(key(p))&&Date.now()-newsByPair.get(key(p)).at<15*6e4));
@@ -882,7 +887,7 @@ function syncVideoDock(groups){
 function renderNews(){
   const stories=homeNews(),where=homeView?'your teams':sportFilter.value?`${catalogEntry(school.value)?.short_name||school.value} ${sportFilter.value}`:(catalogEntry(school.value)?.short_name||school.value);
   sportNav.hidden=true;sportNav.innerHTML='';
-  if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last three weeks' results.`}</div>`;return}
+  if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last week's results.`}</div>`;return}
   feed.innerHTML=`${homeSectionOpen('News','home-news')}${sectionHead('News',`Official stories from ${where}${/s$/i.test(where)?"'":"'s"} recent games`)}<div class="section">${newsCards(stories)}</div></section>`;
 }
 function render(groups){

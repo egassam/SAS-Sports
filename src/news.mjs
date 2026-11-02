@@ -4,7 +4,8 @@
 // looked for elsewhere, and links that are only a scoreboard (MaxPreps,
 // Bound, a timer's results page) are not news.
 
-export const NEWS_DAYS=21,NEWS_PER_SPORT=3;
+// One week of news (user, November 2: "Let's limit the news to one week please").
+export const NEWS_DAYS=7,NEWS_PER_SPORT=3;
 const NOT_STORIES=/maxpreps\.com|bound\.co|gobound\.com|athletic\.net|milesplit\.com|tfrrs\.org|athletic\.live|athleticlive|trackmeet\.io|primetimetiming|runnercard|prep\.golf|tennisreporting|\.pdf(?:$|\?)/i;
 const STORY_PATH=/\/(?:news|story|stories|article|articles|recap|recaps)\//i;
 

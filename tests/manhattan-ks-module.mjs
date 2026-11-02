@@ -478,6 +478,17 @@ try{
       assert.deepEqual([final.status,final.title,final.headline,final.video.state,final.video.video_id],['Final','Manhattan vs Topeka','W, 67-7','replay','yixUf_Mtd1k']);
       assert.ok(!after.upcoming.some(e=>/District - TBD/.test(e.title)),'the placeholder does not come back beside the final');
       assert.equal(after.live.length,0);
+      // The days after (user, November 2, screenshot: "Manhattan football is
+      // showing two games from Friday"): the placeholder never reads as a
+      // played game beside the final.
+      for(const at of ['2026-10-31T17:00:00Z','2026-11-02T14:15:00Z']){
+        const later=new RealDate(at);
+        globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[later.getTime()]))}static now(){return later.getTime()}};
+        const d8={...deps,fetch:apiFetch},w8=Function(...Object.keys(d8),source+';return {fetchLive,groupEvents}')(...Object.values(d8));
+        const [next]=w8.groupEvents((await w8.fetchLive('manhattan-ks','Football',env)).events,later);
+        const friday=[...next.results,...next.upcoming,...(next.other||[])].filter(e=>e.start_time.startsWith('2026-10-30')&&!e.team_label);
+        assert.deepEqual(friday.map(e=>`${e.title} | ${e.headline}`),['Manhattan vs Topeka | W, 67-7'],`${at}: one Friday game, the final`);
+      }
       livePages.set(`${MAXPREPS}football/schedule/`,liveHtml);
       details.items[0].snippet.liveBroadcastContent='live';
       globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[night.getTime()]))}static now(){return night.getTime()}};
