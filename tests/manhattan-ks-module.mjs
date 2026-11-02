@@ -501,7 +501,7 @@ try{
 assert.ok(read('../public/index.html').includes("esc(e.live_update_note||(e.live_score_source?"),'a live card names how its score updates');
 {
   const page=read('../public/index.html');
-  assert.ok(page.includes('<section id="videoDock" class="video-dock" hidden></section>')&&page.includes('function syncVideoDock(groups)')&&page.includes('  syncVideoDock(groups);\n  if(homeMode())return renderHome(groups);'),'the live player sits above the feed and survives redraws');
+  assert.ok(page.includes('<section id="videoDock" class="video-dock" hidden></section>')&&page.includes('function syncVideoDock(groups)')&&page.includes("  syncVideoDock(groups);\n  if(currentView==='news')return renderNews();\n  if(homeMode())return renderHome(groups);"),'the live player sits above the feed and survives redraws');
 }
 // A failed calendar or MaxPreps read serves the last copy (the school's site
 // answered Cloudflare with an intermittent 520; Oct 16, 3 of 8 refreshes blank).
