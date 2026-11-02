@@ -664,7 +664,7 @@ async function loadNews(generation,signal){
 // page (user, October 29): browsing a team no longer writes ?school= into the
 // address, so a reload, a restored tab or a saved shortcut opens Home.
 let homeView=!new URLSearchParams(location.search).get('school');
-function applyHomeView(){document.body.classList.toggle('home-view',homeView);applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
+function applyHomeView(){document.body.classList.toggle('home-view',homeView);if(homeView){if(!fieldTimer&&!fieldBusy)loadFieldHome()}else{clearTimeout(fieldTimer);fieldTimer=null;fieldHome=[];fieldKey=''}applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
 function homeMode(){return homeView||!sportFilter.value}
 // Home: the favorites, in their order. A team's own page with no sport
 // chosen: that team alone.
@@ -726,7 +726,8 @@ function homeSections(groups){
 function liveTeamVars(x){const c=knownColors(x.e.school_colors||catalogEntry(x.e.school_id)?.theme||catalogEntry(x.school_id)?.theme);return c?` style="--team-primary:${c.main};--team-secondary:${c.edge};--theme-on-accent:${c.ink}"`:''}
 function homeItem(x,kind,grid){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 // Home's live games: one grid, sports A to Z, each box naming its sport.
-function homeLiveGrid(items){return`<div class="home-grid">${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
+// The favorites' grid also leads with their SAS Scorer games (homeField).
+function homeLiveGrid(items,field=[]){return`<div class="home-grid">${field.map(fieldItem).join('')}${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
 // Coming up: the viewer's own day and clock where the school published a
 // time; a date-only event keeps the school's date and reads TBA, after the
 // day's timed games.
@@ -770,7 +771,7 @@ function sectionHead(title,sub=''){
   return`<div class="sport-head fav-banner fav-${kind}"><span class="fav-mark" aria-hidden="true">${mark}</span><div><div class="fav-pill">★ My Teams</div><h2 class="sport-title">${esc(label)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
 }
 function homeSectionOpen(title,id){return`<section class="sport home-section${homeView&&FAV_BANNERS[title]?' fav-section':''}" id="${id||`home-${slug(title)}`}">`}
-function homeSection(title,items,kind){if(!items.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -782,12 +783,35 @@ function nextUpBox(todays,coming){
   const box=spotlightCard({...next.e,school_id:next.e.school_id||next.school_id});
   return`<div class="section next-up"${homeView&&next.school_id?` data-open-team="${esc(next.school_id)}" data-open-sport="${esc(next.sport)}"`:''}><div class="home-tag">${homeView?`<b>${esc(next.school)}</b> · `:''}${esc(next.sport)}</div>${box}</div>`;
 }
+// Games a favorite school's own scorekeeper is scoring live in SAS Scorer
+// (/score) join Home's "Live now · My Teams" (user, November 2: "Yes, show it
+// on Home", for Anthony's girls basketball). Asked only for favorites that
+// score their own games: every 3 s while one is live, every 30 s otherwise.
+let fieldScoring=null,fieldHome=[],fieldKey='',fieldTimer=null,fieldBusy=false,homeField=[];
+const fieldCard=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span><span class="fl-chip live">Live</span></div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away?.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away?.name)}</span><b>${esc(g.away?.score)}</b></div><div class="fl-row"><span>${esc(g.home?.name)}</span><b>${esc(g.home?.score)}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label||'SAS Scorer')} · tap for the scoreboard</div></a>`;
+const fieldItem=g=>`<div class="home-item home-field"${liveTeamVars({e:{},school_id:g.school_id})}><div class="home-tag"><span class="home-tag-sport">${esc(g.sport)}</span> · <b>${esc(catalogEntry(g.school_id)?.short_name||catalogEntry(g.school_id)?.name||g.school_id)}</b></div>${fieldCard(g)}</div>`;
+async function loadFieldHome(){
+  clearTimeout(fieldTimer);fieldTimer=null;
+  if(!homeView||fieldBusy)return;
+  fieldBusy=true;try{await readFieldHome()}finally{fieldBusy=false}
+}
+async function readFieldHome(){
+  try{if(!fieldScoring)fieldScoring=new Set(((await (await fetch('/api/score/schools',{cache:'no-store'})).json()).schools||[]).map(x=>x.school_id))}catch{fieldTimer=setTimeout(loadFieldHome,15000);return}
+  const ids=homeTeams().filter(id=>fieldScoring.has(id));
+  const games=(await Promise.all(ids.map(async id=>{try{return(((await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games)||[]).map(g=>({...g,school_id:id}))}catch{return[]}}))).flat().filter(g=>g.status==='live');
+  if(!homeView)return;
+  // Only what the card shows (each answer carries a new server_now).
+  const key=JSON.stringify(games.map(g=>[g.id,g.school_id,g.sport,g.away?.name,g.away?.score,g.home?.name,g.home?.score,g.summary]));
+  if(key!==fieldKey){fieldKey=key;fieldHome=games;render(displayedGroups())}
+  fieldTimer=setTimeout(loadFieldHome,games.length?3000:30000);
+}
 function renderHome(groups){
   const {live,everywhere,todays,recent,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
+  const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];homeField=field;
   // The jump row names each part with its count, the favorites' parts first.
-  const chips=[[mine,live,'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
+  const chips=[[mine,[...live,...field],'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
   sportNav.hidden=chips.length<2;
   sportNav.innerHTML=chips.map(([title,items,short])=>`<a class="sport-chip home-jump${/^Live/.test(short)?' live-jump':''}" href="#home-${slug(title)}">${esc(short)} <b>${items.length}</b></a>`).join('');
   const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
@@ -1390,11 +1414,14 @@ applyHomeView();
   const box=document.querySelector('#fieldLive'),select=document.querySelector('#school');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let scoring=new Set(),timer=null,lastId=null;
+  const key=()=>`${select.value}|${document.body.classList.contains('home-view')}`;
   const card=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span>${g.status==='live'?'<span class="fl-chip live">Live</span>':g.status==='final'?'<span class="fl-chip">Final</span>':'<span class="fl-chip">Today</span>'}</div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away.name)}</span><b>${g.away.score}</b></div><div class="fl-row"><span>${esc(g.home.name)}</span><b>${g.home.score}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label)} · tap for the scoreboard</div></a>`;
   async function refresh(){
     clearTimeout(timer);
-    const id=select.value;lastId=id;
-    if(!scoring.has(id)){box.hidden=true;box.innerHTML='';return}
+    const id=select.value;lastId=key();
+    // Home shows its favorites' scorer games itself (loadFieldHome); this
+    // box is hidden there and does not poll.
+    if(!scoring.has(id)||document.body.classList.contains('home-view')){box.hidden=true;box.innerHTML='';return}
     let games=[];
     try{games=(await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games||[]}catch{}
     if(select.value!==id)return;
@@ -1405,7 +1432,7 @@ applyHomeView();
   fetch('/api/score/schools',{cache:'no-store'}).then(r=>r.json()).then(d=>{scoring=new Set((d.schools||[]).map(s=>s.school_id));refresh()}).catch(()=>{});
   select.addEventListener('change',refresh);
   // The school list fills in (and may restore a saved school) without a change event.
-  setInterval(()=>{if(select.value!==lastId)refresh()},1500);
+  setInterval(()=>{if(key()!==lastId)refresh()},1500);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 })();
 </script>
