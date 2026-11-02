@@ -282,6 +282,7 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
     <button class="tab" data-view="live" aria-pressed="false">Live</button>
     <button class="tab" data-view="results" aria-pressed="false">Results</button>
     <button class="tab" data-view="upcoming" aria-pressed="false">Upcoming</button>
+    <button class="tab" data-view="news" aria-pressed="false">News</button>
   </div>
   <div class="statusline"><div id="status">Loading SAS Sports…</div><div id="schoolMeta"></div></div>
   <nav id="sportNav" class="sport-nav"></nav>
@@ -612,26 +613,31 @@ let everywhereGames=[],everywhereExpanded=false;
 // Schools state cross country meet); kept on this device for the next load.
 let featuredPairs=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-featured')||'[]');return Array.isArray(v)?v.filter(p=>Array.isArray(p)&&p.length===2):[]}catch{return[]}})();
 const EVERYWHERE_SHOWN=30,RECENT_DAYS=7,RESULTS_SHOWN=8,NEWS_SHOWN=6;
-let resultsExpanded=false,newsExpanded=false;
+let resultsExpanded=false,newsExpanded=false,newsLoading=false;
 // News (/live/news) per team-sport, kept on this device for six hours so
 // Home shows it at once on the next visit.
 const NEWS_KEEP_MS=6*36e5;
 let newsByPair=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-news')||'{}');return new Map(Object.entries(v).filter(([,x])=>x&&Array.isArray(x.stories)&&Date.now()-x.at<=NEWS_KEEP_MS))}catch{return new Map()}})();
+// The team-sports whose news is shown: Home's favorites (or the team's
+// sports when no sport is chosen), else the chosen sport alone.
+function newsPairs(){return homeMode()?homePairs().filter(([id])=>homeTeams().includes(id)):[[school.value,sportFilter.value]].filter(([id,sp])=>id&&sp)}
 function homeNews(){
-  const pairs=new Set(homePairs().filter(([id])=>homeTeams().includes(id)).map(([id,sp])=>`${id}|${sp}`)),q=search.value.trim().toLowerCase(),seen=new Set();
+  const pairs=new Set(newsPairs().map(([id,sp])=>`${id}|${sp}`)),q=search.value.trim().toLowerCase(),seen=new Set();
   return[...newsByPair].filter(([k])=>pairs.has(k)).flatMap(([,x])=>x.stories).filter(n=>n&&n.url&&!seen.has(n.url)&&seen.add(n.url)&&(!q||`${n.headline} ${n.school} ${n.sport}`.toLowerCase().includes(q))).sort((a,b)=>String(b.published||b.event_date).localeCompare(String(a.published||a.event_date)));
 }
 // A team-sport is asked for news only when its feed has a final with a
 // story link in the last three weeks.
 const hasStory=g=>(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=21*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
 async function loadNews(generation,signal){
-  const pairs=homePairs().filter(([id])=>homeTeams().includes(id)),key=([id,sp])=>`${id}|${sp}`,groupOf=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
+  const pairs=newsPairs(),key=([id,sp])=>`${id}|${sp}`,groupOf=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
   const wanted=pairs.filter(p=>hasStory(groupOf.get(key(p)))&&!(newsByPair.get(key(p))&&Date.now()-newsByPair.get(key(p)).at<15*6e4));
-  let changed=false;
+  let changed=false;newsLoading=wanted.length>0;if(newsLoading&&currentView==='news')render(displayedGroups());
   await inBatches(wanted,4,async ([id,sp])=>{
     try{const r=await apiFetch(`/live/news?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}`,1,{signal,transientOnly:true});const d=await r.json();if(Array.isArray(d?.stories)&&d.feed_read){newsByPair.set(key([id,sp]),{at:Date.now(),stories:d.stories});changed=true}}catch(e){if(e?.name==='AbortError')throw e}
   });
-  if(!changed||generation!==feedGeneration||!homeMode())return;
+  newsLoading=false;
+  if(generation!==feedGeneration)return;
+  if(!changed){if(currentView==='news')render(displayedGroups());return}
   try{localStorage.setItem('sas-news',JSON.stringify(Object.fromEntries([...newsByPair].filter(([,x])=>Date.now()-x.at<=NEWS_KEEP_MS))))}catch{}
   render(displayedGroups());
 }
@@ -846,8 +852,19 @@ function syncVideoDock(groups){
   dock.dataset.src=src;dock.hidden=!src;
   dock.innerHTML=src?`<div class="video-head"><span class="live-pill"><i></i>LIVE VIDEO</span><b>${esc(e.title)}</b></div><div class="video-frame"><iframe src="${esc(src)}" title="${esc(`${e.title} · ${e.video.source}`)}" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="video-foot"><span>${esc(e.video.source)}</span><a class="official-link" href="${esc(e.video.watch_url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>`:'';
 }
+// The News tab (user, November 2: "Let's create a news button next to the
+// upcoming button so you can just see news if you want"): every official
+// story for Home's favorites, a team's sports, or the chosen sport, and
+// nothing else.
+function renderNews(){
+  const stories=homeNews(),where=homeView?'your teams':sportFilter.value?`${catalogEntry(school.value)?.short_name||school.value} ${sportFilter.value}`:(catalogEntry(school.value)?.short_name||school.value);
+  sportNav.hidden=true;sportNav.innerHTML='';
+  if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last three weeks' results.`}</div>`;return}
+  feed.innerHTML=`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from ${esc(where)}'s recent games</div></div></div><div class="section">${newsCards(stories)}</div></section>`;
+}
 function render(groups){
   syncVideoDock(groups);
+  if(currentView==='news')return renderNews();
   if(homeMode())return renderHome(groups);
   const q=search.value.trim().toLowerCase();
   const chosenSport=sportFilter.value;
@@ -1187,6 +1204,7 @@ async function loadFeed(forceRefresh=false,{automatic=false}={}){
     // Schedule and roster readiness are independent contracts. A publisher
     // layout change in one feed must never suppress the other.
     if(currentGroups.length)loadFeaturedAthletes(currentGroups,id,generation);
+    if(currentGroups.length&&currentView==='news'&&!automatic)loadNews(generation,feedController.signal).catch(()=>{});
   }catch(err){status.textContent='SAS Sports could not reach its live web backend.';feed.innerHTML='<div class="empty">Live backend connection failed. Open SAS Sports from its hosted https:// web address, not from a local index.html file.</div>'}
   finally{
     await hideLiveRefreshLoader(loaderShownAt);
@@ -1326,7 +1344,7 @@ sportFilter.addEventListener('change',()=>{
   loadFeed(false);
 });
 search.addEventListener('input',()=>render(displayedGroups()));
-tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))});render(displayedGroups())});
+tabs.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;currentView=b.dataset.view;tabs.querySelectorAll('.tab').forEach(x=>{const active=x===b;x.classList.toggle('active',active);x.setAttribute('aria-pressed',String(active))});render(displayedGroups());if(currentView==='news'&&currentGroups.length)loadNews(feedGeneration,activeFeedController?.signal).catch(()=>{})});
 favorite.addEventListener('click',()=>{const favorites=favoriteSchoolIds(),on=favorites.includes(school.value);saveFavoriteSchoolIds(on?favorites.filter(id=>id!==school.value):[...favorites,school.value]);updateFavorite();const team=catalogEntry(school.value)?.name||'Team';status.textContent=on?`${team} removed from your favorite teams.`:`★ ${team} added to your SAS Sports homepage favorites.`});
 $('#modalClose').addEventListener('click',closeModal); modalWrap.addEventListener('click',e=>{if(e.target===modalWrap)closeModal()}); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastFeedRefresh>(hasLiveEvents()?LIVE_REFRESH_MS:IDLE_REFRESH_MS))loadFeed(false,{automatic:true})});

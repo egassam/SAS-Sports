@@ -1,6 +1,7 @@
 // Home's news (user, November 2, 2026): official stories linked from the
 // favorites' recent finals.
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {isStoryLink,newsCandidates,storyFromHtml,storyFor} from '../src/news.mjs';
 
 const now=new Date('2026-11-02T18:00:00Z');
@@ -36,5 +37,13 @@ assert.equal(card.school_id,'kstate');assert.equal(card.sport,'Volleyball');asse
 const fallback=storyFor(picked[1],null);
 assert.equal(fallback.headline,'K-State vs kansas · W, 3-1','an unread page falls back to the game and its result');
 assert.equal(fallback.from_page,false);
+
+// The News tab (user, November 2: "a news button next to the upcoming
+// button so you can just see news").
+const index=readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+assert.ok(/data-view="upcoming"[^\n]*Upcoming<\/button>\n\s*<button class="tab" data-view="news" aria-pressed="false">News<\/button>/.test(index),'News sits right after Upcoming');
+assert.ok(index.includes("if(currentView==='news')return renderNews();"),'the News tab shows only news');
+assert.ok(index.includes("function newsPairs(){return homeMode()?homePairs().filter(([id])=>homeTeams().includes(id)):[[school.value,sportFilter.value]]"),'a sport page asks for that sport\'s news');
+assert.ok(index.includes("if(currentView==='news'&&currentGroups.length)loadNews("),'switching to News loads the stories');
 
 console.log('home-news: ok');
