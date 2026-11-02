@@ -5548,7 +5548,16 @@
    "state": "off"
   },
   "liberty|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T07:02:32.679Z",
+   "last_detail": "ESPN shows Men's · Liberty at High Point live (End of 2nd) but the app has no live card",
+   "game": {
+    "key": "liberty|Basketball|Men's|2026-11-01|1",
+    "title": "Men's · Liberty at High Point",
+    "started_seen": "2026-11-02T06:55:21.828Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "liberty|Field Hockey": {
    "state": "done",
@@ -7330,7 +7339,16 @@
    "state": "off"
   },
   "high-point|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T07:02:27.002Z",
+   "last_detail": "ESPN shows Men's · High Point vs Liberty live (End of 2nd) but the app has no live card",
+   "game": {
+    "key": "high-point|Basketball|Men's|2026-11-01|1",
+    "title": "Men's · High Point vs Liberty",
+    "started_seen": "2026-11-02T06:55:22.578Z",
+    "live_passes": [],
+    "final_ok": false
+   }
   },
   "high-point|Lacrosse": {
    "state": "off"
@@ -10735,7 +10753,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.253.0-state-meet-next-day",
- "updated_at": "2026-11-02T00:41:03.560Z",
+ "version": "4.254.0-home-favorites-news",
+ "updated_at": "2026-11-02T07:02:32.685Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

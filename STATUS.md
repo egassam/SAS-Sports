@@ -10,6 +10,8 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
+| high-point | Basketball | 🔴 on | ESPN shows Men's · High Point vs Liberty live (End of 2nd) but the app has no live card |
+| liberty | Basketball | 🔴 on | ESPN shows Men's · Liberty at High Point live (End of 2nd) but the app has no live card |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -355,7 +357,6 @@
 | hampton | Softball | ⚪ off (waiting) |  |
 | hampton | Volleyball | ⚪ off (waiting) |  |
 | high-point | Baseball | ⚪ off (waiting) |  |
-| high-point | Basketball | ⚪ off (waiting) |  |
 | high-point | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Baseball | ⚪ off (waiting) |  |
 | hofstra | Basketball | ⚪ off (waiting) |  |
@@ -456,7 +457,6 @@
 | lehigh | Lacrosse | ⚪ off (waiting) |  |
 | lehigh | Softball | ⚪ off (waiting) |  |
 | liberty | Baseball | ⚪ off (waiting) |  |
-| liberty | Basketball | ⚪ off (waiting) |  |
 | liberty | Lacrosse | ⚪ off (waiting) |  |
 | liberty | Softball | ⚪ off (waiting) |  |
 | lindenwood | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 782/1956; on 0; off 1164; failing 10.
+Done 782/1956; on 2; off 1162; failing 10.
