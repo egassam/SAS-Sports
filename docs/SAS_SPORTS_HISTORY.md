@@ -3880,3 +3880,13 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 **Open.** High and middle schools mostly link MaxPreps or Bound, not stories, so their News stays empty unless the school links an official story.
 
 **Merge and production.** PR #490 merged as `52b5232` (test:release passed on `2e6b1790`, CI green, no conflict). Production `4.254.0-home-favorites-news`: `verify:prod --school=kstate --sports=Volleyball` all PASS (3/3 refreshes, 21 results, expanded views 21/21, XC 18/20 and 26/21). Production `/live/news` for K-State volleyball returns the three official stories. A production Home at 390 px with K-State and KU starred reads Live 1 · Today 2 · Results 17 · Up next 19 · News 35 · Live everywhere 5, in that order.
+
+
+## November 2, 2026 — News tab beside Upcoming
+
+- **User:** "Let's create a news button next to the upcoming button so you can just see news if you want".
+- **Built (`public/index.html`):** a fifth view tab, News, after Upcoming. `currentView==='news'` renders `renderNews()` only: Home lists every official story for the favorites (all, not the 6 of Home's News section), a team page with no sport chosen lists its sports', a sport page lists that sport's. `newsPairs()` picks the team-sports; `loadNews` uses it and runs when the tab is chosen and after a sport page loads in News view. Empty view: loading, no favorites, or no story linked to the last three weeks' results. Phone width: the five tabs share one row (`@media(max-width:560px)`, 320 px and 390 px checked, no sideways scroll). Version `4.255.0-news-tab`.
+- **Tests:** `tests/home-news.mjs` checks the tab's place and wiring; `tests/manhattan-ks-module.mjs` render-line check updated. `npm run test:release` passed on `caa78ddd`.
+- **Gate:** preview `verify:preview --school=kstate --sports=Volleyball`: status, XC 18/20 and 26/21, 36/36 forced refreshes, 21 results with result lines, 21/21 expanded views. Page checked at 390 px on the preview (Home News: K-State volleyball, XC, golf, football stories; K-State Volleyball News: TCU and Kansas stories; Upcoming unchanged; no page errors). CI green, no conflict.
+- **Published:** PR #492 merged as `679abd1`. Production `4.255.0-news-tab` verified (`verify:prod` K-State volleyball 3/3 refreshes, 21/21 expanded views, XC 18/20 and 26/21; News tab on Home and K-State Volleyball at 390 px, no page errors).
+- **Open:** none.
