@@ -10,8 +10,35 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| high-point | Basketball | 🔴 on | ESPN shows Men's · High Point vs Liberty live (End of 2nd) but the app has no live card |
-| liberty | Basketball | 🔴 on | ESPN shows Men's · Liberty at High Point live (End of 2nd) but the app has no live card |
+| alcorn-state | Basketball | 🔴 on | live 0-2 · 7:51 - 1st · official_schedule+live_scoreboard |
+| central-michigan | Basketball | 🔴 on | live 30-27 · Halftime · official_schedule+live_scoreboard |
+| clemson | Basketball | 🔴 on | live 7-0 · 7:34 - 1st · official_schedule+live_scoreboard |
+| coastal-carolina | Basketball | 🔴 on | live 35-23 · Halftime · official_schedule+live_scoreboard |
+| columbia | Basketball | 🔴 on | live 35-33 · Halftime · official_schedule+live_scoreboard |
+| davidson | Basketball | 🔴 on | live 33-35 · Halftime · official_schedule+live_scoreboard |
+| detroit-mercy | Basketball | 🔴 on | live 38-15 · Halftime · official_schedule+live_scoreboard |
+| east-texas-am | Basketball | 🔴 on | live 25-7 · 7:28 - 2nd · official_schedule+live_scoreboard |
+| georgia-tech | Basketball | 🔴 on | live 59-49 · End of 3rd · official_schedule+live_scoreboard |
+| high-point | Basketball | 🔴 on | final W, 72-57 not in the app's results |
+| hofstra | Basketball | 🔴 on | live 27-12 · 6:05 - 1st · official_schedule+live_scoreboard |
+| iu-indy | Basketball | 🔴 on | live 54-36 · Halftime · official_schedule+live_scoreboard |
+| liberty | Basketball | 🔴 on | final L, 57-72 not in the app's results |
+| lipscomb | Basketball | 🔴 on | live 0-0 · 9:53 - 1st · official_schedule+live_scoreboard |
+| maryland | Basketball | 🔴 on | live 0-1 · 9:50 - 1st · official_schedule+live_scoreboard |
+| mcneese | Basketball | 🔴 on | live 3-3 · 8:08 - 1st · official_schedule+live_scoreboard |
+| mercer | Basketball | 🔴 on | live 39-21 · Halftime · official_schedule+live_scoreboard |
+| middle-tennessee | Basketball | 🔴 on | live 41-24 · 3:53 - 1st · official_schedule+live_scoreboard |
+| morgan-state | Basketball | 🔴 on | live 53-26 · 9:26 - 3rd · official_schedule+live_scoreboard |
+| murray-state | Basketball | 🔴 on | live 30-21 · 7:42 - 1st · official_schedule+live_scoreboard |
+| nicholls | Basketball | 🔴 on | live 8-6 · 16:46 - 1st · official_schedule+live_scoreboard |
+| old-dominion | Basketball | 🔴 on | live 27-30 · Halftime · official_schedule+live_scoreboard |
+| ole-miss | Basketball | 🔴 on | live 2-0 · 7:30 - 1st · official_schedule+live_scoreboard |
+| radford | Basketball | 🔴 on | live 0-7 · 7:34 - 1st · official_schedule+live_scoreboard |
+| south-carolina | Basketball | 🔴 on | live 2-0 · 9:27 - 1st · official_schedule+live_scoreboard |
+| south-carolina-state | Basketball | 🔴 on | live 1-2 · 18:18 - 1st · official_schedule+live_scoreboard |
+| southern-miss | Basketball | 🔴 on | live 6-0 · 8:20 - 1st · official_schedule+live_scoreboard |
+| tennessee-state | Basketball | 🔴 on | live 21-31 · 7:42 - 1st · official_schedule+live_scoreboard |
+| vanderbilt | Basketball | 🔴 on | live 0-0 · 9:53 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -37,7 +64,6 @@
 | alabama-state | Softball | ⚪ off (waiting) |  |
 | alabama-state | Volleyball | ⚪ off (waiting) |  |
 | alcorn-state | Baseball | ⚪ off (waiting) |  |
-| alcorn-state | Basketball | ⚪ off (waiting) |  |
 | alcorn-state | Football | ⚪ off (waiting) |  |
 | alcorn-state | Softball | ⚪ off (waiting) |  |
 | american | Basketball | ⚪ off (waiting) |  |
@@ -155,7 +181,6 @@
 | central-arkansas | Football | ⚪ off (waiting) |  |
 | central-arkansas | Softball | ⚪ off (waiting) |  |
 | central-michigan | Baseball | ⚪ off (waiting) |  |
-| central-michigan | Basketball | ⚪ off (waiting) |  |
 | central-michigan | Field Hockey | ⚪ off (waiting) |  |
 | central-michigan | Lacrosse | ⚪ off (waiting) |  |
 | central-michigan | Softball | ⚪ off (waiting) |  |
@@ -184,20 +209,17 @@
 | citadel | Football | ⚪ off (waiting) |  |
 | citadel | Soccer | ⚪ off (waiting) | final L, 0-3 (live phase not observed 2×; waits for the next game) |
 | clemson | Baseball | ⚪ off (waiting) |  |
-| clemson | Basketball | ⚪ off (waiting) |  |
 | clemson | Lacrosse | ⚪ off (waiting) |  |
 | clemson | Softball | ⚪ off (waiting) |  |
 | cleveland-state | Basketball | ⚪ off (waiting) |  |
 | cleveland-state | Lacrosse | ⚪ off (waiting) |  |
 | coastal-carolina | Baseball | ⚪ off (waiting) |  |
-| coastal-carolina | Basketball | ⚪ off (waiting) |  |
 | coastal-carolina | Lacrosse | ⚪ off (waiting) |  |
 | coastal-carolina | Softball | ⚪ off (waiting) |  |
 | colorado | Basketball | ⚪ off (waiting) |  |
 | colorado-state | Basketball | ⚪ off (waiting) |  |
 | colorado-state | Softball | ⚪ off (waiting) |  |
 | columbia | Baseball | ⚪ off (waiting) |  |
-| columbia | Basketball | ⚪ off (waiting) |  |
 | columbia | Field Hockey | ⚪ off (waiting) |  |
 | columbia | Football | ⚪ off (waiting) |  |
 | columbia | Lacrosse | ⚪ off (waiting) |  |
@@ -226,7 +248,6 @@
 | dartmouth | Lacrosse | ⚪ off (waiting) |  |
 | dartmouth | Softball | ⚪ off (waiting) |  |
 | davidson | Baseball | ⚪ off (waiting) |  |
-| davidson | Basketball | ⚪ off (waiting) |  |
 | davidson | Football | ⚪ off (waiting) |  |
 | davidson | Lacrosse | ⚪ off (waiting) |  |
 | delaware | Baseball | ⚪ off (waiting) |  |
@@ -243,7 +264,6 @@
 | denver | Lacrosse | ⚪ off (waiting) |  |
 | depaul | Basketball | ⚪ off (waiting) |  |
 | depaul | Softball | ⚪ off (waiting) |  |
-| detroit-mercy | Basketball | ⚪ off (waiting) |  |
 | detroit-mercy | Lacrosse | ⚪ off (waiting) |  |
 | detroit-mercy | Softball | ⚪ off (waiting) |  |
 | drexel | Basketball | ⚪ off (waiting) |  |
@@ -264,7 +284,6 @@
 | east-tennessee-state | Basketball | ⚪ off (waiting) |  |
 | east-tennessee-state | Football | ⚪ off (waiting) |  |
 | east-tennessee-state | Softball | ⚪ off (waiting) |  |
-| east-texas-am | Basketball | ⚪ off (waiting) |  |
 | east-texas-am | Football | ⚪ off (waiting) |  |
 | east-texas-am | Softball | ⚪ off (waiting) |  |
 | eastern-illinois | Baseball | ⚪ off (waiting) |  |
@@ -342,7 +361,6 @@
 | georgia-southern | Basketball | ⚪ off (waiting) |  |
 | georgia-southern | Softball | ⚪ off (waiting) |  |
 | georgia-tech | Baseball | ⚪ off (waiting) |  |
-| georgia-tech | Basketball | ⚪ off (waiting) |  |
 | georgia-tech | Softball | ⚪ off (waiting) |  |
 | gonzaga | Baseball | ⚪ off (waiting) |  |
 | gonzaga | Basketball | ⚪ off (waiting) |  |
@@ -359,7 +377,6 @@
 | high-point | Baseball | ⚪ off (waiting) |  |
 | high-point | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Baseball | ⚪ off (waiting) |  |
-| hofstra | Basketball | ⚪ off (waiting) |  |
 | hofstra | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Softball | ⚪ off (waiting) |  |
 | holy-cross | Baseball | ⚪ off (waiting) |  |
@@ -401,7 +418,6 @@
 | iowa | Softball | ⚪ off (waiting) |  |
 | iowa-state | Basketball | ⚪ off (waiting) |  |
 | iowa-state | Softball | ⚪ off (waiting) |  |
-| iu-indy | Basketball | ⚪ off (waiting) |  |
 | iu-indy | Softball | ⚪ off (waiting) |  |
 | jackson-state | Baseball | ⚪ off (waiting) |  |
 | jackson-state | Basketball | ⚪ off (waiting) |  |
@@ -467,7 +483,6 @@
 | lindenwood | Softball | ⚪ off (waiting) |  |
 | lindenwood | Volleyball | ⚪ off (waiting) |  |
 | lipscomb | Baseball | ⚪ off (waiting) |  |
-| lipscomb | Basketball | ⚪ off (waiting) |  |
 | lipscomb | Softball | ⚪ off (waiting) |  |
 | liu | Baseball | ⚪ off (waiting) |  |
 | liu | Basketball | ⚪ off (waiting) |  |
@@ -520,21 +535,18 @@
 | marshall | Basketball | ⚪ off (waiting) |  |
 | marshall | Softball | ⚪ off (waiting) |  |
 | maryland | Baseball | ⚪ off (waiting) |  |
-| maryland | Basketball | ⚪ off (waiting) |  |
 | maryland | Lacrosse | ⚪ off (waiting) |  |
 | maryland | Softball | ⚪ off (waiting) |  |
 | maryland-eastern-shore | Baseball | ⚪ off (waiting) |  |
 | maryland-eastern-shore | Basketball | ⚪ off (waiting) |  |
 | maryland-eastern-shore | Softball | ⚪ off (waiting) |  |
 | mcneese | Baseball | ⚪ off (waiting) |  |
-| mcneese | Basketball | ⚪ off (waiting) |  |
 | mcneese | Football | ⚪ off (waiting) |  |
 | mcneese | Softball | ⚪ off (waiting) |  |
 | memphis | Baseball | ⚪ off (waiting) |  |
 | memphis | Basketball | ⚪ off (waiting) |  |
 | memphis | Softball | ⚪ off (waiting) |  |
 | mercer | Baseball | ⚪ off (waiting) |  |
-| mercer | Basketball | ⚪ off (waiting) |  |
 | mercer | Football | ⚪ off (waiting) |  |
 | mercer | Lacrosse | ⚪ off (waiting) |  |
 | mercer | Softball | ⚪ off (waiting) |  |
@@ -565,7 +577,6 @@
 | michigan-state | Basketball | ⚪ off (waiting) |  |
 | michigan-state | Softball | ⚪ off (waiting) |  |
 | middle-tennessee | Baseball | ⚪ off (waiting) |  |
-| middle-tennessee | Basketball | ⚪ off (waiting) |  |
 | middle-tennessee | Softball | ⚪ off (waiting) |  |
 | milwaukee | Baseball | ⚪ off (waiting) |  |
 | milwaukee | Basketball | ⚪ off (waiting) |  |
@@ -601,7 +612,6 @@
 | morehead-state | Basketball | ⚪ off (waiting) |  |
 | morehead-state | Football | ⚪ off (waiting) |  |
 | morehead-state | Softball | ⚪ off (waiting) |  |
-| morgan-state | Basketball | ⚪ off (waiting) |  |
 | morgan-state | Football | ⚪ off (waiting) |  |
 | morgan-state | Softball | ⚪ off (waiting) |  |
 | mount-st-marys | Baseball | ⚪ off (waiting) |  |
@@ -610,7 +620,6 @@
 | mount-st-marys | Softball | ⚪ off (waiting) |  |
 | mount-st-marys | Water Polo | ⚪ off (waiting) |  |
 | murray-state | Baseball | ⚪ off (waiting) |  |
-| murray-state | Basketball | ⚪ off (waiting) |  |
 | murray-state | Football | ⚪ off (waiting) |  |
 | murray-state | Softball | ⚪ off (waiting) |  |
 | nc-at | Baseball | ⚪ off (waiting) |  |
@@ -644,7 +653,6 @@
 | niagara | Lacrosse | ⚪ off (waiting) |  |
 | niagara | Softball | ⚪ off (waiting) |  |
 | nicholls | Baseball | ⚪ off (waiting) |  |
-| nicholls | Basketball | ⚪ off (waiting) |  |
 | nicholls | Football | ⚪ off (waiting) |  |
 | nicholls | Softball | ⚪ off (waiting) |  |
 | njit | Baseball | ⚪ off (waiting) |  |
@@ -709,10 +717,8 @@
 | oklahoma-state | Basketball | ⚪ off (waiting) |  |
 | oklahoma-state | Softball | ⚪ off (waiting) |  |
 | old-dominion | Baseball | ⚪ off (waiting) |  |
-| old-dominion | Basketball | ⚪ off (waiting) |  |
 | old-dominion | Lacrosse | ⚪ off (waiting) |  |
 | ole-miss | Baseball | ⚪ off (waiting) |  |
-| ole-miss | Basketball | ⚪ off (waiting) |  |
 | ole-miss | Softball | ⚪ off (waiting) |  |
 | omaha | Baseball | ⚪ off (waiting) |  |
 | omaha | Basketball | ⚪ off (waiting) |  |
@@ -784,7 +790,6 @@
 | quinnipiac | Lacrosse | ⚪ off (waiting) |  |
 | quinnipiac | Softball | ⚪ off (waiting) |  |
 | radford | Baseball | ⚪ off (waiting) |  |
-| radford | Basketball | ⚪ off (waiting) |  |
 | radford | Field Hockey | ⚪ off (waiting) |  |
 | radford | Lacrosse | ⚪ off (waiting) |  |
 | radford | Softball | ⚪ off (waiting) |  |
@@ -873,9 +878,7 @@
 | south-alabama | Basketball | ⚪ off (waiting) |  |
 | south-alabama | Softball | ⚪ off (waiting) |  |
 | south-carolina | Baseball | ⚪ off (waiting) |  |
-| south-carolina | Basketball | ⚪ off (waiting) |  |
 | south-carolina | Softball | ⚪ off (waiting) |  |
-| south-carolina-state | Basketball | ⚪ off (waiting) |  |
 | south-carolina-state | Football | ⚪ off (waiting) |  |
 | south-carolina-state | Softball | ⚪ off (waiting) |  |
 | south-dakota | Basketball | ⚪ off (waiting) |  |
@@ -912,7 +915,6 @@
 | southern-indiana | Basketball | ⚪ off (waiting) |  |
 | southern-indiana | Softball | ⚪ off (waiting) |  |
 | southern-miss | Baseball | ⚪ off (waiting) |  |
-| southern-miss | Basketball | ⚪ off (waiting) |  |
 | southern-miss | Softball | ⚪ off (waiting) |  |
 | southern-utah | Basketball | ⚪ off (waiting) |  |
 | southern-utah | Football | ⚪ off (waiting) |  |
@@ -962,7 +964,6 @@
 | tennessee | Baseball | ⚪ off (waiting) |  |
 | tennessee | Basketball | ⚪ off (waiting) |  |
 | tennessee | Softball | ⚪ off (waiting) |  |
-| tennessee-state | Basketball | ⚪ off (waiting) |  |
 | tennessee-state | Football | ⚪ off (waiting) |  |
 | tennessee-state | Hockey | ⚪ off (waiting) |  |
 | tennessee-state | Softball | ⚪ off (waiting) |  |
@@ -1103,7 +1104,6 @@
 | valparaiso | Softball | ⚪ off (waiting) |  |
 | valparaiso | Volleyball | ⚪ off (waiting) |  |
 | vanderbilt | Baseball | ⚪ off (waiting) |  |
-| vanderbilt | Basketball | ⚪ off (waiting) |  |
 | vanderbilt | Lacrosse | ⚪ off (waiting) |  |
 | virginia | Baseball | ⚪ off (waiting) |  |
 | virginia | Basketball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 782/1956; on 2; off 1162; failing 10.
+Done 782/1956; on 29; off 1135; failing 10.

@@ -718,7 +718,20 @@
    "state": "off"
   },
   "ole-miss|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:34.541Z",
+   "last_detail": "live 2-0 · 7:30 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ole-miss|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Ole Miss vs Alcorn St",
+    "started_seen": "2026-11-02T17:02:37.774Z",
+    "live_passes": [
+     "2026-11-02T17:02:37.774Z",
+     "2026-11-02T17:04:28.287Z",
+     "2026-11-02T17:06:34.541Z"
+    ],
+    "final_ok": false
+   }
   },
   "ole-miss|Football": {
    "state": "done",
@@ -1078,7 +1091,18 @@
    "state": "off"
   },
   "south-carolina|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:32.550Z",
+   "last_detail": "live 2-0 · 9:27 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-carolina|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · South Carolina vs Maryland",
+    "started_seen": "2026-11-02T17:06:32.550Z",
+    "live_passes": [
+     "2026-11-02T17:06:32.550Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-carolina|Football": {
    "state": "done",
@@ -1114,7 +1138,19 @@
    "state": "off"
   },
   "vanderbilt|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:30.983Z",
+   "last_detail": "live 0-0 · 9:53 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "vanderbilt|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Vanderbilt vs Lipscomb",
+    "started_seen": "2026-11-02T17:04:24.883Z",
+    "live_passes": [
+     "2026-11-02T17:04:24.883Z",
+     "2026-11-02T17:06:30.983Z"
+    ],
+    "final_ok": false
+   }
   },
   "vanderbilt|Football": {
    "state": "done",
@@ -1279,7 +1315,18 @@
    "state": "off"
   },
   "maryland|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:13.173Z",
+   "last_detail": "live 0-1 · 9:50 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "maryland|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Maryland at South Carolina",
+    "started_seen": "2026-11-02T17:06:13.173Z",
+    "live_passes": [
+     "2026-11-02T17:06:13.173Z"
+    ],
+    "final_ok": false
+   }
   },
   "maryland|Field Hockey": {
    "state": "done",
@@ -2149,7 +2196,19 @@
    "state": "off"
   },
   "clemson|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.910Z",
+   "last_detail": "live 7-0 · 7:34 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "clemson|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Clemson vs Radford",
+    "started_seen": "2026-11-02T17:04:25.600Z",
+    "live_passes": [
+     "2026-11-02T17:04:25.600Z",
+     "2026-11-02T17:06:12.910Z"
+    ],
+    "final_ok": false
+   }
   },
   "clemson|Football": {
    "state": "done",
@@ -2275,7 +2334,23 @@
    "state": "off"
   },
   "georgia-tech|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.571Z",
+   "last_detail": "live 59-49 · End of 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "georgia-tech|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Georgia Tech vs Hofstra",
+    "started_seen": "2026-11-02T16:57:13.699Z",
+    "live_passes": [
+     "2026-11-02T16:57:13.699Z",
+     "2026-11-02T16:59:01.944Z",
+     "2026-11-02T17:01:10.359Z",
+     "2026-11-02T17:02:33.497Z",
+     "2026-11-02T17:04:46.041Z",
+     "2026-11-02T17:06:12.571Z"
+    ],
+    "final_ok": false
+   }
   },
   "georgia-tech|Football": {
    "state": "done",
@@ -3529,7 +3604,23 @@
    "state": "off"
   },
   "coastal-carolina|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:10.774Z",
+   "last_detail": "live 35-23 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "coastal-carolina|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Coastal Carolina at W Michigan",
+    "started_seen": "2026-11-02T16:57:14.299Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.299Z",
+     "2026-11-02T16:59:02.445Z",
+     "2026-11-02T17:00:50.726Z",
+     "2026-11-02T17:02:36.835Z",
+     "2026-11-02T17:04:44.823Z",
+     "2026-11-02T17:06:10.774Z"
+    ],
+    "final_ok": false
+   }
   },
   "coastal-carolina|Football": {
    "state": "done",
@@ -3760,7 +3851,23 @@
    "state": "off"
   },
   "old-dominion|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:31.041Z",
+   "last_detail": "live 27-30 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "old-dominion|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Old Dominion at C Michigan",
+    "started_seen": "2026-11-02T16:57:12.912Z",
+    "live_passes": [
+     "2026-11-02T16:57:12.912Z",
+     "2026-11-02T16:59:00.827Z",
+     "2026-11-02T17:01:08.812Z",
+     "2026-11-02T17:02:33.393Z",
+     "2026-11-02T17:04:23.494Z",
+     "2026-11-02T17:06:31.041Z"
+    ],
+    "final_ok": false
+   }
   },
   "old-dominion|Field Hockey": {
    "state": "done",
@@ -3844,7 +3951,19 @@
    "state": "off"
   },
   "southern-miss|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:13.017Z",
+   "last_detail": "live 6-0 · 8:20 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "southern-miss|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Southern Miss vs Miss Christian",
+    "started_seen": "2026-11-02T17:04:46.725Z",
+    "live_passes": [
+     "2026-11-02T17:04:46.725Z",
+     "2026-11-02T17:06:13.017Z"
+    ],
+    "final_ok": false
+   }
   },
   "southern-miss|Football": {
    "state": "done",
@@ -4360,7 +4479,23 @@
    "state": "off"
   },
   "central-michigan|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.699Z",
+   "last_detail": "live 30-27 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "central-michigan|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Central Michigan vs Old Dominion",
+    "started_seen": "2026-11-02T16:57:14.594Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.594Z",
+     "2026-11-02T16:59:21.976Z",
+     "2026-11-02T17:00:50.820Z",
+     "2026-11-02T17:02:39.503Z",
+     "2026-11-02T17:04:25.028Z",
+     "2026-11-02T17:06:12.699Z"
+    ],
+    "final_ok": false
+   }
   },
   "central-michigan|Field Hockey": {
    "state": "off"
@@ -5549,14 +5684,15 @@
   },
   "liberty|Basketball": {
    "state": "on",
-   "last_check": "2026-11-02T07:02:32.679Z",
-   "last_detail": "ESPN shows Men's · Liberty at High Point live (End of 2nd) but the app has no live card",
+   "last_check": "2026-11-02T17:06:54.318Z",
+   "last_detail": "final L, 57-72 not in the app's results",
    "game": {
     "key": "liberty|Basketball|Men's|2026-11-01|1",
     "title": "Men's · Liberty at High Point",
     "started_seen": "2026-11-02T06:55:21.828Z",
     "live_passes": [],
-    "final_ok": false
+    "final_ok": false,
+    "final_due": "2026-11-02T17:12:09.295Z"
    }
   },
   "liberty|Field Hockey": {
@@ -5605,7 +5741,23 @@
    "state": "off"
   },
   "middle-tennessee|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:31.148Z",
+   "last_detail": "live 41-24 · 3:53 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "middle-tennessee|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Middle Tennessee vs Fisk",
+    "started_seen": "2026-11-02T16:57:15.951Z",
+    "live_passes": [
+     "2026-11-02T16:57:15.951Z",
+     "2026-11-02T16:59:03.445Z",
+     "2026-11-02T17:00:50.612Z",
+     "2026-11-02T17:02:36.927Z",
+     "2026-11-02T17:04:43.484Z",
+     "2026-11-02T17:06:31.148Z"
+    ],
+    "final_ok": false
+   }
   },
   "middle-tennessee|Football": {
    "state": "done",
@@ -6019,7 +6171,23 @@
    "state": "off"
   },
   "davidson|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.024Z",
+   "last_detail": "live 33-35 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "davidson|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Davidson at Columbia",
+    "started_seen": "2026-11-02T16:57:15.605Z",
+    "live_passes": [
+     "2026-11-02T16:57:15.605Z",
+     "2026-11-02T16:59:23.367Z",
+     "2026-11-02T17:00:48.398Z",
+     "2026-11-02T17:02:39.585Z",
+     "2026-11-02T17:04:25.810Z",
+     "2026-11-02T17:06:12.024Z"
+    ],
+    "final_ok": false
+   }
   },
   "davidson|Field Hockey": {
    "state": "done",
@@ -6427,7 +6595,23 @@
    "state": "off"
   },
   "murray-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.979Z",
+   "last_detail": "live 30-21 · 7:42 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "murray-state|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Murray State at Tennessee St",
+    "started_seen": "2026-11-02T16:57:15.326Z",
+    "live_passes": [
+     "2026-11-02T16:57:15.326Z",
+     "2026-11-02T16:59:01.436Z",
+     "2026-11-02T17:00:49.639Z",
+     "2026-11-02T17:02:36.861Z",
+     "2026-11-02T17:04:26.477Z",
+     "2026-11-02T17:06:12.979Z"
+    ],
+    "final_ok": false
+   }
   },
   "murray-state|Football": {
    "state": "off"
@@ -6724,7 +6908,19 @@
    "state": "off"
   },
   "lipscomb|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:31.024Z",
+   "last_detail": "live 0-0 · 9:53 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lipscomb|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Lipscomb at Vanderbilt",
+    "started_seen": "2026-11-02T17:04:24.911Z",
+    "live_passes": [
+     "2026-11-02T17:04:24.911Z",
+     "2026-11-02T17:06:31.024Z"
+    ],
+    "final_ok": false
+   }
   },
   "lipscomb|Soccer": {
    "state": "done",
@@ -7340,14 +7536,15 @@
   },
   "high-point|Basketball": {
    "state": "on",
-   "last_check": "2026-11-02T07:02:27.002Z",
-   "last_detail": "ESPN shows Men's · High Point vs Liberty live (End of 2nd) but the app has no live card",
+   "last_check": "2026-11-02T17:06:52.227Z",
+   "last_detail": "final W, 72-57 not in the app's results",
    "game": {
     "key": "high-point|Basketball|Men's|2026-11-01|1",
     "title": "Men's · High Point vs Liberty",
     "started_seen": "2026-11-02T06:55:22.578Z",
     "live_passes": [],
-    "final_ok": false
+    "final_ok": false,
+    "final_due": "2026-11-02T17:12:09.295Z"
    }
   },
   "high-point|Lacrosse": {
@@ -7408,7 +7605,19 @@
    "state": "off"
   },
   "radford|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:31.071Z",
+   "last_detail": "live 0-7 · 7:34 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "radford|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Radford at Clemson",
+    "started_seen": "2026-11-02T17:04:25.221Z",
+    "live_passes": [
+     "2026-11-02T17:04:25.221Z",
+     "2026-11-02T17:06:31.071Z"
+    ],
+    "final_ok": false
+   }
   },
   "radford|Field Hockey": {
    "state": "off"
@@ -7648,7 +7857,18 @@
    "state": "off"
   },
   "hofstra|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:30.945Z",
+   "last_detail": "live 27-12 · 6:05 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "hofstra|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Hofstra vs St Joseph's LI",
+    "started_seen": "2026-11-02T17:06:30.945Z",
+    "live_passes": [
+     "2026-11-02T17:06:30.945Z"
+    ],
+    "final_ok": false
+   }
   },
   "hofstra|Field Hockey": {
    "state": "done",
@@ -7870,7 +8090,23 @@
    "verified_detail": "final L, 1-3"
   },
   "detroit-mercy|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:11.703Z",
+   "last_detail": "live 38-15 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "detroit-mercy|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Detroit Mercy vs UM Dearborn",
+    "started_seen": "2026-11-02T16:57:13.653Z",
+    "live_passes": [
+     "2026-11-02T16:57:13.653Z",
+     "2026-11-02T16:59:21.422Z",
+     "2026-11-02T17:00:49.187Z",
+     "2026-11-02T17:02:53.878Z",
+     "2026-11-02T17:04:24.000Z",
+     "2026-11-02T17:06:11.703Z"
+    ],
+    "final_ok": false
+   }
   },
   "detroit-mercy|Lacrosse": {
    "state": "off"
@@ -7912,7 +8148,23 @@
    "verified_detail": "final W, 3-0"
   },
   "iu-indy|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:32.525Z",
+   "last_detail": "live 54-36 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iu-indy|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · IU Indy vs Miami Mid'town",
+    "started_seen": "2026-11-02T16:57:14.254Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.254Z",
+     "2026-11-02T16:59:01.015Z",
+     "2026-11-02T17:00:49.667Z",
+     "2026-11-02T17:02:34.846Z",
+     "2026-11-02T17:04:23.531Z",
+     "2026-11-02T17:06:32.525Z"
+    ],
+    "final_ok": false
+   }
   },
   "iu-indy|Soccer": {
    "state": "done",
@@ -8179,7 +8431,23 @@
    "state": "off"
   },
   "columbia|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.776Z",
+   "last_detail": "live 35-33 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "columbia|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Columbia vs Davidson",
+    "started_seen": "2026-11-02T16:57:14.782Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.782Z",
+     "2026-11-02T16:59:23.138Z",
+     "2026-11-02T17:01:08.676Z",
+     "2026-11-02T17:02:35.991Z",
+     "2026-11-02T17:04:30.669Z",
+     "2026-11-02T17:06:12.776Z"
+    ],
+    "final_ok": false
+   }
   },
   "columbia|Field Hockey": {
    "state": "off"
@@ -8878,7 +9146,23 @@
    }
   },
   "morgan-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:32.283Z",
+   "last_detail": "live 53-26 · 9:26 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "morgan-state|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Morgan State vs Wash Adventist",
+    "started_seen": "2026-11-02T16:57:13.554Z",
+    "live_passes": [
+     "2026-11-02T16:57:13.554Z",
+     "2026-11-02T16:59:00.877Z",
+     "2026-11-02T17:00:49.973Z",
+     "2026-11-02T17:02:35.297Z",
+     "2026-11-02T17:04:23.659Z",
+     "2026-11-02T17:06:32.283Z"
+    ],
+    "final_ok": false
+   }
   },
   "morgan-state|Football": {
    "state": "off"
@@ -8935,7 +9219,19 @@
    "verified_detail": "final L, 2-3"
   },
   "south-carolina-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:11.743Z",
+   "last_detail": "live 1-2 · 18:18 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-carolina-state|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · SC State vs Morris",
+    "started_seen": "2026-11-02T17:04:28.325Z",
+    "live_passes": [
+     "2026-11-02T17:04:28.325Z",
+     "2026-11-02T17:06:11.743Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-carolina-state|Football": {
    "state": "off"
@@ -9400,7 +9696,23 @@
    "verified_detail": "final L, 2-3"
   },
   "tennessee-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:11.677Z",
+   "last_detail": "live 21-31 · 7:42 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "tennessee-state|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Tennessee State vs Murray St",
+    "started_seen": "2026-11-02T16:57:13.858Z",
+    "live_passes": [
+     "2026-11-02T16:57:13.858Z",
+     "2026-11-02T16:59:01.715Z",
+     "2026-11-02T17:00:49.405Z",
+     "2026-11-02T17:02:34.629Z",
+     "2026-11-02T17:04:24.476Z",
+     "2026-11-02T17:06:11.677Z"
+    ],
+    "final_ok": false
+   }
   },
   "tennessee-state|Football": {
    "state": "off"
@@ -9874,7 +10186,23 @@
    "state": "off"
   },
   "mercer|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:15.795Z",
+   "last_detail": "live 39-21 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mercer|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Mercer vs Reinhardt",
+    "started_seen": "2026-11-02T16:57:14.964Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.964Z",
+     "2026-11-02T16:59:01.620Z",
+     "2026-11-02T17:01:09.742Z",
+     "2026-11-02T17:02:33.478Z",
+     "2026-11-02T17:04:24.065Z",
+     "2026-11-02T17:06:15.795Z"
+    ],
+    "final_ok": false
+   }
   },
   "mercer|Football": {
    "state": "off"
@@ -10015,7 +10343,23 @@
    "verified_detail": "final L, 0-3"
   },
   "east-texas-am|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:11.986Z",
+   "last_detail": "live 25-7 · 7:28 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "east-texas-am|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · East Texas A&M vs OK Christian",
+    "started_seen": "2026-11-02T16:57:14.228Z",
+    "live_passes": [
+     "2026-11-02T16:57:14.228Z",
+     "2026-11-02T16:59:01.148Z",
+     "2026-11-02T17:00:48.861Z",
+     "2026-11-02T17:02:54.525Z",
+     "2026-11-02T17:04:24.866Z",
+     "2026-11-02T17:06:11.986Z"
+    ],
+    "final_ok": false
+   }
   },
   "east-texas-am|Football": {
    "state": "off"
@@ -10135,7 +10479,19 @@
    "state": "off"
   },
   "mcneese|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:12.189Z",
+   "last_detail": "live 3-3 · 8:08 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mcneese|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · McNeese vs TAMU-Kingsvlle",
+    "started_seen": "2026-11-02T17:04:23.746Z",
+    "live_passes": [
+     "2026-11-02T17:04:23.746Z",
+     "2026-11-02T17:06:12.189Z"
+    ],
+    "final_ok": false
+   }
   },
   "mcneese|Football": {
    "state": "off"
@@ -10180,7 +10536,20 @@
    "state": "off"
   },
   "nicholls|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:32.293Z",
+   "last_detail": "live 8-6 · 16:46 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "nicholls|Basketball|Men's|2026-11-02|1",
+    "title": "Men's · Nicholls vs N American",
+    "started_seen": "2026-11-02T17:02:35.782Z",
+    "live_passes": [
+     "2026-11-02T17:02:35.782Z",
+     "2026-11-02T17:04:44.855Z",
+     "2026-11-02T17:06:32.293Z"
+    ],
+    "final_ok": false
+   }
   },
   "nicholls|Football": {
    "state": "off"
@@ -10549,7 +10918,20 @@
    "state": "off"
   },
   "alcorn-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-02T17:06:11.862Z",
+   "last_detail": "live 0-2 · 7:51 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "alcorn-state|Basketball|Women's|2026-11-02|1",
+    "title": "Women's · Alcorn State at Ole Miss",
+    "started_seen": "2026-11-02T17:02:35.527Z",
+    "live_passes": [
+     "2026-11-02T17:02:35.527Z",
+     "2026-11-02T17:04:24.586Z",
+     "2026-11-02T17:06:11.862Z"
+    ],
+    "final_ok": false
+   }
   },
   "alcorn-state|Football": {
    "state": "off"
@@ -10753,7 +11135,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.254.0-home-favorites-news",
- "updated_at": "2026-11-02T07:02:32.685Z",
+ "version": "4.257.0-news-week-hs-placeholder",
+ "updated_at": "2026-11-02T17:06:54.323Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
