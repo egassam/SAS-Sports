@@ -664,7 +664,7 @@ async function loadNews(generation,signal){
 // page (user, October 29): browsing a team no longer writes ?school= into the
 // address, so a reload, a restored tab or a saved shortcut opens Home.
 let homeView=!new URLSearchParams(location.search).get('school');
-function applyHomeView(){document.body.classList.toggle('home-view',homeView);applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
+function applyHomeView(){document.body.classList.toggle('home-view',homeView);if(homeView){if(!fieldTimer&&!fieldBusy)loadFieldHome()}else{clearTimeout(fieldTimer);fieldTimer=null;fieldHome=[];fieldKey=''}applyCurrentSchoolTheme();if(homeView){const u=new URL(location.href);u.searchParams.delete('school');history.replaceState(null,'',u);$('#schoolMeta').textContent='My Teams · every level'}}
 function homeMode(){return homeView||!sportFilter.value}
 // Home: the favorites, in their order. A team's own page with no sport
 // chosen: that team alone.
@@ -782,12 +782,35 @@ function nextUpBox(todays,coming){
   const box=spotlightCard({...next.e,school_id:next.e.school_id||next.school_id});
   return`<div class="section next-up"${homeView&&next.school_id?` data-open-team="${esc(next.school_id)}" data-open-sport="${esc(next.sport)}"`:''}><div class="home-tag">${homeView?`<b>${esc(next.school)}</b> · `:''}${esc(next.sport)}</div>${box}</div>`;
 }
+// Games a favorite school's own scorekeeper is scoring live in SAS Scorer
+// (/score) join Home's "Live now · My Teams" (user, November 2: "Yes, show it
+// on Home", for Anthony's girls basketball). Asked only for favorites that
+// score their own games: every 3 s while one is live, every 30 s otherwise.
+let fieldScoring=null,fieldHome=[],fieldKey='',fieldTimer=null,fieldBusy=false;
+const fieldCard=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span><span class="fl-chip live">Live</span></div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away?.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away?.name)}</span><b>${esc(g.away?.score)}</b></div><div class="fl-row"><span>${esc(g.home?.name)}</span><b>${esc(g.home?.score)}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label||'SAS Scorer')} · tap for the scoreboard</div></a>`;
+const fieldItem=g=>`<div class="home-item home-field"${liveTeamVars({e:{},school_id:g.school_id})}><div class="home-tag"><span class="home-tag-sport">${esc(g.sport)}</span> · <b>${esc(catalogEntry(g.school_id)?.short_name||catalogEntry(g.school_id)?.name||g.school_id)}</b></div>${fieldCard(g)}</div>`;
+async function loadFieldHome(){
+  clearTimeout(fieldTimer);fieldTimer=null;
+  if(!homeView||fieldBusy)return;
+  fieldBusy=true;try{await readFieldHome()}finally{fieldBusy=false}
+}
+async function readFieldHome(){
+  try{if(!fieldScoring)fieldScoring=new Set(((await (await fetch('/api/score/schools',{cache:'no-store'})).json()).schools||[]).map(x=>x.school_id))}catch{fieldTimer=setTimeout(loadFieldHome,60000);return}
+  const ids=homeTeams().filter(id=>fieldScoring.has(id));
+  const games=(await Promise.all(ids.map(async id=>{try{return(((await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games)||[]).map(g=>({...g,school_id:id}))}catch{return[]}}))).flat().filter(g=>g.status==='live');
+  if(!homeView)return;
+  // Only what the card shows (each answer carries a new server_now).
+  const key=JSON.stringify(games.map(g=>[g.id,g.school_id,g.sport,g.away?.name,g.away?.score,g.home?.name,g.home?.score,g.summary]));
+  if(key!==fieldKey){fieldKey=key;fieldHome=games;render(displayedGroups())}
+  fieldTimer=setTimeout(loadFieldHome,games.length?3000:30000);
+}
 function renderHome(groups){
   const {live,everywhere,todays,recent,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
+  const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];
   // The jump row names each part with its count, the favorites' parts first.
-  const chips=[[mine,live,'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
+  const chips=[[mine,[...live,...field],'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
   sportNav.hidden=chips.length<2;
   sportNav.innerHTML=chips.map(([title,items,short])=>`<a class="sport-chip home-jump${/^Live/.test(short)?' live-jump':''}" href="#home-${slug(title)}">${esc(short)} <b>${items.length}</b></a>`).join('');
   const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
@@ -802,7 +825,7 @@ function renderHome(groups){
   // favorites. Live, upcoming and results so it's easier to find. Let's also
   // add news"): their live games, the next game's countdown, today, recent
   // results, coming up and news; every other live game comes after.
-  feed.innerHTML=homeSection(mine,live,'live')+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
+  feed.innerHTML=(field.length?`${homeSectionOpen(mine)}${sectionHead(mine)}<div class="section"><div class="home-grid">${field.map(fieldItem).join('')}${live.map(x=>homeItem(x,'live',true)).join('')}</div></div></section>`:homeSection(mine,live,'live'))+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
   $('#showAllResults')?.addEventListener('click',()=>{resultsExpanded=true;render(displayedGroups())});
   $('#showAllNews')?.addEventListener('click',()=>{newsExpanded=true;render(displayedGroups())});
@@ -1390,11 +1413,14 @@ applyHomeView();
   const box=document.querySelector('#fieldLive'),select=document.querySelector('#school');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let scoring=new Set(),timer=null,lastId=null;
+  const key=()=>`${select.value}|${document.body.classList.contains('home-view')}`;
   const card=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span>${g.status==='live'?'<span class="fl-chip live">Live</span>':g.status==='final'?'<span class="fl-chip">Final</span>':'<span class="fl-chip">Today</span>'}</div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away.name)}</span><b>${g.away.score}</b></div><div class="fl-row"><span>${esc(g.home.name)}</span><b>${g.home.score}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label)} · tap for the scoreboard</div></a>`;
   async function refresh(){
     clearTimeout(timer);
-    const id=select.value;lastId=id;
-    if(!scoring.has(id)){box.hidden=true;box.innerHTML='';return}
+    const id=select.value;lastId=key();
+    // Home shows its favorites' scorer games itself (loadFieldHome); this
+    // box is hidden there and does not poll.
+    if(!scoring.has(id)||document.body.classList.contains('home-view')){box.hidden=true;box.innerHTML='';return}
     let games=[];
     try{games=(await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games||[]}catch{}
     if(select.value!==id)return;
@@ -1405,7 +1431,7 @@ applyHomeView();
   fetch('/api/score/schools',{cache:'no-store'}).then(r=>r.json()).then(d=>{scoring=new Set((d.schools||[]).map(s=>s.school_id));refresh()}).catch(()=>{});
   select.addEventListener('change',refresh);
   // The school list fills in (and may restore a saved school) without a change event.
-  setInterval(()=>{if(select.value!==lastId)refresh()},1500);
+  setInterval(()=>{if(key()!==lastId)refresh()},1500);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});
 })();
 </script>

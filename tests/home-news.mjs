@@ -57,4 +57,14 @@ for(const kind of ['live','today','results','upcoming','news'])assert.ok(index.i
 
 assert.ok(index.includes('const NEWS_DAYS=7;')&&index.includes('inNewsWeek(n)'),'the page keeps one week of news, saved copies too');
 
+// SAS Scorer games on Home (user, November 2: "Yes, show it on Home"):
+// favorites that score their own games, live ones only, in Live now · My
+// Teams; the team page's own box does not poll while Home shows.
+assert.ok(index.includes("const ids=homeTeams().filter(id=>fieldScoring.has(id));"),'only favorites with the scorer on are asked');
+assert.ok(index.includes(".filter(g=>g.status==='live');"),'only live scorer games join Home');
+assert.ok(index.includes("const chips=[[mine,[...live,...field],'Live'],"),'the Live chip counts them');
+assert.ok(index.includes("fieldTimer=setTimeout(loadFieldHome,games.length?3000:30000);"),'3 s while live, 30 s otherwise');
+assert.ok(index.includes("if(!scoring.has(id)||document.body.classList.contains('home-view')){box.hidden=true;box.innerHTML='';return}"),'the team box is quiet on Home');
+assert.ok(/const key=JSON\.stringify\(games\.map\(g=>\[g\.id/.test(index),'a new server_now alone does not redraw Home');
+
 console.log('home-news: ok');
