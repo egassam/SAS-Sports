@@ -67,4 +67,10 @@ assert.ok(index.includes("fieldTimer=setTimeout(loadFieldHome,games.length?3000:
 assert.ok(index.includes("if(!scoring.has(id)||document.body.classList.contains('home-view')){box.hidden=true;box.innerHTML='';return}"),'the team box is quiet on Home');
 assert.ok(/const key=JSON\.stringify\(games\.map\(g=>\[g\.id/.test(index),'a new server_now alone does not redraw Home');
 
+// A favorite whose catalog card failed to load at startup is asked for again
+// before Home picks its sports (user, November 2: "Anthony Middle School
+// girls basketball isn't showing up for upcoming today").
+assert.ok(index.includes("if(homeTeams().some(id=>!SCHOOL_SPORTS[id]))await ensureEntries(homeTeams());"),'Home re-asks for missing favorite cards');
+assert.ok(index.includes("ids.filter(id=>id&&(!knownSchools.has(id)||!SCHOOL_SPORTS[id]))"),'a card without its sports is asked for again');
+
 console.log('home-news: ok');
