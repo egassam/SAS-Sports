@@ -217,6 +217,12 @@ console.log('Live scoring passed: baseball, softball and soccer rules; every oth
   const overlay=readFileSync(new URL('../public/overlay/index.html',import.meta.url),'utf8');
   assert.match(overlay,/html,body\{[^}]*background:transparent/,'the overlay page must be transparent for OBS and vMix');
   assert.match(overlay,/\/api\/score\/games\?school=/);assert.match(overlay,/\/api\/score\/games\/\$\{/);
-  assert.match(readFileSync(new URL('../public/score/index.html',import.meta.url),'utf8'),/\/overlay\/\?game=/,'the scorer app links each game to its overlay');
+  const scorer=readFileSync(new URL('../public/score/index.html',import.meta.url),'utf8');
+  // "Stream this game" (November 2): the link with the scorer's choices, a
+  // sample-score preview, and an OBS scene collection with the box on top.
+  assert.match(scorer,/new URL\('\/overlay\/'/,'the scorer app builds each game\'s overlay link');
+  assert.match(scorer,/searchParams\.set\('game'/);assert.match(scorer,/searchParams\.set\('sample','1'\)/);
+  assert.match(scorer,/id:'browser_source'/,'the OBS file adds the overlay as a browser source');
+  assert.match(overlay,/params\.get\('sample'\)==='1'/,'the overlay shows a sample score for the preview');
   console.log('Stream overlay page checks passed.');
 }

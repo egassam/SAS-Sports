@@ -62,6 +62,13 @@ details summary{cursor:pointer;font-weight:800;margin:6px 0 10px}
 .links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .links a{color:var(--accent);font-weight:800;font-size:14px}
 table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{padding:6px 4px;border-bottom:1px solid var(--line)}
+.stream-preview{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#3a5a7a 0%,#6b8aa6 38%,#8a6a45 39%,#a9845a 100%);margin-bottom:12px}
+.stream-preview iframe{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;transform-origin:0 0;pointer-events:none;background:transparent}
+.stream-preview .tag{position:absolute;right:10px;top:8px;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:999px}
+.copyrow{display:flex;gap:8px;margin-bottom:6px}.copyrow input{flex:1;font-size:13px;min-width:0}.copyrow .btn{flex:0 0 auto}
+.steps{margin:6px 0 4px;padding-left:22px}.steps li{margin-bottom:6px}
+.check{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:15px}.check input{width:auto}
+.btn.stream{background:#a99cff}
 [hidden]{display:none!important}
 /* Every other sport (October 21): the board and buttons each sport describes. */
 .gen-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;font-variant-numeric:tabular-nums}
@@ -103,7 +110,7 @@ table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{pa
 <!-- Games -->
 <section id="homeView" hidden>
   <div class="card">
-    <div class="row" style="align-items:center;margin-bottom:10px"><h2 style="margin:0">Games</h2><div style="flex:0 0 auto"><a class="small" id="schoolBoardLink" target="_blank" style="color:var(--accent);font-weight:800">School TV scoreboard ↗</a> · <a class="small" id="schoolOverlayLink" target="_blank" style="color:var(--accent);font-weight:800">Stream overlay ↗</a></div></div>
+    <div class="row" style="align-items:center;margin-bottom:10px"><h2 style="margin:0">Games</h2><div style="flex:0 0 auto"><a class="small" id="schoolBoardLink" target="_blank" style="color:var(--accent);font-weight:800">School TV scoreboard ↗</a> · <button class="btn small stream" id="schoolStreamBtn" type="button">📺 Stream a game</button></div></div>
     <div class="games" id="gameList"><p class="muted">Loading…</p></div>
   </div>
   <div class="card">
@@ -151,10 +158,55 @@ table.users{width:100%;border-collapse:collapse;font-size:14px}table.users td{pa
 <section id="consoleView" hidden>
   <div class="row" style="margin-bottom:10px;align-items:center"><button id="backBtn" class="btn ghost small" style="flex:0 0 auto">← Games</button><div class="muted small" id="consoleTitle" style="text-align:right"></div></div>
   <div class="board" id="board"></div>
-  <div class="links"><a id="tvLink" target="_blank">Open TV scoreboard ↗</a><a id="appLink" target="_blank">See it in the app ↗</a><a id="overlayLink" target="_blank">Stream overlay ↗</a></div>
-  <p class="note small" style="margin-top:-4px">Streaming the game? In OBS, vMix or Boxcast add the <b>Stream overlay</b> link as a Browser Source (1920×1080). It shows the score over the video and updates with every tap.</p>
+  <div class="links"><a id="tvLink" target="_blank">Open TV scoreboard ↗</a><a id="appLink" target="_blank">See it in the app ↗</a></div>
+  <button class="btn stream" id="streamBtn" type="button" style="width:100%;margin-bottom:12px">📺 Stream this game: put the score on your video</button>
   <div id="controls"></div>
   <div class="error" id="consoleError"></div>
+</section>
+
+<!-- Stream setup (November 2): the overlay link, a preview, and set-up steps -->
+<section id="streamView" hidden>
+  <div class="row" style="margin-bottom:10px;align-items:center"><button id="streamBack" class="btn ghost small" style="flex:0 0 auto">← Back</button><div class="muted small" id="streamTitle" style="text-align:right"></div></div>
+  <div class="card">
+    <h2>1 · Choose how the score looks</h2>
+    <div class="stream-preview" id="streamPreview"><iframe id="streamFrame" title="Score box preview" tabindex="-1"></iframe><span class="tag">Preview</span></div>
+    <p class="muted small" style="margin-top:-6px">The preview shows a sample score until the game is live. On your stream, only the score box shows over your video.</p>
+    <label id="stFollowLabel"><span>Score to show</span><select id="stFollow"><option value="game">This game</option><option value="school">Whichever of our games is live</option></select></label>
+    <div class="row">
+      <label><span>Where</span><select id="stPosition"><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom middle</option><option value="bottom-right">Bottom right</option><option value="top-left">Top left</option><option value="top-right">Top right</option></select></label>
+      <label><span>Size</span><select id="stScale"><option value="0.8">Small</option><option value="1" selected>Normal</option><option value="1.3">Large</option><option value="1.6">Extra large</option></select></label>
+    </div>
+    <label class="check"><input type="checkbox" id="stKeepFinal"> Keep the final score on screen after the game</label>
+  </div>
+  <div class="card">
+    <h2>2 · Get the link to the computer that streams</h2>
+    <div class="copyrow"><input id="stLink" readonly aria-label="Overlay link"><button class="btn small" id="stCopy" type="button">Copy</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost small" id="stShare" type="button">Send the link (text or email)</button></div>
+    <p class="muted small" id="stCopied" style="min-height:1.2em;margin:6px 0 0"></p>
+  </div>
+  <div class="card">
+    <h2>3 · Add it to your streaming software</h2>
+    <details open><summary>OBS Studio (free): easiest with the set-up file</summary>
+      <div class="row" style="margin-bottom:8px"><button class="btn small" id="stObsWin" type="button">Download for Windows</button><button class="btn small" id="stObsMac" type="button">Download for Mac</button></div>
+      <ol class="steps">
+        <li>In OBS, open <b>Scene Collection → Import</b>, pick the file you downloaded, and click <b>Import</b>.</li>
+        <li>Open <b>Scene Collection</b> again and choose <b>SAS Score</b>. The score box is already placed and sized.</li>
+        <li>Double-click <b>Camera</b> in Sources and pick your camera.</li>
+        <li>If the camera or score box doesn't fill the screen (your canvas isn't 1920 × 1080), right-click it and choose <b>Transform → Fit to screen</b>.</li>
+        <li>Set up your stream key in <b>Settings → Stream</b> and click <b>Start Streaming</b>.</li>
+      </ol>
+      <p class="muted small">No file? In Sources click <b>+ → Browser</b>, paste the link, set width <b>1920</b> and height <b>1080</b>, and keep it above your camera in the list.</p>
+    </details>
+    <details><summary>vMix</summary>
+      <ol class="steps"><li><b>Add Input → Web Browser</b>.</li><li>Paste the link, set the size to <b>1920 × 1080</b>, click OK.</li><li>Put it on an overlay channel (click <b>1</b> under the input) so it stays over your camera.</li></ol>
+    </details>
+    <details><summary>Streamlabs Desktop</summary>
+      <ol class="steps"><li>In Sources click <b>+ → Browser Source</b>, then <b>Add Source</b>.</li><li>Paste the link, set width <b>1920</b> and height <b>1080</b>, click Done.</li><li>Drag it above your camera in the Sources list.</li></ol>
+    </details>
+    <details><summary>Wirecast, Boxcast and others</summary>
+      <p class="small">Add a <b>Web page</b> or <b>Browser</b> source with the link at <b>1920 × 1080</b> and layer it above the camera. The background is see-through, so only the score box shows.</p>
+    </details>
+  </div>
 </section>
 </div>
 <div class="sync" id="syncBar" hidden><span id="syncText" class="ok">Saved</span><button id="undoBtn" class="btn ghost small">↶ Undo last</button></div>
@@ -178,7 +230,7 @@ async function api(path,{method='GET',body}={}){
   return data;
 }
 
-function show(view){for(const v of ['signinView','homeView','consoleView'])$('#'+v).hidden=v!==view;$('#signOut').hidden=view==='signinView';$('#syncBar').hidden=view!=='consoleView';}
+function show(view){for(const v of ['signinView','homeView','consoleView','streamView'])$('#'+v).hidden=v!==view;$('#signOut').hidden=view==='signinView';$('#syncBar').hidden=view!=='consoleView';}
 
 // --- sign in -------------------------------------------------------------------
 async function loadSchools(){
@@ -207,7 +259,6 @@ async function enterHome(){
   show('homeView');stopConsole();
   $('#who').textContent=`${session.user.display_name} · ${session.user.school_name}`;
   $('#schoolBoardLink').href=`/scoreboard/?school=${encodeURIComponent(session.user.school_id)}`;
-  $('#schoolOverlayLink').href=`/overlay/?school=${encodeURIComponent(session.user.school_id)}`;
   $('#adminCard').hidden=session.user.role!=='admin';
   if(!sports.length)await loadSchools();
   try{
@@ -256,7 +307,6 @@ async function openGame(id){
   serverOffset=current.server_now-Date.now();
   $('#tvLink').href=`/scoreboard/?game=${encodeURIComponent(id)}`;
   $('#appLink').href=`/?school=${encodeURIComponent(current.school_id)}`;
-  $('#overlayLink').href=`/overlay/?game=${encodeURIComponent(id)}`;
   render();
   // Another scorer's taps (or a second device) show up here too.
   pollTimer=setInterval(async()=>{if(sending||queue.some(q=>q.game===current?.id))return;try{const d=await api(`/api/score/games/${encodeURIComponent(current.id)}?since=${current.version}`);if(!d.unchanged){current=d;render()}}catch{}},3000);
@@ -298,6 +348,72 @@ function updateSync(state){
   else{el.className='ok';el.textContent=current?`Saved · live on every screen`:'Saved'}
 }
 $('#undoBtn').addEventListener('click',()=>send('undo'));
+// --- stream setup ----------------------------------------------------------------------
+// The overlay link with the scorer's choices, a live preview of it, the link to
+// copy or send, and an OBS scene collection with the box already placed.
+let streamFrom=null;
+function overlayUrl({preview=false}={}){
+  const u=new URL('/overlay/',location.origin),follow=$('#stFollow').value;
+  if(follow==='game'&&streamFrom?.game)u.searchParams.set('game',streamFrom.game.id);else u.searchParams.set('school',session.user.school_id);
+  if($('#stPosition').value!=='bottom-left')u.searchParams.set('position',$('#stPosition').value);
+  if($('#stScale').value!=='1')u.searchParams.set('scale',$('#stScale').value);
+  if($('#stKeepFinal').checked)u.searchParams.set('hide_when_idle','0');
+  if(preview)u.searchParams.set('sample','1');
+  return u.toString();
+}
+function fitPreview(){const box=$('#streamPreview');$('#streamFrame').style.transform=`scale(${box.clientWidth/1920})`}
+function updateStream(){
+  $('#stLink').value=overlayUrl();
+  const src=overlayUrl({preview:true});if($('#streamFrame').dataset.src!==src){$('#streamFrame').dataset.src=src;$('#streamFrame').src=src}
+  fitPreview();$('#stCopied').textContent='';
+}
+function openStream(game){
+  stopConsole();streamFrom={game};show('streamView');
+  $('#stFollowLabel').hidden=!game;$('#stFollow').value=game?'game':'school';
+  $('#streamTitle').textContent=game?`${game.away.name} at ${game.home.name}`:session.user.school_name;
+  updateStream();
+}
+for(const id of ['#stFollow','#stPosition','#stScale','#stKeepFinal'])$(id).addEventListener('change',updateStream);
+addEventListener('resize',()=>{if(!$('#streamView').hidden)fitPreview()});
+$('#schoolStreamBtn').addEventListener('click',()=>openStream(null));
+$('#streamBtn').addEventListener('click',()=>{if(current)openStream(current)});
+$('#streamBack').addEventListener('click',()=>{const g=streamFrom?.game;streamFrom=null;g?openGame(g.id):enterHome()});
+$('#stCopy').addEventListener('click',async()=>{
+  const link=$('#stLink').value;
+  try{await navigator.clipboard.writeText(link)}catch{$('#stLink').select();document.execCommand?.('copy')}
+  $('#stCopied').textContent='Copied. Paste it into your streaming software.';
+});
+$('#stShare').addEventListener('click',async()=>{
+  const link=$('#stLink').value,text=`Score overlay for our stream (add as a Browser source, 1920x1080): ${link}`;
+  if(navigator.share){try{await navigator.share({title:'SAS score overlay',text,url:link});return}catch(e){if(e.name==='AbortError')return}}
+  location.href=`mailto:?subject=${encodeURIComponent('SAS score overlay for the stream')}&body=${encodeURIComponent(text)}`;
+});
+const uuid=()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g,()=>(Math.random()*16|0).toString(16));
+// An OBS scene collection (Scene Collection → Import): a "Game" scene with the
+// camera underneath and the score box (a 1920x1080 browser source) on top.
+function obsCollection(os){
+  const cam={uuid:uuid(),name:'Camera',id:os==='mac'?'av_capture_input_v2':'dshow_input'};
+  const box={uuid:uuid(),name:'SAS Score',id:'browser_source'};
+  const item=(src,n)=>({name:src.name,source_uuid:src.uuid,visible:true,locked:n===2,rot:0,pos:{x:0,y:0},scale:{x:1,y:1},align:5,bounds_type:n===1?2:0,bounds_align:0,bounds:{x:1920,y:1080},crop_left:0,crop_top:0,crop_right:0,crop_bottom:0,id:n,group_item_backup:false,scale_filter:'disable',blend_method:'default',blend_type:'normal',show_transition:{duration:0},hide_transition:{duration:0},private_settings:{}});
+  const source=(src,settings)=>({prev_ver:0,name:src.name,uuid:src.uuid,id:src.id,versioned_id:src.id,settings,mixers:0,sync:0,flags:0,volume:1,balance:0.5,enabled:true,muted:false,'push-to-mute':false,'push-to-talk':false,hotkeys:{},deinterlace_mode:0,deinterlace_field_order:0,monitoring_type:0,private_settings:{}});
+  const scene={uuid:uuid(),name:'Game',id:'scene'};
+  return{
+    name:'SAS Score',current_scene:'Game',current_program_scene:'Game',scene_order:[{name:'Game'}],
+    sources:[
+      source(cam,{}),
+      source(box,{url:overlayUrl(),width:1920,height:1080,fps:30,css:'',reroute_audio:false,shutdown:false,restart_when_active:false}),
+      source(scene,{id_counter:2,custom_size:false,items:[item(cam,1),item(box,2)]}),
+    ],
+    groups:[],transitions:[],transition_duration:300,current_transition:'Fade',quick_transitions:[],saved_projectors:[],modules:{},
+  };
+}
+function downloadObs(os){
+  const blob=new Blob([JSON.stringify(obsCollection(os),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`SAS-Score-OBS-${os==='mac'?'Mac':'Windows'}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
+}
+$('#stObsWin').addEventListener('click',()=>downloadObs('windows'));
+$('#stObsMac').addEventListener('click',()=>downloadObs('mac'));
+
 window.addEventListener('online',flush);
 
 // Soccer counts up; football and basketball count down from limit_ms.
