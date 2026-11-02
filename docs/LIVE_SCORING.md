@@ -34,6 +34,8 @@ One tap in the scorer app saves the game. The TV and the app read the new score 
 
 ## Open items
 
+- **Anthony's admin login was reset on November 2, 2026** (the earlier details did not work in front of the scorer). New school code and `owner` password from `score-setup`, run by the user in the D1 console; given in chat, never in the repository. Before handing out sign-in details, check them against production (`POST /api/score/login`).
+- **Streaming help and phone streaming: on hold** (user, November 2: "Let's wait on this"). A setup screen was built and closed unmerged (PR #502). PRISM Live Studio's Web widget asked the user for a card. An in-app live feed through Cloudflare Stream WebRTC (no recording, $1 per 1,000 viewer-minutes) needs Stream enabled, an API token and the school's OK to show minors.
 - Traditional LED scoreboards (Daktronics, Fair-Play, Nevco) need a hardware bridge that reads the console's data output.
 - Every sport the Manhattan schools play can be scored (October 21). Cheer, dance and powerlifting are not scored.
 - Finals do not yet flow into the official results feed (they show on the live card for 6 hours).
