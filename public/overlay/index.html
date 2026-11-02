@@ -51,22 +51,18 @@ html,body{margin:0;background:transparent;overflow:hidden;font-family:system-ui,
 <script>
 // ?game=<id> follows one game; ?school=<id> follows the school's live game.
 // Options: position=bottom-left|bottom-right|top-left|top-right|bottom-center,
-// scale=0.5..2, hide_when_idle=0 to keep a final score on screen,
-// sample=1 to show a made-up score while no game is live (the scorer app's
-// "Stream this game" preview uses it to place the box).
+// scale=0.5..2, hide_when_idle=0 to keep a final score on screen.
 const params=new URLSearchParams(location.search);
 const gameId=params.get('game'),schoolId=params.get('school');
 const position=['bottom-left','bottom-right','top-left','top-right','bottom-center'].includes(params.get('position'))?params.get('position'):'bottom-left';
 const scale=Math.min(2,Math.max(.5,Number(params.get('scale'))||1));
 const hideIdle=params.get('hide_when_idle')!=='0';
-const sample=params.get('sample')==='1';
-const SAMPLE={id:'sample',school_id:schoolId,sport:'Basketball',status:'live',summary:'Q3',home:{name:'Your school',score:42,is_school:true},away:{name:'Opponent',score:38,is_school:false},state:{period:3,clock:{running:false,elapsed_ms:228000,limit_ms:480000,started_at:null,off:false}},view:{kind:'clock',period:'3rd Quarter',possession:'home'},version:0};
 const COLORS={'manhattan-ks':['#28306C','#ffffff']};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const bug=document.getElementById('bug');
 bug.classList.add('pos-'+position);
 document.documentElement.style.setProperty('--scale',scale);
-let game=null,offset=0,followed=gameId,lastScores={},showingSample=false;
+let game=null,offset=0,followed=gameId,lastScores={};
 
 function colors(id){const c=COLORS[id];if(c){document.documentElement.style.setProperty('--school',c[0]);document.documentElement.style.setProperty('--school-on',c[1])}}
 if(schoolId)colors(schoolId);
@@ -91,15 +87,13 @@ async function poll(){
 
 // Soccer counts up; football and basketball count down from limit_ms.
 function clockText(){
-  const c=(showingSample?SAMPLE:game)?.state?.clock;if(!c||c.off)return'';
+  const c=game?.state?.clock;if(!c||c.off)return'';
   const ms=c.elapsed_ms+(c.running?Math.max(0,Date.now()+offset-c.started_at):0);
   const shown=c.limit_ms!=null?Math.max(0,c.limit_ms-ms):ms;
   const t=c.limit_ms!=null?Math.ceil(shown/1000):Math.floor(shown/1000);return`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
 }
 
 function render(){
-  showingSample=sample&&!(game&&(game.status==='live'||(game.status==='final'&&(!hideIdle||gameId))));
-  if(showingSample){const real=game;game=SAMPLE;renderGeneric();game=real;bug.classList.remove('hidden');return}
   // Show live games; finals stay up only when hide_when_idle=0 or for a
   // game followed by id.
   const visible=game&&(game.status==='live'||(game.status==='final'&&(!hideIdle||gameId)));
@@ -144,7 +138,6 @@ function renderGeneric(){
 setInterval(()=>{const el=document.getElementById('clock');if(el)el.textContent=clockText()},250);
 async function loop(){await poll();setTimeout(loop,game?.status==='live'?1000:5000)}
 if(gameId||schoolId)loop();
-if(sample)render();
 </script>
 </body>
 </html>
