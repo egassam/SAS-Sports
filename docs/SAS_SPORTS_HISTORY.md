@@ -3862,3 +3862,19 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 **Open.** Neutral college meet titles reading "vs" (user's decision).
 
 **Decision (user, November 1): "No"** to making neutral meet titles read "at" app-wide. Meet titles keep the school's own "vs"/"at".
+
+
+## November 2, 2026 — Home leads with the favorites: recent results and news
+
+**Request (user).** "Let's make the home page a better experience. The top should be all about the favorites. Live, upcoming and results so it's easier to find. Let's also add news in some way."
+
+**Before.** Home showed Live now · My Teams, then Live now · Everywhere, the countdown, Today and Coming up. Results appeared only for games played today, and there was no news.
+
+**Change (`4.254.0-home-favorites-news`, PR #490).**
+- Order: Live now · My Teams → next-game countdown → Today → Recent results → Coming up → News → Live now · Everywhere. The jump row reads "Live 1 · Today 2 · Results 17 · Up next 19 · News 35 · Live everywhere 6".
+- Recent results (`homeSections` → `recent`): finals from the 7 days before each school's today, newest first, with day headings (a new "Yesterday" heading). One row per final, led by `resultMark` (W/L/T plus the score, a headline's place such as "15th · 362 pts", or "Played"). A row opens the event window. The Results tab also lists them.
+- News: `src/news.mjs` (`isStoryLink`, `newsCandidates`, `storyFromHtml`, `storyFor`) and the `/live/news` route. Each team-sport gives its 3 newest finals from the last 21 days that link a story (official `/news/`, `/story/` or `/recap/` paths, or a "recap" label; never MaxPreps, Bound, AthleticLIVE, MileSplit, TFRRS or a PDF). The route reads only the cached feed, last-good copy or global copy, never a rebuild. It reads story pages through `sourceFetch` (document TTL) and caches its answer for 30 minutes (not kept when no feed copy exists yet). It enforces sponsored sports. Headlines drop the trailing site name, http images are dropped, and an unread page falls back to the game title and result. The page asks only team-sports with such a final, four at a time, after a full load (never on the 15 s live refresh), and keeps the answers in `localStorage` `sas-news` for 6 h.
+
+**Tests.** `tests/home-news.mjs` (new; in `npm test` and `test:release`). `tests/regression.mjs` covers the new order, the Recent results filter, result rows, the page reading `/live/news`, and the route reading only cached copies. The sponsored-sport endpoint count went from 3 to 4 in `regression.mjs` and `isolation-local.mjs`. `npm run test:release` passed. A local server serving the new page against production data showed real K-State and KU stories parsed with headline, summary and photo. On the preview: `/live/news` for K-State volleyball returned "K-State Falls in Four at No. 16 TCU", "No. 15 Kansas Sweeps K-State Friday in Lawrence" and "Massey Sets School Record, Cats Sweep Past Texas Tech", all with photos. KU football returned three stories. An unsponsored sport returned 422. `verify:preview --school=kstate --sports=Volleyball`: 36/36 refreshes, 21 results with result lines, expanded views 21/21, XC 18/20 and 26/21. Screenshots of Home at 1280 px and 390 px were checked by eye. On phones the result column was widened to 84 px so a place like "15th · 362 pts" wraps instead of being cut off.
+
+**Open.** High and middle schools mostly link MaxPreps or Bound, not stories, so their News stays empty unless the school links an official story.
