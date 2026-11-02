@@ -335,7 +335,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.256.0-favorites-banners';
+const VERSION='4.256.1-hs-placeholder-next-day';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4016,7 +4016,10 @@ function matchContest(game,contests,used){
 // listed) stays for college. A placeholder the school's schedule held for a
 // round it never reached (a playoff round, "TBD") is not a game played.
 const HIGH_SCHOOL_PLACEHOLDER=/^(?:tbd|tba|regionals?|sectionals?|sub-?state|state|playoffs?|(?:1st|2nd|first|second) round|quarter-?finals?|semi-?finals?|finals?)\b|\b(?:regional|sub-?state|state|playoff|postseason)\b.*\b(?:football|volleyball|basketball|baseball|softball|tourney|tournament|round)\b|\bpostseason\b|^\d?a? ?(?:regionals?|sub-?state|state)\b/i;
-const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim())||/(?<!sub[- ]?)\bstate\b/i.test(String(name||''));
+// An opponent still "TBD"/"TBA" ("District - TBD") is the calendar holding a
+// round, not a game (user, November 2: "Manhattan football is showing two
+// games from Friday. The district one is the same as the vs Topeka one").
+const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim())||/(?<!sub[- ]?)\bstate\b/i.test(String(name||''))||/\btb[ad]\b/i.test(String(name||''));
 // A school channel's latest 50 uploads with each video's live state (two
 // Data API reads, 1 quota unit each, of the 10,000 a day): every 2 minutes
 // while the school has a game on, every 10 otherwise. The key stays out of
@@ -4681,7 +4684,9 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // the round ("District - TBD"; Oct 30 it came back beside the 67-7
       // final once the live card ended).
       const played=event.status==='Live'||event.status==='Final';
-      const twin=events.findIndex(e=>(e.no_result_posted||played&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||played&&e.status==='Today'&&(isHighSchoolPlaceholder(e.opponent)||/\btb[ad]\b/i.test(e.opponent))));
+      // On later days too: the placeholder read "Played · No score posted"
+      // beside the 67-7 final from Oct 31 (user, November 2).
+      const twin=events.findIndex(e=>(e.no_result_posted||played&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||played&&isHighSchoolPlaceholder(e.opponent)));
       if(twin>=0)events.splice(twin,1);
       events.push(event);
     }
