@@ -46,4 +46,12 @@ assert.ok(index.includes("if(currentView==='news')return renderNews();"),'the Ne
 assert.ok(index.includes("function newsPairs(){return homeMode()?homePairs().filter(([id])=>homeTeams().includes(id)):[[school.value,sportFilter.value]]"),'a sport page asks for that sport\'s news');
 assert.ok(index.includes("if(currentView==='news'&&currentGroups.length)loadNews("),'switching to News loads the stories');
 
+// Favorites banners (user, November 2: "a distinct my favorite banner for
+// each of the live, results, upcoming and news").
+for(const [title,kind] of [['Live now · My Teams','live'],['Recent results','results'],['Coming up','upcoming'],['News','news'],['Today','today']])
+  assert.ok(new RegExp(`'${title}':\\['${kind}',`).test(index),`${title} wears the ${kind} banner`);
+assert.ok(!/'Live now · Everywhere':\[/.test(index),'Live everywhere keeps the plain heading');
+assert.ok(index.includes('const fav=homeView&&FAV_BANNERS[title];'),'banners only on Home, not on a team page');
+for(const kind of ['live','today','results','upcoming','news'])assert.ok(index.includes(`.fav-banner.fav-${kind}{--fav:`),`${kind} has its own color`);
+
 console.log('home-news: ok');
