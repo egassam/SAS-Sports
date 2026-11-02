@@ -3890,3 +3890,13 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 - **Gate:** preview `verify:preview --school=kstate --sports=Volleyball`: status, XC 18/20 and 26/21, 36/36 forced refreshes, 21 results with result lines, 21/21 expanded views. Page checked at 390 px on the preview (Home News: K-State volleyball, XC, golf, football stories; K-State Volleyball News: TCU and Kansas stories; Upcoming unchanged; no page errors). CI green, no conflict.
 - **Published:** PR #492 merged as `679abd1`. Production `4.255.0-news-tab` verified (`verify:prod` K-State volleyball 3/3 refreshes, 21/21 expanded views, XC 18/20 and 26/21; News tab on Home and K-State Volleyball at 390 px, no page errors).
 - **Open:** none.
+
+
+## November 2, 2026 — "★ My Teams" banners on Home's favorites sections
+
+- **User:** "Can we add a distinct my favorite banner for each of the live, results, upcoming and news so it's visually obvious that it's your favs".
+- **Built (`public/index.html`):** `FAV_BANNERS` and `sectionHead(title,sub)`: on Home (`homeView`) the favorites' sections (Live now · My Teams, Today, Recent results, Coming up, News) and the News tab get a header with a gold "★ My Teams" pill, a mark and a stripe in that section's color (Live ● #ff5d6c, Today ◷ #ffd27a, Results ✓ #4ade80, Coming up ▸ #60a5fa, News ▤ #c084fc), and the section a gold frame (`.sport.fav-section`). Live now · Everywhere and a team's own page (no sport chosen) keep the plain heading. No animation (the calm live-glow rule). First draft had every mark gold: `.sport-head.fav-banner{--fav}` outranked the per-kind rules; fixed by scoping them `.fav-banner.fav-<kind>`. Version `4.256.0-favorites-banners`.
+- **Tests:** `tests/home-news.mjs` checks each banner and color, none for Everywhere, Home only. `npm run test:release` passed on `4fd099b`.
+- **Gate:** preview `verify:preview --school=kstate --sports=Volleyball`: status, XC 18/20 and 26/21, 36/36 forced refreshes, 21/21 expanded views; page at 390 px (favorites K-State, Manhattan HS, Chiefs): Today, Recent results, Coming up banners, News tab banner, team page none, no page errors; computed stripe colors checked for all five plus Everywhere plain. No favorite was live, so the Live banner was checked by rendering it on the page (red stripe, ●). CI green, no conflict.
+- **Published:** PR #494 merged as `3a14b24`. Production `4.256.0-favorites-banners` verified (`verify:prod` K-State volleyball 3/3, 21/21, XC 18/20 and 26/21; Home at 390 px shows Today, Recent results, Coming up and News banners, team page none, no page errors).
+- **Open:** none.
