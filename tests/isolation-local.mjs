@@ -12,7 +12,7 @@ assert.match(worker,/function feedCacheKey\(url,school,sport\)[^}]*set\('school'
 assert.match(worker,/versionedUrl\.searchParams\.set\('athlete_cache',VERSION\)/,'athlete cache must be versioned');
 assert.ok(worker.includes('return`${e.school_id}|${e.sport}|${e.team_label'), 'event merge identity must include school and sport');
 assert.match(worker,/Highlights are event-specific[\s\S]*cache-control/,'highlight cache policy is missing');
-assert.equal(worker.split('const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;').length-1,3,'all three live endpoints must enforce sponsored sports');
+assert.equal(worker.split('const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;').length-1,4,'all four live endpoints (feed, athletes, highlights, news) must enforce sponsored sports');
 
 const cacheKeys=new Set();
 for(const school of manifest.schools){

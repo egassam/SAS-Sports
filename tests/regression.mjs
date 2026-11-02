@@ -76,7 +76,7 @@ contains(worker,/'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application\/json'
 contains(worker,/'User-Agent':`Mozilla\/5\.0 \(compatible; SAS-Sports\/\$\{VERSION\}; \+\$\{BOT_INFO_URL\}\)`/,'School-site downloads keep the full identity with the info link');
 contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worker must use the authoritative sponsored-sports manifest');
 contains(baylorModule,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
-assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),3,'Feed, athlete, and highlight endpoints must all reject unsupported school-sport requests');
+assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),4,'Feed, athlete, highlight and news endpoints must all reject unsupported school-sport requests');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 contains(worker,/eventDay>today[\s\S]*effective='Upcoming';schoolScore=null;oppScore=null;resultLabel=null/,'Future games must discard leaked scores and remain upcoming');
 
@@ -320,7 +320,11 @@ assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not wr
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
-contains(page,/homeSection\(mine,live,'live'\)\+everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today',todays\)\+homeSection\('Coming up',coming,'upcoming'\)/,'The home screen must show Live now (my teams, then everywhere), then Today, then Coming up');
+contains(page,/homeSection\(mine,live,'live'\)\+nextUpBox\(todays,coming\)\+homeSection\('Today',todays\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml/,'Home must lead with the favorites (user, November 2): Live now, the countdown, Today, Recent results, Coming up and News, then every other live game');
+contains(page,/bucket==='results'&&!isToday\(x\)&&day\(x\)<\(today\.get[^\n]*day\(x\)>=since\(x\.school_id\)/,'Recent results must hold the finals of the last days before today only');
+contains(page,/class="home-row home-result" data-event-id/,'Each recent result must be one row that opens the game');
+contains(page,/apiFetch\(`\/live\/news\?school=/,'Home must read its news from /live/news');
+contains(worker,/if\(url\.pathname==='\/live\/news'\)\{[\s\S]{0,900}feedCacheKey\(url,school,sport\)[\s\S]{0,200}lastGoodFeedKey/,'/live/news must read only the feed copy already built, never rebuild a feed');
 contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
 // Home's live boxes (user, Oct 29): small, three across, sports A to Z, team colors.
 contains(page,/const live=\[\.\.\.ownLive,\.\.\.fromBoards\]\.sort\(\(a,b\)=>bySport\(a,b\)\|\|byTeam\(a,b\)\)/,'My Teams live games must read sports A to Z');
@@ -426,7 +430,7 @@ contains(page,/setInterval\(\(\)=>\{for\(const box of document\.querySelectorAll
 contains(page,/<b data-unit="s">\$\{c\.s\}<\/b><span>sec<\/span>/,'The countdown must show seconds');
 contains(page,/\.my-teams-toggle\{[^}]*border:2px solid var\(--warn,#ffd27a\)/,'The My Teams menu must stand out in the favorite gold (user, October 30)');
 contains(page,/data-favorite-school/,'Favorite teams must be visible and selectable from the homepage');
-contains(page,/everywhereHtml\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
+contains(page,/homeSection\(mine,live,'live'\)\+nextUpBox\(todays,coming\)\+homeSection\('Today'/,'The overview (Home, a team with no sport chosen) must lead with the next game\'s countdown');
 // My Teams is one dropdown (user, October 30: "Go with option 1"): Home, then
 // the favorites by level, with reorder and remove.
 contains(page,/<button class="ghost my-teams-toggle" aria-expanded="\$\{myTeamsOpen\}"/,'My Teams must be one dropdown button');

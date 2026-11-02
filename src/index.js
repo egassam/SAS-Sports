@@ -52,6 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
+import {newsCandidates,storyFromHtml,storyFor} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
 import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
@@ -334,7 +335,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.253.0-state-meet-next-day';
+const VERSION='4.254.0-home-favorites-news';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6390,6 +6391,29 @@ export default{
       const response=json(await liveNow(new Date()));
       response.headers.set('cache-control','public, max-age=60');
       ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
+    }
+    // Home's news: the official stories linked from a team-sport's recent
+    // finals. It reads only the feed copy already built (never a rebuild),
+    // then each story page (cached like any article), and is shared for 30
+    // minutes at each location.
+    if(url.pathname==='/live/news'){
+      const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/news?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}&v=${VERSION}`,url.origin).toString());
+      const kept=await cache.match(key);if(kept)return kept;
+      const copy=await cache.match(feedCacheKey(url,school,sport))||await cache.match(lastGoodFeedKey(url,school,sport))||await globalCopy(env,url,school,sport);
+      let groups=[];try{groups=copy?await copy.json():[]}catch{}
+      const stories=await Promise.all(newsCandidates(groups).map(async item=>{
+        let page=null;
+        try{const r=await sourceFetch(item.e.recap_url,{headers:HEADERS,redirect:'follow',signal:AbortSignal.timeout(6000)},{ttl:SOURCE_TTL.document});if(r.ok)page=storyFromHtml(await r.text(),item.e.recap_url)}catch{}
+        return storyFor(item,page);
+      }));
+      const response=json({school,sport,stories,feed_read:Boolean(copy)});
+      // Without a feed copy yet the answer is not kept: the next Home load
+      // (after the feed is built) reads it again.
+      response.headers.set('cache-control',copy?'public, max-age=900':'no-store');
+      if(copy)ctx.waitUntil(cache.put(key,new Response(response.clone().body,{headers:{...Object.fromEntries(response.headers),'cache-control':'public, max-age=1800'}})));
       return response;
     }
     if(url.pathname==='/live/feed/grouped'){
