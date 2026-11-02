@@ -171,6 +171,14 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
 #refresh{font-size:26px;line-height:1}
 .hero .tabs{margin-top:8px;gap:4px}
 .hero .tab{min-height:44px;padding:8px 12px;font-size:13px}
+/* Favorites banner on Home's own sections: gold frame and "★ My Teams" pill,
+   one mark and stripe color per part. */
+.sport.fav-section{border:2px solid var(--warn,#ffd27a);box-shadow:0 0 0 3px rgba(255,210,122,.10),0 8px 22px rgba(255,210,122,.10)}
+.sport-head.fav-banner{justify-content:flex-start;gap:12px;background:linear-gradient(110deg,color-mix(in srgb,var(--fav) 30%,#1a1f2a),color-mix(in srgb,var(--warn,#ffd27a) 12%,#11161f) 70%);border-bottom:2px solid var(--fav);box-shadow:inset 6px 0 var(--fav)}
+.fav-banner .sport-title{color:#fff}
+.fav-pill{display:inline-block;margin-bottom:3px;padding:2px 8px;border-radius:999px;background:var(--warn,#ffd27a);color:#1b1405;font-size:11px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.fav-mark{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--fav) 26%,#0b111a);border:2px solid var(--fav);color:var(--fav);font-size:19px;font-weight:900;line-height:1}
+.fav-banner{--fav:#ffd27a}.fav-banner.fav-live{--fav:#ff5d6c}.fav-banner.fav-today{--fav:#ffd27a}.fav-banner.fav-results{--fav:#4ade80}.fav-banner.fav-upcoming{--fav:#60a5fa}.fav-banner.fav-news{--fav:#c084fc}
 /* Five view tabs (All, Live, Results, Upcoming, News) share one row on a phone. */
 @media(max-width:560px){.hero .tabs{flex-wrap:nowrap}.hero .tab{flex:1 1 auto;padding:8px 4px;white-space:nowrap}}
 .hero .statusline{margin-top:6px;font-size:11px;line-height:1.5}
@@ -744,7 +752,20 @@ function resultRows(items){
 function newsCards(stories){
   return`<div class="news-grid">${stories.map(n=>{const c=knownColors(catalogEntry(n.school_id)?.theme),when=String(n.published||n.event_date||'').slice(0,10),label=when?new Date(`${when}T12:00:00Z`).toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'}):'';return`<a class="news-card" href="${esc(n.url)}" target="_blank" rel="noopener"${c?` style="--team-primary:${c.main};--team-secondary:${c.edge}"`:''}><div class="news-art">${n.image?`<img src="${esc(n.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:''}<span>${esc(n.sport)}</span></div><div class="news-body"><div class="news-tag"><b>${esc(catalogEntry(n.school_id)?.short_name||n.school)}</b> · ${esc(n.sport)}${label?` · ${esc(label)}`:''}</div><div class="news-headline">${esc(n.headline)}</div>${n.summary?`<div class="news-summary">${esc(n.summary)}</div>`:''}<div class="news-source">${esc(n.source)} ↗</div></div></a>`}).join('')}</div>`;
 }
-function homeSection(title,items,kind){if(!items.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from your teams' recent games</div></div></div><div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${comingRows(items)}</div></section>`;return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+// The favorites' sections on Home wear a gold "★ My Teams" banner, each part
+// with its own mark and stripe (user, November 2: "add a distinct my
+// favorite banner for each of the live, results, upcoming and news so it's
+// visually obvious that it's your favs"). Live everywhere, and a team's own
+// page, keep the plain heading.
+const FAV_BANNERS={'Live now · My Teams':['live','Live now','●'],'Live now':['live','Live now','●'],'Today':['today','Today','◷'],'Recent results':['results','Recent results','✓'],'Coming up':['upcoming','Coming up','▸'],'News':['news','News','▤']};
+function sectionHead(title,sub=''){
+  const fav=homeView&&FAV_BANNERS[title];
+  if(!fav)return`<div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
+  const [kind,label,mark]=fav;
+  return`<div class="sport-head fav-banner fav-${kind}"><span class="fav-mark" aria-hidden="true">${mark}</span><div><div class="fav-pill">★ My Teams</div><h2 class="sport-title">${esc(label)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
+}
+function homeSectionOpen(title,id){return`<section class="sport home-section${homeView&&FAV_BANNERS[title]?' fav-section':''}" id="${id||`home-${slug(title)}`}">`}
+function homeSection(title,items,kind){if(!items.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -862,7 +883,7 @@ function renderNews(){
   const stories=homeNews(),where=homeView?'your teams':sportFilter.value?`${catalogEntry(school.value)?.short_name||school.value} ${sportFilter.value}`:(catalogEntry(school.value)?.short_name||school.value);
   sportNav.hidden=true;sportNav.innerHTML='';
   if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last three weeks' results.`}</div>`;return}
-  feed.innerHTML=`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from ${esc(where)}${/s$/i.test(where)?"'":"'s"} recent games</div></div></div><div class="section">${newsCards(stories)}</div></section>`;
+  feed.innerHTML=`${homeSectionOpen('News','home-news')}${sectionHead('News',`Official stories from ${where}${/s$/i.test(where)?"'":"'s"} recent games`)}<div class="section">${newsCards(stories)}</div></section>`;
 }
 function render(groups){
   syncVideoDock(groups);
