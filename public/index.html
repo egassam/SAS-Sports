@@ -857,6 +857,13 @@ async function fetchTeamSport(id,sp,forceRefresh,signal){
 // While a game is live, the 15 s refresh reads only the team-sports with a
 // game live or today.
 async function loadHome(forceRefresh,automatic,generation,signal){
+  // A favorite whose catalog card did not load (a failed read at startup)
+  // would be asked only for Cross Country (homeSport) for the whole visit:
+  // its card is asked for again on every load until it arrives (user,
+  // November 2: "Anthony Middle School girls basketball isn't showing up for
+  // upcoming today").
+  if(homeTeams().some(id=>!SCHOOL_SPORTS[id]))await ensureEntries(homeTeams());
+  if(generation!==feedGeneration)return;
   const pairs=homePairs(),key=([id,sp])=>`${id}|${sp}`;
   const busy=new Set(currentGroups.filter(g=>(g.live||[]).length||(g.upcoming||[]).some(e=>String(e.start_time||'').slice(0,10)===schoolToday(g.school_id))).map(g=>`${g.school_id}|${g.sport}`));
   const requested=automatic&&hasLiveEvents()?pairs.filter(p=>busy.has(key(p))):pairs;
@@ -1025,7 +1032,7 @@ async function loadMenu(level,group='',middle=''){
   rememberEntries(menu.entries);catalogMenuState=menu;return menu;
 }
 async function ensureEntries(ids){
-  const missing=[...new Set(ids.filter(id=>id&&!knownSchools.has(id)))];
+  const missing=[...new Set(ids.filter(id=>id&&(!knownSchools.has(id)||!SCHOOL_SPORTS[id])))];
   if(missing.length)try{rememberEntries(await catalogFetch(`/catalog/entries?ids=${encodeURIComponent(missing.join(','))}`))}catch{}
 }
 function levelSchools(){return catalogMenuState.entries||[]}
