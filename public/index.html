@@ -232,7 +232,17 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .home-row-sport{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--team-primary,#94a3b8) 45%,#fff);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-row-title{min-width:0;font-weight:850;font-size:14px;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-row-tv{font-size:11px;color:var(--muted);white-space:nowrap}
-@media(max-width:560px){.home-row{grid-template-columns:64px minmax(0,1fr);gap:2px 10px;padding:8px 10px}.home-row-time{grid-row:1/3;font-size:12px}.home-row-sport{font-size:10px}.home-row-title{grid-column:2;font-size:13px}.home-row-tv{display:none}}
+/* Recent results: the result leads the row, green for a win, red for a loss. */
+.home-row-result{font-weight:950;font-size:13px;font-variant-numeric:tabular-nums;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.home-row-result.wl-w{color:#86efac}.home-row-result.wl-l{color:#fca5a5}.home-row-result.wl-t{color:#fde68a}
+/* The jump row: each part of Home with its count; Live glows. */
+.home-jump b{margin-left:4px;padding:1px 7px;border-radius:999px;background:#13243a;color:#f8fafc;font-size:11px}.home-jump.live-jump{border-color:#29614f;color:#9ff2d3}.home-jump.live-jump b{background:#13352d;color:#9ff2d3}
+/* News: story cards, three across (two on a tablet, one on a phone). */
+.news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:860px){.news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.news-grid{grid-template-columns:1fr}}
+.news-card{display:flex;flex-direction:column;min-width:0;border-radius:14px;overflow:hidden;background:#0d1b2d;border:1px solid #203750;border-top:3px solid var(--team-primary,#64748b);color:#f8fafc;text-decoration:none;transition:transform .12s,border-color .12s}.news-card:hover,.news-card:focus{transform:translateY(-2px);border-color:#335573}
+.news-art{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,color-mix(in srgb,var(--team-primary,#1b4962) 70%,#0b1622),color-mix(in srgb,var(--team-secondary,#18314d) 45%,#0b1622));display:grid;place-items:center;overflow:hidden}.news-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}.news-art span{font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.news-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:5px;flex:1}.news-tag{font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.news-tag b{color:color-mix(in srgb,var(--team-primary,#94a3b8) 45%,#fff)}.news-headline{font-size:15px;font-weight:900;line-height:1.25}.news-summary{font-size:12px;color:#b6c5d6;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.news-source{margin-top:auto;font-size:11px;color:#8de7ff;font-weight:800}
+@media(max-width:560px){.home-row{grid-template-columns:64px minmax(0,1fr);gap:2px 10px;padding:8px 10px}.home-row-time,.home-row-result{grid-row:1/3;font-size:12px}.home-row.home-result{grid-template-columns:84px minmax(0,1fr)}.home-row-result{white-space:normal;line-height:1.2}.home-row-sport{font-size:10px}.home-row-title{grid-column:2;font-size:13px}.home-row-tv{display:none}}
 .home-grid .home-item{display:flex;flex-direction:column;min-width:0}.home-grid .home-item>.card{flex:1;margin:0}
 .home-grid .home-tag{margin:0 2px 4px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-grid .live-more,.home-grid .live-foot{display:none}
@@ -601,7 +611,30 @@ let everywhereGames=[],everywhereExpanded=false;
 // Home even if not starred"): /live/now names them (the Kansas Approved
 // Schools state cross country meet); kept on this device for the next load.
 let featuredPairs=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-featured')||'[]');return Array.isArray(v)?v.filter(p=>Array.isArray(p)&&p.length===2):[]}catch{return[]}})();
-const EVERYWHERE_SHOWN=30;
+const EVERYWHERE_SHOWN=30,RECENT_DAYS=7,RESULTS_SHOWN=8,NEWS_SHOWN=6;
+let resultsExpanded=false,newsExpanded=false;
+// News (/live/news) per team-sport, kept on this device for six hours so
+// Home shows it at once on the next visit.
+const NEWS_KEEP_MS=6*36e5;
+let newsByPair=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-news')||'{}');return new Map(Object.entries(v).filter(([,x])=>x&&Array.isArray(x.stories)&&Date.now()-x.at<=NEWS_KEEP_MS))}catch{return new Map()}})();
+function homeNews(){
+  const pairs=new Set(homePairs().filter(([id])=>homeTeams().includes(id)).map(([id,sp])=>`${id}|${sp}`)),q=search.value.trim().toLowerCase(),seen=new Set();
+  return[...newsByPair].filter(([k])=>pairs.has(k)).flatMap(([,x])=>x.stories).filter(n=>n&&n.url&&!seen.has(n.url)&&seen.add(n.url)&&(!q||`${n.headline} ${n.school} ${n.sport}`.toLowerCase().includes(q))).sort((a,b)=>String(b.published||b.event_date).localeCompare(String(a.published||a.event_date)));
+}
+// A team-sport is asked for news only when its feed has a final with a
+// story link in the last three weeks.
+const hasStory=g=>(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=21*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
+async function loadNews(generation,signal){
+  const pairs=homePairs().filter(([id])=>homeTeams().includes(id)),key=([id,sp])=>`${id}|${sp}`,groupOf=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
+  const wanted=pairs.filter(p=>hasStory(groupOf.get(key(p)))&&!(newsByPair.get(key(p))&&Date.now()-newsByPair.get(key(p)).at<15*6e4));
+  let changed=false;
+  await inBatches(wanted,4,async ([id,sp])=>{
+    try{const r=await apiFetch(`/live/news?school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sp)}`,1,{signal,transientOnly:true});const d=await r.json();if(Array.isArray(d?.stories)&&d.feed_read){newsByPair.set(key([id,sp]),{at:Date.now(),stories:d.stories});changed=true}}catch(e){if(e?.name==='AbortError')throw e}
+  });
+  if(!changed||generation!==feedGeneration||!homeMode())return;
+  try{localStorage.setItem('sas-news',JSON.stringify(Object.fromEntries([...newsByPair].filter(([,x])=>Date.now()-x.at<=NEWS_KEEP_MS))))}catch{}
+  render(displayedGroups());
+}
 // Home is its own level (user, October 28: "add a home next to middle school
 // ... The home screen shouldn't show league, schools and sports boxes. It
 // should only show live and upcoming events for every level from middle
@@ -657,10 +690,15 @@ function homeSections(groups){
   const next=new Map();
   for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||schoolToday(x.school_id))).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
   const coming=[...next.values()].sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
-  if(currentView==='live')return{live,everywhere,todays:[],coming:[]};
-  if(currentView==='results')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='results'),coming:[]};
-  if(currentView==='upcoming')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='upcoming'),coming};
-  return{live,everywhere,todays,coming};
+  // Recent results (user, November 2: "The top should be all about the
+  // favorites. Live, upcoming and results so it's easier to find"): the
+  // finals of the last RECENT_DAYS days before today, newest first.
+  const since=id=>{const d=new Date(`${today.get(id)||schoolToday(id)}T12:00:00Z`);d.setUTCDate(d.getUTCDate()-RECENT_DAYS);return d.toISOString().slice(0,10)};
+  const recent=events.filter(x=>x.bucket==='results'&&!isToday(x)&&day(x)<(today.get(x.school_id)||schoolToday(x.school_id))&&day(x)>=since(x.school_id)).sort((a,b)=>day(b).localeCompare(day(a))||at(b.e)-at(a.e)||byTeam(a,b));
+  if(currentView==='live')return{live,everywhere,todays:[],recent:[],coming:[]};
+  if(currentView==='results')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='results'),recent,coming:[]};
+  if(currentView==='upcoming')return{live:[],everywhere:[],todays:todays.filter(x=>x.bucket==='upcoming'),recent:[],coming};
+  return{live,everywhere,todays,recent,coming};
 }
 // A live card on Home wears its own team's colors (the page itself stays
 // neutral): the school's catalog colors, or those /live/now carries.
@@ -672,12 +710,33 @@ function homeLiveGrid(items){return`<div class="home-grid">${items.map(x=>homeIt
 // time; a date-only event keeps the school's date and reads TBA, after the
 // day's timed games.
 function comingDay(x){const zone=schoolTimeZoneOf(x.e.school_id||x.school_id),t=zone&&x.e.start_time&&hasPublishedClock(x.e)?zonedWallClockToInstant(x.e.start_time,zone):NaN;const tz=viewerTimeZone?{timeZone:viewerTimeZone}:{};if(Number.isFinite(t))return{at:t,day:new Date(t).toLocaleDateString('en-CA',tz),time:new Date(t).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...tz})};const d=String(x.e.start_time||'').slice(0,10);return{at:Date.parse(`${d}T12:00:00Z`)||Infinity,day:d,time:null}}
-function dayHeading(day){const today=new Date().toLocaleDateString('en-CA',viewerTimeZone?{timeZone:viewerTimeZone}:{}),date=new Date(`${day}T12:00:00Z`);if(!Number.isFinite(date.getTime()))return'Date to be announced';const label=date.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}),diff=Math.round((date-new Date(`${today}T12:00:00Z`))/864e5);return diff===0?`Today<small>${label}</small>`:diff===1?`Tomorrow<small>${label}</small>`:label}
+function dayHeading(day){const today=new Date().toLocaleDateString('en-CA',viewerTimeZone?{timeZone:viewerTimeZone}:{}),date=new Date(`${day}T12:00:00Z`);if(!Number.isFinite(date.getTime()))return'Date to be announced';const label=date.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}),diff=Math.round((date-new Date(`${today}T12:00:00Z`))/864e5);return diff===0?`Today<small>${label}</small>`:diff===1?`Tomorrow<small>${label}</small>`:diff===-1?`Yesterday<small>${label}</small>`:label}
 function comingRows(items){
   const rows=items.map(x=>({x,...comingDay(x)})).sort((a,b)=>a.day.localeCompare(b.day)||(a.time?a.at:Infinity)-(b.time?b.at:Infinity));let last=null;
   return rows.map(({x,day,time})=>{const c=knownColors(catalogEntry(x.school_id)?.theme),head=day!==last?`<div class="home-day">${dayHeading(day)}</div>`:'';last=day;return`${head}<div class="home-row" data-event-id="${esc(x.e.id)}"${x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-time${time?'':' tba'}">${esc(time||'TBA')}</span><span class="home-row-sport">${esc(x.sport)}</span><span class="home-row-title">${esc(x.e.title)}</span>${x.e.broadcast?`<span class="home-row-tv">TV: ${esc(x.e.broadcast)}</span>`:'<span></span>'}</div>`}).join('');
 }
-function homeSection(title,items,kind){if(!items.length)return'';if(title==='Coming up')return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${comingRows(items)}</div></section>`;return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+// Recent results: one heading per day, newest first, then a slim row per
+// final with its result in front (W 3-1, L 1-3, a meet's place). A row
+// opens the game's full results.
+function resultMark(e){
+  const s=Number(e.school_score),o=Number(e.opponent_score);
+  if(e.school_score!=null&&e.opponent_score!=null&&e.school_score!==''&&Number.isFinite(s)&&Number.isFinite(o)){const wl=s>o?'W':s<o?'L':'T';return{wl,text:`${wl} ${e.school_score}-${e.opponent_score}`}}
+  const h=String(e.headline||'').trim(),m=h.match(/^([WLT])\b[,\s]*(.*)$/);
+  if(m)return{wl:m[1],text:`${m[1]} ${m[2]}`.trim()};
+  if(e.no_result_posted)return{wl:'',text:'Played'};
+  const team=(e.results||[]).find(r=>/\bteam$/i.test(r.participant||''));
+  return{wl:'',text:h&&h.length<=28&&!/^completed$/i.test(h)?h:team?String(team.result||team.place||team.value||'Final'):'Final'};
+}
+function resultRows(items){
+  let last=null;
+  return items.map(x=>{const d=String(x.e.start_time||'').slice(0,10),c=knownColors(catalogEntry(x.school_id)?.theme),head=d!==last?`<div class="home-day">${dayHeading(d)}</div>`:'';last=d;const r=resultMark(x.e);return`${head}<div class="home-row home-result" data-event-id="${esc(x.e.id)}"${c?` style="--team-primary:${c.main}"`:''}><span class="home-row-result${r.wl?` wl-${r.wl.toLowerCase()}`:''}">${esc(r.text)}</span><span class="home-row-sport">${esc(homeView?`${catalogEntry(x.school_id)?.short_name||x.school} · ${x.sport}`:x.sport)}</span><span class="home-row-title">${esc(x.e.title)}</span>${x.e.recap_url?'<span class="home-row-tv">Recap</span>':'<span></span>'}</div>`}).join('');
+}
+// News: the official stories about the favorites' recent games, newest
+// first, each opening the school's own page.
+function newsCards(stories){
+  return`<div class="news-grid">${stories.map(n=>{const c=knownColors(catalogEntry(n.school_id)?.theme),when=String(n.published||n.event_date||'').slice(0,10),label=when?new Date(`${when}T12:00:00Z`).toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'}):'';return`<a class="news-card" href="${esc(n.url)}" target="_blank" rel="noopener"${c?` style="--team-primary:${c.main};--team-secondary:${c.edge}"`:''}><div class="news-art">${n.image?`<img src="${esc(n.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:''}<span>${esc(n.sport)}</span></div><div class="news-body"><div class="news-tag"><b>${esc(catalogEntry(n.school_id)?.short_name||n.school)}</b> · ${esc(n.sport)}${label?` · ${esc(label)}`:''}</div><div class="news-headline">${esc(n.headline)}</div>${n.summary?`<div class="news-summary">${esc(n.summary)}</div>`:''}<div class="news-source">${esc(n.source)} ↗</div></div></a>`}).join('')}</div>`;
+}
+function homeSection(title,items,kind){if(!items.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`<section class="sport home-section" id="home-news"><div class="sport-head"><div><h2 class="sport-title">News</h2><div class="sport-school">Official stories from your teams' recent games</div></div></div><div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${comingRows(items)}</div></section>`;return`<section class="sport home-section" id="home-${slug(title)}"><div class="sport-head"><div><h2 class="sport-title">${esc(title)}</h2></div></div><div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -690,21 +749,29 @@ function nextUpBox(todays,coming){
   return`<div class="section next-up"${homeView&&next.school_id?` data-open-team="${esc(next.school_id)}" data-open-sport="${esc(next.sport)}"`:''}><div class="home-tag">${homeView?`<b>${esc(next.school)}</b> · `:''}${esc(next.sport)}</div>${box}</div>`;
 }
 function renderHome(groups){
-  const {live,everywhere,todays,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
+  const {live,everywhere,todays,recent,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
+  const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
-  const chips=[[mine,live],['Live now · Everywhere',everywhere],['Today',todays],['Coming up',coming]].filter(([,items])=>items.length);
+  // The jump row names each part with its count, the favorites' parts first.
+  const chips=[[mine,live,'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
   sportNav.hidden=chips.length<2;
-  sportNav.innerHTML=chips.map(([title])=>`<a class="sport-chip" href="#home-${slug(title)}">${esc(title)}</a>`).join('');
+  sportNav.innerHTML=chips.map(([title,items,short])=>`<a class="sport-chip home-jump${/^Live/.test(short)?' live-jump':''}" href="#home-${slug(title)}">${esc(short)} <b>${items.length}</b></a>`).join('');
   const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
   const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',shown,'live').replace(/<\/section>$/,everywhere.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllLive">Show all ${everywhere.length} live games</button></section>`:'</section>'):'';
   const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>':'';
-  if(noFavorites&&!todays.length&&!coming.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
+  if(noFavorites&&!todays.length&&!coming.length&&!recent.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
   if(!chips.length){feed.innerHTML=`<div class="empty">${homeLoading?`Loading ${esc(names.join(', '))}…`:`No live, today or upcoming games for ${esc(names.join(', '))} right now.${homeView?' Tap a team above for its full schedule and results.':' Pick a sport above to see its full schedule and results.'}`}</div>`;return}
   // The next game leads the overview too (a team page with no sport chosen,
   // and Home): user, October 30, "I'm not seeing the count down boxes
   // anywhere except pro".
-  feed.innerHTML=homeSection(mine,live,'live')+everywhereHtml+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Coming up',coming,'upcoming')+noFavorites;
+  // The favorites lead (user, November 2: "The top should be all about the
+  // favorites. Live, upcoming and results so it's easier to find. Let's also
+  // add news"): their live games, the next game's countdown, today, recent
+  // results, coming up and news; every other live game comes after.
+  feed.innerHTML=homeSection(mine,live,'live')+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
+  $('#showAllResults')?.addEventListener('click',()=>{resultsExpanded=true;render(displayedGroups())});
+  $('#showAllNews')?.addEventListener('click',()=>{newsExpanded=true;render(displayedGroups())});
 }
 function bindFeedCards(){
   feed.querySelectorAll('[data-event-id]').forEach(el=>el.addEventListener('click',ev=>{if(ev.target.closest('.live-more details'))return;const team=homeView&&el.closest('[data-open-team]');if(team){openTeam(team.dataset.openTeam,team.dataset.openSport);return}openEvent(el.dataset.eventId)}));
@@ -764,6 +831,7 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   if(generation!==feedGeneration||!homeMode())return;
   show();
   lastFeedRefresh=Date.now();
+  if(!automatic)loadNews(generation,signal).catch(()=>{});
   const live=currentGroups.reduce((n,g)=>n+(g.live||[]).length,0);
   status.textContent=`${live?`LIVE AUTO-REFRESH ON · ${live} live`:homeView?'HOME':'LIVE SOURCE'} · ${homeView?`${homeTeams().length} team${homeTeams().length===1?'':'s'}`:esc(catalogEntry(school.value)?.name||school.value)} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${ok}/${requested.length} sports reached${saved?` · ${saved} from saved copies`:''}${failed?` · ${failed} unavailable`:''}`;
 }
