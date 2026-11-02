@@ -796,7 +796,7 @@ async function loadFieldHome(){
   fieldBusy=true;try{await readFieldHome()}finally{fieldBusy=false}
 }
 async function readFieldHome(){
-  try{if(!fieldScoring)fieldScoring=new Set(((await (await fetch('/api/score/schools',{cache:'no-store'})).json()).schools||[]).map(x=>x.school_id))}catch{fieldTimer=setTimeout(loadFieldHome,60000);return}
+  try{if(!fieldScoring)fieldScoring=new Set(((await (await fetch('/api/score/schools',{cache:'no-store'})).json()).schools||[]).map(x=>x.school_id))}catch{fieldTimer=setTimeout(loadFieldHome,15000);return}
   const ids=homeTeams().filter(id=>fieldScoring.has(id));
   const games=(await Promise.all(ids.map(async id=>{try{return(((await (await fetch(`/api/score/games?school=${encodeURIComponent(id)}`,{cache:'no-store'})).json()).games)||[]).map(g=>({...g,school_id:id}))}catch{return[]}}))).flat().filter(g=>g.status==='live');
   if(!homeView)return;
