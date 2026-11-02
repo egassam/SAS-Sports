@@ -726,7 +726,8 @@ function homeSections(groups){
 function liveTeamVars(x){const c=knownColors(x.e.school_colors||catalogEntry(x.e.school_id)?.theme||catalogEntry(x.school_id)?.theme);return c?` style="--team-primary:${c.main};--team-secondary:${c.edge};--theme-on-accent:${c.ink}"`:''}
 function homeItem(x,kind,grid){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 // Home's live games: one grid, sports A to Z, each box naming its sport.
-function homeLiveGrid(items){return`<div class="home-grid">${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
+// The favorites' grid also leads with their SAS Scorer games (homeField).
+function homeLiveGrid(items,field=[]){return`<div class="home-grid">${field.map(fieldItem).join('')}${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
 // Coming up: the viewer's own day and clock where the school published a
 // time; a date-only event keeps the school's date and reads TBA, after the
 // day's timed games.
@@ -770,7 +771,7 @@ function sectionHead(title,sub=''){
   return`<div class="sport-head fav-banner fav-${kind}"><span class="fav-mark" aria-hidden="true">${mark}</span><div><div class="fav-pill">★ My Teams</div><h2 class="sport-title">${esc(label)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
 }
 function homeSectionOpen(title,id){return`<section class="sport home-section${homeView&&FAV_BANNERS[title]?' fav-section':''}" id="${id||`home-${slug(title)}`}">`}
-function homeSection(title,items,kind){if(!items.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -786,7 +787,7 @@ function nextUpBox(todays,coming){
 // (/score) join Home's "Live now · My Teams" (user, November 2: "Yes, show it
 // on Home", for Anthony's girls basketball). Asked only for favorites that
 // score their own games: every 3 s while one is live, every 30 s otherwise.
-let fieldScoring=null,fieldHome=[],fieldKey='',fieldTimer=null,fieldBusy=false;
+let fieldScoring=null,fieldHome=[],fieldKey='',fieldTimer=null,fieldBusy=false,homeField=[];
 const fieldCard=g=>`<a class="fl-card" href="/scoreboard/?game=${encodeURIComponent(g.id)}" target="_blank" rel="noopener"><div class="fl-top"><span>${esc(g.sport)}</span><span class="fl-chip live">Live</span></div>${g.view?.kind==='meet'?`<div class="fl-row"><span>${esc(g.away?.name)}</span></div>`:`<div class="fl-row"><span>${esc(g.away?.name)}</span><b>${esc(g.away?.score)}</b></div><div class="fl-row"><span>${esc(g.home?.name)}</span><b>${esc(g.home?.score)}</b></div>`}<div class="fl-sum">${esc(g.summary)}</div><div class="fl-src">${esc(g.source_label||'SAS Scorer')} · tap for the scoreboard</div></a>`;
 const fieldItem=g=>`<div class="home-item home-field"${liveTeamVars({e:{},school_id:g.school_id})}><div class="home-tag"><span class="home-tag-sport">${esc(g.sport)}</span> · <b>${esc(catalogEntry(g.school_id)?.short_name||catalogEntry(g.school_id)?.name||g.school_id)}</b></div>${fieldCard(g)}</div>`;
 async function loadFieldHome(){
@@ -808,7 +809,7 @@ function renderHome(groups){
   const {live,everywhere,todays,recent,coming}=homeSections(groups),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
-  const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];
+  const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];homeField=field;
   // The jump row names each part with its count, the favorites' parts first.
   const chips=[[mine,[...live,...field],'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
   sportNav.hidden=chips.length<2;
@@ -825,7 +826,7 @@ function renderHome(groups){
   // favorites. Live, upcoming and results so it's easier to find. Let's also
   // add news"): their live games, the next game's countdown, today, recent
   // results, coming up and news; every other live game comes after.
-  feed.innerHTML=(field.length?`${homeSectionOpen(mine)}${sectionHead(mine)}<div class="section"><div class="home-grid">${field.map(fieldItem).join('')}${live.map(x=>homeItem(x,'live',true)).join('')}</div></div></section>`:homeSection(mine,live,'live'))+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
+  feed.innerHTML=homeSection(mine,live,'live')+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
   bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
   $('#showAllResults')?.addEventListener('click',()=>{resultsExpanded=true;render(displayedGroups())});
   $('#showAllNews')?.addEventListener('click',()=>{newsExpanded=true;render(displayedGroups())});
