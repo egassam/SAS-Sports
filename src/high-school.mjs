@@ -951,6 +951,30 @@ export function sheetCalendar(text,{prefix,home=/^(?:fhcs)\b/i,abbreviations={}}
   return{events};
 }
 
+// A public Google Calendar read through the Google Calendar API (St.
+// Xavier, Junction City, November 3: calendar.google.com's own feeds are
+// disallowed by its robots.txt; the API with an API key is the allowed way).
+// `events.list` with singleEvents gives each entry's summary, location and
+// start in the calendar's zone. `normalize(entry)` turns an entry into
+// calendar titles ("SX HS Volleyball - Veritas Christian - AWAY", one per
+// team it counts for) read like a ParentSquare calendar; null skips it.
+export const GOOGLE_CALENDAR_API='https://www.googleapis.com/calendar/v3/calendars/';
+export const googleCalendarUrl=(id,{start,end,timeZone='America/Chicago',pageToken=null})=>`${GOOGLE_CALENDAR_API}${encodeURIComponent(id)}/events?singleEvents=true&orderBy=startTime&maxResults=2500&timeZone=${encodeURIComponent(timeZone)}&timeMin=${start}T00:00:00Z&timeMax=${end}T23:59:59Z${pageToken?`&pageToken=${encodeURIComponent(pageToken)}`:''}`;
+export function googleCalendarPayload(pages,{normalize}){
+  const events=[];
+  for(const page of pages)for(const e of page?.items||[]){
+    if(e?.status==='cancelled')continue;
+    const start=e.start?.dateTime||e.start?.date||'',end=e.end?.dateTime||e.end?.date||'';
+    if(!/^\d{4}-\d\d-\d\d/.test(start))continue;
+    const allDay=!e.start?.dateTime;
+    // An all-day entry's end date is the day after it.
+    const endDate=allDay&&end?new Date(Date.parse(end.slice(0,10))-864e5).toISOString().slice(0,10):end.slice(0,10);
+    for(const title of normalize({summary:clean(e.summary),location:clean(e.location)})||[])
+      events.push({id:`${e.id}|${title}`,title,start_date:start.slice(0,10),start_time:allDay?'00:00:00':start.slice(11,19),end_date:endDate||start.slice(0,10),all_day:allDay,address:clean(e.location)});
+  }
+  return{events};
+}
+
 // Apptegy (Thrillshare) district calendars (Onaga USD 322: "HS Basketball @
 // Northern Heights", "JH Boys Wrestling at Doniphan West"): the coming events
 // in pages of 100, as ParentSquare-shaped entries for `calendarEvents`.

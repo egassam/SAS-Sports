@@ -55,7 +55,7 @@ import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {newsCandidates,storyFromHtml,storyFor} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar} from './high-school.mjs';
+import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -336,7 +336,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.260.3-geary-county';
+const VERSION='4.261.0-geary-fixes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4040,6 +4040,26 @@ async function youtubeChannelVideos(tv,env,onAir){
     return{videos:youtubeVideos(playlist,info.ok?await info.json():null),read:info.ok?'ok':'ok (no live states)'};
   }catch{return{videos:null,read:'unreachable'}}
 }
+// A public Google Calendar through the Calendar API (`events.list`, one read
+// per page of 2,500, kept as a schedule; a failed read serves the last copy).
+// The key (Worker secret GOOGLE_API_KEY, else the YouTube Data API key: a
+// Google Cloud key works for every API its project turns on) stays out of
+// every URL the feed lists. No key or a refused read (the Calendar API not
+// turned on for the key's project: HTTP 403 accessNotConfigured): no payload,
+// and the feed reads its other sources.
+async function googleCalendarRead(config,year,env){
+  const key=env?.GOOGLE_API_KEY||env?.YOUTUBE_API_KEY,url=googleCalendarUrl(config.id,{start:year.start,end:year.end});
+  if(!key)return{payload:null,read:'no key',url:null};
+  const pages=[];let token=null;
+  try{
+    for(let i=0;i<3;i++){
+      const r=await sourceFetch(`${googleCalendarUrl(config.id,{start:year.start,end:year.end,pageToken:token})}&key=${encodeURIComponent(key)}`,{headers:{Accept:'application/json'}},{ttl:SOURCE_TTL.schedule,staleOnError:true});
+      if(!r.ok){let reason='';try{reason=(await r.json())?.error?.errors?.[0]?.reason||''}catch{}if(!pages.length)return{payload:null,read:`HTTP ${r.status}${reason?` ${reason}`:''}`,url:null};break;}
+      const page=await r.json();pages.push(page);token=page.nextPageToken||null;if(!token)break;
+    }
+  }catch{if(!pages.length)return{payload:null,read:'unreachable',url:null}}
+  return{payload:googleCalendarPayload(pages,{normalize:config.normalize}),read:'ok',url:config.page||url};
+}
 // A meet under way before its first finisher (user, October 31: "the live
 // boxes should show up before runners finish so we know something is
 // happening and it's working"): from its first race's start time on its day
@@ -4553,6 +4573,11 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
     }
     upcomingPayload=apptegyCalendar(pages);
   }
+  // A public Google Calendar (module `googleCalendar`: St. Xavier), read
+  // through the Google Calendar API with the app's Google API key; its
+  // entries fill the days the team's other sources leave empty.
+  const googleCalendar=module.googleCalendar&&teams.some(team=>team.googleCalendar)?await googleCalendarRead(module.googleCalendar,year,env):null;
+  if(googleCalendar?.url)sources.push(googleCalendar.url);
   if(boundRead){if(boundRead.payloads.every(p=>!Array.isArray(p)))return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:`${boundRead.urls[0]}: unreadable`};sources.push(...boundRead.urls);}
   // A failed MaxPreps read leaves every past game without its score (and so
   // unlisted): the build is marked, and the feed keeps its last good copy.
@@ -4609,6 +4634,11 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // so Manhattan soccer was never saved as a good copy).
       const needsScores=maxprepsOnly||team.maxprepsSchedule||games.some(game=>game.date<today);
       try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else if(needsScores)scoresMissing=true}catch{if(needsScores)scoresMissing=true}
+    }
+    // The school's Google Calendar fills days no other source has for the team.
+    if(team.googleCalendar&&googleCalendar?.payload){
+      const extra=calendarEvents(googleCalendar.payload,{prefix:module.googleCalendar.prefix,team:team.googleCalendar,timeZone}).filter(g=>!games.some(x=>x.date===g.date)&&!contests.some(c=>c.date===g.date));
+      if(extra.length){games.push(...extra);games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));}
     }
     const label=team.label||null,used=new Set();
     // Volleyball: MaxPreps lists each match of a tournament or triangular;
@@ -4746,7 +4776,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
     if(stats.length)target.game_stats=stats;
     target.highlight_status=target.score_source?.bound?'Score as entered on Bound by the school.':box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
   }
-  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(youtube?{youtube}:{})};
+  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
@@ -6460,7 +6490,7 @@ export default{
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.youtube?{youtube:result.youtube}:{})});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
   }
 };

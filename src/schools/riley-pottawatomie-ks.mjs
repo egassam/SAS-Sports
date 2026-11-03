@@ -60,6 +60,11 @@ export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milespli
 // Middle school teams on Bound: the grades (7th, 8th; their A teams), and the
 // entries a school files under the whole team ("Middle School", "Junior
 // High", "JH A"). B teams are not listed (as in Manhattan's middle schools).
+// Middle school cross country: the grade races. Varsity and JV races are
+// left out, and so are the 1-mile races (the Fort Riley meet's "1 Mile Run
+// 7th Grade Girls" is its junior varsity race; St. Xavier's notes for the
+// day: "All JV Race - 1 mile"; no other 2026 LetsGoRun meet runs one).
+export const MS_XC_EXCLUDE=/varsity|\bJV\b|\b1 mile\b/i;
 export const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
 const WHOLE=/^(?:Middle School|Junior High|JH)(?: A)?$/i;
 const ANY_MS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|Junior High|JH)(?: A(?:-Team)?)?$/i;
@@ -76,7 +81,7 @@ export function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit,gra
   if(has.includes('Football'))sports.Football=games('Football');
   if(has.includes('Volleyball'))sports.Volleyball=games('Volleyball');
   if(has.includes('Basketball'))sports.Basketball=[...games('Girls Basketball','Girls'),...games('Boys Basketball','Boys')];
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country'],ANY_MS),meet:true,meetPro:{team:meetTeam,exclude:/varsity|\bJV\b/i},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}];
+  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country'],ANY_MS),meet:true,meetPro:{team:meetTeam,exclude:MS_XC_EXCLUDE},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}];
   if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`,ANY_MS),meet:true,label:g}));
   if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field'],ANY_MS),meet:true,meetPro:{team:trackTeam,track:true,meetHas:MS_TRACK}}];
   if(has.includes('Golf'))sports.Golf=[{...on(['Girls Golf','Boys Golf'],ANY_MS),meet:true}];
@@ -110,12 +115,16 @@ export const rileyCountyKsSchool={id:'riley-county-ks',bound:bound('h20250204045
 export const rileyCountyMsKsSchool={id:'riley-county-ms-ks',bound:bound('h20251014075040360c6677198a0a040','rcmsks'),meetPro:LETSGORUN_MEETPRO,
   sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County'})};
 
+// usd384.org and manhattancatholicschools.org (ParentSquare, like
+// mhs.usd383.org) answered Cloudflare's production locations with 520 on
+// November 3 (both cross country feeds read empty there): a location that
+// cannot rebuild serves the last feed built elsewhere (`globalSavedCopy`, KV).
 // Blue Valley USD 384 (Randolph): the district calendar ("HS Football- Home
 // vs. Canton-Galva"; "MS/HS" entries count for both); Bound holds a few
 // of its events only.
 const USD384_ABBREVIATIONS={MHK:'Manhattan',VH:'Valley Heights',WaCo:'Washington County',JCN:'Jefferson County North',BVHS:'Blue Valley',BV:'Blue Valley',TVL:'Twin Valley League',BVL:'Blue Valley League'};
 const usd384=level=>({url:'https://www.usd384.org/api/calendars/151215/events',parse:title=>parseFreeTitle(title,{level,abbreviations:USD384_ABBREVIATIONS,home:/^(?:Blue Valley|home)$/i})});
-export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:usd384('HS'),
+export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:usd384('HS'),globalSavedCopy:true,
   maxpreps:maxpreps('adf57bf4-2b09-4fdf-8fe7-867907f0ea03','randolph/blue-valley-rams'),meetPro:LETSGORUN_MEETPRO,
   sports:{
     Football:[{calendar:/^HS Football$/,maxpreps:'football'}],
@@ -130,12 +139,12 @@ export const blueValleyRandolphKsSchool={id:'blue-valley-randolph-ks',calendar:u
   // Titus Cobb 1st and Kory Fowler 15th, Samantha Gibson 13th at the 1A
   // Cheney Lake sub-state (too few runners for a team score).
   midwestTiming:[stateXc('1A','blue-valley-randolph-ks',['Randolph Blue Valley High School','Blue Valley High School'],['Girls','Boys'])]};
-export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calendar:usd384('MS'),meetPro:LETSGORUN_MEETPRO,
+export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calendar:usd384('MS'),globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,
   sports:{
     Football:[{calendar:/^MS Football$/}],
     Volleyball:[{calendar:/^MS Volleyball$/}],
     Basketball:[{calendar:/^MS Basketball$/}],
-    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',exclude:/varsity|\bJV\b/i},milesplit:{team:41984,middle:true,also:[36605]}}],
+    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'Blue Valley',exclude:MS_XC_EXCLUDE},milesplit:{team:41984,middle:true,also:[36605]}}],
     'Track & Field':[{calendar:/^MS Track & Field$/,meet:true,meetPro:{team:'Blue Valley',track:true,meetHas:MS_TRACK}}]
   }};
 
@@ -207,7 +216,7 @@ export const flintHillsChristianMsKsSchool={id:'flint-hills-christian-ms-ks',cal
   sports:{
     Volleyball:[{calendar:/^MS Volleyball$/}],
     Basketball:[{calendar:/^MS Basketball$/}],
-    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'FH Christian MS',exclude:/varsity|\bJV\b/i},milesplit:{team:51951,middle:true}}],
+    'Cross Country':[{calendar:/^MS Cross Country$/,meet:true,meetPro:{team:'FH Christian MS',exclude:MS_XC_EXCLUDE},milesplit:{team:51951,middle:true}}],
     'Track & Field':[{calendar:/^MS Track$/,meet:true,meetPro:{team:FHCS_TRACK,track:true,meetHas:MS_TRACK}}]
   }};
 
@@ -223,12 +232,12 @@ export const stMarysAcademyJhKsSchool={id:'st-marys-academy-jh-ks',bound:SMA,
 // Manhattan Catholic Schools (Luckey campus, grades 6-8; Riley County): its
 // calendar ("Volleyball Away Game at Valley Heights", "XC @ Clay Center");
 // meets list its runners as "Luckey".
-export const manhattanCatholicKsSchool={id:'manhattan-catholic-ks',
+export const manhattanCatholicKsSchool={id:'manhattan-catholic-ks',globalSavedCopy:true,
   calendar:{url:'https://www.manhattancatholicschools.org/api/calendars/152066/events',parse:title=>parseFreeTitle(title,{abbreviations:{BVL:'Blue Valley League','St. X':'St. Xavier'}})},meetPro:LETSGORUN_MEETPRO,
   sports:{
     Volleyball:[{calendar:/^Volleyball$/}],
     Basketball:[{calendar:/^Basketball$/}],
-    'Cross Country':[{calendar:/^Cross Country$/,meet:true,meetPro:{team:'Luckey',exclude:/varsity|\bJV\b/i},milesplit:{team:47720,middle:true}}],
+    'Cross Country':[{calendar:/^Cross Country$/,meet:true,meetPro:{team:'Luckey',exclude:MS_XC_EXCLUDE},milesplit:{team:47720,middle:true}}],
     'Track & Field':[{calendar:/^Track & Field$/,meet:true,meetPro:{team:['Luckey','Manhattan Catholic'],track:true,meetHas:MS_TRACK}}]
   }};
 
