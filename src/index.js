@@ -336,7 +336,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.260.1-geary-county';
+const VERSION='4.260.2-geary-county';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4322,7 +4322,9 @@ async function milesplitLiveResultsFor(school,config,game,read,live=false){
     meet=team&&{id:String(config.meet),...team,alsoCodes:(config.also||[]).map(id=>milesplitTeamCode(info,id)?.code).filter(Boolean),timer:info.timingCompany?.name||null};
   }else{
     const days=await Promise.all((config.states||['KS']).map(state=>query('',firestoreQuery('meets',{'venue.state':state,dateStart:game.date},['name','season','venue.name','venue.city','teams','timingCompany.name'],300),live?SOURCE_TTL.schedule:SOURCE_TTL.document).then(text=>firestoreDocs(json(text)||[]))));
-    meet=milesplitMeetFor(days.flat(),config.team,game.name,config.also);
+    // A school's name for a meet MileSplit Live names otherwise (`names`:
+    // Junction City's "Blue Jay Invitational" is the Bob Schmoekel meet).
+    meet=milesplitMeetFor(days.flat(),config.team,config.names?.[game.name]||game.name,config.also);
   }
   if(!meet)return null;
   const base=`/meets/${meet.id}`;

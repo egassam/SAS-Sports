@@ -25,19 +25,27 @@ export const junctionCityKsSchool={id:'junction-city-ks',bound:bound('h202502040
   prepGolf:{school:7,code:'JC'},
   sports:boundHighSchool({has:['Football','Volleyball','Soccer','Girls Soccer','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Swimming & Diving','Girls Swimming','Boys Swimming','Bowling','Girls Bowling','Boys Bowling'],
     meetTeam:'Junction City',tennis:'Junction City HS',milesplit:15714,paths:{'Girls Soccer':'soccer/girls/spring'}})};
+// Its home meet at Milford Lake is the "Blue Jay Invitational" on Bound and
+// the "Bob Schmoekel Cross Country Invitational" on MileSplit Live.
+junctionCityKsSchool.sports['Cross Country'][0].milesplit.names={'Blue Jay Invitational Cross Country Meet':'Bob Schmoekel Invitational','Blue Jay Invitational':'Bob Schmoekel Invitational'};
+// Middle school cross country: the 1-mile races are the junior varsity race
+// (the Fort Riley meet's "1 Mile Run 7th Grade Girls"; St. Xavier's notes
+// for the day: "All JV Race - 1 mile").
+const MS_XC_EXCLUDE=/varsity|\bJV\b|\b1 mile\b/i;
+const noMile=school=>{for(const t of school.sports['Cross Country']||[])t.meetPro.exclude=MS_XC_EXCLUDE;return school;};
 
 // Bound gives Junction City MS and St. Xavier no page of their own (no
 // calendar slug; their events are read by Bound id): the feed links Bound's
 // Kansas page.
 const unpaged=school=>({school,page:'https://beta.gobound.com/ks'});
-export const junctionCityMsKsSchool={id:'junction-city-ms-ks',bound:unpaged('h20251215030233573aee5a5046f2741'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:'Junction City',milesplit:39340,grades:usd475Grade})};
+export const junctionCityMsKsSchool=noMile({id:'junction-city-ms-ks',bound:unpaged('h20251215030233573aee5a5046f2741'),meetPro:LETSGORUN_MEETPRO,
+  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:'Junction City',milesplit:39340,grades:usd475Grade})});
 
 // Fort Riley Middle School (on the post; Geary County): LetsGoRun writes it
 // "Ft Riley" at Fort Riley's own meet ("Ft Riley7G") and "Fort Riley Middle
 // School" at Clay Center's.
-export const fortRileyMsKsSchool={id:'fort-riley-ms-ks',bound:bound('h20250612074705722fb6ff5c7484f42','fortrileyms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:['Ft Riley','Fort Riley'],trackTeam:['Ft Riley','Fort Riley'],milesplit:40677,grades:usd475Grade})};
+export const fortRileyMsKsSchool=noMile({id:'fort-riley-ms-ks',bound:bound('h20250612074705722fb6ff5c7484f42','fortrileyms'),meetPro:LETSGORUN_MEETPRO,
+  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:['Ft Riley','Fort Riley'],trackTeam:['Ft Riley','Fort Riley'],milesplit:40677,grades:usd475Grade})});
 
 // --- St. Francis Xavier Catholic School (St. Xavier Rams, 1A)
 
@@ -67,7 +75,7 @@ export const stXavierJhKsSchool={id:'st-xavier-jh-ks',bound:SFX,meetPro:LETSGORU
     Volleyball:[{...on('Volleyball',SFX_JH)}],
     Basketball:[{...on('Girls Basketball',SFX_JH),label:'Girls'},{...on('Boys Basketball',SFX_JH),label:'Boys'}],
     // Its junior high runners run under the high school's MileSplit team.
-    'Cross Country':[{...on(['Girls Cross Country','Boys Cross Country'],SFX_JH),meet:true,meetPro:{team:'St Xavier',exclude:/varsity|\bJV\b/i},milesplit:{team:26138,middle:true}}],
+    'Cross Country':[{...on(['Girls Cross Country','Boys Cross Country'],SFX_JH),meet:true,meetPro:{team:'St Xavier',exclude:MS_XC_EXCLUDE},milesplit:{team:26138,middle:true}}],
     'Track & Field':[{...on(['Girls Track & Field','Boys Track & Field'],SFX_JH),meet:true,meetPro:{team:SFX_TRACK,track:true,meetHas:/\bgrade\b|middle|\bMS\b|\bJH\b|junior high/i}}]
   }};
 

@@ -75,6 +75,18 @@ const row=(place,team)=>`<tr><td class="place">${place}</td><td class="athlete">
 const races=meetProResults(meetPro(row(3,'Fort Riley Middle School')+row(5,'Ft Riley7G')+row(6,'Clay Center')),['Ft Riley','Fort Riley']);
 assert.deepEqual(races.map(r=>[r.runners.map(x=>x.place),r.team?.place]),[[[3,5],2]]);
 assert.equal(meetProResults(meetPro(row(3,'Riley County')),['Ft Riley','Fort Riley']).length,0,'Riley County is not Fort Riley');
+// The 1-mile races at Fort Riley's meet are the junior varsity race: left out.
+for(const m of [junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierJhKsSchool]){
+  const ex=m.sports['Cross Country'][0].meetPro.exclude;
+  assert.ok(ex.test('1 Mile Run 7th Grade Girls')&&!ex.test('7th Grade Girls Two Mile Run'),m.id);
+}
+// Junction City's home meet: "Blue Jay Invitational" on Bound, "Bob Schmoekel" on MileSplit Live.
+import('../src/high-school.mjs').then(({milesplitMeetFor})=>{
+  const meets=[{id:'772766',name:'Bob Schmoekel Cross Country Invitational',venue:{name:'Milford Lake',city:'Junction City'},teams:{JUNC:{id:15714,name:'Junction City High School'}}},{id:'1',name:'Other Invite',venue:{city:'Salina'},teams:{JUNC:{id:15714,name:'Junction City High School'}}}];
+  const {names}=junctionCityKsSchool.sports['Cross Country'][0].milesplit;
+  assert.equal(milesplitMeetFor(meets,15714,names['Blue Jay Invitational Cross Country Meet'])?.id,'772766');
+  assert.equal(milesplitMeetFor(meets,15714,'Blue Jay Invitational Cross Country Meet'),null,'without the alias nothing matches');
+});
 
 // St. Xavier: its junior high reads JHA (not JHB), Junior High and grade entries.
 const sfx=JSON.parse(fixture('bound-st-xavier-2026-11-03.json.gz'));
@@ -95,6 +107,7 @@ const worker=read('../src/index.js');
 assert.ok(worker.includes(':maxprepsOnly||team.maxprepsSchedule?[]:calendarEvents('),'a maxprepsSchedule team reads no calendar');
 assert.ok(worker.includes('if(maxprepsOnly||team.maxprepsSchedule)for(const contest of contests'),'its unscored MaxPreps games are its schedule');
 assert.ok(worker.includes('for(const meet of team.extraMeets||[]){'),'extra meets join the schedule');
+assert.ok(worker.includes('config.names?.[game.name]||game.name'),'a MileSplit meet alias is read');
 assert.ok(worker.includes('...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS'),'the Geary modules are registered');
 
 console.log(`Geary County module passed: ${modules.length} schools, ${modules.reduce((n,m)=>n+Object.keys(m.sports).length,0)} school-sports.`);
