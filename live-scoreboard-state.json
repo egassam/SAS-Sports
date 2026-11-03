@@ -6232,23 +6232,13 @@
    "state": "off"
   },
   "seattle-u|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-03T06:17:33.169Z",
-   "last_detail": "live 39-50 · 18:44 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "seattle-u|Basketball|Men's|2026-11-02|1",
-    "title": "Men's · Seattle U at Hawai'i",
-    "started_seen": "2026-11-03T06:08:37.476Z",
-    "live_passes": [
-     "2026-11-03T06:08:37.476Z",
-     "2026-11-03T06:10:42.774Z",
-     "2026-11-03T06:12:04.657Z",
-     "2026-11-03T06:14:08.295Z",
-     "2026-11-03T06:15:30.067Z",
-     "2026-11-03T06:17:33.169Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-03T14:13:56.950Z",
+   "last_detail": "final L, 73-74",
+   "game": null,
+   "verified_at": "2026-11-03T14:13:56.950Z",
+   "verified_game": "Men's · Seattle U at Hawai'i",
+   "verified_detail": "final L, 73-74"
   },
   "seattle-u|Soccer": {
    "state": "done",
@@ -7196,8 +7186,8 @@
    "state": "off"
   },
   "west-georgia|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-03T06:17:54.379Z",
+   "state": "failing",
+   "last_check": "2026-11-03T14:23:20.414Z",
    "last_detail": "result reads \"L, 92-53\", ESPN final L, 53-92",
    "game": {
     "key": "west-georgia|Basketball|Women's|2026-11-02|1",
@@ -7212,6 +7202,12 @@
     ],
     "final_ok": false,
     "final_due": "2026-11-03T06:23:32.653Z"
+   },
+   "failures": 6,
+   "last_failure": {
+    "at": "2026-11-03T14:23:20.414Z",
+    "game": "Women's · West Georgia at Georgia",
+    "detail": "result reads \"L, 92-53\", ESPN final L, 53-92"
    }
   },
   "west-georgia|Football": {
@@ -11428,6 +11424,6 @@
   }
  },
  "version": "4.259.0-kstate-tv",
- "updated_at": "2026-11-03T06:17:54.384Z",
+ "updated_at": "2026-11-03T14:23:20.421Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

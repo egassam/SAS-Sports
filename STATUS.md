@@ -12,8 +12,7 @@
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
-| seattle-u | Basketball | 🔴 on | live 39-50 · 18:44 - 2nd · official_schedule+live_scoreboard |
-| west-georgia | Basketball | 🔴 on | result reads "L, 92-53", ESPN final L, 53-92 |
+| west-georgia | Basketball | ❌ failing | Women's · West Georgia at Georgia: result reads "L, 92-53", ESPN final L, 53-92 |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -1729,6 +1728,7 @@
 | san-jose-state | Volleyball | ✅ off (passed) | San Jose State at New Mexico · 2026-10-24T07:12:58.386Z |
 | santa-clara | Soccer | ✅ off (passed) | Women's · Santa Clara vs Saint Mary's · 2026-10-24T23:24:12.216Z |
 | santa-clara | Volleyball | ✅ off (passed) | Santa Clara at LMU · 2026-10-23T07:27:20.094Z |
+| seattle-u | Basketball | ✅ off (passed) | Men's · Seattle U at Hawai'i · 2026-11-03T14:13:56.950Z |
 | seattle-u | Soccer | ✅ off (passed) | Seattle U at Saint Mary's · 2026-10-31T23:49:36.821Z |
 | seattle-u | Volleyball | ✅ off (passed) | Seattle U at Portland · 2026-10-24T23:24:09.743Z |
 | seton-hall | Soccer | ✅ off (passed) | Women's · Seton Hall vs Villanova · 2026-10-22T01:43:47.157Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 887/1956; on 2; off 1055; failing 12.
+Done 888/1956; on 0; off 1055; failing 13.
