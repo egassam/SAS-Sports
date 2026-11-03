@@ -32,7 +32,7 @@ const grades=(sport,extra='')=>['7th','8th'].map(grade=>({calendar:new RegExp(`^
 const sports=(team,trackTeam=team,milesplit)=>({
   Football:grades('Football'),
   Volleyball:grades('Volleyball'),
-  'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team,exclude:/junior varsity|\bJV\b/i},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}],
+  'Cross Country':[{calendar:/^Cross Country$/i,meet:true,meetPro:{team,exclude:/junior varsity|\bJV\b|\b1 mile\b/i},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}],
   Basketball:[...grades('Basketball','Girls '),...grades('Basketball','Boys ')],
   // Girls teams are always named; "Little Apple Grapple Wrestling @ MHS" is the boys'.
   Wrestling:[{calendar:/^(?:Boys )?Wrestling$/i,meet:true,label:'Boys'},{calendar:/^Girls Wrestling$/i,meet:true,label:'Girls'}],

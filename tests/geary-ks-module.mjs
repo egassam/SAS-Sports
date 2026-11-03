@@ -5,9 +5,10 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,BOUND_ACTS} from '../src/high-school.mjs';
-import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS,junctionCityKsSchool,junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierKsSchool,stXavierJhKsSchool} from '../src/schools/geary-ks.mjs';
+import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,googleCalendarPayload,googleCalendarUrl,calendarEvents,BOUND_ACTS} from '../src/high-school.mjs';
+import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS,junctionCityKsSchool,junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierKsSchool,stXavierJhKsSchool,stXavierCalendarTitles} from '../src/schools/geary-ks.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from '../src/schools/riley-pottawatomie-ks.mjs';
+import {anthonyMsSchool,eisenhowerMsSchool} from '../src/schools/manhattan-ks-middle.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>{const b=readFileSync(new URL('./fixtures/geary-ks/'+name,import.meta.url));return name.endsWith('.gz')?gunzipSync(b).toString('utf8'):b.toString('utf8');};
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json')),themes=JSON.parse(read('../src/team-themes.json'));
@@ -75,10 +76,11 @@ const row=(place,team)=>`<tr><td class="place">${place}</td><td class="athlete">
 const races=meetProResults(meetPro(row(3,'Fort Riley Middle School')+row(5,'Ft Riley7G')+row(6,'Clay Center')),['Ft Riley','Fort Riley']);
 assert.deepEqual(races.map(r=>[r.runners.map(x=>x.place),r.team?.place]),[[[3,5],2]]);
 assert.equal(meetProResults(meetPro(row(3,'Riley County')),['Ft Riley','Fort Riley']).length,0,'Riley County is not Fort Riley');
-// The 1-mile races at Fort Riley's meet are the junior varsity race: left out.
-for(const m of [junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierJhKsSchool]){
+// The 1-mile races at Fort Riley's meet are the junior varsity race: left out
+// for every Kansas middle school (Anthony and Eisenhower ran it too).
+for(const m of [junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierJhKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS.filter(x=>x.sports['Cross Country'])]){
   const ex=m.sports['Cross Country'][0].meetPro.exclude;
-  assert.ok(ex.test('1 Mile Run 7th Grade Girls')&&!ex.test('7th Grade Girls Two Mile Run'),m.id);
+  assert.ok(ex.test('1 Mile Run 7th Grade Girls')&&!ex.test('7th Grade Girls Two Mile Run')&&!ex.test('8th Grade Boys Two MIle')&&!ex.test('7th Grade  Girls'),m.id);
 }
 // Junction City's home meet: "Blue Jay Invitational" on Bound, "Bob Schmoekel" on MileSplit Live.
 import('../src/high-school.mjs').then(({milesplitMeetFor})=>{
@@ -112,4 +114,33 @@ assert.ok(worker.includes('for(const meet of team.extraMeets||[]){'),'extra meet
 assert.ok(worker.includes('config.names?.[game.name]||game.name'),'a MileSplit meet alias is read');
 assert.ok(worker.includes('...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS'),'the Geary modules are registered');
 
+// A location that cannot rebuild serves the last feed built elsewhere:
+// the MaxPreps high schools here, and the ParentSquare calendars that answered 520.
+for(const m of [junctionCityKsSchool,stXavierKsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS.filter(x=>x.id==='blue-valley-randolph-ks'),...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS.filter(x=>['blue-valley-randolph-ms-ks','manhattan-catholic-ks'].includes(x.id))])assert.equal(m.globalSavedCopy,true,m.id);
+// St. Xavier's Google Calendar (through the Calendar API): entries as the
+// calendar writes them (2026 season; summary and location only).
+const sx=(summary,location='')=>stXavierCalendarTitles({summary,location});
+assert.deepEqual(sx('MS/HS VB vs. Veritas - leave at 3:30','Veritas Christian School Gym, 960 E 1296 Rd, Lawrence, KS 66047, USA'),['SX HS Volleyball - Veritas - AWAY','SX MS Volleyball - Veritas - AWAY'],'"MS/HS" counts for both');
+assert.deepEqual(sx('HS VB - dismiss at 3:25, leave at 3:35','810 N Sycamore St, Peabody, KS 66866, USA'),['SX HS Volleyball - Peabody - AWAY'],'a street address names its town');
+assert.deepEqual(sx('MS Volleyball - we play at 5:30/6:30 - leave at 4:30pm','Luckey Catholic Junior High School, 306 S Juliette Ave, Manhattan, KS 66502, USA'),['SX MS Volleyball - Luckey Catholic - AWAY']);
+assert.deepEqual(sx('MS Volleyball Tournament - leave at 8:00','Chapman Middle School, 624 Marshall Ave, Chapman, KS 67431, USA'),['SX MS Volleyball - Tournament at Chapman - AWAY']);
+assert.deepEqual(sx('MS VB Tri @ St. X'),['SX MS Volleyball - Tri at St. Xavier - HOME']);
+assert.deepEqual(sx('MS BB vs. Wakefield @ St. X'),['SX MS Basketball - Wakefield - HOME']);
+assert.deepEqual(sx('HS BB @ FHC'),['SX HS Basketball - Flint Hills Christian - AWAY']);
+assert.deepEqual(sx('HS Cross Country Meet - leave at 2:15pm','Cedar Hills Golf Course, 1314 Quivira Rd, Washington, KS 66968, USA'),['SX HS Cross Country - Washington Meet at Cedar Hills Golf Course - AWAY']);
+assert.deepEqual(sx('XC Sub-State Competition - time tentative','Spring Lake Playground @ Cheney Lake'),['SX HS Cross Country - Sub-State at Spring Lake Playground @ Cheney Lake - AWAY'],'a sub-state is the high school\'s');
+assert.equal(sx('MS/HS VB','St. Francis Xavier Catholic School, 200 N Washington St, Junction City, KS 66441, USA'),null,'a home game naming no opponent is left to MaxPreps and Bound');
+for(const t of ['CANCELLED MS/HS XC - leave at 1:45','HS JV Track @ Tescott','Basketball Parent Meeting','First Basketball Practice - time TBD','HS Forensics @ Rock Creek','Homecoming Basketball Games','XC End of Season Celebration & Coach\'s Baby Shower','Cheer to HS Cross Country - dismiss 2:45'])assert.equal(sx(t),null,t);
+// The Calendar API's events (singleEvents) as calendar entries in Kansas time.
+const gcal=googleCalendarPayload([{items:[
+  {id:'a',status:'confirmed',summary:'MS/HS VB vs. Veritas - leave at 3:30',location:'Veritas Christian School Gym, 960 E 1296 Rd, Lawrence, KS 66047, USA',start:{dateTime:'2026-09-07T17:30:00-05:00'},end:{dateTime:'2026-09-07T19:30:00-05:00'},description:'not read'},
+  {id:'b',status:'cancelled',summary:'HS VB @ Wakefield',start:{dateTime:'2026-09-09T17:30:00-05:00'}},
+  {id:'c',status:'confirmed',summary:'Homecoming Basketball Games',start:{date:'2027-01-28'},end:{date:'2027-01-29'}}]}],{normalize:stXavierCalendarTitles});
+assert.deepEqual(gcal.events.map(e=>[e.title,e.start_date,e.start_time]),[['SX HS Volleyball - Veritas - AWAY','2026-09-07','17:30:00'],['SX MS Volleyball - Veritas - AWAY','2026-09-07','17:30:00']]);
+assert.ok(!JSON.stringify(gcal).includes('not read'),'the notes are never kept');
+assert.deepEqual(calendarEvents(gcal,{prefix:'SX',team:stXavierKsSchool.sports.Volleyball[0].googleCalendar,timeZone:TZ}).map(g=>`${g.date} ${g.time} ${g.site} ${g.name}`),['2026-09-07 17:30 AWAY Veritas']);
+assert.ok(googleCalendarUrl(stXavierKsSchool.googleCalendar.id,{start:'2026-07-01',end:'2027-06-30'}).startsWith('https://www.googleapis.com/calendar/v3/calendars/k27ts8fuijnopevpe379j6dqtk%40group.calendar.google.com/events?singleEvents=true'));
+assert.ok(Object.values(stXavierKsSchool.sports).flat().every(t=>t.googleCalendar)&&Object.values(stXavierJhKsSchool.sports).flat().every(t=>t.googleCalendar));
+assert.ok(worker.includes("const key=env?.GOOGLE_API_KEY||env?.YOUTUBE_API_KEY"),'the Google key, never in a listed URL');
+assert.ok(worker.includes('read:googleCalendar.read'),'/live/status reports the calendar read');
 console.log(`Geary County module passed: ${modules.length} schools, ${modules.reduce((n,m)=>n+Object.keys(m.sports).length,0)} school-sports.`);
