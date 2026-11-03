@@ -14,10 +14,11 @@ import {calendarSportsAudit} from '../src/high-school.mjs';
 import {manhattanKsSchool} from '../src/schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from '../src/schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from '../src/schools/riley-pottawatomie-ks.mjs';
+import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from '../src/schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from '../src/schools/kas-ks.mjs';
 
 const sponsored=JSON.parse(readFileSync(new URL('../src/sponsored-sports.json',import.meta.url),'utf8'));
-const modules=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS,...KAS_KS_HIGH_SCHOOLS].filter(m=>m.calendar?.url);
+const modules=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS,...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS,...KAS_KS_HIGH_SCHOOLS].filter(m=>m.calendar?.url);
 // The school year in Kansas: July to June.
 const now=new Date(),year=now.getUTCMonth()>=6?now.getUTCFullYear():now.getUTCFullYear()-1;
 const range=`start_date=${year}-07-01&end_date=${year+1}-06-30`;

@@ -10572,5 +10572,145 @@
         "provider_school_id": "h2025020404520561456ac772684c34f"
       }
     ]
+  },
+  {
+    "id": "junction-city-ks",
+    "name": "Junction City High School",
+    "short_name": "Junction City",
+    "state": "Kansas",
+    "city": "Junction City",
+    "county": "Geary County",
+    "conference": "Centennial League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://jchs.usd475.org",
+    "aliases": [
+      "Junction City",
+      "JCHS",
+      "Junction City Blue Jays",
+      "Junction City Bluejays",
+      "USD 475"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/junctioncityhs",
+        "provider_school_id": "h20250204045159822386f317805064a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/junction-city/junction-city-bluejays",
+        "provider_school_id": "0db83983-6aab-46c9-9989-88ee256551be"
+      }
+    ]
+  },
+  {
+    "id": "st-xavier-ks",
+    "name": "St. Xavier High School",
+    "short_name": "St. Xavier",
+    "state": "Kansas",
+    "city": "Junction City",
+    "county": "Geary County",
+    "conference": "Independent",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.saintxrams.org",
+    "aliases": [
+      "St. Xavier",
+      "St Xavier",
+      "St. X",
+      "St. Francis Xavier Catholic",
+      "St. Xavier Rams"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "provider_school_id": "h202502040452054647fae500274d446"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/junction-city/st-xavier-rams",
+        "provider_school_id": "2eb435d3-ebb7-4924-8a91-b479053f94eb"
+      }
+    ]
+  },
+  {
+    "id": "junction-city-ms-ks",
+    "name": "Junction City Middle School",
+    "short_name": "Junction City",
+    "state": "Kansas",
+    "city": "Junction City",
+    "county": "Geary County",
+    "conference": "Centennial Middle School League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd475.org",
+    "aliases": [
+      "Junction City Middle School",
+      "Junction City MS",
+      "JCMS",
+      "Junction City Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "provider_school_id": "h20251215030233573aee5a5046f2741"
+      }
+    ]
+  },
+  {
+    "id": "fort-riley-ms-ks",
+    "name": "Fort Riley Middle School",
+    "short_name": "Fort Riley",
+    "state": "Kansas",
+    "city": "Fort Riley",
+    "county": "Geary County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd475.org",
+    "aliases": [
+      "Fort Riley Middle School",
+      "Fort Riley MS",
+      "Ft Riley",
+      "FRMS",
+      "Fort Riley Troopers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fortrileyms",
+        "provider_school_id": "h20250612074705722fb6ff5c7484f42"
+      }
+    ]
+  },
+  {
+    "id": "st-xavier-jh-ks",
+    "name": "St. Xavier Junior High",
+    "short_name": "St. Xavier",
+    "state": "Kansas",
+    "city": "Junction City",
+    "county": "Geary County",
+    "conference": "Independent",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.saintxrams.org",
+    "aliases": [
+      "St. Xavier Junior High",
+      "St. Xavier JH",
+      "St. Xavier Middle School",
+      "St Xavier"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "provider_school_id": "h202502040452054647fae500274d446"
+      }
+    ]
   }
 ]
