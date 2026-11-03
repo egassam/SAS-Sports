@@ -95,6 +95,8 @@ assert.deepEqual(games(stXavierJhKsSchool,sfx,stXavierJhKsSchool.sports.Basketba
 const sxXc=stXavierKsSchool.sports['Cross Country'][0];
 assert.deepEqual(games(stXavierKsSchool,sfx,sxXc).map(g=>g.name),['WCHS Invitational','Karr Classic at The Orchard'],'Bound lists two varsity meets');
 assert.deepEqual(sxXc.extraMeets.map(m=>m.date),['2026-10-03','2026-10-08','2026-10-24'],'MileSplit Live has its runners at three more');
+assert.deepEqual(junctionCityKsSchool.sports['Cross Country'][0].extraMeets.map(m=>m.date),['2026-10-24'],'the 6A sub-state Bound leaves out');
+assert.deepEqual(fortRileyMsKsSchool.sports['Cross Country'][0].extraMeets.map(m=>m.date),['2026-09-15'],'the Clay Center meet Bound leaves out');
 // Its games are on MaxPreps (school 2eb435d3-...): the 2026 volleyball finals.
 assert.ok(stXavierKsSchool.sports.Basketball.every(t=>t.maxprepsSchedule&&t.maxpreps),'basketball: the MaxPreps schedule');
 assert.deepEqual(games(stXavierKsSchool,sfx,stXavierKsSchool.sports.Volleyball[0]).map(line),['2026-10-19 18:30 HOME Veritas Christian'],'volleyball: Bound\'s one varsity entry beside the MaxPreps finals');
