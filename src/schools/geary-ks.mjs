@@ -34,9 +34,10 @@ export const junctionCityMsKsSchool={id:'junction-city-ms-ks',bound:unpaged('h20
   sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:'Junction City',milesplit:39340,grades:usd475Grade})};
 
 // Fort Riley Middle School (on the post; Geary County): LetsGoRun writes it
-// "Ft Riley" ("Ft Riley7G").
+// "Ft Riley" at Fort Riley's own meet ("Ft Riley7G") and "Fort Riley Middle
+// School" at Clay Center's.
 export const fortRileyMsKsSchool={id:'fort-riley-ms-ks',bound:bound('h20250612074705722fb6ff5c7484f42','fortrileyms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:'Ft Riley',trackTeam:['Ft Riley','Fort Riley'],milesplit:40677,grades:usd475Grade})};
+  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:['Ft Riley','Fort Riley'],trackTeam:['Ft Riley','Fort Riley'],milesplit:40677,grades:usd475Grade})};
 
 // --- St. Francis Xavier Catholic School (St. Xavier Rams, 1A)
 

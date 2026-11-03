@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {boundSchedule,boundDedupe,maxprepsContests,BOUND_ACTS} from '../src/high-school.mjs';
+import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,BOUND_ACTS} from '../src/high-school.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS,junctionCityKsSchool,junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierKsSchool,stXavierJhKsSchool} from '../src/schools/geary-ks.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from '../src/schools/riley-pottawatomie-ks.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
@@ -68,7 +68,13 @@ const frms=JSON.parse(fixture('bound-fort-riley-ms-2026-11-03.json.gz'));
 const g7=games(fortRileyMsKsSchool,frms,fortRileyMsKsSchool.sports.Basketball.find(t=>t.label==='7th Girls'));
 assert.ok(g7.some(g=>g.level==='7A'&&g.name==='Wamego MS')&&g7.some(g=>g.level==='7th Grade A-Team'&&g.name==='Chapman'));
 assert.ok(g7.every(g=>!/8|B$/.test(g.level)),'no 8th grade or B team');
-assert.equal(fortRileyMsKsSchool.sports['Cross Country'][0].meetPro.team,'Ft Riley','LetsGoRun writes "Ft Riley7G"');
+assert.deepEqual(fortRileyMsKsSchool.sports['Cross Country'][0].meetPro.team,['Ft Riley','Fort Riley'],'LetsGoRun writes "Ft Riley7G" and "Fort Riley Middle School"');
+// LetsGoRun Timing (MeetPro): a meet's runners under any of the school's names.
+const meetPro=section=>`<section id="event1"><p class="bold-cell">7th Grade Girls 2 Mile</p><table><tr><td class="team-place">2</td><td class="team">Fort Riley Middle School</td><td class="team-score">61</td></tr>${section}</table></section>`;
+const row=(place,team)=>`<tr><td class="place">${place}</td><td class="athlete">DOE, Jane</td><td class="year">7</td><td class="ath-team">${team}</td><td class="time">14:02.1</td></tr>`;
+const races=meetProResults(meetPro(row(3,'Fort Riley Middle School')+row(5,'Ft Riley7G')+row(6,'Clay Center')),['Ft Riley','Fort Riley']);
+assert.deepEqual(races.map(r=>[r.runners.map(x=>x.place),r.team?.place]),[[[3,5],2]]);
+assert.equal(meetProResults(meetPro(row(3,'Riley County')),['Ft Riley','Fort Riley']).length,0,'Riley County is not Fort Riley');
 
 // St. Xavier: its junior high reads JHA (not JHB), Junior High and grade entries.
 const sfx=JSON.parse(fixture('bound-st-xavier-2026-11-03.json.gz'));
