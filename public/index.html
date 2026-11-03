@@ -474,7 +474,7 @@ function liveMore(e,ours,theirs){
   if(d.matchup)facts.push(`<b>${esc(d.matchup)}</b>`);
   if(d.timeouts)facts.push(`Timeouts <b>${esc(us)} ${esc(d.timeouts.ours)} · ${esc(them)} ${esc(d.timeouts.theirs)}</b>`);
   if(d.win_probability!=null)facts.push(`Win probability <b>${esc(us)} ${esc(d.win_probability)}%</b>`);
-  if(d.broadcast)facts.push(`TV <b>${esc(d.broadcast)}</b>`);
+  if(d.broadcast||e.broadcast)facts.push(`TV <b>${esc(d.broadcast||e.broadcast)}</b>`);
   if(d.venue)facts.push(`<b>${esc(d.venue)}</b>`);
   if(facts.length)parts.push(`<div class="live-facts">${facts.map(f=>`<span>${f}</span>`).join('')}</div>`);
   if(d.last_play||d.drive)parts.push(`<div class="live-play">${d.last_play?`<span>${esc(d.last_play)}</span>`:''}${d.drive?`<small>Drive: ${esc(d.drive)}</small>`:''}</div>`);
@@ -498,7 +498,9 @@ function raceMore(e){
 function statusDetails(e){
   const label=String(e.recency_label||'').trim(),status=String(e.status||'').trim();
   const repeats=!label||label.toLowerCase()===status.toLowerCase()||(/^live now$/i.test(label)&&/^live$/i.test(status));
-  return [repeats?'':label,(e.display_time||e.start_time)?eventTime(e):''].filter(Boolean).join(' · ');
+  // The published TV or stream on a game still to be played (user, Nov 3,
+  // 2026: "Yes, add TV to every game"); a final keeps it in its expanded view.
+  return [repeats?'':label,(e.display_time||e.start_time)?eventTime(e):'',e.broadcast&&e.status!=='Final'?`TV: ${e.broadcast}`:''].filter(Boolean).join(' · ');
 }
 // A race under way: the lap, the leader and the running order (no two-team
 // board).
@@ -1356,7 +1358,7 @@ async function openEvent(id){
   const source=e.source?.url?`<p class="small muted">Source: ${recapUrl?esc(e.source.name||'Official athletics source'):`<a class="official-link" href="${esc(e.source.url)}" target="_blank" rel="noopener">${esc(e.source.name||'Official athletics source')}</a>`} · verified ${esc(e.last_verified_at||e.source.updated_at||'now')}</p>`:'';
   // The game's own video from the school's channel: the replay of a final.
   const replay=e.video?.embed_url&&e.status==='Final'?`<div class="replay"><h4>Game video</h4><div class="video-frame"><iframe src="${esc(e.video.embed_url)}" title="${esc(e.video.title||e.title)}" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="video-foot"><span>${esc(e.video.source)}</span><a class="official-link" href="${esc(e.video.watch_url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div></div>`:'';
-  $('#modalBody').innerHTML=replay+`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div></div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}${highlightStatus}${source}`;
+  $('#modalBody').innerHTML=replay+`<div class="detail-grid"><div class="detail-box"><span>Status</span><b>${esc(e.status)}</b></div><div class="detail-box"><span>Score / result</span><b>${esc(score)}</b></div><div class="detail-box"><span>Start</span><b>${esc(eventTime(e)||'—')}</b></div><div class="detail-box"><span>${e.event_type==='RACE'?'Track':'Opponent'}</span><b>${esc(e.opponent||'—')}</b></div>${e.broadcast?`<div class="detail-box"><span>TV</span><b>${esc(e.broadcast)}</b></div>`:''}</div>${e.headline&&e.school_score==null?`<p>${esc(e.headline)}</p>`:''}${rows?`<div class="section-label">${esc(resultsTitle)}</div>${rows}`:(highlights?'':'<div class="small muted">No participant-level results available for this event.</div>')}${box.line}${highlights}${!highlights?recapButton:''}${gameStats}${box.stats}${box.plays}${highlightStatus}${source}`;
 }
 // A football final's expanded view (user, October 16: "can we clean up the
 // card please"): the score by quarter, team stats, and the scoring plays by

@@ -396,7 +396,7 @@ contains(worker,/function reconcileScoreboardEvents\(/,'Live scores must reconci
 for(const id of ['arizona-state','auburn','byu','cincinnati','clemson','iowa','lsu','miami','missouri','nebraska','northwestern','penn-state','purdue','texas-am','ucf','ucla','vanderbilt'])contains(readFileSync(new URL(`../src/schools/${id}.mjs`,import.meta.url),'utf8'),/!\/\^\(\?:Cross Country\|Golf\)\$\/\.test\(sport\)&&\(\/\^W\/i\.test\(result\[1\]\)/,`${id}: a winner-first WMT score must read from the team's side`);
 contains(worker,/verification_state:['"]official_schedule\+live_scoreboard['"]/,'Reconciled games must retain source provenance');
 contains(worker,/schoolModule\(school\?\.id\)\?\.school\.liveScoreboards\?\.\[sport\]/,'School scoreboards must be explicitly configured per sport, in the school module');
-contains(worker,/\{school:kstateSchool\}/,'K-State must be registered in SCHOOL_MODULES (its scoreboards live in its module)');
+contains(worker,/\{school:kstateSchool[,}]/,'K-State must be registered in SCHOOL_MODULES (its scoreboards live in its module)');
 for(const school of ['kansas','byu'])contains(worker,new RegExp(`\\{school:${school}School,[^\\n]*meetDayIsLast:true`),`${school} meet recaps are searched from the meet's last day`);
 
 // Live lifecycle refresh: poll quickly during games, periodically while idle, and

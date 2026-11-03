@@ -1,4 +1,4 @@
-import {kstateSchool,createKStateHandlers} from './schools/kstate.mjs';
+import {kstateSchool,createKStateHandlers,createKStateScheduleTv} from './schools/kstate.mjs';
 import schools from './schools.json';
 import sponsoredSports from './sponsored-sports.json';
 import teamThemes from './team-themes.json';
@@ -335,7 +335,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.258.1-home-entries-retry';
+const VERSION='4.259.0-kstate-tv';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -385,8 +385,9 @@ const sourceFetch=createSourceFetch({fetch:(...args)=>fetch(...args),headers:HEA
 //   school.teamLabels {path: label}  the team of a combined sport's page whose
 //     address names none
 // Hooks run only for their own school (each checks the event's school).
+const kstateScheduleTv=createKStateScheduleTv({slug:s=>slug(s)});
 const SCHOOL_MODULES=[
-  {school:kstateSchool},
+  {school:kstateSchool,scheduleEvents:(merged,raw,school,sport,url)=>kstateScheduleTv(merged,raw,school,sport,url)},
   {school:kansasSchool,parseSchedule:(...args)=>kansasHandlers.parseSchedule(...args),matchesRecap:(...args)=>kansasHandlers.matchesRecap(...args),meetDayIsLast:true},
   {school:oklahomaStateSchool,
     scheduleEvents:(merged,raw,school,sport,url)=>oklahomaStateHandlers.enrichScheduleEvents(oklahomaStateHandlers.filterEvents(merged,school,sport,url),raw,school,sport,url),

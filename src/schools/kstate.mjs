@@ -1,6 +1,16 @@
 // K-State school module. Shared publisher utilities are injected by the Worker;
 // this file never imports the Worker or changes another school's records.
 // Exact published snapshots retain their original event/school/date keys.
+import {createScheduleDataEnricher} from '../sidearm-schedule-data.mjs';
+
+// Every K-State schedule page names each game's TV or stream in its page data
+// (media.tv: "ESPN+", "FS1", "ION", "Big Ten Plus"); the rendered cards show it
+// only as a logo. User, Nov 3, 2026: "Yes, add TV to every game".
+export const KSTATE_TV_SPORTS=new Set(['Baseball','Basketball','Cross Country','Football','Golf','Rowing','Soccer','Tennis','Track & Field','Volleyball']);
+export function createKStateScheduleTv({slug}){
+  return createScheduleDataEnricher({schoolId:'kstate',host:'www.kstatesports.com',slug,tvSports:KSTATE_TV_SPORTS});
+}
+
 export const kstateSchool={
   id:'kstate',
   // K-State publishes these programs on separate men's and women's pages.
