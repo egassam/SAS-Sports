@@ -69,3 +69,5 @@ User: "look for alternate websites for getting official results for all the spor
 - **Scores depend on coaches reporting to MaxPreps.** A past game without a reported score is not listed until it is reported.
 - **Meets without a results source:** golf meets not on Prep.Golf (or with no place posted) are not listed; cross country meets timed by someone other than LetsGoRun are not listed; tennis invitationals not on TennisReporting are not listed (MaxPreps has no contests for these Manhattan teams, checked Oct 9).
 - MaxPreps volleyball pages hold pool placeholders (0-0 ties, no result); those are not matches.
+
+**November 3:** Anthony and Eisenhower cross country leave out the 1-mile races (the Fort Riley meet's junior varsity race), as every Kansas middle school now does (`docs/GEARY_KS_MODULE.md`).
