@@ -1,0 +1,47 @@
+# Geary County, Kansas: middle and high schools
+
+User, November 3, 2026: "Let's add another county in Kansas", then (asked which) "Geary".
+
+Riley and Pottawatomie counties were already in the app (`docs/RILEY_POTTAWATOMIE_KS_MODULE.md`). This session adds every middle and high school in Geary County that fields teams. Code: `src/schools/geary-ks.mjs` (school data; it reuses the Bound builders exported from `src/schools/riley-pottawatomie-ks.mjs`) and the shared readers in `src/high-school.mjs`; Worker path `fetchHighSchool` in `src/index.js`. The rules for middle and high schools are `AGENTS.md` item 5c.
+
+## Schools
+
+Counties checked with the US Census geocoder: 900 N Eisenhower Dr (Junction City HS's district address), 700 Wildcat Ln (Junction City MS) and 200 N Washington St (St. Xavier) are in Geary County. Junction City HS stands at 1100 Blue Jay Way (Bound) and Fort Riley MS at 4022 1st Division Rd on the post; the geocoder matches neither street, but Junction City lies wholly in Geary County, and the October 25 session placed Fort Riley MS in Geary County.
+
+| School | id | Town | Class · league | Schedule source |
+| --- | --- | --- | --- | --- |
+| Junction City High School | `junction-city-ks` | Junction City | 6A · Centennial League | Bound `junctioncityhs` (the school's site, jchs.usd475.org, links it) |
+| St. Xavier High School (St. Francis Xavier Catholic School) | `st-xavier-ks` | Junction City | 1A · no league found | MaxPreps (games), Bound (meets) |
+| Junction City Middle School | `junction-city-ms-ks` | Junction City | Middle school · Centennial Middle School League | Bound (id `h20251215030233573aee5a5046f2741`; no page of its own) |
+| Fort Riley Middle School | `fort-riley-ms-ks` | Fort Riley | Middle school · North Central Kansas League (Bound) | Bound `fortrileyms` |
+| St. Xavier Junior High | `st-xavier-jh-ks` | Junction City | Middle school | Bound (St. Xavier's id; JHA, Junior High, grade entries) |
+
+Checked and not added: Apostolic Academy (Junction City, PreK-12; no team, schedule or result published anywhere: not on Bound, MaxPreps or any timer; NCSA's pages for it are empty templates), Karns Alternative School (no athletics), elementary schools. MaxPreps' "Junction City/St. Xavier" listing (`junction-city-st-xavier-bluejays`) is an old co-op page; Junction City reads its own (`junction-city-bluejays`).
+
+## Sources (every website checked, November 3)
+
+- **Bound** (`beta.gobound.com`, read with the scoreboard identity): Junction City HS (59 events in the acts tested; every sport), Junction City MS and Fort Riley MS (grade teams, whole-team "Middle School" entries, and middle school golf and tennis), St. Xavier (two varsity cross country meets, a few junior high games). Bound gives Junction City MS and St. Xavier no page (their slug is empty): the feed links Bound's Kansas page.
+- **MaxPreps:** Junction City (`0db83983-6aab-46c9-9989-88ee256551be`; football 9 finals, 4-5) and St. Xavier (`2eb435d3-ebb7-4924-8a91-b479053f94eb`; volleyball 0-3: Flint Hills Christian, Peabody-Burns, Cornerstone Family). Junction City's girls' soccer page is `soccer/girls/spring`. This sandbox reads MaxPreps only through the app's private source route; MaxPreps answers it 403 when read more than about once in 30 seconds.
+- **St. Xavier's Google Calendar** (linked from saintxrams.org's Calendar/News page) holds the whole season, but `calendar.google.com/robots.txt` disallows every path but `/` for every robot, so it is **not read**. The Google Calendar API (googleapis.com) would be the allowed way; it needs the Calendar API turned on for a Google Cloud API key (the user's choice).
+- **LetsGoRun Timing** (user, November 3: "Also look at let's go run as well"). MeetPro: every 2026 cross country folder was read (Manhattan, Wamego MS, Fort Riley, Clay Center, Rock Creek, Centennial League MS). Junction City HS runs at Manhattan (Sep 5); Junction City MS ("Junction City") and Fort Riley MS ("Ft Riley", "Ft Riley7G") at Fort Riley (Sep 10) and the Centennial League MS meet (Oct 2); Fort Riley MS is "Fort Riley Middle School" at Clay Center (Sep 15), so the reader now takes several names for one school (`meetProResults`); St. Xavier's junior high ("St Xavier7B") at Fort Riley. Its 2026 track folders include Junction City meets (Fort Riley-Junction City Invitational, Junction City Invitational and JV, Centennial League); the 2027 ones are found the same way once posted. AthleticLIVE (`search.athletic.live/letsgoruntiming_meet_list`): 14 meets, two from 2026 (the Fort Riley MS X-C Invite, 75943, the same meet as its MeetPro page, and the KAS state meet): nothing more for Geary County.
+- **MileSplit Live:** team ids Junction City HS 15714 (JUNC), Junction City MS 39340 (JCMS), Fort Riley MS 40677 (FRMM), St. Xavier 26138 (STXA; its junior high runs under it). The 2026 season's Kansas meets with each: JCHS 12 (Greg Wilson Classic, Manhattan, Emporia, Olathe Twilight, Shufelberger, Rim Rock, Schmoekel, Salina, Centennial League, 6A Sub-State Manhattan, state at Rim Rock); JCMS 3; FRMS 6; St. Xavier 5 (McPherson MS, Council Grove (team listed, no runner), Schmoekel, Goessel, 1A Sub-State Cheney Lake).
+- **Prep.Golf:** Junction City school 7, golfers' code JC (girls: Centennial League 5th, 6A regional 6th).
+- **TennisReporting:** "Junction City HS" (2025 girls' Topeka West Invite, regional, 6A state; 2026 boys' Topeka HS regional and 6A state).
+- **Not usable:** Athletic.net (403), MileSplit's site (members only), Trackwrestling (406), KSHSAA's site (no machine-readable directory).
+
+## Rules
+
+- High school: Bound's `Varsity` level. Sports: football, volleyball, boys' soccer (fall) and girls' soccer (spring), basketball, baseball, softball, cross country, golf (girls fall, boys spring), tennis (girls fall, boys spring; TennisReporting), wrestling, track and field, swimming and diving (boys winter, girls spring), bowling (girls, boys, Unified). `boundHighSchool` gained girls' soccer, swimming and boys'/girls' bowling, and a `paths` option for a MaxPreps path; the Riley and Pottawatomie schools read exactly as before (`tests/geary-ks-module.mjs` checks Wamego's bowling and St. Mary's Academy's soccer).
+- Middle schools: the grades 7th and 8th and their A teams; Junction City and Fort Riley also write the A team "7th Grade - A - 1" and "7A" (`usd475Grade`); B teams are not listed. `boundMiddleSchool` gained Tennis (Centennial League middle school tennis; levels "Middle School", "MS", "MS A Team", grade). Golf is read as for Wamego MS.
+- St. Xavier's basketball (`maxprepsSchedule`): the team's MaxPreps schedule is its schedule: finals with scores, coming games, and past games without a score as "No score posted". Volleyball reads as Junction City's: MaxPreps' finals, then Bound's varsity entries (October 19 vs Veritas Christian, no score posted). Its meets come from Bound plus `extraMeets`: meets MileSplit Live has its runners at that Bound leaves out (October 3, 8 and 24). The same fills Junction City HS's 6A Sub-State (October 24) and Fort Riley MS's Clay Center meet (September 15).
+- Middle school cross country leaves out the 1-mile races (the junior varsity race at Fort Riley's meet: "1 Mile Run 7th Grade Girls"; St. Xavier's notes for September 10: "All JV Race - 1 mile"). Anthony and Eisenhower read the same meet and still show its 1-mile races (not changed here; see the handoff).
+- Junction City's home meet at Milford Lake is the "Blue Jay Invitational" on Bound and the "Bob Schmoekel Cross Country Invitational" on MileSplit Live: the team's `milesplit.names` maps one to the other.
+- Middle and high school rule (`AGENTS.md` 5c): a past game or meet with no result anywhere is listed as played ("No score posted" / "No results posted").
+
+## Limitations
+
+- **Meets with no results anywhere** (preview, November 3): Junction City HS girls' golf October 1 (its own invitational) and September 24 (Salina Central: Prep.Golf lists Junction City without a team score); St. Xavier cross country September 10 (WCHS Invitational) and September 17 (Karr Classic): neither is on MileSplit Live or LetsGoRun; Junction City MS cross country September 12, 16 and 24. Middle school volleyball and football: no scores published (Bound has none entered). Junction City girls' tennis meets other than regional and state are not on TennisReporting; its 2026 fall regional and state draws do not list Junction City.
+
+- **Not published** (5c): middle school game scores (Junction City MS, Fort Riley MS, St. Xavier JH: none on MaxPreps; Bound finals only where a school enters them); St. Xavier junior high's full schedule (only the entries other schools put on Bound; its own calendar is robots-disallowed); wrestling, swimming and bowling team results (no public source); Apostolic Academy (no athletics published).
+- **St. Xavier's volleyball days MaxPreps lacks** (September 7 at Veritas Christian and October 6 at Topeka, both on its calendar) are not listed: MaxPreps and Bound's varsity entries are the readable sources. Its winter basketball fills when its coaches post it on MaxPreps.
+- **St. Xavier's league** is not published on any source checked; the catalog reads "Independent".

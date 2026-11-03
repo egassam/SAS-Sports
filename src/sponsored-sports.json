@@ -4812,5 +4812,52 @@
     "Basketball",
     "Cross Country",
     "Volleyball"
+  ],
+  "junction-city-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-xavier-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "junction-city-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "fort-riley-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-xavier-jh-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
   ]
 }

@@ -289,9 +289,11 @@ export function meetProLinks(html,prefix='LetsGoRun_Timing'){
 // One school, as meets write it: "Anthony", "Anthony Middle School",
 // "Anthony7G" (Fort Riley adds the grade and gender to the team).
 export const meetProTeam=name=>nameKey(String(name||'').replace(/\d+\s*[BG]$/i,'')).replace(/\b(?:middle school|middle|ms|junior high|jh)\b/g,' ').replace(/\s+/g,' ').trim();
-// The school's races at one meet: team place and its runners.
+// The school's races at one meet: team place and its runners. `team` may
+// list the names meets write the school ("Ft Riley" at Fort Riley's own
+// meet, "Fort Riley Middle School" at Clay Center's).
 export function meetProResults(html,team){
-  const ours=meetProTeam(team),isOurs=name=>meetProTeam(name)===ours;
+  const ours=new Set([].concat(team).map(meetProTeam)),isOurs=name=>ours.has(meetProTeam(name));
   const races=[];
   for(const section of String(html||'').split(/<section id="event\d+"/).slice(1)){
     const header=[...section.matchAll(/<p class="bold-cell">([\s\S]*?)<\/p>/g)].map(m=>clean(m[1]));

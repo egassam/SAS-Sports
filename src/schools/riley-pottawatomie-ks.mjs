@@ -16,26 +16,29 @@
 import {parseFreeTitle,sheetCalendar} from '../high-school.mjs';
 import {LETSGORUN_MEETPRO} from './manhattan-ks.mjs';
 
-const VARSITY=/^Varsity$/i;
-const bound=(school,slug)=>({school,page:`https://beta.gobound.com/ks/schools/${slug}/calendar`});
-const maxpreps=(schoolId,path)=>({schoolId,base:`https://www.maxpreps.com/ks/${path}/`});
-const on=(acts,level=VARSITY)=>({boundSchedule:{acts:[].concat(acts),level}});
+export const VARSITY=/^Varsity$/i;
+export const bound=(school,slug)=>({school,page:`https://beta.gobound.com/ks/schools/${slug}/calendar`});
+export const maxpreps=(schoolId,path)=>({schoolId,base:`https://www.maxpreps.com/ks/${path}/`});
+export const on=(acts,level=VARSITY)=>({boundSchedule:{acts:[].concat(acts),level}});
 
 // Track meets name their divisions: a high school's varsity events have none
 // or a class ("Class 3A/4A"); JV, freshman and middle school divisions are
 // left out. A middle school reads only meets run by grade (or named for
 // middle schools); a high school meet on the same day is not its own.
-const HS_TRACK_EXCLUDE=/\bJV\b|junior varsity|fresh|frosh|soph|\bgrade\b|middle|\bMS\b|\bJH\b/i,MS_TRACK=/\bgrade\b|middle|\bMS\b|\bJH\b|junior high/i;
+export const HS_TRACK_EXCLUDE=/\bJV\b|junior varsity|fresh|frosh|soph|\bgrade\b|middle|\bMS\b|\bJH\b/i,MS_TRACK=/\bgrade\b|middle|\bMS\b|\bJH\b|junior high/i;
 
 // High school sports read from Bound. `has` lists the school's sports; each
 // takes its MaxPreps page (games), or its meet source.
-function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true}){
-  const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:path}:{}),...(label?{label}:{})});
+// Geary County (src/schools/geary-ks.mjs) adds girls' soccer, swimming and
+// boys' and girls' bowling (Junction City); `paths` gives a MaxPreps path
+// that differs from the usual one ("soccer/girls/spring").
+export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true,paths={}}){
+  const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:paths[acts]||path}:{}),...(label?{label}:{})});
   const sports={};
   if(has.includes('Football'))sports.Football=[game('Football','football')];
   if(has.includes('Flag Football'))sports['Flag Football']=[game('Girls Flag Football','flag-football/girls','Girls')];
   if(has.includes('Volleyball'))sports.Volleyball=[game('Volleyball','volleyball')];
-  if(has.includes('Soccer'))sports.Soccer=[game('Boys Soccer','soccer','Boys')];
+  if(has.includes('Soccer'))sports.Soccer=[game('Boys Soccer','soccer','Boys'),...(has.includes('Girls Soccer')?[game('Girls Soccer','soccer/girls','Girls')]:[])];
   if(has.includes('Basketball'))sports.Basketball=[game('Girls Basketball','basketball/girls','Girls'),game('Boys Basketball','basketball','Boys')];
   if(has.includes('Baseball'))sports.Baseball=[game('Baseball','baseball')];
   if(has.includes('Softball'))sports.Softball=[game('Softball','softball')];
@@ -48,20 +51,26 @@ function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpr
   // Track: the timer's MeetPro meets, varsity events only.
   if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field']),meet:true,meetPro:{team:trackTeam,track:true,exclude:HS_TRACK_EXCLUDE}}];
   // KSHSAA Unified Bowling (students with and without disabilities together).
-  if(has.includes('Bowling'))sports.Bowling=[{...on('Unified Bowling'),meet:true,label:'Unified'}];
+  // Boys' and girls' bowling where the school has them (Junction City).
+  if(has.includes('Bowling'))sports.Bowling=[...['Girls','Boys'].filter(g=>has.includes(`${g} Bowling`)).map(g=>({...on(`${g} Bowling`),meet:true,label:g})),{...on('Unified Bowling'),meet:true,label:'Unified'}];
+  if(has.includes('Swimming & Diving'))sports['Swimming & Diving']=['Girls','Boys'].filter(g=>has.includes(`${g} Swimming`)).map(g=>({...on(`${g} Swim & Dive`),meet:true,label:g}));
   return sports;
 }
 
 // Middle school teams on Bound: the grades (7th, 8th; their A teams), and the
 // entries a school files under the whole team ("Middle School", "Junior
 // High", "JH A"). B teams are not listed (as in Manhattan's middle schools).
-const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
+export const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
 const WHOLE=/^(?:Middle School|Junior High|JH)(?: A)?$/i;
 const ANY_MS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|Junior High|JH)(?: A(?:-Team)?)?$/i;
-function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit}){
+// `grades` reads other forms of a grade's A team ("7th Grade - A - 1",
+// "7A": Junction City and Fort Riley); `Tennis` is a middle school team in
+// the Centennial League.
+const MS_TENNIS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|MS|Junior High|JH)(?: A(?:[- ]Team)?)?$/i;
+export function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit,grades=grade}){
   const games=(acts,gender='')=>[
-    {...on(acts,grade('7th')),label:`7th${gender?` ${gender}`:''}`},
-    {...on(acts,grade('8th')),label:`8th${gender?` ${gender}`:''}`},
+    {...on(acts,grades('7th')),label:`7th${gender?` ${gender}`:''}`},
+    {...on(acts,grades('8th')),label:`8th${gender?` ${gender}`:''}`},
     {...on(acts,WHOLE),...(gender?{label:gender}:{})}];
   const sports={};
   if(has.includes('Football'))sports.Football=games('Football');
@@ -71,6 +80,7 @@ function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit}){
   if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`,ANY_MS),meet:true,label:g}));
   if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field'],ANY_MS),meet:true,meetPro:{team:trackTeam,track:true,meetHas:MS_TRACK}}];
   if(has.includes('Golf'))sports.Golf=[{...on(['Girls Golf','Boys Golf'],ANY_MS),meet:true}];
+  if(has.includes('Tennis'))sports.Tennis=[{...on(['Girls Tennis','Boys Tennis'],MS_TENNIS),meet:true}];
   return sports;
 }
 

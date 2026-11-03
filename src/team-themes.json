@@ -3478,5 +3478,45 @@
     "panelDark": "#290007",
     "line": "#d94059",
     "onAccent": "#ffffff"
+  },
+  "junction-city-ks": {
+    "primary": "#00599D",
+    "secondary": "#FFFFFF",
+    "panel": "#002847",
+    "panelDark": "#00121f",
+    "line": "#4082b6",
+    "onAccent": "#ffffff"
+  },
+  "st-xavier-ks": {
+    "primary": "#2C3690",
+    "secondary": "#FFFFFF",
+    "panel": "#141841",
+    "panelDark": "#090b1d",
+    "line": "#6168ac",
+    "onAccent": "#ffffff"
+  },
+  "junction-city-ms-ks": {
+    "primary": "#000F9F",
+    "secondary": "#908E8E",
+    "panel": "#000748",
+    "panelDark": "#000320",
+    "line": "#404bb7",
+    "onAccent": "#ffffff"
+  },
+  "fort-riley-ms-ks": {
+    "primary": "#C00000",
+    "secondary": "#072849",
+    "panel": "#560000",
+    "panelDark": "#260000",
+    "line": "#d04040",
+    "onAccent": "#ffffff"
+  },
+  "st-xavier-jh-ks": {
+    "primary": "#2C3690",
+    "secondary": "#FFFFFF",
+    "panel": "#141841",
+    "panelDark": "#090b1d",
+    "line": "#6168ac",
+    "onAccent": "#ffffff"
   }
 }
