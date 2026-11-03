@@ -15,7 +15,7 @@ const school=schools.find(s=>s.id==='kstate');
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 let responses=new Map(),requests=[];
 const fetch=async url=>{requests.push(String(url));assert.ok(responses.has(String(url)),`Unexpected fetch ${url}`);return new Response(responses.get(String(url)));};
-const worker=Function(...Object.keys(schoolModuleDeps),'createSourceFetch','SOURCE_TTL','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {recapMatchesEvent,candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(...Object.values(schoolModuleDeps),createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
+const worker=Function(...Object.keys(schoolModuleDeps),'createSourceFetch','SOURCE_TTL','schools','sponsoredSports','rosterSocialInstagrams','extractText','isKansasCrossCountry','applyVerifiedKansasMeet','attachKansasRaceDocuments','fetch',`${source}\nreturn {parseHtml,recapMatchesEvent,candidateUrls,rosterUrls,enrichGameEvent,enrichMeetEvent,featuredAthletes,officialCardInstagram,VERIFIED_TEAM_TAG_INSTAGRAM,KNOWN_URLS,schoolCombinedSports,teamLabelForSource,liveScoreboardProviders,parseScoreboardPayload,reconcileScoreboardEvents,makeEvent,groupEvents,schoolTimeZone};`)(...Object.values(schoolModuleDeps),createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,()=>{throw Error('Unexpected PDF');},isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments,fetch);
 
 // Frozen from the pre-module application commit, never regenerated during tests.
 assert.equal(Object.keys(baseline.routes).length,10);
@@ -160,5 +160,27 @@ assert.deepEqual(worker.parseScoreboardPayload(unhPayload,school,'Volleyball',ks
 assert.equal(worker.parseScoreboardPayload(unhPayload,schools.find(s=>s.id==='arizona'),'Football',{path:'football/college-football'},vbUrl,vbNow).length,0,'nor Arizona');
 // Other sports keep their scoreboard output unchanged (no volleyball rule).
 assert.equal(liveMen[0].headline,'2nd Half - 4:12');
+
+// TV on every game (user, Nov 3, 2026: "Yes, add TV to every game"): the
+// schedule page data's media.tv, frozen from kstatesports.com on Nov 2, 2026.
+{
+  const {sidearmBroadcast}=await import('../src/sidearm-schedule-data.mjs');
+  assert.equal(sidearmBroadcast({media:{tv:' ESPN+ '}}),'ESPN+');
+  for(const tv of ['','TBA','tbd',null])assert.equal(sidearmBroadcast({media:{tv}}),null,`no TV for ${tv}`);
+  assert.equal(sidearmBroadcast({}),null);
+  const raw=gunzipSync(readFileSync(new URL('./fixtures/kstate-module/womens-basketball-schedule-2026-11-02.html.gz',import.meta.url))).toString('utf8');
+  const url='https://www.kstatesports.com/sports/womens-basketball/schedule';
+  const events=worker.parseHtml(raw,school,'Basketball',url,new Date('2026-11-03T00:50:00Z'));
+  const tv=day=>events.find(e=>e.start_time?.startsWith(day))?.broadcast??null;
+  assert.equal(tv('2026-11-02'),'ESPN+','tonight vs Wichita State');
+  assert.equal(tv('2026-11-14'),'Big Ten Plus','vs Minnesota');
+  assert.equal(tv('2026-11-27'),'ION','vs NC State');
+  assert.equal(tv('2027-02-15'),'FOX','at Oklahoma State');
+  assert.equal(tv('2026-11-22'),null,'vs Missouri: no TV published');
+  const coming=events.filter(e=>e.status!=='Final');
+  assert.equal(coming.filter(e=>e.broadcast).length,coming.length-2,'every coming game but Missouri and Creighton names its TV');
+  // Another school's page is never read for K-State's TV.
+  assert.ok(worker.parseHtml(raw,school,'Basketball','https://www.example.com/sports/womens-basketball/schedule',new Date('2026-11-03T00:50:00Z')).every(e=>!e.broadcast));
+}
 
 console.log('K-State module: all 10 sport source routes, both basketball/golf teams, independent football/basketball/volleyball scoreboards, evening-game local-time reconciliation, 5 exact soccer records, 3 verified tennis accounts through the athlete path, multi-day golf recap matching, school/event isolation, and independent result snapshots passed.');

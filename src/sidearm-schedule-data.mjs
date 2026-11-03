@@ -53,17 +53,25 @@ export function sidearmPlacing(value){
   return m?`${m[1]?'T':''}${m[2]}${m[3].toLowerCase()} of ${m[4]}`:null;
 }
 
+// The game's TV or stream as the schedule names it (media.tv: "ESPN+", "FS1",
+// "CBS Sports Network"). Empty, "TBA"/"TBD" and markup-only values name none.
+export function sidearmBroadcast(game){
+  const tv=String(game?.media?.tv??'').replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/\s+/g,' ').trim();
+  return tv&&tv.length<=60&&!/^(?:tba|tbd|n\/?a|none|-+)$/i.test(tv)?tv:null;
+}
+
 // Apply the page data to one school's parsed events, matched by date and
 // opponent. Each part applies only to the sports the school module lists:
 // resultSports (W/L headline, one Result row, exact /news/ recap),
-// placingSports (meet placing in K-State's wording) and timeSports
-// (published start times). Anything ambiguous or unmatched is unchanged.
-export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new Set(),placingSports=new Set(),timeSports=new Set()}){
+// placingSports (meet placing in K-State's wording), timeSports
+// (published start times) and tvSports (the published TV, `broadcast`, on
+// every game, played or not). Anything ambiguous or unmatched is unchanged.
+export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new Set(),placingSports=new Set(),timeSports=new Set(),tvSports=new Set()}){
   const officialPath=url=>{
     try{const u=new URL(url);return u.protocol==='https:'&&u.hostname===host?u.pathname:null;}catch{return null;}
   };
   return function enrichScheduleEvents(events,raw,school,sport,sourceUrl){
-    const enabled=resultSports.has(sport)||placingSports.has(sport)||timeSports.has(sport);
+    const enabled=resultSports.has(sport)||placingSports.has(sport)||timeSports.has(sport)||tvSports.has(sport);
     const games=school?.id===schoolId&&enabled&&officialPath(sourceUrl)?sidearmScheduleGames(raw):[];
     if(!games.length)return events;
     for(const event of events){
@@ -71,6 +79,8 @@ export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new 
       const day=String(event.start_time||'').slice(0,10),opponent=slug(event.opponent||'');
       const matches=games.filter(game=>game.date.slice(0,10)===day&&slug(game.opponent.title||'')===opponent);
       if(matches.length!==1)continue;
+      const tv=tvSports.has(sport)?sidearmBroadcast(matches[0]):null;
+      if(tv&&!event.broadcast)event.broadcast=tv;
       if(event.status!=='Final'){
         const start=timeSports.has(sport)?sidearmStartTime(matches[0].date,matches[0].time):null;
         if(start)Object.assign(event,start);
