@@ -71,4 +71,19 @@ const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
 assert.ok(worker.includes('const extra=milesplitIndexGames(index,ids,games,today);'));
 assert.ok(worker.includes('if(game.fromIndex&&!gameResults[index]?.rows?.length)continue;'));
 assert.ok(worker.includes('meet:game.midwestTiming?.milesplit||game.milesplitMeet'));
+
+
+// Found on the preview, November 4: a nameless entry is not a race (the Blue
+// Valley League middle school meet lists four beside its two), and a middle
+// school sharing the high school's MileSplit team (St. Xavier) leaves out its
+// grade 9-12 runners (it read St. Xavier's varsity boys at Bob Schmoekel).
+{
+  const {milesplitMiddleSchoolRaces,milesplitVarsityRaces,milesplitHighSchoolRunner}=await import('../src/high-school.mjs');
+  const events=[{number:'1',name:'Boys 2 Mile Run ',gender:{sex:'M'}},{number:'2',name:'Girls 2 Mile Run ',gender:{sex:'F'}},{number:'3',gender:{sex:'M'}},{number:'4',name:null,gender:{sex:'M'}}];
+  const ours=['1','2','3','4'].map(n=>({event:n,athlete:{sex:n==='2'?'F':'M'}}));
+  assert.deepEqual(milesplitMiddleSchoolRaces(events,ours).map(e=>e.number),['1','2']);
+  assert.deepEqual(milesplitVarsityRaces([{number:'1',name:'Boys 5K',gender:{sex:'M'}},{number:'3',gender:{sex:'M'}}],[{event:'3'},{event:'1'}]).map(e=>e.number),['1']);
+  assert.deepEqual([9,'10','JR','sr',8,'7',null].map(grade=>milesplitHighSchoolRunner({athlete:{grade}})),[true,true,true,true,false,false,false]);
+  assert.ok(worker.includes('.filter(e=>!config.middle||!milesplitHighSchoolRunner(e))'));
+}
 console.log(`milesplit-season-index: ok (${index.length} meets)`);

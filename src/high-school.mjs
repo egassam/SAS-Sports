@@ -484,12 +484,18 @@ const isVarsity=e=>/\bvarsity\b/i.test(raceText(e))&&!/\bjunior varsity\b/i.test
 // together ("7th Grade Two Mile", sex C) is read as two, one a sex, by the
 // runners' sex; its places are the whole race's.
 const HIGH_SCHOOL_RACE=/\bvarsity\b|\bjv\b|high school|\bhs\b|\bc team\b|'c' team/i,MIDDLE_SCHOOL_RACE=/\bgrade\b|middle|\bms\b|junior high|\bjh\b/i;
+// A runner in grades 9-12: a middle school whose runners run under the
+// high school's MileSplit team (St. Xavier) leaves them out.
+export const milesplitHighSchoolRunner=e=>/^(?:9|10|11|12|FR|SO|JR|SR)$/i.test(String(e?.athlete?.grade??'').trim());
 export function milesplitMiddleSchoolRaces(events,ours){
   const sexes=new Map();
   for(const e of ours){const k=String(e.event);if(!sexes.has(k))sexes.set(k,new Set());const sex=String(e.athlete?.sex||'').toUpperCase();if(sex)sexes.get(k).add(sex);}
   const out=[];
   for(const e of [...events].sort((a,b)=>Number(a.number)-Number(b.number))){
     const ran=sexes.get(String(e.number));if(!ran)continue;
+    // An entry with no name is not a race (the Blue Valley League middle
+    // school meet of October 13, 2026 lists four beside its two races).
+    if(!clean(e.name||''))continue;
     const text=raceText(e);if(/\bcombined\b/i.test(text)||(HIGH_SCHOOL_RACE.test(text)&&!MIDDLE_SCHOOL_RACE.test(text)))continue;
     if(e.gender?.sex==='F'||e.gender?.sex==='M')out.push(e);
     else for(const sex of ['F','M'])if(ran.has(sex))out.push({...e,gender:{sex},mixed:true});
@@ -500,7 +506,7 @@ export function milesplitVarsityRaces(events,ours){
   const ran=new Set(ours.map(e=>String(e.event)));
   const out=[];
   for(const sex of ['F','M']){
-    const races=events.filter(e=>e.gender?.sex===sex&&ran.has(String(e.number))&&(isVarsity(e)||!NOT_VARSITY.test(raceText(e)))).sort((a,b)=>Number(a.number)-Number(b.number));
+    const races=events.filter(e=>e.gender?.sex===sex&&clean(e.name||'')&&ran.has(String(e.number))&&(isVarsity(e)||!NOT_VARSITY.test(raceText(e)))).sort((a,b)=>Number(a.number)-Number(b.number));
     const race=races.find(isVarsity)||races[0];if(race)out.push(race);
   }
   return out;
