@@ -83,9 +83,10 @@ for(const m of [junctionCityMsKsSchool,fortRileyMsKsSchool,stXavierJhKsSchool,an
   assert.ok(ex.test('1 Mile Run 7th Grade Girls')&&!ex.test('7th Grade Girls Two Mile Run')&&!ex.test('8th Grade Boys Two MIle')&&!ex.test('7th Grade  Girls'),m.id);
 }
 // Junction City's home meet: "Blue Jay Invitational" on Bound, "Bob Schmoekel" on MileSplit Live.
+// Since November 4 the alias is the state's (src/schools/data/ks-aliases.json).
 import('../src/high-school.mjs').then(({milesplitMeetFor})=>{
   const meets=[{id:'772766',name:'Bob Schmoekel Cross Country Invitational',venue:{name:'Milford Lake',city:'Junction City'},teams:{JUNC:{id:15714,name:'Junction City High School'}}},{id:'1',name:'Other Invite',venue:{city:'Salina'},teams:{JUNC:{id:15714,name:'Junction City High School'}}}];
-  const {names}=junctionCityKsSchool.sports['Cross Country'][0].milesplit;
+  const names=JSON.parse(read('../src/schools/data/ks-aliases.json')).meets;
   assert.equal(milesplitMeetFor(meets,15714,names['Blue Jay Invitational Cross Country Meet'])?.id,'772766');
   assert.equal(milesplitMeetFor(meets,15714,'Blue Jay Invitational Cross Country Meet'),null,'without the alias nothing matches');
 });
@@ -96,9 +97,9 @@ assert.deepEqual(games(stXavierJhKsSchool,sfx,stXavierJhKsSchool.sports.Volleyba
 assert.deepEqual(games(stXavierJhKsSchool,sfx,stXavierJhKsSchool.sports.Basketball[0]).map(line),['2026-10-19 16:30 HOME Wathena-Riverside','2026-11-30 16:30 AWAY Wathena-Riverside']);
 const sxXc=stXavierKsSchool.sports['Cross Country'][0];
 assert.deepEqual(games(stXavierKsSchool,sfx,sxXc).map(g=>g.name),['WCHS Invitational','Karr Classic at The Orchard'],'Bound lists two varsity meets');
-assert.deepEqual(sxXc.extraMeets.map(m=>m.date),['2026-10-03','2026-10-08','2026-10-24'],'MileSplit Live has its runners at three more');
-assert.deepEqual(junctionCityKsSchool.sports['Cross Country'][0].extraMeets.map(m=>m.date),['2026-10-24'],'the 6A sub-state Bound leaves out');
-assert.deepEqual(fortRileyMsKsSchool.sports['Cross Country'][0].extraMeets.map(m=>m.date),['2026-09-15'],'the Clay Center meet Bound leaves out');
+// The meets Bound leaves out come from the statewide MileSplit Live index
+// (tests/milesplit-season-index.mjs): no hand-kept list remains.
+assert.ok([sxXc,junctionCityKsSchool.sports['Cross Country'][0],fortRileyMsKsSchool.sports['Cross Country'][0]].every(t=>!t.extraMeets&&t.milesplit.team),'MileSplit team ids, no extra meets');
 // Its games are on MaxPreps (school 2eb435d3-...): the 2026 volleyball finals.
 assert.ok(stXavierKsSchool.sports.Basketball.every(t=>t.maxprepsSchedule&&t.maxpreps),'basketball: the MaxPreps schedule');
 assert.deepEqual(games(stXavierKsSchool,sfx,stXavierKsSchool.sports.Volleyball[0]).map(line),['2026-10-19 18:30 HOME Veritas Christian'],'volleyball: Bound\'s one varsity entry beside the MaxPreps finals');
@@ -111,7 +112,7 @@ const worker=read('../src/index.js');
 assert.ok(worker.includes(':maxprepsOnly||team.maxprepsSchedule?[]:calendarEvents('),'a maxprepsSchedule team reads no calendar');
 assert.ok(worker.includes('if(maxprepsOnly||team.maxprepsSchedule)for(const contest of contests'),'its unscored MaxPreps games are its schedule');
 assert.ok(worker.includes('for(const meet of team.extraMeets||[]){'),'extra meets join the schedule');
-assert.ok(worker.includes('config.names?.[game.name]||game.name'),'a MileSplit meet alias is read');
+assert.ok(worker.includes('config.names?.[game.name]||config.aliases?.[game.name]||game.name'),'a MileSplit meet alias is read');
 assert.ok(worker.includes('...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS'),'the Geary modules are registered');
 
 // A location that cannot rebuild serves the last feed built elsewhere:

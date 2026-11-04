@@ -2,7 +2,7 @@
 
 User, October 25, 2026: "Let's add all of the middle schools and high schools of Riley county and Pottawatomie county of Kansas. Please check all available websites for these middle school and high school sports. Don't leave any Stone unturned. Learn and optimize".
 
-Manhattan High School and Manhattan's two middle schools (USD 383) were already in the app (`docs/MANHATTAN_KS_MODULE.md`). This session adds every other middle and high school in the two counties. Code: `src/schools/riley-pottawatomie-ks.mjs` (school data) and the shared readers in `src/high-school.mjs`; Worker path `fetchHighSchool` in `src/index.js`.
+Manhattan High School and Manhattan's two middle schools (USD 383) were already in the app (`docs/MANHATTAN_KS_MODULE.md`). This session adds every other middle and high school in the two counties. Code: `src/schools/riley-pottawatomie-ks.mjs` (school data; since November 4 the nine Bound-schedule schools, Riley County HS/MS, Wamego HS/MS, Rock Creek HS/MS, St. Marys HS/JH and St. Mary's Academy, are data in `src/schools/data/ks-riley-pottawatomie.json`, built by `src/high-school-builders.mjs`: `docs/HIGH_SCHOOL_ONBOARDING.md`) and the shared readers in `src/high-school.mjs`; cross country meets their schedules leave out come from the statewide MileSplit Live index; Worker path `fetchHighSchool` in `src/index.js`.
 
 ## Schools
 

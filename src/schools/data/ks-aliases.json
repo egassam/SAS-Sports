@@ -1,0 +1,7 @@
+{
+  "note": "Kansas names one source writes differently from another, shared by every school (user, November 4: one alias table for the state instead of one per module). `meets`: a schedule's meet name (Bound, a school calendar) to the name MileSplit Live gives the same meet.",
+  "meets": {
+    "Blue Jay Invitational": "Bob Schmoekel Invitational",
+    "Blue Jay Invitational Cross Country Meet": "Bob Schmoekel Invitational"
+  }
+}

@@ -1,0 +1,125 @@
+{
+ "state": "ks",
+ "counties": [
+  "Geary"
+ ],
+ "module_doc": "docs/GEARY_KS_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig). St. Xavier (HS and JH) read MaxPreps and their Google Calendar and stay in src/schools/geary-ks.mjs.",
+ "schools": [
+  {
+   "id": "junction-city-ks",
+   "name": "Junction City High School",
+   "level": "high-school",
+   "note": "MaxPreps refuses bursts of reads (403, November 3): a saved copy shared by every Cloudflare location.",
+   "globalSavedCopy": true,
+   "bound": {
+    "school": "h20250204045159822386f317805064a",
+    "slug": "junctioncityhs"
+   },
+   "maxpreps": {
+    "schoolId": "0db83983-6aab-46c9-9989-88ee256551be",
+    "path": "junction-city/junction-city-bluejays"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 7,
+    "code": "JC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Junction City",
+    "tennis": "Junction City HS",
+    "milesplit": 15714,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "junction-city-ms-ks",
+   "name": "Junction City Middle School",
+   "level": "middle-school",
+   "note": "Bound gives it no page of its own: the feed links Bound's Kansas page.",
+   "bound": {
+    "school": "h20251215030233573aee5a5046f2741"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Golf",
+     "Tennis"
+    ],
+    "meetTeam": "Junction City",
+    "milesplit": 39340,
+    "grades": "usd475"
+   }
+  },
+  {
+   "id": "fort-riley-ms-ks",
+   "name": "Fort Riley Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250612074705722fb6ff5c7484f42",
+    "slug": "fortrileyms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Golf",
+     "Tennis"
+    ],
+    "meetTeam": [
+     "Ft Riley",
+     "Fort Riley"
+    ],
+    "trackTeam": [
+     "Ft Riley",
+     "Fort Riley"
+    ],
+    "milesplit": 40677,
+    "grades": "usd475"
+   }
+  }
+ ]
+}
