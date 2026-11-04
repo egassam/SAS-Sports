@@ -421,7 +421,7 @@ export function milesplitIndexGames(index,ids,games,today){
 // Teams of the index whose name matches a school's (for onboarding: the
 // school's MileSplit team id from its name and town).
 export function milesplitTeamsNamed(index,name){
-  const want=nameKey(name).replace(/\b(?:middle school|junior high|high school|jr sr|school)\b/g,' ').replace(/\s+/g,' ').trim();
+  const want=nameKey(name).replace(/\b(?:middle school|junior high|high school|jr sr|school|ms|jh)\b/g,' ').replace(/\s+/g,' ').trim();
   const found=new Map();
   for(const m of index||[])for(const t of m.teams){
     const key=nameKey(t.name);
