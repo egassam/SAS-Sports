@@ -112,3 +112,14 @@ User: "Do the schedule refreshed". A Cron Trigger every 10 minutes (`wrangler.js
 - `/api/refresh-status`: the schedule, the last run (each feed: ok, time, events, the reason it failed) and totals.
 - `/api/refresh-control?action=pause|resume|run` (POST, `Authorization: Bearer <SOURCE_FETCH_KEY>`): pause or resume the Cron Trigger's runs without a deploy, or run 2 feeds now (`&size=` up to 8). On a branch preview a run builds and saves that preview's own copies and record (previews do not run Cron Triggers).
 - The October 1 attempt (#87, every college feed every minute) failed every scheduled build and was reverted with no cause found (`SAS_SPORTS_HISTORY.md`). This one is smaller, records each reason, and can be paused at once.
+
+## Stored finals (November 4)
+
+User: "Once we have results from anywhere shouldn't we just be saving them in a database? Results do not change.", then "Yes, build it and merge when everything passes". Every middle and high school final an official source gives (a game's score, a meet's results) is stored in D1 (`CATALOG_DB`, table `finals`, one row per game or meet, created by the Worker on first use; `src/finals-store.mjs`, `withStoredFinals` in `src/index.js`).
+
+- **Written:** a final not stored yet; a final an official source has changed (the row is updated, and the old reading is kept in `history`, the last 5).
+- **Read back on every build** (this school year): a game the build shows "No score posted" (a refused MaxPreps read) takes its stored final; a final the sources no longer list is listed again. A game today or live is left as the build has it.
+- **Matching:** day, team (girls/boys, grade) and opponent, exact name first and only then a compatible one ("Topeka" and "Topeka High"), so a triangular's matches never trade scores; a doubleheader's second game is its own row (`#2`); a meet by day and team.
+- **Saving:** the stored finals complete a build whose scores source failed, so it is saved again unless a game still reads "No score posted" (it may be a new final the store does not have yet).
+- **Kept per host:** a branch preview writes and reads only its own rows (`scope`), never production's.
+- `/live/status` reports `finals_store: {read, written, filled}` (or its error). Results come only from official sources; nothing else writes to the table.

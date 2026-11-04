@@ -61,6 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
+import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals} from './finals-store.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -339,7 +340,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.265.0-stale-live-games';
+const VERSION='4.266.0-stored-finals';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4798,14 +4799,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
     }
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
-  if(target&&target.status==='Final'&&target.school_score!=null){
-    let box=null;
-    if(target.maxpreps_url){try{const r=await sourceFetch(target.maxpreps_url,{},{ttl:SOURCE_TTL.article});if(r.ok)box=maxprepsBoxScore(await r.text());}catch{}}
-    const {lines,stats}=highSchoolHighlights(target,box);
-    target.highlights=lines;target.highlights_verified=true;
-    if(stats.length)target.game_stats=stats;
-    target.highlight_status=target.score_source?.bound?'Score as entered on Bound by the school.':box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
-  }
+  if(target)await highSchoolTargetHighlights(target);
   return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
@@ -4816,6 +4810,47 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
 // blanked the Chiefs for 28 of 36 preview refreshes, Oct 15).
 // Jolpica answers 406 to the HTML Accept header school pages are read with.
 async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+// A high school final's expanded view: plain facts from the score and the
+// MaxPreps box score (a stored final's too).
+async function highSchoolTargetHighlights(target){
+  if(!(target&&target.status==='Final'&&target.school_score!=null))return;
+  let box=null;
+  if(target.maxpreps_url){try{const r=await sourceFetch(target.maxpreps_url,{},{ttl:SOURCE_TTL.article});if(r.ok)box=maxprepsBoxScore(await r.text());}catch{}}
+  const {lines,stats}=highSchoolHighlights(target,box);
+  target.highlights=lines;target.highlights_verified=true;
+  if(stats.length)target.game_stats=stats;
+  target.highlight_status=target.score_source?.bound?'Score as entered on Bound by the school.':box?'Score and box score as reported to MaxPreps by the team.':'Score as reported to MaxPreps by the team.';
+}
+// Stored finals (src/finals-store.mjs; user, November 4: "Once we have
+// results from anywhere shouldn't we just be saving them in a database?
+// Results do not change."). D1 (`CATALOG_DB`), one row per final, kept per
+// host (a branch preview never writes or reads production's rows). A build
+// that failed outright is left to the saved copies.
+let finalsTableReady=null;
+function ensureFinalsTable(db){
+  if(!finalsTableReady)finalsTableReady=db.batch([db.prepare(FINALS_TABLE_SQL),db.prepare(FINALS_INDEX_SQL)]).catch(error=>{finalsTableReady=null;throw error});
+  return finalsTableReady;
+}
+async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
+  const db=env?.CATALOG_DB;
+  if(!db||result.error||!Array.isArray(result.events))return result;
+  const scope=copyScope(requestCatalog.url||new URL(`https://${PRODUCTION_HOST}`)),year=highSchoolYear(now,school);
+  try{
+    await ensureFinalsTable(db);
+    const {results:rows=[]}=await db.prepare('SELECT event_key AS key, event, sig, history FROM finals WHERE scope=? AND school=? AND sport=? AND date BETWEEN ? AND ?').bind(scope,school.id,sport,year.start,year.end).all();
+    const {events,writes}=mergeFinals(result.events,rows,{now:now.toISOString(),compatible:namesCompatible});
+    if(writes.length)await db.batch(writes.map(w=>w.op==='insert'
+      ?db.prepare('INSERT OR IGNORE INTO finals (scope, school, sport, event_key, date, event, sig, source, first_seen, last_changed, history) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(scope,school.id,sport,w.key,w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.first_seen,w.last_changed,'[]')
+      :db.prepare('UPDATE finals SET date=?, event=?, sig=?, source=?, last_changed=?, history=? WHERE scope=? AND school=? AND sport=? AND event_key=?').bind(w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.last_changed,JSON.stringify(w.history),scope,school.id,sport,w.key)));
+    const filled=events.filter(e=>e.stored_final).length;
+    if(aiTargetId){const target=events.find(e=>e.id===aiTargetId&&e.stored_final);if(target&&!target.highlights_verified)await highSchoolTargetHighlights(target);}
+    // A refused scores source no longer costs the stored scores; the build
+    // still counts as missing scores while a game it has reads "No score
+    // posted" (it may be a new final the store does not have yet).
+    const scoresMissing=result.scores_missing&&events.some(e=>e.no_result_posted&&e.event_type==='GAME');
+    return{...result,events,scores_missing:scoresMissing,finals_store:{read:rows.length,written:writes.length,filled}};
+  }catch(error){return{...result,finals_store:{error:String(error?.message||error).slice(0,200)}};}
+}
 async function fetchPro(school,sport,now,aiTargetId=null){
   const config=proTeam(school.id),timeZone=schoolTimeZone(school);
   const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});
@@ -6203,7 +6238,7 @@ async function completedFromStories(events,school){
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
   const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
-  if(isHighSchool(school))return fetchHighSchool(school,sport,now,aiTargetId,env);
+  if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);
   if(isPro(school))return fetchPro(school,sport,now,aiTargetId);
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   const scoreboardReads=[];
@@ -6574,7 +6609,7 @@ export default{
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
   }
 };
