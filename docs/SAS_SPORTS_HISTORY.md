@@ -3975,3 +3975,10 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 - **Gate:** preview vs production XC across 12 middle schools: only Flint Hills Christian MS Sep 10 changed (13 to 7 runners). `verify:preview` (3 refreshes, all sports): 114 + 171 checks passed. The first middle-school run exited 2 because the script needs `--sports=all` for several schools. Preview `/live/status`: `google_calendar.read: HTTP 403 accessNotConfigured`. CI green.
 - **Published:** PR #508 merged as `679b787`. `verify:prod` 285 checks passed; production Flint Hills Christian MS Sep 10 reads 7 runners.
 - **Open:** the user's step to enable the Google Calendar API for the key's project; St. Xavier basketball and track, and middle-school scores, not published.
+
+
+## November 4, 2026 — Men's and women's records named on combined sports
+
+- **User:** screenshot of K-State Basketball during the men's game against South Dakota State (halftime 28-35): "A distinction needs to be made between men and women Sports and their records on these pages. The K-State 1 and 0 is the women, not the men and we're watching the men's game right now so it appears that the men have already won a game."
+- **Cause:** `seasonRecords` returns one record per `team_label` that has finals. Only the women had a final, so one record came back and `recordLine` printed it as `Record 1-0` without its team label.
+- **Fix (`4.262.0-team-records`):** `teamRecords` in `public/index.html` adds a `0-0` record for every team label in the sport's live, results and upcoming events that has no finals, and a record carrying a team label is always printed with that label. K-State basketball now reads `Men's 0-0 · Women's 1-0`. Single-team sports keep `Record 4-4 · Big Sky 3-2`. The Worker's `records` contract is unchanged. A regression check was added to `tests/regression.mjs`.

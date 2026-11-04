@@ -485,3 +485,15 @@ contains(page,/if\(Array\.isArray\(groups\)&&!groups\.length\)\{liveOk\+\+;empty
 contains(page,/No current or upcoming \$\{esc\(g\.sport\)\} events are on \$\{esc\(g\.school\)\}'s official schedule yet\./,'reached sports with no current events must explain the empty schedule');
 contains(page,/season_label:'No current schedule',schedule_reached:true/,'an empty sport keeps a labeled section');
 console.log('SAS Sports regression checks passed');
+// A combined men's and women's sport names each team's record, and a team
+// with no finals reads 0-0 (user, November 4, 2026: K-State's "Record 1-0" was
+// the women's while the men played their opener).
+{
+  const esc=x=>String(x);
+  const recordLine=new Function('esc',page.match(/function teamRecords[^\n]*/)[0]+';'+page.match(/function recordLine[^\n]*/)[0]+';return recordLine;')(esc);
+  const line=recordLine({records:[{team_label:"Women's",text:'1-0',conference:null}],live:[{team_label:"Men's"}],results:[{team_label:"Women's"}],upcoming:[]});
+  if(!/Men's <b>0-0<\/b> · Women's <b>1-0<\/b>/.test(line))throw new Error(`Combined sports must label each team's record: ${line}`);
+  if(/Record <b>/.test(line))throw new Error('A team-labelled record must not read as the sport record');
+  const single=recordLine({records:[{team_label:null,text:'4-4',conference:{name:'Big Sky',text:'3-2'}}],live:[],results:[{}],upcoming:[]});
+  if(!/^<div[^>]*>Record <b>4-4<\/b> · Big Sky <b>3-2<\/b>/.test(single))throw new Error(`Single-team sports keep "Record": ${single}`);
+}
