@@ -4016,3 +4016,29 @@ User (Manhattan HS screenshot): "High school isn't working. The other levels are
 ## November 4, 2026 — Rule: no results from parents or unofficial scorers
 
 User, after the list of what is left: "I do not want parents or non time scorers to do results so scratch those ideas". Idea 5 from the onboarding discussion (scorer links or QR codes for coaches and parents, text-in scores) is dropped. Results come only from official sources; games no official source scores stay "No score posted". The rule was recorded in the handoff's working notes and `docs/HIGH_SCHOOL_ONBOARDING.md`. The school's existing SAS Scorer setup was left unchanged.
+
+## November 4, 2026 — Scheduled refresh of middle and high school feeds; stale live games (PRs #516, #517)
+
+**Requests.** After "What else is left?" and the no-unofficial-scores rule, user: "Do the schedule refreshed, eliminate scores from people. I do not like that". Asked (multiple choice) whether that meant hiding or removing SAS Scorer, the school's own scorer, the user chose "Keep SAS Scorer". Nothing more was removed.
+
+**Scheduled refresh (#516, `4.264.0-scheduled-refresh`).** Before building, the agent read the October 1 record. #87 (every college feed every minute) failed every scheduled build (`due 20, built 0, failed 20`) and was reverted (#89/#90) with no cause found; the recommendation was to retry small and report reasons.
+- **Built:** a Cron Trigger every 10 minutes (`wrangler.jsonc`). `src/scheduled-refresh.mjs` has `refreshFeeds`, `nextBatch` and `nextStatus`; `runRefreshBatch` in `src/index.js` rebuilds 8 feeds one at a time, 20 s apart, through `freshGroupedFeed` with a report, and sets `sourceCacheOrigin` and the catalog context per feed. The middle and high school list has 183 feeds, each about every 4 hours.
+- **Saved copies:** every middle and high school now keeps the KV saved copy (`usesGlobalCopy`); one without `globalSavedCopy` rewrites it at most every 3 h unless its events changed.
+- **Endpoints:** `/api/refresh-status` (public record) and `/api/refresh-control?action=pause|resume|run` (POST, source key). Records and pause switches are per host, so a preview run writes only the preview's keys.
+- **Tests:** `tests/scheduled-refresh.mjs`. `tests/global-saved-copy.mjs` was updated for the new rule; it failed the first `test:release`, and the fix was test-only.
+- **Gate:** preview manual run 4/4 (Manhattan basketball, bowling, cross country, football); preview 29 schools all sports 3 refreshes 546/546, XC 18/20 and 26/21; `test:release` passed on `a8bf642`; CI green. Merged as `02c072c`; production live 20:37 UTC; `verify:prod` 546/546.
+- **First Cron runs (production):**
+  - 20:52 UTC: 0/8 (Manhattan HS: `mhs.usd383.org` calendar HTTP 520).
+  - 21:02: 0/8 (Manhattan HS volleyball and wrestling, Anthony: `ams.usd383.org` 520).
+  - 21:12: 8/8 (Anthony wrestling, all Eisenhower sports).
+  - By 21:32: 5 runs, 24 built, 16 failed.
+  - So the October-style failures are refusals by school sites on some Cron machines (USD 383 is known to answer some Cloudflare locations with 520), not a code fault, and a failed build saves nothing.
+
+**Stale live game on Home (#517, `4.265.0-stale-live-games`).** User, 3:06 PM, with a screenshot: "This live game is still showing". Home's My Teams · Live now read K-State men's basketball vs South Dakota State "LIVE · Halftime 28-35" while Home was loading (27/37). Production already served the game as Final, L 66-68, and `/live/now` did not list it.
+- **Cause:** the phone's saved copy (`sas-feed:kstate|Basketball`, saved during the game) is shown first while Home loads, and `retireStaleLive` retired only meets (since Oct 31).
+- **Fix:** a live game in a copy over 15 minutes old leaves the live box (an earlier day) or reads Today with no score, "Live score updating…" (today). `hasLiveEvents` and the status line's live count use the same rule. Tests in `tests/last-good-feed.mjs`.
+- **Reproduction** (Playwright, 390 px, favorites `kstate`, that copy injected, `/live/feed/grouped` blocked): production `4.264.0` showed "LIVE K-State 28, South Dakota State 35"; the preview and then production `4.265.0` showed no live card.
+- **Gate:** `test:release` passed on `a1e8bcf`; preview K-State basketball 36/36, expanded 4/4, XC 18/20 and 26/21; CI green. Merged as `64d27d1`; production `verify:prod` K-State basketball 3/3, 4/4, XC 18/20 and 26/21.
+- The PR description says `4.264.1`; the version shipped is `4.265.0-stale-live-games`.
+
+**Open.** Watch `/api/refresh-status` over the next day: how often USD 383 and other sites refuse the Cron machines; pause it there if needed.
