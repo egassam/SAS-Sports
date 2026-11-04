@@ -16,7 +16,23 @@ const sorted=v=>Array.isArray(v)?v.map(sorted):v&&typeof v==='object'?Object.fro
 const before=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/hs-config/modules-2026-11-04.json.gz',import.meta.url))).toString('utf8'));
 const now=[...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS,...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS];
 assert.deepEqual(now.map(m=>m.id).sort(),Object.keys(before).sort(),'the same schools');
-for(const module of now)assert.deepEqual(sorted(ser(module)),sorted(before[module.id]),`${module.id} is the module it was`);
+// The one change made on purpose (November 4): the hand-kept cross country
+// `extraMeets` and MileSplit `names` left the modules for the statewide
+// MileSplit Live index and the state's alias table (checked below and in
+// tests/milesplit-season-index.mjs).
+const MOVED={};
+for(const [id,module] of Object.entries(before))for(const team of module.sports?.['Cross Country']||[]){
+  if(team.extraMeets){(MOVED[id]??={}).extraMeets=team.extraMeets;delete team.extraMeets;}
+  if(team.milesplit?.names){(MOVED[id]??={}).names=team.milesplit.names;delete team.milesplit.names;}
+}
+assert.deepEqual(Object.keys(MOVED).sort(),['fort-riley-ms-ks','junction-city-ks','st-xavier-ks']);
+for(const module of now){
+  const same=JSON.stringify(sorted(ser(module)))===JSON.stringify(sorted(before[module.id]));
+  if(!same)assert.deepEqual(sorted(ser(module)),sorted(before[module.id]),`${module.id} is the module it was`);
+}
+// Every MileSplit name a module kept is in the state's alias table.
+const aliases=JSON.parse(readFileSync(new URL('../src/schools/data/ks-aliases.json',import.meta.url),'utf8'));
+for(const {names} of Object.values(MOVED))for(const [from,to] of Object.entries(names||{}))assert.equal(aliases.meets[from],to,`alias ${from}`);
 
 // Every data file: the format's keys only, ids unique, a level, sports listed.
 const KEYS=new Set(['id','name','level','note','bound','maxpreps','meetPro','prepGolf','globalSavedCopy','sports','extraMeets','milesplitNames','stateXc','town','county','sources']);

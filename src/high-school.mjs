@@ -383,6 +383,52 @@ export function firestoreQuery(collection,where,fields,limit=500){
   const filters=Object.entries(where).map(([field,v])=>Array.isArray(v)?{fieldFilter:{field:{fieldPath:field},op:'IN',value:{arrayValue:{values:v.map(value)}}}}:{fieldFilter:{field:{fieldPath:field},op:'EQUAL',value:value(v)}});
   return JSON.stringify({structuredQuery:{from:[{collectionId:collection}],where:filters.length===1?filters[0]:{compositeFilter:{op:'AND',filters}},select:{fields:fields.map(f=>({fieldPath:f}))},limit}});
 }
+// The statewide meet index (user, November 4: "Index by source, not by
+// school"): every meet MileSplit Live holds for one state, season and year
+// in one query (equality filters only: the database has no index for a date
+// range by state). Kansas cross country 2026: 172 meets, 659 teams, about
+// 2.4 MB. Each meet keeps its id, name, days, city and teams (MileSplit team
+// id, the meet's code and name) and its host's MileSplit id.
+export function milesplitSeasonQuery(state,year,season='CC'){
+  return JSON.stringify({structuredQuery:{from:[{collectionId:'meets'}],where:{compositeFilter:{op:'AND',filters:[
+    {fieldFilter:{field:{fieldPath:'venue.state'},op:'EQUAL',value:{stringValue:String(state).toUpperCase()}}},
+    {fieldFilter:{field:{fieldPath:'seasonYear'},op:'EQUAL',value:{integerValue:String(year)}}},
+    {fieldFilter:{field:{fieldPath:'season'},op:'EQUAL',value:{stringValue:season}}}]}},
+    select:{fields:['name','dateStart','dateEnd','venue.name','venue.city','hostTeam.mileSplitId','teams','isCollege'].map(f=>({fieldPath:f}))},limit:2000}});
+}
+export function milesplitSeasonIndex(json){
+  return firestoreDocs(json||[]).filter(m=>m.dateStart&&!m.isCollege).map(m=>({id:String(m.id),name:clean(m.name||''),date:String(m.dateStart).slice(0,10),
+    end:m.dateEnd&&String(m.dateEnd).slice(0,10)>String(m.dateStart).slice(0,10)?String(m.dateEnd).slice(0,10):null,venue:clean(m.venue?.name||'')||null,city:clean(m.venue?.city||'')||null,host:m.hostTeam?.mileSplitId!=null?String(m.hostTeam.mileSplitId):null,
+    teams:Object.entries(m.teams||{}).map(([code,t])=>({id:String(t?.id??''),code:code.trim(),name:clean(t?.name||'')})).filter(t=>t.id)}))
+    .sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id));
+}
+// The meets a team (MileSplit team ids: the school's, and `also`) is
+// entered in. A team entered is not a team that ran (Council Grove, October
+// 1, 2026, lists St. Xavier with no runner): the caller keeps a meet only
+// when its results have the school's runners.
+export function milesplitTeamMeets(index,teams){
+  const ids=new Set([].concat(teams).filter(x=>x!=null).map(String));
+  return(index||[]).filter(m=>m.teams.some(t=>ids.has(t.id)));
+}
+// The index's meets to add to a schedule: those with the team (`ids`), run
+// by `today`, on a day the schedule has nothing (a multi-day entry covers its
+// days). The host's own meet reads as home.
+export function milesplitIndexGames(index,ids,games,today){
+  ids=[].concat(ids).map(String);
+  return milesplitTeamMeets(index,ids).filter(meet=>meet.date<=today&&!games.some(g=>g.date===meet.date||(g.end_date&&g.date<=meet.date&&meet.date<=g.end_date)))
+    .map(meet=>({date:meet.date,time:null,end_date:meet.end,name:meet.name,site:ids.includes(meet.host)?'HOME':'AWAY',milesplitMeet:meet.id,fromIndex:true,calendar_id:`milesplit|${meet.id}`}));
+}
+// Teams of the index whose name matches a school's (for onboarding: the
+// school's MileSplit team id from its name and town).
+export function milesplitTeamsNamed(index,name){
+  const want=nameKey(name).replace(/\b(?:middle school|junior high|high school|jr sr|school)\b/g,' ').replace(/\s+/g,' ').trim();
+  const found=new Map();
+  for(const m of index||[])for(const t of m.teams){
+    const key=nameKey(t.name);
+    if(want&&(key===want||key.startsWith(`${want} `)||key.includes(` ${want} `)||key.endsWith(` ${want}`))){const hit=found.get(t.id)||{id:t.id,name:t.name,code:t.code,meets:0};hit.meets++;found.set(t.id,hit);}
+  }
+  return[...found.values()].sort((a,b)=>b.meets-a.meets);
+}
 // The meet's code and name for a MileSplit team id ("BVLY", "Randolph Blue
 // Valley High School" for 36605). Runners can carry another code and a
 // shorter name (MeetPro meets: "MAN" for "MANH", "Flinthills Christian" for

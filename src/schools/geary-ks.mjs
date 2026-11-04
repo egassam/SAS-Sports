@@ -100,11 +100,10 @@ export const stXavierKsSchool={id:'st-xavier-ks',globalSavedCopy:true,bound:SFX,
     Volleyball:[{...on('Volleyball'),maxpreps:'volleyball',googleCalendar:/^HS Volleyball$/}],
     // "HS BB" counts for both teams.
     Basketball:[{maxpreps:'basketball/girls',label:'Girls',maxprepsSchedule:true,googleCalendar:/^HS (?:Girls )?Basketball$/},{maxpreps:'basketball',label:'Boys',maxprepsSchedule:true,googleCalendar:/^HS (?:Boys )?Basketball$/}],
-    // Bound lists two of its 2026 meets; MileSplit Live has its runners at
-    // three more (the Council Grove Invitational of October 1 lists the team
-    // but no runner: not added).
-    'Cross Country':[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:'St Xavier',races:/\bvarsity\b/i,exclude:/junior varsity/i},milesplit:{team:26138},googleCalendar:/^HS Cross Country$/,
-      extraMeets:[{date:'2026-10-03',name:'Bob Schmoekel Cross Country Invitational'},{date:'2026-10-08',name:'Goessel XC Invitational'},{date:'2026-10-24',name:'KSHSAA 1A Sub-State Cheney Lake'}]}],
+    // Bound lists two of its 2026 meets; the statewide MileSplit Live index
+    // adds the three more it has St. Xavier's runners at (October 3, 8 and
+    // 24; Council Grove, October 1, lists the team but no runner).
+    'Cross Country':[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:'St Xavier',races:/\bvarsity\b/i,exclude:/junior varsity/i},milesplit:{team:26138},googleCalendar:/^HS Cross Country$/}],
     'Track & Field':[{...on(['Girls Track & Field','Boys Track & Field']),meet:true,meetPro:{team:SFX_TRACK,track:true,exclude:HS_TRACK_EXCLUDE},googleCalendar:/^HS Track & Field$/}]
   }};
 // The junior high (grades 6-8): Bound's "JHA", "Junior High", "Middle

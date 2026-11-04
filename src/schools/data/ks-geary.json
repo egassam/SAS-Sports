@@ -58,18 +58,6 @@
     "paths": {
      "Girls Soccer": "soccer/girls/spring"
     }
-   },
-   "extraMeets": {
-    "Cross Country": [
-     {
-      "date": "2026-10-24",
-      "name": "KSHSAA 6A Sub-State Manhattan"
-     }
-    ]
-   },
-   "milesplitNames": {
-    "Blue Jay Invitational Cross Country Meet": "Bob Schmoekel Invitational",
-    "Blue Jay Invitational": "Bob Schmoekel Invitational"
    }
   },
   {
@@ -131,14 +119,6 @@
     ],
     "milesplit": 40677,
     "grades": "usd475"
-   },
-   "extraMeets": {
-    "Cross Country": [
-     {
-      "date": "2026-09-15",
-      "name": "Clay Center MS/HS Invitational"
-     }
-    ]
    }
   }
  ]

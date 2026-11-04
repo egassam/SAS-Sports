@@ -16,3 +16,7 @@ for(const [,names,path] of index.matchAll(/^import\s*\{([^}]*)\}\s*from\s*['"](\
     schoolModuleDeps[name]=module[name];
   }
 }
+// A school data file index.js reads whole (`import KS_ALIASES from
+// './schools/data/ks-aliases.json' with {type:'json'}`).
+for(const [,name,path] of index.matchAll(/^import\s+([A-Za-z_$][\w$]*)\s+from\s*['"](\.\/schools\/[^'"]+\.json)['"]\s*with\s*\{\s*type\s*:\s*['"]json['"]\s*\};?$/gm))
+  schoolModuleDeps[name]=JSON.parse(readFileSync(new URL(`../src/${path.slice(2)}`,import.meta.url),'utf8'));

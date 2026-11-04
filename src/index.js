@@ -59,6 +59,8 @@ import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isN
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
+import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames} from './high-school.mjs';
+import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
@@ -4330,6 +4332,19 @@ function xcLive(out,all,races){
 // the day's list after two (meets are added that morning). Null when the
 // school is not in a meet that day.
 const milesplitScoresMemo=new Map();
+// The statewide MileSplit Live index (one query per state and season, kept
+// ten minutes; a failed read serves the last copy), parsed once per isolate
+// for ten minutes: it is about 2.4 MB.
+const milesplitSeasonMemo=new Map();
+function milesplitSeasonFor(state,year){
+  const key=`${state}|${year}`,hit=milesplitSeasonMemo.get(key);
+  if(hit&&Date.now()-hit.at<SOURCE_TTL.listing*1000)return hit.promise;
+  const promise=sourceFetch(`${MILESPLIT_LIVE_ROOT}:runQuery`,{method:'POST',body:milesplitSeasonQuery(state,year),headers:{'content-type':'application/json'},signal:AbortSignal.timeout(MEETPRO_TIMEOUT_MS)},{ttl:SOURCE_TTL.listing,staleOnError:true})
+    .then(async r=>{if(!r.ok)throw new Error(`HTTP ${r.status}`);return milesplitSeasonIndex(JSON.parse(await r.text()))})
+    .catch(()=>{milesplitSeasonMemo.delete(key);return[]});
+  milesplitSeasonMemo.set(key,{at:Date.now(),promise});
+  return promise;
+}
 async function milesplitLiveResultsFor(school,config,game,read,live=false){
   if(!config?.team)return null;
   const ttl=live?MEETPRO_LIVE_TTL:SOURCE_TTL.document,json=text=>{try{return text?JSON.parse(text):null}catch{return null}};
@@ -4344,7 +4359,7 @@ async function milesplitLiveResultsFor(school,config,game,read,live=false){
     const days=await Promise.all((config.states||['KS']).map(state=>query('',firestoreQuery('meets',{'venue.state':state,dateStart:game.date},['name','season','venue.name','venue.city','teams','timingCompany.name'],300),live?SOURCE_TTL.schedule:SOURCE_TTL.document).then(text=>firestoreDocs(json(text)||[]))));
     // A school's name for a meet MileSplit Live names otherwise (`names`:
     // Junction City's "Blue Jay Invitational" is the Bob Schmoekel meet).
-    meet=milesplitMeetFor(days.flat(),config.team,config.names?.[game.name]||game.name,config.also);
+    meet=milesplitMeetFor(days.flat(),config.team,config.names?.[game.name]||config.aliases?.[game.name]||game.name,config.also);
   }
   if(!meet)return null;
   const base=`/meets/${meet.id}`;
@@ -4619,12 +4634,24 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));
     }
     // Meets a timer posted with the school in them that its schedule leaves
-    // out (team `extraMeets`: St. Xavier's Bound page lists two of its 2026
-    // cross country meets; MileSplit Live has its runners at three more).
+    // out, named by hand (team `extraMeets`): for timers outside the
+    // statewide index below (no school uses it since November 4).
     for(const meet of team.extraMeets||[]){
       if(games.some(g=>g.date===meet.date))continue;
       games.push({date:meet.date,time:meet.time||null,end_date:null,name:meet.name,site:meet.site||'AWAY',calendar_id:`extra|${meet.date}|${meet.name}`});
       games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));
+    }
+    // Meets the statewide MileSplit Live index has the school in that its
+    // schedule leaves out (user, November 4: "Index by source, not by
+    // school"; this replaced the hand-kept `extraMeets` of St. Xavier,
+    // Junction City and Fort Riley MS). A meet is kept only when its
+    // results have the school's runners (see below).
+    if(team.milesplit?.team&&!team.meetPro?.track){
+      const ids=[team.milesplit.team,...(team.milesplit.also||[])].map(String);
+      // The school's own state only (Manhattan also reads Missouri's days).
+      const index=await milesplitSeasonFor(team.milesplit.indexState||'KS',Number(year.start.slice(0,4)));
+      const extra=milesplitIndexGames(index,ids,games,today);
+      if(extra.length){games.push(...extra);games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));}
     }
     let contests=[];
     if(team.maxpreps){
@@ -4680,9 +4707,11 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
     // the module names, else the meet of the day the calendar entry names,
     // when the timer's own pages have none.
     const teamPlaces=game=>team.boundMeet&&Object.fromEntries(Object.entries(team.boundMeet.acts).map(([label,act])=>[label,boundMeet(bound,{act,date:game.date,lowWins:team.boundMeet.lowWins})]).filter(([,m])=>m));
-    const mileSplit=game=>team.milesplit&&!team.meetPro?.track?milesplitLiveResultsFor(school,{...team.milesplit,meet:game.midwestTiming?.milesplit,teamPlaces:teamPlaces(game)},game,read,(game.end_date||game.date)>=today):Promise.resolve(null);
+    const mileSplit=game=>team.milesplit&&!team.meetPro?.track?milesplitLiveResultsFor(school,{...team.milesplit,meet:game.midwestTiming?.milesplit||game.milesplitMeet,aliases:KS_ALIASES.meets,teamPlaces:teamPlaces(game)},game,read,(game.end_date||game.date)>=today):Promise.resolve(null);
     const read=meetProReader(),gameResults=await Promise.all(games.map(game=>game.date>today?null:team.tennisReporting?tennisReportingResults(school,team,game):game.athleticLive?athleticLiveResultsFor(school,game.athleticLive,game,read,(game.end_date||game.date)>=today).then(r=>r||meetProResultsFor(school,module,team,game,read)).then(r=>r||mileSplit(game)):game.midwestTiming?mileSplit(game).then(r=>r||midwestTimingResultsFor(school,game.midwestTiming,game,read,(game.end_date||game.date)>=today)).then(r=>r||meetProResultsFor(school,module,team,game,read)):team.meetPro?meetProResultsFor(school,module,team,game,read,(game.end_date||game.date)>=today).then(r=>r||mileSplit(game)):sport==='Golf'?prepGolfResultsFor(school,module,team,game,read):null));
     for(const [index,game] of games.entries()){
+      // An index meet with none of the school's runners was not run by it.
+      if(game.fromIndex&&!gameResults[index]?.rows?.length)continue;
       const named=team.meet||isNamedEvent(game.name)||/\btbd\b/i.test(game.name);
       let contest=named?null:matchContest(game,contests,used);
       if(contest)used.add(contest);
