@@ -100,3 +100,7 @@ MileSplit Live's public database answers one query for every meet of a state, se
 
 - **Opponent-side scores on Bound:** of 151 middle school games (Junction City, Fort Riley, Wamego, Rock Creek, Riley County MS; football, volleyball, basketball) and 72 varsity games (eight high schools) with no score on November 3, none had a final in the opponent's own Bound entries (69 opponents read). Nobody enters those scores. Not built.
 - **KSHSAA team schedules** (`schedules/generalSchedule/teamschedule/<activity>/<school>/<gender>`, from kshsaa.org's page code): HTTP 500 to two requests 30 s apart (Volleyball and Football for Junction City, KSHSAA id 605); the parameters are not published. Not used. KSHSAA's state and regional sites (`playoff-sites/...`) and directory answer.
+
+## Not to be built
+
+User, November 4: "I do not want parents or non time scorers to do results so scratch those ideas". No results from parents, fans or other unofficial scorers: no crowd-sourced scorer links, and no text-in or e-mail-in scores. A game no official source scores stays "No score posted".
