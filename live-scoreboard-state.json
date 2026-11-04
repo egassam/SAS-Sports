@@ -2161,10 +2161,25 @@
    "verified_detail": "final W, 87-45"
   },
   "virginia|Field Hockey": {
-   "state": "failing",
-   "last_check": "2026-10-24T23:32:06.634Z",
-   "last_detail": "result reads \"L, 1-0\", ESPN final L, 0-1",
-   "game": null,
+   "state": "on",
+   "last_check": "2026-11-04T21:44:04.459Z",
+   "last_detail": "live 1-0 · 17:50 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "virginia|Field Hockey||2026-11-04|1",
+    "title": "Virginia at Boston College",
+    "started_seen": "2026-11-04T21:35:42.146Z",
+    "live_passes": [
+     "2026-11-04T21:35:42.146Z",
+     "2026-11-04T21:36:47.808Z",
+     "2026-11-04T21:37:50.480Z",
+     "2026-11-04T21:39:13.351Z",
+     "2026-11-04T21:40:36.290Z",
+     "2026-11-04T21:42:00.716Z",
+     "2026-11-04T21:43:01.959Z",
+     "2026-11-04T21:44:04.459Z"
+    ],
+    "final_ok": false
+   },
    "failures": 35,
    "last_failure": {
     "at": "2026-10-24T23:32:06.634Z",
@@ -8020,7 +8035,25 @@
    "state": "off"
   },
   "unc-asheville|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-04T21:44:26.157Z",
+   "last_detail": "live 12-4 · 5:18 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "unc-asheville|Basketball|Women's|2026-11-04|1",
+    "title": "Women's · UNC Asheville vs Clinton",
+    "started_seen": "2026-11-04T21:35:44.968Z",
+    "live_passes": [
+     "2026-11-04T21:35:44.968Z",
+     "2026-11-04T21:36:48.200Z",
+     "2026-11-04T21:38:11.304Z",
+     "2026-11-04T21:39:33.754Z",
+     "2026-11-04T21:40:57.884Z",
+     "2026-11-04T21:41:59.485Z",
+     "2026-11-04T21:43:03.001Z",
+     "2026-11-04T21:44:26.157Z"
+    ],
+    "final_ok": false
+   }
   },
   "unc-asheville|Soccer": {
    "state": "done",
@@ -11725,7 +11758,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.262.0-team-records",
- "updated_at": "2026-11-04T07:24:52.840Z",
+ "version": "4.264.0-scheduled-refresh",
+ "updated_at": "2026-11-04T21:44:26.161Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

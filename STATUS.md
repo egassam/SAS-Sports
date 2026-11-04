@@ -11,8 +11,9 @@
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| virginia | Field Hockey | ❌ failing | Virginia vs Louisville: result reads "L, 1-0", ESPN final L, 0-1 |
 | west-georgia | Basketball | ❌ failing | Women's · West Georgia at Georgia: result reads "L, 92-53", ESPN final L, 53-92 |
+| unc-asheville | Basketball | 🔴 on | live 12-4 · 5:18 - 1st · official_schedule+live_scoreboard |
+| virginia | Field Hockey | 🔴 on | live 1-0 · 17:50 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -920,7 +921,6 @@
 | umbc | Lacrosse | ⚪ off (waiting) |  |
 | umbc | Softball | ⚪ off (waiting) |  |
 | unc-asheville | Baseball | ⚪ off (waiting) |  |
-| unc-asheville | Basketball | ⚪ off (waiting) |  |
 | unc-greensboro | Baseball | ⚪ off (waiting) |  |
 | unc-greensboro | Softball | ⚪ off (waiting) |  |
 | unlv | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 933/1956; on 0; off 1010; failing 13.
+Done 933/1956; on 2; off 1009; failing 12.
