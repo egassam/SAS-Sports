@@ -15,105 +15,20 @@
 // listed (K-State's rule).
 import {parseFreeTitle,sheetCalendar} from '../high-school.mjs';
 import {LETSGORUN_MEETPRO} from './manhattan-ks.mjs';
-
-export const VARSITY=/^Varsity$/i;
-export const bound=(school,slug)=>({school,page:`https://beta.gobound.com/ks/schools/${slug}/calendar`});
-export const maxpreps=(schoolId,path)=>({schoolId,base:`https://www.maxpreps.com/ks/${path}/`});
-export const on=(acts,level=VARSITY)=>({boundSchedule:{acts:[].concat(acts),level}});
-
-// Track meets name their divisions: a high school's varsity events have none
-// or a class ("Class 3A/4A"); JV, freshman and middle school divisions are
-// left out. A middle school reads only meets run by grade (or named for
-// middle schools); a high school meet on the same day is not its own.
-export const HS_TRACK_EXCLUDE=/\bJV\b|junior varsity|fresh|frosh|soph|\bgrade\b|middle|\bMS\b|\bJH\b/i,MS_TRACK=/\bgrade\b|middle|\bMS\b|\bJH\b|junior high/i;
-
-// High school sports read from Bound. `has` lists the school's sports; each
-// takes its MaxPreps page (games), or its meet source.
-// Geary County (src/schools/geary-ks.mjs) adds girls' soccer, swimming and
-// boys' and girls' bowling (Junction City); `paths` gives a MaxPreps path
-// that differs from the usual one ("soccer/girls/spring").
-export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true,paths={}}){
-  const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:paths[acts]||path}:{}),...(label?{label}:{})});
-  const sports={};
-  if(has.includes('Football'))sports.Football=[game('Football','football')];
-  if(has.includes('Flag Football'))sports['Flag Football']=[game('Girls Flag Football','flag-football/girls','Girls')];
-  if(has.includes('Volleyball'))sports.Volleyball=[game('Volleyball','volleyball')];
-  if(has.includes('Soccer'))sports.Soccer=[game('Boys Soccer','soccer','Boys'),...(has.includes('Girls Soccer')?[game('Girls Soccer','soccer/girls','Girls')]:[])];
-  if(has.includes('Basketball'))sports.Basketball=[game('Girls Basketball','basketball/girls','Girls'),game('Boys Basketball','basketball','Boys')];
-  if(has.includes('Baseball'))sports.Baseball=[game('Baseball','baseball')];
-  if(has.includes('Softball'))sports.Softball=[game('Softball','softball')];
-  // Varsity races only (the junior varsity and middle school races share the day).
-  // Meets the timer posts only to MileSplit Live: the school's MileSplit team id.
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country']),meet:true,meetPro:{team:meetTeam,races:/\bvarsity\b/i,exclude:/junior varsity/i},...(milesplit?{milesplit:{team:milesplit}}:{})}];
-  if(has.includes('Golf'))sports.Golf=['Girls','Boys'].filter(g=>has.includes(`${g} Golf`)).map(g=>({...on(`${g} Golf`),meet:true,label:g}));
-  if(has.includes('Tennis'))sports.Tennis=['Girls','Boys'].filter(g=>has.includes(`${g} Tennis`)).map(g=>({...on(`${g} Tennis`),meet:true,label:g,...(tennis?{tennisReporting:{stateId:23,genderId:g==='Girls'?2:1,school:tennis}}:{})}));
-  if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`),meet:true,label:g}));
-  // Track: the timer's MeetPro meets, varsity events only.
-  if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field']),meet:true,meetPro:{team:trackTeam,track:true,exclude:HS_TRACK_EXCLUDE}}];
-  // KSHSAA Unified Bowling (students with and without disabilities together).
-  // Boys' and girls' bowling where the school has them (Junction City).
-  if(has.includes('Bowling'))sports.Bowling=[...['Girls','Boys'].filter(g=>has.includes(`${g} Bowling`)).map(g=>({...on(`${g} Bowling`),meet:true,label:g})),{...on('Unified Bowling'),meet:true,label:'Unified'}];
-  if(has.includes('Swimming & Diving'))sports['Swimming & Diving']=['Girls','Boys'].filter(g=>has.includes(`${g} Swimming`)).map(g=>({...on(`${g} Swim & Dive`),meet:true,label:g}));
-  return sports;
-}
-
-// Middle school teams on Bound: the grades (7th, 8th; their A teams), and the
-// entries a school files under the whole team ("Middle School", "Junior
-// High", "JH A"). B teams are not listed (as in Manhattan's middle schools).
-// Middle school cross country: the grade races. Varsity and JV races are
-// left out, and so are the 1-mile races (the Fort Riley meet's "1 Mile Run
-// 7th Grade Girls" is its junior varsity race; St. Xavier's notes for the
-// day: "All JV Race - 1 mile"; no other 2026 LetsGoRun meet runs one).
-export const MS_XC_EXCLUDE=/varsity|\bJV\b|\b1 mile\b/i;
-export const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
-const WHOLE=/^(?:Middle School|Junior High|JH)(?: A)?$/i;
-const ANY_MS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|Junior High|JH)(?: A(?:-Team)?)?$/i;
-// `grades` reads other forms of a grade's A team ("7th Grade - A - 1",
-// "7A": Junction City and Fort Riley); `Tennis` is a middle school team in
-// the Centennial League.
-const MS_TENNIS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|MS|Junior High|JH)(?: A(?:[- ]Team)?)?$/i;
-export function boundMiddleSchool({has,meetTeam,trackTeam=meetTeam,milesplit,grades=grade}){
-  const games=(acts,gender='')=>[
-    {...on(acts,grades('7th')),label:`7th${gender?` ${gender}`:''}`},
-    {...on(acts,grades('8th')),label:`8th${gender?` ${gender}`:''}`},
-    {...on(acts,WHOLE),...(gender?{label:gender}:{})}];
-  const sports={};
-  if(has.includes('Football'))sports.Football=games('Football');
-  if(has.includes('Volleyball'))sports.Volleyball=games('Volleyball');
-  if(has.includes('Basketball'))sports.Basketball=[...games('Girls Basketball','Girls'),...games('Boys Basketball','Boys')];
-  if(has.includes('Cross Country'))sports['Cross Country']=[{...on(['Girls Cross Country','Boys Cross Country'],ANY_MS),meet:true,meetPro:{team:meetTeam,exclude:MS_XC_EXCLUDE},...(milesplit?{milesplit:{team:milesplit,middle:true}}:{})}];
-  if(has.includes('Wrestling'))sports.Wrestling=['Girls','Boys'].filter(g=>has.includes(`${g} Wrestling`)).map(g=>({...on(`${g} Wrestling`,ANY_MS),meet:true,label:g}));
-  if(has.includes('Track & Field'))sports['Track & Field']=[{...on(['Girls Track & Field','Boys Track & Field'],ANY_MS),meet:true,meetPro:{team:trackTeam,track:true,meetHas:MS_TRACK}}];
-  if(has.includes('Golf'))sports.Golf=[{...on(['Girls Golf','Boys Golf'],ANY_MS),meet:true}];
-  if(has.includes('Tennis'))sports.Tennis=[{...on(['Girls Tennis','Boys Tennis'],MS_TENNIS),meet:true}];
-  return sports;
-}
+import {VARSITY,bound,maxpreps,on,HS_TRACK_EXCLUDE,MS_TRACK,MS_XC_EXCLUDE,grade,boundHighSchool,boundMiddleSchool,stateXc,schoolsFromConfig} from '../high-school-builders.mjs';
+import RILEY_POTTAWATOMIE_DATA from './data/ks-riley-pottawatomie.json' with {type:'json'};
+// The builders moved to src/high-school-builders.mjs (November 4); kept
+// here for the modules and tests that import them from this file.
+export {VARSITY,bound,maxpreps,on,HS_TRACK_EXCLUDE,MS_TRACK,MS_XC_EXCLUDE,grade,boundHighSchool,boundMiddleSchool};
+// The schools whose schedule is on Bound are data
+// (src/schools/data/ks-riley-pottawatomie.json).
+const DATA=schoolsFromConfig(RILEY_POTTAWATOMIE_DATA);
 
 // --- Riley County
 
-// KSHSAA state cross country, October 31 (KSHSAA's state sites and time
-// schedule; user, October 29: "Can we add other state of Kansas schools that
-// are going to be timed at this meet?"). Midwest Timing & Results times both
-// sites and posts live on MileSplit Live. A school's qualifiers come from its
-// October 24 sub-state on MileSplit Live: the top three teams and the top 15
-// runners (KSHSAA). `place` is the site's row on Midwest Timing's results
-// page; `schools` gives the names its results PDF prints.
-const STATE_XC_SITES={
-  lawrence:{site:'Rim Rock Farm, Lawrence',place:/^Lawrence\b/i,milesplit:787763,live:'https://milesplit.live/meets/787763'},
-  wamego:{site:'Wamego Country Club, Wamego',place:/^Wamego\b/i,milesplit:787762,live:'https://milesplit.live/meets/787762'}};
-const STATE_XC_TIMES={'1A':{Girls:'11:10',Boys:'12:55'},'2A':{Girls:'12:20',Boys:'10:35'},'3A':{Girls:'11:10',Boys:'12:55'},'4A':{Girls:'10:00',Boys:'11:45'}};
-const stateXc=(cls,id,names,sexes)=>({date:'2026-10-31',sport:'Cross Country',name:`KSHSAA ${cls} State Championship`,...STATE_XC_SITES[cls==='3A'?'lawrence':'wamego'],
-  races:sexes.map(label=>({label,time:STATE_XC_TIMES[cls][label]})).sort((a,b)=>a.time.localeCompare(b.time)),schools:{[id]:names}});
 
-export const rileyCountyKsSchool={id:'riley-county-ks',bound:bound('h2025020404520421139a7c22372f045','rileycountyhs'),
-  maxpreps:maxpreps('5cdb37b2-ad68-43ee-96f4-0f48d54919fa','riley/riley-county-falcons'),meetPro:LETSGORUN_MEETPRO,
-  // Prep.Golf gives Riley County's golfers the code RC, as it gives Rock
-  // Creek's: when both play one tournament the golfers are not listed.
-  prepGolf:{school:177,code:'RC',sharesCodeWith:'Rock Creek'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County',milesplit:21857}),
-  midwestTiming:[stateXc('3A','riley-county-ks',['Riley County High School'],['Girls','Boys'])]};
-export const rileyCountyMsKsSchool={id:'riley-county-ms-ks',bound:bound('h20251014075040360c6677198a0a040','rcmsks'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Riley County'})};
+export const rileyCountyKsSchool=DATA['riley-county-ks'];
+export const rileyCountyMsKsSchool=DATA['riley-county-ms-ks'];
 
 // usd384.org and manhattancatholicschools.org (ParentSquare, like
 // mhs.usd383.org) answered Cloudflare's production locations with 520 on
@@ -150,28 +65,16 @@ export const blueValleyRandolphMsKsSchool={id:'blue-valley-randolph-ms-ks',calen
 
 // --- Pottawatomie County
 
-export const wamegoKsSchool={id:'wamego-ks',bound:bound('h202502040452088515ce32279a6bd46','wamegohs'),
-  maxpreps:maxpreps('85994f3a-51f3-45de-8eb1-88106d80733b','wamego/wamego-red-raiders'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:124,code:'WAM'},
-  sports:boundHighSchool({has:['Football','Flag Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'Wamego',tennis:'Wamego HS',milesplit:21804}),
-  midwestTiming:[stateXc('4A','wamego-ks',['Wamego High School'],['Girls','Boys'])]};
-export const wamegoMsKsSchool={id:'wamego-ms-ks',bound:bound('h20250612075742474f79cb40e4a7f40','wamegoms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf'],meetTeam:'Wamego Middle School',milesplit:39314})};
+export const wamegoKsSchool=DATA['wamego-ks'];
+export const wamegoMsKsSchool=DATA['wamego-ms-ks'];
 
-export const rockCreekKsSchool={id:'rock-creek-ks',bound:bound('h2025020404520445615614e419a374c','rockcreekhs'),
-  maxpreps:maxpreps('96110ea0-a0ac-4f8d-b7b3-49a4b725e38f','st-george/rock-creek-mustangs'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:119,code:'RC',sharesCodeWith:'Riley County'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek',milesplit:21882}),
-  midwestTiming:[stateXc('4A','rock-creek-ks',['Rock Creek High School'],['Girls','Boys'])]};
-export const rockCreekMsKsSchool={id:'rock-creek-ms-ks',bound:bound('h20260103125538297053dfabf06614f','rockcreekms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:'Rock Creek MS',milesplit:39062})};
+export const rockCreekKsSchool=DATA['rock-creek-ks'];
+export const rockCreekMsKsSchool=DATA['rock-creek-ms-ks'];
 
 // St. Marys Junior/Senior High (Kaw Valley USD 321): one Bound school for
 // both, the junior high's teams under grade levels.
-const ST_MARYS=bound('h20250204045205533eddae2a4d03e42','stmaryshs');
-export const stMarysKsSchool={id:'st-marys-ks',bound:ST_MARYS,
-  maxpreps:maxpreps('0f0ebc9e-4330-405a-a173-f298b055973a','st-marys/st-marys-bears'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:186,code:'STM'},
-  sports:boundHighSchool({has:['Football','Volleyball','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Bowling'],meetTeam:'St. Marys',milesplit:25984})};
-export const stMarysJhKsSchool={id:'st-marys-jh-ks',bound:ST_MARYS,meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field'],meetTeam:"St. Mary's",milesplit:41215})};
+export const stMarysKsSchool=DATA['st-marys-ks'];
+export const stMarysJhKsSchool=DATA['st-marys-jh-ks'];
 
 // Onaga (USD 322): one Bound school for the high school and middle school.
 // Onaga enters part of its season on Bound; its district calendar (Apptegy:
@@ -223,9 +126,7 @@ export const flintHillsChristianMsKsSchool={id:'flint-hills-christian-ms-ks',cal
 // St. Mary's Academy (St. Marys; the Society of St. Pius X school, not a
 // KSHSAA member): Bound holds its schedule (smac.edu answers robots 403).
 const SMA=bound('h2025020404520561456ac772684c34f','saintmarysacademy');
-export const stMarysAcademyKsSchool={id:'st-marys-academy-ks',bound:SMA,
-  maxpreps:maxpreps('72046133-0241-43db-a9b8-71b3f3b6ae10','st-marys/st-marys-academy-crusaders'),meetPro:LETSGORUN_MEETPRO,prepGolf:{school:366,code:'SMA'},
-  sports:boundHighSchool({has:['Football','Soccer','Basketball','Baseball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Golf','Boys Golf'],meetTeam:"St. Mary's Academy",milesplit:41084})};
+export const stMarysAcademyKsSchool=DATA['st-marys-academy-ks'];
 export const stMarysAcademyJhKsSchool={id:'st-marys-academy-jh-ks',bound:SMA,
   sports:{Basketball:[{...on('Boys Basketball',grade('7th')),label:'7th Boys'},{...on('Boys Basketball',grade('8th')),label:'8th Boys'}]}};
 

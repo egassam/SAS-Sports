@@ -12,43 +12,18 @@
 // cross country from LetsGoRun Timing (MeetPro) and MileSplit Live, track
 // from MeetPro, golf from Prep.Golf, tennis from TennisReporting.
 import {LETSGORUN_MEETPRO} from './manhattan-ks.mjs';
-import {bound,maxpreps,on,boundHighSchool,boundMiddleSchool,HS_TRACK_EXCLUDE,MS_XC_EXCLUDE} from './riley-pottawatomie-ks.mjs';
-
-// Junction City's and Fort Riley's Bound levels also write a grade's A team
-// "7th Grade - A - 1" and "7A" (B teams are not listed).
-const usd475Grade=g=>new RegExp(`^(?:${g}(?: Grade)?(?:\\s*-?\\s*A(?:-Team)?(?:\\s*-\\s*1)?)?|${g[0]}A)$`,'i');
+import {maxpreps,on,unpaged,HS_TRACK_EXCLUDE,MS_XC_EXCLUDE,schoolsFromConfig} from '../high-school-builders.mjs';
+import GEARY_DATA from './data/ks-geary.json' with {type:'json'};
+// Junction City HS, Junction City MS and Fort Riley MS are data
+// (src/schools/data/ks-geary.json): Bound schedules, MaxPreps, LetsGoRun,
+// MileSplit Live, Prep.Golf and TennisReporting, with the notes once kept here.
+const DATA=schoolsFromConfig(GEARY_DATA);
 
 // --- Geary County USD 475
 
-// MaxPreps refuses bursts of reads (403, November 3): a build that misses its
-// scores serves the last good feed from any location (`globalSavedCopy`, KV),
-// not a partial one, while the school is new to a location's cache.
-export const junctionCityKsSchool={id:'junction-city-ks',globalSavedCopy:true,bound:bound('h20250204045159822386f317805064a','junctioncityhs'),
-  maxpreps:maxpreps('0db83983-6aab-46c9-9989-88ee256551be','junction-city/junction-city-bluejays'),meetPro:LETSGORUN_MEETPRO,
-  prepGolf:{school:7,code:'JC'},
-  sports:boundHighSchool({has:['Football','Volleyball','Soccer','Girls Soccer','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Swimming & Diving','Girls Swimming','Boys Swimming','Bowling','Girls Bowling','Boys Bowling'],
-    meetTeam:'Junction City',tennis:'Junction City HS',milesplit:15714,paths:{'Girls Soccer':'soccer/girls/spring'}})};
-// Bound leaves out its October 24 sub-state (MileSplit Live: Junction City at the 6A Sub-State at Manhattan).
-junctionCityKsSchool.sports['Cross Country'][0].extraMeets=[{date:'2026-10-24',name:'KSHSAA 6A Sub-State Manhattan'}];
-// Its home meet at Milford Lake is the "Blue Jay Invitational" on Bound and
-// the "Bob Schmoekel Cross Country Invitational" on MileSplit Live.
-junctionCityKsSchool.sports['Cross Country'][0].milesplit.names={'Blue Jay Invitational Cross Country Meet':'Bob Schmoekel Invitational','Blue Jay Invitational':'Bob Schmoekel Invitational'};
-
-// Bound gives Junction City MS and St. Xavier no page of their own (no
-// calendar slug; their events are read by Bound id): the feed links Bound's
-// Kansas page.
-const unpaged=school=>({school,page:'https://beta.gobound.com/ks'});
-export const junctionCityMsKsSchool={id:'junction-city-ms-ks',bound:unpaged('h20251215030233573aee5a5046f2741'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:'Junction City',milesplit:39340,grades:usd475Grade})};
-
-// Fort Riley Middle School (on the post; Geary County): LetsGoRun writes it
-// "Ft Riley" at Fort Riley's own meet ("Ft Riley7G") and "Fort Riley Middle
-// School" at Clay Center's.
-export const fortRileyMsKsSchool={id:'fort-riley-ms-ks',bound:bound('h20250612074705722fb6ff5c7484f42','fortrileyms'),meetPro:LETSGORUN_MEETPRO,
-  sports:boundMiddleSchool({has:['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis'],meetTeam:['Ft Riley','Fort Riley'],trackTeam:['Ft Riley','Fort Riley'],milesplit:40677,grades:usd475Grade})};
-// Fort Riley MS ran the Clay Center meet of September 15 (LetsGoRun and
-// MileSplit Live); Bound does not list it.
-fortRileyMsKsSchool.sports['Cross Country'][0].extraMeets=[{date:'2026-09-15',name:'Clay Center MS/HS Invitational'}];
+export const junctionCityKsSchool=DATA['junction-city-ks'];
+export const junctionCityMsKsSchool=DATA['junction-city-ms-ks'];
+export const fortRileyMsKsSchool=DATA['fort-riley-ms-ks'];
 
 // --- St. Francis Xavier Catholic School (St. Xavier Rams, 1A)
 
