@@ -90,9 +90,13 @@ assert.equal((await atlanta('utah','Football','&refresh=1')).status,200);
 assert.equal(kv.writes,2,'no copy for schools without globalSavedCopy');
 assert.equal((await paris('utah','Football','&refresh=1')).status,502);
 
-// High school entries opt in through their own module (the Manhattan USD 383
-// sites answer Cloudflare's European locations with 520; Oct 16).
-assert.ok(read('../src/index.js').includes('const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);'));
+// High school entries: since November 4 every middle and high school keeps a
+// copy (the scheduled refresh writes it); one flagged in its module (the
+// Manhattan USD 383 sites answer Cloudflare's European locations with 520;
+// Oct 16) rewrites it hourly, the others at most every three hours unless
+// its events changed.
+assert.ok(read('../src/index.js').includes('const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school));'));
+assert.ok(read('../src/index.js').includes('const globalCopyWriteMs=school=>schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy?GLOBAL_COPY_WRITE_MS:3*GLOBAL_COPY_WRITE_MS;'));
 {const {manhattanKsSchool}=await import('../src/schools/manhattan-ks.mjs'),{anthonyMsSchool,eisenhowerMsSchool}=await import('../src/schools/manhattan-ks-middle.mjs');
 for(const m of [manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool])assert.equal(m.globalSavedCopy,true,m.id);}
 // Saved copies outlive a deploy (Oct 21): a new version at the same

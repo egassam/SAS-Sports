@@ -21,7 +21,7 @@
   // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
   // deployed Cron Trigger in place (the reverted #87 added one).
   "triggers": {
-    "crons": []
+    "crons": ["*/10 * * * *"]
   },
   "assets": {
     "directory": "./public/",
