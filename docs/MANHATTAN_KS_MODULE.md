@@ -71,3 +71,5 @@ User: "look for alternate websites for getting official results for all the spor
 - MaxPreps volleyball pages hold pool placeholders (0-0 ties, no result); those are not matches.
 
 **November 3:** Anthony and Eisenhower cross country leave out the 1-mile races (the Fort Riley meet's junior varsity race), as every Kansas middle school now does (`docs/GEARY_KS_MODULE.md`).
+
+**November 4:** cross country meets a schedule leaves out come from the statewide MileSplit Live index when the school's runners are in the results (`docs/HIGH_SCHOOL_ONBOARDING.md`): Eisenhower gains the Wamego MS Invitational (September 8, 7th boys 3rd of 6), which its calendar does not list. Manhattan HS and Anthony are unchanged.
