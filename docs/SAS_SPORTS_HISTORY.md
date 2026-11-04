@@ -4042,3 +4042,24 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - The PR description says `4.264.1`; the version shipped is `4.265.0-stale-live-games`.
 
 **Open.** Watch `/api/refresh-status` over the next day: how often USD 383 and other sites refuse the Cron machines; pause it there if needed.
+
+## November 4, 2026 — Stored finals (PR #519)
+
+**Requests.** User, about the scheduled-refresh failures: "What exactly is happening with these failures?" The agent explained the two kinds: USD 383's ParentSquare calendars answering some Cron machines with HTTP 520, and MaxPreps scores reads refused (the record lacks the HTTP code). User: "Question. Once we have results from anywhere shouldn't we just be saving them in a database? Results do not change." The agent agreed and proposed a D1 table of official finals, with corrections kept as history. User: "Yes, build it and merge when everything passes".
+
+**Built (`4.266.0-stored-finals`).**
+- **Table:** `finals` in D1 `CATALOG_DB` (created by the Worker on first use: `scope, school, sport, event_key, date, event JSON, sig, source, first_seen, last_changed, history`), one row per official final, per host.
+- **Merge rules:** in `src/finals-store.mjs` (`isStoredFinal`, `finalSig`, `finalKeys` with `#2` for a doubleheader's second game, `exactFinal`, `sameFinal`, `mergeFinals`). `withStoredFinals` in `src/index.js` wraps every middle and high school build: it writes inserts and updates (a changed official reading moves the old one into `history`, last 5), reads this school year's rows, fills "No score posted" games and dropped finals, and clears `scores_missing` only when no game still reads "No score posted". The same function gives a stored final's expanded view (`highSchoolTargetHighlights`, extracted).
+- **Found while testing:** the app's `namesCompatible` matches "Topeka" to "Topeka West"; every match now tries the exact opponent first, then compatible names, so a triangular's two matches never trade scores (test added).
+- **Reporting:** `/live/status` reports `finals_store`.
+- **Tests:** `tests/finals-store.mjs`: the merge rules, plus the Worker against an in-memory D1 (insert, refusal fill, new game still missing, correction with history, failed build untouched, preview scope, school year only, no database).
+
+**Gate.** `test:release` passed on `593c5c7`.
+- **Preview vs production, every middle and high school feed (181), two passes:**
+  - Pass 1 wrote 522 rows to the preview's scope with no store errors.
+  - Pass 2 read back 686, rewrote 0 and filled 0.
+  - Both passes showed the same four Manhattan HS differences (football opponent names, cross country meet names, bowling and golf empty on the preview). Fresh builds on both hosts a second apart were identical. They were feeds built at different moments (Manhattan's calendar 520s), not the store.
+- `verify:preview` for 29 schools: 546/546, XC 18/20 and 26/21. CI green.
+- Merged as `110faf2`. Production live 23:16 UTC; `verify:prod` 546/546, XC 18/20 and 26/21; `/live/status` on all 181 feeds: `finals_store` read 686, written 0, errors 0.
+
+**Open.** Colleges are not stored yet. The scheduled refresh's records could carry each failed read's HTTP code.
