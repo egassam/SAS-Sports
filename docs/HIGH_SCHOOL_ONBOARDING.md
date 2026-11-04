@@ -104,3 +104,11 @@ MileSplit Live's public database answers one query for every meet of a state, se
 ## Not to be built
 
 User, November 4: "I do not want parents or non time scorers to do results so scratch those ideas". No results from parents, fans or other unofficial scorers: no crowd-sourced scorer links, and no text-in or e-mail-in scores. A game no official source scores stays "No score posted".
+
+## Scheduled refresh (November 4)
+
+User: "Do the schedule refreshed". A Cron Trigger every 10 minutes (`wrangler.jsonc`) rebuilds the next 8 middle and high school feeds (183 in all, about every 4 hours each), one at a time and 20 s apart, as production (`src/scheduled-refresh.mjs`, `runRefreshBatch` in `src/index.js`). A good build becomes the feed's saved copy in KV, shared by every Cloudflare location. Since this change every middle and high school keeps one: a school without `globalSavedCopy` rewrites it at most every 3 hours unless its events changed. A visitor's build that a school's site or MaxPreps refuses then serves a recent copy instead of a blank feed. Visitors still build feeds as before; the refresh does not change what a good build shows.
+
+- `/api/refresh-status`: the schedule, the last run (each feed: ok, time, events, the reason it failed) and totals.
+- `/api/refresh-control?action=pause|resume|run` (POST, `Authorization: Bearer <SOURCE_FETCH_KEY>`): pause or resume the Cron Trigger's runs without a deploy, or run 2 feeds now (`&size=` up to 8). On a branch preview a run builds and saves that preview's own copies and record (previews do not run Cron Triggers).
+- The October 1 attempt (#87, every college feed every minute) failed every scheduled build and was reverted with no cause found (`SAS_SPORTS_HISTORY.md`). This one is smaller, records each reason, and can be paused at once.

@@ -61,6 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
+import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
@@ -338,7 +339,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.263.1-hs-onboarding';
+const VERSION='4.264.0-scheduled-refresh';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6286,7 +6287,13 @@ const globalCopyKey=(scope,school,sport)=>`feed:v2:${scope}|${school}|${sport}|$
 // The Manhattan (USD 383) school sites answer Cloudflare's European
 // locations with 520 (Stockholm, Warsaw; Oct 16) and Newark with 200: their
 // feeds keep the global copy too.
-const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy);
+// Since November 4 every middle and high school keeps one: the scheduled
+// refresh (src/scheduled-refresh.mjs) writes it every few hours, so a build a
+// school's site or MaxPreps refuses serves a recent copy, not a blank feed.
+const usesGlobalCopy=school=>Boolean(schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school));
+// A school without the flag rewrites its copy at most every three hours
+// unless its events changed (KV writes are metered).
+const globalCopyWriteMs=school=>schoolModule(school)?.school.globalSavedCopy||highSchoolModule(school)?.globalSavedCopy?GLOBAL_COPY_WRITE_MS:3*GLOBAL_COPY_WRITE_MS;
 async function saveGlobalCopy(env,url,school,sport,body,fetchedAt){
   if(!env?.HIGHLIGHTS||!usesGlobalCopy(school))return;
   try{
@@ -6296,7 +6303,7 @@ async function saveGlobalCopy(env,url,school,sport,body,fetchedAt){
     // empty copy saved before them, now that copies outlive a deploy).
     let events=null;try{events=JSON.parse(body).reduce((n,g)=>n+['live','results','upcoming','other'].reduce((m,k)=>m+(g[k]?.length||0),0),0)}catch{}
     const {metadata}=await env.HIGHLIGHTS.getWithMetadata(key,'text');
-    if(Date.now()-Date.parse(metadata?.fetched_at||'')<GLOBAL_COPY_WRITE_MS&&metadata?.events===events)return;
+    if(Date.now()-Date.parse(metadata?.fetched_at||'')<globalCopyWriteMs(school)&&metadata?.events===events)return;
     await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt,events}});
   }catch{}
 }
@@ -6315,8 +6322,10 @@ async function globalCopy(env,url,school,sport){
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
-async function freshGroupedFeed(url,school,sport,env,cache,key){
+async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   const result=await fetchLive(school,sport,env);
+  // The scheduled refresh records why a build was not saved.
+  if(report)Object.assign(report,{events:result.events.length,error:result.error||null,scores_missing:!!result.scores_missing,official_failed:!!result.official_failed});
   if(!result.events.length&&!result.live_source_used)return null;
   let events=result.events;
   // A build missing its scores source (a high school's MaxPreps read failed,
@@ -6412,7 +6421,40 @@ function storeHighlights(env,ctx,key,event){
   return true;
 }
 
+// Scheduled refresh (user, November 4: "Do the schedule refreshed"; see
+// src/scheduled-refresh.mjs). Each run rebuilds the next few middle and high
+// school feeds one at a time, as production, and records every result.
+const sleepMs=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+// Production's record and pause switch; a branch preview keeps its own.
+const refreshKey=(key,host)=>host===PRODUCTION_HOST?key:`${key}|${host}`;
+async function runRefreshBatch(env,{size=REFRESH_BATCH,gap=REFRESH_GAP_MS,force=false,origin=`https://${PRODUCTION_HOST}`}={}){
+  if(!env?.HIGHLIGHTS)return{skipped:'no KV'};
+    // A run asked for on a branch preview builds and saves that preview's
+  // copies (its own KV scope), never production's.
+  sourceCacheOrigin=origin;
+  const host=new URL(origin).hostname,statusKey=refreshKey(REFRESH_STATUS_KEY,host);
+  if(!force&&await env.HIGHLIGHTS.get(refreshKey(REFRESH_PAUSE_KEY,host)))return{skipped:'paused'};
+  const feeds=refreshFeeds(HIGH_SCHOOL_MODULES);
+  let previous=null;try{previous=await env.HIGHLIGHTS.get(statusKey,'json')}catch{}
+  const {batch,cursor}=nextBatch(feeds,previous?.feeds===feeds.length?previous.cursor:0,size),results=[];
+  for(const [i,{school,sport}] of batch.entries()){
+    if(i&&gap)await sleepMs(gap);
+    const url=new URL(`${origin}/live/feed/grouped?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}&refresh=1`),started=Date.now(),report={};
+    requestCatalog={env,url};
+    try{
+      await loadCatalogEntries(env,url,[school]);
+      const built=await freshGroupedFeed(url,school,sport,env,caches.default,feedCacheKey(url,school,sport),report);
+      results.push({school,sport,ok:!!built&&!report.scores_missing&&!report.official_failed,ms:Date.now()-started,events:report.events??null,error:built?null:(report.error||(report.scores_missing?'scores source failed (saved copy kept)':'no usable events')),...(report.scores_missing?{scores_missing:true}:{}),...(report.official_failed?{official_failed:true}:{})});
+    }catch(error){results.push({school,sport,ok:false,ms:Date.now()-started,error:String(error?.message||error).slice(0,300)});}
+  }
+  const status=nextStatus(previous,{at:new Date().toISOString(),version:VERSION,feeds:feeds.length,cursor,results});
+  try{await env.HIGHLIGHTS.put(statusKey,JSON.stringify(status))}catch{}
+  return status;
+}
 export default{
+  async scheduled(event,env,ctx){
+    ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
+  },
   async fetch(request,env,ctx){
     const url=new URL(request.url);sourceCacheOrigin=url.origin;requestCatalog={env,url};
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
@@ -6425,6 +6467,19 @@ export default{
     if(url.pathname==='/catalog/entries')return catalogAnswer(env,url,store=>catalogEntries(store,url.searchParams.get('ids')));
     if(url.pathname==='/schools'){const listDb=await catalogD1();let list=listDb?await catalogAllRecords(listDb).catch(()=>schools):schools;const q=(url.searchParams.get('q')||'').toLowerCase(),conference=url.searchParams.get('conference'),state=url.searchParams.get('state');if(q)list=list.filter(s=>[s.id,s.name,s.short_name,...(s.aliases||[])].join(' ').toLowerCase().includes(q));if(conference)list=list.filter(s=>s.conference.toLowerCase()===conference.toLowerCase());if(state)list=list.filter(s=>s.state.toLowerCase()===state.toLowerCase());return json(list.map(s=>({...s,time_zone:schoolTimeZone(s),sponsored_sports:sponsoredSports[s.id]||null})));}
     if(url.pathname==='/api/source')return privateSource(request,env);
+    // The scheduled refresh: its record (public), and pause, resume or one
+    // run now (2 feeds, no gap) with the source key.
+    if(url.pathname==='/api/refresh-status'){let status=null,paused=null;try{status=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_STATUS_KEY,url.hostname),'json');paused=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_PAUSE_KEY,url.hostname))}catch{}return json({version:VERSION,schedule:'every 10 minutes',batch:REFRESH_BATCH,gap_seconds:REFRESH_GAP_MS/1000,feeds:refreshFeeds(HIGH_SCHOOL_MODULES).length,paused:Boolean(paused),status});}
+    if(url.pathname==='/api/refresh-control'){
+      const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
+      if(!secret)return json({detail:'Not found'},404);
+      if(request.method!=='POST'||!given||!(await sameSecret(given,secret)))return json({detail:'Unauthorized'},401);
+      const action=url.searchParams.get('action');
+      if(action==='pause'){await env.HIGHLIGHTS.put(refreshKey(REFRESH_PAUSE_KEY,url.hostname),new Date().toISOString());return json({paused:true});}
+      if(action==='resume'){await env.HIGHLIGHTS.delete(refreshKey(REFRESH_PAUSE_KEY,url.hostname));return json({paused:false});}
+      if(action==='run')return json(await runRefreshBatch(env,{size:Math.min(Number(url.searchParams.get('size'))||2,REFRESH_BATCH),gap:0,force:true,origin:url.origin}));
+      return json({detail:'action is pause, resume or run'},400);
+    }
     if(url.pathname==='/api/diagnostic'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await diagnostic(school,sport));}
     if(url.pathname==='/api/verify'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);return json(await verification(school,sport));}
     if(url.pathname==='/live/athletes'){
