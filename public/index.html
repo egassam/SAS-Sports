@@ -327,13 +327,23 @@ function demoEvent(){
 // the cards of the moment it was built. The card moves to results; the next
 // read replaces it.
 const STALE_LIVE_MS=15*60*1000;
-function retireStaleLive(groups,now=Date.now()){
+// A live game in such a copy (user, November 4, 3:06 PM: "This live game is
+// still showing", K-State men's basketball "LIVE · Halftime 28-35" from the
+// night before, while Home was still loading the fresh feeds) is not shown
+// LIVE either, and never with its frozen score: a game from an earlier day
+// leaves the live box (the next read lists its final), a game today reads
+// "Today" with no score until the next read.
+function retireStaleLive(groups,now=Date.now(),today=id=>typeof schoolToday==='function'?schoolToday(id):new Date(now).toISOString().slice(0,10)){
   return groups.map(g=>{
     const at=Date.parse(g.saved_at||g.fetched_at||'');
     if(!(now-at>STALE_LIVE_MS))return g;
     const old=(g.live||[]).filter(e=>e.meet_live||e.event_type==='MEET');
-    if(!old.length)return g;
-    return{...g,live:g.live.filter(e=>!old.includes(e)),results:[...old.map(e=>({...e,status:'Final',meet_live:false,live_latest:null,recency_label:'Latest results'})),...(g.results||[])]};
+    const games=(g.live||[]).filter(e=>!old.includes(e));
+    if(!old.length&&!games.length)return g;
+    const day=today(g.school_id),todays=games.filter(e=>String(e.start_time||'').slice(0,10)>=day);
+    return{...g,live:[],
+      upcoming:[...todays.map(e=>({...e,status:'Today',school_score:null,opponent_score:null,headline:null,live_period:null,recency_label:'Live score updating…'})),...(g.upcoming||[])],
+      results:[...old.map(e=>({...e,status:'Final',meet_live:false,live_latest:null,recency_label:'Latest results'})),...(g.results||[])]};
   });
 }
 function displayedGroups(){
@@ -903,7 +913,7 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   show();
   lastFeedRefresh=Date.now();
   if(!automatic)loadNews(generation,signal).catch(()=>{});
-  const live=currentGroups.reduce((n,g)=>n+(g.live||[]).length,0);
+  const live=retireStaleLive(currentGroups).reduce((n,g)=>n+(g.live||[]).length,0);
   status.textContent=`${live?`LIVE AUTO-REFRESH ON · ${live} live`:homeView?'HOME':'LIVE SOURCE'} · ${homeView?`${homeTeams().length} team${homeTeams().length===1?'':'s'}`:esc(catalogEntry(school.value)?.name||school.value)} · refreshed ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} · ${ok}/${requested.length} sports reached${saved?` · ${saved} from saved copies`:''}${failed?` · ${failed} unavailable`:''}`;
 }
 // A game's live broadcast (a school's own YouTube channel): one player
@@ -1163,7 +1173,7 @@ async function loadFeaturedAthletes(groups,schoolId,generation){
     }catch{}
   })
 }
-function hasLiveEvents(groups=currentGroups){return groups.some(g=>(g.live||[]).length)||(homeView&&everywhereGames.length>0)}
+function hasLiveEvents(groups=retireStaleLive(currentGroups)){return groups.some(g=>(g.live||[]).length)||(homeView&&everywhereGames.length>0)}
 function showLiveRefreshLoader(){const el=$('#liveRefreshLoader');el.classList.add('show');el.setAttribute('aria-hidden','false');return Date.now()}
 async function hideLiveRefreshLoader(shownAt){
   const remaining=REFRESH_LOADER_MIN_MS-(Date.now()-shownAt);

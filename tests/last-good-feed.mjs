@@ -131,7 +131,7 @@ assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the dev
   const meet={id:'m',status:'Live',meet_live:true,event_type:'MEET',recency_label:'Girls: 94 finished',live_latest:[{}]};
   const game={id:'g',status:'Live',event_type:'GAME'};
   const [old]=retireStaleLive([{sport:'Cross Country',fetched_at:'2026-10-31T21:00:00Z',live:[meet,game],results:[{id:'r'}]}],now);
-  assert.deepEqual(old.live.map(e=>e.id),['g'],'the old meet card leaves the live box; a game stays');
+  assert.deepEqual(old.live.map(e=>e.id),[],'the old meet card and game leave the live box');
   assert.deepEqual(old.results.map(e=>[e.id,e.status,e.meet_live,e.recency_label]),[['m','Final',false,'Latest results'],['r',undefined,undefined,undefined]]);
   const [saved]=retireStaleLive([{sport:'Cross Country',saved_at:'2026-10-31T21:00:00Z',live:[meet]}],now);
   assert.equal(saved.live.length,0,'a saved copy too');
@@ -139,6 +139,18 @@ assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the dev
   assert.equal(recent.live.length,1,'a copy five minutes old stays live');
   const [unknown]=retireStaleLive([{sport:'Cross Country',live:[meet]}],now);
   assert.equal(unknown.live.length,1,'no time known: left as it is');
+  // A live game in an old copy (user, November 4: "This live game is still
+  // showing": K-State men's basketball at halftime from the night before):
+  // from an earlier day it leaves the live box with its frozen score; today
+  // it reads Today with no score until the next read.
+  const ks={id:'k',status:'Live',event_type:'GAME',start_time:'2026-11-03T12:00:00.000Z',school_score:'28',opponent_score:'35',headline:'Halftime'};
+  const at3pm=Date.parse('2026-11-04T21:06:00Z'),today=()=> '2026-11-04';
+  const [yesterday]=retireStaleLive([{sport:'Basketball',school_id:'kstate',saved_at:'2026-11-04T02:00:00Z',live:[ks],results:[],upcoming:[]}],at3pm,today);
+  assert.deepEqual([yesterday.live.length,yesterday.results.length,yesterday.upcoming.length],[0,0,0],'yesterday\'s halftime card is gone');
+  const [same]=retireStaleLive([{sport:'Basketball',school_id:'kstate',saved_at:'2026-11-04T20:00:00Z',live:[{...ks,start_time:'2026-11-04T12:00:00.000Z'}],upcoming:[{id:'u'}]}],at3pm,today);
+  assert.deepEqual(same.upcoming.map(e=>[e.id,e.status,e.school_score,e.opponent_score,e.headline]),[['k','Today',null,null,null],['u',undefined,undefined,undefined,undefined]],'today\'s game reads Today with no frozen score');
+  const [fresh]=retireStaleLive([{sport:'Basketball',school_id:'kstate',fetched_at:'2026-11-04T21:00:00Z',live:[ks]}],at3pm,today);
+  assert.equal(fresh.live.length,1,'a copy six minutes old stays live');
   assert.match(app,/if\(!demoActive\(\)\)return retireStaleLive\(currentGroups\)/,'every render goes through it');
 }
 console.log('Last good feed checks passed: live builds are saved, cached=1 never rebuilds, failed rebuilds fall back to a labeled copy up to a week old, a live score is laid over the saved schedule when the official page fails, and nothing older or missing is invented.');
