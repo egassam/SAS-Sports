@@ -132,6 +132,45 @@ const worker=Function(...Object.keys(deps),source+';return {withStoredFinals,set
   const plain={events:[unscored('2026-09-04','Abilene')],error:null};
   assert.equal(await worker.withStoredFinals(plain,school,'Football',{},now),plain);
 }
+// Colleges (user, November 4: "Fix them both"): the same store, with the
+// school's highlightRevision in its rows' scope, read-only expanded views,
+// and a game's added rows not counted as a changed result.
+{
+  const db=fakeD1(),env={CATALOG_DB:db},now=new Date('2026-11-04T22:00:00Z');
+  worker.setScope(`https://${worker.PRODUCTION_HOST}/live/feed/grouped`);
+  const kstate=schools.find(s=>s.id==='kstate'),baylor=schools.find(s=>s.id==='baylor');
+  const ks=scored('2026-11-03','South Dakota State',66,68,{team_label:"Men's"});
+  const first=await worker.withStoredFinals({events:[ks],error:null},kstate,'Basketball',env,now);
+  assert.deepEqual(first.finals_store,{read:0,written:1,filled:0});
+  assert.equal([...db.rows.values()][0].scope,'prod','no revision: production\'s scope');
+  // A build that dropped it (its page listed it without a result that day): listed again.
+  const dropped=await worker.withStoredFinals({events:[],error:null,live_source_used:true},kstate,'Basketball',env,now);
+  assert.deepEqual(dropped.events.map(e=>[e.title,e.headline,e.stored_final]),[['Wamego vs South Dakota State','L, 66-68',true]]);
+  // A box score's rows added to the same game: not a new result, nothing written.
+  const before=db.rows.size,log=db.log.length;
+  const boxed=await worker.withStoredFinals({events:[{...ks,results:[{label:'1st Half',value:'28-35'}]}],error:null},kstate,'Basketball',env,now);
+  assert.equal(boxed.finals_store.written,0);assert.equal(db.rows.size,before);
+  // An expanded view's build only reads, even with a corrected score.
+  const view=await worker.withStoredFinals({events:[scored('2026-11-03','South Dakota State',66,69,{team_label:"Men's"})],error:null},kstate,'Basketball',env,now,'any-event-id');
+  assert.equal(view.finals_store.written,0);
+  assert.equal(JSON.parse([...db.rows.values()][0].event).headline,'L, 66-68');
+  // A school with a highlightRevision (Baylor 2) keeps its own rows: raising it starts its store afresh.
+  await worker.withStoredFinals({events:[scored('2026-10-03','Texas Tech',1,0)]},baylor,'Soccer',env,now);
+  assert.ok([...db.rows.values()].some(r=>r.school==='baylor'&&r.scope==='prod|r2'));
+  // fetchLive wraps college builds; a build whose official page failed is left alone.
+  assert.ok(source.includes('if(!school||isHighSchool(school)||isPro(school)||result.official_failed)return result;\n  return withStoredFinals(result,school,sport,env,new Date(),aiTargetId);'));
+}
+// The scheduled refresh records why a scores read failed (user, November 4:
+// "Fix them both"): the page and the HTTP code, or the refusal the source
+// layer is still waiting out.
+{
+  const fn=Function('return '+source.match(/function sourceFailure\(url,r\)\{[\s\S]*?\n\}/)[0])();
+  const r=(status,headers={})=>({status,headers:new Headers(headers)});
+  assert.equal(fn('https://www.maxpreps.com/x/',r(403,{'x-sas-source':'network'})),'https://www.maxpreps.com/x/: HTTP 403');
+  assert.equal(fn('u',r(503,{'x-sas-source':'backoff','x-sas-upstream-status':'403'})),'u: HTTP 503 (waiting out an earlier HTTP 403 refusal; no request sent)');
+  assert.ok(source.includes('scoresErrors.push(sourceFailure(url,r))'));
+  assert.ok(source.includes("`scores source failed${built?'':' (saved copy kept)'}: ${(report.scores_errors||['reason not recorded']).join('; ')}`"));
+}
 // Wired into every middle and high school build, and reported on /live/status.
 assert.ok(source.includes('if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);'));
 assert.ok(source.includes('...(result.finals_store?{finals_store:result.finals_store}:{})'));

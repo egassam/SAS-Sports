@@ -340,7 +340,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.266.0-stored-finals';
+const VERSION='4.267.0-college-finals';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4555,6 +4555,13 @@ function boundEntryResults(school,module,team,game){
   const place=`${m.tied?'T':''}${ORDINAL(m.place)}`,group=`${team.label?`${team.label} `:''}${/^varsity$/i.test(game.level)?'Varsity':game.level}`;
   return{rows:[{group,participant:`${school.short_name} team`,result:`${place} of ${m.teams}${m.score?` · ${m.score} ${unit}`:''}`}],headline:`${place} of ${m.teams}`,highlights:[`${group}: ${school.short_name} ${m.place===1&&!m.tied?'won the team title':`placed ${place} of ${m.teams}`}${m.score?` with ${m.score} ${unit}`:''}.`],url:module.bound.page,label:'View on Bound',note:'Team scores as entered on Bound by the schools.'};
 }
+// Why a source read failed, as the record shows it: "<url>: HTTP 403", or
+// "HTTP 503 (waiting out an earlier HTTP 403)" when the source layer is still
+// backing off after a refusal and sent no request.
+function sourceFailure(url,r){
+  const why=r.headers.get('x-sas-source'),upstream=r.headers.get('x-sas-upstream-status');
+  return`${url}: HTTP ${r.status}${why==='backoff'?` (waiting out an earlier${upstream?` HTTP ${upstream}`:''} refusal; no request sent)`:why&&why!=='network'?` (${why})`:''}`;
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -4599,6 +4606,10 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   // A failed MaxPreps read leaves every past game without its score (and so
   // unlisted): the build is marked, and the feed keeps its last good copy.
   let scoresMissing=false;
+  // Each failed scores read: its page and why (HTTP code, or the refusal the
+  // source layer is still waiting out), for /live/status and the scheduled
+  // refresh's record.
+  const scoresErrors=[];
   for(const team of teams){
     const games=team.boundSchedule?boundDedupe(boundSchedule(boundRead.payloads,{school:module.bound.school,acts:team.boundSchedule.acts,level:team.boundSchedule.level,timeZone,noun:team.meet?'Meet':'Tournament'}),{meet:!!team.meet}).filter(game=>!module.skip?.test(game.name)):maxprepsOnly||team.maxprepsSchedule?[]:calendarEvents(payload,{prefix:module.calendar.prefix,team:team.calendar,parse:module.calendar.parse,timeZone}).filter(game=>!module.skip?.test(game.name));
     if(team.upcoming&&upcomingPayload){
@@ -4662,7 +4673,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // soccer page, a spring season with no games yet, failed every read,
       // so Manhattan soccer was never saved as a good copy).
       const needsScores=maxprepsOnly||team.maxprepsSchedule||games.some(game=>game.date<today);
-      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else if(needsScores)scoresMissing=true}catch{if(needsScores)scoresMissing=true}
+      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else if(needsScores){scoresMissing=true;scoresErrors.push(sourceFailure(url,r));}}catch(error){if(needsScores){scoresMissing=true;scoresErrors.push(`${url}: ${String(error?.name==='TimeoutError'?'timed out':error?.message||error).slice(0,120)}`);}}
     }
     // The school's Google Calendar fills days no other source has for the team.
     if(team.googleCalendar&&googleCalendar?.payload){
@@ -4800,7 +4811,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   }
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target)await highSchoolTargetHighlights(target);
-  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
+  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(scoresErrors.length?{scores_errors:scoresErrors}:{}),...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
@@ -4826,6 +4837,7 @@ async function highSchoolTargetHighlights(target){
 // Results do not change."). D1 (`CATALOG_DB`), one row per final, kept per
 // host (a branch preview never writes or reads production's rows). A build
 // that failed outright is left to the saved copies.
+const FINALS_EPOCH=1;
 let finalsTableReady=null;
 function ensureFinalsTable(db){
   if(!finalsTableReady)finalsTableReady=db.batch([db.prepare(FINALS_TABLE_SQL),db.prepare(FINALS_INDEX_SQL)]).catch(error=>{finalsTableReady=null;throw error});
@@ -4834,16 +4846,21 @@ function ensureFinalsTable(db){
 async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
   const db=env?.CATALOG_DB;
   if(!db||result.error||!Array.isArray(result.events))return result;
-  const scope=copyScope(requestCatalog.url||new URL(`https://${PRODUCTION_HOST}`)),year=highSchoolYear(now,school);
+  // Raising FINALS_EPOCH (every school) or a school module's
+  // highlightRevision (that school, as for its saved highlights) starts its
+  // stored finals afresh: a final a corrected reader no longer gives is not
+  // listed again from the old rows (they stay in the table).
+  const rev=schoolModule(school.id)?.school.highlightRevision;
+  const scope=`${copyScope(requestCatalog.url||new URL(`https://${PRODUCTION_HOST}`))}${FINALS_EPOCH>1?`|e${FINALS_EPOCH}`:''}${rev?`|r${rev}`:''}`,year=highSchoolYear(now,school);
   try{
     await ensureFinalsTable(db);
     const {results:rows=[]}=await db.prepare('SELECT event_key AS key, event, sig, history FROM finals WHERE scope=? AND school=? AND sport=? AND date BETWEEN ? AND ?').bind(scope,school.id,sport,year.start,year.end).all();
-    const {events,writes}=mergeFinals(result.events,rows,{now:now.toISOString(),compatible:namesCompatible});
+    const {events,writes}=mergeFinals(result.events,rows,{now:now.toISOString(),compatible:namesCompatible,write:!aiTargetId});
     if(writes.length)await db.batch(writes.map(w=>w.op==='insert'
       ?db.prepare('INSERT OR IGNORE INTO finals (scope, school, sport, event_key, date, event, sig, source, first_seen, last_changed, history) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(scope,school.id,sport,w.key,w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.first_seen,w.last_changed,'[]')
       :db.prepare('UPDATE finals SET date=?, event=?, sig=?, source=?, last_changed=?, history=? WHERE scope=? AND school=? AND sport=? AND event_key=?').bind(w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.last_changed,JSON.stringify(w.history),scope,school.id,sport,w.key)));
     const filled=events.filter(e=>e.stored_final).length;
-    if(aiTargetId){const target=events.find(e=>e.id===aiTargetId&&e.stored_final);if(target&&!target.highlights_verified)await highSchoolTargetHighlights(target);}
+    if(aiTargetId&&isHighSchool(school)){const target=events.find(e=>e.id===aiTargetId&&e.stored_final);if(target&&!target.highlights_verified)await highSchoolTargetHighlights(target);}
     // A refused scores source no longer costs the stored scores; the build
     // still counts as missing scores while a game it has reads "No score
     // posted" (it may be a new final the store does not have yet).
@@ -6235,7 +6252,17 @@ async function completedFromStories(events,school){
   }));
   return events.filter(event=>!(isBareCompleted(event)&&!event.recap_url&&!event.result_url&&!event.box_score_url));
 }
+// Every school's feed build. College finals are stored too (November 4,
+// user: "Fix them both"): a build whose official page failed is left to the
+// saved copies; otherwise its finals are written and this school year's
+// stored finals are read back (a final a later source read drops, such as a
+// meet whose results page failed, is listed again).
 async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
+  const result=await fetchLiveSource(schoolId,sport,env,aiTargetId),school=catalogSchool(schoolId);
+  if(!school||isHighSchool(school)||isPro(school)||result.official_failed)return result;
+  return withStoredFinals(result,school,sport,env,new Date(),aiTargetId);
+}
+async function fetchLiveSource(schoolId,sport,env=null,aiTargetId=null){
   const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
   if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);
@@ -6360,7 +6387,7 @@ function cacheResponse(response,state){const copy=new Response(response.body,res
 async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   const result=await fetchLive(school,sport,env);
   // The scheduled refresh records why a build was not saved.
-  if(report)Object.assign(report,{events:result.events.length,error:result.error||null,scores_missing:!!result.scores_missing,official_failed:!!result.official_failed});
+  if(report)Object.assign(report,{events:result.events.length,error:result.error||null,scores_missing:!!result.scores_missing,scores_errors:result.scores_errors||null,official_failed:!!result.official_failed});
   if(!result.events.length&&!result.live_source_used)return null;
   let events=result.events;
   // A build missing its scores source (a high school's MaxPreps read failed,
@@ -6479,7 +6506,7 @@ async function runRefreshBatch(env,{size=REFRESH_BATCH,gap=REFRESH_GAP_MS,force=
     try{
       await loadCatalogEntries(env,url,[school]);
       const built=await freshGroupedFeed(url,school,sport,env,caches.default,feedCacheKey(url,school,sport),report);
-      results.push({school,sport,ok:!!built&&!report.scores_missing&&!report.official_failed,ms:Date.now()-started,events:report.events??null,error:built?null:(report.error||(report.scores_missing?'scores source failed (saved copy kept)':'no usable events')),...(report.scores_missing?{scores_missing:true}:{}),...(report.official_failed?{official_failed:true}:{})});
+      results.push({school,sport,ok:!!built&&!report.scores_missing&&!report.official_failed,ms:Date.now()-started,events:report.events??null,error:report.scores_missing?`scores source failed${built?'':' (saved copy kept)'}: ${(report.scores_errors||['reason not recorded']).join('; ')}`:built?null:(report.error||'no usable events'),...(report.scores_missing?{scores_missing:true}:{}),...(report.official_failed?{official_failed:true}:{})});
     }catch(error){results.push({school,sport,ok:false,ms:Date.now()-started,error:String(error?.message||error).slice(0,300)});}
   }
   const status=nextStatus(previous,{at:new Date().toISOString(),version:VERSION,feeds:feeds.length,cursor,results});
@@ -6609,7 +6636,7 @@ export default{
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
   }
 };
