@@ -243,7 +243,7 @@ Lessons from October 8:
 
 ## Season records (user requests, October 7)
 
-User: "put the sports overall win/loss record for every sport", then "add the conference record too". Each sport's header reads `Record 3-2 · Big 12 1-1` (one record per team for a combined sport: `Men's 5-2-3 · Women's 6-3-1 (Big 12 1-2-1)`). The Worker counts both from the current season's finals (`seasonRecords` in `src/index.js`; `records[].conference` on `/live/feed/grouped`):
+User: "put the sports overall win/loss record for every sport", then "add the conference record too". Each sport's header reads `Record 3-2 · Big 12 1-1` (one record per team for a combined sport: `Men's 5-2-3 · Women's 6-3-1 (Big 12 1-2-1)`; since November 4 a combined sport always names each team, and a team with no finals yet reads `0-0`, so K-State's `Record 1-0` no longer reads as the men's while the men play their opener — `teamRecords` in `public/index.html`). The Worker counts both from the current season's finals (`seasonRecords` in `src/index.js`; `records[].conference` on `/live/feed/grouped`):
 - **Overall:** finals whose result line starts W/L/T; exhibitions and scrimmages out (labeled, or type `S` in SIDEARM page data), summer tours (basketball outside Nov-Apr) and fall ball (baseball, softball outside Feb-Jun) out; meets (places) have none.
 - **Conference:** `src/conference-games.mjs`. Games the school's own SIDEARM page data marks `conference: true` (9 schools incl. K-State, ASU, Oklahoma State, Utah); otherwise (KU, BYU, UCF, Cincinnati) regular-season games against conference members.
 - **Checked:** equal to the published records on the official pages for 14 school-sports (Iowa State ×4 and Oklahoma State soccer and K-State volleyball in tests; K-State football and soccer, Colorado, Baylor, Houston, Arizona, Utah on the preview); the fallback's football conference records equal ESPN's Big 12 standings (BYU 2-0, Cincinnati 1-1, UCF 1-1, KU 0-1).
@@ -462,3 +462,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 2 — K-State TV on every game** (#504, `3248b2e`; production `4.259.0-kstate-tv` verified).
 - **Nov 3 — Geary County, Kansas** (#506, `8be6046`; production `4.260.3-geary-county` verified).
 - **Nov 3 — Geary follow-ups** (#508, `679b787`; production `4.261.0-geary-fixes` verified): 1-mile JV races out for every Kansas middle school, saved copies, St. Xavier calendar via the Calendar API (waiting on the user to enable the API).
+- **Nov 4 — Men's and women's records named** (user: the K-State basketball header read `Record 1-0`, the women's, during the men's opener). `4.262.0-team-records`: a combined sport names each team's record and shows `0-0` for a team without finals. Publication: see the history entry.
