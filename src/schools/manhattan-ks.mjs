@@ -26,11 +26,13 @@ export const LETSGORUN_MEETPRO={
     // NCKL Championships at Abilene (November 5: Abilene, Chapman, Clay
     // Center, Marysville, Wamego, Rock Creek and their middle schools).
     '2026-10-15':['2026_NCKL_Cross_Country_Championships'],
-    // Found November 5 under last year's names (user: "Compare those. Let's
-    // go run meats"). The Abilene page prints 9/5 (a Manhattan header left
-    // on it); its runners and times are MileSplit Live's September 3 meet.
+    // Found November 5 under last year's names and compared with production
+    // (user: "Compare those. Let's go run meats"). The Abilene page prints
+    // 9/5 (a Manhattan header left on it); its runners and times are
+    // MileSplit Live's September 3 meet. Not added: Shawnee Heights MS
+    // (Sep 22; its "Eisenhower" is Topeka's, not Manhattan's) and Washburn
+    // Rural MS (Sep 25; no school in the app).
     '2026-09-03':['2026_Abilene_XC_Invitational'],
-    '2026-09-22':['2026_Shawnee_Heights_MS_Invitational'],
     '2026-10-03':['2026_Bob_Schmoekel_Cross_Country_Invitational'],
     '2026-10-17':['2026_Centennial_League_XC_Championships']
   },

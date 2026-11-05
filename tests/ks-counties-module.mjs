@@ -8,6 +8,7 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,BOUND_ACTS} from '../src/high-school.mjs';
 import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
+import {MS_XC_EXCLUDE} from '../src/high-school-builders.mjs';
 import {KS_COUNTY_FILES,KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from '../src/schools/ks-counties.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>{const b=gunzipSync(readFileSync(new URL('./fixtures/ks-counties/'+name,import.meta.url))).toString('utf8');return name.endsWith('.json.gz')?JSON.parse(b):b;};
@@ -98,6 +99,19 @@ const varsity=team=>meetProResults(nckl,team).filter(r=>/varsity/i.test(r.race))
 assert.deepEqual(varsity('Chapman'),['High School Girls Varsity: 4/5 6','High School Boys Varsity: 2/7 7']);
 assert.deepEqual(varsity('Clay Center'),['High School Girls Varsity: 3/5 7','High School Boys Varsity: 3/7 7']);
 assert.deepEqual(varsity('Marysville'),['High School Girls Varsity: 5/5 5','High School Boys Varsity: 6/7 7']);
+
+// More LetsGoRun meets, compared card by card with production first (user,
+// November 5: "Compare those. Let's go run meats"): Abilene (Sep 3), Bob
+// Schmoekel (Oct 3), Centennial League (Oct 17). Shawnee Heights MS (Sep 22)
+// is out: its "Eisenhower" is Topeka's school, not Manhattan's.
+assert.deepEqual(['2026-09-03','2026-10-03','2026-10-17'].map(d=>LETSGORUN_MEETPRO.folders[d]),[['2026_Abilene_XC_Invitational'],['2026_Bob_Schmoekel_Cross_Country_Invitational'],['2026_Centennial_League_XC_Championships']]);
+assert.equal(LETSGORUN_MEETPRO.folders['2026-09-22'],undefined);
+// The Abilene page names its varsity races "High School Boys/Girls": a middle
+// school reads the grade races only (Rock Creek MS had gained the high
+// school's places on the first comparison).
+const abileneMeet=fixture('meetpro-2026_Abilene_XC_Invitational.html.gz');
+assert.deepEqual(meetProResults(abileneMeet,'Rock Creek MS').filter(r=>!MS_XC_EXCLUDE.test(r.race)).map(r=>r.race),["7th Grade Men's","7th Grade Women's","8th Grade Men's","8th Grade Women's"]);
+assert.ok(MS_XC_EXCLUDE.test('High School Boys')&&MS_XC_EXCLUDE.test('High School Girls'));
 
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');
