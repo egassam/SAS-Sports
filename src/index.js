@@ -61,7 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
-import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals} from './finals-store.mjs';
+import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.270.2-onboarding-lessons';
+const VERSION='4.271.0-retracted-finals';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4876,7 +4876,8 @@ async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
   try{
     await ensureFinalsTable(db);
     const {results:rows=[]}=await db.prepare('SELECT event_key AS key, event, sig, history FROM finals WHERE scope=? AND school=? AND sport=? AND date BETWEEN ? AND ?').bind(scope,school.id,sport,year.start,year.end).all();
-    const {events,writes}=mergeFinals(result.events,rows,{now:now.toISOString(),compatible:namesCompatible,write:!aiTargetId});
+    const kept=rows.filter(r=>{try{return!retractedFinal(school.id,sport,typeof r.event==='string'?JSON.parse(r.event):r.event)}catch{return true}});
+    const {events,writes}=mergeFinals(result.events,kept,{now:now.toISOString(),compatible:namesCompatible,write:!aiTargetId});
     if(writes.length)await db.batch(writes.map(w=>w.op==='insert'
       ?db.prepare('INSERT OR IGNORE INTO finals (scope, school, sport, event_key, date, event, sig, source, first_seen, last_changed, history) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(scope,school.id,sport,w.key,w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.first_seen,w.last_changed,'[]')
       :db.prepare('UPDATE finals SET date=?, event=?, sig=?, source=?, last_changed=?, history=? WHERE scope=? AND school=? AND sport=? AND event_key=?').bind(w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.last_changed,JSON.stringify(w.history),scope,school.id,sport,w.key)));

@@ -4272,3 +4272,9 @@ User, after the list of what is left: "I do not want parents or non time scorers
   - Council Grove volleyball vs Chase County: HTTP 404. Watch item: the game's id may differ between builds when a MaxPreps read fails.
   - Both passed on rerun (12/12, 29/29).
 
+
+**Merge, production and a stored final (November 5, evening).**
+- #527 merged as `05c9c3b`. Production `4.270.2-onboarding-lessons`, `verify:prod` all 45 middle and high schools: 925 PASS; 2 FAIL (Riley County and Wabaunsee volleyball, one refresh with status 0), both 3/3 on rerun. XC 18/20 and 26/21.
+- By eye: Junction City Sep 19 Shufelberger "Girls 10th of 10 · Boys 10th of 12" (right).
+- **Sep 5 Greg Wilson Classic still read "Boys 6th of 11".** Production's stored finals had the wrong card from before the fix, and the store lists a final again when the sources stop giving it. The preview never stored it, so `diff:feeds` showed the corrected card there.
+- Fix: `RETRACTED_FINALS` + `retractedFinal` in `src/finals-store.mjs`, filtered in `withStoredFinals` before `mergeFinals`. Tested in `tests/finals-store.mjs`.

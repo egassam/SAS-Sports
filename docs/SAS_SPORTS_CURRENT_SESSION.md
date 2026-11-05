@@ -16,6 +16,10 @@ Last updated: November 5, 2026 (Central, afternoon). **Lessons from the day's se
   - Rerun for Clay County, it matched the hand-built entries and found the Shufelberger TopCity Classic (Sep 19), now added: Junction City gains team places.
 - **Final `diff:feeds` (cross country, 42 feeds):** 41 the same; Junction City Sep 5 (corrected) and Sep 19 (gained).
 - **Working notes** gained the session's lessons (stuck preview builds, client names, one release run per final commit, refresh batch).
+- **#527 merged** (`05c9c3b`); production `4.270.2` `verify:prod` 925 PASS; 2 failed on a sandbox connection error and passed on rerun.
+  - **Production still showed the wrong Sep 5 card** from its stored finals: a saved final is listed again when the sources stop giving it.
+  - Fixed in the next PR: `RETRACTED_FINALS` in `src/finals-store.mjs` (school, sport, day, reason) is never listed again from the store.
+  - Lesson: after a fix that changes production's cards, check production's card itself.
 
 Earlier, November 5, 2026 (Central, midday). **LetsGoRun cross country meets compared with production** (user: "Compare those. Let's go run meats").
 - **What was compared:** the five 2026 LetsGoRun folders found earlier were added on a preview, and all 42 middle and high school cross country feeds were compared card by card with production.
@@ -546,3 +550,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — Stored finals for colleges, HTTP codes in refresh records** (user: "Fix them both"): #521 (`4.267.1`), production verified.
 - **Nov 5 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas** (#523 merged `945ad04`, production `4.268.2-ks-counties` verified; 16 schools as data; rule: several counties per session).
 - **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). #525 merged `fa7d9c5`, production `4.269.1-letsgorun-xc` verified.
+- **Nov 5 — Lessons built** (#527: `diff:feeds`, `stored=0`, LetsGoRun folder check, survey sources, schedule-pairing test; Shufelberger added) and **retracted stored finals** (Junction City Sep 5).
