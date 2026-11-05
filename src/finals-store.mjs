@@ -34,6 +34,14 @@ export function isStoredFinal(e){
 }
 // What a final says: its result and every results row. Two readings of one
 // final with the same signature are the same final.
+// A game's result is its score and headline: rows a build adds to it (a box
+// score, an expanded view's lines) do not make it a different result, so the
+// store is not rewritten for them. A meet's result is its results rows too.
+export function resultChanged(row,e){
+  const event=typeof row.event==='string'?JSON.parse(row.event):row.event;
+  if(isMeet(e))return row.sig!==finalSig(e);
+  return(event.headline||null)!==(e.headline||null)||String(event.school_score??'')!==String(e.school_score??'')||String(event.opponent_score??'')!==String(e.opponent_score??'');
+}
 export function finalSig(e){
   return JSON.stringify([e.headline||null,e.school_score??null,e.opponent_score??null,(e.results||[]).map(r=>[r.group??null,r.participant??r.label??null,r.result??r.value??null])]);
 }
@@ -72,7 +80,7 @@ export const exactFinal=(a,b)=>day(a)===day(b)&&(a.team_label||'')===(b.team_lab
 // Every match is tried on the exact opponent first and only then on a
 // compatible name ("Topeka" and "Topeka High"), so a triangular's two
 // matches (Topeka and Topeka West) never trade scores.
-export function mergeFinals(built,stored,{now=new Date().toISOString(),source=null,compatible=null}={}){
+export function mergeFinals(built,stored,{now=new Date().toISOString(),source=null,compatible=null,write=true}={}){
   const events=[...built],writes=[],keys=finalKeys(built),used=new Set(),claimed=new Set();
   const rows=(stored||[]).map(r=>({...r,event:typeof r.event==='string'?JSON.parse(r.event):r.event}));
   // 1. What the build has: each built final's row, by key, then exactly, then compatibly.
@@ -83,8 +91,14 @@ export function mergeFinals(built,stored,{now=new Date().toISOString(),source=nu
   for(const i of finals){
     const e=built[i],sig=finalSig(e),row=rowFor.get(i);
     claimed.add(i);
+    // Never a downgrade: a stored meet with verified official results (a
+    // TFRRS race, a timer's results) is kept over a build whose results step
+    // failed this time (TFRRS refused a burst of reads on November 4: cards
+    // fell back to the schedule's places without points). Shown from the
+    // store, nothing written.
+    if(row&&isMeet(e)&&row.event.meet_results_verified===true&&e.meet_results_verified!==true){events[i]={...row.event,stored_final:true};continue;}
     if(!row)writes.push({op:'insert',key:keys[i],date:day(e),event:e,sig,source,first_seen:now,last_changed:now,history:[]});
-    else if(row.sig!==sig){
+    else if(row.sig!==sig&&resultChanged(row,e)){
       const history=[{event:row.event,sig:row.sig,replaced:now},...(row.history?JSON.parse(typeof row.history==='string'?row.history:JSON.stringify(row.history)):[])].slice(0,HISTORY_KEEP);
       writes.push({op:'update',key:row.key,date:day(e),event:e,sig,source,last_changed:now,history});
     }
@@ -104,5 +118,6 @@ export function mergeFinals(built,stored,{now=new Date().toISOString(),source=nu
     }
   // A stored final the build does not list at all is listed again.
   for(const row of left)if(!used.has(row))events.push({...row.event,stored_final:true});
-  return{events,writes};
+  // An expanded view's build (one event enriched for its view) only reads.
+  return{events,writes:write?writes:[]};
 }
