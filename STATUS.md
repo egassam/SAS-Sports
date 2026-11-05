@@ -13,8 +13,7 @@
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | west-georgia | Basketball | ❌ failing | Women's · West Georgia at Georgia: result reads "L, 92-53", ESPN final L, 53-92 |
-| north-florida | Basketball | 🔴 on | live 43-29 · 9:32 - 3rd · official_schedule+live_scoreboard |
-| towson | Basketball | 🔴 on | live 43-33 · Halftime · official_schedule+live_scoreboard |
+| robert-morris | Basketball | 🔴 on | live 55-61 · 2:57 - 4th · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -687,7 +686,6 @@
 | rider | Baseball | ⚪ off (waiting) |  |
 | rider | Lacrosse | ⚪ off (waiting) |  |
 | rider | Softball | ⚪ off (waiting) |  |
-| robert-morris | Basketball | ⚪ off (waiting) |  |
 | robert-morris | Football | ⚪ off (waiting) |  |
 | robert-morris | Lacrosse | ⚪ off (waiting) |  |
 | robert-morris | Softball | ⚪ off (waiting) |  |
@@ -1544,6 +1542,7 @@
 | north-dakota-state | Football | ✅ off (passed) | North Dakota State vs UTEP · 2026-10-31T23:49:37.365Z |
 | north-dakota-state | Soccer | ✅ off (passed) | North Dakota State vs North Dakota · 2026-10-25T01:30:06.775Z |
 | north-dakota-state | Volleyball | ✅ off (passed) | North Dakota State vs Kansas City · 2026-10-30T02:55:10.717Z |
+| north-florida | Basketball | ✅ off (passed) | Women's · North Florida at Florida St · 2026-11-05T22:38:27.724Z |
 | north-florida | Soccer | ✅ off (passed) | Women's · North Florida at Jacksonville · 2026-10-31T23:49:37.951Z |
 | north-florida | Volleyball | ✅ off (passed) | North Florida vs West Florida · 2026-10-24T01:59:35.509Z |
 | north-texas | Basketball | ✅ off (passed) | Women's · North Texas vs Newman · 2026-11-03T06:08:40.811Z |
@@ -1806,6 +1805,7 @@
 | toledo | Football | ✅ off (passed) | Toledo vs W Michigan · 2026-10-24T21:15:41.055Z |
 | toledo | Soccer | ✅ off (passed) | Toledo at E Michigan · 2026-10-24T21:15:41.295Z |
 | toledo | Volleyball | ✅ off (passed) | Toledo vs Ohio · 2026-10-23T23:38:05.282Z |
+| towson | Basketball | ✅ off (passed) | Women's · Towson vs Frostburg St · 2026-11-05T22:38:33.337Z |
 | towson | Field Hockey | ✅ off (passed) | Towson vs UC Davis · 2026-10-25T19:08:42.570Z |
 | towson | Volleyball | ✅ off (passed) | Towson at NC A&T · 2026-10-30T02:50:57.055Z |
 | troy | Football | ✅ off (passed) | Troy vs UL Monroe · 2026-10-24T23:24:10.663Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 956/1956; on 2; off 985; failing 13.
+Done 958/1956; on 1; off 984; failing 13.

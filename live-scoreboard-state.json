@@ -6356,7 +6356,7 @@
   },
   "saint-marys|Basketball": {
    "state": "failing",
-   "last_check": "2026-11-05T17:01:16.805Z",
+   "last_check": "2026-11-05T22:47:42.923Z",
    "last_detail": "result reads \"W, 105-64\", ESPN final L, 42-112",
    "game": {
     "key": "saint-marys|Basketball|Men's|2026-11-04|1",
@@ -6373,9 +6373,9 @@
     "final_ok": false,
     "final_due": "2026-11-05T08:52:46.081Z"
    },
-   "failures": 6,
+   "failures": 12,
    "last_failure": {
-    "at": "2026-11-05T17:01:16.805Z",
+    "at": "2026-11-05T22:47:42.923Z",
     "game": "Men's · Saint Mary's at S Indiana",
     "detail": "result reads \"W, 105-64\", ESPN final L, 42-112"
    }
@@ -7401,23 +7401,13 @@
    "state": "off"
   },
   "north-florida|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-05T17:00:58.387Z",
-   "last_detail": "live 43-29 · 9:32 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "north-florida|Basketball|Women's|2026-11-05|1",
-    "title": "Women's · North Florida at Florida St",
-    "started_seen": "2026-11-05T16:51:56.972Z",
-    "live_passes": [
-     "2026-11-05T16:51:56.972Z",
-     "2026-11-05T16:54:00.269Z",
-     "2026-11-05T16:55:22.192Z",
-     "2026-11-05T16:57:28.733Z",
-     "2026-11-05T16:58:53.533Z",
-     "2026-11-05T17:00:58.387Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-05T22:38:27.724Z",
+   "last_detail": "final L, 63-74",
+   "game": null,
+   "verified_at": "2026-11-05T22:38:27.724Z",
+   "verified_game": "Women's · North Florida at Florida St",
+   "verified_detail": "final L, 63-74"
   },
   "north-florida|Soccer": {
    "state": "done",
@@ -8515,23 +8505,13 @@
    "state": "off"
   },
   "towson|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-05T17:00:37.933Z",
-   "last_detail": "live 43-33 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "towson|Basketball|Women's|2026-11-05|1",
-    "title": "Women's · Towson vs Frostburg St",
-    "started_seen": "2026-11-05T16:51:56.423Z",
-    "live_passes": [
-     "2026-11-05T16:51:56.423Z",
-     "2026-11-05T16:53:59.184Z",
-     "2026-11-05T16:55:22.466Z",
-     "2026-11-05T16:57:30.162Z",
-     "2026-11-05T16:59:12.134Z",
-     "2026-11-05T17:00:37.933Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-05T22:38:33.337Z",
+   "last_detail": "final L, 92-94",
+   "game": null,
+   "verified_at": "2026-11-05T22:38:33.337Z",
+   "verified_game": "Women's · Towson vs Frostburg St",
+   "verified_detail": "final L, 92-94"
   },
   "towson|Field Hockey": {
    "state": "done",
@@ -8777,7 +8757,23 @@
    "verified_detail": "final W, 3-2"
   },
   "robert-morris|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-05T22:47:22.303Z",
+   "last_detail": "live 55-61 · 2:57 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "robert-morris|Basketball|Women's|2026-11-05|1",
+    "title": "Women's · Robert Morris vs UIC",
+    "started_seen": "2026-11-05T22:38:26.533Z",
+    "live_passes": [
+     "2026-11-05T22:38:26.533Z",
+     "2026-11-05T22:40:29.783Z",
+     "2026-11-05T22:41:52.730Z",
+     "2026-11-05T22:43:55.928Z",
+     "2026-11-05T22:45:18.081Z",
+     "2026-11-05T22:47:22.303Z"
+    ],
+    "final_ok": false
+   }
   },
   "robert-morris|Football": {
    "state": "off"
@@ -9921,7 +9917,7 @@
   },
   "liu|Basketball": {
    "state": "failing",
-   "last_check": "2026-11-05T17:01:16.529Z",
+   "last_check": "2026-11-05T22:47:42.899Z",
    "last_detail": "final L, 51-69 not in the app's results",
    "game": {
     "key": "liu|Basketball|Women's|2026-11-04|1",
@@ -9931,9 +9927,9 @@
     "final_ok": false,
     "final_due": "2026-11-05T08:52:46.081Z"
    },
-   "failures": 6,
+   "failures": 12,
    "last_failure": {
-    "at": "2026-11-05T17:01:16.529Z",
+    "at": "2026-11-05T22:47:42.899Z",
     "game": "Women's · LIU at Texas St",
     "detail": "final L, 51-69 not in the app's results"
    }
@@ -11925,7 +11921,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.268.2-ks-counties",
- "updated_at": "2026-11-05T17:01:16.811Z",
+ "version": "4.271.0-retracted-finals",
+ "updated_at": "2026-11-05T22:47:42.928Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
