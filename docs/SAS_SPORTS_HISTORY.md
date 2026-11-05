@@ -4063,3 +4063,32 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - Merged as `110faf2`. Production live 23:16 UTC; `verify:prod` 546/546, XC 18/20 and 26/21; `/live/status` on all 181 feeds: `finals_store` read 686, written 0, errors 0.
 
 **Open.** Colleges are not stored yet. The scheduled refresh's records could carry each failed read's HTTP code.
+
+## November 4-5, 2026 — Stored finals for colleges; scores-read HTTP codes (PR #521)
+
+**Request.** User: "Fix them both" (stored finals for colleges, and the HTTP code in the scheduled refresh's failure records).
+
+**Built.**
+- **`4.267.0`:**
+  - `fetchLive` became a wrapper over `fetchLiveSource`, and college builds go through `withStoredFinals`. Pro builds and builds with `official_failed` or an error do not.
+  - A school module's `highlightRevision` joins the rows' scope, plus a global `FINALS_EPOCH`: raising either starts a school's stored finals afresh.
+  - Expanded-view builds only read (`write:!aiTargetId`).
+  - `resultChanged`: a game is rewritten only when its headline or score changes.
+  - `sourceFailure` records each failed MaxPreps read's page and HTTP code, or the source layer's backoff ("HTTP 503 (waiting out an earlier HTTP 403 refusal; no request sent)"), as `scores_errors` on `/live/status`. The refresh record prints them.
+- **Found on the preview:** a burst of cold college builds made TFRRS refuse meet pages. Cards fell back to the schedule's places without points, and the store wrote those poorer results over the stored ones (Houston read 4, wrote 4).
+- **`4.267.1`:** a stored meet with `meet_results_verified` is never replaced by an unverified build; the stored result is shown and nothing is written. After TFRRS answered, Houston showed its points again (3 of 4 meets at once; Arturo Barrios a little later).
+
+**Evidence.**
+- **`test:release`:** passed on `dd93a41` and on `b53284f`. CI green.
+- **Preview `verify:preview`:** K-State and KU all sports, 36 refreshes, on `4.267.0` and again on `4.267.1` (69 PASS each, XC 18/20 and 26/21); 29 middle and high schools, 3 refreshes, 546/546.
+- **College scan, pass 1:** preview vs production on 3,702 of 3,704 feeds, 114 different.
+  - 109 cross country (TFRRS points missing on the preview's cold builds).
+  - Montana State tennis and Fairfield tennis: story or "Completed" headlines read at different moments.
+  - Miami (OH) golf (story headline) and Davidson golf (one place).
+  - Davidson soccer: the women's page missing on a cold build; identical on fresh builds, 37 rows and 18 women's games each, store read 34, wrote 0.
+  - 502s: Arkansas football (fine on retry) and South Carolina track (502 in production too).
+  - The scripted pass 2 over every feed was stopped for time.
+- **Stability sample instead:** 247 feeds, every 15th of the list, two forced rebuilds each, all identical, no failures; 1,771 stored finals read, 28 rewritten.
+- **Merged** as `b92fea6`. Production `4.267.1-college-finals`: `verify:prod` K-State and KU all sports passed (XC 18/20 and 26/21); 29 middle and high schools 546/546.
+
+**Open.** A full two-pass scan of every college feed was not completed (time); the sample stands in for it. Watch `/api/refresh-status` for the new failure reasons.
