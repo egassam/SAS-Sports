@@ -130,6 +130,13 @@ const mhsFixture=name=>gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-
 assert.equal(meetProFolderFits('Milford State Park meet',{folder:'2026_Fort_Riley_XC_Invitational',html:mhsFixture('meetpro-2026_Fort_Riley_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Milford State Park'}),true,'Fort Riley MS meet at Milford Lake');
 assert.equal(meetProFolderFits('Greg Wilson Classic',{folder:'2026_Manhattan_XC_Invitational',html:mhsFixture('meetpro-2026_Manhattan_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Warner Park'}),true,'Manhattan\'s meet at Warner Park');
 
+assert.equal(meetProFolderFits('MS XC',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets,venue:'Great Life Golf Course'}),true,'a venue only counts for a folder');
+// Junction City's Greg Wilson Classic (Sep 5, Johnson County Community
+// College) is not LetsGoRun's Manhattan XC Invitational of the same day,
+// where a Junction City squad also ran: production had shown the Manhattan
+// places on the Greg Wilson card.
+assert.equal(meetProFolderFits('Greg Wilson Classic',{folder:'2026_Manhattan_XC_Invitational',html:mhsFixture('meetpro-2026_Manhattan_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Johnson County Community College'}),false);
+
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');
 const [boys7,boys8]=ams.sports.Basketball.filter(t=>/^(?:7th|8th) Boys$/.test(t.label));

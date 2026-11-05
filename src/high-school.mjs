@@ -469,8 +469,11 @@ const FOLDER_WORDS=new Set('middle ms jh jhs grade 7th 8th boys girls men women 
 export function meetProPlace(html){const m=String(html||'').match(/class="[^"]*m-info[^"]*">([\s\S]*?)<\/div>/);return m?clean(m[1].replace(/<[^>]+>/g,' ')).replace(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/,'').trim():'';}
 export function meetProFolderFits(name,{folder='',html='',aliases={},venue=''}={}){
   const words=n=>new Set([...meetWords(n)].filter(w=>!FOLDER_WORDS.has(w)));
-  const want=new Set([...words(name),...words(aliases[name]||''),...words(venue)]);
-  if(!want.size)return true;
+  // The venue only ever counts for a folder: a schedule name with no word of
+  // its own ("MS XC" at the Great Life Golf Course) takes the day's folder.
+  const own=new Set([...words(name),...words(aliases[name]||'')]);
+  if(!own.size)return true;
+  const want=new Set([...own,...words(venue)]);
   const have=words(`${String(folder).replace(/_/g,' ')} ${meetProName(html)||''} ${meetProPlace(html)}`);
   if([...want].some(w=>have.has(w)))return true;
   // A calendar may name the meet for its host ("Flint Hills Christian at
