@@ -125,6 +125,11 @@ assert.equal(meetProFolderFits('Blue Jay Invitational Cross Country Meet',{folde
 assert.equal(meetProFolderFits('MS XC',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets}),true,'a name with no word of its own takes the day\'s folder');
 assert.equal(meetProFolderFits('Great Life Golf Course meet',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets}),true);
 
+// A meet named for its venue (Bound's address): the page's place block.
+const mhsFixture=name=>gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-module/'+name,import.meta.url))).toString('utf8');
+assert.equal(meetProFolderFits('Milford State Park meet',{folder:'2026_Fort_Riley_XC_Invitational',html:mhsFixture('meetpro-2026_Fort_Riley_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Milford State Park'}),true,'Fort Riley MS meet at Milford Lake');
+assert.equal(meetProFolderFits('Greg Wilson Classic',{folder:'2026_Manhattan_XC_Invitational',html:mhsFixture('meetpro-2026_Manhattan_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Warner Park'}),true,'Manhattan\'s meet at Warner Park');
+
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');
 const [boys7,boys8]=ams.sports.Basketball.filter(t=>/^(?:7th|8th) Boys$/.test(t.label));

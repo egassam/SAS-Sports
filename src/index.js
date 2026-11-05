@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.270.0-onboarding-lessons';
+const VERSION='4.270.1-onboarding-lessons';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4253,7 +4253,7 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader(),li
   for(const folder of folders){
     const html=await page(folder);if(!html)continue;
     // A folder filed only by the day must be this meet (meetProFolderFits).
-    if(folder!==game.meetProFolder&&!meetProFolderFits(game.name,{folder,html,aliases:KS_ALIASES.meets}))continue;
+    if(folder!==game.meetProFolder&&!meetProFolderFits(game.name,{folder,html,aliases:KS_ALIASES.meets,venue:game.address||game.location||''}))continue;
     if(own.track){const r=await meetProTrackResultsFor(school,config,own,folder,html,read,live);if(r)return r;continue;}
     const races=meetProResults(html,own.team).filter(r=>(!own.races||own.races.test(r.race))&&!(own.exclude&&own.exclude.test(r.race)));
     if(!races.length)continue;

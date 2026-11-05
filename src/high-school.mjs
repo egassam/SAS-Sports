@@ -463,11 +463,15 @@ const meetWords=s=>new Set(String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' '
 // title. A schedule name with no word of its own ("MS XC") takes the day's
 // folder, as before.
 const FOLDER_WORDS=new Set('middle ms jh jhs grade 7th 8th boys girls men women mens womens junior senior two mile 5k 2026 2027'.split(' '));
-export function meetProFolderFits(name,{folder='',html='',aliases={}}={}){
+// The game's venue (Bound's `address`: "Milford State Park" for the Fort
+// Riley MS meet, "Warner Park" for Manhattan's) counts too, against the
+// page's place block (town, venue, host school).
+export function meetProPlace(html){const m=String(html||'').match(/class="[^"]*m-info[^"]*">([\s\S]*?)<\/div>/);return m?clean(m[1].replace(/<[^>]+>/g,' ')).replace(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/,'').trim():'';}
+export function meetProFolderFits(name,{folder='',html='',aliases={},venue=''}={}){
   const words=n=>new Set([...meetWords(n)].filter(w=>!FOLDER_WORDS.has(w)));
-  const want=new Set([...words(name),...words(aliases[name]||'')]);
+  const want=new Set([...words(name),...words(aliases[name]||''),...words(venue)]);
   if(!want.size)return true;
-  const have=words(`${String(folder).replace(/_/g,' ')} ${meetProName(html)||''}`);
+  const have=words(`${String(folder).replace(/_/g,' ')} ${meetProName(html)||''} ${meetProPlace(html)}`);
   if([...want].some(w=>have.has(w)))return true;
   // A calendar may name the meet for its host ("Flint Hills Christian at
   // Junction City", October 3): the host is a team in the results.
