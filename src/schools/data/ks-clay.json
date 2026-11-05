@@ -1,0 +1,100 @@
+{
+ "state": "ks",
+ "counties": [
+  "Clay"
+ ],
+ "module_doc": "docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs on November 5, 2026. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "clay-center-ks",
+   "name": "Clay Center Community High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045156578c37ec1a3e5a54b",
+    "slug": "ccenter"
+   },
+   "maxpreps": {
+    "schoolId": "2c1dc9bd-a2ce-4afb-aec3-1882538e2973",
+    "path": "clay-center/clay-center-tigers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 79,
+    "code": "CC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Clay Center",
+    "tennis": "Clay Center Community HS",
+    "milesplit": 21807
+   }
+  },
+  {
+   "id": "wakefield-ks",
+   "name": "Wakefield High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452088014de53e66184f4d",
+    "slug": "wakefieldhs"
+   },
+   "maxpreps": {
+    "schoolId": "17ca41bd-a9d3-469a-8ffc-8221fb0a05d3",
+    "path": "wakefield/wakefield-bombers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Track & Field"
+    ],
+    "meetTeam": "Wakefield",
+    "milesplit": 21944,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "clay-center-ms-ks",
+   "name": "Clay Center Community Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250612074218435c3da8844e90643",
+    "slug": "cccms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Clay Center"
+   }
+  }
+ ]
+}

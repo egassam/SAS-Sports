@@ -240,9 +240,12 @@ async function main(){
     const counts={};
     for(const [act,ids] of Object.entries(BOUND_ACTS)){
       const current=new Set(),last=new Set();
+      // Bound answers some schools' events with every sport whatever `idAct`
+      // asks (Herington and Solomon, November 5: volleyball under swimming),
+      // so each event's own act is checked, as `boundSchedule` does.
       for(const id of ids){
         try{const p=JSON.parse(await get(boundEventsUrl(row.bound.bound,{start:`${y-1}-07-01`,end:`${y+1}-06-30`,act:id}),{headers:{Accept:'application/json'}}));
-          for(const g of Array.isArray(p)?p:[])for(const e of g?.Events||[])if(e?.RecordType==='comp'&&(e.Teams||[]).some(t=>t.HostSchoolID===row.bound.bound)&&(row.level==='middle-school'?MS_LEVEL:VARSITY_LEVEL).test(String(e.LevelDisplay||'').trim())){
+          for(const g of Array.isArray(p)?p:[])for(const e of g?.Events||[])if(e?.RecordType==='comp'&&(e.IDAct===id||(e.IDActs||[]).includes(id))&&(e.Teams||[]).some(t=>t.HostSchoolID===row.bound.bound)&&(row.level==='middle-school'?MS_LEVEL:VARSITY_LEVEL).test(String(e.LevelDisplay||'').trim())){
             const day=String(e.StartDateTime||'').slice(0,10);(day>=`${y}-07-01`?current:last).add(day);}}catch{}
       }
       counts[act]={current:current.size,last:last.size};

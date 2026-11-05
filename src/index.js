@@ -65,6 +65,7 @@ import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals} from './fin
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
+import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
 import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
@@ -340,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.267.1-college-finals';
+const VERSION='4.268.2-ks-counties';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -3995,7 +3996,7 @@ function makeEvent({school,sport,status,relation,opponent,date,time,schoolScore,
 // High schools (src/high-school.mjs): the school's calendar is the schedule
 // and MaxPreps the scores. Each high school's module names its calendar, its
 // MaxPreps team pages and the varsity teams of each sport.
-const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS,...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS,...KAS_KS_HIGH_SCHOOLS];
+const HIGH_SCHOOL_MODULES=[manhattanKsSchool,anthonyMsSchool,eisenhowerMsSchool,...RILEY_POTTAWATOMIE_HIGH_SCHOOLS,...RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS,...GEARY_HIGH_SCHOOLS,...GEARY_MIDDLE_SCHOOLS,...KAS_KS_HIGH_SCHOOLS,...KS_COUNTY_HIGH_SCHOOLS,...KS_COUNTY_MIDDLE_SCHOOLS];
 const highSchoolModule=id=>HIGH_SCHOOL_MODULES.find(module=>module.id===id)||null;
 // Middle schools have their own level (October 21) and the same readers.
 const isHighSchool=school=>school?.level==='high-school'||school?.level==='middle-school';
@@ -4711,6 +4712,18 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       for(const game of games.filter(g=>g.date>=today&&!g.final&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,now});
         if(event)events.push(event);
+      }
+      // A school that enters few of its games on Bound (`maxprepsSchedule`,
+      // November 5: Wabaunsee's Nov 6 playoff game at Olpe was on MaxPreps
+      // only): MaxPreps' games without a score that Bound lacks, coming ones
+      // and past ones ("No score posted"). A Bound tournament day keeps its
+      // own entry.
+      if(team.maxprepsSchedule){
+        const onBound=c=>games.some(g=>g.date===c.date&&(g.h2h===false||g.h2h==null&&isNamedEvent(g.name)||namesCompatible(c.opponent,g.name)));
+        for(const c of contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!onBound(c))){
+          const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',now});
+          if(event)events.push(event);
+        }
       }
       continue;
     }

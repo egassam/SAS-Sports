@@ -4092,3 +4092,66 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - **Merged** as `b92fea6`. Production `4.267.1-college-finals`: `verify:prod` K-State and KU all sports passed (XC 18/20 and 26/21); 29 middle and high schools 546/546.
 
 **Open.** A full two-pass scan of every college feed was not completed (time); the sample stands in for it. Watch `/api/refresh-status` for the new failure reasons.
+
+## November 5, 2026 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas (PR #523)
+
+**Conversation.**
+- User: "Adding more countries in Kansas. Is it going to be easier to add many schools at once?" (then "Counties").
+  - Answer: yes, since the Nov 4 onboarding work. Per-school costs remain: schools not on Bound, hand checks, the 30 s spacing for KSHSAA and MaxPreps, a bigger merge gate, and a slower scheduled refresh. Recommended 3–4 neighboring counties per session.
+- User: "Change the rule to we can add as many counties we think one session can handle. Add counties of your choosing. Skip any schools that will slow down the process for example ones that you have to build."
+  - `AGENTS.md` 5c gained "Several counties per session".
+  - Counties chosen: Dickinson, Wabaunsee, Morris, Clay and Marshall, which border Riley, Pottawatomie and Geary.
+- User, mid-work: "Did you look on let's go run for cross country results?"
+  - At first only the app's six known 2026 LetsGoRun folders had been checked. Then the results listing and the tfmeetpro folder tree were searched (below).
+- The preview never built the final commit (`c74a498`). User: "I can't look why. I'm working." So the handoff commit was pushed to the branch to start a new build.
+
+**Survey.**
+- `onboard-hs` ran for each county one after another (12:35–12:53 UTC). Hand checks:
+  - **Bound sport counts re-done.** Bound's events API ignored `idAct` for some schools (Herington and Solomon: volleyball came back under swimming, bowling and soccer). The survey now keeps only events whose own `IDAct`/`IDActs` is the act asked; the Worker's `boundSchedule` already did this.
+  - **Prep.Golf codes:** the code common to a school's posted varsity tournaments. ABI, CHAP, HER, SLM, CG, CC, MVL, VH, FRA.
+  - **TennisReporting names:** every school in TennisReporting's 53 Kansas events (149 names). "Abilene HS", "Chapman HS", "Wabaunsee HS", "Clay Center Community HS", "Marysville HS".
+  - **School websites** from KSHSAA's directory (13 towns, 30 s apart).
+  - **MaxPreps pages found by hand** (one source-route read every 31 s): Axtell (`485040ec-…`) and Wakefield (`17ca41bd-…`; the school page had no mascot id, the schedule page's `schoolId` gave it). Rural Vista (`white-city/rural-vista-heat`): 404.
+- **Bound coverage.** Few football or volleyball games entered: Solomon, Wabaunsee (1 of 10 football games; MaxPreps has all 10), Mission Valley, Council Grove, Wakefield, Valley Heights, Frankfort, Axtell. These got `sports.maxprepsSchedule`.
+- **Skipped:** about 14 schools, each in the module doc with its reason.
+
+**Code.**
+- Five data files and `src/schools/ks-counties.mjs`, read by `HIGH_SCHOOL_MODULES`.
+- `boundHighSchool({maxprepsSchedule})`.
+- Catalog, sponsored sports and themes (Bound colors; panel ×0.45, panelDark ×0.2, line 25% toward white).
+- `tests/ks-counties-module.mjs` with Nov 5 fixtures: Bound Abilene football, Wabaunsee football and Abilene MS boys' basketball; MaxPreps Wabaunsee football; MeetPro NCKL.
+- `tests/catalog-module.mjs`: Kansas counties and two county menus.
+
+**Preview, first build (`4.268.0`).**
+- `verify:preview` for the 16 schools, all sports, 3 refreshes: 384 PASS, 0 FAIL, XC 18/20 and 26/21.
+- Checked by eye: Wabaunsee football showed its 9 MaxPreps finals but not the Nov 6 playoff game at Olpe. The Bound game-sports path `continue`d before the `maxprepsSchedule` step. Fixed: unscored MaxPreps games Bound lacks are now listed, with a Bound tournament day keeping its own entry (`93bcf3d`).
+- Cross country "No results posted" rows were compared with the statewide MileSplit Live index:
+  - Oct 15 NCKL Championships: Bound calls it "Great Life Golf Course meet"; alias added. It also fills Wamego and Rock Creek, which are in production.
+  - Wabaunsee at the Riley County Invitational (Oct 10): MileSplit Live lists the team (code 17), but no varsity result is read. Open.
+  - Council Grove Sep 10: Bound says Hesston; MileSplit Live has the team at Lyndon. Open.
+  - The rest are not on MileSplit Live.
+
+**LetsGoRun.**
+- `letsgoruncom.rsupartner.com/race-results` lists one 2026 cross country meet, Clay Center, which was already read.
+- `results.tfmeetpro.com/LetsGoRun_Timing/` under last year's names:
+  - 200: 2026 Abilene XC Invitational (page date 9/5), NCKL Cross Country Championships (10/15), Bob Schmoekel (10/3), Centennial League XC (10/17), Washburn Rural MS (9/25), Shawnee Heights MS (9/22).
+  - 404: Emporia, Topeka City, Minneapolis, Blue Valley League MS, Anthony/Eisenhower, Marysville, NCKL MS.
+- NCKL added (`folders['2026-10-15']`). `meetProResults` reads varsity places for Abilene 5/7 boys; Chapman 4/5 girls and 2/7 boys; Clay Center 3/5 and 3/7; Marysville 5/5 and 6/7; plus the grade races.
+- The other five were not added: their schools are already in the app with MileSplit Live results, and LetsGoRun is read first, so they need a comparison before they replace verified cards.
+- `tests/hs-config.mjs` now checks every earlier LetsGoRun folder is still listed and compares modules without the folder list.
+
+**Tests.**
+- `npm run test:release` passed on `f649cb5`, `2b619d8` and `c74a498` (a run on `93bcf3d` was stopped for the alias commit).
+- CI (guardrails, certification matrix) green.
+
+**Publication.**
+- PR #523 is open, not merged.
+- The preview served `4.268.1` (`2b619d8`) and never built `c74a498` (`4.268.2`) in more than an hour; the build log is only on Cloudflare's dashboard.
+- Production is unchanged (`4.267.1-college-finals`).
+
+**Open.**
+- Preview gate on the final version: the 16 schools, plus Wamego, Rock Creek, Wamego MS and Rock Creek MS cross country.
+- Then merge, `verify:prod`, and update the handoff.
+- Wabaunsee Oct 10 and Council Grove Sep 10 cross country (above).
+- The five LetsGoRun folders not added.
+- Spring sports for schools with few Bound entries (`sports.has` comes from Bound).

@@ -1,0 +1,194 @@
+{
+ "state": "ks",
+ "counties": [
+  "Dickinson"
+ ],
+ "module_doc": "docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs on November 5, 2026. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "abilene-ks",
+   "name": "Abilene High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154201bba0cc8ec7614c",
+    "slug": "abilenehs"
+   },
+   "maxpreps": {
+    "schoolId": "136c5329-debe-4c1a-99da-a00dcb883ece",
+    "path": "abilene/abilene-cowboys"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 65,
+    "code": "ABI"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Abilene",
+    "tennis": "Abilene HS",
+    "milesplit": 21806
+   }
+  },
+  {
+   "id": "chapman-ks",
+   "name": "Chapman High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045156111f6b98f911c4647",
+    "slug": "chapmanhs"
+   },
+   "maxpreps": {
+    "schoolId": "26b69422-a33e-4e91-9f84-f1b7ee1d07b7",
+    "path": "chapman/chapman-irish"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 78,
+    "code": "CHAP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Chapman",
+    "tennis": "Chapman HS",
+    "milesplit": 21822
+   }
+  },
+  {
+   "id": "herington-ks",
+   "name": "Herington High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159132b18089b3c81444",
+    "slug": "heringtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "29f1fc38-de3c-4770-be48-1707a5ac6233",
+    "path": "herington/herington-railroaders"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 210,
+    "code": "HER"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Herington",
+    "milesplit": 21870
+   }
+  },
+  {
+   "id": "solomon-ks",
+   "name": "Solomon High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206376d26f299fb04740",
+    "slug": "solomonhs"
+   },
+   "maxpreps": {
+    "schoolId": "536e88e5-c3ed-4311-8809-e4ec922b7812",
+    "path": "solomon/solomon-gorillas"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 243,
+    "code": "SLM"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Solomon",
+    "milesplit": 26131,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "abilene-ms-ks",
+   "name": "Abilene Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202506090633579542ea5c6426c8c49",
+    "slug": "abilenems"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Abilene",
+    "milesplit": 33030
+   }
+  }
+ ]
+}

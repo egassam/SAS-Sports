@@ -1,0 +1,172 @@
+{
+ "state": "ks",
+ "counties": [
+  "Marshall"
+ ],
+ "module_doc": "docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs on November 5, 2026. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "marysville-ks",
+   "name": "Marysville High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520083068273e62724849",
+    "slug": "marysvillehs"
+   },
+   "maxpreps": {
+    "schoolId": "d6bd3ae7-0abd-48b0-9cea-f7ca781a8105",
+    "path": "marysville/marysville-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 166,
+    "code": "MVL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Marysville",
+    "tennis": "Marysville HS",
+    "milesplit": 21880
+   }
+  },
+  {
+   "id": "valley-heights-ks",
+   "name": "Valley Heights High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045208677f3c2da8222f34f",
+    "slug": "valleyheightshs"
+   },
+   "maxpreps": {
+    "schoolId": "3de7a036-4ca3-4d9e-8050-52a20804cc18",
+    "path": "blue-rapids/valley-heights-mustangs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 298,
+    "code": "VH"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Valley Heights",
+    "milesplit": 22012,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "frankfort-ks",
+   "name": "Frankfort High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451584302b27111d12974e",
+    "slug": "frankforths"
+   },
+   "maxpreps": {
+    "schoolId": "6f1649ad-3d98-422f-b5dc-d8d8e78a5d76",
+    "path": "frankfort/frankfort-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 293,
+    "code": "FRA"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Frankfort",
+    "milesplit": 21958,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "axtell-ks",
+   "name": "Axtell High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451548444e2524d4ec6c48",
+    "slug": "axtellhs"
+   },
+   "maxpreps": {
+    "schoolId": "485040ec-6f87-4fd3-a375-41b94e9c07cc",
+    "path": "axtell/axtell-eagles"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Axtell",
+    "milesplit": 21951,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "marysville-ms-ks",
+   "name": "Marysville Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025020404520083068273e62724849",
+    "slug": "marysvillehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Marysville",
+    "milesplit": 33031
+   }
+  }
+ ]
+}

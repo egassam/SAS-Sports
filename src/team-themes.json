@@ -3518,5 +3518,133 @@
     "panelDark": "#090b1d",
     "line": "#6168ac",
     "onAccent": "#ffffff"
+  },
+  "abilene-ks": {
+    "primary": "#EF5A26",
+    "secondary": "#0A0300",
+    "panel": "#6c2911",
+    "panelDark": "#301208",
+    "line": "#f3835c",
+    "onAccent": "#ffffff"
+  },
+  "chapman-ks": {
+    "primary": "#006600",
+    "secondary": "#000000",
+    "panel": "#002e00",
+    "panelDark": "#001400",
+    "line": "#408c40",
+    "onAccent": "#ffffff"
+  },
+  "herington-ks": {
+    "primary": "#632837",
+    "secondary": "#D37434",
+    "panel": "#2d1219",
+    "panelDark": "#14080b",
+    "line": "#8a5e69",
+    "onAccent": "#ffffff"
+  },
+  "solomon-ks": {
+    "primary": "#BF0101",
+    "secondary": "#98989E",
+    "panel": "#560000",
+    "panelDark": "#260000",
+    "line": "#cf4141",
+    "onAccent": "#ffffff"
+  },
+  "wabaunsee-ks": {
+    "primary": "#123993",
+    "secondary": "#C51F26",
+    "panel": "#081a42",
+    "panelDark": "#040b1d",
+    "line": "#4d6bae",
+    "onAccent": "#ffffff"
+  },
+  "mission-valley-ks": {
+    "primary": "#891D06",
+    "secondary": "#FDC52E",
+    "panel": "#3e0d03",
+    "panelDark": "#1b0601",
+    "line": "#a75644",
+    "onAccent": "#ffffff"
+  },
+  "council-grove-ks": {
+    "primary": "#10293F",
+    "secondary": "#FFB400",
+    "panel": "#07121c",
+    "panelDark": "#03080d",
+    "line": "#4c5f6f",
+    "onAccent": "#ffffff"
+  },
+  "clay-center-ks": {
+    "primary": "#F48120",
+    "secondary": "#000000",
+    "panel": "#6e3a0e",
+    "panelDark": "#311a06",
+    "line": "#f7a158",
+    "onAccent": "#ffffff"
+  },
+  "wakefield-ks": {
+    "primary": "#1565A0",
+    "secondary": "#000000",
+    "panel": "#092d48",
+    "panelDark": "#041420",
+    "line": "#508cb8",
+    "onAccent": "#ffffff"
+  },
+  "marysville-ks": {
+    "primary": "#FE0000",
+    "secondary": "#000000",
+    "panel": "#720000",
+    "panelDark": "#330000",
+    "line": "#fe4040",
+    "onAccent": "#ffffff"
+  },
+  "valley-heights-ks": {
+    "primary": "#2E0367",
+    "secondary": "#BABABA",
+    "panel": "#15012e",
+    "panelDark": "#090115",
+    "line": "#62428d",
+    "onAccent": "#ffffff"
+  },
+  "frankfort-ks": {
+    "primary": "#FE0000",
+    "secondary": "#000000",
+    "panel": "#720000",
+    "panelDark": "#330000",
+    "line": "#fe4040",
+    "onAccent": "#ffffff"
+  },
+  "axtell-ks": {
+    "primary": "#EA2836",
+    "secondary": "#1350A1",
+    "panel": "#691218",
+    "panelDark": "#2f080b",
+    "line": "#ef5e68",
+    "onAccent": "#ffffff"
+  },
+  "abilene-ms-ks": {
+    "primary": "#BF5700",
+    "secondary": "#000000",
+    "panel": "#562700",
+    "panelDark": "#261100",
+    "line": "#cf8140",
+    "onAccent": "#ffffff"
+  },
+  "clay-center-ms-ks": {
+    "primary": "#F48120",
+    "secondary": "#000000",
+    "panel": "#6e3a0e",
+    "panelDark": "#311a06",
+    "line": "#f7a158",
+    "onAccent": "#ffffff"
+  },
+  "marysville-ms-ks": {
+    "primary": "#FE0000",
+    "secondary": "#000000",
+    "panel": "#720000",
+    "panelDark": "#330000",
+    "line": "#fe4040",
+    "onAccent": "#ffffff"
   }
 }

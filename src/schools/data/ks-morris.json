@@ -1,0 +1,49 @@
+{
+ "state": "ks",
+ "counties": [
+  "Morris"
+ ],
+ "module_doc": "docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs on November 5, 2026. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "council-grove-ks",
+   "name": "Council Grove High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045157290781a2ec5b72c4e",
+    "slug": "councilgrovehs"
+   },
+   "maxpreps": {
+    "schoolId": "0209b95c-2def-412e-8d17-4a0f7ae05891",
+    "path": "council-grove/council-grove-braves"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 140,
+    "code": "CG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Council Grove",
+    "milesplit": 21896,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

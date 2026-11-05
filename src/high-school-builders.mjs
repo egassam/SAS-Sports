@@ -22,8 +22,12 @@ export const HS_TRACK_EXCLUDE=/\bJV\b|junior varsity|fresh|frosh|soph|\bgrade\b|
 // Geary County (src/schools/geary-ks.mjs) adds girls' soccer, swimming and
 // boys' and girls' bowling (Junction City); `paths` gives a MaxPreps path
 // that differs from the usual one ("soccer/girls/spring").
-export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true,paths={}}){
-  const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:paths[acts]||path}:{}),...(label?{label}:{})});
+// `maxprepsSchedule` (November 5, Wabaunsee and Mission Valley): a school
+// that enters few of its own games on Bound (Wabaunsee: 1 of its 10 football
+// games) takes its games' schedule from MaxPreps as well: Bound's entries,
+// then every MaxPreps game Bound lacks (coming ones too).
+export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milesplit,maxpreps:mp=true,paths={},maxprepsSchedule=false}){
+  const game=(acts,path,label)=>({...on(acts),...(mp&&path?{maxpreps:paths[acts]||path,...(maxprepsSchedule?{maxprepsSchedule:true}:{})}:{}),...(label?{label}:{})});
   const sports={};
   if(has.includes('Football'))sports.Football=[game('Football','football')];
   if(has.includes('Flag Football'))sports['Flag Football']=[game('Girls Flag Football','flag-football/girls','Girls')];
@@ -112,7 +116,7 @@ export const SHARED_SOURCES={letsgorun:LETSGORUN_MEETPRO};
 //    "bound":{"school","slug"} (or {"school"} with no page of its own),
 //    "maxpreps":{"schoolId","path"}, "meetPro":"letsgorun",
 //    "prepGolf":{"school","code","sharesCodeWith"}, "globalSavedCopy":true,
-//    "sports":{"has":[...],"meetTeam","trackTeam","tennis","milesplit","paths","grades":"usd475"},
+//    "sports":{"has":[...],"meetTeam","trackTeam","tennis","milesplit","paths","grades":"usd475","maxprepsSchedule":true},
 //    "milesplitNames":{"<schedule name>":"<MileSplit Live name>"},
 //    "extraMeets":{"<sport>":[{"date","name"}]},
 //    "stateXc":{"class":"3A","names":[...],"sexes":["Girls","Boys"]}}
