@@ -83,6 +83,12 @@ assert.ok(index.includes("if(team.maxprepsSchedule){\n        const onBound=c=>g
 const wabGames=games(wab,fixture('bound-wabaunsee-2026-11-05.json.gz'),wabFb);
 assert.deepEqual(contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!wabGames.some(g=>g.date===c.date)).map(c=>`${c.date} ${c.opponent}`),['2026-11-06 Olpe']);
 
+// Bound names the NCKL championship (October 15, Abilene) for its course:
+// the state's alias table gives MileSplit Live's name (Abilene, Chapman, Clay
+// Center, Marysville, and Wamego and Rock Creek already in the app).
+const ALIASES=JSON.parse(read('../src/schools/data/ks-aliases.json'));
+assert.equal(ALIASES.meets['Great Life Golf Course meet'],'NCKL Cross Country Championships');
+
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');
 const [boys7,boys8]=ams.sports.Basketball.filter(t=>/^(?:7th|8th) Boys$/.test(t.label));
