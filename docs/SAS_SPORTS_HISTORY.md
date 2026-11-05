@@ -4202,3 +4202,16 @@ User, after the list of what is left: "I do not want parents or non time scorers
 **Tests.**
 - `test:release` passed on `92dcc8f`.
 - `verify:preview` for all 45 middle and high schools, every sport, 3 refreshes: 927 PASS, 0 FAIL, XC 18/20 and 26/21.
+
+**Merge and production.**
+- PR #525 merged as `fa7d9c5` (CI green: guardrails, certification matrix, Workers Builds).
+- Production `4.269.1-letsgorun-xc`, `verify:prod` for all 45 middle and high schools, every sport: 922 PASS, 5 FAIL.
+  - Each failure was one refresh of three answering status 0 (the request failed on the sandbox side; no 1102, no 503): St. Marys and Wamego baseball, St. Xavier and Flint Hills Christian MS cross country, Frankfort golf.
+  - Rerun one by one: all 3/3 HTTP 200.
+  - XC 18/20 and 26/21.
+- By eye:
+  - Manhattan Oct 17 Girls 1st of 5 · Boys 2nd of 5; Junction City Girls 4th · Boys 3rd.
+  - St. Xavier Oct 3 60th of 60.
+  - Rock Creek MS Sep 3 with 8th Boys 2nd of 2 · 8th Girls 1st of 1; Wamego MS 8th Boys 1st of 2; Abilene MS 3rd of 50.
+  - Chapman Sep 3 unchanged (MileSplit Live, hundredths).
+  - Eisenhower MS Sep 22 "No results posted".

@@ -11,7 +11,9 @@ Last updated: November 5, 2026 (Central, midday). **LetsGoRun cross country meet
 - **Fix:** middle school cross country now also leaves out races named "High School" (`MS_XC_EXCLUDE`, and Anthony and Eisenhower's own exclusion). On the first preview, Rock Creek MS and Abilene MS took the high school's places from the Abilene page.
 - **Gate:** `test:release` passed on `92dcc8f`. `verify:preview` on `4.269.1-letsgorun-xc` for all 45 middle and high schools, every sport, 3 refreshes: 927 PASS, 0 FAIL, XC 18/20 and 26/21.
 - **Preview only:** the first preview build stored the wrong Eisenhower Sep 22 final in the preview's own stored finals (shown there as "2 runners"). Production never read it.
-- The PR, merge and production check are in the session log.
+- **Merged:** PR #525 as `fa7d9c5`.
+- **Production `4.269.1-letsgorun-xc`:** `verify:prod` for all 45 middle and high schools, every sport. 922 PASS, 5 FAIL; each failure was 1 of 3 refreshes with status 0, a connection error on the sandbox side, not a 1102 or 503 (St. Marys and Wamego baseball, St. Xavier and Flint Hills Christian MS cross country, Frankfort golf). All 5 passed 3/3 on rerun. XC 18/20 and 26/21.
+- **By eye in production:** Manhattan Oct 17 Girls 1st · Boys 2nd of 5; Rock Creek MS Sep 3 with its 8th grade; Eisenhower MS Sep 22 "No results posted".
 
 Earlier, November 5, 2026 (Central, morning). **Five more Kansas counties, all data** (user: "Adding more counties in Kansas. Is it going to be easier to add many schools at once?", then "Change the rule to we can add as many counties we think one session can handle. Add counties of your choosing. Skip any schools that will slow down the process", then "Did you look on let's go run for cross country results?"). PR #523 merged as `945ad04`; production `4.268.2-ks-counties` verified. See `docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md`.
 - **Rule:** `AGENTS.md` 5c, "Several counties per session": the unit of work is a county; schools that need a reader of their own may be skipped and are listed in the module doc.
@@ -519,4 +521,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 4 — Stored finals** (user: "Results do not change"): every official middle and high school final kept in D1 and read back on every build; #519 (`4.266.0`), production verified (686 finals stored).
 - **Nov 5 — Stored finals for colleges, HTTP codes in refresh records** (user: "Fix them both"): #521 (`4.267.1`), production verified.
 - **Nov 5 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas** (#523 merged `945ad04`, production `4.268.2-ks-counties` verified; 16 schools as data; rule: several counties per session).
-- **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). `4.269.1-letsgorun-xc`.
+- **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). #525 merged `fa7d9c5`, production `4.269.1-letsgorun-xc` verified.
