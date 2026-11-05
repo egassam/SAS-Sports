@@ -91,6 +91,12 @@ export function mergeFinals(built,stored,{now=new Date().toISOString(),source=nu
   for(const i of finals){
     const e=built[i],sig=finalSig(e),row=rowFor.get(i);
     claimed.add(i);
+    // Never a downgrade: a stored meet with verified official results (a
+    // TFRRS race, a timer's results) is kept over a build whose results step
+    // failed this time (TFRRS refused a burst of reads on November 4: cards
+    // fell back to the schedule's places without points). Shown from the
+    // store, nothing written.
+    if(row&&isMeet(e)&&row.event.meet_results_verified===true&&e.meet_results_verified!==true){events[i]={...row.event,stored_final:true};continue;}
     if(!row)writes.push({op:'insert',key:keys[i],date:day(e),event:e,sig,source,first_seen:now,last_changed:now,history:[]});
     else if(row.sig!==sig&&resultChanged(row,e)){
       const history=[{event:row.event,sig:row.sig,replaced:now},...(row.history?JSON.parse(typeof row.history==='string'?row.history:JSON.stringify(row.history)):[])].slice(0,HISTORY_KEEP);

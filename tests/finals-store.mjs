@@ -71,6 +71,18 @@ assert.ok(sameFinal(meet('2026-10-03','Blue Jay Invitational',[{}]),meet('2026-1
     const triAgain=mergeFinals([scored('2026-09-15','Topeka',0,2),scored('2026-09-15','Topeka West',2,1)],triRows,{now,compatible:namesCompatible});
     assert.deepEqual(triAgain.writes,[],'listed in the other order: still the same two finals');
   }
+  // Never a downgrade: a verified meet result stays over a build whose
+  // results step failed (TFRRS refusals, November 4).
+  {
+    const rich=meet('2026-09-04','Aggie Opener',[{group:'Women',participant:'Houston team',result:'2nd · 42 pts'},{group:'Women',participant:'A',result:'5th · 17:01'}],{headline:"Women's team: 2nd · 42 pts",meet_results_verified:true});
+    const richRows=mergeFinals([rich],[],{now}).writes.map(w=>({key:w.key,event:JSON.stringify(w.event),sig:w.sig,history:'[]'}));
+    const partial=meet('2026-09-04','Aggie Opener',[{group:'Women',participant:'Houston team',result:'2nd'}],{headline:"Women's team: 2nd",meet_results_verified:false,highlight_state:'official_results_partial'});
+    const kept=mergeFinals([partial],richRows,{now});
+    assert.deepEqual([kept.writes.length,kept.events[0].headline,kept.events[0].stored_final],[0,"Women's team: 2nd · 42 pts",true]);
+    // A verified build that differs is a correction (a timer's re-posted results).
+    const reposted=mergeFinals([{...rich,results:[...rich.results,{group:'Women',participant:'B',result:'9th · 17:40'}]}],richRows,{now});
+    assert.deepEqual(reposted.writes.map(w=>w.op),['update']);
+  }
   // A meet's results rows are part of what it says.
   assert.notEqual(finalSig(meet('2026-09-10','X',[{group:'Girls',participant:'A',result:'1st of 50 · 20:00'}])),finalSig(meet('2026-09-10','X',[{group:'Girls',participant:'A',result:'2nd of 50 · 20:00'}])));
 }
