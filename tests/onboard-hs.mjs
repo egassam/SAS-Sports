@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
+import {prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
 import {schoolFromConfig} from '../src/high-school-builders.mjs';
 
 const read=(name,gz=name.endsWith('.gz'))=>{const b=readFileSync(new URL(`./fixtures/onboard-hs/${name}`,import.meta.url));return gz?gunzipSync(b).toString('utf8'):b.toString('utf8');};
@@ -90,4 +90,25 @@ assert.equal(built.sports['Cross Country'][0].milesplit.team,15714);
   assert.equal(milesplitFor(index,byId['fort-riley-ms-ks'])?.id,'40677');
   assert.deepEqual(maxprepsGuesses('KS',{name:'St. Xavier HS',town:'Junction City',mascot:'Rams'}),['ks/junction-city/st-xavier-rams']);
 }
+// November 5 additions (user: "What can we learn from this to optimize the
+// next", then "Yes, do all of them").
+const ksc=name=>gunzipSync(readFileSync(new URL(`./fixtures/ks-counties/${name}`,import.meta.url))).toString('utf8');
+// Prep.Golf code: the one every posted tournament has; two left, the one the name starts with.
+assert.equal(prepGolfCode([{players:[{school:'CHAP'},{school:'ABI'}]},{players:[{school:'CHAP'},{school:'WAM'}]}],'Chapman'),'CHAP');
+assert.equal(prepGolfCode([{players:[{school:'WR'},{school:'JC'}]},{players:[{school:'JC'},{school:'WR'}]}],'Junction City'),'JC');
+assert.equal(prepGolfCode([],'Abilene'),null);
+// TennisReporting's name.
+assert.equal(tennisReportingName(['Clay Center Community HS','Concordia HS'],{key:schoolKey('Clay Center Community High')}),'Clay Center Community HS');
+assert.equal(tennisReportingName(['Salina-Central HS','Salina-South HS'],{key:schoolKey('Salina Central High School')}),'Salina-Central HS');
+assert.equal(tennisReportingName(['Abilene HS'],{key:'chapman'}),null);
+// Bound coverage: Wabaunsee had 1 of its 10 football games on Bound.
+assert.deepEqual(boundCoverage(1,10),{checked:true,bound:1,maxpreps:10,sparse:true});
+assert.equal(boundCoverage(14,15).sparse,false);
+assert.equal(boundCoverage(1,2).checked,false,'too few MaxPreps games to judge');
+// LetsGoRun: this year's listed folders and last years' names for this year.
+const listing='<a href="http://results.tfmeetpro.com/LetsGoRun_Timing/2026_Clay_Center_XC_Invitational/">x</a><a href="http://results.tfmeetpro.com/LetsGoRun_Timing/2025_NCKL_Cross_Country_Championships/">y</a><a href="http://results.tfmeetpro.com/LetsGoRun_Timing/Junction_City_Invitational/">z</a>';
+assert.deepEqual(letsGoRunGuesses(listing,2026),['2026_Clay_Center_XC_Invitational','2026_NCKL_Cross_Country_Championships']);
+assert.deepEqual(letsGoRunSchools(ksc('meetpro-2026_NCKL_Cross_Country_Championships.html.gz'),[{id:'chapman-ks',sports:{meetTeam:'Chapman'}},{id:'axtell-ks',sports:{meetTeam:'Axtell'}},{id:'fort-riley-ms-ks',sports:{meetTeam:['Ft Riley','Fort Riley']}}]),['chapman-ks','fort-riley-ms-ks']);
+// MaxPreps id from a page with no mascot image: its most frequent schoolId.
+assert.equal(maxprepsSchoolPage(ksc('maxpreps-wabaunsee-football-2026-11-05.html.gz'),'alma/wabaunsee-chargers').id,JSON.parse(readFileSync(new URL('../src/schools/data/ks-wabaunsee.json',import.meta.url),'utf8')).schools.find(e=>e.id==='wabaunsee-ks').maxpreps.schoolId);
 console.log(`onboard-hs: ok (Geary: ${rows.length} schools matched)`);

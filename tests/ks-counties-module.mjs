@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,BOUND_ACTS} from '../src/high-school.mjs';
+import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,meetProFolderFits,BOUND_ACTS} from '../src/high-school.mjs';
 import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
 import {MS_XC_EXCLUDE} from '../src/high-school-builders.mjs';
 import {KS_COUNTY_FILES,KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from '../src/schools/ks-counties.mjs';
@@ -106,12 +106,36 @@ assert.deepEqual(varsity('Marysville'),['High School Girls Varsity: 5/5 5','High
 // is out: its "Eisenhower" is Topeka's school, not Manhattan's.
 assert.deepEqual(['2026-09-03','2026-10-03','2026-10-17'].map(d=>LETSGORUN_MEETPRO.folders[d]),[['2026_Abilene_XC_Invitational'],['2026_Bob_Schmoekel_Cross_Country_Invitational'],['2026_Centennial_League_XC_Championships']]);
 assert.equal(LETSGORUN_MEETPRO.folders['2026-09-22'],undefined);
+assert.deepEqual(LETSGORUN_MEETPRO.folders['2026-09-19'],['2026_Shufelberger_TopCity_Classic'],'found by the survey\'s LetsGoRun step');
 // The Abilene page names its varsity races "High School Boys/Girls": a middle
 // school reads the grade races only (Rock Creek MS had gained the high
 // school's places on the first comparison).
 const abileneMeet=fixture('meetpro-2026_Abilene_XC_Invitational.html.gz');
 assert.deepEqual(meetProResults(abileneMeet,'Rock Creek MS').filter(r=>!MS_XC_EXCLUDE.test(r.race)).map(r=>r.race),["7th Grade Men's","7th Grade Women's","8th Grade Men's","8th Grade Women's"]);
 assert.ok(MS_XC_EXCLUDE.test('High School Boys')&&MS_XC_EXCLUDE.test('High School Girls'));
+
+// A folder filed only by the day must be the school's meet
+// (meetProFolderFits): its name, the page's title or a team in it (the host)
+// shares a word with the schedule's name for the meet (or its alias).
+const shawnee=fixture('meetpro-2026_Shawnee_Heights_MS_Invitational.html.gz'),schmoekel=fixture('meetpro-2026_Bob_Schmoekel_Cross_Country_Invitational.html.gz');
+assert.ok(meetProResults(shawnee,'Eisenhower').length,'Topeka\'s Eisenhower ran it');
+assert.equal(meetProFolderFits('Clay Center',{folder:'2026_Shawnee_Heights_MS_Invitational',html:shawnee,aliases:ALIASES.meets}),false,'Manhattan\'s Eisenhower MS was at Clay Center that day');
+assert.equal(meetProFolderFits('Junction City',{folder:'2026_Bob_Schmoekel_Cross_Country_Invitational',html:schmoekel,aliases:ALIASES.meets}),true,'named for its host (Flint Hills Christian\'s calendar)');
+assert.equal(meetProFolderFits('Blue Jay Invitational Cross Country Meet',{folder:'2026_Bob_Schmoekel_Cross_Country_Invitational',html:schmoekel,aliases:ALIASES.meets}),true,'by the alias table');
+assert.equal(meetProFolderFits('MS XC',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets}),true,'a name with no word of its own takes the day\'s folder');
+assert.equal(meetProFolderFits('Great Life Golf Course meet',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets}),true);
+
+// A meet named for its venue (Bound's address): the page's place block.
+const mhsFixture=name=>gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-module/'+name,import.meta.url))).toString('utf8');
+assert.equal(meetProFolderFits('Milford State Park meet',{folder:'2026_Fort_Riley_XC_Invitational',html:mhsFixture('meetpro-2026_Fort_Riley_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Milford State Park'}),true,'Fort Riley MS meet at Milford Lake');
+assert.equal(meetProFolderFits('Greg Wilson Classic',{folder:'2026_Manhattan_XC_Invitational',html:mhsFixture('meetpro-2026_Manhattan_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Warner Park'}),true,'Manhattan\'s meet at Warner Park');
+
+assert.equal(meetProFolderFits('MS XC',{folder:'2026_NCKL_Cross_Country_Championships',html:nckl,aliases:ALIASES.meets,venue:'Great Life Golf Course'}),true,'a venue only counts for a folder');
+// Junction City's Greg Wilson Classic (Sep 5, Johnson County Community
+// College) is not LetsGoRun's Manhattan XC Invitational of the same day,
+// where a Junction City squad also ran: production had shown the Manhattan
+// places on the Greg Wilson card.
+assert.equal(meetProFolderFits('Greg Wilson Classic',{folder:'2026_Manhattan_XC_Invitational',html:mhsFixture('meetpro-2026_Manhattan_XC_Invitational.html.gz'),aliases:ALIASES.meets,venue:'Johnson County Community College'}),false);
 
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');

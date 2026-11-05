@@ -55,7 +55,7 @@ import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {newsCandidates,storyFromHtml,storyFor} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
+import {meetProFolderFits,calendarEvents,maxprepsContests,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.269.1-letsgorun-xc';
+const VERSION='4.270.2-onboarding-lessons';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4252,6 +4252,8 @@ async function meetProResultsFor(school,module,team,game,read=meetProReader(),li
   }
   for(const folder of folders){
     const html=await page(folder);if(!html)continue;
+    // A folder filed only by the day must be this meet (meetProFolderFits).
+    if(folder!==game.meetProFolder&&!meetProFolderFits(game.name,{folder,html,aliases:KS_ALIASES.meets,venue:game.address||game.location||''}))continue;
     if(own.track){const r=await meetProTrackResultsFor(school,config,own,folder,html,read,live);if(r)return r;continue;}
     const races=meetProResults(html,own.team).filter(r=>(!own.races||own.races.test(r.race))&&!(own.exclude&&own.exclude.test(r.race)));
     if(!races.length)continue;
@@ -4859,6 +4861,12 @@ function ensureFinalsTable(db){
 async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
   const db=env?.CATALOG_DB;
   if(!db||result.error||!Array.isArray(result.events))return result;
+  // A comparison build on a branch preview (`stored=0`, November 5: a wrong
+  // final from a first preview build stayed on the preview from its stored
+  // finals): only what the sources give, nothing read or written.
+  // Production ignores it.
+  const asked=requestCatalog.url;
+  if(asked&&asked.hostname!==PRODUCTION_HOST&&asked.searchParams.get('stored')==='0')return{...result,finals_store:{skipped:'stored=0 (preview comparison build)'}};
   // Raising FINALS_EPOCH (every school) or a school module's
   // highlightRevision (that school, as for its saved highlights) starts its
   // stored finals afresh: a final a corrected reader no longer gives is not

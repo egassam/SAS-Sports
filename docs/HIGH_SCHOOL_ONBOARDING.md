@@ -29,6 +29,14 @@ It reads, in order:
 
 Schools are matched across sources by name without level words (`schoolKey`: "Junction City Sr High", "Junction City HS" and "Junction City High School" are all "junction city"), level and town, and a Bound school by its street address when its name differs ("St. Francis Xavier Catholic" is KSHSAA's "St. Xavier HS").
 
+Since November 5 it also fills in what was looked up by hand for Dickinson, Wabaunsee, Morris, Clay and Marshall:
+
+- **Prep.Golf golfer code:** the code all of a school's posted varsity tournaments share (`prepGolfCode`; of two left, the one matching the name's initials).
+- **TennisReporting name:** every school in the state's TennisReporting events (`tennisReportingName`; "Salina-Central HS" is Salina Central).
+- **MaxPreps id** from a school page with no mascot image: the page data's most frequent `schoolId` (Wakefield).
+- **Bound coverage:** the school's Bound football (else volleyball) games this year against MaxPreps' schedule. Under 60% gets `sports.maxprepsSchedule` in the draft, with a table in the report (`boundCoverage`; Wabaunsee had 1 of 10).
+- **LetsGoRun (MeetPro) meets:** the listing's folders for the season, plus last years' folder names with this year's (`letsGoRunGuesses`; the 2026 listing showed one cross country meet, and six more existed). Each is read, and the report lists its date, title, the county's schools that ran it, and whether the app reads it already. Folders go in `LETSGORUN_MEETPRO.folders` by date. When schools already in the app ran the meet, compare first (`npm run diff:feeds`).
+
 The draft holds one entry for each school found on Bound. The report lists every school found, with what each source had, and what is left to check by hand:
 
 - the school's own calendar (district sites: ParentSquare, Apptegy, Finalsite, Google Calendar) for games Bound lacks; a school with no Bound events needs its own reader in the county module (as Blue Valley, Onaga, Flint Hills Christian, Manhattan Catholic and St. Xavier have);
@@ -130,3 +138,13 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 **Colleges too (November 4, user: "Fix them both").** College builds (`fetchLive` wraps every college and middle/high school build; pro entries are not stored) write and read the same table. A build whose official page failed (`official_failed`, or an error) is left to the saved copies. A college keeps K-State's rule: only finals with a result are stored (a score, or a meet's results), so nothing listed from the store lacks one. A school module's `highlightRevision` is part of its rows' scope (`prod|r2` for Baylor), and `FINALS_EPOCH` in `src/index.js` resets every school: raising either starts the stored finals afresh, so a final a corrected reader no longer gives is not listed again. An expanded view's build only reads, and rows added to a game (a box score) are not a changed result: only its headline or score is. A stored meet with verified official results is never replaced by a build whose results step failed (TFRRS refused a burst of reads on the preview, November 4: cards fell back to the schedule's places without points); the stored result is shown and nothing is written.
 
 **Why a scheduled build failed.** A failed scores read now records its page and the reason: `<url>: HTTP 403`, or `HTTP 503 (waiting out an earlier HTTP 403 refusal; no request sent)` while the source layer backs off after a refusal (`/api/refresh-status` and `/live/status` `scores_errors`).
+
+## Comparing with production (November 5)
+
+`npm run diff:feeds -- --branch=<branch> [--sport="Cross Country"|all] [--level=high-school,middle-school] [--school=a,b] [--out=diff.json]` (`scripts/diff-feeds.mjs`):
+
+- **What it compares:** a fresh preview build (`refresh=1&stored=0`) of every middle and high school feed of the sport, against production, card by card (day and title; headline and rows). It exits 1 when a feed differs.
+- **`stored=0`:** on a preview only, the build skips its stored finals, so a wrong final saved by an earlier preview build does not show. Production ignores it.
+- **When to run it:** a shared source changes for schools already live (`AGENTS.md` 5c). On #525 it found middle schools taking a high school's places and a Topeka school's runners on Manhattan's Eisenhower MS.
+- **A LetsGoRun folder filed by day** is taken only when the schedule's name for the meet, its alias, or its host (a team in the results) shares a word with the folder's name or title (`meetProFolderFits`). A name with no word of its own ("MS XC") takes the day's folder.
+- **Schedule pairings:** `tests/hs-schedule-pairings.mjs` builds whole feeds through the Worker for Bound alone and for Bound + MaxPreps' schedule (the missing Olpe game of #523's first preview).

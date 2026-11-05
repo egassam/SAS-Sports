@@ -24,8 +24,9 @@
 //   NODE_USE_ENV_PROXY=1 node scripts/onboard-hs.mjs --county=Geary [--state=KS]
 //     [--out=draft.json] [--report=report.md] [--no-maxpreps] [--no-kshsaa]
 import {writeFileSync} from 'node:fs';
+import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
 import {pathToFileURL} from 'node:url';
-import {nameKey,milesplitSeasonQuery,milesplitSeasonIndex,milesplitTeamsNamed,MILESPLIT_LIVE_ROOT,BOUND_API,BOUND_ACTS,boundEventsUrl} from '../src/high-school.mjs';
+import {tennisHosts as tennisHostsOf,meetProResults,meetProDate,meetProName,prepGolfTournaments,prepGolfResults,maxprepsContests,nameKey,milesplitSeasonQuery,milesplitSeasonIndex,milesplitTeamsNamed,MILESPLIT_LIVE_ROOT,BOUND_API,BOUND_ACTS,boundEventsUrl} from '../src/high-school.mjs';
 
 export const STATE_FIPS={KS:'20',MO:'29',NE:'31',OK:'40',CO:'08',IA:'19',TX:'48',AR:'05'};
 const UA='Mozilla/5.0 (compatible; SAS-Sports onboarding)';
@@ -99,7 +100,11 @@ export function prepGolfSchools(html){
 }
 // A MaxPreps school page: its id (in the mascot image path) and its team pages.
 export function maxprepsSchoolPage(html,path){
-  const id=(String(html||'').match(/school-mascot\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]\/([0-9a-f-]{36})\./)||[])[1]||null;
+  // The school's id is its mascot image's name; a page with no mascot (e.g.
+  // Wakefield, November 5) names it as the page data's most frequent
+  // "schoolId".
+  const counts=new Map();for(const m of String(html||'').matchAll(/"schoolId":"([0-9a-f-]{36})"/gi))counts.set(m[1],(counts.get(m[1])||0)+1);
+  const id=(String(html||'').match(/school-mascot\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]\/([0-9a-f-]{36})\./)||[])[1]||[...counts].sort((a,b)=>b[1]-a[1])[0]?.[0]||null;
   const base=`/${path.replace(/^\/|\/$/g,'')}/`,teams=new Set();
   for(const m of String(html||'').matchAll(new RegExp(`${base.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}([a-z-]+(?:/(?:girls|boys))?(?:/(?:fall|winter|spring))?)/(?:schedule/)?["?]`,'g')))if(!/^(?:news|photos|videos|rankings|staff|roster|stats|schedule|standings|events|teams)$/.test(m[1]))teams.add(m[1]);
   return{id,teams:[...teams].sort()};
@@ -184,6 +189,54 @@ export function milesplitFor(index,row){
   }
   return null;
 }
+// Prep.Golf golfers' code: the school code every one of the school's posted
+// varsity tournaments has (November 5: ABI, CHAP, HER, ...). `results` are
+// the parsed results pages. More than one left: the one whose letters start
+// the school's name, else none.
+export function prepGolfCode(results,name=''){
+  const sets=results.map(r=>new Set((r.players||[]).map(p=>p.school).filter(Boolean))).filter(x=>x.size);
+  if(!sets.length)return null;
+  let common=[...sets[0]].filter(c=>sets.every(x=>x.has(c)));
+  if(common.length>1){
+    const words=nameKey(name).split(' ').filter(Boolean),joined=words.join(''),initials=words.map(w=>w[0]).join('');
+    common=common.filter(c=>{const k=c.toLowerCase();return initials===k||initials.startsWith(k)||joined.startsWith(k.slice(0,3));});
+  }
+  return common.length===1?common[0]:null;
+}
+// TennisReporting's name for a school, from every school its state's events
+// list ("Clay Center Community HS").
+export function tennisReportingName(names,row){
+  // "Salina-Central HS" is Salina Central; "Topeka-Highland Park HS" is
+  // Highland Park in Topeka (the town before the hyphen).
+  const key=row.key,forms=n=>[schoolKey(n.replace(/-/g,' ')),schoolKey(n.replace(/^[A-Z][a-z]+(?: [A-Z][a-z]+)?-(?=[A-Z])/,''))];
+  const list=[...new Set(names)];
+  return list.find(n=>forms(n)[0]===key)||list.find(n=>forms(n)[1]===key)||null;
+}
+// Bound coverage for a game sport: the school's own Bound games this school
+// year against MaxPreps' schedule for the team. Fewer than 60%: its games
+// also read MaxPreps' schedule (`sports.maxprepsSchedule`; November 5:
+// Wabaunsee had 1 of 10 football games on Bound).
+export function boundCoverage(boundGames,maxprepsGames){
+  if(!(maxprepsGames>=4))return{checked:false};
+  const ratio=boundGames/maxprepsGames;
+  return{checked:true,bound:boundGames,maxpreps:maxprepsGames,sparse:ratio<0.6};
+}
+// LetsGoRun (MeetPro) folders to try for this season: the listing's own
+// folders for the year, and last years' names with this year's
+// (2025_NCKL_Cross_Country_Championships -> 2026_...). November 5: the
+// listing showed one 2026 cross country meet; six more were found this way.
+export function letsGoRunGuesses(listing,year){
+  const links=[...String(listing||'').matchAll(/LetsGoRun_Timing\/([^/"'\s]+)\/?/g)].map(m=>m[1]);
+  const out=new Set(links.filter(f=>f.startsWith(`${year}_`)));
+  for(const f of links){const m=f.match(/^(\d{4})_(.+)$/);if(m&&Number(m[1])<year)out.add(`${year}_${m[2]}`);}
+  return[...out].sort();
+}
+// The schools of a draft that ran a LetsGoRun meet: a team name in the page
+// that is the school's meet team.
+export function letsGoRunSchools(html,entries){
+  return entries.filter(e=>[].concat(e.sports?.meetTeam||[]).some(team=>meetProResults(html,team).some(r=>r.runners.length))).map(e=>e.id);
+}
+
 // The draft data entry for one matched school.
 export function draftEntry(row){
   const name=row.ccd?.name||row.kshsaa?.name||row.name;
@@ -191,9 +244,9 @@ export function draftEntry(row){
   if(row.bound)entry.bound=row.bound.slug?{school:row.bound.bound,slug:row.bound.slug}:{school:row.bound.bound};
   if(row.maxpreps?.id)entry.maxpreps={schoolId:row.maxpreps.id,path:row.maxpreps.path.replace(/^[a-z]{2}\//,'')};
   entry.meetPro='letsgorun';
-  if(row.prepGolf)entry.prepGolf={school:row.prepGolf.id,code:'?'};
+  if(row.prepGolf&&(row.has||[]).includes('Golf'))entry.prepGolf={school:row.prepGolf.id,code:row.prepGolfCode||'?'};
   const meetTeam=(row.bound?.name||name).replace(/\s+(?:HS|High School|Sr\.? High)$/i,'').trim();
-  entry.sports={has:row.has||[],meetTeam,...(row.milesplit?{milesplit:Number(row.milesplit.id)}:{})};
+  entry.sports={has:row.has||[],meetTeam,...((row.has||[]).includes('Tennis')&&row.tennis&&row.level==='high-school'?{tennis:row.tennis}:{}),...(row.milesplit?{milesplit:Number(row.milesplit.id)}:{}),...(row.coverage?.sparse&&row.maxpreps?{maxprepsSchedule:true}:{})};
   return entry;
 }
 
@@ -261,7 +314,9 @@ async function main(){
   // Prep.Golf (high schools).
   if(state==='KS'){
     const pg=prepGolfSchools(await get('https://ks.prep.golf/schools'));
-    for(const row of rows.filter(r=>r.level==='high-school'))row.prepGolf=pg.find(p=>schoolKey(p.name)===row.key)||null;
+    // Prep.Golf may use the shorter name Bound gives ("Clay Center" for Clay
+    // Center Community High, November 5).
+    for(const row of rows.filter(r=>r.level==='high-school'))row.prepGolf=pg.find(p=>schoolKey(p.name)===row.key)||(row.bound?.name&&pg.find(p=>schoolKey(p.name)===schoolKey(row.bound.name)))||null;
   }
   // MaxPreps (high schools), 30 s apart, through the private source route.
   if(!args.includes('--no-maxpreps')){
@@ -276,6 +331,57 @@ async function main(){
       }
     }}
   }
+  // Prep.Golf golfers' codes (high schools with golf), 1.5 s apart.
+  for(const row of rows.filter(r=>r.prepGolf&&(r.has||[]).includes('Golf'))){
+    try{
+      const list=prepGolfTournaments(await get(`https://ks.prep.golf/schools/${row.prepGolf.id}`)).filter(t=>/^varsity$/i.test(t.type)).slice(0,4),results=[];
+      for(const t of list){await sleep(1500);results.push(prepGolfResults(await get(`https://ks.prep.golf/tournaments/results/${t.id}`)));}
+      row.prepGolfCode=prepGolfCode(results,row.bound?.name||row.name);log(`Prep.Golf ${row.id}: ${row.prepGolfCode||'no code found'} (${results.length} tournaments)`);
+    }catch(e){log(`Prep.Golf ${row.id}: ${e.message}`)}
+  }
+  // TennisReporting school names (Kansas events), when a school has tennis.
+  if(state==='KS'&&rows.some(r=>(r.has||[]).includes('Tennis'))){
+    const T='https://api.tennisreporting.com/',H={'content-type':'application/json',accept:'application/json'},names=[];
+    try{
+      const events=JSON.parse(await get(`${T}events`,{method:'POST',headers:H,body:JSON.stringify({page:0,pageSize:200,sorted:[],filtered:{stateId:23}})}));
+      for(const e of events.data||events.rows||events||[]){
+        const ev=JSON.parse(await get(`${T}event/${e.id}`,{headers:H}).catch(()=>'null'));await sleep(250);
+        for(const h of tennisHostsOf(ev)){const list=JSON.parse(await get(`${T}event/${e.id}/host/${h.id}/schools`,{headers:H}).catch(()=>'[]'));names.push(...(list||[]).map(x=>String(x.name).trim()));await sleep(250);}
+      }
+    }catch(e){notes.push(`TennisReporting: ${e.message}`)}
+    for(const row of rows.filter(r=>(r.has||[]).includes('Tennis')))row.tennis=tennisReportingName(names,row);
+    log(`TennisReporting: ${new Set(names).size} Kansas school names`);
+  }
+  // Bound coverage against MaxPreps (high schools with football or
+  // volleyball), through the source route, 30 s apart.
+  if(process.env.SAS_SOURCE_KEY&&!args.includes('--no-maxpreps'))for(const row of rows.filter(r=>r.maxpreps?.id&&r.bound)){
+    const sport=(row.has||[]).includes('Football')?['Football','football']:(row.has||[]).includes('Volleyball')?['Volleyball','volleyball']:null;if(!sport)continue;
+    await sleep(30000);
+    const r=await viaSource(`https://www.maxpreps.com/${row.maxpreps.path}/${sport[1]}/schedule/`);
+    if(r?.status!==200){notes.push(`MaxPreps ${sport[0]} schedule for ${row.id}: ${r?.status}`);continue;}
+    const games=new Set(maxprepsContests(r.text,row.maxpreps.id).filter(c=>c.opponent&&c.date>=`${y}-07-01`&&c.date<=`${y+1}-06-30`).map(c=>c.date)).size;
+    row.coverage={sport:sport[0],...boundCoverage(row.boundCounts?.[sport[0]]?.current||0,games)};
+    log(`Coverage ${row.id} ${sport[0]}: Bound ${row.coverage.bound} of MaxPreps ${row.coverage.maxpreps}${row.coverage.sparse?' (sparse: maxprepsSchedule)':''}`);
+  }
+  // LetsGoRun (MeetPro): this season's folders and the county's schools in them.
+  const lgr=[];
+  if(state==='KS'){
+    try{
+      const known=new Set(Object.values(LETSGORUN_MEETPRO.folders||{}).flat());
+      // Fall meets are filed under the school year's first year, spring
+      // meets under the second.
+      const listing=await get(LETSGORUN_MEETPRO.listing);
+      const entries=rows.filter(r=>r.bound).map(draftEntry);
+      for(const folder of [...new Set([...letsGoRunGuesses(listing,y),...letsGoRunGuesses(listing,y+1)])]){
+        await sleep(1000);
+        let html='';try{html=await get(`${LETSGORUN_MEETPRO.base}${folder}/`)}catch{continue}
+        const date=meetProDate(html);if(!date||date<`${y}-07-01`||date>`${y+1}-06-30`)continue;
+        const schools=letsGoRunSchools(html,entries);
+        lgr.push({folder,date,name:meetProName(html),schools,known:known.has(folder)});
+      }
+      log(`LetsGoRun: ${lgr.length} folders this season, ${lgr.filter(m=>m.schools.length).length} with the county's schools`);
+    }catch(e){notes.push(`LetsGoRun: ${e.message}`)}
+  }
   // The draft and the report.
   const draft={state:state.toLowerCase(),counties:[c.name.replace(/\s+County$/,'')],module_doc:`docs/${slug(c.name.replace(/\s+County$/,'')).toUpperCase().replace(/-/g,'_')}_${state}_MODULE.md`,
     note:`Draft from scripts/onboard-hs.mjs on ${now.toISOString().slice(0,10)}: review every entry before use (docs/HIGH_SCHOOL_ONBOARDING.md).`,
@@ -285,10 +391,14 @@ async function main(){
     `NCES CCD ${ccd.year}: ${ccd.schools.length} middle and high schools; towns with any school: ${ccd.towns.join(', ')}.`,'',
     '| id | School | Level | Town | KSHSAA (class, league) | Bound | Bound sports | MaxPreps | MileSplit | Prep.Golf |','| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows.map(r=>`| \`${r.id}\` | ${r.ccd?.name||r.kshsaa?.name||r.name} | ${r.level||'?'} | ${r.town} | ${r.kshsaa?`${r.kshsaa.class||'?'}, ${r.kshsaa.league||'no league'}`:'—'} | ${r.bound?`${r.bound.slug||'(no page)'} \`${r.bound.bound}\``:'—'} | ${(r.has||[]).join(', ')||'—'} | ${r.maxpreps?`${r.maxpreps.path} (${r.maxpreps.teams.length} teams)`:'—'} | ${r.milesplit?`${r.milesplit.id} ${r.milesplit.code} (${r.milesplit.meets} meets)`:'—'} | ${r.prepGolf?r.prepGolf.id:'—'} |`),
+    ...(rows.some(r=>r.coverage?.checked)?['','## Bound coverage (against MaxPreps)','','| School | Sport | Bound games | MaxPreps games | Reads MaxPreps\' schedule |','| --- | --- | --- | --- | --- |',
+      ...rows.filter(r=>r.coverage?.checked).map(r=>`| \`${r.id}\` | ${r.coverage.sport} | ${r.coverage.bound} | ${r.coverage.maxpreps} | ${r.coverage.sparse?'yes':'no'} |`)]:[]),
+    ...(lgr.length?['','## LetsGoRun (MeetPro) this season','','Add a folder to `LETSGORUN_MEETPRO.folders` (src/schools/manhattan-ks.mjs) by its date; when schools already in the app ran it, compare first (`npm run diff:feeds`).','','| Date | Folder | Title | County schools | Read already |','| --- | --- | --- | --- | --- |',
+      ...lgr.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>`| ${m.date} | \`${m.folder}\` | ${m.name||''} | ${m.schools.join(', ')||'—'} | ${m.known?'yes':'no'} |`)]:[]),
     '','## Still to check by hand','',
     '- Each school\'s own calendar (district site: ParentSquare, Apptegy, Finalsite, Google Calendar) for games Bound lacks; a school with no Bound events stays out of the draft.',
     '- Private and non-member schools (not in NCES CCD or KSHSAA: Kansas Approved Schools, homeschool programs) and schools listed by KSHSAA under another town.',
-    '- TennisReporting school names for tennis schools; LetsGoRun (MeetPro) team names (the draft uses Bound\'s name); Prep.Golf golfer codes (`"code":"?"` in the draft).',
+    '- TennisReporting names and Prep.Golf codes the survey could not find (`"code":"?"`, no `tennis`); LetsGoRun (MeetPro) team names (the draft uses Bound\'s name); a LetsGoRun meet\'s date when its page prints another (the 2026 Abilene page printed a Manhattan header and 9/5 for a September 3 meet).',
     '- MaxPreps team pages a school\'s draft names, and spring sports not yet on Bound.',
     ...(notes.length?['','## Notes','',...notes.map(n=>`- ${n}`)]:[])].join('\n');
   const out=value('out'),rep=value('report');

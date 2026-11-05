@@ -455,6 +455,33 @@ export function milesplitTeamNames(name,others=[]){
 // school in it.
 const MEET_WORDS=new Set('and the meet meets invite invitational invitationals xc cross country classic high school schools varsity junior run race races championship championships league golf course club park state kshsaa jv hs home event'.split(' '));
 const meetWords=s=>new Set(String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w.length>=3&&!MEET_WORDS.has(w)&&!/^\d/.test(w)));
+// Whether a timer's folder filed under the meet's day is the school's meet
+// (November 5: Topeka's Shawnee Heights MS Invitational listed an
+// "Eisenhower", Topeka's school, while Manhattan's Eisenhower MS ran at Clay
+// Center that day). The schedule's own name for the meet (and the state's
+// alias for it) must share a word with the folder's name or the page's
+// title. A schedule name with no word of its own ("MS XC") takes the day's
+// folder, as before.
+const FOLDER_WORDS=new Set('middle ms jh jhs grade 7th 8th boys girls men women mens womens junior senior two mile 5k 2026 2027'.split(' '));
+// The game's venue (Bound's `address`: "Milford State Park" for the Fort
+// Riley MS meet, "Warner Park" for Manhattan's) counts too, against the
+// page's place block (town, venue, host school).
+export function meetProPlace(html){const m=String(html||'').match(/class="[^"]*m-info[^"]*">([\s\S]*?)<\/div>/);return m?clean(m[1].replace(/<[^>]+>/g,' ')).replace(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/,'').trim():'';}
+export function meetProFolderFits(name,{folder='',html='',aliases={},venue=''}={}){
+  const words=n=>new Set([...meetWords(n)].filter(w=>!FOLDER_WORDS.has(w)));
+  // The venue only ever counts for a folder: a schedule name with no word of
+  // its own ("MS XC" at the Great Life Golf Course) takes the day's folder.
+  const own=new Set([...words(name),...words(aliases[name]||'')]);
+  if(!own.size)return true;
+  const want=new Set([...own,...words(venue)]);
+  const have=words(`${String(folder).replace(/_/g,' ')} ${meetProName(html)||''} ${meetProPlace(html)}`);
+  if([...want].some(w=>have.has(w)))return true;
+  // A calendar may name the meet for its host ("Flint Hills Christian at
+  // Junction City", October 3): the host is a team in the results.
+  const teams=[...String(html).matchAll(/class="(?:ath-)?team">([^<]*)</g)].map(m=>nameKey(m[1]));
+  const key=nameKey(name);
+  return !!key&&teams.some(t=>t===key||t.startsWith(`${key} `));
+}
 // `also`: team ids whose runners count as the school's (Randolph's middle
 // schoolers run the grade races under Blue Valley High School's code).
 export function milesplitMeetFor(meets,team,name,also=[]){
