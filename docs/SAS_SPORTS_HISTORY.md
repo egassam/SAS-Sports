@@ -4155,3 +4155,13 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - Wabaunsee Oct 10 and Council Grove Sep 10 cross country (above).
 - The five LetsGoRun folders not added.
 - Spring sports for schools with few Bound entries (`sports.has` comes from Bound).
+
+**Merge and production (November 5, later the same session).**
+- The handoff commit `e7e4151` started a Cloudflare build. The preview served `4.268.2-ks-counties` at 15:40 UTC.
+- `verify:preview`: the 16 schools, all sports, 3 refreshes, 384/384; Wamego, Rock Creek, Wamego MS and Rock Creek MS all sports 105/105; XC 18/20 and 26/21.
+  - By eye: Wabaunsee's Nov 6 game at Olpe is listed ("MaxPreps (team schedule)").
+  - Every NCKL card (Oct 15) reads team places. Before, in production, Wamego and Rock Creek read "No results posted", and Wamego MS and Rock Creek MS read only their 8th grade races.
+- CI on `e7e4151`: guardrails, certification matrix and Workers Builds green.
+- Merged as `945ad04`.
+- Production `4.268.2-ks-counties`, `verify:prod` for the same 20 schools, all sports: 486 PASS, 0 FAIL, XC 18/20 and 26/21. The Kansas high school menu lists Clay, Dickinson, Marshall, Morris and Wabaunsee counties; the Marshall County middle school menu lists Marysville JH.
+- Still open: the items listed above.
