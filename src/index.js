@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.268.0-ks-counties';
+const VERSION='4.268.1-ks-counties';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4712,6 +4712,18 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       for(const game of games.filter(g=>g.date>=today&&!g.final&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,now});
         if(event)events.push(event);
+      }
+      // A school that enters few of its games on Bound (`maxprepsSchedule`,
+      // November 5: Wabaunsee's Nov 6 playoff game at Olpe was on MaxPreps
+      // only): MaxPreps' games without a score that Bound lacks, coming ones
+      // and past ones ("No score posted"). A Bound tournament day keeps its
+      // own entry.
+      if(team.maxprepsSchedule){
+        const onBound=c=>games.some(g=>g.date===c.date&&(g.h2h===false||g.h2h==null&&isNamedEvent(g.name)||namesCompatible(c.opponent,g.name)));
+        for(const c of contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!onBound(c))){
+          const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',now});
+          if(event)events.push(event);
+        }
       }
       continue;
     }

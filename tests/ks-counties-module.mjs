@@ -76,6 +76,13 @@ assert.deepEqual(contests.map(c=>`${c.date} ${c.opponent}${c.result?` ${c.result
   '2026-09-04 West Franklin W 45-3','2026-09-11 Olpe L 14-35','2026-09-18 Onaga L 8-14','2026-09-25 Atchison County W 24-8','2026-10-02 Jackson Heights L 14-18',
   '2026-10-09 Rossville L 0-49','2026-10-16 St. Marys L 14-45','2026-10-23 Mission Valley W 30-14','2026-10-30 Valley Heights W 26-19','2026-11-06 Olpe']);
 
+// The Worker lists MaxPreps' unscored games Bound lacks for such a team (the
+// Bound game-sports path returned before them: Wabaunsee's Nov 6 playoff
+// game at Olpe was missing on the first preview). Here that is Olpe alone.
+assert.ok(index.includes("if(team.maxprepsSchedule){\n        const onBound=c=>games.some("),'Bound game sports read MaxPreps\' coming games');
+const wabGames=games(wab,fixture('bound-wabaunsee-2026-11-05.json.gz'),wabFb);
+assert.deepEqual(contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!wabGames.some(g=>g.date===c.date)).map(c=>`${c.date} ${c.opponent}`),['2026-11-06 Olpe']);
+
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');
 const [boys7,boys8]=ams.sports.Basketball.filter(t=>/^(?:7th|8th) Boys$/.test(t.label));
