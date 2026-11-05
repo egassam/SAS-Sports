@@ -4278,3 +4278,5 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - By eye: Junction City Sep 19 Shufelberger "Girls 10th of 10 · Boys 10th of 12" (right).
 - **Sep 5 Greg Wilson Classic still read "Boys 6th of 11".** Production's stored finals had the wrong card from before the fix, and the store lists a final again when the sources stop giving it. The preview never stored it, so `diff:feeds` showed the corrected card there.
 - Fix: `RETRACTED_FINALS` + `retractedFinal` in `src/finals-store.mjs`, filtered in `withStoredFinals` before `mergeFinals`. Tested in `tests/finals-store.mjs`.
+- #528 merged as `81c9450` (`test:release` passed on `9c85264`; preview gate for the five Geary schools 114/114; CI green).
+- Production `4.271.0-retracted-finals`: Junction City Sep 5 "No results posted", Sep 19 "Girls 10th of 10 · Boys 10th of 12". `verify:prod` for the five Geary schools: 114/114, XC 18/20 and 26/21. The first run's one failure was `/api/status` answering `4.270.2` from one location right after the deploy; the rerun passed.
