@@ -4165,3 +4165,40 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - Merged as `945ad04`.
 - Production `4.268.2-ks-counties`, `verify:prod` for the same 20 schools, all sports: 486 PASS, 0 FAIL, XC 18/20 and 26/21. The Kansas high school menu lists Clay, Dickinson, Marshall, Morris and Wabaunsee counties; the Marshall County middle school menu lists Marysville JH.
 - Still open: the items listed above.
+
+## November 5, 2026 — LetsGoRun cross country meets compared with production
+
+**Conversation.** User: "Compare those. Let's go run meats" (the five 2026 LetsGoRun folders found and not added in #523).
+
+**Method.**
+- Saved each folder's page.
+- Mapped its teams to app schools:
+  - Abilene Invitational: Abilene, Abilene MS, Chapman, Rock Creek, Rock Creek MS, Solomon, Wamego MS;
+  - Bob Schmoekel: Clay Center, Council Grove, Flint Hills Christian, Junction City, Rock Creek;
+  - Centennial League: Junction City, Manhattan;
+  - Shawnee Heights MS: Fort Riley (and, it turned out, an "Eisenhower");
+  - Washburn Rural MS: none.
+- Identity of the Abilene page: it prints "Manhattan, KS Warner Park … 9/5/2026", but Chapman's Liberty Cuevas is 20:34.8 there and 20:34.75 in MileSplit Live's September 3 meet. It is filed on Sep 3.
+- Added the folders on the branch preview (`4.269.0`). A scratchpad script (`lgr/xcdiff.py`) compared every middle and high school cross country feed: a fresh preview build (`refresh=1`) against production, by date and title, headline and rows.
+
+**First comparison (`4.269.0`):** 11 of 42 feeds differ.
+- Centennial (Oct 17): team places gained.
+- Bob Schmoekel (Oct 3): same headlines; places within the 52/60-runner varsity races instead of MileSplit Live's 71/109 varsity-and-JV lists; tenths instead of hundredths.
+- **Wrong:**
+  - Rock Creek MS and Abilene MS took the high school's places from the Abilene page, whose varsity races are "High School Boys/Girls".
+  - Eisenhower MS (Manhattan) took Topeka's Eisenhower runners at Shawnee Heights MS on Sep 22.
+
+**Fixes (`92dcc8f`, `4.269.1`).**
+- `MS_XC_EXCLUDE` and Anthony and Eisenhower's own exclusion also leave out races named "High School".
+- The Shawnee Heights MS folder was removed.
+- `tests/hs-config.mjs` reads the snapshot's middle school exclusion with that addition.
+- `tests/ks-counties-module.mjs`: the Abilene page fixture (the middle school reads the four grade races only) and the folder list.
+
+**Second comparison (`4.269.1`).**
+- The middle schools gain only their grade races, for example Wamego MS "7th Boys 3rd of 5 · 8th Boys 1st of 2" and Rock Creek MS adding its 8th grade. Abilene MS's places are within the grade race (3rd of 50, where MileSplit Live gave 38th of 77 with the grades together).
+- The high schools at Abilene are unchanged: LetsGoRun's "High School" races are not taken by the high school reader, so they keep MileSplit Live.
+- Eisenhower Sep 22 still showed "2 runners" on the preview, from the preview's own stored finals (`finals_store filled 1`). Production never had the row.
+
+**Tests.**
+- `test:release` passed on `92dcc8f`.
+- `verify:preview` for all 45 middle and high schools, every sport, 3 refreshes: 927 PASS, 0 FAIL, XC 18/20 and 26/21.

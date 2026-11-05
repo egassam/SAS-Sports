@@ -58,7 +58,10 @@ export function boundHighSchool({has,meetTeam,trackTeam=meetTeam,tennis,milespli
 // left out, and so are the 1-mile races (the Fort Riley meet's "1 Mile Run
 // 7th Grade Girls" is its junior varsity race; St. Xavier's notes for the
 // day: "All JV Race - 1 mile"; no other 2026 LetsGoRun meet runs one).
-export const MS_XC_EXCLUDE=/varsity|\bJV\b|\b1 mile\b/i;
+// LetsGoRun's Abilene Invitational (Sep 3) names its varsity races "High
+// School Boys" and "High School Girls", with no "varsity": those are left
+// out too (November 5).
+export const MS_XC_EXCLUDE=/varsity|\bJV\b|\b1 mile\b|high school/i;
 export const grade=g=>new RegExp(`^${g}(?: Grade)?(?: A(?:-Team)?)?$`,'i');
 const WHOLE=/^(?:Middle School|Junior High|JH)(?: A)?$/i;
 const ANY_MS=/^(?:(?:7th|8th)(?: Grade)?|Middle School|Junior High|JH)(?: A(?:-Team)?)?$/i;

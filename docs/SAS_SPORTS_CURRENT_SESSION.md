@@ -1,6 +1,19 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 5, 2026 (Central, morning). **Five more Kansas counties, all data** (user: "Adding more counties in Kansas. Is it going to be easier to add many schools at once?", then "Change the rule to we can add as many counties we think one session can handle. Add counties of your choosing. Skip any schools that will slow down the process", then "Did you look on let's go run for cross country results?"). PR #523 merged as `945ad04`; production `4.268.2-ks-counties` verified. See `docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md`.
+Last updated: November 5, 2026 (Central, midday). **LetsGoRun cross country meets compared with production** (user: "Compare those. Let's go run meats").
+- **What was compared:** the five 2026 LetsGoRun folders found earlier were added on a preview, and all 42 middle and high school cross country feeds were compared card by card with production.
+- **Added:** Abilene Invitational (Sep 3; the page prints 9/5 under a leftover Manhattan header), Bob Schmoekel (Oct 3), Centennial League (Oct 17).
+  - Manhattan and Junction City gain Oct 17 team places.
+  - On Oct 3, runner places are now within the varsity race (St. Xavier 46th of 60, where MileSplit Live counted varsity and JV together as 109).
+  - Middle schools gain their Sep 3 grade races with team places.
+  - Times are LetsGoRun's tenths, not MileSplit Live's hundredths.
+- **Left out:** Shawnee Heights MS (Sep 22): its "Eisenhower" is Topeka's school, but it matched Manhattan's Eisenhower MS. Washburn Rural MS (Sep 25): no school in the app.
+- **Fix:** middle school cross country now also leaves out races named "High School" (`MS_XC_EXCLUDE`, and Anthony and Eisenhower's own exclusion). On the first preview, Rock Creek MS and Abilene MS took the high school's places from the Abilene page.
+- **Gate:** `test:release` passed on `92dcc8f`. `verify:preview` on `4.269.1-letsgorun-xc` for all 45 middle and high schools, every sport, 3 refreshes: 927 PASS, 0 FAIL, XC 18/20 and 26/21.
+- **Preview only:** the first preview build stored the wrong Eisenhower Sep 22 final in the preview's own stored finals (shown there as "2 runners"). Production never read it.
+- The PR, merge and production check are in the session log.
+
+Earlier, November 5, 2026 (Central, morning). **Five more Kansas counties, all data** (user: "Adding more counties in Kansas. Is it going to be easier to add many schools at once?", then "Change the rule to we can add as many counties we think one session can handle. Add counties of your choosing. Skip any schools that will slow down the process", then "Did you look on let's go run for cross country results?"). PR #523 merged as `945ad04`; production `4.268.2-ks-counties` verified. See `docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md`.
 - **Rule:** `AGENTS.md` 5c, "Several counties per session": the unit of work is a county; schools that need a reader of their own may be skipped and are listed in the module doc.
 - **Added (16):** Dickinson (Abilene HS and MS, Chapman, Herington, Solomon), Wabaunsee (Wabaunsee, Mission Valley), Morris (Council Grove), Clay (Clay Center HS and MS, Wakefield), Marshall (Marysville HS and JH, Valley Heights, Frankfort, Axtell). They are data files `src/schools/data/ks-<county>.json`, registered in `src/schools/ks-counties.mjs`. **The next all-data county is a data file plus one import line there.** About 14 schools were skipped, each with its reason in the module doc (mostly junior highs with almost nothing on Bound; Rural Vista/Hope/White City; Chapman and Herington middle schools).
 - **Code:**
@@ -9,7 +22,7 @@ Last updated: November 5, 2026 (Central, morning). **Five more Kansas counties, 
   - Kansas alias "Great Life Golf Course meet" → NCKL Cross Country Championships.
   - LetsGoRun folder `2026_NCKL_Cross_Country_Championships` (Oct 15). It also fills Wamego and Rock Creek and their middle schools.
   - `hs-config` compares modules without the shared, growing LetsGoRun folder list.
-- **LetsGoRun has five more 2026 folders**, found and not added (Abilene XC Invitational, Bob Schmoekel, Centennial League, Washburn Rural MS, Shawnee Heights MS). Adding them would replace verified MileSplit results of schools already in the app, so they need a preview-vs-production comparison first.
+- **LetsGoRun's five other 2026 folders:** compared later the same day (see the top entry).
 - **Gate so far:**
   - `test:release` passed on `f649cb5`, on `2b619d8` and on the final code commit `c74a498`; CI green.
   - `verify:preview` on `4.268.0`: 384 PASS, 0 FAIL.
@@ -506,3 +519,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 4 — Stored finals** (user: "Results do not change"): every official middle and high school final kept in D1 and read back on every build; #519 (`4.266.0`), production verified (686 finals stored).
 - **Nov 5 — Stored finals for colleges, HTTP codes in refresh records** (user: "Fix them both"): #521 (`4.267.1`), production verified.
 - **Nov 5 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas** (#523 merged `945ad04`, production `4.268.2-ks-counties` verified; 16 schools as data; rule: several counties per session).
+- **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). `4.269.1-letsgorun-xc`.

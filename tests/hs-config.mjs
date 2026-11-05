@@ -29,6 +29,11 @@ assert.deepEqual(Object.keys(MOVED).sort(),['fort-riley-ms-ks','junction-city-ks
 // LetsGoRun's folder list is shared and grows as meets are posted (November
 // 5: the NCKL Championships): every earlier folder is still read; the
 // modules are compared without it.
+// November 5: middle school cross country also leaves out races named "High
+// School" (LetsGoRun's Abilene Invitational); the snapshot's exclusion is
+// read with that addition.
+const MS_XC_BEFORE='/varsity|\\bJV\\b|\\b1 mile\\b/i',MS_XC_NOW='/varsity|\\bJV\\b|\\b1 mile\\b|high school/i';
+for(const module of Object.values(before))for(const team of module.sports?.['Cross Country']||[])if(team.meetPro?.exclude===MS_XC_BEFORE)team.meetPro.exclude=MS_XC_NOW;
 const folders=m=>m?.meetPro?.folders;
 for(const module of now){
   const was=folders(before[module.id]),is=folders(ser(module));
