@@ -1,0 +1,75 @@
+{
+ "state": "ks",
+ "counties": [
+  "Wabaunsee"
+ ],
+ "module_doc": "docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs on November 5, 2026. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "wabaunsee-ks",
+   "name": "Wabaunsee High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452087754284c1a48db540",
+    "slug": "wabaunseehs"
+   },
+   "maxpreps": {
+    "schoolId": "79b82d91-1dee-4c35-a8fe-281c7f869f07",
+    "path": "alma/wabaunsee-chargers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Cross Country",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Wabaunsee",
+    "tennis": "Wabaunsee HS",
+    "milesplit": 22001,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "mission-valley-ks",
+   "name": "Mission Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520111188b1b6966e5947",
+    "slug": "missionvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "1cfd85e4-56bd-4703-8fce-81d31ee7e98f",
+    "path": "eskridge/mission-valley-vikings"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Mission Valley",
+    "milesplit": 21897,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

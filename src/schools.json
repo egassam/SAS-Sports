@@ -10712,5 +10712,473 @@
         "provider_school_id": "h202502040452054647fae500274d446"
       }
     ]
+  },
+  {
+    "id": "abilene-ks",
+    "name": "Abilene High School",
+    "short_name": "Abilene",
+    "state": "Kansas",
+    "city": "Abilene",
+    "county": "Dickinson County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.abileneschools.org",
+    "aliases": [
+      "Abilene",
+      "AHS",
+      "Abilene Cowboys"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/abilenehs",
+        "provider_school_id": "h20250204045154201bba0cc8ec7614c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/abilene/abilene-cowboys",
+        "provider_school_id": "136c5329-debe-4c1a-99da-a00dcb883ece"
+      }
+    ]
+  },
+  {
+    "id": "chapman-ks",
+    "name": "Chapman High School",
+    "short_name": "Chapman",
+    "state": "Kansas",
+    "city": "Chapman",
+    "county": "Dickinson County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.chapmanirish.net",
+    "aliases": [
+      "Chapman",
+      "CHS",
+      "Chapman Fighting Irish"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chapmanhs",
+        "provider_school_id": "h20250204045156111f6b98f911c4647"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/chapman/chapman-irish",
+        "provider_school_id": "26b69422-a33e-4e91-9f84-f1b7ee1d07b7"
+      }
+    ]
+  },
+  {
+    "id": "herington-ks",
+    "name": "Herington High School",
+    "short_name": "Herington",
+    "state": "Kansas",
+    "city": "Herington",
+    "county": "Dickinson County",
+    "conference": "Wheat State League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.heringtonschools.org",
+    "aliases": [
+      "Herington",
+      "HHS",
+      "Herington Railroaders"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/heringtonhs",
+        "provider_school_id": "h20250204045159132b18089b3c81444"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/herington/herington-railroaders",
+        "provider_school_id": "29f1fc38-de3c-4770-be48-1707a5ac6233"
+      }
+    ]
+  },
+  {
+    "id": "solomon-ks",
+    "name": "Solomon High School",
+    "short_name": "Solomon",
+    "state": "Kansas",
+    "city": "Solomon",
+    "county": "Dickinson County",
+    "conference": "Wheat State League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd393.net",
+    "aliases": [
+      "Solomon",
+      "SHS",
+      "Solomon Gorillas"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/solomonhs",
+        "provider_school_id": "h20250204045206376d26f299fb04740"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/solomon/solomon-gorillas",
+        "provider_school_id": "536e88e5-c3ed-4311-8809-e4ec922b7812"
+      }
+    ]
+  },
+  {
+    "id": "wabaunsee-ks",
+    "name": "Wabaunsee High School",
+    "short_name": "Wabaunsee",
+    "state": "Kansas",
+    "city": "Alma",
+    "county": "Wabaunsee County",
+    "conference": "Flint Hills League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd329.com",
+    "aliases": [
+      "Wabaunsee",
+      "WHS",
+      "Wabaunsee Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wabaunseehs",
+        "provider_school_id": "h202502040452087754284c1a48db540"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/alma/wabaunsee-chargers",
+        "provider_school_id": "79b82d91-1dee-4c35-a8fe-281c7f869f07"
+      }
+    ]
+  },
+  {
+    "id": "mission-valley-ks",
+    "name": "Mission Valley High School",
+    "short_name": "Mission Valley",
+    "state": "Kansas",
+    "city": "Eskridge",
+    "county": "Wabaunsee County",
+    "conference": "Flint Hills League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.mv330.org",
+    "aliases": [
+      "Mission Valley",
+      "MVHS",
+      "Mission Valley Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/missionvalleyhs",
+        "provider_school_id": "h2025020404520111188b1b6966e5947"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/eskridge/mission-valley-vikings",
+        "provider_school_id": "1cfd85e4-56bd-4703-8fce-81d31ee7e98f"
+      }
+    ]
+  },
+  {
+    "id": "council-grove-ks",
+    "name": "Council Grove High School",
+    "short_name": "Council Grove",
+    "state": "Kansas",
+    "city": "Council Grove",
+    "county": "Morris County",
+    "conference": "Flint Hills League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd417.org",
+    "aliases": [
+      "Council Grove",
+      "CGHS",
+      "Council Grove Braves"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/councilgrovehs",
+        "provider_school_id": "h20250204045157290781a2ec5b72c4e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/council-grove/council-grove-braves",
+        "provider_school_id": "0209b95c-2def-412e-8d17-4a0f7ae05891"
+      }
+    ]
+  },
+  {
+    "id": "clay-center-ks",
+    "name": "Clay Center Community High School",
+    "short_name": "Clay Center",
+    "state": "Kansas",
+    "city": "Clay Center",
+    "county": "Clay County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd379.org",
+    "aliases": [
+      "Clay Center",
+      "CCCHS",
+      "Clay Center Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ccenter",
+        "provider_school_id": "h20250204045156578c37ec1a3e5a54b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/clay-center/clay-center-tigers",
+        "provider_school_id": "2c1dc9bd-a2ce-4afb-aec3-1882538e2973"
+      }
+    ]
+  },
+  {
+    "id": "wakefield-ks",
+    "name": "Wakefield High School",
+    "short_name": "Wakefield",
+    "state": "Kansas",
+    "city": "Wakefield",
+    "county": "Clay County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd379.org",
+    "aliases": [
+      "Wakefield",
+      "WHS",
+      "Wakefield Bombers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wakefieldhs",
+        "provider_school_id": "h202502040452088014de53e66184f4d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/wakefield/wakefield-bombers",
+        "provider_school_id": "17ca41bd-a9d3-469a-8ffc-8221fb0a05d3"
+      }
+    ]
+  },
+  {
+    "id": "marysville-ks",
+    "name": "Marysville High School",
+    "short_name": "Marysville",
+    "state": "Kansas",
+    "city": "Marysville",
+    "county": "Marshall County",
+    "conference": "North Central Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd364.org",
+    "aliases": [
+      "Marysville",
+      "MHS",
+      "Marysville Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/marysvillehs",
+        "provider_school_id": "h2025020404520083068273e62724849"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/marysville/marysville-bulldogs",
+        "provider_school_id": "d6bd3ae7-0abd-48b0-9cea-f7ca781a8105"
+      }
+    ]
+  },
+  {
+    "id": "valley-heights-ks",
+    "name": "Valley Heights High School",
+    "short_name": "Valley Heights",
+    "state": "Kansas",
+    "city": "Blue Rapids",
+    "county": "Marshall County",
+    "conference": "Twin Valley League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.valleyheights.org",
+    "aliases": [
+      "Valley Heights",
+      "VHHS",
+      "Valley Heights Mustangs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/valleyheightshs",
+        "provider_school_id": "h20250204045208677f3c2da8222f34f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/blue-rapids/valley-heights-mustangs",
+        "provider_school_id": "3de7a036-4ca3-4d9e-8050-52a20804cc18"
+      }
+    ]
+  },
+  {
+    "id": "frankfort-ks",
+    "name": "Frankfort High School",
+    "short_name": "Frankfort",
+    "state": "Kansas",
+    "city": "Frankfort",
+    "county": "Marshall County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.frankfort.usd380.com",
+    "aliases": [
+      "Frankfort",
+      "FHS",
+      "Frankfort Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/frankforths",
+        "provider_school_id": "h202502040451584302b27111d12974e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/frankfort/frankfort-wildcats",
+        "provider_school_id": "6f1649ad-3d98-422f-b5dc-d8d8e78a5d76"
+      }
+    ]
+  },
+  {
+    "id": "axtell-ks",
+    "name": "Axtell High School",
+    "short_name": "Axtell",
+    "state": "Kansas",
+    "city": "Axtell",
+    "county": "Marshall County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd113.org",
+    "aliases": [
+      "Axtell",
+      "AHS",
+      "Axtell Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/axtellhs",
+        "provider_school_id": "h202502040451548444e2524d4ec6c48"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/axtell/axtell-eagles",
+        "provider_school_id": "485040ec-6f87-4fd3-a375-41b94e9c07cc"
+      }
+    ]
+  },
+  {
+    "id": "abilene-ms-ks",
+    "name": "Abilene Middle School",
+    "short_name": "Abilene",
+    "state": "Kansas",
+    "city": "Abilene",
+    "county": "Dickinson County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.abileneschools.org",
+    "aliases": [
+      "Abilene Middle School",
+      "Abilene MS",
+      "AMS",
+      "Abilene Longhorns"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/abilenems",
+        "provider_school_id": "h202506090633579542ea5c6426c8c49"
+      }
+    ]
+  },
+  {
+    "id": "clay-center-ms-ks",
+    "name": "Clay Center Community Middle School",
+    "short_name": "Clay Center",
+    "state": "Kansas",
+    "city": "Clay Center",
+    "county": "Clay County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd379.org/cccms",
+    "aliases": [
+      "Clay Center Middle School",
+      "Clay Center MS",
+      "CCCMS",
+      "Clay Center Bengals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cccms",
+        "provider_school_id": "h20250612074218435c3da8844e90643"
+      }
+    ]
+  },
+  {
+    "id": "marysville-ms-ks",
+    "name": "Marysville Junior High",
+    "short_name": "Marysville",
+    "state": "Kansas",
+    "city": "Marysville",
+    "county": "Marshall County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd364.org",
+    "aliases": [
+      "Marysville Junior High",
+      "Marysville JH",
+      "MJH",
+      "Marysville Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/marysvillehs",
+        "provider_school_id": "h2025020404520083068273e62724849"
+      }
+    ]
   }
 ]

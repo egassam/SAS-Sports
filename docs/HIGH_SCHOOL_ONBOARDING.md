@@ -73,12 +73,15 @@ The Geary County run of November 4 is the reference: see the session record in `
 | `sports.tennis` | the TennisReporting school name |
 | `sports.milesplit` | the MileSplit team id |
 | `sports.paths` | a MaxPreps team path that differs from the usual one |
+| `sports.maxprepsSchedule` | the school enters few of its own games on Bound: its game sports also read MaxPreps' schedule (Bound's entries, then every MaxPreps game Bound lacks). Since November 5 (Wabaunsee: 1 of 10 football games on Bound) |
 | `sports.grades` | how Bound writes the grade teams (`usd475`: "7th Grade - A - 1", "7A"); default "7th", "7th Grade A" |
 | `stateXc` | the KSHSAA state cross country card: class, names in the results, sexes |
 | `extraMeets`, `milesplitNames` | still read, but the statewide index and the alias table replace them |
 | `note` | free text, not read |
 
-The county module exports each school (`export const junctionCityKsSchool=DATA['junction-city-ks']`) and its lists; `src/index.js` registers the lists in `HIGH_SCHOOL_MODULES` as before. Then, as for any school: the catalog entry (`src/schools.json` with `county` and `city`), `src/sponsored-sports.json`, `src/team-themes.json` (Bound's colors are in the report), the module doc and tests.
+**A county with only data schools** (November 5: Dickinson, Wabaunsee, Morris, Clay, Marshall) needs no module of its own: add its file to `KS_COUNTY_FILES` in `src/schools/ks-counties.mjs` (one import line), which the Worker already reads. Check each school's Bound counts against MaxPreps (a school with few Bound games gets `maxprepsSchedule`). Also confirm that every Bound event's own `IDAct` is the act asked for: the survey has done this since November 5, because Bound answered Herington's events with every sport. See `docs/NORTH_CENTRAL_KS_COUNTIES_MODULE.md`.
+
+A county module that also holds coded schools exports each school (`export const junctionCityKsSchool=DATA['junction-city-ks']`) and its lists; `src/index.js` registers the lists in `HIGH_SCHOOL_MODULES` as before. Then, as for any school: the catalog entry (`src/schools.json` with `county` and `city`), `src/sponsored-sports.json`, `src/team-themes.json` (Bound's colors are in the report), the module doc and tests.
 
 `tests/hs-config.mjs` checks every data file (known keys only, unique ids, a level, sports) and that the 22 Riley, Pottawatomie and Geary modules are the objects their hand-written modules were on November 4 (`tests/fixtures/hs-config/modules-2026-11-04.json.gz`), apart from the `extraMeets` and `names` that moved to the index and the alias table.
 
