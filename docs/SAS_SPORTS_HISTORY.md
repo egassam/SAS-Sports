@@ -4215,3 +4215,60 @@ User, after the list of what is left: "I do not want parents or non time scorers
   - Rock Creek MS Sep 3 with 8th Boys 2nd of 2 · 8th Girls 1st of 1; Wamego MS 8th Boys 1st of 2; Abilene MS 3rd of 50.
   - Chapman Sep 3 unchanged (MileSplit Live, hundredths).
   - Eisenhower MS Sep 22 "No results posted".
+
+## November 5, 2026 — Lessons from the day's sessions, built
+
+**Conversation.**
+- User: "What can we learn from this to optimize the next".
+  - Answer, ten lessons:
+    1. compare before changing what production shows;
+    2. find every results source before building (LetsGoRun in the survey);
+    3. a school name in a timer's results is only the school after its meet is confirmed;
+    4. push the next real commit when a preview build is stuck;
+    5. Bound coverage against MaxPreps in the survey;
+    6. Prep.Golf codes, TennisReporting names and MaxPreps ids in the survey;
+    7. a test for each schedule pairing;
+    8. comparison builds without stored finals;
+    9. client names for reads of production;
+    10. one full release run per final commit.
+  - Also the scheduled refresh slowing as schools are added.
+- User: "Yes, do all of them and merge when it passes".
+
+**Built.**
+- `scripts/diff-feeds.mjs` (`npm run diff:feeds`), added to the `AGENTS.md` 5c gate for shared-source changes.
+- `stored=0` (preview-only) in `withStoredFinals`.
+- `meetProFolderFits` + `meetProPlace` in `src/high-school.mjs`, used in `meetProResultsFor`.
+- `tests/hs-schedule-pairings.mjs`.
+- `onboard-hs` additions:
+  - `prepGolfCode`, `tennisReportingName`, `boundCoverage`, `letsGoRunGuesses`, `letsGoRunSchools`;
+  - the MaxPreps id fallback;
+  - Prep.Golf matching by Bound's name;
+  - report tables for Bound coverage and LetsGoRun.
+- Tests in `tests/onboard-hs.mjs` and `tests/ks-counties-module.mjs` (fixtures: Shawnee Heights MS, Bob Schmoekel; the Manhattan test's Fort Riley and Manhattan pages).
+- Working notes and `docs/HIGH_SCHOOL_ONBOARDING.md`.
+
+**Survey rerun (Clay County).** The draft matched the hand-built entries:
+- TennisReporting "Clay Center Community HS".
+- Wakefield's MaxPreps id `17ca41bd-…` found automatically.
+- Coverage: Clay Center 10 of 9, so no flag; Wakefield 2 of 9, so `maxprepsSchedule`.
+- Prep.Golf for Clay Center was missed (Prep.Golf says "Clay Center"); fixed by also matching Bound's name.
+- LetsGoRun table: 13 folders this season, including two the app did not read:
+  - `2027_Abilene_XC_Invitational`, dated 9/3/2026 but with no results posted;
+  - `2026_Shufelberger_TopCity_Classic` (9/19, Junction City), added.
+
+**The comparison tool, used on its own PR.**
+- 1st run (`4.270.0`, name-only folder check): 9 feeds differ. Sep 10 "Milford State Park meet" lost five middle school cards; Junction City Sep 5 lost its card.
+- 2nd run (`4.270.1`, venue and place block): 6 differ.
+  - Oct 15 "MS XC" refused, because the venue gave a no-name meet words of its own.
+  - Junction City Sep 5: Bound says the Greg Wilson Classic at Johnson County Community College, so it is not LetsGoRun's Manhattan XC Invitational (Warner Park). Production had shown the Manhattan places. MileSplit Live lists Junction City in meet 737908 with 0 entries.
+- 3rd run (`4.270.2`, a venue only counts for a folder): 41 of 42 the same. Junction City Sep 5 reads "No results posted" (a correction); Sep 19 Shufelberger: Girls 10th of 10 · Boys 10th of 12 (a gain).
+
+**Open.** Junction City's Manhattan-meet squad (Sep 5) has no card of its own: Bound lists only Greg Wilson that day.
+
+**Gate.**
+- `test:release` passed on `c1fb115`.
+- `verify:preview` on `4.270.2-onboarding-lessons`, all 45 middle and high schools, every sport, 3 refreshes: 925 PASS, 2 FAIL, both expanded views; XC 18/20 and 26/21.
+  - Blue Valley (Randolph) XC: HTTP 0 (a sandbox connection error).
+  - Council Grove volleyball vs Chase County: HTTP 404. Watch item: the game's id may differ between builds when a MaxPreps read fails.
+  - Both passed on rerun (12/12, 29/29).
+

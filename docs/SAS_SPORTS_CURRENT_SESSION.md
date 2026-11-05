@@ -1,6 +1,23 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 5, 2026 (Central, midday). **LetsGoRun cross country meets compared with production** (user: "Compare those. Let's go run meats").
+Last updated: November 5, 2026 (Central, afternoon). **Lessons from the day's sessions, built** (user: "What can we learn from this to optimize the next", then "Yes, do all of them and merge when it passes"). Branch `ccr-fe7c6016-k3rqnz`, version `4.270.2-onboarding-lessons`; the PR, merge and production check are in the session log.
+- **`npm run diff:feeds`** (`scripts/diff-feeds.mjs`): preview vs production, card by card (`refresh=1&stored=0`). `AGENTS.md` 5c runs it whenever a shared source of schools already in production changes.
+- **`stored=0`:** on a preview, a comparison build skips its stored finals; production ignores it.
+- **LetsGoRun folder check** (`meetProFolderFits`): a folder filed by day must share a word with the schedule's name, its alias, its venue (Bound's address) or its host, against the folder's name, title and place block. A name with no word of its own takes the day's folder.
+  - The first two preview comparisons caught the check dropping venue-named meets (Sep 10 "Milford State Park meet", Oct 15 "MS XC"), fixed in `4.270.1` and `4.270.2`.
+  - They also found one wrong production card: Junction City's Greg Wilson Classic (Sep 5, JCCC) showed the Manhattan XC Invitational's places; it now reads "No results posted".
+- **`tests/hs-schedule-pairings.mjs`:** whole Worker feeds for Bound alone (Abilene) and Bound + MaxPreps' schedule (Wabaunsee, the Olpe game).
+- **The survey** (`onboard-hs`) now looks up:
+  - Prep.Golf codes, also by Bound's shorter name;
+  - TennisReporting names;
+  - a MaxPreps id from a page with no mascot image;
+  - Bound coverage against MaxPreps, setting `maxprepsSchedule`;
+  - LetsGoRun's season folders and which of the county's schools ran each.
+  - Rerun for Clay County, it matched the hand-built entries and found the Shufelberger TopCity Classic (Sep 19), now added: Junction City gains team places.
+- **Final `diff:feeds` (cross country, 42 feeds):** 41 the same; Junction City Sep 5 (corrected) and Sep 19 (gained).
+- **Working notes** gained the session's lessons (stuck preview builds, client names, one release run per final commit, refresh batch).
+
+Earlier, November 5, 2026 (Central, midday). **LetsGoRun cross country meets compared with production** (user: "Compare those. Let's go run meats").
 - **What was compared:** the five 2026 LetsGoRun folders found earlier were added on a preview, and all 42 middle and high school cross country feeds were compared card by card with production.
 - **Added:** Abilene Invitational (Sep 3; the page prints 9/5 under a leftover Manhattan header), Bob Schmoekel (Oct 3), Centennial League (Oct 17).
   - Manhattan and Junction City gain Oct 17 team places.
