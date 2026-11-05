@@ -7,7 +7,7 @@ import {readFileSync} from 'node:fs';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
-import {isStoredFinal,finalSig,finalKeys,sameFinal,exactFinal,mergeFinals} from '../src/finals-store.mjs';
+import {isStoredFinal,finalSig,finalKeys,sameFinal,exactFinal,mergeFinals,retractedFinal,RETRACTED_FINALS} from '../src/finals-store.mjs';
 
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const game=(date,opponent,extra={})=>({id:`g-${date}-${opponent}`,event_type:'GAME',status:'Final',start_time:`${date}T19:00:00.000Z`,opponent,title:`Wamego vs ${opponent}`,...extra});
@@ -182,6 +182,22 @@ const worker=Function(...Object.keys(deps),source+';return {withStoredFinals,set
   assert.equal(fn('u',r(503,{'x-sas-source':'backoff','x-sas-upstream-status':'403'})),'u: HTTP 503 (waiting out an earlier HTTP 403 refusal; no request sent)');
   assert.ok(source.includes('scoresErrors.push(sourceFailure(url,r))'));
   assert.ok(source.includes("`scores source failed${built?'':' (saved copy kept)'}: ${(report.scores_errors||['reason not recorded']).join('; ')}`"));
+}
+// A stored final shown to be wrong is not listed again (November 5: Junction
+// City's Greg Wilson Classic had been stored with the Manhattan XC
+// Invitational's places).
+{
+  assert.ok(RETRACTED_FINALS.every(r=>r.school&&r.sport&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&r.reason));
+  assert.equal(retractedFinal('junction-city-ks','Cross Country',{start_time:'2026-09-05T13:00:00.000Z'}),true);
+  assert.equal(retractedFinal('junction-city-ks','Cross Country',{start_time:'2026-09-19T13:00:00.000Z'}),false);
+  assert.equal(retractedFinal('junction-city-ks','Football',{start_time:'2026-09-05T23:00:00.000Z'}),false);
+  const db=fakeD1(),env={CATALOG_DB:db},now=new Date('2026-11-05T22:00:00Z'),jc=schools.find(s=>s.id==='junction-city-ks');
+  worker.setScope(`https://${worker.PRODUCTION_HOST}/live/feed/grouped`);
+  const meet=(date,name,headline)=>({...game(date,name),event_type:'MEET',status:'Final',headline,results:[{group:'Boys',participant:'Junction City team',result:headline}],meet_results_verified:true});
+  db.rows.set('a',{scope:'prod',school:'junction-city-ks',sport:'Cross Country',event_key:'2026-09-05||greg wilson classic',date:'2026-09-05',event:JSON.stringify(meet('2026-09-05','Greg Wilson Classic','Boys 6th of 11')),sig:'x',history:'[]'});
+  db.rows.set('b',{scope:'prod',school:'junction-city-ks',sport:'Cross Country',event_key:'2026-10-03||blue jay',date:'2026-10-03',event:JSON.stringify(meet('2026-10-03','Blue Jay Invitational','Boys 2nd of 7')),sig:'y',history:'[]'});
+  const out=await worker.withStoredFinals({events:[],error:null},jc,'Cross Country',env,now);
+  assert.deepEqual(out.events.map(e=>e.start_time.slice(0,10)),['2026-10-03'],'the retracted Sep 5 final is not listed; Oct 3 still is');
 }
 // Wired into every middle and high school build, and reported on /live/status.
 assert.ok(source.includes('if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);'));

@@ -80,6 +80,18 @@ export const exactFinal=(a,b)=>day(a)===day(b)&&(a.team_label||'')===(b.team_lab
 // Every match is tried on the exact opponent first and only then on a
 // compatible name ("Topeka" and "Topeka High"), so a triangular's two
 // matches (Topeka and Topeka West) never trade scores.
+// Stored finals shown to be wrong, never listed again from the store (rows
+// stay in the table). November 5: Junction City's Greg Wilson Classic
+// (September 5, Johnson County Community College) had been stored with
+// LetsGoRun's Manhattan XC Invitational places from the same day; the folder
+// check (meetProFolderFits) no longer gives them, and the store listed them
+// again. Each entry: school, sport, the event's day, and why.
+export const RETRACTED_FINALS=[
+  {school:'junction-city-ks',sport:'Cross Country',date:'2026-09-05',reason:'Manhattan XC Invitational places shown on the Greg Wilson Classic (PR #527)'}];
+export function retractedFinal(school,sport,event,list=RETRACTED_FINALS){
+  const date=String(event?.start_time||'').slice(0,10);
+  return list.some(r=>r.school===school&&r.sport===sport&&r.date===date);
+}
 export function mergeFinals(built,stored,{now=new Date().toISOString(),source=null,compatible=null,write=true}={}){
   const events=[...built],writes=[],keys=finalKeys(built),used=new Set(),claimed=new Set();
   const rows=(stored||[]).map(r=>({...r,event:typeof r.event==='string'?JSON.parse(r.event):r.event}));
