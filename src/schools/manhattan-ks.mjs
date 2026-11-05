@@ -33,6 +33,8 @@ export const LETSGORUN_MEETPRO={
     // (Sep 22; its "Eisenhower" is Topeka's, not Manhattan's) and Washburn
     // Rural MS (Sep 25; no school in the app).
     '2026-09-03':['2026_Abilene_XC_Invitational'],
+    // Found by the survey's LetsGoRun step (November 5): Junction City ran it.
+    '2026-09-19':['2026_Shufelberger_TopCity_Classic'],
     '2026-10-03':['2026_Bob_Schmoekel_Cross_Country_Invitational'],
     '2026-10-17':['2026_Centennial_League_XC_Championships']
   },
