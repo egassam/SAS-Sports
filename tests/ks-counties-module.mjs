@@ -6,7 +6,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {boundSchedule,boundDedupe,maxprepsContests,BOUND_ACTS} from '../src/high-school.mjs';
+import {boundSchedule,boundDedupe,maxprepsContests,meetProResults,BOUND_ACTS} from '../src/high-school.mjs';
+import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
 import {KS_COUNTY_FILES,KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from '../src/schools/ks-counties.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>{const b=gunzipSync(readFileSync(new URL('./fixtures/ks-counties/'+name,import.meta.url))).toString('utf8');return name.endsWith('.json.gz')?JSON.parse(b):b;};
@@ -88,6 +89,15 @@ assert.deepEqual(contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!wab
 // Center, Marysville, and Wamego and Rock Creek already in the app).
 const ALIASES=JSON.parse(read('../src/schools/data/ks-aliases.json'));
 assert.equal(ALIASES.meets['Great Life Golf Course meet'],'NCKL Cross Country Championships');
+
+// LetsGoRun (MeetPro) timed it too (user, November 5: "Did you look on let's
+// go run for cross country results?"): the varsity team places for each school.
+assert.deepEqual(LETSGORUN_MEETPRO.folders['2026-10-15'],['2026_NCKL_Cross_Country_Championships']);
+const nckl=fixture('meetpro-2026_NCKL_Cross_Country_Championships.html.gz');
+const varsity=team=>meetProResults(nckl,team).filter(r=>/varsity/i.test(r.race)).map(r=>`${r.race}: ${r.team?`${r.team.place}/${r.teams}`:'-'} ${r.runners.length}`);
+assert.deepEqual(varsity('Chapman'),['High School Girls Varsity: 4/5 6','High School Boys Varsity: 2/7 7']);
+assert.deepEqual(varsity('Clay Center'),['High School Girls Varsity: 3/5 7','High School Boys Varsity: 3/7 7']);
+assert.deepEqual(varsity('Marysville'),['High School Girls Varsity: 5/5 5','High School Boys Varsity: 6/7 7']);
 
 // Abilene MS: the grade teams (7th, 8th; their A teams), B teams left out.
 const ams=by('abilene-ms-ks');

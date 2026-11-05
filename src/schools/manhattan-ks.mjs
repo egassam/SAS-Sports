@@ -22,7 +22,10 @@ export const LETSGORUN_MEETPRO={
     '2026-09-10':['2026_Fort_Riley_XC_Invitational'],
     '2026-09-15':['2026_Clay_Center_XC_Invitational'],
     '2026-09-29':['2026_Rock_Creek_Cross_Country_Invitational'],
-    '2026-10-02':['2026_Centennial_League_Middle_School_XC_Championships']
+    '2026-10-02':['2026_Centennial_League_Middle_School_XC_Championships'],
+    // NCKL Championships at Abilene (November 5: Abilene, Chapman, Clay
+    // Center, Marysville, Wamego, Rock Creek and their middle schools).
+    '2026-10-15':['2026_NCKL_Cross_Country_Championships']
   },
   // Trial track meets for the live reader: {date, folder, name, schools}.
   trials:[],

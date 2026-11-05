@@ -26,9 +26,18 @@ for(const [id,module] of Object.entries(before))for(const team of module.sports?
   if(team.milesplit?.names){(MOVED[id]??={}).names=team.milesplit.names;delete team.milesplit.names;}
 }
 assert.deepEqual(Object.keys(MOVED).sort(),['fort-riley-ms-ks','junction-city-ks','st-xavier-ks']);
+// LetsGoRun's folder list is shared and grows as meets are posted (November
+// 5: the NCKL Championships): every earlier folder is still read; the
+// modules are compared without it.
+const folders=m=>m?.meetPro?.folders;
 for(const module of now){
-  const same=JSON.stringify(sorted(ser(module)))===JSON.stringify(sorted(before[module.id]));
-  if(!same)assert.deepEqual(sorted(ser(module)),sorted(before[module.id]),`${module.id} is the module it was`);
+  const was=folders(before[module.id]),is=folders(ser(module));
+  if(was){for(const [day,list] of Object.entries(was))assert.deepEqual(is?.[day],list,`${module.id}: LetsGoRun ${day}`);delete before[module.id].meetPro.folders;}
+}
+const comparable=module=>{const x=ser(module);if(x.meetPro)delete x.meetPro.folders;return x;};
+for(const module of now){
+  const same=JSON.stringify(sorted(comparable(module)))===JSON.stringify(sorted(before[module.id]));
+  if(!same)assert.deepEqual(sorted(comparable(module)),sorted(before[module.id]),`${module.id} is the module it was`);
 }
 // Every MileSplit name a module kept is in the state's alias table.
 const aliases=JSON.parse(readFileSync(new URL('../src/schools/data/ks-aliases.json',import.meta.url),'utf8'));
