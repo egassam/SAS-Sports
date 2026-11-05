@@ -1,6 +1,7 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | liberty | Basketball | ❌ failing | Men's · Liberty at High Point: final L, 57-72 not in the app's results |
+| liu | Basketball | ❌ failing | Women's · LIU at Texas St: final L, 51-69 not in the app's results |
 | manhattan | Volleyball | ❌ failing | Manhattan at Sacred Heart: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | merrimack | Volleyball | ❌ failing | Merrimack vs Quinnipiac: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
@@ -9,10 +10,11 @@
 | pacific | Volleyball | ❌ failing | Pacific vs Denver: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
 | san-diego-state | Soccer | ❌ failing | San Diego State vs Fresno St: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | west-georgia | Basketball | ❌ failing | Women's · West Georgia at Georgia: result reads "L, 92-53", ESPN final L, 53-92 |
-| liu | Basketball | 🔴 on | final L, 51-69 not in the app's results |
-| saint-marys | Basketball | 🔴 on | result reads "W, 105-64", ESPN final L, 42-112 |
+| north-florida | Basketball | 🔴 on | live 43-29 · 9:32 - 3rd · official_schedule+live_scoreboard |
+| towson | Basketball | 🔴 on | live 43-33 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -567,7 +569,6 @@
 | north-dakota-state | Basketball | ⚪ off (waiting) |  |
 | north-dakota-state | Softball | ⚪ off (waiting) |  |
 | north-florida | Baseball | ⚪ off (waiting) |  |
-| north-florida | Basketball | ⚪ off (waiting) |  |
 | north-florida | Softball | ⚪ off (waiting) |  |
 | north-texas | Softball | ⚪ off (waiting) |  |
 | northern-arizona | Basketball | ⚪ off (waiting) |  |
@@ -833,7 +834,6 @@
 | toledo | Basketball | ⚪ off (waiting) |  |
 | toledo | Softball | ⚪ off (waiting) |  |
 | towson | Baseball | ⚪ off (waiting) |  |
-| towson | Basketball | ⚪ off (waiting) |  |
 | towson | Football | ⚪ off (waiting) |  |
 | towson | Lacrosse | ⚪ off (waiting) |  |
 | towson | Soccer | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 956/1956; on 2; off 987; failing 11.
+Done 956/1956; on 2; off 985; failing 13.

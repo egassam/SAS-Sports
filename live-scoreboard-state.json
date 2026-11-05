@@ -6355,8 +6355,8 @@
    "state": "off"
   },
   "saint-marys|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-05T08:47:08.610Z",
+   "state": "failing",
+   "last_check": "2026-11-05T17:01:16.805Z",
    "last_detail": "result reads \"W, 105-64\", ESPN final L, 42-112",
    "game": {
     "key": "saint-marys|Basketball|Men's|2026-11-04|1",
@@ -6372,6 +6372,12 @@
     ],
     "final_ok": false,
     "final_due": "2026-11-05T08:52:46.081Z"
+   },
+   "failures": 6,
+   "last_failure": {
+    "at": "2026-11-05T17:01:16.805Z",
+    "game": "Men's · Saint Mary's at S Indiana",
+    "detail": "result reads \"W, 105-64\", ESPN final L, 42-112"
    }
   },
   "saint-marys|Soccer": {
@@ -7395,7 +7401,23 @@
    "state": "off"
   },
   "north-florida|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-05T17:00:58.387Z",
+   "last_detail": "live 43-29 · 9:32 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "north-florida|Basketball|Women's|2026-11-05|1",
+    "title": "Women's · North Florida at Florida St",
+    "started_seen": "2026-11-05T16:51:56.972Z",
+    "live_passes": [
+     "2026-11-05T16:51:56.972Z",
+     "2026-11-05T16:54:00.269Z",
+     "2026-11-05T16:55:22.192Z",
+     "2026-11-05T16:57:28.733Z",
+     "2026-11-05T16:58:53.533Z",
+     "2026-11-05T17:00:58.387Z"
+    ],
+    "final_ok": false
+   }
   },
   "north-florida|Soccer": {
    "state": "done",
@@ -8493,7 +8515,23 @@
    "state": "off"
   },
   "towson|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-05T17:00:37.933Z",
+   "last_detail": "live 43-33 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "towson|Basketball|Women's|2026-11-05|1",
+    "title": "Women's · Towson vs Frostburg St",
+    "started_seen": "2026-11-05T16:51:56.423Z",
+    "live_passes": [
+     "2026-11-05T16:51:56.423Z",
+     "2026-11-05T16:53:59.184Z",
+     "2026-11-05T16:55:22.466Z",
+     "2026-11-05T16:57:30.162Z",
+     "2026-11-05T16:59:12.134Z",
+     "2026-11-05T17:00:37.933Z"
+    ],
+    "final_ok": false
+   }
   },
   "towson|Field Hockey": {
    "state": "done",
@@ -9882,8 +9920,8 @@
    "state": "off"
   },
   "liu|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-05T08:47:09.896Z",
+   "state": "failing",
+   "last_check": "2026-11-05T17:01:16.529Z",
    "last_detail": "final L, 51-69 not in the app's results",
    "game": {
     "key": "liu|Basketball|Women's|2026-11-04|1",
@@ -9892,6 +9930,12 @@
     "live_passes": [],
     "final_ok": false,
     "final_due": "2026-11-05T08:52:46.081Z"
+   },
+   "failures": 6,
+   "last_failure": {
+    "at": "2026-11-05T17:01:16.529Z",
+    "game": "Women's · LIU at Texas St",
+    "detail": "final L, 51-69 not in the app's results"
    }
   },
   "liu|Field Hockey": {
@@ -11881,7 +11925,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.267.1-college-finals",
- "updated_at": "2026-11-05T08:47:09.902Z",
+ "version": "4.268.2-ks-counties",
+ "updated_at": "2026-11-05T17:01:16.811Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
