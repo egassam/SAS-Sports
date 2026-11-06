@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {maxprepsFromLinks,maxprepsLinks,prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
+import {boundLocalDay,maxprepsFromLinks,maxprepsLinks,prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
 import {schoolFromConfig} from '../src/high-school-builders.mjs';
 
 const read=(name,gz=name.endsWith('.gz'))=>{const b=readFileSync(new URL(`./fixtures/onboard-hs/${name}`,import.meta.url));return gz?gunzipSync(b).toString('utf8'):b.toString('utf8');};
@@ -142,5 +142,15 @@ assert.equal(maxprepsSchoolPage(ksc('maxpreps-wabaunsee-football-2026-11-05.html
     maxpreps:{id:'0214e66b-7ee7-4dd5-9c77-b72e148aa811',path:'ks/topeka/cair-paravel-lions',teams:['baseball','basketball','football','soccer','tennis/girls','volleyball','volleyball/boys','wrestling']},coverage:{sparse:true}});
   assert.deepEqual(e.sports.has,['Football','Volleyball','Soccer','Basketball','Baseball','Cross Country','Track & Field']);assert.equal(e.sports.maxprepsSchedule,true);
   assert.equal(e.maxpreps.path,'topeka/cair-paravel-lions');
+  assert.deepEqual(e.sports.paths,undefined,'no girls\' soccer team listed');
+  const baldwin=draftEntry({id:'baldwin-ks',level:'high-school',name:'Baldwin High School',bound:{bound:'h2',slug:'baldwinhs',name:'Baldwin'},has:['Football','Flag Football','Soccer','Girls Soccer'],maxpreps:{id:'68189fda-f3d4-4a9e-b180-0ebbbe1f8660',path:'ks/baldwin/baldwin-bulldogs',teams:['flag-football/girls/fall','football','soccer','soccer/girls/spring']}});
+  assert.deepEqual(baldwin.sports.paths,{'Girls Soccer':'soccer/girls/spring','Girls Flag Football':'flag-football/girls/fall'});
 }
+// A guessed path served under another name: the canonical path and its teams (Washburn Rural, November 6).
+{
+  const html='<link rel="canonical" href="https://www.maxpreps.com/ks/topeka/washburn-rural-jr-blues/" data-next-head=""/>"schoolId":"2c49abc2-790c-4061-8aec-81b0d9cc9243" <a href="/ks/topeka/washburn-rural-jr-blues/soccer/girls/spring/schedule/">';
+  assert.deepEqual(maxprepsSchoolPage(html,'ks/topeka/washburn-rural-junior-blues'),{id:'2c49abc2-790c-4061-8aec-81b0d9cc9243',teams:['soccer/girls/spring'],path:'ks/topeka/washburn-rural-jr-blues'});
+  assert.equal(maxprepsSchoolPage(html,'ks/topeka/washburn-rural-jr-blues').path,undefined,'already the canonical path');
+}
+assert.equal(boundLocalDay('2026-09-27T02:00:00.000Z'),'2026-09-26','Bound times are UTC');assert.equal(boundLocalDay(''),null);
 console.log(`onboard-hs: ok (Geary: ${rows.length} schools matched)`);

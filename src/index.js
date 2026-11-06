@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.273.0-winter-readiness';
+const VERSION='4.274.0-ks-counties-3';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5465,8 +5465,10 @@ async function opponentSchoolFor(event,currentSchool){
   const wanted=matchText(event.opponent);
   if(!wanted)return null;
   const db=await catalogD1();
-  if(db){try{const id=await catalogOpponent(db,wanted,currentSchool.id);if(!id)return null;return catalogSchool(id)||(await catalogRecords(db,[id]))[0]||null}catch{}}
-  return schools.find(candidate=>candidate.id!==currentSchool.id&&[candidate.name,candidate.short_name,...(candidate.aliases||[])]
+  // At the school's own age (catalogOpponent): a college's "Washburn" is not Washburn Rural High School.
+  const level=currentSchool.level||catalogSchool(currentSchool.id)?.level||null,schoolAge=l=>l==='high-school'||l==='middle-school';
+  if(db){try{const id=await catalogOpponent(db,wanted,currentSchool.id,level);if(!id)return null;return catalogSchool(id)||(await catalogRecords(db,[id]))[0]||null}catch{}}
+  return schools.find(candidate=>candidate.id!==currentSchool.id&&schoolAge(candidate.level)===schoolAge(level)&&[candidate.name,candidate.short_name,...(candidate.aliases||[])]
     .some(label=>{const value=matchText(label);return value===wanted||(value.length>3&&wanted.length>3&&(value.includes(wanted)||wanted.includes(value)));}))||null;
 }
 function recapMatchesEvent(raw,e,recapUrl=''){

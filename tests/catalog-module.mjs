@@ -105,7 +105,7 @@ assert.deepEqual(levels.map(l=>l.count),['middle-school','high-school','college'
 const pro=await catalogMenu(stores[1],{level:'pro',group:'Auto Racing',middle:'IMSA'});
 assert.deepEqual(pro.middles,['Formula 1','IMSA','NASCAR']);assert.deepEqual(pro.entries.map(e=>e.id),['imsa-weathertech','imsa-pilot-challenge']);
 const kansas=await catalogMenu(stores[1],{level:'high-school',group:'Kansas'});
-assert.deepEqual(kansas.middles,['Brown County','Clay County','Cloud County','Dickinson County','Douglas County','Geary County','Jackson County','Johnson County','Lyon County','Marshall County','Morris County','Nemaha County','Ottawa County','Pottawatomie County','Republic County','Riley County','Wabaunsee County','Washington County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');
+assert.deepEqual(kansas.middles,['Brown County','Clay County','Cloud County','Dickinson County','Douglas County','Geary County','Jackson County','Johnson County','Lyon County','Marshall County','Morris County','Nemaha County','Ottawa County','Pottawatomie County','Republic County','Riley County','Saline County','Shawnee County','Wabaunsee County','Washington County']);assert.equal(kansas.entries[0].city,'Manhattan','the town comes with the card');
 const rileyHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Riley County'});assert.deepEqual(rileyHs.entries.map(e=>e.id),['manhattan-ks','riley-county-ks','blue-valley-randolph-ks']);
 const pottHs=await catalogMenu(stores[1],{level:'high-school',group:'Kansas',middle:'Pottawatomie County'});assert.deepEqual(pottHs.entries.map(e=>e.id),['wamego-ks','rock-creek-ks','st-marys-ks','onaga-ks','flint-hills-christian-ks','st-marys-academy-ks']);
 // Geary County (November 3): Junction City and St. Xavier; three middle schools.
@@ -201,18 +201,22 @@ assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow m
   // Opponent names: the old scan over every entry and the one D1 query pick
   // the same school for every name, alias, part of a name and decorated
   // name in the catalog, and for names of no catalog school.
-  const oldScan=(opponent,current)=>{const wanted=matchText(opponent);if(!wanted)return null;return schools.find(c=>c.id!==current&&[c.name,c.short_name,...(c.aliases||[])].some(label=>{const v=matchText(label);return v===wanted||(v.length>3&&wanted.length>3&&(v.includes(wanted)||wanted.includes(v)))}))?.id||null};
+  const AGE=new Set(schools.filter(c=>['high-school','middle-school'].includes(c.level)).map(c=>c.id));
+  const oldScan=(opponent,current)=>{const wanted=matchText(opponent);if(!wanted)return null;return schools.find(c=>c.id!==current&&AGE.has(c.id)===AGE.has(current)&&[c.name,c.short_name,...(c.aliases||[])].some(label=>{const v=matchText(label);return v===wanted||(v.length>3&&wanted.length>3&&(v.includes(wanted)||wanted.includes(v)))}))?.id||null};
   const probes=new Set(['','Washburn','Northern Iowa','UMKC','Kansas City','Fort Hays State','Nebraska-Omaha','Iowa St.','#12 Texas (Exhibition)','vs. Oklahoma State','at TCU','Miami (Fla.)','Ohio','State','Saint Louis']);
   for(const r of schools)for(const label of [r.name,r.short_name,...(r.aliases||[])].filter(Boolean)){probes.add(label);probes.add(`#5 ${label}`);probes.add(`${label} (Neutral)`);probes.add(label.slice(0,Math.ceil(label.length*0.6)));probes.add(`${label} University`);}
   let agreed=0;
   for(const probe of probes)for(const current of ['kstate','kansas','manhattan-ks','nascar-cup-series']){
-    const want=oldScan(probe,current),got=await catalogOpponent(db3,matchText(probe),current);
+    const want=oldScan(probe,current),got=await catalogOpponent(db3,matchText(probe),current,schools.find(c=>c.id===current)?.level);
     assert.equal(got,want,`opponent "${probe}" for ${current}`);agreed++;
   }
   assert.ok(agreed>1500,`${agreed} opponent lookups agree`);
   // The Worker's own lookup uses D1 now (requestCatalog was set by the request above).
   assert.equal((await opponentSchoolFor({opponent:'#9 Iowa State'},{id:'kstate'}))?.id,'iowa-state');
   assert.equal(await opponentSchoolFor({opponent:'Washburn'},{id:'kstate'}),null);
+  // At the school's own age (November 6): Topeka's Washburn Rural is a high school's opponent, not a college's.
+  assert.equal((await opponentSchoolFor({opponent:'Washburn Rural'},{id:'topeka-ks'}))?.id,'washburn-rural-ks');
+  assert.equal(await opponentSchoolFor({opponent:'Washburn Rural'},{id:'kstate'}),null);
   assert.ok(worker.includes('    const opponentSchool=await opponentSchoolFor(target,school);'));
   // Hosts: every official site, nothing else.
   for(const r of schools)assert.equal(await catalogHostKnown(db3,new URL(r.athletics_url).hostname.replace(/^www\./,'')),true,r.id);

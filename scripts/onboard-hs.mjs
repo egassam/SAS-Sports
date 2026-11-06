@@ -100,6 +100,11 @@ export function prepGolfSchools(html){
 }
 // A MaxPreps school page: its id (in the mascot image path) and its team pages.
 export function maxprepsSchoolPage(html,path){
+  // A guessed path MaxPreps serves under another name ("washburn-rural-junior-blues"
+  // is "washburn-rural-jr-blues", November 6): the page's canonical path, whose
+  // team links it has.
+  const canonical=(String(html||'').match(/<link rel="canonical" href="https:\/\/www\.maxpreps\.com\/([a-z]{2}\/[a-z0-9-]+\/[a-z0-9-]+)\/"/)||[])[1];
+  if(canonical&&canonical!==path.replace(/^\/|\/$/g,''))return{...maxprepsSchoolPage(html.replace(/<link rel="canonical"[^>]*>/,''),canonical),path:canonical};
   // The school's id is its mascot image's name; a page with no mascot (e.g.
   // Wakefield, November 5) names it as the page data's most frequent
   // "schoolId".
@@ -294,9 +299,22 @@ export function draftEntry(row){
     row.has=HAS_ORDER.filter(h=>has.has(h));
   }
   const meetTeam=(row.bound?.name||name).replace(/\s+(?:HS|High School|Sr\.? High)$/i,'').trim();
-  entry.sports={has:row.has||[],meetTeam,...((row.has||[]).includes('Tennis')&&row.tennis&&row.level==='high-school'?{tennis:row.tennis}:{}),...(row.milesplit?{milesplit:Number(row.milesplit.id)}:{}),...(row.coverage?.sparse&&row.maxpreps?{maxprepsSchedule:true}:{})};
+  // MaxPreps files some teams under a season (Kansas girls' soccer
+  // "soccer/girls/spring", flag football "flag-football/girls/fall"; by hand
+  // for Emporia on November 5, from the team list since November 6).
+  const paths={};
+  for(const [act,base,has] of [['Girls Soccer','soccer/girls','Girls Soccer'],['Girls Flag Football','flag-football/girls','Flag Football']]){
+    if(!(row.has||[]).includes(has))continue;
+    const teams=row.maxpreps?.teams||[],season=teams.find(t=>t.startsWith(`${base}/`));
+    if(season&&!teams.includes(base))paths[act]=season;
+  }
+  entry.sports={has:row.has||[],meetTeam,...(Object.keys(paths).length?{paths}:{}),...((row.has||[]).includes('Tennis')&&row.tennis&&row.level==='high-school'?{tennis:row.tennis}:{}),...(row.milesplit?{milesplit:Number(row.milesplit.id)}:{}),...(row.coverage?.sparse&&row.maxpreps?{maxprepsSchedule:true}:{})};
   return entry;
 }
+
+// Bound's times are UTC: the day is Kansas's (November 6: Free State's Rim
+// Rock entry starts 02:00 UTC on September 27, 9 p.m. on the 26th in Lawrence).
+export const boundLocalDay=(iso,timeZone='America/Chicago')=>{const d=new Date(iso||'');return Number.isNaN(d.getTime())?null:new Intl.DateTimeFormat('en-CA',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).format(d)};
 
 // --- Network
 
@@ -349,7 +367,12 @@ async function surveyCounty(args,county,paths){
   const kshsaa=[];
   if(state==='KS'&&!args.includes('--no-kshsaa'))for(const [i,town] of ccd.towns.entries()){
     if(i)await sleep(30000);
-    try{kshsaa.push(...kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town)}`,{json:true})));log(`KSHSAA ${town}: ok`);}catch(e){log(`KSHSAA ${town}: ${e.message}`);notes.push(`KSHSAA directory for ${town}: ${e.message}`)}
+    try{
+      let found=kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town)}`,{json:true}));
+      // KSHSAA may file a town under its first word (NCES "Baldwin City", KSHSAA "Baldwin", November 6).
+      if(!found.length&&/\s/.test(town)){await sleep(30000);found=kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town.split(/\s+/)[0])}`,{json:true})).map(x=>({...x,town}));}
+      kshsaa.push(...found);log(`KSHSAA ${town}: ${found.length} schools`);
+    }catch(e){log(`KSHSAA ${town}: ${e.message}`);notes.push(`KSHSAA directory for ${town}: ${e.message}`)}
   }
   // Bound's state page.
   const bound=boundStateSchools(await get(`https://beta.gobound.com/${state.toLowerCase()}/schools`));
@@ -367,7 +390,7 @@ async function surveyCounty(args,county,paths){
       for(const id of ids){
         try{const p=JSON.parse(await get(boundEventsUrl(row.bound.bound,{start:`${y-1}-07-01`,end:`${y+1}-06-30`,act:id}),{headers:{Accept:'application/json'}}));
           for(const g of Array.isArray(p)?p:[])for(const e of g?.Events||[])if(e?.RecordType==='comp'&&(e.IDAct===id||(e.IDActs||[]).includes(id))&&(e.Teams||[]).some(t=>t.HostSchoolID===row.bound.bound)&&(row.level==='middle-school'?MS_LEVEL:VARSITY_LEVEL).test(String(e.LevelDisplay||'').trim())){
-            const day=String(e.StartDateTime||'').slice(0,10);(day>=`${y}-07-01`?current:last).add(day);
+            const day=boundLocalDay(e.StartDateTime);if(!day)continue;(day>=`${y}-07-01`?current:last).add(day);
             // This season's cross country meets, for the results-sources table.
             if(/Cross Country/.test(act)&&day>=`${y}-07-01`)(row.xcMeets??=new Map()).set(day,String(g.Title||e.Title||e.VenueLocationsDisplay||'').trim()||'(meet)');}}catch{}
       }

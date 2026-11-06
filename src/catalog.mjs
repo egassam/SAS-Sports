@@ -125,9 +125,15 @@ export async function catalogRecords(db,ids){
 // The opponent an event names: the first entry in catalog order (other than
 // the school itself) with a name equal to it, or, both longer than three
 // letters, one containing the other (the Worker's rule, now one query).
-export async function catalogOpponent(db,wanted,excludeId){
+// Opponents stay at their age (November 6: with Topeka's schools, K-State's
+// "Washburn" found Washburn Rural High School): a middle or high school's
+// opponent is a middle or high school, anyone else's is not.
+export const SCHOOL_AGE_LEVELS=['high-school','middle-school'];
+export const schoolAge=level=>SCHOOL_AGE_LEVELS.includes(level);
+export async function catalogOpponent(db,wanted,excludeId,level=null){
   if(!wanted)return null;
-  const row=await db.prepare(`SELECT id FROM catalog_names WHERE id<>? AND (name=? OR (length(name)>3 AND length(?)>3 AND (instr(name,?)>0 OR instr(?,name)>0))) ORDER BY sort LIMIT 1`).bind(excludeId||'',wanted,wanted,wanted,wanted).first();
+  const age=`id ${schoolAge(level)?'IN':'NOT IN'} (SELECT id FROM catalog_entries WHERE level IN ('high-school','middle-school'))`;
+  const row=await db.prepare(`SELECT id FROM catalog_names WHERE id<>? AND ${age} AND (name=? OR (length(name)>3 AND length(?)>3 AND (instr(name,?)>0 OR instr(?,name)>0))) ORDER BY sort LIMIT 1`).bind(excludeId||'',wanted,wanted,wanted,wanted).first();
   return row?.id||null;
 }
 export async function catalogHostKnown(db,host){

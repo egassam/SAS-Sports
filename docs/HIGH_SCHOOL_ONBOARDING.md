@@ -188,6 +188,19 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 
 Do not read the sites that disallow the app.
 
+## Survey fixes from Shawnee, Douglas and Saline (November 6, 2026)
+
+- **MaxPreps pages the guesses miss:** when every guessed path 404s, the survey takes the path that the county's other school pages link, for the school's town, a word of its name and its mascot (`maxprepsFromLinks`). Examples: Topeka West is `topeka/west-chargers`, Cair Paravel `cair-paravel-lions`, Baldwin `baldwin/baldwin-bulldogs` for Baldwin City.
+- **A guessed path served under another name** ("washburn-rural-junior-blues") reads its canonical path ("washburn-rural-jr-blues") and the team links there.
+- **One row per school:** rows at the same level with the same Bound school are one row, KSHSAA's name first. This replaces two rows each for Free State, Lakewood and Topeka's and Lawrence's middle schools.
+- **Few Bound games:** the draft also takes MaxPreps' game sports that Bound lacks (Cair Paravel's baseball). Since November 5 this had been done by hand.
+- **Season paths:** girls' soccer and flag football paths come from MaxPreps' team list (`soccer/girls/spring`, `flag-football/girls/fall`).
+- **Prep.Golf codes** use Bound's name, then KSHSAA's (Seaman: SEA). Prep.Golf schools also match by the town and the name ("Salina Sacred Heart").
+- **KSHSAA towns:** a town with no member schools is searched again by its first word (NCES "Baldwin City", KSHSAA "Baldwin").
+- **Bound days are Kansas days:** Bound's times are UTC, and Free State's Rim Rock entry at 02:00 UTC on September 27 was the evening of the 26th (`boundLocalDay`).
+- **The catalog file** keeps each school's Bound event days by act (`boundDays`, this year/last), for the skip list.
+- **`add:county` names:** KSHSAA's "Salina-Central HS" becomes "Salina Central High School" (the town's hyphen). A name that is already a school's ("Cair Paravel Latin School", "Bishop Seabury Academy") is kept. "Baldwin Junior High School" becomes "Baldwin Junior High". KSHSAA's "Independent - JH" is no league.
+
 ## Winter sports (November 6, 2026)
 
 - **Schedules:** basketball, wrestling, swimming and bowling come from the same sources as the fall (Bound, MaxPreps' schedule for schools with `maxprepsSchedule`, the school calendars). `npm run audit:sports` checks the calendar schools; `npm run audit:bound` (`scripts/audit-bound-sports.mjs`) checks every Bound school's winter acts this school year against its data file's `has` and `src/sponsored-sports.json`. Run both when a season starts.

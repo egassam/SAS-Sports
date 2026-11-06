@@ -3830,5 +3830,277 @@
     "panelDark": "#291e0b",
     "line": "#d8b268",
     "onAccent": "#ffffff"
+  },
+  "cair-paravel-latin-ks": {
+    "primary": "#B20A32",
+    "secondary": "#D2D5D6",
+    "panel": "#500517",
+    "panelDark": "#24020a",
+    "line": "#c54765",
+    "onAccent": "#ffffff"
+  },
+  "hayden-ks": {
+    "primary": "#85754D",
+    "secondary": "#092537",
+    "panel": "#3c3523",
+    "panelDark": "#1b170f",
+    "line": "#a4987a",
+    "onAccent": "#ffffff"
+  },
+  "highland-park-ks": {
+    "primary": "#AB061E",
+    "secondary": "#1D6132",
+    "panel": "#4d030e",
+    "panelDark": "#220106",
+    "line": "#c04456",
+    "onAccent": "#ffffff"
+  },
+  "rossville-ks": {
+    "primary": "#BA0000",
+    "secondary": "#000000",
+    "panel": "#540000",
+    "panelDark": "#250000",
+    "line": "#cb4040",
+    "onAccent": "#ffffff"
+  },
+  "seaman-ks": {
+    "primary": "#AF272F",
+    "secondary": "#003DA5",
+    "panel": "#4f1215",
+    "panelDark": "#230809",
+    "line": "#c35d63",
+    "onAccent": "#ffffff"
+  },
+  "shawnee-heights-ks": {
+    "primary": "#D22030",
+    "secondary": "#000000",
+    "panel": "#5f0e16",
+    "panelDark": "#2a060a",
+    "line": "#dd5864",
+    "onAccent": "#ffffff"
+  },
+  "silver-lake-ks": {
+    "primary": "#C5B358",
+    "secondary": "#44080A",
+    "panel": "#595128",
+    "panelDark": "#272412",
+    "line": "#d4c682",
+    "onAccent": "#ffffff"
+  },
+  "topeka-ks": {
+    "primary": "#EDB74E",
+    "secondary": "#000000",
+    "panel": "#6b5223",
+    "panelDark": "#2f2510",
+    "line": "#f2c97a",
+    "onAccent": "#111111"
+  },
+  "topeka-west-ks": {
+    "primary": "#641792",
+    "secondary": "#000000",
+    "panel": "#2d0a42",
+    "panelDark": "#14051d",
+    "line": "#8b51ad",
+    "onAccent": "#ffffff"
+  },
+  "washburn-rural-ks": {
+    "primary": "#016CAB",
+    "secondary": "#000000",
+    "panel": "#00314d",
+    "panelDark": "#001622",
+    "line": "#4191c0",
+    "onAccent": "#ffffff"
+  },
+  "robinson-ms-ks": {
+    "primary": "#FECF86",
+    "secondary": "#743693",
+    "panel": "#725d3c",
+    "panelDark": "#33291b",
+    "line": "#fedba4",
+    "onAccent": "#111111"
+  },
+  "rossville-ms-ks": {
+    "primary": "#BA0000",
+    "secondary": "#000000",
+    "panel": "#540000",
+    "panelDark": "#250000",
+    "line": "#cb4040",
+    "onAccent": "#ffffff"
+  },
+  "seaman-ms-ks": {
+    "primary": "#B92330",
+    "secondary": "#0059A6",
+    "panel": "#531016",
+    "panelDark": "#25070a",
+    "line": "#cb5a64",
+    "onAccent": "#ffffff"
+  },
+  "shawnee-heights-ms-ks": {
+    "primary": "#3AB3E3",
+    "secondary": "#D42031",
+    "panel": "#1a5166",
+    "panelDark": "#0c242d",
+    "line": "#6bc6ea",
+    "onAccent": "#ffffff"
+  },
+  "silver-lake-ms-ks": {
+    "primary": "#C5B358",
+    "secondary": "#44080A",
+    "panel": "#595128",
+    "panelDark": "#272412",
+    "line": "#d4c682",
+    "onAccent": "#ffffff"
+  },
+  "washburn-rural-ms-ks": {
+    "primary": "#4E58EF",
+    "secondary": "#000000",
+    "panel": "#23286c",
+    "panelDark": "#101230",
+    "line": "#7a82f3",
+    "onAccent": "#ffffff"
+  },
+  "washburn-rural-north-ms-ks": {
+    "primary": "#469DD2",
+    "secondary": "#000000",
+    "panel": "#20475f",
+    "panelDark": "#0e1f2a",
+    "line": "#74b6dd",
+    "onAccent": "#ffffff"
+  },
+  "baldwin-ks": {
+    "primary": "#512888",
+    "secondary": "#A7A7A7",
+    "panel": "#24123d",
+    "panelDark": "#10081b",
+    "line": "#7d5ea6",
+    "onAccent": "#ffffff"
+  },
+  "bishop-seabury-ks": {
+    "primary": "#158241",
+    "secondary": "#0B2A73",
+    "panel": "#093b1d",
+    "panelDark": "#041a0d",
+    "line": "#50a171",
+    "onAccent": "#ffffff"
+  },
+  "eudora-ks": {
+    "primary": "#A31E24",
+    "secondary": "#000080",
+    "panel": "#490e10",
+    "panelDark": "#210607",
+    "line": "#ba565b",
+    "onAccent": "#ffffff"
+  },
+  "lawrence-free-state-ks": {
+    "primary": "#275534",
+    "secondary": "#000000",
+    "panel": "#122617",
+    "panelDark": "#08110a",
+    "line": "#5d8067",
+    "onAccent": "#ffffff"
+  },
+  "lawrence-ks": {
+    "primary": "#951C1C",
+    "secondary": "#000000",
+    "panel": "#430d0d",
+    "panelDark": "#1e0606",
+    "line": "#b05555",
+    "onAccent": "#ffffff"
+  },
+  "baldwin-ms-ks": {
+    "primary": "#5128A7",
+    "secondary": "#A7A7A7",
+    "panel": "#24124b",
+    "panelDark": "#100821",
+    "line": "#7d5ebd",
+    "onAccent": "#ffffff"
+  },
+  "eudora-ms-ks": {
+    "primary": "#A01E24",
+    "secondary": "#000080",
+    "panel": "#480e10",
+    "panelDark": "#200607",
+    "line": "#b8565b",
+    "onAccent": "#ffffff"
+  },
+  "lawrence-southwest-ms-ks": {
+    "primary": "#000080",
+    "secondary": "#737373",
+    "panel": "#00003a",
+    "panelDark": "#00001a",
+    "line": "#4040a0",
+    "onAccent": "#ffffff"
+  },
+  "lawrence-west-ms-ks": {
+    "primary": "#003895",
+    "secondary": "#6AB7E6",
+    "panel": "#001943",
+    "panelDark": "#000b1e",
+    "line": "#406ab0",
+    "onAccent": "#ffffff"
+  },
+  "ell-saline-ks": {
+    "primary": "#ED2124",
+    "secondary": "#000000",
+    "panel": "#6b0f10",
+    "panelDark": "#2f0707",
+    "line": "#f2595b",
+    "onAccent": "#ffffff"
+  },
+  "salina-sacred-heart-ks": {
+    "primary": "#C4B55A",
+    "secondary": "#C7C7C7",
+    "panel": "#585129",
+    "panelDark": "#272412",
+    "line": "#d3c883",
+    "onAccent": "#111111"
+  },
+  "salina-central-ks": {
+    "primary": "#610F10",
+    "secondary": "#373A36",
+    "panel": "#2c0707",
+    "panelDark": "#130303",
+    "line": "#894b4c",
+    "onAccent": "#ffffff"
+  },
+  "salina-south-ks": {
+    "primary": "#005800",
+    "secondary": "#FFB71B",
+    "panel": "#002800",
+    "panelDark": "#001200",
+    "line": "#408240",
+    "onAccent": "#ffffff"
+  },
+  "southeast-of-saline-ks": {
+    "primary": "#8E51AD",
+    "secondary": "#532B78",
+    "panel": "#40244e",
+    "panelDark": "#1c1023",
+    "line": "#aa7dc2",
+    "onAccent": "#ffffff"
+  },
+  "salina-lakewood-ms-ks": {
+    "primary": "#66140D",
+    "secondary": "#000000",
+    "panel": "#2e0906",
+    "panelDark": "#140403",
+    "line": "#8c4f4a",
+    "onAccent": "#ffffff"
+  },
+  "salina-sacred-heart-ms-ks": {
+    "primary": "#C4B55A",
+    "secondary": "#C7C7C7",
+    "panel": "#585129",
+    "panelDark": "#272412",
+    "line": "#d3c883",
+    "onAccent": "#111111"
+  },
+  "salina-south-ms-ks": {
+    "primary": "#275818",
+    "secondary": "#000000",
+    "panel": "#12280b",
+    "panelDark": "#081205",
+    "line": "#5d8252",
+    "onAccent": "#ffffff"
   }
 }

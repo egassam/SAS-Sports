@@ -1,0 +1,339 @@
+{
+ "state": "ks",
+ "counties": [
+  "Douglas"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH3_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "baldwin-ks",
+   "name": "Baldwin High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451548695af21c0e8ea843",
+    "slug": "baldwinhs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 71,
+    "code": "BALD"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Baldwin",
+    "tennis": "Baldwin HS",
+    "milesplit": 20829,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring",
+     "Girls Flag Football": "flag-football/girls/fall"
+    }
+   },
+   "maxpreps": {
+    "schoolId": "68189fda-f3d4-4a9e-b180-0ebbbe1f8660",
+    "path": "baldwin/baldwin-bulldogs"
+   }
+  },
+  {
+   "id": "bishop-seabury-ks",
+   "name": "Bishop Seabury Academy",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451551150e81d58f8a4f4d",
+    "slug": "bishopseaburyacademy"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 218,
+    "code": "BS"
+   },
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Boys Tennis",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Bishop Seabury",
+    "tennis": "Bishop Seabury Academy",
+    "milesplit": 23159,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   },
+   "maxpreps": {
+    "schoolId": "edabcd8d-fad9-4e6a-b543-38ff71eaa641",
+    "path": "lawrence/bishop-seabury-academy-seahawks"
+   }
+  },
+  {
+   "id": "eudora-ks",
+   "name": "Eudora High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158178f528780114134b",
+    "slug": "eudorahs"
+   },
+   "maxpreps": {
+    "schoolId": "b5a9c1c3-b18e-4a18-9506-4587fedd02a9",
+    "path": "eudora/eudora-cardinals"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 87,
+    "code": "EUD"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Eudora",
+    "milesplit": 19038,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "lawrence-free-state-ks",
+   "name": "Free State High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200224ef2a53cad83f4e",
+    "slug": "lawrencefreestatehs"
+   },
+   "maxpreps": {
+    "schoolId": "9374ea9a-1e2a-49e2-bf12-2649b8a4dced",
+    "path": "lawrence/lawrence-free-state-firebirds"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 10,
+    "code": "LFS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Lawrence Free State",
+    "tennis": "Free State HS",
+    "milesplit": 19096,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring",
+     "Girls Flag Football": "flag-football/girls/fall"
+    }
+   }
+  },
+  {
+   "id": "lawrence-ks",
+   "name": "Lawrence High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200196d2f2cd52ed0745",
+    "slug": "lawrencehs"
+   },
+   "maxpreps": {
+    "schoolId": "fde83020-2e6f-43b9-b27f-c19a4052d15a",
+    "path": "lawrence/lawrence-chesty-lions"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 9,
+    "code": "LAW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Lawrence",
+    "tennis": "Lawrence HS",
+    "milesplit": 19094,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring",
+     "Girls Flag Football": "flag-football/girls/fall"
+    }
+   }
+  },
+  {
+   "id": "baldwin-ms-ks",
+   "name": "Baldwin Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2026051111531125990e4f293c4004f",
+    "slug": "baldwinjhks"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Baldwin JH"
+   }
+  },
+  {
+   "id": "eudora-ms-ks",
+   "name": "Eudora Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202607291122557737cb442f64fef4d",
+    "slug": "eudoramsks"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Eudora MS",
+    "milesplit": 26640
+   }
+  },
+  {
+   "id": "lawrence-southwest-ms-ks",
+   "name": "Lawrence Southwest Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250708030309640f221faac5d3a44",
+    "slug": "southwestms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Southwest MS",
+    "milesplit": 53835
+   }
+  },
+  {
+   "id": "lawrence-west-ms-ks",
+   "name": "Lawrence West Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250613080249638dbe4c0b4c36f47",
+    "slug": "lawrencewestms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country"
+    ],
+    "meetTeam": "West MS",
+    "milesplit": 57350
+   }
+  }
+ ]
+}
