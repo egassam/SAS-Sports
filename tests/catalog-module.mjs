@@ -238,6 +238,8 @@ assert.ok(page.includes('if(generation!==menuGeneration)return null;'),'a slow m
   assert.equal(plain.catalogSchool('kstate').name,'Kansas State');
   // No lookup by id scans the bundled list any more.
   assert.ok(!/schools\.find\((?:s|x)=>(?:s|x)\.id===/.test(worker),'every lookup by id goes through catalogSchool');
-  assert.ok(worker.includes("if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);"));
+  assert.ok(worker.includes("if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.pathname!=='/live/feed/grouped'&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);"));
+  // The feed route reads the catalog only before a rebuild (November 6): a saved feed answers without D1.
+  assert.ok(worker.includes("const rebuild=async()=>{await loadCatalogEntries(env,url,[school]);return freshGroupedFeed(url,school,sport,env,cache,key);};"));
 }
 console.log(`Catalog module tests passed (${checked} menu steps, D1 equals bundled)`);

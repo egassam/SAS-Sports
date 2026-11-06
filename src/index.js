@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.277.0-quiet-feeds';
+const VERSION='4.277.1-quiet-feeds';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2806,7 +2806,11 @@ async function bundledCatalog(){
 async function catalogStore(env,url,now=Date.now()){
   const bundle=await bundledCatalog();
   if(!env?.CATALOG_DB)return{store:bundle.store,revision:bundle.revision};
-  if(catalogChoice&&now-catalogChoice.at<60000)return catalogChoice.value;
+  // Once D1 holds this build's catalog it stays the answer for 15 minutes
+  // (the revision changes only with a deploy, which starts new isolates);
+  // until then it is asked again each minute (November 6: each check is
+  // several D1 round trips before a request is answered).
+  if(catalogChoice&&now-catalogChoice.at<(catalogChoice.value.store.kind==='d1'?15*60000:60000))return catalogChoice.value;
   let store=bundle.store;
   try{
     if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records,bundle.derived);
@@ -6571,7 +6575,10 @@ export default{
     // School-entered live scores (scorer app, TV scoreboard, public live cards).
     if(url.pathname.startsWith('/api/score/'))return handleLiveScoring(request,env,url);
     // A request naming a school has its catalog entry loaded first.
-    if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);
+    // The feed route loads it only before a rebuild: a saved feed needs no
+    // catalog read (November 6, "The app itself seems to be running very
+    // slow": cache hits waited 0.6-1.7 s behind the catalog's D1 reads).
+    if((url.pathname.startsWith('/live/')||url.pathname.startsWith('/api/'))&&url.pathname!=='/live/feed/grouped'&&url.searchParams.get('school'))await loadCatalogEntries(env,url,[url.searchParams.get('school')]);
     if(url.pathname==='/api/status'){const {store,revision}=await catalogStore(env,url);let count=schools.length;if(store.kind==='d1')try{count=Number((await env.CATALOG_DB.prepare(`SELECT value FROM catalog_meta WHERE key='records'`).first())?.value)||count}catch{}return json({name:'SAS Sports API',version:VERSION,mode:'cloudflare-worker-live',web_live_mode:true,school_catalog_count:count,catalog:{source:store.kind,revision},web_path:'/'});}
     if(url.pathname==='/catalog/menu')return catalogAnswer(env,url,store=>catalogMenu(store,{level:url.searchParams.get('level'),group:url.searchParams.get('group'),middle:url.searchParams.get('middle')}));
     if(url.pathname==='/catalog/entries')return catalogAnswer(env,url,store=>catalogEntries(store,url.searchParams.get('ids')));
@@ -6663,6 +6670,8 @@ export default{
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const cache=caches.default,key=feedCacheKey(url,school,sport),cached=await cache.match(key),force=url.searchParams.get('refresh')==='1';
+      // A rebuild, here or in the background, reads the school's catalog entry first.
+      const rebuild=async()=>{await loadCatalogEntries(env,url,[school]);return freshGroupedFeed(url,school,sport,env,cache,key);};
       // A saved copy only, never a rebuild: cheap enough to answer when the
       // live rebuild just failed.
       if(url.searchParams.get('cached')==='1'){
@@ -6674,15 +6683,15 @@ export default{
       if(cached&&!force){
         const age=cachedAge(cached);
         if(age<=(cached.headers.get('x-sas-live')==='1'?LIVE_FEED_FRESH_MS:FEED_FRESH_MS))return cacheResponse(cached,'fresh');
-        if(age<=(cached.headers.get('x-sas-quiet')==='1'?QUIET_FEED_SERVE_STALE_MS:FEED_SERVE_STALE_MS)){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
+        if(age<=(cached.headers.get('x-sas-quiet')==='1'?QUIET_FEED_SERVE_STALE_MS:FEED_SERVE_STALE_MS)){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
       }
       // Nothing saved at this location: a quiet feed's shared copy, if recent,
       // is answered at once and the feed rebuilt in the background.
       if(!cached&&!force&&usesGlobalCopy(school)){
         const shared=await globalCopy(env,url,school,sport);
-        if(shared&&shared.headers.get('x-sas-quiet')==='1'&&cachedAge(shared)<=QUIET_FEED_SERVE_STALE_MS){ctx?.waitUntil(freshGroupedFeed(url,school,sport,env,cache,key).catch(()=>null));return cacheResponse(shared,'global-refreshing')}
+        if(shared&&shared.headers.get('x-sas-quiet')==='1'&&cachedAge(shared)<=QUIET_FEED_SERVE_STALE_MS){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(shared,'global-refreshing')}
       }
-      const fresh=await freshGroupedFeed(url,school,sport,env,cache,key);
+      const fresh=await rebuild();
       if(fresh)return cacheResponse(fresh,'live');
       if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(cached,'stale-fallback');
       const lastGood=await cache.match(lastGoodFeedKey(url,school,sport));
