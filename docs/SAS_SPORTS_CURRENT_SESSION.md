@@ -1,6 +1,15 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 5, 2026 (Central, evening). **Seven more Kansas counties** (user: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites"). `docs/KS_COUNTIES_BATCH2_MODULE.md`. PR #530 merged as `676a312`; production `4.272.0-ks-counties-2` verified (`verify:prod` 26 schools, all sports: 624/0, XC 18/20 and 26/21).
+Last updated: November 6, 2026 (Central, about 11:30 PM Nov 5). **Winter-season readiness for the middle and high schools** (user: "Start the winter session"). PR #532 merged as `fa9f19e`; production `4.273.0-winter-readiness` verified (`verify:prod` for the 40 Bound schools with winter meet sports, all sports, 3 refreshes: 927/0; XC 18/20 and 26/21).
+- **Calendars:** `npm run audit:sports` ok (8 calendar schools). New `npm run audit:bound` (`scripts/audit-bound-sports.mjs`): all 51 Bound schools' winter sports this school year are read and listed. Run both when a season starts.
+- **Bound's guard:** about 350 reads 0.4 s apart drew HTTP 202 with no body, and it then kept answering Node's fetch with 202 while it answered curl. The audit reads with curl, 3 s apart. Production's Bound reads were unaffected.
+- **Bound winter team scores:** `boundEntryResults` also reads wrestling and swimming points and bowling pins (high wins), as entered by a meet's host. Last winter only the bigger meets had them (McPherson girls' wrestling, Dec 6, 2025: Junction City 1st of 17; Douglass; Topeka West swimming). Tested on Junction City's real 2025-26 entries.
+- **MaxPreps' schedule** for Herington (Bound 4 dates per team; MaxPreps 5 boys', 8 girls') and St. Mary's Academy (Bound 2; MaxPreps 5). `diff:feeds`: the 51 winter meet feeds are unchanged; the two schools only gain games.
+- **Sources checked:** USA Bracketing needs a sign-in for every event page (not usable). Trackwrestling, FloWrestling and SwimCloud disallow the app. KSHSAA's bowling results are documents on its script site (not read). Middle school basketball is already under way: Bound finals show where schools enter them; the others read "No score posted".
+- **Open (not published yet):** St. Xavier HS basketball (MaxPreps' 2026-27 pages empty; its Google Calendar still waits on the user enabling the Google Calendar API, see Nov 3). Winter meets get team places only when a host enters scores on Bound.
+- **Gate:** `test:release` passed on `44011d9` (the first run, on `3da573d`, failed `ks-counties-module`, which lists the `maxprepsSchedule` schools; fixed). `verify:preview` 927/0, XC 18/20 and 26/21; page checked at 390 px; CI green.
+
+Earlier, November 5, 2026 (Central, evening). **Seven more Kansas counties** (user: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites"). `docs/KS_COUNTIES_BATCH2_MODULE.md`. PR #530 merged as `676a312`; production `4.272.0-ks-counties-2` verified (`verify:prod` 26 schools, all sports: 624/0, XC 18/20 and 26/21).
 - **Added (23):** Washington, Republic, Cloud, Ottawa, Jackson, Nemaha and Lyon counties: 20 high schools (Emporia 5A among them) and 3 middle schools. About 25 schools skipped, with reasons.
 - **Survey (`onboard-hs`):**
   - several counties per run, with statewide reads done once;
@@ -138,7 +147,7 @@ Earlier, October 29: **Manhattan's 6A state cross country meet** (user: "Can we 
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.267.1-college-finals`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.273.0-winter-readiness`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -572,3 +581,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). #525 merged `fa7d9c5`, production `4.269.1-letsgorun-xc` verified.
 - **Nov 5 — Lessons built** (#527: `diff:feeds`, `stored=0`, LetsGoRun folder check, survey sources, schedule-pairing test; Shufelberger added) and **retracted stored finals** (#528, Junction City Sep 5); production `4.271.0-retracted-finals` verified.
 - **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards). #530 merged `676a312`, production verified.
+- **Nov 6 — Winter readiness** (Bound winter team scores for wrestling, swimming, bowling; `audit:bound` 51 schools ok; MaxPreps schedule for Herington and St. Mary's Academy). #532 merged `fa9f19e`, production `4.273.0-winter-readiness` verified.
