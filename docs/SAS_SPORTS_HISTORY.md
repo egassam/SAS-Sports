@@ -4403,3 +4403,23 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - `verify:preview` on `4.274.2-ks-counties-3` for 37 schools, all sports, 3 refreshes: 1023 PASS, 0 FAIL, XC 18/20 and 26/21.
 - Page: Topeka High football at 390 px, in K-State's format.
 
+**Merge and production.**
+- CI on `8554b89`: guardrails passed in 17 minutes; the Workers build passed.
+- #534 merged as `94cec5e`.
+- Production `4.274.2-ks-counties-3`: `verify:prod`, 37 schools, all sports, 3 refreshes: 1023 PASS, 0 FAIL, XC 18/20 and 26/21.
+- Blue Valley-Randolph's Oct 30 card is gone.
+- Republic County still had both Oct 24 cards, the Sub-State one from the finals store (saved 01:19 UTC). A scan of every middle and high school cross country feed in production for two cards on one day with one results link found no other. That card is retracted in the follow-up (`4.275.0-retract-republic`).
+- Lesson (again, as in #528): when a change removes a card, check production's stored finals for it before merging, and retract in the same PR.
+
+**User: "These builds keep taking a long time. How can we speed this up?"**
+- Measured this session:
+  - `diff:feeds` all sports: about 78 minutes for 476 compared feeds plus 326 new ones (built, with nothing to compare);
+  - the survey: 38 minutes, plus 20 minutes of lookups by hand;
+  - `test:release`: about 25 minutes locally, 17 in CI;
+  - `verify:preview`: about 10 minutes.
+- Proposed:
+  1. `diff:feeds` skips feeds not in production, checks only the sports a change touches, and reads a few at a time;
+  2. `test:release` runs its test files in parallel;
+  3. the survey saves KSHSAA directory and MaxPreps school-page reads between runs (KSHSAA's 30 s spacing kept);
+  4. (the user's decision) CI's green run counts as the merge gate's test run.
+
