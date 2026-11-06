@@ -4463,6 +4463,12 @@ Changes:
 
 Preview measurements: cache hits fell to 0.2-0.3 s in most reads. After the merge, the first reads on production were all rebuilds, because the feed cache key carries the version and every deploy starts it empty.
 
+**After, on production** (10 min after the deploy, 3 reads each):
+- most saved answers were about 0.2 s;
+- Salina Central tennis read 1.0, 0.2 and 0.7 s from its saved copy (it was 4.2 s);
+- reads near 1 s are Worker starts;
+- Manhattan cross country rebuilt in 21.8 s at a location with no copy: its shared KV copy was saved before the quiet mark, which it takes when next rewritten.
+
 **Gate.**
 - `test:release` (parallel) passed on `87c7efd`, and CI's guardrails passed.
 - `verify:preview`: K-State football, Topeka football and cross country, 3/3 each, XC 18/20 and 26/21.

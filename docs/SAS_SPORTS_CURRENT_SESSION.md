@@ -14,6 +14,10 @@ Last updated: November 6, 2026 (Central, about noon). **Faster gates and a faste
   - first feed reads 1.3-2 s, some 4-14 s;
   - cache hits up to 1.7 s;
   - about 1 request in 7 costs about 1 s of Worker startup (10 MB bundle, 8.3 MB school modules).
+- **Measured after (production, 10 min after the deploy, 3 reads each):**
+  - saved answers 0.16-1.2 s, most about 0.2 s;
+  - Salina Central tennis 4.2 s to 0.2-1.0 s (`stale-refreshing`);
+  - a location with nothing saved still rebuilds: Manhattan cross country 21.8 s, its shared copy saved before the quiet mark.
 - **Open:**
   - **Startup:** load school modules only when needed (about half the bundle's startup), as its own project.
   - **Every deploy empties the feed cache** (the version is in the key); quiet shared copies now carry middle and high schools across a deploy.
