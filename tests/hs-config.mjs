@@ -39,6 +39,10 @@ for(const module of now){
   const was=folders(before[module.id]),is=folders(ser(module));
   if(was){for(const [day,list] of Object.entries(was))assert.deepEqual(is?.[day],list,`${module.id}: LetsGoRun ${day}`);delete before[module.id].meetPro.folders;}
 }
+// November 6 (winter session): St. Mary's Academy enters few games on Bound
+// (2 of MaxPreps' 5 boys' basketball games) and also reads MaxPreps'
+// schedule; every game team of the snapshot gains the flag.
+for(const teams of Object.values(before['st-marys-academy-ks'].sports))for(const team of teams)if(team.maxpreps)team.maxprepsSchedule=true;
 const comparable=module=>{const x=ser(module);if(x.meetPro)delete x.meetPro.folders;return x;};
 for(const module of now){
   const same=JSON.stringify(sorted(comparable(module)))===JSON.stringify(sorted(before[module.id]));

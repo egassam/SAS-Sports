@@ -183,7 +183,14 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 | FloWrestling | `ClaudeBot Disallow: /` |
 | Athletic.net | disallows ClaudeBot and anthropic-ai |
 | SwimCloud | `anthropic-ai Disallow: /` |
-| USA Bracketing | allows all but account pages: a wrestling source to check before the winter season |
+| USA Bracketing | robots.txt allows event results pages, but every event page (`/events/<id>`, `/results`, `/schedule`) redirects to its sign-in page (November 6): no public results to read |
 | KSHSAA | `Crawl-delay: 30`; its site is a script page, with no readable results found yet |
 
 Do not read the sites that disallow the app.
+
+## Winter sports (November 6, 2026)
+
+- **Schedules:** basketball, wrestling, swimming and bowling come from the same sources as the fall (Bound, MaxPreps' schedule for schools with `maxprepsSchedule`, the school calendars). `npm run audit:sports` checks the calendar schools; `npm run audit:bound` (`scripts/audit-bound-sports.mjs`) checks every Bound school's winter acts this school year against its data file's `has` and `src/sponsored-sports.json`. Run both when a season starts.
+- **Bound's guard:** about 350 reads 0.4 s apart drew HTTP 202 with no body; it then kept answering Node's client with 202 while it answered curl. The audit reads with curl, 3 s apart. Production's Bound reads were not affected (`/api/refresh-status`).
+- **Results:** basketball finals from MaxPreps, then the school's Bound entry. Wrestling, swimming and bowling meets take the team scores a meet's host enters on Bound (high wins; `boundEntryResults`): last winter that was the bigger meets only (McPherson girls' wrestling invitational, December 6, 2025; Douglass's two varsity tournaments; Topeka West swimming, January 13, 2026). Other meets read "No results posted". Trackwrestling, FloWrestling and SwimCloud disallow the app; USA Bracketing needs a sign-in; KSHSAA posts state and regional bowling results as documents on its own script site (not read).
+- **Unified bowling** is a fall KSHSAA sport: its October meets are on Bound under "Unified" (no scores entered).

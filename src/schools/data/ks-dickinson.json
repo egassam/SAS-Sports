@@ -106,6 +106,7 @@
     "code": "HER"
    },
    "sports": {
+    "maxprepsSchedule": true,
     "has": [
      "Football",
      "Volleyball",

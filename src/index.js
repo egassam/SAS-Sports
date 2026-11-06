@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.272.0-ks-counties-2';
+const VERSION='4.273.0-winter-readiness';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4550,12 +4550,21 @@ async function boundSchedulePayloads(module,acts,year){
   const payloads=await Promise.all(urls.map(async url=>{try{const r=await sourceFetch(url,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}},{ttl:SOURCE_TTL.listing,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}));
   return{urls,payloads,failed:payloads.some(p=>!Array.isArray(p))};
 }
-// A Bound meet's team place from the scores entered on it (golf strokes,
-// cross country points): low wins.
+// A Bound meet's team place from the scores entered on it: golf strokes and
+// cross country points (low wins); since the winter session (November 6)
+// wrestling and swimming team points and bowling pins (high wins). Last
+// winter the hosts of the bigger meets entered every team's score on Bound
+// (McPherson girls' wrestling invitational, Dec 6, 2025: Junction City 1st of
+// 17 with 203.5; Topeka West swimming, Jan 13, 2026), where no other source
+// the app may read has them (Trackwrestling, FloWrestling and SwimCloud
+// disallow it). A dual entered with both scores reads "1st of 2"
+// (none was entered last winter at the schools checked).
+const BOUND_ENTRY_UNITS=[[/golf/i,'strokes',true],[/cross country/i,'pts',true],[/wrestling|swim/i,'pts',false],[/bowling/i,'pins',false]];
 function boundEntryResults(school,module,team,game){
-  const unit=/golf/i.test(game.act)?'strokes':/cross country/i.test(game.act)?'pts':null;if(!unit)return null;
-  const m=boundTeamPlace(game,{lowWins:true});if(!m)return null;
-  const place=`${m.tied?'T':''}${ORDINAL(m.place)}`,group=`${team.label?`${team.label} `:''}${/^varsity$/i.test(game.level)?'Varsity':game.level}`;
+  const kind=BOUND_ENTRY_UNITS.find(([re])=>re.test(game.act));if(!kind)return null;
+  const [,unit,lowWins]=kind,group=`${team.label?`${team.label} `:''}${/^varsity$/i.test(game.level)?'Varsity':game.level}`;
+  const m=boundTeamPlace(game,{lowWins});if(!m)return null;
+  const place=`${m.tied?'T':''}${ORDINAL(m.place)}`;
   return{rows:[{group,participant:`${school.short_name} team`,result:`${place} of ${m.teams}${m.score?` · ${m.score} ${unit}`:''}`}],headline:`${place} of ${m.teams}`,highlights:[`${group}: ${school.short_name} ${m.place===1&&!m.tied?'won the team title':`placed ${place} of ${m.teams}`}${m.score?` with ${m.score} ${unit}`:''}.`],url:module.bound.page,label:'View on Bound',note:'Team scores as entered on Bound by the schools.'};
 }
 // Why a source read failed, as the record shows it: "<url>: HTTP 403", or
