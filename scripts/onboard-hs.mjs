@@ -22,8 +22,9 @@
 // src/schools/data/<state>-<county>.json (docs/HIGH_SCHOOL_ONBOARDING.md).
 //
 //   NODE_USE_ENV_PROXY=1 node scripts/onboard-hs.mjs --county=Geary [--state=KS]
-//     [--out=draft.json] [--report=report.md] [--no-maxpreps] [--no-kshsaa]
-import {writeFileSync} from 'node:fs';
+//     [--out=draft.json] [--report=report.md] [--no-maxpreps] [--no-kshsaa] [--fresh] [--cache-dir=<dir>]
+import {writeFileSync,readFileSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {LETSGORUN_MEETPRO} from '../src/schools/manhattan-ks.mjs';
 import {pathToFileURL} from 'node:url';
 import {tennisHosts as tennisHostsOf,meetProResults,meetProDate,meetProName,prepGolfTournaments,prepGolfResults,maxprepsContests,nameKey,milesplitSeasonQuery,milesplitSeasonIndex,milesplitTeamsNamed,MILESPLIT_LIVE_ROOT,BOUND_API,BOUND_ACTS,boundEventsUrl} from '../src/high-school.mjs';
@@ -322,20 +323,56 @@ export const boundLocalDay=(iso,timeZone='America/Chicago')=>{const d=new Date(i
 // reads (NCES CCD, Bound's state page, MileSplit Live's index, Prep.Golf,
 // TennisReporting, LetsGoRun), November 5.
 const memo=new Map();
+// Saved reads between runs (user, November 6: "These builds keep taking a
+// long time", then "Go ahead with 1-4"). KSHSAA's directory and MaxPreps'
+// school pages rarely change; each of their reads waited 30 s, so a re-run
+// or a county next to one surveyed reads them from the saved copy at once.
+// `--fresh` reads everything again. The spacing a site asks for
+// (KSHSAA's robots.txt Crawl-delay: 30) is kept for every network read.
+const DAY=86400000;
+export function cacheTtl(url){
+  if(/^https:\/\/kshsaa-api\.kshsaa\.org\/directory\//.test(url))return 30*DAY;
+  if(/^https:\/\/www\.maxpreps\.com\/[a-z]{2}\/[^/]+\/[^/]+\/$/.test(url))return 7*DAY;          // a school page
+  if(/^https:\/\/www\.maxpreps\.com\/.+\/schedule\/$/.test(url))return DAY;                    // a team's schedule
+  return 0;
+}
+// Network spacing by site: each read waits until this long after the last.
+const SPACING_MS={'kshsaa-api.kshsaa.org':30000,'www.maxpreps.com':30000};
+const lastRead=new Map();
+async function spaced(url){
+  const host=new URL(url).hostname,ms=SPACING_MS[host];if(!ms)return;
+  const wait=(lastRead.get(host)||0)+ms-Date.now();if(wait>0)await sleep(wait);
+  lastRead.set(host,Date.now());
+}
+let cacheDir=process.env.ONBOARD_HS_CACHE||new URL('../.cache/onboard-hs/',import.meta.url).pathname,fresh=false;
+const cacheFile=url=>`${cacheDir.replace(/\/?$/,'/')}${createHash('sha256').update(url).digest('hex').slice(0,32)}.json`;
+function cacheRead(url){
+  const ttl=cacheTtl(url);if(!ttl||fresh)return null;
+  try{const hit=JSON.parse(readFileSync(cacheFile(url),'utf8'));return hit.url===url&&Date.now()-hit.at<ttl?hit:null}catch{return null}
+}
+function cacheWrite(url,entry){if(!cacheTtl(url))return;try{mkdirSync(cacheDir,{recursive:true});writeFileSync(cacheFile(url),JSON.stringify({url,at:Date.now(),...entry}))}catch{}}
 async function get(url,{json=false,headers={},method='GET',body=null}={}){
   const key=`${method} ${url} ${body||''}`;
   if(!memo.has(key))memo.set(key,(async()=>{
+    const saved=method==='GET'&&cacheRead(url);if(saved)return saved.text;
+    await spaced(url);
     const r=await fetch(url,{method,headers:{'User-Agent':UA,...headers,...(body?{'content-type':'application/json'}:{})},body,signal:AbortSignal.timeout(60000)});
     if(!r.ok)throw Error(`${url}: HTTP ${r.status}`);
-    return r.text();
+    const text=await r.text();if(method==='GET')cacheWrite(url,{text});
+    return text;
   })());
   try{const text=await memo.get(key);return json?JSON.parse(text):text;}catch(e){memo.delete(key);throw e;}
 }
 async function viaSource(url){
   const key=process.env.SAS_SOURCE_KEY;if(!key)return null;
+  // A saved answer, 404s included (the guessed paths that are not the school's).
+  const saved=cacheRead(url);if(saved)return{status:saved.status,text:saved.text};
+  await spaced(url);
   const base=(process.env.SAS_SPORTS_BASE_URL||'https://sas-sports.lovetogivepain.workers.dev').replace(/\/$/,'');
   const r=await fetch(`${base}/api/source?url=${encodeURIComponent(url)}`,{headers:{authorization:`Bearer ${key}`},signal:AbortSignal.timeout(60000)});
-  return{status:r.status,text:r.ok?await r.text():''};
+  const answer={status:r.status,text:r.ok?await r.text():''};
+  if(r.ok||r.status===404)cacheWrite(url,answer);
+  return answer;
 }
 
 // Several counties in one run (`--county=Washington,Republic,Cloud`): one
@@ -343,6 +380,8 @@ async function viaSource(url){
 async function main(){
   const args=process.argv.slice(2),value=n=>{const hit=args.find(x=>x.startsWith(`--${n}=`));return hit?hit.slice(n.length+3):null};
   const counties=(value('county')||'').split(',').map(c=>c.trim()).filter(Boolean);
+  // --fresh: read every page again; --cache-dir=<dir>: where the saved reads go (default .cache/onboard-hs).
+  fresh=args.includes('--fresh');if(value('cache-dir'))cacheDir=value('cache-dir');
   if(counties.length>1){
     const dir=value('out-dir');if(!dir){console.error('several counties need --out-dir=<directory>');process.exit(2)}
     for(const county of counties)await surveyCounty(args,county,{out:`${dir}/${county.replace(/\s+/g,'-')}-draft.json`,report:`${dir}/${county.replace(/\s+/g,'-')}-report.md`});
@@ -366,11 +405,10 @@ async function surveyCounty(args,county,paths){
   // KSHSAA directory by town (Kansas only), 30 s apart.
   const kshsaa=[];
   if(state==='KS'&&!args.includes('--no-kshsaa'))for(const [i,town] of ccd.towns.entries()){
-    if(i)await sleep(30000);
     try{
       let found=kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town)}`,{json:true}));
       // KSHSAA may file a town under its first word (NCES "Baldwin City", KSHSAA "Baldwin", November 6).
-      if(!found.length&&/\s/.test(town)){await sleep(30000);found=kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town.split(/\s+/)[0])}`,{json:true})).map(x=>({...x,town}));}
+      if(!found.length&&/\s/.test(town)){found=kshsaaSchools(await get(`https://kshsaa-api.kshsaa.org/directory/search/city/${encodeURIComponent(town.split(/\s+/)[0])}`,{json:true})).map(x=>({...x,town}));}
       kshsaa.push(...found);log(`KSHSAA ${town}: ${found.length} schools`);
     }catch(e){log(`KSHSAA ${town}: ${e.message}`);notes.push(`KSHSAA directory for ${town}: ${e.message}`)}
   }
@@ -420,10 +458,9 @@ async function surveyCounty(args,county,paths){
   // MaxPreps (high schools), 30 s apart, through the private source route.
   if(!args.includes('--no-maxpreps')){
     if(!process.env.SAS_SOURCE_KEY)notes.push('MaxPreps not checked: SAS_SOURCE_KEY is not set.');
-    else{let first=true;const links=[];for(const row of rows.filter(r=>r.level==='high-school')){
+    else{const links=[];for(const row of rows.filter(r=>r.level==='high-school')){
       const names=[...new Set([row.kshsaa?.name,row.bound?.name,row.ccd?.name].filter(Boolean))];
       for(const path of [...new Set(names.flatMap(name=>maxprepsGuesses(state,{name,town:row.town,mascot:row.bound?.mascot})))]){
-        if(!first)await sleep(30000);first=false;
         const r=await viaSource(`https://www.maxpreps.com/${path}/`);
         log(`MaxPreps ${path}: ${r?.status}`);
         if(r?.status===200){links.push(...maxprepsLinks(r.text));const page=maxprepsSchoolPage(r.text,path);if(page.id){row.maxpreps={path,...page};break;}}
@@ -434,7 +471,7 @@ async function surveyCounty(args,county,paths){
       const names=[...new Set([row.kshsaa?.name,row.bound?.name,row.ccd?.name].filter(Boolean))];
       const path=names.map(name=>maxprepsFromLinks(links,state,{name,town:row.town,mascot:row.bound?.mascot})).find(Boolean);
       if(!path)continue;
-      await sleep(30000);const r=await viaSource(`https://www.maxpreps.com/${path}/`);log(`MaxPreps ${path} (linked): ${r?.status}`);
+      const r=await viaSource(`https://www.maxpreps.com/${path}/`);log(`MaxPreps ${path} (linked): ${r?.status}`);
       if(r?.status===200){const page=maxprepsSchoolPage(r.text,path);if(page.id)row.maxpreps={path,...page};}
     }}
   }
@@ -464,7 +501,6 @@ async function surveyCounty(args,county,paths){
   // volleyball), through the source route, 30 s apart.
   if(process.env.SAS_SOURCE_KEY&&!args.includes('--no-maxpreps'))for(const row of rows.filter(r=>r.maxpreps?.id&&r.bound)){
     const sport=(row.has||[]).includes('Football')?['Football','football']:(row.has||[]).includes('Volleyball')?['Volleyball','volleyball']:null;if(!sport)continue;
-    await sleep(30000);
     const r=await viaSource(`https://www.maxpreps.com/${row.maxpreps.path}/${sport[1]}/schedule/`);
     if(r?.status!==200){notes.push(`MaxPreps ${sport[0]} schedule for ${row.id}: ${r?.status}`);continue;}
     const games=new Set(maxprepsContests(r.text,row.maxpreps.id).filter(c=>c.opponent&&c.date>=`${y}-07-01`&&c.date<=`${y+1}-06-30`).map(c=>c.date)).size;
