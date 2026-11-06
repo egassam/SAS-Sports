@@ -97,6 +97,10 @@ const ksc=name=>gunzipSync(readFileSync(new URL(`./fixtures/ks-counties/${name}`
 assert.equal(prepGolfCode([{players:[{school:'CHAP'},{school:'ABI'}]},{players:[{school:'CHAP'},{school:'WAM'}]}],'Chapman'),'CHAP');
 assert.equal(prepGolfCode([{players:[{school:'WR'},{school:'JC'}]},{players:[{school:'JC'},{school:'WR'}]}],'Junction City'),'JC');
 assert.equal(prepGolfCode([],'Abilene'),null);
+// Royal Valley: PLHS was in all three tournaments, RV in two (no Royal Valley golfer at the 3A state tournament).
+assert.equal(prepGolfCode([{players:[{school:'PLHS'},{school:'HOLT'}]},{players:[{school:'PLHS'},{school:'RV'}]},{players:[{school:'PLHS'},{school:'RV'}]}],'Royal Valley'),'RV');
+assert.equal(prepGolfCode([{players:[{school:'RPC'},{school:'SSH'}]},{players:[{school:'PL'},{school:'RPC'}]}],'Republic County'),'RPC');
+assert.equal(prepGolfCode([{players:[{school:'WACO'},{school:'HAN'}]}],'Washington County'),'WACO');
 // TennisReporting's name.
 assert.equal(tennisReportingName(['Clay Center Community HS','Concordia HS'],{key:schoolKey('Clay Center Community High')}),'Clay Center Community HS');
 assert.equal(tennisReportingName(['Salina-Central HS','Salina-South HS'],{key:schoolKey('Salina Central High School')}),'Salina-Central HS');
@@ -104,6 +108,7 @@ assert.equal(tennisReportingName(['Abilene HS'],{key:'chapman'}),null);
 // Bound coverage: Wabaunsee had 1 of its 10 football games on Bound.
 assert.deepEqual(boundCoverage(1,10),{checked:true,bound:1,maxpreps:10,sparse:true});
 assert.equal(boundCoverage(14,15).sparse,false);
+assert.equal(boundCoverage(7,10).sparse,true,'Nemaha Central: 7 of 10 is missing games');assert.equal(boundCoverage(9,10).sparse,false);
 assert.equal(boundCoverage(1,2).checked,false,'too few MaxPreps games to judge');
 // LetsGoRun: this year's listed folders and last years' names for this year.
 const listing='<a href="http://results.tfmeetpro.com/LetsGoRun_Timing/2026_Clay_Center_XC_Invitational/">x</a><a href="http://results.tfmeetpro.com/LetsGoRun_Timing/2025_NCKL_Cross_Country_Championships/">y</a><a href="http://results.tfmeetpro.com/LetsGoRun_Timing/Junction_City_Invitational/">z</a>';

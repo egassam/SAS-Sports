@@ -1,0 +1,80 @@
+{
+ "state": "ks",
+ "counties": [
+  "Republic"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "pike-valley-ks",
+   "name": "Pike Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520229069c7afa70dbe4b",
+    "slug": "pikevalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "79bb700a-e249-4a07-95eb-b988a54d6e14",
+    "path": "scandia/pike-valley-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 353,
+    "code": "PV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Pike Valley",
+    "milesplit": 21917,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "republic-county-ks",
+   "name": "Republic County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045204105989ea066d16145",
+    "slug": "republiccountyhs"
+   },
+   "maxpreps": {
+    "schoolId": "727fbd23-173f-4dc1-a6ec-c6cf096920ce",
+    "path": "belleville/republic-county-buffaloes"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 196,
+    "code": "RPC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Republic County",
+    "milesplit": 22044
+   }
+  }
+ ]
+}

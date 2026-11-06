@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.271.0-retracted-finals';
+const VERSION='4.272.0-ks-counties-2';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4666,7 +4666,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       const ids=[team.milesplit.team,...(team.milesplit.also||[])].map(String);
       // The school's own state only (Manhattan also reads Missouri's days).
       const index=await milesplitSeasonFor(team.milesplit.indexState||'KS',Number(year.start.slice(0,4)));
-      const extra=milesplitIndexGames(index,ids,games,today);
+      const extra=milesplitIndexGames(index,ids,games,today,{aliases:KS_ALIASES.meets});
       if(extra.length){games.push(...extra);games.sort((a,b)=>a.date.localeCompare(b.date)||String(a.time||'').localeCompare(String(b.time||'')));}
     }
     let contests=[];

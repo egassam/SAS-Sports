@@ -3646,5 +3646,189 @@
     "panelDark": "#330000",
     "line": "#fe4040",
     "onAccent": "#ffffff"
+  },
+  "hanover-ks": {
+    "primary": "#BD1B28",
+    "secondary": "#201460",
+    "panel": "#550c12",
+    "panelDark": "#260508",
+    "line": "#ce545e",
+    "onAccent": "#ffffff"
+  },
+  "linn-ks": {
+    "primary": "#FFD700",
+    "secondary": "#000000",
+    "panel": "#736100",
+    "panelDark": "#332b00",
+    "line": "#ffe140",
+    "onAccent": "#111111"
+  },
+  "washington-county-ks": {
+    "primary": "#EC1C24",
+    "secondary": "#000000",
+    "panel": "#6a0d10",
+    "panelDark": "#2f0607",
+    "line": "#f1555b",
+    "onAccent": "#ffffff"
+  },
+  "pike-valley-ks": {
+    "primary": "#003BA8",
+    "secondary": "#FDEC00",
+    "panel": "#001b4c",
+    "panelDark": "#000c22",
+    "line": "#406cbe",
+    "onAccent": "#ffffff"
+  },
+  "republic-county-ks": {
+    "primary": "#0251BC",
+    "secondary": "#EA0004",
+    "panel": "#012455",
+    "panelDark": "#001026",
+    "line": "#417dcd",
+    "onAccent": "#ffffff"
+  },
+  "clifton-clyde-ks": {
+    "primary": "#FE0303",
+    "secondary": "#140277",
+    "panel": "#720101",
+    "panelDark": "#330101",
+    "line": "#fe4242",
+    "onAccent": "#ffffff"
+  },
+  "concordia-ks": {
+    "primary": "#F90303",
+    "secondary": "#000000",
+    "panel": "#700101",
+    "panelDark": "#320101",
+    "line": "#fb4242",
+    "onAccent": "#ffffff"
+  },
+  "concordia-ms-ks": {
+    "primary": "#F90303",
+    "secondary": "#000000",
+    "panel": "#700101",
+    "panelDark": "#320101",
+    "line": "#fb4242",
+    "onAccent": "#ffffff"
+  },
+  "bennington-ks": {
+    "primary": "#F1CE42",
+    "secondary": "#000000",
+    "panel": "#6c5d1e",
+    "panelDark": "#30290d",
+    "line": "#f5da71",
+    "onAccent": "#111111"
+  },
+  "minneapolis-ks": {
+    "primary": "#C30300",
+    "secondary": "#1C1851",
+    "panel": "#580100",
+    "panelDark": "#270100",
+    "line": "#d24240",
+    "onAccent": "#ffffff"
+  },
+  "tescott-ks": {
+    "primary": "#405DAB",
+    "secondary": "#03004C",
+    "panel": "#1d2a4d",
+    "panelDark": "#0d1322",
+    "line": "#7086c0",
+    "onAccent": "#ffffff"
+  },
+  "minneapolis-ms-ks": {
+    "primary": "#C30300",
+    "secondary": "#1C1851",
+    "panel": "#580100",
+    "panelDark": "#270100",
+    "line": "#d24240",
+    "onAccent": "#ffffff"
+  },
+  "holton-ks": {
+    "primary": "#0044CB",
+    "secondary": "#000000",
+    "panel": "#001f5b",
+    "panelDark": "#000e29",
+    "line": "#4073d8",
+    "onAccent": "#ffffff"
+  },
+  "jackson-heights-ks": {
+    "primary": "#D3BD8E",
+    "secondary": "#1F381B",
+    "panel": "#5f5540",
+    "panelDark": "#2a261c",
+    "line": "#deceaa",
+    "onAccent": "#111111"
+  },
+  "royal-valley-ks": {
+    "primary": "#663194",
+    "secondary": "#000000",
+    "panel": "#2e1643",
+    "panelDark": "#140a1e",
+    "line": "#8c65af",
+    "onAccent": "#ffffff"
+  },
+  "jackson-heights-ms-ks": {
+    "primary": "#D3BD8E",
+    "secondary": "#1F381B",
+    "panel": "#5f5540",
+    "panelDark": "#2a261c",
+    "line": "#deceaa",
+    "onAccent": "#111111"
+  },
+  "centralia-ks": {
+    "primary": "#FC5500",
+    "secondary": "#000000",
+    "panel": "#712600",
+    "panelDark": "#321100",
+    "line": "#fd8040",
+    "onAccent": "#ffffff"
+  },
+  "nemaha-central-ks": {
+    "primary": "#533A7D",
+    "secondary": "#4C7FB2",
+    "panel": "#251a38",
+    "panelDark": "#110c19",
+    "line": "#7e6b9e",
+    "onAccent": "#ffffff"
+  },
+  "sabetha-ks": {
+    "primary": "#19318E",
+    "secondary": "#9A9B9F",
+    "panel": "#0b1640",
+    "panelDark": "#050a1c",
+    "line": "#5365aa",
+    "onAccent": "#ffffff"
+  },
+  "emporia-ks": {
+    "primary": "#EC1E24",
+    "secondary": "#000000",
+    "panel": "#6a0e10",
+    "panelDark": "#2f0607",
+    "line": "#f1565b",
+    "onAccent": "#ffffff"
+  },
+  "hartford-ks": {
+    "primary": "#004BBA",
+    "secondary": "#FF0000",
+    "panel": "#002254",
+    "panelDark": "#000f25",
+    "line": "#4078cb",
+    "onAccent": "#ffffff"
+  },
+  "northern-heights-ks": {
+    "primary": "#BA182B",
+    "secondary": "#000000",
+    "panel": "#540b13",
+    "panelDark": "#250509",
+    "line": "#cb5260",
+    "onAccent": "#ffffff"
+  },
+  "olpe-ks": {
+    "primary": "#CB9836",
+    "secondary": "#000000",
+    "panel": "#5b4418",
+    "panelDark": "#291e0b",
+    "line": "#d8b268",
+    "onAccent": "#ffffff"
   }
 }

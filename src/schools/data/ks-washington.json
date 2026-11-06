@@ -1,0 +1,110 @@
+{
+ "state": "ks",
+ "counties": [
+  "Washington"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "hanover-ks",
+   "name": "Hanover High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451589243f84e96ad0454d",
+    "slug": "hanoverhs"
+   },
+   "maxpreps": {
+    "schoolId": "1d6273f8-f018-4b6e-990a-723c96b558a8",
+    "path": "hanover/hanover-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 276,
+    "code": "HAN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Hanover",
+    "milesplit": 21929,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "linn-ks",
+   "name": "Linn High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520042522a52b8eedb94d",
+    "slug": "linnhs"
+   },
+   "maxpreps": {
+    "schoolId": "8cb686e6-3225-4f66-a1f5-4c9a688b8554",
+    "path": "linn/linn-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 272,
+    "code": "LINN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Linn",
+    "milesplit": 21971,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "washington-county-ks",
+   "name": "Washington County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045208932cc9b35b087734b",
+    "slug": "washingtoncountyhs"
+   },
+   "maxpreps": {
+    "schoolId": "fba727e9-ec29-46e8-a4a7-3a879d64ff32",
+    "path": "washington/washington-county-tigers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 253,
+    "code": "WACO"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Washington County",
+    "milesplit": 21993
+   }
+  }
+ ]
+}

@@ -1,0 +1,109 @@
+{
+ "state": "ks",
+ "counties": [
+  "Cloud"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "clifton-clyde-ks",
+   "name": "Clifton-Clyde High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451566356e91b000ba9343",
+    "slug": "cliftonclydehs"
+   },
+   "maxpreps": {
+    "schoolId": "8574eca9-c2c6-49f2-bbbc-4ea845ec6ed0",
+    "path": "clyde/clifton-clyde-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 2426,
+    "code": "CLCL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Clifton-Clyde",
+    "milesplit": 22022,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "concordia-ks",
+   "name": "Concordia High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045157237145c0313018347",
+    "slug": "concordiahs"
+   },
+   "maxpreps": {
+    "schoolId": "76e4b041-f805-482e-8a7f-11efbf7bfaf3",
+    "path": "concordia/concordia-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 84,
+    "code": "CON"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Concordia",
+    "tennis": "Concordia HS",
+    "milesplit": 21811
+   }
+  },
+  {
+   "id": "concordia-ms-ks",
+   "name": "Concordia Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045157237145c0313018347",
+    "slug": "concordiahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Concordia",
+    "milesplit": 32811
+   }
+  }
+ ]
+}

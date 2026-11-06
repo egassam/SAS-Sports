@@ -194,14 +194,21 @@ export function milesplitFor(index,row){
 // the parsed results pages. More than one left: the one whose letters start
 // the school's name, else none.
 export function prepGolfCode(results,name=''){
-  const sets=results.map(r=>new Set((r.players||[]).map(p=>p.school).filter(Boolean))).filter(x=>x.size);
-  if(!sets.length)return null;
-  let common=[...sets[0]].filter(c=>sets.every(x=>x.has(c)));
-  if(common.length>1){
-    const words=nameKey(name).split(' ').filter(Boolean),joined=words.join(''),initials=words.map(w=>w[0]).join('');
-    common=common.filter(c=>{const k=c.toLowerCase();return initials===k||initials.startsWith(k)||joined.startsWith(k.slice(0,3));});
-  }
-  return common.length===1?common[0]:null;
+  // The school's code spells its name: its letters appear in order in the
+  // name (RV in Royal Valley, RPC in Republic County, WACO in Washington
+  // County); the most frequent such code wins. November 5: "every
+  // tournament's code" picked PLHS (Perry-Lecompton) for Royal Valley, whose
+  // golfers were not in one of its tournaments.
+  const counts=new Map();
+  for(const r of results)for(const c of new Set((r.players||[]).map(p=>p.school).filter(Boolean)))counts.set(c,(counts.get(c)||0)+1);
+  const joined=nameKey(name).replace(/\b(?:high school|high|school|hs)\b/g,'').replace(/\s+/g,'');
+  const spells=c=>{let i=0;for(const ch of c.toLowerCase()){i=joined.indexOf(ch,i);if(i<0)return false;i++;}return true;};
+  // Ties: the code that matches more of the name's start (CON over CC for
+  // Concordia), then the longer code.
+  const lead=c=>{let n=0;while(n<c.length&&joined[n]===c[n].toLowerCase())n++;return n;};
+  const ranked=[...counts].filter(([c])=>spells(c)&&joined.startsWith(c[0].toLowerCase())).map(([c,n])=>[c,n,lead(c),c.length]).sort((a,b)=>b[1]-a[1]||b[2]-a[2]||b[3]-a[3]);
+  const same=(a,b)=>a&&b&&a[1]===b[1]&&a[2]===b[2]&&a[3]===b[3];
+  return ranked.length&&!same(ranked[0],ranked[1])?ranked[0][0]:null;
 }
 // TennisReporting's name for a school, from every school its state's events
 // list ("Clay Center Community HS").
@@ -213,13 +220,15 @@ export function tennisReportingName(names,row){
   return list.find(n=>forms(n)[0]===key)||list.find(n=>forms(n)[1]===key)||null;
 }
 // Bound coverage for a game sport: the school's own Bound games this school
-// year against MaxPreps' schedule for the team. Fewer than 60%: its games
+// year against MaxPreps' schedule for the team. Fewer than 85%: its games
 // also read MaxPreps' schedule (`sports.maxprepsSchedule`; November 5:
-// Wabaunsee had 1 of 10 football games on Bound).
+// Wabaunsee had 1 of 10 football games on Bound; Centralia 6 of 10 and
+// Nemaha Central 7 of 10 were missing games too, while complete schedules
+// count 90% or more: Holton 14 of 9 with its jamboree and playoffs).
 export function boundCoverage(boundGames,maxprepsGames){
   if(!(maxprepsGames>=4))return{checked:false};
   const ratio=boundGames/maxprepsGames;
-  return{checked:true,bound:boundGames,maxpreps:maxprepsGames,sparse:ratio<0.6};
+  return{checked:true,bound:boundGames,maxpreps:maxprepsGames,sparse:ratio<0.85};
 }
 // LetsGoRun (MeetPro) folders to try for this season: the listing's own
 // folders for the year, and last years' names with this year's
@@ -252,10 +261,18 @@ export function draftEntry(row){
 
 // --- Network
 
+// Each page is read once per run: several counties share the statewide
+// reads (NCES CCD, Bound's state page, MileSplit Live's index, Prep.Golf,
+// TennisReporting, LetsGoRun), November 5.
+const memo=new Map();
 async function get(url,{json=false,headers={},method='GET',body=null}={}){
-  const r=await fetch(url,{method,headers:{'User-Agent':UA,...headers,...(body?{'content-type':'application/json'}:{})},body,signal:AbortSignal.timeout(60000)});
-  if(!r.ok)throw Error(`${url}: HTTP ${r.status}`);
-  return json?r.json():r.text();
+  const key=`${method} ${url} ${body||''}`;
+  if(!memo.has(key))memo.set(key,(async()=>{
+    const r=await fetch(url,{method,headers:{'User-Agent':UA,...headers,...(body?{'content-type':'application/json'}:{})},body,signal:AbortSignal.timeout(60000)});
+    if(!r.ok)throw Error(`${url}: HTTP ${r.status}`);
+    return r.text();
+  })());
+  try{const text=await memo.get(key);return json?JSON.parse(text):text;}catch(e){memo.delete(key);throw e;}
 }
 async function viaSource(url){
   const key=process.env.SAS_SOURCE_KEY;if(!key)return null;
@@ -264,9 +281,21 @@ async function viaSource(url){
   return{status:r.status,text:r.ok?await r.text():''};
 }
 
+// Several counties in one run (`--county=Washington,Republic,Cloud`): one
+// draft and one report each, in `--out-dir` (November 5).
 async function main(){
   const args=process.argv.slice(2),value=n=>{const hit=args.find(x=>x.startsWith(`--${n}=`));return hit?hit.slice(n.length+3):null};
-  const state=(value('state')||'KS').toUpperCase(),county=value('county');
+  const counties=(value('county')||'').split(',').map(c=>c.trim()).filter(Boolean);
+  if(counties.length>1){
+    const dir=value('out-dir');if(!dir){console.error('several counties need --out-dir=<directory>');process.exit(2)}
+    for(const county of counties)await surveyCounty(args,county,{out:`${dir}/${county.replace(/\s+/g,'-')}-draft.json`,report:`${dir}/${county.replace(/\s+/g,'-')}-report.md`});
+    return;
+  }
+  await surveyCounty(args,counties[0],{out:value('out'),report:value('report')});
+}
+async function surveyCounty(args,county,paths){
+  const value=n=>{const hit=args.find(x=>x.startsWith(`--${n}=`));return hit?hit.slice(n.length+3):null};
+  const state=(value('state')||'KS').toUpperCase();
   if(!county||!STATE_FIPS[state]){console.error('usage: NODE_USE_ENV_PROXY=1 node scripts/onboard-hs.mjs --county=<name> [--state=KS] [--out=draft.json] [--report=report.md] [--no-maxpreps] [--no-kshsaa]');process.exit(2)}
   const log=(...x)=>console.error(...x),notes=[];
   const fipsText=await get(`https://www2.census.gov/geo/docs/reference/codes2020/cou/st${STATE_FIPS[state]}_${state.toLowerCase()}_cou2020.txt`);
@@ -299,7 +328,9 @@ async function main(){
       for(const id of ids){
         try{const p=JSON.parse(await get(boundEventsUrl(row.bound.bound,{start:`${y-1}-07-01`,end:`${y+1}-06-30`,act:id}),{headers:{Accept:'application/json'}}));
           for(const g of Array.isArray(p)?p:[])for(const e of g?.Events||[])if(e?.RecordType==='comp'&&(e.IDAct===id||(e.IDActs||[]).includes(id))&&(e.Teams||[]).some(t=>t.HostSchoolID===row.bound.bound)&&(row.level==='middle-school'?MS_LEVEL:VARSITY_LEVEL).test(String(e.LevelDisplay||'').trim())){
-            const day=String(e.StartDateTime||'').slice(0,10);(day>=`${y}-07-01`?current:last).add(day);}}catch{}
+            const day=String(e.StartDateTime||'').slice(0,10);(day>=`${y}-07-01`?current:last).add(day);
+            // This season's cross country meets, for the results-sources table.
+            if(/Cross Country/.test(act)&&day>=`${y}-07-01`)(row.xcMeets??=new Map()).set(day,String(g.Title||e.Title||e.VenueLocationsDisplay||'').trim()||'(meet)');}}catch{}
       }
       counts[act]={current:current.size,last:last.size};
     }
@@ -307,7 +338,12 @@ async function main(){
     log(`Bound ${row.id}: ${row.has.join(', ')||'no events at its level'}`);
   }
   // MileSplit Live index (this fall's cross country).
-  const index=milesplitSeasonIndex(JSON.parse(await get(`${MILESPLIT_LIVE_ROOT}:runQuery`,{method:'POST',body:milesplitSeasonQuery(state,y)})));
+  // With each meet's timer (MileSplit Live's `timingCompany`), for the
+  // results-sources table: which timing companies a county's meets used.
+  const q=JSON.parse(milesplitSeasonQuery(state,y));q.structuredQuery.select.fields.push({fieldPath:'timingCompany.name'});
+  const raw=JSON.parse(await get(`${MILESPLIT_LIVE_ROOT}:runQuery`,{method:'POST',body:JSON.stringify(q)}));
+  const index=milesplitSeasonIndex(raw);
+  const timers=new Map(raw.filter(x=>x.document).map(x=>[x.document.name.split('/').pop(),x.document.fields?.timingCompany?.mapValue?.fields?.name?.stringValue||null]));
   for(const row of rows){
     row.milesplit=milesplitFor(index,row);
   }
@@ -382,6 +418,20 @@ async function main(){
       log(`LetsGoRun: ${lgr.length} folders this season, ${lgr.filter(m=>m.schools.length).length} with the county's schools`);
     }catch(e){notes.push(`LetsGoRun: ${e.message}`)}
   }
+  // Results sources for each school's cross country meets this season: the
+  // MileSplit Live index (by team id and day, with its timer), a LetsGoRun
+  // folder that has the school, or none (to search for by hand: the host
+  // school's site, KSHSAA for postseason meets, another timer).
+  const sourcesRows=[];
+  for(const row of rows.filter(r=>r.xcMeets?.size)){
+    const team=row.milesplit?.id&&String(row.milesplit.id);
+    for(const [date,name] of [...row.xcMeets].sort()){
+      if(date>now.toISOString().slice(0,10))continue;
+      const ms=team&&index.find(m=>m.date<=date&&(m.end||m.date)>=date&&m.teams.some(t=>t.id===team));
+      const lg=lgr.find(m=>m.date===date&&m.schools.includes(row.id));
+      sourcesRows.push({id:row.id,date,name,source:ms?`MileSplit Live ${ms.id}${timers.get(ms.id)?` (${timers.get(ms.id)})`:''}`:lg?`LetsGoRun ${lg.folder}`:'none found'});
+    }
+  }
   // The draft and the report.
   const draft={state:state.toLowerCase(),counties:[c.name.replace(/\s+County$/,'')],module_doc:`docs/${slug(c.name.replace(/\s+County$/,'')).toUpperCase().replace(/-/g,'_')}_${state}_MODULE.md`,
     note:`Draft from scripts/onboard-hs.mjs on ${now.toISOString().slice(0,10)}: review every entry before use (docs/HIGH_SCHOOL_ONBOARDING.md).`,
@@ -395,14 +445,24 @@ async function main(){
       ...rows.filter(r=>r.coverage?.checked).map(r=>`| \`${r.id}\` | ${r.coverage.sport} | ${r.coverage.bound} | ${r.coverage.maxpreps} | ${r.coverage.sparse?'yes':'no'} |`)]:[]),
     ...(lgr.length?['','## LetsGoRun (MeetPro) this season','','Add a folder to `LETSGORUN_MEETPRO.folders` (src/schools/manhattan-ks.mjs) by its date; when schools already in the app ran it, compare first (`npm run diff:feeds`).','','| Date | Folder | Title | County schools | Read already |','| --- | --- | --- | --- | --- |',
       ...lgr.sort((a,b)=>a.date.localeCompare(b.date)).map(m=>`| ${m.date} | \`${m.folder}\` | ${m.name||''} | ${m.schools.join(', ')||'—'} | ${m.known?'yes':'no'} |`)]:[]),
+    ...(sourcesRows.length?['','## Cross country results sources (this season)','','A meet with no source found: search the host school\'s site, KSHSAA (postseason), and the timers of the county\'s other meets.','','| School | Date | Bound meet | Results |','| --- | --- | --- | --- |',
+      ...sourcesRows.map(r=>`| \`${r.id}\` | ${r.date} | ${r.name} | ${r.source} |`),'',`Timers of the county's meets: ${[...new Set(sourcesRows.map(r=>(r.source.match(/\((.+)\)$/)||[])[1]).filter(Boolean))].join(', ')||'none named'}.`]:[]),
     '','## Still to check by hand','',
     '- Each school\'s own calendar (district site: ParentSquare, Apptegy, Finalsite, Google Calendar) for games Bound lacks; a school with no Bound events stays out of the draft.',
     '- Private and non-member schools (not in NCES CCD or KSHSAA: Kansas Approved Schools, homeschool programs) and schools listed by KSHSAA under another town.',
     '- TennisReporting names and Prep.Golf codes the survey could not find (`"code":"?"`, no `tennis`); LetsGoRun (MeetPro) team names (the draft uses Bound\'s name); a LetsGoRun meet\'s date when its page prints another (the 2026 Abilene page printed a Manhattan header and 9/5 for a September 3 meet).',
     '- MaxPreps team pages a school\'s draft names, and spring sports not yet on Bound.',
     ...(notes.length?['','## Notes','',...notes.map(n=>`- ${n}`)]:[])].join('\n');
-  const out=value('out'),rep=value('report');
+  const out=paths.out,rep=paths.report;
   if(out)writeFileSync(out,JSON.stringify(draft,null,1)+'\n');else console.log(JSON.stringify(draft,null,1));
+  // Catalog facts for scripts/add-county.mjs (November 5): one entry per
+  // draft school, beside the draft (`-catalog.json`).
+  if(out){
+    const catalog={state,county:c.name,schools:Object.fromEntries(rows.filter(r=>r.bound).map(r=>[r.id,{level:r.level,name:r.ccd?.name||r.kshsaa?.name||r.name,kshsaaName:r.kshsaa?.name||null,boundName:r.bound?.name||null,
+      town:r.ccd?.town||r.bound?.town||r.town,class:r.kshsaa?.class||null,league:r.kshsaa?.league||null,website:r.kshsaa?.website||null,mascot:r.bound?.mascot||null,colors:r.bound?.colors||[],
+      coverage:r.coverage||null,maxprepsTeams:r.maxpreps?.teams||[]}]))};
+    writeFileSync(out.replace(/(-draft)?\.json$/,'-catalog.json'),JSON.stringify(catalog,null,1)+'\n');
+  }
   if(rep)writeFileSync(rep,report+'\n');else console.error('\n'+report);
 }
 

@@ -413,9 +413,25 @@ export function milesplitTeamMeets(index,teams){
 // The index's meets to add to a schedule: those with the team (`ids`), run
 // by `today`, on a day the schedule has nothing (a multi-day entry covers its
 // days). The host's own meet reads as home.
-export function milesplitIndexGames(index,ids,games,today){
+// A day the schedule already has a meet takes the index's meet as its own
+// card only when it is plainly another meet (November 5: Council Grove's
+// Bound entry for September 10 is the Hesston Invitational; MileSplit Live
+// has six Council Grove runners at the Lyndon XC Invitational that day): the
+// schedule's meet has a name of its own, and neither it, its alias nor its
+// venue shares a word with the index meet's name, venue or town. A generic
+// name ("MS XC") or a venue-named meet that matches is the same meet.
+const INDEX_WORDS=new Set('middle ms jh jhs grade 7th 8th boys girls men women junior senior two mile 5k invite invitational meet xc cross country classic'.split(' '));
+export function sameIndexMeet(game,meet,aliases={}){
+  const words=n=>new Set(String(n||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w.length>=3&&!/^\d/.test(w)&&!INDEX_WORDS.has(w)&&!MEET_WORDS.has(w)));
+  const own=new Set([...words(game.name),...words(aliases[game.name])]);
+  if(!own.size)return true;
+  const want=new Set([...own,...words(game.address)]),have=words(`${meet.name} ${meet.venue||''} ${meet.city||''}`);
+  return[...want].some(w=>have.has(w));
+}
+export function milesplitIndexGames(index,ids,games,today,{aliases={}}={}){
   ids=[].concat(ids).map(String);
-  return milesplitTeamMeets(index,ids).filter(meet=>meet.date<=today&&!games.some(g=>g.date===meet.date||(g.end_date&&g.date<=meet.date&&meet.date<=g.end_date)))
+  const onDay=(g,meet)=>g.date===meet.date||(g.end_date&&g.date<=meet.date&&meet.date<=g.end_date);
+  return milesplitTeamMeets(index,ids).filter(meet=>meet.date<=today&&!games.some(g=>onDay(g,meet)&&sameIndexMeet(g,meet,aliases)))
     .map(meet=>({date:meet.date,time:null,end_date:meet.end,name:meet.name,site:ids.includes(meet.host)?'HOME':'AWAY',milesplitMeet:meet.id,fromIndex:true,calendar_id:`milesplit|${meet.id}`}));
 }
 // Teams of the index whose name matches a school's (for onboarding: the
@@ -427,7 +443,10 @@ export function milesplitTeamsNamed(index,name){
     const key=nameKey(t.name);
     if(want&&(key===want||key.startsWith(`${want} `)||key.includes(` ${want} `)||key.endsWith(` ${want}`))){const hit=found.get(t.id)||{id:t.id,name:t.name,code:t.code,meets:0};hit.meets++;found.set(t.id,hit);}
   }
-  return[...found.values()].sort((a,b)=>b.meets-a.meets);
+  // An exact name first (November 5: "Linn High School" is team 21971, not
+  // Jayhawk Linn, 21877, which had more meets), then by meets.
+  const exact=t=>nameKey(t.name).replace(/\b(?:middle school|junior high|high school|jr sr|school|ms|jh)\b/g,' ').replace(/\s+/g,' ').trim()===want;
+  return[...found.values()].sort((a,b)=>exact(b)-exact(a)||b.meets-a.meets);
 }
 // The meet's code and name for a MileSplit team id ("BVLY", "Randolph Blue
 // Valley High School" for 36605). Runners can carry another code and a
