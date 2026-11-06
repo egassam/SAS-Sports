@@ -29,10 +29,16 @@ export const LETSGORUN_MEETPRO={
     // Found November 5 under last year's names and compared with production
     // (user: "Compare those. Let's go run meats"). The Abilene page prints
     // 9/5 (a Manhattan header left on it); its runners and times are
-    // MileSplit Live's September 3 meet. Not added: Shawnee Heights MS
-    // (Sep 22; its "Eisenhower" is Topeka's, not Manhattan's) and Washburn
-    // Rural MS (Sep 25; no school in the app).
+    // MileSplit Live's September 3 meet.
     '2026-09-03':['2026_Abilene_XC_Invitational'],
+    // Topeka's middle school meets (November 6, with Shawnee and Douglas
+    // counties: Shawnee Heights, Washburn Rural and Lawrence's middle
+    // schools ran them). Left out on November 5 when no school in the app
+    // had run them. Its "Eisenhower" is Topeka's: Manhattan's Eisenhower MS
+    // calendar says "at Clay Center" that day, which this folder does not
+    // fit (meetProFolderFits; compared with npm run diff:feeds).
+    '2026-09-22':['2026_Shawnee_Heights_MS_Invitational'],
+    '2026-09-25':['2026_Washburn_Rural_MS_Invitational'],
     // Found by the survey's LetsGoRun step (November 5): Junction City ran it.
     '2026-09-19':['2026_Shufelberger_TopCity_Classic'],
     '2026-10-03':['2026_Bob_Schmoekel_Cross_Country_Invitational'],

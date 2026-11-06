@@ -111,6 +111,24 @@ export function maxprepsSchoolPage(html,path){
 }
 // MaxPreps paths to try for a school: its town and name with the mascot
 // ("junction-city/junction-city-bluejays", "-blue-jays").
+// A school whose guessed paths all 404 (November 6: Topeka West is
+// "ks/topeka/west-chargers", Cair Paravel "cair-paravel-lions", Baldwin
+// "ks/baldwin/baldwin-bulldogs" for Baldwin City): the county's other school
+// pages link their opponents. A link fits when its town is the school's (or
+// one starts the other), it has a word of the name (beyond the town's when
+// the name has one), and a mascot word's first four letters. More than one
+// link fitting as well: none.
+export function maxprepsFromLinks(links,state,{name,town,mascot}){
+  const t=slug(town),townWords=new Set(t.split('-')),nameWords=slug(schoolKey(name)).split('-').filter(Boolean);
+  const own=nameWords.filter(w=>!townWords.has(w)),words=own.length?own:nameWords;
+  const stems=slug(mascot||'').split('-').filter(w=>w.length>=4).map(w=>w.slice(0,4));
+  const fits=[...new Set(links)].map(l=>l.split('/')).filter(([st,lt,school])=>st===state.toLowerCase()&&school&&(lt===t||t.startsWith(lt+'-')||lt.startsWith(t+'-'))).map(([st,lt,school])=>{
+    const parts=school.split('-');
+    return{path:`${st}/${lt}/${school}`,hits:words.filter(w=>parts.includes(w)).length,mascot:stems.some(m=>parts.some(p=>p.startsWith(m)))};
+  }).filter(f=>f.hits&&f.mascot).sort((a,b)=>b.hits-a.hits);
+  return fits.length&&!(fits[1]&&fits[1].hits===fits[0].hits)?fits[0].path:null;
+}
+export const maxprepsLinks=html=>[...String(html||'').matchAll(/maxpreps\.com\/([a-z]{2}\/[a-z0-9-]+\/[a-z0-9-]+)\//g)].map(m=>m[1]);
 export function maxprepsGuesses(state,{name,town,mascot}){
   const base=schoolKey(name).replace(/\bsaint\b/g,'st'),t=slug(town);
   const forms=[...new Set([slug(mascot),slug(mascot).replace(/-/g,'')])].filter(Boolean);
@@ -124,6 +142,8 @@ const ACT_HAS={Football:['Football'],'Girls Flag Football':['Flag Football'],Vol
   'Boys Wrestling':['Wrestling','Boys Wrestling'],'Girls Wrestling':['Wrestling','Girls Wrestling'],'Boys Track & Field':['Track & Field'],'Girls Track & Field':['Track & Field'],
   'Boys Swim & Dive':['Swimming & Diving','Boys Swimming'],'Girls Swim & Dive':['Swimming & Diving','Girls Swimming'],'Boys Bowling':['Bowling','Boys Bowling'],'Girls Bowling':['Bowling','Girls Bowling'],'Unified Bowling':['Bowling']};
 const HAS_ORDER=['Football','Flag Football','Volleyball','Soccer','Girls Soccer','Basketball','Baseball','Softball','Cross Country','Golf','Girls Golf','Boys Golf','Tennis','Girls Tennis','Boys Tennis','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Swimming & Diving','Girls Swimming','Boys Swimming','Bowling','Girls Bowling','Boys Bowling'];
+// MaxPreps team pages of game sports → `sports.has`.
+const MAXPREPS_GAME_HAS={football:['Football'],volleyball:['Volleyball'],basketball:['Basketball'],'basketball/girls':['Basketball'],baseball:['Baseball'],softball:['Softball'],soccer:['Soccer'],'soccer/girls/spring':['Soccer','Girls Soccer']};
 // Middle schools read football, volleyball, basketball, cross country,
 // wrestling, track, golf and tennis (src/high-school-builders.mjs).
 const MS_HAS=new Set(['Football','Volleyball','Basketball','Cross Country','Wrestling','Girls Wrestling','Boys Wrestling','Track & Field','Golf','Tennis']);
@@ -174,6 +194,17 @@ export function matchSchools({ccd,kshsaa,bound,state}){
       const at=bound.filter(b=>slug(b.town)===slug(row.town)&&keys.includes(addressKey(b.address)));
       row.bound=at.find(b=>(levelOf({name:b.name})||row.level)===row.level)||at[0]||null;
     }
+  }
+  // One school under two names (November 6: NCES's "Lawrence Free State
+  // High" and KSHSAA's "Free State HS"; "Chase Middle School" and
+  // "Topeka-Chase MS"): rows at the same level with the same Bound school
+  // are one row, KSHSAA's name first.
+  for(const row of [...rows]){
+    if(!row.bound)continue;
+    const twin=rows.find(r=>r!==row&&r.level===row.level&&r.bound?.bound===row.bound.bound);
+    if(!twin)continue;
+    const [keep,drop]=row.kshsaa||!twin.kshsaa?[row,twin]:[twin,row];
+    keep.ccd??=drop.ccd;keep.kshsaa??=drop.kshsaa;rows.splice(rows.indexOf(drop),1);
   }
   for(const row of rows)row.id=appId(row.kshsaa?.name||row.ccd?.name||row.name,row.level,state);
   return rows.sort((a,b)=>(a.level||'').localeCompare(b.level||'')||a.id.localeCompare(b.id));
@@ -254,6 +285,14 @@ export function draftEntry(row){
   if(row.maxpreps?.id)entry.maxpreps={schoolId:row.maxpreps.id,path:row.maxpreps.path.replace(/^[a-z]{2}\//,'')};
   entry.meetPro='letsgorun';
   if(row.prepGolf&&(row.has||[]).includes('Golf'))entry.prepGolf={school:row.prepGolf.id,code:row.prepGolfCode||'?'};
+  // A school with few of its own games on Bound also takes the game sports
+  // MaxPreps lists that Bound lacks (by hand for Tescott on November 5; in
+  // the draft since November 6: Cair Paravel's baseball).
+  if(row.coverage?.sparse&&row.maxpreps&&row.level==='high-school'){
+    const has=new Set(row.has||[]);
+    for(const t of row.maxpreps.teams||[])for(const h of MAXPREPS_GAME_HAS[t]||[])has.add(h);
+    row.has=HAS_ORDER.filter(h=>has.has(h));
+  }
   const meetTeam=(row.bound?.name||name).replace(/\s+(?:HS|High School|Sr\.? High)$/i,'').trim();
   entry.sports={has:row.has||[],meetTeam,...((row.has||[]).includes('Tennis')&&row.tennis&&row.level==='high-school'?{tennis:row.tennis}:{}),...(row.milesplit?{milesplit:Number(row.milesplit.id)}:{}),...(row.coverage?.sparse&&row.maxpreps?{maxprepsSchedule:true}:{})};
   return entry;
@@ -352,19 +391,28 @@ async function surveyCounty(args,county,paths){
     const pg=prepGolfSchools(await get('https://ks.prep.golf/schools'));
     // Prep.Golf may use the shorter name Bound gives ("Clay Center" for Clay
     // Center Community High, November 5).
-    for(const row of rows.filter(r=>r.level==='high-school'))row.prepGolf=pg.find(p=>schoolKey(p.name)===row.key)||(row.bound?.name&&pg.find(p=>schoolKey(p.name)===schoolKey(row.bound.name)))||null;
+    // Or the town before the name ("Salina Sacred Heart", November 6).
+    for(const row of rows.filter(r=>r.level==='high-school'))row.prepGolf=pg.find(p=>schoolKey(p.name)===row.key)||(row.bound?.name&&pg.find(p=>schoolKey(p.name)===schoolKey(row.bound.name)))||pg.find(p=>schoolKey(p.name)===schoolKey(`${row.town} ${row.key}`))||null;
   }
   // MaxPreps (high schools), 30 s apart, through the private source route.
   if(!args.includes('--no-maxpreps')){
     if(!process.env.SAS_SOURCE_KEY)notes.push('MaxPreps not checked: SAS_SOURCE_KEY is not set.');
-    else{let first=true;for(const row of rows.filter(r=>r.level==='high-school')){
+    else{let first=true;const links=[];for(const row of rows.filter(r=>r.level==='high-school')){
       const names=[...new Set([row.kshsaa?.name,row.bound?.name,row.ccd?.name].filter(Boolean))];
       for(const path of [...new Set(names.flatMap(name=>maxprepsGuesses(state,{name,town:row.town,mascot:row.bound?.mascot})))]){
         if(!first)await sleep(30000);first=false;
         const r=await viaSource(`https://www.maxpreps.com/${path}/`);
         log(`MaxPreps ${path}: ${r?.status}`);
-        if(r?.status===200){const page=maxprepsSchoolPage(r.text,path);if(page.id){row.maxpreps={path,...page};break;}}
+        if(r?.status===200){links.push(...maxprepsLinks(r.text));const page=maxprepsSchoolPage(r.text,path);if(page.id){row.maxpreps={path,...page};break;}}
       }
+    }
+    // Schools no guess found: a path the other schools' pages link.
+    for(const row of rows.filter(r=>r.level==='high-school'&&!r.maxpreps)){
+      const names=[...new Set([row.kshsaa?.name,row.bound?.name,row.ccd?.name].filter(Boolean))];
+      const path=names.map(name=>maxprepsFromLinks(links,state,{name,town:row.town,mascot:row.bound?.mascot})).find(Boolean);
+      if(!path)continue;
+      await sleep(30000);const r=await viaSource(`https://www.maxpreps.com/${path}/`);log(`MaxPreps ${path} (linked): ${r?.status}`);
+      if(r?.status===200){const page=maxprepsSchoolPage(r.text,path);if(page.id)row.maxpreps={path,...page};}
     }}
   }
   // Prep.Golf golfers' codes (high schools with golf), 1.5 s apart.
@@ -372,7 +420,8 @@ async function surveyCounty(args,county,paths){
     try{
       const list=prepGolfTournaments(await get(`https://ks.prep.golf/schools/${row.prepGolf.id}`)).filter(t=>/^varsity$/i.test(t.type)).slice(0,4),results=[];
       for(const t of list){await sleep(1500);results.push(prepGolfResults(await get(`https://ks.prep.golf/tournaments/results/${t.id}`)));}
-      row.prepGolfCode=prepGolfCode(results,row.bound?.name||row.name);log(`Prep.Golf ${row.id}: ${row.prepGolfCode||'no code found'} (${results.length} tournaments)`);
+      // Bound's name, then KSHSAA's: Bound's "Topeka Seaman" does not spell SEA, KSHSAA's "Seaman HS" does (November 6).
+      row.prepGolfCode=[...new Set([row.bound?.name,row.kshsaa?.name,row.name].filter(Boolean))].map(n=>prepGolfCode(results,n)).find(Boolean)||null;log(`Prep.Golf ${row.id}: ${row.prepGolfCode||'no code found'} (${results.length} tournaments)`);
     }catch(e){log(`Prep.Golf ${row.id}: ${e.message}`)}
   }
   // TennisReporting school names (Kansas events), when a school has tennis.
@@ -460,7 +509,9 @@ async function surveyCounty(args,county,paths){
   if(out){
     const catalog={state,county:c.name,schools:Object.fromEntries(rows.filter(r=>r.bound).map(r=>[r.id,{level:r.level,name:r.ccd?.name||r.kshsaa?.name||r.name,kshsaaName:r.kshsaa?.name||null,boundName:r.bound?.name||null,
       town:r.ccd?.town||r.bound?.town||r.town,class:r.kshsaa?.class||null,league:r.kshsaa?.league||null,website:r.kshsaa?.website||null,mascot:r.bound?.mascot||null,colors:r.bound?.colors||[],
-      coverage:r.coverage||null,maxprepsTeams:r.maxpreps?.teams||[]}]))};
+      coverage:r.coverage||null,maxprepsTeams:r.maxpreps?.teams||[],
+      // Bound days with events at the school's level, this year and last, by act (for the skip list).
+      boundDays:Object.fromEntries(Object.entries(r.boundCounts||{}).filter(([,c])=>c.current||c.last).map(([a,c])=>[a,`${c.current}/${c.last}`]))}]))};
     writeFileSync(out.replace(/(-draft)?\.json$/,'-catalog.json'),JSON.stringify(catalog,null,1)+'\n');
   }
   if(rep)writeFileSync(rep,report+'\n');else console.error('\n'+report);
