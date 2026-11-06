@@ -59,6 +59,13 @@ assert.deepEqual(milesplitIndexGames(index,26138,[],'2026-09-30').map(g=>g.date)
 // A multi-day schedule entry covers its days; the host's meet reads as home.
 assert.deepEqual(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:null,host:'9',teams:[{id:'9'}]}],[9],[{date:'2026-10-01',end_date:'2026-10-03'}],'2026-11-01'),[]);
 assert.equal(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:null,host:'9',teams:[{id:'9'}]}],[9],[],'2026-11-01')[0].site,'HOME');
+// A postseason entry is the day's postseason meet: Free State's Bound "KSHSAA Regionals" (at Rim Rock Farm)
+// is MileSplit Live's "KSHSAA 6A Sub-State Manhattan" (November 6), while an invitational the same day is not.
+{
+  const sub=[{id:'788036',name:'KSHSAA 6A Sub-State Manhattan',date:'2026-10-24',end:null,venue:'Warner Park',city:'Manhattan',host:'1',teams:[{id:'19096'}]}];
+  assert.deepEqual(milesplitIndexGames(sub,[19096],[{date:'2026-10-24',name:'KSHSAA Regionals',address:'Rim Rock Farm'}],'2026-11-01'),[]);
+  assert.equal(milesplitIndexGames(sub,[19096],[{date:'2026-10-24',name:'Haskell Invite'}],'2026-11-01').length,1);
+}
 
 // A day with a schedule meet takes the index's meet too only when it is
 // plainly another meet (November 5: Junction City's Greg Wilson Classic and
