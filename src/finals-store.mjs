@@ -91,6 +91,10 @@ export const RETRACTED_FINALS=[
   // November 6 (diff:feeds for Shawnee, Douglas and Saline counties): saved on November 4 from a MaxPreps
   // listing that is gone; Blue Valley-Randolph (8-man) played Goessel on October 29, and MaxPreps' schedule
   // has no October 30 game.
+  // November 6, after #534: production's stored copy of the index's "KSHSAA 2A Sub-State Republic Co"
+  // card, saved before a postseason entry became the day's postseason meet; Bound's "KSHSAA Regional
+  // Cross Country" card is built with the same 7 runners (MileSplit Live 788048).
+  {school:'republic-county-ks',sport:'Cross Country',date:'2026-10-24',reason:'Second card for the regional (the index\'s Sub-State, stored before #534); the built Regional card has its runners'},
   {school:'blue-valley-randolph-ks',sport:'Football',date:'2026-10-30',reason:'"W, 58-0 vs Leavenworth" no longer on MaxPreps\' schedule (Goessel, Oct 29, is the week\'s game)'}];
 export function retractedFinal(school,sport,event,list=RETRACTED_FINALS){
   const date=String(event?.start_time||'').slice(0,10);
