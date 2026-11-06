@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 5, 2026 (Central, evening). **Seven more Kansas counties** (user: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites"). `docs/KS_COUNTIES_BATCH2_MODULE.md`; version `4.272.0-ks-counties-2`; PR, merge and production check in the session log.
+Last updated: November 5, 2026 (Central, evening). **Seven more Kansas counties** (user: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites"). `docs/KS_COUNTIES_BATCH2_MODULE.md`. PR #530 merged as `676a312`; production `4.272.0-ks-counties-2` verified (`verify:prod` 26 schools, all sports: 624/0, XC 18/20 and 26/21).
 - **Added (23):** Washington, Republic, Cloud, Ottawa, Jackson, Nemaha and Lyon counties: 20 high schools (Emporia 5A among them) and 3 middle schools. About 25 schools skipped, with reasons.
 - **Survey (`onboard-hs`):**
   - several counties per run, with statewide reads done once;
@@ -571,4 +571,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas** (#523 merged `945ad04`, production `4.268.2-ks-counties` verified; 16 schools as data; rule: several counties per session).
 - **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). #525 merged `fa7d9c5`, production `4.269.1-letsgorun-xc` verified.
 - **Nov 5 — Lessons built** (#527: `diff:feeds`, `stored=0`, LetsGoRun folder check, survey sources, schedule-pairing test; Shufelberger added) and **retracted stored finals** (#528, Junction City Sep 5); production `4.271.0-retracted-finals` verified.
-- **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards).
+- **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards). #530 merged `676a312`, production verified.
