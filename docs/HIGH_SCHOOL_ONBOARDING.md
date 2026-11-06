@@ -167,7 +167,12 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 ## MileSplit Live: names and same-day meets (November 5)
 
 - **Team ids by name:** an exact name wins over a longer one (`milesplitTeamsNamed`). "Linn High School" (Washington County) is team 21971, not Jayhawk Linn (21877), which had more meets.
-- **A second meet on a day the schedule already has one:** the index's meet gets its own card when it is plainly another meet (`sameIndexMeet`). The test is that the schedule's meet has a name of its own, and neither that name, its alias nor its venue shares a word with the index meet's name, venue or town. Example: Council Grove, September 10, Hesston on Bound; six runners at the Lyndon XC Invitational on MileSplit Live. The index rule (kept only with the school's runners) still holds.
+- **A second meet on a day the schedule already has one:** the index's meet gets its own card when it is plainly another meet (`sameIndexMeet`). The test is that the schedule's meet has a name of its own, and neither that name, its alias nor its venue shares a word with the index meet's name, venue or town. Examples:
+  - Junction City, September 5: Bound has the Greg Wilson Classic; a second squad ran the Manhattan Invitational (Boys 6th of 11), now its own card.
+  - Eisenhower MS, September 22: the calendar says "at Clay Center"; its runners were at the McPherson MS Invitational.
+  - Manhattan, October 10: the calendar says the Haskell Invite; its varsity won the Salina Invitational girls' race.
+
+  The index rule still keeps a meet only with the school's own runners: Council Grove's six runners at Lyndon (September 10) were 7th and 8th graders, so its varsity gets no Lyndon card.
 - **Listed but no runners:** MileSplit Live listing a team in a meet with zero entries means the results were not posted for it (Wabaunsee at Riley County, October 10; Junction City at the Greg Wilson Classic, September 5).
 
 ## Sites that turn the app away (robots.txt, November 5)

@@ -61,8 +61,9 @@ assert.deepEqual(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:nul
 assert.equal(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:null,host:'9',teams:[{id:'9'}]}],[9],[],'2026-11-01')[0].site,'HOME');
 
 // A day with a schedule meet takes the index's meet too only when it is
-// plainly another meet (November 5: Council Grove's Bound entry for Sep 10 is
-// the Hesston Invitational; MileSplit Live has its runners at Lyndon).
+// plainly another meet (November 5: Junction City's Greg Wilson Classic and
+// its second squad's Manhattan Invitational on Sep 5; Eisenhower MS's
+// calendar "Clay Center" and its runners at McPherson on Sep 22).
 const lyndon={id:'773708',name:'Lyndon XC Invitational',date:'2026-09-10',end:null,venue:'Lyndon',city:'Lyndon',host:'1',teams:[{id:'21896'}]};
 assert.deepEqual(milesplitIndexGames([lyndon],[21896],[{date:'2026-09-10',name:'Hesston Invitational',address:'Hesston Golf Course'}],'2026-11-01').map(g=>g.name),['Lyndon XC Invitational']);
 assert.deepEqual(milesplitIndexGames([lyndon],[21896],[{date:'2026-09-10',name:'MS XC'}],'2026-11-01'),[],'a name with no word of its own is the day\'s meet');

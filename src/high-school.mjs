@@ -414,9 +414,13 @@ export function milesplitTeamMeets(index,teams){
 // by `today`, on a day the schedule has nothing (a multi-day entry covers its
 // days). The host's own meet reads as home.
 // A day the schedule already has a meet takes the index's meet as its own
-// card only when it is plainly another meet (November 5: Council Grove's
-// Bound entry for September 10 is the Hesston Invitational; MileSplit Live
-// has six Council Grove runners at the Lyndon XC Invitational that day): the
+// card only when it is plainly another meet (November 5: Junction City's
+// Bound entry for September 5 is the Greg Wilson Classic, while a second
+// squad ran the Manhattan Invitational; Eisenhower MS's calendar says "at
+// Clay Center" on September 22, its runners were at the McPherson MS
+// Invitational; the index meet is still kept only with the school's own
+// runners, so Council Grove's 7th and 8th graders at Lyndon, September 10,
+// give its varsity no card): the
 // schedule's meet has a name of its own, and neither it, its alias nor its
 // venue shares a word with the index meet's name, venue or town. A generic
 // name ("MS XC") or a venue-named meet that matches is the same meet.

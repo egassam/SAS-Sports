@@ -4280,3 +4280,54 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - Fix: `RETRACTED_FINALS` + `retractedFinal` in `src/finals-store.mjs`, filtered in `withStoredFinals` before `mergeFinals`. Tested in `tests/finals-store.mjs`.
 - #528 merged as `81c9450` (`test:release` passed on `9c85264`; preview gate for the five Geary schools 114/114; CI green).
 - Production `4.271.0-retracted-finals`: Junction City Sep 5 "No results posted", Sep 19 "Girls 10th of 10 · Boys 10th of 12". `verify:prod` for the five Geary schools: 114/114, XC 18/20 and 26/21. The first run's one failure was `/api/status` answering `4.270.2` from one location right after the deploy; the rerun passed.
+
+## November 5, 2026 — Seven more Kansas counties (batch 2)
+
+**Conversation.**
+- User: "What should we do next?" Answer: the next counties (recommended), a winter-season readiness pass before December, the small open items, and later items.
+- User: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites."
+
+**Sources.**
+- MileSplit Live's index names each Kansas meet's timer (2026): Midwest Timing & Results 65, Goddard 22, LetsGoRun 17, FAT Dog 13, Heartland 10, Shawnee Mission Timing Team 10, Timer Guys 7, Olathe Schools 6, Blue Valley Timing 6, Ticker 5, Eagle Eye 3, others 1–3.
+  - Heartland's and Midwest Timing's sites link to MileSplit Live; goddardtiming.com refused the proxy connection.
+  - results.tfmeetpro.com's root is a script page.
+  - search.athletic.live is an open Elasticsearch; only the meet list the app already uses is read, and the cluster is not enumerated.
+- robots.txt checks:
+  - Trackwrestling: `ClaudeBot Disallow: /`.
+  - FloWrestling: ClaudeBot disallowed.
+  - Athletic.net: ClaudeBot and anthropic-ai disallowed.
+  - SwimCloud: anthropic-ai disallowed.
+  - USA Bracketing: allowed.
+  - KSHSAA: Crawl-delay 30; its site is a script page, with no results feed found.
+- Not published: the small meets listed in the module doc (none in the index, LetsGoRun, Midwest Timing or Bound).
+- MileSplit Live entries checked:
+  - Wabaunsee at Riley County (780908, code 17): 0 entries.
+  - Junction City at Greg Wilson (737908, code 3): 0 entries.
+  - Council Grove at Lyndon (773708, COUN): 6 entries, all grades 7–8.
+
+**Survey run.**
+- One run for 7 counties, 23:3x–23:5x UTC.
+- Afterwards:
+  - MaxPreps team lists for the 20 high schools through the source route, 31 s apart;
+  - catalog facts from the reports, Bound's state page and KSHSAA, 30 s apart. My helper first read the sources table too; the dry run caught it.
+  - Bound event counts for the 12 middle schools.
+- Corrections found while building:
+  - **Linn's MileSplit id** (21877 Jayhawk Linn → 21971 Linn). The matcher now puts exact names first; all 26 stored ids were checked.
+  - **Royal Valley's Prep.Golf code** (PLHS → RV). `prepGolfCode` now takes the most frequent code that spells the name, then the longest lead match.
+  - **The coverage threshold** (60% → 85%).
+  - **The duplicate Jackson Heights MS** (two survey rows).
+  - **Minneapolis JH's league** ("NCAA League" → North Central Activities Association).
+
+**`diff:feeds` (cross country):** 39 the same, 3 differ (Junction City Sep 5 Manhattan Invitational; Manhattan Oct 10 Salina Invitational; Eisenhower MS Sep 22 McPherson MS Invitational), all real results from `sameIndexMeet`, plus the 23 new schools. Checks:
+- Eisenhower's team 40690 is Manhattan's (it ran Wamego, Clay Center, Anthony-Eisenhower and Rock Creek), and Anthony MS's calendar has McPherson that day.
+- Manhattan's calendar has the Haskell Invite; MileSplit Live has its varsity at Salina (21783 MANH).
+
+**By eye (preview):**
+- Tescott volleyball: 30 results from MaxPreps.
+- Linn cross country: the TVL and Republic County meets, no results posted.
+- Concordia JH football: grade teams.
+- Emporia soccer: "L, 4-4" vs Goddard, as MaxPreps gives it (a penalty-kick loss).
+
+**Tests.**
+- `test:release` passed on `46ca146`.
+- `verify:preview` on `4.272.0-ks-counties-2` for 26 schools, all sports: 624 PASS, 0 FAIL, XC 18/20 and 26/21.
