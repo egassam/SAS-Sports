@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {boundLocalDay,maxprepsFromLinks,maxprepsLinks,prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
+import {cacheTtl,boundLocalDay,maxprepsFromLinks,maxprepsLinks,prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
 import {schoolFromConfig} from '../src/high-school-builders.mjs';
 
 const read=(name,gz=name.endsWith('.gz'))=>{const b=readFileSync(new URL(`./fixtures/onboard-hs/${name}`,import.meta.url));return gz?gunzipSync(b).toString('utf8'):b.toString('utf8');};
@@ -153,4 +153,9 @@ assert.equal(maxprepsSchoolPage(ksc('maxpreps-wabaunsee-football-2026-11-05.html
   assert.equal(maxprepsSchoolPage(html,'ks/topeka/washburn-rural-jr-blues').path,undefined,'already the canonical path');
 }
 assert.equal(boundLocalDay('2026-09-27T02:00:00.000Z'),'2026-09-26','Bound times are UTC');assert.equal(boundLocalDay(''),null);
+// Saved reads (November 6): KSHSAA's directory 30 days, MaxPreps school pages 7, schedules 1; nothing else.
+assert.equal(cacheTtl('https://kshsaa-api.kshsaa.org/directory/search/city/Topeka'),30*86400000);
+assert.equal(cacheTtl('https://www.maxpreps.com/ks/topeka/west-chargers/'),7*86400000);
+assert.equal(cacheTtl('https://www.maxpreps.com/ks/topeka/west-chargers/football/schedule/'),86400000);
+assert.equal(cacheTtl('https://beta.gobound.com/ks/schools'),0);
 console.log(`onboard-hs: ok (Geary: ${rows.length} schools matched)`);

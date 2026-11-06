@@ -27,8 +27,8 @@ The user wants one school-module project per conversation.
 
 6. **Standing merge permission (user, September 29, 2026).** The agent may merge its own SAS Sports pull requests into `main` (which deploys production), for both code and docs PRs, without asking first, when every condition below holds:
    - **Code PRs:**
-     - `npm run test:release` passes locally on the final commit (it runs every test in `npm test`, plus the checks and isolation).
-     - CI on the PR head is green, and the PR has no merge conflict.
+     - `npm run test:release` passes on the final commit (it runs every test in `npm test`, plus the checks and isolation). CI's `guardrails` check runs it on the PR head, and that green check counts: a separate local run is not required (user, November 6, 2026: "Go ahead with 1-4. I approve them all"). Run the tests a change touches locally before pushing.
+     - CI on the PR head is green (the `guardrails` job is the `test:release` run), and the PR has no merge conflict.
      - The branch preview (`https://<branch>-sas-sports.lovetogivepain.workers.dev`) shows every changed sport in K-State's results format.
      - On that preview, K-State XC keeps 18/20 rows and KU XC keeps 26/21.
      - The change is the work the user asked for in this session (since October 16, 2026, it need not stay within one school: shared code, pro leagues and several entries are covered when every check here passes for every entry the change touches).

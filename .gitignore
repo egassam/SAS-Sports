@@ -3,3 +3,4 @@ node_modules
 screenshots/
 live-scoreboard-state.json
 .wrangler/
+.cache/

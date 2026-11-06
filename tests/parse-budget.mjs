@@ -30,9 +30,16 @@ const hosts={kstate:'kstatesports.com',kansas:'kuathletics.com','oklahoma-state'
 const pages=[];
 const walk=dir=>{for(const name of readdirSync(dir)){const path=`${dir}/${name}`;if(statSync(path).isDirectory())walk(path);else if(/\.html(?:\.gz)?$/.test(name)&&!/roster/i.test(name))pages.push(path);}};
 walk(new URL('./fixtures',import.meta.url).pathname);
+// --shard=i/N parses every Nth page from the ith, so test:release runs the
+// parts side by side (November 6: the whole file took 514 s of a 627 s run).
+// The parts together parse every page; with no --shard, all of them.
+const shardArg=(process.argv.find(a=>a.startsWith('--shard='))||'').slice(8),[shardIndex,shardCount]=shardArg?shardArg.split('/').map(Number):[0,1];
+assert.ok(shardCount>=1&&shardIndex>=0&&shardIndex<shardCount,`--shard=${shardArg}: i/N with 0 <= i < N`);
+pages.sort();
+const mine=pages.filter((_,i)=>i%shardCount===shardIndex);
 const MAX_LARGE_READS=4,MAX_MS=Number(process.env.PARSE_BUDGET_MS||400),now=new Date('2026-09-30T18:00:00Z');
 let checked=0,worst={ms:0};
-for(const path of pages){
+for(const path of mine){
   const bytes=readFileSync(path),raw=path.endsWith('.gz')?gunzipSync(bytes).toString('utf8'):bytes.toString('utf8');
   for(const [id,host] of Object.entries(hosts)){
     if(!raw.includes(host))continue;
@@ -52,5 +59,5 @@ for(const path of pages){
     }
   }
 }
-assert.ok(checked>=20,`expected to parse the saved official pages, parsed ${checked}`);
-console.log(`Parse budget checks passed: ${checked} page parses; slowest ${worst.ms.toFixed(0)} ms (${worst.label}, ${worst.kb} KB, ${worst.reads} whole-page reads).`);
+assert.ok(checked>=Math.ceil(20/shardCount),`expected to parse the saved official pages, parsed ${checked}`);
+console.log(`Parse budget checks passed${shardArg?` (part ${shardIndex+1} of ${shardCount})`:''}: ${checked} page parses; slowest ${worst.ms.toFixed(0)} ms (${worst.label}, ${worst.kb} KB, ${worst.reads} whole-page reads).`);

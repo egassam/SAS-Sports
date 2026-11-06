@@ -149,7 +149,9 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 
 ## Comparing with production (November 5)
 
-`npm run diff:feeds -- --branch=<branch> [--sport="Cross Country"|all] [--level=high-school,middle-school] [--school=a,b] [--out=diff.json]` (`scripts/diff-feeds.mjs`):
+`npm run diff:feeds -- --branch=<branch> [--sport="Cross Country"|"A,B"|all] [--level=high-school,middle-school] [--school=a,b] [--parallel=4] [--out=diff.json]` (`scripts/diff-feeds.mjs`):
+
+- **Faster since November 6** (user: "These builds keep taking a long time", then "Go ahead with 1-4"): production is read first, and a feed production does not have (a school new in the branch) is not built. #534's all-sports run built 326 of those, most of its 78 minutes. Feeds are read 4 at a time (`--parallel`), and `--sport` takes the list of sports a change touches.
 
 - **What it compares:** a fresh preview build (`refresh=1&stored=0`) of every middle and high school feed of the sport, against production, card by card (day and title; headline and rows). It exits 1 when a feed differs.
 - **`stored=0`:** on a preview only, the build skips its stored finals, so a wrong final saved by an earlier preview build does not show. Production ignores it.
@@ -189,6 +191,8 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 Do not read the sites that disallow the app.
 
 ## Survey fixes from Shawnee, Douglas and Saline (November 6, 2026)
+
+- **Saved reads:** KSHSAA's directory (30 days), MaxPreps school pages (7 days, 404s included) and schedules (1 day) are saved in `.cache/onboard-hs/` (not committed). The 30 s spacing applies to network reads only, per site. `--fresh` reads everything again. Morris County: 257 s on the first run, 140 s on the second.
 
 - **MaxPreps pages the guesses miss:** when every guessed path 404s, the survey takes the path that the county's other school pages link, for the school's town, a word of its name and its mascot (`maxprepsFromLinks`). Examples: Topeka West is `topeka/west-chargers`, Cair Paravel `cair-paravel-lions`, Baldwin `baldwin/baldwin-bulldogs` for Baldwin City.
 - **A guessed path served under another name** ("washburn-rural-junior-blues") reads its canonical path ("washburn-rural-jr-blues") and the team links there.

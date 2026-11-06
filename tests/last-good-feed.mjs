@@ -49,7 +49,12 @@ assert.ok(keys.some(k=>k.includes('/__sas_cache/feed?'))&&keys.some(k=>k.include
 {
   const feedKey=[...cache.store.keys()].find(k=>k.includes('/__sas_cache/feed?'));
   const original=new Map([...cache.store].filter(([k])=>k.includes('/__sas_cache/feed')).map(([k,v])=>[k,v.clone()]));
-  const age=ms=>{const entry=cache.store.get(feedKey),copy=new Response(entry.clone().body,entry);copy.headers.set('x-sas-fetched-at',new Date(Date.now()-ms).toISOString());cache.store.set(feedKey,copy);};
+  // quiet: a feed with no game near now (x-sas-quiet, November 6) is answered from its copy for an hour.
+  const age=(ms,quiet=false)=>{const entry=cache.store.get(feedKey),copy=new Response(entry.clone().body,entry);copy.headers.set('x-sas-fetched-at',new Date(Date.now()-ms).toISOString());if(quiet)copy.headers.set('x-sas-quiet','1');else copy.headers.delete('x-sas-quiet');cache.store.set(feedKey,copy);};
+  age(10*60*1000,true);
+  assert.equal((await call()).headers.get('x-sas-cache'),'stale-refreshing','a quiet feed\'s ten-minute-old copy is answered at once');
+  age(90*60*1000,true);
+  assert.equal((await call()).headers.get('x-sas-cache'),'live','a quiet feed\'s 90-minute-old copy is rebuilt first');
   age(60*1000);
   assert.equal((await call()).headers.get('x-sas-cache'),'stale-refreshing','a one-minute-old copy is answered at once');
   age(10*60*1000);
@@ -154,3 +159,14 @@ assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the dev
   assert.match(app,/if\(!demoActive\(\)\)return retireStaleLive\(currentGroups\)/,'every render goes through it');
 }
 console.log('Last good feed checks passed: live builds are saved, cached=1 never rebuilds, failed rebuilds fall back to a labeled copy up to a week old, a live score is laid over the saved schedule when the official page fails, and nothing older or missing is invented.');
+
+// A feed is quiet when no game is live or starts between 12 hours ago and 18 hours ahead.
+{
+  const fa=Function('return '+read('../src/index.js').match(/const ACTIVE_BEFORE_MS=[^\n]+\nfunction feedActive[\s\S]*?\n}\n/)[0].replace(/^const /,'(()=>{const ')+'return feedActive;})()')();
+  const now=Date.parse('2026-11-06T18:00:00Z'),ev=(start_time,status='Upcoming')=>({start_time,status});
+  assert.equal(fa([{results:[ev('2026-10-30T23:00:00Z','Final')],upcoming:[ev('2026-11-13T23:00:00Z')]}],now),false,'last week and next week: quiet');
+  assert.equal(fa([{upcoming:[ev('2026-11-07T00:30:00Z')]}],now),true,'tonight: active');
+  assert.equal(fa([{results:[ev('2026-11-06T08:00:00Z','Final')]}],now),true,'this morning (10 hours ago): active');
+  assert.equal(fa([{live:[ev('2026-11-06T17:00:00Z','Live')]}],now),true);
+  assert.equal(fa([{upcoming:[ev('2026-11-20T00:00:00Z','Today')]}],now),true,'a Today card');
+}

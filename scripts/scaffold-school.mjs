@@ -7,7 +7,7 @@
 //   - the school's entries moved out of src/index.js and the module wired in
 //     (import, handlers, one SCHOOL_MODULES entry);
 //   - tests/<id>-module.mjs checking route parity and module ownership, added
-//     to `npm test` and `npm run test:release`.
+//     to `npm test` and `npm run test:release` (its list, `test:release:list`).
 // Output is unchanged for every school: the new module only restates
 // today's routes. Then convert one sport at a time: add it to pageDataSports
 // with fixtures and tests, and change a reader setting only where the site
@@ -210,7 +210,7 @@ writeFileSync(new URL(`src/schools/${id}.mjs`,root),moduleText);
 writeFileSync(new URL('src/index.js',root),next);
 writeFileSync(new URL(`tests/${id}-module.mjs`,root),testText);
 const pkg=JSON.parse(read('package.json'));
-for(const script of ['test','test:release']){
+for(const script of ['test','test:release:list']){  // test:release runs test:release:list in parallel (November 6)
   const anchor=/node tests\/colorado-module\.mjs/;
   if(!pkg.scripts[script].includes(`tests/${id}-module.mjs`))pkg.scripts[script]=pkg.scripts[script].replace(anchor,match=>`${match} && node tests/${id}-module.mjs`);
 }
