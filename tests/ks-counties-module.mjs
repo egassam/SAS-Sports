@@ -50,7 +50,9 @@ for(const file of KS_COUNTY_FILES)for(const entry of file.schools){
 // schedule (`maxprepsSchedule`); the others read Bound alone.
 const SPARSE=['solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','wakefield-ks','valley-heights-ks','frankfort-ks','axtell-ks',
   // Second batch: under 85% of MaxPreps' games on Bound (Centralia 6 of 10, Nemaha Central 7 of 10, ...).
-  'hanover-ks','linn-ks','pike-valley-ks','clifton-clyde-ks','bennington-ks','tescott-ks','centralia-ks','nemaha-central-ks','sabetha-ks','hartford-ks','northern-heights-ks','olpe-ks'];
+  'hanover-ks','linn-ks','pike-valley-ks','clifton-clyde-ks','bennington-ks','tescott-ks','centralia-ks','nemaha-central-ks','sabetha-ks','hartford-ks','northern-heights-ks','olpe-ks',
+  // Winter session (November 6): Herington had 4 of its basketball dates per team on Bound, MaxPreps 5 boys' and 8 girls' games.
+  'herington-ks'];
 for(const m of KS_COUNTY_HIGH_SCHOOLS){
   const flags=Object.values(m.sports).flat().filter(t=>t.maxpreps).map(t=>!!t.maxprepsSchedule);
   assert.ok(flags.length,`${m.id}: MaxPreps teams`);

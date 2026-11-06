@@ -85,3 +85,9 @@ Sports per school come from Bound: sports with events at the school's level this
     - the TVL meet (Oct 15) and the Wabaunsee Invite (Sep 19).
   - **Open:** Wabaunsee at the Riley County Invitational (October 10). MileSplit Live lists Wabaunsee (team code 17) in meet 780908, but no varsity result for it is read. Riley County's own card from the same meet reads. Council Grove's Bound entry for September 10 is the Hesston Invitational, while MileSplit Live has Council Grove at the Lyndon XC Invitational that day. Neither was changed this session.
 - **Scheduled refresh:** the Cron Trigger rebuilds 8 middle and high school feeds every 10 minutes. With these schools there are 310 feeds (183 before, 127 added), so each one is rebuilt about every 6.5 hours, up from about 4. Visitors still build feeds as before.
+
+## Winter season (November 6)
+
+- `npm run audit:bound`: every school's Bound winter sports (basketball, wrestling, swimming, bowling) are read and listed.
+- **Herington** enters 4 of its basketball dates per team on Bound; MaxPreps lists 5 boys' and 8 girls' games. It now also reads MaxPreps' schedule (`maxprepsSchedule`), for every game sport.
+- Wrestling, swimming and bowling meets take the team scores a host enters on Bound (`docs/HIGH_SCHOOL_ONBOARDING.md`, "Winter sports"). Last winter Abilene's boys were 2nd of 18 at Douglass (Dec 13, 2025) and its girls 3rd of 17 at McPherson (Dec 6) on Bound. Meets without scores read "No results posted": not published by any source the app may read.
