@@ -4333,3 +4333,35 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - `verify:preview` on `4.272.0-ks-counties-2` for 26 schools, all sports: 624 PASS, 0 FAIL, XC 18/20 and 26/21.
 - CI on `b22a89e` green. The first merge call timed out and did not merge; the retry merged #530 as `676a312`.
 - Production `4.272.0-ks-counties-2`, `verify:prod` for the 23 new schools plus Manhattan, Eisenhower MS and Junction City, all sports: 624 PASS, 0 FAIL, XC 18/20 and 26/21.
+
+## November 6, 2026 — Winter-season readiness (middle and high schools)
+
+**Conversation.**
+- User: "Start the winter session". The Nov 5 handoff had offered "a winter-season readiness pass before December"; this session did that for every Kansas middle and high school.
+
+**Survey (production, Nov 5 22:20 Central).**
+- 118 winter school-sports (basketball, wrestling, swimming, bowling) read from production. High school seasons open Nov 24 to Dec 5. Middle school basketball has been under way since late October (Bound finals where entered: Fort Riley 7th girls W 21-11; others "No score posted").
+- Bowling results in October are KSHSAA Unified Bowling (fall), listed as "Unified".
+- `npm run audit:sports`: 8 calendar schools ok.
+
+**Bound audit.**
+- New `scripts/audit-bound-sports.mjs` (`npm run audit:bound`, default `--season=winter`): each data-file school's Bound acts this school year at its level, compared with `has` and `src/sponsored-sports.json`. Result: 51 of 51 ok.
+- The first run, Node fetch 0.4 s apart, drew Bound's guard after about 350 reads: HTTP 202 with no body. It kept answering Node 202 (more than 30 min later) while curl with the same name and headers got 200. The script reads with curl, 3 s apart. Production's `/api/refresh-status` showed Bound builds succeeding throughout.
+
+**Results sources.**
+- USA Bracketing: robots.txt allows `/events/*/results`, but every event page redirects to `/login` (checked on an event from its sitemap, 8,774 event URLs listed). Not usable.
+- Bound, 2025-26 winter, five schools (Junction City, Emporia, Abilene, Concordia, Holton): about 80 varsity winter events, 7 with every team's score entered by the host: Douglass Varsity Tournament (Dec 13, 2025: Abilene 2nd of 18, Emporia 7th), McPherson girls' invitational (Dec 6: Junction City 1st of 17, 203.5; Abilene 3rd), Douglass Varsity Invite (Dec 12: Abilene 3rd of 22), Topeka West swimming (Jan 13, 2026: Junction City 6th of 14, Emporia 8th). No bowling scores and no wrestling dual scores were entered.
+- Newspaper stories (The Mercury, Topeka sports news) report swim and bowling places but are not official sources (Working notes); not read.
+
+**Code.**
+- `src/index.js` `boundEntryResults`: `BOUND_ENTRY_UNITS` (golf strokes and cross country points, low wins; wrestling and swimming points and bowling pins, high wins). A dual entered with both scores reads "1st of 2".
+- `maxprepsSchedule` for Herington (`ks-dickinson.json`) and St. Mary's Academy (`ks-riley-pottawatomie.json`). MaxPreps (Nov 6): Herington boys 5 games, girls 8; St. Mary's Academy boys 5, girls page 404. St. Xavier HS boys' and girls' 2026-27 pages had no contests.
+- Tests: `tests/hs-schedule-pairings.mjs` builds Junction City wrestling and swimming on Jan 20, 2026 from the real Bound payloads (`tests/fixtures/ks-counties/bound-junction-city-*-2025-26.json.gz`); it fails without the change. `tests/hs-config.mjs` records St. Mary's Academy's flag; `tests/ks-counties-module.mjs` lists Herington.
+
+**Gate and production.**
+- `test:release`: failed on `3da573d` (`ks-counties-module`: Herington's new flag), passed on `44011d9`.
+- `verify:preview` on `4.273.0-winter-readiness`, all sports of the 40 Bound schools with wrestling, swimming or bowling, 3 refreshes: 927 PASS, 0 FAIL; XC 18/20 and 26/21. St. Mary's Academy basketball checked at 390 px, no page errors.
+- `diff:feeds` against production: Wrestling 39, Swimming & Diving 5, Bowling 7 feeds all the same. Herington basketball +11 MaxPreps games; St. Mary's Academy basketball +5, football +1 (Nov 7 vs Oklahoma City Patriots HomeSchool), baseball +2; none removed.
+- PR #532 merged as `fa9f19e` (CI green). Production `4.273.0-winter-readiness`: `verify:prod` for the same 40 schools, all sports: 927 PASS, 0 FAIL; XC 18/20 and 26/21. St. Mary's Academy basketball reads 7 games (2 Bound, 5 MaxPreps).
+
+**Open.** St. Xavier HS basketball until MaxPreps posts it (or the user enables the Google Calendar API). Winter meet places depend on hosts entering scores on Bound.
