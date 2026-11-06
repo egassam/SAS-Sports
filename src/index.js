@@ -6,7 +6,7 @@ import {catalogCards,catalogRevision,catalogDerived,syncCatalog,storeMatches,bun
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {OPENDORSE_PROFILE,opendorseSlug,opendorseInstagram} from './opendorse.mjs';
 import {INFLCR_SCHOOLS,inflcrInstagram} from './inflcr.mjs';
-import {extractText} from 'unpdf';
+import {extractText} from './pdf-text.mjs';
 import {golfStoryPlace} from './sidearm-school-kit.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.278.0-startup';
+const VERSION='4.278.1-startup';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
