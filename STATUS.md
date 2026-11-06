@@ -10,7 +10,10 @@
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| west-georgia | Basketball | 🔴 on | result reads "L, 76-53", ESPN final L, 53-76 |
+| west-georgia | Basketball | ❌ failing | Men's · West Georgia at Loyola Chicago: feed built 411 s ago (cache stale-refreshing) |
+| arkansas | Basketball | 🔴 on | live 45-30 · 6:57 - 3rd · official_schedule+live_scoreboard |
+| indiana-state | Basketball | 🔴 on | live 29-43 · 5:18 - 3rd · official_schedule+live_scoreboard |
+| northwestern-state | Basketball | 🔴 on | live 30-45 · 6:57 - 3rd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -44,7 +47,6 @@
 | arizona-state | Softball | ⚪ off (waiting) |  |
 | arizona-state | Water Polo | ⚪ off (waiting) |  |
 | arkansas | Baseball | ⚪ off (waiting) |  |
-| arkansas | Basketball | ⚪ off (waiting) | final W, 106-61 (live phase not observed 2×; waits for the next game) |
 | arkansas | Softball | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Baseball | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Basketball | ⚪ off (waiting) | final L, 61-106 (live phase not observed 2×; waits for the next game) |
@@ -323,7 +325,6 @@
 | indiana | Softball | ⚪ off (waiting) |  |
 | indiana | Water Polo | ⚪ off (waiting) |  |
 | indiana-state | Baseball | ⚪ off (waiting) |  |
-| indiana-state | Basketball | ⚪ off (waiting) |  |
 | indiana-state | Football | ⚪ off (waiting) |  |
 | indiana-state | Softball | ⚪ off (waiting) |  |
 | iowa | Baseball | ⚪ off (waiting) |  |
@@ -565,7 +566,6 @@
 | northwestern | Lacrosse | ⚪ off (waiting) |  |
 | northwestern | Softball | ⚪ off (waiting) |  |
 | northwestern-state | Baseball | ⚪ off (waiting) |  |
-| northwestern-state | Basketball | ⚪ off (waiting) |  |
 | northwestern-state | Football | ⚪ off (waiting) |  |
 | northwestern-state | Softball | ⚪ off (waiting) |  |
 | northwestern-state | Volleyball | ⚪ off (waiting) | final W, 3-2 (live phase not observed 2×; waits for the next game) |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 992/1956; on 1; off 953; failing 10.
+Done 992/1956; on 3; off 950; failing 11.

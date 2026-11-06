@@ -1066,10 +1066,23 @@
    "state": "off"
   },
   "arkansas|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-04T07:24:45.515Z",
-   "last_detail": "final W, 106-61 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-06T17:51:33.319Z",
+   "last_detail": "live 45-30 · 6:57 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "arkansas|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Arkansas vs N'Western St",
+    "started_seen": "2026-11-06T17:42:31.936Z",
+    "live_passes": [
+     "2026-11-06T17:42:31.936Z",
+     "2026-11-06T17:44:40.098Z",
+     "2026-11-06T17:46:03.967Z",
+     "2026-11-06T17:48:07.126Z",
+     "2026-11-06T17:49:50.779Z",
+     "2026-11-06T17:51:33.319Z"
+    ],
+    "final_ok": false
+   }
   },
   "arkansas|Football": {
    "state": "done",
@@ -7069,7 +7082,23 @@
    "state": "off"
   },
   "indiana-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-06T17:51:36.925Z",
+   "last_detail": "live 29-43 · 5:18 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "indiana-state|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Indiana State at Seton Hall",
+    "started_seen": "2026-11-06T17:42:32.517Z",
+    "live_passes": [
+     "2026-11-06T17:42:32.517Z",
+     "2026-11-06T17:44:40.207Z",
+     "2026-11-06T17:46:07.288Z",
+     "2026-11-06T17:47:47.634Z",
+     "2026-11-06T17:49:50.804Z",
+     "2026-11-06T17:51:36.925Z"
+    ],
+    "final_ok": false
+   }
   },
   "indiana-state|Football": {
    "state": "off"
@@ -7594,9 +7623,9 @@
    "state": "off"
   },
   "west-georgia|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-06T10:49:48.529Z",
-   "last_detail": "result reads \"L, 76-53\", ESPN final L, 53-76",
+   "state": "failing",
+   "last_check": "2026-11-06T17:51:53.650Z",
+   "last_detail": "feed built 411 s ago (cache stale-refreshing)",
    "game": {
     "key": "west-georgia|Basketball|Men's|2026-11-05|1",
     "title": "Men's · West Georgia at Loyola Chicago",
@@ -7613,11 +7642,11 @@
     "final_ok": false,
     "final_due": "2026-11-06T10:55:16.823Z"
    },
-   "failures": 6,
+   "failures": 12,
    "last_failure": {
-    "at": "2026-11-03T14:23:20.414Z",
-    "game": "Women's · West Georgia at Georgia",
-    "detail": "result reads \"L, 92-53\", ESPN final L, 53-92"
+    "at": "2026-11-06T17:51:53.650Z",
+    "game": "Men's · West Georgia at Loyola Chicago",
+    "detail": "feed built 411 s ago (cache stale-refreshing)"
    }
   },
   "west-georgia|Football": {
@@ -11446,7 +11475,23 @@
    "state": "off"
   },
   "northwestern-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-06T17:51:33.443Z",
+   "last_detail": "live 30-45 · 6:57 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "northwestern-state|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · NSU at Arkansas",
+    "started_seen": "2026-11-06T17:42:33.856Z",
+    "live_passes": [
+     "2026-11-06T17:42:33.856Z",
+     "2026-11-06T17:44:40.238Z",
+     "2026-11-06T17:46:07.272Z",
+     "2026-11-06T17:47:48.341Z",
+     "2026-11-06T17:49:50.422Z",
+     "2026-11-06T17:51:33.443Z"
+    ],
+    "final_ok": false
+   }
   },
   "northwestern-state|Football": {
    "state": "off"
@@ -12085,7 +12130,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.273.0-winter-readiness",
- "updated_at": "2026-11-06T10:49:48.535Z",
+ "version": "4.277.1-quiet-feeds",
+ "updated_at": "2026-11-06T17:51:53.657Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
