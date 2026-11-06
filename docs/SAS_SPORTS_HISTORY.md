@@ -4474,3 +4474,29 @@ Preview measurements: cache hits fell to 0.2-0.3 s in most reads. After the merg
 - `verify:preview`: K-State football, Topeka football and cross country, 3/3 each, XC 18/20 and 26/21.
 - Production `4.277.1-quiet-feeds`: `verify:prod` K-State football 3/3, expanded views 8/8, XC 18/20 and 26/21.
 
+## November 6, 2026 — Worker startup (PR #538)
+
+**Conversation.** Asked whether to work on startup or the next counties, the user said "Go work startup".
+
+**Measured.**
+- A `server-timing` header now reports a new or warm isolate, catalog D1 wait and total.
+- Preview `/api/status` (n=40): a new isolate took 0.97 s at the median; warm took 0.23 s. Handler totals were 20-85 ms, catalog 12-58 ms.
+- Locally, `npx wrangler check startup` gave 87-117 ms of startup CPU: 53 ms top-level compile and run, almost none in the 320 `create*Handlers` setups.
+- Bundle (wrangler dry run): 12.7 MB, gzip 1.43 MB. By esbuild's metafile, school modules are 8.3 MB of source (about 25 KB each minified) and `unpdf` about 1.7 MB.
+
+**Changes.**
+- `minify: true`, `keep_names: true`: 7.8 MB, gzip 1.16 MB.
+- `unpdf` loads on the first PDF read (`src/pdf-text.mjs`). The bundler still includes it, but it is no longer evaluated at startup.
+
+**Results.**
+- Preview, new isolates: 0.74 s at the median (n=23); warm 0.21 s.
+- Production, after the deploy had settled: new isolates 0.73-0.98 s, with catalog 44-75 ms; warm 0.20 s. Right after the deploy, new isolates were 1.06 s at the median (n=12).
+
+**Gate.**
+- `test:release` (parallel) passed; CI guardrails passed in 4.7 min.
+- `diff:feeds` on the minified preview (Cross Country, Football, Volleyball, Basketball): 385 compared, 383 the same. The 2 are St. Mary's Academy's flaky MaxPreps upcoming games.
+- `verify:preview` K-State all sports 33 PASS, 0 FAIL; K-State football 36/36 refreshes; XC 18/20 and 26/21.
+- Production `verify:prod` K-State football 3/3, expanded views 8/8.
+
+**Next for startup.** School modules (about 5 MB minified) need either their duplicated code shared, or loading on demand (dynamic imports, or separate modules with `find_additional_modules`). It is not yet known whether Cloudflare's load time falls for modules that are never imported, so measure that first.
+

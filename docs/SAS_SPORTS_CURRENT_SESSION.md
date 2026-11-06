@@ -1,6 +1,18 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 6, 2026 (Central, about noon). **Faster gates and a faster app** (user: "These builds keep taking a long time. How can we speed this up?", "Go ahead with 1-4. I approve them all", then "The app itself seems to be running very slow. Check on that please"). PR #536 merged as `2610508`; production `4.277.1-quiet-feeds` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
+Last updated: November 6, 2026 (Central, about 1 PM). **Worker startup** (user: "Go work startup"). PR #538 merged as `dd65f1a`; production `4.279.0-minified` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
+- **Measured** (`server-timing` on every answer: `isolate;desc="new|warm", catalog;dur, total;dur`):
+  - A new isolate's first answer took 0.97 s at the median (preview, n=19); warm took 0.23 s. Its handler ran 20-85 ms, catalog included, so the rest is Cloudflare loading the script, which scales with size.
+  - Locally, `npx wrangler check startup` showed 87-117 ms of startup CPU.
+- **Changes:**
+  - `minify` and `keep_names` (`wrangler.jsonc`): 12.7 MB to 7.8 MB. New isolates fell to 0.74 s (preview, n=23); production 0.73-0.98 s, with catalog 44-75 ms of it.
+  - `unpdf` loads on the first PDF read (`src/pdf-text.mjs`).
+- **Gate:**
+  - `diff:feeds` (4 sports): 383 of 385 the same; the 2 are St. Mary's Academy's flaky MaxPreps upcoming games.
+  - K-State all sports 33/0; football 36/36.
+- **Open:** about 5 MB of the 7.8 MB is ~320 school modules (about 25 KB each minified). Next cuts are their shared code, or schools loaded on demand; measure first.
+
+Earlier, November 6, 2026 (Central, about noon). **Faster gates and a faster app** (user: "These builds keep taking a long time. How can we speed this up?", "Go ahead with 1-4. I approve them all", then "The app itself seems to be running very slow. Check on that please"). PR #536 merged as `2610508`; production `4.277.1-quiet-feeds` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
 - **Gates:**
   - `test:release` runs in parallel (`scripts/run-tests.mjs`; `parse-budget` in 8 parts): about 25 min down to about 4.5 min locally; CI's guardrails 17 min down to 6.
   - CI's guardrails run counts as the merge gate's `test:release` (`AGENTS.md` item 6).
@@ -629,3 +641,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 6 — Winter readiness** (Bound winter team scores for wrestling, swimming, bowling; `audit:bound` 51 schools ok; MaxPreps schedule for Herington and St. Mary's Academy). #532 merged `fa9f19e`, production `4.273.0-winter-readiness` verified.
 - **Nov 6 — Shawnee, Douglas and Saline counties** (34 schools; survey finds MaxPreps from linked pages; opponents stay at their age; postseason entries match the day's postseason meet; Blue Valley-Randolph Oct 30 retracted). #534 merged `94cec5e`, production `4.274.2` verified 1023/0; Republic County's stored Oct 24 card retracted in the follow-up.
 - **Nov 6 — Faster gates and quiet feeds** (parallel `test:release` 25 min → 4.5; `diff:feeds` skips new feeds; survey saves reads; CI's test run counts; quiet feeds answer at once; feed route reads the catalog only before a rebuild). #535 merged `8f933f6` (Republic County retracted, production checked), #536 merged `2610508`, production `4.277.1` verified.
+- **Nov 6 — Worker startup** (Server-Timing; minified upload 12.7 → 7.8 MB; unpdf on first use; new isolate 0.97 → about 0.75 s). #538 merged `dd65f1a`, production `4.279.0` verified.
