@@ -38,6 +38,8 @@ const call=async(query='')=>handler.fetch(new Request(base+query),{},{waitUntil(
 const live=await call('&refresh=1');
 assert.equal(live.status,200);
 assert.equal(live.headers.get('x-sas-cache'),'live');
+// Every answer carries its timing: a new or warm isolate, the catalog's D1 wait and the whole request (November 6).
+assert.match(live.headers.get('server-timing')||'',/^isolate;desc="(?:new|warm)", catalog;dur=\d+, total;dur=\d+$/);
 const liveBody=await live.json();
 assert.equal(liveBody[0].sport,'Football');
 const keys=[...cache.store.keys()];

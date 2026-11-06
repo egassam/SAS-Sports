@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.278.1-startup';
+const VERSION='4.279.0-minified';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6572,14 +6572,16 @@ async function runRefreshBatch(env,{size=REFRESH_BATCH,gap=REFRESH_GAP_MS,force=
 // Server-Timing header, so a cold start on Cloudflare can be told apart from
 // a slow source. Workers' clock moves only across I/O, so the durations are
 // waiting time (D1, sources), not CPU.
-const ISOLATE_STARTED_AT=Date.now();
+// (Measured November 6: a new isolate's first answer took 0.97 s at the
+// median against 0.23 s warm, while its handler ran 20-85 ms: the rest is
+// Cloudflare loading the script, which scales with its size.)
 let isolateRequests=0,catalogWaitMs=0;
 async function timedRequest(request,env,ctx){
   const first=isolateRequests++===0,started=Date.now();catalogWaitMs=0;
   const response=await routeRequest(request,env,ctx);
   try{
     const timed=new Response(response.body,response);
-    timed.headers.append('server-timing',`isolate;desc="${first?'new':'warm'}";dur=${Math.max(0,started-ISOLATE_STARTED_AT)}, catalog;dur=${catalogWaitMs}, total;dur=${Date.now()-started}`);
+    timed.headers.append('server-timing',`isolate;desc="${first?'new':'warm'}", catalog;dur=${catalogWaitMs}, total;dur=${Date.now()-started}`);
     return timed;
   }catch{return response}
 }
