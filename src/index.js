@@ -6,7 +6,7 @@ import {catalogCards,catalogRevision,catalogDerived,syncCatalog,storeMatches,bun
 import {rosterSocialInstagrams} from './roster-socials.js';
 import {OPENDORSE_PROFILE,opendorseSlug,opendorseInstagram} from './opendorse.mjs';
 import {INFLCR_SCHOOLS,inflcrInstagram} from './inflcr.mjs';
-import {extractText} from 'unpdf';
+import {extractText} from './pdf-text.mjs';
 import {golfStoryPlace} from './sidearm-school-kit.mjs';
 import {kansasSchool,createKansasHandlers,isKansasCrossCountry,applyVerifiedKansasMeet,attachKansasRaceDocuments} from './schools/kansas.mjs';
 import {oklahomaStateSchool,createOklahomaStateHandlers} from './schools/oklahoma-state.mjs';
@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.277.1-quiet-feeds';
+const VERSION='4.279.0-minified';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2811,11 +2811,12 @@ async function catalogStore(env,url,now=Date.now()){
   // until then it is asked again each minute (November 6: each check is
   // several D1 round trips before a request is answered).
   if(catalogChoice&&now-catalogChoice.at<(catalogChoice.value.store.kind==='d1'?15*60000:60000))return catalogChoice.value;
-  let store=bundle.store;
+  let store=bundle.store;const waitStarted=Date.now();
   try{
     if(url.hostname===PRODUCTION_HOST)await syncCatalog(env.CATALOG_DB,bundle.cards,bundle.revision,Date.now(),bundle.records,bundle.derived);
     if(await storeMatches(env.CATALOG_DB,bundle.revision,bundle.cards.length,bundle.records.length))store=d1Store(env.CATALOG_DB);
   }catch{}
+  catalogWaitMs+=Date.now()-waitStarted;
   catalogChoice={at:now,value:{store,revision:bundle.revision}};
   return catalogChoice.value;
 }
@@ -2850,11 +2851,11 @@ async function loadCatalogEntries(env,url,ids){
     if(loadedEntries.revision!==revision)loadedEntries={revision,byId:new Map(),members:new Map()};
     const missing=ids.filter(id=>id&&!loadedEntries.byId.has(id));
     if(missing.length){
-      const found=await catalogRecords(env.CATALOG_DB,missing);
+      const readStarted=Date.now(),found=await catalogRecords(env.CATALOG_DB,missing);catalogWaitMs+=Date.now()-readStarted;
       if(loadedEntries.revision===revision)for(const entry of found)loadedEntries.byId.set(entry.id,entry);
     }
     for(const conference of new Set(ids.map(id=>loadedEntries.byId.get(id)?.conference).filter(Boolean)))
-      if(!loadedEntries.members.has(conference)){const members=await catalogMembers(env.CATALOG_DB,conference);if(loadedEntries.revision===revision)loadedEntries.members.set(conference,members);}
+      if(!loadedEntries.members.has(conference)){const readStarted=Date.now(),members=await catalogMembers(env.CATALOG_DB,conference);catalogWaitMs+=Date.now()-readStarted;if(loadedEntries.revision===revision)loadedEntries.members.set(conference,members);}
   }catch{}
 }
 // ?source=bundled answers from the bundled copy (to compare it with D1).
@@ -6565,11 +6566,26 @@ async function runRefreshBatch(env,{size=REFRESH_BATCH,gap=REFRESH_GAP_MS,force=
   try{await env.HIGHLIGHTS.put(statusKey,JSON.stringify(status))}catch{}
   return status;
 }
-export default{
-  async scheduled(event,env,ctx){
-    ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
-  },
-  async fetch(request,env,ctx){
+// Startup timing (user, November 6: "Go work startup"). Every answer says
+// whether this isolate is new (its first request) or warm, how long the
+// catalog's D1 setup and reads took, and the whole request, as a
+// Server-Timing header, so a cold start on Cloudflare can be told apart from
+// a slow source. Workers' clock moves only across I/O, so the durations are
+// waiting time (D1, sources), not CPU.
+// (Measured November 6: a new isolate's first answer took 0.97 s at the
+// median against 0.23 s warm, while its handler ran 20-85 ms: the rest is
+// Cloudflare loading the script, which scales with its size.)
+let isolateRequests=0,catalogWaitMs=0;
+async function timedRequest(request,env,ctx){
+  const first=isolateRequests++===0,started=Date.now();catalogWaitMs=0;
+  const response=await routeRequest(request,env,ctx);
+  try{
+    const timed=new Response(response.body,response);
+    timed.headers.append('server-timing',`isolate;desc="${first?'new':'warm'}", catalog;dur=${catalogWaitMs}, total;dur=${Date.now()-started}`);
+    return timed;
+  }catch{return response}
+}
+async function routeRequest(request,env,ctx){
     const url=new URL(request.url);sourceCacheOrigin=url.origin;requestCatalog={env,url};
     if(url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/web'){const assetRequest=url.pathname==='/web'?new Request(new URL('/index.html',url),request):request;const response=await env.ASSETS.fetch(assetRequest),headers=new Headers(response.headers);headers.set('cache-control','no-store, no-cache, must-revalidate');headers.set('pragma','no-cache');headers.set('expires','0');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
     // School-entered live scores (scorer app, TV scoreboard, public live cards).
@@ -6701,5 +6717,10 @@ export default{
     }
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
-  }
+}
+export default{
+  async scheduled(event,env,ctx){
+    ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
+  },
+  async fetch(request,env,ctx){return timedRequest(request,env,ctx);}
 };

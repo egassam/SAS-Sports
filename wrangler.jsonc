@@ -3,6 +3,11 @@
   "name": "sas-sports",
   "main": "./src/index.js",
   "compatibility_date": "2026-09-05",
+  // Minified upload (user, November 6: "Go work startup"): 12.7 MB to 7.8 MB;
+  // a new isolate spent 0.6-1.2 s loading the script before the app ran.
+  // Names are kept (keep_names), so behavior and stack traces are unchanged.
+  "minify": true,
+  "keep_names": true,
   "ai": {
     "binding": "AI"
   },
