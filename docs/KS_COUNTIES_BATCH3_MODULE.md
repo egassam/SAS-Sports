@@ -66,6 +66,13 @@ Athletic.net, which some of these hosts use, disallows the app (`docs/HIGH_SCHOO
 
 With Washburn Rural in the catalog, K-State's opponent "Washburn" (Washburn University) matched Washburn Rural High School. Opponent lookup matches names by substring (`catalogOpponent`), and now looks only at schools of the current school's age: a middle or high school's opponents are middle and high schools, and a college's or pro team's are not. `tests/catalog-module.mjs` checks both.
 
+## Changes to schools already in the app (compared with `npm run diff:feeds`)
+
+All sports, every middle and high school feed: 476 compared, 473 the same, 3 differ, 326 new. Cross country again on `4.274.2`: 64 compared, 63 the same, 1 differs (Republic County), 35 new.
+- **Republic County, Oct 24:** production has two cards for one meet. They are Bound's "KSHSAA Regional Cross Country" and MileSplit Live's "KSHSAA 2A Sub-State Republic Co", with the same 7 runners from meet 788048. The preview has one, Bound's card with the 7 runners. A postseason entry is now the day's postseason meet (`sameIndexMeet`). The same rule gives Free State one card for its regional on Oct 24 (the 6A Sub-State at Manhattan, which Bound lists at Rim Rock Farm).
+- **Blue Valley-Randolph football, Oct 30:** production shows a stored "W, 58-0 vs Leavenworth", saved November 4. MaxPreps' schedule now has Hanover (Oct 23) and Goessel (Oct 29) and no Oct 30 game, and the fresh build has none. It is retracted (`RETRACTED_FINALS`).
+- **St. Mary's Academy basketball:** five games were missing from one preview read under the forced-refresh load, and were back on the next read. Not a code change.
+
 ## Limitations
 
 - **Cair Paravel golf:** its golfers are on Prep.Golf (CPLS, 315; at the 2A state tournament), but its golf schedule is not on Bound or MaxPreps. Prep.Golf results attach only to meets on a school's schedule, so its golf needs a reader of its own (Prep.Golf's school page as the schedule). Not built.
