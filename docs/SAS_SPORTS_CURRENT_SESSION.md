@@ -1,6 +1,24 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 6, 2026 (Central, afternoon). **Shawnee, Douglas and Saline counties** (user: "What's next?", then "Start the next counties"). `docs/KS_COUNTIES_BATCH3_MODULE.md`. 34 schools (20 high schools: Topeka, Washburn Rural, Lawrence, Free State, Salina Central and South among them; 14 middle schools). PR #534 merged as `94cec5e`; production `4.274.2-ks-counties-3` verified (`verify:prod` for the 34 schools plus Republic County, Blue Valley-Randolph and Eisenhower MS, all sports, 3 refreshes: 1023 PASS, 0 FAIL; XC 18/20 and 26/21). Production still listed Republic County's stored Oct 24 Sub-State card (a scan of every middle and high school cross country feed found no other); retracted in the follow-up PR (`4.275.0-retract-republic`).
+Last updated: November 6, 2026 (Central, about noon). **Faster gates and a faster app** (user: "These builds keep taking a long time. How can we speed this up?", "Go ahead with 1-4. I approve them all", then "The app itself seems to be running very slow. Check on that please"). PR #536 merged as `2610508`; production `4.277.1-quiet-feeds` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
+- **Gates:**
+  - `test:release` runs in parallel (`scripts/run-tests.mjs`; `parse-budget` in 8 parts): about 25 min down to about 4.5 min locally; CI's guardrails 17 min down to 6.
+  - CI's guardrails run counts as the merge gate's `test:release` (`AGENTS.md` item 6).
+  - `diff:feeds` skips feeds production lacks and reads 4 at a time.
+  - The survey saves KSHSAA and MaxPreps reads: Morris County 257 s, then 140 s.
+- **App:**
+  - **Quiet feeds:** no game live or starting between 12 hours ago and 18 hours ahead. Their saved copy is answered at once for up to an hour (`stale-refreshing`), and the feed rebuilt in the background. For middle and high schools with nothing saved at a location, the shared KV copy answers (`global-refreshing`).
+  - **The feed route reads the catalog (D1) only before a rebuild.** Cache hits had waited 0.6-1.7 s behind several D1 round trips. A matching D1 catalog check is kept 15 minutes, not 1.
+- **Measured before:**
+  - page 0.5 s, menus 0.1-0.2 s;
+  - first feed reads 1.3-2 s, some 4-14 s;
+  - cache hits up to 1.7 s;
+  - about 1 request in 7 costs about 1 s of Worker startup (10 MB bundle, 8.3 MB school modules).
+- **Open:**
+  - **Startup:** load school modules only when needed (about half the bundle's startup), as its own project.
+  - **Every deploy empties the feed cache** (the version is in the key); quiet shared copies now carry middle and high schools across a deploy.
+
+Earlier, November 6, 2026 (Central, afternoon). **Shawnee, Douglas and Saline counties** (user: "What's next?", then "Start the next counties"). `docs/KS_COUNTIES_BATCH3_MODULE.md`. 34 schools (20 high schools: Topeka, Washburn Rural, Lawrence, Free State, Salina Central and South among them; 14 middle schools). PR #534 merged as `94cec5e`; production `4.274.2-ks-counties-3` verified (`verify:prod` for the 34 schools plus Republic County, Blue Valley-Randolph and Eisenhower MS, all sports, 3 refreshes: 1023 PASS, 0 FAIL; XC 18/20 and 26/21). Production still listed Republic County's stored Oct 24 Sub-State card (a scan of every middle and high school cross country feed found no other); retracted in the follow-up PR (`4.275.0-retract-republic`).
 - **Survey (`onboard-hs`):**
   - MaxPreps pages from the links on the county's other school pages (Topeka West `west-chargers`, Cair Paravel, Rossville, Baldwin, Bishop Seabury) and canonical paths (Washburn Rural `jr-blues`);
   - one row per Bound school;
@@ -606,3 +624,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards). #530 merged `676a312`, production verified.
 - **Nov 6 — Winter readiness** (Bound winter team scores for wrestling, swimming, bowling; `audit:bound` 51 schools ok; MaxPreps schedule for Herington and St. Mary's Academy). #532 merged `fa9f19e`, production `4.273.0-winter-readiness` verified.
 - **Nov 6 — Shawnee, Douglas and Saline counties** (34 schools; survey finds MaxPreps from linked pages; opponents stay at their age; postseason entries match the day's postseason meet; Blue Valley-Randolph Oct 30 retracted). #534 merged `94cec5e`, production `4.274.2` verified 1023/0; Republic County's stored Oct 24 card retracted in the follow-up.
+- **Nov 6 — Faster gates and quiet feeds** (parallel `test:release` 25 min → 4.5; `diff:feeds` skips new feeds; survey saves reads; CI's test run counts; quiet feeds answer at once; feed route reads the catalog only before a rebuild). #535 merged `8f933f6` (Republic County retracted, production checked), #536 merged `2610508`, production `4.277.1` verified.

@@ -4423,3 +4423,48 @@ User, after the list of what is left: "I do not want parents or non time scorers
   3. the survey saves KSHSAA directory and MaxPreps school-page reads between runs (KSHSAA's 30 s spacing kept);
   4. (the user's decision) CI's green run counts as the merge gate's test run.
 
+## November 6, 2026 — Faster gates and a faster app (PRs #535, #536)
+
+**Conversation.**
+- User: "These builds keep taking a long time. How can we speed this up?" Measured:
+  - `diff:feeds` all sports: 78 min;
+  - survey: 38 min plus 20 min by hand;
+  - `test:release`: about 25 min locally and 17 in CI.
+
+  Proposed four changes.
+- User: "Go ahead with 1-4. I approve them all."
+- User: "The app itself seems to be running very slow. Check on that please."
+
+**#535.** Republic County's stored Oct 24 Sub-State card was retracted. Production `4.275.0-retract-republic`: one card; `verify:prod` 3/3, XC 18/20 and 26/21.
+
+**Gates (#536).**
+- `scripts/run-tests.mjs` runs `test:release:list` with one command per CPU. `parse-budget` takes `--shard`, and its 8 parts replace the 514 s it took on its own.
+  - First parallel run: 627 s. With the parts: 273 s and 275 s, all passed. CI's guardrails: 6 min (was 17).
+- `AGENTS.md` item 6: CI's guardrails run counts as the merge gate's `test:release` run.
+- `diff:feeds`: production first, no preview build for feeds production lacks, `--parallel=4`, `--sport` as a list.
+- Survey: saved reads in `.cache/onboard-hs/` (KSHSAA 30 days, MaxPreps pages 7, schedules 1), spacing per site for network reads only, `--fresh`. Morris County: 257 s, then 140 s.
+
+**App (#536).** Production timings before the change:
+- page 0.5 s; `/catalog/menu` 0.1-0.2 s;
+- first feed reads 1.3-2 s (Manhattan cross country 13.6 s, Salina Central tennis 3.9 s);
+- cache hits ("fresh") 0.6-1.7 s;
+- `/api/status` mostly 0.2 s, with about 1 in 7 at 1.1 s.
+
+Causes:
+- A saved feed was answered at once only under 2 minutes old.
+- The feed route read the catalog from D1 (several round trips: schema, revision, match check, records, conference members) before checking its cache, re-checking every minute.
+- Worker startup: a 10 MB bundle (8.3 MB school modules). Locally, compiling and running it took about 260 ms.
+- The scheduled refresh goes around its 804 feeds in about 17 hours.
+
+Changes:
+- **Quiet feeds:** no game live or within 12 h before / 18 h after now. They are answered from the local copy or the shared KV copy for up to an hour, and rebuilt in the background.
+- **The feed route reads the catalog only before a rebuild.**
+- **The D1 catalog check is kept 15 minutes once it matches.**
+
+Preview measurements: cache hits fell to 0.2-0.3 s in most reads. After the merge, the first reads on production were all rebuilds, because the feed cache key carries the version and every deploy starts it empty.
+
+**Gate.**
+- `test:release` (parallel) passed on `87c7efd`, and CI's guardrails passed.
+- `verify:preview`: K-State football, Topeka football and cross country, 3/3 each, XC 18/20 and 26/21.
+- Production `4.277.1-quiet-feeds`: `verify:prod` K-State football 3/3, expanded views 8/8, XC 18/20 and 26/21.
+
