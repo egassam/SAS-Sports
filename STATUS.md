@@ -2,7 +2,6 @@
 | --- | --- | --- | --- |
 | liberty | Basketball | ❌ failing | Men's · Liberty at High Point: final L, 57-72 not in the app's results |
 | liu | Basketball | ❌ failing | Women's · LIU at Texas St: final L, 51-69 not in the app's results |
-| manhattan | Volleyball | ❌ failing | Manhattan at Sacred Heart: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | merrimack | Volleyball | ❌ failing | Merrimack vs Quinnipiac: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
@@ -10,10 +9,14 @@
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| west-georgia | Basketball | ❌ failing | Men's · West Georgia at Loyola Chicago: feed built 411 s ago (cache stale-refreshing) |
-| arkansas | Basketball | 🔴 on | live 45-30 · 6:57 - 3rd · official_schedule+live_scoreboard |
-| indiana-state | Basketball | 🔴 on | live 29-43 · 5:18 - 3rd · official_schedule+live_scoreboard |
-| northwestern-state | Basketball | 🔴 on | live 30-45 · 6:57 - 3rd · official_schedule+live_scoreboard |
+| west-georgia | Basketball | ❌ failing | Men's · West Georgia at Loyola Chicago: result reads "L, 76-53", ESPN final L, 53-76 |
+| arkansas-pine-bluff | Basketball | 🔴 on | live 6-29 · 7:43 - 1st · official_schedule+live_scoreboard |
+| eastern-washington | Basketball | 🔴 on | live 61-58 · 4:50 - 4th · official_schedule+live_scoreboard |
+| lindenwood | Hockey | 🔴 on | live 1-0 · End of 1st · official_schedule+live_scoreboard |
+| lmu | Basketball | 🔴 on | live 57-39 · 5:38 - 4th · official_schedule+live_scoreboard |
+| manhattan | Volleyball | 🔴 on | live 2-3 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard |
+| western-illinois | Volleyball | 🔴 on | live 2-4 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard |
+| wright-state | Basketball | 🔴 on | live 44-10 · 6:47 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
@@ -49,7 +52,6 @@
 | arkansas | Baseball | ⚪ off (waiting) |  |
 | arkansas | Softball | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Baseball | ⚪ off (waiting) |  |
-| arkansas-pine-bluff | Basketball | ⚪ off (waiting) | final L, 61-106 (live phase not observed 2×; waits for the next game) |
 | arkansas-pine-bluff | Football | ⚪ off (waiting) |  |
 | arkansas-pine-bluff | Softball | ⚪ off (waiting) |  |
 | arkansas-state | Baseball | ⚪ off (waiting) |  |
@@ -229,7 +231,6 @@
 | eastern-kentucky | Softball | ⚪ off (waiting) |  |
 | eastern-michigan | Baseball | ⚪ off (waiting) |  |
 | eastern-michigan | Lacrosse | ⚪ off (waiting) |  |
-| eastern-washington | Basketball | ⚪ off (waiting) | final L, 67-76 (live phase not observed 2×; waits for the next game) |
 | eastern-washington | Football | ⚪ off (waiting) |  |
 | elon | Baseball | ⚪ off (waiting) |  |
 | elon | Basketball | ⚪ off (waiting) |  |
@@ -382,7 +383,6 @@
 | liberty | Softball | ⚪ off (waiting) |  |
 | lindenwood | Baseball | ⚪ off (waiting) |  |
 | lindenwood | Football | ⚪ off (waiting) |  |
-| lindenwood | Hockey | ⚪ off (waiting) | final L, 3-4 (live phase not observed 2×; waits for the next game) |
 | lindenwood | Lacrosse | ⚪ off (waiting) |  |
 | lindenwood | Softball | ⚪ off (waiting) |  |
 | lindenwood | Volleyball | ⚪ off (waiting) |  |
@@ -396,7 +396,6 @@
 | liu | Softball | ⚪ off (waiting) |  |
 | liu | Water Polo | ⚪ off (waiting) |  |
 | lmu | Baseball | ⚪ off (waiting) |  |
-| lmu | Basketball | ⚪ off (waiting) |  |
 | lmu | Softball | ⚪ off (waiting) |  |
 | lmu | Water Polo | ⚪ off (waiting) |  |
 | long-beach-state | Baseball | ⚪ off (waiting) |  |
@@ -946,7 +945,6 @@
 | western-illinois | Baseball | ⚪ off (waiting) |  |
 | western-illinois | Football | ⚪ off (waiting) |  |
 | western-illinois | Softball | ⚪ off (waiting) |  |
-| western-illinois | Volleyball | ⚪ off (waiting) |  |
 | western-kentucky | Baseball | ⚪ off (waiting) |  |
 | western-kentucky | Softball | ⚪ off (waiting) |  |
 | william-mary | Baseball | ⚪ off (waiting) |  |
@@ -958,7 +956,6 @@
 | winthrop | Softball | ⚪ off (waiting) |  |
 | wisconsin | Softball | ⚪ off (waiting) |  |
 | wright-state | Baseball | ⚪ off (waiting) |  |
-| wright-state | Basketball | ⚪ off (waiting) | final L, 71-73 (live phase not observed 2×; waits for the next game) |
 | xavier | Baseball | ⚪ off (waiting) |  |
 | youngstown-state | Baseball | ⚪ off (waiting) |  |
 | youngstown-state | Football | ⚪ off (waiting) |  |
@@ -997,6 +994,7 @@
 | arizona-state | Hockey | ✅ off (passed) | ASU vs Holy Cross · 2026-10-11T00:53:26.581Z |
 | arizona-state | Soccer | ✅ off (passed) | ASU at Oklahoma St · 2026-10-17T06:14:53.377Z |
 | arizona-state | Volleyball | ✅ off (passed) | ASU vs TCU · 2026-10-11T22:31:53.086Z |
+| arkansas | Basketball | ✅ off (passed) | Women's · Arkansas vs N'Western St · 2026-11-06T22:27:06.472Z |
 | arkansas | Football | ✅ off (passed) | Arkansas vs Tennessee · 2026-10-11T00:49:40.520Z |
 | arkansas | Soccer | ✅ off (passed) | Arkansas at LSU · 2026-10-10T07:23:28.884Z |
 | arkansas | Volleyball | ✅ off (passed) | Arkansas vs Texas · 2026-10-10T07:23:28.893Z |
@@ -1293,6 +1291,7 @@
 | indiana | Football | ✅ off (passed) | Indiana vs Ohio State · 2026-10-17T21:44:24.435Z |
 | indiana | Soccer | ✅ off (passed) | Men's · Indiana vs Hanover · 2026-10-10T07:23:30.741Z |
 | indiana | Volleyball | ✅ off (passed) | Indiana vs USC · 2026-10-11T22:23:42.160Z |
+| indiana-state | Basketball | ✅ off (passed) | Women's · Indiana State at Seton Hall · 2026-11-06T22:27:10.576Z |
 | indiana-state | Soccer | ✅ off (passed) | Indiana State at Murray St · 2026-10-25T21:48:17.042Z |
 | indiana-state | Volleyball | ✅ off (passed) | Indiana State vs Evansville · 2026-10-28T02:25:41.270Z |
 | iowa | Field Hockey | ✅ off (passed) | Iowa at Northwestern · 2026-10-09T21:48:31.382Z |
@@ -1547,6 +1546,7 @@
 | northwestern | Football | ✅ off (passed) | Northwestern at Michigan St · 2026-10-17T19:30:43.793Z |
 | northwestern | Soccer | ✅ off (passed) | Men's · Northwestern vs Penn State · 2026-10-17T06:14:54.946Z |
 | northwestern | Volleyball | ✅ off (passed) | Northwestern at Maryland · 2026-10-11T06:38:16.590Z |
+| northwestern-state | Basketball | ✅ off (passed) | Women's · NSU at Arkansas · 2026-11-06T22:27:07.965Z |
 | northwestern-state | Soccer | ✅ off (passed) | NSU vs Nicholls · 2026-10-25T21:48:17.519Z |
 | notre-dame | Basketball | ✅ off (passed) | Men's · Notre Dame at Villanova · 2026-11-01T21:03:21.582Z |
 | notre-dame | Football | ✅ off (passed) | Notre Dame at BYU · 2026-10-18T06:34:58.909Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 992/1956; on 3; off 950; failing 11.
+Done 995/1956; on 7; off 944; failing 10.
