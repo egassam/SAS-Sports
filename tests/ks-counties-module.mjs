@@ -119,9 +119,11 @@ assert.deepEqual(varsity('Marysville'),['High School Girls Varsity: 5/5 5','High
 // More LetsGoRun meets, compared card by card with production first (user,
 // November 5: "Compare those. Let's go run meats"): Abilene (Sep 3), Bob
 // Schmoekel (Oct 3), Centennial League (Oct 17). Shawnee Heights MS (Sep 22)
-// is out: its "Eisenhower" is Topeka's school, not Manhattan's.
+// and Washburn Rural MS (Sep 25) joined on November 6 with Shawnee County:
+// its "Eisenhower" is Topeka's school, and Manhattan's Eisenhower MS does not
+// fit the folder (below).
 assert.deepEqual(['2026-09-03','2026-10-03','2026-10-17'].map(d=>LETSGORUN_MEETPRO.folders[d]),[['2026_Abilene_XC_Invitational'],['2026_Bob_Schmoekel_Cross_Country_Invitational'],['2026_Centennial_League_XC_Championships']]);
-assert.equal(LETSGORUN_MEETPRO.folders['2026-09-22'],undefined);
+assert.deepEqual(['2026-09-22','2026-09-25'].map(d=>LETSGORUN_MEETPRO.folders[d]),[['2026_Shawnee_Heights_MS_Invitational'],['2026_Washburn_Rural_MS_Invitational']]);
 assert.deepEqual(LETSGORUN_MEETPRO.folders['2026-09-19'],['2026_Shufelberger_TopCity_Classic'],'found by the survey\'s LetsGoRun step');
 // The Abilene page names its varsity races "High School Boys/Girls": a middle
 // school reads the grade races only (Rock Creek MS had gained the high
