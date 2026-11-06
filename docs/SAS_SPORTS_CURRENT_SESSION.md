@@ -1,6 +1,21 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 6, 2026 (Central, about 11:30 PM Nov 5). **Winter-season readiness for the middle and high schools** (user: "Start the winter session"). PR #532 merged as `fa9f19e`; production `4.273.0-winter-readiness` verified (`verify:prod` for the 40 Bound schools with winter meet sports, all sports, 3 refreshes: 927/0; XC 18/20 and 26/21).
+Last updated: November 6, 2026 (Central, afternoon). **Shawnee, Douglas and Saline counties** (user: "What's next?", then "Start the next counties"). `docs/KS_COUNTIES_BATCH3_MODULE.md`. 34 schools (20 high schools: Topeka, Washburn Rural, Lawrence, Free State, Salina Central and South among them; 14 middle schools). Version `4.274.2-ks-counties-3`; PR, merge and production check in the session log.
+- **Survey (`onboard-hs`):**
+  - MaxPreps pages from the links on the county's other school pages (Topeka West `west-chargers`, Cair Paravel, Rossville, Baldwin, Bishop Seabury) and canonical paths (Washburn Rural `jr-blues`);
+  - one row per Bound school;
+  - MaxPreps game sports and season paths (`soccer/girls/spring`, `flag-football/girls/fall`) in the draft;
+  - Prep.Golf by KSHSAA's name (Seaman SEA) and by town ("Salina Sacred Heart");
+  - KSHSAA towns by their first word (Baldwin City), Bound days in Kansas time, Bound event days in the catalog file.
+  `add:county` names: "Salina Central", "Cair Paravel Latin School", "Baldwin Junior High".
+- **Opponents stay at their age:** K-State's "Washburn" had found Washburn Rural High School (`catalogOpponent`).
+- **A postseason entry is the day's postseason meet** (`sameIndexMeet`): Republic County's two Oct 24 cards in production are now one; Free State's regional too.
+- **LetsGoRun:** Shawnee Heights MS (Sep 22) and Washburn Rural MS (Sep 25) added.
+- **Retracted:** Blue Valley-Randolph's stored Oct 30 "W 58-0 vs Leavenworth" (not on MaxPreps' schedule).
+- **Skipped:** Topeka USD 501's other middle schools (one or two cross country meets on Bound), Billy Mills and Liberty Memorial Central (Lawrence), Ell-Saline MS, and schools not on Bound. Left for later: Cair Paravel golf (Prep.Golf has its golfers; no schedule on Bound) needs a reader of its own.
+- **Gate:** `test:release` passed on `7751044`. `diff:feeds` all sports: 476 compared, 473 the same, 3 explained; cross country again on `4.274.2`: 63/64 the same (Republic County). `verify:preview` for the 34 schools plus Republic County, Blue Valley-Randolph and Eisenhower MS, all sports, 3 refreshes: 1023 PASS, 0 FAIL, XC 18/20 and 26/21. Topeka High's football page checked at 390 px.
+
+Earlier, November 6, 2026 (Central, about 11:30 PM Nov 5). **Winter-season readiness for the middle and high schools** (user: "Start the winter session"). PR #532 merged as `fa9f19e`; production `4.273.0-winter-readiness` verified (`verify:prod` for the 40 Bound schools with winter meet sports, all sports, 3 refreshes: 927/0; XC 18/20 and 26/21).
 - **Calendars:** `npm run audit:sports` ok (8 calendar schools). New `npm run audit:bound` (`scripts/audit-bound-sports.mjs`): all 51 Bound schools' winter sports this school year are read and listed. Run both when a season starts.
 - **Bound's guard:** about 350 reads 0.4 s apart drew HTTP 202 with no body, and it then kept answering Node's fetch with 202 while it answered curl. The audit reads with curl, 3 s apart. Production's Bound reads were unaffected.
 - **Bound winter team scores:** `boundEntryResults` also reads wrestling and swimming points and bowling pins (high wins), as entered by a meet's host. Last winter only the bigger meets had them (McPherson girls' wrestling, Dec 6, 2025: Junction City 1st of 17; Douglass; Topeka West swimming). Tested on Junction City's real 2025-26 entries.
@@ -583,3 +598,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — Lessons built** (#527: `diff:feeds`, `stored=0`, LetsGoRun folder check, survey sources, schedule-pairing test; Shufelberger added) and **retracted stored finals** (#528, Junction City Sep 5); production `4.271.0-retracted-finals` verified.
 - **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards). #530 merged `676a312`, production verified.
 - **Nov 6 — Winter readiness** (Bound winter team scores for wrestling, swimming, bowling; `audit:bound` 51 schools ok; MaxPreps schedule for Herington and St. Mary's Academy). #532 merged `fa9f19e`, production `4.273.0-winter-readiness` verified.
+- **Nov 6 — Shawnee, Douglas and Saline counties** (34 schools; survey finds MaxPreps from linked pages; opponents stay at their age; postseason entries match the day's postseason meet; Blue Valley-Randolph Oct 30 retracted). PR pending.
