@@ -54,6 +54,6 @@
      "maxpreps": {"schoolId": "72046133-0241-43db-a9b8-71b3f3b6ae10", "path": "st-marys/st-marys-academy-crusaders"},
      "meetPro": "letsgorun",
      "prepGolf": {"school": 366, "code": "SMA"},
-     "sports": {"has": ["Football", "Soccer", "Basketball", "Baseball", "Cross Country", "Wrestling", "Girls Wrestling", "Boys Wrestling", "Golf", "Boys Golf"], "meetTeam": "St. Mary's Academy", "milesplit": 41084}}
+     "sports": {"maxprepsSchedule": true, "has": ["Football", "Soccer", "Basketball", "Baseball", "Cross Country", "Wrestling", "Girls Wrestling", "Boys Wrestling", "Golf", "Boys Golf"], "meetTeam": "St. Mary's Academy", "milesplit": 41084}}
   ]
 }

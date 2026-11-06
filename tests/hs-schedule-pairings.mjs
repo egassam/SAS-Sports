@@ -16,16 +16,20 @@ import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
 import {BOUND_ACTS,boundEventsUrl} from '../src/high-school.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS} from '../src/schools/ks-counties.mjs';
+import {GEARY_HIGH_SCHOOLS} from '../src/schools/geary-ks.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>gunzipSync(readFileSync(new URL('./fixtures/ks-counties/'+name,import.meta.url))).toString('utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json'));
-const by=id=>KS_COUNTY_HIGH_SCHOOLS.find(m=>m.id===id);
+const by=id=>[...KS_COUNTY_HIGH_SCHOOLS,...GEARY_HIGH_SCHOOLS].find(m=>m.id===id);
 const YEAR={start:'2026-07-01',end:'2027-06-30'};
 const bound=(id,file)=>BOUND_ACTS.Football.map(act=>[boundEventsUrl(by(id).bound.school,{...YEAR,act}),fixture(file)]);
 const pages=new Map([
   ...bound('abilene-ks','bound-abilene-2026-11-05.json.gz'),
   ...bound('wabaunsee-ks','bound-wabaunsee-2026-11-05.json.gz'),
-  [`${by('wabaunsee-ks').maxpreps.base}football/schedule/`,fixture('maxpreps-wabaunsee-football-2026-11-05.html.gz')]]);
+  [`${by('wabaunsee-ks').maxpreps.base}football/schedule/`,fixture('maxpreps-wabaunsee-football-2026-11-05.html.gz')],
+  // Last winter's Bound entries (read November 6, 2026): Junction City's
+  // girls' wrestling (both act ids) and boys' swimming.
+  ...['h20240520120020666fd407ba14fec4f','h20240528042647438f458375a138041','h202502030938188603c9b78ae239440'].map(act=>[boundEventsUrl(by('junction-city-ks').bound.school,{start:'2025-07-01',end:'2026-06-30',act}),fixture(`bound-junction-city-${act}-2025-26.json.gz`)])]);
 const requests=[];
 // Anything else (Abilene's MaxPreps page, Bound's scores) answers 404: the
 // feed must still list its schedule.
@@ -68,4 +72,23 @@ try{
   assert.equal(a.results.length,10);
   assert.ok(requests.some(u=>u.startsWith('https://www.maxpreps.com/ks/abilene/abilene-cowboys/football/schedule/')),'MaxPreps was asked for its finals');
 }finally{globalThis.Date=RealDate}
-console.log('hs-schedule-pairings: ok (Bound alone; Bound + MaxPreps schedule)');
+
+// Winter meets with the team scores the host entered on Bound (November 6,
+// the winter session): wrestling and swimming points, high wins. January 20,
+// 2026 in Kansas.
+const winter=new RealDate('2026-01-20T18:00:00Z');
+globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[winter.getTime()]))}static now(){return winter.getTime()}};
+try{
+  const wr=await worker.fetchLive('junction-city-ks','Wrestling');
+  const girls=worker.groupEvents(wr.events,winter).flatMap(g=>g.results).filter(e=>e.team_label==='Girls');
+  const mcp=girls.find(e=>e.start_time.startsWith('2025-12-06'));
+  assert.ok(mcp,'the McPherson girls\' invitational is listed');
+  assert.equal(mcp.headline,'1st of 17','Junction City won it: 203.5 points, the most of the 17 teams with a score');
+  assert.ok(mcp.results.some(r=>/203\.5 pts/.test(r.result)),'the points');
+  assert.ok(girls.some(e=>e.headline==='No results posted'),'a meet with no scores entered reads as played without results');
+  const sw=await worker.fetchLive('junction-city-ks','Swimming & Diving');
+  const tw=worker.groupEvents(sw.events,winter).flatMap(g=>g.results).find(e=>e.start_time.startsWith('2026-01-13'));
+  assert.ok(tw,'the Topeka West swimming meet is listed');
+  assert.equal(tw.headline,'6th of 14','138 points: 6th of the 14 teams with a score (high wins)');
+}finally{globalThis.Date=RealDate}
+console.log('hs-schedule-pairings: ok (Bound alone; Bound + MaxPreps schedule; Bound winter team scores)');
