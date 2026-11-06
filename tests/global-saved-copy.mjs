@@ -71,9 +71,21 @@ assert.equal(kv.writes,1,'at most one write an hour per sport');
 for(const query of ['&refresh=1','','&cached=1']){
   const saved=await paris('south-carolina','Football',query);
   assert.equal(saved.status,200,`Paris ${query||'(plain)'}`);
-  assert.equal(saved.headers.get('x-sas-cache'),'saved-global');
+  // A plain read of a quiet feed (no game near now) answers from the shared copy at once and rebuilds
+  // in the background (November 6); a forced or cached=1 read is the fallback as before.
+  assert.equal(saved.headers.get('x-sas-cache'),query===''?'global-refreshing':'saved-global');
   assert.ok(saved.headers.get('x-sas-fetched-at'),'the copy carries its age');
   assert.deepEqual(await saved.json(),liveBody);
+}
+
+// The shared copy says whether the feed was quiet; a copy with a game near now is not answered
+// without a rebuild (Paris cannot rebuild, so it falls back to the copy as before).
+{
+  const k=[...kv.store.keys()][0],saved=kv.store.get(k);
+  assert.equal(saved.metadata.quiet,true,'a feed with no game near now is saved as quiet');
+  kv.store.set(k,{...saved,metadata:{...saved.metadata,quiet:undefined}});
+  assert.equal((await paris('south-carolina','Football')).headers.get('x-sas-cache'),'saved-global','not quiet: rebuilt first, the copy only as the fallback');
+  kv.store.set(k,saved);
 }
 
 // A copy older than the week-long last-good limit is not served.
