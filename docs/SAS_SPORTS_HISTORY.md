@@ -4331,3 +4331,5 @@ User, after the list of what is left: "I do not want parents or non time scorers
 **Tests.**
 - `test:release` passed on `46ca146`.
 - `verify:preview` on `4.272.0-ks-counties-2` for 26 schools, all sports: 624 PASS, 0 FAIL, XC 18/20 and 26/21.
+- CI on `b22a89e` green. The first merge call timed out and did not merge; the retry merged #530 as `676a312`.
+- Production `4.272.0-ks-counties-2`, `verify:prod` for the 23 new schools plus Manhattan, Eisenhower MS and Junction City, all sports: 624 PASS, 0 FAIL, XC 18/20 and 26/21.
