@@ -1,0 +1,650 @@
+{
+ "state": "ks",
+ "counties": [
+  "Shawnee"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH3_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "cair-paravel-latin-ks",
+   "name": "Cair Paravel Latin School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155615f04d3f32918943",
+    "slug": "cplatin"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Cross Country",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Track & Field"
+    ],
+    "meetTeam": "Cair Paravel Latin",
+    "tennis": "Cair Paravel Latin School",
+    "maxprepsSchedule": true,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   },
+   "maxpreps": {
+    "schoolId": "0214e66b-7ee7-4dd5-9c77-b72e148aa811",
+    "path": "topeka/cair-paravel-lions"
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "hayden-ks",
+   "name": "Hayden High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159031dc41235a9f644f",
+    "slug": "haydencatholichs"
+   },
+   "maxpreps": {
+    "schoolId": "d187d158-5fc5-415e-866b-99b42531bf02",
+    "path": "topeka/hayden-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 121,
+    "code": "HAY"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Hayden Catholic",
+    "tennis": "Hayden HS",
+    "milesplit": 21853,
+    "maxprepsSchedule": true,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "highland-park-ks",
+   "name": "Highland Park High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451592613cb9deb2bd7140",
+    "slug": "topekahighlandpark"
+   },
+   "maxpreps": {
+    "schoolId": "bfd2344e-5468-48bc-aac9-4254586857b1",
+    "path": "topeka/highland-park-scots"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Topeka Highland Park",
+    "tennis": "Topeka-Highland Park HS",
+    "milesplit": 21792,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "rossville-ks",
+   "name": "Rossville High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520497477af86b2265546",
+    "slug": "rossvillehs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 179,
+    "code": "ROS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Rossville",
+    "milesplit": 20262,
+    "maxprepsSchedule": true
+   },
+   "maxpreps": {
+    "schoolId": "bf50f008-64f6-4819-bcf5-1f3987c4b9d8",
+    "path": "rossville/rossville-bulldogs"
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "seaman-ks",
+   "name": "Seaman High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206007c072b82ed3d044",
+    "slug": "seamanhs"
+   },
+   "maxpreps": {
+    "schoolId": "ea17eb0b-bbb6-4737-990b-ce528fe0fa14",
+    "path": "topeka/seaman-vikings"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 59,
+    "code": "SEA"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Topeka Seaman",
+    "tennis": "Seaman HS",
+    "milesplit": 21793,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "shawnee-heights-ks",
+   "name": "Shawnee Heights High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520608794fab26390aa47",
+    "slug": "shawneeheightshs"
+   },
+   "maxpreps": {
+    "schoolId": "f9f3fa6e-e1db-4e54-a4f9-e21ac7bc19b9",
+    "path": "tecumseh/shawnee-heights-thunderbirds"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 57,
+    "code": "SH"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Shawnee Heights",
+    "tennis": "Shawnee Heights HS",
+    "milesplit": 21787,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "silver-lake-ks",
+   "name": "Silver Lake High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452062687536116fd9f742",
+    "slug": "silverlakehs"
+   },
+   "maxpreps": {
+    "schoolId": "b021d1eb-9b9d-4686-b117-e59fda9f3ee6",
+    "path": "silver-lake/silver-lake-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 185,
+    "code": "SL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Silver Lake",
+    "milesplit": 21881
+   }
+  },
+  {
+   "id": "topeka-ks",
+   "name": "Topeka High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452080831498ec86c27342",
+    "slug": "topekahs"
+   },
+   "maxpreps": {
+    "schoolId": "e9968bc0-9661-4861-9906-d2e1f57df627",
+    "path": "topeka/topeka-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 25,
+    "code": "TOP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Topeka",
+    "tennis": "Topeka HS",
+    "milesplit": 15620,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "topeka-west-ks",
+   "name": "Topeka West High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520810928f87d83095043",
+    "slug": "topekawesths"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 60,
+    "code": "TW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Topeka West",
+    "tennis": "Topeka West HS",
+    "milesplit": 15617,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   },
+   "maxpreps": {
+    "schoolId": "96537fc0-8324-4b97-991b-a69b0581796a",
+    "path": "topeka/west-chargers"
+   }
+  },
+  {
+   "id": "washburn-rural-ks",
+   "name": "Washburn Rural High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202410240446310950b2ca8b8f9b348",
+    "slug": "washburnrural"
+   },
+   "maxpreps": {
+    "schoolId": "2c49abc2-790c-4061-8aec-81b0d9cc9243",
+    "path": "topeka/washburn-rural-jr-blues"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 26,
+    "code": "WR"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Washburn Rural",
+    "tennis": "Washburn Rural HS",
+    "milesplit": 21780,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "robinson-ms-ks",
+   "name": "Robinson Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250603041802206dfe452e411d643",
+    "slug": "robinsonmiddleschoolks"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Robinson MS",
+    "milesplit": 46855
+   }
+  },
+  {
+   "id": "rossville-ms-ks",
+   "name": "Rossville Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025020404520497477af86b2265546",
+    "slug": "rossvillehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Rossville"
+   }
+  },
+  {
+   "id": "seaman-ms-ks",
+   "name": "Seaman Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250707010056032357a790b749f47",
+    "slug": "seamanms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Topeka Seaman MS",
+    "milesplit": 31931
+   }
+  },
+  {
+   "id": "shawnee-heights-ms-ks",
+   "name": "Shawnee Heights Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202507071259397765caf74ed922545",
+    "slug": "shawneeheightsms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Shawnee Heights MS",
+    "milesplit": 39244
+   }
+  },
+  {
+   "id": "silver-lake-ms-ks",
+   "name": "Silver Lake Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452062687536116fd9f742",
+    "slug": "silverlakehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Silver Lake",
+    "milesplit": 39256
+   }
+  },
+  {
+   "id": "washburn-rural-ms-ks",
+   "name": "Washburn Rural Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260102023331793fbb9d901c4f143",
+    "slug": "washrurms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Washburn Rural MS",
+    "milesplit": 31987
+   }
+  },
+  {
+   "id": "washburn-rural-north-ms-ks",
+   "name": "Washburn Rural North Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260103121605214c3c1f730a1e543",
+    "slug": "washrurnorms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Washburn Rural North MS",
+    "milesplit": 70187
+   }
+  }
+ ]
+}

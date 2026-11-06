@@ -20,8 +20,11 @@ import OTTAWA from './data/ks-ottawa.json' with {type:'json'};
 import JACKSON from './data/ks-jackson.json' with {type:'json'};
 import NEMAHA from './data/ks-nemaha.json' with {type:'json'};
 import LYON from './data/ks-lyon.json' with {type:'json'};
+import SHAWNEE from './data/ks-shawnee.json' with {type:'json'};
+import DOUGLAS from './data/ks-douglas.json' with {type:'json'};
+import SALINE from './data/ks-saline.json' with {type:'json'};
 
-export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON];
+export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON,SHAWNEE,DOUGLAS,SALINE];
 const built=KS_COUNTY_FILES.map(file=>({file,schools:schoolsFromConfig(file)}));
 const atLevel=level=>built.flatMap(({file,schools})=>file.schools.filter(entry=>entry.level===level).map(entry=>schools[entry.id]));
 export const KS_COUNTY_HIGH_SCHOOLS=atLevel('high-school');

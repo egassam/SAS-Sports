@@ -4365,3 +4365,41 @@ User, after the list of what is left: "I do not want parents or non time scorers
 - PR #532 merged as `fa9f19e` (CI green). Production `4.273.0-winter-readiness`: `verify:prod` for the same 40 schools, all sports: 927 PASS, 0 FAIL; XC 18/20 and 26/21. St. Mary's Academy basketball reads 7 games (2 Bound, 5 MaxPreps).
 
 **Open.** St. Xavier HS basketball until MaxPreps posts it (or the user enables the Google Calendar API). Winter meet places depend on hosts entering scores on Bound.
+
+## November 6, 2026 — Shawnee, Douglas and Saline counties (batch 3)
+
+**Conversation.**
+- User: "What's next?" Answer: from the handoff, more counties (recommended: Shawnee, Douglas and Saline), the LetsGoRun trial meet (waiting on the user), St. Xavier basketball (waiting on MaxPreps and the Google Calendar API).
+- User: "Start the next counties."
+
+**Survey run.** One run for three counties (12:59–13:35 UTC). Then by hand:
+- MaxPreps pages for Topeka West, Cair Paravel, Rossville, Baldwin and Bishop Seabury, from the opponent links on Hayden's, Silver Lake's, Eudora's, Rossville's and Baldwin's pages (source route, 30 s apart). Washburn Rural's guessed path answered with no team links; its canonical path is `washburn-rural-jr-blues`.
+- Bound counts (curl, 3 s apart, with the survey's user agent; Node's client got nothing back once, and curl with its default agent got 403):
+  - football coverage: Topeka West 9/9, Cair Paravel 3/9, Rossville 3/10, Baldwin 10/10; Bishop Seabury volleyball 18/19;
+  - middle school event days by act, for the skip list.
+- Prep.Golf:
+  - Seaman's tournaments show SEA;
+  - Topeka West's TW appears only in JV tournaments, and its own varsity invitational lists Topeka's TOP;
+  - Sacred Heart is "Salina Sacred Heart", 239, SSH;
+  - Highland Park is not listed;
+  - Cair Paravel (315) has golfers at 2A state but no golf on Bound.
+- KSHSAA's Baldwin entries are under "Baldwin" (one read).
+- The MileSplit Live index, read for each "none found" meet's day: only Rim Rock was there (Sep 26; Bound's 02:00 UTC entry had dated it the 27th).
+- Every other survey correction above is now in `onboard-hs`/`add:county`, with tests.
+
+**Found while building.**
+- **K-State's "Washburn"** matched Washburn Rural High School (`tests/catalog-module.mjs`). Opponent lookup now stays at the current school's age, in D1 and in the bundled fallback.
+- **Free State's Oct 24:** two cards with the same 14 runners. Bound's "KSHSAA Regionals" (listed at Rim Rock Farm) and the index's "KSHSAA 6A Sub-State Manhattan" are one meet. A postseason entry is now the day's postseason meet.
+
+**`diff:feeds`.**
+- All sports: 476 compared, 473 the same, 3 differ, 326 new.
+  - Republic County Oct 24: production's duplicate card is gone.
+  - Blue Valley-Randolph Oct 30: a stored final MaxPreps no longer lists (MaxPreps' schedule read: Hanover Oct 23, Goessel Oct 29); retracted.
+  - St. Mary's Academy basketball: missing on one read, back on the next.
+- Cross country again on `4.274.2`: 63/64 the same (Republic County).
+
+**Tests.**
+- `test:release` passed on `4daa25e`'s code and again on `7751044` (the commits after it are docs only).
+- `verify:preview` on `4.274.2-ks-counties-3` for 37 schools, all sports, 3 refreshes: 1023 PASS, 0 FAIL, XC 18/20 and 26/21.
+- Page: Topeka High football at 390 px, in K-State's format.
+

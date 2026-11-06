@@ -429,6 +429,10 @@ export function sameIndexMeet(game,meet,aliases={}){
   const words=n=>new Set(String(n||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w.length>=3&&!/^\d/.test(w)&&!INDEX_WORDS.has(w)&&!MEET_WORDS.has(w)));
   const own=new Set([...words(game.name),...words(aliases[game.name])]);
   if(!own.size)return true;
+  // A postseason entry is the day's postseason meet (November 6: Free State's
+  // Bound "KSHSAA Regionals", listed at Rim Rock Farm, is MileSplit Live's
+  // "KSHSAA 6A Sub-State Manhattan"; it had a second card with the same runners).
+  if(POSTSEASON.test(game.name||'')&&POSTSEASON.test(meet.name||''))return true;
   const want=new Set([...own,...words(game.address)]),have=words(`${meet.name} ${meet.venue||''} ${meet.city||''}`);
   return[...want].some(w=>have.has(w));
 }

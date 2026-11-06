@@ -87,7 +87,11 @@ export const exactFinal=(a,b)=>day(a)===day(b)&&(a.team_label||'')===(b.team_lab
 // check (meetProFolderFits) no longer gives them, and the store listed them
 // again. Each entry: school, sport, the event's day, and why.
 export const RETRACTED_FINALS=[
-  {school:'junction-city-ks',sport:'Cross Country',date:'2026-09-05',reason:'Manhattan XC Invitational places shown on the Greg Wilson Classic (PR #527)'}];
+  {school:'junction-city-ks',sport:'Cross Country',date:'2026-09-05',reason:'Manhattan XC Invitational places shown on the Greg Wilson Classic (PR #527)'},
+  // November 6 (diff:feeds for Shawnee, Douglas and Saline counties): saved on November 4 from a MaxPreps
+  // listing that is gone; Blue Valley-Randolph (8-man) played Goessel on October 29, and MaxPreps' schedule
+  // has no October 30 game.
+  {school:'blue-valley-randolph-ks',sport:'Football',date:'2026-10-30',reason:'"W, 58-0 vs Leavenworth" no longer on MaxPreps\' schedule (Goessel, Oct 29, is the week\'s game)'}];
 export function retractedFinal(school,sport,event,list=RETRACTED_FINALS){
   const date=String(event?.start_time||'').slice(0,10);
   return list.some(r=>r.school===school&&r.sport===sport&&r.date===date);

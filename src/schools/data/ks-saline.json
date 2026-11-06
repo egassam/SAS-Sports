@@ -1,0 +1,301 @@
+{
+ "state": "ks",
+ "counties": [
+  "Saline"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH3_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "ell-saline-ks",
+   "name": "Ell-Saline High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045157928d148225bf5ae43",
+    "slug": "ellsalinehs"
+   },
+   "maxpreps": {
+    "schoolId": "f658c6fd-3121-4332-81a6-918fa7aa324c",
+    "path": "brookville/ell-saline-cardinals"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 199,
+    "code": "ELS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ell-Saline",
+    "milesplit": 22000,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "salina-sacred-heart-ks",
+   "name": "Sacred Heart High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045205321062d0158f9d043",
+    "slug": "sacredhearths"
+   },
+   "maxpreps": {
+    "schoolId": "336c9b56-1545-44ce-a5d4-845cfa799465",
+    "path": "salina/sacred-heart-knights"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Sacred Heart",
+    "tennis": "Sacred Heart HS",
+    "milesplit": 22008
+   },
+   "prepGolf": {
+    "school": 239,
+    "code": "SSH"
+   }
+  },
+  {
+   "id": "salina-central-ks",
+   "name": "Salina Central High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452057777ebbbab7e7ed44",
+    "slug": "salinacentralhs"
+   },
+   "maxpreps": {
+    "schoolId": "899bd812-c1f2-4037-99ba-0352b76e0f04",
+    "path": "salina/salina-central-mustangs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 54,
+    "code": "SCN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Salina Central",
+    "tennis": "Salina-Central HS",
+    "milesplit": 21800,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "salina-south-ks",
+   "name": "Salina South High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045205848414b3f3ce44d41",
+    "slug": "salinasouthhs"
+   },
+   "maxpreps": {
+    "schoolId": "567eec81-80e5-4a03-8dae-ccc3f0b8b4ab",
+    "path": "salina/salina-south-cougars"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 55,
+    "code": "SSO"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Salina South",
+    "tennis": "Salina-South HS",
+    "milesplit": 21803,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "southeast-of-saline-ks",
+   "name": "Southeast of Saline High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206546161745563df64c",
+    "slug": "southeastofsalinehs"
+   },
+   "maxpreps": {
+    "schoolId": "2d6edb12-b6a9-412f-abe6-f9ab146f24ab",
+    "path": "gypsum/southeast-of-saline-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 151,
+    "code": "SES"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Southeast of Saline",
+    "milesplit": 21873
+   }
+  },
+  {
+   "id": "salina-lakewood-ms-ks",
+   "name": "Salina Lakewood Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h2025061308174157706fd89d2fd104c",
+    "slug": "lwmssalina"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Lakewood MS Salina",
+    "milesplit": 39146
+   }
+  },
+  {
+   "id": "salina-sacred-heart-ms-ks",
+   "name": "Salina Sacred Heart Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045205321062d0158f9d043",
+    "slug": "sacredhearths"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Sacred Heart",
+    "milesplit": 33101
+   }
+  },
+  {
+   "id": "salina-south-ms-ks",
+   "name": "Salina South Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250613085014453831b082366554a",
+    "slug": "salinasouthms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Salina South MS",
+    "milesplit": 33043
+   }
+  }
+ ]
+}

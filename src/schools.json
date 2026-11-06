@@ -11855,5 +11855,973 @@
         "provider_school_id": "559c7667-0ad9-49fb-a945-c68e83e37c99"
       }
     ]
+  },
+  {
+    "id": "cair-paravel-latin-ks",
+    "name": "Cair Paravel Latin School",
+    "short_name": "Cair Paravel Latin School",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Flint Hills League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.cpls.org",
+    "aliases": [
+      "Cair Paravel Latin School",
+      "Cair Paravel Latin",
+      "Cair Paravel Latin School Rampant Red Lion"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cplatin",
+        "provider_school_id": "h20250204045155615f04d3f32918943"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/cair-paravel-lions",
+        "provider_school_id": "0214e66b-7ee7-4dd5-9c77-b72e148aa811"
+      }
+    ]
+  },
+  {
+    "id": "hayden-ks",
+    "name": "Hayden High School",
+    "short_name": "Hayden",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.haydencatholic.net",
+    "aliases": [
+      "Hayden High School",
+      "Hayden",
+      "Hayden Catholic",
+      "Hayden Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/haydencatholichs",
+        "provider_school_id": "h20250204045159031dc41235a9f644f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/hayden-wildcats",
+        "provider_school_id": "d187d158-5fc5-415e-866b-99b42531bf02"
+      }
+    ]
+  },
+  {
+    "id": "highland-park-ks",
+    "name": "Highland Park High School",
+    "short_name": "Highland Park",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Meadowlark Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://beta.gobound.com/ks/schools/topekahighlandpark",
+    "aliases": [
+      "Highland Park High School",
+      "Highland Park",
+      "Topeka Highland Park",
+      "Highland Park Scots"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/topekahighlandpark",
+        "provider_school_id": "h202502040451592613cb9deb2bd7140"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/highland-park-scots",
+        "provider_school_id": "bfd2344e-5468-48bc-aac9-4254586857b1"
+      }
+    ]
+  },
+  {
+    "id": "rossville-ks",
+    "name": "Rossville High School",
+    "short_name": "Rossville",
+    "state": "Kansas",
+    "city": "Rossville",
+    "county": "Shawnee County",
+    "conference": "Big East League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.kawvalley.k12.ks.us",
+    "aliases": [
+      "Rossville High School",
+      "Rossville",
+      "Rossville Bulldawgs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rossvillehs",
+        "provider_school_id": "h2025020404520497477af86b2265546"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/rossville/rossville-bulldogs",
+        "provider_school_id": "bf50f008-64f6-4819-bcf5-1f3987c4b9d8"
+      }
+    ]
+  },
+  {
+    "id": "seaman-ks",
+    "name": "Seaman High School",
+    "short_name": "Seaman",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.seamanschools.org",
+    "aliases": [
+      "Seaman High School",
+      "Seaman",
+      "Topeka Seaman",
+      "Seaman Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/seamanhs",
+        "provider_school_id": "h20250204045206007c072b82ed3d044"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/seaman-vikings",
+        "provider_school_id": "ea17eb0b-bbb6-4737-990b-ce528fe0fa14"
+      }
+    ]
+  },
+  {
+    "id": "shawnee-heights-ks",
+    "name": "Shawnee Heights High School",
+    "short_name": "Shawnee Heights",
+    "state": "Kansas",
+    "city": "Tecumseh",
+    "county": "Shawnee County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https:\\\\www.usd450.net",
+    "aliases": [
+      "Shawnee Heights High School",
+      "Shawnee Heights",
+      "Shawnee Heights Thunderbirds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/shawneeheightshs",
+        "provider_school_id": "h2025020404520608794fab26390aa47"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/tecumseh/shawnee-heights-thunderbirds",
+        "provider_school_id": "f9f3fa6e-e1db-4e54-a4f9-e21ac7bc19b9"
+      }
+    ]
+  },
+  {
+    "id": "silver-lake-ks",
+    "name": "Silver Lake High School",
+    "short_name": "Silver Lake",
+    "state": "Kansas",
+    "city": "Silver Lake",
+    "county": "Shawnee County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.silverlakeschools.org",
+    "aliases": [
+      "Silver Lake High School",
+      "Silver Lake",
+      "Silver Lake Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/silverlakehs",
+        "provider_school_id": "h202502040452062687536116fd9f742"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/silver-lake/silver-lake-eagles",
+        "provider_school_id": "b021d1eb-9b9d-4686-b117-e59fda9f3ee6"
+      }
+    ]
+  },
+  {
+    "id": "topeka-ks",
+    "name": "Topeka High School",
+    "short_name": "Topeka",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://thsweb.org",
+    "aliases": [
+      "Topeka High School",
+      "Topeka",
+      "Topeka Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/topekahs",
+        "provider_school_id": "h202502040452080831498ec86c27342"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/topeka-trojans",
+        "provider_school_id": "e9968bc0-9661-4861-9906-d2e1f57df627"
+      }
+    ]
+  },
+  {
+    "id": "topeka-west-ks",
+    "name": "Topeka West High School",
+    "short_name": "Topeka West",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.topekapublicschools.net/twhs",
+    "aliases": [
+      "Topeka West High School",
+      "Topeka West",
+      "Topeka West Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/topekawesths",
+        "provider_school_id": "h2025020404520810928f87d83095043"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/west-chargers",
+        "provider_school_id": "96537fc0-8324-4b97-991b-a69b0581796a"
+      }
+    ]
+  },
+  {
+    "id": "washburn-rural-ks",
+    "name": "Washburn Rural High School",
+    "short_name": "Washburn Rural",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://www.wrhs.net",
+    "aliases": [
+      "Washburn Rural High School",
+      "Washburn Rural",
+      "Washburn Rural Junior Blues"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/washburnrural",
+        "provider_school_id": "h202410240446310950b2ca8b8f9b348"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/topeka/washburn-rural-jr-blues",
+        "provider_school_id": "2c49abc2-790c-4061-8aec-81b0d9cc9243"
+      }
+    ]
+  },
+  {
+    "id": "robinson-ms-ks",
+    "name": "Robinson Middle School",
+    "short_name": "Robinson",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/robinsonmiddleschoolks",
+    "aliases": [
+      "Robinson Middle School",
+      "Robinson",
+      "Robinson MS",
+      "Robinson Rams"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/robinsonmiddleschoolks",
+        "provider_school_id": "h20250603041802206dfe452e411d643"
+      }
+    ]
+  },
+  {
+    "id": "rossville-ms-ks",
+    "name": "Rossville Junior High",
+    "short_name": "Rossville",
+    "state": "Kansas",
+    "city": "Rossville",
+    "county": "Shawnee County",
+    "conference": "Big East League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.kawvalley.k12.ks.us",
+    "aliases": [
+      "Rossville Junior High",
+      "Rossville",
+      "Rossville Bulldawgs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rossvillehs",
+        "provider_school_id": "h2025020404520497477af86b2265546"
+      }
+    ]
+  },
+  {
+    "id": "seaman-ms-ks",
+    "name": "Seaman Middle School",
+    "short_name": "Seaman",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial Middle League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd345.com",
+    "aliases": [
+      "Seaman Middle School",
+      "Seaman",
+      "Topeka Seaman MS",
+      "Seaman Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/seamanms",
+        "provider_school_id": "h20250707010056032357a790b749f47"
+      }
+    ]
+  },
+  {
+    "id": "shawnee-heights-ms-ks",
+    "name": "Shawnee Heights Middle School",
+    "short_name": "Shawnee Heights",
+    "state": "Kansas",
+    "city": "Tecumseh",
+    "county": "Shawnee County",
+    "conference": "Centennial Middle League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://shms.usd450.net",
+    "aliases": [
+      "Shawnee Heights Middle School",
+      "Shawnee Heights",
+      "Shawnee Heights MS",
+      "Shawnee Heights Thunderbirds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/shawneeheightsms",
+        "provider_school_id": "h202507071259397765caf74ed922545"
+      }
+    ]
+  },
+  {
+    "id": "silver-lake-ms-ks",
+    "name": "Silver Lake Junior High",
+    "short_name": "Silver Lake",
+    "state": "Kansas",
+    "city": "Silver Lake",
+    "county": "Shawnee County",
+    "conference": "Big East League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.silverlakeschools.org",
+    "aliases": [
+      "Silver Lake Junior High",
+      "Silver Lake",
+      "Silver Lake Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/silverlakehs",
+        "provider_school_id": "h202502040452062687536116fd9f742"
+      }
+    ]
+  },
+  {
+    "id": "washburn-rural-ms-ks",
+    "name": "Washburn Rural Middle School",
+    "short_name": "Washburn Rural",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial Middle League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.wrms.net",
+    "aliases": [
+      "Washburn Rural Middle School",
+      "Washburn Rural",
+      "Washburn Rural MS",
+      "Washburn Rural Falcons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/washrurms",
+        "provider_school_id": "h20260102023331793fbb9d901c4f143"
+      }
+    ]
+  },
+  {
+    "id": "washburn-rural-north-ms-ks",
+    "name": "Washburn Rural North Middle School",
+    "short_name": "Washburn Rural North",
+    "state": "Kansas",
+    "city": "Topeka",
+    "county": "Shawnee County",
+    "conference": "Centennial Middle League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://usd437.net/wrn",
+    "aliases": [
+      "Washburn Rural North Middle School",
+      "Washburn Rural North",
+      "Washburn Rural North MS",
+      "Washburn Rural North Ravens"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/washrurnorms",
+        "provider_school_id": "h20260103121605214c3c1f730a1e543"
+      }
+    ]
+  },
+  {
+    "id": "baldwin-ks",
+    "name": "Baldwin High School",
+    "short_name": "Baldwin",
+    "state": "Kansas",
+    "city": "Baldwin City",
+    "county": "Douglas County",
+    "conference": "Frontier League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd348.com",
+    "aliases": [
+      "Baldwin High School",
+      "Baldwin",
+      "Baldwin HS",
+      "Baldwin Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/baldwinhs",
+        "provider_school_id": "h202502040451548695af21c0e8ea843"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/baldwin/baldwin-bulldogs",
+        "provider_school_id": "68189fda-f3d4-4a9e-b180-0ebbbe1f8660"
+      }
+    ]
+  },
+  {
+    "id": "bishop-seabury-ks",
+    "name": "Bishop Seabury Academy",
+    "short_name": "Bishop Seabury Academy",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": "Kaw Valley Conference",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.seaburyacademy.org",
+    "aliases": [
+      "Bishop Seabury Academy",
+      "Bishop Seabury",
+      "Bishop Seabury Academy Seahawks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/bishopseaburyacademy",
+        "provider_school_id": "h202502040451551150e81d58f8a4f4d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lawrence/bishop-seabury-academy-seahawks",
+        "provider_school_id": "edabcd8d-fad9-4e6a-b543-38ff71eaa641"
+      }
+    ]
+  },
+  {
+    "id": "eudora-ks",
+    "name": "Eudora High School",
+    "short_name": "Eudora",
+    "state": "Kansas",
+    "city": "Eudora",
+    "county": "Douglas County",
+    "conference": "Frontier League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.eudoraschools.org",
+    "aliases": [
+      "Eudora High School",
+      "Eudora",
+      "Eudora Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/eudorahs",
+        "provider_school_id": "h20250204045158178f528780114134b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/eudora/eudora-cardinals",
+        "provider_school_id": "b5a9c1c3-b18e-4a18-9506-4587fedd02a9"
+      }
+    ]
+  },
+  {
+    "id": "lawrence-free-state-ks",
+    "name": "Free State High School",
+    "short_name": "Free State",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": "Sunflower League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://www.usd497.org/Domain/26",
+    "aliases": [
+      "Free State High School",
+      "Free State",
+      "Lawrence Free State",
+      "Free State Firebirds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lawrencefreestatehs",
+        "provider_school_id": "h20250204045200224ef2a53cad83f4e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lawrence/lawrence-free-state-firebirds",
+        "provider_school_id": "9374ea9a-1e2a-49e2-bf12-2649b8a4dced"
+      }
+    ]
+  },
+  {
+    "id": "lawrence-ks",
+    "name": "Lawrence High School",
+    "short_name": "Lawrence",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": "Sunflower League",
+    "classification": "6A",
+    "level": "high-school",
+    "division": "KSHSAA 6A",
+    "athletics_url": "https://www.lhs.usd497.org",
+    "aliases": [
+      "Lawrence High School",
+      "Lawrence",
+      "Lawrence Chesty Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lawrencehs",
+        "provider_school_id": "h20250204045200196d2f2cd52ed0745"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lawrence/lawrence-chesty-lions",
+        "provider_school_id": "fde83020-2e6f-43b9-b27f-c19a4052d15a"
+      }
+    ]
+  },
+  {
+    "id": "baldwin-ms-ks",
+    "name": "Baldwin Junior High",
+    "short_name": "Baldwin",
+    "state": "Kansas",
+    "city": "Baldwin City",
+    "county": "Douglas County",
+    "conference": "Frontier League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd348.com/schools/bjhs",
+    "aliases": [
+      "Baldwin Junior High",
+      "Baldwin",
+      "Baldwin JH",
+      "Baldwin Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/baldwinjhks",
+        "provider_school_id": "h2026051111531125990e4f293c4004f"
+      }
+    ]
+  },
+  {
+    "id": "eudora-ms-ks",
+    "name": "Eudora Middle School",
+    "short_name": "Eudora",
+    "state": "Kansas",
+    "city": "Eudora",
+    "county": "Douglas County",
+    "conference": "Frontier League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.eudoraschools.org",
+    "aliases": [
+      "Eudora Middle School",
+      "Eudora",
+      "Eudora MS",
+      "Eudora Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/eudoramsks",
+        "provider_school_id": "h202607291122557737cb442f64fef4d"
+      }
+    ]
+  },
+  {
+    "id": "lawrence-southwest-ms-ks",
+    "name": "Lawrence Southwest Middle School",
+    "short_name": "Lawrence Southwest",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "http://southwest.usd497.org",
+    "aliases": [
+      "Lawrence Southwest Middle School",
+      "Lawrence Southwest",
+      "Southwest MS",
+      "Lawrence Southwest Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/southwestms",
+        "provider_school_id": "h20250708030309640f221faac5d3a44"
+      }
+    ]
+  },
+  {
+    "id": "lawrence-west-ms-ks",
+    "name": "Lawrence West Middle School",
+    "short_name": "Lawrence West",
+    "state": "Kansas",
+    "city": "Lawrence",
+    "county": "Douglas County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://west.usd497.org",
+    "aliases": [
+      "Lawrence West Middle School",
+      "Lawrence West",
+      "West MS",
+      "Lawrence West Warhawks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lawrencewestms",
+        "provider_school_id": "h20250613080249638dbe4c0b4c36f47"
+      }
+    ]
+  },
+  {
+    "id": "ell-saline-ks",
+    "name": "Ell-Saline High School",
+    "short_name": "Ell-Saline",
+    "state": "Kansas",
+    "city": "Brookville",
+    "county": "Saline County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.ellsaline.org",
+    "aliases": [
+      "Ell-Saline High School",
+      "Ell-Saline",
+      "Ell-Saline Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ellsalinehs",
+        "provider_school_id": "h20250204045157928d148225bf5ae43"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/brookville/ell-saline-cardinals",
+        "provider_school_id": "f658c6fd-3121-4332-81a6-918fa7aa324c"
+      }
+    ]
+  },
+  {
+    "id": "salina-sacred-heart-ks",
+    "name": "Sacred Heart High School",
+    "short_name": "Sacred Heart",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": "North Central Activities Association",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.shknights.com",
+    "aliases": [
+      "Sacred Heart High School",
+      "Sacred Heart",
+      "Sacred Heart Knights"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sacredhearths",
+        "provider_school_id": "h20250204045205321062d0158f9d043"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/salina/sacred-heart-knights",
+        "provider_school_id": "336c9b56-1545-44ce-a5d4-845cfa799465"
+      }
+    ]
+  },
+  {
+    "id": "salina-central-ks",
+    "name": "Salina Central High School",
+    "short_name": "Salina Central",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": "AVCTL I & II League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd305.com",
+    "aliases": [
+      "Salina Central High School",
+      "Salina Central",
+      "Salina Central Mustangs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/salinacentralhs",
+        "provider_school_id": "h202502040452057777ebbbab7e7ed44"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/salina/salina-central-mustangs",
+        "provider_school_id": "899bd812-c1f2-4037-99ba-0352b76e0f04"
+      }
+    ]
+  },
+  {
+    "id": "salina-south-ks",
+    "name": "Salina South High School",
+    "short_name": "Salina South",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": "AVCTL I & II League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd305.com/south",
+    "aliases": [
+      "Salina South High School",
+      "Salina South",
+      "Salina South HS",
+      "Salina South Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/salinasouthhs",
+        "provider_school_id": "h20250204045205848414b3f3ce44d41"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/salina/salina-south-cougars",
+        "provider_school_id": "567eec81-80e5-4a03-8dae-ccc3f0b8b4ab"
+      }
+    ]
+  },
+  {
+    "id": "southeast-of-saline-ks",
+    "name": "Southeast of Saline High School",
+    "short_name": "Southeast of Saline",
+    "state": "Kansas",
+    "city": "Gypsum",
+    "county": "Saline County",
+    "conference": "North Central Activities Association",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd306.org",
+    "aliases": [
+      "Southeast of Saline High School",
+      "Southeast of Saline",
+      "Southeast of Saline Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/southeastofsalinehs",
+        "provider_school_id": "h20250204045206546161745563df64c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/gypsum/southeast-of-saline-trojans",
+        "provider_school_id": "2d6edb12-b6a9-412f-abe6-f9ab146f24ab"
+      }
+    ]
+  },
+  {
+    "id": "salina-lakewood-ms-ks",
+    "name": "Salina Lakewood Middle School",
+    "short_name": "Salina Lakewood",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": "Wichita Suburban League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd305.com",
+    "aliases": [
+      "Salina Lakewood Middle School",
+      "Salina Lakewood",
+      "Lakewood MS Salina",
+      "Salina Lakewood Mustangs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lwmssalina",
+        "provider_school_id": "h2025061308174157706fd89d2fd104c"
+      }
+    ]
+  },
+  {
+    "id": "salina-sacred-heart-ms-ks",
+    "name": "Salina Sacred Heart Middle School",
+    "short_name": "Salina Sacred Heart",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.shknights.com",
+    "aliases": [
+      "Salina Sacred Heart Middle School",
+      "Salina Sacred Heart",
+      "Sacred Heart",
+      "Salina Sacred Heart Knights"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sacredhearths",
+        "provider_school_id": "h20250204045205321062d0158f9d043"
+      }
+    ]
+  },
+  {
+    "id": "salina-south-ms-ks",
+    "name": "Salina South Middle School",
+    "short_name": "Salina South",
+    "state": "Kansas",
+    "city": "Salina",
+    "county": "Saline County",
+    "conference": "Wichita Suburban League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd305.com/southmiddle",
+    "aliases": [
+      "Salina South Middle School",
+      "Salina South",
+      "Salina South MS",
+      "Salina South Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/salinasouthms",
+        "provider_school_id": "h20250613085014453831b082366554a"
+      }
+    ]
   }
 ]

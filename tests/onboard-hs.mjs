@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
+import {boundLocalDay,maxprepsFromLinks,maxprepsLinks,prepGolfCode,tennisReportingName,boundCoverage,letsGoRunGuesses,letsGoRunSchools,milesplitFor,countyFips,ccdCounty,kshsaaSchools,boundStateSchools,prepGolfSchools,maxprepsSchoolPage,maxprepsGuesses,matchSchools,draftEntry,boundSportsHas,schoolKey,levelOf,appId,addressKey,MS_LEVEL,VARSITY_LEVEL} from '../scripts/onboard-hs.mjs';
 import {schoolFromConfig} from '../src/high-school-builders.mjs';
 
 const read=(name,gz=name.endsWith('.gz'))=>{const b=readFileSync(new URL(`./fixtures/onboard-hs/${name}`,import.meta.url));return gz?gunzipSync(b).toString('utf8'):b.toString('utf8');};
@@ -116,4 +116,41 @@ assert.deepEqual(letsGoRunGuesses(listing,2026),['2026_Clay_Center_XC_Invitation
 assert.deepEqual(letsGoRunSchools(ksc('meetpro-2026_NCKL_Cross_Country_Championships.html.gz'),[{id:'chapman-ks',sports:{meetTeam:'Chapman'}},{id:'axtell-ks',sports:{meetTeam:'Axtell'}},{id:'fort-riley-ms-ks',sports:{meetTeam:['Ft Riley','Fort Riley']}}]),['chapman-ks','fort-riley-ms-ks']);
 // MaxPreps id from a page with no mascot image: its most frequent schoolId.
 assert.equal(maxprepsSchoolPage(ksc('maxpreps-wabaunsee-football-2026-11-05.html.gz'),'alma/wabaunsee-chargers').id,JSON.parse(readFileSync(new URL('../src/schools/data/ks-wabaunsee.json',import.meta.url),'utf8')).schools.find(e=>e.id==='wabaunsee-ks').maxpreps.schoolId);
+// MaxPreps paths the guesses miss, from the links on the county's other
+// school pages (November 6: Shawnee and Douglas counties).
+{
+  const links=['ks/topeka/west-chargers','ks/carbondale/santa-fe-trail-chargers','ks/topeka/cair-paravel-lions','ks/rossville/rossville-bulldogs','ks/baldwin/baldwin-bulldogs',
+    'ks/lawrence/bishop-seabury-academy-seahawks','ks/perry/perry-lecompton-bishop-seabury-academy','ks/lawrence/lawrence-chesty-lions','ks/lawrence/lawrence-free-state-firebirds','ks/topeka/highland-park-scots','ks/football/game'];
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Topeka West High',town:'Topeka',mascot:'Chargers'}),'ks/topeka/west-chargers');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Cair Paravel Latin School',town:'Topeka',mascot:'Rampant Red Lion'}),'ks/topeka/cair-paravel-lions');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Rossville Jr.-Sr. High School',town:'Rossville',mascot:'Bulldawgs'}),'ks/rossville/rossville-bulldogs');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Baldwin High School',town:'Baldwin City',mascot:'Bulldogs'}),'ks/baldwin/baldwin-bulldogs');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Bishop Seabury Academy',town:'Lawrence',mascot:'Seahawks'}),'ks/lawrence/bishop-seabury-academy-seahawks');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Lawrence High',town:'Lawrence',mascot:'Chesty Lions'}),'ks/lawrence/lawrence-chesty-lions');
+  assert.equal(maxprepsFromLinks(links,'KS',{name:'Hope Street Academy',town:'Topeka',mascot:'Panthers'}),null,'no link fits');
+  assert.deepEqual(maxprepsLinks('<a href="https://www.maxpreps.com/ks/topeka/west-chargers/football/">'),['ks/topeka/west-chargers']);
+}
+// One school under two names, with one Bound school: one row (Free State).
+{
+  const b={name:'Lawrence Free State',town:'Lawrence',bound:'hFS',address:'4700 Overland Dr'};
+  const two=matchSchools({ccd:[{name:'Lawrence Free State High',town:'Lawrence',level:'high-school',address:'4700 Overland Dr'}],kshsaa:[{name:'Free State HS',town:'Lawrence',address:'4700 Overland Drive'}],bound:[b],state:'KS'});
+  assert.equal(two.filter(r=>r.bound).length,1);assert.ok(two[0].kshsaa&&two[0].ccd,'both sources kept');
+}
+// Few Bound games: MaxPreps' game sports join the draft (Cair Paravel, November 6).
+{
+  const e=draftEntry({id:'cair-paravel-latin-ks',level:'high-school',name:'Cair Paravel Latin School',bound:{bound:'h1',slug:'cplatin',name:'Cair Paravel Latin'},has:['Football','Volleyball','Basketball','Cross Country','Track & Field'],
+    maxpreps:{id:'0214e66b-7ee7-4dd5-9c77-b72e148aa811',path:'ks/topeka/cair-paravel-lions',teams:['baseball','basketball','football','soccer','tennis/girls','volleyball','volleyball/boys','wrestling']},coverage:{sparse:true}});
+  assert.deepEqual(e.sports.has,['Football','Volleyball','Soccer','Basketball','Baseball','Cross Country','Track & Field']);assert.equal(e.sports.maxprepsSchedule,true);
+  assert.equal(e.maxpreps.path,'topeka/cair-paravel-lions');
+  assert.deepEqual(e.sports.paths,undefined,'no girls\' soccer team listed');
+  const baldwin=draftEntry({id:'baldwin-ks',level:'high-school',name:'Baldwin High School',bound:{bound:'h2',slug:'baldwinhs',name:'Baldwin'},has:['Football','Flag Football','Soccer','Girls Soccer'],maxpreps:{id:'68189fda-f3d4-4a9e-b180-0ebbbe1f8660',path:'ks/baldwin/baldwin-bulldogs',teams:['flag-football/girls/fall','football','soccer','soccer/girls/spring']}});
+  assert.deepEqual(baldwin.sports.paths,{'Girls Soccer':'soccer/girls/spring','Girls Flag Football':'flag-football/girls/fall'});
+}
+// A guessed path served under another name: the canonical path and its teams (Washburn Rural, November 6).
+{
+  const html='<link rel="canonical" href="https://www.maxpreps.com/ks/topeka/washburn-rural-jr-blues/" data-next-head=""/>"schoolId":"2c49abc2-790c-4061-8aec-81b0d9cc9243" <a href="/ks/topeka/washburn-rural-jr-blues/soccer/girls/spring/schedule/">';
+  assert.deepEqual(maxprepsSchoolPage(html,'ks/topeka/washburn-rural-junior-blues'),{id:'2c49abc2-790c-4061-8aec-81b0d9cc9243',teams:['soccer/girls/spring'],path:'ks/topeka/washburn-rural-jr-blues'});
+  assert.equal(maxprepsSchoolPage(html,'ks/topeka/washburn-rural-jr-blues').path,undefined,'already the canonical path');
+}
+assert.equal(boundLocalDay('2026-09-27T02:00:00.000Z'),'2026-09-26','Bound times are UTC');assert.equal(boundLocalDay(''),null);
 console.log(`onboard-hs: ok (Geary: ${rows.length} schools matched)`);

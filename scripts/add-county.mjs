@@ -25,12 +25,16 @@ const TITLE={'high-school':'High School','middle-school':'Middle School'};
 // "Hanover High", "Republic County Jr./Sr. High School" -> "Hanover High School";
 // a middle school keeps its kind ("Junior High", "Middle School").
 export function displayName(entry,facts){
-  const raw=String(facts.kshsaaName||facts.name||entry.name).replace(/\s+/g,' ').trim();
+  // KSHSAA's "Salina-Central HS", "Lawrence-West MS": the town and the name (November 6).
+  const raw=String(facts.kshsaaName||facts.name||entry.name).replace(/\s+/g,' ').trim();const town=String(facts.town||'').split(/\s+/)[0];
+  const named=town&&raw.startsWith(`${town}-`)&&/^[A-Z]/.test(raw.slice(town.length+1))?`${town} ${raw.slice(town.length+1)}`:raw;
   if(entry.level==='middle-school'){
-    const base=raw.replace(/\b(?:MS|Middle School|Middle|JH|Jr\.? High|Junior High)$/i,'').trim();
-    return `${base} ${/\b(?:JH|Jr\.? High|Junior High)$/i.test(raw)?'Junior High':'Middle School'}`;
+    const base=named.replace(/\b(?:MS|Middle School|Middle|JH|Jr\.? High(?: School)?|Junior High(?: School)?)$/i,'').trim();
+    return `${base} ${/\b(?:JH|Jr\.? High|Junior High)(?: School)?$/i.test(named)?'Junior High':'Middle School'}`;
   }
-  const base=raw.replace(/\b(?:HS|High School|High|Jr\.?\s*\/\s*Sr\.?\s*High(?: School)?|Junior\s*\/\s*Senior High(?: School)?|Sr\.? High)$/i,'').trim();
+  // A name that is already a school's ("Cair Paravel Latin School", "Bishop Seabury Academy").
+  if(/\b(?:School|Academy)$/.test(named)&&!/\bHigh School$/.test(named))return named;
+  const base=named.replace(/\b(?:HS|High School|High|Jr\.?\s*\/\s*Sr\.?\s*High(?: School)?|Junior\s*\/\s*Senior High(?: School)?|Sr\.? High)$/i,'').trim();
   return `${base} ${TITLE[entry.level]}`;
 }
 export const shortName=name=>name.replace(/\s+(?:High School|Middle School|Junior High)$/,'');
@@ -46,7 +50,8 @@ export function themeFor(colors){
 // KSHSAA writes a junior high league "<league> Jr."; "NCAA" is the North
 // Central Activities Association.
 const LEAGUE_NAMES={NCAA:'North Central Activities Association'};
-const leagueName=l=>{if(!l)return null;const base=l.replace(/\s+Jr\.?$/,'').trim();return LEAGUE_NAMES[base]||(/league|association|conference/i.test(base)?base:`${base} League`);};
+// KSHSAA's "Independent - JH" is no league (November 6: Lawrence's and Salina's middle schools).
+const leagueName=l=>{if(!l||/^Independent\b/i.test(l))return null;const base=l.replace(/\s+Jr\.?$/,'').trim();return LEAGUE_NAMES[base]||(/league|association|conference/i.test(base)?base:`${base} League`);};
 const website=w=>!w?null:/^https?:/i.test(w)?w.replace(/\/$/,''):`https://${w.replace(/\/$/,'')}`;
 
 // --- The data file
