@@ -34,8 +34,14 @@ Since November 5 it also fills in what was looked up by hand for Dickinson, Waba
 - **Prep.Golf golfer code:** the code all of a school's posted varsity tournaments share (`prepGolfCode`; of two left, the one matching the name's initials).
 - **TennisReporting name:** every school in the state's TennisReporting events (`tennisReportingName`; "Salina-Central HS" is Salina Central).
 - **MaxPreps id** from a school page with no mascot image: the page data's most frequent `schoolId` (Wakefield).
-- **Bound coverage:** the school's Bound football (else volleyball) games this year against MaxPreps' schedule. Under 60% gets `sports.maxprepsSchedule` in the draft, with a table in the report (`boundCoverage`; Wabaunsee had 1 of 10).
+- **Bound coverage:** the school's Bound football (else volleyball) games this year against MaxPreps' schedule. Under 85% gets `sports.maxprepsSchedule` in the draft (60% until November 5: Centralia 6 of 10 and Nemaha Central 7 of 10 were missing games), with a table in the report (`boundCoverage`; Wabaunsee had 1 of 10).
 - **LetsGoRun (MeetPro) meets:** the listing's folders for the season, plus last years' folder names with this year's (`letsGoRunGuesses`; the 2026 listing showed one cross country meet, and six more existed). Each is read, and the report lists its date, title, the county's schools that ran it, and whether the app reads it already. Folders go in `LETSGORUN_MEETPRO.folders` by date. When schools already in the app ran the meet, compare first (`npm run diff:feeds`).
+
+**Several counties at once** (November 5): `--county=Washington,Republic,Cloud --out-dir=<dir>` writes `<County>-draft.json`, `<County>-catalog.json` and `<County>-report.md` for each; statewide pages are read once per run.
+
+**Results sources table:** for each school's cross country meets this season, the report shows where results are: MileSplit Live (meet id and its timer), a LetsGoRun folder with the school, or "none found".
+- **Timers:** MileSplit Live names each meet's timer. Kansas 2026: Midwest Timing & Results 65, Goddard 22, LetsGoRun 17, FAT Dog 13, Heartland 10, Shawnee Mission Timing Team 10, Timer Guys 7, and others. Their own sites point to MileSplit Live (Heartland, Midwest Timing).
+- **"None found"** is mostly small meets the host times itself (TVL, Concordia, Beloit, Marysville, Republic County in 2026). Check the host school's site before recording them as not published.
 
 The draft holds one entry for each school found on Bound. The report lists every school found, with what each source had, and what is left to check by hand:
 
@@ -150,3 +156,34 @@ User: "Once we have results from anywhere shouldn't we just be saving them in a 
 - **When to run it:** a shared source changes for schools already live (`AGENTS.md` 5c). On #525 it found middle schools taking a high school's places and a Topeka school's runners on Manhattan's Eisenhower MS.
 - **A LetsGoRun folder filed by day** is taken only when the schedule's name for the meet, its alias, or its host (a team in the results) shares a word with the folder's name or title (`meetProFolderFits`). A name with no word of its own ("MS XC") takes the day's folder.
 - **Schedule pairings:** `tests/hs-schedule-pairings.mjs` builds whole feeds through the Worker for Bound alone and for Bound + MaxPreps' schedule (the missing Olpe game of #523's first preview).
+
+## Adding a surveyed county (November 5)
+
+`npm run add:county -- --draft=<County>-draft.json --doc=docs/<DOC>.md [--skip=id,...] [--rename=old:new,...] [--dry-run]` (`scripts/add-county.mjs`):
+
+- **What it writes:** `src/schools/data/ks-<county>.json`, the county's line in `src/schools/ks-counties.mjs`, and each school's catalog entry (`src/schools.json`: name, town, county, class, league, website, aliases, providers), sponsored sports (from the built module) and team colors (Bound's first real color).
+- **Before running it:** review the draft (ids, MileSplit team, skipped schools). Then add the county to `tests/ks-counties-module.mjs` and `tests/catalog-module.mjs`.
+
+## MileSplit Live: names and same-day meets (November 5)
+
+- **Team ids by name:** an exact name wins over a longer one (`milesplitTeamsNamed`). "Linn High School" (Washington County) is team 21971, not Jayhawk Linn (21877), which had more meets.
+- **A second meet on a day the schedule already has one:** the index's meet gets its own card when it is plainly another meet (`sameIndexMeet`). The test is that the schedule's meet has a name of its own, and neither that name, its alias nor its venue shares a word with the index meet's name, venue or town. Examples:
+  - Junction City, September 5: Bound has the Greg Wilson Classic; a second squad ran the Manhattan Invitational (Boys 6th of 11), now its own card.
+  - Eisenhower MS, September 22: the calendar says "at Clay Center"; its runners were at the McPherson MS Invitational.
+  - Manhattan, October 10: the calendar says the Haskell Invite; its varsity won the Salina Invitational girls' race.
+
+  The index rule still keeps a meet only with the school's own runners: Council Grove's six runners at Lyndon (September 10) were 7th and 8th graders, so its varsity gets no Lyndon card.
+- **Listed but no runners:** MileSplit Live listing a team in a meet with zero entries means the results were not posted for it (Wabaunsee at Riley County, October 10; Junction City at the Greg Wilson Classic, September 5).
+
+## Sites that turn the app away (robots.txt, November 5)
+
+| Site | Answer |
+| --- | --- |
+| Trackwrestling | `User-agent: ClaudeBot Disallow: /` (and HTTP 406) |
+| FloWrestling | `ClaudeBot Disallow: /` |
+| Athletic.net | disallows ClaudeBot and anthropic-ai |
+| SwimCloud | `anthropic-ai Disallow: /` |
+| USA Bracketing | allows all but account pages: a wrestling source to check before the winter season |
+| KSHSAA | `Crawl-delay: 30`; its site is a script page, with no readable results found yet |
+
+Do not read the sites that disallow the app.

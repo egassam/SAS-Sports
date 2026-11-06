@@ -1,0 +1,159 @@
+{
+ "state": "ks",
+ "counties": [
+  "Lyon"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "emporia-ks",
+   "name": "Emporia High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451581248ef6dd9c8db940",
+    "slug": "emporiahs"
+   },
+   "maxpreps": {
+    "schoolId": "acd350d8-af6f-4d46-a29e-71d85724c7ed",
+    "path": "emporia/emporia-spartans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 36,
+    "code": "EMP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Emporia",
+    "tennis": "Emporia HS",
+    "milesplit": 14600,
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    }
+   }
+  },
+  {
+   "id": "hartford-ks",
+   "name": "Hartford High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515898151b8e7ee1a214d",
+    "slug": "hartfordhs"
+   },
+   "maxpreps": {
+    "schoolId": "512fb0d3-1990-4430-8b44-bb36cd8a5b9e",
+    "path": "hartford/hartford-jaguars"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 270,
+    "code": "HF"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf"
+    ],
+    "meetTeam": "Hartford",
+    "milesplit": 21962,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "northern-heights-ks",
+   "name": "Northern Heights High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452014097c488994aa434b",
+    "slug": "northernheightshs"
+   },
+   "maxpreps": {
+    "schoolId": "747d3694-afcb-4a3e-9f32-b0c3d4d717a6",
+    "path": "allen/northern-heights-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Northern Heights",
+    "milesplit": 15205,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "olpe-ks",
+   "name": "Olpe High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201758bb52d302d83c47",
+    "slug": "olpehs"
+   },
+   "maxpreps": {
+    "schoolId": "559c7667-0ad9-49fb-a945-c68e83e37c99",
+    "path": "olpe/olpe-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 233,
+    "code": "OLPE"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Olpe",
+    "milesplit": 22016,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

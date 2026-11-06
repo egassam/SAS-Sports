@@ -18,9 +18,15 @@ const TZ='America/Chicago';
 
 // The schools, by county and level.
 const modules=[...KS_COUNTY_HIGH_SCHOOLS,...KS_COUNTY_MIDDLE_SCHOOLS];
-assert.deepEqual(KS_COUNTY_FILES.map(f=>f.counties[0]),['Dickinson','Wabaunsee','Morris','Clay','Marshall']);
-assert.deepEqual(KS_COUNTY_HIGH_SCHOOLS.map(m=>m.id),['abilene-ks','chapman-ks','herington-ks','solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','clay-center-ks','wakefield-ks','marysville-ks','valley-heights-ks','frankfort-ks','axtell-ks']);
-assert.deepEqual(KS_COUNTY_MIDDLE_SCHOOLS.map(m=>m.id),['abilene-ms-ks','clay-center-ms-ks','marysville-ms-ks']);
+const BATCH1=['Dickinson','Wabaunsee','Morris','Clay','Marshall'],BATCH2=['Washington','Republic','Cloud','Ottawa','Jackson','Nemaha','Lyon'];
+assert.deepEqual(KS_COUNTY_FILES.map(f=>f.counties[0]),[...BATCH1,...BATCH2]);
+const idsOf=(counties,level)=>KS_COUNTY_FILES.filter(f=>counties.includes(f.counties[0])).flatMap(f=>f.schools.filter(e=>e.level===level).map(e=>e.id));
+const inBatch1=new Set([...idsOf(BATCH1,'high-school'),...idsOf(BATCH1,'middle-school')]);
+assert.deepEqual(idsOf(BATCH1,'high-school'),['abilene-ks','chapman-ks','herington-ks','solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','clay-center-ks','wakefield-ks','marysville-ks','valley-heights-ks','frankfort-ks','axtell-ks']);
+assert.deepEqual(idsOf(BATCH1,'middle-school'),['abilene-ms-ks','clay-center-ms-ks','marysville-ms-ks']);
+// The second batch (November 5, user: "Let's add the next counties. Your choice. Learn and optimize").
+assert.deepEqual(idsOf(BATCH2,'high-school'),['hanover-ks','linn-ks','washington-county-ks','pike-valley-ks','republic-county-ks','clifton-clyde-ks','concordia-ks','bennington-ks','minneapolis-ks','tescott-ks','holton-ks','jackson-heights-ks','royal-valley-ks','centralia-ks','nemaha-central-ks','sabetha-ks','emporia-ks','hartford-ks','northern-heights-ks','olpe-ks']);
+assert.deepEqual(idsOf(BATCH2,'middle-school'),['concordia-ms-ks','minneapolis-ms-ks','jackson-heights-ms-ks']);
 assert.match(index,/\.\.\.KS_COUNTY_HIGH_SCHOOLS,\.\.\.KS_COUNTY_MIDDLE_SCHOOLS\]/,'the Worker reads them');
 
 // Catalog: in Kansas, in its county, at its level, with a theme and the
@@ -42,7 +48,9 @@ for(const file of KS_COUNTY_FILES)for(const entry of file.schools){
 
 // Schools that enter few of their own games on Bound also read MaxPreps'
 // schedule (`maxprepsSchedule`); the others read Bound alone.
-const SPARSE=['solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','wakefield-ks','valley-heights-ks','frankfort-ks','axtell-ks'];
+const SPARSE=['solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','wakefield-ks','valley-heights-ks','frankfort-ks','axtell-ks',
+  // Second batch: under 85% of MaxPreps' games on Bound (Centralia 6 of 10, Nemaha Central 7 of 10, ...).
+  'hanover-ks','linn-ks','pike-valley-ks','clifton-clyde-ks','bennington-ks','tescott-ks','centralia-ks','nemaha-central-ks','sabetha-ks','hartford-ks','northern-heights-ks','olpe-ks'];
 for(const m of KS_COUNTY_HIGH_SCHOOLS){
   const flags=Object.values(m.sports).flat().filter(t=>t.maxpreps).map(t=>!!t.maxprepsSchedule);
   assert.ok(flags.length,`${m.id}: MaxPreps teams`);
@@ -51,8 +59,14 @@ for(const m of KS_COUNTY_HIGH_SCHOOLS){
 }
 // Results sources found by the survey.
 const by=id=>modules.find(m=>m.id===id);
-assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.prepGolf).map(m=>[m.id,m.prepGolf.code])),{'abilene-ks':'ABI','chapman-ks':'CHAP','herington-ks':'HER','solomon-ks':'SLM','council-grove-ks':'CG','clay-center-ks':'CC','marysville-ks':'MVL','valley-heights-ks':'VH','frankfort-ks':'FRA'});
-assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.sports.Tennis).map(m=>[m.id,[...new Set(m.sports.Tennis.map(t=>t.tennisReporting?.school))]])),{'abilene-ks':['Abilene HS'],'chapman-ks':['Chapman HS'],'wabaunsee-ks':['Wabaunsee HS'],'clay-center-ks':['Clay Center Community HS'],'marysville-ks':['Marysville HS']});
+assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.prepGolf&&inBatch1.has(m.id)).map(m=>[m.id,m.prepGolf.code])),{'abilene-ks':'ABI','chapman-ks':'CHAP','herington-ks':'HER','solomon-ks':'SLM','council-grove-ks':'CG','clay-center-ks':'CC','marysville-ks':'MVL','valley-heights-ks':'VH','frankfort-ks':'FRA'});
+assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.sports.Tennis&&inBatch1.has(m.id)).map(m=>[m.id,[...new Set(m.sports.Tennis.map(t=>t.tennisReporting?.school))]])),{'abilene-ks':['Abilene HS'],'chapman-ks':['Chapman HS'],'wabaunsee-ks':['Wabaunsee HS'],'clay-center-ks':['Clay Center Community HS'],'marysville-ks':['Marysville HS']});
+// Second batch: codes that spell the school's name (prepGolfCode), TennisReporting names, MileSplit ids.
+assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.prepGolf&&!inBatch1.has(m.id)).map(m=>[m.id,m.prepGolf.code])),{'hanover-ks':'HAN','linn-ks':'LINN','washington-county-ks':'WACO','pike-valley-ks':'PV','republic-county-ks':'RPC','clifton-clyde-ks':'CLCL','concordia-ks':'CON','minneapolis-ks':'MNP','holton-ks':'HOLT','royal-valley-ks':'RV','centralia-ks':'CEN','nemaha-central-ks':'NMC','sabetha-ks':'SB','emporia-ks':'EMP','hartford-ks':'HF','olpe-ks':'OLPE'});
+assert.deepEqual(Object.fromEntries(KS_COUNTY_HIGH_SCHOOLS.filter(m=>m.sports.Tennis&&!inBatch1.has(m.id)).map(m=>[m.id,[...new Set(m.sports.Tennis.map(t=>t.tennisReporting?.school))]])),{'concordia-ks':['Concordia HS'],'sabetha-ks':['Sabetha HS'],'emporia-ks':['Emporia HS']});
+assert.equal(by('linn-ks').sports['Cross Country'][0].milesplit.team,21971,'Linn High School, not Jayhawk Linn (21877)');
+assert.deepEqual(Object.keys(by('tescott-ks').sports).sort(),['Basketball','Cross Country','Football','Softball','Track & Field','Volleyball'],'game sports from MaxPreps where Bound has none');
+assert.deepEqual(by('emporia-ks').sports.Soccer.map(t=>[t.label,t.maxpreps]),[['Boys','soccer'],['Girls','soccer/girls/spring']]);
 assert.equal(by('abilene-ks').sports['Cross Country'][0].milesplit.team,21806);
 assert.deepEqual(by('abilene-ms-ks').sports['Cross Country'][0].milesplit,{team:33030,middle:true});
 assert.equal(by('marysville-ms-ks').bound.school,by('marysville-ks').bound.school,'Marysville JH reads the high school\'s Bound id at its grade levels');

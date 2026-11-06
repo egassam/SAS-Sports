@@ -1,6 +1,26 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 5, 2026 (Central, afternoon). **Lessons from the day's sessions, built** (user: "What can we learn from this to optimize the next", then "Yes, do all of them and merge when it passes"). Branch `ccr-fe7c6016-k3rqnz`, version `4.270.2-onboarding-lessons`; the PR, merge and production check are in the session log.
+Last updated: November 5, 2026 (Central, evening). **Seven more Kansas counties** (user: "Let's add the next counties. Your choice. Learn and optimize. Make sure you think outside the box. I shouldn't have to tell you to look at let's go run out any other sites"). `docs/KS_COUNTIES_BATCH2_MODULE.md`; version `4.272.0-ks-counties-2`; PR, merge and production check in the session log.
+- **Added (23):** Washington, Republic, Cloud, Ottawa, Jackson, Nemaha and Lyon counties: 20 high schools (Emporia 5A among them) and 3 middle schools. About 25 schools skipped, with reasons.
+- **Survey (`onboard-hs`):**
+  - several counties per run, with statewide reads done once;
+  - a results-sources table (each meet's MileSplit Live timer, LetsGoRun, or none);
+  - a catalog file and each school's MaxPreps team list;
+  - Bound coverage at 85% (was 60%: Centralia 6 of 10 and Nemaha Central 7 of 10 were missing games);
+  - Prep.Golf codes that spell the school's name (Royal Valley RV, not Perry-Lecompton's PLHS).
+- **`npm run add:county`** (`scripts/add-county.mjs`): a draft plus catalog file becomes the data file, its registration, the catalog entry, sponsored sports and colors.
+- **Fixes:**
+  - MileSplit team ids take an exact name first: Linn is 21971, not Jayhawk Linn 21877; the 26 earlier ids were all checked and right.
+  - A second index meet on a day the schedule already has one gets its own card when it is plainly another meet (`sameIndexMeet`). Production gains Junction City's Sep 5 Manhattan Invitational squad, Manhattan's Oct 10 Salina Invitational and Eisenhower MS's Sep 22 McPherson meet.
+  - Schools with few Bound games take MaxPreps' game sports (Tescott: four).
+- **Sources beyond the timers:** each timer's own site points to MileSplit Live. Sites that disallow the app are recorded and not read: Trackwrestling, FloWrestling, Athletic.net, SwimCloud. USA Bracketing is open, to check for wrestling.
+- **Gate:**
+  - `test:release` passed on `46ca146`.
+  - `verify:preview` for the 23 new schools plus Manhattan, Eisenhower and Junction City, all sports: 624/0, XC 18/20 and 26/21.
+  - `diff:feeds` cross country: 39 the same, the 3 gains above, 23 new.
+- **Closed as not published:** Wabaunsee Oct 10 and Junction City Sep 5 (listed on MileSplit Live with zero entries). Council Grove Sep 10: its runners at Lyndon were 7th and 8th graders, so its varsity's Hesston meet has no results.
+
+Earlier, November 5, 2026 (Central, afternoon). **Lessons from the day's sessions, built** (user: "What can we learn from this to optimize the next", then "Yes, do all of them and merge when it passes"). Branch `ccr-fe7c6016-k3rqnz`, version `4.270.2-onboarding-lessons`; the PR, merge and production check are in the session log.
 - **`npm run diff:feeds`** (`scripts/diff-feeds.mjs`): preview vs production, card by card (`refresh=1&stored=0`). `AGENTS.md` 5c runs it whenever a shared source of schools already in production changes.
 - **`stored=0`:** on a preview, a comparison build skips its stored finals; production ignores it.
 - **LetsGoRun folder check** (`meetProFolderFits`): a folder filed by day must share a word with the schedule's name, its alias, its venue (Bound's address) or its host, against the folder's name, title and place block. A name with no word of its own takes the day's folder.
@@ -551,3 +571,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 5 — Dickinson, Wabaunsee, Morris, Clay and Marshall counties, Kansas** (#523 merged `945ad04`, production `4.268.2-ks-counties` verified; 16 schools as data; rule: several counties per session).
 - **Nov 5 — LetsGoRun meets compared with production** (Abilene Sep 3, Bob Schmoekel Oct 3, Centennial Oct 17 added; Shawnee Heights MS left out; middle schools leave out "High School" races). #525 merged `fa7d9c5`, production `4.269.1-letsgorun-xc` verified.
 - **Nov 5 — Lessons built** (#527: `diff:feeds`, `stored=0`, LetsGoRun folder check, survey sources, schedule-pairing test; Shufelberger added) and **retracted stored finals** (#528, Junction City Sep 5); production `4.271.0-retracted-finals` verified.
+- **Nov 5 — Seven more counties** (Washington, Republic, Cloud, Ottawa, Jackson, Nemaha, Lyon; 23 schools; survey sources table, `add:county`, exact MileSplit names, second-meet cards).

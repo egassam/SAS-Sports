@@ -60,6 +60,17 @@ assert.deepEqual(milesplitIndexGames(index,26138,[],'2026-09-30').map(g=>g.date)
 assert.deepEqual(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:null,host:'9',teams:[{id:'9'}]}],[9],[{date:'2026-10-01',end_date:'2026-10-03'}],'2026-11-01'),[]);
 assert.equal(milesplitIndexGames([{id:'1',name:'A',date:'2026-10-02',end:null,host:'9',teams:[{id:'9'}]}],[9],[],'2026-11-01')[0].site,'HOME');
 
+// A day with a schedule meet takes the index's meet too only when it is
+// plainly another meet (November 5: Junction City's Greg Wilson Classic and
+// its second squad's Manhattan Invitational on Sep 5; Eisenhower MS's
+// calendar "Clay Center" and its runners at McPherson on Sep 22).
+const lyndon={id:'773708',name:'Lyndon XC Invitational',date:'2026-09-10',end:null,venue:'Lyndon',city:'Lyndon',host:'1',teams:[{id:'21896'}]};
+assert.deepEqual(milesplitIndexGames([lyndon],[21896],[{date:'2026-09-10',name:'Hesston Invitational',address:'Hesston Golf Course'}],'2026-11-01').map(g=>g.name),['Lyndon XC Invitational']);
+assert.deepEqual(milesplitIndexGames([lyndon],[21896],[{date:'2026-09-10',name:'MS XC'}],'2026-11-01'),[],'a name with no word of its own is the day\'s meet');
+assert.deepEqual(milesplitIndexGames([lyndon],[21896],[{date:'2026-09-10',name:'Lyndon Invite'}],'2026-11-01'),[],'the same meet by name');
+assert.deepEqual(milesplitIndexGames([{...lyndon,name:'NCKL Cross Country Championships',venue:'Abilene CC Course',city:'Abilene'}],[21896],[{date:'2026-09-10',name:'Great Life Golf Course meet'}],'2026-11-01',{aliases:{'Great Life Golf Course meet':'NCKL Cross Country Championships'}}),[],'the same meet by the alias table');
+assert.deepEqual(milesplitIndexGames([{...lyndon,name:'Fort Riley MS XC Invitational',venue:'Milford Lake',city:'Junction City'}],[21896],[{date:'2026-09-10',name:'Milford State Park meet',address:'Milford State Park'}],'2026-11-01'),[],'the same meet by its venue');
+
 // Onboarding: a school's MileSplit team id from its name.
 assert.deepEqual(milesplitTeamsNamed(index,'Junction City High School').map(t=>t.id),['15714','39340']);
 assert.deepEqual(milesplitTeamsNamed(index,'Fort Riley Middle School').map(t=>[t.id,t.code]),[['40677','FRMM']]);
@@ -68,7 +79,7 @@ assert.deepEqual(milesplitTeamsNamed(index,'Fort Riley Middle School').map(t=>[t
 // team id, keeps an index meet only when its results list the school's
 // runners, and reads it by its MileSplit meet id.
 const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
-assert.ok(worker.includes('const extra=milesplitIndexGames(index,ids,games,today);'));
+assert.ok(worker.includes('const extra=milesplitIndexGames(index,ids,games,today,{aliases:KS_ALIASES.meets});'));
 assert.ok(worker.includes('if(game.fromIndex&&!gameResults[index]?.rows?.length)continue;'));
 assert.ok(worker.includes('meet:game.midwestTiming?.milesplit||game.milesplitMeet'));
 

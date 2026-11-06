@@ -42,6 +42,8 @@ const out={preview:PREVIEW,compared:0,same:0,differ:[],errors:[]};
 for(const [id,sport] of pairs){
   const q=`school=${encodeURIComponent(id)}&sport=${encodeURIComponent(sport)}`;
   const [preview,prod]=await Promise.all([get(`${PREVIEW}/live/feed/grouped?${q}&refresh=1&stored=0`),get(`${PROD}/live/feed/grouped?${q}`)]);
+  // A school new in this branch has no production feed yet.
+  if(Array.isArray(preview)&&!(Array.isArray(prod)&&prod.length)){(out.added??=[]).push(`${id} ${sport}`);console.log(`NEW ${id} ${sport}: ${preview[0]?.results?.length??0} results, ${preview[0]?.upcoming?.length??0} upcoming (not in production yet)`);continue;}
   if(!Array.isArray(preview)||!Array.isArray(prod)){out.errors.push(`${id} ${sport}`);console.log(`ERROR ${id} ${sport}: no feed`);continue;}
   out.compared++;
   const a=cards(prod),b=cards(preview),changes=[];
@@ -55,6 +57,6 @@ for(const [id,sport] of pairs){
   for(const c of changes)console.log(`  ${c.card}\n    production: ${c.prod?`${c.prod.headline||'-'} (${c.prod.rows} rows)`:'(no card)'}\n    preview:    ${c.preview?`${c.preview.headline||'-'} (${c.preview.rows} rows)`:'(no card)'}`);
   await sleep(1000);
 }
-console.log(`\n${out.compared} feeds compared: ${out.same} the same, ${out.differ.length} differ, ${out.errors.length} not read.`);
+console.log(`\n${out.compared} feeds compared: ${out.same} the same, ${out.differ.length} differ, ${out.errors.length} not read${out.added?.length?`, ${out.added.length} new in the preview`:''}.`);
 const file=value('out');if(file)writeFileSync(file,JSON.stringify(out,null,1)+'\n');
 process.exit(out.errors.length?2:out.differ.length?1:0);

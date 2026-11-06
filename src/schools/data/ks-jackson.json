@@ -1,0 +1,131 @@
+{
+ "state": "ks",
+ "counties": [
+  "Jackson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "holton-ks",
+   "name": "Holton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159406486947322e5642",
+    "slug": "holtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "383e583c-3d28-44cd-9691-50e93a5eab90",
+    "path": "holton/holton-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 96,
+    "code": "HOLT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Holton",
+    "milesplit": 21829
+   }
+  },
+  {
+   "id": "jackson-heights-ks",
+   "name": "Jackson Heights High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159719d8f36fe2c8444b",
+    "slug": "jacksonheightshs"
+   },
+   "maxpreps": {
+    "schoolId": "60607980-384e-4d9f-8aef-0994e4afaa07",
+    "path": "holton/jackson-heights-cobras"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Jackson Heights",
+    "milesplit": 21992
+   }
+  },
+  {
+   "id": "royal-valley-ks",
+   "name": "Royal Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025060608443260152b88f9d23064b",
+    "slug": "royalvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "02f13fa6-ef3b-42b2-a632-ad53fbc4a425",
+    "path": "hoyt/royal-valley-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 157,
+    "code": "RV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Royal Valley",
+    "milesplit": 21854
+   }
+  },
+  {
+   "id": "jackson-heights-ms-ks",
+   "name": "Jackson Heights Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045159719d8f36fe2c8444b",
+    "slug": "jacksonheightshs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Jackson Heights",
+    "milesplit": 39117
+   }
+  }
+ ]
+}

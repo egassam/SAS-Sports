@@ -1,0 +1,129 @@
+{
+ "state": "ks",
+ "counties": [
+  "Ottawa"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "bennington-ks",
+   "name": "Bennington High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154980e6bc3197395343",
+    "slug": "benningtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "401025d9-52a8-4477-86f7-6963665c3143",
+    "path": "bennington/bennington-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field",
+     "Swimming & Diving",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Bennington",
+    "milesplit": 22004,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "minneapolis-ks",
+   "name": "Minneapolis High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201059c499b39b360544",
+    "slug": "minneapolishs"
+   },
+   "maxpreps": {
+    "schoolId": "2127f66c-3a2a-4b12-b5b2-602ddc2190a2",
+    "path": "minneapolis/minneapolis-lions"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 167,
+    "code": "MNP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Minneapolis",
+    "milesplit": 22015
+   }
+  },
+  {
+   "id": "tescott-ks",
+   "name": "Tescott High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045207248bcadd5300eb74f",
+    "slug": "tescotths"
+   },
+   "maxpreps": {
+    "schoolId": "76082bab-a9e5-4df5-99ef-9015c6d8959a",
+    "path": "tescott/tescott-trojans"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Tescott",
+    "milesplit": 21979,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "minneapolis-ms-ks",
+   "name": "Minneapolis Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045201059c499b39b360544",
+    "slug": "minneapolishs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Minneapolis",
+    "milesplit": 33267
+   }
+  }
+ ]
+}

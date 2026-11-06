@@ -13,8 +13,15 @@ import WABAUNSEE from './data/ks-wabaunsee.json' with {type:'json'};
 import MORRIS from './data/ks-morris.json' with {type:'json'};
 import CLAY from './data/ks-clay.json' with {type:'json'};
 import MARSHALL from './data/ks-marshall.json' with {type:'json'};
+import WASHINGTON from './data/ks-washington.json' with {type:'json'};
+import REPUBLIC from './data/ks-republic.json' with {type:'json'};
+import CLOUD from './data/ks-cloud.json' with {type:'json'};
+import OTTAWA from './data/ks-ottawa.json' with {type:'json'};
+import JACKSON from './data/ks-jackson.json' with {type:'json'};
+import NEMAHA from './data/ks-nemaha.json' with {type:'json'};
+import LYON from './data/ks-lyon.json' with {type:'json'};
 
-export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL];
+export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON];
 const built=KS_COUNTY_FILES.map(file=>({file,schools:schoolsFromConfig(file)}));
 const atLevel=level=>built.flatMap(({file,schools})=>file.schools.filter(entry=>entry.level===level).map(entry=>schools[entry.id]));
 export const KS_COUNTY_HIGH_SCHOOLS=atLevel('high-school');

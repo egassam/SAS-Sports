@@ -1,0 +1,124 @@
+{
+ "state": "ks",
+ "counties": [
+  "Nemaha"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH2_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "centralia-ks",
+   "name": "Centralia High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155957c65a75b3f19341",
+    "slug": "centraliahs"
+   },
+   "maxpreps": {
+    "schoolId": "a8ec44a3-2faa-40c1-9f65-64efbed45540",
+    "path": "centralia/centralia-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 259,
+    "code": "CEN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Centralia",
+    "milesplit": 21920,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "nemaha-central-ks",
+   "name": "Nemaha Central High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520124510f085acd3334b",
+    "slug": "nemahacentralhs"
+   },
+   "maxpreps": {
+    "schoolId": "13c06bd8-2fd6-4889-b285-7653a2ec0e66",
+    "path": "seneca/nemaha-central-thunder"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 184,
+    "code": "NMC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Nemaha Central",
+    "milesplit": 21995,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "sabetha-ks",
+   "name": "Sabetha High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045205247cc2754569a5148",
+    "slug": "sabethahs"
+   },
+   "maxpreps": {
+    "schoolId": "aa89f2f7-cd75-47b9-bf15-d0832829d766",
+    "path": "sabetha/sabetha-bluejays"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 181,
+    "code": "SB"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Sabetha",
+    "tennis": "Sabetha HS",
+    "milesplit": 21907,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

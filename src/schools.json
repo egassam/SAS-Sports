@@ -11180,5 +11180,680 @@
         "provider_school_id": "h2025020404520083068273e62724849"
       }
     ]
+  },
+  {
+    "id": "hanover-ks",
+    "name": "Hanover High School",
+    "short_name": "Hanover",
+    "state": "Kansas",
+    "city": "Hanover",
+    "county": "Washington County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd223.org",
+    "aliases": [
+      "Hanover High School",
+      "Hanover",
+      "Hanover Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hanoverhs",
+        "provider_school_id": "h202502040451589243f84e96ad0454d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hanover/hanover-wildcats",
+        "provider_school_id": "1d6273f8-f018-4b6e-990a-723c96b558a8"
+      }
+    ]
+  },
+  {
+    "id": "linn-ks",
+    "name": "Linn High School",
+    "short_name": "Linn",
+    "state": "Kansas",
+    "city": "Linn",
+    "county": "Washington County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd223.org",
+    "aliases": [
+      "Linn High School",
+      "Linn",
+      "Linn Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/linnhs",
+        "provider_school_id": "h2025020404520042522a52b8eedb94d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/linn/linn-bulldogs",
+        "provider_school_id": "8cb686e6-3225-4f66-a1f5-4c9a688b8554"
+      }
+    ]
+  },
+  {
+    "id": "washington-county-ks",
+    "name": "Washington County High School",
+    "short_name": "Washington County",
+    "state": "Kansas",
+    "city": "Washington",
+    "county": "Washington County",
+    "conference": "Twin Valley League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd108.org",
+    "aliases": [
+      "Washington County High School",
+      "Washington County",
+      "Washington County Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/washingtoncountyhs",
+        "provider_school_id": "h20250204045208932cc9b35b087734b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/washington/washington-county-tigers",
+        "provider_school_id": "fba727e9-ec29-46e8-a4a7-3a879d64ff32"
+      }
+    ]
+  },
+  {
+    "id": "pike-valley-ks",
+    "name": "Pike Valley High School",
+    "short_name": "Pike Valley",
+    "state": "Kansas",
+    "city": "Scandia",
+    "county": "Republic County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.pikevalley.com",
+    "aliases": [
+      "Pike Valley High School",
+      "Pike Valley",
+      "Pike Valley Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/pikevalleyhs",
+        "provider_school_id": "h2025020404520229069c7afa70dbe4b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/scandia/pike-valley-panthers",
+        "provider_school_id": "79bb700a-e249-4a07-95eb-b988a54d6e14"
+      }
+    ]
+  },
+  {
+    "id": "republic-county-ks",
+    "name": "Republic County High School",
+    "short_name": "Republic County",
+    "state": "Kansas",
+    "city": "Belleville",
+    "county": "Republic County",
+    "conference": "North Central Activities Association",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd109.org",
+    "aliases": [
+      "Republic County High School",
+      "Republic County",
+      "Republic County Buffaloes"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/republiccountyhs",
+        "provider_school_id": "h20250204045204105989ea066d16145"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/belleville/republic-county-buffaloes",
+        "provider_school_id": "727fbd23-173f-4dc1-a6ec-c6cf096920ce"
+      }
+    ]
+  },
+  {
+    "id": "clifton-clyde-ks",
+    "name": "Clifton-Clyde High School",
+    "short_name": "Clifton-Clyde",
+    "state": "Kansas",
+    "city": "Clyde",
+    "county": "Cloud County",
+    "conference": "Twin Valley League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd224.com",
+    "aliases": [
+      "Clifton-Clyde High School",
+      "Clifton-Clyde",
+      "Clifton-Clyde Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cliftonclydehs",
+        "provider_school_id": "h202502040451566356e91b000ba9343"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/clyde/clifton-clyde-eagles",
+        "provider_school_id": "8574eca9-c2c6-49f2-bbbc-4ea845ec6ed0"
+      }
+    ]
+  },
+  {
+    "id": "concordia-ks",
+    "name": "Concordia High School",
+    "short_name": "Concordia",
+    "state": "Kansas",
+    "city": "Concordia",
+    "county": "Cloud County",
+    "conference": "North Central Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd333.com",
+    "aliases": [
+      "Concordia High School",
+      "Concordia",
+      "Concordia Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/concordiahs",
+        "provider_school_id": "h20250204045157237145c0313018347"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/concordia/concordia-panthers",
+        "provider_school_id": "76e4b041-f805-482e-8a7f-11efbf7bfaf3"
+      }
+    ]
+  },
+  {
+    "id": "concordia-ms-ks",
+    "name": "Concordia Junior High",
+    "short_name": "Concordia",
+    "state": "Kansas",
+    "city": "Concordia",
+    "county": "Cloud County",
+    "conference": "North Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/concordiahs",
+    "aliases": [
+      "Concordia Junior High",
+      "Concordia",
+      "Concordia Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/concordiahs",
+        "provider_school_id": "h20250204045157237145c0313018347"
+      }
+    ]
+  },
+  {
+    "id": "bennington-ks",
+    "name": "Bennington High School",
+    "short_name": "Bennington",
+    "state": "Kansas",
+    "city": "Bennington",
+    "county": "Ottawa County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd240.org",
+    "aliases": [
+      "Bennington High School",
+      "Bennington",
+      "Bennington Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/benningtonhs",
+        "provider_school_id": "h20250204045154980e6bc3197395343"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/bennington/bennington-bulldogs",
+        "provider_school_id": "401025d9-52a8-4477-86f7-6963665c3143"
+      }
+    ]
+  },
+  {
+    "id": "minneapolis-ks",
+    "name": "Minneapolis High School",
+    "short_name": "Minneapolis",
+    "state": "Kansas",
+    "city": "Minneapolis",
+    "county": "Ottawa County",
+    "conference": "North Central Activities Association",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd239.org",
+    "aliases": [
+      "Minneapolis High School",
+      "Minneapolis",
+      "Minneapolis Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/minneapolishs",
+        "provider_school_id": "h20250204045201059c499b39b360544"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/minneapolis/minneapolis-lions",
+        "provider_school_id": "2127f66c-3a2a-4b12-b5b2-602ddc2190a2"
+      }
+    ]
+  },
+  {
+    "id": "tescott-ks",
+    "name": "Tescott High School",
+    "short_name": "Tescott",
+    "state": "Kansas",
+    "city": "Tescott",
+    "county": "Ottawa County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "http://www.usd240.org",
+    "aliases": [
+      "Tescott High School",
+      "Tescott",
+      "Tescott Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/tescotths",
+        "provider_school_id": "h20250204045207248bcadd5300eb74f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/tescott/tescott-trojans",
+        "provider_school_id": "76082bab-a9e5-4df5-99ef-9015c6d8959a"
+      }
+    ]
+  },
+  {
+    "id": "minneapolis-ms-ks",
+    "name": "Minneapolis Junior High",
+    "short_name": "Minneapolis",
+    "state": "Kansas",
+    "city": "Minneapolis",
+    "county": "Ottawa County",
+    "conference": "North Central Activities Association",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd239.org",
+    "aliases": [
+      "Minneapolis Junior High",
+      "Minneapolis",
+      "Minneapolis Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/minneapolishs",
+        "provider_school_id": "h20250204045201059c499b39b360544"
+      }
+    ]
+  },
+  {
+    "id": "holton-ks",
+    "name": "Holton High School",
+    "short_name": "Holton",
+    "state": "Kansas",
+    "city": "Holton",
+    "county": "Jackson County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.holton.k12.ks.us",
+    "aliases": [
+      "Holton High School",
+      "Holton",
+      "Holton Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/holtonhs",
+        "provider_school_id": "h20250204045159406486947322e5642"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/holton/holton-wildcats",
+        "provider_school_id": "383e583c-3d28-44cd-9691-50e93a5eab90"
+      }
+    ]
+  },
+  {
+    "id": "jackson-heights-ks",
+    "name": "Jackson Heights High School",
+    "short_name": "Jackson Heights",
+    "state": "Kansas",
+    "city": "Holton",
+    "county": "Jackson County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.jhcobras.net",
+    "aliases": [
+      "Jackson Heights High School",
+      "Jackson Heights",
+      "Jackson Heights Cobras"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/jacksonheightshs",
+        "provider_school_id": "h20250204045159719d8f36fe2c8444b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/holton/jackson-heights-cobras",
+        "provider_school_id": "60607980-384e-4d9f-8aef-0994e4afaa07"
+      }
+    ]
+  },
+  {
+    "id": "royal-valley-ks",
+    "name": "Royal Valley High School",
+    "short_name": "Royal Valley",
+    "state": "Kansas",
+    "city": "Hoyt",
+    "county": "Jackson County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.rv337.com",
+    "aliases": [
+      "Royal Valley High School",
+      "Royal Valley",
+      "Royal Valley Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/royalvalleyhs",
+        "provider_school_id": "h2025060608443260152b88f9d23064b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hoyt/royal-valley-panthers",
+        "provider_school_id": "02f13fa6-ef3b-42b2-a632-ad53fbc4a425"
+      }
+    ]
+  },
+  {
+    "id": "jackson-heights-ms-ks",
+    "name": "Jackson Heights Junior High",
+    "short_name": "Jackson Heights",
+    "state": "Kansas",
+    "city": "Holton",
+    "county": "Jackson County",
+    "conference": "Northeast Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.jhcobras.net",
+    "aliases": [
+      "Jackson Heights Junior High",
+      "Jackson Heights",
+      "Jackson Heights Cobras"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/jacksonheightshs",
+        "provider_school_id": "h20250204045159719d8f36fe2c8444b"
+      }
+    ]
+  },
+  {
+    "id": "centralia-ks",
+    "name": "Centralia High School",
+    "short_name": "Centralia",
+    "state": "Kansas",
+    "city": "Centralia",
+    "county": "Nemaha County",
+    "conference": "Twin Valley League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.centralia.usd380.com",
+    "aliases": [
+      "Centralia High School",
+      "Centralia",
+      "Centralia Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/centraliahs",
+        "provider_school_id": "h20250204045155957c65a75b3f19341"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/centralia/centralia-panthers",
+        "provider_school_id": "a8ec44a3-2faa-40c1-9f65-64efbed45540"
+      }
+    ]
+  },
+  {
+    "id": "nemaha-central-ks",
+    "name": "Nemaha Central High School",
+    "short_name": "Nemaha Central",
+    "state": "Kansas",
+    "city": "Seneca",
+    "county": "Nemaha County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd115.org",
+    "aliases": [
+      "Nemaha Central High School",
+      "Nemaha Central",
+      "Nemaha Central Thunder"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/nemahacentralhs",
+        "provider_school_id": "h2025020404520124510f085acd3334b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/seneca/nemaha-central-thunder",
+        "provider_school_id": "13c06bd8-2fd6-4889-b285-7653a2ec0e66"
+      }
+    ]
+  },
+  {
+    "id": "sabetha-ks",
+    "name": "Sabetha High School",
+    "short_name": "Sabetha",
+    "state": "Kansas",
+    "city": "Sabetha",
+    "county": "Nemaha County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd113.org",
+    "aliases": [
+      "Sabetha High School",
+      "Sabetha",
+      "Sabetha Bluejays"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sabethahs",
+        "provider_school_id": "h20250204045205247cc2754569a5148"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/sabetha/sabetha-bluejays",
+        "provider_school_id": "aa89f2f7-cd75-47b9-bf15-d0832829d766"
+      }
+    ]
+  },
+  {
+    "id": "emporia-ks",
+    "name": "Emporia High School",
+    "short_name": "Emporia",
+    "state": "Kansas",
+    "city": "Emporia",
+    "county": "Lyon County",
+    "conference": "Centennial League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd253.org/~ehs",
+    "aliases": [
+      "Emporia High School",
+      "Emporia",
+      "Emporia Spartans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/emporiahs",
+        "provider_school_id": "h202502040451581248ef6dd9c8db940"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/emporia/emporia-spartans",
+        "provider_school_id": "acd350d8-af6f-4d46-a29e-71d85724c7ed"
+      }
+    ]
+  },
+  {
+    "id": "hartford-ks",
+    "name": "Hartford High School",
+    "short_name": "Hartford",
+    "state": "Kansas",
+    "city": "Hartford",
+    "county": "Lyon County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd252.org",
+    "aliases": [
+      "Hartford High School",
+      "Hartford",
+      "Hartford Jaguars"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hartfordhs",
+        "provider_school_id": "h2025020404515898151b8e7ee1a214d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hartford/hartford-jaguars",
+        "provider_school_id": "512fb0d3-1990-4430-8b44-bb36cd8a5b9e"
+      }
+    ]
+  },
+  {
+    "id": "northern-heights-ks",
+    "name": "Northern Heights High School",
+    "short_name": "Northern Heights",
+    "state": "Kansas",
+    "city": "Allen",
+    "county": "Lyon County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd251.org",
+    "aliases": [
+      "Northern Heights High School",
+      "Northern Heights",
+      "Northern Heights Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/northernheightshs",
+        "provider_school_id": "h202502040452014097c488994aa434b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/allen/northern-heights-wildcats",
+        "provider_school_id": "747d3694-afcb-4a3e-9f32-b0c3d4d717a6"
+      }
+    ]
+  },
+  {
+    "id": "olpe-ks",
+    "name": "Olpe High School",
+    "short_name": "Olpe",
+    "state": "Kansas",
+    "city": "Olpe",
+    "county": "Lyon County",
+    "conference": "Lyon County League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd252.org",
+    "aliases": [
+      "Olpe High School",
+      "Olpe",
+      "Olpe Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/olpehs",
+        "provider_school_id": "h20250204045201758bb52d302d83c47"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/olpe/olpe-eagles",
+        "provider_school_id": "559c7667-0ad9-49fb-a945-c68e83e37c99"
+      }
+    ]
   }
 ]

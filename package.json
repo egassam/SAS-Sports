@@ -38,6 +38,7 @@
     "test:riley-pottawatomie-ks-module": "node tests/riley-pottawatomie-ks-module.mjs",
     "test:hs-onboarding": "node tests/ks-counties-module.mjs && node tests/hs-schedule-pairings.mjs && node tests/hs-config.mjs && node tests/milesplit-season-index.mjs && node tests/onboard-hs.mjs",
     "onboard:hs": "node scripts/onboard-hs.mjs",
+    "add:county": "node scripts/add-county.mjs",
     "test:pro-sports-module": "node tests/pro-sports-module.mjs && node tests/mls-module.mjs && node tests/mlb-module.mjs",
     "test:imsa-module": "node tests/imsa-module.mjs && node tests/f1-module.mjs",
     "test:opendorse-module": "node tests/opendorse-module.mjs",
