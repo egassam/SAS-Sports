@@ -5988,6 +5988,10 @@ function parseScoreboardPayload(payload,school,sport,provider,url,now){
       const espnHex=v=>/^[0-9a-f]{6}$/i.test(v||'')?`#${v}`:null,oppPrimary=espnHex(opponent.team?.color);
       if(oppPrimary)event.opponent_colors={primary:oppPrimary,secondary:espnHex(opponent.team?.alternateColor)||oppPrimary};
     }else event.recency_label='Final';
+    // ESPN's board names each side's Top 25 rank (99 is unranked); the polls
+    // replace it when they answer (rankEvents).
+    const curated=side=>{const n=Number(side?.curatedRank?.current);return n>=1&&n<=25?{rank:n,poll:'Top 25'}:null;};
+    if(!isPro(school)&&!isHighSchool(school)){const mine=curated(ours),theirs=curated(opponent);if(mine)event.school_rank=mine;if(theirs)event.opponent_rank=theirs;}
     // Volleyball scores are sets won (0-0 during the first set). The live
     // headline adds the current set's points; a final reads like K-State's
     // official results ("W, 3-1").
@@ -6090,28 +6094,57 @@ function schoolRanks(boards,school){
   }
   return out;
 }
-// An opponent's rank in the board's first poll (the CFP once published, else
-// the AP), by its name as the schedule writes it ("#7 Iowa State", "at No. 3
-// Texas"). Shown only on live, today's and upcoming games: a current rank on
-// an old result would read as the rank at the time.
+// A team's rank in the board's first poll (the CFP once published, else the
+// AP), by its name as the schedule writes it ("#7 Iowa State", "at No. 3
+// Texas"). Every card carries this week's ranks (user, November 7, 2026: "I
+// want the rankings of college sports in all of score cards and live"): live,
+// today's, upcoming and past games alike. A schedule that wrote the rank at
+// the time ("#7 Iowa State") keeps its own; the page then adds none.
+function boardFor(boards,event){return boards.find(b=>!b.team_label||!event?.team_label||b.team_label===event.team_label);}
 function opponentRank(boards,event){
   // Parentheses go only when they hold a note ("(Exhibition)"): "Miami (OH)" is not Miami.
   const name=normalizedTeamName(String(event?.opponent||'').replace(/\((?:[^)]*\b(?:exhibition|neutral|game|dh|doubleheader|homecoming|senior|scrimmage)\b[^)]*)\)/gi,' ').replace(/#\s*\d+|\bNo\.\s*\d+/gi,' ').replace(/^\s*(?:vs\.?|at)\s+/i,''));
   if(!name)return null;
-  const board=boards.find(b=>!b.team_label||!event.team_label||b.team_label===event.team_label);
-  const poll=board?.polls?.[0];if(!poll)return null;
+  const poll=boardFor(boards,event)?.polls?.[0];if(!poll)return null;
   const hit=poll.ranks.find(r=>[r.team.location,r.team.displayName,r.team.shortDisplayName,r.team.nickname].map(normalizedTeamName).filter(x=>x.length>=3).includes(name));
   return hit?{rank:hit.rank,poll:poll.poll}:null;
+}
+// The school's own rank on a card, in the same poll as its opponent's.
+function ownRank(boards,event,school){
+  const poll=boardFor(boards,event)?.polls?.[0];if(!poll)return null;
+  const hit=poll.ranks.find(r=>scoreboardTeamMatchesSchool(r.team,school));
+  return hit?{rank:hit.rank,poll:poll.poll}:null;
+}
+function rankEvents(events,boards,school){
+  for(const event of events){
+    const theirs=opponentRank(boards,event),mine=ownRank(boards,event,school);
+    if(theirs)event.opponent_rank=theirs;else if(event.opponent_rank?.poll!=='Top 25')delete event.opponent_rank;
+    if(mine)event.school_rank=mine;else if(event.school_rank?.poll!=='Top 25')delete event.school_rank;
+  }
+  return events;
 }
 async function attachRankings(groups,school,sport){
   try{
     const boards=await sportRankingPolls(school,sport);if(!boards.some(b=>b.polls.length))return groups;
     for(const group of groups){
       group.rankings=schoolRanks(boards,school);
-      for(const event of [...(group.live||[]),...(group.upcoming||[])]){const rank=opponentRank(boards,event);if(rank)event.opponent_rank=rank;}
+      rankEvents([...(group.live||[]),...(group.results||[]),...(group.upcoming||[]),...(group.other||[])],boards,school);
     }
   }catch{}
   return groups;
+}
+// Home's live games from ESPN's college boards take the same polls (one
+// memoized read per board), each game by its own board.
+async function rankLiveNowGames(games){
+  const byPath=new Map();
+  for(const game of games){if(game.level!=='college'||!game.ranking_board)continue;if(!byPath.has(game.ranking_board))byPath.set(game.ranking_board,[]);byPath.get(game.ranking_board).push(game);}
+  await Promise.all([...byPath].map(async([path,list])=>{
+    let polls=[];try{polls=await espnRankingPolls(path)}catch{}
+    if(!polls.length)return;
+    for(const game of list){const school=catalogSchool(game.school_id);if(school)rankEvents([game],[{team_label:game.team_label||null,polls}],school);}
+  }));
+  for(const game of games)delete game.ranking_board;
+  return games;
 }
 // Every live game the app can name, from every level ESPN publishes a board
 // for (user, October 28: home screen "favorites and then all events"; PR 2).
@@ -6152,7 +6185,7 @@ function liveNowGames(boards,now=new Date()){
       if(!school)continue;
       seen.add(`${board.path}|${item.id}`);
       const provider={path:board.path,team_label:board.team_label||undefined,sourceName:'Live scoreboard'};
-      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
+      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(board.level==='college'?{ranking_board:board.path}:{}),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
     }
   }
   return games;
@@ -6239,7 +6272,8 @@ async function liveNow(now=new Date(),env=null){
     return{board,payload,url,ok:Boolean(payload)};
   }));
   const highSchool=await hsLiveGames(now,env).catch(()=>[]);
-  return{fetched_at:now.toISOString(),games:[...liveNowGames(reads.filter(read=>read.ok),now),...highSchool],featured:featuredMeets(now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
+  const college=await rankLiveNowGames(liveNowGames(reads.filter(read=>read.ok),now));
+  return{fetched_at:now.toISOString(),games:[...college,...highSchool],featured:featuredMeets(now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
 }
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
   const events=scheduleEvents.slice(),joined=new Set();
