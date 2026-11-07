@@ -6,7 +6,10 @@
 // of them (football) holding only an old game. The page must then show every
 // in-season sport the Worker lists, with its ranks where MaxPreps ranks it.
 //
-//   node scripts/check-reference-page.mjs --base=https://<branch>-sas-sports.lovetogivepain.workers.dev
+//   node scripts/check-reference-page.mjs --base=https://<branch>-sas-sports.lovetogivepain.workers.dev [--school=<ids>]
+//
+// --school checks other middle and high schools the same way (November 7,
+// 2026: a sample of each county).
 import {createRequire} from 'node:module';
 const {chromium}=createRequire(import.meta.url)('playwright');
 import {readFileSync} from 'node:fs';
@@ -18,7 +21,7 @@ const sponsored=JSON.parse(readFileSync(new URL('../src/sponsored-sports.json',i
 const failures=[];const report=(ok,text)=>{console.log(`${ok?'PASS':'FAIL'} ${text}`);if(!ok)failures.push(text);};
 const browser=await chromium.launch();
 try{
-  for(const id of REFERENCE_SCHOOLS){
+  for(const id of arg('school')?.split(',')||REFERENCE_SCHOOLS){
     // What the Worker lists for each sport now.
     const feeds=await Promise.all(sponsored[id].map(async sport=>{
       const r=await fetch(`${base}/live/feed/grouped?school=${id}&sport=${encodeURIComponent(sport)}`,{signal:AbortSignal.timeout(60000)});
@@ -36,7 +39,10 @@ try{
     await page.waitForFunction(()=>/\d+\/\d+ sports reached/.test(document.body.innerText),null,{timeout:120000}).catch(()=>{});
     const status=await page.evaluate(()=>(document.body.innerText.match(/(\d+)\/(\d+) sports reached[^\n]*/)||[''])[0]);
     const [,ok,asked]=status.match(/(\d+)\/(\d+)/)||[];
-    report(Number(ok)===inSeason.length&&Number(asked)===inSeason.length,`${id}: ${status||'no status line'} (in season: ${inSeason.length})`);
+    // A school with no sport in season (Kickapoo Nation: cross country only,
+    // nothing published) reads every sport it has.
+    const want=inSeason.length||sponsored[id].length;
+    report(Number(ok)===want&&Number(asked)===want,`${id}: ${status||'no status line'} (in season: ${inSeason.length})`);
     const near=feeds.filter(({sport,group})=>inSeason.includes(sport)&&['live','results','upcoming'].some(k=>(group[k]||[]).some(e=>Math.abs(Date.parse(e.start_time)-Date.now())<=7*864e5))).map(f=>f.sport);
     const text=(await page.evaluate(()=>document.body.innerText)).toLowerCase();
     const missing=near.filter(s=>!text.includes(s.toLowerCase()));

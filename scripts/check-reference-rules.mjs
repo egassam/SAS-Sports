@@ -6,10 +6,13 @@
 // Cards that need reading by eye (all-capital words, "TBD" still ahead) are
 // listed as NOTE, not FAIL.
 //
-//   node scripts/check-reference-rules.mjs [--base=<url>] [--school=<ids>|--county=<name>] [--cards=<file>]
+//   node scripts/check-reference-rules.mjs [--base=<url>] [--school=<ids>|--county=<name>] [--sports=<names>] [--refresh] [--cards=<file>]
 //
 // With no --school or --county every middle and high school but the three
-// reference schools is read. --cards writes every card line to a file.
+// reference schools is read. --refresh rebuilds each feed (on a preview,
+// without its stored finals: `refresh=1&stored=0`, as diff:feeds does);
+// without it the saved copy answers, which after a deploy may predate it.
+// --cards writes every card line to a file.
 import {readFileSync,writeFileSync} from 'node:fs';
 import {REFERENCE_SCHOOLS,cardLine} from '../tests/hs-reference-lib.mjs';
 import {nameCase} from '../src/high-school.mjs';
@@ -30,7 +33,7 @@ const PLACEHOLDER=/\b(?:TBD|Sub-?\s?State|Quarter-?\s?Finals?|Semi-?\s?Finals?|S
 async function feed(id,sport){
   for(let attempt=0;attempt<3;attempt++){
     try{
-      const r=await fetch(`${base}/live/feed/grouped?school=${id}&sport=${encodeURIComponent(sport)}`,{signal:AbortSignal.timeout(90000)});
+      const r=await fetch(`${base}/live/feed/grouped?school=${id}&sport=${encodeURIComponent(sport)}${process.argv.includes('--refresh')?'&refresh=1&stored=0':''}`,{signal:AbortSignal.timeout(90000)});
       if(r.ok){const b=await r.json();return{group:Array.isArray(b)?b[0]:null,status:r.status};}
       if(attempt===2)return{error:`HTTP ${r.status}`};
     }catch(e){if(attempt===2)return{error:String(e.message||e)};}
@@ -38,7 +41,9 @@ async function feed(id,sport){
   }
 }
 
-const jobs=ids.flatMap(id=>(sponsored[id]||[]).map(sport=>({id,sport})));
+const only=arg('sports')?.split(',');
+const sportsOf=id=>(sponsored[id]||[]).filter(s=>!only||only.includes(s));
+const jobs=ids.flatMap(id=>sportsOf(id).map(sport=>({id,sport})));
 const out={};
 let next=0;
 await Promise.all(Array.from({length:4},async()=>{
@@ -51,7 +56,7 @@ await Promise.all(Array.from({length:4},async()=>{
 for(const id of ids){
   const school=schools.find(s=>s.id===id);
   if(!school){fail(id,'not in the catalog');continue;}
-  for(const sport of sponsored[id]||[]){
+  for(const sport of sportsOf(id)){
     const where=`${id} ${sport}`,{group:g,error}=out[`${id}|${sport}`]||{};
     if(error){fail(where,`feed not read (${error})`);continue;}
     const events=g?[...(g.live||[]),...(g.results||[]),...(g.upcoming||[])]:[];
@@ -60,7 +65,7 @@ for(const id of ids){
     // 1. Every sponsored sport lists its schedule (a sport whose season has
     // not been published yet lists nothing and is noted, not failed).
     if(!events.length){(g?.in_season?fail:note)(where,`no schedule listed${g?.in_season?' while in season':` (${g?.season_label||'out of season'})`}`);continue;}
-    const seen=new Map();
+    const seen=new Map(),ids=new Set();
     for(const e of events){
       const day=dayOf(e.start_time),end=e.end_time?dayOf(e.end_time):day,title=e.title||'';
       // 2. A past game or meet is a result, or played with no result posted.
@@ -71,7 +76,7 @@ for(const id of ids){
       if(/ - (?:HOME|AWAY)\b|\d(?::\d\d)?\s?(?:AM|PM)\b|\bNorht\b|\bStare Park\b|\bJV League\b/i.test(title))fail(where,`${day} title reads as typed: "${title}"`);
       if(e.event_type==='GAME'&&(!String(e.opponent||'').trim()||/\b(?:vs|at)\s*$/.test(title)))fail(where,`${day} no opponent named: "${title}"`);
       // Words typed in capitals (league and school codes stay).
-      if(nameCase(title)!==title)note(where,`${day} capitals in "${title}"`);
+      if(nameCase(title)!==title.trim())note(where,`${day} capitals in "${title}"`);
       if(/\bJV\b|\bjunior varsity\b|\bC[- ]Team\b/i.test(title)&&!/\bJV\s*\/\s*V(?:arsity)?\b|\bVarsity\b|\bV\s*\/\s*JV\b/i.test(title))fail(where,`${day} junior varsity listed: "${title}"`);
       // 4. Rounds never reached: gone after their day or a playoff loss; a named round reads "·".
       const placeholder=PLACEHOLDER.test(e.opponent||'')||(/\bTBD\b/.test(title));
@@ -81,9 +86,13 @@ for(const id of ids){
       }
       // 5. No college ranks.
       for(const r of [e.school_rank,e.opponent_rank].filter(Boolean))if(!/MaxPreps/i.test(`${r.source||''} ${r.poll||''}`))fail(where,`${day} "${title}" carries a ${r.poll} rank`);
-      // Doubles: the same start and title twice (doubleheaders differ by time).
+      // One card per id. The same start and title twice with two ids is two
+      // matches when the source has two (Wamego and Sabetha on Oct 10, two
+      // MaxPreps match pages): read by eye.
+      if(ids.has(e.id))fail(where,`${day} "${title}" listed twice (one id)`);
+      ids.add(e.id);
       const key=`${e.start_time}|${title}|${e.team_label||''}`;
-      if(seen.has(key))fail(where,`${day} "${title}" listed twice`);
+      if(seen.has(key)){const a=seen.get(key);(a.recap_url&&e.recap_url&&a.recap_url!==e.recap_url?note:fail)(where,`${day} "${title}" twice (${a.headline} · ${e.headline})`);}
       seen.set(key,e);
     }
     for(const r of g?.rankings||[])if(!/MaxPreps/i.test(r.source||''))fail(where,`team rank from ${r.source} ${r.poll}`);
