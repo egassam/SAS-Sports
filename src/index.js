@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.286.2-reference-rules';
+const VERSION='4.287.0-ks-counties-4';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4048,7 +4048,10 @@ const HIGH_SCHOOL_PLACEHOLDER=/^(?:tbd|tba|regionals?|sectionals?|sub-?state|sta
 // An event named without a place ("League Tournament 1st Round", "Double
 // Dual", "Quarter Final"): "Eisenhower · League Tournament 1st Round", not "at".
 const NAMED_WITHOUT_PLACE=/^(?:league|double dual|dual|tri|triangular|quad|mixer|tournament|invitational|quarter|semi|finals?|\d(?:st|nd|rd|th) round)\b(?!.* - )/i;
-const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim())||/(?<!sub[- ]?)\bstate\b/i.test(String(name||''))||/\btb[ad]\b/i.test(String(name||''));
+// "Wichita State University tournament" is a college's event, not a state
+// round (November 7, 2026, Seaman softball).
+const withoutCollegeState=name=>String(name||'').replace(/\bstate\s+(?:university|college)\b/ig,'University').trim();
+const isHighSchoolPlaceholder=(name,{lone=false}={})=>{const n=withoutCollegeState(name);return lone||HIGH_SCHOOL_PLACEHOLDER.test(n)||/(?<!sub[- ]?)\bstate\b/i.test(n)||/\btb[ad]\b/i.test(n);};
 // A school channel's latest 50 uploads with each video's live state (two
 // Data API reads, 1 quota unit each, of the 10,000 a day): every 2 minutes
 // while the school has a game on, every 10 otherwise. The key stays out of
@@ -4131,7 +4134,7 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   // A playoff game round may never have been reached; a meet's regional or
   // sub-state is run by every team, its state meet only by qualifiers.
   // A meet with a `schedule` is one the school qualified for.
-  else if(!schedule&&(placeholder||(eventType(sport)==='GAME'?isHighSchoolPlaceholder(opponent):/(?<!sub-?)\bstate\b/i.test(opponent))))return null;
+  else if(!schedule&&(placeholder||(eventType(sport)==='GAME'?isHighSchoolPlaceholder(opponent):/(?<!sub-?)\bstate\b/i.test(withoutCollegeState(opponent)))))return null;
   else{status='Final';unscored=true;}
   const underWay=status==='Today'&&!results&&!contest?.live?scheduleUnderWay(schedule,date,now,school):null;
   if(underWay)status='Live';

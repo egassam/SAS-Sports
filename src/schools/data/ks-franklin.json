@@ -1,0 +1,219 @@
+{
+ "state": "ks",
+ "counties": [
+  "Franklin"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "central-heights-ks",
+   "name": "Central Heights High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451558563120952067f141",
+    "slug": "centralheightshs"
+   },
+   "maxpreps": {
+    "schoolId": "4866222a-a662-4aa6-9938-ee06da87b756",
+    "path": "richmond/central-heights-vikings"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Central Heights",
+    "milesplit": 21906,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "ottawa-ks",
+   "name": "Ottawa High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202017c45238e26c784c",
+    "slug": "ottawahs"
+   },
+   "maxpreps": {
+    "schoolId": "17246c19-6aba-4d86-b28e-b9e1de144bf1",
+    "path": "ottawa/ottawa-cyclones"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 112,
+    "code": "OTT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Ottawa",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Ottawa HS",
+    "milesplit": 18918
+   }
+  },
+  {
+   "id": "wellsville-ks",
+   "name": "Wellsville High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045209027b68218998dbd4c",
+    "slug": "wellsvillehs"
+   },
+   "maxpreps": {
+    "schoolId": "d97af696-5939-4503-9e25-191fe2e7cba5",
+    "path": "wellsville/wellsville-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 190,
+    "code": "WLV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Wellsville",
+    "paths": {
+     "Girls Flag Football": "flag-football/girls/fall"
+    },
+    "milesplit": 21905
+   }
+  },
+  {
+   "id": "west-franklin-ks",
+   "name": "West Franklin High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045209167fcd7db2423144d",
+    "slug": "westfranklinhs"
+   },
+   "maxpreps": {
+    "schoolId": "d27ff8b5-8feb-43b1-8c7f-b4e1d9a4f473",
+    "path": "pomona/west-franklin-falcons"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 175,
+    "code": "WF"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "West Franklin",
+    "milesplit": 21862,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "ottawa-ms-ks",
+   "name": "Ottawa Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250609064937140d4600f0b30f149",
+    "slug": "ottawams"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ottawa MS",
+    "milesplit": 26642
+   }
+  },
+  {
+   "id": "wellsville-ms-ks",
+   "name": "Wellsville Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045209027b68218998dbd4c",
+    "slug": "wellsvillehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Wellsville",
+    "milesplit": 26978
+   }
+  }
+ ]
+}

@@ -52,7 +52,9 @@ export function themeFor(colors){
 const LEAGUE_NAMES={NCAA:'North Central Activities Association'};
 // KSHSAA's "Independent - JH" is no league (November 6: Lawrence's and Salina's middle schools).
 const leagueName=l=>{if(!l||/^Independent\b/i.test(l))return null;const base=l.replace(/\s+Jr\.?$/,'').trim();return LEAGUE_NAMES[base]||(/league|association|conference/i.test(base)?base:`${base} League`);};
-const website=w=>!w?null:/^https?:/i.test(w)?w.replace(/\/$/,''):`https://${w.replace(/\/$/,'')}`;
+// KSHSAA lists some sites by address ("www.198.248.92.140", Santa Fe Trail,
+// November 7, 2026): not a site; look it up by hand.
+const website=w=>{if(!w||/^(?:https?:\/\/)?(?:www\.)?\d+\.\d+\.\d+\.\d+(?:[\/:]|$)/i.test(w))return null;return /^https?:/i.test(w)?w.replace(/\/$/,''):`https://${w.replace(/\/$/,'')}`;};
 
 // --- The data file
 const entries=draft.schools.filter(e=>!skip.has(e.id)).map(e=>{const id=rename.get(e.id)||e.id;return{...e,id};});

@@ -23,8 +23,14 @@ import LYON from './data/ks-lyon.json' with {type:'json'};
 import SHAWNEE from './data/ks-shawnee.json' with {type:'json'};
 import DOUGLAS from './data/ks-douglas.json' with {type:'json'};
 import SALINE from './data/ks-saline.json' with {type:'json'};
+import JEFFERSON from './data/ks-jefferson.json' with {type:'json'};
+import OSAGE from './data/ks-osage.json' with {type:'json'};
+import FRANKLIN from './data/ks-franklin.json' with {type:'json'};
+import MARION from './data/ks-marion.json' with {type:'json'};
+import MCPHERSON from './data/ks-mcpherson.json' with {type:'json'};
+import CHASE from './data/ks-chase.json' with {type:'json'};
 
-export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON,SHAWNEE,DOUGLAS,SALINE];
+export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON,SHAWNEE,DOUGLAS,SALINE,JEFFERSON,OSAGE,FRANKLIN,MARION,MCPHERSON,CHASE];
 const built=KS_COUNTY_FILES.map(file=>({file,schools:schoolsFromConfig(file)}));
 const atLevel=level=>built.flatMap(({file,schools})=>file.schools.filter(entry=>entry.level===level).map(entry=>schools[entry.id]));
 export const KS_COUNTY_HIGH_SCHOOLS=atLevel('high-school');

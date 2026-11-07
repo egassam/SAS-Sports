@@ -12823,5 +12823,1023 @@
         "provider_school_id": "h20250613085014453831b082366554a"
       }
     ]
+  },
+  {
+    "id": "jefferson-county-north-ks",
+    "name": "Jefferson County North High School",
+    "short_name": "Jefferson County North",
+    "state": "Kansas",
+    "city": "Winchester",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd339.net/jcnhs/jcnhs.htm",
+    "aliases": [
+      "Jefferson County North High School",
+      "Jefferson County North",
+      "Jefferson County North Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/jcnorth",
+        "provider_school_id": "h202502040451597700abd974d48d942"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/winchester/jefferson-county-north-chargers",
+        "provider_school_id": "8c135148-8437-4cb5-be56-ecb2d4321b11"
+      }
+    ]
+  },
+  {
+    "id": "jefferson-west-ks",
+    "name": "Jefferson West High School",
+    "short_name": "Jefferson West",
+    "state": "Kansas",
+    "city": "Meriden",
+    "county": "Jefferson County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd340.org",
+    "aliases": [
+      "Jefferson West High School",
+      "Jefferson West",
+      "Jefferson West Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/jeffersonwesths",
+        "provider_school_id": "h2025020404515979622d79a4a1eb842"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/meriden/jefferson-west-tigers",
+        "provider_school_id": "ed0e82fd-791b-43a1-bec5-a78e70b7ecc6"
+      }
+    ]
+  },
+  {
+    "id": "mclouth-ks",
+    "name": "McLouth High School",
+    "short_name": "McLouth",
+    "state": "Kansas",
+    "city": "McLouth",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.mclouth.org",
+    "aliases": [
+      "McLouth High School",
+      "McLouth",
+      "McLouth Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/mclouthhs",
+        "provider_school_id": "h202502040452008877bd1814f7c3047"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/mclouth/mclouth-bulldogs",
+        "provider_school_id": "125e36c7-c059-4929-b8aa-4fe0c9d87277"
+      }
+    ]
+  },
+  {
+    "id": "oskaloosa-ks",
+    "name": "Oskaloosa High School",
+    "short_name": "Oskaloosa",
+    "state": "Kansas",
+    "city": "Oskaloosa",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd341.org",
+    "aliases": [
+      "Oskaloosa High School",
+      "Oskaloosa",
+      "Oskaloosa Bears"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/oskaloosahs",
+        "provider_school_id": "h20250204045201924d1839c49215741"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/oskaloosa/oskaloosa-bears",
+        "provider_school_id": "39c0b481-7aa4-4ceb-aa3b-453fd10300e5"
+      }
+    ]
+  },
+  {
+    "id": "perry-lecompton-ks",
+    "name": "Perry-Lecompton High School",
+    "short_name": "Perry-Lecompton",
+    "state": "Kansas",
+    "city": "Perry",
+    "county": "Jefferson County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd343.org",
+    "aliases": [
+      "Perry-Lecompton High School",
+      "Perry-Lecompton",
+      "Perry-Lecompton Kaws",
+      "Perry Lecompton High School",
+      "Perry Lecompton",
+      "Perry Lecompton Kaws"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/perrylecomptonhs",
+        "provider_school_id": "h2025020404520223389951ac468c244"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/perry/perry-lecompton-kaws",
+        "provider_school_id": "2f8019ef-fcb6-407c-8fe3-bb062a624e44"
+      }
+    ]
+  },
+  {
+    "id": "valley-falls-ks",
+    "name": "Valley Falls High School",
+    "short_name": "Valley Falls",
+    "state": "Kansas",
+    "city": "Valley Falls",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd338.com",
+    "aliases": [
+      "Valley Falls High School",
+      "Valley Falls",
+      "Valley Falls Dragons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/valleyfallshs",
+        "provider_school_id": "h202502040452086372c92a9ed7d6542"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/valley-falls/valley-falls-dragons",
+        "provider_school_id": "a5424f9f-74ec-463b-bc3d-daf4249e0c9a"
+      }
+    ]
+  },
+  {
+    "id": "mclouth-ms-ks",
+    "name": "McLouth Middle School",
+    "short_name": "McLouth",
+    "state": "Kansas",
+    "city": "McLouth",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.mclouth.org",
+    "aliases": [
+      "McLouth Middle School",
+      "McLouth",
+      "McLouth Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/mclouthhs",
+        "provider_school_id": "h202502040452008877bd1814f7c3047"
+      }
+    ]
+  },
+  {
+    "id": "oskaloosa-ms-ks",
+    "name": "Oskaloosa Junior High",
+    "short_name": "Oskaloosa",
+    "state": "Kansas",
+    "city": "Oskaloosa",
+    "county": "Jefferson County",
+    "conference": "Northeast Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd341.org",
+    "aliases": [
+      "Oskaloosa Junior High",
+      "Oskaloosa",
+      "Oskaloosa Bears"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/oskaloosahs",
+        "provider_school_id": "h20250204045201924d1839c49215741"
+      }
+    ]
+  },
+  {
+    "id": "burlingame-ks",
+    "name": "Burlingame High School",
+    "short_name": "Burlingame",
+    "state": "Kansas",
+    "city": "Burlingame",
+    "county": "Osage County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd454.net",
+    "aliases": [
+      "Burlingame High School",
+      "Burlingame",
+      "Burlingame Bearcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/burlingamehs",
+        "provider_school_id": "h2025020404515553371627daec87247"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/burlingame/burlingame-bearcats",
+        "provider_school_id": "27f4c3ef-7017-4e6d-a8af-29854319b8ef"
+      }
+    ]
+  },
+  {
+    "id": "lyndon-ks",
+    "name": "Lyndon High School",
+    "short_name": "Lyndon",
+    "state": "Kansas",
+    "city": "Lyndon",
+    "county": "Osage County",
+    "conference": "Flint Hills League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd421.org",
+    "aliases": [
+      "Lyndon High School",
+      "Lyndon",
+      "Lyndon Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lyndonhs",
+        "provider_school_id": "h20250204045200534da403e892f4847"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lyndon/lyndon-tigers",
+        "provider_school_id": "73cc91ff-6ff4-4a41-a5e0-149b408572de"
+      }
+    ]
+  },
+  {
+    "id": "osage-city-ks",
+    "name": "Osage City High School",
+    "short_name": "Osage City",
+    "state": "Kansas",
+    "city": "Osage City",
+    "county": "Osage County",
+    "conference": "Flint Hills League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd420.org",
+    "aliases": [
+      "Osage City High School",
+      "Osage City",
+      "Osage City Indians"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/osagecityhs",
+        "provider_school_id": "h2025020404520182907a13e1e69fc4d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/osage-city/osage-city-indians",
+        "provider_school_id": "5f1adccc-89dd-4457-9dd3-563039a1e5cd"
+      }
+    ]
+  },
+  {
+    "id": "santa-fe-trail-ks",
+    "name": "Santa Fe Trail High School",
+    "short_name": "Santa Fe Trail",
+    "state": "Kansas",
+    "city": "Carbondale",
+    "county": "Osage County",
+    "conference": "Pioneer League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd434.org",
+    "aliases": [
+      "Santa Fe Trail High School",
+      "Santa Fe Trail",
+      "Santa Fe Trail Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/santafetrailhs",
+        "provider_school_id": "h202502040452058736988d787f20b47"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/carbondale/santa-fe-trail-chargers",
+        "provider_school_id": "d1cd3922-e265-4303-8ede-10f4c6e1d03d"
+      }
+    ]
+  },
+  {
+    "id": "central-heights-ks",
+    "name": "Central Heights High School",
+    "short_name": "Central Heights",
+    "state": "Kansas",
+    "city": "Richmond",
+    "county": "Franklin County",
+    "conference": "Three Rivers League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd288.org",
+    "aliases": [
+      "Central Heights High School",
+      "Central Heights",
+      "Central Heights Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/centralheightshs",
+        "provider_school_id": "h202502040451558563120952067f141"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/richmond/central-heights-vikings",
+        "provider_school_id": "4866222a-a662-4aa6-9938-ee06da87b756"
+      }
+    ]
+  },
+  {
+    "id": "ottawa-ks",
+    "name": "Ottawa High School",
+    "short_name": "Ottawa",
+    "state": "Kansas",
+    "city": "Ottawa",
+    "county": "Franklin County",
+    "conference": "Frontier League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd290.org",
+    "aliases": [
+      "Ottawa High School",
+      "Ottawa",
+      "Ottawa Cyclones"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ottawahs",
+        "provider_school_id": "h20250204045202017c45238e26c784c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/ottawa/ottawa-cyclones",
+        "provider_school_id": "17246c19-6aba-4d86-b28e-b9e1de144bf1"
+      }
+    ]
+  },
+  {
+    "id": "wellsville-ks",
+    "name": "Wellsville High School",
+    "short_name": "Wellsville",
+    "state": "Kansas",
+    "city": "Wellsville",
+    "county": "Franklin County",
+    "conference": "Pioneer League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.wellsville-usd289.org",
+    "aliases": [
+      "Wellsville High School",
+      "Wellsville",
+      "Wellsville Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wellsvillehs",
+        "provider_school_id": "h20250204045209027b68218998dbd4c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/wellsville/wellsville-eagles",
+        "provider_school_id": "d97af696-5939-4503-9e25-191fe2e7cba5"
+      }
+    ]
+  },
+  {
+    "id": "west-franklin-ks",
+    "name": "West Franklin High School",
+    "short_name": "West Franklin",
+    "state": "Kansas",
+    "city": "Pomona",
+    "county": "Franklin County",
+    "conference": "Flint Hills League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd287.org/wfhs",
+    "aliases": [
+      "West Franklin High School",
+      "West Franklin",
+      "West Franklin Falcons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/westfranklinhs",
+        "provider_school_id": "h20250204045209167fcd7db2423144d"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/pomona/west-franklin-falcons",
+        "provider_school_id": "d27ff8b5-8feb-43b1-8c7f-b4e1d9a4f473"
+      }
+    ]
+  },
+  {
+    "id": "ottawa-ms-ks",
+    "name": "Ottawa Middle School",
+    "short_name": "Ottawa",
+    "state": "Kansas",
+    "city": "Ottawa",
+    "county": "Franklin County",
+    "conference": "Frontier League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd290.org",
+    "aliases": [
+      "Ottawa Middle School",
+      "Ottawa",
+      "Ottawa MS",
+      "Ottawa Whirlwinds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ottawams",
+        "provider_school_id": "h20250609064937140d4600f0b30f149"
+      }
+    ]
+  },
+  {
+    "id": "wellsville-ms-ks",
+    "name": "Wellsville Middle School",
+    "short_name": "Wellsville",
+    "state": "Kansas",
+    "city": "Wellsville",
+    "county": "Franklin County",
+    "conference": "Pioneer Middle League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://wellsville-usd289.org",
+    "aliases": [
+      "Wellsville Middle School",
+      "Wellsville",
+      "Wellsville Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/wellsvillehs",
+        "provider_school_id": "h20250204045209027b68218998dbd4c"
+      }
+    ]
+  },
+  {
+    "id": "centre-ks",
+    "name": "Centre High School",
+    "short_name": "Centre",
+    "state": "Kansas",
+    "city": "Lost Springs",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd397.com",
+    "aliases": [
+      "Centre High School",
+      "Centre",
+      "Centre Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/centrehs",
+        "provider_school_id": "h202502040451559858969d9816a9f49"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lost-springs/centre-cougars",
+        "provider_school_id": "536d3ec1-700f-45cf-9b11-33cded0ac64a"
+      }
+    ]
+  },
+  {
+    "id": "goessel-ks",
+    "name": "Goessel High School",
+    "short_name": "Goessel",
+    "state": "Kansas",
+    "city": "Goessel",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd411.org",
+    "aliases": [
+      "Goessel High School",
+      "Goessel",
+      "Goessel Bluebirds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/goesselhs",
+        "provider_school_id": "h20250204045158779731f3c6bd7504c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/goessel/goessel-bluebirds",
+        "provider_school_id": "18738c7c-abd6-4a72-80ba-aa48b0afd9b5"
+      }
+    ]
+  },
+  {
+    "id": "hillsboro-ks",
+    "name": "Hillsboro High School",
+    "short_name": "Hillsboro",
+    "state": "Kansas",
+    "city": "Hillsboro",
+    "county": "Marion County",
+    "conference": "Central Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd410.net",
+    "aliases": [
+      "Hillsboro High School",
+      "Hillsboro",
+      "Hillsboro Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hillsborohs",
+        "provider_school_id": "h202502040451593101dec8700f9e548"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hillsboro/hillsboro-trojans",
+        "provider_school_id": "fa397804-2d57-4ba5-80e6-d5c6fe896e23"
+      }
+    ]
+  },
+  {
+    "id": "marion-ks",
+    "name": "Marion High School",
+    "short_name": "Marion",
+    "state": "Kansas",
+    "city": "Marion",
+    "county": "Marion County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd408.com",
+    "aliases": [
+      "Marion High School",
+      "Marion",
+      "Marion Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/marionhs",
+        "provider_school_id": "h202502040452007792af79a6246ef48"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/marion/marion-warriors",
+        "provider_school_id": "a7f4e90f-036b-4efd-a45f-72d829bec294"
+      }
+    ]
+  },
+  {
+    "id": "peabody-burns-ks",
+    "name": "Peabody-Burns High School",
+    "short_name": "Peabody-Burns",
+    "state": "Kansas",
+    "city": "Peabody",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd398.net",
+    "aliases": [
+      "Peabody-Burns High School",
+      "Peabody-Burns",
+      "Peabody-Burns Warriors",
+      "Peabody Burns High School",
+      "Peabody Burns",
+      "Peabody Burns Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/peabodyburnshs",
+        "provider_school_id": "h202502040452022065a6a64ac404547"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/peabody/peabody-burns-warriors",
+        "provider_school_id": "dcf5857c-1fff-4486-8082-eceec70232d4"
+      }
+    ]
+  },
+  {
+    "id": "centre-ms-ks",
+    "name": "Centre Junior High",
+    "short_name": "Centre",
+    "state": "Kansas",
+    "city": "Lost Springs",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd397.com",
+    "aliases": [
+      "Centre Junior High",
+      "Centre",
+      "Centre Cougars"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/centrehs",
+        "provider_school_id": "h202502040451559858969d9816a9f49"
+      }
+    ]
+  },
+  {
+    "id": "goessel-ms-ks",
+    "name": "Goessel Junior High",
+    "short_name": "Goessel",
+    "state": "Kansas",
+    "city": "Goessel",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd411.org",
+    "aliases": [
+      "Goessel Junior High",
+      "Goessel",
+      "Goessel Bluebirds"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/goesselhs",
+        "provider_school_id": "h20250204045158779731f3c6bd7504c"
+      }
+    ]
+  },
+  {
+    "id": "hillsboro-ms-ks",
+    "name": "Hillsboro Middle School",
+    "short_name": "Hillsboro",
+    "state": "Kansas",
+    "city": "Hillsboro",
+    "county": "Marion County",
+    "conference": "Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd410.net",
+    "aliases": [
+      "Hillsboro Middle School",
+      "Hillsboro",
+      "Hillsboro Trojans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hillsborohs",
+        "provider_school_id": "h202502040451593101dec8700f9e548"
+      }
+    ]
+  },
+  {
+    "id": "peabody-burns-ms-ks",
+    "name": "Peabody-Burns Junior High",
+    "short_name": "Peabody-Burns",
+    "state": "Kansas",
+    "city": "Peabody",
+    "county": "Marion County",
+    "conference": "Wheat State League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd398.com",
+    "aliases": [
+      "Peabody-Burns Junior High",
+      "Peabody-Burns",
+      "Peabody-Burns Warriors",
+      "Peabody Burns Junior High",
+      "Peabody Burns",
+      "Peabody Burns Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/peabodyburnshs",
+        "provider_school_id": "h202502040452022065a6a64ac404547"
+      }
+    ]
+  },
+  {
+    "id": "canton-galva-ks",
+    "name": "Canton-Galva High School",
+    "short_name": "Canton-Galva",
+    "state": "Kansas",
+    "city": "Canton",
+    "county": "McPherson County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.canton-galva.k12.ks.us",
+    "aliases": [
+      "Canton-Galva High School",
+      "Canton-Galva",
+      "Canton-Galva Eagles",
+      "Canton Galva High School",
+      "Canton Galva",
+      "Canton Galva Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cantongalvaseniorhs",
+        "provider_school_id": "h20250204045155758064facd9b65140"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/canton/canton-galva-eagles",
+        "provider_school_id": "e60750f6-c078-48da-ba87-ac16068b1acf"
+      }
+    ]
+  },
+  {
+    "id": "inman-ks",
+    "name": "Inman High School",
+    "short_name": "Inman",
+    "state": "Kansas",
+    "city": "Inman",
+    "county": "McPherson County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd448.com",
+    "aliases": [
+      "Inman High School",
+      "Inman",
+      "Inman Teutons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/inmanhs",
+        "provider_school_id": "h2025020404515966995f66b22f18e46"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/inman/inman-teutons",
+        "provider_school_id": "02916de7-18cf-41f6-8adc-8f10b79bb0fa"
+      }
+    ]
+  },
+  {
+    "id": "mcpherson-ks",
+    "name": "McPherson High School",
+    "short_name": "McPherson",
+    "state": "Kansas",
+    "city": "McPherson",
+    "county": "McPherson County",
+    "conference": "AVCTL III & IV League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://mhs.mcpherson.com",
+    "aliases": [
+      "McPherson High School",
+      "McPherson",
+      "McPherson Bullpups"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/mcphersonhs",
+        "provider_school_id": "h20250204045200919d2c0c04b8d0047"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/mcpherson/mcpherson-bullpups",
+        "provider_school_id": "f6334ad2-8556-4c9f-9e06-924b600457e0"
+      }
+    ]
+  },
+  {
+    "id": "moundridge-ks",
+    "name": "Moundridge High School",
+    "short_name": "Moundridge",
+    "state": "Kansas",
+    "city": "Moundridge",
+    "county": "McPherson County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd423.org",
+    "aliases": [
+      "Moundridge High School",
+      "Moundridge",
+      "Moundridge Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/moundridgehs",
+        "provider_school_id": "h20250204045201161cc488f415d8540"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/moundridge/moundridge-wildcats",
+        "provider_school_id": "705dec22-bb9a-423d-bbc5-9f4a6417b5e6"
+      }
+    ]
+  },
+  {
+    "id": "smoky-valley-ks",
+    "name": "Smoky Valley High School",
+    "short_name": "Smoky Valley",
+    "state": "Kansas",
+    "city": "Lindsborg",
+    "county": "McPherson County",
+    "conference": "Central Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.smokyvalley.org",
+    "aliases": [
+      "Smoky Valley High School",
+      "Smoky Valley",
+      "Smoky Valley HS",
+      "Smoky Valley Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/smokyvalleyhs",
+        "provider_school_id": "h20250204045206349f8c8f11de47149"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lindsborg/smoky-valley-vikings",
+        "provider_school_id": "c0b57271-416d-430e-8781-78ae5af06238"
+      }
+    ]
+  },
+  {
+    "id": "canton-galva-ms-ks",
+    "name": "Canton-Galva Middle School",
+    "short_name": "Canton-Galva",
+    "state": "Kansas",
+    "city": "Canton",
+    "county": "McPherson County",
+    "conference": "Wheat State League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd419.org/cg-jr-sr-high",
+    "aliases": [
+      "Canton-Galva Middle School",
+      "Canton-Galva",
+      "Canton-Galva Eagles",
+      "Canton Galva Middle School",
+      "Canton Galva",
+      "Canton Galva Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cantongalvaseniorhs",
+        "provider_school_id": "h20250204045155758064facd9b65140"
+      }
+    ]
+  },
+  {
+    "id": "smoky-valley-ms-ks",
+    "name": "Smoky Valley Middle School",
+    "short_name": "Smoky Valley",
+    "state": "Kansas",
+    "city": "Lindsborg",
+    "county": "McPherson County",
+    "conference": "Central Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/smovallms",
+    "aliases": [
+      "Smoky Valley Middle School",
+      "Smoky Valley",
+      "Smoky Valley MS",
+      "Smoky Valley Vikings"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/smovallms",
+        "provider_school_id": "h202601120105416737f03a82d66494a"
+      }
+    ]
+  },
+  {
+    "id": "chase-county-ks",
+    "name": "Chase County High School",
+    "short_name": "Chase County",
+    "state": "Kansas",
+    "city": "Cottonwood Falls",
+    "county": "Chase County",
+    "conference": "Flint Hills League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd284.org",
+    "aliases": [
+      "Chase County High School",
+      "Chase County",
+      "Chase County Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chasecountyhs",
+        "provider_school_id": "h20250204045156163993c448888e64a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/cottonwood-falls/chase-county-bulldogs",
+        "provider_school_id": "d9a74006-d0f2-4269-954e-0986d4537b2d"
+      }
+    ]
   }
 ]

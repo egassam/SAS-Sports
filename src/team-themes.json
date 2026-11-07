@@ -4102,5 +4102,285 @@
     "panelDark": "#081205",
     "line": "#5d8252",
     "onAccent": "#ffffff"
+  },
+  "jefferson-county-north-ks": {
+    "primary": "#055A08",
+    "secondary": "#000000",
+    "panel": "#022904",
+    "panelDark": "#011202",
+    "line": "#448346",
+    "onAccent": "#ffffff"
+  },
+  "jefferson-west-ks": {
+    "primary": "#E51D24",
+    "secondary": "#000000",
+    "panel": "#670d10",
+    "panelDark": "#2e0607",
+    "line": "#ec565b",
+    "onAccent": "#ffffff"
+  },
+  "mclouth-ks": {
+    "primary": "#8F257B",
+    "secondary": "#F3EA26",
+    "panel": "#401137",
+    "panelDark": "#1d0719",
+    "line": "#ab5c9c",
+    "onAccent": "#ffffff"
+  },
+  "oskaloosa-ks": {
+    "primary": "#2D2FD2",
+    "secondary": "#000000",
+    "panel": "#14155f",
+    "panelDark": "#09092a",
+    "line": "#6263dd",
+    "onAccent": "#ffffff"
+  },
+  "perry-lecompton-ks": {
+    "primary": "#281597",
+    "secondary": "#FBEC1D",
+    "panel": "#120944",
+    "panelDark": "#08041e",
+    "line": "#5e50b1",
+    "onAccent": "#ffffff"
+  },
+  "valley-falls-ks": {
+    "primary": "#D69B04",
+    "secondary": "#050504",
+    "panel": "#604602",
+    "panelDark": "#2b1f01",
+    "line": "#e0b443",
+    "onAccent": "#ffffff"
+  },
+  "mclouth-ms-ks": {
+    "primary": "#8F257B",
+    "secondary": "#F3EA26",
+    "panel": "#401137",
+    "panelDark": "#1d0719",
+    "line": "#ab5c9c",
+    "onAccent": "#ffffff"
+  },
+  "oskaloosa-ms-ks": {
+    "primary": "#2D2FD2",
+    "secondary": "#000000",
+    "panel": "#14155f",
+    "panelDark": "#09092a",
+    "line": "#6263dd",
+    "onAccent": "#ffffff"
+  },
+  "burlingame-ks": {
+    "primary": "#43217F",
+    "secondary": "#CCCACD",
+    "panel": "#1e0f39",
+    "panelDark": "#0d0719",
+    "line": "#72599f",
+    "onAccent": "#ffffff"
+  },
+  "lyndon-ks": {
+    "primary": "#D5914F",
+    "secondary": "#000000",
+    "panel": "#604124",
+    "panelDark": "#2b1d10",
+    "line": "#e0ad7b",
+    "onAccent": "#ffffff"
+  },
+  "osage-city-ks": {
+    "primary": "#92191D",
+    "secondary": "#000000",
+    "panel": "#420b0d",
+    "panelDark": "#1d0506",
+    "line": "#ad5356",
+    "onAccent": "#ffffff"
+  },
+  "santa-fe-trail-ks": {
+    "primary": "#0F24CE",
+    "secondary": "#CE1421",
+    "panel": "#07105d",
+    "panelDark": "#030729",
+    "line": "#4b5bda",
+    "onAccent": "#ffffff"
+  },
+  "central-heights-ks": {
+    "primary": "#3878B7",
+    "secondary": "#000000",
+    "panel": "#193652",
+    "panelDark": "#0b1825",
+    "line": "#6a9ac9",
+    "onAccent": "#ffffff"
+  },
+  "ottawa-ks": {
+    "primary": "#B52025",
+    "secondary": "#000000",
+    "panel": "#510e11",
+    "panelDark": "#240607",
+    "line": "#c8585c",
+    "onAccent": "#ffffff"
+  },
+  "wellsville-ks": {
+    "primary": "#850101",
+    "secondary": "#02015E",
+    "panel": "#3c0000",
+    "panelDark": "#1b0000",
+    "line": "#a44141",
+    "onAccent": "#ffffff"
+  },
+  "west-franklin-ks": {
+    "primary": "#0B2CC3",
+    "secondary": "#000000",
+    "panel": "#051458",
+    "panelDark": "#020927",
+    "line": "#4861d2",
+    "onAccent": "#ffffff"
+  },
+  "ottawa-ms-ks": {
+    "primary": "#FF1723",
+    "secondary": "#000000",
+    "panel": "#730a10",
+    "panelDark": "#330507",
+    "line": "#ff515a",
+    "onAccent": "#ffffff"
+  },
+  "wellsville-ms-ks": {
+    "primary": "#850101",
+    "secondary": "#02015E",
+    "panel": "#3c0000",
+    "panelDark": "#1b0000",
+    "line": "#a44141",
+    "onAccent": "#ffffff"
+  },
+  "centre-ks": {
+    "primary": "#07468B",
+    "secondary": "#929C9E",
+    "panel": "#03203f",
+    "panelDark": "#010e1c",
+    "line": "#4574a8",
+    "onAccent": "#ffffff"
+  },
+  "goessel-ks": {
+    "primary": "#0000FF",
+    "secondary": "#000000",
+    "panel": "#000073",
+    "panelDark": "#000033",
+    "line": "#4040ff",
+    "onAccent": "#ffffff"
+  },
+  "hillsboro-ks": {
+    "primary": "#640203",
+    "secondary": "#FFD206",
+    "panel": "#2d0101",
+    "panelDark": "#140001",
+    "line": "#8b4142",
+    "onAccent": "#ffffff"
+  },
+  "marion-ks": {
+    "primary": "#B60000",
+    "secondary": "#120098",
+    "panel": "#520000",
+    "panelDark": "#240000",
+    "line": "#c84040",
+    "onAccent": "#ffffff"
+  },
+  "peabody-burns-ks": {
+    "primary": "#0004D8",
+    "secondary": "#000000",
+    "panel": "#000261",
+    "panelDark": "#00012b",
+    "line": "#4043e2",
+    "onAccent": "#ffffff"
+  },
+  "centre-ms-ks": {
+    "primary": "#07468B",
+    "secondary": "#929C9E",
+    "panel": "#03203f",
+    "panelDark": "#010e1c",
+    "line": "#4574a8",
+    "onAccent": "#ffffff"
+  },
+  "goessel-ms-ks": {
+    "primary": "#0000FF",
+    "secondary": "#000000",
+    "panel": "#000073",
+    "panelDark": "#000033",
+    "line": "#4040ff",
+    "onAccent": "#ffffff"
+  },
+  "hillsboro-ms-ks": {
+    "primary": "#640203",
+    "secondary": "#FFD206",
+    "panel": "#2d0101",
+    "panelDark": "#140001",
+    "line": "#8b4142",
+    "onAccent": "#ffffff"
+  },
+  "peabody-burns-ms-ks": {
+    "primary": "#0004D8",
+    "secondary": "#000000",
+    "panel": "#000261",
+    "panelDark": "#00012b",
+    "line": "#4043e2",
+    "onAccent": "#ffffff"
+  },
+  "canton-galva-ks": {
+    "primary": "#261088",
+    "secondary": "#C13929",
+    "panel": "#11073d",
+    "panelDark": "#08031b",
+    "line": "#5c4ca6",
+    "onAccent": "#ffffff"
+  },
+  "inman-ks": {
+    "primary": "#DE4F00",
+    "secondary": "#000000",
+    "panel": "#642400",
+    "panelDark": "#2c1000",
+    "line": "#e67b40",
+    "onAccent": "#ffffff"
+  },
+  "mcpherson-ks": {
+    "primary": "#E11B22",
+    "secondary": "#000000",
+    "panel": "#650c0f",
+    "panelDark": "#2d0507",
+    "line": "#e95459",
+    "onAccent": "#ffffff"
+  },
+  "moundridge-ks": {
+    "primary": "#E90001",
+    "secondary": "#000000",
+    "panel": "#690000",
+    "panelDark": "#2f0000",
+    "line": "#ef4041",
+    "onAccent": "#ffffff"
+  },
+  "smoky-valley-ks": {
+    "primary": "#F15F29",
+    "secondary": "#000000",
+    "panel": "#6c2b12",
+    "panelDark": "#301308",
+    "line": "#f5875f",
+    "onAccent": "#ffffff"
+  },
+  "canton-galva-ms-ks": {
+    "primary": "#261088",
+    "secondary": "#C13929",
+    "panel": "#11073d",
+    "panelDark": "#08031b",
+    "line": "#5c4ca6",
+    "onAccent": "#ffffff"
+  },
+  "smoky-valley-ms-ks": {
+    "primary": "#F15F29",
+    "secondary": "#000000",
+    "panel": "#6c2b12",
+    "panelDark": "#301308",
+    "line": "#f5875f",
+    "onAccent": "#ffffff"
+  },
+  "chase-county-ks": {
+    "primary": "#F12313",
+    "secondary": "#000000",
+    "panel": "#6c1009",
+    "panelDark": "#300704",
+    "line": "#f55a4e",
+    "onAccent": "#ffffff"
   }
 }

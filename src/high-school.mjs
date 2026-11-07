@@ -40,7 +40,9 @@ export function parseCalendarTitle(title,prefix){
   if(!dash)return null;
   // "MHS Varsity Bowling - JV League - HOME": the junior varsity's day.
   if(/^JV\b/i.test(dash[2].trim()))return null;
-  return{team:dash[1].trim(),name:dash[2].trim(),site};
+  // Words typed in capitals read as names, as on Bound ("Regional Meet -
+  // WARNER PARK" reads "Regional Meet - Warner Park"; November 7, 2026).
+  return{team:dash[1].trim(),name:nameCase(dash[2].trim()),site};
 }
 
 // Calendar events for one varsity team (team: a RegExp on the team words).
@@ -881,11 +883,14 @@ const GENERIC_TITLE=/^(?:(?:event|meet|game|match|tbd|tba|tournament|7th|8th|gra
 const NAME_CODES=/^(?:NCAA|KSHSAA|GWAL|AVCTL|ACVTL|KCBA|KASC|HOPL|BTEN|SVHE|WAHAA|WYCO|KIPP|CKTL|NCKL|NEKL|NEKAA|CKL|MCL|TVL|CPL|USD|NOAH|CHIEF|MAYO|FHSU|KSU)$/;
 export function nameCase(text){
   const t=clean(text),allCaps=!/[a-z]/.test(t);
+  // Two or more capital words together ("WARNER PARK") are read word by
+  // word, as a name typed all in capitals is.
+  const run=new Set((t.match(/\b[A-Z]{4,}(?:\s+[A-Z]{4,})+\b/g)||[]).flatMap(r=>r.split(/\s+/)));
   return t.replace(/\b[A-Z]{4,}\b/g,word=>{
     // Associations ("KSHSAA", Bound's "KHSAA State XC Meet") and school codes stay.
     if(NAME_CODES.test(word)||/(?:HS|MS|JH|AA)$/.test(word))return word;
     const vowels=(word.match(/[AEIOU]/g)||[]).length;
-    return vowels>=(allCaps?1:2)?word[0]+word.slice(1).toLowerCase():word;
+    return vowels>=(allCaps||run.has(word)?1:2)?word[0]+word.slice(1).toLowerCase():word;
   });
 }
 // A title naming a junior varsity event only (not "JV/V", "Varsity & JV").

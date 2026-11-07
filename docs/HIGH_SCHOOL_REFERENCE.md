@@ -33,7 +33,8 @@ The reference schools are USD 383's **Manhattan High School** (`manhattan-ks`), 
    - known slips are corrected ("Norht", "Stare Park");
    - an event named without a place reads "·" ("Eisenhower · League Tournament 1st Round").
    A junior varsity day on a varsity team's calendar ("JV League") is not listed; nor is a junior varsity event Bound files as varsity ("Wabaunsee Track Meet - RC JV", "Louisburg JV Mixer", a middle school's "Eudora MS JV vs Santa Fe Trail 7th Grade"). "JV/V" and "Varsity & JV" are varsity.
-   Bound's event names follow the same capitals rule ("EMPORIA Bowling Meet" reads "Emporia Bowling Meet"); league and school codes stay ("NCAA League Tournament", "WCHS Invite", "KSHSAA").
+   Bound's event names and the school calendars' titles follow the same capitals rule ("EMPORIA Bowling Meet" reads "Emporia Bowling Meet"; Manhattan's "Regional Meet - WARNER PARK" reads "Regional Meet - Warner Park", since two capital words together are read word by word, November 7, 2026); league and school codes stay ("NCAA League Tournament", "WCHS Invite", "KSHSAA").
+   A college's event is not a state round: "Seaman · Wichita State University tournament" keeps its name and place ("State University" and "State College" are not "State").
    A Bound game against "TBD", or against a team Bound has not named yet, reads "Silver Lake · TBD", and on a day MaxPreps has the game, gives way to it.
 6. **Live.**
    - **Team feeds** take a game's running score from MaxPreps' state scores page when it has the game (fresher than the team page: 22-7 there while the team page read 15-7, Nov 6). It is matched by MaxPreps school id, then by the team page's live flag.
@@ -68,4 +69,3 @@ The reference schools are USD 383's **Manhattan High School** (`manhattan-ks`), 
 - **Meets that ran under another name.** Manhattan's Oct 10 Haskell Invite and Eisenhower's Sep 22 Clay Center have no results: those days the timers have the teams at the Salina Invitational and McPherson, and those cards are listed.
 - **Golf and tennis meets** read "No results posted" when the host posted nothing to Prep.Golf or TennisReporting.
 - **Calendar typos the app cannot know**, such as "Hay Tournament", are shown as typed.
-- **Calendar capitals in Manhattan's own titles** ("Manhattan at Regional Meet - WARNER PARK") are not cleaned yet; the capitals rule is applied to Bound's names. Changing it moves the baseline: re-record and read the cards.

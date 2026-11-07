@@ -1,0 +1,155 @@
+{
+ "state": "ks",
+ "counties": [
+  "Osage"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "burlingame-ks",
+   "name": "Burlingame High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515553371627daec87247",
+    "slug": "burlingamehs"
+   },
+   "maxpreps": {
+    "schoolId": "27f4c3ef-7017-4e6d-a8af-29854319b8ef",
+    "path": "burlingame/burlingame-bearcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Burlingame",
+    "milesplit": 22040,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "lyndon-ks",
+   "name": "Lyndon High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200534da403e892f4847",
+    "slug": "lyndonhs"
+   },
+   "maxpreps": {
+    "schoolId": "73cc91ff-6ff4-4a41-a5e0-149b408572de",
+    "path": "lyndon/lyndon-tigers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 222,
+    "code": "LYN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Lyndon",
+    "milesplit": 22011,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "osage-city-ks",
+   "name": "Osage City High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520182907a13e1e69fc4d",
+    "slug": "osagecityhs"
+   },
+   "maxpreps": {
+    "schoolId": "5f1adccc-89dd-4457-9dd3-563039a1e5cd",
+    "path": "osage-city/osage-city-indians"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 171,
+    "code": "OSC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Osage City",
+    "paths": {
+     "Girls Flag Football": "flag-football/girls/fall"
+    },
+    "milesplit": 21859,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "santa-fe-trail-ks",
+   "name": "Santa Fe Trail High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452058736988d787f20b47",
+    "slug": "santafetrailhs"
+   },
+   "maxpreps": {
+    "schoolId": "d1cd3922-e265-4303-8ede-10f4c6e1d03d",
+    "path": "carbondale/santa-fe-trail-chargers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 76,
+    "code": "SFT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Santa Fe Trail",
+    "milesplit": 21818
+   }
+  }
+ ]
+}

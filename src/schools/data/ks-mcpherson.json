@@ -1,0 +1,243 @@
+{
+ "state": "ks",
+ "counties": [
+  "McPherson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "canton-galva-ks",
+   "name": "Canton-Galva High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155758064facd9b65140",
+    "slug": "cantongalvaseniorhs"
+   },
+   "maxpreps": {
+    "schoolId": "e60750f6-c078-48da-ba87-ac16068b1acf",
+    "path": "canton/canton-galva-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 201,
+    "code": "CGAL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Canton-Galva",
+    "milesplit": 22041,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "inman-ks",
+   "name": "Inman High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515966995f66b22f18e46",
+    "slug": "inmanhs"
+   },
+   "maxpreps": {
+    "schoolId": "02916de7-18cf-41f6-8adc-8f10b79bb0fa",
+    "path": "inman/inman-teutons"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 216,
+    "code": "INM"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Inman",
+    "milesplit": 22034,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "mcpherson-ks",
+   "name": "McPherson High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200919d2c0c04b8d0047",
+    "slug": "mcphersonhs"
+   },
+   "maxpreps": {
+    "schoolId": "f6334ad2-8556-4c9f-9e06-924b600457e0",
+    "path": "mcpherson/mcpherson-bullpups"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 107,
+    "code": "MP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "McPherson",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "McPherson HS",
+    "milesplit": 20797
+   }
+  },
+  {
+   "id": "moundridge-ks",
+   "name": "Moundridge High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201161cc488f415d8540",
+    "slug": "moundridgehs"
+   },
+   "maxpreps": {
+    "schoolId": "705dec22-bb9a-423d-bbc5-9f4a6417b5e6",
+    "path": "moundridge/moundridge-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Moundridge",
+    "milesplit": 22028,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "smoky-valley-ks",
+   "name": "Smoky Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206349f8c8f11de47149",
+    "slug": "smokyvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "c0b57271-416d-430e-8781-78ae5af06238",
+    "path": "lindsborg/smoky-valley-vikings"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Smoky Valley",
+    "tennis": "Smoky Valley HS",
+    "milesplit": 20800
+   }
+  },
+  {
+   "id": "canton-galva-ms-ks",
+   "name": "Canton-Galva Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045155758064facd9b65140",
+    "slug": "cantongalvaseniorhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Canton-Galva",
+    "milesplit": 33324
+   }
+  },
+  {
+   "id": "smoky-valley-ms-ks",
+   "name": "Smoky Valley Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202601120105416737f03a82d66494a",
+    "slug": "smovallms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Smoky Valley MS",
+    "milesplit": 33091
+   }
+  }
+ ]
+}

@@ -1,0 +1,262 @@
+{
+ "state": "ks",
+ "counties": [
+  "Marion"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "centre-ks",
+   "name": "Centre High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451559858969d9816a9f49",
+    "slug": "centrehs"
+   },
+   "maxpreps": {
+    "schoolId": "536d3ec1-700f-45cf-9b11-33cded0ac64a",
+    "path": "lost-springs/centre-cougars"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Centre",
+    "milesplit": 21973,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "goessel-ks",
+   "name": "Goessel High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158779731f3c6bd7504c",
+    "slug": "goesselhs"
+   },
+   "maxpreps": {
+    "schoolId": "18738c7c-abd6-4a72-80ba-aa48b0afd9b5",
+    "path": "goessel/goessel-bluebirds"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 266,
+    "code": "GS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Goessel",
+    "milesplit": 21919
+   }
+  },
+  {
+   "id": "hillsboro-ks",
+   "name": "Hillsboro High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451593101dec8700f9e548",
+    "slug": "hillsborohs"
+   },
+   "maxpreps": {
+    "schoolId": "fa397804-2d57-4ba5-80e6-d5c6fe896e23",
+    "path": "hillsboro/hillsboro-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 212,
+    "code": "HSB"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Hillsboro",
+    "tennis": "Hillsboro HS",
+    "milesplit": 21890
+   }
+  },
+  {
+   "id": "marion-ks",
+   "name": "Marion High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452007792af79a6246ef48",
+    "slug": "marionhs"
+   },
+   "maxpreps": {
+    "schoolId": "a7f4e90f-036b-4efd-a45f-72d829bec294",
+    "path": "marion/marion-warriors"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 165,
+    "code": "MRN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Marion",
+    "milesplit": 20795,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "peabody-burns-ks",
+   "name": "Peabody-Burns High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452022065a6a64ac404547",
+    "slug": "peabodyburnshs"
+   },
+   "maxpreps": {
+    "schoolId": "dcf5857c-1fff-4486-8082-eceec70232d4",
+    "path": "peabody/peabody-burns-warriors"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Track & Field"
+    ],
+    "meetTeam": "Peabody Burns",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "centre-ms-ks",
+   "name": "Centre Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040451559858969d9816a9f49",
+    "slug": "centrehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Centre",
+    "milesplit": 33325
+   }
+  },
+  {
+   "id": "goessel-ms-ks",
+   "name": "Goessel Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158779731f3c6bd7504c",
+    "slug": "goesselhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Goessel",
+    "milesplit": 33326
+   }
+  },
+  {
+   "id": "hillsboro-ms-ks",
+   "name": "Hillsboro Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040451593101dec8700f9e548",
+    "slug": "hillsborohs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Hillsboro",
+    "milesplit": 33090
+   }
+  },
+  {
+   "id": "peabody-burns-ms-ks",
+   "name": "Peabody-Burns Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452022065a6a64ac404547",
+    "slug": "peabodyburnshs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Track & Field"
+    ],
+    "meetTeam": "Peabody Burns"
+   }
+  }
+ ]
+}
