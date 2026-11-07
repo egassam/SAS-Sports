@@ -333,15 +333,26 @@ const STALE_LIVE_MS=15*60*1000;
 // LIVE either, and never with its frozen score: a game from an earlier day
 // leaves the live box (the next read lists its final), a game today reads
 // "Today" with no score until the next read.
-function retireStaleLive(groups,now=Date.now(),today=id=>typeof schoolToday==='function'?schoolToday(id):new Date(now).toISOString().slice(0,10)){
+// A game under way rides out a short gap (user, November 7: "Do both", after
+// Manhattan's live game fell back to Today while production was updating):
+// in a copy under an hour old, a game that started in the last 3½ hours
+// stays LIVE with its score, marked "score may be delayed".
+const LIVE_GAP_COPY_MS=60*60*1000,LIVE_GAP_GAME_MS=3.5*60*60*1000;
+function wallClockNow(id,now){
+  try{const zone=typeof schoolTimeZoneOf==='function'?schoolTimeZoneOf(id):undefined;const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:zone||undefined,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(now)).map(x=>[x.type,x.value]));return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)}catch{return now}
+}
+function retireStaleLive(groups,now=Date.now(),today=id=>typeof schoolToday==='function'?schoolToday(id):new Date(now).toISOString().slice(0,10),wallNow=id=>wallClockNow(id,now)){
   return groups.map(g=>{
     const at=Date.parse(g.saved_at||g.fetched_at||'');
     if(!(now-at>STALE_LIVE_MS))return g;
+    // Start times are the school's wall clock with a Z suffix.
+    const riding=now-at<=LIVE_GAP_COPY_MS?(g.live||[]).filter(e=>!(e.meet_live||e.event_type==='MEET')&&(()=>{const ago=wallNow(g.school_id)-Date.parse(e.start_time||'');return ago>=0&&ago<=LIVE_GAP_GAME_MS})()):[];
     const old=(g.live||[]).filter(e=>e.meet_live||e.event_type==='MEET');
-    const games=(g.live||[]).filter(e=>!old.includes(e));
+    const games=(g.live||[]).filter(e=>!old.includes(e)&&!riding.includes(e));
+    if(riding.length&&!old.length&&!games.length)return{...g,live:riding.map(e=>({...e,score_delayed:true,recency_label:`${e.recency_label||'Live'} · score may be delayed`}))};
     if(!old.length&&!games.length)return g;
     const day=today(g.school_id),todays=games.filter(e=>String(e.start_time||'').slice(0,10)>=day);
-    return{...g,live:[],
+    return{...g,live:riding.map(e=>({...e,score_delayed:true,recency_label:`${e.recency_label||'Live'} · score may be delayed`})),
       upcoming:[...todays.map(e=>({...e,status:'Today',school_score:null,opponent_score:null,headline:null,live_period:null,recency_label:'Live score updating…'})),...(g.upcoming||[])],
       results:[...old.map(e=>({...e,status:'Final',meet_live:false,live_latest:null,recency_label:'Latest results'})),...(g.results||[])]};
   });
@@ -721,7 +732,7 @@ function readActivity(id,sp,now){
   const upcoming=groups.flatMap(g=>g.upcoming||[]),results=groups.flatMap(g=>g.results||[]);
   const isToday=[...upcoming,...results].some(e=>day(e)===today);
   const nextAt=Math.min(...upcoming.map(ts).filter(Number.isFinite)),lastAt=Math.max(...results.map(ts).filter(Number.isFinite));
-  return{live,today:isToday,nextDays:Number.isFinite(nextAt)?(nextAt-now)/DAY_MS:Infinity,lastDays:Number.isFinite(lastAt)?(now-lastAt)/DAY_MS:Infinity};
+  return{live,today:isToday,nextDays:Number.isFinite(nextAt)?(nextAt-now)/DAY_MS:Infinity,lastDays:Number.isFinite(lastAt)?(now-lastAt)/DAY_MS:Infinity,ageHours:(now-Date.parse(copy.at))/3600000};
 }
 // The home screen leaves out a sport whose season is over or not started
 // for this team: nothing live or today, no game in the next 7 days and no
@@ -729,8 +740,12 @@ function readActivity(id,sp,now){
 // finished cross country was the slowest read, 11-12 s). A sport this
 // device has no copy of is read once. The team's own page still has all of
 // its sports.
-const HOME_AHEAD_DAYS=7,HOME_BEHIND_DAYS=7;
-function homeCurrent(id,sp){const a=feedActivity(id,sp);return!a||a.live||a.today||a.nextDays<=HOME_AHEAD_DAYS||a.lastDays<=HOME_BEHIND_DAYS}
+// A copy over 12 hours old is read again whatever it says (user, November
+// 7: "It's broke", Manhattan's page without football: the playoff game vs
+// Garden City was scheduled after this device's last football copy, which
+// showed nothing within a week, so football was never read again).
+const HOME_AHEAD_DAYS=7,HOME_BEHIND_DAYS=7,HOME_RECHECK_HOURS=12;
+function homeCurrent(id,sp){const a=feedActivity(id,sp);return!a||a.ageHours>HOME_RECHECK_HOURS||a.live||a.today||a.nextDays<=HOME_AHEAD_DAYS||a.lastDays<=HOME_BEHIND_DAYS}
 // Live and today's games first, then the next few days, then recent
 // results, then sports this device has not read yet.
 function homeOrder(id,sp){const a=feedActivity(id,sp);if(!a)return 4;if(a.live)return 0;if(a.today)return 1;if(a.nextDays<=2)return 2;return 3}
@@ -741,7 +756,8 @@ function homePairs(){
     const sports=sponsored?active.filter(sp=>sponsored.includes(sp)):[];
     // A team with nothing current keeps its next game's sport (it still
     // shows Coming up), or its first in-season sport.
-    const current=sports.filter(sp=>homeCurrent(id,sp));
+    // Home only: a team's own page (all in-season sports) reads every sport.
+    const current=homeView?sports.filter(sp=>homeCurrent(id,sp)):sports;
     const next=sports.slice().sort((a,b)=>(feedActivity(id,a)?.nextDays??Infinity)-(feedActivity(id,b)?.nextDays??Infinity))[0];
     for(const sp of current.length?current:next?[next]:[homeSport(id)])pairs.push([id,sp]);
   }

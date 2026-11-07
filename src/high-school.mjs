@@ -1124,3 +1124,28 @@ export function youtubeVideoFor(videos,{date,sport,team=null,timeZone='America/C
   if(tagged.length)return tagged[0];
   return videos.find(v=>fits(v)&&localDay(v.started||v.published)===date)||null;
 }
+
+// MaxPreps' state scores page for a sport (/ks/football/scores/): every game
+// of the day with its state, score and period, and each team's MaxPreps
+// school id (in its mascot image's path, as on school pages). One read lists
+// every school's live game (user, November 7, 2026: live high school games on
+// Home for everyone, "Do both").
+export function maxprepsScoreboard(html){
+  const out=[];
+  for(const m of String(html||'').matchAll(/<li class="c"[^>]*data-contest-id="([0-9a-f-]{36})"[^>]*>([\s\S]*?)<\/a><\/div><\/li>/g)){
+    const body=m[2];
+    const state=(body.match(/data-contest-state="([^"]+)"/)||[])[1]||'';
+    const live=/data-contest-live="1"/.test(body);
+    const url=(body.match(/<a href="(https:\/\/www\.maxpreps\.com\/[^"]+)"/)||[])[1]||null;
+    const teams=[...body.matchAll(/<li data-result="[^"]*"[^>]*>([\s\S]*?)<\/li>/g)].map(t=>{
+      const team=t[1],score=(team.match(/<div class="score"\s*>\s*(\d+)\s*<\/div>/)||[])[1];
+      const id=(team.match(/school-mascot\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]\/([0-9a-f-]{36})\./)||[])[1]||null;
+      const name=clean(((team.match(/<div class="name"\s*>([\s\S]*?)<\/div>/)||[])[1]||'').replace(/<span class="rank"[^>]*>[\s\S]*?<\/span>/,'').replace(/<[^>]+>/g,' '));
+      const rank=(team.match(/<span class="rank"[^>]*>\(#(\d+)\)<\/span>/)||[])[1];
+      return{schoolId:id,name,score:score!=null?Number(score):null,rank:rank?Number(rank):null};
+    });
+    const period=clean(((body.match(/<div class="period"\s*>([\s\S]*?)<\/div>/)||[])[1]||'').replace(/<[^>]+>/g,' '))||null;
+    if(teams.length===2)out.push({id:m[1],state,live,period,url,away:teams[0],home:teams[1]});
+  }
+  return out;
+}
