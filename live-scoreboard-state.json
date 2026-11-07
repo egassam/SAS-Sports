@@ -4,10 +4,24 @@
    "state": "off"
   },
   "kstate|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-04T07:24:46.092Z",
-   "last_detail": "final L, 66-68 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.865Z",
+   "last_detail": "live 32-20 · 8:58 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kstate|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · K-State vs CSU Northridge",
+    "started_seen": "2026-11-07T02:18:20.968Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.968Z",
+     "2026-11-07T02:19:30.543Z",
+     "2026-11-07T02:20:33.626Z",
+     "2026-11-07T02:22:16.768Z",
+     "2026-11-07T02:23:40.352Z",
+     "2026-11-07T02:25:03.498Z",
+     "2026-11-07T02:26:26.865Z"
+    ],
+    "final_ok": false
+   }
   },
   "kstate|Football": {
    "state": "done",
@@ -490,7 +504,24 @@
    "verified_detail": "final L, 2-3"
   },
   "iowa-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:05.814Z",
+   "last_detail": "live 49-31 · 15:37 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iowa-state|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Iowa State vs Southern Miss",
+    "started_seen": "2026-11-07T02:18:20.825Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.825Z",
+     "2026-11-07T02:19:30.375Z",
+     "2026-11-07T02:20:53.546Z",
+     "2026-11-07T02:21:56.509Z",
+     "2026-11-07T02:23:19.406Z",
+     "2026-11-07T02:24:42.767Z",
+     "2026-11-07T02:26:05.814Z"
+    ],
+    "final_ok": false
+   }
   },
   "iowa-state|Football": {
    "state": "done",
@@ -943,10 +974,24 @@
    "state": "off"
   },
   "missouri|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-04T07:24:50.477Z",
-   "last_detail": "final W, 111-50 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.566Z",
+   "last_detail": "live 56-38 · 2:21 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "missouri|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Missouri at Little Rock",
+    "started_seen": "2026-11-07T02:18:20.709Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.709Z",
+     "2026-11-07T02:19:30.294Z",
+     "2026-11-07T02:20:54.066Z",
+     "2026-11-07T02:22:17.197Z",
+     "2026-11-07T02:23:19.603Z",
+     "2026-11-07T02:25:03.548Z",
+     "2026-11-07T02:26:27.566Z"
+    ],
+    "final_ok": false
+   }
   },
   "missouri|Football": {
    "state": "done",
@@ -1150,7 +1195,24 @@
    "state": "off"
   },
   "oklahoma|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.409Z",
+   "last_detail": "live 55-36 · 10:18 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "oklahoma|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Oklahoma vs Miss Valley St",
+    "started_seen": "2026-11-07T02:18:20.216Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.216Z",
+     "2026-11-07T02:19:31.235Z",
+     "2026-11-07T02:20:33.653Z",
+     "2026-11-07T02:21:56.292Z",
+     "2026-11-07T02:23:19.713Z",
+     "2026-11-07T02:25:03.432Z",
+     "2026-11-07T02:26:06.409Z"
+    ],
+    "final_ok": false
+   }
   },
   "oklahoma|Football": {
    "state": "done",
@@ -1408,7 +1470,24 @@
    "state": "off"
   },
   "iowa|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.214Z",
+   "last_detail": "live 41-20 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "iowa|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Iowa vs E Illinois",
+    "started_seen": "2026-11-07T02:18:20.639Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.639Z",
+     "2026-11-07T02:19:30.320Z",
+     "2026-11-07T02:20:32.934Z",
+     "2026-11-07T02:21:56.582Z",
+     "2026-11-07T02:23:19.860Z",
+     "2026-11-07T02:24:42.605Z",
+     "2026-11-07T02:26:06.214Z"
+    ],
+    "final_ok": false
+   }
   },
   "iowa|Field Hockey": {
    "state": "done",
@@ -3061,7 +3140,24 @@
    "verified_detail": "final L, 0-3"
   },
   "boise-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:05.793Z",
+   "last_detail": "live 37-40 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "boise-state|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Boise State vs Portland St",
+    "started_seen": "2026-11-07T02:18:20.738Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.738Z",
+     "2026-11-07T02:19:30.952Z",
+     "2026-11-07T02:20:33.640Z",
+     "2026-11-07T02:21:56.591Z",
+     "2026-11-07T02:23:19.743Z",
+     "2026-11-07T02:24:42.452Z",
+     "2026-11-07T02:26:05.793Z"
+    ],
+    "final_ok": false
+   }
   },
   "boise-state|Football": {
    "state": "done",
@@ -3094,7 +3190,24 @@
    "verified_detail": "final L, 0-3"
   },
   "colorado-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.524Z",
+   "last_detail": "live 16-19 · 10:16 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "colorado-state|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Colorado State vs Idaho",
+    "started_seen": "2026-11-07T02:18:20.905Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.905Z",
+     "2026-11-07T02:19:30.483Z",
+     "2026-11-07T02:20:53.817Z",
+     "2026-11-07T02:21:56.681Z",
+     "2026-11-07T02:23:19.689Z",
+     "2026-11-07T02:25:03.570Z",
+     "2026-11-07T02:26:26.524Z"
+    ],
+    "final_ok": false
+   }
   },
   "colorado-state|Football": {
    "state": "done",
@@ -3163,7 +3276,24 @@
    "state": "off"
   },
   "gonzaga|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.252Z",
+   "last_detail": "live 14-25 · 0:00 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "gonzaga|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Gonzaga vs Idaho",
+    "started_seen": "2026-11-07T02:18:21.011Z",
+    "live_passes": [
+     "2026-11-07T02:18:21.011Z",
+     "2026-11-07T02:19:31.261Z",
+     "2026-11-07T02:20:53.739Z",
+     "2026-11-07T02:22:16.800Z",
+     "2026-11-07T02:23:40.576Z",
+     "2026-11-07T02:25:04.197Z",
+     "2026-11-07T02:26:27.252Z"
+    ],
+    "final_ok": false
+   }
   },
   "gonzaga|Soccer": {
    "state": "done",
@@ -3511,7 +3641,24 @@
    "state": "off"
   },
   "uconn|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.531Z",
+   "last_detail": "live 49-34 · 17:51 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uconn|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · UConn at Michigan",
+    "started_seen": "2026-11-07T02:18:22.285Z",
+    "live_passes": [
+     "2026-11-07T02:18:22.285Z",
+     "2026-11-07T02:19:30.621Z",
+     "2026-11-07T02:20:33.250Z",
+     "2026-11-07T02:21:56.076Z",
+     "2026-11-07T02:23:41.065Z",
+     "2026-11-07T02:25:04.189Z",
+     "2026-11-07T02:26:06.531Z"
+    ],
+    "final_ok": false
+   }
   },
   "uconn|Field Hockey": {
    "state": "done",
@@ -3637,7 +3784,18 @@
    "verified_detail": "final W, 3-2"
   },
   "idaho-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.631Z",
+   "last_detail": "live 28-7 · 9:06 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "idaho-state|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Idaho State vs Westminster UT",
+    "started_seen": "2026-11-07T02:26:27.631Z",
+    "live_passes": [
+     "2026-11-07T02:26:27.631Z"
+    ],
+    "final_ok": false
+   }
   },
   "idaho-state|Football": {
    "state": "off"
@@ -3664,23 +3822,13 @@
    "verified_detail": "final W, 3-1"
   },
   "eastern-washington|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:11.942Z",
-   "last_detail": "live 61-58 · 4:50 - 4th · official_schedule+live_scoreboard",
-   "game": {
-    "key": "eastern-washington|Basketball|Women's|2026-11-06|1",
-    "title": "Women's · Eastern Washington vs UC Davis",
-    "started_seen": "2026-11-06T22:27:06.452Z",
-    "live_passes": [
-     "2026-11-06T22:27:06.452Z",
-     "2026-11-06T22:29:16.415Z",
-     "2026-11-06T22:31:00.088Z",
-     "2026-11-06T22:32:43.622Z",
-     "2026-11-06T22:34:05.887Z",
-     "2026-11-06T22:36:11.942Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-07T02:18:20.979Z",
+   "last_detail": "final W, 76-72",
+   "game": null,
+   "verified_at": "2026-11-07T02:18:20.979Z",
+   "verified_game": "Women's · Eastern Washington vs UC Davis",
+   "verified_detail": "final W, 76-72"
   },
   "eastern-washington|Football": {
    "state": "off"
@@ -3737,7 +3885,24 @@
    "state": "off"
   },
   "northern-colorado|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.030Z",
+   "last_detail": "live 14-26 · 8:08 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "northern-colorado|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Northern Colorado at Arizona St",
+    "started_seen": "2026-11-07T02:18:21.142Z",
+    "live_passes": [
+     "2026-11-07T02:18:21.142Z",
+     "2026-11-07T02:19:31.353Z",
+     "2026-11-07T02:20:33.168Z",
+     "2026-11-07T02:21:56.412Z",
+     "2026-11-07T02:23:40.125Z",
+     "2026-11-07T02:25:03.449Z",
+     "2026-11-07T02:26:27.030Z"
+    ],
+    "final_ok": false
+   }
   },
   "northern-colorado|Football": {
    "state": "off"
@@ -3764,7 +3929,24 @@
    "verified_detail": "final L, 2-3"
   },
   "portland-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:05.946Z",
+   "last_detail": "live 40-37 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "portland-state|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Portland State at Boise St",
+    "started_seen": "2026-11-07T02:18:20.582Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.582Z",
+     "2026-11-07T02:19:30.609Z",
+     "2026-11-07T02:20:33.195Z",
+     "2026-11-07T02:21:56.660Z",
+     "2026-11-07T02:23:19.653Z",
+     "2026-11-07T02:24:42.963Z",
+     "2026-11-07T02:26:05.946Z"
+    ],
+    "final_ok": false
+   }
   },
   "portland-state|Football": {
    "state": "off"
@@ -3857,7 +4039,24 @@
    "state": "off"
   },
   "utah-tech|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.998Z",
+   "last_detail": "live 34-72 · 8:04 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "utah-tech|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Utah Tech vs CA Baptist",
+    "started_seen": "2026-11-07T02:18:24.624Z",
+    "live_passes": [
+     "2026-11-07T02:18:24.624Z",
+     "2026-11-07T02:19:30.921Z",
+     "2026-11-07T02:20:53.952Z",
+     "2026-11-07T02:21:56.303Z",
+     "2026-11-07T02:23:40.416Z",
+     "2026-11-07T02:24:43.167Z",
+     "2026-11-07T02:26:26.998Z"
+    ],
+    "final_ok": false
+   }
   },
   "utah-tech|Football": {
    "state": "off"
@@ -3971,7 +4170,24 @@
    "state": "off"
   },
   "georgia-southern|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.104Z",
+   "last_detail": "live 82-92 · 0:54 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "georgia-southern|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Georgia Southern at Georgia Tech",
+    "started_seen": "2026-11-07T02:18:21.960Z",
+    "live_passes": [
+     "2026-11-07T02:18:21.960Z",
+     "2026-11-07T02:19:31.274Z",
+     "2026-11-07T02:20:33.466Z",
+     "2026-11-07T02:22:16.915Z",
+     "2026-11-07T02:23:40.394Z",
+     "2026-11-07T02:25:03.480Z",
+     "2026-11-07T02:26:27.104Z"
+    ],
+    "final_ok": false
+   }
   },
   "georgia-southern|Football": {
    "state": "done",
@@ -4313,7 +4529,24 @@
    "state": "off"
   },
   "troy|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.128Z",
+   "last_detail": "live 68-91 · End of 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "troy|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Troy at Florida St",
+    "started_seen": "2026-11-07T02:18:20.679Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.679Z",
+     "2026-11-07T02:19:30.642Z",
+     "2026-11-07T02:20:33.377Z",
+     "2026-11-07T02:21:56.535Z",
+     "2026-11-07T02:23:40.790Z",
+     "2026-11-07T02:24:42.653Z",
+     "2026-11-07T02:26:06.128Z"
+    ],
+    "final_ok": false
+   }
   },
   "troy|Football": {
    "state": "done",
@@ -4478,7 +4711,24 @@
    "state": "off"
   },
   "new-mexico|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.307Z",
+   "last_detail": "live 15-8 · 10:00 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "new-mexico|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · New Mexico vs NM Highlands",
+    "started_seen": "2026-11-07T02:18:20.144Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.144Z",
+     "2026-11-07T02:19:30.993Z",
+     "2026-11-07T02:20:33.703Z",
+     "2026-11-07T02:22:16.907Z",
+     "2026-11-07T02:23:19.913Z",
+     "2026-11-07T02:24:43.002Z",
+     "2026-11-07T02:26:06.307Z"
+    ],
+    "final_ok": false
+   }
   },
   "new-mexico|Football": {
    "state": "done",
@@ -5156,7 +5406,24 @@
    "state": "off"
   },
   "cal-baptist|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.198Z",
+   "last_detail": "live 72-34 · 8:04 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "cal-baptist|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Cal Baptist at Utah Tech",
+    "started_seen": "2026-11-07T02:18:20.445Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.445Z",
+     "2026-11-07T02:19:30.935Z",
+     "2026-11-07T02:20:54.343Z",
+     "2026-11-07T02:21:56.391Z",
+     "2026-11-07T02:23:40.469Z",
+     "2026-11-07T02:24:43.090Z",
+     "2026-11-07T02:26:27.198Z"
+    ],
+    "final_ok": false
+   }
   },
   "cal-baptist|Soccer": {
    "state": "done",
@@ -5210,7 +5477,24 @@
    "state": "off"
   },
   "cal-poly|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.351Z",
+   "last_detail": "live 18-13 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "cal-poly|Volleyball||2026-11-06|1",
+    "title": "Cal Poly vs Long Beach St",
+    "started_seen": "2026-11-07T02:18:20.494Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.494Z",
+     "2026-11-07T02:19:30.139Z",
+     "2026-11-07T02:20:53.898Z",
+     "2026-11-07T02:22:17.362Z",
+     "2026-11-07T02:23:39.835Z",
+     "2026-11-07T02:24:42.875Z",
+     "2026-11-07T02:26:26.351Z"
+    ],
+    "final_ok": false
+   }
   },
   "cal-state-fullerton|Baseball": {
    "state": "off"
@@ -5345,7 +5629,24 @@
    "state": "off"
   },
   "uc-riverside|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.086Z",
+   "last_detail": "live 12-20 · 0:20 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uc-riverside|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · UC Riverside at Seattle U",
+    "started_seen": "2026-11-07T02:18:20.784Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.784Z",
+     "2026-11-07T02:19:30.408Z",
+     "2026-11-07T02:20:54.142Z",
+     "2026-11-07T02:21:56.497Z",
+     "2026-11-07T02:23:40.510Z",
+     "2026-11-07T02:24:43.187Z",
+     "2026-11-07T02:26:27.086Z"
+    ],
+    "final_ok": false
+   }
   },
   "uc-riverside|Soccer": {
    "state": "done",
@@ -5612,7 +5913,24 @@
    "state": "off"
   },
   "fau|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.909Z",
+   "last_detail": "live 66-95 · 1:45 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "fau|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · FAU at Wright St",
+    "started_seen": "2026-11-07T02:18:21.472Z",
+    "live_passes": [
+     "2026-11-07T02:18:21.472Z",
+     "2026-11-07T02:19:31.026Z",
+     "2026-11-07T02:20:33.482Z",
+     "2026-11-07T02:22:17.982Z",
+     "2026-11-07T02:23:40.665Z",
+     "2026-11-07T02:25:03.510Z",
+     "2026-11-07T02:26:26.909Z"
+    ],
+    "final_ok": false
+   }
   },
   "fau|Football": {
    "state": "done",
@@ -5996,7 +6314,13 @@
    "state": "off"
   },
   "delaware|Basketball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-07T02:23:40.273Z",
+   "last_detail": "final L, 64-73",
+   "game": null,
+   "verified_at": "2026-11-07T02:23:40.273Z",
+   "verified_game": "Men's · Delaware at Wisconsin",
+   "verified_detail": "final L, 64-73"
   },
   "delaware|Field Hockey": {
    "state": "done",
@@ -6236,7 +6560,24 @@
    "state": "off"
   },
   "missouri-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:05.869Z",
+   "last_detail": "live 51-40 · 11:51 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "missouri-state|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Missouri State vs Truman St",
+    "started_seen": "2026-11-07T02:18:23.578Z",
+    "live_passes": [
+     "2026-11-07T02:18:23.578Z",
+     "2026-11-07T02:19:31.115Z",
+     "2026-11-07T02:20:33.455Z",
+     "2026-11-07T02:22:17.330Z",
+     "2026-11-07T02:23:40.339Z",
+     "2026-11-07T02:25:03.790Z",
+     "2026-11-07T02:26:05.869Z"
+    ],
+    "final_ok": false
+   }
   },
   "missouri-state|Football": {
    "state": "done",
@@ -6356,23 +6697,13 @@
    "state": "off"
   },
   "lmu|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:11.384Z",
-   "last_detail": "live 57-39 · 5:38 - 4th · official_schedule+live_scoreboard",
-   "game": {
-    "key": "lmu|Basketball|Women's|2026-11-06|1",
-    "title": "Women's · LMU at Utah State",
-    "started_seen": "2026-11-06T22:27:06.495Z",
-    "live_passes": [
-     "2026-11-06T22:27:06.495Z",
-     "2026-11-06T22:29:16.431Z",
-     "2026-11-06T22:30:40.320Z",
-     "2026-11-06T22:32:43.152Z",
-     "2026-11-06T22:34:05.920Z",
-     "2026-11-06T22:36:11.384Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-07T02:18:21.131Z",
+   "last_detail": "final W, 70-45",
+   "game": null,
+   "verified_at": "2026-11-07T02:18:21.131Z",
+   "verified_game": "Women's · LMU at Utah State",
+   "verified_detail": "final W, 70-45"
   },
   "lmu|Soccer": {
    "state": "done",
@@ -7266,7 +7597,24 @@
    "state": "off"
   },
   "belmont|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:06.401Z",
+   "last_detail": "live 18-34 · 0:00 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "belmont|Basketball|Women's|2026-11-06|1",
+    "title": "Women's · Belmont vs South Florida",
+    "started_seen": "2026-11-07T02:18:20.372Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.372Z",
+     "2026-11-07T02:19:31.321Z",
+     "2026-11-07T02:20:54.149Z",
+     "2026-11-07T02:22:17.023Z",
+     "2026-11-07T02:23:19.876Z",
+     "2026-11-07T02:25:03.615Z",
+     "2026-11-07T02:26:06.401Z"
+    ],
+    "final_ok": false
+   }
   },
   "belmont|Soccer": {
    "state": "done",
@@ -7635,22 +7983,7 @@
    "state": "failing",
    "last_check": "2026-11-06T22:36:31.610Z",
    "last_detail": "result reads \"L, 76-53\", ESPN final L, 53-76",
-   "game": {
-    "key": "west-georgia|Basketball|Men's|2026-11-05|1",
-    "title": "Men's · West Georgia at Loyola Chicago",
-    "started_seen": "2026-11-06T02:51:25.293Z",
-    "live_passes": [
-     "2026-11-06T02:51:25.293Z",
-     "2026-11-06T02:52:34.084Z",
-     "2026-11-06T02:54:20.538Z",
-     "2026-11-06T02:55:24.509Z",
-     "2026-11-06T02:57:11.247Z",
-     "2026-11-06T02:58:15.358Z",
-     "2026-11-06T03:00:00.841Z"
-    ],
-    "final_ok": false,
-    "final_due": "2026-11-06T10:55:16.823Z"
-   },
+   "game": null,
    "failures": 18,
    "last_failure": {
     "at": "2026-11-06T22:36:31.610Z",
@@ -8646,7 +8979,24 @@
    "state": "off"
   },
   "stony-brook|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.063Z",
+   "last_detail": "live 46-58 · 11:22 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "stony-brook|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Stony Brook at Northwestern",
+    "started_seen": "2026-11-07T02:18:26.764Z",
+    "live_passes": [
+     "2026-11-07T02:18:26.764Z",
+     "2026-11-07T02:19:30.581Z",
+     "2026-11-07T02:20:54.466Z",
+     "2026-11-07T02:22:17.005Z",
+     "2026-11-07T02:23:19.534Z",
+     "2026-11-07T02:24:42.755Z",
+     "2026-11-07T02:26:27.063Z"
+    ],
+    "final_ok": false
+   }
   },
   "stony-brook|Football": {
    "state": "off"
@@ -8985,23 +9335,13 @@
    "state": "off"
   },
   "wright-state|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:11.475Z",
-   "last_detail": "live 44-10 · 6:47 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "wright-state|Basketball|Women's|2026-11-06|1",
-    "title": "Women's · Wright State vs Ohio Christian",
-    "started_seen": "2026-11-06T22:27:07.051Z",
-    "live_passes": [
-     "2026-11-06T22:27:07.051Z",
-     "2026-11-06T22:29:17.313Z",
-     "2026-11-06T22:30:39.546Z",
-     "2026-11-06T22:32:43.308Z",
-     "2026-11-06T22:34:26.591Z",
-     "2026-11-06T22:36:11.475Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-07T02:18:23.345Z",
+   "last_detail": "final W, 103-25",
+   "game": null,
+   "verified_at": "2026-11-07T02:18:23.345Z",
+   "verified_game": "Women's · Wright State vs Ohio Christian",
+   "verified_detail": "final W, 103-25"
   },
   "wright-state|Soccer": {
    "state": "done",
@@ -9487,29 +9827,19 @@
    "state": "off"
   },
   "manhattan|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:10.754Z",
-   "last_detail": "live 2-3 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "manhattan|Volleyball||2026-11-06|1",
-    "title": "Manhattan at Quinnipiac",
-    "started_seen": "2026-11-06T22:27:11.380Z",
-    "live_passes": [
-     "2026-11-06T22:27:11.380Z",
-     "2026-11-06T22:29:16.057Z",
-     "2026-11-06T22:31:00.287Z",
-     "2026-11-06T22:32:43.324Z",
-     "2026-11-06T22:34:26.278Z",
-     "2026-11-06T22:36:10.754Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-07T02:18:20.869Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
    "failures": 5,
    "last_failure": {
     "at": "2026-10-24T23:31:47.195Z",
     "game": "Manhattan at Sacred Heart",
     "detail": "the game is live and also still in upcoming (scoreboard not joined to the official schedule)"
-   }
+   },
+   "verified_at": "2026-11-07T02:18:20.869Z",
+   "verified_game": "Manhattan at Quinnipiac",
+   "verified_detail": "final L, 0-3"
   },
   "marist|Baseball": {
    "state": "off"
@@ -10419,8 +10749,8 @@
   },
   "lindenwood|Hockey": {
    "state": "on",
-   "last_check": "2026-11-06T22:36:11.145Z",
-   "last_detail": "live 1-0 · End of 1st · official_schedule+live_scoreboard",
+   "last_check": "2026-11-07T02:26:05.452Z",
+   "last_detail": "live 0-1 · 12:18 - 1st · official_schedule+live_scoreboard",
    "game": {
     "key": "lindenwood|Hockey||2026-11-06|1",
     "title": "Lindenwood vs Syracuse",
@@ -10431,7 +10761,14 @@
      "2026-11-06T22:30:40.562Z",
      "2026-11-06T22:32:42.527Z",
      "2026-11-06T22:34:05.712Z",
-     "2026-11-06T22:36:11.145Z"
+     "2026-11-06T22:36:11.145Z",
+     "2026-11-07T02:18:22.106Z",
+     "2026-11-07T02:19:31.421Z",
+     "2026-11-07T02:20:33.889Z",
+     "2026-11-07T02:21:55.816Z",
+     "2026-11-07T02:23:39.855Z",
+     "2026-11-07T02:24:42.532Z",
+     "2026-11-07T02:26:05.452Z"
     ],
     "final_ok": false
    }
@@ -10515,7 +10852,24 @@
    "state": "off"
   },
   "siue|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:05.983Z",
+   "last_detail": "live 7-6 · 5th Set · Sets 2-2 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "siue|Volleyball||2026-11-06|1",
+    "title": "SIUE vs Morehead St",
+    "started_seen": "2026-11-07T02:18:21.022Z",
+    "live_passes": [
+     "2026-11-07T02:18:21.022Z",
+     "2026-11-07T02:19:30.310Z",
+     "2026-11-07T02:20:54.034Z",
+     "2026-11-07T02:22:16.536Z",
+     "2026-11-07T02:23:39.724Z",
+     "2026-11-07T02:25:03.216Z",
+     "2026-11-07T02:26:05.983Z"
+    ],
+    "final_ok": false
+   }
   },
   "southeast-missouri|Baseball": {
    "state": "off"
@@ -10677,23 +11031,13 @@
    "state": "off"
   },
   "western-illinois|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:11.614Z",
-   "last_detail": "live 2-4 · 2nd Set · Sets 0-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "western-illinois|Volleyball||2026-11-06|1",
-    "title": "Western Illinois at E Illinois",
-    "started_seen": "2026-11-06T22:27:10.006Z",
-    "live_passes": [
-     "2026-11-06T22:27:10.006Z",
-     "2026-11-06T22:29:16.449Z",
-     "2026-11-06T22:30:39.605Z",
-     "2026-11-06T22:32:42.555Z",
-     "2026-11-06T22:34:26.576Z",
-     "2026-11-06T22:36:11.614Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-07T02:18:20.206Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-11-07T02:18:20.206Z",
+   "verified_game": "Western Illinois at E Illinois",
+   "verified_detail": "final L, 0-3"
   },
   "american|Basketball": {
    "state": "off"
@@ -11590,7 +11934,10 @@
    "state": "off"
   },
   "stephen-f-austin|Basketball": {
-   "state": "off"
+   "state": "off",
+   "last_check": "2026-11-07T02:19:31.342Z",
+   "last_detail": "final W, 89-32 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "stephen-f-austin|Football": {
    "state": "off"
@@ -11650,7 +11997,19 @@
    "verified_detail": "final W, 3-1"
   },
   "kansas-city|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:27.015Z",
+   "last_detail": "live 3-2 · 18:05 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "kansas-city|Basketball|Men's|2026-11-06|1",
+    "title": "Men's · Kansas City vs S Illinois",
+    "started_seen": "2026-11-07T02:24:45.420Z",
+    "live_passes": [
+     "2026-11-07T02:24:45.420Z",
+     "2026-11-07T02:26:27.015Z"
+    ],
+    "final_ok": false
+   }
   },
   "kansas-city|Soccer": {
    "state": "done",
@@ -11866,7 +12225,24 @@
    "state": "off"
   },
   "st-thomas|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-07T02:26:26.289Z",
+   "last_detail": "live 14-13 · 3rd Set · Sets 1-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "st-thomas|Volleyball||2026-11-06|1",
+    "title": "St. Thomas vs Omaha",
+    "started_seen": "2026-11-07T02:18:20.254Z",
+    "live_passes": [
+     "2026-11-07T02:18:20.254Z",
+     "2026-11-07T02:19:31.136Z",
+     "2026-11-07T02:20:53.378Z",
+     "2026-11-07T02:22:16.551Z",
+     "2026-11-07T02:23:39.780Z",
+     "2026-11-07T02:25:03.246Z",
+     "2026-11-07T02:26:26.289Z"
+    ],
+    "final_ok": false
+   }
   },
   "alabama-am|Baseball": {
    "state": "off"
@@ -12082,23 +12458,13 @@
    "state": "off"
   },
   "arkansas-pine-bluff|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-06T22:36:11.129Z",
-   "last_detail": "live 6-29 · 7:43 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "arkansas-pine-bluff|Basketball|Men's|2026-11-06|1",
-    "title": "Men's · Arkansas-Pine Bluff at Baylor",
-    "started_seen": "2026-11-06T22:27:14.943Z",
-    "live_passes": [
-     "2026-11-06T22:27:14.943Z",
-     "2026-11-06T22:29:16.509Z",
-     "2026-11-06T22:31:00.014Z",
-     "2026-11-06T22:32:22.948Z",
-     "2026-11-06T22:34:26.564Z",
-     "2026-11-06T22:36:11.129Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-07T02:18:27.842Z",
+   "last_detail": "final L, 53-109",
+   "game": null,
+   "verified_at": "2026-11-07T02:18:27.842Z",
+   "verified_game": "Men's · Arkansas-Pine Bluff at Baylor",
+   "verified_detail": "final L, 53-109"
   },
   "arkansas-pine-bluff|Football": {
    "state": "off"
@@ -12197,7 +12563,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.279.0-minified",
- "updated_at": "2026-11-06T22:36:31.616Z",
+ "version": "4.282.0-hs-live",
+ "updated_at": "2026-11-07T02:26:27.641Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
