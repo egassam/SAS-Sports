@@ -1,5 +1,7 @@
 # Manhattan High School (Kansas 6A): module notes
 
+**The reference for every middle and high school (November 7, 2026): see `HIGH_SCHOOL_REFERENCE.md`.** Manhattan HS, Anthony MS and Eisenhower MS are rebuilt from saved sources by `tests/hs-reference.mjs` (22 sports, 407 cards) and checked in a browser by `scripts/check-reference-page.mjs`.
+
 The first high school (user, October 9, 2026: "Let's do some highschool. The menu box should go by state for first box then schools for second drop down menu and then sports just like college.. we will start with Kansas, and just the 6A for now. We will focus on Manhattan high school first").
 
 ## Decisions (user, October 9)
@@ -50,7 +52,7 @@ User, October 9: "My timer friend also does middle schools so let's add the Manh
 
 - Titles are typed by hand ("7th VB @SH", "8h Girls BB @ Washburn Rural"); `parseMiddleSchoolTitle` in `src/high-school.mjs` reads them, and `USD383_ABBREVIATIONS` (`src/schools/manhattan-ks-middle.mjs`) expands the league short names (SH, WRN, JC, EMS, AMS, FR, LWMS...). B-team days, scrimmages, tryouts, practices and pictures are not games.
 - Teams are the grades (7th, 8th; 7th Girls, 8th Boys in basketball).
-- **Results:** cross country from the same LetsGoRun MeetPro pages (every grade race; JV races left out; team names vary by meet: "Anthony", "Anthony Middle School", "Anthony7G"). Anthony: 5 meets, Eisenhower: 4 (Sep 8 to Oct 2). Track and field from the timer's MeetPro track meets (October 25; meets run by grade only; "Susan B Anthony" and "Eisenhower" at the 2026 Fort Riley/Junction City invitational, "Anthony" and "Eisenhower" at the Washburn Rural Relays; reader and its limits in `RILEY_POTTAWATOMIE_KS_MODULE.md`). No site publishes middle school game scores; past games are not listed (K-State's rule).
+- **Results:** cross country from the same LetsGoRun MeetPro pages (every grade race; JV races left out; team names vary by meet: "Anthony", "Anthony Middle School", "Anthony7G"). Anthony: 5 meets, Eisenhower: 4 (Sep 8 to Oct 2). Track and field from the timer's MeetPro track meets (October 25; meets run by grade only; "Susan B Anthony" and "Eisenhower" at the 2026 Fort Riley/Junction City invitational, "Anthony" and "Eisenhower" at the Washburn Rural Relays; reader and its limits in `RILEY_POTTAWATOMIE_KS_MODULE.md`). No site publishes middle school game scores: past games read "No score posted" (`AGENTS.md` 5c since October 25).
 
 ## Other sources checked (October 21)
 
@@ -63,11 +65,19 @@ User: "look for alternate websites for getting official results for all the spor
 - **Not usable:** Athletic.net (403 to the app), MileSplit (results for paying members only), Trackwrestling (406), SwimCloud (API disallowed; no Manhattan team pages found).
 - **Middle schools:** no site publishes Anthony's or Eisenhower's game scores; their games need the school's own live scoring (SAS Scorer, every sport since October 21).
 
+## Ranks and live (November 7, 2026)
+
+- **MaxPreps ranks:** the team's state rank and class rank, read from the MaxPreps team schedule page the app already reads (`rankingsData`), are shown after the record. On Nov 7: football No. 10 Kansas · No. 3 6A; volleyball No. 20 · No. 7; boys soccer No. 45 · No. 23. Media-market ranks are left out. On today's and live games, each side's state rank comes from the state scores page ("(#10) Manhattan").
+- **Live score:** on game day a team feed takes the running score and period from MaxPreps' state scores page (`/ks/<sport>/scores/`, kept 2 minutes, the read Home makes). It is matched by MaxPreps school id; with two games that day, by opponent. On Nov 6 it read 22-7 while the team page read 15-7.
+- **Placeholders:** "State Championship - TBD" and other calendar rounds are dropped once their day passes with no game, or after a MaxPreps playoff loss. MaxPreps marks football and volleyball playoff games; Manhattan's soccer playoff loss at Maize (Oct 26) read "non-conference", so soccer relies on the day passing.
+- **Calendar titles:** time notes after "- HOME"/"- AWAY" are dropped. "JV League" on the varsity bowling calendar is not listed. Anthony's capitals ("BWR DOUBLE DUAL") and Eisenhower's typos ("Norht", "Stare Park") are corrected. "BWR Dual vs EMS" reads "Anthony vs Eisenhower". "Hay Tournament" (boys basketball, Dec 3) is shown as typed.
+- **Bowling** is now read on the team page. The page's season table lacked it, so the "All in-season sports" view never read it.
+
 ## Limitations
 
 - **Live scores only when the team scores the game live on MaxPreps** (since `4.245.0-maxpreps-live-scores`, Oct 30; user: "Can you find anything out there right now that has the Manhattan high School live for football?", then "Yes build it, merge when everything passes"). MaxPreps' team schedule (read every 2 minutes, the read the app already makes) marks a game its Scoretracker is scoring with "Live game is still in progress.", the period (`Q2`) and each team's running score. On game day the card goes Live ("2nd Quarter", 31-7 against Topeka in the 6A first round), as fresh as the team's scorekeeper enters it; the final replaces it. A live game the calendar lists only as a placeholder ("District - TBD") takes that card's place. A live flag left on after game day is ignored (the game reads "No score posted" until the final). No clock, quarter scores or possession: MaxPreps' schedule data has none, and no ESPN-style feed exists for Kansas high schools. Without live scoring on MaxPreps a game shows "Today" until the final is entered.
-- **Scores depend on coaches reporting to MaxPreps.** A past game without a reported score is not listed until it is reported.
-- **Meets without a results source:** golf meets not on Prep.Golf (or with no place posted) are not listed; cross country meets timed by someone other than LetsGoRun are not listed; tennis invitationals not on TennisReporting are not listed (MaxPreps has no contests for these Manhattan teams, checked Oct 9).
+- **Scores depend on coaches reporting to MaxPreps** (or the school entering them on Bound). A past game without a score reads "No score posted" until one is reported.
+- **Meets without a results source** read "No results posted": golf meets not on Prep.Golf (Blue Valley Northwest, Salina Central), tennis invitationals not on TennisReporting (9 in fall 2026), and cross country meets no timer posted (the Oct 10 Haskell Invite; that day MileSplit has Manhattan at the Salina Invitational, which is listed). MaxPreps has no contests for these teams (checked Oct 9).
 - MaxPreps volleyball pages hold pool placeholders (0-0 ties, no result); those are not matches.
 
 **November 3:** Anthony and Eisenhower cross country leave out the 1-mile races (the Fort Riley meet's junior varsity race), as every Kansas middle school now does (`docs/GEARY_KS_MODULE.md`).
