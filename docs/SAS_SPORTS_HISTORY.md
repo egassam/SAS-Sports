@@ -5099,3 +5099,54 @@ Earlier, October 29: **Manhattan's 6A state cross country meet** (user: "Can we 
 - **Oct 31 — Live box only for entered schools** ("Yes. Create the PR"). `4.251.1-live-entered-only`: an AthleticLIVE meet whose entry lists are posted without the school stays Today ("Not on the timer's entry lists for this meet."); Kickapoo Nation had read "Live · Races under way".
 - **Oct 31 (evening) — A meet over on its day reads Final** ("Manhattan highschool cross country is still showing a live card", 7:27 PM). `4.252.0-meet-final-on-day`: every race scored (MileSplit team scores), or every race run and nothing new for 45 min, or 3 h past the last start (meets with race times; AthleticLIVE's live database gives no update time) → Final on the day. Before, a live meet stayed Live until midnight.
 - **Oct 31 (night) — Old copies never show a meet LIVE** ("I'm still seeing the live cards on the home page for cross country"). #485 merged as `87f16f06` (production `4.252.0` verified: Manhattan, Flint Hills Christian, Wamego XC 3/3, expanded views, XC 18/20 and 26/21; `check:race-day` no problems). The server's cards were Final; the page showed copies (this device's, a location's saved or stale-fallback copy up to 24 h). The page now moves a live meet card from a copy over 15 min old to results.
+
+
+## Handoff of November 7, 2026 (about noon), replaced in SAS_SPORTS_CURRENT_SESSION.md the same evening
+
+Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference rules run on every county; booked playoff rounds listed.** PR #549 merged as `cae0064`; production `4.286.2-reference-rules` verified: `verify:prod` for the 50 changed and reference schools, all sports, 1377 PASS, 0 FAIL; K-State XC 18/20 and KU XC 26/21; the reference page check passed; Manhattan's team page reads "Football · Next game · Manhattan vs Maize".
+
+**Done (user, Nov 7: "Run the checks on the other counties", then "I'm not liking Manhattan high page totally. It's showing swimming and diving as it's next upcoming and I know there's other sports first"):**
+- **Checks on every school:**
+  - `npm run check:reference-rules` (`scripts/check-reference-rules.mjs`): the reference rules read off every other middle and high school's feeds (99 schools, 780 feeds, 11,872 cards in production). `--refresh` rebuilds; `--school`, `--county`, `--sports`.
+  - `check-reference-page.mjs --school=`: the page check on 37 schools (a high school and a middle school of each of the 20 counties). All passed on the preview.
+- **What they found, fixed** (`tests/hs-rules.mjs` rebuilds 12 feeds from the real sources of Nov 7):
+  - Two matches with one opponent on one day shared one id (Wamego and Sabetha twice on Oct 10, two MaxPreps match pages; 7 schools). The later one takes `-2`.
+  - MaxPreps' unscored copies listed as extra matches (Hanover, Frankfort's "White City" slots, Hartford's dual four times). Now a copy only when the day has a scored match against a compatible opponent; "Hartford vs Lebo · No score posted" stays, once.
+  - Junior varsity events Bound files as varsity (10 cards, e.g. "Wabaunsee Track Meet - RC JV", "Louisburg JV Mixer"; a middle school's "Eudora MS JV vs Santa Fe Trail 7th Grade").
+  - Bound names in capitals ("EMPORIA Bowling Meet", "WILL ENSLEY INVITATIONAL"; 38 cards) now read as names; codes stay (NCAA, KSHSAA, WCHS).
+  - "Silver Lake vs TBD" now reads "Silver Lake · TBD" (and so do Holton, Royal Valley, Seaman and other schools' rounds). A blank Bound opponent ("Silver Lake vs ") counts as TBD.
+  - Middle school October basketball had no record; middle and high school records count every month.
+- **Manhattan's page (user's report):** football's Nov 13 home game against Maize was on MaxPreps only. Calendar schools took only MaxPreps' scored or live games, so the page's next event was the Dec 2 swim meet. A MaxPreps game booked after the calendar's last named game for the team is now listed (it replaces that day's placeholder). The preview page reads "Football · Next game · Manhattan vs Maize". The reference baseline gains that card (408); `tests/hs-reference.mjs` checks it.
+- **Gate:**
+  - Tests touched pass locally; CI guardrails (`test:release`) on the head.
+  - Same-source comparison (main vs branch): only the intended changes.
+  - `diff:feeds` (790 feeds): 725 the same; the 65 that differ are explained (renames, "· TBD", JV removed, copies removed, or production's older source copies: Republic County's 42-14 final, Salina Lakewood's girls' wrestling schedule).
+  - `verify:preview`: reference schools 69/0, XC 18/20 and 26/21. Changed schools (50): 1335 PASS, 42 FAIL, all while Bound refused the preview after the burst of reads (39 expanded views 404, 3 single 503s); rerun once Bound answered (results in the session log).
+
+**Open:**
+- Manhattan's own calendar capitals ("Regional Meet - WARNER PARK") are not cleaned (would move the baseline).
+- "Seaman · Wichita State University tournament" reads "·" (`isHighSchoolPlaceholder` takes "State").
+- "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
+- Baseball and softball college polls (not on ESPN).
+- Re-record the reference when the winter results start.
+- Home: one "home" request for every favorite's saved feed (not built).
+
+**Next session:** the user's choice. Run `npm run check:reference-rules` after any middle or high school change.
+
+## November 7, 2026 (Central, afternoon and evening): cleanup and six more Kansas counties (PR #551)
+
+**Conversation.** The user asked "What's next?". The handoff left the next session to them; the answer listed the open items (Manhattan's calendar capitals, the "Wichita State University tournament" placeholder, the "Hay Tournament" typo, baseball and softball polls, re-recording the reference, Home's single request), the options (more counties, the Summit League and SWAC), and recommended the two small fixes, then counties, and trimming the 290 KB current-session file. The user: "Do the cleanup and then add counties". Later, while the gate ran: "Merge it when everything passes".
+
+**Cleanup (commit `9646bf1`).**
+- `nameCase` (src/high-school.mjs) reads two or more capital words together word by word (one vowel is enough), as a title typed all in capitals; `parseCalendarTitle` now applies it to calendar titles. Manhattan's "Regional Meet - WARNER PARK" reads "Regional Meet - Warner Park". It was the only reference card that moved; `expected-2026-11-07.json` and `tests/manhattan-ks-module.mjs` updated.
+- `isHighSchoolPlaceholder` (src/index.js) reads a name with "State University" or "State College" without it (`withoutCollegeState`), so "Wichita State University tournament" is not a state round. `tests/hs-rules.mjs` gained the cases. "Quarter Final" (space) is not matched by the placeholder pattern; the test uses "Quarterfinals".
+- `docs/HIGH_SCHOOL_REFERENCE.md`: rule 5 covers calendar capitals and college "State" names; the capitals limit is gone.
+- The current-session file (291 KB) moved its earlier handoff entries and the session-log lines before Nov 2 to the end of this file, word for word (119 KB after).
+
+**Counties (commit `a0decce`).** Chosen next to counties already in: Jefferson, Osage, Franklin, Marion, McPherson, Chase. `onboard:hs` for all six took about 75 minutes. Of 47 schools found, 35 went in (`add:county`). Skipped: Marais des Cygnes Valley HS and MS (no Bound events), Elyria Christian (no MaxPreps page; the county test requires MaxPreps teams for high schools), Lyndon MS, Central Heights MS, Inman MS and Chase County JH (one to three Bound events), and middle schools not on Bound. Fixes by hand: names with hyphens (Perry-Lecompton, Canton-Galva, Peabody-Burns; unhyphenated aliases kept); Santa Fe Trail's KSHSAA website was an IP address (catalog test failed: every entry needs a host), set to `usd434.org`, and `add:county` now refuses an address; Prep.Golf codes MJW, PLHS and WF from each school's varsity tournaments (the survey's finder needs the code's letters in the name); Smoky Valley's Prep.Golf entry removed (no tournaments). Tests: `ks-counties-module` (BATCH4 lists, sparse schools), `catalog-module` (county list). The state cross country meets need no `stateXc`: the MileSplit index gives them (Emporia's Oct 31 card in production).
+
+**Gate.** Local `test:release`: 2 of 404 failed, both from this PR (`hs-live-now`: Inman and McPherson now app schools on the Nov 6 state page, 13 not 11; `manhattan-ks-module`: Warner Park); fixed in `b5e672c`. CI guardrails green on `b5e672c`. `diff:feeds` all sports, 790 feeds: 752 the same, 38 differ, all explained (2 intended; 33 Bound refusing the preview's burst, same on a rerun 2 at a time; 3 production saved copies older than the source, checked by a production rebuild of Southeast of Saline wrestling). `verify:preview` reference 69/0; new schools 724/80, the 80 all HTTP 502 with `/live/status` "unreadable" Bound reads (Bound's guard after the diff's burst); the 40 school-sports rerun one at a time after Bound answered (21:17 UTC): 240/0. `check:reference-rules` (`--county` takes "Jefferson County", not "Jefferson"): 35 schools, 267 feeds, 3861 cards, 0 FAIL, 12 NOTE. Page check: reference and 10 new schools passed; McPherson's page by eye at 390 px (next football game "McPherson · Tournament", Bound's name for the Nov 13 round, as production's "Wamego · Sectional Football").
+
+**Merge and production.** PR #551 merged as `e16d202` under the standing permission and the user's "Merge it when everything passes". Production `4.287.0-ks-counties-4`: `verify:prod` for the 35 new and 3 reference schools, all sports, 3 refreshes: 870 PASS, 0 FAIL; K-State XC 18/20, KU XC 26/21; reference page check passed, and on Oskaloosa, Ottawa MS, McPherson and Chase County; Manhattan's card reads "Regional Meet - Warner Park".
+
+**Lesson.** Bound refused the preview after `diff:feeds` (790 forced builds) and before `verify:preview` for 35 schools; the refusals lasted about 10 minutes. Separate the two passes, or rerun failed pairs once Bound answers.
