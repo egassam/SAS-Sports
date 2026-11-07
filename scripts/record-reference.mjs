@@ -12,6 +12,10 @@
 //
 // Writes tests/fixtures/hs-reference/sources-<date>.json.gz and
 // expected-<date>.json. Read the expected cards before committing them.
+//
+// --feeds=<school>:<sport>,… --dir=<fixtures folder> records other feeds
+// the same way (tests/hs-rules.mjs: the cases the reference rules found on
+// the other counties, November 7, 2026).
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {gzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
@@ -58,9 +62,11 @@ const at=new Date(),date=process.argv.find(a=>a.startsWith('--date='))?.slice(7)
 const RealDate=Date;
 globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
 const expected={recorded_at:at.toISOString(),schools:{}};
-for(const id of REFERENCE_SCHOOLS){
-  expected.schools[id]={};
-  for(const sport of sponsoredSports[id]){
+const feedsArg=process.argv.find(a=>a.startsWith('--feeds='))?.slice(8);
+const feeds=feedsArg?feedsArg.split(',').map(f=>f.split(':')):REFERENCE_SCHOOLS.flatMap(id=>sponsoredSports[id].map(sport=>[id,sport]));
+for(const [id,sport] of feeds){
+  expected.schools[id]??={};
+  {
     const result=await worker.fetchLive(id,sport);
     const [g]=worker.groupEvents(result.events,at);
     expected.schools[id][sport]={error:result.error||null,rankings:(result.rankings||[]).map(r=>`${r.team_label?`${r.team_label} `:''}No. ${r.rank} ${r.poll}`),
@@ -69,7 +75,7 @@ for(const id of REFERENCE_SCHOOLS){
   }
 }
 globalThis.Date=RealDate;
-const dir=new URL('../tests/fixtures/hs-reference/',import.meta.url);mkdirSync(dir,{recursive:true});
+const dir=new URL(`../tests/fixtures/${process.argv.find(a=>a.startsWith('--dir='))?.slice(6)||'hs-reference'}/`,import.meta.url);mkdirSync(dir,{recursive:true});
 writeFileSync(new URL(`sources-${date}.json.gz`,dir),gzipSync(JSON.stringify(saved)));
 writeFileSync(new URL(`expected-${date}.json`,dir),JSON.stringify(expected,null,1)+'\n');
 console.log(`saved ${Object.keys(saved).length} sources; ${Object.values(saved).filter(s=>s.status!==200).length} not 200`);

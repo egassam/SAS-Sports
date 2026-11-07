@@ -74,6 +74,10 @@ for(const id of REFERENCE_SCHOOLS)for(const sport of sponsoredSports[id]){
 }
 // 7. MaxPreps' state and class ranks for the team (Nov 7, 2026: football No. 10 Kansas, No. 3 6A).
 assert.deepEqual(built['manhattan-ks'].Football.result.rankings.map(r=>[r.poll,r.rank]),[['Kansas',10],['6A',3]]);
+// 7a. A round MaxPreps booked after the calendar's last game is the team's
+// next game (user, November 7, 2026: the page's next event was the Dec 2 swim
+// meet while football played Maize at home on Nov 13).
+assert.deepEqual(built['manhattan-ks'].Football.g.upcoming.map(e=>`${e.title} ${e.start_time.slice(0,10)}`),['Manhattan vs Maize 2026-11-13']);
 // 8. No featured athletes for minors.
 for(const id of REFERENCE_SCHOOLS)for(const sport of sponsoredSports[id])assert.ok(!built[id][sport].g?.featured_athletes?.length,`${id} ${sport}: no featured athletes`);
 // 9. The page's season table names every sport the Worker has a season for

@@ -68,7 +68,7 @@ try{
   assert.ok(a.results.some(e=>/Clay Center/.test(e.title)&&e.headline==='W, 17-14'),'a Bound final');
   assert.ok(a.results.some(e=>/Rock Creek/.test(e.title)&&e.headline==='No score posted'),'a played game with no score anywhere');
   assert.ok(!a.results.some(e=>/\bTBD\b/.test(e.title)),'a past playoff "TBD" (Oct 30) is a round not reached, not a game');
-  assert.deepEqual(a.upcoming.map(line),['Upcoming Nov 6, 7:00 PM Abilene vs TBD | ','Upcoming Nov 13, 7:00 PM Abilene vs TBD | ','Upcoming Nov 20, 7:00 PM Abilene vs TBD | '],'coming playoff dates stay on the schedule');
+  assert.deepEqual(a.upcoming.map(line),['Upcoming Nov 6, 7:00 PM Abilene · TBD | ','Upcoming Nov 13, 7:00 PM Abilene · TBD | ','Upcoming Nov 20, 7:00 PM Abilene · TBD | '],'coming playoff dates stay on the schedule, read "·" (a round not drawn)');
   assert.equal(a.results.length,10);
   assert.ok(requests.some(u=>u.startsWith('https://www.maxpreps.com/ks/abilene/abilene-cowboys/football/schedule/')),'MaxPreps was asked for its finals');
 }finally{globalThis.Date=RealDate}
