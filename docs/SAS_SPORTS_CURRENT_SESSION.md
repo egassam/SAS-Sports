@@ -1,6 +1,6 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference rules run on every county; booked playoff rounds listed.** PR #549 (branch `ccr-60e0d376-nx9yzk`, version `4.286.2-reference-rules`); merge and production check below.
+Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference rules run on every county; booked playoff rounds listed.** PR #549 merged as `cae0064`; production `4.286.2-reference-rules` verified: `verify:prod` for the 50 changed and reference schools, all sports, 1377 PASS, 0 FAIL; K-State XC 18/20 and KU XC 26/21; the reference page check passed; Manhattan's team page reads "Football · Next game · Manhattan vs Maize".
 
 **Done (user, Nov 7: "Run the checks on the other counties", then "I'm not liking Manhattan high page totally. It's showing swimming and diving as it's next upcoming and I know there's other sports first"):**
 - **Checks on every school:**
@@ -742,3 +742,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 7 — Startup test; faster home screen; national rankings** (on-demand loading measured no help; home pool + current sports + live first: 61 s → 17 s; ESPN polls by record and on opponents). #540 merged `cd8b7d7`, #541 merged `163dbba`, production `4.281.1` verified.
 - **Nov 6 evening — Live high school games** (#543 Bound games take MaxPreps' live score; #544 team pages fixed, live HS games on Home for everyone, gap rule; #545 board games' video). Production `4.284.0` verified. **Next session: Manhattan as the middle and high school reference** (user).
 - **Nov 7 — College rankings on every card and live; Manhattan as the middle and high school reference** (#547, merged `6e5cf0d`; production `4.285.0-rankings-hs-reference` verified: 69/0, XC 18/20 and 26/21, page check passed).
+- **Nov 7 — Reference rules on every county; booked playoff rounds** (PR #549, merged `cae0064`). Rules check on 99 schools; duplicate match ids, unscored copies, JV on Bound, capitals, "· TBD", MS records, MaxPreps-only playoff rounds (Manhattan vs Maize). Production `4.286.2-reference-rules` verified (1377/0, XC 18/20 and 26/21).
