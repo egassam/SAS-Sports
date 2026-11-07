@@ -1,5 +1,36 @@
 # SAS Sports — Current State and Next Session
 
+Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference rules run on every county; booked playoff rounds listed.** PR #549 (branch `ccr-60e0d376-nx9yzk`, version `4.286.2-reference-rules`); merge and production check below.
+
+**Done (user, Nov 7: "Run the checks on the other counties", then "I'm not liking Manhattan high page totally. It's showing swimming and diving as it's next upcoming and I know there's other sports first"):**
+- **Checks on every school:**
+  - `npm run check:reference-rules` (`scripts/check-reference-rules.mjs`): the reference rules read off every other middle and high school's feeds (99 schools, 780 feeds, 11,872 cards in production). `--refresh` rebuilds; `--school`, `--county`, `--sports`.
+  - `check-reference-page.mjs --school=`: the page check on 37 schools (a high school and a middle school of each of the 20 counties). All passed on the preview.
+- **What they found, fixed** (`tests/hs-rules.mjs` rebuilds 12 feeds from the real sources of Nov 7):
+  - Two matches with one opponent on one day shared one id (Wamego and Sabetha twice on Oct 10, two MaxPreps match pages; 7 schools). The later one takes `-2`.
+  - MaxPreps' unscored copies listed as extra matches (Hanover, Frankfort's "White City" slots, Hartford's dual four times). Now a copy only when the day has a scored match against a compatible opponent; "Hartford vs Lebo · No score posted" stays, once.
+  - Junior varsity events Bound files as varsity (10 cards, e.g. "Wabaunsee Track Meet - RC JV", "Louisburg JV Mixer"; a middle school's "Eudora MS JV vs Santa Fe Trail 7th Grade").
+  - Bound names in capitals ("EMPORIA Bowling Meet", "WILL ENSLEY INVITATIONAL"; 38 cards) now read as names; codes stay (NCAA, KSHSAA, WCHS).
+  - "Silver Lake vs TBD" now reads "Silver Lake · TBD" (and so do Holton, Royal Valley, Seaman and other schools' rounds). A blank Bound opponent ("Silver Lake vs ") counts as TBD.
+  - Middle school October basketball had no record; middle and high school records count every month.
+- **Manhattan's page (user's report):** football's Nov 13 home game against Maize was on MaxPreps only. Calendar schools took only MaxPreps' scored or live games, so the page's next event was the Dec 2 swim meet. A MaxPreps game booked after the calendar's last named game for the team is now listed (it replaces that day's placeholder). The preview page reads "Football · Next game · Manhattan vs Maize". The reference baseline gains that card (408); `tests/hs-reference.mjs` checks it.
+- **Gate:**
+  - Tests touched pass locally; CI guardrails (`test:release`) on the head.
+  - Same-source comparison (main vs branch): only the intended changes.
+  - `diff:feeds` (790 feeds): 725 the same; the 65 that differ are explained (renames, "· TBD", JV removed, copies removed, or production's older source copies: Republic County's 42-14 final, Salina Lakewood's girls' wrestling schedule).
+  - `verify:preview`: reference schools 69/0, XC 18/20 and 26/21. Changed schools (50): 1335 PASS, 42 FAIL, all while Bound refused the preview after the burst of reads (39 expanded views 404, 3 single 503s); rerun once Bound answered (results in the session log).
+
+**Open:**
+- Manhattan's own calendar capitals ("Regional Meet - WARNER PARK") are not cleaned (would move the baseline).
+- "Seaman · Wichita State University tournament" reads "·" (`isHighSchoolPlaceholder` takes "State").
+- "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
+- Baseball and softball college polls (not on ESPN).
+- Re-record the reference when the winter results start.
+- Home: one "home" request for every favorite's saved feed (not built).
+
+**Next session:** the user's choice. Run `npm run check:reference-rules` after any middle or high school change.
+
+Earlier, November 7, 2026 (Central, about 10 AM). **College rankings on every card and live; Manhattan is the middle and high school reference** (PR #547).
 Last updated: November 7, 2026 (Central, about 10 AM). **College rankings on every card and live; Manhattan is the middle and high school reference.** PR #547 merged as `6e5cf0d`; production `4.285.0-rankings-hs-reference` verified.
 
 **Done (user, Nov 7: "1. I want the rankings of college sports in all of score cards and live. 2. Make the 3 Manhattan schools solid so we can make them the rule for all others"):**
@@ -32,7 +63,7 @@ Last updated: November 7, 2026 (Central, about 10 AM). **College rankings on eve
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
 
-**Next session:** apply the reference to the other counties' schools. Run `check-reference-page.mjs` on a sample of each county, and fix what differs from `HIGH_SCHOOL_REFERENCE.md`. Or the user's choice.
+
 
 Earlier, November 7, 2026 (Central, about 8:45 PM Nov 6). **Live high school games; next session: Manhattan as the high and middle school reference** (done above).
 **Done November 6 evening (Friday playoff night):**
