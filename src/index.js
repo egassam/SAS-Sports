@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.286.1-reference-rules';
+const VERSION='4.286.2-reference-rules';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4851,6 +4851,26 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // beside the 67-7 final from Oct 31 (user, November 2).
       const twin=events.findIndex(e=>(e.no_result_posted||played&&e.status==='Today')&&e.sport===sport&&(e.team_label||null)===label&&e.start_time.slice(0,10)===contest.date&&(namesCompatible(e.opponent,contest.opponent)||played&&isHighSchoolPlaceholder(e.opponent)));
       if(twin>=0)events.splice(twin,1);
+      events.push(event);
+    }
+    // A coming game MaxPreps has booked that the calendar does not list (user,
+    // November 7, 2026: "It's showing swimming and diving as it's next upcoming
+    // and I know there's other sports first"; Manhattan's Nov 13 sub-state game
+    // at home against Maize was on MaxPreps only, so the page's next event was
+    // the Dec 2 swim meet). It takes the place of the calendar's placeholder
+    // for that day's round ("Sub-State - TBD"). Only games after the
+    // calendar's last named game for the team (rounds booked after the
+    // calendar was printed): in the season, MaxPreps' dates can differ from
+    // the calendar's (Great Bend basketball: Feb 2 on the calendar, Feb 3 on
+    // MaxPreps), and the calendar's are the school's.
+    const teamEvent=e=>e.sport===sport&&(e.team_label||null)===label;
+    const lastNamed=events.filter(e=>teamEvent(e)&&!isHighSchoolPlaceholder(e.opponent)).map(e=>e.start_time.slice(0,10)).sort().at(-1)||'';
+    if(!maxprepsOnly&&!team.maxprepsSchedule)for(const contest of contests.filter(c=>!used.has(c)&&c.opponent&&!c.result&&c.date>=today&&c.date>lastNamed)){
+      const sameDay=e=>teamEvent(e)&&e.start_time.slice(0,10)===contest.date;
+      const event=highSchoolEvent({school,sport,team:label,date:contest.date,time:contest.time,opponent:contest.opponent,relation:contestRelation(contest,school),named:true,sourceUrl:contest.game_url||`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',...(contest.live&&contest.date===today?{contest}:{}),now});
+      if(!event)continue;
+      used.add(contest);
+      for(let i=events.length-1;i>=0;i--)if(sameDay(events[i])&&isHighSchoolPlaceholder(events[i].opponent))events.splice(i,1);
       events.push(event);
     }
   }
