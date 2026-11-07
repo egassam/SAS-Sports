@@ -1145,7 +1145,7 @@ export function youtubeVideoFor(videos,{date,sport,team=null,timeZone='America/C
 export function maxprepsRankings(html){
   const m=String(html||'').match(/"rankingsData":\{"timeStamp":"[^"]*","data":(\[[^\]]*\])/);if(!m)return[];
   let data=[];try{data=JSON.parse(m[1])}catch{return[]}
-  return data.filter(r=>Number(r?.rank)>0&&(r.rankingType===1||r.rankingType===4)).map(r=>({poll:r.rankingType===1?String(r.contextName||'State'):String(r.contextName||'Class').replace(/^.*?\bDivision\s+/i,''),rank:Number(r.rank),previous:Number(r.movement)?Number(r.rank)+Number(r.movement):null,source:'MaxPreps',url:r.canonicalUrl||null}));
+  return data.filter(r=>Number(r?.rank)>0&&(r.rankingType===1||r.rankingType===4)).map(r=>({poll:r.rankingType===1?String(r.contextName||'State'):String(r.contextName||'Class').replace(/^.*?\b(?:Division|Class)\s+/i,''),rank:Number(r.rank),previous:Number(r.movement)?Number(r.rank)+Number(r.movement):null,source:'MaxPreps',url:r.canonicalUrl||null}));
 }
 // MaxPreps' state scores page for a sport (/ks/football/scores/): every game
 // of the day with its state, score and period, and each team's MaxPreps

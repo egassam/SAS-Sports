@@ -71,7 +71,10 @@ assert.deepEqual(w.rankingPolls(boards['soccer/usa.ncaa.w.1']).map(p=>p.poll),['
   const page=read('../public/index.html'),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const rankedTitle=Function('esc',page.match(/function rankBadge\(r\)\{.*\n/)[0]+page.match(/function rankedTitle\(e\)\{[\s\S]*?\n\}\n/)[0]+';return rankedTitle;')(esc);
   assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU',opponent_rank:{rank:9,poll:'CFP'}}),'Utah vs <span class="rank-badge" title="No. 9 in this week&#39;s CFP poll">#9</span> BYU');
-  assert.equal(rankedTitle({title:'K-State at #15 Texas Tech',opponent:'#15 Texas Tech',opponent_rank:{rank:15,poll:'CFP'}}),'K-State at #15 Texas Tech','the schedule already wrote it');
+  assert.equal(rankedTitle({title:'K-State at #15 Texas Tech',opponent:'#15 Texas Tech',opponent_rank:{rank:15,poll:'CFP'}}),'K-State at <span class="rank-badge" title="No. 15, as the schedule lists it">#15</span> Texas Tech','the schedule already wrote it: one badge');
+  assert.equal(rankedTitle({title:'Utah vs No. 9 BYU',opponent:'No. 9 BYU',school_rank:{rank:3,poll:'CFP'},opponent_rank:{rank:9,poll:'CFP'}}),'<span class="rank-badge" title="No. 3 in this week&#39;s CFP poll">#3</span> Utah vs <span class="rank-badge" title="No. 9, as the schedule lists it">#9</span> BYU');
+  assert.equal(rankedTitle({title:'Girls · Manhattan vs Topeka',opponent:'Topeka'}),'Girls · Manhattan vs Topeka','no number, no badge');
+  assert.equal(rankedTitle({title:'Race #3 Daytona',opponent:'Daytona'}),'Race #3 Daytona','a race number is not a rank');
   assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU'}),'Utah vs BYU');
   assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU',school_rank:{rank:3,poll:'CFP'},opponent_rank:{rank:9,poll:'CFP'}}),'<span class="rank-badge" title="No. 3 in this week&#39;s CFP poll">#3</span> Utah vs <span class="rank-badge" title="No. 9 in this week&#39;s CFP poll">#9</span> BYU','both sides ranked');
   assert.equal(rankedTitle({title:"Women's · South Carolina at Texas",opponent:'Texas',school_rank:{rank:1,poll:'AP'}}),'Women&#39;s · <span class="rank-badge" title="No. 1 in this week&#39;s AP poll">#1</span> South Carolina at Texas','a team label stays in front');

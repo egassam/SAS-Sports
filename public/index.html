@@ -604,7 +604,10 @@ function rankedTitle(e){
   const theirs=e.opponent_rank?.rank&&opp&&!/#\s*\d|\bNo\.\s*\d/i.test(opp),mine=e.school_rank?.rank&&m&&m[2]&&!/#\s*\d|\bNo\.\s*\d/i.test(m[2]);
   if(theirs){const from=m?esc(m[0]).length:0,at=title.indexOf(esc(opp),from);if(at>=0)title=`${title.slice(0,at)}${rankBadge(e.opponent_rank)}${title.slice(at)}`;}
   if(mine){const at=esc(m[1]).length;title=`${title.slice(0,at)}${rankBadge(e.school_rank)}${title.slice(at)}`;}
-  return title;
+  // A rank the schedule wrote ("Utah vs No. 9 BYU") reads as the same badge.
+  // Only after "vs"/"at", where the opponent is named.
+  const cut=m?title.indexOf(esc(m[3]),esc(m[1]+m[2]).length)+m[3].length:-1;if(cut<0)return title;
+  return title.slice(0,cut)+title.slice(cut).replace(/^(\s+)(?:#\s?|No\.\s?)(\d{1,2})\s+(?=[A-Z])/,(_,lead,n)=>`${lead}<span class="rank-badge" title="No. ${n}, as the schedule lists it">#${n}</span> `);
 }
 function recordLine(g){const records=teamRecords(g),ranks=rankLine(g);if(!records.length)return ranks?`<div class="sport-record" title="${(g.rankings||[]).some(r=>r.source==='MaxPreps')?'MaxPreps state and class rankings':'National polls this week'}">${ranks}</div>`:'';const conf=r=>r.conference?.text?`${esc(r.conference.name)} <b>${esc(r.conference.text)}</b>`:'';return`<div class="sport-record" title="Records this season, from the official schedule's finals (exhibitions excluded); conference games as the school marks them">${records.length===1&&!records[0].team_label?`Record <b>${esc(records[0].text)}</b>${conf(records[0])?` · ${conf(records[0])}`:''}`:records.map(r=>`${esc(r.team_label||'Overall')} <b>${esc(r.text)}</b>${conf(r)?` (${conf(r)})`:''}`).join(' · ')}${ranks?` · ${ranks}`:''}</div>`}
 function savedScheduleNote(g){return g.saved_at?`<div class="saved-note">Saved schedule · updated ${esc(savedAgo(g.saved_at))}. The official source could not be refreshed just now; press Refresh to try again.</div>`:''}
