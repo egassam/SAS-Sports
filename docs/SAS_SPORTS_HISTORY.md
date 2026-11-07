@@ -4573,6 +4573,7 @@ The cost follows the bytes uploaded, not the code run. On-demand loading is drop
 - User: "It's working again. We need to make the Manhattan schools the next that they can be so we can create rules for every other school. There's been too many mess ups. Like we did with KSTATE being the base for all of college."
   - Proposed the four-step plan in the handoff.
   - User: "Let's start a new session for this."
+  - User: "List it has Manhattan high, Anthony, and Eisenhower": the reference schools are `manhattan-ks`, `anthony-ms-ks` and `eisenhower-ms-ks`.
 
 **Tests.**
 - `tests/hs-live-now.mjs`: the scores page saved at 8 PM Nov 6, with 74 games, 36 live, 11 of our schools.
@@ -4585,4 +4586,3 @@ The cost follows the bytes uploaded, not the code run. On-demand loading is drop
 - Home and team-page changes need a browser check with an old saved copy on the device.
 - Merging during live games empties the feed caches.
 - MaxPreps' state scores page is fresher than the team page.
-

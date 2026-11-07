@@ -13,7 +13,7 @@ Last updated: November 7, 2026 (Central, about 8:45 PM Nov 6). **Live high schoo
    - a browser check on every preview: the team page shows every in-season sport, Home shows the live game and its video, and a stale saved copy hides no sport.
 4. **`AGENTS.md`:** Manhattan is the reference for every middle and high school; no middle or high school change merges unless the Manhattan baselines pass.
 
-**Open questions for the user:** does "the Manhattan schools" mean USD 383 only (Manhattan HS, Anthony MS, Eisenhower MS), or also Manhattan Catholic, Flint Hills Christian, St. Xavier, Riley County and Blue Valley?
+**Scope (user, November 6: "List it has Manhattan high, Anthony, and Eisenhower"):** the reference schools are USD 383's Manhattan High School (`manhattan-ks`), Susan B. Anthony Middle School (`anthony-ms-ks`) and Eisenhower Middle School (`eisenhower-ms-ks`). The other Manhattan-area schools are not part of the reference.
 
 **Done November 6 evening (Friday playoff night):**
 - **#543 (`dae836c`):** today's games built from Bound (and MaxPreps-schedule games) take MaxPreps' live score. Hayden read Q2 7-7 on MaxPreps and "Today" here. 6 more games went live.
