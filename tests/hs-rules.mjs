@@ -7,7 +7,8 @@
 //     Sabetha twice on Oct 10, Cair Paravel and Osage City on Sep 22);
 //   - MaxPreps' unscored copies of a day's matches were listed as more
 //     matches (Hanover's 9:00 match with Marais des Cygnes Valley, Frankfort's
-//     timeless "White City" slots, Hartford's Oct 13 dual four times);
+//     "White City" slots beside its Rural Vista matches, Hartford's Oct 13
+//     dual four times; Hartford's unscored Lebo match stays, once);
 //   - junior varsity events filed as varsity on Bound (Rock Creek's
 //     "Wabaunsee Track Meet - RC JV", Baldwin's "Louisburg JV Mixer");
 //   - Bound's capitals ("EMPORIA Bowling Meet", "LADY COUGAR HOLIDAY
@@ -80,8 +81,11 @@ assert.equal(sabetha.length,2,'both Sabetha matches');
 assert.deepEqual(sabetha.map(e=>e.id).sort(),['live-wamego-ks-volleyball-oct-10-2026-sabetha-final','live-wamego-ks-volleyball-oct-10-2026-sabetha-final-2']);
 // MaxPreps' unscored copies are not more matches.
 assert.deepEqual(titles('hanover-ks','Volleyball',/^2026-10-31 /).map(e=>`${e.title} ${e.headline}`),['Hanover vs Argonia W, 2-0','Hanover vs Marais des Cygnes Valley W, 2-0']);
-assert.deepEqual(titles('frankfort-ks','Volleyball',/White City$/).map(e=>e.start_time.slice(0,10)),[],'Frankfort\'s timeless "White City" slots');
+// Frankfort's "White City" slots are its matches with Rural Vista [Hope/White
+// City] on Oct 3 and 20; Oct 13 has no such match and reads as played.
+assert.deepEqual(titles('frankfort-ks','Volleyball',/White City\b/).map(e=>`${e.start_time.slice(0,10)} ${e.title} ${e.headline}`),['2026-10-20 Frankfort at Rural Vista [Hope/White City] L, 0-2','2026-10-13 Frankfort at White City No score posted','2026-10-03 Frankfort vs Rural Vista [Hope/White City] L, 0-2']);
 assert.deepEqual(titles('hartford-ks','Volleyball',/^2026-10-13 /).map(e=>`${e.title} ${e.headline}`),['Hartford vs Northern Heights No score posted'],'one dual, listed once');
+assert.deepEqual(titles('hartford-ks','Volleyball',/Lebo$/).map(e=>`${e.title} ${e.headline}`),['Hartford vs Lebo No score posted'],'an unscored match with no scored match against that opponent is played, listed once');
 // Junior varsity events on Bound are not listed.
 assert.deepEqual(titles('rock-creek-ks','Track & Field',/\bJV\b/),[]);
 assert.deepEqual(titles('baldwin-ks','Wrestling',/\bJV\b/),[]);

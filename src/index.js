@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.286.0-reference-rules';
+const VERSION='4.286.1-reference-rules';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4771,12 +4771,15 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
         // (November 7, 2026, the reference rules run on every county):
         // Hanover's scored 9:00 match with Marais des Cygnes Valley was listed
         // again unscored; Frankfort's tournament days held timeless "White
-        // City" slots beside the scored matches; Hartford's Oct 13 dual was
-        // listed four times. A past day with scored matches keeps them alone;
-        // the rest are listed once per opponent and time.
+        // City" slots beside the scored match with Rural Vista [Hope/White
+        // City]; Hartford's Oct 13 dual was listed four times. An unscored
+        // match against an opponent the day has a scored match with (at the
+        // same time, or with no time) is that match; the rest are listed once
+        // per opponent and time (Hartford's unscored Oct 6 match with Lebo,
+        // listed "vs" and "at", once).
         const listed=new Set();
         const copy=c=>{
-          if(c.date<today&&finals.some(f=>f.date===c.date&&(!c.time||f.time===c.time&&namesCompatible(f.opponent,c.opponent))))return true;
+          if(c.date<today&&finals.some(f=>f.date===c.date&&namesCompatible(f.opponent,c.opponent)&&(!c.time||f.time===c.time)))return true;
           const key=`${c.date}|${nameKey(c.opponent)}|${c.time||''}`;
           if(listed.has(key))return true;
           listed.add(key);return false;
