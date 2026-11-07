@@ -490,7 +490,11 @@ console.log('SAS Sports regression checks passed');
 // the women's while the men played their opener).
 {
   const esc=x=>String(x);
-  const recordLine=new Function('esc',page.match(/function teamRecords[^\n]*/)[0]+';'+page.match(/function recordLine[^\n]*/)[0]+';return recordLine;')(esc);
+  const recordLine=new Function('esc',page.match(/function teamRecords[^\n]*/)[0]+';'+page.match(/function rankLine\(g\)\{[\s\S]*?\n\}\n/)[0]+';'+page.match(/function recordLine[^\n]*/)[0]+';return recordLine;')(esc);
+  // National ranks after the record (November 7): two polls at most; a men's and women's sport names its teams.
+  assert.match(recordLine({records:[{team_label:null,text:'8-1',conference:null}],rankings:[{poll:'CFP',rank:3},{poll:'AP',rank:3},{poll:'Coaches',rank:4}],live:[],results:[{}],upcoming:[]}),/Record <b>8-1<\/b> · <b class="rank-pill">No\. 3<\/b> CFP · <b class="rank-pill">No\. 3<\/b> AP<\/div>/);
+  assert.match(recordLine({records:[],rankings:[{poll:'AP',rank:1,team_label:"Women's"}],live:[],results:[],upcoming:[]}),/No\. 1<\/b> AP/,'a ranked team with no finals yet');
+  assert.equal(recordLine({records:[],live:[],results:[],upcoming:[]}),'');
   const line=recordLine({records:[{team_label:"Women's",text:'1-0',conference:null}],live:[{team_label:"Men's"}],results:[{team_label:"Women's"}],upcoming:[]});
   if(!/Men's <b>0-0<\/b> · Women's <b>1-0<\/b>/.test(line))throw new Error(`Combined sports must label each team's record: ${line}`);
   if(/Record <b>/.test(line))throw new Error('A team-labelled record must not read as the sport record');

@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.280.0-home-pool';
+const VERSION='4.281.0-rankings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6036,6 +6036,77 @@ async function fetchLiveScoreboards(school,sport,now,reads=[],dates=scoreboardDa
   }
   return mergeEvents([found]);
 }
+// National rankings (user, November 7, 2026: "We also need to add rankings
+// to the college sports so I can tell where teams are ranked nationally").
+// ESPN publishes each college sport's polls next to its scoreboard
+// (/rankings): football's CFP, AP and Coaches, basketball's AP and Coaches,
+// volleyball's AVCA, soccer's United Soccer Coaches, hockey's USCHO,
+// lacrosse's Inside Lacrosse and field hockey's NFHCA (baseball and softball
+// have none there). A poll is read once for every school: Cloudflare keeps it
+// six hours, this isolate an hour (ESPN refused per-school volume on Oct 10).
+// Division I polls only: FCS, Division II and III polls and tournament
+// seedings are left out.
+const RANKINGS_TTL_S=6*60*60,RANKINGS_MEMO_MS=60*60*1000;
+const RANKINGS_SKIP=/\bFCS\b|Division II|Division III|\bNAIA\b|Seedings|\bD-?II\b|\bD-?III\b/i;
+const POLL_LABELS=[[/playoff|\bCFP\b/i,'CFP'],[/\bAP\b|associated press/i,'AP'],[/coaches poll|afca/i,'Coaches'],[/\bAVCA\b/i,'AVCA'],[/united soccer/i,'United Soccer Coaches'],[/\bUSCHO\b/i,'USCHO'],[/inside lacrosse/i,'Inside Lacrosse'],[/\bNFHCA\b/i,'NFHCA']];
+function pollLabel(poll){const name=`${poll?.name||''} ${poll?.shortName||''}`;for(const [pattern,label] of POLL_LABELS)if(pattern.test(name))return label;return String(poll?.shortName||poll?.name||'Poll').trim();}
+// The Division I polls of one ESPN payload, in ESPN's order (the CFP leads
+// football once it is published): [{poll, ranks:[{rank, previous, team}]}].
+function rankingPolls(payload){
+  return(payload?.rankings||[]).filter(poll=>!RANKINGS_SKIP.test(`${poll?.name||''} ${poll?.shortName||''}`)&&Array.isArray(poll?.ranks)&&poll.ranks.length)
+    .map(poll=>({poll:pollLabel(poll),ranks:poll.ranks.map(r=>({rank:Number(r.current),previous:Number(r.previous)||null,team:r.team||{}})).filter(r=>Number.isFinite(r.rank)&&r.rank>0)}));
+}
+const rankingsMemo=new Map();
+async function espnRankingPolls(path,now=Date.now()){
+  const memo=rankingsMemo.get(path);if(memo&&now-memo.at<RANKINGS_MEMO_MS)return memo.polls;
+  let polls=[];
+  try{
+    const response=await fetch(`https://site.api.espn.com/apis/site/v2/sports/${path}/rankings`,{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'},cf:{cacheTtl:RANKINGS_TTL_S,cacheEverything:true}});
+    if(response.ok)polls=rankingPolls(await response.json());
+  }catch{}
+  // A failed read is kept ten minutes, so a refusal is not asked again per feed.
+  rankingsMemo.set(path,{at:polls.length?now:now-RANKINGS_MEMO_MS+10*60*1000,polls});
+  return polls;
+}
+// The polls for a college school's sport, one board per team (men's and
+// women's basketball; one soccer board unless the school has both teams).
+async function sportRankingPolls(school,sport){
+  if(!school||isHighSchool(school)||isPro(school))return[];
+  const providers=liveScoreboardProviders(school,sport);
+  return Promise.all(providers.map(async provider=>({team_label:provider.team_label||scoreboardBoardLabel(provider.path),polls:await espnRankingPolls(provider.path)})));
+}
+// The school's own ranks: [{poll, rank, previous, team_label}].
+function schoolRanks(boards,school){
+  const out=[];
+  for(const {team_label,polls} of boards)for(const {poll,ranks} of polls){
+    const hit=ranks.find(r=>scoreboardTeamMatchesSchool(r.team,school));
+    if(hit)out.push({poll,rank:hit.rank,previous:hit.previous,team_label:team_label||null});
+  }
+  return out;
+}
+// An opponent's rank in the board's first poll (the CFP once published, else
+// the AP), by its name as the schedule writes it ("#7 Iowa State", "at No. 3
+// Texas"). Shown only on live, today's and upcoming games: a current rank on
+// an old result would read as the rank at the time.
+function opponentRank(boards,event){
+  // Parentheses go only when they hold a note ("(Exhibition)"): "Miami (OH)" is not Miami.
+  const name=normalizedTeamName(String(event?.opponent||'').replace(/\((?:[^)]*\b(?:exhibition|neutral|game|dh|doubleheader|homecoming|senior|scrimmage)\b[^)]*)\)/gi,' ').replace(/#\s*\d+|\bNo\.\s*\d+/gi,' ').replace(/^\s*(?:vs\.?|at)\s+/i,''));
+  if(!name)return null;
+  const board=boards.find(b=>!b.team_label||!event.team_label||b.team_label===event.team_label);
+  const poll=board?.polls?.[0];if(!poll)return null;
+  const hit=poll.ranks.find(r=>[r.team.location,r.team.displayName,r.team.shortDisplayName,r.team.nickname].map(normalizedTeamName).filter(x=>x.length>=3).includes(name));
+  return hit?{rank:hit.rank,poll:poll.poll}:null;
+}
+async function attachRankings(groups,school,sport){
+  try{
+    const boards=await sportRankingPolls(school,sport);if(!boards.some(b=>b.polls.length))return groups;
+    for(const group of groups){
+      group.rankings=schoolRanks(boards,school);
+      for(const event of [...(group.live||[]),...(group.upcoming||[])]){const rank=opponentRank(boards,event);if(rank)event.opponent_rank=rank;}
+    }
+  }catch{}
+  return groups;
+}
 // Every live game the app can name, from every level ESPN publishes a board
 // for (user, October 28: home screen "favorites and then all events"; PR 2).
 // Each board is read once for all schools, never once per school (ESPN
@@ -6459,7 +6530,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
     const previous=(await saved.json()).flatMap(group=>[...(group.live||[]),...(group.results||[]),...(group.upcoming||[]),...(group.other||[])]);
     events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
   }
-  const groups=groupEvents(events),response=json(groups),stored=new Response(response.body,response);
+  const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport),response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
