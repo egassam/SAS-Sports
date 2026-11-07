@@ -16,7 +16,7 @@ let reads=0;
 const fetch=async url=>{const m=String(url).match(/sports\/(.+)\/rankings$/);if(m){reads++;return boards[m[1]]?new Response(JSON.stringify(boards[m[1]]),{status:200}):new Response('{}',{status:404});}throw Error(`Unexpected network request: ${url}`);};
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
-const w=Function(...Object.keys(deps),source+';return {rankingPolls,schoolRanks,opponentRank,attachRankings,catalogSchool,pollLabel};')(...Object.values(deps));
+const w=Function(...Object.keys(deps),source+';return {rankingPolls,schoolRanks,opponentRank,attachRankings,catalogSchool,pollLabel,rankLiveNowGames,parseScoreboardPayload};')(...Object.values(deps));
 const school=id=>w.catalogSchool(id);
 
 // The Division I polls only, in ESPN's order (the CFP leads football).
@@ -30,13 +30,15 @@ assert.deepEqual(w.rankingPolls(boards['soccer/usa.ncaa.w.1']).map(p=>p.poll),['
   await w.attachRankings(groups,school('utah'),'Football');
   assert.deepEqual(groups[0].rankings.map(r=>[r.poll,r.rank]).slice(0,2),[['CFP',3],['AP',3]]);
   assert.deepEqual(groups[0].upcoming[0].opponent_rank,{rank:9,poll:'CFP'},'an upcoming opponent takes its rank in the first poll');
+  assert.deepEqual(groups[0].upcoming[0].school_rank,{rank:3,poll:'CFP'},'the school\'s own rank, in the same poll');
 }
 // Kansas State is unranked: no rankings, and K-State is never taken for Kansas or the reverse.
 {
   const groups=[{school_id:'kstate',sport:'Football',records:[],live:[],results:[{opponent:'Utah',title:'K-State vs Utah',status:'Final'}],upcoming:[{opponent:'#15 Texas Tech',title:'K-State at Texas Tech',status:'Upcoming'}]}];
   await w.attachRankings(groups,school('kstate'),'Football');
   assert.deepEqual(groups[0].rankings,[],'K-State is not ranked');
-  assert.equal(groups[0].results[0].opponent_rank,undefined,'a past result keeps no current rank');
+  assert.deepEqual(groups[0].results[0].opponent_rank,{rank:3,poll:'CFP'},'a past result carries this week\'s rank too (user, Nov 7: "all of score cards")');
+  assert.equal(groups[0].results[0].school_rank,undefined,'K-State is unranked on its cards');
   assert.deepEqual(groups[0].upcoming[0].opponent_rank,{rank:15,poll:'CFP'},'"#15 Texas Tech" is Texas Tech');
 }
 // "Miami (OH)" is not Miami (No. 1); "(Exhibition)" is a note.
@@ -67,9 +69,33 @@ assert.deepEqual(w.rankingPolls(boards['soccer/usa.ncaa.w.1']).map(p=>p.poll),['
 // The page: a ranked opponent's rank before its name; never twice.
 {
   const page=read('../public/index.html'),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const rankedTitle=Function('esc',page.match(/function rankedTitle\(e\)\{[\s\S]*?\n\}\n/)[0]+';return rankedTitle;')(esc);
-  assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU',opponent_rank:{rank:9,poll:'CFP'}}),'Utah vs <span class="rank-badge" title="No. 9 in the CFP poll">#9</span> BYU');
-  assert.equal(rankedTitle({title:'K-State at #15 Texas Tech',opponent:'#15 Texas Tech',opponent_rank:{rank:15,poll:'CFP'}}),'K-State at #15 Texas Tech','the schedule already wrote it');
+  const rankedTitle=Function('esc',page.match(/function rankBadge\(r\)\{.*\n/)[0]+page.match(/function rankedTitle\(e\)\{[\s\S]*?\n\}\n/)[0]+';return rankedTitle;')(esc);
+  assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU',opponent_rank:{rank:9,poll:'CFP'}}),'Utah vs <span class="rank-badge" title="No. 9 in this week&#39;s CFP poll">#9</span> BYU');
+  assert.equal(rankedTitle({title:'K-State at #15 Texas Tech',opponent:'#15 Texas Tech',opponent_rank:{rank:15,poll:'CFP'}}),'K-State at <span class="rank-badge" title="No. 15, as the schedule lists it">#15</span> Texas Tech','the schedule already wrote it: one badge');
+  assert.equal(rankedTitle({title:'Utah vs No. 9 BYU',opponent:'No. 9 BYU',school_rank:{rank:3,poll:'CFP'},opponent_rank:{rank:9,poll:'CFP'}}),'<span class="rank-badge" title="No. 3 in this week&#39;s CFP poll">#3</span> Utah vs <span class="rank-badge" title="No. 9, as the schedule lists it">#9</span> BYU');
+  assert.equal(rankedTitle({title:'Girls · Manhattan vs Topeka',opponent:'Topeka'}),'Girls · Manhattan vs Topeka','no number, no badge');
+  assert.equal(rankedTitle({title:'Race #3 Daytona',opponent:'Daytona'}),'Race #3 Daytona','a race number is not a rank');
   assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU'}),'Utah vs BYU');
+  assert.equal(rankedTitle({title:'Utah vs BYU',opponent:'BYU',school_rank:{rank:3,poll:'CFP'},opponent_rank:{rank:9,poll:'CFP'}}),'<span class="rank-badge" title="No. 3 in this week&#39;s CFP poll">#3</span> Utah vs <span class="rank-badge" title="No. 9 in this week&#39;s CFP poll">#9</span> BYU','both sides ranked');
+  assert.equal(rankedTitle({title:"Women's · South Carolina at Texas",opponent:'Texas',school_rank:{rank:1,poll:'AP'}}),'Women&#39;s · <span class="rank-badge" title="No. 1 in this week&#39;s AP poll">#1</span> South Carolina at Texas','a team label stays in front');
+  assert.equal(rankedTitle({title:'Utah at BYU',opponent:'BYU',opponent_rank:{rank:9,poll:'Top 25'}}),'Utah at <span class="rank-badge" title="No. 9 in the Top 25">#9</span> BYU');
+  // Every card and Home row uses it: results, upcoming, live, Home's rows and spotlight.
+  for(const where of ['<span class="home-row-title">${rankedTitle(x.e)}</span>','<div class="spotlight-title">${rankedTitle(e)}</div>','${rk(i)}${esc(name)}'])assert.ok(page.includes(where),`the page ranks ${where}`);
 }
-console.log('rankings: ok (CFP, AP, Coaches, AVCA, United Soccer Coaches; team and upcoming opponent ranks; college only; one read per board)');
+// Home's live games: ESPN's own Top 25 mark first, then the polls (one read per board).
+{
+  const item={id:'1',competitions:[{date:'2026-11-07T20:00:00Z',status:{type:{state:'in',shortDetail:'Q2 5:00'}},competitors:[
+    {homeAway:'home',score:'14',curatedRank:{current:3},team:{id:'254',location:'Utah',displayName:'Utah Utes',shortDisplayName:'Utah',abbreviation:'UTAH'}},
+    {homeAway:'away',score:'7',curatedRank:{current:99},team:{id:'252',location:'BYU',displayName:'BYU Cougars',shortDisplayName:'BYU',abbreviation:'BYU'}}]}]};
+  const [game]=w.parseScoreboardPayload({events:[item]},school('utah'),'Football',{path:'football/college-football'},'https://example.test',new Date('2026-11-07T21:00:00Z'));
+  assert.deepEqual(game.school_rank,{rank:3,poll:'Top 25'},'ESPN\'s board marks Utah No. 3');
+  assert.equal(game.opponent_rank,undefined,'99 is unranked');
+  const games=[{...game,school_id:'utah',level:'college',ranking_board:'football/college-football'}];
+  await w.rankLiveNowGames(games);
+  assert.deepEqual(games[0].school_rank,{rank:3,poll:'CFP'});
+  assert.deepEqual(games[0].opponent_rank,{rank:9,poll:'CFP'},'the poll ranks BYU 9th');
+  assert.equal(games[0].ranking_board,undefined,'the board path is not sent');
+  const kstate=w.parseScoreboardPayload({events:[item]},school('manhattan-ks'),'Football',{path:'football/college-football'},'https://example.test',new Date());
+  assert.ok(kstate.every(g=>!g.school_rank),'a high school never takes a college rank');
+}
+console.log('rankings: ok (every card, both sides, Home live games; CFP, AP, Coaches, AVCA, United Soccer Coaches; team and upcoming opponent ranks; college only; one read per board)');

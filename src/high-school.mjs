@@ -31,10 +31,15 @@ export function parseCalendarTitle(title,prefix){
   if(!s.toLowerCase().startsWith(prefix.toLowerCase()+' '))return null;
   s=s.slice(prefix.length).trim();
   let site=null;
-  const siteMatch=s.match(/\s*-\s*(HOME|AWAY|NEUTRAL)\s*$/i);
+  // "- HOME" at the end, or before a note of times ("Topeka West - AWAY 1:30
+  // Dive/5:00 Swim", "Varsity League - HOME 9:30AM (Girls)/1PM (Boys)"):
+  // the note is dropped.
+  const siteMatch=s.match(/\s*-\s*(HOME|AWAY|NEUTRAL)(?:\s+(?=\S*\d)[^-]*)?\s*$/i);
   if(siteMatch){site=siteMatch[1].toUpperCase();s=s.slice(0,siteMatch.index).trim();}
   const dash=s.match(/^(.+?)\s*-\s*(.+)$/);
   if(!dash)return null;
+  // "MHS Varsity Bowling - JV League - HOME": the junior varsity's day.
+  if(/^JV\b/i.test(dash[2].trim()))return null;
   return{team:dash[1].trim(),name:dash[2].trim(),site};
 }
 
@@ -56,7 +61,7 @@ export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null}){
     if(/^0[1-6]:\d\d$/.test(clock))clock=`${String(Number(clock.slice(0,2))+12)}${clock.slice(2)}`;
     const time=e.all_day||!clock||clock==='00:00'?null:clock;
     const endDate=String(e.end_date||'').slice(0,10);
-    out.push({date,time,end_date:endDate&&endDate>date?endDate:null,name:parsed.name,site:parsed.site,address:clean(e.address)||null,calendar_id:e.id||null});
+    out.push({date,time,end_date:endDate&&endDate>date?endDate:null,name:parsed.name,site:parsed.site,address:clean(e.address)||null,calendar_id:e.id||null,...(parsed.h2h?{h2h:true}:{})});
   }
   return out;
 }
@@ -111,10 +116,13 @@ export function maxprepsContests(html,schoolId){
     // "won their away conference game"; "non-conference" is not.
     const conference=summary?/\b(?:home|away|neutral)?\s*conference\b/i.test(summary)&&!/non-conference/i.test(summary):null;
     const tournament=summary?/\btournament\b/i.test(summary):false;
+    // "lost their neutral playoff game" (MaxPreps marks football and volleyball
+    // playoff games; Manhattan's soccer playoff loss read "non-conference").
+    const playoff=summary?/\bplayoff\b/i.test(summary):false;
     // The team row's home/away type: 0 home, 1 away, 2 neutral (it agrees
     // with every game summary on Manhattan's 2026 pages).
     const site=own[11]===0?'HOME':own[11]===1?'AWAY':own[11]===2?'NEUTRAL':null;
-    const contest={start,site,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament};
+    const contest={start,site,date:start.slice(0,10),time:start.slice(11,16)==='00:00'?null:start.slice(11,16),opponent:opp?clean(teamName(opp)):null,opponent_id:opp?.[1]||null,result,score,opponent_score:oppScore,game_url:gameUrl,summary,stream_url:stream,conference,tournament,playoff};
     // A game the team scores live on MaxPreps (its Scoretracker): "Live game
     // is still in progress.", the period at [25] ("Q2") and each team's
     // running score at [30] of the contest's second team rows (Manhattan vs
@@ -233,9 +241,14 @@ export function parseMiddleSchoolTitle(title,{abbreviations={}}={}){
   }
   // A second "@" names the venue: "@ Washburn Rural @ Washburn Rural North".
   name=expandAbbreviations(name.replace(/\s*@.*$/,''),abbreviations).replace(/\s+(?:inv\.?)$/i,' Invitational').trim();
+  // Typing slips on the USD 383 calendars ("Washburn Rural Norht", "Milford
+  // Stare Park").
+  name=name.replace(/\bNorht\b/g,'North').replace(/\bStare Park\b/g,'State Park');
   // "Cross Country @ HOME": a home meet with no opponent named.
   if(/^home$/i.test(name))name='Home event';
-  return name?{team,name,site}:null;
+  // A meet sport against one school ("BWR Dual vs EMS"): a dual, "Anthony vs Eisenhower".
+  const dual=Boolean(versus)&&/^(?:Wrestling|Tennis)$/.test(sport)&&!/\b(?:tournament|invitational|invite|tri|triangular|quad|league|double)\b/i.test(name);
+  return name?{team,name,site,...(dual?{h2h:true}:{})}:null;
 }
 
 // A school calendar against the app's sports list (user, October 30: "You
@@ -1125,6 +1138,15 @@ export function youtubeVideoFor(videos,{date,sport,team=null,timeZone='America/C
   return videos.find(v=>fits(v)&&localDay(v.started||v.published)===date)||null;
 }
 
+// MaxPreps' rankings for a team, from the team schedule page the app already
+// reads (its `rankingsData`): the state rank and the class rank ("No. 10
+// Kansas · No. 3 6A", Manhattan football, Nov 6, 2026). Media-market ranks
+// (rankingType 6, "Topeka") are left out.
+export function maxprepsRankings(html){
+  const m=String(html||'').match(/"rankingsData":\{"timeStamp":"[^"]*","data":(\[[^\]]*\])/);if(!m)return[];
+  let data=[];try{data=JSON.parse(m[1])}catch{return[]}
+  return data.filter(r=>Number(r?.rank)>0&&(r.rankingType===1||r.rankingType===4)).map(r=>({poll:r.rankingType===1?String(r.contextName||'State'):String(r.contextName||'Class').replace(/^.*?\b(?:Division|Class)\s+/i,''),rank:Number(r.rank),previous:Number(r.movement)?Number(r.rank)+Number(r.movement):null,source:'MaxPreps',url:r.canonicalUrl||null}));
+}
 // MaxPreps' state scores page for a sport (/ks/football/scores/): every game
 // of the day with its state, score and period, and each team's MaxPreps
 // school id (in its mascot image's path, as on school pages). One read lists
