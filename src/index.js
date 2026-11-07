@@ -55,7 +55,7 @@ import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
 import {newsCandidates,storyFromHtml,storyFor} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
-import {meetProFolderFits,calendarEvents,maxprepsContests,maxprepsScoreboard,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
+import {meetProFolderFits,calendarEvents,maxprepsContests,maxprepsRankings,maxprepsScoreboard,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
 import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.284.0-hs-live-video';
+const VERSION='4.285.0-rankings-hs-reference';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4045,6 +4045,9 @@ const HIGH_SCHOOL_PLACEHOLDER=/^(?:tbd|tba|regionals?|sectionals?|sub-?state|sta
 // An opponent still "TBD"/"TBA" ("District - TBD") is the calendar holding a
 // round, not a game (user, November 2: "Manhattan football is showing two
 // games from Friday. The district one is the same as the vs Topeka one").
+// An event named without a place ("League Tournament 1st Round", "Double
+// Dual", "Quarter Final"): "Eisenhower · League Tournament 1st Round", not "at".
+const NAMED_WITHOUT_PLACE=/^(?:league|double dual|dual|tri|triangular|quad|mixer|tournament|invitational|quarter|semi|finals?|\d(?:st|nd|rd|th) round)\b(?!.* - )/i;
 const isHighSchoolPlaceholder=(name,{lone=false}={})=>lone||HIGH_SCHOOL_PLACEHOLDER.test(String(name||'').trim())||/(?<!sub[- ]?)\bstate\b/i.test(String(name||''))||/\btb[ad]\b/i.test(String(name||''));
 // A school channel's latest 50 uploads with each video's live state (two
 // Data API reads, 1 quota unit each, of the 10,000 a day): every 2 minutes
@@ -4116,6 +4119,11 @@ function highSchoolEvent({school,sport,team,date,time,endDate,opponent,relation,
   let status,unscored=false;
   if(scored)status='Final';
   else if(day>today)status='Upcoming';
+  // A playoff round the calendar holds ("State Championship - TBD") whose
+  // first day has passed with no game for the team: the team was not in it
+  // (Manhattan soccer's state placeholder read "Today" on Nov 7, 2026, after
+  // its Oct 26 loss at Maize).
+  else if(day<today&&!contest?.live&&!results?.rows?.length&&!schedule&&eventType(sport)==='GAME'&&(placeholder||isHighSchoolPlaceholder(opponent)))return null;
   // A track meet under way with results posted reads live (LetsGoRun).
   // A meet over on its day (every race scored, quiet, or past its window) is Final.
   else if(lastDay>=today)status=results?.rows?.length&&(results.done||results.live&&scheduleOver(schedule,date,now,school))?'Final':results?.live&&results.rows?.length||contest?.live?'Live':'Today';
@@ -4612,7 +4620,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   // Christian, Kickapoo Nation, Metro Academy: no calendar, not on Bound).
   const maxprepsOnly=!module.calendar&&!module.bound;
   const timeZone=schoolTimeZone(school),sourceUrl=calendarUrl?calendarUrl.split('?')[0]:maxprepsOnly?module.maxpreps.base:module.bound.page,sourceName=calendarUrl?'Official school calendar':maxprepsOnly?'MaxPreps (team schedule)':'Bound (school schedule)';
-  const sources=calendarUrl?[calendarUrl]:[],events=[],today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
+  const sources=calendarUrl?[calendarUrl]:[],events=[],rankings=[],eliminated=new Map(),today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
   // Every team's Bound acts at once.
   const boundActs=[...new Set(teams.flatMap(team=>team.boundSchedule?.acts||[]))];
   const boundRead=boundActs.length?await boundSchedulePayloads(module,boundActs,year):null;
@@ -4704,7 +4712,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // soccer page, a spring season with no games yet, failed every read,
       // so Manhattan soccer was never saved as a good copy).
       const needsScores=maxprepsOnly||team.maxprepsSchedule||games.some(game=>game.date<today);
-      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests(await r.text(),module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);sources.push(url);}else if(needsScores){scoresMissing=true;scoresErrors.push(sourceFailure(url,r));}}catch(error){if(needsScores){scoresMissing=true;scoresErrors.push(`${url}: ${String(error?.name==='TimeoutError'?'timed out':error?.message||error).slice(0,120)}`);}}
+      try{const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){const html=await r.text();contests=maxprepsContests(html,module.maxpreps.schoolId).filter(c=>c.date>=year.start&&c.date<=year.end);for(const rank of maxprepsRankings(html))rankings.push({...rank,team_label:team.label||null});const out=contests.filter(c=>c.playoff&&c.result==='L').map(c=>c.date).sort().at(-1);if(out)eliminated.set(team.label||null,out);sources.push(url);}else if(needsScores){scoresMissing=true;scoresErrors.push(sourceFailure(url,r));}}catch(error){if(needsScores){scoresMissing=true;scoresErrors.push(`${url}: ${String(error?.name==='TimeoutError'?'timed out':error?.message||error).slice(0,120)}`);}}
     }
     // The school's Google Calendar fills days no other source has for the team.
     if(team.googleCalendar&&googleCalendar?.payload){
@@ -4727,7 +4735,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       }
       const inMaxPreps=game=>finals.some(c=>c.date===game.date&&namesCompatible(c.opponent,game.name));
       // "Tournament at Wakefield" names its place: "Blue Valley · Tournament at Wakefield".
-      const gameRelation=game=>game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
+      const gameRelation=game=>isHighSchoolPlaceholder(game.name)&&!game.h2h?'·':game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
       for(const game of games.filter(g=>g.final&&g.date<=today&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
         if(event)events.push(event);
@@ -4788,7 +4796,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       const opponent=contest?.opponent&&!namesCompatible(game.name,contest.opponent)?contest.opponent:game.name;
       // A meet or tournament the school hosts reads "Manhattan · Manhattan Invite".
       // A dual on Bound names the opponent: "Rock Creek vs Abilene".
-      const relation=game.h2h?(game.site==='AWAY'?'at':'vs'):named?(game.site==='HOME'||/\bat\s/.test(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
+      const relation=game.h2h?(game.site==='AWAY'?'at':'vs'):named||eventType(sport)==='GAME'&&isHighSchoolPlaceholder(game.name)?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)||eventType(sport)==='GAME'&&isHighSchoolPlaceholder(game.name)?'·':'at'):game.site==='AWAY'?'at':game.site==='HOME'?'vs':contest?contestRelation(contest,school):'vs';
       const results=gameResults[index]||(team.boundMeet&&game.date<new Date(today).toISOString().slice(0,10)?boundMeetResults(school,module,team,bound,game.date):null)||(game.teams&&game.date<today?boundEntryResults(school,module,team,game):null);
       const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time||contest?.time||null,endDate:game.end_date,opponent,relation,named,contest,results,sourceUrl,sourceName,schedule:game.midwestTiming?midwestTimingSchedule(game.midwestTiming):game.athleticLive&&game.athleticLive.time&&game.date>=new Date(today).toISOString().slice(0,10)?athleticLiveSchedule(game.athleticLive,game.athleticLiveNotEntered):null,placeholder:game.teams?.length===1&&eventType(sport)==='GAME',now});
       if(event)events.push(event);
@@ -4858,9 +4866,13 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       e.video={kind:'youtube_live',embed_url:`https://www.youtube.com/embed/live_stream?channel=${tv.channel}`,watch_url:v?watch(v.id):`${tv.url}/streams`,source,...(v?{video_id:v.id,title:v.title}:{})};
     }
   }
+  // A team out of the playoffs (a MaxPreps playoff loss) plays none of the
+  // calendar's later placeholder rounds ("Sub-State - TBD").
+  for(let i=events.length-1;i>=0;i--){const e=events[i],out=eliminated.get(e.team_label||null);if(out&&e.event_type==='GAME'&&String(e.start_time).slice(0,10)>out&&e.school_score==null&&e.status!=='Live'&&isHighSchoolPlaceholder(e.opponent))events.splice(i,1);}
+  await applyStateScoreboard(events,module,sport,today,now);
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target)await highSchoolTargetHighlights(target);
-  return{events,source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(scoresErrors.length?{scores_errors:scoresErrors}:{}),...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
+  return{events,...(rankings.length?{rankings}:{}),source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(scoresErrors.length?{scores_errors:scoresErrors}:{}),...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
 // Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
@@ -6123,8 +6135,10 @@ function rankEvents(events,boards,school){
   }
   return events;
 }
-async function attachRankings(groups,school,sport){
+async function attachRankings(groups,school,sport,built=null){
   try{
+    // A middle or high school's ranks come from its own build (MaxPreps).
+    if(isHighSchool(school)){if(built?.length)for(const group of groups)group.rankings=built;return groups;}
     const boards=await sportRankingPolls(school,sport);if(!boards.some(b=>b.polls.length))return groups;
     for(const group of groups){
       group.rankings=schoolRanks(boards,school);
@@ -6239,9 +6253,40 @@ function hsScoreboardEvents(contests,board,day){
       school_score:side.score!=null?String(side.score):null,opponent_score:other.score!=null?String(other.score):null,headline:period,recency_label:period,
       start_time:`${day}T12:00:00.000Z`,results:[],result_count:0,live_score_source:'MaxPreps (scored live by the team)',
       live_update_note:'Live score from MaxPreps · as the team enters it',recap_url:contest.url,recap_label:'Follow on MaxPreps',
+      ...(side.rank?{school_rank:{rank:side.rank,poll:'MaxPreps Kansas'}}:{}),...(other.rank?{opponent_rank:{rank:other.rank,poll:'MaxPreps Kansas'}}:{}),
       source:{name:'MaxPreps (state scores)',url:`https://www.maxpreps.com/ks/${board.path}/scores/`}});
   }
   return games;
+}
+// A team feed's games today take MaxPreps' state scores page (user, November
+// 6: the reference plan, "team feeds take the live score from MaxPreps' state
+// scores page": 22-7 there while the team page read 15-7). The same read
+// Home makes for everyone (kept two minutes), matched by MaxPreps school id
+// and, with two games that day, by opponent. Each side's state rank there
+// ("(#10) Manhattan") goes on the card.
+async function stateScoreboard(path){
+  try{const r=await sourceFetch(`https://www.maxpreps.com/ks/${path}/scores/`,{},{ttl:SOURCE_TTL.schedule});return r.ok?maxprepsScoreboard(await r.text()):null;}catch{return null}
+}
+async function applyStateScoreboard(events,module,sport,today,now){
+  const id=module?.maxpreps?.schoolId;if(!id)return events;
+  const month=Number(today.slice(5,7)),todays=events.filter(e=>String(e.start_time||'').slice(0,10)===today&&e.status!=='Final'&&e.event_type==='GAME');
+  if(!todays.length)return events;
+  const boards=HS_SCOREBOARDS.filter(b=>b.sport===sport&&b.months.includes(month));
+  for(const board of boards){
+    const mine=todays.filter(e=>!board.team||!e.team_label||e.team_label===board.team);if(!mine.length)continue;
+    const contests=(await stateScoreboard(board.path)||[]).filter(c=>c.home.schoolId===id||c.away.schoolId===id);if(!contests.length)continue;
+    for(const event of mine){
+      const contest=contests.length===1&&mine.length===1?contests[0]:contests.find(c=>namesCompatible((c.home.schoolId===id?c.away:c.home).name,String(event.opponent||'')));
+      if(!contest)continue;
+      const ours=contest.home.schoolId===id?contest.home:contest.away,theirs=ours===contest.home?contest.away:contest.home;
+      if(ours.rank)event.school_rank={rank:ours.rank,poll:'MaxPreps Kansas'};
+      if(theirs.rank)event.opponent_rank={rank:theirs.rank,poll:'MaxPreps Kansas'};
+      if(!contest.live||ours.score==null||theirs.score==null)continue;
+      const period=maxprepsPeriodLabel(contest.period)||contest.period||'Live now';
+      Object.assign(event,{status:'Live',priority_bucket:'live',school_score:String(ours.score),opponent_score:String(theirs.score),headline:period,recency_label:period,results:[],result_count:0,live_score_source:'MaxPreps (scored live by the team)',live_update_note:'Live score from MaxPreps · as the team enters it',highlight_status:'Live: the score as the team enters it on MaxPreps; the final replaces it.',...(contest.url&&!event.recap_url?{recap_url:contest.url,recap_label:'Follow on MaxPreps'}:{})});
+    }
+  }
+  return events;
 }
 async function hsLiveGames(now=new Date(),env=null){
   const local=schoolNow(now,catalogSchool('manhattan-ks')),month=local.getUTCMonth()+1,day=local.toISOString().slice(0,10);
@@ -6633,7 +6678,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
     const previous=(await saved.json()).flatMap(group=>[...(group.live||[]),...(group.results||[]),...(group.upcoming||[]),...(group.other||[])]);
     events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
   }
-  const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport),response=json(groups),stored=new Response(response.body,response);
+  const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings),response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);

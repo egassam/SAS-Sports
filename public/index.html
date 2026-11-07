@@ -379,7 +379,12 @@ const AUTO_SEASON_WINDOWS={
   'Football':[[8,1]],'Flag Football':[[8,11]],'Volleyball':[[8,12]],'Soccer':[[8,12]],'Cross Country':[[8,11]],
   'Basketball':[[10,4]],'Swimming & Diving':[[9,3]],'Wrestling':[[10,3]],
   'Tennis':[[9,11],[1,5]],'Golf':[[8,11],[2,6]],'Track & Field':[[12,6]],
-  'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]],'Auto Racing':[[2,11]]
+  'Baseball':[[2,6]],'Softball':[[2,6]],'Rowing':[[3,6]],'Auto Racing':[[2,11]],
+  // The Worker's other seasons (SEASONS in src/index.js): a team page reads
+  // every in-season sport (Manhattan's bowling was never read, Nov 7, 2026).
+  "Men's Volleyball":[[1,5]],'Field Hockey':[[8,11]],'Hockey':[[10,4]],'Gymnastics':[[1,4]],'Lacrosse':[[2,5]],
+  'Beach Volleyball':[[2,5]],'Water Polo':[[1,5],[8,12]],'Fencing':[[10,3]],'Bowling':[[10,4]],'Equestrian':[[9,11],[2,4]],
+  'Rifle':[[9,3]],'Skiing':[[1,3]],'Triathlon':[[8,11]],'Acrobatics & Tumbling':[[2,4]],'STUNT':[[2,5]]
 };
 const HOME_SPORT_PRIORITY=['Cross Country','Soccer','Volleyball','Swimming & Diving','Wrestling','Tennis','Golf','Rowing','Track & Field','Softball','Baseball','Basketball','Football'];
 // Each team's sports come with its catalog card (rememberEntries).
@@ -593,7 +598,7 @@ function rankLine(g){
 // Both sides' ranks on every card (user, November 7: "I want the rankings of
 // college sports in all of score cards and live"): this week's poll, before
 // each team's name; a rank the schedule already wrote is never added twice.
-function rankBadge(r){return`<span class="rank-badge" title="${esc(r.poll==='Top 25'?`No. ${r.rank} in the Top 25`:`No. ${r.rank} in this week's ${r.poll} poll`)}">#${esc(r.rank)}</span> `}
+function rankBadge(r){const poll=String(r.poll||'');return`<span class="rank-badge" title="${esc(poll==='Top 25'?`No. ${r.rank} in the Top 25`:/^MaxPreps /.test(poll)?`No. ${r.rank} in MaxPreps' ${poll.slice(9)} rankings`:`No. ${r.rank} in this week's ${poll} poll`)}">#${esc(r.rank)}</span> `}
 function rankedTitle(e){
   let title=esc(e.title);const raw=String(e.title||''),opp=String(e.opponent||'').trim(),m=raw.match(/^((?:[^·]*· )?)(.*?)\s+(vs|at)\s+/);
   const theirs=e.opponent_rank?.rank&&opp&&!/#\s*\d|\bNo\.\s*\d/i.test(opp),mine=e.school_rank?.rank&&m&&m[2]&&!/#\s*\d|\bNo\.\s*\d/i.test(m[2]);
@@ -601,7 +606,7 @@ function rankedTitle(e){
   if(mine){const at=esc(m[1]).length;title=`${title.slice(0,at)}${rankBadge(e.school_rank)}${title.slice(at)}`;}
   return title;
 }
-function recordLine(g){const records=teamRecords(g),ranks=rankLine(g);if(!records.length)return ranks?`<div class="sport-record" title="National polls this week">${ranks}</div>`:'';const conf=r=>r.conference?.text?`${esc(r.conference.name)} <b>${esc(r.conference.text)}</b>`:'';return`<div class="sport-record" title="Records this season, from the official schedule's finals (exhibitions excluded); conference games as the school marks them">${records.length===1&&!records[0].team_label?`Record <b>${esc(records[0].text)}</b>${conf(records[0])?` · ${conf(records[0])}`:''}`:records.map(r=>`${esc(r.team_label||'Overall')} <b>${esc(r.text)}</b>${conf(r)?` (${conf(r)})`:''}`).join(' · ')}${ranks?` · ${ranks}`:''}</div>`}
+function recordLine(g){const records=teamRecords(g),ranks=rankLine(g);if(!records.length)return ranks?`<div class="sport-record" title="${(g.rankings||[]).some(r=>r.source==='MaxPreps')?'MaxPreps state and class rankings':'National polls this week'}">${ranks}</div>`:'';const conf=r=>r.conference?.text?`${esc(r.conference.name)} <b>${esc(r.conference.text)}</b>`:'';return`<div class="sport-record" title="Records this season, from the official schedule's finals (exhibitions excluded); conference games as the school marks them">${records.length===1&&!records[0].team_label?`Record <b>${esc(records[0].text)}</b>${conf(records[0])?` · ${conf(records[0])}`:''}`:records.map(r=>`${esc(r.team_label||'Overall')} <b>${esc(r.text)}</b>${conf(r)?` (${conf(r)})`:''}`).join(' · ')}${ranks?` · ${ranks}`:''}</div>`}
 function savedScheduleNote(g){return g.saved_at?`<div class="saved-note">Saved schedule · updated ${esc(savedAgo(g.saved_at))}. The official source could not be refreshed just now; press Refresh to try again.</div>`:''}
 function emptyScheduleNote(g){return eventTotal(g.source_group||g)?'':`<div class="empty-schedule">No current or upcoming ${esc(g.sport)} events are on ${esc(g.school)}'s official schedule yet. They will appear here when the school publishes them.</div>`}
 // SIDEARM's square /crop thumbnails can already have the top of a head

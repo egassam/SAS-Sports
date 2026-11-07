@@ -138,7 +138,7 @@ try{
     'Today Oct 9, 7:00 PM Manhattan vs Emporia | ',
     'Upcoming Oct 15, 7:00 PM Manhattan at Topeka High | ',
     'Upcoming Oct 23, 7:00 PM Manhattan vs Washburn Rural | ',
-    'Upcoming Oct 30, 7:00 PM Manhattan at District - TBD | '
+    'Upcoming Oct 30, 7:00 PM Manhattan · District - TBD | '
   ]);
   assert.equal(group.upcoming[0].video,undefined,'no live player five hours before kickoff');
   assert.deepEqual(group.records,[{team_label:null,wins:3,losses:2,ties:0,conference:{name:'Centennial League',wins:1,losses:0,ties:0,text:'1-0'},text:'3-2'}]);
@@ -299,7 +299,7 @@ try{
   assert.equal(vb.results.length,29);assert.ok(vb.results.includes('Final Aug 25, 4:00 PM Manhattan at Jamboree - Rock Creek | No score posted'));
   assert.deepEqual(vb.records,['21-7 · Centennial League 9-1']);
     assert.ok(!vb.results.some(x=>/T, 0-0/.test(x)),'pool placeholders are not results');
-  assert.deepEqual(vb.upcoming,['Upcoming Oct 10, 9:00 AM Manhattan · Manhattan Invite | ','Upcoming Oct 15, 5:00 PM Manhattan at Maize South TRI | ','Upcoming Oct 20, 5:00 PM Manhattan at St. Thomas Aquinas HS | ','Upcoming Oct 24 Manhattan at Sub State | ','Upcoming Oct 30 Manhattan at 6A State Tourn. | ']);
+  assert.deepEqual(vb.upcoming,['Upcoming Oct 10, 9:00 AM Manhattan · Manhattan Invite | ','Upcoming Oct 15, 5:00 PM Manhattan at Maize South TRI | ','Upcoming Oct 20, 5:00 PM Manhattan at St. Thomas Aquinas HS | ','Upcoming Oct 24 Manhattan at Sub State | ','Upcoming Oct 30 Manhattan · 6A State Tourn. | ']);
   // Expanded views: soccer halves, volleyball sets (a tournament match has
   // no home or road).
   const expand=async(sport,event)=>(await worker.fetchLive('manhattan-ks',sport,null,event.id)).events.find(e=>e.id===event.id);
@@ -369,7 +369,7 @@ try{
   assert.equal(amsXc.results[0].results[1].participant,'Stella Snively (7)');
   const emsXc=await msFeed('eisenhower-ms-ks','Cross Country');
   assert.deepEqual(emsXc.results.map(line),[
-    'Final Oct 2, 2:00 PM Eisenhower at Milford Stare Park League Tournament | 7th Boys 6th of 8 · 8th Boys 2nd of 6',
+    'Final Oct 2, 2:00 PM Eisenhower at Milford State Park League Tournament | 7th Boys 6th of 8 · 8th Boys 2nd of 6',
     'Final Sep 29, 4:00 PM Eisenhower at Rock Creek | 7th Boys 3rd of 6 · 8th Boys 2nd of 5','Final Sep 22, 4:00 PM Eisenhower at Clay Center | No results posted','Final Sep 18, 2:00 PM Eisenhower · Home event | No results posted',
     'Final Sep 15, 4:00 PM Eisenhower at Clay Center | 7th Boys 3rd of 8 · 8th Boys 3rd of 6',
     'Final Sep 10, 4:30 PM Eisenhower at Fort Riley | 7th Boys 7th of 9 · 8th Boys 6th of 10','Final Sep 2, 4:00 PM Eisenhower at Wamego | No results posted'
@@ -518,5 +518,5 @@ assert.ok(read('../public/index.html').includes("esc(e.live_update_note||(e.live
 // answered Cloudflare with an intermittent 520; Oct 16, 3 of 8 refreshes blank).
 {const w=read('../src/index.js');
 assert.ok(w.includes('const calendarResponse=await sourceFetch(calendarUrl,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});'),'calendar read keeps its last copy');
-assert.ok(w.includes('const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){contests=maxprepsContests('),'MaxPreps read keeps its last copy');}
+assert.ok(w.includes('const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.schedule,staleOnError:true});if(r.ok){const html=await r.text();contests=maxprepsContests(html,'),'MaxPreps read keeps its last copy');}
 console.log('Manhattan (KS) module: high school football, soccer, volleyball, tennis, cross country, golf and both middle schools verified (schedules, scores, records, TennisReporting draws, expanded views)');

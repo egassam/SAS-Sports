@@ -22,7 +22,12 @@ export function anthonyTitle(title){
     .replace(/^((?:Boys|Girls) Wrestling) (?:Double Dual|Dual|Tri|Mixer)\s+(?=vs?\b)/i,'$1 ')
     .replace(/\s+v\s+/i,' vs ').replace(/@(?=\S)/,'@ ').replace(/@ AMS\b/i,'@ Home')
     .replace(/\bTny\b/i,'Tournament').replace(/\bLEAGUE\b/,'League Tournament').replace(/\bInv Home$/i,'Home Invitational').replace(/\bInv\b/i,'Invitational')
-    .replace(/\b[A-Za-z]{1,3}MS\b/g,code=>code.toUpperCase());
+    .replace(/\b[A-Za-z]{1,3}MS\b/g,code=>code.toUpperCase())
+    // Words typed in capitals ("DOUBLE DUAL", "CONCORDIA") read as names;
+    // school codes ("WRNMS", "EMS") stay.
+    .replace(/\b[A-Z]{4,}\b/g,word=>/MS$|HS$/.test(word)?word:word[0]+word.slice(1).toLowerCase())
+    // "BWR GRAPPLE": the Little Apple Grapple, Eisenhower's "Little Apple Grapple Wrestling @ MHS".
+    .replace(/^((?:Boys|Girls) Wrestling) Grapple$/,'$1 @ Manhattan Little Apple Grapple');
   return t;
 }
 const anthonyParse=title=>parse(anthonyTitle(title));
