@@ -1,0 +1,259 @@
+{
+ "state": "ks",
+ "counties": [
+  "Jefferson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "jefferson-county-north-ks",
+   "name": "Jefferson County North High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451597700abd974d48d942",
+    "slug": "jcnorth"
+   },
+   "maxpreps": {
+    "schoolId": "8c135148-8437-4cb5-be56-ecb2d4321b11",
+    "path": "winchester/jefferson-county-north-chargers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Jefferson County North",
+    "milesplit": 21886,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "jefferson-west-ks",
+   "name": "Jefferson West High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515979622d79a4a1eb842",
+    "slug": "jeffersonwesths"
+   },
+   "maxpreps": {
+    "schoolId": "ed0e82fd-791b-43a1-bec5-a78e70b7ecc6",
+    "path": "meriden/jefferson-west-tigers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 108,
+    "code": "MJW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Jefferson West",
+    "milesplit": 21824
+   }
+  },
+  {
+   "id": "mclouth-ks",
+   "name": "McLouth High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452008877bd1814f7c3047",
+    "slug": "mclouthhs"
+   },
+   "maxpreps": {
+    "schoolId": "125e36c7-c059-4929-b8aa-4fe0c9d87277",
+    "path": "mclouth/mclouth-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "McLouth",
+    "milesplit": 21908,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "oskaloosa-ks",
+   "name": "Oskaloosa High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201924d1839c49215741",
+    "slug": "oskaloosahs"
+   },
+   "maxpreps": {
+    "schoolId": "39c0b481-7aa4-4ceb-aa3b-453fd10300e5",
+    "path": "oskaloosa/oskaloosa-bears"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 172,
+    "code": "OSK"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Oskaloosa",
+    "milesplit": 21898
+   }
+  },
+  {
+   "id": "perry-lecompton-ks",
+   "name": "Perry-Lecompton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520223389951ac468c244",
+    "slug": "perrylecomptonhs"
+   },
+   "maxpreps": {
+    "schoolId": "2f8019ef-fcb6-407c-8fe3-bb062a624e44",
+    "path": "perry/perry-lecompton-kaws"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 173,
+    "code": "PLHS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Perry-Lecompton",
+    "tennis": "Perry-Lecompton HS",
+    "milesplit": 21841
+   }
+  },
+  {
+   "id": "valley-falls-ks",
+   "name": "Valley Falls High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452086372c92a9ed7d6542",
+    "slug": "valleyfallshs"
+   },
+   "maxpreps": {
+    "schoolId": "a5424f9f-74ec-463b-bc3d-daf4249e0c9a",
+    "path": "valley-falls/valley-falls-dragons"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Valley Falls",
+    "milesplit": 22027,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "mclouth-ms-ks",
+   "name": "McLouth Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452008877bd1814f7c3047",
+    "slug": "mclouthhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "McLouth",
+    "milesplit": 39119
+   }
+  },
+  {
+   "id": "oskaloosa-ms-ks",
+   "name": "Oskaloosa Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045201924d1839c49215741",
+    "slug": "oskaloosahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Oskaloosa",
+    "milesplit": 65203
+   }
+  }
+ ]
+}

@@ -24,7 +24,7 @@ assert.deepEqual([mhs.home.name,mhs.home.score,mhs.home.rank,mhs.home.schoolId,m
 
 // The app's schools that were live, once each, with their own score first.
 const games=w.hsScoreboardEvents(contests,w.HS_SCOREBOARDS[0],'2026-11-06');
-assert.deepEqual(games.map(g=>g.school_id).sort(),['council-grove-ks','hayden-ks','lawrence-free-state-ks','manhattan-ks','riley-county-ks','rossville-ks','salina-central-ks','st-marys-ks','wamego-ks','washburn-rural-ks','washington-county-ks']);
+assert.deepEqual(games.map(g=>g.school_id).sort(),['council-grove-ks','hayden-ks','inman-ks','lawrence-free-state-ks','manhattan-ks','mcpherson-ks','riley-county-ks','rossville-ks','salina-central-ks','st-marys-ks','wamego-ks','washburn-rural-ks','washington-county-ks']);
 const m=games.find(g=>g.school_id==='manhattan-ks');
 assert.deepEqual([m.title,m.school_score,m.opponent_score,m.recency_label,m.status,m.level,m.sport],['Manhattan vs Garden City','22','7','2nd Quarter','Live','high-school','Football']);
 assert.deepEqual(m.school_rank,{rank:10,poll:'MaxPreps Kansas'},'the state rank the page prints, "(#10) Manhattan"');
@@ -34,8 +34,8 @@ assert.ok(games.every(g=>g.recap_url?.startsWith('https://www.maxpreps.com/ks/fo
 // A game between two of the app's schools shows once.
 const both={id:'x',live:true,period:'Q3',url:null,away:{schoolId:mhs.home.schoolId,name:'Manhattan',score:7},home:{schoolId:contests.find(c=>c.home.name==='Hayden'||c.away.name==='Hayden').home.name==='Hayden'?contests.find(c=>c.home.name==='Hayden').home.schoolId:contests.find(c=>c.away.name==='Hayden').away.schoolId,name:'Hayden',score:3}};
 assert.equal(w.hsScoreboardEvents([both,both],w.HS_SCOREBOARDS[0],'2026-11-06').length,1);
-// Through the reader: in November, football's page is read (and basketball's, which this stand-in does not have).
-assert.equal((await w.hsLiveGames(new Date('2026-11-07T02:00:00Z'))).length,11);
+// Through the reader: in November, football's page is read (and basketball's, which this stand-in does not have). Inman and McPherson (November 7 counties) make 13.
+assert.equal((await w.hsLiveGames(new Date('2026-11-07T02:00:00Z'))).length,13);
 // The team feed takes the state page's score (the reference plan: 22-7 there
 // while Manhattan's own MaxPreps page read 15-7), its period and the ranks.
 {

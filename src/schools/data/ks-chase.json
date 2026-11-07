@@ -1,0 +1,41 @@
+{
+ "state": "ks",
+ "counties": [
+  "Chase"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH4_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "chase-county-ks",
+   "name": "Chase County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045156163993c448888e64a",
+    "slug": "chasecountyhs"
+   },
+   "maxpreps": {
+    "schoolId": "d9a74006-d0f2-4269-954e-0986d4537b2d",
+    "path": "cottonwood-falls/chase-county-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Chase County",
+    "milesplit": 20798,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}
