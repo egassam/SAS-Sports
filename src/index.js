@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.281.1-rankings';
+const VERSION='4.282.0-hs-live';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4739,8 +4739,14 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,placeholder:game.teams?.length===1,now});
         if(event)events.push(event);
       }
+      // A game today that the team scores live on MaxPreps takes its running
+      // score (user, November 7: "Is there no other football team in our app
+      // currently that is playing live that we can grab?"; Hayden vs Baldwin
+      // read Q2 7-7 on MaxPreps and "Today" here).
+      const liveContest=game=>game.date===today?contests.find(c=>c.date===today&&c.live&&!c.result&&(namesCompatible(c.opponent,game.name)||contests.filter(x=>x.date===today).length===1))||null:null;
       for(const game of games.filter(g=>g.date>=today&&!g.final&&!inMaxPreps(g))){
-        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,now});
+        const live=liveContest(game);
+        const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,...(live?{contest:live}:{}),now});
         if(event)events.push(event);
       }
       // A school that enters few of its games on Bound (`maxprepsSchedule`,
@@ -4751,7 +4757,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       if(team.maxprepsSchedule){
         const onBound=c=>games.some(g=>g.date===c.date&&(g.h2h===false||g.h2h==null&&isNamedEvent(g.name)||namesCompatible(c.opponent,g.name)));
         for(const c of contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!onBound(c))){
-          const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',now});
+          const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',...(c.live&&c.date===today?{contest:c}:{}),now});
           if(event)events.push(event);
         }
       }
