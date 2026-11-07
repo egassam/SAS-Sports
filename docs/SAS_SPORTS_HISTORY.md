@@ -4548,3 +4548,41 @@ The cost follows the bytes uploaded, not the code run. On-demand loading is drop
   - Production `4.281.1-rankings`: Utah football 3/3, ranks CFP 3 / AP 3 / Coaches 4.
 - Two merge calls were first refused (409) because they named a head SHA I had not read yet; the retries with the real SHA merged.
 
+## November 6, 2026 (evening) — Live high school games on playoff night (PRs #543, #544, #545)
+
+**Conversation.**
+- User: "Currently, Manhattan high School is live on the homepage. Is there no other football team in our app currently that is playing live that we can grab?"
+  - 30 high school football games in the app were on; only Manhattan read Live.
+  - MaxPreps had Hayden vs Baldwin live (Q2 7-7) while the app read "Today".
+  - Cause: today's Bound games were built without MaxPreps' contest.
+  - #543 merged as `dae836c`.
+  - `diff:feeds` Football: 88 compared, 82 the same, 6 = tonight's games turning live.
+- User: "Manhattan high is no longer showing live" (screenshot at 7:55 PM: "9 teams · 3/3 sports reached", no Live section). Production read Live; I could not reproduce it; the likeliest cause was the deploy minute. The user was offered two changes.
+- User: "Do both."
+  - Live high school games on Home for everyone, from MaxPreps' state scores page (`/ks/<sport>/scores/`: every game, live state, period, both teams' MaxPreps ids in the mascot images).
+  - Live cards that ride out short gaps.
+- User: "It's broke" (8:05 PM: Manhattan's team page read 2 sports, no football).
+  - Reproduced on production with an old saved football copy: 2 reads, no Garden City game.
+  - Cause: #540 left a sport out by the device's copy and never re-read it, and applied on team pages too.
+  - Fixed: team pages read every sport; Home re-reads copies over 12 h.
+  - #544 merged as `7977d88`. Production: football read and the game shown; `/live/now` listed 12 of the app's high schools live.
+- User: "The live is now showing on the home page but the video isn't."
+  - Board games carried no video, and Home's player looked only at feeds.
+  - Board games of streaming schools now carry the game's own live YouTube video (only when YouTube reports it live).
+  - #545 merged as `4a460df`. Production dock: "LIVE VIDEO Manhattan vs Garden City" with only K-State starred.
+- User: "It's working again. We need to make the Manhattan schools the next that they can be so we can create rules for every other school. There's been too many mess ups. Like we did with KSTATE being the base for all of college."
+  - Proposed the four-step plan in the handoff.
+  - User: "Let's start a new session for this."
+  - User: "List it has Manhattan high, Anthony, and Eisenhower": the reference schools are `manhattan-ks`, `anthony-ms-ks` and `eisenhower-ms-ks`.
+
+**Tests.**
+- `tests/hs-live-now.mjs`: the scores page saved at 8 PM Nov 6, with 74 games, 36 live, 11 of our schools.
+- `tests/last-good-feed.mjs`: the gap rule.
+- `tests/home-load.mjs`: re-reading after 12 h; team pages read every sport.
+- CI guardrails passed for each PR.
+- `verify:preview` and `verify:prod` Manhattan football 3/3; XC 18/20 and 26/21.
+
+**Lessons.**
+- Home and team-page changes need a browser check with an old saved copy on the device.
+- Merging during live games empties the feed caches.
+- MaxPreps' state scores page is fresher than the team page.
