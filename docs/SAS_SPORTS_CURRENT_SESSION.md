@@ -1,6 +1,26 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 6, 2026 (Central, about 1 PM). **Worker startup** (user: "Go work startup"). PR #538 merged as `dd65f1a`; production `4.279.0-minified` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
+Last updated: November 7, 2026 (Central, about 7:30 PM Nov 6). **Startup test, faster home screen, national rankings.** PRs #540 (`cd8b7d7`) and #541 (`163dbba`) merged; production `4.281.1-rankings` verified (`verify:prod` Utah football 3/3, ranks CFP 3 / AP 3 / Coaches 4; XC 18/20 and 26/21).
+- **Startup test** (user: "Run the test next"). Throwaway Workers on the branch preview, new-isolate median of `/api/status` (n about 20 each):
+  - tiny Worker 0.23 s;
+  - plus 5.3 MB of school code run at startup: 0.46 s;
+  - the same code bundled but never run: 0.42 s;
+  - the same code as a separate module, never imported: 0.41 s.
+  - **Conclusion:** loading on demand does not help, because Cloudflare pays per uploaded byte (about 0.04 s per MB). The rest of the app accounts for the remaining 0.3 s. The branch was reset; nothing was merged.
+- **Home screen (#540; user: "Homepage still loads slow", then "Do 1, 2, 4 first"):**
+  - `inBatches` is a pool of four;
+  - sports with nothing live or today, no game in 7 days and no result in 7 (this device's saved copy) are left off the home screen;
+  - reads go live first, then today, then the next days.
+  - **Measured, 5 favorites:** first visit 61 s → 17 s; second visit 5.9 s (39 reads) → 2.3 s (19 reads). `tests/home-load.mjs`.
+- **Rankings (#541; user: "We also need to add rankings to the college sports", then "Do rankings next"):**
+  - ESPN's Division I polls (CFP, AP, Coaches, AVCA, United Soccer Coaches, USCHO, Inside Lacrosse, NFHCA), one read per board for all schools (Cloudflare 6 h, isolate 1 h);
+  - the team's ranks after its record (two polls at most);
+  - a `#N` badge on ranked opponents of live, today's and upcoming games.
+  - `tests/rankings.mjs` uses polls saved Nov 7.
+  - **Open:** baseball and softball polls (not on ESPN; NCAA.com or D1Baseball/NFCA by spring).
+- **Still suggested for the home screen:** one "home" request returning every favorite's saved feed at once (item 3, not built).
+
+Earlier, November 6, 2026 (Central, about 1 PM). **Worker startup** (user: "Go work startup"). PR #538 merged as `dd65f1a`; production `4.279.0-minified` verified (`verify:prod` K-State football 3/3, XC 18/20 and 26/21).
 - **Measured** (`server-timing` on every answer: `isolate;desc="new|warm", catalog;dur, total;dur`):
   - A new isolate's first answer took 0.97 s at the median (preview, n=19); warm took 0.23 s. Its handler ran 20-85 ms, catalog included, so the rest is Cloudflare loading the script, which scales with size.
   - Locally, `npx wrangler check startup` showed 87-117 ms of startup CPU.
@@ -642,3 +662,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 6 — Shawnee, Douglas and Saline counties** (34 schools; survey finds MaxPreps from linked pages; opponents stay at their age; postseason entries match the day's postseason meet; Blue Valley-Randolph Oct 30 retracted). #534 merged `94cec5e`, production `4.274.2` verified 1023/0; Republic County's stored Oct 24 card retracted in the follow-up.
 - **Nov 6 — Faster gates and quiet feeds** (parallel `test:release` 25 min → 4.5; `diff:feeds` skips new feeds; survey saves reads; CI's test run counts; quiet feeds answer at once; feed route reads the catalog only before a rebuild). #535 merged `8f933f6` (Republic County retracted, production checked), #536 merged `2610508`, production `4.277.1` verified.
 - **Nov 6 — Worker startup** (Server-Timing; minified upload 12.7 → 7.8 MB; unpdf on first use; new isolate 0.97 → about 0.75 s). #538 merged `dd65f1a`, production `4.279.0` verified.
+- **Nov 7 — Startup test; faster home screen; national rankings** (on-demand loading measured no help; home pool + current sports + live first: 61 s → 17 s; ESPN polls by record and on opponents). #540 merged `cd8b7d7`, #541 merged `163dbba`, production `4.281.1` verified.
