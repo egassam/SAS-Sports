@@ -37,6 +37,12 @@ const activity=pick(/const ACTIVITY_COPY_MS=[\s\S]*?\nfunction homeOrder\([^\n]+
   for(const sp of ['Football','Basketball','Volleyball'])assert.equal(homeCurrent('kstate',sp),true,sp);
   assert.equal(homeCurrent('kstate','Soccer'),true,'no copy on this device: read once');
   assert.equal(feedActivity('kstate','Tennis'),null,'a copy over 30 days old is not used');
+  // A copy over 12 hours old is read again: a game scheduled since (a playoff round) is found (November 7).
+  save('manhattan-ks','Football',[{sport:'Football',results:[ev(-8)],upcoming:[]}],new Date(now-13*3600000).toISOString());
+  assert.equal(homeCurrent('manhattan-ks','Football'),true,'an old copy that shows nothing is read again');
+  save('manhattan-ks','Golf',[{sport:'Golf',results:[ev(-20)],upcoming:[]}],new Date(now-2*3600000).toISOString());
+  assert.equal(homeCurrent('manhattan-ks','Golf'),false,'a recent copy that shows nothing is left out');
   assert.deepEqual(['Soccer','Basketball','Football','Volleyball'].sort((a,b)=>homeOrder('kstate',a)-homeOrder('kstate',b)),['Volleyball','Football','Basketball','Soccer'],'live, today, the next days, then unread');
 }
+assert.match(page,/const current=homeView\?sports\.filter\(sp=>homeCurrent\(id,sp\)\):sports;/,'a team\'s own page reads every in-season sport');
 console.log('home-load: ok (pool of four, current sports only, live and today first)');

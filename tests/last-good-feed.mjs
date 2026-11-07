@@ -158,6 +158,18 @@ assert.match(app,/localStorage\.setItem\(`sas-feed:\$\{id\}\|\$\{sp\}`/,'the dev
   assert.deepEqual(same.upcoming.map(e=>[e.id,e.status,e.school_score,e.opponent_score,e.headline]),[['k','Today',null,null,null],['u',undefined,undefined,undefined,undefined]],'today\'s game reads Today with no frozen score');
   const [fresh]=retireStaleLive([{sport:'Basketball',school_id:'kstate',fetched_at:'2026-11-04T21:00:00Z',live:[ks]}],at3pm,today);
   assert.equal(fresh.live.length,1,'a copy six minutes old stays live');
+  // A game under way rides out a gap (November 7: Manhattan vs Garden City fell back to Today while
+  // production was updating): a copy 25 minutes old of a game that started 55 minutes ago stays LIVE.
+  {
+    const mhs={id:'mhs',status:'Live',event_type:'GAME',start_time:'2026-11-06T19:00:00.000Z',school_score:'22',opponent_score:'7',recency_label:'2nd Quarter'};
+    const at=Date.parse('2026-11-07T01:55:00Z'),wall=()=>Date.parse('2026-11-06T19:55:00Z');
+    const [gap]=retireStaleLive([{sport:'Football',school_id:'manhattan-ks',fetched_at:'2026-11-07T01:30:00Z',live:[mhs],upcoming:[]}],at,()=> '2026-11-06',wall);
+    assert.deepEqual(gap.live.map(e=>[e.id,e.school_score,e.recency_label]),[['mhs','22','2nd Quarter · score may be delayed']]);
+    const [hourOld]=retireStaleLive([{sport:'Football',school_id:'manhattan-ks',fetched_at:'2026-11-07T00:45:00Z',live:[mhs],upcoming:[]}],at,()=> '2026-11-06',wall);
+    assert.deepEqual([hourOld.live.length,hourOld.upcoming[0].status],[0,'Today'],'a copy over an hour old: Today, as before');
+    const [long]=retireStaleLive([{sport:'Football',school_id:'manhattan-ks',fetched_at:'2026-11-07T01:30:00Z',live:[{...mhs,start_time:'2026-11-06T16:00:00.000Z'}],upcoming:[]}],at,()=> '2026-11-06',wall);
+    assert.equal(long.live.length,0,'a game that started over 3½ hours ago: Today, as before');
+  }
   assert.match(app,/if\(!demoActive\(\)\)return retireStaleLive\(currentGroups\)/,'every render goes through it');
 }
 console.log('Last good feed checks passed: live builds are saved, cached=1 never rebuilds, failed rebuilds fall back to a labeled copy up to a week old, a live score is laid over the saved schedule when the official page fails, and nothing older or missing is invented.');
