@@ -4500,3 +4500,51 @@ Preview measurements: cache hits fell to 0.2-0.3 s in most reads. After the merg
 
 **Next for startup.** School modules (about 5 MB minified) need either their duplicated code shared, or loading on demand (dynamic imports, or separate modules with `find_additional_modules`). It is not yet known whether Cloudflare's load time falls for modules that are never imported, so measure that first.
 
+## November 7, 2026 — Startup test, faster home screen, national rankings (PRs #540, #541)
+
+**Conversation.**
+- User: "Run the test next" (the startup test proposed after #538).
+- User: "Homepage still loads slow so I need some suggestions there. We also need to add rankings to the college sports so I can tell where teams are ranked nationally."
+- I suggested five home-screen changes:
+  1. a pool of four reads;
+  2. no finished seasons on the home screen;
+  3. one home request;
+  4. live games first;
+  5. cheaper cross country rebuilds.
+
+  I also proposed rankings from ESPN's polls.
+- User: "Do 1, 2, 4 first", then "Do rankings next".
+
+**Startup test** (branch preview only; the branch was reset to `main` afterwards). `/api/status`, new isolates only, median:
+- E1, a tiny Worker: 0.23 s (n=23).
+- E2, plus 5.3 MB of minified school code evaluated at startup: 0.46 s (n=20).
+- E3, the same code bundled behind an `import()` that never runs: 0.42 s (n=20).
+- E4, the same code as a separate uploaded module (`find_additional_modules`, `no_bundle`), never imported: 0.41 s (n=26).
+- Warm isolates: 0.19-0.22 s throughout.
+
+The cost follows the bytes uploaded, not the code run. On-demand loading is dropped; only fewer bytes would help.
+
+**Home screen (#540).** Production, 5 favorites (K-State, KU, Manhattan, Topeka, Eisenhower MS): 39 feed reads in fixed batches of four; all loaded at 44.7-61 s; one 11.5 s read held three slots idle.
+- Changes: `inBatches` is a pool; `feedActivity`, `homeCurrent` and `homeOrder` work from the device's saved copies, up to 30 days old.
+- After (preview): first visit 17 s; second visit 2.3 s with 19 reads (production then: 61 s and 5.9 s).
+- Tests: `tests/home-load.mjs`, home-news and regression passed; CI guardrails passed; `verify:preview` K-State football.
+- Production `4.280.0-home-pool`: `verify:prod` K-State football 3/3, XC 18/20 and 26/21.
+
+**Rankings (#541).**
+- ESPN `/rankings` answered for football, men's and women's basketball, volleyball, men's and women's soccer, men's and women's hockey, men's and women's lacrosse, and field hockey. Baseball returned 404 and softball 400.
+- Division I polls only. Teams are matched with `scoreboardTeamMatchesSchool`. An opponent's rank comes from the board's first poll and is shown only on live, today's and upcoming games. Parenthesized notes are dropped only for "(Exhibition)"-type notes, so "Miami (OH)" is not Miami.
+- The page:
+  - `rankLine` after the record;
+  - `rankedTitle` puts a badge before a ranked opponent unless the schedule wrote the rank.
+  - The first 390 px check showed Utah's red ranks on its red header; they now use the record's white, one rank per line.
+- Preview feeds:
+  - Utah football CFP 3 / AP 3 / Coaches 4, with BYU No. 9 and Arizona No. 22;
+  - K-State unranked;
+  - South Carolina women's basketball AP 1;
+  - Nebraska volleyball AVCA 1.
+- Gate:
+  - `test:release` passed locally (401 commands); CI green.
+  - `verify:preview` 36/36 for Utah football, South Carolina basketball and Nebraska volleyball; XC 18/20 and 26/21.
+  - Production `4.281.1-rankings`: Utah football 3/3, ranks CFP 3 / AP 3 / Coaches 4.
+- Two merge calls were first refused (409) because they named a head SHA I had not read yet; the retries with the real SHA merged.
+
