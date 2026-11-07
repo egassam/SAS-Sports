@@ -5626,5 +5626,342 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "jefferson-county-north-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "jefferson-west-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "mclouth-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "oskaloosa-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "perry-lecompton-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "valley-falls-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "mclouth-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "oskaloosa-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "burlingame-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "lyndon-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "osage-city-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Flag Football",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "santa-fe-trail-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "central-heights-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "ottawa-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "wellsville-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Flag Football",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "west-franklin-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "ottawa-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "wellsville-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "centre-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "goessel-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "hillsboro-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "marion-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "peabody-burns-ks": [
+    "Basketball",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "centre-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "goessel-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "hillsboro-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "peabody-burns-ms-ks": [
+    "Basketball",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "canton-galva-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "inman-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "mcpherson-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "moundridge-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "smoky-valley-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "canton-galva-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "smoky-valley-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "chase-county-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
   ]
 }
