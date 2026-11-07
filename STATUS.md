@@ -1,17 +1,29 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| liberty | Basketball | ❌ failing | Men's · Liberty at High Point: final L, 57-72 not in the app's results |
-| liu | Basketball | ❌ failing | Women's · LIU at Texas St: final L, 51-69 not in the app's results |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| merrimack | Volleyball | ❌ failing | Merrimack vs Quinnipiac: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | princeton | Volleyball | ❌ failing | Princeton at Penn: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| sacred-heart | Volleyball | ❌ failing | Sacred Heart at Fairfield: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| west-georgia | Basketball | ❌ failing | Men's · West Georgia at Loyola Chicago: result reads "L, 76-53", ESPN final L, 53-76 |
+| abilene-christian | Basketball | 🔴 on | live 36-24 · 3:44 - 1st · official_schedule+live_scoreboard |
+| alabama-state | Basketball | 🔴 on | live 25-30 · 3:43 - 2nd · official_schedule+live_scoreboard |
+| cal-state-fullerton | Basketball | 🔴 on | live 43-38 · 2:02 - 1st · official_schedule+live_scoreboard |
+| charleston | Basketball | 🔴 on | live 69-50 · 2:34 - 4th · official_schedule+live_scoreboard |
+| charleston | Volleyball | 🔴 on | live 11-13 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
+| charleston-southern | Basketball | 🔴 on | live 50-69 · 2:34 - 4th · official_schedule+live_scoreboard |
+| cincinnati | Basketball | 🔴 on | live 40-19 · 1:17 - 2nd · official_schedule+live_scoreboard |
+| east-carolina | Basketball | 🔴 on | live 26-30 · 4:41 - 1st · official_schedule+live_scoreboard |
+| hofstra | Basketball | 🔴 on | live 36-21 · 1:21 - 2nd · official_schedule+live_scoreboard |
+| liberty | Basketball | 🔴 on | live 50-18 · 0:03 - 1st · official_schedule+live_scoreboard |
+| liu | Basketball | 🔴 on | live 23-37 · 0:21 - 2nd · live_scoreboard |
+| merrimack | Volleyball | 🔴 on | live 10-7 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
+| milwaukee | Volleyball | 🔴 on | live 12-15 · 4th Set · Sets 1-2 · official_schedule+live_scoreboard |
+| nc-at | Basketball | 🔴 on | live 54-66 · 5:54 - 2nd · official_schedule+live_scoreboard |
+| northwestern-state | Volleyball | 🔴 on | live 21-25 · End of 3rd · Sets 2-1 · official_schedule+live_scoreboard |
+| ohio | Basketball | 🔴 on | live 66-54 · 5:54 - 2nd · official_schedule+live_scoreboard |
+| sacred-heart | Volleyball | 🔴 on | live 24-16 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
+| west-georgia | Basketball | 🔴 on | live 30-25 · 3:43 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
-| abilene-christian | Basketball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
 | air-force | Baseball | ⚪ off (waiting) |  |
@@ -26,7 +38,6 @@
 | alabama-am | Football | ⚪ off (waiting) |  |
 | alabama-am | Softball | ⚪ off (waiting) |  |
 | alabama-state | Baseball | ⚪ off (waiting) |  |
-| alabama-state | Basketball | ⚪ off (waiting) | final L, 66-97 (live phase not observed 2×; waits for the next game) |
 | alabama-state | Football | ⚪ off (waiting) |  |
 | alabama-state | Softball | ⚪ off (waiting) |  |
 | alabama-state | Volleyball | ⚪ off (waiting) |  |
@@ -106,7 +117,6 @@
 | cal-poly | Football | ⚪ off (waiting) |  |
 | cal-poly | Softball | ⚪ off (waiting) |  |
 | cal-state-fullerton | Baseball | ⚪ off (waiting) |  |
-| cal-state-fullerton | Basketball | ⚪ off (waiting) |  |
 | cal-state-fullerton | Softball | ⚪ off (waiting) |  |
 | cal-state-fullerton | Water Polo | ⚪ off (waiting) |  |
 | california | Baseball | ⚪ off (waiting) |  |
@@ -125,11 +135,8 @@
 | central-michigan | Lacrosse | ⚪ off (waiting) |  |
 | central-michigan | Softball | ⚪ off (waiting) |  |
 | charleston | Baseball | ⚪ off (waiting) |  |
-| charleston | Basketball | ⚪ off (waiting) |  |
 | charleston | Softball | ⚪ off (waiting) |  |
-| charleston | Volleyball | ⚪ off (waiting) |  |
 | charleston-southern | Baseball | ⚪ off (waiting) |  |
-| charleston-southern | Basketball | ⚪ off (waiting) |  |
 | charleston-southern | Football | ⚪ off (waiting) |  |
 | charleston-southern | Softball | ⚪ off (waiting) |  |
 | charlotte | Baseball | ⚪ off (waiting) |  |
@@ -141,7 +148,6 @@
 | chicago-state | Basketball | ⚪ off (waiting) |  |
 | chicago-state | Football | ⚪ off (waiting) |  |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
-| cincinnati | Basketball | ⚪ off (waiting) |  |
 | cincinnati | Lacrosse | ⚪ off (waiting) |  |
 | citadel | Baseball | ⚪ off (waiting) |  |
 | citadel | Basketball | ⚪ off (waiting) |  |
@@ -201,7 +207,6 @@
 | duquesne | Football | ⚪ off (waiting) |  |
 | duquesne | Lacrosse | ⚪ off (waiting) |  |
 | east-carolina | Baseball | ⚪ off (waiting) |  |
-| east-carolina | Basketball | ⚪ off (waiting) |  |
 | east-carolina | Lacrosse | ⚪ off (waiting) |  |
 | east-carolina | Softball | ⚪ off (waiting) |  |
 | east-tennessee-state | Baseball | ⚪ off (waiting) |  |
@@ -282,7 +287,6 @@
 | high-point | Baseball | ⚪ off (waiting) |  |
 | high-point | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Baseball | ⚪ off (waiting) |  |
-| hofstra | Basketball | ⚪ off (waiting) | final W, 97-51 (live phase not observed 2×; waits for the next game) |
 | hofstra | Lacrosse | ⚪ off (waiting) |  |
 | hofstra | Softball | ⚪ off (waiting) |  |
 | holy-cross | Baseball | ⚪ off (waiting) |  |
@@ -448,7 +452,6 @@
 | middle-tennessee | Softball | ⚪ off (waiting) |  |
 | milwaukee | Baseball | ⚪ off (waiting) |  |
 | milwaukee | Basketball | ⚪ off (waiting) | final L, 60-64 (live phase not observed 2×; waits for the next game) |
-| milwaukee | Volleyball | ⚪ off (waiting) |  |
 | minnesota | Baseball | ⚪ off (waiting) |  |
 | minnesota | Softball | ⚪ off (waiting) |  |
 | mississippi-state | Baseball | ⚪ off (waiting) |  |
@@ -484,7 +487,6 @@
 | murray-state | Football | ⚪ off (waiting) |  |
 | murray-state | Softball | ⚪ off (waiting) |  |
 | nc-at | Baseball | ⚪ off (waiting) |  |
-| nc-at | Basketball | ⚪ off (waiting) |  |
 | nc-at | Football | ⚪ off (waiting) |  |
 | nc-at | Softball | ⚪ off (waiting) |  |
 | nc-central | Football | ⚪ off (waiting) |  |
@@ -543,12 +545,10 @@
 | northwestern-state | Baseball | ⚪ off (waiting) |  |
 | northwestern-state | Football | ⚪ off (waiting) |  |
 | northwestern-state | Softball | ⚪ off (waiting) |  |
-| northwestern-state | Volleyball | ⚪ off (waiting) | final W, 3-2 (live phase not observed 2×; waits for the next game) |
 | notre-dame | Baseball | ⚪ off (waiting) |  |
 | notre-dame | Lacrosse | ⚪ off (waiting) |  |
 | notre-dame | Softball | ⚪ off (waiting) |  |
 | ohio | Baseball | ⚪ off (waiting) |  |
-| ohio | Basketball | ⚪ off (waiting) |  |
 | ohio | Softball | ⚪ off (waiting) |  |
 | ohio-state | Baseball | ⚪ off (waiting) |  |
 | ohio-state | Lacrosse | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1028/1956; on 0; off 918; failing 10.
+Done 1028/1956; on 18; off 905; failing 5.
