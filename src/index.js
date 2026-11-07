@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.279.0-minified';
+const VERSION='4.280.0-home-pool';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it

@@ -379,7 +379,11 @@ function automaticSports(date=new Date()){
   const active=Object.entries(AUTO_SEASON_WINDOWS).filter(([,windows])=>windows.some(window=>monthInWindow(month,window))).map(([sport])=>sport);
   return active.sort((a,b)=>HOME_SPORT_PRIORITY.indexOf(a)-HOME_SPORT_PRIORITY.indexOf(b));
 }
-async function inBatches(items,size,work){for(let i=0;i<items.length;i+=size)await Promise.all(items.slice(i,i+size).map(work))}
+// At most `size` at a time, the next starting as soon as one ends (user,
+// November 7: "Homepage still loads slow"). In fixed batches of four, one
+// 11.5 s read (Topeka cross country) held three finished slots idle; five
+// favorites took 44.7 s to load.
+async function inBatches(items,size,work){let next=0;await Promise.all(Array.from({length:Math.min(size,items.length)},async()=>{while(next<items.length)await work(items[next++])}))}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const localTime=v=>{if(!v)return'';try{return new Date(v).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}catch{return v}};
 // Published start times are the school's local wall clock (start_time carries
@@ -685,12 +689,46 @@ function homeMode(){return homeView||!sportFilter.value}
 // Home: the favorites, in their order. A team's own page with no sport
 // chosen: that team alone.
 function homeTeams(){return homeView?favoriteSchoolIds():[school.value].filter(Boolean)}
+// What this device last saw of a team-sport (its saved feed, up to 30 days
+// old): whether a game is live or today, and the days to the next game and
+// since the last result. Null when it has no copy.
+const ACTIVITY_COPY_MS=30*24*60*60*1000,DAY_MS=24*60*60*1000;
+const activityMemo=new Map();
+function feedActivity(id,sp,now=Date.now()){
+  const memo=activityMemo.get(`${id}|${sp}`);if(memo&&now-memo.at<60000)return memo.value;
+  const value=readActivity(id,sp,now);activityMemo.set(`${id}|${sp}`,{at:now,value});return value;
+}
+function readActivity(id,sp,now){
+  let copy=null;try{copy=JSON.parse(localStorage.getItem(`sas-feed:${id}|${sp}`)||'null')}catch{}
+  if(!copy||!Array.isArray(copy.groups)||!(now-Date.parse(copy.at)<=ACTIVITY_COPY_MS))return null;
+  const today=schoolToday(id),day=e=>String(e.start_time||'').slice(0,10),ts=e=>Date.parse(e.start_time||'');
+  const groups=copy.groups.filter(g=>!g.sport||g.sport===sp),live=groups.some(g=>(g.live||[]).length);
+  const upcoming=groups.flatMap(g=>g.upcoming||[]),results=groups.flatMap(g=>g.results||[]);
+  const isToday=[...upcoming,...results].some(e=>day(e)===today);
+  const nextAt=Math.min(...upcoming.map(ts).filter(Number.isFinite)),lastAt=Math.max(...results.map(ts).filter(Number.isFinite));
+  return{live,today:isToday,nextDays:Number.isFinite(nextAt)?(nextAt-now)/DAY_MS:Infinity,lastDays:Number.isFinite(lastAt)?(now-lastAt)/DAY_MS:Infinity};
+}
+// The home screen leaves out a sport whose season is over or not started
+// for this team: nothing live or today, no game in the next 7 days and no
+// result in the last 7 (user, November 7: "Homepage still loads slow";
+// finished cross country was the slowest read, 11-12 s). A sport this
+// device has no copy of is read once. The team's own page still has all of
+// its sports.
+const HOME_AHEAD_DAYS=7,HOME_BEHIND_DAYS=7;
+function homeCurrent(id,sp){const a=feedActivity(id,sp);return!a||a.live||a.today||a.nextDays<=HOME_AHEAD_DAYS||a.lastDays<=HOME_BEHIND_DAYS}
+// Live and today's games first, then the next few days, then recent
+// results, then sports this device has not read yet.
+function homeOrder(id,sp){const a=feedActivity(id,sp);if(!a)return 4;if(a.live)return 0;if(a.today)return 1;if(a.nextDays<=2)return 2;return 3}
 function homePairs(){
   const active=automaticSports(),pairs=[];
   for(const id of homeTeams()){
     const sponsored=SCHOOL_SPORTS[id];
     const sports=sponsored?active.filter(sp=>sponsored.includes(sp)):[];
-    for(const sp of sports.length?sports:[homeSport(id)])pairs.push([id,sp]);
+    // A team with nothing current keeps its next game's sport (it still
+    // shows Coming up), or its first in-season sport.
+    const current=sports.filter(sp=>homeCurrent(id,sp));
+    const next=sports.slice().sort((a,b)=>(feedActivity(id,a)?.nextDays??Infinity)-(feedActivity(id,b)?.nextDays??Infinity))[0];
+    for(const sp of current.length?current:next?[next]:[homeSport(id)])pairs.push([id,sp]);
   }
   if(homeView)for(const p of featuredPairs)if(!pairs.some(q=>q[0]===p[0]&&q[1]===p[1]))pairs.push(p);
   return pairs;
@@ -882,7 +920,7 @@ async function loadHome(forceRefresh,automatic,generation,signal){
   if(generation!==feedGeneration)return;
   const pairs=homePairs(),key=([id,sp])=>`${id}|${sp}`;
   const busy=new Set(currentGroups.filter(g=>(g.live||[]).length||(g.upcoming||[]).some(e=>String(e.start_time||'').slice(0,10)===schoolToday(g.school_id))).map(g=>`${g.school_id}|${g.sport}`));
-  const requested=automatic&&hasLiveEvents()?pairs.filter(p=>busy.has(key(p))):pairs;
+  const requested=(automatic&&hasLiveEvents()?pairs.filter(p=>busy.has(key(p))):pairs).map((p,i)=>[p,i]).sort((a,b)=>homeOrder(...a[0])-homeOrder(...b[0])||a[1]-b[1]).map(([p])=>p);
   const byPair=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
   if(!currentGroups.length)for(const [id,sp] of pairs){try{const copy=JSON.parse(localStorage.getItem(`sas-feed:${id}|${sp}`)||'null');if(copy&&Array.isArray(copy.groups)&&Date.now()-Date.parse(copy.at)<=SAVED_FEED_MS)for(const g of copy.groups)byPair.set(key([id,sp]),{...g,saved_at:copy.at})}catch{}}
   const show=()=>{currentGroups=homePairs().map(p=>byPair.get(key(p))).filter(Boolean);updateDemo()};
@@ -1188,7 +1226,7 @@ function scheduleLiveRefresh(){
 // Last good feed per school and sport on this device (a week at most), for
 // Cloudflare locations that have no saved copy of their own.
 const SAVED_FEED_MS=7*24*60*60*1000;
-function saveFeedCopy(id,sp,groups,at){try{localStorage.setItem(`sas-feed:${id}|${sp}`,JSON.stringify({at:at||new Date().toISOString(),groups}))}catch{}}
+function saveFeedCopy(id,sp,groups,at){activityMemo.delete(`${id}|${sp}`);try{localStorage.setItem(`sas-feed:${id}|${sp}`,JSON.stringify({at:at||new Date().toISOString(),groups}))}catch{}}
 async function savedFeedCopy(id,sp,path,signal){
   try{
     const r=await apiFetch(path+'&cached=1',2,{signal,transientOnly:true});
