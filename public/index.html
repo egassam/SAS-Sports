@@ -990,7 +990,11 @@ async function loadHome(forceRefresh,automatic,generation,signal){
 // changed only when another broadcast comes on, removed when none is on.
 function syncVideoDock(groups){
   const dock=document.getElementById('videoDock');if(!dock)return;
-  const e=(groups||[]).flatMap(g=>[...(g.live||[]),...(g.upcoming||[])]).find(x=>x.video?.embed_url&&(x.status==='Live'||x.status==='Today'));
+  // Home also plays a live game from the boards (user, November 7: "The live
+  // is now showing on the home page but the video isn't"): the viewer's
+  // teams first, then any other.
+  const board=homeView?everywhereGames.filter(x=>x.status==='Live'&&x.video?.embed_url):[],mine=new Set(homeView?homeTeams():[]);
+  const e=(groups||[]).flatMap(g=>[...(g.live||[]),...(g.upcoming||[])]).find(x=>x.video?.embed_url&&(x.status==='Live'||x.status==='Today'))||board.find(x=>mine.has(x.school_id))||board[0];
   const src=e?.video.embed_url||'';
   if(dock.dataset.src===src)return;
   dock.dataset.src=src;dock.hidden=!src;
