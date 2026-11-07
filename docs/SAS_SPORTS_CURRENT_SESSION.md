@@ -1,6 +1,32 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 7, 2026 (Central, about 7:30 PM Nov 6). **Startup test, faster home screen, national rankings.** PRs #540 (`cd8b7d7`) and #541 (`163dbba`) merged; production `4.281.1-rankings` verified (`verify:prod` Utah football 3/3, ranks CFP 3 / AP 3 / Coaches 4; XC 18/20 and 26/21).
+Last updated: November 7, 2026 (Central, about 8:45 PM Nov 6). **Live high school games; next session: Manhattan as the high and middle school reference.**
+
+**NEXT SESSION (user, November 6, 8:40 PM: "We need to make the Manhattan schools the next that they can be so we can create rules for every other school. There's been too many mess ups. Like we did with KSTATE being the base for all of college", then "Let's start a new session for this").** Proposed plan (not yet confirmed):
+1. **Make the Manhattan schools as complete as they can be.** Audit every sport against every source and fix or document each limitation in `MANHATTAN_KS_MODULE.md`. Known items:
+   - team feeds take the live score from MaxPreps' state scores page (fresher than the team page: 22-7 vs 15-7 on Nov 6);
+   - MaxPreps state ranks ("(#10) Manhattan" on the scores page);
+   - spring sources ready.
+2. **Write `docs/HIGH_SCHOOL_REFERENCE.md`:** every behavior a middle or high school must have, with Manhattan as the worked example (schedule, results per sport, live scores, video, records, played-without-score, Home: Live now / Today / current sports / live for everyone, team pages read every in-season sport, saved-copy rules).
+3. **Baselines like K-State 18/20 and KU 26/21:**
+   - saved-source tests that build Manhattan's, Anthony's and Eisenhower's feeds to exact cards;
+   - a browser check on every preview: the team page shows every in-season sport, Home shows the live game and its video, and a stale saved copy hides no sport.
+4. **`AGENTS.md`:** Manhattan is the reference for every middle and high school; no middle or high school change merges unless the Manhattan baselines pass.
+
+**Open questions for the user:** does "the Manhattan schools" mean USD 383 only (Manhattan HS, Anthony MS, Eisenhower MS), or also Manhattan Catholic, Flint Hills Christian, St. Xavier, Riley County and Blue Valley?
+
+**Done November 6 evening (Friday playoff night):**
+- **#543 (`dae836c`):** today's games built from Bound (and MaxPreps-schedule games) take MaxPreps' live score. Hayden read Q2 7-7 on MaxPreps and "Today" here. 6 more games went live.
+- **#544 (`7977d88`):**
+  - **Regression from #540 fixed** (user: "It's broke"): Manhattan's page showed only soccer and cross country. A left-out sport was never re-read, and the device's football copy predated the playoff game. Team pages now read every in-season sport; on Home, a copy over 12 hours old is re-read.
+  - **Live high school games on Home for everyone:** `/live/now` reads MaxPreps' Kansas state scores page per sport (`maxprepsScoreboard`, one read per 2 min) and matches by MaxPreps school id. 12 of our schools were live.
+  - **Live cards ride out short gaps:** a game started within 3.5 h, in a copy under an hour old, stays LIVE ("score may be delayed").
+- **#545 (`4a460df`, user: "The live is now showing on the home page but the video isn't"):** board games carry the school's live YouTube video; Home's player also takes board games. Production `4.284.0-hs-live-video` verified: the Home dock played Manhattan vs Garden City with only K-State starred; `verify:prod` Manhattan football 3/3; XC 18/20 and 26/21.
+- **Lessons (for the reference rules):**
+  - every Home or team-page change needs a browser check with a realistic device state (old saved copies), not only a fresh browser;
+  - a merge during live games resets feed caches.
+
+Earlier, November 7, 2026 (Central, about 7:30 PM Nov 6). **Startup test, faster home screen, national rankings.** PRs #540 (`cd8b7d7`) and #541 (`163dbba`) merged; production `4.281.1-rankings` verified (`verify:prod` Utah football 3/3, ranks CFP 3 / AP 3 / Coaches 4; XC 18/20 and 26/21).
 - **Startup test** (user: "Run the test next"). Throwaway Workers on the branch preview, new-isolate median of `/api/status` (n about 20 each):
   - tiny Worker 0.23 s;
   - plus 5.3 MB of school code run at startup: 0.46 s;
@@ -663,3 +689,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 6 — Faster gates and quiet feeds** (parallel `test:release` 25 min → 4.5; `diff:feeds` skips new feeds; survey saves reads; CI's test run counts; quiet feeds answer at once; feed route reads the catalog only before a rebuild). #535 merged `8f933f6` (Republic County retracted, production checked), #536 merged `2610508`, production `4.277.1` verified.
 - **Nov 6 — Worker startup** (Server-Timing; minified upload 12.7 → 7.8 MB; unpdf on first use; new isolate 0.97 → about 0.75 s). #538 merged `dd65f1a`, production `4.279.0` verified.
 - **Nov 7 — Startup test; faster home screen; national rankings** (on-demand loading measured no help; home pool + current sports + live first: 61 s → 17 s; ESPN polls by record and on opponents). #540 merged `cd8b7d7`, #541 merged `163dbba`, production `4.281.1` verified.
+- **Nov 6 evening — Live high school games** (#543 Bound games take MaxPreps' live score; #544 team pages fixed, live HS games on Home for everyone, gap rule; #545 board games' video). Production `4.284.0` verified. **Next session: Manhattan as the middle and high school reference** (user).
