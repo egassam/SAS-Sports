@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.283.0-hs-live-home';
+const VERSION='4.284.0-hs-live-video';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6210,21 +6210,35 @@ function hsScoreboardEvents(contests,board,day){
   }
   return games;
 }
-async function hsLiveGames(now=new Date()){
+async function hsLiveGames(now=new Date(),env=null){
   const local=schoolNow(now,catalogSchool('manhattan-ks')),month=local.getUTCMonth()+1,day=local.toISOString().slice(0,10);
   const boards=HS_SCOREBOARDS.filter(board=>board.months.includes(month));
   const lists=await Promise.all(boards.map(async board=>{
     try{const r=await sourceFetch(`https://www.maxpreps.com/ks/${board.path}/scores/`,{},{ttl:SOURCE_TTL.schedule});return r.ok?hsScoreboardEvents(maxprepsScoreboard(await r.text()),board,day):[];}catch{return[]}
   }));
-  return lists.flat();
+  const games=lists.flat();
+  // A school that streams its games (Manhattan's MHS Student Media) carries
+  // the game's own live video, as its feed does (user, November 7: "The live
+  // is now showing on the home page but the video isn't"). Only a video
+  // YouTube itself reports live: the board names no home side, and the
+  // channel's live player is for home games.
+  await Promise.all(games.map(async game=>{
+    const tv=highSchoolModule(game.school_id)?.youtube;if(!tv||!env)return;
+    try{
+      const {videos}=await youtubeChannelVideos(tv,env,true);
+      const v=videos&&youtubeVideoFor(videos,{date:day,sport:game.sport,team:game.team_label||null,timeZone:schoolTimeZone(catalogSchool(game.school_id))});
+      if(v?.state==='live')game.video={kind:'youtube',state:'live',video_id:v.id,embed_url:`https://www.youtube.com/embed/${v.id}`,watch_url:`https://www.youtube.com/watch?v=${v.id}`,title:v.title,source:`${tv.name} (YouTube)`};
+    }catch{}
+  }));
+  return games;
 }
-async function liveNow(now=new Date()){
+async function liveNow(now=new Date(),env=null){
   const boards=liveNowBoards(now),reads=await Promise.all(boards.map(async board=>{
     const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}`;
     const payload=await readJson(url,30);
     return{board,payload,url,ok:Boolean(payload)};
   }));
-  const highSchool=await hsLiveGames(now).catch(()=>[]);
+  const highSchool=await hsLiveGames(now,env).catch(()=>[]);
   return{fetched_at:now.toISOString(),games:[...liveNowGames(reads.filter(read=>read.ok),now),...highSchool],featured:featuredMeets(now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
 }
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
@@ -6780,7 +6794,7 @@ async function routeRequest(request,env,ctx){
     if(url.pathname==='/live/now'){
       const cache=caches.default,key=new Request(new URL(`/__sas_cache/live-now?v=${VERSION}`,url.origin).toString());
       const cached=await cache.match(key);if(cached)return cached;
-      const response=json(await liveNow(new Date()));
+      const response=json(await liveNow(new Date(),env));
       response.headers.set('cache-control','public, max-age=60');
       ctx.waitUntil(cache.put(key,response.clone()));
       return response;
