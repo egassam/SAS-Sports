@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.285.0-rankings-hs-reference';
+const VERSION='4.286.0-reference-rules';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4735,15 +4735,18 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       }
       const inMaxPreps=game=>finals.some(c=>c.date===game.date&&namesCompatible(c.opponent,game.name));
       // "Tournament at Wakefield" names its place: "Blue Valley · Tournament at Wakefield".
-      const gameRelation=game=>isHighSchoolPlaceholder(game.name)&&!game.h2h?'·':game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
+      // A Bound game against "TBD" is a round not yet drawn: "Silver Lake · TBD"
+      // (November 7, 2026), not "vs TBD".
+      const gameRelation=game=>isHighSchoolPlaceholder(game.name)&&(!game.h2h||/^tb[ad]$/i.test(String(game.name).trim()))?'·':game.h2h===false||(game.h2h==null&&isNamedEvent(game.name))?(game.site==='HOME'||/\bat\s/.test(game.name)||!game.site&&NAMED_WITHOUT_PLACE.test(game.name)?'·':'at'):game.site==='AWAY'?'at':'vs';
       for(const game of games.filter(g=>g.final&&g.date<=today&&!inMaxPreps(g))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,opponent:game.name,relation:gameRelation(game),named:false,contest:{...game.final,opponent:game.name,source:'bound',game_url:null,source_url:module.bound.page},sourceUrl,sourceName,now});
         if(event)events.push(event);
       }
       // Played with no score anywhere (a game MaxPreps and Bound lack; a
-      // tournament day with no match posted): "No score posted".
+      // tournament day with no match posted): "No score posted". A "TBD"
+      // round on a day MaxPreps has the game for is that game.
       const finalDays=new Set(finals.map(c=>c.date));
-      for(const game of games.filter(g=>g.date<today&&!g.final&&!inMaxPreps(g)&&(g.h2h||!finalDays.has(g.date)))){
+      for(const game of games.filter(g=>g.date<today&&!g.final&&!inMaxPreps(g)&&(g.h2h&&!/^tb[ad]$/i.test(g.name)||!finalDays.has(g.date)))){
         const event=highSchoolEvent({school,sport,team:label,date:game.date,time:game.time,endDate:game.end_date,opponent:game.name,relation:gameRelation(game),named:true,sourceUrl,sourceName,placeholder:game.teams?.length===1,now});
         if(event)events.push(event);
       }
@@ -4764,7 +4767,21 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
       // own entry.
       if(team.maxprepsSchedule){
         const onBound=c=>games.some(g=>g.date===c.date&&(g.h2h===false||g.h2h==null&&isNamedEvent(g.name)||namesCompatible(c.opponent,g.name)));
-        for(const c of contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!onBound(c))){
+        // MaxPreps' unscored copies of a day's matches are not more matches
+        // (November 7, 2026, the reference rules run on every county):
+        // Hanover's scored 9:00 match with Marais des Cygnes Valley was listed
+        // again unscored; Frankfort's tournament days held timeless "White
+        // City" slots beside the scored matches; Hartford's Oct 13 dual was
+        // listed four times. A past day with scored matches keeps them alone;
+        // the rest are listed once per opponent and time.
+        const listed=new Set();
+        const copy=c=>{
+          if(c.date<today&&finals.some(f=>f.date===c.date&&(!c.time||f.time===c.time&&namesCompatible(f.opponent,c.opponent))))return true;
+          const key=`${c.date}|${nameKey(c.opponent)}|${c.time||''}`;
+          if(listed.has(key))return true;
+          listed.add(key);return false;
+        };
+        for(const c of contests.filter(c=>c.opponent&&!(c.result&&c.score!=null)&&!onBound(c)&&!copy(c))){
           const event=highSchoolEvent({school,sport,team:label,date:c.date,time:c.time,opponent:c.opponent,relation:contestRelation(c,school),named:true,sourceUrl:`${module.maxpreps.base}${team.maxpreps}/schedule/`,sourceName:'MaxPreps (team schedule)',...(c.live&&c.date===today?{contest:c}:{}),now});
           if(event)events.push(event);
         }
@@ -4869,6 +4886,13 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   // A team out of the playoffs (a MaxPreps playoff loss) plays none of the
   // calendar's later placeholder rounds ("Sub-State - TBD").
   for(let i=events.length-1;i>=0;i--){const e=events[i],out=eliminated.get(e.team_label||null);if(out&&e.event_type==='GAME'&&String(e.start_time).slice(0,10)>out&&e.school_score==null&&e.status!=='Live'&&isHighSchoolPlaceholder(e.opponent))events.splice(i,1);}
+  // Two matches of one day with one opponent (Wamego played Sabetha twice on
+  // Oct 10, 2026; MaxPreps has two match pages) made one id, so the expanded
+  // view and the stored finals held one of them. The later one (by time,
+  // then MaxPreps' match page) takes "-2"; the first keeps its id.
+  const sameId=new Map();
+  for(const e of events){if(!sameId.has(e.id))sameId.set(e.id,[]);sameId.get(e.id).push(e);}
+  for(const same of sameId.values())if(same.length>1)same.sort((a,b)=>a.start_time.localeCompare(b.start_time)||String(a.maxpreps_url||a.recap_url||'').localeCompare(String(b.maxpreps_url||b.recap_url||''))).forEach((e,i)=>{if(i)e.id=`${e.id}-${i+1}`;});
   await applyStateScoreboard(events,module,sport,today,now);
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target)await highSchoolTargetHighlights(target);
@@ -5379,8 +5403,10 @@ const RECORD_MONTHS={Basketball:[11,12,1,2,3,4],Baseball:[2,3,4,5,6],Softball:[2
 function seasonRecords(results){
   const byTeam=new Map();
   for(const e of results){
-    // A pro season's games all count (MLB plays April to September).
-    const months=e.pro?null:RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
+    // A pro season's games all count (MLB plays April to September); so do
+    // a middle or high school's (Kansas middle school girls' basketball is
+    // played in October: Wamego MS's 16-47 had no record, November 7, 2026).
+    const months=e.pro||isHighSchool(catalogSchool(e.school_id))?null:RECORD_MONTHS[e.sport],month=Number(String(e.start_time||'').slice(5,7));
     if(months&&!months.includes(month))continue;
     // NFL playoffs are not part of the season record.
     if(e.not_in_record)continue;

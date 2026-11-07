@@ -41,7 +41,7 @@ assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.c
 // months; MLB is in season March to November, and every month's games count.
 assert.ok(worker.includes("if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}"));
 assert.ok(worker.includes('const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]]};'));
-assert.ok(worker.includes('const months=e.pro?null:RECORD_MONTHS[e.sport]'));
+assert.ok(worker.includes('const months=e.pro||isHighSchool(catalogSchool(e.school_id))?null:RECORD_MONTHS[e.sport]'));
 
 // Postseason rounds from ESPN's game notes.
 assert.deepEqual(mlbRound('ALCS - Game 5'),{series:'ALCS',game:5,label:'ALCS · Game 5'});

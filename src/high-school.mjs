@@ -872,6 +872,28 @@ const GENERIC_TITLE=/^(?:(?:event|meet|game|match|tbd|tba|tournament|7th|8th|gra
 // time in the school's zone, the opponent (a game) or the event's name (a
 // tournament or meet), HOME/AWAY from the home flags, the final the schools
 // entered, and the event group (a tournament's matches share it).
+// Words typed in capitals read as names (docs/HIGH_SCHOOL_REFERENCE.md 5;
+// November 7, 2026, Bound's "EMPORIA Invite", "WILL ENSLEY INVITATIONAL",
+// "LADY COUGAR HOLIDAY WRESTLING CLASSIC"). In a name with lower case, a
+// capital word with two vowels is a word ("EMPORIA"), not a school code
+// ("WCHS", "SHHS"); a name typed all in capitals is read word by word.
+// League and school codes stay.
+const NAME_CODES=/^(?:NCAA|KSHSAA|GWAL|AVCTL|ACVTL|KCBA|KASC|HOPL|BTEN|SVHE|WAHAA|WYCO|KIPP|CKTL|NCKL|NEKL|NEKAA|CKL|MCL|TVL|CPL|USD|NOAH|CHIEF|MAYO|FHSU|KSU)$/;
+export function nameCase(text){
+  const t=clean(text),allCaps=!/[a-z]/.test(t);
+  return t.replace(/\b[A-Z]{4,}\b/g,word=>{
+    // Associations ("KSHSAA", Bound's "KHSAA State XC Meet") and school codes stay.
+    if(NAME_CODES.test(word)||/(?:HS|MS|JH|AA)$/.test(word))return word;
+    const vowels=(word.match(/[AEIOU]/g)||[]).length;
+    return vowels>=(allCaps?1:2)?word[0]+word.slice(1).toLowerCase():word;
+  });
+}
+// A title naming a junior varsity event only (not "JV/V", "Varsity & JV").
+export function juniorVarsityOnly(title){
+  const t=clean(title);
+  if(!/\bJV\b|\bjunior varsity\b/i.test(t))return false;
+  return !/\bvarsity\b/i.test(t.replace(/\bjunior varsity\b/ig,''))&&!/\bJV\s*[\/&]\s*V\b|\bV\s*[\/&]\s*JV\b/i.test(t);
+}
 export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'}){
   const ids=new Set(acts.flatMap(a=>BOUND_ACTS[a]||[])),seen=new Set(),out=[];
   for(const payload of payloads)for(const group of Array.isArray(payload)?payload:[])for(const e of group?.Events||[]){
@@ -882,6 +904,10 @@ export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'})
     // An event filed under the wrong act ("Flag Football Triangular" as
     // Wamego girls' wrestling, Sep 14): its title names another sport.
     if(namesOtherSport(`${group.Title||''} ${e.Title||''}`,e.ActName))continue;
+    // A junior varsity event filed as varsity ("Wabaunsee Track Meet - RC
+    // JV", "St. Marys JV Golf Tournament", "Louisburg JV Mixer"; November 7,
+    // 2026, the reference rules on every county): varsity only. "JV/V" is both.
+    if(juniorVarsityOnly(`${group.Title||''} ${e.Title||''}`))continue;
     seen.add(e.RecordID);
     const start=localParts(e.StartDateTime,timeZone);if(!start)continue;
     const end=localParts(e.EndDateTime,timeZone);
@@ -893,14 +919,16 @@ export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'})
     // is played is not known (Bound's host says, when it names one).
     const home=others.length?own.HomeFlag||(!others.some(t=>t.HomeFlag)&&e.HostID===school):false;
     const site=home?'HOME':!others.length?null:others.some(t=>t.HomeFlag)||(e.HostID&&e.HostID!==school)?'AWAY':null;
-    const groupTitle=clean(group.Title),title=clean(e.Title),venue=clean(e.VenueLocationsDisplay).split(',')[0].trim();
+    const groupTitle=nameCase(group.Title),title=nameCase(e.Title),venue=clean(e.VenueLocationsDisplay).split(',')[0].trim();
     const eventName=[groupTitle,title].find(t=>!GENERIC_TITLE.test(t)&&!/\bvs\.?\b/i.test(t))||(venue?`${venue} ${noun.toLowerCase()}`:noun);
     const score=n=>Number.isFinite(Number(n))?Number(n):null;
     const us=score(own.Score),them=h2h?score(others[0].Score):null;
     // 0-0 is how a game nobody entered reads.
     const final=e.FinalFlag&&h2h&&us!=null&&them!=null&&us+them>0?{result:us>them?'W':us<them?'L':'T',score:us,opponent_score:them}:null;
     out.push({date:start.date,time:start.time==='00:00'?null:start.time,end_date:end&&end.date>start.date?end.date:null,
-      name:h2h?clean(others[0].Name):eventName,event_name:eventName,site,address:venue||null,h2h,
+      // A playoff opponent not filled in yet has no name (Silver Lake's Nov 6
+      // game read "Silver Lake vs "): it is "TBD".
+      name:h2h?clean(others[0].Name)||'TBD':eventName,event_name:eventName,site,address:venue||null,h2h,
       group:group.IDEvent||e.IDEvent,record:e.RecordID,level:clean(e.LevelDisplay),act:clean(e.ActName),final,
       teams:(e.Teams||[]).map(t=>({name:clean(t.Name),score:score(t.Score),place:score(t.Place)||null,own:t===own})),
       final_flag:!!e.FinalFlag});
