@@ -4586,3 +4586,57 @@ The cost follows the bytes uploaded, not the code run. On-demand loading is drop
 - Home and team-page changes need a browser check with an old saved copy on the device.
 - Merging during live games empties the feed caches.
 - MaxPreps' state scores page is fresher than the team page.
+
+## November 7, 2026 — College rankings everywhere; Manhattan as the middle and high school reference (PR #547)
+
+**Requests.**
+- User, about 8:30 AM Central: "1. I want the rankings of college sports in all of score cards and live. 2. Make the 3 Manhattan schools solid so we can make them the rule for all others".
+- Then "Pause until 12a / Begin". A scheduled start for midnight was set.
+- Then "That was from last night... Begin the session now". The scheduled task was deleted and work began.
+
+**Rankings.**
+- Before: #541 showed the team's ranks in the sport header and opponent ranks on live and upcoming games only, on purpose, so a current rank would not read as the rank at the time.
+- The user asked for every card, so past results carry this week's rank too. The badge tooltip says "this week's <poll> poll"; a rank the schedule wrote (the rank at the time) keeps its own number, shown as a badge.
+- `rankEvents` sets `school_rank` and `opponent_rank` on every event.
+- `rankLiveNowGames` ranks Home's ESPN live games by their board's polls, after ESPN's `curatedRank` (99 is unranked).
+- The page adds `rankBadge` to `rankedTitle`, the live board's team rows, Home's rows and the spotlight.
+- Tests: `tests/rankings.mjs`.
+
+**Manhattan reference.**
+- *Recording:* `scripts/record-reference.mjs` builds every sponsored sport through `fetchLive` and saves each answer (`tests/fixtures/hs-reference/sources-2026-11-07.json.gz`, 156 reads) with the expected cards. Sources that refuse the sandbox are read through `/api/source` (MaxPreps answers the sandbox 403), and Bound with curl (Bound answered Node's fetch 503).
+- *Reading the 407 cards found:*
+  - soccer's "State Championship - TBD" read Today on Nov 7, after the Oct 26 loss;
+  - calendar notes in titles ("- AWAY 1:30 Dive/5:00 Swim", "- HOME 9:30AM (Girls)/1PM (Boys)") and a JV day on the varsity bowling calendar;
+  - "Anthony · Eisenhower" for a dual;
+  - "GRAPPLE", "DOUBLE DUAL", "CONCORDIA";
+  - "Norht" and "Stare Park";
+  - "at League Tournament 1st Round" with no place;
+  - "Manhattan vs Quarter Final".
+  All were fixed. Meets with a known site keep "at Regionals", so other schools' meet titles did not churn.
+- *Browser check:* `scripts/check-reference-page.mjs`. Its first run against production found Manhattan's team page reading 9 of 10 sports: the page's `AUTO_SEASON_WINDOWS` had no Bowling (nor Hockey, Lacrosse, Field Hockey and the other college seasons). The page now names every Worker season, and `tests/hs-reference.mjs` checks this.
+- *MaxPreps:*
+  - `maxprepsRankings` reads the team schedule page's `rankingsData` (state and class; media-market ranks are left out). "Kansas Class 6A" and "Kansas Division 6A" read "6A".
+  - `applyStateScoreboard` gives today's games the state scores page's live score, period and ranks.
+  - Contests carry `playoff` (football and volleyball summaries say "playoff"; Manhattan's soccer playoff loss read "non-conference").
+
+**Gate.**
+- `test:release` passed on `e844935` (the first run failed `manhattan-ks-module` on the new "·" lines; fixed). CI guardrails green on `c0b9080` and on `3814258`.
+- Preview `4.285.0`:
+  - `verify:preview` for the 3 schools, all sports, 3 refreshes: 69/0;
+  - the page check passed (10/10, 5/5, 6/6 sports; ranks shown);
+  - K-State and Utah football 36/36; XC 18/20 and 26/21;
+  - Utah football by eye at 390 px ("#3 Utah vs No. 9 BYU" led to the schedule-rank badge).
+- `diff:feeds` (high and middle schools): 773 compared, 98 differ, 29 new. Seaman swimming (preview 6, production 12, local 18 from both `main` and the branch) and Silver Lake basketball showed Bound answering the preview's burst only partly.
+- So a code-only comparison was run instead: both code versions built every feed from one shared read of each source (curl for Bound, 1.2 s apart). 802 feeds, 769 the same, 33 differ:
+  - all are "·" titles, the Manhattan cleanups, and placeholders after a passed day (Blue Valley Nov 6) or after a MaxPreps playoff loss;
+  - the losses, checked on MaxPreps: Abilene Oct 29 at Wamego, Holton Oct 30 at Burlington, Royal Valley Nov 6 vs Caney Valley, Onaga Oct 30 at St. Marys, Seaman soccer Oct 29 at De Soto.
+- Merged as `6e5cf0d`. Production `4.285.0-rankings-hs-reference`:
+  - `verify:prod` for the 3 schools, all sports: 69/0;
+  - K-State and Utah football 3/3; XC 18/20 and 26/21;
+  - the page check passed.
+
+**Lessons.**
+- A saved-source baseline read by eye finds what feed comparisons cannot: every title the school typed is seen at once.
+- `diff:feeds` during a Bound guard compares Bound's refusals. For a shared reader change, compare both code versions from one shared read of each source.
+- Check the page's own tables against the Worker's: a sport missing from one is never read.
+

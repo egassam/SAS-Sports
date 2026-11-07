@@ -1,20 +1,40 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 7, 2026 (Central, about 8:45 PM Nov 6). **Live high school games; next session: Manhattan as the high and middle school reference.**
+Last updated: November 7, 2026 (Central, about 10 AM). **College rankings on every card and live; Manhattan is the middle and high school reference.** PR #547 merged as `6e5cf0d`; production `4.285.0-rankings-hs-reference` verified.
 
-**NEXT SESSION (user, November 6, 8:40 PM: "We need to make the Manhattan schools the next that they can be so we can create rules for every other school. There's been too many mess ups. Like we did with KSTATE being the base for all of college", then "Let's start a new session for this").** Proposed plan (not yet confirmed):
-1. **Make the Manhattan schools as complete as they can be.** Audit every sport against every source and fix or document each limitation in `MANHATTAN_KS_MODULE.md`. Known items:
-   - team feeds take the live score from MaxPreps' state scores page (fresher than the team page: 22-7 vs 15-7 on Nov 6);
-   - MaxPreps state ranks ("(#10) Manhattan" on the scores page);
-   - spring sources ready.
-2. **Write `docs/HIGH_SCHOOL_REFERENCE.md`:** every behavior a middle or high school must have, with Manhattan as the worked example (schedule, results per sport, live scores, video, records, played-without-score, Home: Live now / Today / current sports / live for everyone, team pages read every in-season sport, saved-copy rules).
-3. **Baselines like K-State 18/20 and KU 26/21:**
-   - saved-source tests that build Manhattan's, Anthony's and Eisenhower's feeds to exact cards;
-   - a browser check on every preview: the team page shows every in-season sport, Home shows the live game and its video, and a stale saved copy hides no sport.
-4. **`AGENTS.md`:** Manhattan is the reference for every middle and high school; no middle or high school change merges unless the Manhattan baselines pass.
+**Done (user, Nov 7: "1. I want the rankings of college sports in all of score cards and live. 2. Make the 3 Manhattan schools solid so we can make them the rule for all others"):**
+- **College ranks everywhere.** Both teams' ranks in this week's poll on live, today's, upcoming and past cards (`school_rank`, `opponent_rank`), Home's live board, Coming up, Recent results and the spotlight. A rank the schedule wrote ("No. 9 BYU") shows as the same badge. `/live/now` takes ESPN's `curatedRank`, then the polls. Preview: Utah reads "#3 Utah vs #9 BYU".
+- **The reference** (`docs/HIGH_SCHOOL_REFERENCE.md`; `AGENTS.md` 5c: no middle or high school change merges unless the Manhattan baselines pass):
+  - `tests/hs-reference.mjs` (in `test:release`) rebuilds all 22 sports of Manhattan HS, Anthony MS and Eisenhower MS from 156 saved real sources (Nov 7). It compares 407 cards (read by eye) and checks the rules on them.
+  - `npm run record:reference` re-records.
+  - `scripts/check-reference-page.mjs --base=<url>` opens the team pages in a browser with two-day-old saved copies.
+- **Middle and high school changes:**
+  - MaxPreps state and class ranks after the record, from the team schedule page already read (football No. 10 Kansas · No. 3 6A).
+  - Each side's state rank on today's, live and Home games.
+  - Team feeds take the live score from MaxPreps' state scores page.
+  - Placeholder rounds go once their day passes or after a MaxPreps playoff loss.
+  - Named rounds and events with no place read "·".
+  - Calendar time notes, capitals and typos are cleaned; "JV League" is dropped; duals read "vs".
+  - The page's season table now names every Worker season. **Manhattan's team page had never read bowling** (9/9, now 10/10).
+- **Gate:**
+  - `test:release` passed on `e844935`; CI guardrails green on `c0b9080` and on the head `3814258`.
+  - Preview: `verify:preview` for the 3 schools, all sports, 3 refreshes: 69/0. The page check passed. K-State and Utah football 36/36; XC 18/20 and 26/21. Utah checked by eye at 390 px.
+  - `diff:feeds` (773 high and middle school feeds) flagged 98, mostly Bound refusing the preview's burst of reads (seen Nov 5).
+  - Exact code-only comparison: every feed built with `main` and with the branch from one shared read of each source. 802 feeds, 769 the same, 33 differ, all explained:
+    - "·" titles and the title cleanups;
+    - placeholders removed for Blue Valley (its day passed) and for Abilene, Holton, Royal Valley, Onaga and Seaman soccer, each with a MaxPreps playoff loss checked.
+- **Production:** `verify:prod` for the 3 schools, all sports: 69/0. K-State and Utah football 3/3; XC 18/20 and 26/21. The page check passed (Manhattan 10/10 sports). Soccer's ranks showed at once; football's and volleyball's quiet saved copies, built before the deploy, had none until they were rebuilt minutes later (No. 10 · No. 3; No. 20 · No. 7).
 
-**Scope (user, November 6: "List it has Manhattan high, Anthony, and Eisenhower"):** the reference schools are USD 383's Manhattan High School (`manhattan-ks`), Susan B. Anthony Middle School (`anthony-ms-ks`) and Eisenhower Middle School (`eisenhower-ms-ks`). The other Manhattan-area schools are not part of the reference.
+**Open:**
+- "Seaman · Wichita State University tournament" (softball, May) reads "·" because "State" marks it as a round (`isHighSchoolPlaceholder`); give "University" names an exception.
+- "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
+- Baseball and softball college polls (not on ESPN).
+- Re-record the reference when the winter results start.
+- Home: one "home" request for every favorite's saved feed (not built).
 
+**Next session:** apply the reference to the other counties' schools. Run `check-reference-page.mjs` on a sample of each county, and fix what differs from `HIGH_SCHOOL_REFERENCE.md`. Or the user's choice.
+
+Earlier, November 7, 2026 (Central, about 8:45 PM Nov 6). **Live high school games; next session: Manhattan as the high and middle school reference** (done above).
 **Done November 6 evening (Friday playoff night):**
 - **#543 (`dae836c`):** today's games built from Bound (and MaxPreps-schedule games) take MaxPreps' live score. Hayden read Q2 7-7 on MaxPreps and "Today" here. 6 more games went live.
 - **#544 (`7977d88`):**
@@ -690,3 +710,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 6 — Worker startup** (Server-Timing; minified upload 12.7 → 7.8 MB; unpdf on first use; new isolate 0.97 → about 0.75 s). #538 merged `dd65f1a`, production `4.279.0` verified.
 - **Nov 7 — Startup test; faster home screen; national rankings** (on-demand loading measured no help; home pool + current sports + live first: 61 s → 17 s; ESPN polls by record and on opponents). #540 merged `cd8b7d7`, #541 merged `163dbba`, production `4.281.1` verified.
 - **Nov 6 evening — Live high school games** (#543 Bound games take MaxPreps' live score; #544 team pages fixed, live HS games on Home for everyone, gap rule; #545 board games' video). Production `4.284.0` verified. **Next session: Manhattan as the middle and high school reference** (user).
+- **Nov 7 — College rankings on every card and live; Manhattan as the middle and high school reference** (#547, merged `6e5cf0d`; production `4.285.0-rankings-hs-reference` verified: 69/0, XC 18/20 and 26/21, page check passed).
