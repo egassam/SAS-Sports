@@ -1483,23 +1483,13 @@
    "state": "off"
   },
   "maryland|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-08T02:35:19.895Z",
-   "last_detail": "live 64-85 · 2:02 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "maryland|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · Maryland at Georgetown",
-    "started_seen": "2026-11-08T02:26:30.356Z",
-    "live_passes": [
-     "2026-11-08T02:26:30.356Z",
-     "2026-11-08T02:28:32.227Z",
-     "2026-11-08T02:29:53.571Z",
-     "2026-11-08T02:31:56.453Z",
-     "2026-11-08T02:33:38.126Z",
-     "2026-11-08T02:35:19.895Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T09:25:06.973Z",
+   "last_detail": "final L, 74-86",
+   "game": null,
+   "verified_at": "2026-11-08T09:25:06.973Z",
+   "verified_game": "Men's · Maryland at Georgetown",
+   "verified_detail": "final L, 74-86"
   },
   "maryland|Field Hockey": {
    "state": "done",
@@ -6578,23 +6568,13 @@
    "state": "off"
   },
   "pacific|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-08T02:34:59.602Z",
-   "last_detail": "live 54-39 · 9:06 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "pacific|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · Pacific at Bradley",
-    "started_seen": "2026-11-08T02:26:30.065Z",
-    "live_passes": [
-     "2026-11-08T02:26:30.065Z",
-     "2026-11-08T02:28:31.593Z",
-     "2026-11-08T02:30:14.411Z",
-     "2026-11-08T02:31:35.631Z",
-     "2026-11-08T02:33:38.060Z",
-     "2026-11-08T02:34:59.602Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T09:25:07.123Z",
+   "last_detail": "final W, 63-52",
+   "game": null,
+   "verified_at": "2026-11-08T09:25:07.123Z",
+   "verified_game": "Men's · Pacific at Bradley",
+   "verified_detail": "final W, 63-52"
   },
   "pacific|Soccer": {
    "state": "done",
@@ -10366,7 +10346,7 @@
   },
   "liu|Basketball": {
    "state": "failing",
-   "last_check": "2026-11-08T02:35:41.225Z",
+   "last_check": "2026-11-08T09:34:20.217Z",
    "last_detail": "final L, 42-92 not in the app's results",
    "game": {
     "key": "liu|Basketball|Women's|2026-11-07|1",
@@ -10384,9 +10364,9 @@
     "final_ok": false,
     "final_due": "2026-11-07T23:17:29.030Z"
    },
-   "failures": 18,
+   "failures": 24,
    "last_failure": {
-    "at": "2026-11-08T02:35:41.225Z",
+    "at": "2026-11-08T09:34:20.217Z",
     "game": "Women's · LIU at Pitt",
     "detail": "final L, 42-92 not in the app's results"
    }
@@ -12463,6 +12443,6 @@
   }
  },
  "version": "4.287.0-ks-counties-4",
- "updated_at": "2026-11-08T02:35:41.231Z",
+ "updated_at": "2026-11-08T09:34:20.225Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

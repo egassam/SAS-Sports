@@ -5,8 +5,6 @@
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| maryland | Basketball | 🔴 on | live 64-85 · 2:02 - 2nd · official_schedule+live_scoreboard |
-| pacific | Basketball | 🔴 on | live 54-39 · 9:06 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1366,6 +1364,7 @@
 | marshall | Football | ✅ off (passed) | Marshall at Old Dominion · 2026-10-31T20:40:55.542Z |
 | marshall | Soccer | ✅ off (passed) | Women's · Marshall at Georgia St · 2026-10-23T02:02:22.028Z |
 | marshall | Volleyball | ✅ off (passed) | Marshall at Old Dominion · 2026-10-24T21:15:41.828Z |
+| maryland | Basketball | ✅ off (passed) | Men's · Maryland at Georgetown · 2026-11-08T09:25:06.973Z |
 | maryland | Field Hockey | ✅ off (passed) | Maryland vs Michigan State · 2026-10-16T23:47:54.972Z |
 | maryland | Football | ✅ off (passed) | Maryland at Ohio State · 2026-10-11T00:49:40.707Z |
 | maryland | Soccer | ✅ off (passed) | Men's · Maryland vs Michigan St · 2026-10-10T07:23:32.146Z |
@@ -1566,6 +1565,7 @@
 | oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
 | oregon-state | Soccer | ✅ off (passed) | Women's · Oregon State at Fresno St · 2026-10-23T07:27:20.782Z |
 | oregon-state | Volleyball | ✅ off (passed) | Oregon State at Fresno St · 2026-10-23T07:27:20.287Z |
+| pacific | Basketball | ✅ off (passed) | Men's · Pacific at Bradley · 2026-11-08T09:25:07.123Z |
 | pacific | Soccer | ✅ off (passed) | Men's · Pacific at Denver · 2026-10-24T23:24:14.846Z |
 | pacific | Volleyball | ✅ off (passed) | Pacific vs LMU · 2026-11-06T10:40:23.456Z |
 | penn | Basketball | ✅ off (passed) | Men's · Penn at Illinois · 2026-11-06T10:40:22.420Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1058/1956; on 2; off 891; failing 5.
+Done 1060/1956; on 0; off 891; failing 5.
