@@ -27,6 +27,10 @@ const pages=new Map([
   ...bound('abilene-ks','bound-abilene-2026-11-05.json.gz'),
   ...bound('wabaunsee-ks','bound-wabaunsee-2026-11-05.json.gz'),
   [`${by('wabaunsee-ks').maxpreps.base}football/schedule/`,fixture('maxpreps-wabaunsee-football-2026-11-05.html.gz')],
+  // McPherson's sources of November 8, 2026: Bound names the coming playoff
+  // rounds "Tournament"; MaxPreps has the Nov 13 game booked against Wellington.
+  ...bound('mcpherson-ks','bound-mcpherson-2026-11-08.json.gz'),
+  [`${by('mcpherson-ks').maxpreps.base}football/schedule/`,fixture('maxpreps-mcpherson-football-2026-11-08.html.gz')],
   // Last winter's Bound entries (read November 6, 2026): Junction City's
   // girls' wrestling (both act ids) and boys' swimming.
   ...['h20240520120020666fd407ba14fec4f','h20240528042647438f458375a138041','h202502030938188603c9b78ae239440'].map(act=>[boundEventsUrl(by('junction-city-ks').bound.school,{start:'2025-07-01',end:'2026-06-30',act}),fixture(`bound-junction-city-${act}-2025-26.json.gz`)])]);
@@ -73,6 +77,21 @@ try{
   assert.ok(requests.some(u=>u.startsWith('https://www.maxpreps.com/ks/abilene/abilene-cowboys/football/schedule/')),'MaxPreps was asked for its finals');
 }finally{globalThis.Date=RealDate}
 
+// A coming round Bound names only by its kind takes MaxPreps' booked opponent
+// (November 8, 2026: "McPherson · Tournament" for the Nov 13 game MaxPreps
+// had at home against Wellington). Rounds MaxPreps has not booked stay.
+const nov8=new RealDate('2026-11-08T17:00:00Z');
+globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[nov8.getTime()]))}static now(){return nov8.getTime()}};
+try{
+  const mcp=await worker.fetchLive('mcpherson-ks','Football');
+  assert.equal(mcp.error,null);
+  const [m]=worker.groupEvents(mcp.events,nov8);
+  assert.deepEqual(m.upcoming.map(line),['Upcoming Nov 13, 7:00 PM McPherson vs Wellington | ','Upcoming Nov 20, 7:00 PM McPherson · Tournament | ','Upcoming Nov 28, 1:00 PM McPherson · Tournament | '],'the booked round names its opponent; the rest stay Bound\'s rounds');
+  assert.equal(m.upcoming[0].source.name,'MaxPreps (team schedule)');
+  assert.ok(m.results.some(e=>e.title==='McPherson vs Augusta'&&e.headline==='W, 40-23'),'the Nov 6 playoff final');
+  assert.ok(!m.results.some(e=>/Tournament/.test(e.title)&&e.start_time.startsWith('2026-11-06')),'the played round is its final, not a tournament day');
+}finally{globalThis.Date=RealDate}
+
 // Winter meets with the team scores the host entered on Bound (November 6,
 // the winter session): wrestling and swimming points, high wins. January 20,
 // 2026 in Kansas.
@@ -91,4 +110,4 @@ try{
   assert.ok(tw,'the Topeka West swimming meet is listed');
   assert.equal(tw.headline,'6th of 14','138 points: 6th of the 14 teams with a score (high wins)');
 }finally{globalThis.Date=RealDate}
-console.log('hs-schedule-pairings: ok (Bound alone; Bound + MaxPreps schedule; Bound winter team scores)');
+console.log('hs-schedule-pairings: ok (Bound alone; Bound + MaxPreps schedule; booked playoff round; Bound winter team scores)');
