@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.288.0-booked-rounds';
+const VERSION='4.289.0-home-live-fixes';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6273,7 +6273,7 @@ function liveNowGames(boards,now=new Date()){
       if(!school)continue;
       seen.add(`${board.path}|${item.id}`);
       const provider={path:board.path,team_label:board.team_label||undefined,sourceName:'Live scoreboard'};
-      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(board.level==='college'?{ranking_board:board.path}:{}),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
+      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(Number.isFinite(Date.parse(item.date))?{start_utc:new Date(item.date).toISOString()}:{}),...(board.level==='college'?{ranking_board:board.path}:{}),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
     }
   }
   return games;

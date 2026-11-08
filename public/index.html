@@ -478,7 +478,10 @@ function liveCard(e){
   // ESPN names no team for, such as after a score).
   const ball=i=>e.possession===(i===0?'school':'opponent')?'<span class="live-ball" title="Has the ball" aria-hidden="true"><svg viewBox="0 0 24 14" width="24" height="14"><ellipse cx="12" cy="7" rx="11" ry="6.2" fill="#c26a2b" stroke="#f3d2b3" stroke-width="1"/><path d="M7 7h10M9.5 5.4v3.2M12 5.4v3.2M14.5 5.4v3.2" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/></svg></span>':'';
   const rk=i=>{const r=i===0?e.school_rank:e.opponent_rank;return r?.rank&&!/#\s*\d/.test(i===0?ours:theirs)?rankBadge(r):''};
-  const team=(cls,name,note,score,i)=>`<div class="live-team ${cls}${lead(i)}${ball(i)?' has-ball':''}"><span class="live-mono" aria-hidden="true">${esc(monogram(name))}</span><span class="live-name">${ball(i)}${rk(i)}${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts${flash(i)}">${esc(score)}</span></div>`;
+  // Each side's badge: the board's own abbreviation (KC, NYJ, RGV), else
+  // letters from the name (user, November 8: the Chiefs read "CHI").
+  const liveMono=(i,name)=>{const t=e.live_details?.teams?.[i===0?'ours':'theirs'];return/^[A-Za-z0-9&.'-]{1,5}$/.test(t||'')?String(t).toUpperCase():monogram(name)};
+  const team=(cls,name,note,score,i)=>`<div class="live-team ${cls}${lead(i)}${ball(i)?' has-ball':''}"><span class="live-mono" aria-hidden="true">${esc(liveMono(i,name))}</span><span class="live-name">${ball(i)}${rk(i)}${esc(name)}${note?`<small>${esc(note)}</small>`:''}</span><span class="live-pts${flash(i)}">${esc(score)}</span></div>`;
   const holder=e.possession==='school'?ours:e.possession==='opponent'?theirs:'';
   const situation=holder?`<div class="live-situation${e.red_zone?' red-zone':''}"><span>${esc(holder)} ball</span>${e.down_distance?`<span>${esc(e.down_distance)}</span>`:''}${e.red_zone?'<span class="live-rz">Red zone</span>':''}</div>`:'';
   const label=`${ours} ${a===''?'':a}, ${theirs} ${b===''?'':b}, ${clock}${holder?`, ${holder} has the ball${e.down_distance?', '+e.down_distance:''}`:''}`;
@@ -791,7 +794,11 @@ function homeSections(groups){
   // the team first in their order (K-State at Kansas volleyball, Oct 30).
   const plain=v=>String(v||'').toLowerCase().replace(/^#\d+\s+/,'').replace(/[^a-z0-9]+/g,' ').trim();
   const names=new Map(teams.map(id=>{const c=catalogEntry(id);return[id,new Set([c?.name,c?.short_name,...(c?.aliases||[])].map(plain).filter(Boolean))]}));
-  const opponentTeam=x=>teams.find(id=>id!==x.school_id&&names.get(id).has(plain(x.e.opponent)));
+  // A favorite is the opponent only at the game's own level (user, November
+  // 8: Maine vs Manhattan College basketball showed, and opened, as
+  // Manhattan High School).
+  const levelOfItem=x=>x.e.level||catalogEntry(x.school_id)?.level||'college';
+  const opponentTeam=x=>teams.find(id=>id!==x.school_id&&(catalogEntry(id)?.level||'college')===levelOfItem(x)&&names.get(id).has(plain(x.e.opponent)));
   const dayOf=x=>{const zone=schoolTimeZoneOf(x.school_id),t=zone&&hasPublishedClock(x.e)?zonedWallClockToInstant(x.e.start_time,zone):NaN;return Number.isFinite(t)?new Date(t).toISOString().slice(0,10):day(x)};
   events=events.filter(x=>{const other=opponentTeam(x);return!other||teamRank(x.school_id)<teamRank(other)||!events.some(y=>y.school_id===other&&y.sport===x.sport&&y.bucket===x.bucket&&opponentTeam(y)===x.school_id&&Math.abs(Date.parse(dayOf(y))-Date.parse(dayOf(x)))<=864e5)});
   const isToday=x=>day(x)===(today.get(x.school_id)||schoolToday(x.school_id));
@@ -804,8 +811,12 @@ function homeSections(groups){
   const ownLive=events.filter(x=>x.bucket==='live'&&(!homeView||teams.includes(x.school_id))),featuredLive=homeView?events.filter(x=>x.bucket==='live'&&!teams.includes(x.school_id)):[];
   const fromBoards=allLive.filter(x=>{const id=favoriteOf(x);return id&&!ownLive.some(y=>y.sport===x.sport&&(y.school_id===id||y.school_id===x.school_id))}).map(x=>{if(teams.includes(x.school_id))return x;const id=favoriteOf(x);return{...x,school_id:id,school:catalogEntry(id)?.name||x.school}});
   const bySport=(a,b)=>String(a.sport).localeCompare(String(b.sport));
+  // Live games in order of their real start: a school's clock is its own
+  // zone (K-State's noon Central tip sat among the noon Eastern ones), and
+  // /live/now gives the board's UTC start.
+  const liveAt=x=>{const u=Date.parse(x.e.start_utc||'');if(Number.isFinite(u))return u;const zone=schoolTimeZoneOf(x.e.school_id||x.school_id),t=zone&&hasPublishedClock(x.e)?zonedWallClockToInstant(x.e.start_time,zone):NaN;return Number.isFinite(t)?t:at(x.e)};
   const live=[...ownLive,...fromBoards].sort((a,b)=>bySport(a,b)||byTeam(a,b));
-  const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>bySport(a,b)||levelRank(a.e)-levelRank(b.e)||at(a.e)-at(b.e)||String(a.school).localeCompare(String(b.school)));
+  const everywhere=[...featuredLive,...allLive.filter(x=>!favoriteOf(x))].sort((a,b)=>bySport(a,b)||levelRank(a.e)-levelRank(b.e)||liveAt(a)-liveAt(b)||String(a.school).localeCompare(String(b.school)));
   const todays=events.filter(x=>x.bucket!=='live'&&x.bucket!=='other'&&isToday(x)).sort((a,b)=>at(a.e)-at(b.e)||byTeam(a,b));
   const next=new Map();
   for(const x of events.filter(x=>x.bucket==='upcoming'&&!isToday(x)&&day(x)>(today.get(x.school_id)||schoolToday(x.school_id))).sort((a,b)=>at(a.e)-at(b.e))){const key=`${x.school_id}|${x.sport}|${x.e.team_label||''}`;if(!next.has(key))next.set(key,x);}
