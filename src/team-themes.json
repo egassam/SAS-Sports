@@ -4382,5 +4382,501 @@
     "panelDark": "#300704",
     "line": "#f55a4e",
     "onAccent": "#ffffff"
+  },
+  "boston-celtics": {
+    "primary": "#008348",
+    "secondary": "#FFFFFF",
+    "panel": "#09251c",
+    "panelDark": "#04120e",
+    "line": "#0e563a",
+    "onAccent": "#ffffff"
+  },
+  "brooklyn-nets": {
+    "primary": "#000000",
+    "secondary": "#FFFFFF",
+    "panel": "#09090c",
+    "panelDark": "#040407",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "new-york-knicks": {
+    "primary": "#1D428A",
+    "secondary": "#F58426",
+    "panel": "#0f172b",
+    "panelDark": "#070b15",
+    "line": "#1e335f",
+    "onAccent": "#ffffff"
+  },
+  "philadelphia-76ers": {
+    "primary": "#1D428A",
+    "secondary": "#E01234",
+    "panel": "#0f172b",
+    "panelDark": "#070b15",
+    "line": "#1e335f",
+    "onAccent": "#ffffff"
+  },
+  "toronto-raptors": {
+    "primary": "#D91244",
+    "secondary": "#000000",
+    "panel": "#380d1b",
+    "panelDark": "#1a060e",
+    "line": "#861838",
+    "onAccent": "#ffffff"
+  },
+  "chicago-bulls": {
+    "primary": "#CE1141",
+    "secondary": "#000000",
+    "panel": "#360c1b",
+    "panelDark": "#19060e",
+    "line": "#801837",
+    "onAccent": "#ffffff"
+  },
+  "cleveland-cavaliers": {
+    "primary": "#860038",
+    "secondary": "#BC945C",
+    "panel": "#260919",
+    "panelDark": "#12040d",
+    "line": "#580e32",
+    "onAccent": "#ffffff"
+  },
+  "detroit-pistons": {
+    "primary": "#1D428A",
+    "secondary": "#C8102E",
+    "panel": "#0f172b",
+    "panelDark": "#070b15",
+    "line": "#1e335f",
+    "onAccent": "#ffffff"
+  },
+  "indiana-pacers": {
+    "primary": "#0C2340",
+    "secondary": "#FFD520",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#152236",
+    "onAccent": "#ffffff"
+  },
+  "milwaukee-bucks": {
+    "primary": "#00471B",
+    "secondary": "#EEE1C6",
+    "panel": "#091812",
+    "panelDark": "#040c0a",
+    "line": "#0e3522",
+    "onAccent": "#ffffff"
+  },
+  "atlanta-hawks": {
+    "primary": "#C8102E",
+    "secondary": "#FDB927",
+    "panel": "#350c17",
+    "panelDark": "#18060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
+  "charlotte-hornets": {
+    "primary": "#008CA8",
+    "secondary": "#1D1060",
+    "panel": "#092731",
+    "panelDark": "#041218",
+    "line": "#0e5b6f",
+    "onAccent": "#ffffff"
+  },
+  "miami-heat": {
+    "primary": "#98002E",
+    "secondary": "#000000",
+    "panel": "#2a0917",
+    "panelDark": "#14040c",
+    "line": "#620e2c",
+    "onAccent": "#ffffff"
+  },
+  "orlando-magic": {
+    "primary": "#0150B5",
+    "secondary": "#9CA0A3",
+    "panel": "#091a34",
+    "panelDark": "#050c19",
+    "line": "#0f3a76",
+    "onAccent": "#ffffff"
+  },
+  "washington-wizards": {
+    "primary": "#E31837",
+    "secondary": "#002B5C",
+    "panel": "#3b0e19",
+    "panelDark": "#1b070d",
+    "line": "#8b1c31",
+    "onAccent": "#ffffff"
+  },
+  "denver-nuggets": {
+    "primary": "#0E2240",
+    "secondary": "#FEC524",
+    "panel": "#0c101b",
+    "panelDark": "#06080e",
+    "line": "#162136",
+    "onAccent": "#ffffff"
+  },
+  "minnesota-timberwolves": {
+    "primary": "#266092",
+    "secondary": "#79BC43",
+    "panel": "#111e2d",
+    "panelDark": "#080e16",
+    "line": "#234363",
+    "onAccent": "#ffffff"
+  },
+  "oklahoma-city-thunder": {
+    "primary": "#007AC1",
+    "secondary": "#EF3B24",
+    "panel": "#092337",
+    "panelDark": "#04111a",
+    "line": "#0e527d",
+    "onAccent": "#ffffff"
+  },
+  "portland-trail-blazers": {
+    "primary": "#E03A3E",
+    "secondary": "#000000",
+    "panel": "#3a151a",
+    "panelDark": "#1b0a0d",
+    "line": "#8a2e35",
+    "onAccent": "#ffffff"
+  },
+  "utah-jazz": {
+    "primary": "#4E008E",
+    "secondary": "#79A3DC",
+    "panel": "#1a092c",
+    "panelDark": "#0c0415",
+    "line": "#390e61",
+    "onAccent": "#ffffff"
+  },
+  "golden-state-warriors": {
+    "primary": "#FDB927",
+    "secondary": "#1D428A",
+    "panel": "#403115",
+    "panelDark": "#1e170b",
+    "line": "#9a7428",
+    "onAccent": "#0b0b10"
+  },
+  "los-angeles-clippers": {
+    "primary": "#12173F",
+    "secondary": "#C8102E",
+    "panel": "#0d0e1a",
+    "panelDark": "#06070e",
+    "line": "#181b36",
+    "onAccent": "#ffffff"
+  },
+  "los-angeles-lakers": {
+    "primary": "#552583",
+    "secondary": "#FDB927",
+    "panel": "#1b1129",
+    "panelDark": "#0d0814",
+    "line": "#3d235b",
+    "onAccent": "#ffffff"
+  },
+  "phoenix-suns": {
+    "primary": "#29127A",
+    "secondary": "#E56020",
+    "panel": "#120d27",
+    "panelDark": "#090613",
+    "line": "#251856",
+    "onAccent": "#ffffff"
+  },
+  "sacramento-kings": {
+    "primary": "#5A2D81",
+    "secondary": "#6A7A82",
+    "panel": "#1c1229",
+    "panelDark": "#0e0914",
+    "line": "#40275a",
+    "onAccent": "#ffffff"
+  },
+  "dallas-mavericks": {
+    "primary": "#0064B1",
+    "secondary": "#BBC4CA",
+    "panel": "#091f33",
+    "panelDark": "#040e19",
+    "line": "#0e4574",
+    "onAccent": "#ffffff"
+  },
+  "houston-rockets": {
+    "primary": "#CE0E2D",
+    "secondary": "#000000",
+    "panel": "#360c16",
+    "panelDark": "#19060c",
+    "line": "#80162c",
+    "onAccent": "#ffffff"
+  },
+  "memphis-grizzlies": {
+    "primary": "#5D76A9",
+    "secondary": "#12173F",
+    "panel": "#1d2332",
+    "panelDark": "#0e1018",
+    "line": "#424f70",
+    "onAccent": "#ffffff"
+  },
+  "new-orleans-pelicans": {
+    "primary": "#0A2240",
+    "secondary": "#B4975A",
+    "panel": "#0b101b",
+    "panelDark": "#06080e",
+    "line": "#142136",
+    "onAccent": "#ffffff"
+  },
+  "san-antonio-spurs": {
+    "primary": "#000000",
+    "secondary": "#C4CED4",
+    "panel": "#09090c",
+    "panelDark": "#040407",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "boston-bruins": {
+    "primary": "#231F20",
+    "secondary": "#FDB71A",
+    "panel": "#100f14",
+    "panelDark": "#08080a",
+    "line": "#221f24",
+    "onAccent": "#ffffff"
+  },
+  "buffalo-sabres": {
+    "primary": "#00468B",
+    "secondary": "#FDB71A",
+    "panel": "#09182b",
+    "panelDark": "#040c15",
+    "line": "#0e355f",
+    "onAccent": "#ffffff"
+  },
+  "detroit-red-wings": {
+    "primary": "#E30526",
+    "secondary": "#FFFFFF",
+    "panel": "#3b0a15",
+    "panelDark": "#1b050b",
+    "line": "#8b1128",
+    "onAccent": "#ffffff"
+  },
+  "florida-panthers": {
+    "primary": "#E51937",
+    "secondary": "#002D62",
+    "panel": "#3b0e19",
+    "panelDark": "#1b070d",
+    "line": "#8c1c31",
+    "onAccent": "#ffffff"
+  },
+  "montreal-canadiens": {
+    "primary": "#C41230",
+    "secondary": "#013A81",
+    "panel": "#340d17",
+    "panelDark": "#18060c",
+    "line": "#7a182d",
+    "onAccent": "#ffffff"
+  },
+  "ottawa-senators": {
+    "primary": "#DD1A32",
+    "secondary": "#B79257",
+    "panel": "#390e17",
+    "panelDark": "#1b070c",
+    "line": "#881d2e",
+    "onAccent": "#ffffff"
+  },
+  "tampa-bay-lightning": {
+    "primary": "#003E7E",
+    "secondary": "#FFFFFF",
+    "panel": "#091628",
+    "panelDark": "#040b14",
+    "line": "#0e3058",
+    "onAccent": "#ffffff"
+  },
+  "toronto-maple-leafs": {
+    "primary": "#003E7E",
+    "secondary": "#FFFFFF",
+    "panel": "#091628",
+    "panelDark": "#040b14",
+    "line": "#0e3058",
+    "onAccent": "#ffffff"
+  },
+  "carolina-hurricanes": {
+    "primary": "#E30426",
+    "secondary": "#000000",
+    "panel": "#3b0915",
+    "panelDark": "#1b050b",
+    "line": "#8b1128",
+    "onAccent": "#ffffff"
+  },
+  "columbus-blue-jackets": {
+    "primary": "#002D62",
+    "secondary": "#E31937",
+    "panel": "#091222",
+    "panelDark": "#040911",
+    "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
+  "new-jersey-devils": {
+    "primary": "#E30B2B",
+    "secondary": "#000000",
+    "panel": "#3b0b16",
+    "panelDark": "#1b060c",
+    "line": "#8b142b",
+    "onAccent": "#ffffff"
+  },
+  "new-york-islanders": {
+    "primary": "#00529B",
+    "secondary": "#F47D31",
+    "panel": "#091b2f",
+    "panelDark": "#040d17",
+    "line": "#0e3c68",
+    "onAccent": "#ffffff"
+  },
+  "new-york-rangers": {
+    "primary": "#0056AE",
+    "secondary": "#E51937",
+    "panel": "#091c33",
+    "panelDark": "#040d19",
+    "line": "#0e3e73",
+    "onAccent": "#ffffff"
+  },
+  "philadelphia-flyers": {
+    "primary": "#FE5823",
+    "secondary": "#000000",
+    "panel": "#401c14",
+    "panelDark": "#1e0d0b",
+    "line": "#9a3f26",
+    "onAccent": "#ffffff"
+  },
+  "pittsburgh-penguins": {
+    "primary": "#000000",
+    "secondary": "#FDB71A",
+    "panel": "#09090c",
+    "panelDark": "#040407",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "washington-capitals": {
+    "primary": "#D71830",
+    "secondary": "#0B1F41",
+    "panel": "#380e17",
+    "panelDark": "#1a070c",
+    "line": "#851c2d",
+    "onAccent": "#ffffff"
+  },
+  "chicago-blackhawks": {
+    "primary": "#E31937",
+    "secondary": "#000000",
+    "panel": "#3b0e19",
+    "panelDark": "#1b070d",
+    "line": "#8b1c31",
+    "onAccent": "#ffffff"
+  },
+  "colorado-avalanche": {
+    "primary": "#860038",
+    "secondary": "#005EA3",
+    "panel": "#260919",
+    "panelDark": "#12040d",
+    "line": "#580e32",
+    "onAccent": "#ffffff"
+  },
+  "dallas-stars": {
+    "primary": "#20864C",
+    "secondary": "#000000",
+    "panel": "#10261d",
+    "panelDark": "#08120f",
+    "line": "#20583d",
+    "onAccent": "#ffffff"
+  },
+  "minnesota-wild": {
+    "primary": "#124734",
+    "secondary": "#AE122A",
+    "panel": "#0d1818",
+    "panelDark": "#060c0c",
+    "line": "#183530",
+    "onAccent": "#ffffff"
+  },
+  "nashville-predators": {
+    "primary": "#FDBA31",
+    "secondary": "#002D62",
+    "panel": "#403217",
+    "panelDark": "#1e170c",
+    "line": "#9a752e",
+    "onAccent": "#0b0b10"
+  },
+  "st-louis-blues": {
+    "primary": "#0070B9",
+    "secondary": "#FDB71A",
+    "panel": "#092135",
+    "panelDark": "#04101a",
+    "line": "#0e4c79",
+    "onAccent": "#ffffff"
+  },
+  "utah-mammoth": {
+    "primary": "#000000",
+    "secondary": "#7AB2E1",
+    "panel": "#09090c",
+    "panelDark": "#040407",
+    "line": "#0e0e13",
+    "onAccent": "#ffffff"
+  },
+  "winnipeg-jets": {
+    "primary": "#002D62",
+    "secondary": "#C41230",
+    "panel": "#091222",
+    "panelDark": "#040911",
+    "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
+  "anaheim-ducks": {
+    "primary": "#FC4C02",
+    "secondary": "#000000",
+    "panel": "#40190d",
+    "panelDark": "#1e0c07",
+    "line": "#993814",
+    "onAccent": "#ffffff"
+  },
+  "calgary-flames": {
+    "primary": "#DD1A32",
+    "secondary": "#000000",
+    "panel": "#390e17",
+    "panelDark": "#1b070c",
+    "line": "#881d2e",
+    "onAccent": "#ffffff"
+  },
+  "edmonton-oilers": {
+    "primary": "#00205B",
+    "secondary": "#FF4C00",
+    "panel": "#091020",
+    "panelDark": "#040810",
+    "line": "#0e2045",
+    "onAccent": "#ffffff"
+  },
+  "los-angeles-kings": {
+    "primary": "#121212",
+    "secondary": "#A2AAAD",
+    "panel": "#0d0d10",
+    "panelDark": "#060609",
+    "line": "#18181d",
+    "onAccent": "#ffffff"
+  },
+  "seattle-kraken": {
+    "primary": "#000D33",
+    "secondary": "#A3DCE4",
+    "panel": "#090b18",
+    "panelDark": "#04060c",
+    "line": "#0e162f",
+    "onAccent": "#ffffff"
+  },
+  "san-jose-sharks": {
+    "primary": "#00788A",
+    "secondary": "#070707",
+    "panel": "#09232b",
+    "panelDark": "#041015",
+    "line": "#0e505f",
+    "onAccent": "#ffffff"
+  },
+  "vancouver-canucks": {
+    "primary": "#003E7E",
+    "secondary": "#008752",
+    "panel": "#091628",
+    "panelDark": "#040b14",
+    "line": "#0e3058",
+    "onAccent": "#ffffff"
+  },
+  "vegas-golden-knights": {
+    "primary": "#344043",
+    "secondary": "#B4975A",
+    "panel": "#14171b",
+    "panelDark": "#0a0b0e",
+    "line": "#2b3238",
+    "onAccent": "#ffffff"
   }
 }

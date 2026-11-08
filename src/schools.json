@@ -9097,6 +9097,1556 @@
     ]
   },
   {
+    "id": "boston-celtics",
+    "name": "Boston Celtics",
+    "short_name": "Celtics",
+    "state": "Massachusetts",
+    "city": "Boston",
+    "conference": "Atlantic",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Atlantic",
+    "athletics_url": "https://www.nba.com/celtics",
+    "aliases": [
+      "Celtics",
+      "BOS",
+      "Boston Celtics"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/bos",
+        "provider_school_id": "2"
+      }
+    ]
+  },
+  {
+    "id": "brooklyn-nets",
+    "name": "Brooklyn Nets",
+    "short_name": "Nets",
+    "state": "New York",
+    "city": "Brooklyn",
+    "conference": "Atlantic",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Atlantic",
+    "athletics_url": "https://www.nba.com/nets",
+    "aliases": [
+      "Nets",
+      "BKN",
+      "Brooklyn Nets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/bkn",
+        "provider_school_id": "17"
+      }
+    ]
+  },
+  {
+    "id": "new-york-knicks",
+    "name": "New York Knicks",
+    "short_name": "Knicks",
+    "state": "New York",
+    "city": "New York",
+    "conference": "Atlantic",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Atlantic",
+    "athletics_url": "https://www.nba.com/knicks",
+    "aliases": [
+      "Knicks",
+      "NY",
+      "New York Knicks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/ny",
+        "provider_school_id": "18"
+      }
+    ]
+  },
+  {
+    "id": "philadelphia-76ers",
+    "name": "Philadelphia 76ers",
+    "short_name": "76ers",
+    "state": "Pennsylvania",
+    "city": "Philadelphia",
+    "conference": "Atlantic",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Atlantic",
+    "athletics_url": "https://www.nba.com/sixers",
+    "aliases": [
+      "76ers",
+      "PHI",
+      "Philadelphia 76ers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/phi",
+        "provider_school_id": "20"
+      }
+    ]
+  },
+  {
+    "id": "toronto-raptors",
+    "name": "Toronto Raptors",
+    "short_name": "Raptors",
+    "state": "Ontario",
+    "city": "Toronto",
+    "conference": "Atlantic",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Atlantic",
+    "athletics_url": "https://www.nba.com/raptors",
+    "aliases": [
+      "Raptors",
+      "TOR",
+      "Toronto Raptors"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/tor",
+        "provider_school_id": "28"
+      }
+    ]
+  },
+  {
+    "id": "chicago-bulls",
+    "name": "Chicago Bulls",
+    "short_name": "Bulls",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "Central",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Central",
+    "athletics_url": "https://www.nba.com/bulls",
+    "aliases": [
+      "Bulls",
+      "CHI",
+      "Chicago Bulls"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/chi",
+        "provider_school_id": "4"
+      }
+    ]
+  },
+  {
+    "id": "cleveland-cavaliers",
+    "name": "Cleveland Cavaliers",
+    "short_name": "Cavaliers",
+    "state": "Ohio",
+    "city": "Cleveland",
+    "conference": "Central",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Central",
+    "athletics_url": "https://www.nba.com/cavaliers",
+    "aliases": [
+      "Cavaliers",
+      "CLE",
+      "Cleveland Cavaliers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/cle",
+        "provider_school_id": "5"
+      }
+    ]
+  },
+  {
+    "id": "detroit-pistons",
+    "name": "Detroit Pistons",
+    "short_name": "Pistons",
+    "state": "Michigan",
+    "city": "Detroit",
+    "conference": "Central",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Central",
+    "athletics_url": "https://www.nba.com/pistons",
+    "aliases": [
+      "Pistons",
+      "DET",
+      "Detroit Pistons"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/det",
+        "provider_school_id": "8"
+      }
+    ]
+  },
+  {
+    "id": "indiana-pacers",
+    "name": "Indiana Pacers",
+    "short_name": "Pacers",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "conference": "Central",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Central",
+    "athletics_url": "https://www.nba.com/pacers",
+    "aliases": [
+      "Pacers",
+      "IND",
+      "Indiana Pacers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/ind",
+        "provider_school_id": "11"
+      }
+    ]
+  },
+  {
+    "id": "milwaukee-bucks",
+    "name": "Milwaukee Bucks",
+    "short_name": "Bucks",
+    "state": "Wisconsin",
+    "city": "Milwaukee",
+    "conference": "Central",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Central",
+    "athletics_url": "https://www.nba.com/bucks",
+    "aliases": [
+      "Bucks",
+      "MIL",
+      "Milwaukee Bucks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/mil",
+        "provider_school_id": "15"
+      }
+    ]
+  },
+  {
+    "id": "atlanta-hawks",
+    "name": "Atlanta Hawks",
+    "short_name": "Hawks",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "conference": "Southeast",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southeast",
+    "athletics_url": "https://www.nba.com/hawks",
+    "aliases": [
+      "Hawks",
+      "ATL",
+      "Atlanta Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/atl",
+        "provider_school_id": "1"
+      }
+    ]
+  },
+  {
+    "id": "charlotte-hornets",
+    "name": "Charlotte Hornets",
+    "short_name": "Hornets",
+    "state": "North Carolina",
+    "city": "Charlotte",
+    "conference": "Southeast",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southeast",
+    "athletics_url": "https://www.nba.com/hornets",
+    "aliases": [
+      "Hornets",
+      "CHA",
+      "Charlotte Hornets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/cha",
+        "provider_school_id": "30"
+      }
+    ]
+  },
+  {
+    "id": "miami-heat",
+    "name": "Miami Heat",
+    "short_name": "Heat",
+    "state": "Florida",
+    "city": "Miami",
+    "conference": "Southeast",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southeast",
+    "athletics_url": "https://www.nba.com/heat",
+    "aliases": [
+      "Heat",
+      "MIA",
+      "Miami Heat"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/mia",
+        "provider_school_id": "14"
+      }
+    ]
+  },
+  {
+    "id": "orlando-magic",
+    "name": "Orlando Magic",
+    "short_name": "Magic",
+    "state": "Florida",
+    "city": "Orlando",
+    "conference": "Southeast",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southeast",
+    "athletics_url": "https://www.nba.com/magic",
+    "aliases": [
+      "Magic",
+      "ORL",
+      "Orlando Magic"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/orl",
+        "provider_school_id": "19"
+      }
+    ]
+  },
+  {
+    "id": "washington-wizards",
+    "name": "Washington Wizards",
+    "short_name": "Wizards",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "Southeast",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southeast",
+    "athletics_url": "https://www.nba.com/wizards",
+    "aliases": [
+      "Wizards",
+      "WSH",
+      "Washington Wizards"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/wsh",
+        "provider_school_id": "27"
+      }
+    ]
+  },
+  {
+    "id": "denver-nuggets",
+    "name": "Denver Nuggets",
+    "short_name": "Nuggets",
+    "state": "Colorado",
+    "city": "Denver",
+    "conference": "Northwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Northwest",
+    "athletics_url": "https://www.nba.com/nuggets",
+    "aliases": [
+      "Nuggets",
+      "DEN",
+      "Denver Nuggets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/den",
+        "provider_school_id": "7"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-timberwolves",
+    "name": "Minnesota Timberwolves",
+    "short_name": "Timberwolves",
+    "state": "Minnesota",
+    "city": "Minneapolis",
+    "conference": "Northwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Northwest",
+    "athletics_url": "https://www.nba.com/timberwolves",
+    "aliases": [
+      "Timberwolves",
+      "MIN",
+      "Minnesota Timberwolves"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/min",
+        "provider_school_id": "16"
+      }
+    ]
+  },
+  {
+    "id": "oklahoma-city-thunder",
+    "name": "Oklahoma City Thunder",
+    "short_name": "Thunder",
+    "state": "Oklahoma",
+    "city": "Oklahoma City",
+    "conference": "Northwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Northwest",
+    "athletics_url": "https://www.nba.com/thunder",
+    "aliases": [
+      "Thunder",
+      "OKC",
+      "Oklahoma City Thunder"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/okc",
+        "provider_school_id": "25"
+      }
+    ]
+  },
+  {
+    "id": "portland-trail-blazers",
+    "name": "Portland Trail Blazers",
+    "short_name": "Trail Blazers",
+    "state": "Oregon",
+    "city": "Portland",
+    "conference": "Northwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Northwest",
+    "athletics_url": "https://www.nba.com/blazers",
+    "aliases": [
+      "Trail Blazers",
+      "POR",
+      "Portland Trail Blazers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/por",
+        "provider_school_id": "22"
+      }
+    ]
+  },
+  {
+    "id": "utah-jazz",
+    "name": "Utah Jazz",
+    "short_name": "Jazz",
+    "state": "Utah",
+    "city": "Salt Lake City",
+    "conference": "Northwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Northwest",
+    "athletics_url": "https://www.nba.com/jazz",
+    "aliases": [
+      "Jazz",
+      "UTAH",
+      "Utah Jazz"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/utah",
+        "provider_school_id": "26"
+      }
+    ]
+  },
+  {
+    "id": "golden-state-warriors",
+    "name": "Golden State Warriors",
+    "short_name": "Warriors",
+    "state": "California",
+    "city": "San Francisco",
+    "conference": "Pacific",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Pacific",
+    "athletics_url": "https://www.nba.com/warriors",
+    "aliases": [
+      "Warriors",
+      "GS",
+      "Golden State Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/gs",
+        "provider_school_id": "9"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-clippers",
+    "name": "Los Angeles Clippers",
+    "short_name": "Clippers",
+    "state": "California",
+    "city": "Inglewood",
+    "conference": "Pacific",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Pacific",
+    "athletics_url": "https://www.nba.com/clippers",
+    "aliases": [
+      "Clippers",
+      "LAC",
+      "Los Angeles Clippers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/lac",
+        "provider_school_id": "12"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-lakers",
+    "name": "Los Angeles Lakers",
+    "short_name": "Lakers",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "Pacific",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Pacific",
+    "athletics_url": "https://www.nba.com/lakers",
+    "aliases": [
+      "Lakers",
+      "LAL",
+      "Los Angeles Lakers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/lal",
+        "provider_school_id": "13"
+      }
+    ]
+  },
+  {
+    "id": "phoenix-suns",
+    "name": "Phoenix Suns",
+    "short_name": "Suns",
+    "state": "Arizona",
+    "city": "Phoenix",
+    "conference": "Pacific",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Pacific",
+    "athletics_url": "https://www.nba.com/suns",
+    "aliases": [
+      "Suns",
+      "PHX",
+      "Phoenix Suns"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/phx",
+        "provider_school_id": "21"
+      }
+    ]
+  },
+  {
+    "id": "sacramento-kings",
+    "name": "Sacramento Kings",
+    "short_name": "Kings",
+    "state": "California",
+    "city": "Sacramento",
+    "conference": "Pacific",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Pacific",
+    "athletics_url": "https://www.nba.com/kings",
+    "aliases": [
+      "Kings",
+      "SAC",
+      "Sacramento Kings"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/sac",
+        "provider_school_id": "23"
+      }
+    ]
+  },
+  {
+    "id": "dallas-mavericks",
+    "name": "Dallas Mavericks",
+    "short_name": "Mavericks",
+    "state": "Texas",
+    "city": "Dallas",
+    "conference": "Southwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southwest",
+    "athletics_url": "https://www.nba.com/mavs",
+    "aliases": [
+      "Mavericks",
+      "DAL",
+      "Dallas Mavericks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/dal",
+        "provider_school_id": "6"
+      }
+    ]
+  },
+  {
+    "id": "houston-rockets",
+    "name": "Houston Rockets",
+    "short_name": "Rockets",
+    "state": "Texas",
+    "city": "Houston",
+    "conference": "Southwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southwest",
+    "athletics_url": "https://www.nba.com/rockets",
+    "aliases": [
+      "Rockets",
+      "HOU",
+      "Houston Rockets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/hou",
+        "provider_school_id": "10"
+      }
+    ]
+  },
+  {
+    "id": "memphis-grizzlies",
+    "name": "Memphis Grizzlies",
+    "short_name": "Grizzlies",
+    "state": "Tennessee",
+    "city": "Memphis",
+    "conference": "Southwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southwest",
+    "athletics_url": "https://www.nba.com/grizzlies",
+    "aliases": [
+      "Grizzlies",
+      "MEM",
+      "Memphis Grizzlies"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/mem",
+        "provider_school_id": "29"
+      }
+    ]
+  },
+  {
+    "id": "new-orleans-pelicans",
+    "name": "New Orleans Pelicans",
+    "short_name": "Pelicans",
+    "state": "Louisiana",
+    "city": "New Orleans",
+    "conference": "Southwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southwest",
+    "athletics_url": "https://www.nba.com/pelicans",
+    "aliases": [
+      "Pelicans",
+      "NO",
+      "New Orleans Pelicans"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/no",
+        "provider_school_id": "3"
+      }
+    ]
+  },
+  {
+    "id": "san-antonio-spurs",
+    "name": "San Antonio Spurs",
+    "short_name": "Spurs",
+    "state": "Texas",
+    "city": "San Antonio",
+    "conference": "Southwest",
+    "league": "NBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "NBA · Southwest",
+    "athletics_url": "https://www.nba.com/spurs",
+    "aliases": [
+      "Spurs",
+      "SA",
+      "San Antonio Spurs"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/nba/teams/sa",
+        "provider_school_id": "24"
+      }
+    ]
+  },
+  {
+    "id": "boston-bruins",
+    "name": "Boston Bruins",
+    "short_name": "Bruins",
+    "state": "Massachusetts",
+    "city": "Boston",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/bruins",
+    "aliases": [
+      "Bruins",
+      "BOS",
+      "Boston Bruins"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/bos",
+        "provider_school_id": "1"
+      }
+    ]
+  },
+  {
+    "id": "buffalo-sabres",
+    "name": "Buffalo Sabres",
+    "short_name": "Sabres",
+    "state": "New York",
+    "city": "Buffalo",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/sabres",
+    "aliases": [
+      "Sabres",
+      "BUF",
+      "Buffalo Sabres"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/buf",
+        "provider_school_id": "2"
+      }
+    ]
+  },
+  {
+    "id": "detroit-red-wings",
+    "name": "Detroit Red Wings",
+    "short_name": "Red Wings",
+    "state": "Michigan",
+    "city": "Detroit",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/redwings",
+    "aliases": [
+      "Red Wings",
+      "DET",
+      "Detroit Red Wings"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/det",
+        "provider_school_id": "5"
+      }
+    ]
+  },
+  {
+    "id": "florida-panthers",
+    "name": "Florida Panthers",
+    "short_name": "Panthers",
+    "state": "Florida",
+    "city": "Sunrise",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/panthers",
+    "aliases": [
+      "Panthers",
+      "FLA",
+      "Florida Panthers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/fla",
+        "provider_school_id": "26"
+      }
+    ]
+  },
+  {
+    "id": "montreal-canadiens",
+    "name": "Montreal Canadiens",
+    "short_name": "Canadiens",
+    "state": "Quebec",
+    "city": "Montréal",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/canadiens",
+    "aliases": [
+      "Canadiens",
+      "MTL",
+      "Montreal Canadiens"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/mtl",
+        "provider_school_id": "10"
+      }
+    ]
+  },
+  {
+    "id": "ottawa-senators",
+    "name": "Ottawa Senators",
+    "short_name": "Senators",
+    "state": "Ontario",
+    "city": "Ottawa",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/senators",
+    "aliases": [
+      "Senators",
+      "OTT",
+      "Ottawa Senators"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/ott",
+        "provider_school_id": "14"
+      }
+    ]
+  },
+  {
+    "id": "tampa-bay-lightning",
+    "name": "Tampa Bay Lightning",
+    "short_name": "Lightning",
+    "state": "Florida",
+    "city": "Tampa",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/lightning",
+    "aliases": [
+      "Lightning",
+      "TB",
+      "Tampa Bay Lightning"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/tb",
+        "provider_school_id": "20"
+      }
+    ]
+  },
+  {
+    "id": "toronto-maple-leafs",
+    "name": "Toronto Maple Leafs",
+    "short_name": "Maple Leafs",
+    "state": "Ontario",
+    "city": "Toronto",
+    "conference": "Atlantic Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Atlantic Division",
+    "athletics_url": "https://www.nhl.com/mapleleafs",
+    "aliases": [
+      "Maple Leafs",
+      "TOR",
+      "Toronto Maple Leafs"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/tor",
+        "provider_school_id": "21"
+      }
+    ]
+  },
+  {
+    "id": "carolina-hurricanes",
+    "name": "Carolina Hurricanes",
+    "short_name": "Hurricanes",
+    "state": "North Carolina",
+    "city": "Raleigh",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/hurricanes",
+    "aliases": [
+      "Hurricanes",
+      "CAR",
+      "Carolina Hurricanes"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/car",
+        "provider_school_id": "7"
+      }
+    ]
+  },
+  {
+    "id": "columbus-blue-jackets",
+    "name": "Columbus Blue Jackets",
+    "short_name": "Blue Jackets",
+    "state": "Ohio",
+    "city": "Columbus",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/bluejackets",
+    "aliases": [
+      "Blue Jackets",
+      "CBJ",
+      "Columbus Blue Jackets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/cbj",
+        "provider_school_id": "29"
+      }
+    ]
+  },
+  {
+    "id": "new-jersey-devils",
+    "name": "New Jersey Devils",
+    "short_name": "Devils",
+    "state": "New Jersey",
+    "city": "Newark",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/devils",
+    "aliases": [
+      "Devils",
+      "NJ",
+      "New Jersey Devils"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/nj",
+        "provider_school_id": "11"
+      }
+    ]
+  },
+  {
+    "id": "new-york-islanders",
+    "name": "New York Islanders",
+    "short_name": "Islanders",
+    "state": "New York",
+    "city": "Elmont",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/islanders",
+    "aliases": [
+      "Islanders",
+      "NYI",
+      "New York Islanders"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/nyi",
+        "provider_school_id": "12"
+      }
+    ]
+  },
+  {
+    "id": "new-york-rangers",
+    "name": "New York Rangers",
+    "short_name": "Rangers",
+    "state": "New York",
+    "city": "New York",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/rangers",
+    "aliases": [
+      "Rangers",
+      "NYR",
+      "New York Rangers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/nyr",
+        "provider_school_id": "13"
+      }
+    ]
+  },
+  {
+    "id": "philadelphia-flyers",
+    "name": "Philadelphia Flyers",
+    "short_name": "Flyers",
+    "state": "Pennsylvania",
+    "city": "Philadelphia",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/flyers",
+    "aliases": [
+      "Flyers",
+      "PHI",
+      "Philadelphia Flyers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/phi",
+        "provider_school_id": "15"
+      }
+    ]
+  },
+  {
+    "id": "pittsburgh-penguins",
+    "name": "Pittsburgh Penguins",
+    "short_name": "Penguins",
+    "state": "Pennsylvania",
+    "city": "Pittsburgh",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/penguins",
+    "aliases": [
+      "Penguins",
+      "PIT",
+      "Pittsburgh Penguins"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/pit",
+        "provider_school_id": "16"
+      }
+    ]
+  },
+  {
+    "id": "washington-capitals",
+    "name": "Washington Capitals",
+    "short_name": "Capitals",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "Metropolitan Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Metropolitan Division",
+    "athletics_url": "https://www.nhl.com/capitals",
+    "aliases": [
+      "Capitals",
+      "WSH",
+      "Washington Capitals"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/wsh",
+        "provider_school_id": "23"
+      }
+    ]
+  },
+  {
+    "id": "chicago-blackhawks",
+    "name": "Chicago Blackhawks",
+    "short_name": "Blackhawks",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/blackhawks",
+    "aliases": [
+      "Blackhawks",
+      "CHI",
+      "Chicago Blackhawks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/chi",
+        "provider_school_id": "4"
+      }
+    ]
+  },
+  {
+    "id": "colorado-avalanche",
+    "name": "Colorado Avalanche",
+    "short_name": "Avalanche",
+    "state": "Colorado",
+    "city": "Denver",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/avalanche",
+    "aliases": [
+      "Avalanche",
+      "COL",
+      "Colorado Avalanche"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/col",
+        "provider_school_id": "17"
+      }
+    ]
+  },
+  {
+    "id": "dallas-stars",
+    "name": "Dallas Stars",
+    "short_name": "Stars",
+    "state": "Texas",
+    "city": "Dallas",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/stars",
+    "aliases": [
+      "Stars",
+      "DAL",
+      "Dallas Stars"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/dal",
+        "provider_school_id": "9"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-wild",
+    "name": "Minnesota Wild",
+    "short_name": "Wild",
+    "state": "Minnesota",
+    "city": "Saint Paul",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/wild",
+    "aliases": [
+      "Wild",
+      "MIN",
+      "Minnesota Wild"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/min",
+        "provider_school_id": "30"
+      }
+    ]
+  },
+  {
+    "id": "nashville-predators",
+    "name": "Nashville Predators",
+    "short_name": "Predators",
+    "state": "Tennessee",
+    "city": "Nashville",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/predators",
+    "aliases": [
+      "Predators",
+      "NSH",
+      "Nashville Predators"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/nsh",
+        "provider_school_id": "27"
+      }
+    ]
+  },
+  {
+    "id": "st-louis-blues",
+    "name": "St. Louis Blues",
+    "short_name": "Blues",
+    "state": "Missouri",
+    "city": "St. Louis",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/blues",
+    "aliases": [
+      "Blues",
+      "STL",
+      "St. Louis Blues"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/stl",
+        "provider_school_id": "19"
+      }
+    ]
+  },
+  {
+    "id": "utah-mammoth",
+    "name": "Utah Mammoth",
+    "short_name": "Mammoth",
+    "state": "Utah",
+    "city": "Salt Lake City",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/utah",
+    "aliases": [
+      "Mammoth",
+      "UTA",
+      "Utah Mammoth"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/uta",
+        "provider_school_id": "129764"
+      }
+    ]
+  },
+  {
+    "id": "winnipeg-jets",
+    "name": "Winnipeg Jets",
+    "short_name": "Jets",
+    "state": "Manitoba",
+    "city": "Winnipeg",
+    "conference": "Central Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Central Division",
+    "athletics_url": "https://www.nhl.com/jets",
+    "aliases": [
+      "Jets",
+      "WPG",
+      "Winnipeg Jets"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/wpg",
+        "provider_school_id": "28"
+      }
+    ]
+  },
+  {
+    "id": "anaheim-ducks",
+    "name": "Anaheim Ducks",
+    "short_name": "Ducks",
+    "state": "California",
+    "city": "Anaheim",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/ducks",
+    "aliases": [
+      "Ducks",
+      "ANA",
+      "Anaheim Ducks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/ana",
+        "provider_school_id": "25"
+      }
+    ]
+  },
+  {
+    "id": "calgary-flames",
+    "name": "Calgary Flames",
+    "short_name": "Flames",
+    "state": "Alberta",
+    "city": "Calgary",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/flames",
+    "aliases": [
+      "Flames",
+      "CGY",
+      "Calgary Flames"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/cgy",
+        "provider_school_id": "3"
+      }
+    ]
+  },
+  {
+    "id": "edmonton-oilers",
+    "name": "Edmonton Oilers",
+    "short_name": "Oilers",
+    "state": "Alberta",
+    "city": "Edmonton",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/oilers",
+    "aliases": [
+      "Oilers",
+      "EDM",
+      "Edmonton Oilers"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/edm",
+        "provider_school_id": "6"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-kings",
+    "name": "Los Angeles Kings",
+    "short_name": "Kings",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/kings",
+    "aliases": [
+      "Kings",
+      "LA",
+      "Los Angeles Kings"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/la",
+        "provider_school_id": "8"
+      }
+    ]
+  },
+  {
+    "id": "seattle-kraken",
+    "name": "Seattle Kraken",
+    "short_name": "Kraken",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/kraken",
+    "aliases": [
+      "Kraken",
+      "SEA",
+      "Seattle Kraken"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/sea",
+        "provider_school_id": "124292"
+      }
+    ]
+  },
+  {
+    "id": "san-jose-sharks",
+    "name": "San Jose Sharks",
+    "short_name": "Sharks",
+    "state": "California",
+    "city": "San Jose",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/sharks",
+    "aliases": [
+      "Sharks",
+      "SJ",
+      "San Jose Sharks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/sj",
+        "provider_school_id": "18"
+      }
+    ]
+  },
+  {
+    "id": "vancouver-canucks",
+    "name": "Vancouver Canucks",
+    "short_name": "Canucks",
+    "state": "British Columbia",
+    "city": "Vancouver",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/canucks",
+    "aliases": [
+      "Canucks",
+      "VAN",
+      "Vancouver Canucks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/van",
+        "provider_school_id": "22"
+      }
+    ]
+  },
+  {
+    "id": "vegas-golden-knights",
+    "name": "Vegas Golden Knights",
+    "short_name": "Golden Knights",
+    "state": "Nevada",
+    "city": "Las Vegas",
+    "conference": "Pacific Division",
+    "league": "NHL",
+    "pro_sport": "Hockey",
+    "level": "pro",
+    "division": "NHL · Pacific Division",
+    "athletics_url": "https://www.nhl.com/goldenknights",
+    "aliases": [
+      "Golden Knights",
+      "VGK",
+      "Vegas Golden Knights"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "hockey/nhl/teams/vgk",
+        "provider_school_id": "37"
+      }
+    ]
+  },
+  {
     "id": "chattanooga",
     "name": "Chattanooga",
     "short_name": "Chattanooga",

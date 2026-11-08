@@ -34,7 +34,7 @@ assert.deepEqual([skc.name,skc.short_name,skc.conference,skc.state],['Sporting K
 assert.equal(themes['vancouver-whitecaps'].primary,'#12284C');
 assert.ok(worker.includes("'British Columbia':'America/Vancouver'"));
 // The Team box groups clubs under their conference, as it does NFL divisions.
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
 
 // The Worker reads results and fixtures (ESPN's numeric id in the URL), the
 // NFL-only postseason read stays the NFL's, and MLS is in season Feb-Dec.

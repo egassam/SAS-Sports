@@ -35,12 +35,12 @@ const cle=mlb.find(s=>s.id==='cleveland-guardians'),mil=mlb.find(s=>s.id==='milw
 assert.deepEqual([cle.name,cle.short_name,cle.conference,cle.state],['Cleveland Guardians','Guardians','AL Central','Ohio']);
 assert.deepEqual(PRO_TEAMS['kansas-city-royals'].division.members,['CHW','CLE','DET','MIN']);
 // The Team box groups teams under their division, as it does the NFL's.
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
 
 // The Worker reads the regular season by name and the postseason in its
 // months; MLB is in season March to November, and every month's games count.
 assert.ok(worker.includes("if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}"));
-assert.ok(worker.includes('const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]]};'));
+assert.ok(worker.includes('const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]]};'));
 assert.ok(worker.includes('const months=e.pro||isHighSchool(catalogSchool(e.school_id))?null:RECORD_MONTHS[e.sport]'));
 
 // Postseason rounds from ESPN's game notes.

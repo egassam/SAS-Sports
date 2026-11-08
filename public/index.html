@@ -1121,7 +1121,7 @@ const LEVELS=[
   {id:'middle-school',label:'Middle School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
   {id:'high-school',label:'High School',group:'State',groups:'All states',team:'School',groupOf:s=>s.state,cityOf:s=>s.county||'',middle:'County',middles:'All counties',townOf:s=>s.city||'',sectionOf:s=>s.classification||s.conference},
   {id:'college',label:'College',group:'Conference',groups:'All conferences',team:'School',groupOf:s=>s.conference,sectionOf:s=>s.conference},
-  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS','MLB'].includes(s.league)?s.conference:s.league}
+  {id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team',teamFor:sport=>sport==='Auto Racing'?'Races':sport?'Team':'Team or races',groupOf:s=>s.pro_sport,cityOf:s=>s.league||'',middle:'League',middles:'All leagues',sectionOf:s=>['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}
 ];
 const currentLevelInfo=()=>LEVELS.find(level=>level.id===currentLevel)||LEVELS[0];
 const schoolLevel=s=>s?.level||'college';

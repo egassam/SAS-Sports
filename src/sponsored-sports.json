@@ -5963,5 +5963,191 @@
     "Softball",
     "Volleyball",
     "Wrestling"
+  ],
+  "boston-celtics": [
+    "Basketball"
+  ],
+  "brooklyn-nets": [
+    "Basketball"
+  ],
+  "new-york-knicks": [
+    "Basketball"
+  ],
+  "philadelphia-76ers": [
+    "Basketball"
+  ],
+  "toronto-raptors": [
+    "Basketball"
+  ],
+  "chicago-bulls": [
+    "Basketball"
+  ],
+  "cleveland-cavaliers": [
+    "Basketball"
+  ],
+  "detroit-pistons": [
+    "Basketball"
+  ],
+  "indiana-pacers": [
+    "Basketball"
+  ],
+  "milwaukee-bucks": [
+    "Basketball"
+  ],
+  "atlanta-hawks": [
+    "Basketball"
+  ],
+  "charlotte-hornets": [
+    "Basketball"
+  ],
+  "miami-heat": [
+    "Basketball"
+  ],
+  "orlando-magic": [
+    "Basketball"
+  ],
+  "washington-wizards": [
+    "Basketball"
+  ],
+  "denver-nuggets": [
+    "Basketball"
+  ],
+  "minnesota-timberwolves": [
+    "Basketball"
+  ],
+  "oklahoma-city-thunder": [
+    "Basketball"
+  ],
+  "portland-trail-blazers": [
+    "Basketball"
+  ],
+  "utah-jazz": [
+    "Basketball"
+  ],
+  "golden-state-warriors": [
+    "Basketball"
+  ],
+  "los-angeles-clippers": [
+    "Basketball"
+  ],
+  "los-angeles-lakers": [
+    "Basketball"
+  ],
+  "phoenix-suns": [
+    "Basketball"
+  ],
+  "sacramento-kings": [
+    "Basketball"
+  ],
+  "dallas-mavericks": [
+    "Basketball"
+  ],
+  "houston-rockets": [
+    "Basketball"
+  ],
+  "memphis-grizzlies": [
+    "Basketball"
+  ],
+  "new-orleans-pelicans": [
+    "Basketball"
+  ],
+  "san-antonio-spurs": [
+    "Basketball"
+  ],
+  "boston-bruins": [
+    "Hockey"
+  ],
+  "buffalo-sabres": [
+    "Hockey"
+  ],
+  "detroit-red-wings": [
+    "Hockey"
+  ],
+  "florida-panthers": [
+    "Hockey"
+  ],
+  "montreal-canadiens": [
+    "Hockey"
+  ],
+  "ottawa-senators": [
+    "Hockey"
+  ],
+  "tampa-bay-lightning": [
+    "Hockey"
+  ],
+  "toronto-maple-leafs": [
+    "Hockey"
+  ],
+  "carolina-hurricanes": [
+    "Hockey"
+  ],
+  "columbus-blue-jackets": [
+    "Hockey"
+  ],
+  "new-jersey-devils": [
+    "Hockey"
+  ],
+  "new-york-islanders": [
+    "Hockey"
+  ],
+  "new-york-rangers": [
+    "Hockey"
+  ],
+  "philadelphia-flyers": [
+    "Hockey"
+  ],
+  "pittsburgh-penguins": [
+    "Hockey"
+  ],
+  "washington-capitals": [
+    "Hockey"
+  ],
+  "chicago-blackhawks": [
+    "Hockey"
+  ],
+  "colorado-avalanche": [
+    "Hockey"
+  ],
+  "dallas-stars": [
+    "Hockey"
+  ],
+  "minnesota-wild": [
+    "Hockey"
+  ],
+  "nashville-predators": [
+    "Hockey"
+  ],
+  "st-louis-blues": [
+    "Hockey"
+  ],
+  "utah-mammoth": [
+    "Hockey"
+  ],
+  "winnipeg-jets": [
+    "Hockey"
+  ],
+  "anaheim-ducks": [
+    "Hockey"
+  ],
+  "calgary-flames": [
+    "Hockey"
+  ],
+  "edmonton-oilers": [
+    "Hockey"
+  ],
+  "los-angeles-kings": [
+    "Hockey"
+  ],
+  "seattle-kraken": [
+    "Hockey"
+  ],
+  "san-jose-sharks": [
+    "Hockey"
+  ],
+  "vancouver-canucks": [
+    "Hockey"
+  ],
+  "vegas-golden-knights": [
+    "Hockey"
   ]
 }
