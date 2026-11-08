@@ -304,7 +304,23 @@
    "state": "off"
   },
   "arizona|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:45.082Z",
+   "last_detail": "live 40-27 · 0:28 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "arizona|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Arizona vs Iona",
+    "started_seen": "2026-11-08T20:37:51.560Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.560Z",
+     "2026-11-08T20:39:55.065Z",
+     "2026-11-08T20:41:36.264Z",
+     "2026-11-08T20:43:19.784Z",
+     "2026-11-08T20:44:41.931Z",
+     "2026-11-08T20:46:45.082Z"
+    ],
+    "final_ok": false
+   }
   },
   "arizona|Football": {
    "state": "done",
@@ -2671,10 +2687,23 @@
    "state": "off"
   },
   "nc-state|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-02T23:53:20.085Z",
-   "last_detail": "final W, 80-50 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-08T20:46:24.456Z",
+   "last_detail": "live 44-56 · 0:36 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "nc-state|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · NC State vs Kentucky",
+    "started_seen": "2026-11-08T20:37:53.963Z",
+    "live_passes": [
+     "2026-11-08T20:37:53.963Z",
+     "2026-11-08T20:39:54.977Z",
+     "2026-11-08T20:41:15.660Z",
+     "2026-11-08T20:43:19.679Z",
+     "2026-11-08T20:45:02.413Z",
+     "2026-11-08T20:46:24.456Z"
+    ],
+    "final_ok": false
+   }
   },
   "nc-state|Football": {
    "state": "done",
@@ -3700,10 +3729,23 @@
    "verified_detail": "final W, 3-2"
   },
   "idaho-state|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-07T08:58:07.062Z",
-   "last_detail": "final W, 79-30 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-08T20:46:24.798Z",
+   "last_detail": "live 37-34 · 4:52 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "idaho-state|Basketball|Men's|2026-11-08|1",
+    "title": "Men's · Idaho State at Air Force",
+    "started_seen": "2026-11-08T20:37:57.598Z",
+    "live_passes": [
+     "2026-11-08T20:37:57.598Z",
+     "2026-11-08T20:39:55.028Z",
+     "2026-11-08T20:41:36.489Z",
+     "2026-11-08T20:43:19.841Z",
+     "2026-11-08T20:45:02.787Z",
+     "2026-11-08T20:46:24.798Z"
+    ],
+    "final_ok": false
+   }
   },
   "idaho-state|Football": {
    "state": "off"
@@ -4180,7 +4222,23 @@
    "state": "off"
   },
   "louisiana-tech|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:44.396Z",
+   "last_detail": "live 76-55 · 2:40 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "louisiana-tech|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Louisiana Tech at McNeese",
+    "started_seen": "2026-11-08T20:37:52.235Z",
+    "live_passes": [
+     "2026-11-08T20:37:52.235Z",
+     "2026-11-08T20:39:54.634Z",
+     "2026-11-08T20:41:36.452Z",
+     "2026-11-08T20:43:19.461Z",
+     "2026-11-08T20:44:41.914Z",
+     "2026-11-08T20:46:44.396Z"
+    ],
+    "final_ok": false
+   }
   },
   "louisiana-tech|Football": {
    "state": "done",
@@ -6718,7 +6776,13 @@
    "state": "off"
   },
   "san-francisco|Basketball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-08T20:41:36.372Z",
+   "last_detail": "final L, 65-87",
+   "game": null,
+   "verified_at": "2026-11-08T20:41:36.372Z",
+   "verified_game": "Women's · San Francisco at California",
+   "verified_detail": "final L, 65-87"
   },
   "san-francisco|Soccer": {
    "state": "done",
@@ -7117,7 +7181,23 @@
    "state": "off"
   },
   "richmond|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:45.226Z",
+   "last_detail": "live 36-42 · 4:28 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "richmond|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Richmond vs Rice",
+    "started_seen": "2026-11-08T20:37:51.682Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.682Z",
+     "2026-11-08T20:39:54.583Z",
+     "2026-11-08T20:41:35.612Z",
+     "2026-11-08T20:43:19.630Z",
+     "2026-11-08T20:44:41.446Z",
+     "2026-11-08T20:46:45.226Z"
+    ],
+    "final_ok": false
+   }
   },
   "richmond|Field Hockey": {
    "state": "done",
@@ -7903,7 +7983,23 @@
    "state": "off"
   },
   "tarleton-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:44.950Z",
+   "last_detail": "live 15-41 · 1:37 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "tarleton-state|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Tarleton State at TCU",
+    "started_seen": "2026-11-08T20:37:51.018Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.018Z",
+     "2026-11-08T20:39:54.752Z",
+     "2026-11-08T20:41:37.023Z",
+     "2026-11-08T20:43:19.887Z",
+     "2026-11-08T20:45:01.765Z",
+     "2026-11-08T20:46:44.950Z"
+    ],
+    "final_ok": false
+   }
   },
   "tarleton-state|Football": {
    "state": "off"
@@ -8074,7 +8170,23 @@
    "state": "off"
   },
   "bryant|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:44.173Z",
+   "last_detail": "live 63-44 · 0:58 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "bryant|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Bryant at Manhattan",
+    "started_seen": "2026-11-08T20:37:50.885Z",
+    "live_passes": [
+     "2026-11-08T20:37:50.885Z",
+     "2026-11-08T20:39:54.646Z",
+     "2026-11-08T20:41:15.830Z",
+     "2026-11-08T20:43:19.478Z",
+     "2026-11-08T20:45:02.715Z",
+     "2026-11-08T20:46:44.173Z"
+    ],
+    "final_ok": false
+   }
   },
   "bryant|Field Hockey": {
    "state": "off"
@@ -8941,7 +9053,13 @@
    "state": "off"
   },
   "william-mary|Basketball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-08T20:46:45.484Z",
+   "last_detail": "final L, 58-99",
+   "game": null,
+   "verified_at": "2026-11-08T20:46:45.484Z",
+   "verified_game": "Women's · William & Mary at Virginia",
+   "verified_detail": "final L, 58-99"
   },
   "william-mary|Field Hockey": {
    "state": "done",
@@ -9094,10 +9212,23 @@
    "state": "off"
   },
   "milwaukee|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-04T07:24:47.511Z",
-   "last_detail": "final L, 60-64 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-08T20:46:24.840Z",
+   "last_detail": "live 54-59 · 1:39 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "milwaukee|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Milwaukee at SIUE",
+    "started_seen": "2026-11-08T20:37:51.434Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.434Z",
+     "2026-11-08T20:39:54.906Z",
+     "2026-11-08T20:41:35.148Z",
+     "2026-11-08T20:43:19.145Z",
+     "2026-11-08T20:45:02.675Z",
+     "2026-11-08T20:46:24.840Z"
+    ],
+    "final_ok": false
+   }
   },
   "milwaukee|Soccer": {
    "state": "done",
@@ -9643,7 +9774,23 @@
    "state": "off"
   },
   "fairfield|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:45.155Z",
+   "last_detail": "live 62-42 · 4:56 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "fairfield|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Fairfield vs Vermont",
+    "started_seen": "2026-11-08T20:37:50.873Z",
+    "live_passes": [
+     "2026-11-08T20:37:50.873Z",
+     "2026-11-08T20:39:54.994Z",
+     "2026-11-08T20:41:36.031Z",
+     "2026-11-08T20:43:19.573Z",
+     "2026-11-08T20:44:41.781Z",
+     "2026-11-08T20:46:45.155Z"
+    ],
+    "final_ok": false
+   }
   },
   "fairfield|Field Hockey": {
    "state": "done",
@@ -9835,7 +9982,23 @@
    "state": "off"
   },
   "mount-st-marys|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:24.692Z",
+   "last_detail": "live 45-67 · 6:00 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mount-st-marys|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Mount St. Mary's vs UAlbany",
+    "started_seen": "2026-11-08T20:37:51.902Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.902Z",
+     "2026-11-08T20:39:54.089Z",
+     "2026-11-08T20:41:35.775Z",
+     "2026-11-08T20:43:19.603Z",
+     "2026-11-08T20:45:01.561Z",
+     "2026-11-08T20:46:24.692Z"
+    ],
+    "final_ok": false
+   }
   },
   "mount-st-marys|Lacrosse": {
    "state": "off"
@@ -10123,7 +10286,23 @@
    "state": "off"
   },
   "delaware-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:44.755Z",
+   "last_detail": "live 50-63 · 4:59 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "delaware-state|Basketball|Women's|2026-11-08|1",
+    "title": "Women's · Delaware State at Robert Morris",
+    "started_seen": "2026-11-08T20:37:51.302Z",
+    "live_passes": [
+     "2026-11-08T20:37:51.302Z",
+     "2026-11-08T20:39:53.232Z",
+     "2026-11-08T20:41:15.773Z",
+     "2026-11-08T20:43:18.500Z",
+     "2026-11-08T20:45:02.836Z",
+     "2026-11-08T20:46:44.755Z"
+    ],
+    "final_ok": false
+   }
   },
   "delaware-state|Football": {
    "state": "off"
@@ -10346,7 +10525,7 @@
   },
   "liu|Basketball": {
    "state": "failing",
-   "last_check": "2026-11-08T09:34:20.217Z",
+   "last_check": "2026-11-08T20:47:05.781Z",
    "last_detail": "final L, 42-92 not in the app's results",
    "game": {
     "key": "liu|Basketball|Women's|2026-11-07|1",
@@ -10364,9 +10543,9 @@
     "final_ok": false,
     "final_due": "2026-11-07T23:17:29.030Z"
    },
-   "failures": 24,
+   "failures": 30,
    "last_failure": {
-    "at": "2026-11-08T09:34:20.217Z",
+    "at": "2026-11-08T20:47:05.781Z",
     "game": "Women's · LIU at Pitt",
     "detail": "final L, 42-92 not in the app's results"
    }
@@ -11206,7 +11385,23 @@
    "state": "off"
   },
   "lehigh|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T20:46:24.358Z",
+   "last_detail": "live 53-58 · 4:09 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lehigh|Basketball|Men's|2026-11-08|1",
+    "title": "Men's · Lehigh vs Brown",
+    "started_seen": "2026-11-08T20:37:52.984Z",
+    "live_passes": [
+     "2026-11-08T20:37:52.984Z",
+     "2026-11-08T20:39:54.927Z",
+     "2026-11-08T20:41:15.223Z",
+     "2026-11-08T20:43:19.406Z",
+     "2026-11-08T20:45:02.826Z",
+     "2026-11-08T20:46:24.358Z"
+    ],
+    "final_ok": false
+   }
   },
   "lehigh|Field Hockey": {
    "state": "done",
@@ -12442,7 +12637,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.287.0-ks-counties-4",
- "updated_at": "2026-11-08T09:34:20.225Z",
+ "version": "4.289.0-home-live-fixes",
+ "updated_at": "2026-11-08T20:47:05.787Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
