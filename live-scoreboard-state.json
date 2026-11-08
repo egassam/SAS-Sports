@@ -1483,10 +1483,23 @@
    "state": "off"
   },
   "maryland|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-02T23:51:09.778Z",
-   "last_detail": "final L, 93-101 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-08T02:35:19.895Z",
+   "last_detail": "live 64-85 · 2:02 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "maryland|Basketball|Men's|2026-11-07|1",
+    "title": "Men's · Maryland at Georgetown",
+    "started_seen": "2026-11-08T02:26:30.356Z",
+    "live_passes": [
+     "2026-11-08T02:26:30.356Z",
+     "2026-11-08T02:28:32.227Z",
+     "2026-11-08T02:29:53.571Z",
+     "2026-11-08T02:31:56.453Z",
+     "2026-11-08T02:33:38.126Z",
+     "2026-11-08T02:35:19.895Z"
+    ],
+    "final_ok": false
+   }
   },
   "maryland|Field Hockey": {
    "state": "done",
@@ -3313,23 +3326,13 @@
    "state": "off"
   },
   "washington-state|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.892Z",
-   "last_detail": "live 39-41 · 16:15 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "washington-state|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · Washington State at High Point",
-    "started_seen": "2026-11-07T23:02:32.056Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.056Z",
-     "2026-11-07T23:04:36.476Z",
-     "2026-11-07T23:06:19.263Z",
-     "2026-11-07T23:07:41.480Z",
-     "2026-11-07T23:09:45.223Z",
-     "2026-11-07T23:11:29.892Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:29.225Z",
+   "last_detail": "final L, 71-83",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:29.225Z",
+   "verified_game": "Men's · Washington State at High Point",
+   "verified_detail": "final L, 71-83"
   },
   "washington-state|Football": {
    "state": "done",
@@ -3866,20 +3869,13 @@
    "verified_detail": "final W, 3-2"
   },
   "weber-state|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.625Z",
-   "last_detail": "live 5-4 · 6:15 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "weber-state|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Weber State vs Denver",
-    "started_seen": "2026-11-07T23:07:43.471Z",
-    "live_passes": [
-     "2026-11-07T23:07:43.471Z",
-     "2026-11-07T23:09:45.197Z",
-     "2026-11-07T23:11:29.625Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:31.956Z",
+   "last_detail": "final W, 64-51",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:31.956Z",
+   "verified_game": "Women's · Weber State vs Denver",
+   "verified_detail": "final W, 64-51"
   },
   "weber-state|Football": {
    "state": "off"
@@ -5088,23 +5084,13 @@
    "state": "off"
   },
   "miami-oh|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:08.900Z",
-   "last_detail": "live 45-42 · 16:29 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "miami-oh|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · Miami (OH) vs Bellarmine",
-    "started_seen": "2026-11-07T23:02:33.809Z",
-    "live_passes": [
-     "2026-11-07T23:02:33.809Z",
-     "2026-11-07T23:04:36.118Z",
-     "2026-11-07T23:06:19.199Z",
-     "2026-11-07T23:08:02.216Z",
-     "2026-11-07T23:09:44.743Z",
-     "2026-11-07T23:11:08.900Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.509Z",
+   "last_detail": "final W, 80-73",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:30.509Z",
+   "verified_game": "Men's · Miami (OH) vs Bellarmine",
+   "verified_detail": "final W, 80-73"
   },
   "miami-oh|Field Hockey": {
    "state": "done",
@@ -5365,23 +5351,13 @@
    "state": "off"
   },
   "cal-state-fullerton|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:30.111Z",
-   "last_detail": "live 47-32 · 4:59 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "cal-state-fullerton|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Cal State Fullerton vs Westcliff",
-    "started_seen": "2026-11-07T23:02:32.601Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.601Z",
-     "2026-11-07T23:04:35.971Z",
-     "2026-11-07T23:06:18.979Z",
-     "2026-11-07T23:07:41.561Z",
-     "2026-11-07T23:09:44.866Z",
-     "2026-11-07T23:11:30.111Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:32.586Z",
+   "last_detail": "final W, 73-43",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:32.586Z",
+   "verified_game": "Women's · Cal State Fullerton vs Westcliff",
+   "verified_detail": "final W, 73-43"
   },
   "cal-state-fullerton|Soccer": {
    "state": "done",
@@ -5615,22 +5591,13 @@
    "state": "off"
   },
   "utah-valley|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:30.066Z",
-   "last_detail": "live 8-12 · 4:51 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "utah-valley|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Utah Valley vs Santa Clara",
-    "started_seen": "2026-11-07T23:04:16.725Z",
-    "live_passes": [
-     "2026-11-07T23:04:16.725Z",
-     "2026-11-07T23:06:19.076Z",
-     "2026-11-07T23:08:02.263Z",
-     "2026-11-07T23:09:45.243Z",
-     "2026-11-07T23:11:30.066Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.302Z",
+   "last_detail": "final L, 62-64",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:30.302Z",
+   "verified_game": "Women's · Utah Valley vs Santa Clara",
+   "verified_detail": "final L, 62-64"
   },
   "utah-valley|Soccer": {
    "state": "done",
@@ -6158,23 +6125,13 @@
    "state": "off"
   },
   "utsa|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.728Z",
-   "last_detail": "live 31-35 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "utsa|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · UTSA vs VMI",
-    "started_seen": "2026-11-07T23:02:32.737Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.737Z",
-     "2026-11-07T23:04:35.691Z",
-     "2026-11-07T23:05:58.675Z",
-     "2026-11-07T23:08:02.237Z",
-     "2026-11-07T23:09:23.934Z",
-     "2026-11-07T23:11:29.728Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:29.410Z",
+   "last_detail": "final W, 70-68",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:29.410Z",
+   "verified_game": "Men's · UTSA vs VMI",
+   "verified_detail": "final W, 70-68"
   },
   "utsa|Football": {
    "state": "done",
@@ -6357,29 +6314,19 @@
    "state": "off"
   },
   "liberty|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.854Z",
-   "last_detail": "live 33-18 · 0:00 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "liberty|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Liberty at East Carolina",
-    "started_seen": "2026-11-07T23:02:33.434Z",
-    "live_passes": [
-     "2026-11-07T23:02:33.434Z",
-     "2026-11-07T23:04:36.092Z",
-     "2026-11-07T23:06:19.513Z",
-     "2026-11-07T23:08:02.089Z",
-     "2026-11-07T23:09:45.258Z",
-     "2026-11-07T23:11:29.854Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.553Z",
+   "last_detail": "final W, 82-49",
+   "game": null,
    "failures": 5,
    "last_failure": {
     "at": "2026-11-02T23:59:05.523Z",
     "game": "Men's · Liberty at High Point",
     "detail": "final L, 57-72 not in the app's results"
-   }
+   },
+   "verified_at": "2026-11-08T02:26:30.553Z",
+   "verified_game": "Women's · Liberty at East Carolina",
+   "verified_detail": "final W, 82-49"
   },
   "liberty|Field Hockey": {
    "state": "done",
@@ -6631,7 +6578,23 @@
    "state": "off"
   },
   "pacific|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-08T02:34:59.602Z",
+   "last_detail": "live 54-39 · 9:06 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "pacific|Basketball|Men's|2026-11-07|1",
+    "title": "Men's · Pacific at Bradley",
+    "started_seen": "2026-11-08T02:26:30.065Z",
+    "live_passes": [
+     "2026-11-08T02:26:30.065Z",
+     "2026-11-08T02:28:31.593Z",
+     "2026-11-08T02:30:14.411Z",
+     "2026-11-08T02:31:35.631Z",
+     "2026-11-08T02:33:38.060Z",
+     "2026-11-08T02:34:59.602Z"
+    ],
+    "final_ok": false
+   }
   },
   "pacific|Soccer": {
    "state": "done",
@@ -6799,22 +6762,13 @@
    "state": "off"
   },
   "santa-clara|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:30.005Z",
-   "last_detail": "live 12-8 · 4:51 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "santa-clara|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Santa Clara at Utah Valley",
-    "started_seen": "2026-11-07T23:04:16.672Z",
-    "live_passes": [
-     "2026-11-07T23:04:16.672Z",
-     "2026-11-07T23:06:19.495Z",
-     "2026-11-07T23:08:02.316Z",
-     "2026-11-07T23:09:45.414Z",
-     "2026-11-07T23:11:30.005Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.255Z",
+   "last_detail": "final W, 64-62",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:30.255Z",
+   "verified_game": "Women's · Santa Clara at Utah Valley",
+   "verified_detail": "final W, 64-62"
   },
   "santa-clara|Soccer": {
    "state": "done",
@@ -7423,23 +7377,13 @@
    "verified_detail": "final W, 3-2"
   },
   "northern-iowa|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:09.125Z",
-   "last_detail": "live 35-49 · 18:44 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "northern-iowa|Basketball|Men's|2026-11-07|1",
-    "title": "Men's · Northern Iowa at Furman",
-    "started_seen": "2026-11-07T23:02:32.500Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.500Z",
-     "2026-11-07T23:04:35.910Z",
-     "2026-11-07T23:05:58.480Z",
-     "2026-11-07T23:08:02.140Z",
-     "2026-11-07T23:09:45.001Z",
-     "2026-11-07T23:11:09.125Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.418Z",
+   "last_detail": "final L, 83-98",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:30.418Z",
+   "verified_game": "Men's · Northern Iowa at Furman",
+   "verified_detail": "final L, 83-98"
   },
   "northern-iowa|Football": {
    "state": "off"
@@ -9698,29 +9642,19 @@
    "state": "off"
   },
   "princeton|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.203Z",
-   "last_detail": "live 3-3 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "princeton|Volleyball||2026-11-07|1",
-    "title": "Princeton vs Harvard",
-    "started_seen": "2026-11-07T23:02:32.846Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.846Z",
-     "2026-11-07T23:04:35.044Z",
-     "2026-11-07T23:05:58.424Z",
-     "2026-11-07T23:08:02.178Z",
-     "2026-11-07T23:09:44.677Z",
-     "2026-11-07T23:11:29.203Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.009Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
    "failures": 6,
    "last_failure": {
     "at": "2026-10-23T23:43:20.366Z",
     "game": "Princeton at Penn",
     "detail": "the game is live and also still in upcoming (scoreboard not joined to the official schedule)"
-   }
+   },
+   "verified_at": "2026-11-08T02:26:30.009Z",
+   "verified_game": "Princeton vs Harvard",
+   "verified_detail": "final L, 2-3"
   },
   "princeton|Water Polo": {
    "state": "off"
@@ -9870,23 +9804,13 @@
    "verified_detail": "final L, 0-9"
   },
   "merrimack|Football": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:09.025Z",
-   "last_detail": "live 0-56 · 4:21 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "merrimack|Football||2026-11-07|1",
-    "title": "Merrimack at Wake Forest",
-    "started_seen": "2026-11-07T23:02:32.296Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.296Z",
-     "2026-11-07T23:04:35.592Z",
-     "2026-11-07T23:05:58.620Z",
-     "2026-11-07T23:08:01.925Z",
-     "2026-11-07T23:09:45.078Z",
-     "2026-11-07T23:11:09.025Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:30.280Z",
+   "last_detail": "final L, 0-77",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:30.280Z",
+   "verified_game": "Merrimack at Wake Forest",
+   "verified_detail": "final L, 0-77"
   },
   "merrimack|Hockey": {
    "state": "done",
@@ -10378,23 +10302,13 @@
    "verified_detail": "final L, 0-3"
   },
   "chicago-state|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:29.541Z",
-   "last_detail": "live 20-49 · 3:38 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "chicago-state|Basketball|Women's|2026-11-07|1",
-    "title": "Women's · Chicago State vs Texas St",
-    "started_seen": "2026-11-07T23:02:32.827Z",
-    "live_passes": [
-     "2026-11-07T23:02:32.827Z",
-     "2026-11-07T23:04:35.811Z",
-     "2026-11-07T23:05:58.126Z",
-     "2026-11-07T23:08:02.518Z",
-     "2026-11-07T23:09:23.969Z",
-     "2026-11-07T23:11:29.541Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-08T02:26:31.186Z",
+   "last_detail": "final L, 51-106",
+   "game": null,
+   "verified_at": "2026-11-08T02:26:31.186Z",
+   "verified_game": "Women's · Chicago State vs Texas St",
+   "verified_detail": "final L, 51-106"
   },
   "chicago-state|Football": {
    "state": "off"
@@ -10451,8 +10365,8 @@
    "state": "off"
   },
   "liu|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-07T23:11:50.371Z",
+   "state": "failing",
+   "last_check": "2026-11-08T02:35:41.225Z",
    "last_detail": "final L, 42-92 not in the app's results",
    "game": {
     "key": "liu|Basketball|Women's|2026-11-07|1",
@@ -10470,11 +10384,11 @@
     "final_ok": false,
     "final_due": "2026-11-07T23:17:29.030Z"
    },
-   "failures": 12,
+   "failures": 18,
    "last_failure": {
-    "at": "2026-11-05T22:47:42.899Z",
-    "game": "Women's · LIU at Texas St",
-    "detail": "final L, 51-69 not in the app's results"
+    "at": "2026-11-08T02:35:41.225Z",
+    "game": "Women's · LIU at Pitt",
+    "detail": "final L, 42-92 not in the app's results"
    }
   },
   "liu|Field Hockey": {
@@ -12549,6 +12463,6 @@
   }
  },
  "version": "4.287.0-ks-counties-4",
- "updated_at": "2026-11-07T23:11:50.377Z",
+ "updated_at": "2026-11-08T02:35:41.231Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
