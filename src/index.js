@@ -341,7 +341,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.289.0-home-live-fixes';
+const VERSION='4.290.0-nba-nhl';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -2789,7 +2789,7 @@ const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/
 // Official schedule times are stored as the school's local wall clock with a
 // Z suffix. Compare days and convert provider UTC times in that same frame so
 // an evening game is not moved to the next day or dropped at 00:00 UTC.
-const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Montana:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',Hawaii:'Pacific/Honolulu','New Mexico':'America/Denver',Wyoming:'America/Denver','British Columbia':'America/Vancouver',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago','North Dakota':'America/Chicago','South Dakota':'America/Chicago'};
+const STATE_TIME_ZONES={Arizona:'America/Phoenix',Utah:'America/Denver',Idaho:'America/Boise',Montana:'America/Denver',Colorado:'America/Denver',Nevada:'America/Los_Angeles',Hawaii:'Pacific/Honolulu','New Mexico':'America/Denver',Wyoming:'America/Denver','British Columbia':'America/Vancouver',Alberta:'America/Edmonton',Manitoba:'America/Winnipeg',California:'America/Los_Angeles',Oregon:'America/Los_Angeles',Washington:'America/Los_Angeles',Texas:'America/Chicago',Iowa:'America/Chicago',Kansas:'America/Chicago',Oklahoma:'America/Chicago',Illinois:'America/Chicago',Minnesota:'America/Chicago',Nebraska:'America/Chicago',Wisconsin:'America/Chicago',Alabama:'America/Chicago',Arkansas:'America/Chicago',Louisiana:'America/Chicago',Mississippi:'America/Chicago',Missouri:'America/Chicago',Tennessee:'America/Chicago','North Dakota':'America/Chicago','South Dakota':'America/Chicago'};
 // Formula 1 races are listed in Eastern time, as ESPN and US broadcasts list them.
 // Idaho's Moscow (the Vandals) keeps Pacific time; Boise, Mountain.
 const SCHOOL_TIME_ZONES={chattanooga:'America/New_York','east-tennessee-state':'America/New_York',evansville:'America/Chicago',valparaiso:'America/Chicago','murray-state':'America/Chicago','western-kentucky':'America/Chicago',tennessee:'America/New_York',idaho:'America/Los_Angeles','formula-1':'America/New_York'};
@@ -4946,7 +4946,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   if(target)await highSchoolTargetHighlights(target);
   return{events,...(rankings.length?{rankings}:{}),source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(scoresErrors.length?{scores_errors:scoresErrors}:{}),...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
-// Professional teams and series (src/pro-sports.mjs): NFL, MLS and MLB teams
+// Professional teams and series (src/pro-sports.mjs): NFL, MLS, MLB, NBA and NHL teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
 // ESPN reads carry the scoreboard identity (ESPN refuses a user agent with a
 // web address; see SCOREBOARD_USER_AGENT).
@@ -5023,8 +5023,14 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     // the regular season, then the postseason), so the regular season is read
     // by name, and the postseason in its months (September to November).
     // After the regular season ends its list is kept six hours.
-    const ttl=url=>config.sport==='Baseball'&&url.endsWith('seasontype=2')&&(month>=10||month<=2)?SOURCE_TTL.document:SOURCE_TTL.schedule;
+    // NBA and NHL (user, November 8: "Add NBA then NHL"): the regular season
+    // by name as well, the playoffs in April to June, and the NBA's play-in
+    // tournament (its own season type) in April. The regular season's list is
+    // kept six hours once it is over (May to September).
+    const winter=config.sport==='Basketball'||config.sport==='Hockey';
+    const ttl=url=>url.endsWith('seasontype=2')&&(config.sport==='Baseball'&&(month>=10||month<=2)||winter&&month>=5&&month<=9)?SOURCE_TTL.document:SOURCE_TTL.schedule;
     if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}
+    if(winter){urls[0]=`${base}?seasontype=2`;if(month>=4&&month<=6)urls.push(`${base}?seasontype=3`);if(config.sport==='Basketball'&&month===4)urls.push(`${base}?seasontype=5`);}
     const payloads=await Promise.all(urls.map(url=>readJson(url,ttl(url))));
     if(!payloads[0])return failed(`${base}: unreadable`);
     const events=espnTeamGames(payloads.filter(Boolean),{school,config,timeZone,now});
@@ -5051,7 +5057,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
         target.box_score=details.box_score;
         target.result_count=target.results.length;
         if(details.recap){target.recap_url=details.recap;target.recap_label='View ESPN recap';}
-        target.highlight_status=config.sport==='Soccer'?'Score by half, goals and team stats from ESPN\'s match summary.':config.sport==='Baseball'?'Line score, pitchers of record, team stats and scoring plays from ESPN\'s game summary.':'Line score, team stats and leaders from ESPN\'s game summary.';
+        target.highlight_status=config.sport==='Soccer'?'Score by half, goals and team stats from ESPN\'s match summary.':config.sport==='Baseball'?'Line score, pitchers of record, team stats and scoring plays from ESPN\'s game summary.':config.sport==='Basketball'?'Score by quarter, team leaders and team stats from ESPN\'s game summary.':config.sport==='Hockey'?'Score by period, goals, goalies, three stars and team stats from ESPN\'s game summary.':'Line score, team stats and leaders from ESPN\'s game summary.';
       }
     }
     return{events,source_url:base,source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
@@ -5436,8 +5442,9 @@ function compactScheduleHtml(raw,sourceUrl){
 function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';return`${e.school_id}|${e.sport}|${e.team_label||''}|${slug(e.opponent||'')}|${day}${e.school_id==='kansas'&&e.official_event_id?'|'+e.official_event_id:''}${e.game_number?'|game-'+e.game_number:''}`;}
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 // Pro leagues whose season is not the college one: MLS plays late February to
-// early December, MLB late March to the World Series (early November).
-const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]]};
+// early December, MLB late March to the World Series (early November), the
+// NBA and NHL October to the June finals.
+const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]]};
 function inSeason(sport,month,pro=false){const windows=(pro&&PRO_SEASONS[sport])||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 // A sport's overall record this season (user, October 7: "the sports overall
 // win/loss record for every sport"), counted from its finals' W/L/T results
@@ -5449,7 +5456,7 @@ function inSeason(sport,month,pro=false){const windows=(pro&&PRO_SEASONS[sport])
 // fall ball (baseball, softball) are not part of the official record.
 const RECORD_MONTHS={Basketball:[11,12,1,2,3,4],Baseball:[2,3,4,5,6],Softball:[2,3,4,5,6]};
 function seasonRecords(results){
-  const byTeam=new Map();
+  const byTeam=new Map(),otl=results.some(e=>e.pro&&e.sport==='Hockey');
   for(const e of results){
     // A pro season's games all count (MLB plays April to September); so do
     // a middle or high school's (Kansas middle school girls' basketball is
@@ -5460,8 +5467,9 @@ function seasonRecords(results){
     if(e.not_in_record)continue;
     if(e.exhibition||/\bexhib|\(exh\.?\)|\(ex\.\)|\bscrimmage\b/i.test(`${e.opponent||''} ${e.title||''}`))continue;
     const outcome=(String(e.headline||'').match(/^(W|L|T|D)\b/)||[])[1];if(!outcome)continue;
-    const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0,conference:{wins:0,losses:0,ties:0,games:0}};
-    const add=tally=>{if(outcome==='W')tally.wins++;else if(outcome==='L')tally.losses++;else tally.ties++;};
+    // NHL records read W-L-OTL: a loss in overtime or a shootout is its own column.
+    const team=e.team_label||null,record=byTeam.get(team)||{team_label:team,wins:0,losses:0,ties:0,...(otl?{ot_losses:0}:{}),conference:{wins:0,losses:0,ties:0,...(otl?{ot_losses:0}:{}),games:0}};
+    const add=tally=>{if(outcome==='W')tally.wins++;else if(otl&&e.ot_loss)tally.ot_losses++;else if(outcome==='L')tally.losses++;else tally.ties++;};
     add(record);
     // The conference record counts the games the school marks as conference
     // games (or, without that mark, regular-season games against members).
@@ -5470,7 +5478,7 @@ function seasonRecords(results){
     if(e.conference_game===true){add(record.conference);record.conference.games++;if(e.conference_name)record.conference.name=e.conference_name;}
     byTeam.set(team,record);
   }
-  const text=r=>`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`;
+  const text=r=>otl?`${r.wins}-${r.losses}-${r.ot_losses||0}`:`${r.wins}-${r.losses}${r.ties?`-${r.ties}`:''}`;
   const conference=catalogSchool(results[0]?.school_id)?.conference||null;
   return[...byTeam.values()].sort((a,b)=>String(a.team_label||'').localeCompare(String(b.team_label||''))).map(r=>{
     const {games,name,...tally}=r.conference;
