@@ -1,32 +1,20 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 7, 2026 (Central, evening). **Cleanup and six more Kansas counties.** PR #551 merged as `e16d202`; production `4.287.0-ks-counties-4` verified: `verify:prod` for the 35 new schools and the 3 reference schools, all sports, 3 refreshes: 870 PASS, 0 FAIL; K-State XC 18/20 and KU XC 26/21; the reference page check passed (and on Oskaloosa, Ottawa MS, McPherson, Chase County); Manhattan's card reads "Regional Meet - Warner Park".
+Last updated: November 8, 2026 (Central, about noon). **Bound schools' coming playoff rounds take MaxPreps' booked opponent.** PR #553 merged as `b9da781`; production `4.288.0-booked-rounds` verified: `verify:prod` for McPherson, Eudora and the 3 reference schools, all sports, 3 refreshes: all PASS, K-State XC 18/20 and KU XC 26/21; reference page check passed (and on McPherson, Eudora); production's Nov 13 cards read "McPherson vs Wellington" and "Eudora at Bishop Miege"; Wamego (not yet booked on MaxPreps) still reads "Wamego · Sectional Football".
 
-**Done (user, Nov 7: "What's next?", then "Do the cleanup and then add counties", then "Merge it when everything passes"):**
-- **Cleanup:**
-  - Calendar titles read capitals as names; two capital words together are read word by word ("Regional Meet - WARNER PARK" reads "Regional Meet - Warner Park"; `nameCase` in `parseCalendarTitle`). The one reference card that moves was updated (still 408 cards).
-  - "State University"/"State College" is not a state round (`withoutCollegeState`): "Seaman at Wichita State University tournament".
-  - This file went from 291 KB to about 120 KB: earlier handoff entries and session-log lines before Nov 2 moved word for word to the end of `SAS_SPORTS_HISTORY.md`.
-- **Counties** (`docs/KS_COUNTIES_BATCH4_MODULE.md`): Jefferson, Osage, Franklin, Marion, McPherson and Chase. 35 schools (25 high schools, 10 middle schools; Ottawa and McPherson 4A). 15 read MaxPreps' schedule (few Bound games). 17 schools skipped, each with its reason (no Bound, one or two Bound events, Elyria Christian not on MaxPreps).
-  - Prep.Golf codes the survey missed, found by hand: Jefferson West MJW, Perry-Lecompton PLHS, West Franklin WF. Smoky Valley has no Prep.Golf tournaments posted.
-  - `add:county` refuses an IP address as a website (KSHSAA's "www.198.248.92.140" for Santa Fe Trail; catalog has `usd434.org`).
-  - Survey: about 75 minutes for six counties (KSHSAA and MaxPreps at 30 s).
-- **Gate:**
-  - CI guardrails (`test:release`) green on `b5e672c`. A local run first failed `hs-live-now` (Inman and McPherson are now app schools live on the Nov 6 state page: 13, was 11) and `manhattan-ks-module` (Warner Park); both expectations updated.
-  - `diff:feeds` all sports (790 feeds): 752 the same, 38 differ. Intended: Manhattan XC (Warner Park), Seaman softball (Wichita State University tournament). 33 were Bound refusing the preview's burst (same on a rerun 2 at a time: 188 of 193 the same). 3 were production's older saved copies (Salina South MS basketball and wrestling, Southeast of Saline wrestling; production's own rebuild gives the preview's cards).
-  - `verify:preview`: reference schools 69/0, XC 18/20 and 26/21. New schools: 724 PASS, 80 FAIL, all HTTP 502 "unreadable" while Bound refused the preview; once Bound answered, the 40 failed school-sports were rerun one at a time: 240/0.
-  - `check:reference-rules` on the six counties: 35 schools, 267 feeds, 3861 cards, 0 FAIL, 12 NOTE (5 spring sports not posted; 7 days with two volleyball matches against one opponent, each scored on its own page).
-  - Page check: reference schools and 10 new schools passed on the preview; McPherson HS checked by eye at 390 px.
+**Done (user, Nov 8: "Do your recommendations from last session"; the last session recommended this open item):**
+- A coming Bound round named only by its kind ("Sectional Football", "TBD", a football "Tournament") after the team's last game with a named opponent takes MaxPreps' game when MaxPreps has exactly one unplayed game that day (`booked` in the Bound game-sports path of `src/index.js`). Rounds MaxPreps has not booked stay as Bound names them. Rule 4 of `docs/HIGH_SCHOOL_REFERENCE.md`.
+- Test: `tests/hs-schedule-pairings.mjs` builds McPherson football from its real Bound and MaxPreps sources of Nov 8 (fixtures in `tests/fixtures/ks-counties/`); it fails with the rule turned off.
+- **Gate:** CI guardrails and certification-matrix green on `fd3c1d2e` (PR head). `diff:feeds` Football and Basketball, middle and high schools: 257 feeds, 254 the same, 3 differ: McPherson and Eudora football (intended), Fort Riley MS basketball (production's saved copy older than the source; production's own rebuild gives 44 upcoming and 8 results, as the preview). `verify:preview` reference schools plus McPherson and Eudora, all sports, 3 refreshes: all PASS, XC 18/20 and 26/21. `check:reference-rules` Football and Basketball: 134 schools, 253 feeds, 5194 cards, 0 FAIL, 2 NOTE (out of season). Page check passed on the reference schools, McPherson, Eudora, Wamego; McPherson's page by eye at 390 px ("Next game · McPherson vs Wellington").
 
 **Open:**
-- Bound schools' playoff rounds read Bound's name ("McPherson · Tournament", "Wamego · Sectional Football"); Manhattan now takes MaxPreps' booked opponent ("Manhattan vs Maize"). Do the same for Bound schools.
 - "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 
-**Next session:** the user's choice. Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
+**Next session:** the user's choice (more counties, Home's single request, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
 
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
@@ -324,3 +312,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 7 — College rankings on every card and live; Manhattan as the middle and high school reference** (#547, merged `6e5cf0d`; production `4.285.0-rankings-hs-reference` verified: 69/0, XC 18/20 and 26/21, page check passed).
 - **Nov 7 — Reference rules on every county; booked playoff rounds** (PR #549, merged `cae0064`). Rules check on 99 schools; duplicate match ids, unscored copies, JV on Bound, capitals, "· TBD", MS records, MaxPreps-only playoff rounds (Manhattan vs Maize). Production `4.286.2-reference-rules` verified (1377/0, XC 18/20 and 26/21).
 - **Nov 7 — Cleanup and six more Kansas counties** (PR #551, merged `e16d202`). Calendar capitals as names; "State University" not a round; Jefferson, Osage, Franklin, Marion, McPherson, Chase (35 schools). Production `4.287.0-ks-counties-4` verified (870/0, XC 18/20 and 26/21).
+- **Nov 8 — Bound playoff rounds take MaxPreps' booked opponent** (PR #553, merged `b9da781`; production `4.288.0-booked-rounds` verified, XC 18/20 and 26/21). "McPherson vs Wellington", "Eudora at Bishop Miege".
