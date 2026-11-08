@@ -1,11 +1,13 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 8, 2026 (Central, about noon). **Bound schools' coming playoff rounds take MaxPreps' booked opponent.** PR #553 merged as `b9da781`; production `4.288.0-booked-rounds` verified: `verify:prod` for McPherson, Eudora and the 3 reference schools, all sports, 3 refreshes: all PASS, K-State XC 18/20 and KU XC 26/21; reference page check passed (and on McPherson, Eudora); production's Nov 13 cards read "McPherson vs Wellington" and "Eudora at Bishop Miege"; Wamego (not yet booked on MaxPreps) still reads "Wamego · Sectional Football".
+Last updated: November 8, 2026 (Central, about 1 PM). **Home's live grid fixed.** PR #555 merged as `aad9317`; production `4.289.0-home-live-fixes` verified: `verify:prod` for the 3 reference schools and K-State, all sports, 3 refreshes: 99 PASS, K-State XC 18/20 and KU XC 26/21; reference page check passed; Home with the user's favorites on production lists no Manhattan College game under Manhattan High School and reads KC/NYJ badges.
 
-**Done (user, Nov 8: "Do your recommendations from last session"; the last session recommended this open item):**
-- A coming Bound round named only by its kind ("Sectional Football", "TBD", a football "Tournament") after the team's last game with a named opponent takes MaxPreps' game when MaxPreps has exactly one unplayed game that day (`booked` in the Bound game-sports path of `src/index.js`). Rounds MaxPreps has not booked stay as Bound names them. Rule 4 of `docs/HIGH_SCHOOL_REFERENCE.md`.
-- Test: `tests/hs-schedule-pairings.mjs` builds McPherson football from its real Bound and MaxPreps sources of Nov 8 (fixtures in `tests/fixtures/ks-counties/`); it fails with the rule turned off.
-- **Gate:** CI guardrails and certification-matrix green on `fd3c1d2e` (PR head). `diff:feeds` Football and Basketball, middle and high schools: 257 feeds, 254 the same, 3 differ: McPherson and Eudora football (intended), Fort Riley MS basketball (production's saved copy older than the source; production's own rebuild gives 44 upcoming and 8 results, as the preview). `verify:preview` reference schools plus McPherson and Eudora, all sports, 3 refreshes: all PASS, XC 18/20 and 26/21. `check:reference-rules` Football and Basketball: 134 schools, 253 feeds, 5194 cards, 0 FAIL, 2 NOTE (out of season). Page check passed on the reference schools, McPherson, Eudora, Wamego; McPherson's page by eye at 390 px ("Next game · McPherson vs Wellington").
+**Done (user, Nov 8: "What is wrong in the homepage live feed?", then "You need to fix it all but you missed the worst one"):**
+- Favorites matched by level: a live game's opponent is a favorite only at the game's own level. Maine vs Manhattan College basketball and Siena vs Manhattan soccer showed, and opened, as Manhattan High School (`opponentTeam` in `homeSections`, `public/index.html`).
+- Live card badges use the board's abbreviation (`live_details.teams`): the Chiefs read "CHI".
+- Live now · Everywhere orders by real start: `/live/now` games carry `start_utc` from ESPN.
+- Not a bug: 50 colleges with no sports list (Navy, Howard, FDU...) are not catalog cards, so their games stay off Home.
+- Test: `tests/home-live.mjs` (in `npm test` and `test:release`); fails without the fix. Gate: CI guardrails and certification-matrix green on `657d481`; `verify:preview` same schools, 99 PASS; reference page check passed. `diff:feeds` not run: no team feed changed (`/live/now` only gains a field).
 
 **Open:**
 - "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
@@ -313,3 +315,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 7 — Reference rules on every county; booked playoff rounds** (PR #549, merged `cae0064`). Rules check on 99 schools; duplicate match ids, unscored copies, JV on Bound, capitals, "· TBD", MS records, MaxPreps-only playoff rounds (Manhattan vs Maize). Production `4.286.2-reference-rules` verified (1377/0, XC 18/20 and 26/21).
 - **Nov 7 — Cleanup and six more Kansas counties** (PR #551, merged `e16d202`). Calendar capitals as names; "State University" not a round; Jefferson, Osage, Franklin, Marion, McPherson, Chase (35 schools). Production `4.287.0-ks-counties-4` verified (870/0, XC 18/20 and 26/21).
 - **Nov 8 — Bound playoff rounds take MaxPreps' booked opponent** (PR #553, merged `b9da781`; production `4.288.0-booked-rounds` verified, XC 18/20 and 26/21). "McPherson vs Wellington", "Eudora at Bishop Miege".
+- Nov 8 — Home live grid: favorites by level (Manhattan College no longer under Manhattan HS), board abbreviations, live order by real start (PR #555, `4.289.0`, verified in production).
