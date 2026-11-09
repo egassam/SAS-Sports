@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 8, 2026 (Central, about 7:15 PM). **Installable app (PWA) live.** PR #559 merged as `b4091f5`; production `4.291.0-pwa` verified: manifest, `/sw.js`, `/offline` and icons HTTP 200; Chromium reports no installability errors, the service worker activates and the offline page shows offline; `verify:prod --school=kstate --sports="Cross Country,Football"`: all PASS, K-State XC 18/20 and KU XC 26/21.
+Last updated: November 8, 2026 (Central, about 8:00 PM). **Push alerts merged, waiting on one secret.** PR #562 merged as `fe908a1`; production `4.292.0-push-alerts` verified (`verify:prod --school=kstate --sports="Cross Country,Football"`: all PASS, XC 18/20 and 26/21; `/live/now` unchanged; the 10-minute refresh still runs, 8/0 at 01:42 UTC). Alerts are **off** until the user adds the Worker secret `VAPID_PRIVATE_KEY` (Cloudflare → sas-sports → Settings → Variables and Secrets); `/api/push/config` then reads `enabled: true`. The private key was handed to the user in the session (not in the repo); a lost key means a new pair (`PUSH_PUBLIC_KEY` in `src/index.js` plus the secret).
+
+**Push alerts (user, Nov 8: "Let's do push alerts next"):** favorites' game start and final score, college and pro (ESPN boards), Cron `*/2`, only the boards subscribers need, D1 per host, `src/push-alerts.mjs` (RFC 8291/8292 with WebCrypto, checked against `http_ece`), `tests/push-alerts.mjs`. Detail in `docs/PWA.md`. **To do:** once the secret is set, turn on Alerts on the user's phone, send a test alert, and see a real start/final alert; middle and high school alerts (no frequent source yet).
 
 **Done (user, Nov 8 evening: "When should we make this into an app for Apple and Droid?", then "Begin the pwa"):**
 - Advice given: a PWA now; App Store / Google Play builds (Capacitor) only once push alerts exist (Apple rejects plain web wrappers), Home's single request is built, and logo/trademark use is settled; beta about February, release before the March basketball postseason.
@@ -13,7 +15,7 @@ Last updated: November 8, 2026 (Central, about 7:15 PM). **Installable app (PWA)
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
-- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone").
+- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone"). Push alerts built (PR #562), waiting on the secret.
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 
@@ -319,3 +321,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 8 — Home live grid: favorites by level (Manhattan College no longer under Manhattan HS), board abbreviations, live order by real start (PR #555, `4.289.0`, verified in production).
 - Nov 8 — NBA and NHL in Pro (62 teams, live cards observed; PR #557, `4.290.0-nba-nhl`, verified in production).
 - Nov 8 — Installable app (PWA): manifest, icons, service worker with offline page, Install button (PR #559, `4.291.0-pwa`, verified in production).
+- Nov 8 — Push alerts for favorites: start and final, college and pro (PR #562, `4.292.0-push-alerts`, verified in production; off until the VAPID secret is set).
