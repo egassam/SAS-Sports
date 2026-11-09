@@ -2104,25 +2104,13 @@
    "state": "off"
   },
   "usc|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-09T06:26:33.268Z",
-   "last_detail": "live 90-84 · 0:22 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "usc|Basketball|Men's|2026-11-08|1",
-    "title": "Men's · USC vs Wichita St",
-    "started_seen": "2026-11-09T06:17:42.357Z",
-    "live_passes": [
-     "2026-11-09T06:17:42.357Z",
-     "2026-11-09T06:19:04.966Z",
-     "2026-11-09T06:20:06.308Z",
-     "2026-11-09T06:21:27.661Z",
-     "2026-11-09T06:22:28.636Z",
-     "2026-11-09T06:23:50.484Z",
-     "2026-11-09T06:25:11.840Z",
-     "2026-11-09T06:26:33.268Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-09T16:40:24.817Z",
+   "last_detail": "final W, 93-86",
+   "game": null,
+   "verified_at": "2026-11-09T16:40:24.817Z",
+   "verified_game": "Men's · USC vs Wichita St",
+   "verified_detail": "final W, 93-86"
   },
   "usc|Football": {
    "state": "done",
@@ -12539,6 +12527,6 @@
   }
  },
  "version": "4.292.3-push-key-check",
- "updated_at": "2026-11-09T06:26:33.273Z",
+ "updated_at": "2026-11-09T16:40:24.824Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

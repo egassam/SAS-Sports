@@ -5,7 +5,6 @@
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| usc | Basketball | 🔴 on | live 90-84 · 0:22 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1852,6 +1851,7 @@
 | unlv | Basketball | ✅ off (passed) | Men's · UNLV vs Samford · 2026-11-07T23:06:19.462Z |
 | unlv | Football | ✅ off (passed) | UNLV vs N Illinois · 2026-11-01T10:17:13.727Z |
 | unlv | Volleyball | ✅ off (passed) | UNLV at Hawai'i · 2026-10-25T12:07:20.509Z |
+| usc | Basketball | ✅ off (passed) | Men's · USC vs Wichita St · 2026-11-09T16:40:24.817Z |
 | usc | Football | ✅ off (passed) | USC at Wisconsin · 2026-10-25T06:45:59.527Z |
 | usc | Soccer | ✅ off (passed) | USC at Northwestern · 2026-10-17T21:44:24.750Z |
 | usc | Volleyball | ✅ off (passed) | USC vs Penn State · 2026-10-18T01:31:23.379Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1077/1956; on 1; off 873; failing 5.
+Done 1078/1956; on 0; off 873; failing 5.
