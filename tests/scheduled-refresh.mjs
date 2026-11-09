@@ -84,7 +84,13 @@ assert.ok(all.length>100,`middle and high school feeds: ${all.length}`);
   assert.equal((await (await worker.handler.fetch(new Request(`https://${worker.PRODUCTION_HOST}/api/refresh-status`),env,{waitUntil(){}})).json()).paused,true);
   assert.deepEqual(await (await control({method:'POST',headers:{authorization:'Bearer secret'}},'action=resume')).json(),{paused:false});
 }
-// The Cron Trigger: every 10 minutes, wired to the run.
-assert.match(read('../wrangler.jsonc'),/"crons":\s*\["\*\/10 \* \* \* \*"\]/);
-assert.ok(source.includes('async scheduled(event,env,ctx){\n    ctx.waitUntil(runRefreshBatch(env).catch(()=>null));'));
+// The Cron Triggers: the refresh every 10 minutes, wired to the run; push
+// alerts every 2 minutes on their own trigger (tests/push-alerts.mjs).
+assert.match(read('../wrangler.jsonc'),/"crons":\s*\["\*\/10 \* \* \* \*", "\*\/2 \* \* \* \*"\]/);
+assert.ok(source.includes("if(event?.cron===PUSH_CRON){ctx.waitUntil(runPushAlerts(env).catch(()=>null));return}\n    ctx.waitUntil(runRefreshBatch(env).catch(()=>null));"));
+{
+  const ran=[];const runs={waitUntil:p=>ran.push(p)};
+  await worker.handler.scheduled({cron:'*/2 * * * *'},{},runs);
+  assert.deepEqual(await ran[0],{skipped:'not configured'},'the 2-minute trigger runs push alerts (off without keys), not the refresh');
+}
 console.log(`scheduled-refresh: ok (${all.length} feeds, ${REFRESH_BATCH} a run)`);

@@ -37,3 +37,23 @@ self.addEventListener('fetch',event=>{
   }
   // Everything else (scores, feeds, images) is left to the network.
 });
+
+// Push alerts (user, November 8, 2026: "Let's do push alerts next"): a
+// favorite's game starting and its final score, sent by the Worker
+// (src/push-alerts.mjs). Tapping one opens that team's page.
+self.addEventListener('push',event=>{
+  let data={};
+  try{data=event.data?event.data.json():{}}catch{data={body:event.data?.text()||''}}
+  event.waitUntil(self.registration.showNotification(data.title||'SAS Sports',{
+    body:data.body||'',icon:'/icons/icon-192.png',tag:data.tag||undefined,renotify:Boolean(data.tag),data:{url:data.url||'/'}
+  }));
+});
+self.addEventListener('notificationclick',event=>{
+  event.notification.close();
+  const target=new URL(event.notification.data?.url||'/',self.location.origin).href;
+  event.waitUntil((async()=>{
+    const open=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    for(const client of open){if('navigate' in client&&'focus' in client){try{await client.focus();const moved=await client.navigate(target);if(moved)return moved}catch{}}}
+    return self.clients.openWindow(target);
+  })());
+});

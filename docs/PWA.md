@@ -25,8 +25,31 @@ These files are served as static assets (not in `run_worker_first`), so the Work
 
 To change the service worker's cached files, bump `CACHE` in `sw.js` (`sas-sports-shell-v1`); old caches are deleted on activation.
 
+## Push alerts (user, November 8, 2026: "Let's do push alerts next")
+
+Version `4.292.0-push-alerts`. An **Alerts** button in the header (shown only when alerts are set up) turns on alerts for the phone's favorites (☆ Favorite): one alert when a favorite's game **starts**, one with its **final score**. Tapping an alert opens that team's page. The panel has "Send a test alert" and "Turn off alerts".
+
+- **Covered:** college and pro teams (the ESPN live boards Home already reads). **Not yet:** middle and high schools (their live source, MaxPreps, refuses frequent reads).
+- **iPhone/iPad:** only in the installed app (iOS 16.4+). In Safari the button explains how to install first.
+- **Favorites follow the phone:** the page sends the favorites again on every load and whenever a star changes.
+
+How it runs:
+
+| Piece | Where |
+|---|---|
+| Encryption (RFC 8291 aes128gcm), VAPID signing (RFC 8292), which alerts are due, the message text | `src/push-alerts.mjs` (WebCrypto only, no library) |
+| `GET /api/push/config`, `POST /api/push/subscribe` (subscription and favorites), `/unsubscribe`, `/test` (one every 30 s), `/run` (source key; runs the alert check now, for previews) | `pushRoute` in `src/index.js` |
+| The check, every 2 minutes (Cron Trigger `*/2 * * * *`; the feed refresh keeps `*/10`) | `runPushAlerts` in `src/index.js` |
+| Showing the alert and opening the team's page | `push` and `notificationclick` in `public/sw.js` |
+| Tests | `tests/push-alerts.mjs`: the encryption against a vector made by `http_ece` (`tests/fixtures/push-vector.json`), the VAPID signature, the rules, and the whole Worker run on ESPN's Nov 8 NBA board (76ers at Bulls: start, no repeat, final with the score, 410 deletes, scopes) |
+
+Rules: a run reads only the boards its subscribers' favorites play on (no subscriptions: no reads). A game is recorded the first time it is seen (D1 `push_events`, kept 3 days) and alerted at most once live and once final; a final never seen live (a game already over when alerts were turned on, a postponed game) is silent. Each run sends at most 40 messages. A subscription the phone's push service drops (404/410), or that fails 5 times in a row, is deleted. Subscriptions and events are kept per host (D1 `CATALOG_DB`, `push_subscriptions`), so a preview's are its own; only production has the Cron Trigger.
+
+**Setup (once):** the Worker secret `VAPID_PRIVATE_KEY` (Cloudflare dashboard → Workers & Pages → sas-sports → Settings → Variables and Secrets → Add → type Secret). Its public half is `PUSH_PUBLIC_KEY` in `src/index.js` (a `VAPID_PUBLIC_KEY` variable overrides it). Without the secret, `/api/push/config` reports `enabled: false`, the button stays hidden and the 2-minute run does nothing. Changing the key pair turns off every phone's alerts until it turns them on again.
+
 ## Not built yet (next steps toward store apps)
 
-- **Push alerts** for favorites' live scores and finals (Web Push; on iPhone it works only for the installed app, iOS 16.4+). This is also what Apple needs to see before it accepts a wrapped app.
+- Middle and high school alerts (needs a source that can be checked every few minutes: SAS Scorer games, or spaced MaxPreps reads).
+- Score-change alerts (every score, or close games late) if wanted; game-day reminders.
 - One "home" request for every favorite's saved feed (already open in the handoff), before an app makes Home load more often.
 - App store builds (Capacitor around the same site): Apple Developer Program $99/year, Google Play $25 once, and a Mac or cloud build service for iOS. Logo and trademark use to settle before store review.

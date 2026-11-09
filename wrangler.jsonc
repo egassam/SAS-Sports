@@ -23,10 +23,14 @@
     // writes it from src/schools.json; previews only read it.
     { "binding": "CATALOG_DB", "database_name": "sas-sports-catalog", "database_id": "49c4cfa6-ca6a-4999-93c8-1233cd084012" }
   ],
-  // No scheduled jobs. Kept explicit: omitting "triggers" leaves a previously
-  // deployed Cron Trigger in place (the reverted #87 added one).
+  // Cron Triggers: the middle and high school feed refresh every 10 minutes
+  // (src/scheduled-refresh.mjs), push alerts for favorites every 2 minutes
+  // (src/push-alerts.mjs; PUSH_CRON in src/index.js). Kept explicit: omitting
+  // "triggers" leaves a previously deployed Cron Trigger in place.
+  // Push alerts also need the Worker secret VAPID_PRIVATE_KEY (docs/PWA.md);
+  // without it alerts stay off. The public key is PUSH_PUBLIC_KEY in the code.
   "triggers": {
-    "crons": ["*/10 * * * *"]
+    "crons": ["*/10 * * * *", "*/2 * * * *"]
   },
   "assets": {
     "directory": "./public/",
