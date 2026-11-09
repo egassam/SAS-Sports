@@ -1,21 +1,23 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 8, 2026 (Central, about 5:30 PM). **NBA and NHL added to Pro.** PR #557 merged as `a95f22f`; production `4.290.0-nba-nhl` verified: `verify:prod` for all 62 NBA and NHL teams, 3 refreshes, no expanded reads: 127 PASS; with expanded views for the Thunder and Blues: 10/10 and 17/17; K-State XC 18/20 and KU XC 26/21; the D1 catalog lists 158 pro entries with NBA and NHL.
+Last updated: November 8, 2026 (Central, about 7:15 PM). **Installable app (PWA) live.** PR #559 merged as `b4091f5`; production `4.291.0-pwa` verified: manifest, `/sw.js`, `/offline` and icons HTTP 200; Chromium reports no installability errors, the service worker activates and the offline page shows offline; `verify:prod --school=kstate --sports="Cross Country,Football"`: all PASS, K-State XC 18/20 and KU XC 26/21.
 
-**Done (user, Nov 8: "What pro sports should we add next?", then "Add NBA then NHL"):**
-- Pro → Basketball → NBA (30 teams by division) and Pro → Hockey → NHL (32 teams, ESPN's "… Division" names) on the shared ESPN team reader: schedules and results, NBA Cup stages, playoffs and play-in with the series, expanded finals, live cards (observed live Nov 8: 76ers at Bulls, Golden Knights at Sabres). NHL records W-L-OTL. Fixed: `Final/2OT` read as innings. Detail in `docs/PRO_SPORTS_MODULE.md`.
-- Gate: `test:release` passed locally (407 commands) and CI guardrails and certification-matrix green on `dcdd6d3`; preview: 62 teams × 3 forced refreshes, results format, expanded views for four teams; page checked by eye (Blues and Thunder cards and expanded views).
-- Not run: `diff:feeds` (middle and high school rule; no shared feed changed). ESPN reads were kept low: no expanded-view sweep of every team.
+**Done (user, Nov 8 evening: "When should we make this into an app for Apple and Droid?", then "Begin the pwa"):**
+- Advice given: a PWA now; App Store / Google Play builds (Capacitor) only once push alerts exist (Apple rejects plain web wrappers), Home's single request is built, and logo/trademark use is settled; beta about February, release before the March basketball postseason.
+- Built: manifest, icons (`scripts/make-pwa-icons.cjs`), `public/sw.js` (pages network first with an offline page; icons from the device; `/api`, `/live`, feeds and scores never cached), "Install app" button (Android/desktop prompt; iPhone Share → Add to Home Screen hint). Detail in `docs/PWA.md`.
+- Found: Cloudflare redirects `/offline.html` to `/offline`, and a redirected answer cannot stand in for a page: the worker uses `/offline` (test guards it).
+- Gate: `test:release` passed locally (408 commands) and CI guardrails and certification-matrix green on `2e69e7b`; preview checked in Chromium (installable, offline page, K-State page loads under the service worker) and `verify:preview` K-State XC/Football 3 refreshes all PASS.
 
 **Open:**
 - "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
+- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Not yet tried on a real iPhone or Android phone: check "Install app" and Add to Home Screen by hand.
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 
-**Next session:** the user's choice (more counties, more pro leagues, Home's single request, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
+**Next session:** the user's choice (more counties, more pro leagues, Home's single request, PWA push alerts, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
 
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
@@ -316,3 +318,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - **Nov 8 — Bound playoff rounds take MaxPreps' booked opponent** (PR #553, merged `b9da781`; production `4.288.0-booked-rounds` verified, XC 18/20 and 26/21). "McPherson vs Wellington", "Eudora at Bishop Miege".
 - Nov 8 — Home live grid: favorites by level (Manhattan College no longer under Manhattan HS), board abbreviations, live order by real start (PR #555, `4.289.0`, verified in production).
 - Nov 8 — NBA and NHL in Pro (62 teams, live cards observed; PR #557, `4.290.0-nba-nhl`, verified in production).
+- Nov 8 — Installable app (PWA): manifest, icons, service worker with offline page, Install button (PR #559, `4.291.0-pwa`, verified in production).
