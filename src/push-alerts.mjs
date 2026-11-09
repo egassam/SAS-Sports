@@ -131,6 +131,20 @@ export async function vapidSigningKey(publicKey,privateKey){
   const jwk={kty:'EC',crv:'P-256',x:b64url(pub.slice(1,33)),y:b64url(pub.slice(33,65)),d:String(privateKey).trim(),ext:true};
   return crypto.subtle.importKey('jwk',jwk,{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
 }
+// Whether the secret and the public key work together: sign with one, verify
+// with the other. Returns {ok} or {ok:false, problem} (never the key).
+export async function vapidKeyCheck(publicKey,privateKey){
+  try{
+    const text=String(privateKey).trim();
+    if(!/^[A-Za-z0-9_-]+$/.test(text))return{ok:false,problem:'VAPID_PRIVATE_KEY has characters that are not part of the key (quotes, spaces or a label?): paste only the 43-character key'};
+    const d=fromB64url(text);
+    if(d.length!==32)return{ok:false,problem:`VAPID_PRIVATE_KEY decodes to ${d.length} bytes; it must be the 43-character key (32 bytes), with no quotes or spaces`};
+    const signing=await vapidSigningKey(publicKey,privateKey),data=enc.encode('sas-sports key check');
+    const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},signing,data);
+    const verify=await crypto.subtle.importKey('raw',fromB64url(publicKey),{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
+    return await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},verify,sig,data)?{ok:true}:{ok:false,problem:'VAPID_PRIVATE_KEY does not match the public key'};
+  }catch(error){return{ok:false,problem:`VAPID_PRIVATE_KEY could not be loaded (${error?.name||'Error'})`}}
+}
 export async function vapidHeader(endpoint,{publicKey,signingKey,subject,now=Date.now()}){
   const aud=new URL(endpoint).origin;
   const head=b64url(enc.encode(JSON.stringify({typ:'JWT',alg:'ES256'})));
