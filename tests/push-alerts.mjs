@@ -62,8 +62,8 @@ const VAPID_PUBLIC_KEY=b64url(vapid.getPublicKey()),VAPID_PRIVATE_KEY=b64url(vap
   // As pasted: quotes, a label, a line break inside the key.
   for(const pasted of [`"${VAPID_PRIVATE_KEY}"`,`'${VAPID_PRIVATE_KEY}'`,`VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}`,`VAPID_PRIVATE_KEY: "${VAPID_PRIVATE_KEY}"`,`${VAPID_PRIVATE_KEY.slice(0,20)}\n${VAPID_PRIVATE_KEY.slice(20)}`])
     assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,pasted),{ok:true},`key found in ${JSON.stringify(pasted.replace(VAPID_PRIVATE_KEY,'<key>'))}`);
-  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PUBLIC_KEY)).problem,/87-character public key/,'the public key pasted as the secret is reported');
-  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,'"oops"')).problem,/no 43-character key/);
+  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PUBLIC_KEY)).problem,/87 characters \(87 key characters\) \(that is the public key length\)/,'the public key pasted as the secret is reported');
+  assert.equal((await vapidKeyCheck(VAPID_PUBLIC_KEY,'"/tmp/x/key.txt"')).problem,'VAPID_PRIVATE_KEY has no 43-character key in it; saved value: 16 characters (10 key characters, 2 quotes, 4 path or URL characters)');
   const other=nodeCrypto.createECDH('prime256v1');other.generateKeys();
   const mismatch=await vapidKeyCheck(VAPID_PUBLIC_KEY,b64url(other.getPrivateKey()));
   assert.equal(mismatch.ok,false,'a private key from another pair is reported');

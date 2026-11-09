@@ -150,7 +150,10 @@ export async function vapidKeyCheck(publicKey,privateKey){
   try{
     if(!privateKeyText(privateKey)){
       const plain=String(privateKey??'').trim();
-      return{ok:false,problem:/^[A-Za-z0-9_-]+$/.test(plain)?`VAPID_PRIVATE_KEY is ${plain.length} characters; it must be the 43-character private key (not the 87-character public key)`:'VAPID_PRIVATE_KEY has no 43-character key in it: paste only the key from the private key file'};
+      // Only the shape of what was saved: its length and the kinds of characters.
+      const kinds=[[/[A-Za-z0-9_-]/,'key characters'],[/\s/,'spaces or line breaks'],[/["'`]/,'quotes'],[/[/\\.:]/,'path or URL characters'],[/[^A-Za-z0-9_\-\s"'`/\\.:]/,'other symbols']].map(([re,name])=>[name,[...plain].filter(c=>re.test(c)).length]).filter(([,n])=>n).map(([name,n])=>`${n} ${name}`).join(', ');
+      const shape=`saved value: ${plain.length} characters (${kinds||'empty'})`;
+      return{ok:false,problem:/^[A-Za-z0-9_-]+$/.test(plain)?`VAPID_PRIVATE_KEY must be the 43-character private key; ${shape}${plain.length===87?' (that is the public key length)':''}`:`VAPID_PRIVATE_KEY has no 43-character key in it; ${shape}`};
     }
     const signing=await vapidSigningKey(publicKey,privateKey),data=enc.encode('sas-sports key check');
     const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},signing,data);
