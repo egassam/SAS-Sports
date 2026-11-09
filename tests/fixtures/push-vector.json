@@ -1,0 +1,9 @@
+{
+ "ua_public": "BB4YUy_UdUwC8wQdnHXOszuD_9gax85P6ILMscmLxYlupGwxHE4v9A3ZajZT5uRURdMt_khuztdcepDGoYiBwKM",
+ "auth": "AwMDAwMDAwMDAwMDAwMDAw",
+ "salt": "BQUFBQUFBQUFBQUFBQUFBQ",
+ "as_private": "CQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk",
+ "as_public": "BHE1-k_ZOgnc6Yu_aBtL_PUOfA1jVOYq-wv_KjQpYXhl7UwfAt25Aj7lalV-UV1qncZsEfIglg3llDNN9Yh3ZyQ",
+ "message": "{\"title\":\"Final: K-State Football\",\"body\":\"K-State 31, Baylor 24 (W)\"}",
+ "expected": "BQUFBQUFBQUFBQUFBQUFBQAAEABBBHE1-k_ZOgnc6Yu_aBtL_PUOfA1jVOYq-wv_KjQpYXhl7UwfAt25Aj7lalV-UV1qncZsEfIglg3llDNN9Yh3ZyQ90jNoSEkYrtQ3JINxaYQN1Z35hLUn_vnj-rWbIeaYWB3rQereb1-SRpSvcT_LfQ9oJuSjga4wQwsJJOx9wLvuHXS2s14m6qUMD7e_50ES5f2ZVaHzNy4"
+}

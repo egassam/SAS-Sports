@@ -62,6 +62,7 @@ import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from 
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
+import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -341,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.291.0-pwa';
+const VERSION='4.292.0-push-alerts';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6260,7 +6261,9 @@ function liveNowBoards(now=new Date()){
   for(const school of schools){if(school.level!=='pro')continue;const config=proTeam(school.id);if(config?.kind==='espn-team'&&!pro.has(config.espn.path))pro.set(config.espn.path,{path:config.espn.path,sport:config.sport,level:'pro'});}
   return[...LIVE_NOW_COLLEGE_BOARDS,...pro.values()].filter(board=>inSeason(board.sport,month,board.level==='pro'));
 }
-function liveNowGames(boards,now=new Date()){
+// Push alerts read finished games too, and every catalog side of a game
+// (both teams can be someone's favorite): {states:['in','post'],allSides:true}.
+function liveNowGames(boards,now=new Date(),{states=['in'],allSides=false}={}){
   const games=[],seen=new Set();
   const college=schools.filter(school=>(school.level||'college')==='college');
   const index=new Map();
@@ -6274,14 +6277,16 @@ function liveNowGames(boards,now=new Date()){
   for(const {board,payload,url} of boards){
     for(const item of payload?.events||[]){
       const competition=item?.competitions?.[0],state=String(competition?.status?.type?.state||item?.status?.type?.state||'').toLowerCase();
-      if(state!=='in'||seen.has(`${board.path}|${item.id}`))continue;
+      if(!states.includes(state)||seen.has(`${board.path}|${item.id}`))continue;
       const sides=[...(competition?.competitors||[])].sort((a,b)=>(a.homeAway==='home'?0:1)-(b.homeAway==='home'?0:1));
-      let school=null;
-      for(const side of sides){school=board.level==='pro'?proMatch(side.team,board.path):collegeMatch(side.team,board.sport);if(school)break;}
-      if(!school)continue;
+      const matched=[];
+      for(const side of sides){const found=board.level==='pro'?proMatch(side.team,board.path):collegeMatch(side.team,board.sport);if(found&&!matched.includes(found))matched.push(found);if(found&&!allSides)break;}
+      if(!matched.length)continue;
       seen.add(`${board.path}|${item.id}`);
+      for(const school of matched){
       const provider={path:board.path,team_label:board.team_label||undefined,sourceName:'Live scoreboard'};
-      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(Number.isFinite(Date.parse(item.date))?{start_utc:new Date(item.date).toISOString()}:{}),...(board.level==='college'?{ranking_board:board.path}:{}),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
+      for(const event of parseScoreboardPayload({events:[item]},school,board.sport,provider,url,now))games.push({...event,school_id:school.id,school:school.name,short_name:school.short_name||school.name,level:school.level||'college',espn_event_id:String(item.id),...(Number.isFinite(Date.parse(item.date))?{start_utc:new Date(item.date).toISOString()}:{}),...(board.level==='college'?{ranking_board:board.path}:{}),...(teamThemes[school.id]?{school_colors:{primary:teamThemes[school.id].primary,secondary:teamThemes[school.id].secondary}}:{})});
+      }
     }
   }
   return games;
@@ -6391,6 +6396,125 @@ async function hsLiveGames(now=new Date(),env=null){
     }catch{}
   }));
   return games;
+}
+// Push alerts for favorites (user, November 8, 2026: "Let's do push alerts
+// next"; src/push-alerts.mjs). Subscriptions and the games already alerted
+// are in D1 (`CATALOG_DB`), kept per host like the stored finals: a branch
+// preview's subscriptions are its own, and only production has the Cron
+// Trigger (a preview runs it through /api/push/run with the source key).
+// Every PUSH_CRON run reads only the boards its subscribers' favorites play
+// on: with no subscriptions it reads nothing.
+const PUSH_CRON='*/2 * * * *';
+// The app's VAPID public key (not secret; the variable VAPID_PUBLIC_KEY
+// overrides it). Its private half is the Worker secret VAPID_PRIVATE_KEY.
+const PUSH_PUBLIC_KEY='BK7IaTGSiyc4L1vGzP7I2ao9DICjcMyyCgzd9OmTlcs57CRt1YL2xTMS7N6xPx5TLnRoePCuQmJxr_Q6kuL3DWA';
+const PUSH_SUBJECT=`https://${PRODUCTION_HOST}/bot`;
+// One run sends at most this many messages (each is a subrequest).
+const PUSH_MAX_SENDS=40;
+let pushTablesReady=null,pushKeyCache=null;
+function ensurePushTables(db){
+  if(!pushTablesReady)pushTablesReady=db.batch(PUSH_TABLES_SQL.map(sql=>db.prepare(sql))).catch(error=>{pushTablesReady=null;throw error});
+  return pushTablesReady;
+}
+const pushPublicKey=env=>env?.VAPID_PUBLIC_KEY||PUSH_PUBLIC_KEY;
+const pushConfigured=env=>Boolean(env?.CATALOG_DB&&env?.VAPID_PRIVATE_KEY&&pushPublicKey(env));
+async function pushKeys(env){
+  const publicKey=pushPublicKey(env);
+  if(!pushKeyCache||pushKeyCache.publicKey!==publicKey||pushKeyCache.privateKey!==env.VAPID_PRIVATE_KEY)pushKeyCache={publicKey,privateKey:env.VAPID_PRIVATE_KEY,signingKey:await vapidSigningKey(publicKey,env.VAPID_PRIVATE_KEY)};
+  return{publicKey:pushKeyCache.publicKey,signingKey:pushKeyCache.signingKey,subject:PUSH_SUBJECT};
+}
+// Alerts cover the teams the live boards carry: college and pro (ESPN).
+// Middle and high schools have no board read often enough (MaxPreps refuses
+// frequent reads).
+const pushCovered=id=>{const school=catalogSchool(id);return Boolean(school&&((school.level||'college')==='college'||(school.level==='pro'&&proTeam(id)?.kind==='espn-team')))};
+function pushBoards(favorites,now=new Date()){
+  const sports=new Set(),proPaths=new Set();
+  for(const id of favorites){
+    const school=catalogSchool(id);if(!school)continue;
+    if(school.level==='pro'){const config=proTeam(id);if(config?.kind==='espn-team')proPaths.add(config.espn.path);}
+    else if((school.level||'college')==='college')for(const sport of sponsoredSports[id]||school.sponsored_sports||[])sports.add(sport);
+  }
+  return liveNowBoards(now).filter(board=>board.level==='pro'?proPaths.has(board.path):sports.has(board.sport));
+}
+async function runPushAlerts(env,{origin=`https://${PRODUCTION_HOST}`,now=new Date(),fetchImpl=fetch}={}){
+  if(!pushConfigured(env))return{skipped:'not configured'};
+  const db=env.CATALOG_DB,scope=new URL(origin).hostname;
+  await ensurePushTables(db);
+  const subs=(await db.prepare('SELECT endpoint,p256dh,auth,favorites,failures FROM push_subscriptions WHERE scope=?').bind(scope).all()).results||[];
+  if(!subs.length)return{scope,subscriptions:0,boards:0,games:0,alerts:0,sent:0};
+  for(const sub of subs){try{sub.list=JSON.parse(sub.favorites)}catch{sub.list=[]}}
+  const favorites=new Set(subs.flatMap(sub=>sub.list));
+  sourceCacheOrigin=origin;
+  const boards=pushBoards(favorites,now);
+  const reads=await Promise.all(boards.map(async board=>{const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}`;const payload=await readJson(url,30);return{board,payload,url,ok:Boolean(payload)}}));
+  const games=liveNowGames(reads.filter(read=>read.ok),now,{states:['in','post'],allSides:true}).filter(game=>favorites.has(game.school_id));
+  const keys=[...new Set(games.map(pushEventKey))],seen=new Map();
+  for(let i=0;i<keys.length;i+=50){
+    const part=keys.slice(i,i+50);
+    const rows=(await db.prepare(`SELECT event_key,state FROM push_events WHERE scope=? AND event_key IN (${part.map(()=>'?').join(',')})`).bind(scope,...part).all()).results||[];
+    for(const row of rows)seen.set(row.event_key,row.state);
+  }
+  const {alerts,rows}=dueAlerts(games,seen),at=now.toISOString();
+  // Recorded before sending: a run that overlaps never sends an alert twice.
+  const writes=rows.map(row=>db.prepare('INSERT INTO push_events (scope,event_key,school_id,state,seen) VALUES (?,?,?,?,?) ON CONFLICT(scope,event_key) DO UPDATE SET state=excluded.state,seen=excluded.seen').bind(scope,row.key,row.school_id,row.state,at));
+  writes.push(db.prepare('DELETE FROM push_events WHERE scope=? AND seen<?').bind(scope,new Date(now.getTime()-PUSH_EVENT_KEEP_DAYS*864e5).toISOString()));
+  await db.batch(writes);
+  const jobs=[];
+  for(const alert of alerts){const message=alertMessage(alert);for(const sub of subs)if(sub.list.includes(alert.game.school_id))jobs.push({sub,message});}
+  const keysFor=await pushKeys(env),results=[];
+  for(let i=0;i<Math.min(jobs.length,PUSH_MAX_SENDS);i+=6){
+    results.push(...await Promise.all(jobs.slice(i,Math.min(i+6,PUSH_MAX_SENDS)).map(async job=>({job,result:await sendPush(job.sub,job.message,{...keysFor,fetchImpl})}))));
+  }
+  const updates=[];
+  for(const {job,result} of results){
+    const sub=job.sub;
+    if(result.gone||(!result.ok&&sub.failures+1>=PUSH_FAILURES_TO_DROP)){updates.push(db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,sub.endpoint));continue}
+    if(result.ok)updates.push(db.prepare('UPDATE push_subscriptions SET last_sent=?,failures=0 WHERE scope=? AND endpoint=?').bind(at,scope,sub.endpoint));
+    else{sub.failures+=1;updates.push(db.prepare('UPDATE push_subscriptions SET failures=? WHERE scope=? AND endpoint=?').bind(sub.failures,scope,sub.endpoint));}
+  }
+  if(updates.length)await db.batch(updates);
+  return{scope,subscriptions:subs.length,boards:boards.length,boards_read:reads.filter(read=>read.ok).length,games:games.length,alerts:alerts.map(alert=>({kind:alert.kind,school_id:alert.game.school_id,event:pushEventKey(alert.game)})),sent:results.filter(r=>r.result.ok).length,failed:results.filter(r=>!r.result.ok).map(r=>r.result.status),skipped_sends:Math.max(0,jobs.length-PUSH_MAX_SENDS)};
+}
+async function readBody(request,limit=8192){
+  const text=await request.text();if(text.length>limit)return null;
+  try{return JSON.parse(text)}catch{return null}
+}
+async function pushRoute(request,env,url){
+  const path=url.pathname,scope=url.hostname;
+  if(path==='/api/push/config')return json({enabled:pushConfigured(env),public_key:pushConfigured(env)?pushPublicKey(env):null,covers:'College and pro teams: when a game starts and its final score'});
+  if(path==='/api/push/run'){
+    const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
+    if(!secret)return json({detail:'Not found'},404);
+    if(request.method!=='POST'||!given||!(await sameSecret(given,secret)))return json({detail:'Unauthorized'},401);
+    return json(await runPushAlerts(env,{origin:url.origin}));
+  }
+  if(request.method!=='POST')return json({detail:'Use POST'},405);
+  if(!pushConfigured(env))return json({detail:'Alerts are not set up'},503);
+  const db=env.CATALOG_DB,body=await readBody(request);
+  if(!body)return json({detail:'A JSON body is required'},400);
+  await ensurePushTables(db);
+  const at=new Date().toISOString();
+  if(path==='/api/push/subscribe'){
+    const sub=validSubscription(body.subscription);if(!sub)return json({detail:'Not a valid push subscription'},400);
+    const favorites=cleanFavorites(body.favorites,id=>Boolean(catalogSchool(id)));
+    await db.prepare('INSERT INTO push_subscriptions (scope,endpoint,p256dh,auth,favorites,created,updated,failures) VALUES (?,?,?,?,?,?,?,0) ON CONFLICT(scope,endpoint) DO UPDATE SET p256dh=excluded.p256dh,auth=excluded.auth,favorites=excluded.favorites,updated=excluded.updated').bind(scope,sub.endpoint,sub.p256dh,sub.auth,JSON.stringify(favorites),at,at).run();
+    return json({subscribed:true,favorites,covered:favorites.filter(pushCovered)});
+  }
+  const endpoint=String(body.endpoint||'');
+  if(path==='/api/push/unsubscribe'){
+    await db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).run();
+    return json({subscribed:false});
+  }
+  if(path==='/api/push/test'){
+    const sub=await db.prepare('SELECT endpoint,p256dh,auth,last_sent FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
+    if(!sub)return json({detail:'Not subscribed'},404);
+    if(sub.last_sent&&Date.now()-Date.parse(sub.last_sent)<30000)return json({detail:'One test every 30 seconds'},429);
+    const result=await sendPush(sub,{title:'SAS Sports alerts are on',body:"You'll get an alert when a favorite's game starts and when it ends.",url:'/',tag:'test'},{...await pushKeys(env),fetchImpl:fetch});
+    if(result.gone){await db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).run();return json({sent:false,status:result.status,detail:'The browser dropped this subscription'},410)}
+    await db.prepare('UPDATE push_subscriptions SET last_sent=? WHERE scope=? AND endpoint=?').bind(at,scope,endpoint).run();
+    return json({sent:result.ok,status:result.status});
+  }
+  return json({detail:'Not found'},404);
 }
 async function liveNow(now=new Date(),env=null){
   const boards=liveNowBoards(now),reads=await Promise.all(boards.map(async board=>{
@@ -6904,6 +7028,7 @@ async function routeRequest(request,env,ctx){
     // The scheduled refresh: its record (public), and pause, resume or one
     // run now (2 feeds, no gap) with the source key.
     if(url.pathname==='/api/refresh-status'){let status=null,paused=null;try{status=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_STATUS_KEY,url.hostname),'json');paused=await env.HIGHLIGHTS?.get(refreshKey(REFRESH_PAUSE_KEY,url.hostname))}catch{}return json({version:VERSION,schedule:'every 10 minutes',batch:REFRESH_BATCH,gap_seconds:REFRESH_GAP_MS/1000,feeds:refreshFeeds(HIGH_SCHOOL_MODULES).length,paused:Boolean(paused),status});}
+    if(url.pathname.startsWith('/api/push/'))return pushRoute(request,env,url);
     if(url.pathname==='/api/refresh-control'){
       const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
       if(!secret)return json({detail:'Not found'},404);
@@ -7021,6 +7146,8 @@ async function routeRequest(request,env,ctx){
 }
 export default{
   async scheduled(event,env,ctx){
+    // Two Cron Triggers: push alerts every 2 minutes, the feed refresh every 10.
+    if(event?.cron===PUSH_CRON){ctx.waitUntil(runPushAlerts(env).catch(()=>null));return}
     ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
   },
   async fetch(request,env,ctx){return timedRequest(request,env,ctx);}
