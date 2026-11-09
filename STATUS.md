@@ -5,9 +5,7 @@
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| james-madison | Basketball | 🔴 on | live 20-33 · 7:03 - 3rd · official_schedule+live_scoreboard |
-| north-carolina | Basketball | 🔴 on | live 35-71 · 4:57 - 4th · official_schedule+live_scoreboard |
-| utep | Basketball | 🔴 on | live 7-2 · 16:58 - 1st · official_schedule+live_scoreboard |
+| usc | Basketball | 🔴 on | live 90-84 · 0:22 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -800,7 +798,6 @@
 | unlv | Soccer | ⚪ off (waiting) |  |
 | unlv | Softball | ⚪ off (waiting) |  |
 | usc | Baseball | ⚪ off (waiting) |  |
-| usc | Basketball | ⚪ off (waiting) |  |
 | usc | Lacrosse | ⚪ off (waiting) |  |
 | usc | Water Polo | ⚪ off (waiting) |  |
 | usc-upstate | Baseball | ⚪ off (waiting) |  |
@@ -1263,6 +1260,7 @@
 | jacksonville-state | Football | ✅ off (passed) | Jacksonville State at New Mexico St · 2026-10-29T06:33:50.086Z |
 | jacksonville-state | Soccer | ✅ off (passed) | Jacksonville State at Western KY · 2026-10-23T02:02:21.497Z |
 | jacksonville-state | Volleyball | ✅ off (passed) | Jacksonville State vs FIU · 2026-10-24T01:59:34.856Z |
+| james-madison | Basketball | ✅ off (passed) | Women's · James Madison at Virginia Tech · 2026-11-09T06:17:40.794Z |
 | james-madison | Field Hockey | ✅ off (passed) | James Madison at Wake Forest · 2026-10-25T19:08:42.269Z |
 | james-madison | Football | ✅ off (passed) | James Madison at App State · 2026-10-23T07:27:20.209Z |
 | james-madison | Soccer | ✅ off (passed) | Women's · James Madison at Coastal · 2026-10-23T02:02:22.547Z |
@@ -1484,6 +1482,7 @@
 | north-alabama | Basketball | ✅ off (passed) | Women's · North Alabama at Mississippi St · 2026-11-04T07:24:46.584Z |
 | north-alabama | Soccer | ✅ off (passed) | North Alabama vs West Georgia · 2026-11-02T00:41:01.459Z |
 | north-alabama | Volleyball | ✅ off (passed) | North Alabama at UT Arlington · 2026-10-24T21:15:41.647Z |
+| north-carolina | Basketball | ✅ off (passed) | Women's · UNC at South Carolina · 2026-11-09T06:17:39.515Z |
 | north-carolina | Field Hockey | ✅ off (passed) | UNC vs Wake Forest · 2026-10-24T01:59:34.474Z |
 | north-carolina | Football | ✅ off (passed) | UNC at Duke · 2026-10-17T23:31:05.365Z |
 | north-carolina | Soccer | ✅ off (passed) | Women's · UNC at Clemson · 2026-10-16T04:55:15.574Z |
@@ -1871,6 +1870,7 @@
 | utah-valley | Basketball | ✅ off (passed) | Women's · Utah Valley vs Santa Clara · 2026-11-08T02:26:30.302Z |
 | utah-valley | Soccer | ✅ off (passed) | Women's · Utah Valley vs Long Beach St · 2026-10-29T06:33:50.150Z |
 | utah-valley | Volleyball | ✅ off (passed) | Utah Valley at Sacramento St · 2026-10-23T07:27:20.478Z |
+| utep | Basketball | ✅ off (passed) | Men's · UTEP vs Incarnate Word · 2026-11-09T06:17:40.949Z |
 | utep | Football | ✅ off (passed) | UTEP at N Dakota St · 2026-10-31T23:49:37.402Z |
 | utep | Soccer | ✅ off (passed) | UTEP vs New Mexico · 2026-10-25T06:46:01.636Z |
 | utep | Volleyball | ✅ off (passed) | UTEP vs Air Force · 2026-10-24T23:24:11.867Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1074/1956; on 3; off 874; failing 5.
+Done 1077/1956; on 1; off 873; failing 5.

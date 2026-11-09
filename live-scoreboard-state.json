@@ -2104,7 +2104,25 @@
    "state": "off"
   },
   "usc|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-09T06:26:33.268Z",
+   "last_detail": "live 90-84 · 0:22 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "usc|Basketball|Men's|2026-11-08|1",
+    "title": "Men's · USC vs Wichita St",
+    "started_seen": "2026-11-09T06:17:42.357Z",
+    "live_passes": [
+     "2026-11-09T06:17:42.357Z",
+     "2026-11-09T06:19:04.966Z",
+     "2026-11-09T06:20:06.308Z",
+     "2026-11-09T06:21:27.661Z",
+     "2026-11-09T06:22:28.636Z",
+     "2026-11-09T06:23:50.484Z",
+     "2026-11-09T06:25:11.840Z",
+     "2026-11-09T06:26:33.268Z"
+    ],
+    "final_ok": false
+   }
   },
   "usc|Football": {
    "state": "done",
@@ -2719,24 +2737,13 @@
    "state": "off"
   },
   "north-carolina|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-09T00:11:32.661Z",
-   "last_detail": "live 35-71 · 4:57 - 4th · official_schedule+live_scoreboard",
-   "game": {
-    "key": "north-carolina|Basketball|Women's|2026-11-08|1",
-    "title": "Women's · UNC at South Carolina",
-    "started_seen": "2026-11-09T00:03:27.909Z",
-    "live_passes": [
-     "2026-11-09T00:03:27.909Z",
-     "2026-11-09T00:05:05.990Z",
-     "2026-11-09T00:06:06.903Z",
-     "2026-11-09T00:07:49.344Z",
-     "2026-11-09T00:09:10.806Z",
-     "2026-11-09T00:10:12.175Z",
-     "2026-11-09T00:11:32.661Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-09T06:17:39.515Z",
+   "last_detail": "final L, 39-84",
+   "game": null,
+   "verified_at": "2026-11-09T06:17:39.515Z",
+   "verified_game": "Women's · UNC at South Carolina",
+   "verified_detail": "final L, 39-84"
   },
   "north-carolina|Field Hockey": {
    "state": "done",
@@ -4119,24 +4126,13 @@
    "state": "off"
   },
   "james-madison|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-09T00:11:32.591Z",
-   "last_detail": "live 20-33 · 7:03 - 3rd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "james-madison|Basketball|Women's|2026-11-08|1",
-    "title": "Women's · James Madison at Virginia Tech",
-    "started_seen": "2026-11-09T00:03:29.555Z",
-    "live_passes": [
-     "2026-11-09T00:03:29.555Z",
-     "2026-11-09T00:05:05.361Z",
-     "2026-11-09T00:06:27.174Z",
-     "2026-11-09T00:07:48.617Z",
-     "2026-11-09T00:08:50.318Z",
-     "2026-11-09T00:10:11.665Z",
-     "2026-11-09T00:11:32.591Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-09T06:17:40.794Z",
+   "last_detail": "final L, 43-59",
+   "game": null,
+   "verified_at": "2026-11-09T06:17:40.794Z",
+   "verified_game": "Women's · James Madison at Virginia Tech",
+   "verified_detail": "final L, 43-59"
   },
   "james-madison|Field Hockey": {
    "state": "done",
@@ -4766,22 +4762,13 @@
    "verified_detail": "final L, 0-3"
   },
   "utep|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-09T00:11:32.638Z",
-   "last_detail": "live 7-2 · 16:58 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "utep|Basketball|Men's|2026-11-08|1",
-    "title": "Men's · UTEP vs Incarnate Word",
-    "started_seen": "2026-11-09T00:06:08.129Z",
-    "live_passes": [
-     "2026-11-09T00:06:08.129Z",
-     "2026-11-09T00:07:48.334Z",
-     "2026-11-09T00:09:10.786Z",
-     "2026-11-09T00:10:31.933Z",
-     "2026-11-09T00:11:32.638Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-09T06:17:40.949Z",
+   "last_detail": "final W, 79-60",
+   "game": null,
+   "verified_at": "2026-11-09T06:17:40.949Z",
+   "verified_game": "Men's · UTEP vs Incarnate Word",
+   "verified_detail": "final W, 79-60"
   },
   "utep|Football": {
    "state": "done",
@@ -12551,7 +12538,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.290.0-nba-nhl",
- "updated_at": "2026-11-09T00:11:32.667Z",
+ "version": "4.292.3-push-key-check",
+ "updated_at": "2026-11-09T06:26:33.273Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
