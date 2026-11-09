@@ -4,7 +4,9 @@
 // other request go to the network exactly as they do without it. Only the
 // offline page and the app icons are kept on the device.
 const CACHE='sas-sports-shell-v1';
-const OFFLINE='/offline.html';
+// Cloudflare serves public/offline.html at /offline (/offline.html redirects,
+// and a redirected answer cannot stand in for a page).
+const OFFLINE='/offline';
 const PRECACHE=[OFFLINE,'/icons/icon-192.png','/icons/icon-512.png','/icons/apple-touch-icon.png'];
 
 self.addEventListener('install',event=>{

@@ -16,7 +16,7 @@ The site can be installed from the browser and opens full screen with its own ic
 |---|---|
 | `public/manifest.webmanifest` | Name, colors, `start_url` `/`, `display: standalone`, icons |
 | `public/icons/*.png` | 192 and 512 icons ("any", rounded tile; "maskable", full bleed), 180 Apple touch icon. Drawn from the site's "SAS" mark by `scripts/make-pwa-icons.cjs` |
-| `public/sw.js` | Service worker. Pages: network first (navigation preload), the offline page when there is no connection. Icons: from the device. **Everything else goes to the network untouched**: it never caches `/api/*`, `/live/*`, feeds or scores, so the shared feed caching and `refresh=1` behave exactly as before |
+| `public/sw.js` | Service worker. Pages: network first (navigation preload), the offline page (`/offline`; Cloudflare redirects `/offline.html` there, and a redirected answer cannot stand in for a page) when there is no connection. Icons: from the device. **Everything else goes to the network untouched**: it never caches `/api/*`, `/live/*`, feeds or scores, so the shared feed caching and `refresh=1` behave exactly as before |
 | `public/offline.html` | "You're offline" page; reloads when the connection returns |
 | `public/index.html` | Manifest, icon and Apple meta tags; the Install button and hint; registers `/sw.js` |
 | `tests/pwa.mjs` | Checks the tags, the manifest and icon sizes, and runs `sw.js` to prove score/feed requests are left to the network (in `npm test` and `test:release`) |

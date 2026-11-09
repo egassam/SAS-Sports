@@ -33,7 +33,7 @@ assert.deepEqual(pngSize('/icons/apple-touch-icon.png'),[180,180]);
 assert.ok(existsSync(new URL('offline.html',root)),'offline page exists');
 
 // Service worker: run it with a stand-in for the worker scope.
-const handlers={},cached=new Map([['/offline.html','OFFLINE'],['/icons/icon-192.png','ICON']]);
+const handlers={},cached=new Map([['/offline','OFFLINE'],['/icons/icon-192.png','ICON']]);
 const scope={location:new URL('https://sas.example/'),registration:{},clients:{claim:async()=>{}},skipWaiting:async()=>{},
   addEventListener:(type,fn)=>{handlers[type]=fn}};
 let network=async()=>'NETWORK';
@@ -41,6 +41,7 @@ const context=vm.createContext({self:scope,URL,Response:{error:()=>'ERROR'},
   caches:{match:async r=>cached.get(new URL(typeof r==='string'?r:r.url,scope.location).pathname),open:async()=>({addAll:async()=>{}}),keys:async()=>[],delete:async()=>{}},
   fetch:(...a)=>network(...a)});
 vm.runInContext(read('sw.js').toString(),context);
+assert.doesNotMatch(read('sw.js').toString(),/'\/[^']*\.html'/,'sw.js uses clean paths: Cloudflare redirects /x.html to /x, and a redirect cannot answer a page');
 for(const t of ['install','activate','fetch'])assert.equal(typeof handlers[t],'function',`sw.js handles ${t}`);
 const fire=(url,{mode='cors',method='GET'}={})=>{let answer=null;handlers.fetch({request:{url,mode,method},preloadResponse:Promise.resolve(undefined),respondWith:p=>{answer=p}});return answer};
 for(const url of ['https://sas.example/api/schools','https://sas.example/api/feed?school=kstate&refresh=1','https://sas.example/live/highlights','https://sas.example/catalog/x','https://sas.example/score/'])
