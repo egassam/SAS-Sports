@@ -13,7 +13,7 @@ Last updated: November 8, 2026 (Central, about 7:15 PM). **Installable app (PWA)
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
-- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Not yet tried on a real iPhone or Android phone: check "Install app" and Add to Home Screen by hand.
+- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone").
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 

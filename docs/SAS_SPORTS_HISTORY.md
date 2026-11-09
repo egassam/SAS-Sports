@@ -5209,3 +5209,5 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 **Merge and production.** PR #559 merged as `b4091f5` under the standing permission. Production `4.291.0-pwa`: `/manifest.webmanifest` (application/manifest+json), `/sw.js`, `/offline`, icons 200; Chromium: installable, service worker active, offline page; `verify:prod --school=kstate --sports="Cross Country,Football" --version=4.291.0-pwa`: all PASS, XC 18/20 and 26/21.
 
 **Limits and next.** Not tried on a physical iPhone or Android phone. No push alerts yet (Web Push; on iPhone only for the installed app, iOS 16.4+); no store builds. Offline shows only the offline page (no saved scores), by design.
+
+**Phone check (follow-up).** User, after the merge: "Works well on my phone." The open item for a physical-phone check is closed.
