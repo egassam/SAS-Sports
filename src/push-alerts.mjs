@@ -125,24 +125,37 @@ export async function encryptPayload(payload,{p256dh,auth},{salt=crypto.getRando
 }
 
 // ---------- VAPID (RFC 8292) ----------
+// The 43-character key from the secret as saved: quotes, spaces and line
+// breaks are dropped, and a label pasted with it ("VAPID_PRIVATE_KEY=…") is
+// ignored when exactly one 43-character key is in the text. The key check
+// below still proves it is the right key. Null when no key can be found.
+export function privateKeyText(raw){
+  const text=String(raw??'');
+  const bare=text.replace(/["'`\s]/g,'');
+  if(/^[A-Za-z0-9_-]{43}$/.test(bare))return bare;
+  const found=text.match(/(?<![A-Za-z0-9_-])[A-Za-z0-9_-]{43}(?![A-Za-z0-9_-])/g)||[];
+  return found.length===1?found[0]:null;
+}
 export async function vapidSigningKey(publicKey,privateKey){
   const pub=fromB64url(publicKey);
   if(pub.length!==65||pub[0]!==4)throw new Error('VAPID_PUBLIC_KEY must be a 65-byte uncompressed P-256 key');
-  const jwk={kty:'EC',crv:'P-256',x:b64url(pub.slice(1,33)),y:b64url(pub.slice(33,65)),d:String(privateKey).trim(),ext:true};
+  const d=privateKeyText(privateKey);
+  if(!d)throw new Error('VAPID_PRIVATE_KEY has no 43-character key in it');
+  const jwk={kty:'EC',crv:'P-256',x:b64url(pub.slice(1,33)),y:b64url(pub.slice(33,65)),d,ext:true};
   return crypto.subtle.importKey('jwk',jwk,{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
 }
 // Whether the secret and the public key work together: sign with one, verify
 // with the other. Returns {ok} or {ok:false, problem} (never the key).
 export async function vapidKeyCheck(publicKey,privateKey){
   try{
-    const text=String(privateKey).trim();
-    if(!/^[A-Za-z0-9_-]+$/.test(text))return{ok:false,problem:'VAPID_PRIVATE_KEY has characters that are not part of the key (quotes, spaces or a label?): paste only the 43-character key'};
-    const d=fromB64url(text);
-    if(d.length!==32)return{ok:false,problem:`VAPID_PRIVATE_KEY decodes to ${d.length} bytes; it must be the 43-character key (32 bytes), with no quotes or spaces`};
+    if(!privateKeyText(privateKey)){
+      const plain=String(privateKey??'').trim();
+      return{ok:false,problem:/^[A-Za-z0-9_-]+$/.test(plain)?`VAPID_PRIVATE_KEY is ${plain.length} characters; it must be the 43-character private key (not the 87-character public key)`:'VAPID_PRIVATE_KEY has no 43-character key in it: paste only the key from the private key file'};
+    }
     const signing=await vapidSigningKey(publicKey,privateKey),data=enc.encode('sas-sports key check');
     const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},signing,data);
     const verify=await crypto.subtle.importKey('raw',fromB64url(publicKey),{name:'ECDSA',namedCurve:'P-256'},false,['verify']);
-    return await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},verify,sig,data)?{ok:true}:{ok:false,problem:'VAPID_PRIVATE_KEY does not match the public key'};
+    return await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},verify,sig,data)?{ok:true}:{ok:false,problem:'VAPID_PRIVATE_KEY does not match the public key (a key from another pair?)'};
   }catch(error){return{ok:false,problem:`VAPID_PRIVATE_KEY could not be loaded (${error?.name||'Error'})`}}
 }
 export async function vapidHeader(endpoint,{publicKey,signingKey,subject,now=Date.now()}){

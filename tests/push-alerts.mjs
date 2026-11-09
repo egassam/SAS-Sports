@@ -59,8 +59,11 @@ const VAPID_PUBLIC_KEY=b64url(vapid.getPublicKey()),VAPID_PRIVATE_KEY=b64url(vap
   const {vapidKeyCheck}=await import('../src/push-alerts.mjs');
   assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY),{ok:true});
   assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,` ${VAPID_PRIVATE_KEY}\n`),{ok:true},'spaces and a newline are trimmed');
-  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,`"${VAPID_PRIVATE_KEY}"`)).problem,/not part of the key/,'quotes are reported');
-  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PUBLIC_KEY)).problem,/decodes to 65 bytes/,'the public key pasted as the secret is reported');
+  // As pasted: quotes, a label, a line break inside the key.
+  for(const pasted of [`"${VAPID_PRIVATE_KEY}"`,`'${VAPID_PRIVATE_KEY}'`,`VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}`,`VAPID_PRIVATE_KEY: "${VAPID_PRIVATE_KEY}"`,`${VAPID_PRIVATE_KEY.slice(0,20)}\n${VAPID_PRIVATE_KEY.slice(20)}`])
+    assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,pasted),{ok:true},`key found in ${JSON.stringify(pasted.replace(VAPID_PRIVATE_KEY,'<key>'))}`);
+  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PUBLIC_KEY)).problem,/87-character public key/,'the public key pasted as the secret is reported');
+  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,'"oops"')).problem,/no 43-character key/);
   const other=nodeCrypto.createECDH('prime256v1');other.generateKeys();
   const mismatch=await vapidKeyCheck(VAPID_PUBLIC_KEY,b64url(other.getPrivateKey()));
   assert.equal(mismatch.ok,false,'a private key from another pair is reported');
