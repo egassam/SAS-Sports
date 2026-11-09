@@ -62,7 +62,7 @@ import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from 
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
-import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,sendPush} from './push-alerts.mjs';
+import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.292.0-push-alerts';
+const VERSION='4.292.3-push-key-check';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6481,7 +6481,12 @@ async function readBody(request,limit=8192){
 }
 async function pushRoute(request,env,url){
   const path=url.pathname,scope=url.hostname;
-  if(path==='/api/push/config')return json({enabled:pushConfigured(env),public_key:pushConfigured(env)?pushPublicKey(env):null,covers:'College and pro teams: when a game starts and its final score'});
+  // The key check signs with the secret and verifies with the public key; it
+  // reports only whether they work together, never the key.
+  if(path==='/api/push/config'){
+    const enabled=pushConfigured(env),key=enabled?await vapidKeyCheck(pushPublicKey(env),env.VAPID_PRIVATE_KEY):null;
+    return json({enabled:Boolean(enabled&&key?.ok),public_key:enabled&&key?.ok?pushPublicKey(env):null,covers:'College and pro teams: when a game starts and its final score',...(key&&!key.ok?{key_problem:key.problem}:{})});
+  }
   if(path==='/api/push/run'){
     const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
     if(!secret)return json({detail:'Not found'},404);
@@ -6509,7 +6514,9 @@ async function pushRoute(request,env,url){
     const sub=await db.prepare('SELECT endpoint,p256dh,auth,last_sent FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).first();
     if(!sub)return json({detail:'Not subscribed'},404);
     if(sub.last_sent&&Date.now()-Date.parse(sub.last_sent)<30000)return json({detail:'One test every 30 seconds'},429);
-    const result=await sendPush(sub,{title:'SAS Sports alerts are on',body:"You'll get an alert when a favorite's game starts and when it ends.",url:'/',tag:'test'},{...await pushKeys(env),fetchImpl:fetch});
+    let result;
+    try{result=await sendPush(sub,{title:'SAS Sports alerts are on',body:"You'll get an alert when a favorite's game starts and when it ends.",url:'/',tag:'test'},{...await pushKeys(env),fetchImpl:fetch})}
+    catch(error){return json({sent:false,status:0,detail:`The alert could not be prepared: ${error?.name||'Error'}: ${error?.message||error}`},500)}
     if(result.gone){await db.prepare('DELETE FROM push_subscriptions WHERE scope=? AND endpoint=?').bind(scope,endpoint).run();return json({sent:false,status:result.status,detail:'The browser dropped this subscription'},410)}
     await db.prepare('UPDATE push_subscriptions SET last_sent=? WHERE scope=? AND endpoint=?').bind(at,scope,endpoint).run();
     return json({sent:result.ok,status:result.status});

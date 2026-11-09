@@ -54,6 +54,21 @@ const VAPID_PUBLIC_KEY=b64url(vapid.getPublicKey()),VAPID_PRIVATE_KEY=b64url(vap
   assert.ok(await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},verify,fromB64url(s),new TextEncoder().encode(`${a}.${b}`)),'ES256 signature verifies');
 }
 
+// ---- The key check (reported by /api/push/config, never the key itself)
+{
+  const {vapidKeyCheck}=await import('../src/push-alerts.mjs');
+  assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY),{ok:true});
+  assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,` ${VAPID_PRIVATE_KEY}\n`),{ok:true},'spaces and a newline are trimmed');
+  // As pasted: quotes, a label, a line break inside the key.
+  for(const pasted of [`"${VAPID_PRIVATE_KEY}"`,`'${VAPID_PRIVATE_KEY}'`,`VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}`,`VAPID_PRIVATE_KEY: "${VAPID_PRIVATE_KEY}"`,`${VAPID_PRIVATE_KEY.slice(0,20)}\n${VAPID_PRIVATE_KEY.slice(20)}`])
+    assert.deepEqual(await vapidKeyCheck(VAPID_PUBLIC_KEY,pasted),{ok:true},`key found in ${JSON.stringify(pasted.replace(VAPID_PRIVATE_KEY,'<key>'))}`);
+  assert.match((await vapidKeyCheck(VAPID_PUBLIC_KEY,VAPID_PUBLIC_KEY)).problem,/87 characters \(87 key characters\) \(that is the public key length\)/,'the public key pasted as the secret is reported');
+  assert.equal((await vapidKeyCheck(VAPID_PUBLIC_KEY,'"/tmp/x/key.txt"')).problem,'VAPID_PRIVATE_KEY has no 43-character key in it; saved value: 16 characters (10 key characters, 2 quotes, 4 path or URL characters)');
+  const other=nodeCrypto.createECDH('prime256v1');other.generateKeys();
+  const mismatch=await vapidKeyCheck(VAPID_PUBLIC_KEY,b64url(other.getPrivateKey()));
+  assert.equal(mismatch.ok,false,'a private key from another pair is reported');
+}
+
 // ---- Pure rules
 const ua=nodeCrypto.createECDH('prime256v1');ua.generateKeys();
 const auth=nodeCrypto.randomBytes(16);
@@ -110,6 +125,12 @@ const call=(path,body,{method='POST',headers={},on=env,at=host}={})=>worker.hand
 assert.deepEqual(await (await call('/api/push/config',null,{method:'GET',on:{}})).json(),{enabled:false,public_key:null,covers:'College and pro teams: when a game starts and its final score'},'off without keys');
 assert.equal((await call('/api/push/subscribe',{subscription,favorites:['chicago-bulls']},{on:{}})).status,503);
 assert.equal((await (await call('/api/push/config',null,{method:'GET'})).json()).public_key,VAPID_PUBLIC_KEY);
+{
+  const bad=await (await call('/api/push/config',null,{method:'GET',on:{...env,VAPID_PRIVATE_KEY:'"oops"'}})).json();
+  assert.deepEqual([bad.enabled,bad.public_key],[false,null]);
+  assert.match(bad.key_problem,/VAPID_PRIVATE_KEY/);
+  assert.ok(!JSON.stringify(bad).includes('oops'),'the secret is never echoed');
+}
 assert.equal((await call('/api/push/subscribe',{subscription:{endpoint:'nope'},favorites:[]})).status,400);
 const subscribed=await (await call('/api/push/subscribe',{subscription,favorites:['chicago-bulls','philadelphia-76ers','manhattan-ks','no-such-team']})).json();
 assert.deepEqual(subscribed,{subscribed:true,favorites:['chicago-bulls','philadelphia-76ers','manhattan-ks'],covered:['chicago-bulls','philadelphia-76ers']});
