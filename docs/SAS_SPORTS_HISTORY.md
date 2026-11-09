@@ -5193,3 +5193,19 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Limits and next.** Preseason not listed; the Cup championship's note to be checked in December; play-in and playoffs in April; Finals opponent not yet decided reads "TBD"; no logos or headshots; standings not shown. Pro ideas left with the user: NWSL (KC Current), WNBA, IndyCar, PGA Tour.
 
+
+## November 8, 2026 (Central, evening) — Installable app (PWA) (PR #559, 4.291.0-pwa)
+
+**Conversation.** User: "When should we make this into an app for Apple and Droid?" The agent found no manifest, icons or service worker in the repo and advised: make the site installable (PWA) now; build store apps (Capacitor around the same site) only after push alerts exist (Apple rejects apps that are only a website), Home's single request is built, and logo/trademark use is settled; TestFlight / Play internal beta about February, public before the March basketball postseason; costs $99/year Apple, $25 once Google, a Mac or cloud build for iOS. User: "Begin the pwa".
+
+**Built.** `public/manifest.webmanifest` (standalone, `start_url` `/`, theme `#07111f`, 192/512 "any" and "maskable" icons); `public/icons/` drawn from the "SAS" mark with Playwright and Inter (`scripts/make-pwa-icons.cjs`), 180 px Apple touch icon; `public/sw.js` (cache `sas-sports-shell-v1`: pages network first with navigation preload and `/offline` as fallback, icons cache first, every other request left to the network, so `/api/*`, `/live/*`, feeds and `refresh=1` are unchanged); `public/offline.html`; in `public/index.html` the manifest, icon and Apple meta tags (status bar `black`, as the page does not pad for the notch), the "Install app" button (shown on `beforeinstallprompt`, or on iPhone/iPad with a Share → Add to Home Screen hint; hidden in standalone) and the registration. Version `4.291.0-pwa` (also renews the versioned feed cache, as every release does). `docs/PWA.md`.
+
+**Found.** On the preview, `/offline.html` answered 307 to `/offline` (Cloudflare's asset HTML handling). A redirected response cannot answer a navigation, so the offline fallback would have failed: the worker caches `/offline`, and `tests/pwa.mjs` rejects `.html` paths in `sw.js` (commit `2e69e7b`).
+
+**Tests.** `tests/pwa.mjs` (in `npm test` and `test:release`): page tags, manifest fields, icon PNG sizes, and `sw.js` run in a VM stand-in: `/api/schools`, `/api/feed?…&refresh=1`, `/live/highlights`, `/catalog/x`, `/score/`, other origins and POSTs get no `respondWith`; navigations come from the network online and the offline page offline; icons from the cache. Local Chromium against a static serve of `public/`: service worker active, `Page.getInstallabilityErrors` empty, manifest without errors, offline reload shows "You're offline"; iPhone 13 emulation (button and hint) and the desktop header checked by eye.
+
+**Gate.** `test:release` passed locally (408 commands, 246 s) on the first commit; CI guardrails and certification-matrix green on `2e69e7b`. Preview `4.291.0-pwa`: the same Chromium check (installable, offline page), the K-State page under the service worker (Pixel 7 emulation: controlled, live feed loaded), `verify:preview --school=kstate --sports="Cross Country,Football" --refreshes=3`: all PASS, XC 18/20 and 26/21. No sport changed, so no 36-refresh run.
+
+**Merge and production.** PR #559 merged as `b4091f5` under the standing permission. Production `4.291.0-pwa`: `/manifest.webmanifest` (application/manifest+json), `/sw.js`, `/offline`, icons 200; Chromium: installable, service worker active, offline page; `verify:prod --school=kstate --sports="Cross Country,Football" --version=4.291.0-pwa`: all PASS, XC 18/20 and 26/21.
+
+**Limits and next.** Not tried on a physical iPhone or Android phone. No push alerts yet (Web Push; on iPhone only for the installed app, iOS 16.4+); no store builds. Offline shows only the offline page (no saved scores), by design.
