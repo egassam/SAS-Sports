@@ -1,10 +1,13 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| liu | Basketball | ❌ failing | Women's · LIU at Pitt: final L, 42-92 not in the app's results |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
+| charlotte | Basketball | 🔴 on | live 29-25 · 6:15 - 2nd · official_schedule+live_scoreboard |
+| liu | Basketball | 🔴 on | live 24-30 · 5:32 - 1st · official_schedule+live_scoreboard |
+| memphis | Basketball | 🔴 on | live 19-13 · 6:05 - 2nd · official_schedule+live_scoreboard |
+| syracuse | Basketball | 🔴 on | live 38-34 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -120,7 +123,6 @@
 | charleston-southern | Football | ⚪ off (waiting) |  |
 | charleston-southern | Softball | ⚪ off (waiting) |  |
 | charlotte | Baseball | ⚪ off (waiting) |  |
-| charlotte | Basketball | ⚪ off (waiting) |  |
 | charlotte | Lacrosse | ⚪ off (waiting) |  |
 | charlotte | Softball | ⚪ off (waiting) |  |
 | chattanooga | Football | ⚪ off (waiting) |  |
@@ -393,7 +395,6 @@
 | mcneese | Football | ⚪ off (waiting) |  |
 | mcneese | Softball | ⚪ off (waiting) |  |
 | memphis | Baseball | ⚪ off (waiting) |  |
-| memphis | Basketball | ⚪ off (waiting) |  |
 | memphis | Softball | ⚪ off (waiting) |  |
 | mercer | Baseball | ⚪ off (waiting) |  |
 | mercer | Football | ⚪ off (waiting) |  |
@@ -707,7 +708,6 @@
 | stony-brook | Football | ⚪ off (waiting) |  |
 | stony-brook | Lacrosse | ⚪ off (waiting) |  |
 | stony-brook | Softball | ⚪ off (waiting) |  |
-| syracuse | Basketball | ⚪ off (waiting) |  |
 | syracuse | Lacrosse | ⚪ off (waiting) |  |
 | syracuse | Softball | ⚪ off (waiting) |  |
 | tarleton-state | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1078/1956; on 0; off 873; failing 5.
+Done 1078/1956; on 4; off 870; failing 4.
