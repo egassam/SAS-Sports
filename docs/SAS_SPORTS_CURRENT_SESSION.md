@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 10, 2026 (Central, about 3:45 PM). **Home: one request for every favorite's saved feed live** (user: "Do the home page"; PR #568, merge `5ee6e47`, production `4.294.0-home-request`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). `/live/home?pairs=school|Sport,...` (40 at most) answers each favorite's sport with the copy this Cloudflare location already has (edge, last good, or the shared KV copy), never a rebuild, marked `fresh`, `recent` (quiet feed within the hour) or `stale`; the page shows them all at once and reads again, four at a time, only the sports not `fresh`/`recent`. A forced refresh, or a failed `/live/home`, reads every sport as before. `tests/home-copies.mjs`. Production, 5 favorites (K-State, KU, Manhattan, Anthony, Utah), Chromium: first visit 62.8 s / 38 reads → 13.0 s / 1 + 24; second 14.7 s / 23 → 3.8 s / 1 + 9; a new device 7.3 s / 38 → 2.1 s / 1 + 10.
+Last updated: November 10, 2026 (Central, about 4:40 PM). **Live marquee signs live** (user: "give every sports live it's own marque sign look ... It's still to overwhelming when there's a lot of live games"; PR #570, merge `da64a5d`, production `4.295.0-live-marquees`, `verify:prod` PASS, XC 18/20 and 26/21). Home's live sections are grouped by sport under a lit sign each (own color, mark, live count; `SPORT_MARQUEE`); Everywhere shows 6 games a sport with "Show all N <sport>" and sport chips that jump to each sign (the single 30-game cap is gone). `tests/home-marquee.mjs`.
+
+Earlier the same day: **Home: one request for every favorite's saved feed live** (user: "Do the home page"; PR #568, merge `5ee6e47`, production `4.294.0-home-request`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). `/live/home?pairs=school|Sport,...` (40 at most) answers each favorite's sport with the copy this Cloudflare location already has (edge, last good, or the shared KV copy), never a rebuild, marked `fresh`, `recent` (quiet feed within the hour) or `stale`; the page shows them all at once and reads again, four at a time, only the sports not `fresh`/`recent`. A forced refresh, or a failed `/live/home`, reads every sport as before. `tests/home-copies.mjs`. Production, 5 favorites (K-State, KU, Manhattan, Anthony, Utah), Chromium: first visit 62.8 s / 38 reads → 13.0 s / 1 + 24; second 14.7 s / 23 → 3.8 s / 1 + 9; a new device 7.3 s / 38 → 2.1 s / 1 + 10.
 
 **Found, not fixed (production, not this PR):** `check:reference-rules` (all sports): 134 schools, 1,047 feeds, 15,648 cards, **21 FAIL**: volleyball games listed twice with one id (Wabaunsee 9, Ell-Saline 7, Emporia 1, Linn 1 plus its result twice), Baldwin flag football Sep 16 twice, Hillsboro MS boys basketball Nov 9 at Hoisington MS reads Upcoming. The last full run (Nov 6 to 9) checked basketball only.
 
@@ -36,7 +38,7 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.294.0-home-request`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.295.0-live-marquees`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -332,3 +334,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 8 — Push alerts: key check and as-pasted key (PR #564, `4.292.3`); the secret fixed by the user; test alert received ("It works").
 - Nov 9 — Middle school schedule fixes: finished games read played after 3 h, Anthony Nov 19 is 8th grade, Washburn Rural MS/North basketball from USD 437 PDFs (PR #566, `4.293.0-ms-schedule-fixes`, verified in production).
 - Nov 10 — Home: one `/live/home` request for every favorite's saved copy, only the rest read again (PR #568, `4.294.0-home-request`, verified in production).
+- Nov 10 — Home: a marquee sign per sport for live games, 6 a sport on Everywhere with Show all and sport chips (PR #570, `4.295.0-live-marquees`, verified in production).
