@@ -60,6 +60,23 @@ assert.ok(sameFinal(meet('2026-10-03','Blue Jay Invitational',[{}]),meet('2026-1
   const dhNext=mergeFinals([scored('2026-04-10','Clay Center',3,1),unscored('2026-04-10','Clay Center')],dhRows,{now});
   assert.deepEqual(dhNext.events.map(e=>e.headline),['W, 3-1','L, 2-5']);
   assert.deepEqual(dhNext.writes,[]);
+  // An extra stored row for a game the build has once (November 10: Linn,
+  // Emporia, Baldwin): not listed again. Two MaxPreps match pages are two
+  // games: game 2 is listed again when the build drops it.
+  {
+    const mp=c=>`https://www.maxpreps.com/ks/volleyball/match/linn-vs-x/10-30-2026/?c=${c}`;
+    const twice=[scored('2026-10-30','Tipton',2,0,{recap_url:mp('6742b950')}),scored('2026-10-30','Tipton',2,0,{recap_url:mp('6742b950')})];
+    const twiceRows=mergeFinals(twice,[],{now}).writes.map(w=>({key:w.key,event:JSON.stringify(w.event),sig:w.sig,history:'[]'}));
+    assert.equal(twiceRows.length,2,'the old build stored the game twice');
+    assert.deepEqual(mergeFinals([twice[0]],twiceRows,{now}).events.map(e=>e.headline),['W, 2-0'],'listed once');
+    const bound=scored('2026-09-16','Osage City',14,0,{recap_url:'https://beta.gobound.com/ks/schools/baldwinhs/calendar'});
+    const rows=mergeFinals([scored('2026-09-16','Osage City',30,12),bound],[],{now}).writes.map(w=>({key:w.key,event:JSON.stringify(w.event),sig:w.sig,history:'[]'}));
+    assert.deepEqual(mergeFinals([scored('2026-09-16','Osage City',30,12)],rows,{now}).events.map(e=>e.headline),['W, 30-12'],'Bound\'s second reading of MaxPreps\' one game');
+    const dh2=[scored('2026-10-10','Sabetha',2,0,{recap_url:mp('aaa1')}),scored('2026-10-10','Sabetha',0,2,{recap_url:mp('bbb2')})];
+    const dh2Rows=mergeFinals(dh2,[],{now}).writes.map(w=>({key:w.key,event:JSON.stringify(w.event),sig:w.sig,history:'[]'}));
+    assert.deepEqual(mergeFinals([dh2[0]],dh2Rows,{now}).events.map(e=>e.headline),['W, 2-0','L, 0-2'],'a doubleheader\'s dropped game 2 is listed again');
+    assert.deepEqual(mergeFinals([],dh2Rows,{now}).events.length,2,'nothing built: both listed again');
+  }
   // A triangular: Topeka and Topeka West the same day never trade scores
   // (loose names match "Topeka" to both), refused or not.
   {
