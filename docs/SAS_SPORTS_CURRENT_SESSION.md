@@ -1,6 +1,10 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 10, 2026 (Central, about 4:40 PM). **Live marquee signs live** (user: "give every sports live it's own marque sign look ... It's still to overwhelming when there's a lot of live games"; PR #570, merge `da64a5d`, production `4.295.0-live-marquees`, `verify:prod` PASS, XC 18/20 and 26/21). Home's live sections are grouped by sport under a lit sign each (own color, mark, live count; `SPORT_MARQUEE`); Everywhere shows 6 games a sport with "Show all N <sport>" and sport chips that jump to each sign (the single 30-game cap is gone). `tests/home-marquee.mjs`.
+Last updated: November 10, 2026 (Central, about 6:30 PM). **Reference-rule failures fixed** (user: "Fix those next"; PRs #572 `e363a07` and #573 `c2a182d`, production `4.297.0-aged-copies`, `verify:prod` K-State PASS, XC 18/20 and 26/21). Production `check:reference-rules` (all sports): 21 FAIL → **0 FAIL** (134 schools, 1,047 feeds, 15,768 cards, 35 NOTE). (1) #572: duplicate cards were stored finals listed again when an earlier build had listed one game twice (Linn, Emporia, Baldwin flag football; MaxPreps has one Baldwin Sep 16 game, W 30-12): a leftover stored game is listed again only when the build lacks it or the two have different MaxPreps match pages (a doubleheader); every card keeps its own id after the merge. (2) #573: a middle or high school saved copy built on an earlier day (served while Bound refuses a rebuild) reads its past Today/Live/Upcoming games as played and drops past placeholders (Nov 9 games read Today on Nov 10). Wabaunsee, Ell-Saline and Hillsboro MS had been saved copies; fresh builds were right.
+
+**After the merge:** `verify:prod` Manhattan/Silver Lake MS/Oskaloosa MS: Oskaloosa MS volleyball's expanded views answered 404, and 1 wrestling refresh got no answer, because Bound refused production (`/live/status`: Bound "unreadable") after this session's three full rule runs (about 3,000 reads). Bound answered again by 23:17 UTC (Oskaloosa volleyball 11 events); `verify:prod --school=oskaloosa-ms-ks --sports=all`: PASS.
+
+Earlier: **Live marquee signs live** (user: "give every sports live it's own marque sign look ... It's still to overwhelming when there's a lot of live games"; PR #570, merge `da64a5d`, production `4.295.0-live-marquees`, `verify:prod` PASS, XC 18/20 and 26/21). Home's live sections are grouped by sport under a lit sign each (own color, mark, live count; `SPORT_MARQUEE`); Everywhere shows 6 games a sport with "Show all N <sport>" and sport chips that jump to each sign (the single 30-game cap is gone). `tests/home-marquee.mjs`.
 
 Earlier the same day: **Home: one request for every favorite's saved feed live** (user: "Do the home page"; PR #568, merge `5ee6e47`, production `4.294.0-home-request`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). `/live/home?pairs=school|Sport,...` (40 at most) answers each favorite's sport with the copy this Cloudflare location already has (edge, last good, or the shared KV copy), never a rebuild, marked `fresh`, `recent` (quiet feed within the hour) or `stale`; the page shows them all at once and reads again, four at a time, only the sports not `fresh`/`recent`. A forced refresh, or a failed `/live/home`, reads every sport as before. `tests/home-copies.mjs`. Production, 5 favorites (K-State, KU, Manhattan, Anthony, Utah), Chromium: first visit 62.8 s / 38 reads → 13.0 s / 1 + 24; second 14.7 s / 23 → 3.8 s / 1 + 9; a new device 7.3 s / 38 → 2.1 s / 1 + 10.
 
@@ -23,12 +27,12 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 - Washburn Rural MS and North wrestling stay on Bound: WRMS's boys PDF is still 2025-26 and the girls' PDFs name meets only by their field (`KS_COUNTIES_BATCH3_MODULE.md`).
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
-- Duplicate fall cards and one past game reading Upcoming in production (`check:reference-rules`, 21 FAIL, listed above).
+- Bound's read limit: a full `check:reference-rules` reads about 1,050 feeds; three in two hours made Bound refuse production. Run it at most once an hour, or with `--school`/`--county`.
 - PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone"). Push alerts live (PRs #562, #564), test alert received on the user's phone.
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 
-**Next session:** the user's choice (the 21 reference-rule failures, more counties, the Summit League and SWAC, more pro leagues, PWA push alerts, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
+**Next session:** the user's choice (more counties, the Summit League and SWAC, more pro leagues, PWA push alerts, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
 
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
@@ -38,7 +42,7 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.295.0-live-marquees`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.297.0-aged-copies`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -335,3 +339,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 9 — Middle school schedule fixes: finished games read played after 3 h, Anthony Nov 19 is 8th grade, Washburn Rural MS/North basketball from USD 437 PDFs (PR #566, `4.293.0-ms-schedule-fixes`, verified in production).
 - Nov 10 — Home: one `/live/home` request for every favorite's saved copy, only the rest read again (PR #568, `4.294.0-home-request`, verified in production).
 - Nov 10 — Home: a marquee sign per sport for live games, 6 a sport on Everywhere with Show all and sport chips (PR #570, `4.295.0-live-marquees`, verified in production).
+- Nov 10 — Reference-rule failures 21 → 0: stored finals no longer relist a game the build has (PR #572), saved copies from an earlier day read past games played (PR #573, `4.297.0-aged-copies`, verified in production).

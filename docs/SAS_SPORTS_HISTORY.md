@@ -5311,3 +5311,43 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 - Manhattan, Anthony and Eisenhower, all sports, 3 refreshes: PASS. `check-reference-page`: PASS.
 - On the preview and in production, the real live games (1 basketball, 4 soccer) showed under two signs.
 - `verify:prod`: PASS.
+
+### November 10, 2026 (Central, about 6:30 PM): the 21 reference-rule failures
+
+**Conversation.** User: "Fix those next" (the 21 `check:reference-rules` FAILs found in production after PR #568).
+
+**Found:**
+- **Linn, Emporia, Baldwin (one id twice).** A stored final was listed again beside the same game from the build. An earlier build had listed one game twice: Bound twice (Linn vs St. John's/Tipton Catholic Oct 30, both MaxPreps `c=6742b950`), or Bound and MaxPreps at different times (Emporia at Andover Sep 12, 9:00 MaxPreps / 10:00 Bound, both L 0-2; Baldwin at Osage City Sep 16, Bound 6:30 W 14-0 / MaxPreps W 30-12). The store kept both rows (key and `#2`); the build now lists the game once, so the `#2` row was left over and listed again as a dropped final. MaxPreps' Baldwin schedule has one Sep 16 game (W 30-12, one box score) and an unscored Sep 17 game.
+- **Wabaunsee and Ell-Saline.** Real doubleheaders (two MaxPreps match pages each). Fresh builds already gave the second match "-2" (Nov 7); the check had read older copies.
+- **Hillsboro MS.** Fresh build correct (Nov 9 reads played).
+
+**PR #572 (merge `e363a07`, `4.296.0-stored-twins`):**
+- `mergeFinals` lists a leftover stored game again only when the build doesn't have that game (exact or compatible opponent, same day and team), unless the two have different MaxPreps match pages (a doubleheader). Meets keep their rule.
+- `withStoredFinals` makes every id unique after the merge.
+- Tests in `tests/finals-store.mjs`.
+- Gate:
+  - `test:release` exit 0; CI green.
+  - `diff:feeds` Volleyball and Flag Football: 140 feeds, all the same.
+  - `verify:preview` K-State 36/36, XC 18/20 and 26/21; six schools, all sports, 3 refreshes: PASS; reference page PASS.
+  - Rules with `--refresh` on the six schools: 0 FAIL.
+  - Production: the six schools 0 FAIL.
+
+**Then** the full production run gave 8 FAIL:
+- Frankfort volleyball duplicate: a saved copy; a fresh build had none.
+- 7 Nov 9 middle school basketball games reading "Today" on Nov 10 (Silver Lake ×2, Washburn Rural ×2, Salina South, Oskaloosa, Wellsville). Bound refused production's rebuilds (`refresh=1` answered `saved`, built 04:00 UTC = Nov 9, 10 PM Central). The cause was this session's repeated full runs past Bound's about 800 reads an hour.
+
+**PR #573 (merge `c2a182d`, `4.297.0-aged-copies`):**
+- `agedCopy`/`agedHighSchoolGroups`: a middle or high school saved copy built on an earlier day at the school has its past Today/Live/Upcoming games read as played ("No score posted" / "No results posted") and past placeholders dropped, on every saved answer of `/live/feed/grouped` and on `/live/home`. Copies built today and college copies are untouched.
+- `tests/aged-copies.mjs`.
+- Gate:
+  - `test:release` exit 0; CI green.
+  - `verify:preview` K-State 36/36, XC baselines; Manhattan, Anthony, Eisenhower, Silver Lake MS, Oskaloosa MS: PASS; reference page PASS.
+  - `diff:feeds` Basketball, high and middle school: 134 feeds, 129 the same, 5 differ (Salina Lakewood MS, Perry-Lecompton, McLouth MS, Goessel, Peabody-Burns). In each the preview had cards production's served copy lacked, and production's own forced rebuild gave the same cards (copies built while Bound refused); none came from the change.
+
+**Production after #573:**
+- `verify:prod` K-State Football: PASS (XC 18/20, 26/21).
+- `check:reference-rules`, all sports: **134 schools, 1,047 feeds, 15,768 cards, 0 FAIL, 35 NOTE**.
+- `verify:prod` Manhattan, Silver Lake MS, Oskaloosa MS, all sports: Oskaloosa MS volleyball's expanded views answered 404 for 2 events, and 1 wrestling refresh got no answer. `/live/status` gave 0 events with Bound "unreadable": Bound was refusing production after about 3,000 reads in two hours. Expanded views rebuild the feed, so they 404 while Bound refuses. Not from the change.
+
+**Lesson:** run the full `check:reference-rules` at most once an hour (about 1,050 Bound reads each), or narrow it with `--school`/`--county`.
+- **Recheck:** Bound answered production again by 23:17 UTC (Oskaloosa MS volleyball: 11 events); `verify:prod --school=oskaloosa-ms-ks --sports=all --version=4.297.0-aged-copies`: all checks passed.
