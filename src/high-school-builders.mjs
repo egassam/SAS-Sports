@@ -5,6 +5,7 @@
 // by `schoolFromConfig`; schools with their own calendar readers stay in
 // their county module. See docs/HIGH_SCHOOL_ONBOARDING.md.
 import {LETSGORUN_MEETPRO} from './schools/manhattan-ks.mjs';
+import {usd437ScheduleUrl} from './high-school.mjs';
 
 export const VARSITY=/^Varsity$/i;
 export const bound=(school,slug,state='ks')=>({school,page:`https://beta.gobound.com/${state}/schools/${slug}/calendar`});
@@ -122,7 +123,8 @@ export const SHARED_SOURCES={letsgorun:LETSGORUN_MEETPRO};
 //    "sports":{"has":[...],"meetTeam","trackTeam","tennis","milesplit","paths","grades":"usd475","maxprepsSchedule":true},
 //    "milesplitNames":{"<schedule name>":"<MileSplit Live name>"},
 //    "extraMeets":{"<sport>":[{"date","name"}]},
-//    "stateXc":{"class":"3A","names":[...],"sexes":["Girls","Boys"]}}
+//    "stateXc":{"class":"3A","names":[...],"sexes":["Girls","Boys"]},
+//    "usd437":"wrms"|"wrn" (basketball schedule PDFs from USD 437)}
 // A module built from data is the same object its hand-written module was
 // (tests/hs-config.mjs compares them).
 export function schoolFromConfig(entry,{shared={}}={}){
@@ -144,6 +146,12 @@ export function schoolFromConfig(entry,{shared={}}={}){
   for(const [sport,meets] of Object.entries(entry.extraMeets||{}))if(module.sports[sport])module.sports[sport][0].extraMeets=meets.map(m=>({...m}));
   if(entry.milesplitNames&&module.sports['Cross Country']?.[0]?.milesplit)module.sports['Cross Country'][0].milesplit.names={...entry.milesplitNames};
   if(entry.stateXc)module.midwestTiming=[stateXc(entry.stateXc.class,entry.id,entry.stateXc.names,entry.stateXc.sexes)];
+  // "usd437": "wrms" | "wrn": each grade's basketball schedule PDF from the
+  // district (Bound lists only a few of the games; November 9, 2026).
+  if(entry.usd437)for(const team of module.sports.Basketball||[]){
+    const m=String(team.label||'').match(/^(7th|8th) (Girls|Boys)$/);
+    if(m)team.pdfSchedule={url:usd437ScheduleUrl(`${m[2].toLowerCase()}-basketball`,`${m[1]}-grade`,entry.usd437),school:entry.usd437};
+  }
   return module;
 }
 // Every school of a data file, by id.

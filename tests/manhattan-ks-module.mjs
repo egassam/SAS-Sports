@@ -9,7 +9,7 @@ import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {schoolModuleDeps} from './school-module-deps.mjs';
 import {manhattanKsSchool} from '../src/schools/manhattan-ks.mjs';
-import {USD383_ABBREVIATIONS} from '../src/schools/manhattan-ks-middle.mjs';
+import {USD383_ABBREVIATIONS,anthonyMsSchool} from '../src/schools/manhattan-ks-middle.mjs';
 import {boundFinals,boundGame,boundMeet,parseMiddleSchoolTitle,parseCalendarTitle,calendarEvents,maxprepsContests,maxprepsBoxScore,isNamedEvent,namesCompatible,tennisTeamStanding} from '../src/high-school.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const fixture=name=>name.endsWith('.gz')?gunzipSync(readFileSync(new URL('./fixtures/manhattan-ks-module/'+name,import.meta.url))).toString('utf8'):read('./fixtures/manhattan-ks-module/'+name);
@@ -36,6 +36,16 @@ for(const name of ['Inter Squad Scrimmage','Intrasquad','Intra-Squad Scrimmage']
 assert.ok(!manhattanKsSchool.skip.test('Junction City'));
 // Winter added October 30 (basketball, wrestling, boys swimming, bowling).
 assert.deepEqual(sponsoredSports['manhattan-ks'],['Basketball','Bowling','Cross Country','Football','Golf','Soccer','Swimming & Diving','Tennis','Volleyball','Wrestling']);
+
+// A title typed with the wrong grade is read as corrected, by event id
+// (Anthony's Nov 19 "7GBB v JC" is the 8th grade game: Junction City's Bound
+// schedule). Only that event changes; the 7th grade's "@ JC" stays.
+{
+  const payload={data:{events:[{id:'86646704@parentsquare.com',title:'7GBB v JC',start_date:'2026-11-19',start_time:'16:15:00',end_date:'2026-11-19'},{id:'86646558@parentsquare.com',title:'7GBB @ JC',start_date:'2026-11-19',start_time:'16:30:00',end_date:'2026-11-19'}]}};
+  const read=label=>calendarEvents(payload,{team:new RegExp(`^${label} Girls Basketball$`,'i'),parse:anthonyMsSchool.calendar.parse,corrections:anthonyMsSchool.calendar.corrections}).map(g=>`${g.time} ${g.name}`);
+  assert.deepEqual(read('8th'),['16:15 Junction City']);
+  assert.deepEqual(read('7th'),['16:30 Junction City']);
+}
 
 // Calendar titles.
 assert.deepEqual(parseCalendarTitle('MHS Varsity Football - Junction City - AWAY','MHS'),{team:'Varsity Football',name:'Junction City',site:'AWAY'});
@@ -257,6 +267,18 @@ try{
       assert.equal(post[0].results[1].participant+' | '+post[0].results[1].result,'Maddie Myers | 1st · 136 (-8) · 63-73');
       assert.equal(post[0].highlights[1],'Maddie Myers led Manhattan in 1st with 136 (-8), the medalist.');
       assert.equal(post[1].results[1].participant+' | '+post[1].results[1].result,'Maddie Myers | 2nd · 72 (E) · Qualified for State','the state-qualifier badge is not part of the name');
+    }finally{globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}}}
+  }
+  // A game played earlier today with no score is played, not "Today" (user,
+  // November 9, 2026: Anthony's 4:00 PM game at Wamego read "Today" at
+  // 9:28 PM): three hours after its start, "No score posted".
+  for(const [clock,expected] of [['2026-10-10T02:59:00Z','Today Oct 9, 7:00 PM Manhattan vs Emporia | '],['2026-10-10T03:00:00Z','Final Oct 9, 7:00 PM Manhattan vs Emporia | No score posted']]){
+    const t=new RealDate(clock);
+    globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[t.getTime()]))}static now(){return t.getTime()}};
+    try{
+      const [g]=worker.groupEvents((await worker.fetchLive('manhattan-ks','Football')).events,t);
+      const line=e=>`${e.status} ${e.display_time} ${e.title} | ${e.headline||''}`;
+      assert.ok([...g.results,...g.upcoming].map(line).includes(expected),`${clock}: ${expected}`);
     }finally{globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}}}
   }
 

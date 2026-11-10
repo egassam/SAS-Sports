@@ -46,6 +46,11 @@ const sports=(team,trackTeam=team,milesplit)=>({
   // Spring tennis: one team for Anthony and Eisenhower ("AMS/EMS Varsity Tennis").
   Tennis:[{calendar:/^Tennis$/i,meet:true}]
 });
+// Titles typed with the wrong grade, by calendar event id, with the official
+// schedule that shows it. Nov 19, 2026: "7GBB v JC" (4:15) beside "7GBB @ JC"
+// (4:30); Junction City MS's Bound schedule has "8th Girls · Junction City at
+// Susan B. Anthony MS" at 4:15 and its 7th grade home at 4:30.
+export const ANTHONY_CORRECTIONS={'86646704@parentsquare.com':'8GBB v JC'};
 // "GBB vs CCCMS" names no grade: not a team the app lists.
-export const anthonyMsSchool={id:'anthony-ms-ks',calendar:{url:'https://ams.usd383.org/api/calendars/128968/events',parse:anthonyParse,ignore:/^[GB]BB\b/i},globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,sports:sports('Anthony',['Anthony','Susan B Anthony'],40691)};
+export const anthonyMsSchool={id:'anthony-ms-ks',calendar:{url:'https://ams.usd383.org/api/calendars/128968/events',parse:anthonyParse,ignore:/^[GB]BB\b/i,corrections:ANTHONY_CORRECTIONS},globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,sports:sports('Anthony',['Anthony','Susan B Anthony'],40691)};
 export const eisenhowerMsSchool={id:'eisenhower-ms-ks',calendar:{url:'https://ems.usd383.org/api/calendars/128776/events',parse},globalSavedCopy:true,meetPro:LETSGORUN_MEETPRO,sports:sports('Eisenhower','Eisenhower',40690)};
