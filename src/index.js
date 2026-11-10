@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.296.0-stored-twins';
+const VERSION='4.297.0-aged-copies';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6936,12 +6936,50 @@ async function homeSavedFeed(url,env,cache,school,sport){
     if(!state){response=await cache.match(lastGoodFeedKey(url,school,sport));state=response&&cachedAge(response)<=LAST_GOOD_MS?'stale':null}
     if(!state){response=await globalCopy(env,url,school,sport);state=response?homeCopyState(response):null}
     if(!state)return null;
-    const groups=await response.json();
+    const groups=await (await agedCopy(response,school)).json();
     return Array.isArray(groups)?{school,sport,state,fetched_at:response.headers.get('x-sas-fetched-at')||'',groups}:null;
   }catch{return null}
 }
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
+// A middle or high school's saved copy built on an earlier day (the school's
+// site or MaxPreps refused the rebuild): a game it still reads Today, Live or
+// Upcoming whose day has passed is played ("No score posted"), a placeholder
+// round is dropped, as a build would (user, November 10: "Fix those next";
+// check:reference-rules found Nov 9 games reading Today on Nov 10 from a copy
+// saved at 11 PM the night before, while Bound refused the rebuilds).
+function agedHighSchoolGroups(groups,schoolId,now=new Date()){
+  if(!highSchoolModule(schoolId)||!Array.isArray(groups))return null;
+  const local=schoolNow(now,catalogSchool(schoolId)||{id:schoolId,state:'KS'}),today=new Date(Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())).toISOString().slice(0,10);
+  let changed=false;
+  const out=groups.map(g=>{
+    const keep=[],played=[];
+    for(const bucket of ['live','upcoming'])for(const e of g[bucket]||[]){
+      const last=String(e.end_time||e.start_time||'').slice(0,10);
+      if(!last||last>=today||!['Live','Today','Upcoming'].includes(e.status)){keep.push([bucket,e]);continue}
+      changed=true;
+      if(e.school_score==null&&isHighSchoolPlaceholder(e.opponent))continue;
+      const game=e.event_type==='GAME';
+      played.push({...e,status:'Final',no_result_posted:true,headline:game?'No score posted':'No results posted',school_score:null,opponent_score:null,results:[{label:game?'Score':'Results',value:'Not posted yet'}],result_count:1,priority_bucket:'recent_final',recency_label:'Final',meet_live:undefined,live_latest:undefined,highlight_status:'Played; no score or result has been posted by MaxPreps, Bound, a timer or the school.'});
+    }
+    if(!played.length&&!changed)return g;
+    const results=[...(g.results||[]),...played].sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));
+    return{...g,live:keep.filter(([b])=>b==='live').map(([,e])=>e),upcoming:keep.filter(([b])=>b==='upcoming').map(([,e])=>e),results};
+  });
+  return changed?out:null;
+}
+async function agedCopy(response,schoolId,now=new Date()){
+  if(!highSchoolModule(schoolId))return response;
+  // Only a copy built on an earlier day at the school: every other answer
+  // is passed on untouched.
+  const school=catalogSchool(schoolId)||{id:schoolId,state:'KS'},at=new Date(response.headers.get('x-sas-fetched-at')||'');
+  if(Number.isFinite(at.getTime())&&schoolNow(at,school).toISOString().slice(0,10)>=schoolNow(now,school).toISOString().slice(0,10))return response;
+  try{
+    const groups=await response.clone().json(),aged=agedHighSchoolGroups(groups,schoolId,now);
+    if(!aged)return response;
+    return new Response(JSON.stringify(aged),{status:response.status,headers:response.headers});
+  }catch{return response}
+}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
 async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   const result=await fetchLive(school,sport,env);
@@ -7205,27 +7243,27 @@ async function routeRequest(request,env,ctx){
       // live rebuild just failed.
       if(url.searchParams.get('cached')==='1'){
         const saved=cached||await cache.match(lastGoodFeedKey(url,school,sport));
-        if(saved&&cachedAge(saved)<=LAST_GOOD_MS)return cacheResponse(saved,'saved');
-        const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
+        if(saved&&cachedAge(saved)<=LAST_GOOD_MS)return cacheResponse(await agedCopy(saved,school),'saved');
+        const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(await agedCopy(shared,school),'saved-global');
         return json({detail:{message:'No saved schedule is available',school,sport}},404);
       }
       if(cached&&!force){
         const age=cachedAge(cached);
         if(age<=(cached.headers.get('x-sas-live')==='1'?LIVE_FEED_FRESH_MS:FEED_FRESH_MS))return cacheResponse(cached,'fresh');
-        if(age<=(cached.headers.get('x-sas-quiet')==='1'?QUIET_FEED_SERVE_STALE_MS:FEED_SERVE_STALE_MS)){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(cached,'stale-refreshing')}
+        if(age<=(cached.headers.get('x-sas-quiet')==='1'?QUIET_FEED_SERVE_STALE_MS:FEED_SERVE_STALE_MS)){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(await agedCopy(cached,school),'stale-refreshing')}
       }
       // Nothing saved at this location: a quiet feed's shared copy, if recent,
       // is answered at once and the feed rebuilt in the background.
       if(!cached&&!force&&usesGlobalCopy(school)){
         const shared=await globalCopy(env,url,school,sport);
-        if(shared&&shared.headers.get('x-sas-quiet')==='1'&&cachedAge(shared)<=QUIET_FEED_SERVE_STALE_MS){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(shared,'global-refreshing')}
+        if(shared&&shared.headers.get('x-sas-quiet')==='1'&&cachedAge(shared)<=QUIET_FEED_SERVE_STALE_MS){ctx?.waitUntil(rebuild().catch(()=>null));return cacheResponse(await agedCopy(shared,school),'global-refreshing')}
       }
       const fresh=await rebuild();
       if(fresh)return cacheResponse(fresh,'live');
-      if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(cached,'stale-fallback');
+      if(cached&&cachedAge(cached)<=FEED_STALE_MS)return cacheResponse(await agedCopy(cached,school),'stale-fallback');
       const lastGood=await cache.match(lastGoodFeedKey(url,school,sport));
-      if(lastGood&&cachedAge(lastGood)<=LAST_GOOD_MS)return cacheResponse(lastGood,'saved');
-      const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(shared,'saved-global');
+      if(lastGood&&cachedAge(lastGood)<=LAST_GOOD_MS)return cacheResponse(await agedCopy(lastGood,school),'saved');
+      const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(await agedCopy(shared,school),'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
     if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
