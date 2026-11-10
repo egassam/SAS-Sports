@@ -620,7 +620,8 @@
     ],
     "meetTeam": "Washburn Rural MS",
     "milesplit": 31987
-   }
+   },
+   "usd437": "wrms"
   },
   {
    "id": "washburn-rural-north-ms-ks",
@@ -644,7 +645,8 @@
     ],
     "meetTeam": "Washburn Rural North MS",
     "milesplit": 70187
-   }
+   },
+   "usd437": "wrn"
   }
  ]
 }

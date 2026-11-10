@@ -46,11 +46,16 @@ export function parseCalendarTitle(title,prefix){
 }
 
 // Calendar events for one varsity team (team: a RegExp on the team words).
-export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null}){
+// `corrections`: a calendar event's title as the school meant it, by event
+// id, where another official schedule shows the typed title is a slip
+// (Anthony's Nov 19 "7GBB v JC" is the 8th grade game: Junction City's Bound
+// schedule has its 8th grade at Anthony at 4:15 and its 7th grade home at 4:30).
+export function calendarEvents(payload,{prefix,team,parse=null,timeZone=null,corrections=null}){
   const events=(payload?.data?.events||payload?.events||[]);
   const out=[];
   for(const e of events){
-    const parsed=parse?parse(e.title):parseCalendarTitle(e.title,prefix);
+    const title=corrections?.[e.id]??e.title;
+    const parsed=parse?parse(title):parseCalendarTitle(title,prefix);
     if(!parsed||!team.test(parsed.team))continue;
     // A calendar fed from Google in UTC (Manhattan Catholic's) gives UTC
     // dates and times: they are read in the school's zone.
@@ -272,7 +277,7 @@ export function calendarSportsAudit(payload,module,listed=[],siblings=[]){
   const unlisted=new Map(),unread=new Map(),unparsed=new Map(),add=(map,key)=>map.set(key,(map.get(key)||0)+1);
   for(const e of payload?.data?.events||payload?.events||[]){
     // `calendar.ignore`: titles the module knows are no team it lists.
-    const title=clean(e.title);if(UNLISTED_LEVEL.test(title)||module.calendar.ignore?.test(title))continue;
+    const title=clean(module.calendar.corrections?.[e.id]??e.title);if(UNLISTED_LEVEL.test(title)||module.calendar.ignore?.test(title))continue;
     const parsed=read(module,title);
     // Only a title naming a game or meet ("@", "vs", "at"); "8th Girls BB" alone names none.
     if(!parsed?.team){if(AUDIT_SPORT_WORDS.test(title)&&/@|\bvs?\b\.?|\bat\b/i.test(title)&&!POSTSEASON.test(title)&&!siblings.some(m=>read(m,title)?.team))add(unparsed,title);continue;}
@@ -1203,4 +1208,47 @@ export function maxprepsScoreboard(html){
     if(teams.length===2)out.push({id:m[1],state,live,period,url,away:teams[0],home:teams[1]});
   }
   return out;
+}
+
+// Washburn Rural's middle schools (USD 437) publish each grade's basketball
+// schedule as a PDF (usd437.net/assets/documents/student/sports/<sport>/
+// <grade>-schedule/<wrms|wrn>); their Bound schedules list only a few games
+// (November 9, 2026: Washburn Rural MS's Bound page had no Nov 10 game with
+// Anthony, which both schools' schedules list). `usd437`: "wrms" or "wrn".
+export const USD437_DOCS='https://usd437.net/assets/documents/student/sports/';
+export const usd437ScheduleUrl=(sport,grade,school)=>`${USD437_DOCS}${sport}/${grade}-schedule/${school}`;
+// Where the school plays at home, as the location column writes it.
+const USD437_HOME={wrms:/\bWashburn Rural Middle\b/i,wrn:/\bNORTH\b/};
+// Opponents as the app names them ("Manhattan - Eisenhower", "WRMS",
+// "Washburn Rural North MS").
+const USD437_NAMES=[[/^Manhattan\s*-?\s*(Anthony|Eisenhower)$/i,'$1'],[/^WRMS$|^Washburn Rural Middle(?: School)?$/i,'Washburn Rural'],[/^WRN$|^Washburn Rural North(?: MS| Middle School)?$/i,'Washburn Rural North']];
+// One row: day, date, time ("3:45 PM", "3:45\nPM", "TBD"), the opponent
+// (one or more lines), the level ("7th A/B", "8th A", "8th", "7th/8th A/B"),
+// then the location (with a tournament's field after it).
+const USD437_ROW=/^(?:MON|TUES?|WED|THURS?|FRI|SAT|SUN)\s+(\d{1,2})\/(\d{1,2})\/(\d\d)\s+(?:(\d{1,2}):(\d\d)\s*(AM|PM)|TBD)\s+(.+?)\s+(?:[78]th(?:\s*\/\s*[78]th)?)(?!\s+Grade)(?:\s+(?:A\/B|A|B|JV\/V|V))?(?:\s+(.*))?$/i;
+export function usd437ScheduleRows(text,{school}){
+  const rows=[],home=USD437_HOME[school];
+  const lines=String(text||'').split('\n').map(l=>l.replace(/\s+/g,' ').trim()).filter(Boolean);
+  const starts=lines.map((l,i)=>/^(?:MON|TUES?|WED|THURS?|FRI|SAT|SUN)\s+\d{1,2}\/\d{1,2}\/\d\d\b/i.test(l)?i:-1).filter(i=>i>=0);
+  starts.forEach((s,k)=>{
+    const end=k+1<starts.length?starts[k+1]:lines.findIndex((l,i)=>i>s&&/^(?:updated|\*\*please)/i.test(l));
+    // The CML first round: "7th A followed by 8th A" (one gym, both grades).
+    const row=lines.slice(s,end>s?end:undefined).filter(l=>!/^(?:updated|\*\*please)/i.test(l)&&l!=='`').join(' ')
+      .replace(/\b[78]th(?: A)? followed by [78]th(?: A)?(?: TBD)?\s*/i,'').replace(/[“”"]/g,'')
+      // The page's footer ("09/03/2026 Riffey", "9/3/26 updated (Riffey)").
+      .replace(/^(.{14,}?)\s+(?:updated\b|\d{1,2}\/\d{1,2}\/\d{2,4}\b).*$/i,'$1');
+    const m=row.match(USD437_ROW);if(!m)return;
+    const [,mm,dd,yy,h,min,ap,opponentRaw,location='']=m;
+    const date=`20${yy}-${mm.padStart(2,'0')}-${dd.padStart(2,'0')}`,time=h?`${String(Number(h)%12+(/pm/i.test(ap)?12:0)).padStart(2,'0')}:${min}`:null;
+    // A tournament row lists its field after the name: the name ends at "Tournament".
+    let name=opponentRaw.replace(/\s+/g,' ').trim();
+    const tournament=name.match(/^(.*?\bTournament\b(?:\s+1st Round)?)/i);if(tournament)name=tournament[1];
+    for(const [re,to] of USD437_NAMES)name=name.replace(re,to);
+    const event=isNamedEvent(name)||/\bmixer\b/i.test(name);
+    // A mixer lists both grades' levels ("7th A 8th A") before its site.
+    const loc=location.replace(/^(?:[78]th A\s+)+/i,'').replace(/\bHigher Seed\b|\(TBD\)|^TBD\b/ig,'').replace(/\s+/g,' ').trim();
+    const site=home?.test(location)?'HOME':loc?'AWAY':null;
+    rows.push({date,time,end_date:null,name,site,address:loc||null,h2h:!event,calendar_id:`usd437|${date}|${name}`});
+  });
+  return rows;
 }

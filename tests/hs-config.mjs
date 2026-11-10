@@ -53,7 +53,7 @@ const aliases=JSON.parse(readFileSync(new URL('../src/schools/data/ks-aliases.js
 for(const {names} of Object.values(MOVED))for(const [from,to] of Object.entries(names||{}))assert.equal(aliases.meets[from],to,`alias ${from}`);
 
 // Every data file: the format's keys only, ids unique, a level, sports listed.
-const KEYS=new Set(['id','name','level','note','bound','maxpreps','meetPro','prepGolf','globalSavedCopy','sports','extraMeets','milesplitNames','stateXc','town','county','sources']);
+const KEYS=new Set(['id','name','level','note','bound','maxpreps','meetPro','prepGolf','globalSavedCopy','sports','extraMeets','milesplitNames','stateXc','town','county','sources','usd437']);
 const SPORT_KEYS=new Set(['has','meetTeam','trackTeam','tennis','milesplit','paths','grades','maxpreps','maxprepsSchedule']);
 const dir=new URL('../src/schools/data/',import.meta.url),ids=new Set();
 let count=0;

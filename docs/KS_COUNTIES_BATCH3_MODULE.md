@@ -79,3 +79,10 @@ All sports, every middle and high school feed: 476 compared, 473 the same, 3 dif
 - **Spring sports for schools with few Bound games** come from MaxPreps' team list. A team MaxPreps lists with no games this season answers no schedule until its season is posted.
 - **Middle school game scores:** not published (5c).
 - **LetsGoRun team names:** taken from Bound ("Topeka Seaman", "Hayden Catholic"). Cross country reads MileSplit Live by team id.
+
+## Washburn Rural MS and Washburn Rural North MS basketball (November 9, 2026)
+
+Bound lists only a few of their basketball games (Washburn Rural MS: Nov 12, Dec 12 and two January games; North: Dec 1, Dec 12, Jan 12). The district publishes each grade's full schedule as a PDF: `https://usd437.net/assets/documents/student/sports/<girls|boys>-basketball/<7th|8th>-grade-schedule/<wrms|wrn>` (8 PDFs, 110 games and tournament days). The data entry's `"usd437": "wrms"|"wrn"` gives each grade team a `pdfSchedule`; `usd437ScheduleRows` reads the rows (day, date, time, opponent, level, location; home when the location is the school's own gym) and the feed adds every day Bound leaves empty, labeled "District schedule (USD 437, PDF)". Found when Anthony's Nov 10 game at Washburn Rural was not on Washburn Rural MS's page (user: "Fix all problems"). Test: `tests/usd437-schedules.mjs`.
+
+Not read from the PDFs: wrestling. Washburn Rural MS's boys wrestling PDF is still 2025-26 (checked November 9, 2026), and the girls' PDFs list each meet as its field of schools ("WRMS/JCMS/EIS ..."), not a name; both stay on Bound.
+
