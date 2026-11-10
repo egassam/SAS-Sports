@@ -325,7 +325,7 @@ contains(page,/bucket==='results'&&!isToday\(x\)&&day\(x\)<\(today\.get[^\n]*day
 contains(page,/class="home-row home-result" data-event-id/,'Each recent result must be one row that opens the game');
 contains(page,/apiFetch\(`\/live\/news\?school=/,'Home must read its news from /live/news');
 contains(worker,/if\(url\.pathname==='\/live\/news'\)\{[\s\S]{0,900}feedCacheKey\(url,school,sport\)[\s\S]{0,200}lastGoodFeedKey/,'/live/news must read only the feed copy already built, never rebuild a feed');
-contains(page,/inBatches\(requested,4,/,'Home feeds must load four at a time');
+contains(page,/inBatches\(reread,4,/,'Home feeds the single request left must load four at a time');
 // Home's live boxes (user, Oct 29): small, three across, sports A to Z, team colors.
 contains(page,/const live=\[\.\.\.ownLive,\.\.\.fromBoards\]\.sort\(\(a,b\)=>bySport\(a,b\)\|\|byTeam\(a,b\)\)/,'My Teams live games must read sports A to Z');
 contains(page,/\.sort\(\(a,b\)=>bySport\(a,b\)\|\|levelRank/,'Everywhere live games must read sports A to Z');
