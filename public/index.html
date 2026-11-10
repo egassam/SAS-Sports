@@ -979,6 +979,29 @@ async function fetchTeamSport(id,sp,forceRefresh,signal){
 // team-sport read four at a time (the favorites first, smaller sports first).
 // While a game is live, the 15 s refresh reads only the team-sports with a
 // game live or today.
+// Home's saved copies in one request (/live/home): every copy is shown at
+// once; "fresh" and "recent" ones are current and not read again.
+const HOME_COPY_PAIRS=40,HOME_CURRENT_STATES=new Set(['fresh','recent']);
+async function homeCopies(pairs,forceRefresh,signal){
+  const groups=new Map(),current=new Set();
+  if(forceRefresh||!pairs.length)return{groups,current};
+  const keys=pairs.map(([id,sp])=>`${id}|${sp}`);
+  for(let i=0;i<keys.length;i+=HOME_COPY_PAIRS){
+    try{
+      const r=await apiFetch('/live/home?pairs='+encodeURIComponent(keys.slice(i,i+HOME_COPY_PAIRS).join(',')),1,{signal,transientOnly:true});
+      const d=await r.json();
+      for(const f of Array.isArray(d?.feeds)?d.feeds:[]){
+        if(!f||!Array.isArray(f.groups))continue;
+        const k=`${f.school}|${f.sport}`;if(!keys.includes(k))continue;
+        const g=f.groups.find(x=>x.sport===f.sport)||f.groups[0]||null;
+        if(g)g.fetched_at=f.fetched_at;
+        if(HOME_CURRENT_STATES.has(f.state)){current.add(k);saveFeedCopy(f.school,f.sport,f.groups,f.fetched_at);groups.set(k,g)}
+        else if(g)groups.set(k,g);
+      }
+    }catch(e){if(e?.name==='AbortError')throw e}
+  }
+  return{groups,current};
+}
 async function loadHome(forceRefresh,automatic,generation,signal){
   // A favorite whose catalog card did not load (a failed read at startup)
   // would be asked only for Cross Country (homeSport) for the whole visit:
@@ -1005,7 +1028,17 @@ async function loadHome(forceRefresh,automatic,generation,signal){
     show();
     for(const [id,sp] of fresh)fetchTeamSport(id,sp,false,signal).then(({groups,savedAt,fetchedAt})=>{if(generation!==feedGeneration||!homeView)return;const g=Array.isArray(groups)?groups.find(x=>x.sport===sp)||groups[0]:null;if(g){if(savedAt!=null)g.saved_at=savedAt;else g.fetched_at=fetchedAt;byPair.set(key([id,sp]),g);show()}}).catch(()=>{});}).catch(()=>{});
   let ok=0,saved=0,failed=0;
-  await inBatches(requested,4,async ([id,sp])=>{
+  // One request first for every sport's copy the server already has; only
+  // the sports whose copy is not current are read one by one (user, November
+  // 10: "Do the home page"). A forced refresh reads every sport.
+  const settled=await homeCopies(requested,forceRefresh,signal).catch(e=>{homeLoading=false;throw e});
+  if(generation!==feedGeneration||!homeMode()){homeLoading=false;return}
+  for(const [k,g] of settled.groups){if(g)byPair.set(k,g);else byPair.delete(k)}
+  if(settled.groups.size)show();
+  ok=settled.current.size;
+  const reread=requested.filter(p=>!settled.current.has(key(p)));
+  if(ok)status.textContent=`Loaded ${ok}/${requested.length} of your teams' sports…`;
+  await inBatches(reread,4,async ([id,sp])=>{
     try{
       const {groups,savedAt,fetchedAt}=await fetchTeamSport(id,sp,forceRefresh,signal);
       if(generation!==feedGeneration||!homeMode())return;

@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.293.0-ms-schedule-fixes';
+const VERSION='4.294.0-home-request';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6907,6 +6907,36 @@ async function globalCopy(env,url,school,sport){
   }
   return null;
 }
+// Home's saved feeds in one answer (user, November 10, 2026: "Do the home
+// page"). Each favorite's sport is answered with the copy this location
+// already has, never a rebuild, so one request costs no school downloads and
+// no Worker CPU limit (1102). state tells the page what to read again:
+//   fresh   the copy the feed route would answer as fresh;
+//   recent  a quiet feed (no game near now) within the hour the feed route
+//           answers it at once: the page leaves it;
+//   stale   any older copy (a week at most): shown, then read again;
+//   a sport with no copy is left out and read as before.
+const HOME_PAIRS_MAX=40;
+function homeFeedPairs(value){
+  const pairs=[...new Set(String(value||'').split(',').map(x=>x.trim()).filter(Boolean))].map(x=>x.split('|'));
+  if(!pairs.length||pairs.length>HOME_PAIRS_MAX||pairs.some(p=>p.length!==2||!/^[a-z0-9][a-z0-9-]{0,63}$/.test(p[0])||!p[1]||p[1].length>40))return null;
+  return pairs.filter(([school,sport])=>!sponsoredSports[school]||sponsoredSports[school].includes(sport));
+}
+function homeCopyState(response){
+  const age=cachedAge(response),quiet=response.headers.get('x-sas-quiet')==='1';
+  if(age<=(response.headers.get('x-sas-live')==='1'?LIVE_FEED_FRESH_MS:FEED_FRESH_MS))return'fresh';
+  return quiet&&age<=QUIET_FEED_SERVE_STALE_MS?'recent':'stale';
+}
+async function homeSavedFeed(url,env,cache,school,sport){
+  try{
+    let response=await cache.match(feedCacheKey(url,school,sport)),state=response&&cachedAge(response)<=FEED_STALE_MS?homeCopyState(response):null;
+    if(!state){response=await cache.match(lastGoodFeedKey(url,school,sport));state=response&&cachedAge(response)<=LAST_GOOD_MS?'stale':null}
+    if(!state){response=await globalCopy(env,url,school,sport);state=response?homeCopyState(response):null}
+    if(!state)return null;
+    const groups=await response.json();
+    return Array.isArray(groups)?{school,sport,state,fetched_at:response.headers.get('x-sas-fetched-at')||'',groups}:null;
+  }catch{return null}
+}
 function sponsoredSportError(school,sport){const allowed=sponsoredSports[school];return allowed&&!allowed.includes(sport)?json({detail:{message:`${school} does not sponsor ${sport}`,school,sport}},422):null;}
 function cachedAge(response){const saved=Date.parse(response.headers.get('x-sas-fetched-at')||'');return Number.isFinite(saved)?Date.now()-saved:Infinity;}
 function cacheResponse(response,state){const copy=new Response(response.body,response);copy.headers.set('x-sas-cache',state);copy.headers.set('access-control-expose-headers','x-sas-cache,x-sas-fetched-at');return copy;}
@@ -7156,6 +7186,11 @@ async function routeRequest(request,env,ctx){
       response.headers.set('cache-control',copy?'public, max-age=900':'no-store');
       if(copy)ctx.waitUntil(cache.put(key,new Response(response.clone().body,{headers:{...Object.fromEntries(response.headers),'cache-control':'public, max-age=1800'}})));
       return response;
+    }
+    if(url.pathname==='/live/home'){
+      const pairs=homeFeedPairs(url.searchParams.get('pairs'));if(!pairs)return json({detail:'pairs is required: school|Sport,school|Sport (at most '+HOME_PAIRS_MAX+')'},400);
+      const feeds=await Promise.all(pairs.map(([school,sport])=>homeSavedFeed(url,env,caches.default,school,sport)));
+      return json({version:VERSION,fetched_at:new Date().toISOString(),feeds:feeds.filter(Boolean)});
     }
     if(url.pathname==='/live/feed/grouped'){
       const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
