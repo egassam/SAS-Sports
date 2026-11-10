@@ -5294,3 +5294,20 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 - Production: `verify:prod --school=kstate --sports=Football --version=4.294.0-home-request`: PASS (XC 18/20, 26/21).
 
 **Found, not fixed:** `check:reference-rules` (production, all sports): 134 schools, 1,047 feeds, 15,648 cards, 21 FAIL, 31 NOTE. These are volleyball games listed twice with one id (Wabaunsee 9, Ell-Saline 7, Emporia 1, Linn 1 plus its result twice), Baldwin flag football Sep 16 twice, and Hillsboro MS boys basketball Nov 9 at Hoisington MS reading Upcoming. They come from the feeds, which this PR does not change. Left for the user's choice.
+
+### November 10, 2026 (Central, about 4:40 PM): a marquee sign for each sport's live games
+
+**Conversation.** After PR #568, the user said: "Also let's give every sports live it's own marque sign look. For example basketball separate, from football, from baseball. It's still to overwhelming when there's a lot of live games".
+
+**Built (PR #570, merge `da64a5d`, `4.295.0-live-marquees`):**
+- `homeLiveGrid` groups Home's live games (My Teams, including SAS Scorer games, and Everywhere) by sport, A to Z. Each sport gets a `.sport-marquee` sign: chasing bulbs top and bottom, a neon name, the sport's mark, and an "N live" pill, all in the sport's color from `SPORT_MARQUEE`. Unlisted sports use the accent `#42d3ff`. Cards under a sign name only their team.
+- Everywhere: `EVERYWHERE_SHOWN` is now 6 games per sport (was 30 for the whole section). "Show all N <sport>" (`data-show-sport`, `expandedLiveSports`) opens a sport. Sport chips (`data-jump`) scroll to each sign when there are two or more sports. The old `showAllLive` button is gone.
+- The bulbs stop for reduced motion; in forced-colors mode the signs keep a plain border.
+
+**Checks:**
+- `tests/home-marquee.mjs` added; `test:release` exit 0; CI guardrails and certification-matrix green.
+- Chromium with 41 test live games in 6 sports: at 390 px no sideways scroll; at 1280 px Show all went from 26 to 33 cards, and the Hockey chip landed 12 px from the top. The first chips rendered light gray (the global button style) and were fixed before the PR.
+- `verify:preview` K-State Football: the first run had 35/36 refreshes; the failed request got no HTTP status (it never reached the server), on a front-end-only change. The rerun had 36/36, XC 18/20 and 26/21, and results and expanded views 9/9.
+- Manhattan, Anthony and Eisenhower, all sports, 3 refreshes: PASS. `check-reference-page`: PASS.
+- On the preview and in production, the real live games (1 basketball, 4 soccer) showed under two signs.
+- `verify:prod`: PASS.
