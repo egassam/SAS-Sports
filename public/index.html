@@ -243,6 +243,22 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .home-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:stretch}
 @media(max-width:860px){.home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
 .home-tag-sport{color:color-mix(in srgb,var(--team-primary) 45%,#fff)}
+/* Each sport's live games under their own marquee sign (November 10). */
+.mq-group{margin:4px 0 14px}.mq-group+.mq-group{margin-top:18px}
+.sport-marquee{position:relative;display:flex;align-items:center;gap:10px;margin:2px 0 10px;padding:10px 16px;border-radius:14px;background:linear-gradient(180deg,color-mix(in srgb,var(--mq) 22%,#0a1424),#08111d);border:2px solid color-mix(in srgb,var(--mq) 70%,#000);box-shadow:0 0 0 1px #000 inset,0 0 18px color-mix(in srgb,var(--mq) 35%,transparent),inset 0 0 22px color-mix(in srgb,var(--mq) 18%,transparent);overflow:hidden;scroll-margin-top:12px}
+.sport-marquee::before,.sport-marquee::after{content:'';position:absolute;left:8px;right:8px;height:6px;background:radial-gradient(circle,var(--mq) 0 2px,transparent 2.6px) 0 50%/14px 6px repeat-x;filter:drop-shadow(0 0 3px var(--mq));animation:mqChase 1.2s steps(2) infinite}
+.sport-marquee::before{top:3px}.sport-marquee::after{bottom:3px;animation-delay:-.6s}
+.mq-mark{font-size:22px;line-height:1;filter:drop-shadow(0 0 6px color-mix(in srgb,var(--mq) 70%,transparent))}
+.mq-name{flex:1;min-width:0;font-size:20px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 0 6px var(--mq),0 0 16px color-mix(in srgb,var(--mq) 70%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mq-count{font-size:11px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:999px;color:#06111c;background:var(--mq);box-shadow:0 0 10px color-mix(in srgb,var(--mq) 60%,transparent);white-space:nowrap}
+.mq-group .home-item .card{border-color:color-mix(in srgb,var(--mq) 35%,#203750)}
+.mq-more{display:block;margin:10px auto 0;border-color:color-mix(in srgb,var(--mq) 55%,#29435f)}
+.mq-chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 12px}.mq-chips::-webkit-scrollbar{display:none}
+.mq-chips .mq-chip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:color-mix(in srgb,var(--mq) 16%,#0a192a);color:#f4f8fc;border:1px solid color-mix(in srgb,var(--mq) 65%,#29435f);font-size:12px;font-weight:850;box-shadow:none}.mq-chips .mq-chip b{min-width:18px;padding:1px 6px;border-radius:999px;background:var(--mq);color:#06111c;font-size:11px}
+@keyframes mqChase{to{background-position:14px 50%}}
+@media(max-width:560px){.sport-marquee{padding:9px 12px;gap:8px}.mq-name{font-size:16px;letter-spacing:.12em}.mq-mark{font-size:18px}.mq-count{font-size:10px;padding:4px 8px}}
+@media(prefers-reduced-motion:reduce){.sport-marquee::before,.sport-marquee::after{animation:none}}
+@media(forced-colors:active){.sport-marquee,.mq-chip{border:2px solid CanvasText}.sport-marquee::before,.sport-marquee::after{display:none}}
 /* Coming up: one heading per day, then a slim row per game (time, sport,
    matchup) with the team's color down its left edge (user, October 29). */
 .home-day{margin:14px 2px 6px;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase;color:#e2e8f0}.home-day:first-child{margin-top:2px}.home-day small{margin-left:8px;color:var(--muted);font-size:11px;letter-spacing:.04em}
@@ -693,12 +709,13 @@ let homeLoading=false;
 // catalog (/live/now, one read of each board, cached a minute), below the
 // viewer's own live games, sports A to Z (user, October 29: "Organize them
 // by sport ABC order"); 30 shown, then "Show all".
-let everywhereGames=[],everywhereExpanded=false;
+let everywhereGames=[],everywhereExpanded=false;const expandedLiveSports=new Set();
 // Meets Home shows to everyone, starred or not (user, October 28: "Show it on
 // Home even if not starred"): /live/now names them (the Kansas Approved
 // Schools state cross country meet); kept on this device for the next load.
 let featuredPairs=(()=>{try{const v=JSON.parse(localStorage.getItem('sas-featured')||'[]');return Array.isArray(v)?v.filter(p=>Array.isArray(p)&&p.length===2):[]}catch{return[]}})();
-const EVERYWHERE_SHOWN=30,RECENT_DAYS=7,RESULTS_SHOWN=8,NEWS_SHOWN=6;
+// Live everywhere: at most this many games per sport until its "Show all".
+const EVERYWHERE_SHOWN=6,RECENT_DAYS=7,RESULTS_SHOWN=8,NEWS_SHOWN=6;
 let resultsExpanded=false,newsExpanded=false,newsLoading=false;
 // News (/live/news) per team-sport, kept on this device for six hours so
 // Home shows it at once on the next visit.
@@ -847,10 +864,29 @@ function homeSections(groups){
 // A live card on Home wears its own team's colors (the page itself stays
 // neutral): the school's catalog colors, or those /live/now carries.
 function liveTeamVars(x){const c=knownColors(x.e.school_colors||catalogEntry(x.e.school_id)?.theme||catalogEntry(x.school_id)?.theme);return c?` style="--team-primary:${c.main};--team-secondary:${c.edge};--theme-on-accent:${c.ink}"`:''}
-function homeItem(x,kind,grid){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
+function homeItem(x,kind,grid,grouped){return`<div class="home-item"${kind==='live'&&x.school_id?` data-open-team="${esc(x.school_id)}" data-open-sport="${esc(x.sport)}"`:''}${kind==='live'&&homeView?liveTeamVars(x):''}><div class="home-tag">${grouped?`<b>${esc(x.school)}</b>`:grid?`<span class="home-tag-sport">${esc(x.sport)}</span> · <b>${esc(x.school)}</b>`:`<b>${esc(x.school)}</b> · ${esc(x.sport)}`}</div>${card(x.e,kind||(x.bucket==='results'?'results':'upcoming'))}</div>`}
 // Home's live games: one grid, sports A to Z, each box naming its sport.
 // The favorites' grid also leads with their SAS Scorer games (homeField).
-function homeLiveGrid(items,field=[]){return`<div class="home-grid">${field.map(fieldItem).join('')}${items.map(x=>homeItem(x,'live',true)).join('')}</div>`}
+// Each sport's live games under their own marquee sign (user, November 10:
+// "give every sports live it's own marque sign look. For example basketball
+// separate, from football, from baseball. It's still to overwhelming when
+// there's a lot of live games"): its own color and mark, how many are live,
+// and on Everywhere the first EVERYWHERE_SHOWN games until "Show all".
+const SPORT_MARQUEE={Basketball:['#ff8a3d','🏀'],Football:['#b6f04a','🏈'],'Flag Football':['#d9f99d','🏈'],Baseball:['#ff5d6c','⚾'],Softball:['#ffd23f','🥎'],Soccer:['#3ee08f','⚽'],Volleyball:['#5aa9ff','🏐'],Hockey:['#7fe3ff','🏒'],'Ice Hockey':['#7fe3ff','🏒'],'Field Hockey':['#2dd4bf','🏑'],Lacrosse:['#ffb547','🥍'],Wrestling:['#c58bff','🤼'],'Cross Country':['#46e6b0','🏃'],'Track & Field':['#ff7ab6','🏃'],Golf:['#9bf27a','⛳'],Tennis:['#e6f25a','🎾'],'Swimming & Diving':['#38c8ff','🏊'],Rowing:['#93b8ff','🚣'],Bowling:['#f07cff','🎳'],'Beach Volleyball':['#ffd88a','🏐'],Gymnastics:['#ff9be0','🤸'],Rifle:['#cbd5e1','🎯'],'Auto Racing':['#ff6ad5','🏁']};
+const marqueeOf=sport=>SPORT_MARQUEE[sport]||['#42d3ff','●'];
+const marqueeId=sport=>`live-${slug(sport)}`;
+function sportMarquee(sport,count,id=''){const [color,mark]=marqueeOf(sport);return`<div class="sport-marquee" style="--mq:${color}"${id?` id="${esc(id)}"`:''} role="heading" aria-level="3"><span class="mq-mark" aria-hidden="true">${mark}</span><span class="mq-name">${esc(sport)}</span><span class="mq-count">${count} live</span></div>`}
+// Everywhere's sport chips: one tap to a sport's sign.
+function marqueeChips(items){const counts=new Map();for(const x of items)counts.set(x.sport,(counts.get(x.sport)||0)+1);if(counts.size<2)return'';return`<div class="mq-chips">${[...counts].map(([sport,n])=>{const [color,mark]=marqueeOf(sport);return`<button type="button" class="mq-chip" data-jump="${esc(marqueeId('everywhere-'+sport))}" style="--mq:${color}"><span aria-hidden="true">${mark}</span>${esc(sport)} <b>${n}</b></button>`}).join('')}</div>`}
+function homeLiveGrid(items,field=[],{capped=false,scope='mine'}={}){
+  const sports=[];const bySport=new Map();
+  const add=(sport,html)=>{if(!bySport.has(sport)){bySport.set(sport,[]);sports.push(sport)}bySport.get(sport).push(html)};
+  for(const g of field)add(g.sport,fieldItem(g));
+  for(const x of items)add(x.sport,homeItem(x,'live',true,true));
+  sports.sort((a,b)=>String(a).localeCompare(String(b)));
+  return(capped?marqueeChips(items):'')+sports.map(sport=>{const cards=bySport.get(sport),open=!capped||expandedLiveSports.has(sport),shown=open?cards:cards.slice(0,EVERYWHERE_SHOWN);
+    return`<div class="mq-group" style="--mq:${marqueeOf(sport)[0]}">${sportMarquee(sport,cards.length,marqueeId(scope==='everywhere'?'everywhere-'+sport:sport))}<div class="home-grid">${shown.join('')}</div>${cards.length>shown.length?`<button type="button" class="ghost show-all-live mq-more" data-show-sport="${esc(sport)}">Show all ${cards.length} ${esc(sport)}</button>`:''}</div>`}).join('');
+}
 // Coming up: the viewer's own day and clock where the school published a
 // time; a date-only event keeps the school's date and reads TBA, after the
 // day's timed games.
@@ -894,7 +930,7 @@ function sectionHead(title,sub=''){
   return`<div class="sport-head fav-banner fav-${kind}"><span class="fav-mark" aria-hidden="true">${mark}</span><div><div class="fav-pill">★ My Teams</div><h2 class="sport-title">${esc(label)}</h2>${sub?`<div class="sport-school">${esc(sub)}</div>`:''}</div></div>`;
 }
 function homeSectionOpen(title,id){return`<section class="sport home-section${homeView&&FAV_BANNERS[title]?' fav-section':''}" id="${id||`home-${slug(title)}`}">`}
-function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
+function homeSection(title,items,kind){const field=kind==='live'&&homeView&&title!=='Live now · Everywhere'?homeField:[];if(!items.length&&!field.length)return'';if(title==='Recent results'){const shown=resultsExpanded?items:items.slice(0,RESULTS_SHOWN);return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${resultRows(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllResults">Show all ${items.length} results</button>`:''}</div></section>`}if(title==='News'){const shown=newsExpanded?items:items.slice(0,NEWS_SHOWN);return`${homeSectionOpen(title,'home-news')}${sectionHead('News',"Official stories from your teams' recent games")}<div class="section">${newsCards(shown)}${items.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllNews">Show all ${items.length} stories</button>`:''}</div></section>`}if(title==='Coming up')return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${comingRows(items)}</div></section>`;return`${homeSectionOpen(title)}${sectionHead(title)}<div class="section">${kind==='live'&&homeView?homeLiveGrid(items,field,title==='Live now · Everywhere'?{capped:true,scope:'everywhere'}:{}):items.map(x=>homeItem(x,kind)).join('')}</div></section>`}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -937,10 +973,9 @@ function renderHome(groups){
   const chips=[[mine,[...live,...field],'Live'],['Today',todays,'Today'],['Recent results',recent,'Results'],['Coming up',coming,'Up next'],['News',news,'News'],['Live now · Everywhere',everywhere,'Live everywhere']].filter(([,items])=>items.length);
   sportNav.hidden=chips.length<2;
   sportNav.innerHTML=chips.map(([title,items,short])=>`<a class="sport-chip home-jump${/^Live/.test(short)?' live-jump':''}" href="#home-${slug(title)}">${esc(short)} <b>${items.length}</b></a>`).join('');
-  const shown=everywhereExpanded?everywhere:everywhere.slice(0,EVERYWHERE_SHOWN);
-  const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',shown,'live').replace(/<\/section>$/,everywhere.length>shown.length?`<button type="button" class="ghost show-all-live" id="showAllLive">Show all ${everywhere.length} live games</button></section>`:'</section>'):'';
+  const everywhereHtml=everywhere.length?homeSection('Live now · Everywhere',everywhere,'live'):'';
   const noFavorites=homeView&&!names.length?'<div class="empty">No favorite teams yet. Choose a level above, pick a team and tap ☆ Favorite: its live and upcoming games will show first.</div>':'';
-  if(noFavorites&&!todays.length&&!coming.length&&!recent.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});return}
+  if(noFavorites&&!todays.length&&!coming.length&&!recent.length){feed.innerHTML=everywhereHtml+noFavorites;bindFeedCards();return}
   if(!chips.length){feed.innerHTML=`<div class="empty">${homeLoading?`Loading ${esc(names.join(', '))}…`:`No live, today or upcoming games for ${esc(names.join(', '))} right now.${homeView?' Tap a team above for its full schedule and results.':' Pick a sport above to see its full schedule and results.'}`}</div>`;return}
   // The next game leads the overview too (a team page with no sport chosen,
   // and Home): user, October 30, "I'm not seeing the count down boxes
@@ -950,11 +985,13 @@ function renderHome(groups){
   // add news"): their live games, the next game's countdown, today, recent
   // results, coming up and news; every other live game comes after.
   feed.innerHTML=homeSection(mine,live,'live')+nextUpBox(todays,coming)+homeSection('Today',todays)+homeSection('Recent results',recent)+homeSection('Coming up',coming,'upcoming')+homeSection('News',news)+everywhereHtml+noFavorites;
-  bindFeedCards();$('#showAllLive')?.addEventListener('click',()=>{everywhereExpanded=true;render(displayedGroups())});
+  bindFeedCards();
   $('#showAllResults')?.addEventListener('click',()=>{resultsExpanded=true;render(displayedGroups())});
   $('#showAllNews')?.addEventListener('click',()=>{newsExpanded=true;render(displayedGroups())});
 }
 function bindFeedCards(){
+  feed.querySelectorAll('[data-show-sport]').forEach(b=>b.addEventListener('click',()=>{expandedLiveSports.add(b.dataset.showSport);render(displayedGroups())}));
+  feed.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.jump)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})));
   feed.querySelectorAll('[data-event-id]').forEach(el=>el.addEventListener('click',ev=>{if(ev.target.closest('.live-more details'))return;const team=homeView&&el.closest('[data-open-team]');if(team){openTeam(team.dataset.openTeam,team.dataset.openSport);return}openEvent(el.dataset.eventId)}));
   feed.querySelectorAll('.live-card[data-event-id] .live-more details').forEach(d=>{const key=d.closest('[data-event-id]').dataset.eventId+'|'+d.querySelector('summary').textContent.replace(/\s*\(\d+\)$/,'');if(openLiveDetails.has(key))d.open=true;d.addEventListener('toggle',()=>{d.open?openLiveDetails.add(key):openLiveDetails.delete(key)})});
 }
