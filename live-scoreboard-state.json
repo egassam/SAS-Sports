@@ -2962,24 +2962,13 @@
    "state": "off"
   },
   "syracuse|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-10T00:35:16.787Z",
-   "last_detail": "live 38-34 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "syracuse|Basketball|Men's|2026-11-09|1",
-    "title": "Men's · Syracuse at Indiana",
-    "started_seen": "2026-11-10T00:27:36.824Z",
-    "live_passes": [
-     "2026-11-10T00:27:36.824Z",
-     "2026-11-10T00:28:39.785Z",
-     "2026-11-10T00:29:44.651Z",
-     "2026-11-10T00:31:07.498Z",
-     "2026-11-10T00:32:30.206Z",
-     "2026-11-10T00:33:51.618Z",
-     "2026-11-10T00:35:16.787Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-10T07:41:05.857Z",
+   "last_detail": "final L, 80-83",
+   "game": null,
+   "verified_at": "2026-11-10T07:41:05.857Z",
+   "verified_game": "Men's · Syracuse at Indiana",
+   "verified_detail": "final L, 80-83"
   },
   "syracuse|Field Hockey": {
    "state": "done",
@@ -5736,24 +5725,13 @@
    "state": "off"
   },
   "charlotte|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-10T00:35:33.675Z",
-   "last_detail": "live 29-25 · 6:15 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "charlotte|Basketball|Women's|2026-11-09|1",
-    "title": "Women's · Charlotte vs Longwood",
-    "started_seen": "2026-11-10T00:27:37.951Z",
-    "live_passes": [
-     "2026-11-10T00:27:37.951Z",
-     "2026-11-10T00:28:43.807Z",
-     "2026-11-10T00:29:49.040Z",
-     "2026-11-10T00:31:28.387Z",
-     "2026-11-10T00:32:30.191Z",
-     "2026-11-10T00:33:51.599Z",
-     "2026-11-10T00:35:33.675Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-10T07:41:05.835Z",
+   "last_detail": "final W, 86-72",
+   "game": null,
+   "verified_at": "2026-11-10T07:41:05.835Z",
+   "verified_game": "Women's · Charlotte vs Longwood",
+   "verified_detail": "final W, 86-72"
   },
   "charlotte|Football": {
    "state": "done",
@@ -5879,24 +5857,13 @@
    "state": "off"
   },
   "memphis|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-10T00:35:33.986Z",
-   "last_detail": "live 19-13 · 6:05 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "memphis|Basketball|Women's|2026-11-09|1",
-    "title": "Women's · Memphis vs Little Rock",
-    "started_seen": "2026-11-10T00:27:37.298Z",
-    "live_passes": [
-     "2026-11-10T00:27:37.298Z",
-     "2026-11-10T00:28:43.035Z",
-     "2026-11-10T00:29:45.204Z",
-     "2026-11-10T00:31:07.444Z",
-     "2026-11-10T00:32:30.174Z",
-     "2026-11-10T00:34:11.979Z",
-     "2026-11-10T00:35:33.986Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-10T07:41:06.759Z",
+   "last_detail": "final W, 62-48",
+   "game": null,
+   "verified_at": "2026-11-10T07:41:06.759Z",
+   "verified_game": "Women's · Memphis vs Little Rock",
+   "verified_detail": "final W, 62-48"
   },
   "memphis|Football": {
    "state": "done",
@@ -10489,30 +10456,19 @@
    "state": "off"
   },
   "liu|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-10T00:35:13.155Z",
-   "last_detail": "live 24-30 · 5:32 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "liu|Basketball|Men's|2026-11-09|1",
-    "title": "Men's · LIU at Towson",
-    "started_seen": "2026-11-10T00:27:36.836Z",
-    "live_passes": [
-     "2026-11-10T00:27:36.836Z",
-     "2026-11-10T00:28:41.755Z",
-     "2026-11-10T00:30:06.417Z",
-     "2026-11-10T00:31:28.370Z",
-     "2026-11-10T00:32:50.552Z",
-     "2026-11-10T00:33:52.899Z",
-     "2026-11-10T00:35:13.155Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-10T07:41:06.478Z",
+   "last_detail": "final L, 46-66",
+   "game": null,
    "failures": 30,
    "last_failure": {
     "at": "2026-11-08T20:47:05.781Z",
     "game": "Women's · LIU at Pitt",
     "detail": "final L, 42-92 not in the app's results"
-   }
+   },
+   "verified_at": "2026-11-10T07:41:06.478Z",
+   "verified_game": "Men's · LIU at Towson",
+   "verified_detail": "final L, 46-66"
   },
   "liu|Field Hockey": {
    "state": "off"
@@ -12591,7 +12547,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.292.3-push-key-check",
- "updated_at": "2026-11-10T00:35:34.037Z",
+ "version": "4.293.0-ms-schedule-fixes",
+ "updated_at": "2026-11-10T07:41:06.766Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

@@ -4,10 +4,6 @@
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| charlotte | Basketball | 🔴 on | live 29-25 · 6:15 - 2nd · official_schedule+live_scoreboard |
-| liu | Basketball | 🔴 on | live 24-30 · 5:32 - 1st · official_schedule+live_scoreboard |
-| memphis | Basketball | 🔴 on | live 19-13 · 6:05 - 2nd · official_schedule+live_scoreboard |
-| syracuse | Basketball | 🔴 on | live 38-34 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1026,6 +1022,7 @@
 | charleston-southern | Basketball | ✅ off (passed) | Women's · Charleston Southern at Charleston · 2026-11-07T23:02:32.413Z |
 | charleston-southern | Soccer | ✅ off (passed) | Charleston Southern at High Point · 2026-10-29T06:33:50.157Z |
 | charleston-southern | Volleyball | ✅ off (passed) | Charleston Southern vs Gardner-Webb · 2026-10-24T01:59:34.292Z |
+| charlotte | Basketball | ✅ off (passed) | Women's · Charlotte vs Longwood · 2026-11-10T07:41:05.835Z |
 | charlotte | Football | ✅ off (passed) | Charlotte vs Tulane · 2026-10-31T06:18:48.363Z |
 | charlotte | Soccer | ✅ off (passed) | Men's · Charlotte at Tulsa · 2026-10-23T07:27:21.431Z |
 | charlotte | Volleyball | ✅ off (passed) | Charlotte vs Temple · 2026-10-23T20:40:15.724Z |
@@ -1310,6 +1307,7 @@
 | lipscomb | Basketball | ✅ off (passed) | Women's · Lipscomb at Vanderbilt · 2026-11-02T23:51:09.687Z |
 | lipscomb | Soccer | ✅ off (passed) | Men's · Lipscomb at Bellarmine · 2026-10-25T01:30:06.565Z |
 | lipscomb | Volleyball | ✅ off (passed) | Lipscomb vs FGCU · 2026-10-24T01:59:34.979Z |
+| liu | Basketball | ✅ off (passed) | Men's · LIU at Towson · 2026-11-10T07:41:06.478Z |
 | liu | Hockey | ✅ off (passed) | LIU at Western Michigan · 2026-10-30T02:50:57.372Z |
 | liu | Volleyball | ✅ off (passed) | LIU vs C Connecticut · 2026-10-31T20:40:57.626Z |
 | lmu | Basketball | ✅ off (passed) | Women's · LMU at Utah State · 2026-11-07T02:18:21.131Z |
@@ -1363,6 +1361,7 @@
 | mcneese | Basketball | ✅ off (passed) | Women's · McNeese vs TAMU-Kingsvlle · 2026-11-02T23:51:08.379Z |
 | mcneese | Soccer | ✅ off (passed) | McNeese at East Texas A&M · 2026-10-25T21:48:16.749Z |
 | mcneese | Volleyball | ✅ off (passed) | McNeese vs SE Louisiana · 2026-10-30T02:50:58.085Z |
+| memphis | Basketball | ✅ off (passed) | Women's · Memphis vs Little Rock · 2026-11-10T07:41:06.759Z |
 | memphis | Football | ✅ off (passed) | Memphis vs East Carolina · 2026-10-23T07:27:20.217Z |
 | memphis | Soccer | ✅ off (passed) | Women's · Memphis vs UTSA · 2026-10-23T02:09:34.215Z |
 | memphis | Volleyball | ✅ off (passed) | Memphis at FAU · 2026-10-24T01:59:35.059Z |
@@ -1748,6 +1747,7 @@
 | stony-brook | Basketball | ✅ off (passed) | Men's · Stony Brook at Northwestern · 2026-11-07T08:58:10.301Z |
 | stony-brook | Soccer | ✅ off (passed) | Men's · Stony Brook at Monmouth · 2026-10-24T21:15:41.229Z |
 | stony-brook | Volleyball | ✅ off (passed) | Stony Brook at Northeastern · 2026-10-24T21:15:40.597Z |
+| syracuse | Basketball | ✅ off (passed) | Men's · Syracuse at Indiana · 2026-11-10T07:41:05.857Z |
 | syracuse | Field Hockey | ✅ off (passed) | Syracuse vs Stanford · 2026-10-23T23:34:13.488Z |
 | syracuse | Football | ✅ off (passed) | Syracuse vs Louisville · 2026-10-18T06:35:01.174Z |
 | syracuse | Hockey | ✅ off (passed) | Syracuse at Robert Morris · 2026-10-17T01:39:25.894Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1078/1956; on 4; off 870; failing 4.
+Done 1082/1956; on 0; off 870; failing 4.
