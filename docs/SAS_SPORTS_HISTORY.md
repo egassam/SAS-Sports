@@ -5233,3 +5233,35 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 **Gate.** `tests/push-alerts.mjs` extended (pair, quotes, label, line break, the public key pasted, a path, another pair's key, never echoed); `regression`, `scheduled-refresh`, `pwa`, `home-live`, `live-now` passed locally; CI guardrails and certification-matrix green on `fb32800`; preview `verify:preview --school=kstate --sports="Cross Country" --refreshes=3` PASS, XC 18/20 and 26/21. PR #564 merged as `4201c81`; production `4.292.3-push-key-check`: `verify:prod` PASS, XC 18/20 and 26/21; after the user's fix `/api/push/config` `enabled:true`.
 
 **Next.** A real start/final alert on a favorite's game; middle and high school alerts; store builds later (`docs/PWA.md`).
+
+## November 9, 2026 — Middle school schedule fixes (PR #566)
+
+**Request.** The user sent a screenshot of Anthony's page (9:28 PM): "Can you check this upcoming game. I don't think it's correct" (Next game: 8th Girls · Anthony at Washburn Rural, Nov 10, 3:30 PM).
+
+**Check.** The game is correct. Anthony's ParentSquare calendar has "8GBB @ Washburn Rural" Nov 10 3:30 and "7GBB v Washburn Rural" 4:15. Washburn Rural MS's USD 437 PDFs agree: 8th grade Tue 11/10 3:30 vs Manhattan Anthony at WRMS, and 7th grade 4:15 at Anthony. Washburn Rural North plays Seaman that day, so the opponent is WRMS. Problems found and reported: (1) the 4:00 and 4:15 games at Wamego still read "Today" at 9:28 PM; (2) Anthony's calendar has two 7th grade Junction City games on Nov 19 ("7GBB v JC" 4:15, "7GBB @ JC" 4:30); (3) Washburn Rural MS's Bound schedule had only a few games (no Nov 10 game with Anthony); (4) the Nov 2 game typed at 3:30 AM, which the app already read as PM.
+
+**Decision.** The user: "Fix all problems."
+
+**Built.**
+- `gameOverToday` (`src/index.js`): a single game with a start time is past 3 hours (`GAME_OVER_HOURS`) after its start, on its day, with no score, live flag, results or timer schedule. It reads Final, "No score posted". Tournaments and multi-game days (`MANY_GAME_DAY`), untimed games and held rounds (placeholders) keep the end-of-day rule. `HIGH_SCHOOL_REFERENCE.md` rule 3.
+- `calendarEvents(..., {corrections})` and `calendar.corrections` (also read by the sports audit): titles by event id. `ANTHONY_CORRECTIONS`: `86646704@parentsquare.com` → "8GBB v JC". Evidence: Junction City MS's Bound schedule has "8th Girls · Junction City at Susan B. Anthony MS" at 4:15 and its 7th grade at home at 4:30. `HIGH_SCHOOL_REFERENCE.md` rule 5.
+- `usd437ScheduleRows` and `usd437ScheduleUrl` (`src/high-school.mjs`), plus data key `usd437` (`"wrms"`/`"wrn"` in `ks-shawnee.json`, built in `schoolFromConfig`). These give each 7th/8th girls and boys basketball team a `pdfSchedule`. The feed (`pdfScheduleRows`, 10-minute memo, 2 MB cap) adds every row on a day Bound has nothing for that team, labeled "District schedule (USD 437, PDF)". It reads 110 rows from 8 PDFs and handles: times split across lines, tournament fields after the name, the mixer, the CML first round ("7th A followed by 8th A"), footers, and single-digit dates. Wrestling is not read: the WRMS boys PDF is 2025-26, and the girls' PDFs list each meet as its field of schools.
+- Version `4.293.0-ms-schedule-fixes`.
+
+**Tests.**
+- New `tests/usd437-schedules.mjs` (in `npm test`; fixtures are the PDFs' text, gzipped).
+- New cases in `tests/manhattan-ks-module.mjs`: at 9:59 PM the 7 PM game is Today; at 10:00 PM it is Final, "No score posted". The event-id correction is covered too.
+- `tests/hs-config.mjs` key list.
+- `hs-reference` expected file: the Nov 19 card is now "8th Girls · Anthony vs Junction City" (the intended change; 408 cards).
+- `npm run test:release` passed locally. CI guardrails and certification-matrix were green.
+
+**Preview** (`ccr-243c269e-2nzwwx`):
+- `verify:preview` for Anthony, Eisenhower, Manhattan, Washburn Rural MS and North, all sports, 3 refreshes: PASS. K-State XC 18/20, KU XC 26/21.
+- `check-reference-page.mjs`: all passed.
+- `check:reference-rules --sports=Basketball`: 134 schools, 4,152 cards, 0 FAIL.
+- `diff:feeds --sport=Basketball`: 134 feeds, 24 differ. Every difference was explained: 30 Nov 9 games now played, 98 new Washburn Rural cards from the PDFs, and the Anthony Nov 19 grade. New upcoming cards for Olpe, Hayden and Cair Paravel came from production's older saved copy; production's own forced refresh has them.
+
+**Production.** PR #566 merged as `902f87f`. `verify:prod` for Anthony, Washburn Rural MS and North, all sports: PASS, `4.293.0-ms-schedule-fixes`, K-State XC 18/20, KU XC 26/21. Cards checked: Anthony's Nov 9 Wamego games read "No score posted"; Nov 19 reads 8th Girls vs Junction City; Washburn Rural MS lists "8th Girls · Washburn Rural vs Anthony" Nov 10 3:30.
+
+**Limits.** A tournament day stays "Today" until midnight. Washburn Rural MS and North wrestling stay on Bound.
+

@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 8, 2026 (Central, about 9:00 PM). **Push alerts live and confirmed on the user's phone** (test alert received; user: "It works"). Production `4.292.3-push-key-check`: `/api/push/config` `enabled: true` (the key check signs with the secret and verifies with `PUSH_PUBLIC_KEY`); K-State XC 18/20 and KU XC 26/21. PRs #562 (alerts, `fe908a1`) and #564 (key check, `4201c81`). The first secret held the key file's path (found by the check's "105 characters, 7 path characters"); the user replaced it. The private key is only in Cloudflare and with the user; a lost key means a new pair (`PUSH_PUBLIC_KEY` in `src/index.js` plus the secret) and every phone turning alerts on again.
+Last updated: November 9, 2026 (Central, about 10:30 PM). **Middle school schedule fixes live** (PR #566, merge `902f87f`, production `4.293.0-ms-schedule-fixes`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). The user asked to check Anthony's Nov 10 game at Washburn Rural. The game was correct (Washburn Rural MS's USD 437 schedules agree), and the check found three problems, all fixed ("Fix all problems"): (1) a single game with a start time now reads played ("No score posted") 3 hours after it starts on its day, instead of "Today" all evening (`gameOverToday`; tournaments, untimed games and held rounds keep the end-of-day rule); (2) Anthony's Nov 19 "7GBB v JC" is read as 8th grade (Junction City MS's Bound schedule; `calendar.corrections` by event id); (3) Washburn Rural MS and North basketball read the district's PDFs for the days Bound leaves empty (`usd437`, 8 PDFs, 110 rows).
+
+Earlier (November 8): **Push alerts live and confirmed on the user's phone** (test alert received; user: "It works"). Production `4.292.3-push-key-check`: `/api/push/config` `enabled: true` (the key check signs with the secret and verifies with `PUSH_PUBLIC_KEY`); K-State XC 18/20 and KU XC 26/21. PRs #562 (alerts, `fe908a1`) and #564 (key check, `4201c81`). The first secret held the key file's path (found by the check's "105 characters, 7 path characters"); the user replaced it. The private key is only in Cloudflare and with the user; a lost key means a new pair (`PUSH_PUBLIC_KEY` in `src/index.js` plus the secret) and every phone turning alerts on again.
 
 **Push alerts (user, Nov 8: "Let's do push alerts next"):** favorites' game start and final score, college and pro (ESPN boards), Cron `*/2`, only the boards subscribers need, D1 per host, `src/push-alerts.mjs` (RFC 8291/8292 with WebCrypto, checked against `http_ece`), `tests/push-alerts.mjs`. Detail in `docs/PWA.md`. **To do:** see a real start/final alert arrive for a favorite's game (the test alert works); middle and high school alerts (no frequent source yet).
 
@@ -12,6 +14,7 @@ Last updated: November 8, 2026 (Central, about 9:00 PM). **Push alerts live and 
 
 **Open:**
 - "Hay Tournament" (Manhattan boys basketball, Dec 3) is the calendar's typo.
+- Washburn Rural MS and North wrestling stay on Bound: WRMS's boys PDF is still 2025-26 and the girls' PDFs name meets only by their field (`KS_COUNTIES_BATCH3_MODULE.md`).
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Home: one "home" request for every favorite's saved feed (not built).
@@ -29,7 +32,7 @@ Last updated: November 8, 2026 (Central, about 9:00 PM). **Push alerts live and 
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.273.0-winter-readiness`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.293.0-ms-schedule-fixes`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -323,3 +326,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 8 — Installable app (PWA): manifest, icons, service worker with offline page, Install button (PR #559, `4.291.0-pwa`, verified in production).
 - Nov 8 — Push alerts for favorites: start and final, college and pro (PR #562, `4.292.0-push-alerts`, verified in production; off until the VAPID secret is set).
 - Nov 8 — Push alerts: key check and as-pasted key (PR #564, `4.292.3`); the secret fixed by the user; test alert received ("It works").
+- Nov 9 — Middle school schedule fixes: finished games read played after 3 h, Anthony Nov 19 is 8th grade, Washburn Rural MS/North basketball from USD 437 PDFs (PR #566, `4.293.0-ms-schedule-fixes`, verified in production).
