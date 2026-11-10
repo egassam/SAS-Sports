@@ -5265,3 +5265,32 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Limits.** A tournament day stays "Today" until midnight. Washburn Rural MS and North wrestling stay on Bound.
 
+
+---
+
+## November 10, 2026 (Central, about 3:45 PM): Home, one request for every favorite's saved feed
+
+**Conversation.** User: "What's next?" The handoff left the choice open. The answer listed more counties, more pro leagues, Home's single request, finishing push alerts, the Summit League and SWAC, and the small open items, and recommended the two conferences or Home's single request. User: "Do the home page".
+
+**Built (PR #568, merge `5ee6e47`, `4.294.0-home-request`):**
+- `/live/home?pairs=school|Sport,...` (40 at most; ids `[a-z0-9-]`; a sport the school does not sponsor is dropped; a bad request answers 400). Each sport gets the copy this Cloudflare location already has: the edge feed copy (within 24 h), then the last good copy (a week), then the shared KV copy (middle and high schools). It never rebuilds, so it makes no school downloads and cannot hit the CPU limit (1102). States: `fresh` (what the feed route answers as fresh: 25 s, or 10 s while live), `recent` (a quiet feed within the hour), `stale` (anything older). A sport with no copy is left out.
+- Page (`homeCopies` in `loadHome`): every copy is shown at once; `fresh`/`recent` copies are saved on the device and not read again; the pool of four reads the rest. A forced refresh, or a failed `/live/home`, reads every sport as before. More than 40 sports go out in requests of 40.
+- Tests: `tests/home-copies.mjs` (Worker with a fake cache and KV: states, no downloads, 400s, unsponsored sports; the page's keep or reread choice, batches, forced refresh, failure). `tests/regression.mjs` now checks `inBatches(reread,4,`.
+
+**Found on the preview:** the first `/live/home` after warming four feeds returned only Manhattan's (KV) copy; the same ask seconds later returned all four. Likely the proxy reached a different Cloudflare location for that request. Edge copies are per location by design.
+
+**Measured** (Chromium, favorites K-State, KU, Manhattan HS, Anthony MS, Utah; reads = `/live/feed/grouped` requests):
+- Production 4.293.0: first 62.8 s / 38 reads; second 14.7 s / 23; a new device 7.3 s / 38.
+- Preview: first 28.9 s / 1 + 25; second 7.6 s / 1 + 18; a new device 2.9 s / 1 + 1.
+- Production 4.294.0 after the merge: first 13.0 s / 1 + 24; second 3.8 s / 1 + 9; a new device 2.1 s / 1 + 10.
+
+**Gate:**
+- Local `npm run test:release`: exit 0.
+- CI on the head: guardrails and certification-matrix green.
+- `verify:preview` K-State Football: XC 18/20 and 26/21, 36/36 refreshes, 9/9 results and expanded views.
+- `verify:preview` Manhattan, Anthony, Eisenhower, all sports, 3 refreshes: PASS.
+- `check-reference-page --base=<preview>`: PASS.
+- The preview Home screenshot was checked by eye.
+- Production: `verify:prod --school=kstate --sports=Football --version=4.294.0-home-request`: PASS (XC 18/20, 26/21).
+
+**Found, not fixed:** `check:reference-rules` (production, all sports): 134 schools, 1,047 feeds, 15,648 cards, 21 FAIL, 31 NOTE. These are volleyball games listed twice with one id (Wabaunsee 9, Ell-Saline 7, Emporia 1, Linn 1 plus its result twice), Baldwin flag football Sep 16 twice, and Hillsboro MS boys basketball Nov 9 at Hoisington MS reading Upcoming. They come from the feeds, which this PR does not change. Left for the user's choice.
