@@ -1,6 +1,10 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 9, 2026 (Central, about 10:30 PM). **Middle school schedule fixes live** (PR #566, merge `902f87f`, production `4.293.0-ms-schedule-fixes`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). The user asked to check Anthony's Nov 10 game at Washburn Rural. The game was correct (Washburn Rural MS's USD 437 schedules agree), and the check found three problems, all fixed ("Fix all problems"): (1) a single game with a start time now reads played ("No score posted") 3 hours after it starts on its day, instead of "Today" all evening (`gameOverToday`; tournaments, untimed games and held rounds keep the end-of-day rule); (2) Anthony's Nov 19 "7GBB v JC" is read as 8th grade (Junction City MS's Bound schedule; `calendar.corrections` by event id); (3) Washburn Rural MS and North basketball read the district's PDFs for the days Bound leaves empty (`usd437`, 8 PDFs, 110 rows).
+Last updated: November 10, 2026 (Central, about 3:45 PM). **Home: one request for every favorite's saved feed live** (user: "Do the home page"; PR #568, merge `5ee6e47`, production `4.294.0-home-request`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). `/live/home?pairs=school|Sport,...` (40 at most) answers each favorite's sport with the copy this Cloudflare location already has (edge, last good, or the shared KV copy), never a rebuild, marked `fresh`, `recent` (quiet feed within the hour) or `stale`; the page shows them all at once and reads again, four at a time, only the sports not `fresh`/`recent`. A forced refresh, or a failed `/live/home`, reads every sport as before. `tests/home-copies.mjs`. Production, 5 favorites (K-State, KU, Manhattan, Anthony, Utah), Chromium: first visit 62.8 s / 38 reads → 13.0 s / 1 + 24; second 14.7 s / 23 → 3.8 s / 1 + 9; a new device 7.3 s / 38 → 2.1 s / 1 + 10.
+
+**Found, not fixed (production, not this PR):** `check:reference-rules` (all sports): 134 schools, 1,047 feeds, 15,648 cards, **21 FAIL**: volleyball games listed twice with one id (Wabaunsee 9, Ell-Saline 7, Emporia 1, Linn 1 plus its result twice), Baldwin flag football Sep 16 twice, Hillsboro MS boys basketball Nov 9 at Hoisington MS reads Upcoming. The last full run (Nov 6 to 9) checked basketball only.
+
+Earlier (November 9): **Middle school schedule fixes live** (PR #566, merge `902f87f`, production `4.293.0-ms-schedule-fixes`, `verify:prod` PASS, K-State XC 18/20, KU XC 26/21). The user asked to check Anthony's Nov 10 game at Washburn Rural. The game was correct (Washburn Rural MS's USD 437 schedules agree), and the check found three problems, all fixed ("Fix all problems"): (1) a single game with a start time now reads played ("No score posted") 3 hours after it starts on its day, instead of "Today" all evening (`gameOverToday`; tournaments, untimed games and held rounds keep the end-of-day rule); (2) Anthony's Nov 19 "7GBB v JC" is read as 8th grade (Junction City MS's Bound schedule; `calendar.corrections` by event id); (3) Washburn Rural MS and North basketball read the district's PDFs for the days Bound leaves empty (`usd437`, 8 PDFs, 110 rows).
 
 Earlier (November 8): **Push alerts live and confirmed on the user's phone** (test alert received; user: "It works"). Production `4.292.3-push-key-check`: `/api/push/config` `enabled: true` (the key check signs with the secret and verifies with `PUSH_PUBLIC_KEY`); K-State XC 18/20 and KU XC 26/21. PRs #562 (alerts, `fe908a1`) and #564 (key check, `4201c81`). The first secret held the key file's path (found by the check's "105 characters, 7 path characters"); the user replaced it. The private key is only in Cloudflare and with the user; a lost key means a new pair (`PUSH_PUBLIC_KEY` in `src/index.js` plus the secret) and every phone turning alerts on again.
 
@@ -17,12 +21,12 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 - Washburn Rural MS and North wrestling stay on Bound: WRMS's boys PDF is still 2025-26 and the girls' PDFs name meets only by their field (`KS_COUNTIES_BATCH3_MODULE.md`).
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
-- Home: one "home" request for every favorite's saved feed (not built).
+- Duplicate fall cards and one past game reading Upcoming in production (`check:reference-rules`, 21 FAIL, listed above).
 - PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone"). Push alerts live (PRs #562, #564), test alert received on the user's phone.
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, middle schools not on Bound) need readers of their own.
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 
-**Next session:** the user's choice (more counties, more pro leagues, Home's single request, PWA push alerts, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
+**Next session:** the user's choice (the 21 reference-rule failures, more counties, the Summit League and SWAC, more pro leagues, PWA push alerts, the other open items). Run `npm run check:reference-rules` after any middle or high school change. Bound refuses a preview after about 800 forced reads in an hour: run `diff:feeds` and `verify:preview` for many schools in separate passes, or rerun the failed pairs after it answers.
 
 
 **Read this whole file at the start of every SAS Sports session.** Keep it short: it holds only what the next session needs. Full evidence and every earlier session record are in `docs/SAS_SPORTS_HISTORY.md` (append-only; search it, do not read it whole). Per-school detail and limitations are in `docs/<SCHOOL>_MODULE.md`.
@@ -32,7 +36,7 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.293.0-ms-schedule-fixes`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.294.0-home-request`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -327,3 +331,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 8 — Push alerts for favorites: start and final, college and pro (PR #562, `4.292.0-push-alerts`, verified in production; off until the VAPID secret is set).
 - Nov 8 — Push alerts: key check and as-pasted key (PR #564, `4.292.3`); the secret fixed by the user; test alert received ("It works").
 - Nov 9 — Middle school schedule fixes: finished games read played after 3 h, Anthony Nov 19 is 8th grade, Washburn Rural MS/North basketball from USD 437 PDFs (PR #566, `4.293.0-ms-schedule-fixes`, verified in production).
+- Nov 10 — Home: one `/live/home` request for every favorite's saved copy, only the rest read again (PR #568, `4.294.0-home-request`, verified in production).
