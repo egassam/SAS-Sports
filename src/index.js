@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.295.0-live-marquees';
+const VERSION='4.296.0-stored-twins';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5039,6 +5039,9 @@ async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
     const {results:rows=[]}=await db.prepare('SELECT event_key AS key, event, sig, history FROM finals WHERE scope=? AND school=? AND sport=? AND date BETWEEN ? AND ?').bind(scope,school.id,sport,year.start,year.end).all();
     const kept=rows.filter(r=>{try{return!retractedFinal(school.id,sport,typeof r.event==='string'?JSON.parse(r.event):r.event)}catch{return true}});
     const {events,writes}=mergeFinals(result.events,kept,{now:now.toISOString(),compatible:namesCompatible,write:!aiTargetId});
+    // A stored game saved before the "-2" ids (November 7) can come back
+    // with its doubleheader partner's id: each card keeps an id of its own.
+    const idCount=new Map();for(const e of events){const n=(idCount.get(e.id)||0)+1;idCount.set(e.id,n);if(n>1)e.id=`${e.id}-${n}`;}
     if(writes.length)await db.batch(writes.map(w=>w.op==='insert'
       ?db.prepare('INSERT OR IGNORE INTO finals (scope, school, sport, event_key, date, event, sig, source, first_seen, last_changed, history) VALUES (?,?,?,?,?,?,?,?,?,?,?)').bind(scope,school.id,sport,w.key,w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.first_seen,w.last_changed,'[]')
       :db.prepare('UPDATE finals SET date=?, event=?, sig=?, source=?, last_changed=?, history=? WHERE scope=? AND school=? AND sport=? AND event_key=?').bind(w.date,JSON.stringify(w.event),w.sig,w.event.score_source?.name||w.event.recap_label||null,w.last_changed,JSON.stringify(w.history),scope,school.id,sport,w.key)));

@@ -136,8 +136,16 @@ export function mergeFinals(built,stored,{now=new Date().toISOString(),source=nu
       used.add(row);claimed.add(i);
       if(events[i].no_result_posted||events[i].status==='Final')events[i]={...row.event,stored_final:true};
     }
-  // A stored final the build does not list at all is listed again.
-  for(const row of left)if(!used.has(row))events.push({...row.event,stored_final:true});
+  // A stored final the build does not list at all is listed again. A stored
+  // game the build already has is not: an earlier build listed one game
+  // twice (Bound twice, or Bound and MaxPreps apart), the store kept both,
+  // and the extra row came back as a second card (November 10,
+  // check:reference-rules: Linn vs St. John's/Tipton Catholic Oct 30, Emporia
+  // at Andover Sep 12, Baldwin at Osage City Sep 16, MaxPreps' one game).
+  // Two MaxPreps match pages are two games (a doubleheader): listed again.
+  const page=e=>String(e?.recap_url||'').match(/maxpreps\.com\/[^?#]*\/(?:game|match)\/[^?#]*\?(?:[^#]*&)?c=([0-9a-f-]+)/i)?.[1]||null;
+  const twin=row=>!isMeet(row.event)&&events.some(e=>!isMeet(e)&&(exactFinal(e,row.event)||sameFinal(e,row.event,compatible))&&!(page(e)&&page(row.event)&&page(e)!==page(row.event)));
+  for(const row of left)if(!used.has(row)&&!twin(row))events.push({...row.event,stored_final:true});
   // An expanded view's build (one event enriched for its view) only reads.
   return{events,writes:write?writes:[]};
 }
