@@ -3307,7 +3307,26 @@
    "state": "off"
   },
   "san-diego-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-11T23:05:15.239Z",
+   "last_detail": "live 39-40 · 18:29 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "san-diego-state|Basketball|Men's|2026-11-11|1",
+    "title": "Men's · San Diego State vs Bethune",
+    "started_seen": "2026-11-11T22:56:24.414Z",
+    "live_passes": [
+     "2026-11-11T22:56:24.414Z",
+     "2026-11-11T22:57:25.306Z",
+     "2026-11-11T22:58:26.882Z",
+     "2026-11-11T22:59:27.923Z",
+     "2026-11-11T23:00:28.580Z",
+     "2026-11-11T23:01:29.746Z",
+     "2026-11-11T23:02:30.556Z",
+     "2026-11-11T23:03:53.411Z",
+     "2026-11-11T23:05:15.239Z"
+    ],
+    "final_ok": false
+   }
   },
   "san-diego-state|Football": {
    "state": "done",
@@ -4342,10 +4361,26 @@
    "state": "off"
   },
   "old-dominion|Soccer": {
-   "state": "failing",
-   "last_check": "2026-10-25T21:48:17.524Z",
-   "last_detail": "final W, 2-0 (live phase not observed 2×; waits for the next game)",
-   "game": null,
+   "state": "on",
+   "last_check": "2026-11-11T23:04:54.705Z",
+   "last_detail": "live 0-0 · HT · official_schedule+live_scoreboard",
+   "game": {
+    "key": "old-dominion|Soccer||2026-11-11|1",
+    "title": "Old Dominion vs App State",
+    "started_seen": "2026-11-11T22:56:24.163Z",
+    "live_passes": [
+     "2026-11-11T22:56:24.163Z",
+     "2026-11-11T22:57:25.619Z",
+     "2026-11-11T22:58:26.548Z",
+     "2026-11-11T22:59:27.525Z",
+     "2026-11-11T23:00:28.565Z",
+     "2026-11-11T23:01:29.706Z",
+     "2026-11-11T23:02:30.521Z",
+     "2026-11-11T23:03:33.006Z",
+     "2026-11-11T23:04:54.705Z"
+    ],
+    "final_ok": false
+   },
    "failures": 13,
    "last_failure": {
     "at": "2026-10-25T19:17:02.615Z",
@@ -7057,7 +7092,18 @@
    "state": "off"
   },
   "george-mason|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-11T23:04:56.330Z",
+   "last_detail": "live 0-0 · 9:17 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "george-mason|Basketball|Women's|2026-11-11|1",
+    "title": "Women's · George Mason at Army",
+    "started_seen": "2026-11-11T23:04:56.330Z",
+    "live_passes": [
+     "2026-11-11T23:04:56.330Z"
+    ],
+    "final_ok": false
+   }
   },
   "george-mason|Lacrosse": {
    "state": "off"
@@ -8362,7 +8408,20 @@
    "state": "off"
   },
   "umass-lowell|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-11T23:05:15.324Z",
+   "last_detail": "live 3-1 · 8:31 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "umass-lowell|Basketball|Women's|2026-11-11|1",
+    "title": "Women's · UMass Lowell at Boston College",
+    "started_seen": "2026-11-11T23:02:32.319Z",
+    "live_passes": [
+     "2026-11-11T23:02:32.319Z",
+     "2026-11-11T23:03:53.751Z",
+     "2026-11-11T23:05:15.324Z"
+    ],
+    "final_ok": false
+   }
   },
   "umass-lowell|Field Hockey": {
    "state": "done",
@@ -12619,7 +12678,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.300.1-pro-menus-sport",
- "updated_at": "2026-11-11T08:18:49.762Z",
+ "version": "4.302.0-college-standings",
+ "updated_at": "2026-11-11T23:05:15.330Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

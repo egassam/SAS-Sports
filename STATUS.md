@@ -2,8 +2,11 @@
 | --- | --- | --- | --- |
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| old-dominion | Soccer | ❌ failing | Old Dominion vs Coastal: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
+| george-mason | Basketball | 🔴 on | live 0-0 · 9:17 - 1st · official_schedule+live_scoreboard |
+| old-dominion | Soccer | 🔴 on | live 0-0 · HT · official_schedule+live_scoreboard |
+| san-diego-state | Basketball | 🔴 on | live 39-40 · 18:29 - 2nd · official_schedule+live_scoreboard |
+| umass-lowell | Basketball | 🔴 on | live 3-1 · 8:31 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -235,7 +238,6 @@
 | gardner-webb | Lacrosse | ⚪ off (waiting) |  |
 | gardner-webb | Softball | ⚪ off (waiting) |  |
 | george-mason | Baseball | ⚪ off (waiting) |  |
-| george-mason | Basketball | ⚪ off (waiting) |  |
 | george-mason | Lacrosse | ⚪ off (waiting) |  |
 | george-mason | Softball | ⚪ off (waiting) |  |
 | george-washington | Baseball | ⚪ off (waiting) |  |
@@ -612,7 +614,6 @@
 | samford | Football | ⚪ off (waiting) |  |
 | samford | Softball | ⚪ off (waiting) |  |
 | san-diego-state | Baseball | ⚪ off (waiting) |  |
-| san-diego-state | Basketball | ⚪ off (waiting) |  |
 | san-diego-state | Lacrosse | ⚪ off (waiting) |  |
 | san-diego-state | Softball | ⚪ off (waiting) |  |
 | san-diego-state | Water Polo | ⚪ off (waiting) |  |
@@ -767,7 +768,6 @@
 | umass | Lacrosse | ⚪ off (waiting) |  |
 | umass | Softball | ⚪ off (waiting) |  |
 | umass-lowell | Baseball | ⚪ off (waiting) |  |
-| umass-lowell | Basketball | ⚪ off (waiting) |  |
 | umass-lowell | Lacrosse | ⚪ off (waiting) |  |
 | umass-lowell | Softball | ⚪ off (waiting) |  |
 | umbc | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1095/1956; on 0; off 857; failing 4.
+Done 1095/1956; on 4; off 854; failing 3.
