@@ -287,6 +287,8 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .home-grid .live-situation{padding:5px 10px;font-size:11px;gap:4px 8px}.home-grid .live-ball svg{width:18px;height:11px}
 .home-grid .live-card:not(.live-card-board){padding:0 0 8px}.home-grid .live-card:not(.live-card-board)>:not(.live-head){margin-left:10px;margin-right:10px}.home-grid .live-card .event-title{margin-top:7px;font-size:13px}
 @media(max-width:560px){.home-grid .live-name{font-size:13px}.home-grid .live-pts{font-size:21px}.home-grid .live-mono{width:24px;height:24px;font-size:8px}.home-grid .live-team{grid-template-columns:24px minmax(0,1fr) auto;gap:6px}.home-grid .live-head{padding:5px 8px}.home-grid .live-board{padding:2px 8px 3px}}
+.standings .st-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:0 5px 8px}.st-tab{background:#0b192a;color:#cfe0f2;border:1px solid #29435f;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:800;cursor:pointer}.st-tab.on{background:var(--team-primary,var(--accent2));border-color:var(--team-primary,var(--accent2));color:#fff}.st-title{font-size:13px;font-weight:900;color:#e7eef6;padding:0 5px 6px}
+.st-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}.st-table th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7f9ab7;font-weight:900;text-align:left;padding:4px 6px;border-bottom:1px solid #203750}.st-table td{padding:7px 6px;border-bottom:1px solid #18293d;vertical-align:top}.st-table .st-pos{width:34px;color:#9fb3c8;font-weight:900}.st-table .st-num{width:58px;text-align:right}.st-table th.st-num{text-align:right}.st-name b,.st-num b{display:block;color:#f8fafc;overflow-wrap:anywhere}.st-name span,.st-num span{display:block;font-size:11px;color:#8ea5bd;overflow-wrap:anywhere}.st-source{display:block;font-size:11px;color:#8ea5bd;padding:8px 5px 0}
 </style>
 </head>
 <body>
@@ -607,6 +609,28 @@ function resultPreview(e){
 }
 function card(e,kind){if(kind==='live')return e.event_type==='RACE'||e.meet_live?raceLiveCard(e):liveCard(e);if(e.race_table?.length&&kind!=='live')return raceCard(e);const score=e.school_score!=null?`${esc(e.school_score)}–${esc(e.opponent_score)}`:'';const rows=resultPreview(e);return `<article class="card ${kind==='live'?'live-card':''}" data-event-id="${esc(e.id)}"><div class="row"><div><div class="event-title">${rankedTitle(e)}</div><div class="small muted">${badge(e)}${esc(statusDetails(e))}</div></div>${score?`<div class="score">${score}</div>`:''}</div>${e.verification_state==='result_pending'?'<div class="pending">Final result verification in progress</div>':''}${rows?`<div class="results">${rows}</div>`:''}${e.video?.embed_url&&e.status==='Final'?'<div class="video-note">▶ Game video · open for the replay</div>':''}</article>`}
 function section(label,items,kind=''){if(!items.length)return'';return `<div class="section"><div class="section-label ${kind==='live'?'live':''}">${label}</div>${items.map(e=>card(e,kind)).join('')}</div>`}
+// Standings (user, November 11, 2026: "Something we should add to auto racing
+// and probably other sports is the overall team/driver standings"): the feed's
+// tables (drivers, teams, a class each in IMSA), the top 5 with Show all, a tab
+// per table. The chosen tab and Show all stay across the 15 s refresh.
+const STANDINGS_SHOWN=5,standingsState=new Map();
+function standingsBlock(g){
+  const tables=(Array.isArray(g.standings)?g.standings:[]).filter(x=>x?.rows?.length);if(!tables.length)return'';
+  const key=`${g.school_id||g.school}|${g.sport}`,st=standingsState.get(key)||{tab:0,all:false},tab=Math.min(st.tab,tables.length-1),t=tables[tab],lead=t.rows[0]?.points;
+  const who=/team|constructor|manufacturer/i.test(t.title)?'Team':'Driver';
+  const rows=(st.all?t.rows:t.rows.slice(0,STANDINGS_SHOWN)).map(r=>`<tr><td class="st-pos">${esc(r.pos??'')}</td><td class="st-name"><b>${esc(r.name)}</b>${r.detail?`<span>${esc(r.detail)}</span>`:''}</td>${t.wins?`<td class="st-num">${esc(r.wins??0)}</td>`:''}<td class="st-num"><b>${esc(r.points)}</b>${typeof lead==='number'&&typeof r.points==='number'&&r.points<lead?`<span>−${lead-r.points}</span>`:''}</td></tr>`).join('');
+  const tabs=tables.length>1?`<div class="st-tabs" role="tablist">${tables.map((x,i)=>`<button type="button" class="st-tab${i===tab?' on':''}" role="tab" aria-selected="${i===tab}" data-st-tab="${i}">${esc(x.title)}</button>`).join('')}</div>`:`<div class="st-title">${esc(t.title)}</div>`;
+  const more=t.rows.length>STANDINGS_SHOWN?`<button type="button" class="ghost show-all-live" data-st-all>${st.all?`Show top ${STANDINGS_SHOWN}`:`Show all ${t.rows.length}`}</button>`:'';
+  const source=t.source?.name?(t.source.url?`<a class="st-source" href="${esc(t.source.url)}" target="_blank" rel="noopener">${esc(t.source.name)}</a>`:`<span class="st-source">${esc(t.source.name)}</span>`):'';
+  return`<div class="section standings" data-standings="${esc(key)}"><div class="section-label">Standings</div>${tabs}<table class="st-table"><thead><tr><th class="st-pos">Pos</th><th>${who}</th>${t.wins?'<th class="st-num">Wins</th>':''}<th class="st-num">Pts</th></tr></thead><tbody>${rows}</tbody></table>${more}${source}</div>`;
+}
+feed.addEventListener('click',ev=>{
+  const button=ev.target.closest('[data-st-tab],[data-st-all]'),box=button?.closest('[data-standings]');if(!box)return;
+  ev.stopPropagation();const key=box.dataset.standings,st={...(standingsState.get(key)||{tab:0,all:false})};
+  if(button.dataset.stTab!=null){st.tab=Number(button.dataset.stTab);st.all=false;}else st.all=!st.all;
+  standingsState.set(key,st);
+  const g=(currentGroups||[]).find(x=>`${x.school_id||x.school}|${x.sport}`===key);if(g)box.outerHTML=standingsBlock(g);
+});
 // A reached official schedule with nothing current is not a failed source.
 const eventTotal=g=>g.live.length+g.results.length+g.upcoming.length+g.other.length;
 // A schedule shown from a saved copy (the live rebuild failed) always says so.
@@ -1132,7 +1156,7 @@ function render(groups){
   }
   sportNav.hidden=filtered.length<2;
   sportNav.innerHTML=filtered.map(g=>`<a class="sport-chip ${g.in_season?'active-season':''}" href="#sport-${slug(g.sport)}">${esc(g.sport)}</a>`).join('');
-  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${featuredAthletesRow(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}</section>`).join('');
+  feed.innerHTML=filtered.map(g=>`<section class="sport" id="sport-${slug(g.sport)}"><div class="sport-head"><div><h2 class="sport-title">${esc(g.sport)}</h2><div class="sport-school">${esc(g.school)}</div>${recordLine(g)}</div><span class="season ${g.in_season?'active':''}">${esc(g.season_label)}</span></div>${savedScheduleNote(g)}${featuredAthletesRow(g)}${section('Live',g.live,'live')}${spotlightOf(g)?spotlightCard(spotlightOf(g)):''}${standingsBlock(g)}${section('Recent Results',g.results,'results')}${section('Upcoming Schedule',spotlightOf(g)?g.upcoming.slice(1):g.upcoming,'upcoming')}${section('Other',g.other,'other')}${g.schedule_reached&&!q&&currentView==='all'?emptyScheduleNote(g):''}</section>`).join('');
   // A live card's folded parts (team stats, scoring plays, the rest of the
   // field) open in place, stay open across the 15 s refresh, and do not open
   // the event window.
