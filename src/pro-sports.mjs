@@ -1331,3 +1331,60 @@ export function imsaStandingsTable(payload,{championship,url=null}={}){
   const teams=/\bteams$/i.test(title);
   return standingsTable(title,rows.slice().sort((a,b)=>a.position-b.position).map(r=>({pos:r.position,name:teams?(r.team||r.key):r.key,detail:teams&&r.key?`#${r.key}`:'',points:pointsOf(r.total_points)})),{source:{name:'IMSA official championship points (Al Kamel Systems)',url}});
 }
+
+// ---- Team league standings (ESPN) ----
+// The pro team leagues (NFL, NBA, NHL, MLB, MLS): ESPN's league standings,
+// one read per league shared by every team (`?level=3`: conferences and their
+// divisions). A team's page shows its division first, then its conference
+// and the other conference by seed (MLS: the two conferences by rank). The
+// team's own row is marked.
+export const ESPN_STANDINGS='https://site.api.espn.com/apis/v2/sports/';
+export const espnStandingsUrl=path=>`${ESPN_STANDINGS}${path}/standings?level=3`;
+const statsOf=entry=>{const by={};for(const s of entry?.stats||[]){for(const k of [s.name,s.type])if(k&&!(k in by))by[k]=s;}return by};
+const num=s=>{const n=Number(s?.value);return Number.isFinite(n)?n:null};
+const shown=s=>s?.displayValue??'';
+// "Last 10 7-3" stays on one line (no break space and hyphen).
+const lastTen=s=>`Last\u00a010\u00a0${shown(s.lasttengames).replace(/-/g,'\u2011')}`;
+const gamesBack=(lead,r)=>{const g=((lead.w-r.w)+(r.l-lead.l))/2;return g<=0?'—':String(g)};
+// Columns per league (three numbers fit a phone): records as W-L, the
+// league's measure, and a third (division record, games back, points).
+const LEAGUE_STANDINGS={
+  'football/nfl':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'div',label:'Div'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
+  'basketball/nba':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
+  'baseball/mlb':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
+  'hockey/nhl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-OT'},{key:'pts',label:'Pts'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
+  'soccer/usa.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''}
+};
+function standingsRow(entry,league){
+  const s=statsOf(entry),w=num(s.wins)??0,l=num(s.losses)??0,t=num(s.ties)??0,ot=num(s.otLosses)??num(s.overtimeLosses)??0;
+  const record=league==='hockey/nhl'?`${w}-${l}-${ot}`:league==='soccer/usa.1'?`${w}-${l}-${t}`:t?`${w}-${l}-${t}`:`${w}-${l}`;
+  return{team:entry.team,w,l,seed:num(s.playoffSeed),rank:num(s.rank),points:num(s.points),gp:num(s.gamesPlayed)??(w+l+t+ot),pct:num(s.winPercent),
+    values:{record,pct:shown(s.winPercent),div:shown(s.divisionRecord)||shown(s.vsdiv),gp:String(num(s.gamesPlayed)??(w+l+t+ot)),pts:shown(s.points)},
+    detail:LEAGUE_STANDINGS[league].detail(s)};
+}
+// Best first: ESPN's seed (its own tie-breaks), MLS's rank, else the record.
+function orderRows(rows){
+  const key=rows.every(r=>r.seed!=null)?'seed':rows.every(r=>r.rank!=null)?'rank':null;
+  return rows.slice().sort((a,b)=>key?a[key]-b[key]:(b.points??b.pct??0)-(a.points??a.pct??0)||a.gp-b.gp);
+}
+function leagueTable(title,rows,{league,own,ranked,source}){
+  const spec=LEAGUE_STANDINGS[league],ordered=orderRows(rows),lead=ordered[0];
+  if(!ordered.length)return null;
+  return{title,columns:spec.columns,...(source?{source}:{}),rows:ordered.map((r,i)=>({pos:ranked?(r.seed??r.rank??i+1):i+1,name:r.team.displayName||r.team.shortDisplayName||r.team.abbreviation,detail:r.detail,
+    values:{...r.values,gb:gamesBack(lead,r)},...(own(r.team)?{own:true}:{})}))};
+}
+export function espnLeagueStandings(payload,{config}={}){
+  const league=config?.espn?.path;if(!payload||!LEAGUE_STANDINGS[league])return[];
+  const entriesOf=node=>[...(node?.standings?.entries||[]),...(node?.children||[]).flatMap(entriesOf)];
+  const own=team=>config.espn.id!=null?String(team?.id)===String(config.espn.id):String(team?.abbreviation||'').toLowerCase()===config.espn.team;
+  const conferences=(payload.children||[]).filter(c=>entriesOf(c).length);
+  const mine=conferences.find(c=>entriesOf(c).some(e=>own(e.team)));if(!mine)return[];
+  const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*MLS$/,'');
+  const source={name:`ESPN standings${season?` (${season} season)`:''}`,url:`https://www.espn.com/${league.split('/')[1]==='usa.1'?'soccer':league.split('/')[1]}/standings${league==='soccer/usa.1'?'/_/league/usa.1':''}`};
+  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4?c.abbreviation.replace(/^East$/,'Eastern Conference').replace(/^West$/,'Western Conference'):c.name;
+  const row=e=>standingsRow(e,league),tables=[];
+  const division=(mine.children||[]).find(d=>(d.standings?.entries||[]).some(e=>own(e.team)));
+  if(division)tables.push(leagueTable(division.name,division.standings.entries.map(row),{league,own,ranked:false,source}));
+  for(const c of [mine,...conferences.filter(c=>c!==mine)])tables.push(leagueTable(conferenceName(c),entriesOf(c).map(row),{league,own,ranked:true,source}));
+  return tables.filter(Boolean);
+}
