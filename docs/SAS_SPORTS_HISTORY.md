@@ -5386,3 +5386,15 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 - Read the new cards by eye, not only the rules check: duplicate meets under an abbreviation (CKL, SVMS) and "Non-Varsity" passed every rule.
 - A change that merges two cards into one leaves production's stored final of the old card: check production's cards after the merge, and retract the day when needed.
 - The container restarted twice during the session; long reruns were made resumable (one log per feed).
+
+## November 11, 2026 (UTC 03:30-04:00): Formula 1 calendar's last good copy (PR #578)
+
+**Conversation.** The user sent a phone screenshot of Formula 1 (9:36): "SAVED SCHEDULE · live refresh failed for 1/1 sport · showing the last good copy · 29 events", "Saved schedule · updated 3 days ago", Next race "Brazilian Grand Prix, Nov 8", and asked: "Check on the Brazilian Grand prix".
+
+**Found.** Production's `/live/status` at 03:37 UTC: 29 events, no error; the feed had "Brazilian Grand Prix, Final, Winner: Lando Norris (McLaren)" from formula1.com, Las Vegas (Nov 21) next. Five forced refreshes: 200, `x-sas-cache: live`, under 1.1 s. So the phone's rebuild had failed and the page showed the feed copy saved before the race. In `fetchF1` only an empty Jolpica calendar fails the build (a failed formula1.com page drops one result). The source cache keeps an entry at most 24 hours (`KEEP_SECONDS`), so after three days with no F1 visits nothing stale was left, and one refused Jolpica read failed the build. Jolpica limits requests per IP and Cloudflare Workers share outgoing IPs (the likely refusal; the source route does not allow Jolpica, so it was not reproduced). Parsing was ruled out: 30 classification pages (about 450 KB each) parse in about 30 ms.
+
+**Change.** `f1CalendarOrSaved` (`src/pro-sports.mjs`): a good calendar is written to KV `HIGHLIGHTS` as `f1-calendar:<year>` (at most every 6 hours per isolate); a failed or empty read uses it ("(last good copy, <time>)" in the source list). `fetchF1` reads the store through `requestCatalog.env`. `tests/f1-module.mjs`: in-memory store cases (kept, 6-hour spacing, three kinds of failed read use the copy, no copy or no store still fails); fails without the change.
+
+**Gate.** `verify:preview --school=formula-1 --sports="Auto Racing"`: 36/36 forced refreshes, 29 events, 26 results, expanded views 26/26, K-State XC 18/20, KU XC 26/21; the page at 390 px read Brazil final (Norris, Verstappen, Hadjar) and Las Vegas next. CI guardrails and certification-matrix green on `c7f6e91`. Merged as `be616eb`; production `4.299.0-f1-calendar-copy`: `verify:prod` PASS (3/3 refreshes, 29 events, 26/26 expanded views, XC 18/20 and 26/21).
+
+**Limits.** The KV copy is written only after a good read under this version. NASCAR and IMSA have no such copy yet (each fails on its own listing read).
