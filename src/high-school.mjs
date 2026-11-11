@@ -899,10 +899,12 @@ export function nameCase(text){
   });
 }
 // A title naming a junior varsity event only (not "JV/V", "Varsity & JV").
+// "Non-Varsity" is junior varsity (November 10, 2026: Newton's and Eureka's
+// "2027 Titan Wrestling Invitational- Boys Non-Varsity").
 export function juniorVarsityOnly(title){
   const t=clean(title);
-  if(!/\bJV\b|\bjunior varsity\b/i.test(t))return false;
-  return !/\bvarsity\b/i.test(t.replace(/\bjunior varsity\b/ig,''))&&!/\bJV\s*[\/&]\s*V\b|\bV\s*[\/&]\s*JV\b/i.test(t);
+  if(!/\bJV\b|\bjunior varsity\b|\bnon[- ]?varsity\b/i.test(t))return false;
+  return !/\bvarsity\b/i.test(t.replace(/\bjunior varsity\b|\bnon[- ]?varsity\b/ig,''))&&!/\bJV\s*[\/&]\s*V\b|\bV\s*[\/&]\s*JV\b/i.test(t);
 }
 export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'}){
   const ids=new Set(acts.flatMap(a=>BOUND_ACTS[a]||[])),seen=new Set(),out=[];

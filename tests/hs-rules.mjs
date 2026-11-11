@@ -54,8 +54,8 @@ assert.equal(nameCase('CCCMS Triangular'),'CCCMS Triangular');
 // Capital words together in a mixed title (Manhattan's calendar, November 7, 2026).
 assert.equal(nameCase('Regional Meet - WARNER PARK'),'Regional Meet - Warner Park');
 assert.equal(nameCase('KSHSAA STATE Meet'),'KSHSAA State Meet');
-for(const t of ['Wabaunsee Track Meet - RC JV','St. Marys JV Golf Tournament','Louisburg JV Mixer','Junior Varsity Classic'])assert.ok(juniorVarsityOnly(t),t);
-for(const t of ['Centennial League JV/V','Varsity & JV Invite','Louisburg Varsity Girls Mixer','Topeka Invite'])assert.ok(!juniorVarsityOnly(t),t);
+for(const t of ['Wabaunsee Track Meet - RC JV','St. Marys JV Golf Tournament','Louisburg JV Mixer','Junior Varsity Classic','2027 Titan Wrestling Invitational- Boys Non-Varsity','Non Varsity Invite'])assert.ok(juniorVarsityOnly(t),t);
+for(const t of ['Centennial League JV/V','Varsity & JV Invite','Louisburg Varsity Girls Mixer','Topeka Invite','2027 Titan Wrestling Invitational - Girls Varsity'])assert.ok(!juniorVarsityOnly(t),t);
 
 // "Wichita State University tournament" is a tournament, not a state round.
 assert.ok(!worker.isHighSchoolPlaceholder('Wichita State University tournament'));
