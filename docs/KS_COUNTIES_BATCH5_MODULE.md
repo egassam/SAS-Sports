@@ -71,7 +71,16 @@ The survey's results-sources table found no MileSplit Live or LetsGoRun results 
 
 ## Changes to schools already in the app
 
-None from the counties (new schools only). The survey fix (`matchSchools` towns) changes only new surveys.
+The counties add new schools only, and the survey fix (`matchSchools` towns) changes only new surveys. Two fixes found in the new cards apply to every school:
+
+- **"Non-Varsity" is junior varsity** (`juniorVarsityOnly` in `src/high-school.mjs`, and `check:reference-rules`): Newton's and Eureka's "2027 Titan Wrestling Invitational- Boys Non-Varsity" (Jan 30) was listed; the girls' varsity event stays.
+- **Meet aliases** (`src/schools/data/ks-aliases.json`): Bound's "CKL Cross Country Meet" is MileSplit Live's "Central Kansas League Cross Country Meet", and "SVMS XC Meet" is the "Ellis Invitational Cross Country" (773558). Halstead, Hesston, Hillsboro and Smoky Valley (Oct 15) and Sterling JH (Sep 3) had two cards for one meet: Bound's (a team place or "No results posted") and the index's. Now one card with the full results.
+
+`diff:feeds --sport=all` against production (November 11): 1,049 feeds, 982 the same, 67 differ. The 67 rerun one at a time (the first pass met Bound's refusals of the burst): 63 the same, 4 differ:
+- Hillsboro and Smoky Valley cross country, Oct 15: the CKL alias (intended).
+- Anthony and Eisenhower cross country, Sep 10: USD 383's calendars no longer list the meet (asked for Sep 8 to 12, Anthony's answers only an 8th grade volleyball game on Sep 12). Production keeps the stored final, which the `stored=0` preview build skips. Not this change; production's card stays.
+
+**After the merge (#575):** production listed the two old Oct 15 rows of Hillsboro and Smoky Valley beside the merged card: Bound's team place ("4th of 5", "3rd of 5") had been stored as its own final. Both days are in `RETRACTED_FINALS` (the built card keeps its live results).
 
 ## Limitations
 
