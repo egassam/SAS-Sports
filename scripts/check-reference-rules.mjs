@@ -77,7 +77,7 @@ for(const id of ids){
       if(e.event_type==='GAME'&&(!String(e.opponent||'').trim()||/\b(?:vs|at)\s*$/.test(title)))fail(where,`${day} no opponent named: "${title}"`);
       // Words typed in capitals (league and school codes stay).
       if(nameCase(title)!==title.trim())note(where,`${day} capitals in "${title}"`);
-      if(/\bJV\b|\bjunior varsity\b|\bC[- ]Team\b/i.test(title)&&!/\bJV\s*\/\s*V(?:arsity)?\b|\bVarsity\b|\bV\s*\/\s*JV\b/i.test(title))fail(where,`${day} junior varsity listed: "${title}"`);
+      if(/\bJV\b|\bjunior varsity\b|\bnon[- ]?varsity\b|\bC[- ]Team\b/i.test(title)&&!/\bJV\s*\/\s*V(?:arsity)?\b|\bVarsity\b|\bV\s*\/\s*JV\b/i.test(title.replace(/\bnon[- ]?varsity\b/ig,'')))fail(where,`${day} junior varsity listed: "${title}"`);
       // 4. Rounds never reached: gone after their day or a playoff loss; a named round reads "·".
       const placeholder=PLACEHOLDER.test(e.opponent||'')||(/\bTBD\b/.test(title));
       if(placeholder&&e.event_type==='GAME'){

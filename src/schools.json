@@ -15391,5 +15391,851 @@
         "provider_school_id": "d9a74006-d0f2-4269-954e-0986d4537b2d"
       }
     ]
+  },
+  {
+    "id": "atchison-co-community-ks",
+    "name": "Atchison Co Community High School",
+    "short_name": "Atchison Co Community",
+    "state": "Kansas",
+    "city": "Effingham",
+    "county": "Atchison County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd377.org",
+    "aliases": [
+      "Atchison Co Community High School",
+      "Atchison Co Community",
+      "Atchison County HS",
+      "Atchison Co Community Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/acounty",
+        "provider_school_id": "h2025020404515476678109846bda84c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/effingham/atchison-county-tigers",
+        "provider_school_id": "0d9ef561-dd7c-4707-a9f3-5d114f6ce988"
+      }
+    ]
+  },
+  {
+    "id": "atchison-ks",
+    "name": "Atchison High School",
+    "short_name": "Atchison",
+    "state": "Kansas",
+    "city": "Atchison",
+    "county": "Atchison County",
+    "conference": "Meadowlark Conference",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd409.net",
+    "aliases": [
+      "Atchison High School",
+      "Atchison",
+      "Atchison Phoenix"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/atchisonhs",
+        "provider_school_id": "h20250204045154734d7022641ef2a4e"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/atchison/atchison-phoenix",
+        "provider_school_id": "a11bdf79-39ff-404a-8384-3680f767e310"
+      }
+    ]
+  },
+  {
+    "id": "maur-hill-mount-ks",
+    "name": "Maur Hill-Mount Academy",
+    "short_name": "Maur Hill-Mount Academy",
+    "state": "Kansas",
+    "city": "Atchison",
+    "county": "Atchison County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.mh-ma.com",
+    "aliases": [
+      "Maur Hill-Mount Academy",
+      "Maur Hill - Mount Academy",
+      "Maur Hill-Mount Academy Raven"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/maurhillmountacademy",
+        "provider_school_id": "h20250204045200856f4ddc627e3da4b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/atchison/maur-hill-prep-mount-academy-ravens",
+        "provider_school_id": "a6e57c3e-2d8a-4657-ab22-9ea0adf4569d"
+      }
+    ]
+  },
+  {
+    "id": "atchison-st-benedict-catholic-ms-ks",
+    "name": "St. Benedict Catholic School",
+    "short_name": "St. Benedict",
+    "state": "Kansas",
+    "city": "Atchison",
+    "county": "Atchison County",
+    "conference": "Northeast Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "http://stbenedictatchison.org/school",
+    "aliases": [
+      "St. Benedict Catholic School",
+      "Atchison St. Benedict Catholic School",
+      "Atchison-St. Benedict Catholic School",
+      "St. Benedict Catholic MS",
+      "Atchison St. Benedict Catholic School Ravens"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/stbencathms",
+        "provider_school_id": "h20260427014343000ac1d71181f8748"
+      }
+    ]
+  },
+  {
+    "id": "hiawatha-ks",
+    "name": "Hiawatha High School",
+    "short_name": "Hiawatha",
+    "state": "Kansas",
+    "city": "Hiawatha",
+    "county": "Brown County",
+    "conference": "Big East League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.hiawathaschools415.org",
+    "aliases": [
+      "Hiawatha High School",
+      "Hiawatha",
+      "Hiawatha Red Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hiawathahs",
+        "provider_school_id": "h2025020404515923566262fb6262942"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hiawatha/hiawatha-red-hawks",
+        "provider_school_id": "1a64cf37-0545-4695-bb4d-53de33665625"
+      }
+    ]
+  },
+  {
+    "id": "horton-ks",
+    "name": "Horton High School",
+    "short_name": "Horton",
+    "state": "Kansas",
+    "city": "Horton",
+    "county": "Brown County",
+    "conference": "Northeast Kansas League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd430.org",
+    "aliases": [
+      "Horton High School",
+      "Horton",
+      "Horton Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hortonhs",
+        "provider_school_id": "h2025020404515945646bda64d725849"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/horton/horton-chargers",
+        "provider_school_id": "69f670f8-f474-4893-a7e1-053ea924d1f4"
+      }
+    ]
+  },
+  {
+    "id": "everest-ms-ks",
+    "name": "Everest Middle School",
+    "short_name": "Everest",
+    "state": "Kansas",
+    "city": "Everest",
+    "county": "Brown County",
+    "conference": "Northeast Kansas League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://usd430.org",
+    "aliases": [
+      "Everest Middle School",
+      "Everest",
+      "Everest MS",
+      "Everest Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/everestms",
+        "provider_school_id": "h20260427013527429ff2af84f044d44"
+      }
+    ]
+  },
+  {
+    "id": "burlington-ks",
+    "name": "Burlington High School",
+    "short_name": "Burlington",
+    "state": "Kansas",
+    "city": "Burlington",
+    "county": "Coffey County",
+    "conference": "Pioneer League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd244ks.org",
+    "aliases": [
+      "Burlington High School",
+      "Burlington",
+      "Burlington Wildcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/burlingtonhs",
+        "provider_school_id": "h20250204045155559f729906af1f947"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/burlington/burlington-wildcats",
+        "provider_school_id": "c73b5c2f-32fa-4ea7-8418-5455c81545b0"
+      }
+    ]
+  },
+  {
+    "id": "lebo-ks",
+    "name": "Lebo High School",
+    "short_name": "Lebo",
+    "state": "Kansas",
+    "city": "Lebo",
+    "county": "Coffey County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd243ks.org",
+    "aliases": [
+      "Lebo High School",
+      "Lebo",
+      "Lebo Wolves"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lebohs",
+        "provider_school_id": "h20250204045200314d9f73946b93749"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lebo/lebo-wolves",
+        "provider_school_id": "41f5bc40-874a-4d4f-8cef-8ab649a8e459"
+      }
+    ]
+  },
+  {
+    "id": "southern-coffey-county-ks",
+    "name": "Southern Coffey County High School",
+    "short_name": "Southern Coffey County",
+    "state": "Kansas",
+    "city": "LeRoy",
+    "county": "Coffey County",
+    "conference": "Three Rivers League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd245ks.org",
+    "aliases": [
+      "Southern Coffey County High School",
+      "Southern Coffey County",
+      "Southern Coffey County Titans"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sccounty",
+        "provider_school_id": "h2025020404520660310849aee04c54a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/leroy/southern-coffey-county-titans",
+        "provider_school_id": "b0592357-ea4c-4087-bec2-65b02f036908"
+      }
+    ]
+  },
+  {
+    "id": "waverly-ks",
+    "name": "Waverly High School",
+    "short_name": "Waverly",
+    "state": "Kansas",
+    "city": "Waverly",
+    "county": "Coffey County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd243ks.org",
+    "aliases": [
+      "Waverly High School",
+      "Waverly",
+      "Waverly Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/waverlyhs",
+        "provider_school_id": "h20250204045208964879fb437eced4c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/waverly/waverly-bulldogs",
+        "provider_school_id": "1bc9333a-f72c-4337-833b-57c4b410c6c0"
+      }
+    ]
+  },
+  {
+    "id": "anderson-county-ks",
+    "name": "Anderson County High School",
+    "short_name": "Anderson County",
+    "state": "Kansas",
+    "city": "Garnett",
+    "county": "Anderson County",
+    "conference": "Pioneer League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd365.org",
+    "aliases": [
+      "Anderson County High School",
+      "Anderson County",
+      "Anderson County Bulldog"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/andersoncountyhs",
+        "provider_school_id": "h20250204045154519a901771425414f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/garnett/anderson-county-bulldogs",
+        "provider_school_id": "58e2b3fa-a0ce-4ea8-8dcb-d0622da468a3"
+      }
+    ]
+  },
+  {
+    "id": "crest-ks",
+    "name": "Crest High School",
+    "short_name": "Crest",
+    "state": "Kansas",
+    "city": "Colony",
+    "county": "Anderson County",
+    "conference": "Three Rivers League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd479.org",
+    "aliases": [
+      "Crest High School",
+      "Crest",
+      "Crest Lancers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/cresths",
+        "provider_school_id": "h2025020404515731493bdeb45066349"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/colony/crest-lancers",
+        "provider_school_id": "07c06d2d-557c-4e24-bdee-3212677a3b11"
+      }
+    ]
+  },
+  {
+    "id": "eureka-ks",
+    "name": "Eureka High School",
+    "short_name": "Eureka",
+    "state": "Kansas",
+    "city": "Eureka",
+    "county": "Greenwood County",
+    "conference": "Tri-Valley League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.eurekausd389.net",
+    "aliases": [
+      "Eureka High School",
+      "Eureka",
+      "Eureka Tornadoes"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/eurekahs",
+        "provider_school_id": "h202502040451582066a230e21443444"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/eureka/eureka-tornadoes",
+        "provider_school_id": "da9ea580-dabc-439d-a3c5-d1f7d6105a1f"
+      }
+    ]
+  },
+  {
+    "id": "madison-ks",
+    "name": "Madison High School",
+    "short_name": "Madison",
+    "state": "Kansas",
+    "city": "Madison",
+    "county": "Greenwood County",
+    "conference": "Lyon County League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd386.net",
+    "aliases": [
+      "Madison High School",
+      "Madison",
+      "Madison Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/madisonhs",
+        "provider_school_id": "h20250204045200613ea803498a1c644"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/madison/madison-bulldogs",
+        "provider_school_id": "d139118f-1fe6-45eb-a25c-5d3cf6a289fd"
+      }
+    ]
+  },
+  {
+    "id": "burrton-ks",
+    "name": "Burrton High School",
+    "short_name": "Burrton",
+    "state": "Kansas",
+    "city": "Burrton",
+    "county": "Harvey County",
+    "conference": "Heart of the Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://burrton.usd369.org",
+    "aliases": [
+      "Burrton High School",
+      "Burrton",
+      "Burrton Chargers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/burrtonhs",
+        "provider_school_id": "h202502040451555862bb6aefb60d147"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/burrton/burrton-chargers",
+        "provider_school_id": "d7dfb21a-7adf-4241-8500-d83af3f1c34e"
+      }
+    ]
+  },
+  {
+    "id": "halstead-ks",
+    "name": "Halstead High School",
+    "short_name": "Halstead",
+    "state": "Kansas",
+    "city": "Halstead",
+    "county": "Harvey County",
+    "conference": "Central Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd440.com",
+    "aliases": [
+      "Halstead High School",
+      "Halstead",
+      "Halstead Dragons"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/halsteadhs",
+        "provider_school_id": "h202502040451589008d68fc61f30e4b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/halstead/halstead-dragons",
+        "provider_school_id": "368c24e0-5b41-4255-b4e2-08da2c7f7a5a"
+      }
+    ]
+  },
+  {
+    "id": "hesston-ks",
+    "name": "Hesston High School",
+    "short_name": "Hesston",
+    "state": "Kansas",
+    "city": "Hesston",
+    "county": "Harvey County",
+    "conference": "Central Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://hs.hesstonschools.org",
+    "aliases": [
+      "Hesston High School",
+      "Hesston",
+      "Hesston Swathers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/hesstonhs",
+        "provider_school_id": "h202502040451592114de82fed1bb347"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/hesston/hesston-swathers",
+        "provider_school_id": "4a2e67a2-fb4e-4087-ba6f-d42f2abbc38f"
+      }
+    ]
+  },
+  {
+    "id": "newton-ks",
+    "name": "Newton High School",
+    "short_name": "Newton",
+    "state": "Kansas",
+    "city": "Newton",
+    "county": "Harvey County",
+    "conference": "AVCTL I & II League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://nhs.usd373.org",
+    "aliases": [
+      "Newton High School",
+      "Newton",
+      "Newton HS",
+      "Newton Railers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/newtonhs",
+        "provider_school_id": "h20250204045201326e9cfaaec29de4f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/newton/newton-railers",
+        "provider_school_id": "c0a88409-bec6-403b-9d7f-1f0ad98d50f3"
+      }
+    ]
+  },
+  {
+    "id": "sedgwick-ks",
+    "name": "Sedgwick High School",
+    "short_name": "Sedgwick",
+    "state": "Kansas",
+    "city": "Sedgwick",
+    "county": "Harvey County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd439.com",
+    "aliases": [
+      "Sedgwick High School",
+      "Sedgwick",
+      "Sedgwick Cardinals"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sedgwickhs",
+        "provider_school_id": "h20250204045206060265a1e4292814c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/sedgwick/sedgwick-cardinals",
+        "provider_school_id": "a3cb2fd2-867a-4e17-839d-23ccbcd4b0fa"
+      }
+    ]
+  },
+  {
+    "id": "newton-chisholm-ms-ks",
+    "name": "Newton Chisholm Middle School",
+    "short_name": "Newton Chisholm",
+    "state": "Kansas",
+    "city": "Newton",
+    "county": "Harvey County",
+    "conference": "Wichita Suburban League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://chisholm.usd373.org",
+    "aliases": [
+      "Newton Chisholm Middle School",
+      "Newton Chisholm",
+      "Newton Chisholm MS",
+      "Newton Chisholm Railers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chisholmms",
+        "provider_school_id": "h202506130848002852be4f96d86fe42"
+      }
+    ]
+  },
+  {
+    "id": "chase-ks",
+    "name": "Chase High School",
+    "short_name": "Chase",
+    "state": "Kansas",
+    "city": "Chase",
+    "county": "Rice County",
+    "conference": "Central Prairie League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd401.com",
+    "aliases": [
+      "Chase High School",
+      "Chase",
+      "Chase Kats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chasehs",
+        "provider_school_id": "h202502040451561367c5bba1af66340"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/chase/chase-kats",
+        "provider_school_id": "7c371c63-ec90-45f7-ad49-b9d329aa479c"
+      }
+    ]
+  },
+  {
+    "id": "little-river-ks",
+    "name": "Little River High School",
+    "short_name": "Little River",
+    "state": "Kansas",
+    "city": "Little River",
+    "county": "Rice County",
+    "conference": "Wheat State League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd444.com",
+    "aliases": [
+      "Little River High School",
+      "Little River",
+      "Little River Redskins"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/littleriverhs",
+        "provider_school_id": "h20250204045200450dcd7b32f3d0e43"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/little-river/little-river-redskins",
+        "provider_school_id": "0796a694-c90d-4269-a038-32bbc43d05d9"
+      }
+    ]
+  },
+  {
+    "id": "lyons-ks",
+    "name": "Lyons High School",
+    "short_name": "Lyons",
+    "state": "Kansas",
+    "city": "Lyons",
+    "county": "Rice County",
+    "conference": "North Central Activities Association",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd405.com",
+    "aliases": [
+      "Lyons High School",
+      "Lyons",
+      "Lyons Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lyonshs",
+        "provider_school_id": "h20250204045200560bbb0156bc3e14b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lyons/lyons-lions",
+        "provider_school_id": "2eed7b8d-517b-4239-b695-ed60af78bfd0"
+      }
+    ]
+  },
+  {
+    "id": "sterling-ks",
+    "name": "Sterling High School",
+    "short_name": "Sterling",
+    "state": "Kansas",
+    "city": "Sterling",
+    "county": "Rice County",
+    "conference": "Heart of America League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd376.com",
+    "aliases": [
+      "Sterling High School",
+      "Sterling",
+      "Sterling Black Bear"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sterlinghs",
+        "provider_school_id": "h20250204045207011afc20e2023474c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/sterling/sterling-black-bears",
+        "provider_school_id": "23b0c43c-4d25-4fb6-afca-4a019920e19c"
+      }
+    ]
+  },
+  {
+    "id": "little-river-ms-ks",
+    "name": "Little River Junior High",
+    "short_name": "Little River",
+    "state": "Kansas",
+    "city": "Little River",
+    "county": "Rice County",
+    "conference": "Wheat State League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "http://usd444.ss5.sharpschool.com/,http://usd444.ss5.sharpschool.com",
+    "aliases": [
+      "Little River Junior High",
+      "Little River",
+      "Little River Redskins"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/littleriverhs",
+        "provider_school_id": "h20250204045200450dcd7b32f3d0e43"
+      }
+    ]
+  },
+  {
+    "id": "sterling-ms-ks",
+    "name": "Sterling Junior High",
+    "short_name": "Sterling",
+    "state": "Kansas",
+    "city": "Sterling",
+    "county": "Rice County",
+    "conference": "Heart of America League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd376.com",
+    "aliases": [
+      "Sterling Junior High",
+      "Sterling",
+      "Sterling Black Bear"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/sterlinghs",
+        "provider_school_id": "h20250204045207011afc20e2023474c"
+      }
+    ]
+  },
+  {
+    "id": "ellsworth-ks",
+    "name": "Ellsworth High School",
+    "short_name": "Ellsworth",
+    "state": "Kansas",
+    "city": "Ellsworth",
+    "county": "Ellsworth County",
+    "conference": "North Central Activities Association",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd327.org",
+    "aliases": [
+      "Ellsworth High School",
+      "Ellsworth",
+      "Ellsworth Bearcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ellsworthhs",
+        "provider_school_id": "h20250204045158064e13d55a61e4348"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/ellsworth/ellsworth-bearcats",
+        "provider_school_id": "39580e9a-650d-4be4-8242-275755c5b0e3"
+      }
+    ]
+  },
+  {
+    "id": "ellsworth-ms-ks",
+    "name": "Ellsworth Junior High",
+    "short_name": "Ellsworth",
+    "state": "Kansas",
+    "city": "Ellsworth",
+    "county": "Ellsworth County",
+    "conference": "North Central Activities Association",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd327.org",
+    "aliases": [
+      "Ellsworth Junior High",
+      "Ellsworth",
+      "Ellsworth Bearcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/ellsworthhs",
+        "provider_school_id": "h20250204045158064e13d55a61e4348"
+      }
+    ]
   }
 ]

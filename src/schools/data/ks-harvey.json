@@ -1,0 +1,234 @@
+{
+ "state": "ks",
+ "counties": [
+  "Harvey"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "burrton-ks",
+   "name": "Burrton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451555862bb6aefb60d147",
+    "slug": "burrtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "d7dfb21a-7adf-4241-8500-d83af3f1c34e",
+    "path": "burrton/burrton-chargers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Burrton",
+    "milesplit": 21914,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "halstead-ks",
+   "name": "Halstead High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451589008d68fc61f30e4b",
+    "slug": "halsteadhs"
+   },
+   "maxpreps": {
+    "schoolId": "368c24e0-5b41-4255-b4e2-08da2c7f7a5a",
+    "path": "halstead/halstead-dragons"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 152,
+    "code": "HAL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Halstead",
+    "milesplit": 20801
+   }
+  },
+  {
+   "id": "hesston-ks",
+   "name": "Hesston High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451592114de82fed1bb347",
+    "slug": "hesstonhs"
+   },
+   "maxpreps": {
+    "schoolId": "4a2e67a2-fb4e-4087-ba6f-d42f2abbc38f",
+    "path": "hesston/hesston-swathers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 154,
+    "code": "HST"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Hesston",
+    "tennis": "Hesston HS",
+    "milesplit": 21823
+   }
+  },
+  {
+   "id": "newton-ks",
+   "name": "Newton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201326e9cfaaec29de4f",
+    "slug": "newtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "c0a88409-bec6-403b-9d7f-1f0ad98d50f3",
+    "path": "newton/newton-railers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 50,
+    "code": "NEW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Newton",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Newton HS",
+    "milesplit": 21795
+   }
+  },
+  {
+   "id": "sedgwick-ks",
+   "name": "Sedgwick High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206060265a1e4292814c",
+    "slug": "sedgwickhs"
+   },
+   "maxpreps": {
+    "schoolId": "a3cb2fd2-867a-4e17-839d-23ccbcd4b0fa",
+    "path": "sedgwick/sedgwick-cardinals"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 183,
+    "code": "SG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "Sedgwick",
+    "milesplit": 21904,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "newton-chisholm-ms-ks",
+   "name": "Newton Chisholm Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202506130848002852be4f96d86fe42",
+    "slug": "chisholmms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Newton Chisholm MS",
+    "milesplit": 31942
+   }
+  }
+ ]
+}

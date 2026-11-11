@@ -136,6 +136,16 @@ assert.equal(maxprepsSchoolPage(ksc('maxpreps-wabaunsee-football-2026-11-05.html
   const two=matchSchools({ccd:[{name:'Lawrence Free State High',town:'Lawrence',level:'high-school',address:'4700 Overland Dr'}],kshsaa:[{name:'Free State HS',town:'Lawrence',address:'4700 Overland Drive'}],bound:[b],state:'KS'});
   assert.equal(two.filter(r=>r.bound).length,1);assert.ok(two[0].kshsaa&&two[0].ccd,'both sources kept');
 }
+// A same-named Bound school in another county's town is not the school (November 10, 2026:
+// Greenwood County's Hamilton JH took Wichita's Hamilton MS). One in a county town still is.
+{
+  const wichita={name:'Hamilton MS',town:'Wichita',bound:'hW'};
+  const ccdRow={name:'Hamilton JH',town:'Hamilton',level:'middle-school'};
+  const [none]=matchSchools({ccd:[ccdRow],kshsaa:[],bound:[wichita],state:'KS',towns:['Eureka','Hamilton','Madison']});
+  assert.equal(none.bound,null,'Wichita is not in Greenwood County');
+  const [near]=matchSchools({ccd:[{...ccdRow,town:'Hamilton'}],kshsaa:[],bound:[{...wichita,town:'Madison'}],state:'KS',towns:['Eureka','Hamilton','Madison']});
+  assert.equal(near.bound?.bound,'hW','a county town is kept');
+}
 // Few Bound games: MaxPreps' game sports join the draft (Cair Paravel, November 6).
 {
   const e=draftEntry({id:'cair-paravel-latin-ks',level:'high-school',name:'Cair Paravel Latin School',bound:{bound:'h1',slug:'cplatin',name:'Cair Paravel Latin'},has:['Football','Volleyball','Basketball','Cross Country','Track & Field'],

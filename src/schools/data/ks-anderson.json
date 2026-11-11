@@ -1,0 +1,78 @@
+{
+ "state": "ks",
+ "counties": [
+  "Anderson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "anderson-county-ks",
+   "name": "Anderson County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154519a901771425414f",
+    "slug": "andersoncountyhs"
+   },
+   "maxpreps": {
+    "schoolId": "58e2b3fa-a0ce-4ea8-8dcb-d0622da468a3",
+    "path": "garnett/anderson-county-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 90,
+    "code": "AC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Anderson County",
+    "milesplit": 20799,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "crest-ks",
+   "name": "Crest High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515731493bdeb45066349",
+    "slug": "cresths"
+   },
+   "maxpreps": {
+    "schoolId": "07c06d2d-557c-4e24-bdee-3212677a3b11",
+    "path": "colony/crest-lancers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Crest",
+    "milesplit": 21975,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

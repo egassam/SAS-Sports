@@ -1,0 +1,109 @@
+{
+ "state": "ks",
+ "counties": [
+  "Brown"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "hiawatha-ks",
+   "name": "Hiawatha High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515923566262fb6262942",
+    "slug": "hiawathahs"
+   },
+   "maxpreps": {
+    "schoolId": "1a64cf37-0545-4695-bb4d-53de33665625",
+    "path": "hiawatha/hiawatha-red-hawks"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 155,
+    "code": "HIAW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Hiawatha",
+    "milesplit": 21820,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "horton-ks",
+   "name": "Horton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515945646bda64d725849",
+    "slug": "hortonhs"
+   },
+   "maxpreps": {
+    "schoolId": "69f670f8-f474-4893-a7e1-053ea924d1f4",
+    "path": "horton/horton-chargers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 214,
+    "code": "HRT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Horton",
+    "milesplit": 21899,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "everest-ms-ks",
+   "name": "Everest Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260427013527429ff2af84f044d44",
+    "slug": "everestms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Everest MS"
+   }
+  }
+ ]
+}

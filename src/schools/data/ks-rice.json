@@ -1,0 +1,185 @@
+{
+ "state": "ks",
+ "counties": [
+  "Rice"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "chase-ks",
+   "name": "Chase High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451561367c5bba1af66340",
+    "slug": "chasehs"
+   },
+   "maxpreps": {
+    "schoolId": "7c371c63-ec90-45f7-ad49-b9d329aa479c",
+    "path": "chase/chase-kats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Track & Field"
+    ],
+    "meetTeam": "Chase",
+    "milesplit": 20798,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "little-river-ks",
+   "name": "Little River High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200450dcd7b32f3d0e43",
+    "slug": "littleriverhs"
+   },
+   "maxpreps": {
+    "schoolId": "0796a694-c90d-4269-a038-32bbc43d05d9",
+    "path": "little-river/little-river-redskins"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Little River",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "lyons-ks",
+   "name": "Lyons High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200560bbb0156bc3e14b",
+    "slug": "lyonshs"
+   },
+   "maxpreps": {
+    "schoolId": "2eed7b8d-517b-4239-b695-ed60af78bfd0",
+    "path": "lyons/lyons-lions"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 164,
+    "code": "LYNS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Lyons",
+    "tennis": "Lyons HS",
+    "milesplit": 21863
+   }
+  },
+  {
+   "id": "sterling-ks",
+   "name": "Sterling High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045207011afc20e2023474c",
+    "slug": "sterlinghs"
+   },
+   "maxpreps": {
+    "schoolId": "23b0c43c-4d25-4fb6-afca-4a019920e19c",
+    "path": "sterling/sterling-black-bears"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 187,
+    "code": "STG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Track & Field"
+    ],
+    "meetTeam": "Sterling",
+    "tennis": "Sterling HS",
+    "milesplit": 21865,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "little-river-ms-ks",
+   "name": "Little River Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045200450dcd7b32f3d0e43",
+    "slug": "littleriverhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Little River"
+   }
+  },
+  {
+   "id": "sterling-ms-ks",
+   "name": "Sterling Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045207011afc20e2023474c",
+    "slug": "sterlinghs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Track & Field"
+    ],
+    "meetTeam": "Sterling",
+    "milesplit": 39143
+   }
+  }
+ ]
+}

@@ -1,0 +1,129 @@
+{
+ "state": "ks",
+ "counties": [
+  "Coffey"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "burlington-ks",
+   "name": "Burlington High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155559f729906af1f947",
+    "slug": "burlingtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "c73b5c2f-32fa-4ea7-8418-5455c81545b0",
+    "path": "burlington/burlington-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 75,
+    "code": "BURL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Burlington",
+    "milesplit": 21872,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "lebo-ks",
+   "name": "Lebo High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200314d9f73946b93749",
+    "slug": "lebohs"
+   },
+   "maxpreps": {
+    "schoolId": "41f5bc40-874a-4d4f-8cef-8ab649a8e459",
+    "path": "lebo/lebo-wolves"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Lebo",
+    "milesplit": 22029,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "southern-coffey-county-ks",
+   "name": "Southern Coffey County High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520660310849aee04c54a",
+    "slug": "sccounty"
+   },
+   "maxpreps": {
+    "schoolId": "b0592357-ea4c-4087-bec2-65b02f036908",
+    "path": "leroy/southern-coffey-county-titans"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball"
+    ],
+    "meetTeam": "Southern Coffey County",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "waverly-ks",
+   "name": "Waverly High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045208964879fb437eced4c",
+    "slug": "waverlyhs"
+   },
+   "maxpreps": {
+    "schoolId": "1bc9333a-f72c-4337-833b-57c4b410c6c0",
+    "path": "waverly/waverly-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Waverly",
+    "milesplit": 21931,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

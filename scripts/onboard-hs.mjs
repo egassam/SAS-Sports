@@ -181,7 +181,7 @@ export function addressKey(address){
 // The schools of a county, matched across sources (by name key, town and
 // level; a Bound school by its street address when its name differs:
 // "St. Francis Xavier Catholic" is KSHSAA's "St. Xavier HS").
-export function matchSchools({ccd,kshsaa,bound,state}){
+export function matchSchools({ccd,kshsaa,bound,state,towns}){
   const rows=[];
   const add=(src,level)=>{
     const key=schoolKey(src.name);
@@ -194,7 +194,11 @@ export function matchSchools({ccd,kshsaa,bound,state}){
   for(const s of kshsaa){const level=levelOf({name:s.name,type:s.type})||'high-school';const row=add(s,level);row.kshsaa=s;if(/HS$|High School/.test(s.name))row.name=row.name||s.name;}
   for(const row of rows){
     const near=bound.filter(b=>schoolKey(b.name)===row.key&&(levelOf({name:b.name})||'high-school')===row.level);
-    row.bound=near.find(b=>slug(b.town)===slug(row.town))||near[0]||null;
+    // A same-named Bound school in another town is taken only when that town
+    // is one of the county's (November 10, 2026: Greenwood County's Hamilton
+    // JH took Wichita's Hamilton MS and its All City meets).
+    const inCounty=b=>!towns||towns.some(t=>slug(t)===slug(b.town));
+    row.bound=near.find(b=>slug(b.town)===slug(row.town))||near.find(inCounty)||null;
     if(!row.bound){
       const keys=[row.kshsaa?.address,row.ccd?.address].map(addressKey).filter(Boolean);
       const at=bound.filter(b=>slug(b.town)===slug(row.town)&&keys.includes(addressKey(b.address)));
@@ -415,7 +419,7 @@ async function surveyCounty(args,county,paths){
   // Bound's state page.
   const bound=boundStateSchools(await get(`https://beta.gobound.com/${state.toLowerCase()}/schools`));
   log(`Bound: ${bound.length} ${state} schools`);
-  const rows=matchSchools({ccd:ccd.schools,kshsaa:[...new Map(kshsaa.map(s=>[s.kshsaa||s.name,s])).values()].filter(s=>ccd.towns.some(t=>slug(t)===slug(s.town))),bound,state});
+  const rows=matchSchools({ccd:ccd.schools,towns:ccd.towns,kshsaa:[...new Map(kshsaa.map(s=>[s.kshsaa||s.name,s])).values()].filter(s=>ccd.towns.some(t=>slug(t)===slug(s.town))),bound,state});
   // Bound sports by level, two school years.
   const now=new Date(),y=now.getUTCMonth()>=6?now.getUTCFullYear():now.getUTCFullYear()-1;
   for(const row of rows.filter(r=>r.bound)){
