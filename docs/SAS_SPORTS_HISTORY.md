@@ -5351,3 +5351,38 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Lesson:** run the full `check:reference-rules` at most once an hour (about 1,050 Bound reads each), or narrow it with `--school`/`--county`.
 - **Recheck:** Bound answered production again by 23:17 UTC (Oskaloosa MS volleyball: 11 events); `verify:prod --school=oskaloosa-ms-ks --sports=all --version=4.297.0-aged-copies`: all checks passed.
+
+## November 10-11, 2026 (Central, evening): eight more Kansas counties (PRs #575, #576)
+
+**Conversation.** The user asked "What's next?". The handoff left the next session to them; the answer listed the options (more counties, the Summit League and SWAC, more pro leagues, push alert follow-up, store builds, the smaller open items) and recommended more counties. The user: "Add more counties."
+
+**Counties chosen.** Next to counties already in the app, leaving out the metro counties: Atchison, Brown, Coffey, Anderson, Greenwood, Harvey, Rice, Ellsworth. `onboard:hs` for all eight took about 55 minutes (23:50 to 00:44 UTC). Of the schools found, 29 went in with `add:county` (23 high schools, 6 middle schools); 16 high schools read MaxPreps' schedule (`maxprepsSchedule`).
+
+**Fixed by hand (from the reports and Bound's day counts per sport):**
+- Maur Hill-Mount: no MaxPreps page found by the survey; `atchison/maur-hill-prep-mount-academy-ravens` read through the source route (school id `a6e57c3e-…`); Bound has all 9 MaxPreps football games, so Bound's schedule only.
+- Burrton: 2 Bound volleyball matches, no Bound basketball; MaxPreps lists volleyball, basketball and wrestling teams. `maxprepsSchedule` set by hand, Basketball and Wrestling added (the survey made no comparison: fewer than 4 MaxPreps volleyball games).
+- Southern Coffey County: swimming dropped (2 Bound meets, last year only).
+- St. Benedict Catholic School: `add:county` wrote "Atchison St. Benedict Catholic School Middle School"; renamed, old forms kept as aliases.
+- Hamilton JH (Greenwood): the survey matched Bound's "Hamilton MS", which is Wichita's (town Wichita; All City and Westside meets). Left out; `matchSchools` now takes a same-named Bound school from another town only when that town is one of the county's (`tests/onboard-hs.mjs` fails without it).
+- Skipped middle schools with no or 1 to 3 Bound events per sport: Lebo JH, Waverly JH, Southern Coffey County MS, Crest MS, Eureka JH, Burrton MS, Chase-Raymond JH; schools not on Bound listed in `KS_COUNTIES_BATCH5_MODULE.md`.
+
+**Tests.** `ks-counties-module` (BATCH5 lists, sparse schools), `catalog-module` (county list), `hs-live-now` (Hesston is now an app school on the Nov 6 state page: 14, not 13), `onboard-hs` (Hamilton case). Local: hs-config, hs-live-now, hs-reference, hs-rules, hs-schedule-pairings, ks-counties-module, catalog-module, geary-ks-module, manhattan-ks-module, finals-store passed. CI `guardrails` (`test:release`) and certification-matrix green on #575's head `6c4e5ce` and #576's `fa2a241`.
+
+**Gate (#575, preview).**
+- `verify:preview` reference schools, all sports, 3 refreshes: 69 PASS / 0 FAIL, K-State XC 18/20, KU XC 26/21.
+- The 29 new schools, all sports, 3 refreshes: 666 PASS / 0 FAIL (221 school-sports).
+- `check:reference-rules --county=<the eight>`: 30 schools, 222 feeds, 3008 cards, 0 FAIL, 17 NOTE (12 out of season; 5 volleyball days with two MaxPreps match pages against one opponent, rule 8a, Lebo's W and L at Girard among them).
+- Reading the cards found three problems the rules missed, fixed in `797c23e` for every school: "2027 Titan Wrestling Invitational- Boys Non-Varsity" (Newton, Eureka) was listed (`juniorVarsityOnly` read "Varsity" in it; "non-varsity" is now junior varsity, also in the rules check); Bound's "CKL Cross Country Meet" and MileSplit Live's "Central Kansas League Cross Country Meet" (Oct 15) were two cards (alias); Sterling JH's "SVMS XC Meet" and the index's "Ellis Invitational Cross Country" (Sep 3, MileSplit Live 773558) were two cards (alias). Halstead's "State Cross Country" (Oct 31) is not listed: its runners are not in the 3A results.
+- `audit:bound` (winter) on the 29: every winter sport read. `--season=all` took over 20 minutes (3 s per read) and was stopped. It showed Newton's boys' basketball (23 events), which the survey's day counts had left out; the limitation first written for it was removed.
+- `diff:feeds --sport=all` (2 at a time): 1049 feeds, 982 the same, 67 differ, nearly all whole sports missing on the preview (Bound refusing the burst; Topeka basketball rebuilt with all 40 events right after). Rerun one at a time, 10 s apart: 63 the same, 4 differ. Hillsboro and Smoky Valley, Oct 15: the CKL alias (intended). Anthony and Eisenhower, Sep 10: USD 383's calendars no longer list the meet (Anthony's, asked for Sep 8 to 12, answers only an 8th grade volleyball game on Sep 12); production's cards are stored finals (`stored_final: true`), which the `stored=0` preview build skips. Not this change.
+- After the fixes: `verify:preview` reference + Hillsboro, Smoky Valley, Halstead, Hesston, Sterling JH, Newton, Eureka: 282 PASS / 0 FAIL, XC 18/20 and 26/21. `check-reference-page`: reference schools and 10 new schools passed; Newton's and Hesston's pages read by eye at 390 px.
+
+**Merge and production (#575).** Merged as `406c576` under the standing permission. Production `4.298.0-ks-counties-5`: `verify:prod` for the 29 new schools, the 3 reference schools, Hillsboro and Smoky Valley, all sports, 3 refreshes: 795 PASS / 0 FAIL, K-State XC 18/20, KU XC 26/21. Production's cards: Hillsboro and Smoky Valley each listed two Oct 15 CKL cards, the merged one and a stored final of Bound's team place ("4th of 5", "3rd of 5"): two rows had been stored for the day before the alias.
+
+**#576.** Both days in `RETRACTED_FINALS` (as Republic County after #534; only stored rows are filtered, the built card keeps its live results); `KS_COUNTIES_BATCH5_MODULE.md` records the changes to existing schools and the diff. Preview: `verify:preview` reference + Hillsboro, Smoky Valley: 132 PASS / 0 FAIL, XC 18/20 and 26/21; page check passed. Merged as `3715c4b`. Production `4.298.1-ckl-retract`: one CKL card each for Hillsboro, Smoky Valley, Halstead, Hesston; one Sep 3 card for Sterling JH; no non-varsity Titan card; Anthony's stored Sep 10 card kept. `verify:prod` same schools: 132 PASS / 0 FAIL, XC 18/20 and 26/21.
+
+**Lessons.**
+- A same-named Bound school can be in another county: check each new school's town in `add:county`'s output (Hamilton showed "Wichita").
+- Read the new cards by eye, not only the rules check: duplicate meets under an abbreviation (CKL, SVMS) and "Non-Varsity" passed every rule.
+- A change that merges two cards into one leaves production's stored final of the old card: check production's cards after the merge, and retract the day when needed.
+- The container restarted twice during the session; long reruns were made resumable (one log per feed).
