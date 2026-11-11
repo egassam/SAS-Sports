@@ -95,7 +95,12 @@ export const RETRACTED_FINALS=[
   // card, saved before a postseason entry became the day's postseason meet; Bound's "KSHSAA Regional
   // Cross Country" card is built with the same 7 runners (MileSplit Live 788048).
   {school:'republic-county-ks',sport:'Cross Country',date:'2026-10-24',reason:'Second card for the regional (the index\'s Sub-State, stored before #534); the built Regional card has its runners'},
-  {school:'blue-valley-randolph-ks',sport:'Football',date:'2026-10-30',reason:'"W, 58-0 vs Leavenworth" no longer on MaxPreps\' schedule (Goessel, Oct 29, is the week\'s game)'}];
+  {school:'blue-valley-randolph-ks',sport:'Football',date:'2026-10-30',reason:'"W, 58-0 vs Leavenworth" no longer on MaxPreps\' schedule (Goessel, Oct 29, is the week\'s game)'},
+  // November 11, after #575: Bound's "CKL Cross Country Meet" (one team-place row) and the index's
+  // "Central Kansas League Cross Country Meet" were stored as two finals; the alias makes them one built
+  // card with the MileSplit Live results, and the leftover row was listed again beside it in production.
+  {school:'hillsboro-ks',sport:'Cross Country',date:'2026-10-15',reason:'Second card for the CKL meet (Bound\'s team place, stored before the #575 alias); the built CKL card has the full results'},
+  {school:'smoky-valley-ks',sport:'Cross Country',date:'2026-10-15',reason:'Second card for the CKL meet (Bound\'s team place, stored before the #575 alias); the built CKL card has the full results'}];
 export function retractedFinal(school,sport,event,list=RETRACTED_FINALS){
   const date=String(event?.start_time||'').slice(0,10);
   return list.some(r=>r.school===school&&r.sport===sport&&r.date===date);
