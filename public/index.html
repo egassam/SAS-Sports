@@ -1317,7 +1317,12 @@ async function populateSchoolControls(preferred){
 // A new group or city: that step's cities and teams.
 async function refillFromMenus(){
   const menu=await loadMenu(currentLevel,conference.value,currentLevelInfo().cityOf?city.value:'').catch(()=>null);if(!menu)return false;
-  fillCities(menu.middle);fillSchools();renderLevels();return true;
+  // The new team's sports (user, November 11, 2026: "I'm not seeing standings
+  // and results are missing": the Chiefs, then Auto Racing, then Formula 1 kept
+  // no sport chosen, so the pro page showed the overview: one result, no
+  // standings). Its current sport stays when the team has it; a pro team or
+  // series takes its one sport.
+  fillCities(menu.middle);fillSchools();renderLevels();populateSportFilter();return true;
 }
 // Cloudflare serves a Worker resource-limit failure (Error 1102) as 503. Those
 // and dropped connections are transient; a deliberate answer such as 502

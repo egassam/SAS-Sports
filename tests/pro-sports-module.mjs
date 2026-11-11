@@ -70,6 +70,10 @@ assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
 // reads results and the whole schedule, not Home's next-game view (user,
 // October 30: "The pro sections isn't showing any results and only one upcoming").
 assert.ok(page.includes("if(!homeView&&currentLevel==='pro'&&!sportFilter.value&&ordered.length)sportFilter.value=ordered[0];"));
+// Changing the Sport or League box (the Chiefs, then Auto Racing, then
+// Formula 1; November 11, 2026) chooses the new team's sport again: without
+// it the pro page showed the overview, one result and no standings.
+{const fn=page.slice(page.indexOf('async function refillFromMenus(){'));assert.match(fn.slice(0,fn.indexOf('\n}')),/fillSchools\(\);renderLevels\(\);populateSportFilter\(\);return true;/);}
 // Worker: pro feeds skip the college season filter; no featured athletes.
 assert.ok(worker.includes('if(isPro(school))return fetchPro(school,sport,now,aiTargetId);'));
 assert.ok(worker.includes('if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason'));
