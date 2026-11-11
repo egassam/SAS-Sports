@@ -1,0 +1,75 @@
+{
+ "state": "ks",
+ "counties": [
+  "Ellsworth"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "ellsworth-ks",
+   "name": "Ellsworth High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158064e13d55a61e4348",
+    "slug": "ellsworthhs"
+   },
+   "maxpreps": {
+    "schoolId": "39580e9a-650d-4be4-8242-275755c5b0e3",
+    "path": "ellsworth/ellsworth-bearcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 144,
+    "code": "EW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ellsworth",
+    "tennis": "Ellsworth HS",
+    "milesplit": 21893
+   }
+  },
+  {
+   "id": "ellsworth-ms-ks",
+   "name": "Ellsworth Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158064e13d55a61e4348",
+    "slug": "ellsworthhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ellsworth",
+    "milesplit": 32812
+   }
+  }
+ ]
+}

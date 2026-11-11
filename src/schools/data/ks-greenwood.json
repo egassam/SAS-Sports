@@ -1,0 +1,73 @@
+{
+ "state": "ks",
+ "counties": [
+  "Greenwood"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "eureka-ks",
+   "name": "Eureka High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451582066a230e21443444",
+    "slug": "eurekahs"
+   },
+   "maxpreps": {
+    "schoolId": "da9ea580-dabc-439d-a3c5-d1f7d6105a1f",
+    "path": "eureka/eureka-tornadoes"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 147,
+    "code": "EUR"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Eureka",
+    "milesplit": 21901,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "madison-ks",
+   "name": "Madison High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200613ea803498a1c644",
+    "slug": "madisonhs"
+   },
+   "maxpreps": {
+    "schoolId": "d139118f-1fe6-45eb-a25c-5d3cf6a289fd",
+    "path": "madison/madison-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country"
+    ],
+    "meetTeam": "Madison",
+    "milesplit": 21922,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

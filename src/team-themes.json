@@ -4878,5 +4878,237 @@
     "panelDark": "#0a0b0e",
     "line": "#2b3238",
     "onAccent": "#ffffff"
+  },
+  "atchison-co-community-ks": {
+    "primary": "#C65911",
+    "secondary": "#000000",
+    "panel": "#592808",
+    "panelDark": "#281203",
+    "line": "#d4834d",
+    "onAccent": "#ffffff"
+  },
+  "atchison-ks": {
+    "primary": "#CF2230",
+    "secondary": "#F5C01C",
+    "panel": "#5d0f16",
+    "panelDark": "#29070a",
+    "line": "#db5964",
+    "onAccent": "#ffffff"
+  },
+  "maur-hill-mount-ks": {
+    "primary": "#D2B14A",
+    "secondary": "#000000",
+    "panel": "#5f5021",
+    "panelDark": "#2a230f",
+    "line": "#ddc577",
+    "onAccent": "#111111"
+  },
+  "atchison-st-benedict-catholic-ms-ks": {
+    "primary": "#C9A84C",
+    "secondary": "#1A1A2E",
+    "panel": "#5a4c22",
+    "panelDark": "#28220f",
+    "line": "#d7be79",
+    "onAccent": "#ffffff"
+  },
+  "hiawatha-ks": {
+    "primary": "#C90300",
+    "secondary": "#2146A1",
+    "panel": "#5a0100",
+    "panelDark": "#280100",
+    "line": "#d74240",
+    "onAccent": "#ffffff"
+  },
+  "horton-ks": {
+    "primary": "#0E15C9",
+    "secondary": "#000000",
+    "panel": "#06095a",
+    "panelDark": "#030428",
+    "line": "#4a50d7",
+    "onAccent": "#ffffff"
+  },
+  "everest-ms-ks": {
+    "primary": "#0000CC",
+    "secondary": "#FFFFFF",
+    "panel": "#00005c",
+    "panelDark": "#000029",
+    "line": "#4040d9",
+    "onAccent": "#ffffff"
+  },
+  "burlington-ks": {
+    "primary": "#CD202E",
+    "secondary": "#000000",
+    "panel": "#5c0e15",
+    "panelDark": "#290609",
+    "line": "#da5862",
+    "onAccent": "#ffffff"
+  },
+  "lebo-ks": {
+    "primary": "#C51230",
+    "secondary": "#A7B2AC",
+    "panel": "#590816",
+    "panelDark": "#27040a",
+    "line": "#d44d64",
+    "onAccent": "#ffffff"
+  },
+  "southern-coffey-county-ks": {
+    "primary": "#172A53",
+    "secondary": "#FCEC18",
+    "panel": "#0a1325",
+    "panelDark": "#050811",
+    "line": "#515f7e",
+    "onAccent": "#ffffff"
+  },
+  "waverly-ks": {
+    "primary": "#E24F0F",
+    "secondary": "#000000",
+    "panel": "#662407",
+    "panelDark": "#2d1003",
+    "line": "#e97b4b",
+    "onAccent": "#ffffff"
+  },
+  "anderson-county-ks": {
+    "primary": "#FF0000",
+    "secondary": "#C5C9CB",
+    "panel": "#730000",
+    "panelDark": "#330000",
+    "line": "#ff4040",
+    "onAccent": "#ffffff"
+  },
+  "crest-ks": {
+    "primary": "#F11728",
+    "secondary": "#79C4D6",
+    "panel": "#6c0a12",
+    "panelDark": "#300508",
+    "line": "#f5515e",
+    "onAccent": "#ffffff"
+  },
+  "eureka-ks": {
+    "primary": "#F72323",
+    "secondary": "#000066",
+    "panel": "#6f1010",
+    "panelDark": "#310707",
+    "line": "#f95a5a",
+    "onAccent": "#ffffff"
+  },
+  "madison-ks": {
+    "primary": "#FDA721",
+    "secondary": "#000000",
+    "panel": "#724b0f",
+    "panelDark": "#332107",
+    "line": "#febd59",
+    "onAccent": "#111111"
+  },
+  "burrton-ks": {
+    "primary": "#E0AD34",
+    "secondary": "#000000",
+    "panel": "#654e17",
+    "panelDark": "#2d230a",
+    "line": "#e8c267",
+    "onAccent": "#111111"
+  },
+  "halstead-ks": {
+    "primary": "#131E92",
+    "secondary": "#B0B1B5",
+    "panel": "#090e42",
+    "panelDark": "#04061d",
+    "line": "#4e56ad",
+    "onAccent": "#ffffff"
+  },
+  "hesston-ks": {
+    "primary": "#CF152D",
+    "secondary": "#919191",
+    "panel": "#5d0914",
+    "panelDark": "#290409",
+    "line": "#db5062",
+    "onAccent": "#ffffff"
+  },
+  "newton-ks": {
+    "primary": "#F6D13B",
+    "secondary": "#000000",
+    "panel": "#6f5e1b",
+    "panelDark": "#312a0c",
+    "line": "#f8dd6c",
+    "onAccent": "#111111"
+  },
+  "sedgwick-ks": {
+    "primary": "#C72426",
+    "secondary": "#000000",
+    "panel": "#5a1011",
+    "panelDark": "#280708",
+    "line": "#d55b5c",
+    "onAccent": "#ffffff"
+  },
+  "newton-chisholm-ms-ks": {
+    "primary": "#F7D13B",
+    "secondary": "#000000",
+    "panel": "#6f5e1b",
+    "panelDark": "#312a0c",
+    "line": "#f9dd6c",
+    "onAccent": "#111111"
+  },
+  "chase-ks": {
+    "primary": "#FC0000",
+    "secondary": "#EEE8E8",
+    "panel": "#710000",
+    "panelDark": "#320000",
+    "line": "#fd4040",
+    "onAccent": "#ffffff"
+  },
+  "little-river-ks": {
+    "primary": "#A90000",
+    "secondary": "#000000",
+    "panel": "#4c0000",
+    "panelDark": "#220000",
+    "line": "#bf4040",
+    "onAccent": "#ffffff"
+  },
+  "lyons-ks": {
+    "primary": "#285FA0",
+    "secondary": "#000000",
+    "panel": "#122b48",
+    "panelDark": "#081320",
+    "line": "#5e87b8",
+    "onAccent": "#ffffff"
+  },
+  "sterling-ks": {
+    "primary": "#C0C0C0",
+    "secondary": "#000000",
+    "panel": "#565656",
+    "panelDark": "#262626",
+    "line": "#d0d0d0",
+    "onAccent": "#111111"
+  },
+  "little-river-ms-ks": {
+    "primary": "#A90000",
+    "secondary": "#000000",
+    "panel": "#4c0000",
+    "panelDark": "#220000",
+    "line": "#bf4040",
+    "onAccent": "#ffffff"
+  },
+  "sterling-ms-ks": {
+    "primary": "#C0C0C0",
+    "secondary": "#000000",
+    "panel": "#565656",
+    "panelDark": "#262626",
+    "line": "#d0d0d0",
+    "onAccent": "#111111"
+  },
+  "ellsworth-ks": {
+    "primary": "#B10F14",
+    "secondary": "#C0BFBF",
+    "panel": "#500709",
+    "panelDark": "#230304",
+    "line": "#c54b4f",
+    "onAccent": "#ffffff"
+  },
+  "ellsworth-ms-ks": {
+    "primary": "#B10F14",
+    "secondary": "#C0BFBF",
+    "panel": "#500709",
+    "panelDark": "#230304",
+    "line": "#c54b4f",
+    "onAccent": "#ffffff"
   }
 }

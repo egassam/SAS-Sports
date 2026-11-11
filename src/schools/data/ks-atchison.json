@@ -1,0 +1,140 @@
+{
+ "state": "ks",
+ "counties": [
+  "Atchison"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH5_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "atchison-co-community-ks",
+   "name": "Atchison Co Community High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515476678109846bda84c",
+    "slug": "acounty"
+   },
+   "maxpreps": {
+    "schoolId": "0d9ef561-dd7c-4707-a9f3-5d114f6ce988",
+    "path": "effingham/atchison-county-tigers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Atchison County",
+    "milesplit": 21892,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "atchison-ks",
+   "name": "Atchison High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154734d7022641ef2a4e",
+    "slug": "atchisonhs"
+   },
+   "maxpreps": {
+    "schoolId": "a11bdf79-39ff-404a-8384-3680f767e310",
+    "path": "atchison/atchison-phoenix"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 69,
+    "code": "ATCH"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Atchison",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "milesplit": 21840
+   }
+  },
+  {
+   "id": "maur-hill-mount-ks",
+   "name": "Maur Hill-Mount Academy",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200856f4ddc627e3da4b",
+    "slug": "maurhillmountacademy"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming"
+    ],
+    "meetTeam": "Maur Hill - Mount Academy",
+    "milesplit": 26130
+   },
+   "maxpreps": {
+    "schoolId": "a6e57c3e-2d8a-4657-ab22-9ea0adf4569d",
+    "path": "atchison/maur-hill-prep-mount-academy-ravens"
+   }
+  },
+  {
+   "id": "atchison-st-benedict-catholic-ms-ks",
+   "name": "St. Benedict Catholic School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260427014343000ac1d71181f8748",
+    "slug": "stbencathms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "St. Benedict Catholic MS"
+   }
+  }
+ ]
+}
