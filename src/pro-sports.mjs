@@ -1327,7 +1327,7 @@ export function imsaStandingsTable(payload,{championship,url=null}={}){
   const c=payload?.championship,rows=Array.isArray(payload?.classification)?payload.classification:[];
   if(!c||!rows.length)return null;
   // "IMSA WeatherTech SportsCar Championship GTP Drivers" reads "GTP Drivers".
-  const title=String(c.main_title||c.name||'').replace(championship||'','').replace(/\s+/g,' ').trim()||'Standings';
+  const title=String(c.main_title||c.name||'').replace(championship||'','').replace(/\bGTDPRO\b/g,'GTD PRO').replace(/\s+/g,' ').trim()||'Standings';
   const teams=/\bteams$/i.test(title);
   return standingsTable(title,rows.slice().sort((a,b)=>a.position-b.position).map(r=>({pos:r.position,name:teams?(r.team||r.key):r.key,detail:teams&&r.key?`#${r.key}`:'',points:pointsOf(r.total_points)})),{source:{name:'IMSA official championship points (Al Kamel Systems)',url}});
 }

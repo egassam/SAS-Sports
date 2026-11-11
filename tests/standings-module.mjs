@@ -48,6 +48,7 @@ assert.equal(gtp.title,'GTP Drivers');assert.deepEqual(gtp.rows[0],{pos:1,name:'
 const gtpTeams=imsaStandingsTable(json('imsa-iwsc-gtp-teams-2026.json'),{championship});
 assert.equal(gtpTeams.title,'GTP Teams');assert.deepEqual(gtpTeams.rows[0],{pos:1,name:'Cadillac Whelen',detail:'#31',points:3020});
 assert.equal(imsaStandingsTable({championship:{main_title:'x'},classification:[]}),null);
+assert.equal(imsaStandingsTable({championship:{main_title:'IMSA WeatherTech SportsCar Championship GTDPRO Drivers'},classification:[{position:1,key:'A',total_points:1}]},{championship}).title,'GTD PRO Drivers');
 assert.equal(standingsTable('Drivers',[{name:'',points:1}]),null,'no named row: no table');
 
 // The Worker: each series' build returns its standings, and the grouped feed
