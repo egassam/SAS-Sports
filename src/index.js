@@ -67,7 +67,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.298.1-ckl-retract';
+const VERSION='4.299.0-f1-calendar-copy';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5155,9 +5155,9 @@ async function fetchPro(school,sport,now,aiTargetId=null){
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
   const [calendarPayload,seasonHtml]=await Promise.all([readJson(calendarUrl,SOURCE_TTL.listing),readText(seasonUrl,SOURCE_TTL.listing)]);
-  const calendar=f1Calendar(calendarPayload);
+  const {calendar,saved:calendarSaved}=await f1CalendarOrSaved(calendarPayload,{store:requestCatalog?.env?.HIGHLIGHTS,year,now:Date.now()});
   if(!calendar.length)return failed(`${calendarUrl}: unreadable or empty`);
-  const season=f1SeasonResults(seasonHtml,year),sources=[calendarUrl,seasonUrl],nowMs=now.getTime();
+  const season=f1SeasonResults(seasonHtml,year),sources=[calendarSaved?`${calendarUrl} (last good copy, ${calendarSaved})`:calendarUrl,seasonUrl],nowMs=now.getTime();
   const results=new Map(),origins=new Map(),pages=new Map();
   await Promise.all(calendar.flatMap(round=>[false,true].map(async sprint=>{
     const at=sprint?round.sprint:round.start;if(!at||Date.parse(at)>nowMs)return;

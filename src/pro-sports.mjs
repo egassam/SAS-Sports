@@ -1172,6 +1172,29 @@ export function f1Calendar(payload){
 }
 // formula1.com's season row for a calendar round: the same day, give or take
 // one (a night race's local date can differ from its UTC date).
+// The calendar's last good copy (user, November 11, 2026: "Check on the
+// Brazilian Grand prix"; the page showed a copy saved before the race, three
+// days old, "live refresh failed"). The whole feed hangs on Jolpica's
+// calendar, and the source cache keeps a read at most a day, so one refused
+// read after quiet days failed every build. A good calendar is kept in KV (at
+// most every 6 hours per isolate); a failed or empty read uses that copy, and
+// formula1.com still gives the results.
+export const F1_CALENDAR_KEEP_MS=6*3600e3;
+const f1CalendarWritten=new Map();
+export async function f1CalendarOrSaved(payload,{store,year,now=Date.now(),written=f1CalendarWritten}={}){
+  const key=`f1-calendar:${year}`,calendar=f1Calendar(payload);
+  if(calendar.length){
+    if(store&&!(now-(written.get(key)||0)<F1_CALENDAR_KEEP_MS)){
+      written.set(key,now);
+      try{await store.put(key,JSON.stringify({saved_at:new Date(now).toISOString(),payload}))}catch{}
+    }
+    return{calendar,saved:null};
+  }
+  if(!store)return{calendar,saved:null};
+  let copy=null;try{copy=await store.get(key,'json')}catch{}
+  const saved=f1Calendar(copy?.payload);
+  return saved.length?{calendar:saved,saved:copy.saved_at||null}:{calendar,saved:null};
+}
 export function f1SeasonRow(season,round){
   const day=Date.parse(round.start.slice(0,10)+'T00:00:00Z');
   return season.find(r=>Math.abs(Date.parse(r.date+'T00:00:00Z')-day)<=864e5)||null;
