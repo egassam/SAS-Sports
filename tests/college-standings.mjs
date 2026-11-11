@@ -38,7 +38,7 @@ assert.deepEqual(collegeStandingsReads('manhattan-ks','Football'),[],'a high sch
 {
   const [t,...rest]=tablesFor('kstate','Football',{'football/college-football':'football-big12'});
   assert.equal(rest.length,0);assert.equal(t.title,'Big 12');
-  assert.deepEqual(t.columns.map(c=>c.label),['Conf','Overall','Strk']);
+  assert.deepEqual(t.columns.map(c=>c.label),['Conf','Ovr','Strk']);
   assert.equal(t.rows.length,16);
   assert.deepEqual(t.rows[0],{pos:1,name:'Utah',detail:'Home 6-0 · Away 3-0',values:{conf:'6-0',overall:'9-0',streak:'W9'}});
   // ESPN's seed, not its list order: Iowa State (11) above Cincinnati (12).

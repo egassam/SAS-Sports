@@ -46,7 +46,7 @@ function ordered(rows){
   if(rows.every(r=>r.seed!=null))return rows.slice().sort((a,b)=>a.seed-b.seed);
   return rows.slice().sort((a,b)=>(b.confPct??-1)-(a.confPct??-1)||(b.overallPct??-1)-(a.overallPct??-1));
 }
-const COLUMNS=[{key:'conf',label:'Conf'},{key:'overall',label:'Overall'},{key:'streak',label:'Strk'}];
+const COLUMNS=[{key:'conf',label:'Conf'},{key:'overall',label:'Ovr'},{key:'streak',label:'Strk'}];
 function table(title,entries,{own,source}){
   const rows=ordered(entries.map(row));if(!rows.length)return null;
   return{title,columns:COLUMNS,source,rows:rows.map((r,i)=>({pos:i+1,name:r.team.location||r.team.shortDisplayName||r.team.displayName||r.team.abbreviation,

@@ -6,7 +6,7 @@ User, November 11, 2026: "Start the college conference standings" (the next step
 
 A college school's **Football** and **Basketball** sections show a Standings block (the same block as the pro pages): the school's conference by ESPN's seed, the top 5 with Show all, the school's own row marked and kept visible below the top 5.
 
-- Columns: **Conf** (conference record), **Overall**, **Strk** (streak). The detail line under the name is the home and away record.
+- Columns: **Conf** (conference record), **Ovr** (overall record; "Overall" ran into "Strk" at 390 px), **Strk** (streak). The detail line under the name is the home and away record.
 - Football conferences with divisions (Sun Belt, SWAC) show the school's division first, then the whole conference.
 - Basketball shows two tabs, "Men's <conference>" and "Women's <conference>" (one when the school has no women's team: The Citadel, VMI).
 - Source line: "ESPN standings (2026 season)" / "(2026-27 season)", linked to ESPN's conference page.
