@@ -65,6 +65,10 @@ The survey's results-sources table found no MileSplit Live or LetsGoRun results 
 - **Harvey, Rice and Ellsworth counties:** Valley Center (Sep 8, Oct 2), Ellsworth JH meet (Sep 8), Hesston (Sep 10), Herington (Sep 17), Berean Academy (Oct 1), Goessel (Oct 8; MileSplit Live 781656 has it for the schools whose runners are in it), Sterling (Oct 8), WSL/HOPL (Oct 13), NCAA junior high league (Oct 13).
 - **Halstead's "State Cross Country" (Oct 31):** Halstead's runners are not in the 3A state results (787763, where Hesston and Ellsworth are): a state meet the team did not qualify for is not listed (5c).
 
+## Bound winter audit (November 10)
+
+`npm run audit:bound -- --school=<the 29>`: every winter Bound sport of the 29 schools is read and listed (Newton's boys' basketball, 23 events, too: the survey's day counts had left it out, but the school's `Basketball` reads both teams).
+
 ## Changes to schools already in the app
 
 None from the counties (new schools only). The survey fix (`matchSchools` towns) changes only new surveys.
@@ -73,4 +77,3 @@ None from the counties (new schools only). The survey fix (`matchSchools` towns)
 
 - **Middle school game scores:** not published (5c).
 - **Spring sports for schools with few Bound games** come from MaxPreps' team list. A team MaxPreps lists with no games this season answers no schedule until its season is posted.
-- **Newton boys' basketball:** Bound has no boys' basketball events for Newton in either school year (girls' 24 and 23); the boys' schedule fills when Newton enters it on Bound. MaxPreps gives scores for games Bound lists.
