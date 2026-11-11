@@ -7,7 +7,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {proTeam,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails,f1FinishTable} from '../src/pro-sports.mjs';
+import {proTeam,f1CalendarOrSaved,F1_CALENDAR_KEEP_MS,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1Races,f1RaceDetails,f1LiveDetails,f1FinishTable} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const raw=name=>gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.gz`,import.meta.url))).toString('utf8');
 const json=name=>JSON.parse(raw(name));
@@ -132,5 +132,27 @@ const liveEvent=f1Races(calendar,{school:series,config:proTeam('formula-1'),time
 assert.equal(liveEvent.status,'Live');assert.equal(liveEvent.recency_label,'Lap 30');assert.equal(liveEvent.headline,'Leader: Max Verstappen');
 assert.equal(liveEvent.live_details.order.length,22);assert.equal(liveEvent.results.length,10);
 assert.deepEqual(liveEvent.results[0],{participant:'1st Max Verstappen',result:'Red Bull Racing · #3'});
+
+// The calendar's last good copy (November 11, 2026: the page showed a copy
+// saved before the Brazilian Grand Prix, "live refresh failed", three days
+// after the race). A refused or empty Jolpica read uses the copy in KV.
+{
+  const kv=new Map(),store={async put(k,v){kv.set(k,v)},async get(k,type){const v=kv.get(k);return v==null?null:type==='json'?JSON.parse(v):v}};
+  const good=json('f1-calendar.json'),written=new Map(),t0=Date.parse('2026-11-08T12:00:00Z');
+  const first=await f1CalendarOrSaved(good,{store,year:2026,now:t0,written});
+  assert.ok(first.calendar.length>20);assert.equal(first.saved,null);assert.equal(kv.size,1,'a good calendar is kept');
+  const before=kv.get('f1-calendar:2026');
+  await f1CalendarOrSaved(good,{store,year:2026,now:t0+3600e3,written});
+  assert.equal(kv.get('f1-calendar:2026'),before,'written at most every 6 hours');
+  await f1CalendarOrSaved(good,{store,year:2026,now:t0+F1_CALENDAR_KEEP_MS+1,written});
+  assert.notEqual(kv.get('f1-calendar:2026'),before,'and again after 6 hours');
+  for(const failedRead of [null,{},{MRData:{RaceTable:{Races:[]}}}]){
+    const r=await f1CalendarOrSaved(failedRead,{store,year:2026,now:t0+3*864e5,written});
+    assert.deepEqual(r.calendar,first.calendar,'the last good calendar');assert.ok(r.saved);
+  }
+  assert.equal((await f1CalendarOrSaved(null,{store,year:2027,written})).calendar.length,0,'no copy: still a failed read');
+  assert.equal((await f1CalendarOrSaved(null,{year:2026})).calendar.length,0,'no store');
+  assert.ok(worker.includes('f1CalendarOrSaved(calendarPayload,{store:requestCatalog?.env?.HIGHLIGHTS'),'the Worker reads it');
+}
 
 console.log('Formula 1 module checks passed');
