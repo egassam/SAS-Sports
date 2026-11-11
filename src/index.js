@@ -67,7 +67,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.300.1-pro-menus-sport';
+const VERSION='4.301.0-league-standings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4996,7 +4996,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
 // A refused or failed read serves the last copy read (a burst of ESPN refusals
 // blanked the Chiefs for 28 of 36 preview refreshes, Oct 15).
 // Jolpica answers 406 to the HTML Accept header school pages are read with.
-async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)||url.startsWith(ESPN_STANDINGS)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
 // A high school final's expanded view: plain facts from the score and the
 // MaxPreps box score (a stored final's too).
 async function highSchoolTargetHighlights(target){
@@ -5077,8 +5077,12 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     const ttl=url=>url.endsWith('seasontype=2')&&(config.sport==='Baseball'&&(month>=10||month<=2)||winter&&month>=5&&month<=9)?SOURCE_TTL.document:SOURCE_TTL.schedule;
     if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}
     if(winter){urls[0]=`${base}?seasontype=2`;if(month>=4&&month<=6)urls.push(`${base}?seasontype=3`);if(config.sport==='Basketball'&&month===4)urls.push(`${base}?seasontype=5`);}
-    const payloads=await Promise.all(urls.map(url=>readJson(url,ttl(url))));
+    // The league's standings (one read for every team of the league, kept
+    // 30 minutes): the team's division, its conference and the other one.
+    const standingsUrl=espnStandingsUrl(config.espn.path);
+    const [standingsPayload,...payloads]=await Promise.all([readJson(standingsUrl,SOURCE_TTL.article),...urls.map(url=>readJson(url,ttl(url)))]);
     if(!payloads[0])return failed(`${base}: unreadable`);
+    const standings=espnLeagueStandings(standingsPayload,{config});
     const events=espnTeamGames(payloads.filter(Boolean),{school,config,timeZone,now});
     // A game under way (or past its kickoff and not yet final on the team
     // schedule) takes the league scoreboard and its game summary: the live
@@ -5106,7 +5110,8 @@ async function fetchPro(school,sport,now,aiTargetId=null){
         target.highlight_status=config.sport==='Soccer'?'Score by half, goals and team stats from ESPN\'s match summary.':config.sport==='Baseball'?'Line score, pitchers of record, team stats and scoring plays from ESPN\'s game summary.':config.sport==='Basketball'?'Score by quarter, team leaders and team stats from ESPN\'s game summary.':config.sport==='Hockey'?'Score by period, goals, goalies, three stars and team stats from ESPN\'s game summary.':'Line score, team stats and leaders from ESPN\'s game summary.';
       }
     }
-    return{events,source_url:base,source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
+    if(standings.length)urls.push(standingsUrl);
+    return{events,...(standings.length?{standings}:{}),source_url:base,source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
   }
   if(config.kind==='nascar'){
     const year=schoolNow(now,school).getUTCFullYear(),listUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/race_list_basic.json`,pointsUrl=`${NASCAR_FEEDS}cacher/${year}/${config.seriesId}/racinginsights-points-feed.json`;
