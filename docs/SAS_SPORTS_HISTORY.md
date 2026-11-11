@@ -5435,3 +5435,17 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Notes.** MLB and MLS show the finished 2026 season until ESPN's tables turn over. The NHL's GB column is not shown (points decide). College conference standings would be a separate project.
 
+## November 11, 2026 — College conference standings: football and basketball (PR #586)
+
+**Request.** User: "Start the college conference standings" (the separate project named after the pro team league standings, PR #584).
+
+**Sources checked.** ESPN `site.api.espn.com/apis/v2/sports/<board>/standings`: college football (FBS default, 11 conferences; FCS `group=81`, 14), men's and women's basketball (32 conferences each) and men's hockey (10, seeds 0) have conference tables; volleyball and baseball one Division I table; soccer and softball none. Whole payloads are 2.6 MB (FBS), 2.4 MB (FCS), about 6 MB (basketball; 34 ms to parse in Node), so the Worker reads one conference (`?group=<id>`, about 300 KB). Entries carry `playoffseed` (conference-wide, ESPN's tie-breaks), `vsconf`, `total`, `streak`, home/away (`homerecord`/`awayrecord` football, `home`/`road` basketball).
+
+**Built.** `src/college-standings.mjs`: `COLLEGE_STANDINGS_BOARDS`, `collegeConferenceStandings` (division then conference; columns Conf, Ovr, Strk; detail home/away; own row by ESPN team id; independents none), `collegeStandingsReads`. `src/college-standings.json` from `scripts/make-college-standings.mjs` (the app's `scoreboardTeamMatchesSchool`; one ESPN team never two schools; UC Davis, Southeastern Louisiana and USC Upstate by ESPN id because the matcher misses them by name). `src/index.js`: `attachCollegeStandings` in `freshGroupedFeed` when no pro standings (`readJson`, scoreboard identity, `SOURCE_TTL.article`). Page: the existing Standings block; column widths for Conf and Ovr ("Overall" ran into "Strk" at 390 px on the first preview render, so the label is "Ovr").
+
+**Tests.** `tests/college-standings.mjs` (npm test and test:release) with Nov 11 fixtures: map coverage (unmapped only football independents Notre Dame, UConn, Merrimack, Chicago State and Citadel/VMI women's basketball), K-State 15th of 16 in the Big 12, Alabama A&M 2nd in SWAC - East and 4th in the SWAC, Kansas's two tabs, the Worker's reads. Local `test:release` 415 commands passed; CI guardrails and certification-matrix green on `0d221bc`.
+
+**Gate.** Preview `4.302.0-college-standings`: feeds for K-State, Kansas, Alabama A&M, South Dakota State carried the tables; `verify:preview --school=kstate --sports=Football,Basketball` (36 refreshes) PASS twice (before and after the label fix), XC 18/20 and 26/21; Chromium at 390 px, no errors. Merged as `342034b`. Production: `verify:prod` kstate Football and Basketball PASS, XC 18/20 and 26/21; the same Chromium check; Alabama A&M, South Dakota State and Utah feeds correct.
+
+**Next.** Hockey (ESPN men's tables without seeds), other sports from conferences' own sites; the scoreboard matcher's three name misses (a shared change: run `diff:feeds`).
+
