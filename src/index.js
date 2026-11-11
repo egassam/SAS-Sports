@@ -61,6 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
+import {collegeStandingsReads,collegeConferenceStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
 import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
@@ -342,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.301.0-league-standings';
+const VERSION='4.302.0-college-standings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6301,6 +6302,20 @@ async function attachRankings(groups,school,sport,built=null){
   }catch{}
   return groups;
 }
+// College conference standings (user, November 11, 2026: "Start the college
+// conference standings"): the school's conference table from ESPN, one read
+// per conference (`?group=`, about 300 KB) kept 30 minutes and shared by every
+// school in it (src/college-standings.mjs). Basketball reads the men's and
+// women's tables. A failed read leaves the feed without standings.
+async function attachCollegeStandings(groups,school,sport){
+  try{
+    if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
+    const reads=collegeStandingsReads(school.id,sport);if(!reads.length)return groups;
+    const tables=(await Promise.all(reads.map(async read=>collegeConferenceStandings(await readJson(read.url,SOURCE_TTL.article),read)))).flat();
+    if(tables.length)for(const group of groups)group.standings=tables;
+  }catch{}
+  return groups;
+}
 // Home's live games from ESPN's college boards take the same polls (one
 // memoized read per board), each game by its own board.
 async function rankLiveNowGames(games){
@@ -7033,6 +7048,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings);
   // Series and league standings (pro entries): one set for the sport.
   if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
+  else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
