@@ -1283,3 +1283,51 @@ export function f1Races(calendar,{school,config,timeZone,now,results=new Map(),l
   }
   return events;
 }
+
+// ---- Standings ----
+// User, November 11, 2026: "Something we should add to auto racing and
+// probably other sports is the overall team/driver standings". A feed carries
+// `standings`: tables of { title, source, rows: [{pos, name, detail, points,
+// wins}] }, best first; the page shows them under the sport's header.
+const pointsOf=v=>{const n=Number(String(v??'').replace(/[^\d.-]/g,''));return Number.isFinite(n)?n:null};
+export function standingsTable(title,rows,{source=null,wins=false}={}){
+  const list=rows.filter(r=>r&&r.name&&r.points!=null).map(r=>({pos:r.pos??null,name:String(r.name).trim(),detail:String(r.detail||'').trim(),points:r.points,...(wins?{wins:r.wins??0}:{})}));
+  return list.length?{title,...(source?{source}:{}),...(wins?{wins:true}:{}),rows:list}:null;
+}
+// Formula 1: formula1.com's drivers' and teams' standings pages.
+export function f1Standings(driversHtml,teamsHtml,{year}={}){
+  const tables=[];
+  {const {head,rows}=f1Table(driversHtml),at=re=>column(head,re),[pos,driver,team,pts]=[/^Pos/i,/^Driver$/i,/^Team$/i,/^Pts/i].map(at);
+    if(pos>=0&&driver>=0&&pts>=0)tables.push(standingsTable('Drivers',rows.map(r=>({pos:r[pos].text,name:f1Driver(r[driver].raw).name,detail:team<0?'':r[team].text,points:pointsOf(r[pts].text)})),{source:{name:'Formula 1 official standings (formula1.com)',url:`${F1_RESULTS}${year}/drivers`}}));}
+  {const {head,rows}=f1Table(teamsHtml),at=re=>column(head,re),[pos,team,pts]=[/^Pos/i,/^Team$/i,/^Pts/i].map(at);
+    if(pos>=0&&team>=0&&pts>=0)tables.push(standingsTable('Constructors',rows.map(r=>({pos:r[pos].text,name:r[team].text,points:pointsOf(r[pts].text)})),{source:{name:'Formula 1 official standings (formula1.com)',url:`${F1_RESULTS}${year}/team`}}));}
+  return tables.filter(Boolean);
+}
+// NASCAR: the series' points feed (the one the races already read).
+export function nascarStandings(points,{url=null}={}){
+  const rows=(Array.isArray(points)?points:[]).slice().sort((a,b)=>a.position-b.position).map(r=>({pos:r.position,name:String(r.driver_name||`${r.driver_first_name||''} ${r.driver_last_name||''}`).trim(),detail:[r.car_no?`#${r.car_no}`:'',r.manufacturer||''].filter(Boolean).join(' · '),points:pointsOf(r.points),wins:Number(r.wins)||0}));
+  const table=standingsTable('Drivers',rows,{source:{name:'NASCAR official points (nascar.com)',url},wins:true});
+  return table?[table]:[];
+}
+// IMSA: the championship points files of the latest weekend that has them
+// ("POINTS DATA - Official", "Points Data - Offiical", else Provisional):
+// IWSC (WeatherTech) or IMPC (Pilot Challenge), each class's drivers and
+// teams. Bronze and award files are left out.
+export const IMSA_POINTS_PREFIX={weathertech:'IWSC',pilotChallenge:'IMPC'};
+export function imsaPointsFolders(listing){
+  const dirs=imsaListing(listing).filter(e=>e.dir&&/points\s*data/i.test(e.name));
+  const official=dirs.filter(e=>/off/i.test(e.name)&&!/provisional/i.test(e.name)),provisional=dirs.filter(e=>/provisional/i.test(e.name));
+  return[...official,...provisional];
+}
+export function imsaStandingsFiles(listing,calendar){
+  const prefix=IMSA_POINTS_PREFIX[calendar];if(!prefix)return[];
+  return imsaListing(listing).filter(e=>!e.dir&&new RegExp(`^${prefix}\\s+\\d+\\s+.+\\s(Drivers|Teams)\\.json$`,'i').test(e.name)).map(e=>({...e,order:Number((e.name.match(/^\S+\s+(\d+)/)||[])[1])||0})).sort((a,b)=>a.order-b.order);
+}
+export function imsaStandingsTable(payload,{championship,url=null}={}){
+  const c=payload?.championship,rows=Array.isArray(payload?.classification)?payload.classification:[];
+  if(!c||!rows.length)return null;
+  // "IMSA WeatherTech SportsCar Championship GTP Drivers" reads "GTP Drivers".
+  const title=String(c.main_title||c.name||'').replace(championship||'','').replace(/\bGTDPRO\b/g,'GTD PRO').replace(/\s+/g,' ').trim()||'Standings';
+  const teams=/\bteams$/i.test(title);
+  return standingsTable(title,rows.slice().sort((a,b)=>a.position-b.position).map(r=>({pos:r.position,name:teams?(r.team||r.key):r.key,detail:teams&&r.key?`#${r.key}`:'',points:pointsOf(r.total_points)})),{source:{name:'IMSA official championship points (Al Kamel Systems)',url}});
+}

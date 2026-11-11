@@ -67,7 +67,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -342,7 +342,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.299.0-f1-calendar-copy';
+const VERSION='4.300.0-standings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5141,7 +5141,8 @@ async function fetchPro(school,sport,now,aiTargetId=null){
         target.highlight_status='Finishing order and race numbers from NASCAR\'s official results feed.';
       }
     }
-    return{events,source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+    const standings=nascarStandings(points,{url:pointsUrl});
+    return{events,...(standings.length?{standings}:{}),source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
   }
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
@@ -5154,7 +5155,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
 // reads ESPN's F1 board every 30 s.
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
-  const [calendarPayload,seasonHtml]=await Promise.all([readJson(calendarUrl,SOURCE_TTL.listing),readText(seasonUrl,SOURCE_TTL.listing)]);
+  const [calendarPayload,seasonHtml,driversHtml,teamsHtml]=await Promise.all([readJson(calendarUrl,SOURCE_TTL.listing),readText(seasonUrl,SOURCE_TTL.listing),readText(`${F1_RESULTS}${year}/drivers`,SOURCE_TTL.article),readText(`${F1_RESULTS}${year}/team`,SOURCE_TTL.article)]);
   const {calendar,saved:calendarSaved}=await f1CalendarOrSaved(calendarPayload,{store:requestCatalog?.env?.HIGHLIGHTS,year,now:Date.now()});
   if(!calendar.length)return failed(`${calendarUrl}: unreadable or empty`);
   const season=f1SeasonResults(seasonHtml,year),sources=[calendarSaved?`${calendarUrl} (last good copy, ${calendarSaved})`:calendarUrl,seasonUrl],nowMs=now.getTime();
@@ -5197,7 +5198,8 @@ async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
       target.highlight_status=`Classification${grid.length?', starting grid and fastest laps':''} from ${origins.get(key)?.name||'Formula 1 official results'}.`;
     }
   }
-  return{events,source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  const standings=f1Standings(driversHtml,teamsHtml,{year});
+  return{events,...(standings.length?{standings}:{}),source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
 }
 // IMSA's results folders (src/pro-sports.mjs): the season's events, each
 // championship's race sessions, and each race's classification. Folders of
@@ -5212,12 +5214,14 @@ async function fetchImsa(school,config,now,timeZone,aiTargetId,failed){
   // season, not a failed read.
   if(listing==null)return failed(`${seasonUrl}: unreadable`);
   const sources=[seasonUrl],settled=modified=>{const t=Date.parse(String(modified).replace(' ','T')+':00Z');return Number.isFinite(t)&&now.getTime()-t>8*864e5};
+  const seriesFolders=[];
   const races=(await Promise.all(imsaListing(listing).filter(e=>e.dir).map(async ev=>{
     const ttl=settled(ev.modified)?SOURCE_TTL.document:SOURCE_TTL.schedule,eventUrl=`${seasonUrl}${ev.href}`;
     const series=imsaListing(await readText(eventUrl,ttl)).find(e=>e.dir&&e.name.replace(/^\d+_/,'')===config.championship);
     if(!series)return[];
-    const seriesUrl=`${eventUrl}${series.href}`,track=imsaTrack(ev.name);
-    return Promise.all(imsaRaceSessions(imsaListing(await readText(seriesUrl,ttl))).map(async session=>{
+    const seriesUrl=`${eventUrl}${series.href}`,track=imsaTrack(ev.name),seriesHtml=await readText(seriesUrl,ttl);
+    seriesFolders.push({order:Number((ev.name.match(/^(\d+)_/)||[])[1])||0,url:seriesUrl,html:seriesHtml,ttl});
+    return Promise.all(imsaRaceSessions(imsaListing(seriesHtml)).map(async session=>{
       const raceUrl=`${seriesUrl}${session.href}`,files=imsaListing(await readText(raceUrl,ttl));
       // An endurance race keeps its classification in its last hour folder,
       // and hourly standings in each.
@@ -5231,6 +5235,7 @@ async function fetchImsa(school,config,now,timeZone,aiTargetId,failed){
     }));
   }))).flat();
   const events=imsaRaces(races,{school,config,timeZone,now,calendar:IMSA_CALENDARS[config.calendar]||[]});
+  const standings=await imsaStandingsOf(seriesFolders,config);
   const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
   if(target&&target.status==='Final'&&target.imsa_path){
     const details=imsaRaceDetails(await readResults(target.imsa_path,SOURCE_TTL.document));
@@ -5241,7 +5246,23 @@ async function fetchImsa(school,config,now,timeZone,aiTargetId,failed){
       target.highlight_status='Finishing order by class and race numbers from IMSA\'s official results.';
     }
   }
-  return{events,source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  return{events,...(standings.length?{standings}:{}),source_url:seasonUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+}
+// The championship standings of the latest weekend whose points folder has
+// them (src/pro-sports.mjs imsaStandingsFiles): each class's drivers and teams.
+async function imsaStandingsOf(seriesFolders,config){
+  try{
+    for(const folder of seriesFolders.slice().sort((a,b)=>b.order-a.order)){
+      for(const points of imsaPointsFolders(folder.html)){
+        const url=`${folder.url}${points.href}`,files=imsaStandingsFiles(await readText(url,folder.ttl),config.calendar);
+        if(!files.length)continue;
+        const tables=await Promise.all(files.map(async f=>imsaStandingsTable(await readResults(`${url}${f.href}`,folder.ttl),{championship:config.championship,url:`${url}${f.href}`})));
+        const found=tables.filter(Boolean);
+        if(found.length)return found;
+      }
+    }
+  }catch{}
+  return[];
 }
 function parseLabel(label,school,sport,sourceUrl,now){const s=clean(label);if(!s)return null;let m=s.match(/^Upcoming Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})(?:\s+at\s+(.+?))?$/i);if(m)return fromMatch('Upcoming','upcoming',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*(?:(Win|Loss|Tie|Draw)?\s*,?\s*)?(\d+(?:\.\d+)?)?\s*,?\s*(?:to|-)?\s*,?\s*(\d+(?:\.\d+)?)?\s*$/i);if(m)return fromMatch('Final','score',m);m=s.match(/^Completed Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})\s*,\s*,\s*(.+?)\s*$/i);if(m)return fromMatch('Final','meet',m);m=s.match(/^Live Event:\s*(.+?)\s+(versus|vs\.?|at)\s+(.+?)(?:\s+on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4}))?\s*$/i);if(m)return fromMatch('Live','live',m);return null;function fromMatch(status,kind,x){const parsedSport=clean(x[1])||sport;if(!sportMatches(sport,parsedSport))return null;const opponent=clean(x[3]);if(!opponent||/\b(?:vs\.?|versus)\b/i.test(opponent))return null;return makeEvent({school,sport,status,relation:clean(x[2])||'vs',opponent,date:clean(x[4]),time:kind==='upcoming'?clean(x[5]):null,schoolScore:kind==='score'?clean(x[6]):null,oppScore:kind==='score'?clean(x[7]):null,resultText:kind==='meet'?clean(x[5]):null,sourceUrl,now});}}
 function extractEventLabels(raw){
@@ -7004,7 +7025,10 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
     const previous=(await saved.json()).flatMap(group=>[...(group.live||[]),...(group.results||[]),...(group.upcoming||[]),...(group.other||[])]);
     events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
   }
-  const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings),response=json(groups),stored=new Response(response.body,response);
+  const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings);
+  // Series and league standings (pro entries): one set for the sport.
+  if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
+  const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
   stored.headers.set('cache-control',`public, max-age=${Math.floor(FEED_STALE_MS/1000)}`);
