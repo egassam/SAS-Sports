@@ -61,7 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
-import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings} from './college-standings.mjs';
+import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
 import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
@@ -6310,6 +6310,21 @@ async function attachRankings(groups,school,sport,built=null){
 // per conference (`?group=`, about 300 KB) kept 30 minutes and shared by every
 // school in it (src/college-standings.mjs). Basketball reads the men's and
 // women's tables. A failed read leaves the feed without standings.
+// The conference standings page a school and sport read, as /live/status
+// shows it: what the site answered, whether it holds a SIDEARM standings
+// table, and whether the school's row was found (Nov 12: twelve conferences
+// gave no table on the first preview, and the sandbox cannot reach them).
+async function conferenceStandingsStatus(school,sport){
+  const url=school&&!isHighSchool(school)&&!isPro(school)?conferenceStandingsUrl(school.conference,sport):null;if(!url)return[];
+  try{
+    const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.article,staleOnError:true}),text=await r.text(),parsed=parseSidearmStandings(text);
+    const names=new Set([school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(Boolean));
+    const rows=parsed?parsed.groups.flatMap(g=>g.rows.map(x=>x.name)):[];
+    return[{url,http_status:r.status,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,source_cache:r.headers.get('x-sas-source')||null,bytes:text.length,
+      has_table:/sidearm-standings-table/.test(text),bot_wall:/Incapsula|_Incapsula_Resource|cf-chl|Just a moment/i.test(text),title:parsed?.title||null,rows:rows.length,
+      own_row:rows.find(n=>names.has(normalizedTeamName(n))||scoreboardTeamMatchesSchool({location:n,displayName:n,shortDisplayName:n},school))||null}];
+  }catch(error){return[{url,error:String(error?.message||error).slice(0,200)}];}
+}
 async function attachCollegeStandings(groups,school,sport){
   try{
     if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
@@ -7329,7 +7344,7 @@ async function routeRequest(request,env,ctx){
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(await agedCopy(shared,school),'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],standings_reads:await conferenceStandingsStatus(catalogSchool(school),sport),...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
 }
 export default{
