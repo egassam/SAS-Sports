@@ -3,10 +3,6 @@
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| fresno-state | Basketball | 🔴 on | live 52-38 · 3:38 - 3rd · official_schedule+live_scoreboard |
-| oregon-state | Basketball | 🔴 on | live 74-48 · 1:44 - 4th · official_schedule+live_scoreboard |
-| san-diego-state | Basketball | 🔴 on | live 20-28 · Halftime · official_schedule+live_scoreboard |
-| ucla | Basketball | 🔴 on | live 88-26 · 5:37 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1151,6 +1147,7 @@
 | florida-state | Volleyball | ✅ off (passed) | Florida State at Pitt · 2026-10-17T01:39:26.083Z |
 | fordham | Basketball | ✅ off (passed) | Women's · Fordham vs Niagara · 2026-11-03T06:08:39.458Z |
 | fordham | Volleyball | ✅ off (passed) | Fordham at G Washington · 2026-10-24T01:59:34.211Z |
+| fresno-state | Basketball | ✅ off (passed) | Women's · Fresno State vs New Mexico · 2026-11-12T11:55:40.345Z |
 | fresno-state | Soccer | ✅ off (passed) | Fresno State vs Oregon State · 2026-10-23T07:27:20.171Z |
 | fresno-state | Volleyball | ✅ off (passed) | Fresno State vs Oregon St · 2026-10-23T07:27:22.225Z |
 | gardner-webb | Basketball | ✅ off (passed) | Men's · Gardner-Webb at Texas · 2026-11-06T10:40:23.337Z |
@@ -1548,6 +1545,7 @@
 | oregon | Football | ✅ off (passed) | Oregon vs UCLA · 2026-10-11T00:49:41.505Z |
 | oregon | Soccer | ✅ off (passed) | Oregon vs Michigan · 2026-10-17T06:14:53.726Z |
 | oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
+| oregon-state | Basketball | ✅ off (passed) | Women's · Oregon State vs NW Nazarene · 2026-11-12T11:55:40.327Z |
 | oregon-state | Soccer | ✅ off (passed) | Women's · Oregon State at Fresno St · 2026-10-23T07:27:20.782Z |
 | oregon-state | Volleyball | ✅ off (passed) | Oregon State at Fresno St · 2026-10-23T07:27:20.287Z |
 | pacific | Basketball | ✅ off (passed) | Men's · Pacific at Bradley · 2026-11-08T09:25:07.123Z |
@@ -1656,6 +1654,7 @@
 | samford | Basketball | ✅ off (passed) | Men's · Samford at UNLV · 2026-11-07T23:06:19.384Z |
 | samford | Soccer | ✅ off (passed) | Samford vs UNC Greensboro · 2026-10-30T02:51:00.287Z |
 | samford | Volleyball | ✅ off (passed) | Samford vs Tennessee Tech · 2026-10-24T23:24:11.923Z |
+| san-diego-state | Basketball | ✅ off (passed) | Women's · San Diego State vs Colorado · 2026-11-12T11:55:40.400Z |
 | san-diego-state | Football | ✅ off (passed) | San Diego State at Colorado St · 2026-10-25T06:45:59.499Z |
 | san-diego-state | Soccer | ✅ off (passed) | San Diego State at Utah State · 2026-11-06T10:40:22.017Z |
 | san-diego-state | Volleyball | ✅ off (passed) | San Diego State vs Washington St · 2026-10-31T23:49:36.006Z |
@@ -1819,6 +1818,7 @@
 | ucf | Football | ✅ off (passed) | UCF vs BYU · 2026-10-25T01:30:05.285Z |
 | ucf | Soccer | ✅ off (passed) | Women's · UCF vs Oklahoma St · 2026-10-11T22:23:42.554Z |
 | ucf | Volleyball | ✅ off (passed) | UCF vs Kansas · 2026-10-11T22:23:41.697Z |
+| ucla | Basketball | ✅ off (passed) | Men's · UCLA vs AR-Pine Bluff · 2026-11-12T11:55:41.318Z |
 | ucla | Football | ✅ off (passed) | UCLA vs Wisconsin · 2026-10-18T06:34:59.253Z |
 | ucla | Soccer | ✅ off (passed) | Men's · UCLA at Wisconsin · 2026-10-17T06:14:53.774Z |
 | ucla | Volleyball | ✅ off (passed) | UCLA vs Ohio State · 2026-10-19T00:36:49.716Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1097/1956; on 4; off 852; failing 3.
+Done 1101/1956; on 0; off 852; failing 3.
