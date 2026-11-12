@@ -3,6 +3,10 @@
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
+| mercyhurst | Soccer | 🔴 on | live 0-0 · 74' · official_schedule+live_scoreboard |
+| stonehill | Soccer | 🔴 on | live 0-0 · 69' · official_schedule+live_scoreboard |
+| uc-davis | Basketball | 🔴 on | live 49-19 · Halftime · official_schedule+live_scoreboard |
+| uc-san-diego | Basketball | 🔴 on | live 38-35 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -392,7 +396,6 @@
 | mercyhurst | Baseball | ⚪ off (waiting) |  |
 | mercyhurst | Football | ⚪ off (waiting) |  |
 | mercyhurst | Lacrosse | ⚪ off (waiting) |  |
-| mercyhurst | Soccer | ⚪ off (waiting) |  |
 | mercyhurst | Softball | ⚪ off (waiting) |  |
 | mercyhurst | Water Polo | ⚪ off (waiting) |  |
 | merrimack | Baseball | ⚪ off (waiting) |  |
@@ -682,7 +685,6 @@
 | stonehill | Baseball | ⚪ off (waiting) |  |
 | stonehill | Football | ⚪ off (waiting) |  |
 | stonehill | Lacrosse | ⚪ off (waiting) |  |
-| stonehill | Soccer | ⚪ off (waiting) | final L, 2-3 (live phase not observed 2×; waits for the next game) |
 | stonehill | Softball | ⚪ off (waiting) |  |
 | stony-brook | Baseball | ⚪ off (waiting) |  |
 | stony-brook | Football | ⚪ off (waiting) |  |
@@ -726,7 +728,6 @@
 | ualbany | Softball | ⚪ off (waiting) |  |
 | ualbany | Volleyball | ⚪ off (waiting) | final W, 3-0 (live phase not observed 2×; waits for the next game) |
 | uc-davis | Baseball | ⚪ off (waiting) |  |
-| uc-davis | Basketball | ⚪ off (waiting) |  |
 | uc-davis | Field Hockey | ⚪ off (waiting) |  |
 | uc-davis | Football | ⚪ off (waiting) |  |
 | uc-davis | Lacrosse | ⚪ off (waiting) |  |
@@ -739,7 +740,6 @@
 | uc-riverside | Baseball | ⚪ off (waiting) |  |
 | uc-riverside | Softball | ⚪ off (waiting) |  |
 | uc-san-diego | Baseball | ⚪ off (waiting) |  |
-| uc-san-diego | Basketball | ⚪ off (waiting) |  |
 | uc-san-diego | Softball | ⚪ off (waiting) |  |
 | uc-san-diego | Water Polo | ⚪ off (waiting) |  |
 | uc-santa-barbara | Baseball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1101/1956; on 0; off 852; failing 3.
+Done 1101/1956; on 4; off 848; failing 3.

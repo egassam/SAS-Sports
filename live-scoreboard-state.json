@@ -4741,7 +4741,25 @@
    "state": "off"
   },
   "uc-davis|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T19:53:22.825Z",
+   "last_detail": "live 49-19 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uc-davis|Basketball|Women's|2026-11-12|1",
+    "title": "Women's · UC Davis vs Fullerton",
+    "started_seen": "2026-11-12T19:45:10.823Z",
+    "live_passes": [
+     "2026-11-12T19:45:10.823Z",
+     "2026-11-12T19:46:33.662Z",
+     "2026-11-12T19:47:55.280Z",
+     "2026-11-12T19:49:16.980Z",
+     "2026-11-12T19:50:17.711Z",
+     "2026-11-12T19:51:20.944Z",
+     "2026-11-12T19:52:21.963Z",
+     "2026-11-12T19:53:22.825Z"
+    ],
+    "final_ok": false
+   }
   },
   "uc-davis|Field Hockey": {
    "state": "off"
@@ -5608,7 +5626,25 @@
    "state": "off"
   },
   "uc-san-diego|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T19:53:22.787Z",
+   "last_detail": "live 38-35 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "uc-san-diego|Basketball|Women's|2026-11-12|1",
+    "title": "Women's · UC San Diego vs Portland St",
+    "started_seen": "2026-11-12T19:45:11.749Z",
+    "live_passes": [
+     "2026-11-12T19:45:11.749Z",
+     "2026-11-12T19:46:13.001Z",
+     "2026-11-12T19:47:55.294Z",
+     "2026-11-12T19:48:56.355Z",
+     "2026-11-12T19:50:20.278Z",
+     "2026-11-12T19:51:20.973Z",
+     "2026-11-12T19:52:21.990Z",
+     "2026-11-12T19:53:22.787Z"
+    ],
+    "final_ok": false
+   }
   },
   "uc-san-diego|Soccer": {
    "state": "done",
@@ -10642,7 +10678,25 @@
    "state": "off"
   },
   "mercyhurst|Soccer": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T19:53:22.743Z",
+   "last_detail": "live 0-0 · 74' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "mercyhurst|Soccer|Men's|2026-11-12|1",
+    "title": "Men's · Mercyhurst at Long Island",
+    "started_seen": "2026-11-12T19:45:11.532Z",
+    "live_passes": [
+     "2026-11-12T19:45:11.532Z",
+     "2026-11-12T19:46:16.675Z",
+     "2026-11-12T19:47:36.537Z",
+     "2026-11-12T19:48:56.368Z",
+     "2026-11-12T19:50:17.651Z",
+     "2026-11-12T19:51:20.885Z",
+     "2026-11-12T19:52:21.892Z",
+     "2026-11-12T19:53:22.743Z"
+    ],
+    "final_ok": false
+   }
   },
   "mercyhurst|Softball": {
    "state": "off"
@@ -10744,10 +10798,25 @@
    "state": "off"
   },
   "stonehill|Soccer": {
-   "state": "off",
-   "last_check": "2026-11-09T00:05:05.557Z",
-   "last_detail": "final L, 2-3 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-12T19:53:23.233Z",
+   "last_detail": "live 0-0 · 69' · official_schedule+live_scoreboard",
+   "game": {
+    "key": "stonehill|Soccer|Women's|2026-11-12|1",
+    "title": "Women's · Stonehill at FDU",
+    "started_seen": "2026-11-12T19:45:11.917Z",
+    "live_passes": [
+     "2026-11-12T19:45:11.917Z",
+     "2026-11-12T19:46:13.627Z",
+     "2026-11-12T19:47:37.546Z",
+     "2026-11-12T19:48:56.372Z",
+     "2026-11-12T19:50:17.667Z",
+     "2026-11-12T19:51:21.314Z",
+     "2026-11-12T19:52:21.887Z",
+     "2026-11-12T19:53:23.233Z"
+    ],
+    "final_ok": false
+   }
   },
   "stonehill|Softball": {
    "state": "off"
@@ -12655,7 +12724,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.302.0-college-standings",
- "updated_at": "2026-11-12T11:55:41.325Z",
+ "version": "4.303.0-hockey-standings",
+ "updated_at": "2026-11-12T19:53:23.238Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
