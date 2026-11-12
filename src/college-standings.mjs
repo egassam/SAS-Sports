@@ -79,3 +79,69 @@ export function collegeStandingsReads(schoolId,sport,groupsFile=COLLEGE_STANDING
   }
   return out;
 }
+
+// ---- College hockey (user, November 12, 2026: "Add the hockey conference
+// standings") ----
+// ESPN's men's hockey standings group teams by conference but carry only the
+// overall W-L-T (no conference record, points 0, no seeds), and its women's
+// standings have no conferences, so neither ranks a hockey conference.
+// College Hockey News publishes every Division I conference's table on one
+// page per gender (about 120 KB men's, 70 KB women's; robots.txt allows
+// /reports/ and /women/): conference GP, points, regulation and overtime
+// wins and losses, then the overall record. One read per gender serves every
+// school, kept 30 minutes. Which team is a school's comes from
+// src/college-standings.json (`chn/<gender>`: [conference, CHN team id]).
+export const COLLEGE_HOCKEY_PAGES={
+  'chn/mens-hockey':{label:"Men's",url:'https://www.collegehockeynews.com/reports/standings.php'},
+  'chn/womens-hockey':{label:"Women's",url:'https://www.collegehockeynews.com/women/standings.php'}
+};
+const cellText=html=>String(html||'').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&#0?39;|&apos;/g,"'").replace(/\s+/g,' ').trim();
+// An empty cell (a tied team's rank) is no number, not 0.
+const num=v=>{if(v==null||String(v).trim()==='')return null;const n=Number(v);return Number.isFinite(n)?n:null};
+// The page → [{conference, teams:[{rank, name, slug, id, gp, pts, rw, rl,
+// ow, ol, w, l, t}]}] in CHN's order. A tied team's rank cell is blank: it
+// shares the rank above. Independents are no conference.
+export function parseChnStandings(html){
+  const out=[];
+  const sections=String(html||'').split(/<tr class="stats-section">/).slice(1);
+  for(const section of sections){
+    const name=cellText((section.match(/<td[^>]*>([\s\S]*?)<\/td>/)||[])[1]);
+    if(!name||independentGroup(name))continue;
+    const teams=[];let rank=null;
+    for(const [,row] of section.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)){
+      const link=row.match(/href="[^"]*\/team\/([^/"]+)\/(\d+)[^"]*"[^>]*>([\s\S]*?)<\/a>/);if(!link)continue;
+      const cells=[...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m=>cellText(m[1]));
+      // rank, team, GP, PTS, Pt%, RW, RL, OW, OL, |, GP, W, L, T, ...
+      if(cells.length<14)continue;
+      if(num(cells[0])!=null)rank=num(cells[0]);
+      teams.push({rank,name:cellText(link[3]),slug:link[1],id:link[2],gp:num(cells[2]),pts:num(cells[3]),rw:num(cells[5]),rl:num(cells[6]),ow:num(cells[7]),ol:num(cells[8]),w:num(cells[11]),l:num(cells[12]),t:num(cells[13])});
+    }
+    if(teams.length)out.push({conference:name,teams});
+  }
+  return out;
+}
+const HOCKEY_COLUMNS=[{key:'gp',label:'GP'},{key:'pts',label:'Pts'},{key:'overall',label:'Ovr'}];
+// The school's conference table from one gender's page, or [] when the team
+// is not on it (the map is stale: rerun the generator).
+export function collegeHockeyStandings(html,{board,team}={}){
+  const spec=COLLEGE_HOCKEY_PAGES[board];if(!spec||team==null)return[];
+  const conference=parseChnStandings(html).find(c=>c.teams.some(t=>t.id===String(team)));if(!conference)return[];
+  // The title reads "2026&#8209;27 Standings" (a non-breaking hyphen).
+  const season=((String(html).match(/<title>\s*(20\d\d)(?:&#8209;|&#x2011;|\u2011|-)(\d\d) Standings/i)||[]).slice(1,3).join('-'));
+  const source={name:`College Hockey News standings${season?` (${season} season)`:''}`,url:spec.url};
+  return[{title:`${spec.label} ${conference.conference}`,columns:HOCKEY_COLUMNS,source,rows:conference.teams.map(t=>({
+    pos:t.rank??'',name:t.name,
+    detail:[`Reg ${t.rw??0}-${t.rl??0}`,`OT ${t.ow??0}-${t.ol??0}`].join(' · '),
+    values:{gp:String(t.gp??0),pts:String(t.pts??0),overall:`${t.w??0}-${t.l??0}-${t.t??0}`},
+    ...(t.id===String(team)?{own:true}:{})}))}];
+}
+// The hockey pages a school reads.
+export function collegeHockeyReads(schoolId,sport,groupsFile=COLLEGE_STANDINGS_GROUPS){
+  if(sport!=='Hockey')return[];
+  const out=[];
+  for(const [board,spec] of Object.entries(COLLEGE_HOCKEY_PAGES)){
+    const hit=groupsFile?.boards?.[board]?.[schoolId];
+    if(hit)out.push({board,team:hit[1],url:spec.url});
+  }
+  return out;
+}

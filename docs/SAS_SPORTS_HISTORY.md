@@ -5449,3 +5449,17 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Next.** Hockey (ESPN men's tables without seeds), other sports from conferences' own sites; the scoreboard matcher's three name misses (a shared change: run `diff:feeds`).
 
+## November 12, 2026 — Scoreboard matcher: UC Davis, Southeastern Louisiana, USC Upstate (PR #588)
+
+**Request.** User: "What's next?" Offered the handoff's next items and recommended the scoreboard name misses found by the college standings (PR #586). User: "Fix the scoreboard bug".
+
+**Cause.** `scoreboardTeamMatchesSchool` builds a nickname set from ESPN's team name and from catalog aliases with no space ending in "s", and removes those from the wanted names. UC Davis's alias "UC-Davis" normalizes to "uc davis", so its own name was removed. ESPN's teams endpoint (Nov 12) names the others "SE Louisiana" (id 2545) and "South Carolina Upstate" (id 2908, short "SC Upstate"); the catalog had neither spelling. The only other college school with a name or short name caught by the nickname rule is Maryland Eastern Shore ("UMES"); it already matched ESPN's "Maryland Eastern Shore" by full name.
+
+**Change.** A school's own name and short name are never a nickname; aliases "SE Louisiana" and "South Carolina Upstate" in `src/schools.json`; `scripts/make-college-standings.mjs` drops `ESPN_TEAM_IDS`. Rerun against ESPN: 0 differences on all three boards (same 6 unmapped by design); the regenerated file was not committed (only its date changed). Version `4.302.1-scoreboard-names`. `docs/COLLEGE_STANDINGS_MODULE.md` updated.
+
+**Tests.** `tests/scoreboard-match.mjs`: each of the three ESPN team objects matches its own school and no other (fails on main with "UC Davis Aggies", passes with the fix). Every catalog school against the five ESPN fixture boards, main vs branch: 379 → 383 pairs, the 4 new ones being `uc-davis => UC Davis Aggies`, `southeastern-louisiana => SE Louisiana Lions` and `SE Louisiana Lady Lions`, `usc-upstate => South Carolina Upstate Spartans`; no pair lost. Local `npm test` passed; CI guardrails (`test:release`) and certification-matrix green on `afa1601`. `diff:feeds` was not run: the matcher returns false for high and middle schools, and the all-school fixture comparison above covered the college change.
+
+**Gate.** Preview `4.302.1-scoreboard-names`: `verify:preview` 36 forced refreshes, results format and expanded views for UC Davis and Southeastern Louisiana (Football, Basketball, Volleyball, Soccer) and USC Upstate (Basketball, Volleyball, Soccer; no football): all PASS, XC 18/20 and 26/21. Baseball, softball, field hockey, lacrosse and water polo are out of season and read no ESPN board until a game is yesterday or today, so they were not refreshed. Chromium at 390 px (`scripts/screenshot-school.mjs`): UC Davis and USC Upstate basketball pages (standings tabs, results, schedule) read normally. Merged as `4e05ab8`.
+
+**Production.** `4.302.1-scoreboard-names`; `verify:prod` (3 refreshes) PASS for all three schools, XC 18/20 and 26/21; one UC Davis soccer refresh first got no answer (status 0, not 1102/503) and the rerun passed 3/3. UC Davis women's basketball vs Cal State Fullerton (Nov 12, ESPN in progress, 6-3 in the 1st) read Live, 7:18 - 1st, `official_schedule+live_scoreboard`, on production.
+

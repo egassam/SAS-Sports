@@ -4,7 +4,7 @@ User, November 11, 2026: "Start the college conference standings" (the next step
 
 ## What a page shows
 
-A college school's **Football** and **Basketball** sections show a Standings block (the same block as the pro pages): the school's conference by ESPN's seed, the top 5 with Show all, the school's own row marked and kept visible below the top 5.
+A college school's **Football**, **Basketball** and **Hockey** (from College Hockey News, below) sections show a Standings block (the same block as the pro pages): the school's conference by ESPN's seed, the top 5 with Show all, the school's own row marked and kept visible below the top 5.
 
 - Columns: **Conf** (conference record), **Ovr** (overall record; "Overall" ran into "Strk" at 390 px), **Strk** (streak). The detail line under the name is the home and away record.
 - Football conferences with divisions (Sun Belt, SWAC) show the school's division first, then the whole conference.
@@ -27,10 +27,19 @@ A college school's **Football** and **Basketball** sections show a Standings blo
 
 The scoreboard matcher (`scoreboardTeamMatchesSchool`) missed three schools by name, found by this module on November 11: UC Davis (its alias "UC-Davis" read as a nickname and removed its own name "UC Davis"), Southeastern Louisiana (ESPN "SE Louisiana") and USC Upstate (ESPN "South Carolina Upstate"). Fixed in 4.302.1: a school's own name and short name are never treated as a nickname, and the catalog carries ESPN's spellings as aliases. The generator no longer needs ESPN team-id overrides; rerun on November 12, it gave the same map as before (0 differences on all three boards). On the test payloads the only new matches are those three schools' own teams (`tests/scoreboard-match.mjs`). Their live scores now join their official games on ESPN's boards as well.
 
+## Hockey (November 12, 2026)
+
+User: "Add the hockey conference standings". ESPN's hockey standings cannot rank a conference: men's (`hockey/mens-college-hockey/standings`) groups teams by conference but each entry carries only the overall W-L-T (no `vsconf`, `points` 0.0, `playoffseed` 0, `streak` "-"; checked Nov 12 on the whole payload and `?group=54` CCHA, `?group=62` Big Ten), and women's has no conferences (one flat list of 45 teams). Hockey tables come from **College Hockey News** instead: one page per gender holds every Division I conference (`https://www.collegehockeynews.com/reports/standings.php`, about 120 KB; `/women/standings.php`, about 70 KB; robots.txt allows both), read with `readText` through the source cache (30 minutes, shared by every school, last good copy on a failed read).
+
+- Columns: GP, Pts (conference), Ovr (overall W-L-T); the detail line is the conference regulation and overtime record ("Reg 4-0 · OT 0-0"). CHN's order (its tie-breaks); a tied team shares the rank above (CHN leaves the cell blank). Men's and Women's tabs for a school with both teams, the men's first.
+- Map: `src/college-standings.json` boards `chn/mens-hockey` and `chn/womens-hockey`, `{school: [conference, CHN team id]}`, from the generator with the app's matcher on CHN's full names; four CHN spellings are named in the generator (`CHN_NAMES`: "Miami" is Miami (OH) and never Miami (FL), "Massachusetts", "Mass.-Lowell", women's "Long Island"). 33 men's and 26 women's teams mapped (Nov 12).
+- Not mapped, by design: men's independents (LIU, Mercyhurst, Stonehill, Lindenwood; CHN's "Independent" is no conference), schools without a team of that gender, and Delaware men's (not on CHN's men's page in 2026-27). Jacksonville, NJIT and Tennessee State list Hockey in `sponsored-sports.json` but have no Division I team on either page.
+- `src/college-standings.mjs`: `COLLEGE_HOCKEY_PAGES`, `parseChnStandings`, `collegeHockeyStandings`, `collegeHockeyReads`; `attachCollegeStandings` reads both kinds.
+
 ## Next
 
-- Other sports ESPN publishes: men's college hockey has conference tables (seeds not published; W-L-T records), women's hockey has a payload; volleyball and baseball have one Division I table only (no conferences); soccer and softball none. Their conference standings would need another source (the conferences' own sites).
+- Volleyball and baseball (ESPN: one Division I table only, no conferences), soccer and softball (none): another source per sport, as hockey now uses College Hockey News.
 
 ## Tests
 
-`tests/college-standings.mjs` (in `npm test` and `test:release`), fixtures `tests/fixtures/college-standings/` (Nov 11, trimmed to the fields read): Big 12 and SWAC football, Big 12 men's and women's basketball; the map's coverage and uniqueness; K-State 15th of 16 in the Big 12; Alabama A&M 2nd in SWAC - East, 4th in the SWAC; Kansas's two tabs; the Worker's wiring (one read, scoreboard identity, no reads for high schools, pro teams or other sports; a refused read adds nothing).
+`tests/college-standings.mjs` (in `npm test` and `test:release`), fixtures `tests/fixtures/college-standings/` (Nov 11, trimmed to the fields read): Big 12 and SWAC football, Big 12 men's and women's basketball; College Hockey News men's and women's pages (Nov 12, trimmed to the title and tables: conferences, Boston College's two tabs, Holy Cross's shared ranks, the hockey map's coverage); the map's coverage and uniqueness; K-State 15th of 16 in the Big 12; Alabama A&M 2nd in SWAC - East, 4th in the SWAC; Kansas's two tabs; the Worker's wiring (one read, scoreboard identity, no reads for high schools, pro teams or other sports; a refused read adds nothing).
