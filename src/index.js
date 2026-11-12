@@ -61,7 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
-import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings} from './college-standings.mjs';
+import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
 import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.303.0-hockey-standings';
+const VERSION='4.304.0-volleyball-standings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6313,12 +6313,22 @@ async function attachRankings(groups,school,sport,built=null){
 async function attachCollegeStandings(groups,school,sport){
   try{
     if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
-    const reads=collegeStandingsReads(school.id,sport),hockey=collegeHockeyReads(school.id,sport);if(!reads.length&&!hockey.length)return groups;
+    const reads=collegeStandingsReads(school.id,sport),hockey=collegeHockeyReads(school.id,sport);
+    // Volleyball: the school's conference's own standings page (SIDEARM),
+    // its row found by the scoreboard matcher on the conference's name for it,
+    // or by any catalog alias, abbreviations too: within one conference's page
+    // "UNI" and "EKU" are only Northern Iowa and Eastern Kentucky (the
+    // matcher refuses abbreviations because ESPN's boards hold every school).
+    const siteUrl=conferenceStandingsUrl(school.conference,sport);
+    if(!reads.length&&!hockey.length&&!siteUrl)return groups;
+    const names=new Set([school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(Boolean));
+    const own=name=>names.has(normalizedTeamName(name))||scoreboardTeamMatchesSchool({location:name,displayName:name,shortDisplayName:name},school);
     // Hockey: College Hockey News's page per gender (ESPN has no hockey
     // conference records or points), the men's table first.
     const tables=(await Promise.all([
       ...reads.map(async read=>collegeConferenceStandings(await readJson(read.url,SOURCE_TTL.article),read)),
-      ...hockey.map(async read=>collegeHockeyStandings(await readText(read.url,SOURCE_TTL.article),read))
+      ...hockey.map(async read=>collegeHockeyStandings(await readText(read.url,SOURCE_TTL.article),read)),
+      ...(siteUrl?[(async()=>conferenceSiteStandings(await readText(siteUrl,SOURCE_TTL.article),{conference:school.conference,sport,url:siteUrl,own}))()]:[])
     ])).flat();
     if(tables.length)for(const group of groups)group.standings=tables;
   }catch{}

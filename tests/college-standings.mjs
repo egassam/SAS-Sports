@@ -8,11 +8,12 @@ import {gunzipSync} from 'node:zlib';
 import {rosterSocialInstagrams} from '../src/roster-socials.js';
 import {createSourceFetch,SOURCE_TTL} from '../src/source-fetch.mjs';
 import {schoolModuleDeps} from './school-module-deps.mjs';
-import {COLLEGE_STANDINGS_BOARDS,COLLEGE_HOCKEY_PAGES,collegeConferenceStandings,collegeStandingsReads,collegeStandingsUrl,parseChnStandings,collegeHockeyStandings,collegeHockeyReads} from '../src/college-standings.mjs';
+import {COLLEGE_STANDINGS_BOARDS,COLLEGE_HOCKEY_PAGES,collegeConferenceStandings,collegeStandingsReads,collegeStandingsUrl,parseChnStandings,collegeHockeyStandings,collegeHockeyReads,CONFERENCE_SITES,conferenceStandingsUrl,parseSidearmStandings,conferenceSiteStandings,sidearmTeamName} from '../src/college-standings.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json')),groups=JSON.parse(read('../src/college-standings.json'));
 const fixture=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/college-standings/${name}-2026-11-11.json.gz`,import.meta.url))).toString('utf8'));
 const page=name=>gunzipSync(readFileSync(new URL(`./fixtures/college-standings/${name}-2026-11-12.html.gz`,import.meta.url))).toString('utf8');
+const volleyball=name=>gunzipSync(readFileSync(new URL(`./fixtures/college-standings/volleyball-${name}-2026-11-12.html.gz`,import.meta.url))).toString('utf8');
 const tablesFor=(id,sport,files)=>collegeStandingsReads(id,sport).flatMap(r=>collegeConferenceStandings(fixture(files[r.board]),r));
 
 // Every college school with football or basketball has its conference,
@@ -115,12 +116,48 @@ assert.deepEqual(collegeConferenceStandings(null,{board:'football/college-footba
   assert.deepEqual(collegeHockeyReads('manhattan-ks','Hockey'),[]);
 }
 
+// Volleyball (user, November 12, 2026: "Start with volleyball"): ESPN has
+// no volleyball conference tables and NCAA.com's are empty, so a school's
+// conference's own SIDEARM standings page is read (pages saved Nov 12,
+// trimmed to the title and the table). Every college conference with
+// volleyball schools has its site, except the SEC (not SIDEARM).
+{
+  const confs=new Set(schools.filter(s=>(!s.level||s.level==='college')&&!s.pro&&(sponsoredSports[s.id]||[]).includes('Volleyball')).map(s=>s.conference));
+  assert.deepEqual([...confs].filter(c=>!CONFERENCE_SITES[c]).sort(),['SEC']);
+  assert.equal(conferenceStandingsUrl('Sun Belt','Volleyball'),'https://sunbeltsports.org/standings.aspx?path=wvball');
+  assert.equal(conferenceStandingsUrl('Big 12','Soccer'),null,'volleyball only for now');
+  assert.equal(conferenceStandingsUrl('SEC','Volleyball'),null);
+  // Clinched and eliminated marks are not the name.
+  assert.deepEqual(['Cornell *','Fairfield *#','Manhattan E',"Saint Peter's E",'Texas A&amp;M','UC Davis'].map(sidearmTeamName),['Cornell','Fairfield','Manhattan',"Saint Peter's",'Texas A&M','UC Davis']);
+  const site=(name,conference,me)=>conferenceSiteStandings(volleyball(name),{conference,sport:'Volleyball',url:conferenceStandingsUrl(conference,'Volleyball'),own:n=>n===me});
+  // ACC: the column is named "ACC"; home and away are the overall ones.
+  const [acc,...none]=site('acc','ACC','Pitt');
+  assert.equal(none.length,0);assert.equal(acc.title,'ACC');assert.equal(acc.rows.length,18);
+  assert.deepEqual(acc.columns.map(c=>c.label),['Conf','Ovr','Strk']);
+  assert.equal(acc.rows[0].name,'Louisville');
+  assert.deepEqual(acc.rows.find(r=>r.own),{pos:2,name:'Pitt',detail:'Home 12-1 · Away 9-0',values:{conf:'14-1',overall:'24-1',streak:'W10'},own:true});
+  assert.deepEqual(acc.source,{name:'ACC standings (2026 season)',url:'https://theacc.com/standings.aspx?path=wvball'});
+  // Sun Belt: the school's division first ("DIVISION" is never the conference record), then the conference.
+  const sb=site('sunbelt','Sun Belt','Troy');
+  assert.deepEqual(sb.map(t=>[t.title,t.rows.length,t.rows.find(r=>r.own).pos]),[['Sun Belt - West',7,3],['Sun Belt',14,5]]);
+  assert.deepEqual(sb[0].rows.find(r=>r.own).values,{conf:'8-6',overall:'13-10',streak:'L4'});
+  // Big East: "Conf" among W-L/PCT narrow-screen headers.
+  assert.deepEqual(site('bigeast','Big East','Marquette')[0].rows[0],{pos:1,name:'Marquette',detail:'Home 8-1 · Away 8-5',values:{conf:'12-2',overall:'17-7',streak:'W3'},own:true});
+  // Metro: "Metro" names the conference column; marks stripped.
+  assert.deepEqual(parseSidearmStandings(volleyball('metro')).groups[0].rows.map(r=>r.name),['Fairfield','Siena','Marist','Sacred Heart','Quinnipiac','Iona','Rider','Manhattan',"Saint Peter's",'Canisius','Merrimack','Niagara']);
+  assert.equal(site('metro','Metro Conference','Manhattan')[0].rows.find(r=>r.own).pos,8);
+  // Not the school's conference, no page, no table on it: nothing.
+  assert.deepEqual(site('uac','UAC','Pitt'),[]);
+  assert.deepEqual(conferenceSiteStandings(null,{conference:'UAC',own:()=>true}),[]);
+  assert.deepEqual(conferenceSiteStandings('<html><title>x</title></html>',{conference:'UAC',own:()=>true}),[]);
+}
+
 // The Worker: a college feed's groups carry the tables; one read per
 // conference board, kept 30 minutes; high schools and pro teams read none.
 {
   let reads=[];
   const byUrl={[collegeStandingsUrl('football/college-football',4)]:fixture('football-big12'),[collegeStandingsUrl('basketball/mens-college-basketball',8)]:fixture('mens-basketball-big12'),[collegeStandingsUrl('basketball/womens-college-basketball',8)]:fixture('womens-basketball-big12')};
-  const htmlByUrl={[COLLEGE_HOCKEY_PAGES['chn/mens-hockey'].url]:page('chn-mens-hockey'),[COLLEGE_HOCKEY_PAGES['chn/womens-hockey'].url]:page('chn-womens-hockey')};
+  const htmlByUrl={[conferenceStandingsUrl('UAC','Volleyball')]:volleyball('uac'),[conferenceStandingsUrl('ACC','Volleyball')]:volleyball('acc'),[conferenceStandingsUrl('Sun Belt','Volleyball')]:volleyball('sunbelt'),[COLLEGE_HOCKEY_PAGES['chn/mens-hockey'].url]:page('chn-mens-hockey'),[COLLEGE_HOCKEY_PAGES['chn/womens-hockey'].url]:page('chn-womens-hockey')};
   const fetch=async(url,init)=>{const u=String(url?.url||url);reads.push({url:u,agent:new Headers(init?.headers||url?.headers).get('user-agent')});if(htmlByUrl[u])return new Response(htmlByUrl[u],{status:200,headers:{'content-type':'text/html'}});return byUrl[u]?new Response(JSON.stringify(byUrl[u]),{status:200,headers:{'content-type':'application/json'}}):new Response('{}',{status:404});};
   const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
   const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:()=>{throw Error('Unexpected PDF');},fetch};
@@ -133,7 +170,7 @@ assert.deepEqual(collegeConferenceStandings(null,{board:'football/college-footba
   const ku=group('kansas','Basketball');await w.attachCollegeStandings(ku,w.catalogSchool('kansas'),'Basketball');
   assert.deepEqual(ku[0].standings.map(t=>t.title),["Men's Big 12","Women's Big 12"]);
   reads=[];
-  for(const [id,sport] of [['manhattan-ks','Football'],['kansas-city-chiefs','Football'],['kstate','Volleyball']]){const g=group(id,sport);await w.attachCollegeStandings(g,w.catalogSchool(id),sport);assert.equal(g[0].standings,undefined,`${id} ${sport}`);}
+  for(const [id,sport] of [['manhattan-ks','Football'],['kansas-city-chiefs','Football'],['kstate','Golf']]){const g=group(id,sport);await w.attachCollegeStandings(g,w.catalogSchool(id),sport);assert.equal(g[0].standings,undefined,`${id} ${sport}`);}
   assert.equal(reads.length,0,'no standings read for a high school, a pro team or a sport without tables');
   // Hockey: the College Hockey News page of each gender, the same URL for every school.
   reads=[];
@@ -143,6 +180,18 @@ assert.deepEqual(collegeConferenceStandings(null,{board:'football/college-footba
   assert.equal(bu[0].standings.length,2);
   // (The source cache, absent here, keeps each page 30 minutes for every school.)
   assert.deepEqual([...new Set(reads.map(r=>r.url).filter(u=>!u.endsWith('/robots.txt')))].sort(),Object.values(COLLEGE_HOCKEY_PAGES).map(p=>p.url).sort(),'only the two College Hockey News pages');
+  // Volleyball: the conference's own page; "EKU" is Eastern Kentucky (an
+  // alias abbreviation, taken on a conference's page only), "UNI" is not Pitt.
+  reads=[];
+  const eku=group('eastern-kentucky','Volleyball');await w.attachCollegeStandings(eku,w.catalogSchool('eastern-kentucky'),'Volleyball');
+  assert.deepEqual(eku[0].standings.map(t=>[t.title,t.rows.find(r=>r.own)?.name]),[['UAC','EKU']]);
+  const pitt=group('pitt','Volleyball');await w.attachCollegeStandings(pitt,w.catalogSchool('pitt'),'Volleyball');
+  assert.deepEqual(pitt[0].standings[0].rows.filter(r=>r.own).map(r=>r.name),['Pitt']);
+  const troy=group('troy','Volleyball');await w.attachCollegeStandings(troy,w.catalogSchool('troy'),'Volleyball');
+  assert.deepEqual(troy[0].standings.map(t=>t.title),['Sun Belt - West','Sun Belt']);
+  assert.deepEqual([...new Set(reads.map(r=>r.url).filter(u=>!u.endsWith('/robots.txt')))].sort(),['https://sunbeltsports.org/standings.aspx?path=wvball','https://theacc.com/standings.aspx?path=wvball','https://uacsports.com/standings.aspx?path=wvball']);
+  const secVb=group('alabama','Volleyball');await w.attachCollegeStandings(secVb,w.catalogSchool('alabama'),'Volleyball');
+  assert.equal(secVb[0].standings,undefined,'SEC: no conference page yet');
   // A refused read leaves the feed as it was.
   const ut=group('utah','Football');await w.attachCollegeStandings(ut,w.catalogSchool('utah'),'Football');
   assert.equal(ut[0].standings?.[0]?.title,'Big 12','Utah reads the same Big 12 table (kept)');
