@@ -6322,7 +6322,8 @@ async function conferenceStandingsStatus(school,sport){
     const rows=parsed?parsed.groups.flatMap(g=>g.rows.map(x=>x.name)):[];
     return[{url,http_status:r.status,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,source_cache:r.headers.get('x-sas-source')||null,bytes:text.length,
       has_table:/sidearm-standings-table/.test(text),title:parsed?.title||null,rows:rows.length,
-      own_row:rows.find(n=>names.has(normalizedTeamName(n))||scoreboardTeamMatchesSchool({location:n,displayName:n,shortDisplayName:n},school))||null,row_names:rows}];
+      own_row:rows.find(n=>names.has(normalizedTeamName(n))||scoreboardTeamMatchesSchool({location:n,displayName:n,shortDisplayName:n},school))||null,row_names:rows,
+      ...(rows.length?{}:{sample:(()=>{const at=text.search(/<table[^>]*standings|<table/);return text.slice(at>=0?at:0,(at>=0?at:0)+2500)})()})}];
   }catch(error){return[{url,error:String(error?.message||error).slice(0,200)}];}
 }
 async function attachCollegeStandings(groups,school,sport){
