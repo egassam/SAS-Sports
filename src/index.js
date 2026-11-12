@@ -6310,6 +6310,16 @@ async function attachRankings(groups,school,sport,built=null){
 // per conference (`?group=`, about 300 KB) kept 30 minutes and shared by every
 // school in it (src/college-standings.mjs). Basketball reads the men's and
 // women's tables. A failed read leaves the feed without standings.
+// A school's row on its own conference's standings page: the scoreboard
+// matcher, or any catalog name or alias exactly, abbreviations too ("UNI",
+// "EKU"), or the name without its state ("Miami (OH)" is the MAC's "Miami")
+// or a trailing "U" ("Seattle U" is the WCC's "Seattle"). Safe only within
+// one conference's page, where no two schools share these names.
+function conferenceRowMatcher(school){
+  const base=[school.name,school.short_name,...(school.aliases||[])].filter(Boolean);
+  const names=new Set([...base,...base.map(n=>String(n).replace(/\s*\([^)]*\)$/,'')),...base.map(n=>String(n).replace(/\s+U$/,''))].map(normalizedTeamName).filter(Boolean));
+  return name=>names.has(normalizedTeamName(name))||scoreboardTeamMatchesSchool({location:name,displayName:name,shortDisplayName:name},school);
+}
 // The conference standings page a school and sport read, as /live/status
 // shows it: what the site answered, whether it holds a SIDEARM standings
 // table, and whether the school's row was found (Nov 12: twelve conferences
@@ -6318,11 +6328,10 @@ async function conferenceStandingsStatus(school,sport){
   const url=school&&!isHighSchool(school)&&!isPro(school)?conferenceStandingsUrl(school.conference,sport):null;if(!url)return[];
   try{
     const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.article,staleOnError:true}),text=await r.text(),parsed=parseSidearmStandings(text);
-    const names=new Set([school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(Boolean));
-    const rows=parsed?parsed.groups.flatMap(g=>g.rows.map(x=>x.name)):[];
+    const own=conferenceRowMatcher(school),rows=parsed?parsed.groups.flatMap(g=>g.rows.map(x=>x.name)):[];
     return[{url,http_status:r.status,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,source_cache:r.headers.get('x-sas-source')||null,bytes:text.length,
       has_table:/sidearm-standings-table/.test(text),title:parsed?.title||null,rows:rows.length,
-      own_row:rows.find(n=>names.has(normalizedTeamName(n))||scoreboardTeamMatchesSchool({location:n,displayName:n,shortDisplayName:n},school))||null,row_names:rows,
+      own_row:rows.find(own)||null,row_names:rows,
       ...(rows.length?{}:{sample:(()=>{const at=text.search(/<table[^>]*standings|<table/);return text.slice(at>=0?at:0,(at>=0?at:0)+2500)})()})}];
   }catch(error){return[{url,error:String(error?.message||error).slice(0,200)}];}
 }
@@ -6337,8 +6346,7 @@ async function attachCollegeStandings(groups,school,sport){
     // matcher refuses abbreviations because ESPN's boards hold every school).
     const siteUrl=conferenceStandingsUrl(school.conference,sport);
     if(!reads.length&&!hockey.length&&!siteUrl)return groups;
-    const names=new Set([school.name,school.short_name,...(school.aliases||[])].map(normalizedTeamName).filter(Boolean));
-    const own=name=>names.has(normalizedTeamName(name))||scoreboardTeamMatchesSchool({location:name,displayName:name,shortDisplayName:name},school);
+    const own=conferenceRowMatcher(school);
     // Hockey: College Hockey News's page per gender (ESPN has no hockey
     // conference records or points), the men's table first.
     const tables=(await Promise.all([

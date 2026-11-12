@@ -168,12 +168,16 @@ export const CONFERENCE_SITES={
 };
 // The sports read from the conference sites, by SIDEARM path.
 export const CONFERENCE_STANDINGS_SPORTS={'Volleyball':'wvball'};
-export const conferenceStandingsUrl=(conference,sport)=>CONFERENCE_SITES[conference]&&CONFERENCE_STANDINGS_SPORTS[sport]?`https://${CONFERENCE_SITES[conference]}/standings.aspx?path=${CONFERENCE_STANDINGS_SPORTS[sport]}`:null;
+// A conference whose SIDEARM code for the sport differs (checked Nov 12:
+// horizonleague.org answers "Something went wrong" for wvball, the table for
+// vball).
+const CONFERENCE_PATHS={'Horizon League':{'Volleyball':'vball'}};
+export const conferenceStandingsUrl=(conference,sport)=>CONFERENCE_SITES[conference]&&CONFERENCE_STANDINGS_SPORTS[sport]?`https://${CONFERENCE_SITES[conference]}/standings.aspx?path=${CONFERENCE_PATHS[conference]?.[sport]||CONFERENCE_STANDINGS_SPORTS[sport]}`:null;
 
 const decode=s=>String(s||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&#0?39;|&apos;|&#8217;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
 // "Cornell *", "Fairfield *#", "Manhattan E": the conference's clinched and
 // eliminated marks are not the name.
-export const sidearmTeamName=name=>decode(name).replace(/(?:\s*[*#†‡]+|\s+[A-Z])+$/,'').trim();
+export const sidearmTeamName=name=>{const html=String(name||''),links=[...html.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)].map(m=>decode(m[1])).filter(Boolean);return(links.at(-1)||decode(html)).replace(/(?:\s*[*#†‡]+|\s+-[a-z*]{1,4}|\s+[A-Z])+$/,'').trim()};
 // The page → {title, groups:[{name, rows:[{name, conf, overall, streak,
 // home, away}]}]}. The table carries a narrow-screen column set
 // (`hide-on-large`) and the full one (`hide-on-medium-down`); the full set's
@@ -186,15 +190,8 @@ export function parseSidearmStandings(html){
   const table=page.slice(start,page.indexOf('</table>',start));
   const [head,body='']=table.split(/<\/thead>/);
   const headers=[...head.matchAll(/<th class="([^"]*)"[^>]*>([\s\S]*?)<\/th>/g)].filter(m=>/hide-on-medium-down/.test(m[1])).map(m=>decode(m[2]));
-  const mobile=[...head.matchAll(/<th class="([^"]*)"[^>]*>([\s\S]*?)<\/th>/g)].filter(m=>/hide-on-large/.test(m[1])).map(m=>decode(m[2]));
   if(headers.length<3)return null;
-  const find=(test,from=1)=>{for(let i=from;i<headers.length;i++)if(test(headers[i]))return i;return -1};
-  let conf=find(h=>/^(conf\.?|conference|w-l)$/i.test(h));
-  if(conf<0&&mobile[1])conf=find(h=>h.toLowerCase()===mobile[1].toLowerCase()&&!/division|overall/i.test(h));
-  const overall=find(h=>/^overall$/i.test(h));
-  let streak=-1;for(let i=headers.length-1;i>0;i--)if(/^streak$/i.test(headers[i])){streak=i;break;}
-  const home=overall>0?find(h=>/^home$/i.test(h),overall+1):-1,away=overall>0?find(h=>/^away$/i.test(h),overall+1):-1;
-  if(conf<0||overall<0)return null;
+  // The rows first; the columns are then chosen by header and by value.
   const groups=[];let group={name:null,rows:[]};
   for(const [,row] of body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)){
     const label=row.match(/<th scope="colgroup" class="hide-on-medium-down"[^>]*>([\s\S]*?)<\/th>/);
@@ -202,10 +199,23 @@ export function parseSidearmStandings(html){
     const cells=[...row.matchAll(/<td class="([^"]*)"[^>]*>([\s\S]*?)<\/td>/g)].filter(m=>/hide-on-medium-down/.test(m[1])).map(m=>m[2]);
     if(cells.length<headers.length)continue;
     const name=sidearmTeamName(cells[0]);if(!name)continue;
-    const at=i=>i>=0?decode(cells[i]):'';
-    group.rows.push({name,conf:at(conf),overall:at(overall),streak:at(streak).replace(/^-+$/,''),home:at(home),away:at(away)});
+    group.rows.push({name,cells:cells.map(decode)});
   }
   if(group.rows.length)groups.push(group);
+  const sample=groups.flatMap(g=>g.rows)[0];if(!sample)return null;
+  const record=v=>/^\d+-\d+(-\d+)?$/.test(v||'');
+  // Never the conference record: percentages, games played, points, the
+  // division, overall, home/away/neutral, last 10, streak.
+  const NOT_CONF=/pct|%|\bgp\b|games|\bpf\b|\bpa\b|division|overall|\bovr\b|^all$|home|away|road|neutral|\bntrl\b|\bl10\b|last 10|streak|\bstrk\b|sets/i;
+  const find=(test,from=1)=>{for(let i=from;i<headers.length;i++)if(test(headers[i],i))return i;return -1};
+  // "Conf", "Conference", "Conf. W-L", or the conference's own name ("ACC", "Big South", "BW", "SLC", "Metro").
+  const conf=find((h,i)=>!NOT_CONF.test(h)&&record(sample.cells[i]));
+  let overall=find(h=>/^(overall|ovr|all|overall w-l|overall record)$/i.test(h));
+  if(overall<0&&conf>0)overall=find((h,i)=>/^w-l$/i.test(h)&&record(sample.cells[i]),conf+1);
+  let streak=-1;for(let i=headers.length-1;i>0;i--)if(/^(streak|strk)$/i.test(headers[i])){streak=i;break;}
+  const home=overall>0?find(h=>/^home$/i.test(h),overall+1):-1,away=overall>0?find(h=>/^(away|road)$/i.test(h),overall+1):-1;
+  if(conf<0||overall<0)return null;
+  for(const g of groups)g.rows=g.rows.map(({name,cells})=>{const at=i=>i>=0?cells[i]:'';return{name,conf:at(conf),overall:at(overall),streak:at(streak).replace(/^-+$/,''),home:at(home),away:at(away)}});
   const title=decode((page.match(/<title>([\s\S]*?)<\/title>/)||[])[1]);
   return groups.length?{title,groups}:null;
 }
