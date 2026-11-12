@@ -61,7 +61,7 @@ import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
-import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings} from './college-standings.mjs';
+import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
 import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.303.0-hockey-standings';
+const VERSION='4.304.1-volleyball-standings';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6310,15 +6310,49 @@ async function attachRankings(groups,school,sport,built=null){
 // per conference (`?group=`, about 300 KB) kept 30 minutes and shared by every
 // school in it (src/college-standings.mjs). Basketball reads the men's and
 // women's tables. A failed read leaves the feed without standings.
+// A school's row on its own conference's standings page: the scoreboard
+// matcher, or any catalog name or alias exactly, abbreviations too ("UNI",
+// "EKU"), or the name without its state ("Miami (OH)" is the MAC's "Miami")
+// or a trailing "U" ("Seattle U" is the WCC's "Seattle"). Safe only within
+// one conference's page, where no two schools share these names.
+function conferenceRowMatcher(school){
+  const base=[school.name,school.short_name,...(school.aliases||[])].filter(Boolean);
+  const names=new Set([...base,...base.map(n=>String(n).replace(/\s*\([^)]*\)$/,'')),...base.map(n=>String(n).replace(/\s+U$/,''))].map(normalizedTeamName).filter(Boolean));
+  return name=>names.has(normalizedTeamName(name))||scoreboardTeamMatchesSchool({location:name,displayName:name,shortDisplayName:name},school);
+}
+// The conference standings page a school and sport read, as /live/status
+// shows it: what the site answered, whether it holds a SIDEARM standings
+// table, and whether the school's row was found (Nov 12: twelve conferences
+// gave no table on the first preview, and the sandbox cannot reach them).
+async function conferenceStandingsStatus(school,sport){
+  const url=school&&!isHighSchool(school)&&!isPro(school)?conferenceStandingsUrl(school.conference,sport):null;if(!url)return[];
+  try{
+    const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.article,staleOnError:true}),text=await r.text(),parsed=parseSidearmStandings(text);
+    const own=conferenceRowMatcher(school),rows=parsed?parsed.groups.flatMap(g=>g.rows.map(x=>x.name)):[];
+    return[{url,http_status:r.status,upstream_status:Number(r.headers.get('x-sas-upstream-status'))||null,source_cache:r.headers.get('x-sas-source')||null,bytes:text.length,
+      has_table:/sidearm-standings-table/.test(text),title:parsed?.title||null,rows:rows.length,
+      own_row:rows.find(own)||null,row_names:rows,
+      ...(rows.length?{}:{sample:(()=>{const at=text.search(/<table[^>]*standings|<table/);return text.slice(at>=0?at:0,(at>=0?at:0)+2500)})()})}];
+  }catch(error){return[{url,error:String(error?.message||error).slice(0,200)}];}
+}
 async function attachCollegeStandings(groups,school,sport){
   try{
     if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
-    const reads=collegeStandingsReads(school.id,sport),hockey=collegeHockeyReads(school.id,sport);if(!reads.length&&!hockey.length)return groups;
+    const reads=collegeStandingsReads(school.id,sport),hockey=collegeHockeyReads(school.id,sport);
+    // Volleyball: the school's conference's own standings page (SIDEARM),
+    // its row found by the scoreboard matcher on the conference's name for it,
+    // or by any catalog alias, abbreviations too: within one conference's page
+    // "UNI" and "EKU" are only Northern Iowa and Eastern Kentucky (the
+    // matcher refuses abbreviations because ESPN's boards hold every school).
+    const siteUrl=conferenceStandingsUrl(school.conference,sport);
+    if(!reads.length&&!hockey.length&&!siteUrl)return groups;
+    const own=conferenceRowMatcher(school);
     // Hockey: College Hockey News's page per gender (ESPN has no hockey
     // conference records or points), the men's table first.
     const tables=(await Promise.all([
       ...reads.map(async read=>collegeConferenceStandings(await readJson(read.url,SOURCE_TTL.article),read)),
-      ...hockey.map(async read=>collegeHockeyStandings(await readText(read.url,SOURCE_TTL.article),read))
+      ...hockey.map(async read=>collegeHockeyStandings(await readText(read.url,SOURCE_TTL.article),read)),
+      ...(siteUrl?[(async()=>conferenceSiteStandings(await readText(siteUrl,SOURCE_TTL.article),{conference:school.conference,sport,url:siteUrl,own}))()]:[])
     ])).flat();
     if(tables.length)for(const group of groups)group.standings=tables;
   }catch{}
@@ -7319,7 +7353,7 @@ async function routeRequest(request,env,ctx){
       const shared=await globalCopy(env,url,school,sport);if(shared)return cacheResponse(await agedCopy(shared,school),'saved-global');
       return json({detail:{message:'Live source returned no usable events',fetched_at:new Date().toISOString(),error:'All official source candidates failed and no verified cache is available'}},502);
     }
-    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
+    if(url.pathname==='/live/status'){const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);const result=await fetchLive(school,sport,env);return json({school,sport,live_source_used:result.live_source_used,source_url:result.source_url,source_urls:result.source_urls,fetched_at:result.fetched_at,event_count:result.events.length,error:result.error,scoreboard_reads:result.scoreboard_reads||[],standings_reads:await conferenceStandingsStatus(catalogSchool(school),sport),...(result.finals_store?{finals_store:result.finals_store}:{}),...(result.scores_errors?{scores_missing:true,scores_errors:result.scores_errors}:{}),...(result.youtube?{youtube:result.youtube}:{}),...(result.google_calendar?{google_calendar:result.google_calendar}:{})});}
     return env.ASSETS.fetch(request);
 }
 export default{

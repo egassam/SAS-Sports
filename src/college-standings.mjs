@@ -145,3 +145,94 @@ export function collegeHockeyReads(schoolId,sport,groupsFile=COLLEGE_STANDINGS_G
   }
   return out;
 }
+
+// ---- Conference sites (user, November 12, 2026: "Find another source for
+// the other sports", then "Start with volleyball") ----
+// ESPN has no conference tables for volleyball (one Division I table),
+// soccer or softball, and NCAA.com's standings pages for them are empty. The
+// conferences publish their own: 31 of the 32 the app's schools play in run
+// SIDEARM, whose standings page is the same everywhere
+// (`/standings.aspx?path=<sport>`, the current season by default; robots.txt
+// allows it). One read per conference and sport, kept 30 minutes and shared
+// by every school of the conference. The SEC's site is not SIDEARM (its
+// standings load by script): no table yet.
+export const CONFERENCE_SITES={
+  'ACC':'theacc.com','ASUN':'asunsports.org','America East':'americaeast.com','American':'theamerican.org',
+  'Atlantic 10':'atlantic10.com','Big 12':'big12sports.com','Big East':'www.bigeast.com','Big Sky':'bigskyconf.com',
+  'Big South':'bigsouthsports.com','Big Ten':'bigten.org','Big West':'bigwest.org','CAA':'caasports.com',
+  'Conference USA':'conferenceusa.com','Horizon League':'horizonleague.org','Ivy League':'ivyleague.com','MAC':'getsomemaction.com',
+  'MEAC':'meacsports.com','Metro Conference':'themetro.org','Missouri Valley':'mvc-sports.com','Mountain West':'themw.com',
+  'NEC':'northeastconference.org','OVC':'ovcsports.com','Pac-12':'pac-12.com','Patriot League':'patriotleague.org',
+  'SWAC':'swac.org','Southern Conference':'soconsports.com','Southland Conference':'southland.org','Summit League':'thesummitleague.org',
+  'Sun Belt':'sunbeltsports.org','UAC':'uacsports.com','WCC':'wccsports.com'
+};
+// The sports read from the conference sites, by SIDEARM path.
+export const CONFERENCE_STANDINGS_SPORTS={'Volleyball':'wvball'};
+// A conference whose SIDEARM code for the sport differs (checked Nov 12:
+// horizonleague.org answers "Something went wrong" for wvball, the table for
+// vball).
+const CONFERENCE_PATHS={'Horizon League':{'Volleyball':'vball'}};
+export const conferenceStandingsUrl=(conference,sport)=>CONFERENCE_SITES[conference]&&CONFERENCE_STANDINGS_SPORTS[sport]?`https://${CONFERENCE_SITES[conference]}/standings.aspx?path=${CONFERENCE_PATHS[conference]?.[sport]||CONFERENCE_STANDINGS_SPORTS[sport]}`:null;
+
+const decode=s=>String(s||'').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&#0?39;|&apos;|&#8217;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+// "Cornell *", "Fairfield *#", "Manhattan E": the conference's clinched and
+// eliminated marks are not the name.
+export const sidearmTeamName=name=>{const html=String(name||''),links=[...html.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)].map(m=>decode(m[1])).filter(Boolean);return(links.at(-1)||decode(html)).replace(/(?:\s*[*#†‡]+|\s+-[a-z*]{1,4}|\s+[A-Z])+$/,'').trim()};
+// The page → {title, groups:[{name, rows:[{name, conf, overall, streak,
+// home, away}]}]}. The table carries a narrow-screen column set
+// (`hide-on-large`) and the full one (`hide-on-medium-down`); the full set's
+// headers name the columns, which each conference chooses: the conference
+// record is "Conf", "Conference", "W-L" or the conference's own name ("ACC",
+// "Metro"), never "Division"; the overall record "Overall"; the last
+// "Streak" is the overall streak; Home and Away after Overall are overall.
+export function parseSidearmStandings(html){
+  const page=String(html||''),start=page.search(/<table[^>]*sidearm-standings-table/);if(start<0)return null;
+  const table=page.slice(start,page.indexOf('</table>',start));
+  const [head,body='']=table.split(/<\/thead>/);
+  const headers=[...head.matchAll(/<th class="([^"]*)"[^>]*>([\s\S]*?)<\/th>/g)].filter(m=>/hide-on-medium-down/.test(m[1])).map(m=>decode(m[2]));
+  if(headers.length<3)return null;
+  // The rows first; the columns are then chosen by header and by value.
+  const groups=[];let group={name:null,rows:[]};
+  for(const [,row] of body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)){
+    const label=row.match(/<th scope="colgroup" class="hide-on-medium-down"[^>]*>([\s\S]*?)<\/th>/);
+    if(label){if(group.rows.length)groups.push(group);group={name:decode(label[1]),rows:[]};continue;}
+    const cells=[...row.matchAll(/<td class="([^"]*)"[^>]*>([\s\S]*?)<\/td>/g)].filter(m=>/hide-on-medium-down/.test(m[1])).map(m=>m[2]);
+    if(cells.length<headers.length)continue;
+    const name=sidearmTeamName(cells[0]);if(!name)continue;
+    group.rows.push({name,cells:cells.map(decode)});
+  }
+  if(group.rows.length)groups.push(group);
+  const sample=groups.flatMap(g=>g.rows)[0];if(!sample)return null;
+  const record=v=>/^\d+-\d+(-\d+)?$/.test(v||'');
+  // Never the conference record: percentages, games played, points, the
+  // division, overall, home/away/neutral, last 10, streak.
+  const NOT_CONF=/pct|%|\bgp\b|games|\bpf\b|\bpa\b|division|overall|\bovr\b|^all$|home|away|road|neutral|\bntrl\b|\bl10\b|last 10|streak|\bstrk\b|sets/i;
+  const find=(test,from=1)=>{for(let i=from;i<headers.length;i++)if(test(headers[i],i))return i;return -1};
+  // "Conf", "Conference", "Conf. W-L", or the conference's own name ("ACC", "Big South", "BW", "SLC", "Metro").
+  const conf=find((h,i)=>!NOT_CONF.test(h)&&record(sample.cells[i]));
+  let overall=find(h=>/^(overall|ovr|all|overall w-l|overall record)$/i.test(h));
+  if(overall<0&&conf>0)overall=find((h,i)=>/^w-l$/i.test(h)&&record(sample.cells[i]),conf+1);
+  let streak=-1;for(let i=headers.length-1;i>0;i--)if(/^(streak|strk)$/i.test(headers[i])){streak=i;break;}
+  const home=overall>0?find(h=>/^home$/i.test(h),overall+1):-1,away=overall>0?find(h=>/^(away|road)$/i.test(h),overall+1):-1;
+  if(conf<0||overall<0)return null;
+  for(const g of groups)g.rows=g.rows.map(({name,cells})=>{const at=i=>i>=0?cells[i]:'';return{name,conf:at(conf),overall:at(overall),streak:at(streak).replace(/^-+$/,''),home:at(home),away:at(away)}});
+  const title=decode((page.match(/<title>([\s\S]*?)<\/title>/)||[])[1]);
+  return groups.length?{title,groups}:null;
+}
+// The school's tables from its conference's page: its division first when
+// the conference has them (then the whole conference by conference record,
+// then overall), else the conference in the page's order. `own(name)` says
+// which row is the school's; no row is the school's, no table.
+export function conferenceSiteStandings(html,{conference,sport,url,own}={}){
+  const parsed=parseSidearmStandings(html);if(!parsed||typeof own!=='function')return[];
+  const all=parsed.groups.flatMap(g=>g.rows);if(!all.some(r=>own(r.name)))return[];
+  const season=(parsed.title.match(/^(20\d\d(?:-\d\d)?)\b/)||[])[1]||'';
+  const source={name:`${conference} standings${season?` (${season} season)`:''}`,url};
+  const make=(title,rows)=>({title,columns:COLUMNS,source,rows:rows.map((r,i)=>({pos:i+1,name:r.name,
+    detail:[r.home&&`Home ${r.home}`,r.away&&`Away ${r.away}`].filter(Boolean).join(' · '),
+    values:{conf:r.conf,overall:r.overall,streak:r.streak},...(own(r.name)?{own:true}:{})}))});
+  if(parsed.groups.length<2||parsed.groups.some(g=>!g.name))return[make(conference,all)];
+  const mine=parsed.groups.find(g=>g.rows.some(r=>own(r.name)));
+  const whole=all.slice().sort((a,b)=>(pct(b.conf)??-1)-(pct(a.conf)??-1)||(pct(b.overall)??-1)-(pct(a.overall)??-1));
+  return[make(`${conference} - ${mine.name.replace(/\s+Division$/i,'')}`,mine.rows),make(conference,whole)];
+}

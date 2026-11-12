@@ -75,6 +75,20 @@ Six of the eight Summit League schools read (Oct 24, about 19:57 UTC; Denver lef
 
 Not blocked, for contrast: many SIDEARM sites behind Imperva answer the build sandbox with 403 but let the Worker read them (Ohio State, Louisville, Creighton, Marquette, UConn, Xavier, Montana State, Northern Arizona and others). Those are built normally through the private source route.
 
+## Conference sites
+
+Since November 12, 2026, the app also reads conferences' own SIDEARM standings pages (college volleyball standings; `docs/COLLEGE_STANDINGS_MODULE.md`). These conference sites answer the app with Imperva's redirect loop ("Too many redirects" for `/standings.aspx?path=wvball`), so their schools show no conference table. The schools' own sites are not affected (their schedules still read). Checked through the branch preview's feeds and `/live/status` (`standings_reads`, the same network as production) on Nov 12 at about 20:05 (every volleyball school's feed), 20:15 to 20:30 (`/live/status`, then every feed again) and 20:40 UTC.
+
+| Conference | Site | Blocked since | Checks | Schools without a volleyball table |
+| --- | --- | --- | --- | --- |
+| ACC | theacc.com | Nov 12, 2026 | Nov 12, three rounds (above) | 18 |
+| Atlantic 10 | atlantic10.com | Nov 12, 2026 | Nov 12, three rounds | 7 |
+| Big 12 | big12sports.com | Nov 12, 2026 | Nov 12, three rounds | 15 |
+| Conference USA | conferenceusa.com | Nov 12, 2026 | Nov 12, three rounds | 8 |
+| OVC | ovcsports.com | Nov 12, 2026 | Nov 12, three rounds | 9 |
+
+Not a block: the Southern Conference's `soconsports.com/standings.aspx` answers HTTP 500 ("Something went wrong") for every sport code tried, to the app and to an outside fetcher alike.
+
 ## Note a school could be sent
 
 > SAS Sports (https://sas-sports.lovetogivepain.workers.dev) shows fans every school's official schedules and results, with links back to your site. Your athletics site (`<site>`) answers our requests from Cloudflare Workers with a redirect loop from Imperva, so your teams cannot be listed. We read only public schedule, roster and news pages, a few times an hour, with the user agent `Mozilla/5.0 (compatible; SAS-Sports/<version>; +<bot page address>)`, whose address describes the bot. Could you allow that user agent from Cloudflare's network?
