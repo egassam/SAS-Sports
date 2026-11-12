@@ -2077,7 +2077,25 @@
    "state": "off"
   },
   "ucla|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T03:53:10.342Z",
+   "last_detail": "live 88-26 · 5:37 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "ucla|Basketball|Men's|2026-11-11|1",
+    "title": "Men's · UCLA vs AR-Pine Bluff",
+    "started_seen": "2026-11-12T03:43:55.638Z",
+    "live_passes": [
+     "2026-11-12T03:43:55.638Z",
+     "2026-11-12T03:44:56.536Z",
+     "2026-11-12T03:46:17.719Z",
+     "2026-11-12T03:47:19.727Z",
+     "2026-11-12T03:48:44.588Z",
+     "2026-11-12T03:50:05.998Z",
+     "2026-11-12T03:51:48.156Z",
+     "2026-11-12T03:53:10.342Z"
+    ],
+    "final_ok": false
+   }
   },
   "ucla|Football": {
    "state": "done",
@@ -3214,7 +3232,25 @@
    "state": "off"
   },
   "fresno-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T03:53:10.957Z",
+   "last_detail": "live 52-38 · 3:38 - 3rd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "fresno-state|Basketball|Women's|2026-11-11|1",
+    "title": "Women's · Fresno State vs New Mexico",
+    "started_seen": "2026-11-12T03:43:55.109Z",
+    "live_passes": [
+     "2026-11-12T03:43:55.109Z",
+     "2026-11-12T03:44:56.651Z",
+     "2026-11-12T03:46:17.967Z",
+     "2026-11-12T03:47:39.874Z",
+     "2026-11-12T03:49:05.313Z",
+     "2026-11-12T03:50:06.620Z",
+     "2026-11-12T03:51:27.535Z",
+     "2026-11-12T03:53:10.957Z"
+    ],
+    "final_ok": false
+   }
   },
   "fresno-state|Football": {
    "state": "off"
@@ -3277,7 +3313,25 @@
    "state": "off"
   },
   "oregon-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-12T03:52:50.402Z",
+   "last_detail": "live 74-48 · 1:44 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "oregon-state|Basketball|Women's|2026-11-11|1",
+    "title": "Women's · Oregon State vs NW Nazarene",
+    "started_seen": "2026-11-12T03:43:54.556Z",
+    "live_passes": [
+     "2026-11-12T03:43:54.556Z",
+     "2026-11-12T03:44:56.617Z",
+     "2026-11-12T03:46:18.363Z",
+     "2026-11-12T03:47:39.843Z",
+     "2026-11-12T03:48:44.471Z",
+     "2026-11-12T03:50:26.328Z",
+     "2026-11-12T03:51:48.912Z",
+     "2026-11-12T03:52:50.402Z"
+    ],
+    "final_ok": false
+   }
   },
   "oregon-state|Football": {
    "state": "off"
@@ -3308,22 +3362,21 @@
   },
   "san-diego-state|Basketball": {
    "state": "on",
-   "last_check": "2026-11-11T23:05:15.239Z",
-   "last_detail": "live 39-40 · 18:29 - 2nd · official_schedule+live_scoreboard",
+   "last_check": "2026-11-12T03:52:50.387Z",
+   "last_detail": "live 20-28 · Halftime · official_schedule+live_scoreboard",
    "game": {
-    "key": "san-diego-state|Basketball|Men's|2026-11-11|1",
-    "title": "Men's · San Diego State vs Bethune",
-    "started_seen": "2026-11-11T22:56:24.414Z",
+    "key": "san-diego-state|Basketball|Women's|2026-11-11|1",
+    "title": "Women's · San Diego State vs Colorado",
+    "started_seen": "2026-11-12T03:43:54.735Z",
     "live_passes": [
-     "2026-11-11T22:56:24.414Z",
-     "2026-11-11T22:57:25.306Z",
-     "2026-11-11T22:58:26.882Z",
-     "2026-11-11T22:59:27.923Z",
-     "2026-11-11T23:00:28.580Z",
-     "2026-11-11T23:01:29.746Z",
-     "2026-11-11T23:02:30.556Z",
-     "2026-11-11T23:03:53.411Z",
-     "2026-11-11T23:05:15.239Z"
+     "2026-11-12T03:43:54.735Z",
+     "2026-11-12T03:44:56.600Z",
+     "2026-11-12T03:46:17.733Z",
+     "2026-11-12T03:47:19.011Z",
+     "2026-11-12T03:48:44.616Z",
+     "2026-11-12T03:50:06.676Z",
+     "2026-11-12T03:51:27.506Z",
+     "2026-11-12T03:52:50.387Z"
     ],
     "final_ok": false
    }
@@ -4361,32 +4414,19 @@
    "state": "off"
   },
   "old-dominion|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-11T23:04:54.705Z",
-   "last_detail": "live 0-0 · HT · official_schedule+live_scoreboard",
-   "game": {
-    "key": "old-dominion|Soccer||2026-11-11|1",
-    "title": "Old Dominion vs App State",
-    "started_seen": "2026-11-11T22:56:24.163Z",
-    "live_passes": [
-     "2026-11-11T22:56:24.163Z",
-     "2026-11-11T22:57:25.619Z",
-     "2026-11-11T22:58:26.548Z",
-     "2026-11-11T22:59:27.525Z",
-     "2026-11-11T23:00:28.565Z",
-     "2026-11-11T23:01:29.706Z",
-     "2026-11-11T23:02:30.521Z",
-     "2026-11-11T23:03:33.006Z",
-     "2026-11-11T23:04:54.705Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-12T03:43:54.522Z",
+   "last_detail": "final W, 1-0",
+   "game": null,
    "failures": 13,
    "last_failure": {
     "at": "2026-10-25T19:17:02.615Z",
     "game": "Old Dominion vs Coastal",
     "detail": "the game is live and also still in upcoming (scoreboard not joined to the official schedule)"
-   }
+   },
+   "verified_at": "2026-11-12T03:43:54.522Z",
+   "verified_game": "Old Dominion vs App State",
+   "verified_detail": "final W, 1-0"
   },
   "old-dominion|Volleyball": {
    "state": "done",
@@ -7092,18 +7132,10 @@
    "state": "off"
   },
   "george-mason|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-11T23:04:56.330Z",
-   "last_detail": "live 0-0 · 9:17 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "george-mason|Basketball|Women's|2026-11-11|1",
-    "title": "Women's · George Mason at Army",
-    "started_seen": "2026-11-11T23:04:56.330Z",
-    "live_passes": [
-     "2026-11-11T23:04:56.330Z"
-    ],
-    "final_ok": false
-   }
+   "state": "off",
+   "last_check": "2026-11-12T03:43:54.630Z",
+   "last_detail": "final L, 75-80 (live phase not observed 2×; waits for the next game)",
+   "game": null
   },
   "george-mason|Lacrosse": {
    "state": "off"
@@ -8408,20 +8440,13 @@
    "state": "off"
   },
   "umass-lowell|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-11T23:05:15.324Z",
-   "last_detail": "live 3-1 · 8:31 - 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "umass-lowell|Basketball|Women's|2026-11-11|1",
-    "title": "Women's · UMass Lowell at Boston College",
-    "started_seen": "2026-11-11T23:02:32.319Z",
-    "live_passes": [
-     "2026-11-11T23:02:32.319Z",
-     "2026-11-11T23:03:53.751Z",
-     "2026-11-11T23:05:15.324Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-12T03:43:55.614Z",
+   "last_detail": "final L, 57-86",
+   "game": null,
+   "verified_at": "2026-11-12T03:43:55.614Z",
+   "verified_game": "Women's · UMass Lowell at Boston College",
+   "verified_detail": "final L, 57-86"
   },
   "umass-lowell|Field Hockey": {
    "state": "done",
@@ -12679,6 +12704,6 @@
   }
  },
  "version": "4.302.0-college-standings",
- "updated_at": "2026-11-11T23:05:15.330Z",
+ "updated_at": "2026-11-12T03:53:10.963Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

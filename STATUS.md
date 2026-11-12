@@ -3,10 +3,10 @@
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| george-mason | Basketball | 🔴 on | live 0-0 · 9:17 - 1st · official_schedule+live_scoreboard |
-| old-dominion | Soccer | 🔴 on | live 0-0 · HT · official_schedule+live_scoreboard |
-| san-diego-state | Basketball | 🔴 on | live 39-40 · 18:29 - 2nd · official_schedule+live_scoreboard |
-| umass-lowell | Basketball | 🔴 on | live 3-1 · 8:31 - 1st · official_schedule+live_scoreboard |
+| fresno-state | Basketball | 🔴 on | live 52-38 · 3:38 - 3rd · official_schedule+live_scoreboard |
+| oregon-state | Basketball | 🔴 on | live 74-48 · 1:44 - 4th · official_schedule+live_scoreboard |
+| san-diego-state | Basketball | 🔴 on | live 20-28 · Halftime · official_schedule+live_scoreboard |
+| ucla | Basketball | 🔴 on | live 88-26 · 5:37 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -229,7 +229,6 @@
 | fordham | Softball | ⚪ off (waiting) |  |
 | fordham | Water Polo | ⚪ off (waiting) |  |
 | fresno-state | Baseball | ⚪ off (waiting) |  |
-| fresno-state | Basketball | ⚪ off (waiting) |  |
 | fresno-state | Football | ⚪ off (waiting) |  |
 | fresno-state | Softball | ⚪ off (waiting) |  |
 | fresno-state | Water Polo | ⚪ off (waiting) |  |
@@ -238,6 +237,7 @@
 | gardner-webb | Lacrosse | ⚪ off (waiting) |  |
 | gardner-webb | Softball | ⚪ off (waiting) |  |
 | george-mason | Baseball | ⚪ off (waiting) |  |
+| george-mason | Basketball | ⚪ off (waiting) | final L, 75-80 (live phase not observed 2×; waits for the next game) |
 | george-mason | Lacrosse | ⚪ off (waiting) |  |
 | george-mason | Softball | ⚪ off (waiting) |  |
 | george-washington | Baseball | ⚪ off (waiting) |  |
@@ -525,7 +525,6 @@
 | oregon | Lacrosse | ⚪ off (waiting) |  |
 | oregon | Softball | ⚪ off (waiting) |  |
 | oregon-state | Baseball | ⚪ off (waiting) |  |
-| oregon-state | Basketball | ⚪ off (waiting) |  |
 | oregon-state | Football | ⚪ off (waiting) |  |
 | oregon-state | Softball | ⚪ off (waiting) |  |
 | pacific | Baseball | ⚪ off (waiting) |  |
@@ -754,7 +753,6 @@
 | ucf | Baseball | ⚪ off (waiting) |  |
 | ucf | Softball | ⚪ off (waiting) |  |
 | ucla | Baseball | ⚪ off (waiting) |  |
-| ucla | Basketball | ⚪ off (waiting) |  |
 | ucla | Softball | ⚪ off (waiting) |  |
 | ucla | Water Polo | ⚪ off (waiting) |  |
 | uconn | Baseball | ⚪ off (waiting) |  |
@@ -1536,6 +1534,7 @@
 | old-dominion | Basketball | ✅ off (passed) | Women's · Old Dominion at C Michigan · 2026-11-02T23:51:08.478Z |
 | old-dominion | Field Hockey | ✅ off (passed) | Old Dominion vs UConn · 2026-10-23T20:45:48.406Z |
 | old-dominion | Football | ✅ off (passed) | Old Dominion at Louisiana Tech · 2026-10-25T01:30:06.092Z |
+| old-dominion | Soccer | ✅ off (passed) | Old Dominion vs App State · 2026-11-12T03:43:54.522Z |
 | old-dominion | Volleyball | ✅ off (passed) | Old Dominion vs Marshall · 2026-10-24T21:15:41.101Z |
 | ole-miss | Basketball | ✅ off (passed) | Women's · Ole Miss vs Alcorn St · 2026-11-02T23:51:12.272Z |
 | ole-miss | Football | ✅ off (passed) | Ole Miss at Vanderbilt · 2026-10-11T00:49:40.705Z |
@@ -1836,6 +1835,7 @@
 | umass | Basketball | ✅ off (passed) | Women's · UMass vs Marshall · 2026-11-03T06:08:39.277Z |
 | umass | Football | ✅ off (passed) | UMass at UConn · 2026-10-24T07:12:57.697Z |
 | umass | Soccer | ✅ off (passed) | Men's · UMass at Kansas City · 2026-10-25T19:13:11.133Z |
+| umass-lowell | Basketball | ✅ off (passed) | Women's · UMass Lowell at Boston College · 2026-11-12T03:43:55.614Z |
 | umass-lowell | Field Hockey | ✅ off (passed) | UMass Lowell vs Maine · 2026-10-23T23:34:14.407Z |
 | umass-lowell | Hockey | ✅ off (passed) | UMass Lowell vs Providence · 2026-10-24T01:59:34.538Z |
 | umass-lowell | Soccer | ✅ off (passed) | Men's · UMass Lowell vs NJIT · 2026-10-25T01:30:07.860Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1095/1956; on 4; off 854; failing 3.
+Done 1097/1956; on 4; off 852; failing 3.
