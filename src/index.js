@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.302.0-college-standings';
+const VERSION='4.302.1-scoreboard-names';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6061,7 +6061,10 @@ function scoreboardTeamMatchesSchool(team,school){
   // - ESPN's boards carry no high or middle school: Manhattan High School
   //   ("Manhattan") never takes the Manhattan Jaspers (Oct 23).
   if(school?.level==='high-school'||school?.level==='middle-school')return false;
-  const nicknames=new Set([team?.name===team?.location?null:team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(Boolean));
+  // The school's own name and short name are never a nickname: UC Davis's
+  // alias "UC-Davis" read as one and removed "UC Davis" (Nov 12).
+  const own=new Set([school.name,school.short_name].map(normalizedTeamName));
+  const nicknames=new Set([team?.name===team?.location?null:team?.name,...(school.aliases||[]).filter(alias=>!/\s/.test(alias)&&/s$/i.test(alias))].map(normalizedTeamName).filter(x=>x&&!own.has(x)));
   const wanted=[school.name,school.short_name,...(school.aliases||[])].filter(name=>!/^[A-Z&]{2,5}$/.test(String(name||''))||name===school.short_name).map(normalizedTeamName).filter(x=>x.length>=2&&!nicknames.has(x));
   const names=[team?.location,team?.displayName,team?.shortDisplayName].map(normalizedTeamName).filter(Boolean);
   return wanted.some(x=>names.includes(x));
