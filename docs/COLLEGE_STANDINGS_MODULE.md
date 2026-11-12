@@ -23,9 +23,9 @@ A college school's **Football** and **Basketball** sections show a Standings blo
 - Football independents (Notre Dame, UConn, Merrimack, Chicago State): ESPN's "FBS/FCS Independents" is not a conference, so no table.
 - Women's basketball: The Citadel and VMI have no women's team.
 
-## Found, not fixed
+## Scoreboard names (fixed November 12, 2026)
 
-- The scoreboard matcher misses three schools by name: UC Davis (its alias "UC-Davis" is read as a nickname, which removes its own name "UC Davis"), Southeastern Louisiana (ESPN "SE Louisiana") and USC Upstate (ESPN "South Carolina Upstate"). The generator maps them by ESPN team id (302, 2545, 2908). Their live scoreboard and poll matching likely have the same gap; not changed here (a shared matcher change needs `diff:feeds`).
+The scoreboard matcher (`scoreboardTeamMatchesSchool`) missed three schools by name, found by this module on November 11: UC Davis (its alias "UC-Davis" read as a nickname and removed its own name "UC Davis"), Southeastern Louisiana (ESPN "SE Louisiana") and USC Upstate (ESPN "South Carolina Upstate"). Fixed in 4.302.1: a school's own name and short name are never treated as a nickname, and the catalog carries ESPN's spellings as aliases. The generator no longer needs ESPN team-id overrides; rerun on November 12, it gave the same map as before (0 differences on all three boards). On the test payloads the only new matches are those three schools' own teams (`tests/scoreboard-match.mjs`). Their live scores now join their official games on ESPN's boards as well.
 
 ## Next
 

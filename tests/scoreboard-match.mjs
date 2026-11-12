@@ -33,6 +33,17 @@ for(const name of ['football-espn-2026-09-26.json.gz','volleyball-espn-2026-09-2
 const has=pair=>pairs.has(pair);
 for(const pair of ['kansas => Kansas Jayhawks','kstate => Kansas State Wildcats','arizona => Arizona Wildcats','iowa-state => Iowa State Cyclones','texas-tech => Texas Tech Red Raiders','ohio-state => Ohio State Buckeyes','utah => Utah Utes','arizona-state => Arizona State Sun Devils'])assert.ok(has(pair),`${pair} must match`);
 for(const pair of ['kansas => Kansas State Wildcats','arizona => Arizona State Sun Devils','iowa => Iowa State Cyclones','texas => Texas Tech Red Raiders','oklahoma-state => Ohio State Buckeyes','kstate => Kentucky Wildcats','kstate => New Hampshire Wildcats','arizona => Northern Arizona Lumberjacks'])assert.ok(!has(pair),`${pair} must not match`);
+// Three schools the matcher missed by name (found Nov 11 by the conference
+// standings, fixed Nov 12; ESPN team objects as ESPN's teams endpoint gives
+// them): UC Davis's alias "UC-Davis" read as a nickname and removed its own
+// name; ESPN writes "SE Louisiana" and "South Carolina Upstate". Each matches
+// its own school and no other.
+for(const [id,team] of [
+  ['uc-davis',{id:'302',location:'UC Davis',name:'Aggies',displayName:'UC Davis Aggies',shortDisplayName:'UC Davis'}],
+  ['southeastern-louisiana',{id:'2545',location:'SE Louisiana',name:'Lions',displayName:'SE Louisiana Lions',shortDisplayName:'SE Louisiana'}],
+  ['usc-upstate',{id:'2908',location:'South Carolina Upstate',name:'Spartans',displayName:'South Carolina Upstate Spartans',shortDisplayName:'SC Upstate'}]
+])assert.deepEqual(schools.filter(school=>worker.scoreboardTeamMatchesSchool(team,school)).map(s=>s.id),[id],team.displayName);
+
 // Each ESPN team belongs to at most one catalog school.
 const owners=new Map();for(const pair of pairs){const [id,team]=pair.split(' => ');owners.set(team,[...(owners.get(team)||[]),id]);}
 for(const [team,ids] of owners)assert.equal(ids.length,1,`${team} matched ${ids.join(', ')}`);
