@@ -4,7 +4,7 @@ User, November 11, 2026: "Start the college conference standings" (the next step
 
 ## What a page shows
 
-A college school's **Football**, **Basketball** and **Hockey** (from College Hockey News, below) sections show a Standings block (the same block as the pro pages): the school's conference by ESPN's seed, the top 5 with Show all, the school's own row marked and kept visible below the top 5.
+A college school's **Football**, **Basketball**, **Hockey** (from College Hockey News, below) and **Volleyball** (from its conference's own site, below) sections show a Standings block (the same block as the pro pages): the school's conference by ESPN's seed, the top 5 with Show all, the school's own row marked and kept visible below the top 5.
 
 - Columns: **Conf** (conference record), **Ovr** (overall record; "Overall" ran into "Strk" at 390 px), **Strk** (streak). The detail line under the name is the home and away record.
 - Football conferences with divisions (Sun Belt, SWAC) show the school's division first, then the whole conference.
@@ -36,10 +36,30 @@ User: "Add the hockey conference standings". ESPN's hockey standings cannot rank
 - Not mapped, by design: men's independents (LIU, Mercyhurst, Stonehill, Lindenwood; CHN's "Independent" is no conference), schools without a team of that gender, and Delaware men's (not on CHN's men's page in 2026-27). Jacksonville, NJIT and Tennessee State list Hockey in `sponsored-sports.json` but have no Division I team on either page.
 - `src/college-standings.mjs`: `COLLEGE_HOCKEY_PAGES`, `parseChnStandings`, `collegeHockeyStandings`, `collegeHockeyReads`; `attachCollegeStandings` reads both kinds.
 
+## Volleyball (November 12, 2026)
+
+User: "Find another source for the other sports", then "Start with volleyball". Sources checked first: ESPN (`volleyball/womens-college-volleyball/standings`: one Division I table, no conferences), NCAA.com (`/standings/volleyball-women/d1`, every conference: the table region is empty, "Last Updated EDT" with no date; only football's pages hold data), Warren Nolan (baseball and softball only). The conferences' own sites publish the tables: **31 of the 32 conferences the app's schools play in run SIDEARM** (`https://<site>/standings.aspx?path=wvball`, the current season by default; robots.txt allows it). The SEC (secsports.com) is not SIDEARM and loads its standings by script: no table.
+
+- Read: `conferenceStandingsUrl(conference, sport)` from `CONFERENCE_SITES` (catalog conference → host) and `CONFERENCE_STANDINGS_SPORTS` (`Volleyball: wvball`), per-conference codes in `CONFERENCE_PATHS` (Horizon League `vball`: its `wvball` answers SIDEARM's "Something went wrong"). One read per conference, 30 minutes, shared (`readText`, stale on error).
+- Parse (`parseSidearmStandings`): the table's full column set (`hide-on-medium-down`). Columns are chosen by header and value, since each conference names them: the conference record is the first record-valued column that is not a percentage, games played, points, division, overall, home/away/neutral, last 10, streak or sets (seen: "Conf", "Conference", "Conf. W-L", "ACC", "Metro", "Big South", "BW", "SLC"); overall is "Overall"/"Ovr"/"All", else the next "W-L" (ASUN); the last "Streak"/"Strk"; Home and Away after overall. Names: the row's link text; clinched/eliminated marks stripped ("Cornell *", "Fairfield *#", "Manhattan E", "UMBC -xy"). Division groups (`<th scope="colgroup">`, Sun Belt) give the school's division tab first, then the whole conference by conference record.
+- The school's row (`conferenceRowMatcher` in the Worker): the scoreboard matcher, or any catalog name or alias exactly (abbreviations too: "UNI", "EKU"), or the name without its state ("Miami (OH)" → MAC "Miami") or a trailing "U" ("Seattle U" → WCC "Seattle"). Safe only within one conference's page.
+- `/live/status?school=&sport=` shows `standings_reads`: the page's HTTP answer, whether it holds a table, its title, row names and the school's row (and the start of the page when no row was read).
+
+**Coverage (preview, Nov 12, every college volleyball school's feed):** 221 of 301 schools in 25 conferences, every school there on its own row, no row claimed twice. Not covered:
+
+| Conference | Schools | Answer to the app |
+| --- | --- | --- |
+| ACC, Atlantic 10, Big 12, Conference USA, OVC | 57 | Imperva's "Too many redirects" (the block in `docs/BLOCKED_SCHOOLS.md`); not routed around |
+| SEC | 16 | Not SIDEARM; standings load by script (no reader) |
+| Southern Conference | 7 | `standings.aspx` answers HTTP 500 "Something went wrong" for `wvball`, `vball`, `wvb`, `volley` and with no path (also to WebFetch, Nov 12) |
+
+Conference rows with no catalog volleyball school are mostly schools that block the app (Butler, Georgetown, Villanova, App State, Georgia State, Hawaiʻi, Nevada, Utah State, Texas State) or schools whose `sponsored-sports.json` entry has no Volleyball (Yale, Harvard, Iona, Saint Peter's, Canisius, Bradley, Drake, UIC, Wyoming, Little Rock).
+
 ## Next
 
-- Volleyball and baseball (ESPN: one Division I table only, no conferences), soccer and softball (none): another source per sport, as hockey now uses College Hockey News.
+- Soccer (men's `msoc`, women's `wsoc`), then baseball and softball, from the same conference pages (`CONFERENCE_STANDINGS_SPORTS`), checking each conference's code; Warren Nolan as the fallback for baseball and softball.
+- The SEC's standings (find the data its page's script reads) and the SoCon (check again; a page that answers would be read with no code change).
 
 ## Tests
 
-`tests/college-standings.mjs` (in `npm test` and `test:release`), fixtures `tests/fixtures/college-standings/` (Nov 11, trimmed to the fields read): Big 12 and SWAC football, Big 12 men's and women's basketball; College Hockey News men's and women's pages (Nov 12, trimmed to the title and tables: conferences, Boston College's two tabs, Holy Cross's shared ranks, the hockey map's coverage); the map's coverage and uniqueness; K-State 15th of 16 in the Big 12; Alabama A&M 2nd in SWAC - East, 4th in the SWAC; Kansas's two tabs; the Worker's wiring (one read, scoreboard identity, no reads for high schools, pro teams or other sports; a refused read adds nothing).
+`tests/college-standings.mjs` (in `npm test` and `test:release`), fixtures `tests/fixtures/college-standings/` (Nov 11, trimmed to the fields read): Big 12 and SWAC football, Big 12 men's and women's basketball; College Hockey News men's and women's pages (Nov 12, trimmed to the title and tables: conferences, Boston College's two tabs, Holy Cross's shared ranks, the hockey map's coverage); SIDEARM volleyball pages of the ACC, Sun Belt, Big East, Metro and UAC (Nov 12) plus tables built from the headers the app read for the Big Ten, ASUN, Big South, Big West, Southland and America East; the map's coverage and uniqueness; K-State 15th of 16 in the Big 12; Alabama A&M 2nd in SWAC - East, 4th in the SWAC; Kansas's two tabs; the Worker's wiring (one read, scoreboard identity, no reads for high schools, pro teams or other sports; a refused read adds nothing).
