@@ -32,7 +32,7 @@ Earlier (November 9): **Middle school schedule fixes live** (PR #566, merge `902
 
 Earlier (November 8): **Push alerts live and confirmed on the user's phone** (test alert received; user: "It works"). Production `4.292.3-push-key-check`: `/api/push/config` `enabled: true` (the key check signs with the secret and verifies with `PUSH_PUBLIC_KEY`); K-State XC 18/20 and KU XC 26/21. PRs #562 (alerts, `fe908a1`) and #564 (key check, `4201c81`). The first secret held the key file's path (found by the check's "105 characters, 7 path characters"); the user replaced it. The private key is only in Cloudflare and with the user; a lost key means a new pair (`PUSH_PUBLIC_KEY` in `src/index.js` plus the secret) and every phone turning alerts on again.
 
-**Push alerts (user, Nov 8: "Let's do push alerts next"):** favorites' game start and final score, college and pro (ESPN boards), Cron `*/2`, only the boards subscribers need, D1 per host, `src/push-alerts.mjs` (RFC 8291/8292 with WebCrypto, checked against `http_ece`), `tests/push-alerts.mjs`. Detail in `docs/PWA.md`. **To do:** see a real start/final alert arrive for a favorite's game (the test alert works); middle and high school alerts (no frequent source yet).
+**Push alerts (user, Nov 8: "Let's do push alerts next"):** favorites' game start and final score, college and pro (ESPN boards), Cron `*/2`, only the boards subscribers need, D1 per host, `src/push-alerts.mjs` (RFC 8291/8292 with WebCrypto, checked against `http_ece`), `tests/push-alerts.mjs`. Detail in `docs/PWA.md`. **Confirmed (user, Nov 13: "I have received all notifications for my favorites"):** real start and final alerts arrive for favorites' games. **To do:** middle and high school alerts (no frequent source yet).
 
 **Done (user, Nov 8 evening: "When should we make this into an app for Apple and Droid?", then "Begin the pwa"):**
 - Advice given: a PWA now; App Store / Google Play builds (Capacitor) only once push alerts exist (Apple rejects plain web wrappers), Home's single request is built, and logo/trademark use is settled; beta about February, release before the March basketball postseason.
@@ -46,7 +46,7 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 - Baseball and softball college polls (not on ESPN).
 - Re-record the reference when the winter results start.
 - Bound's read limit: a full `check:reference-rules` reads about 1,050 feeds; three in two hours made Bound refuse production. Run it at most once an hour, or with `--school`/`--county`.
-- PWA next steps: push alerts for favorites (Web Push; iPhone only for the installed app, iOS 16.4+), then store builds (`docs/PWA.md`). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone"). Push alerts live (PRs #562, #564), test alert received on the user's phone.
+- PWA next steps: store builds (`docs/PWA.md`); push alerts for favorites are live and confirmed by the user on real games (Nov 13). Installed and checked on the user's own phone (user, Nov 8: "Works well on my phone"). Push alerts live (PRs #562, #564), test alert received on the user's phone.
 - Skipped schools (Marais des Cygnes Valley, Elyria Christian, Hamilton HS and JH, middle schools not on Bound) need readers of their own (`KS_COUNTIES_BATCH4_MODULE.md`, `KS_COUNTIES_BATCH5_MODULE.md`).
 - NBA Cup championship note (December) and the first NBA/NHL playoff and play-in games (April) to check against the reader; next pro ideas offered: NWSL (KC Current, March), WNBA (May), IndyCar, PGA Tour.
 
@@ -369,3 +369,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 12 — Scoreboard matcher reads UC Davis, Southeastern Louisiana and USC Upstate by name, so their ESPN live scores join (PR #588, `4.302.1-scoreboard-names`, verified in production).
 - Nov 12 — College hockey conference standings from College Hockey News, men's and women's (ESPN has no hockey conference records; PR #589, `4.303.0-hockey-standings`, verified in production).
 - Nov 12 — College volleyball conference standings from the conferences' own SIDEARM pages, 221 of 301 schools (PR #591, `4.304.1-volleyball-standings`, verified in production).
+- Nov 13 — Push alerts confirmed on real games: the user received every start and final alert for their favorites.

@@ -53,3 +53,5 @@ Rules: a run reads only the boards its subscribers' favorites play on (no subscr
 - Score-change alerts (every score, or close games late) if wanted; game-day reminders.
 - One "home" request for every favorite's saved feed (already open in the handoff), before an app makes Home load more often.
 - App store builds (Capacitor around the same site): Apple Developer Program $99/year, Google Play $25 once, and a Mac or cloud build service for iOS. Logo and trademark use to settle before store review.
+
+**Confirmed on real games (November 13, 2026).** User: "I have received all notifications for my favorites": the start and final-score alerts for favorites' games arrive on the user's phone (earlier only the test alert had been seen).
