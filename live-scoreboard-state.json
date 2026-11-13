@@ -6802,10 +6802,25 @@
    "state": "off"
   },
   "saint-marys|Basketball": {
-   "state": "failing",
-   "last_check": "2026-11-05T22:47:42.923Z",
-   "last_detail": "result reads \"W, 105-64\", ESPN final L, 42-112",
-   "game": null,
+   "state": "on",
+   "last_check": "2026-11-13T21:48:12.154Z",
+   "last_detail": "live 26-25 · 4:31 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "saint-marys|Basketball|Women's|2026-11-13|1",
+    "title": "Women's · Saint Mary's at Hawai'i",
+    "started_seen": "2026-11-13T21:40:03.938Z",
+    "live_passes": [
+     "2026-11-13T21:40:03.938Z",
+     "2026-11-13T21:41:04.786Z",
+     "2026-11-13T21:42:26.271Z",
+     "2026-11-13T21:43:47.277Z",
+     "2026-11-13T21:44:48.474Z",
+     "2026-11-13T21:46:09.529Z",
+     "2026-11-13T21:47:11.039Z",
+     "2026-11-13T21:48:12.154Z"
+    ],
+    "final_ok": false
+   },
    "failures": 12,
    "last_failure": {
     "at": "2026-11-05T22:47:42.923Z",
@@ -12701,6 +12716,6 @@
   }
  },
  "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-13T07:25:33.989Z",
+ "updated_at": "2026-11-13T21:48:12.159Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
