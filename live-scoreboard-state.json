@@ -10213,24 +10213,13 @@
    "state": "off"
   },
   "sacred-heart|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-13T00:52:22.731Z",
-   "last_detail": "live 43-31 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "sacred-heart|Basketball|Men's|2026-11-12|1",
-    "title": "Men's · Sacred Heart vs C Connecticut",
-    "started_seen": "2026-11-13T00:44:27.753Z",
-    "live_passes": [
-     "2026-11-13T00:44:27.753Z",
-     "2026-11-13T00:45:50.168Z",
-     "2026-11-13T00:46:51.160Z",
-     "2026-11-13T00:48:15.614Z",
-     "2026-11-13T00:50:18.200Z",
-     "2026-11-13T00:51:19.086Z",
-     "2026-11-13T00:52:22.731Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T07:25:27.447Z",
+   "last_detail": "final L, 75-79",
+   "game": null,
+   "verified_at": "2026-11-13T07:25:27.447Z",
+   "verified_game": "Men's · Sacred Heart vs C Connecticut",
+   "verified_detail": "final L, 75-79"
   },
   "sacred-heart|Field Hockey": {
    "state": "done",
@@ -10914,24 +10903,13 @@
    "state": "off"
   },
   "lindenwood|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-13T00:52:22.025Z",
-   "last_detail": "live 22-19 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "lindenwood|Volleyball||2026-11-12|1",
-    "title": "Lindenwood vs Tennessee St",
-    "started_seen": "2026-11-13T00:44:29.099Z",
-    "live_passes": [
-     "2026-11-13T00:44:29.099Z",
-     "2026-11-13T00:45:33.265Z",
-     "2026-11-13T00:47:14.473Z",
-     "2026-11-13T00:48:56.163Z",
-     "2026-11-13T00:50:17.918Z",
-     "2026-11-13T00:51:21.293Z",
-     "2026-11-13T00:52:22.025Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T07:25:27.066Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-11-13T07:25:27.066Z",
+   "verified_game": "Lindenwood vs Tennessee St",
+   "verified_detail": "final W, 3-0"
   },
   "morehead-state|Baseball": {
    "state": "off"
@@ -12074,24 +12052,13 @@
    "state": "off"
   },
   "southeastern-louisiana|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-13T00:52:23.349Z",
-   "last_detail": "live 5-26 · End of 1st · official_schedule+live_scoreboard",
-   "game": {
-    "key": "southeastern-louisiana|Basketball|Women's|2026-11-12|1",
-    "title": "Women's · Southeastern at TCU",
-    "started_seen": "2026-11-13T00:44:27.973Z",
-    "live_passes": [
-     "2026-11-13T00:44:27.973Z",
-     "2026-11-13T00:45:32.861Z",
-     "2026-11-13T00:46:53.654Z",
-     "2026-11-13T00:48:36.448Z",
-     "2026-11-13T00:50:17.410Z",
-     "2026-11-13T00:51:20.240Z",
-     "2026-11-13T00:52:23.349Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T07:25:28.580Z",
+   "last_detail": "final L, 47-106",
+   "game": null,
+   "verified_at": "2026-11-13T07:25:28.580Z",
+   "verified_game": "Women's · Southeastern at TCU",
+   "verified_detail": "final L, 47-106"
   },
   "southeastern-louisiana|Football": {
    "state": "off"
@@ -12103,24 +12070,13 @@
    "state": "off"
   },
   "southeastern-louisiana|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-13T00:52:42.999Z",
-   "last_detail": "live 17-14 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "southeastern-louisiana|Volleyball||2026-11-12|1",
-    "title": "Southeastern vs SF Austin",
-    "started_seen": "2026-11-13T00:44:28.161Z",
-    "live_passes": [
-     "2026-11-13T00:44:28.161Z",
-     "2026-11-13T00:45:32.472Z",
-     "2026-11-13T00:47:11.355Z",
-     "2026-11-13T00:48:36.812Z",
-     "2026-11-13T00:50:17.468Z",
-     "2026-11-13T00:51:20.574Z",
-     "2026-11-13T00:52:42.999Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T07:25:33.983Z",
+   "last_detail": "final W, 3-1",
+   "game": null,
+   "verified_at": "2026-11-13T07:25:33.983Z",
+   "verified_game": "Southeastern vs SF Austin",
+   "verified_detail": "final W, 3-1"
   },
   "stephen-f-austin|Baseball": {
    "state": "off"
@@ -12745,6 +12701,6 @@
   }
  },
  "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-13T00:52:43.005Z",
+ "updated_at": "2026-11-13T07:25:33.989Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

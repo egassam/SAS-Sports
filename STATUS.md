@@ -3,10 +3,6 @@
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| lindenwood | Volleyball | 🔴 on | live 22-19 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
-| sacred-heart | Basketball | 🔴 on | live 43-31 · Halftime · official_schedule+live_scoreboard |
-| southeastern-louisiana | Basketball | 🔴 on | live 5-26 · End of 1st · official_schedule+live_scoreboard |
-| southeastern-louisiana | Volleyball | 🔴 on | live 17-14 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1286,6 +1282,7 @@
 | lindenwood | Basketball | ✅ off (passed) | Women's · Lindenwood at Denver · 2026-11-05T08:37:51.358Z |
 | lindenwood | Hockey | ✅ off (passed) | Lindenwood vs Syracuse · 2026-11-07T08:58:08.241Z |
 | lindenwood | Soccer | ✅ off (passed) | Men's · Lindenwood vs E Illinois · 2026-10-24T07:12:57.969Z |
+| lindenwood | Volleyball | ✅ off (passed) | Lindenwood vs Tennessee St · 2026-11-13T07:25:27.066Z |
 | lipscomb | Basketball | ✅ off (passed) | Women's · Lipscomb at Vanderbilt · 2026-11-02T23:51:09.687Z |
 | lipscomb | Soccer | ✅ off (passed) | Men's · Lipscomb at Bellarmine · 2026-10-25T01:30:06.565Z |
 | lipscomb | Volleyball | ✅ off (passed) | Lipscomb vs FGCU · 2026-10-24T01:59:34.979Z |
@@ -1631,6 +1628,7 @@
 | sacramento-state | Football | ✅ off (passed) | Sacramento State at Ball State · 2026-10-24T23:24:10.177Z |
 | sacramento-state | Soccer | ✅ off (passed) | Women's · Sacramento State vs CSU Northridge · 2026-10-25T01:30:07.010Z |
 | sacramento-state | Volleyball | ✅ off (passed) | Sacramento State vs Utah Valley · 2026-10-23T07:27:26.427Z |
+| sacred-heart | Basketball | ✅ off (passed) | Men's · Sacred Heart vs C Connecticut · 2026-11-13T07:25:27.447Z |
 | sacred-heart | Field Hockey | ✅ off (passed) | Sacred Heart vs Mercyhurst · 2026-10-30T20:55:52.341Z |
 | sacred-heart | Hockey | ✅ off (passed) | Sacred Heart at Cornell · 2026-10-31T06:18:54.303Z |
 | sacred-heart | Soccer | ✅ off (passed) | Men's · Sacred Heart vs Siena · 2026-10-24T23:24:12.885Z |
@@ -1704,6 +1702,8 @@
 | southeast-missouri | Basketball | ✅ off (passed) | Men's · SEMO vs Webster · 2026-11-05T08:37:51.553Z |
 | southeast-missouri | Soccer | ✅ off (passed) | SEMO at UT Martin · 2026-10-25T01:30:07.172Z |
 | southeast-missouri | Volleyball | ✅ off (passed) | SEMO vs Tennessee St · 2026-10-30T02:50:58.500Z |
+| southeastern-louisiana | Basketball | ✅ off (passed) | Women's · Southeastern at TCU · 2026-11-13T07:25:28.580Z |
+| southeastern-louisiana | Volleyball | ✅ off (passed) | Southeastern vs SF Austin · 2026-11-13T07:25:33.983Z |
 | southern | Basketball | ✅ off (passed) | Women's · Southern at Oklahoma St · 2026-11-03T06:08:41.721Z |
 | southern | Soccer | ✅ off (passed) | Southern vs Alabama St · 2026-10-25T21:48:17.553Z |
 | southern | Volleyball | ✅ off (passed) | Southern at Bethune · 2026-10-25T19:08:41.908Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1105/1956; on 4; off 844; failing 3.
+Done 1109/1956; on 0; off 844; failing 3.
