@@ -4741,25 +4741,13 @@
    "state": "off"
   },
   "uc-davis|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-12T19:53:22.825Z",
-   "last_detail": "live 49-19 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "uc-davis|Basketball|Women's|2026-11-12|1",
-    "title": "Women's · UC Davis vs Fullerton",
-    "started_seen": "2026-11-12T19:45:10.823Z",
-    "live_passes": [
-     "2026-11-12T19:45:10.823Z",
-     "2026-11-12T19:46:33.662Z",
-     "2026-11-12T19:47:55.280Z",
-     "2026-11-12T19:49:16.980Z",
-     "2026-11-12T19:50:17.711Z",
-     "2026-11-12T19:51:20.944Z",
-     "2026-11-12T19:52:21.963Z",
-     "2026-11-12T19:53:22.825Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T00:44:26.398Z",
+   "last_detail": "final W, 86-52",
+   "game": null,
+   "verified_at": "2026-11-13T00:44:26.398Z",
+   "verified_game": "Women's · UC Davis vs Fullerton",
+   "verified_detail": "final W, 86-52"
   },
   "uc-davis|Field Hockey": {
    "state": "off"
@@ -5626,25 +5614,13 @@
    "state": "off"
   },
   "uc-san-diego|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-12T19:53:22.787Z",
-   "last_detail": "live 38-35 · Halftime · official_schedule+live_scoreboard",
-   "game": {
-    "key": "uc-san-diego|Basketball|Women's|2026-11-12|1",
-    "title": "Women's · UC San Diego vs Portland St",
-    "started_seen": "2026-11-12T19:45:11.749Z",
-    "live_passes": [
-     "2026-11-12T19:45:11.749Z",
-     "2026-11-12T19:46:13.001Z",
-     "2026-11-12T19:47:55.294Z",
-     "2026-11-12T19:48:56.355Z",
-     "2026-11-12T19:50:20.278Z",
-     "2026-11-12T19:51:20.973Z",
-     "2026-11-12T19:52:21.990Z",
-     "2026-11-12T19:53:22.787Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T00:44:27.311Z",
+   "last_detail": "final W, 78-64",
+   "game": null,
+   "verified_at": "2026-11-13T00:44:27.311Z",
+   "verified_game": "Women's · UC San Diego vs Portland St",
+   "verified_detail": "final W, 78-64"
   },
   "uc-san-diego|Soccer": {
    "state": "done",
@@ -10237,7 +10213,24 @@
    "state": "off"
   },
   "sacred-heart|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-13T00:52:22.731Z",
+   "last_detail": "live 43-31 · Halftime · official_schedule+live_scoreboard",
+   "game": {
+    "key": "sacred-heart|Basketball|Men's|2026-11-12|1",
+    "title": "Men's · Sacred Heart vs C Connecticut",
+    "started_seen": "2026-11-13T00:44:27.753Z",
+    "live_passes": [
+     "2026-11-13T00:44:27.753Z",
+     "2026-11-13T00:45:50.168Z",
+     "2026-11-13T00:46:51.160Z",
+     "2026-11-13T00:48:15.614Z",
+     "2026-11-13T00:50:18.200Z",
+     "2026-11-13T00:51:19.086Z",
+     "2026-11-13T00:52:22.731Z"
+    ],
+    "final_ok": false
+   }
   },
   "sacred-heart|Field Hockey": {
    "state": "done",
@@ -10678,25 +10671,13 @@
    "state": "off"
   },
   "mercyhurst|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-12T19:53:22.743Z",
-   "last_detail": "live 0-0 · 74' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "mercyhurst|Soccer|Men's|2026-11-12|1",
-    "title": "Men's · Mercyhurst at Long Island",
-    "started_seen": "2026-11-12T19:45:11.532Z",
-    "live_passes": [
-     "2026-11-12T19:45:11.532Z",
-     "2026-11-12T19:46:16.675Z",
-     "2026-11-12T19:47:36.537Z",
-     "2026-11-12T19:48:56.368Z",
-     "2026-11-12T19:50:17.651Z",
-     "2026-11-12T19:51:20.885Z",
-     "2026-11-12T19:52:21.892Z",
-     "2026-11-12T19:53:22.743Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T00:44:28.656Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-11-13T00:44:28.656Z",
+   "verified_game": "Men's · Mercyhurst at Long Island",
+   "verified_detail": "final L, 0-1"
   },
   "mercyhurst|Softball": {
    "state": "off"
@@ -10798,25 +10779,13 @@
    "state": "off"
   },
   "stonehill|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-12T19:53:23.233Z",
-   "last_detail": "live 0-0 · 69' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "stonehill|Soccer|Women's|2026-11-12|1",
-    "title": "Women's · Stonehill at FDU",
-    "started_seen": "2026-11-12T19:45:11.917Z",
-    "live_passes": [
-     "2026-11-12T19:45:11.917Z",
-     "2026-11-12T19:46:13.627Z",
-     "2026-11-12T19:47:37.546Z",
-     "2026-11-12T19:48:56.372Z",
-     "2026-11-12T19:50:17.667Z",
-     "2026-11-12T19:51:21.314Z",
-     "2026-11-12T19:52:21.887Z",
-     "2026-11-12T19:53:23.233Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-13T00:44:27.576Z",
+   "last_detail": "final L, 0-1",
+   "game": null,
+   "verified_at": "2026-11-13T00:44:27.576Z",
+   "verified_game": "Women's · Stonehill at FDU",
+   "verified_detail": "final L, 0-1"
   },
   "stonehill|Softball": {
    "state": "off"
@@ -10945,7 +10914,24 @@
    "state": "off"
   },
   "lindenwood|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-13T00:52:22.025Z",
+   "last_detail": "live 22-19 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "lindenwood|Volleyball||2026-11-12|1",
+    "title": "Lindenwood vs Tennessee St",
+    "started_seen": "2026-11-13T00:44:29.099Z",
+    "live_passes": [
+     "2026-11-13T00:44:29.099Z",
+     "2026-11-13T00:45:33.265Z",
+     "2026-11-13T00:47:14.473Z",
+     "2026-11-13T00:48:56.163Z",
+     "2026-11-13T00:50:17.918Z",
+     "2026-11-13T00:51:21.293Z",
+     "2026-11-13T00:52:22.025Z"
+    ],
+    "final_ok": false
+   }
   },
   "morehead-state|Baseball": {
    "state": "off"
@@ -12088,7 +12074,24 @@
    "state": "off"
   },
   "southeastern-louisiana|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-13T00:52:23.349Z",
+   "last_detail": "live 5-26 · End of 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "southeastern-louisiana|Basketball|Women's|2026-11-12|1",
+    "title": "Women's · Southeastern at TCU",
+    "started_seen": "2026-11-13T00:44:27.973Z",
+    "live_passes": [
+     "2026-11-13T00:44:27.973Z",
+     "2026-11-13T00:45:32.861Z",
+     "2026-11-13T00:46:53.654Z",
+     "2026-11-13T00:48:36.448Z",
+     "2026-11-13T00:50:17.410Z",
+     "2026-11-13T00:51:20.240Z",
+     "2026-11-13T00:52:23.349Z"
+    ],
+    "final_ok": false
+   }
   },
   "southeastern-louisiana|Football": {
    "state": "off"
@@ -12100,7 +12103,24 @@
    "state": "off"
   },
   "southeastern-louisiana|Volleyball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-13T00:52:42.999Z",
+   "last_detail": "live 17-14 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "southeastern-louisiana|Volleyball||2026-11-12|1",
+    "title": "Southeastern vs SF Austin",
+    "started_seen": "2026-11-13T00:44:28.161Z",
+    "live_passes": [
+     "2026-11-13T00:44:28.161Z",
+     "2026-11-13T00:45:32.472Z",
+     "2026-11-13T00:47:11.355Z",
+     "2026-11-13T00:48:36.812Z",
+     "2026-11-13T00:50:17.468Z",
+     "2026-11-13T00:51:20.574Z",
+     "2026-11-13T00:52:42.999Z"
+    ],
+    "final_ok": false
+   }
   },
   "stephen-f-austin|Baseball": {
    "state": "off"
@@ -12724,7 +12744,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.303.0-hockey-standings",
- "updated_at": "2026-11-12T19:53:23.238Z",
+ "version": "4.304.1-volleyball-standings",
+ "updated_at": "2026-11-13T00:52:43.005Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

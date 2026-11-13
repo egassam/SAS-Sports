@@ -3,10 +3,10 @@
 | maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | saint-marys | Basketball | ❌ failing | Men's · Saint Mary's at S Indiana: result reads "W, 105-64", ESPN final L, 42-112 |
-| mercyhurst | Soccer | 🔴 on | live 0-0 · 74' · official_schedule+live_scoreboard |
-| stonehill | Soccer | 🔴 on | live 0-0 · 69' · official_schedule+live_scoreboard |
-| uc-davis | Basketball | 🔴 on | live 49-19 · Halftime · official_schedule+live_scoreboard |
-| uc-san-diego | Basketball | 🔴 on | live 38-35 · Halftime · official_schedule+live_scoreboard |
+| lindenwood | Volleyball | 🔴 on | live 22-19 · 2nd Set · Sets 1-0 · official_schedule+live_scoreboard |
+| sacred-heart | Basketball | 🔴 on | live 43-31 · Halftime · official_schedule+live_scoreboard |
+| southeastern-louisiana | Basketball | 🔴 on | live 5-26 · End of 1st · official_schedule+live_scoreboard |
+| southeastern-louisiana | Volleyball | 🔴 on | live 17-14 · 1st Set · Sets 0-0 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -339,7 +339,6 @@
 | lindenwood | Football | ⚪ off (waiting) |  |
 | lindenwood | Lacrosse | ⚪ off (waiting) |  |
 | lindenwood | Softball | ⚪ off (waiting) |  |
-| lindenwood | Volleyball | ⚪ off (waiting) |  |
 | lipscomb | Baseball | ⚪ off (waiting) |  |
 | lipscomb | Softball | ⚪ off (waiting) |  |
 | liu | Baseball | ⚪ off (waiting) |  |
@@ -594,7 +593,6 @@
 | sacramento-state | Baseball | ⚪ off (waiting) |  |
 | sacramento-state | Softball | ⚪ off (waiting) |  |
 | sacred-heart | Baseball | ⚪ off (waiting) |  |
-| sacred-heart | Basketball | ⚪ off (waiting) |  |
 | sacred-heart | Football | ⚪ off (waiting) |  |
 | sacred-heart | Lacrosse | ⚪ off (waiting) |  |
 | sacred-heart | Softball | ⚪ off (waiting) |  |
@@ -651,11 +649,9 @@
 | southeast-missouri | Football | ⚪ off (waiting) |  |
 | southeast-missouri | Softball | ⚪ off (waiting) |  |
 | southeastern-louisiana | Baseball | ⚪ off (waiting) |  |
-| southeastern-louisiana | Basketball | ⚪ off (waiting) |  |
 | southeastern-louisiana | Football | ⚪ off (waiting) |  |
 | southeastern-louisiana | Soccer | ⚪ off (waiting) |  |
 | southeastern-louisiana | Softball | ⚪ off (waiting) |  |
-| southeastern-louisiana | Volleyball | ⚪ off (waiting) |  |
 | southern | Baseball | ⚪ off (waiting) |  |
 | southern | Football | ⚪ off (waiting) |  |
 | southern | Softball | ⚪ off (waiting) |  |
@@ -1358,6 +1354,7 @@
 | mercyhurst | Basketball | ✅ off (passed) | Women's · Mercyhurst at Seton Hall · 2026-11-04T07:24:48.186Z |
 | mercyhurst | Field Hockey | ✅ off (passed) | Mercyhurst at Sacred Heart · 2026-10-30T20:55:53.069Z |
 | mercyhurst | Hockey | ✅ off (passed) | Mercyhurst at UConn · 2026-10-24T01:59:33.558Z |
+| mercyhurst | Soccer | ✅ off (passed) | Men's · Mercyhurst at Long Island · 2026-11-13T00:44:28.656Z |
 | mercyhurst | Volleyball | ✅ off (passed) | Mercyhurst vs C Connecticut · 2026-10-24T01:59:33.769Z |
 | merrimack | Basketball | ✅ off (passed) | Women's · Merrimack at Florida St · 2026-11-03T06:08:37.967Z |
 | merrimack | Field Hockey | ✅ off (passed) | Merrimack vs Wagner · 2026-10-24T01:59:34.556Z |
@@ -1740,6 +1737,7 @@
 | stonehill | Basketball | ✅ off (passed) | Women's · Stonehill at Providence · 2026-11-04T07:24:47.225Z |
 | stonehill | Field Hockey | ✅ off (passed) | Stonehill vs Colgate · 2026-10-25T19:08:45.669Z |
 | stonehill | Hockey | ✅ off (passed) | Stonehill vs Princeton · 2026-10-31T06:19:01.894Z |
+| stonehill | Soccer | ✅ off (passed) | Women's · Stonehill at FDU · 2026-11-13T00:44:27.576Z |
 | stonehill | Volleyball | ✅ off (passed) | Stonehill at New Haven · 2026-10-24T01:59:36.457Z |
 | stony-brook | Basketball | ✅ off (passed) | Men's · Stony Brook at Northwestern · 2026-11-07T08:58:10.301Z |
 | stony-brook | Soccer | ✅ off (passed) | Men's · Stony Brook at Monmouth · 2026-10-24T21:15:41.229Z |
@@ -1804,12 +1802,14 @@
 | ualbany | Basketball | ✅ off (passed) | Men's · UAlbany vs RI College · 2026-11-03T06:08:39.657Z |
 | ualbany | Field Hockey | ✅ off (passed) | UAlbany at New Hampshire · 2026-10-23T20:40:16.087Z |
 | ualbany | Soccer | ✅ off (passed) | Men's · UAlbany vs Vermont · 2026-10-25T01:30:08.206Z |
+| uc-davis | Basketball | ✅ off (passed) | Women's · UC Davis vs Fullerton · 2026-11-13T00:44:26.398Z |
 | uc-irvine | Basketball | ✅ off (passed) | Women's · UC Irvine at N Arizona · 2026-11-11T08:18:44.625Z |
 | uc-irvine | Soccer | ✅ off (passed) | Men's · UC Irvine vs Santa Barbara · 2026-10-25T06:46:00.294Z |
 | uc-irvine | Volleyball | ✅ off (passed) | Women's · UC Irvine at UC San Diego · 2026-10-24T07:12:58.577Z |
 | uc-riverside | Basketball | ✅ off (passed) | Women's · UC Riverside at Seattle U · 2026-11-07T08:58:05.188Z |
 | uc-riverside | Soccer | ✅ off (passed) | Women's · UC Riverside vs Santa Barbara · 2026-10-31T23:49:37.966Z |
 | uc-riverside | Volleyball | ✅ off (passed) | UC Riverside vs CA Baptist · 2026-10-24T07:13:01.059Z |
+| uc-san-diego | Basketball | ✅ off (passed) | Women's · UC San Diego vs Portland St · 2026-11-13T00:44:27.311Z |
 | uc-san-diego | Soccer | ✅ off (passed) | Women's · UC San Diego at Fullerton · 2026-10-25T01:30:06.326Z |
 | uc-san-diego | Volleyball | ✅ off (passed) | Women's · UC San Diego vs UC Irvine · 2026-10-24T07:12:57.517Z |
 | uc-santa-barbara | Basketball | ✅ off (passed) | Women's · UC Santa Barbara at Pepperdine · 2026-11-06T10:40:22.243Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1101/1956; on 4; off 848; failing 3.
+Done 1105/1956; on 4; off 844; failing 3.
