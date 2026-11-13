@@ -5497,3 +5497,7 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 **Production.** `4.304.1-volleyball-standings`; `verify:prod` Volleyball troy, michigan, eastern-kentucky PASS, XC 18/20 and 26/21; feeds: Troy Sun Belt - West 3rd / Sun Belt 5th, Nebraska Big Ten 1st 14-0, Miami (OH) MAC 3rd, Seattle U WCC 9th, EKU UAC 1st, Wright State Horizon 1st 14-0.
 
+## November 13, 2026 — Push alerts confirmed on real games
+
+User: "I have received all notifications for my favorites". The handoff's open item "see a real start/final alert arrive for a favorite's game" is closed: the game-start and final-score alerts (PRs #562, #564) reach the user's phone for their favorites. Recorded in `docs/SAS_SPORTS_CURRENT_SESSION.md` and `docs/PWA.md`; no code change. Still open: middle and high school alerts (no frequent source).
+
