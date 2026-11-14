@@ -10387,30 +10387,19 @@
    "state": "off"
   },
   "maryland-eastern-shore|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-14T01:59:16.453Z",
-   "last_detail": "live 13-18 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "maryland-eastern-shore|Volleyball||2026-11-13|1",
-    "title": "UMES at Delaware St",
-    "started_seen": "2026-11-14T01:51:02.978Z",
-    "live_passes": [
-     "2026-11-14T01:51:02.978Z",
-     "2026-11-14T01:52:04.878Z",
-     "2026-11-14T01:53:26.395Z",
-     "2026-11-14T01:54:47.869Z",
-     "2026-11-14T01:56:12.720Z",
-     "2026-11-14T01:57:54.557Z",
-     "2026-11-14T01:59:16.453Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-14T08:49:27.912Z",
+   "last_detail": "final L, 2-3",
+   "game": null,
    "failures": 1,
    "last_failure": {
     "at": "2026-10-23T23:34:12.205Z",
     "game": "UMES at SC State",
     "detail": "the game is live and also still in upcoming (scoreboard not joined to the official schedule)"
-   }
+   },
+   "verified_at": "2026-11-14T08:49:27.912Z",
+   "verified_game": "UMES at Delaware St",
+   "verified_detail": "final L, 2-3"
   },
   "morgan-state|Basketball": {
    "state": "done",
@@ -12718,6 +12707,6 @@
   }
  },
  "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-14T01:59:16.457Z",
+ "updated_at": "2026-11-14T08:49:27.918Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

@@ -1,7 +1,6 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| maryland-eastern-shore | Volleyball | 🔴 on | live 13-18 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1337,6 +1336,7 @@
 | maryland | Soccer | ✅ off (passed) | Men's · Maryland vs Michigan St · 2026-10-10T07:23:32.146Z |
 | maryland | Volleyball | ✅ off (passed) | Maryland vs Northwestern · 2026-10-11T06:38:17.170Z |
 | maryland-eastern-shore | Basketball | ✅ off (passed) | Women's · UMES at Virginia · 2026-11-03T06:08:39.256Z |
+| maryland-eastern-shore | Volleyball | ✅ off (passed) | UMES at Delaware St · 2026-11-14T08:49:27.912Z |
 | mcneese | Basketball | ✅ off (passed) | Women's · McNeese vs TAMU-Kingsvlle · 2026-11-02T23:51:08.379Z |
 | mcneese | Soccer | ✅ off (passed) | McNeese at East Texas A&M · 2026-10-25T21:48:16.749Z |
 | mcneese | Volleyball | ✅ off (passed) | McNeese vs SE Louisiana · 2026-10-30T02:50:58.085Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1110/1956; on 1; off 844; failing 1.
+Done 1111/1956; on 0; off 844; failing 1.
