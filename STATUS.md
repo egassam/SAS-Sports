@@ -1,8 +1,7 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
-| maryland-eastern-shore | Volleyball | ❌ failing | UMES at SC State: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| saint-marys | Basketball | 🔴 on | live 26-25 · 4:31 - 2nd · official_schedule+live_scoreboard |
+| maryland-eastern-shore | Volleyball | 🔴 on | live 13-18 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1640,6 +1639,7 @@
 | saint-louis | Field Hockey | ✅ off (passed) | Saint Louis vs BALL STATE · 2026-10-30T21:03:04.611Z |
 | saint-louis | Soccer | ✅ off (passed) | Men's · Saint Louis vs Loyola Chicago · 2026-10-25T06:46:05.257Z |
 | saint-louis | Volleyball | ✅ off (passed) | Saint Louis vs George Mason · 2026-10-24T21:15:40.116Z |
+| saint-marys | Basketball | ✅ off (passed) | Women's · Saint Mary's at Hawai'i · 2026-11-14T01:50:56.189Z |
 | saint-marys | Soccer | ✅ off (passed) | Women's · Saint Mary's at Santa Clara · 2026-10-24T23:24:12.301Z |
 | saint-marys | Volleyball | ✅ off (passed) | Saint Mary's vs Denver · 2026-10-23T07:27:20.577Z |
 | sam-houston | Basketball | ✅ off (passed) | Men's · Sam Houston at Alabama · 2026-11-04T07:24:47.338Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1109/1956; on 1; off 844; failing 2.
+Done 1110/1956; on 1; off 844; failing 1.

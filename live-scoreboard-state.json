@@ -6802,31 +6802,19 @@
    "state": "off"
   },
   "saint-marys|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-13T21:48:12.154Z",
-   "last_detail": "live 26-25 · 4:31 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "saint-marys|Basketball|Women's|2026-11-13|1",
-    "title": "Women's · Saint Mary's at Hawai'i",
-    "started_seen": "2026-11-13T21:40:03.938Z",
-    "live_passes": [
-     "2026-11-13T21:40:03.938Z",
-     "2026-11-13T21:41:04.786Z",
-     "2026-11-13T21:42:26.271Z",
-     "2026-11-13T21:43:47.277Z",
-     "2026-11-13T21:44:48.474Z",
-     "2026-11-13T21:46:09.529Z",
-     "2026-11-13T21:47:11.039Z",
-     "2026-11-13T21:48:12.154Z"
-    ],
-    "final_ok": false
-   },
+   "state": "done",
+   "last_check": "2026-11-14T01:50:56.189Z",
+   "last_detail": "final L, 89-93",
+   "game": null,
    "failures": 12,
    "last_failure": {
     "at": "2026-11-05T22:47:42.923Z",
     "game": "Men's · Saint Mary's at S Indiana",
     "detail": "result reads \"W, 105-64\", ESPN final L, 42-112"
-   }
+   },
+   "verified_at": "2026-11-14T01:50:56.189Z",
+   "verified_game": "Women's · Saint Mary's at Hawai'i",
+   "verified_detail": "final L, 89-93"
   },
   "saint-marys|Soccer": {
    "state": "done",
@@ -10399,10 +10387,24 @@
    "state": "off"
   },
   "maryland-eastern-shore|Volleyball": {
-   "state": "failing",
-   "last_check": "2026-10-23T23:36:22.331Z",
-   "last_detail": "final L, 0-3 (live phase not observed 2×; waits for the next game)",
-   "game": null,
+   "state": "on",
+   "last_check": "2026-11-14T01:59:16.453Z",
+   "last_detail": "live 13-18 · 4th Set · Sets 2-1 · official_schedule+live_scoreboard",
+   "game": {
+    "key": "maryland-eastern-shore|Volleyball||2026-11-13|1",
+    "title": "UMES at Delaware St",
+    "started_seen": "2026-11-14T01:51:02.978Z",
+    "live_passes": [
+     "2026-11-14T01:51:02.978Z",
+     "2026-11-14T01:52:04.878Z",
+     "2026-11-14T01:53:26.395Z",
+     "2026-11-14T01:54:47.869Z",
+     "2026-11-14T01:56:12.720Z",
+     "2026-11-14T01:57:54.557Z",
+     "2026-11-14T01:59:16.453Z"
+    ],
+    "final_ok": false
+   },
    "failures": 1,
    "last_failure": {
     "at": "2026-10-23T23:34:12.205Z",
@@ -12716,6 +12718,6 @@
   }
  },
  "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-13T21:48:12.159Z",
+ "updated_at": "2026-11-14T01:59:16.457Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
