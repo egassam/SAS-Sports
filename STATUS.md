@@ -1,6 +1,8 @@
 | School | Sport | Tester | Detail |
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| george-mason | Basketball | 🔴 on | live 8-9 · 5:31 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -231,7 +233,6 @@
 | gardner-webb | Lacrosse | ⚪ off (waiting) |  |
 | gardner-webb | Softball | ⚪ off (waiting) |  |
 | george-mason | Baseball | ⚪ off (waiting) |  |
-| george-mason | Basketball | ⚪ off (waiting) | final L, 75-80 (live phase not observed 2×; waits for the next game) |
 | george-mason | Lacrosse | ⚪ off (waiting) |  |
 | george-mason | Softball | ⚪ off (waiting) |  |
 | george-washington | Baseball | ⚪ off (waiting) |  |
@@ -302,7 +303,6 @@
 | kansas | Softball | ⚪ off (waiting) |  |
 | kansas-city | Softball | ⚪ off (waiting) |  |
 | kent-state | Baseball | ⚪ off (waiting) |  |
-| kent-state | Basketball | ⚪ off (waiting) |  |
 | kent-state | Lacrosse | ⚪ off (waiting) |  |
 | kent-state | Softball | ⚪ off (waiting) |  |
 | kentucky | Baseball | ⚪ off (waiting) |  |
@@ -704,7 +704,6 @@
 | towson | Baseball | ⚪ off (waiting) |  |
 | towson | Football | ⚪ off (waiting) |  |
 | towson | Lacrosse | ⚪ off (waiting) |  |
-| towson | Soccer | ⚪ off (waiting) |  |
 | towson | Softball | ⚪ off (waiting) |  |
 | troy | Baseball | ⚪ off (waiting) |  |
 | troy | Softball | ⚪ off (waiting) |  |
@@ -1244,6 +1243,7 @@
 | kansas-city | Basketball | ✅ off (passed) | Men's · Kansas City vs S Illinois · 2026-11-07T08:58:06.422Z |
 | kansas-city | Soccer | ✅ off (passed) | Women's · Kansas City at Oral Roberts · 2026-10-25T06:46:07.343Z |
 | kansas-city | Volleyball | ✅ off (passed) | Kansas City at N Dakota St · 2026-10-30T02:55:10.691Z |
+| kent-state | Basketball | ✅ off (passed) | Women's · Kent State vs Duquesne · 2026-11-14T20:06:28.806Z |
 | kent-state | Field Hockey | ✅ off (passed) | Kent State at Miami (Oh) · 2026-10-23T20:40:16.743Z |
 | kent-state | Football | ✅ off (passed) | Kent State vs Akron · 2026-10-24T21:15:40.854Z |
 | kent-state | Soccer | ✅ off (passed) | Kent State at Buffalo · 2026-10-30T02:50:57.697Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1111/1956; on 0; off 844; failing 1.
+Done 1112/1956; on 1; off 841; failing 2.
