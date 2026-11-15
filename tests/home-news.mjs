@@ -74,3 +74,46 @@ assert.ok(index.includes("if(homeTeams().some(id=>!SCHOOL_SPORTS[id]))await ensu
 assert.ok(index.includes("ids.filter(id=>id&&(!knownSchools.has(id)||!SCHOOL_SPORTS[id]))"),'a card without its sports is asked for again');
 
 console.log('home-news: ok');
+
+// Pro teams' news (user, November 15, 2026: "I'm not seeing any news on the
+// KC Chiefs page and that seems unlikely. Can you check that and all the
+// other pro teams"): ESPN's team news, saved Nov 15 (trimmed to the fields
+// read), only articles about this team (one or two teams tagged) from the
+// last week, merged with the feed's recaps.
+{
+  const {espnTeamNewsUrl,espnTeamStories,mergeStories,storyKey}=await import('../src/news.mjs');
+  const {gunzipSync}=await import('node:zlib');
+  const schools=JSON.parse(readFileSync(new URL('../src/schools.json',import.meta.url),'utf8')),entry=id=>schools.find(s=>s.id===id);
+  const payload=id=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-news/${id}-2026-11-15.json.gz`,import.meta.url))).toString('utf8'));
+  const at=new Date('2026-11-15T17:30:00Z');
+  assert.equal(espnTeamNewsUrl(entry('kansas-city-chiefs')),'https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?team=12&limit=50');
+  assert.equal(espnTeamNewsUrl(entry('sporting-kansas-city')),'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/news?team=186&limit=50');
+  assert.equal(espnTeamNewsUrl(entry('formula-1')),null,'a racing series has no ESPN team');
+  assert.equal(espnTeamNewsUrl(entry('kstate')),null,'colleges keep their official stories only');
+  // The Chiefs, no game in the last week: six stories about them; league-wide pieces (32 teams) and videos are left out.
+  const chiefs=espnTeamStories(payload('kansas-city-chiefs'),entry('kansas-city-chiefs'),'Football',at);
+  assert.deepEqual(chiefs.map(s=>s.headline),["Sources: Chiefs had renowned baseball doctors weigh in on Patrick Mahomes' elbow","Chiefs' Kenneth Walker III (groin) to sit out vs. Falcons",'Chiefs RB Kenneth Walker III (groin) misses practice, status uncertain','NFL rushing leaders in spotlight as Kenneth Walker III and Chiefs face Bijan Robinson and Falcons','Chiefs sticking with struggling Harrison Butker as kicker this week',"How Josh Downs fits with Patrick Mahomes and the Chiefs' offense"]);
+  assert.equal(chiefs.length,6);
+  assert.ok(chiefs.every(s=>s.url.startsWith('https://')&&s.source==='espn.com'&&s.school_id==='kansas-city-chiefs'&&s.published&&s.image.startsWith('https://')));
+  assert.ok(!chiefs.some(s=>/Week 10 NFL highlights|Power Rankings/.test(s.headline)),'league-wide pieces are not team news');
+  assert.ok(chiefs.every(s=>Date.parse(s.published)>=at-7*864e5),'one week of news');
+  assert.equal(espnTeamStories(payload('boston-celtics'),entry('boston-celtics'),'Basketball',at).length,6);
+  assert.equal(espnTeamStories(payload('kansas-city-royals'),entry('kansas-city-royals'),'Baseball',at).length,0,'the offseason week holds only league-wide pieces');
+  assert.deepEqual(espnTeamStories(null,entry('kansas-city-chiefs'),'Football',at),[],'a refused read adds nothing');
+  // The Kraken's recap is the same story as the feed's recap link (http vs https): one card.
+  const kraken=espnTeamStories(payload('seattle-kraken'),entry('seattle-kraken'),'Hockey',at);
+  const feedRecap={id:'r',url:'https://www.espn.com/nhl/recap?gameId=401891809',headline:'Hurricanes 5-1 Kraken',event_date:'2026-11-14T10:00:00.000Z',published:''};
+  assert.equal(storyKey('http://www.espn.com/nhl/recap?gameId=401891809'),storyKey(feedRecap.url));
+  const merged=mergeStories([feedRecap],kraken);
+  assert.equal(merged.filter(s=>storyKey(s.url)===storyKey(feedRecap.url)).length,1);
+  assert.equal(merged.length,kraken.length);
+  // Wiring: the Worker reads the team news without waiting for a final, and
+  // keeps an answer only when it read the current feed; the page asks a pro
+  // team for news even in a week without a game.
+  const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
+  assert.ok(worker.includes('const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport):[];'));
+  assert.ok(worker.includes('const keep=Boolean(fresh);'),'an answer from an older copy is not kept');
+  assert.ok(worker.includes('if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;'));
+  assert.ok(index.includes("const hasStory=g=>Boolean(g?.team_news)||"),'the page asks a pro team for news without a recent final');
+}
+console.log('pro team news checks passed');

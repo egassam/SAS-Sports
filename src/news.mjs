@@ -64,3 +64,54 @@ export function storyFor({e,g},page){
     summary:page?.summary||'',image:page?.image||'',published:page?.published||'',from_page:Boolean(page?.headline)
   };
 }
+
+// ---- Pro teams' news (user, November 15, 2026: "I'm not seeing any news on
+// the KC Chiefs page and that seems unlikely. Can you check that and all the
+// other pro teams") ----
+// A pro team's news was only the ESPN recap of its finals in the last week,
+// so an NFL team (one game a week) had none most days, and an offseason team
+// none for months. ESPN publishes each team's news
+// (`/apis/site/v2/sports/<league>/news?team=<id>`): its own stories, recaps,
+// previews and headlines, plus league-wide pieces tagged to every team
+// ("Week 10 NFL highlights", 32 teams). Only articles about this team (it is
+// one of at most two teams tagged: its own story, or its game) from the last
+// week are kept. One read per team, kept 30 minutes.
+export const PRO_NEWS_PER_TEAM=6;
+const PRO_NEWS_TYPES=new Set(['Story','HeadlineNews','Recap','Preview']);
+// The team's ESPN news URL from its catalog entry ("football/nfl/teams/kc", id 12).
+export function espnTeamNewsUrl(school){
+  if(school?.level!=='pro')return null;
+  const espn=(school.providers||[]).find(p=>p?.provider==='ESPN'&&p.provider_school_id&&/\/teams\//.test(p.slug||''));
+  if(!espn)return null;
+  const league=String(espn.slug).split('/teams/')[0];
+  return`https://site.api.espn.com/apis/site/v2/sports/${league}/news?team=${encodeURIComponent(espn.provider_school_id)}&limit=50`;
+}
+const espnTeamId=school=>(school?.providers||[]).find(p=>p?.provider==='ESPN')?.provider_school_id;
+// The same story whether linked over http or https.
+export const storyKey=url=>{try{const u=new URL(url);return`${u.hostname.replace(/^www\./,'')}${u.pathname.replace(/\/+$/,'')}${u.search}`}catch{return String(url||'')}};
+export function espnTeamStories(payload,school,sport,now=new Date(),days=NEWS_DAYS,limit=PRO_NEWS_PER_TEAM){
+  const team=String(espnTeamId(school)||''),since=now.getTime()-days*864e5,out=[],seen=new Set();
+  if(!team)return out;
+  for(const a of Array.isArray(payload?.articles)?payload.articles:[]){
+    if(!PRO_NEWS_TYPES.has(a?.type))continue;
+    const teams=(a.categories||[]).filter(c=>c?.type==='team');
+    if(!teams.length||teams.length>2||!teams.some(c=>String(c.teamId??c.team?.id)===team))continue;
+    const published=Date.parse(a.published||a.lastModified||'');if(!Number.isFinite(published)||published<since||published>now.getTime()+864e5)continue;
+    let url=a.links?.web?.href||'';try{url=new URL(url).href.replace(/^http:\/\//i,'https://')}catch{continue}
+    if(!/^https:\/\//i.test(url)||seen.has(storyKey(url)))continue;seen.add(storyKey(url));
+    let image=a.images?.[0]?.url||'';if(!/^https:\/\//i.test(image))image='';
+    out.push({id:`espn-news-${a.id||out.length}`,url,source:'espn.com',school_id:school.id,school:school.name,sport,
+      event_title:'',event_date:'',result:'',headline:decode(a.headline||''),summary:decode(a.description||'').slice(0,240),image,
+      published:new Date(published).toISOString(),from_page:true,kind:a.type});
+    if(out.length>=limit)break;
+  }
+  return out;
+}
+// A pro team's stories: its game recaps (from the feed) and ESPN's team
+// news, one card per story, newest first.
+export function mergeStories(...lists){
+  const seen=new Set(),out=[];
+  for(const s of lists.flat()){if(!s?.url||seen.has(storyKey(s.url)))continue;seen.add(storyKey(s.url));out.push(s)}
+  const when=s=>Math.max(Date.parse(s.published)||0,Date.parse(s.event_date)||0);
+  return out.sort((a,b)=>when(b)-when(a));
+}

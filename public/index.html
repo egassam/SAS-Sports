@@ -765,7 +765,9 @@ function homeNews(){
 // story link in the last week (user, November 2: "Let's limit the news to
 // one week please").
 const NEWS_DAYS=7;
-const hasStory=g=>(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=NEWS_DAYS*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
+// A pro team's feed says it has ESPN team news (Nov 15: the Chiefs, one game
+// a week, showed none most days).
+const hasStory=g=>Boolean(g?.team_news)||(g?.results||[]).some(e=>e.status==='Final'&&e.recap_url&&Date.now()-(Date.parse(e.start_time)||0)<=NEWS_DAYS*864e5&&!/maxpreps|bound/i.test(e.recap_label||''));
 async function loadNews(generation,signal){
   const pairs=newsPairs(),key=([id,sp])=>`${id}|${sp}`,groupOf=new Map(currentGroups.map(g=>[`${g.school_id}|${g.sport}`,g]));
   const wanted=pairs.filter(p=>hasStory(groupOf.get(key(p)))&&!(newsByPair.get(key(p))&&Date.now()-newsByPair.get(key(p)).at<15*6e4));
