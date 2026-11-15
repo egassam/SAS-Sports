@@ -5501,3 +5501,17 @@ Last updated: November 7, 2026 (Central, about noon). **The Manhattan reference 
 
 User: "I have received all notifications for my favorites". The handoff's open item "see a real start/final alert arrive for a favorite's game" is closed: the game-start and final-score alerts (PRs #562, #564) reach the user's phone for their favorites. Recorded in `docs/SAS_SPORTS_CURRENT_SESSION.md` and `docs/PWA.md`; no code change. Still open: middle and high school alerts (no frequent source).
 
+## November 15, 2026 — Pro teams' news (PR #594)
+
+**Request.** User: "I'm not seeing any news on the KC Chiefs page and that seems unlikely. Can you check that and all the other pro teams".
+
+**Found.** News (`src/news.mjs`) is the stories linked from a team-sport's finals of the last week; the page asks `/live/news` only when the feed has such a final. Chiefs: last final Nov 8 (ESPN recap), Nov 15 game at noon CT: no news. Production `/live/news` on Nov 15 17:20 UTC: Chiefs, Celtics, Kraken, Royals, Sporting KC, F1 all 0 stories. The Celtics and Kraken had recaps in the week: `/live/news` had read the last good copy (up to a week old) and kept the answer 30 minutes; after their current feeds were built they answered 2 each (Golden Knights first answered `feed_read:false` before its feed was stored, then 2). ESPN team news (`/apis/site/v2/sports/<league>/news?team=<id>`) holds team stories, recaps, previews and headlines plus league-wide pieces tagged to every team.
+
+**Built.** `src/news.mjs`: `espnTeamNewsUrl` (catalog ESPN provider), `leagueTeamIds`, `espnTeamStories` (Story/HeadlineNews/Recap/Preview, last week, this team plus at most one other team of its league; first rule counted every tagged team and lost soccer stories that tag national teams: MLS 4/30 → 10/30), `mergeStories`, `storyKey`. `/live/news`: team news for pro entries, `keep=Boolean(fresh)`. `freshGroupedFeed`: `team_news:true` on pro feeds. Page: `hasStory` honours `team_news`; News heading for a pro team "The last week's stories about <team> from ESPN" and its own empty message. `tests/school-module-deps.mjs` passes `news.mjs`. `tests/houston-module.mjs` fixed (failed on main from Nov 15; Date fixed to Oct 4 around `fetchLive`, as the Colorado test does). Version `4.305.1-pro-team-news`.
+
+**Tests.** `tests/home-news.mjs` with ESPN payloads saved Nov 15 (Chiefs 6 stories with exact headlines, Celtics 6, Kraken 4, Royals 0, Inter Miami 2; league-wide excluded; recap http/https one card; wiring). Related suites passed locally; CI guardrails and certification-matrix green on `6375511`.
+
+**Gate.** Preview: every pro team's `/live/news` (NFL 32/32, 180 stories; NBA 30/30, 179; NHL 32/32, 183; MLB 16/30, 33; MLS 10/30, 11; racing 0/4); `verify:preview` 3 refreshes Chiefs, Celtics, Kraken, Royals, Inter Miami PASS, XC 18/20 and 26/21; Chromium 390 px Chiefs News tab, Royals empty message, K-State unchanged, no errors. Merged `08b04c5`.
+
+**Production.** `4.305.1-pro-team-news`; `verify:prod` kansas-city-chiefs PASS, XC 18/20 and 26/21; every pro team's `/live/news` the same as the preview (NBA 180); Chiefs News tab in Chromium shows the ESPN stories.
+
