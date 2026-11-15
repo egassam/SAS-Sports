@@ -81,11 +81,14 @@ console.log('home-news: ok');
 // read), only articles about this team (one or two teams tagged) from the
 // last week, merged with the feed's recaps.
 {
-  const {espnTeamNewsUrl,espnTeamStories,mergeStories,storyKey}=await import('../src/news.mjs');
+  const {espnTeamNewsUrl,espnTeamStories:read,mergeStories,storyKey,leagueTeamIds}=await import('../src/news.mjs');
   const {gunzipSync}=await import('node:zlib');
   const schools=JSON.parse(readFileSync(new URL('../src/schools.json',import.meta.url),'utf8')),entry=id=>schools.find(s=>s.id===id);
   const payload=id=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-news/${id}-2026-11-15.json.gz`,import.meta.url))).toString('utf8'));
   const at=new Date('2026-11-15T17:30:00Z');
+  // As the Worker reads them: the league's own teams decide what is about one team.
+  const espnTeamStories=(p,e,sp,now)=>read(p,e,sp,now,undefined,undefined,leagueTeamIds(schools,e));
+  assert.equal(leagueTeamIds(schools,entry('kansas-city-chiefs')).size,32);
   assert.equal(espnTeamNewsUrl(entry('kansas-city-chiefs')),'https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?team=12&limit=50');
   assert.equal(espnTeamNewsUrl(entry('sporting-kansas-city')),'https://site.api.espn.com/apis/site/v2/sports/soccer/usa.1/news?team=186&limit=50');
   assert.equal(espnTeamNewsUrl(entry('formula-1')),null,'a racing series has no ESPN team');
@@ -100,6 +103,12 @@ console.log('home-news: ok');
   assert.equal(espnTeamStories(payload('boston-celtics'),entry('boston-celtics'),'Basketball',at).length,6);
   assert.equal(espnTeamStories(payload('kansas-city-royals'),entry('kansas-city-royals'),'Baseball',at).length,0,'the offseason week holds only league-wide pieces');
   assert.deepEqual(espnTeamStories(null,entry('kansas-city-chiefs'),'Football',at),[],'a refused read adds nothing');
+  // Soccer tags national teams and foreign clubs: only MLS teams count, so
+  // the Messi friendly (Argentina, Inter Miami, River Plate) is Inter Miami
+  // news; the MVP shortlist naming several MLS clubs is not.
+  const miami=espnTeamStories(payload('inter-miami'),entry('inter-miami'),'Soccer',at);
+  assert.deepEqual(miami.map(s=>s.headline),['Messi to play in Argentina Jan. 19 for Inter Miami-River friendly',"Why Messi won't be 'doing a Wrexham' as owner of Cornellà"]);
+  assert.equal(read(payload('inter-miami'),entry('inter-miami'),'Soccer',at).length,0,'counting every tagged team (national teams, foreign clubs) loses both');
   // The Kraken's recap is the same story as the feed's recap link (http vs https): one card.
   const kraken=espnTeamStories(payload('seattle-kraken'),entry('seattle-kraken'),'Hockey',at);
   const feedRecap={id:'r',url:'https://www.espn.com/nhl/recap?gameId=401891809',headline:'Hurricanes 5-1 Kraken',event_date:'2026-11-14T10:00:00.000Z',published:''};
@@ -111,7 +120,7 @@ console.log('home-news: ok');
   // keeps an answer only when it read the current feed; the page asks a pro
   // team for news even in a week without a game.
   const worker=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
-  assert.ok(worker.includes('const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport):[];'));
+  assert.ok(worker.includes('const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport,new Date(),undefined,undefined,leagueTeamIds(schools,entry)):[];'));
   assert.ok(worker.includes('const keep=Boolean(fresh);'),'an answer from an older copy is not kept');
   assert.ok(worker.includes('if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;'));
   assert.ok(index.includes("const hasStory=g=>Boolean(g?.team_news)||"),'the page asks a pro team for news without a recent final');

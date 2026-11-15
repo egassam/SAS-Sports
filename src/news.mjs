@@ -74,8 +74,8 @@ export function storyFor({e,g},page){
 // (`/apis/site/v2/sports/<league>/news?team=<id>`): its own stories, recaps,
 // previews and headlines, plus league-wide pieces tagged to every team
 // ("Week 10 NFL highlights", 32 teams). Only articles about this team (it is
-// one of at most two teams tagged: its own story, or its game) from the last
-// week are kept. One read per team, kept 30 minutes.
+// one of at most two teams of its league tagged: its own story, or its game)
+// from the last week are kept. One read per team, kept 30 minutes.
 export const PRO_NEWS_PER_TEAM=6;
 const PRO_NEWS_TYPES=new Set(['Story','HeadlineNews','Recap','Preview']);
 // The team's ESPN news URL from its catalog entry ("football/nfl/teams/kc", id 12).
@@ -89,13 +89,23 @@ export function espnTeamNewsUrl(school){
 const espnTeamId=school=>(school?.providers||[]).find(p=>p?.provider==='ESPN')?.provider_school_id;
 // The same story whether linked over http or https.
 export const storyKey=url=>{try{const u=new URL(url);return`${u.hostname.replace(/^www\./,'')}${u.pathname.replace(/\/+$/,'')}${u.search}`}catch{return String(url||'')}};
-export function espnTeamStories(payload,school,sport,now=new Date(),days=NEWS_DAYS,limit=PRO_NEWS_PER_TEAM){
+// The ESPN ids of the league's teams in the catalog (the Chiefs' league:
+// the 32 NFL teams). Soccer articles also tag national teams and foreign
+// clubs ("Messi to play in Argentina for Inter Miami-River Plate friendly":
+// Argentina, Inter Miami, River Plate), so only the league's own teams count.
+export function leagueTeamIds(schools,school){
+  return new Set((Array.isArray(schools)?schools:[]).filter(s=>s?.level==='pro'&&s.league===school?.league).map(espnTeamId).filter(Boolean).map(String));
+}
+export function espnTeamStories(payload,school,sport,now=new Date(),days=NEWS_DAYS,limit=PRO_NEWS_PER_TEAM,league=null){
   const team=String(espnTeamId(school)||''),since=now.getTime()-days*864e5,out=[],seen=new Set();
   if(!team)return out;
   for(const a of Array.isArray(payload?.articles)?payload.articles:[]){
     if(!PRO_NEWS_TYPES.has(a?.type))continue;
-    const teams=(a.categories||[]).filter(c=>c?.type==='team');
-    if(!teams.length||teams.length>2||!teams.some(c=>String(c.teamId??c.team?.id)===team))continue;
+    const teams=(a.categories||[]).filter(c=>c?.type==='team').map(c=>String(c.teamId??c.team?.id??''));
+    if(!teams.includes(team))continue;
+    // About this team: it and at most one other team of its league (its game).
+    const inLeague=league?.size?teams.filter(id=>league.has(id)):teams;
+    if(new Set(inLeague).size>2)continue;
     const published=Date.parse(a.published||a.lastModified||'');if(!Number.isFinite(published)||published<since||published>now.getTime()+864e5)continue;
     let url=a.links?.web?.href||'';try{url=new URL(url).href.replace(/^http:\/\//i,'https://')}catch{continue}
     if(!/^https:\/\//i.test(url)||seen.has(storyKey(url)))continue;seen.add(storyKey(url));

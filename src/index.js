@@ -52,7 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
-import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories} from './news.mjs';
+import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories,leagueTeamIds} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
 import {meetProFolderFits,calendarEvents,maxprepsContests,maxprepsRankings,maxprepsScoreboard,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.305.0-pro-team-news';
+const VERSION='4.305.1-pro-team-news';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7319,7 +7319,7 @@ async function routeRequest(request,env,ctx){
       // A pro team's own news from ESPN (Nov 15: the Chiefs, one game a
       // week, had no news most days). It needs no feed copy.
       const entry=catalogSchool(school),newsUrl=espnTeamNewsUrl(entry);
-      const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport):[];
+      const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport,new Date(),undefined,undefined,leagueTeamIds(schools,entry)):[];
       const stories=mergeStories(recaps,team);
       const read=Boolean(copy)||Boolean(newsUrl);
       const response=json({school,sport,stories,feed_read:read});
