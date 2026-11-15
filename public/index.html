@@ -1147,8 +1147,10 @@ function syncVideoDock(groups){
 function renderNews(){
   const stories=homeNews(),where=homeView?'your teams':sportFilter.value?`${catalogEntry(school.value)?.short_name||school.value} ${sportFilter.value}`:(catalogEntry(school.value)?.short_name||school.value);
   sportNav.hidden=true;sportNav.innerHTML='';
-  if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':`No news for ${esc(where)} right now. News comes from the official stories linked to the last week's results.`}</div>`;return}
-  feed.innerHTML=`${homeSectionOpen('News','home-news')}${sectionHead('News',`Official stories from ${where}${/s$/i.test(where)?"'":"'s"} recent games`)}<div class="section">${newsCards(stories)}</div></section>`;
+  // A pro team's news is ESPN's stories about it (Nov 15), not only its games.
+  const pro=!homeView&&catalogEntry(school.value)?.level==='pro';
+  if(!stories.length){feed.innerHTML=`<div class="empty">${newsLoading||homeLoading?`Loading news for ${esc(where)}…`:homeView&&!homeTeams().length?'No favorite teams yet. Pick a team and tap ☆ Favorite to see its news here.':pro?`No news for ${esc(where)} this week. News comes from ESPN's stories about the team and its games of the last week.`:`No news for ${esc(where)} right now. News comes from the official stories linked to the last week's results.`}</div>`;return}
+  feed.innerHTML=`${homeSectionOpen('News','home-news')}${sectionHead('News',pro?`The last week's stories about ${where} from ESPN`:`Official stories from ${where}${/s$/i.test(where)?"'":"'s"} recent games`)}<div class="section">${newsCards(stories)}</div></section>`;
 }
 function render(groups){
   syncVideoDock(groups);
