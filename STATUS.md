@@ -2,7 +2,10 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| george-mason | Basketball | 🔴 on | live 8-9 · 5:31 - 1st · official_schedule+live_scoreboard |
+| fordham | Soccer | 🔴 on | live 1-2 · 80' · official_schedule+live_scoreboard |
+| fresno-state | Football | 🔴 on | live 35-31 · 8:33 - 4th · ball: opponent (2nd & 7 at FRES 31) · official_schedule+live_scoreboard |
+| oregon-state | Football | 🔴 on | live 13-15 · 12:22 - 2nd · official_schedule+live_scoreboard |
+| valparaiso | Volleyball | 🔴 on | live 0-1 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -221,11 +224,9 @@
 | florida-state | Softball | ⚪ off (waiting) |  |
 | fordham | Baseball | ⚪ off (waiting) |  |
 | fordham | Football | ⚪ off (waiting) |  |
-| fordham | Soccer | ⚪ off (waiting) |  |
 | fordham | Softball | ⚪ off (waiting) |  |
 | fordham | Water Polo | ⚪ off (waiting) |  |
 | fresno-state | Baseball | ⚪ off (waiting) |  |
-| fresno-state | Football | ⚪ off (waiting) |  |
 | fresno-state | Softball | ⚪ off (waiting) |  |
 | fresno-state | Water Polo | ⚪ off (waiting) |  |
 | gardner-webb | Baseball | ⚪ off (waiting) |  |
@@ -517,7 +518,6 @@
 | oregon | Lacrosse | ⚪ off (waiting) |  |
 | oregon | Softball | ⚪ off (waiting) |  |
 | oregon-state | Baseball | ⚪ off (waiting) |  |
-| oregon-state | Football | ⚪ off (waiting) |  |
 | oregon-state | Softball | ⚪ off (waiting) |  |
 | pacific | Baseball | ⚪ off (waiting) |  |
 | pacific | Softball | ⚪ off (waiting) |  |
@@ -792,7 +792,6 @@
 | valparaiso | Football | ⚪ off (waiting) |  |
 | valparaiso | Soccer | ⚪ off (waiting) |  |
 | valparaiso | Softball | ⚪ off (waiting) |  |
-| valparaiso | Volleyball | ⚪ off (waiting) |  |
 | vanderbilt | Baseball | ⚪ off (waiting) |  |
 | vanderbilt | Lacrosse | ⚪ off (waiting) |  |
 | virginia | Baseball | ⚪ off (waiting) |  |
@@ -1142,6 +1141,7 @@
 | gardner-webb | Basketball | ✅ off (passed) | Men's · Gardner-Webb at Texas · 2026-11-06T10:40:23.337Z |
 | gardner-webb | Soccer | ✅ off (passed) | Men's · Gardner-Webb at Winthrop · 2026-10-25T01:30:07.254Z |
 | gardner-webb | Volleyball | ✅ off (passed) | Gardner-Webb at Charleston So · 2026-10-24T01:59:36.141Z |
+| george-mason | Basketball | ✅ off (passed) | Women's · George Mason vs NC Central · 2026-11-14T23:53:37.959Z |
 | george-mason | Soccer | ✅ off (passed) | Women's · George Mason vs La Salle · 2026-10-25T19:14:34.848Z |
 | george-mason | Volleyball | ✅ off (passed) | George Mason vs Dayton · 2026-10-31T17:38:42.377Z |
 | george-washington | Basketball | ✅ off (passed) | Women's · George Washington vs Dist Columbia · 2026-11-03T06:08:41.404Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1112/1956; on 1; off 841; failing 2.
+Done 1113/1956; on 4; off 837; failing 2.
