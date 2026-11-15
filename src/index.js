@@ -52,7 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
-import {newsCandidates,storyFromHtml,storyFor} from './news.mjs';
+import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories,leagueTeamIds} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
 import {meetProFolderFits,calendarEvents,maxprepsContests,maxprepsRankings,maxprepsScoreboard,maxprepsBoxScore,maxprepsPeriodLabel,isNamedEvent,nameKey,namesCompatible,TENNIS_REPORTING,tennisReportingEvents,tennisHosts,tennisMatches,tennisTeamStanding,meetProResults,athleticLiveXcRaces,ATHLETIC_LIVE_DOCS,ATHLETIC_LIVE_FIREBASE,athleticLiveFirebaseRaces,milesplitLiveXcRaces,milesplitMeetFor,milesplitTeamCode,milesplitTeamNames,milesplitTeamScores,milesplitVarsityRaces,milesplitMiddleSchoolRaces,firestoreDocs,firestoreQuery,MILESPLIT_LIVE_ROOT,midwestTimingMeets,hytekXcResults,MIDWEST_TIMING_RESULTS,meetProDate,meetProLinks,meetProTrackIndex,meetProTrackEvent,meetProTrackTeam,meetProTrackGroup,meetProTrackRecent,PREP_GOLF,prepGolfTournaments,youtubeVideos,youtubeVideoFor,prepGolfResults,BOUND_API,boundFinals,boundGame,boundMeet,BOUND_ACTS,boundEventsUrl,boundSchedule,boundDedupe,boundTeamPlace,apptegyCalendar,googleCalendarUrl,googleCalendarPayload} from './high-school.mjs';
@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.304.1-volleyball-standings';
+const VERSION='4.305.1-pro-team-news';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7091,6 +7091,9 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   // Series and league standings (pro entries): one set for the sport.
   if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
+  // A pro team has news on ESPN in a week without a game: the page asks
+  // for it without waiting for a final with a recap.
+  if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
@@ -7301,18 +7304,31 @@ async function routeRequest(request,env,ctx){
       const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
       const cache=caches.default,key=new Request(new URL(`/__sas_cache/news?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}&v=${VERSION}`,url.origin).toString());
       const kept=await cache.match(key);if(kept)return kept;
-      const copy=await cache.match(feedCacheKey(url,school,sport))||await cache.match(lastGoodFeedKey(url,school,sport))||await globalCopy(env,url,school,sport);
+      // The feed built here now; else an older copy (the last good one, up to
+      // a week old, or the shared KV copy), whose answer is not kept: on Nov
+      // 15 a week-old copy answered "no stories" for the Celtics and Kraken
+      // while the current feed had two recaps each.
+      const fresh=await cache.match(feedCacheKey(url,school,sport));
+      const copy=fresh||await cache.match(lastGoodFeedKey(url,school,sport))||await globalCopy(env,url,school,sport);
       let groups=[];try{groups=copy?await copy.json():[]}catch{}
-      const stories=await Promise.all(newsCandidates(groups).map(async item=>{
+      const recaps=await Promise.all(newsCandidates(groups).map(async item=>{
         let page=null;
         try{const r=await sourceFetch(item.e.recap_url,{headers:HEADERS,redirect:'follow',signal:AbortSignal.timeout(6000)},{ttl:SOURCE_TTL.document});if(r.ok)page=storyFromHtml(await r.text(),item.e.recap_url)}catch{}
         return storyFor(item,page);
       }));
-      const response=json({school,sport,stories,feed_read:Boolean(copy)});
-      // Without a feed copy yet the answer is not kept: the next Home load
-      // (after the feed is built) reads it again.
-      response.headers.set('cache-control',copy?'public, max-age=900':'no-store');
-      if(copy)ctx.waitUntil(cache.put(key,new Response(response.clone().body,{headers:{...Object.fromEntries(response.headers),'cache-control':'public, max-age=1800'}})));
+      // A pro team's own news from ESPN (Nov 15: the Chiefs, one game a
+      // week, had no news most days). It needs no feed copy.
+      const entry=catalogSchool(school),newsUrl=espnTeamNewsUrl(entry);
+      const team=newsUrl?espnTeamStories(await readJson(newsUrl,SOURCE_TTL.article),entry,sport,new Date(),undefined,undefined,leagueTeamIds(schools,entry)):[];
+      const stories=mergeStories(recaps,team);
+      const read=Boolean(copy)||Boolean(newsUrl);
+      const response=json({school,sport,stories,feed_read:read});
+      // Without the current feed the answer is not kept (ESPN's team news is
+      // still read through the 30-minute source cache): the next load, after
+      // the feed is built, reads it again.
+      const keep=Boolean(fresh);
+      response.headers.set('cache-control',keep?'public, max-age=900':'no-store');
+      if(keep)ctx.waitUntil(cache.put(key,new Response(response.clone().body,{headers:{...Object.fromEntries(response.headers),'cache-control':'public, max-age=1800'}})));
       return response;
     }
     if(url.pathname==='/live/home'){
