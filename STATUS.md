@@ -2,6 +2,8 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| american | Basketball | 🔴 on | live 55-59 · 8:11 - 2nd · official_schedule+live_scoreboard |
+| south-dakota-state | Basketball | 🔴 on | live 20-19 · 8:37 - 2nd · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -19,11 +21,9 @@
 | alabama-state | Baseball | ⚪ off (waiting) |  |
 | alabama-state | Football | ⚪ off (waiting) |  |
 | alabama-state | Softball | ⚪ off (waiting) |  |
-| alabama-state | Volleyball | ⚪ off (waiting) |  |
 | alcorn-state | Baseball | ⚪ off (waiting) |  |
 | alcorn-state | Football | ⚪ off (waiting) |  |
 | alcorn-state | Softball | ⚪ off (waiting) |  |
-| american | Basketball | ⚪ off (waiting) |  |
 | american | Lacrosse | ⚪ off (waiting) |  |
 | arizona | Baseball | ⚪ off (waiting) |  |
 | arizona | Softball | ⚪ off (waiting) |  |
@@ -629,7 +629,6 @@
 | south-dakota | Football | ⚪ off (waiting) |  |
 | south-dakota | Softball | ⚪ off (waiting) |  |
 | south-dakota-state | Baseball | ⚪ off (waiting) |  |
-| south-dakota-state | Basketball | ⚪ off (waiting) | final W, 68-66 (live phase not observed 2×; waits for the next game) |
 | south-dakota-state | Football | ⚪ off (waiting) |  |
 | south-dakota-state | Softball | ⚪ off (waiting) |  |
 | south-florida | Baseball | ⚪ off (waiting) |  |
@@ -860,6 +859,7 @@
 | alabama-am | Volleyball | ✅ off (passed) | Alabama A&M vs Bethune · 2026-10-31T00:41:40.207Z |
 | alabama-state | Basketball | ✅ off (passed) | Women's · Alabama State at West Georgia · 2026-11-07T23:02:32.905Z |
 | alabama-state | Soccer | ✅ off (passed) | Alabama State at Southern · 2026-10-25T21:48:17.052Z |
+| alabama-state | Volleyball | ✅ off (passed) | Alabama State vs Southern · 2026-11-15T19:34:47.718Z |
 | alcorn-state | Basketball | ✅ off (passed) | Women's · Alcorn State at Ole Miss · 2026-11-02T23:51:11.379Z |
 | alcorn-state | Soccer | ✅ off (passed) | Alcorn State at Texas Southern · 2026-10-25T21:48:23.591Z |
 | alcorn-state | Volleyball | ✅ off (passed) | Alcorn State at Florida A&M · 2026-10-25T19:08:42.140Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1117/1956; on 0; off 837; failing 2.
+Done 1118/1956; on 2; off 834; failing 2.

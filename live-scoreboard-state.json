@@ -11197,7 +11197,24 @@
    "verified_detail": "final L, 0-3"
   },
   "american|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-15T19:37:31.627Z",
+   "last_detail": "live 55-59 · 8:11 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "american|Basketball|Men's|2026-11-15|1",
+    "title": "Men's · American vs Harvard",
+    "started_seen": "2026-11-15T19:29:19.538Z",
+    "live_passes": [
+     "2026-11-15T19:29:19.538Z",
+     "2026-11-15T19:30:23.297Z",
+     "2026-11-15T19:32:05.072Z",
+     "2026-11-15T19:33:26.543Z",
+     "2026-11-15T19:34:48.042Z",
+     "2026-11-15T19:35:48.844Z",
+     "2026-11-15T19:37:31.627Z"
+    ],
+    "final_ok": false
+   }
   },
   "american|Field Hockey": {
    "state": "done",
@@ -12346,10 +12363,24 @@
    "state": "off"
   },
   "south-dakota-state|Basketball": {
-   "state": "off",
-   "last_check": "2026-11-04T07:24:48.210Z",
-   "last_detail": "final W, 68-66 (live phase not observed 2×; waits for the next game)",
-   "game": null
+   "state": "on",
+   "last_check": "2026-11-15T19:37:31.198Z",
+   "last_detail": "live 20-19 · 8:37 - 2nd · official_schedule+live_scoreboard",
+   "game": {
+    "key": "south-dakota-state|Basketball|Women's|2026-11-15|1",
+    "title": "Women's · South Dakota State vs Oklahoma St",
+    "started_seen": "2026-11-15T19:29:21.916Z",
+    "live_passes": [
+     "2026-11-15T19:29:21.916Z",
+     "2026-11-15T19:30:43.165Z",
+     "2026-11-15T19:31:44.395Z",
+     "2026-11-15T19:33:06.496Z",
+     "2026-11-15T19:34:27.323Z",
+     "2026-11-15T19:36:09.617Z",
+     "2026-11-15T19:37:31.198Z"
+    ],
+    "final_ok": false
+   }
   },
   "south-dakota-state|Football": {
    "state": "off"
@@ -12490,7 +12521,13 @@
    "state": "off"
   },
   "alabama-state|Volleyball": {
-   "state": "off"
+   "state": "done",
+   "last_check": "2026-11-15T19:34:47.718Z",
+   "last_detail": "final W, 3-0",
+   "game": null,
+   "verified_at": "2026-11-15T19:34:47.718Z",
+   "verified_game": "Alabama State vs Southern",
+   "verified_detail": "final W, 3-0"
   },
   "alcorn-state|Baseball": {
    "state": "off"
@@ -12748,7 +12785,7 @@
    "verified_detail": "final L, 1-3"
   }
  },
- "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-15T05:52:18.249Z",
+ "version": "4.305.1-pro-team-news",
+ "updated_at": "2026-11-15T19:37:31.635Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
