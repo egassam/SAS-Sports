@@ -2932,7 +2932,24 @@
    "state": "off"
   },
   "stanford|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-15T23:38:23.433Z",
+   "last_detail": "live 59-59 · 4:44 - 4th · official_schedule+live_scoreboard",
+   "game": {
+    "key": "stanford|Basketball|Women's|2026-11-15|1",
+    "title": "Women's · Stanford vs Gonzaga",
+    "started_seen": "2026-11-15T23:30:29.608Z",
+    "live_passes": [
+     "2026-11-15T23:30:29.608Z",
+     "2026-11-15T23:31:31.843Z",
+     "2026-11-15T23:33:14.370Z",
+     "2026-11-15T23:34:36.787Z",
+     "2026-11-15T23:35:59.323Z",
+     "2026-11-15T23:37:00.638Z",
+     "2026-11-15T23:38:23.433Z"
+    ],
+    "final_ok": false
+   }
   },
   "stanford|Field Hockey": {
    "state": "done",
@@ -3760,7 +3777,24 @@
    "verified_detail": "final L, 1-3"
   },
   "montana-state|Basketball": {
-   "state": "off"
+   "state": "on",
+   "last_check": "2026-11-15T23:38:43.930Z",
+   "last_detail": "live 26-16 · 3:53 - 1st · official_schedule+live_scoreboard",
+   "game": {
+    "key": "montana-state|Basketball|Men's|2026-11-15|1",
+    "title": "Men's · Montana State vs Cal Poly",
+    "started_seen": "2026-11-15T23:30:30.621Z",
+    "live_passes": [
+     "2026-11-15T23:30:30.621Z",
+     "2026-11-15T23:31:52.118Z",
+     "2026-11-15T23:32:53.510Z",
+     "2026-11-15T23:34:37.541Z",
+     "2026-11-15T23:35:59.347Z",
+     "2026-11-15T23:37:22.000Z",
+     "2026-11-15T23:38:43.930Z"
+    ],
+    "final_ok": false
+   }
   },
   "montana-state|Football": {
    "state": "off"
@@ -11197,24 +11231,13 @@
    "verified_detail": "final L, 0-3"
   },
   "american|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-15T19:37:31.627Z",
-   "last_detail": "live 55-59 · 8:11 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "american|Basketball|Men's|2026-11-15|1",
-    "title": "Men's · American vs Harvard",
-    "started_seen": "2026-11-15T19:29:19.538Z",
-    "live_passes": [
-     "2026-11-15T19:29:19.538Z",
-     "2026-11-15T19:30:23.297Z",
-     "2026-11-15T19:32:05.072Z",
-     "2026-11-15T19:33:26.543Z",
-     "2026-11-15T19:34:48.042Z",
-     "2026-11-15T19:35:48.844Z",
-     "2026-11-15T19:37:31.627Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T23:30:29.023Z",
+   "last_detail": "final W, 70-64",
+   "game": null,
+   "verified_at": "2026-11-15T23:30:29.023Z",
+   "verified_game": "Men's · American vs Harvard",
+   "verified_detail": "final W, 70-64"
   },
   "american|Field Hockey": {
    "state": "done",
@@ -12363,24 +12386,13 @@
    "state": "off"
   },
   "south-dakota-state|Basketball": {
-   "state": "on",
-   "last_check": "2026-11-15T19:37:31.198Z",
-   "last_detail": "live 20-19 · 8:37 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "south-dakota-state|Basketball|Women's|2026-11-15|1",
-    "title": "Women's · South Dakota State vs Oklahoma St",
-    "started_seen": "2026-11-15T19:29:21.916Z",
-    "live_passes": [
-     "2026-11-15T19:29:21.916Z",
-     "2026-11-15T19:30:43.165Z",
-     "2026-11-15T19:31:44.395Z",
-     "2026-11-15T19:33:06.496Z",
-     "2026-11-15T19:34:27.323Z",
-     "2026-11-15T19:36:09.617Z",
-     "2026-11-15T19:37:31.198Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T23:30:30.723Z",
+   "last_detail": "final L, 80-90",
+   "game": null,
+   "verified_at": "2026-11-15T23:30:30.723Z",
+   "verified_game": "Women's · South Dakota State vs Oklahoma St",
+   "verified_detail": "final L, 80-90"
   },
   "south-dakota-state|Football": {
    "state": "off"
@@ -12786,6 +12798,6 @@
   }
  },
  "version": "4.305.1-pro-team-news",
- "updated_at": "2026-11-15T19:37:31.635Z",
+ "updated_at": "2026-11-15T23:38:43.936Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }

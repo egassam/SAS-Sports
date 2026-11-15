@@ -2,8 +2,8 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| american | Basketball | 🔴 on | live 55-59 · 8:11 - 2nd · official_schedule+live_scoreboard |
-| south-dakota-state | Basketball | 🔴 on | live 20-19 · 8:37 - 2nd · official_schedule+live_scoreboard |
+| montana-state | Basketball | 🔴 on | live 26-16 · 3:53 - 1st · official_schedule+live_scoreboard |
+| stanford | Basketball | 🔴 on | live 59-59 · 4:44 - 4th · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -423,7 +423,6 @@
 | montana | Basketball | ⚪ off (waiting) |  |
 | montana | Football | ⚪ off (waiting) |  |
 | montana | Softball | ⚪ off (waiting) |  |
-| montana-state | Basketball | ⚪ off (waiting) |  |
 | montana-state | Football | ⚪ off (waiting) |  |
 | morehead-state | Baseball | ⚪ off (waiting) |  |
 | morehead-state | Football | ⚪ off (waiting) |  |
@@ -660,7 +659,6 @@
 | st-thomas | Football | ⚪ off (waiting) |  |
 | st-thomas | Softball | ⚪ off (waiting) |  |
 | stanford | Baseball | ⚪ off (waiting) |  |
-| stanford | Basketball | ⚪ off (waiting) |  |
 | stanford | Lacrosse | ⚪ off (waiting) |  |
 | stanford | Softball | ⚪ off (waiting) |  |
 | stanford | Water Polo | ⚪ off (waiting) |  |
@@ -863,6 +861,7 @@
 | alcorn-state | Basketball | ✅ off (passed) | Women's · Alcorn State at Ole Miss · 2026-11-02T23:51:11.379Z |
 | alcorn-state | Soccer | ✅ off (passed) | Alcorn State at Texas Southern · 2026-10-25T21:48:23.591Z |
 | alcorn-state | Volleyball | ✅ off (passed) | Alcorn State at Florida A&M · 2026-10-25T19:08:42.140Z |
+| american | Basketball | ✅ off (passed) | Men's · American vs Harvard · 2026-11-15T23:30:29.023Z |
 | american | Field Hockey | ✅ off (passed) | American at Holy Cross · 2026-10-25T19:08:41.866Z |
 | american | Soccer | ✅ off (passed) | Men's · American vs Lafayette · 2026-10-24T21:15:44.665Z |
 | american | Volleyball | ✅ off (passed) | American vs Holy Cross · 2026-10-24T23:24:09.777Z |
@@ -1692,6 +1691,7 @@
 | south-dakota | Basketball | ✅ off (passed) | Men's · South Dakota vs Mount Marty · 2026-11-03T06:08:41.986Z |
 | south-dakota | Soccer | ✅ off (passed) | South Dakota vs N Dakota St · 2026-10-30T02:50:57.390Z |
 | south-dakota | Volleyball | ✅ off (passed) | South Dakota at Kansas City · 2026-11-06T10:40:21.887Z |
+| south-dakota-state | Basketball | ✅ off (passed) | Women's · South Dakota State vs Oklahoma St · 2026-11-15T23:30:30.723Z |
 | south-dakota-state | Soccer | ✅ off (passed) | South Dakota State vs N Dakota St · 2026-11-02T00:41:02.836Z |
 | south-dakota-state | Volleyball | ✅ off (passed) | South Dakota State vs Omaha · 2026-10-31T20:40:55.963Z |
 | south-florida | Basketball | ✅ off (passed) | Women's · USF vs Furman · 2026-11-03T06:08:40.864Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1118/1956; on 2; off 834; failing 2.
+Done 1120/1956; on 2; off 832; failing 2.
