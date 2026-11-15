@@ -2,10 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| fordham | Soccer | 🔴 on | live 1-2 · 80' · official_schedule+live_scoreboard |
-| fresno-state | Football | 🔴 on | live 35-31 · 8:33 - 4th · ball: opponent (2nd & 7 at FRES 31) · official_schedule+live_scoreboard |
-| oregon-state | Football | 🔴 on | live 13-15 · 12:22 - 2nd · official_schedule+live_scoreboard |
-| valparaiso | Volleyball | 🔴 on | live 0-1 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1134,8 +1130,10 @@
 | florida-state | Soccer | ✅ off (passed) | Florida State at Wake Forest · 2026-10-16T00:29:03.970Z |
 | florida-state | Volleyball | ✅ off (passed) | Florida State at Pitt · 2026-10-17T01:39:26.083Z |
 | fordham | Basketball | ✅ off (passed) | Women's · Fordham vs Niagara · 2026-11-03T06:08:39.458Z |
+| fordham | Soccer | ✅ off (passed) | Men's · Fordham at Saint Louis · 2026-11-15T05:52:18.230Z |
 | fordham | Volleyball | ✅ off (passed) | Fordham at G Washington · 2026-10-24T01:59:34.211Z |
 | fresno-state | Basketball | ✅ off (passed) | Women's · Fresno State vs New Mexico · 2026-11-12T11:55:40.345Z |
+| fresno-state | Football | ✅ off (passed) | Fresno State at Texas St · 2026-11-15T05:52:12.733Z |
 | fresno-state | Soccer | ✅ off (passed) | Fresno State vs Oregon State · 2026-10-23T07:27:20.171Z |
 | fresno-state | Volleyball | ✅ off (passed) | Fresno State vs Oregon St · 2026-10-23T07:27:22.225Z |
 | gardner-webb | Basketball | ✅ off (passed) | Men's · Gardner-Webb at Texas · 2026-11-06T10:40:23.337Z |
@@ -1539,6 +1537,7 @@
 | oregon | Soccer | ✅ off (passed) | Oregon vs Michigan · 2026-10-17T06:14:53.726Z |
 | oregon | Volleyball | ✅ off (passed) | Oregon at Michigan St · 2026-10-10T07:23:29.556Z |
 | oregon-state | Basketball | ✅ off (passed) | Women's · Oregon State vs NW Nazarene · 2026-11-12T11:55:40.327Z |
+| oregon-state | Football | ✅ off (passed) | Oregon State at Boise St · 2026-11-15T05:52:13.381Z |
 | oregon-state | Soccer | ✅ off (passed) | Women's · Oregon State at Fresno St · 2026-10-23T07:27:20.782Z |
 | oregon-state | Volleyball | ✅ off (passed) | Oregon State at Fresno St · 2026-10-23T07:27:20.287Z |
 | pacific | Basketball | ✅ off (passed) | Men's · Pacific at Bradley · 2026-11-08T09:25:07.123Z |
@@ -1882,6 +1881,7 @@
 | utsa | Soccer | ✅ off (passed) | UTSA at Memphis · 2026-10-23T02:09:33.950Z |
 | utsa | Volleyball | ✅ off (passed) | UTSA vs UAB · 2026-10-24T01:59:33.611Z |
 | valparaiso | Basketball | ✅ off (passed) | Women's · Valparaiso at Michigan St · 2026-11-04T07:24:47.128Z |
+| valparaiso | Volleyball | ✅ off (passed) | Valparaiso vs Northern Iowa · 2026-11-15T05:52:12.257Z |
 | vanderbilt | Basketball | ✅ off (passed) | Women's · Vanderbilt vs Lipscomb · 2026-11-02T23:51:12.058Z |
 | vanderbilt | Football | ✅ off (passed) | Vanderbilt vs Ole Miss · 2026-10-11T00:49:40.791Z |
 | vanderbilt | Soccer | ✅ off (passed) | Vanderbilt vs Florida · 2026-10-16T04:55:14.886Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1113/1956; on 4; off 837; failing 2.
+Done 1117/1956; on 0; off 837; failing 2.

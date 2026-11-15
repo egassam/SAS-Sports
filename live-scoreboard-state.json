@@ -3229,25 +3229,13 @@
    "verified_detail": "final W, 74-56"
   },
   "fresno-state|Football": {
-   "state": "on",
-   "last_check": "2026-11-15T00:01:44.809Z",
-   "last_detail": "live 35-31 · 8:33 - 4th · ball: opponent (2nd & 7 at FRES 31) · official_schedule+live_scoreboard",
-   "game": {
-    "key": "fresno-state|Football||2026-11-14|1",
-    "title": "Fresno State at Texas St",
-    "started_seen": "2026-11-14T23:53:36.614Z",
-    "live_passes": [
-     "2026-11-14T23:53:36.614Z",
-     "2026-11-14T23:54:39.644Z",
-     "2026-11-14T23:56:00.054Z",
-     "2026-11-14T23:57:00.698Z",
-     "2026-11-14T23:58:02.051Z",
-     "2026-11-14T23:59:23.277Z",
-     "2026-11-15T00:00:23.869Z",
-     "2026-11-15T00:01:44.809Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T05:52:12.733Z",
+   "last_detail": "final L, 35-37",
+   "game": null,
+   "verified_at": "2026-11-15T05:52:12.733Z",
+   "verified_game": "Fresno State at Texas St",
+   "verified_detail": "final L, 35-37"
   },
   "fresno-state|Soccer": {
    "state": "done",
@@ -3316,25 +3304,13 @@
    "verified_detail": "final W, 77-53"
   },
   "oregon-state|Football": {
-   "state": "on",
-   "last_check": "2026-11-15T00:02:04.983Z",
-   "last_detail": "live 13-15 · 12:22 - 2nd · official_schedule+live_scoreboard",
-   "game": {
-    "key": "oregon-state|Football||2026-11-14|1",
-    "title": "Oregon State at Boise St",
-    "started_seen": "2026-11-14T23:53:36.882Z",
-    "live_passes": [
-     "2026-11-14T23:53:36.882Z",
-     "2026-11-14T23:54:38.999Z",
-     "2026-11-14T23:56:00.056Z",
-     "2026-11-14T23:57:00.731Z",
-     "2026-11-14T23:58:02.024Z",
-     "2026-11-14T23:59:02.977Z",
-     "2026-11-15T00:00:23.896Z",
-     "2026-11-15T00:02:04.983Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T05:52:13.381Z",
+   "last_detail": "final L, 41-46",
+   "game": null,
+   "verified_at": "2026-11-15T05:52:13.381Z",
+   "verified_game": "Oregon State at Boise St",
+   "verified_detail": "final L, 41-46"
   },
   "oregon-state|Soccer": {
    "state": "done",
@@ -7120,25 +7096,13 @@
    "state": "off"
   },
   "fordham|Soccer": {
-   "state": "on",
-   "last_check": "2026-11-15T00:01:45.289Z",
-   "last_detail": "live 1-2 · 80' · official_schedule+live_scoreboard",
-   "game": {
-    "key": "fordham|Soccer|Men's|2026-11-14|1",
-    "title": "Men's · Fordham at Saint Louis",
-    "started_seen": "2026-11-14T23:53:38.288Z",
-    "live_passes": [
-     "2026-11-14T23:53:38.288Z",
-     "2026-11-14T23:54:39.001Z",
-     "2026-11-14T23:56:00.108Z",
-     "2026-11-14T23:57:01.332Z",
-     "2026-11-14T23:58:02.254Z",
-     "2026-11-14T23:59:03.738Z",
-     "2026-11-15T00:00:24.778Z",
-     "2026-11-15T00:01:45.289Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T05:52:18.230Z",
+   "last_detail": "final L, 1-2",
+   "game": null,
+   "verified_at": "2026-11-15T05:52:18.230Z",
+   "verified_game": "Men's · Fordham at Saint Louis",
+   "verified_detail": "final L, 1-2"
   },
   "fordham|Softball": {
    "state": "off"
@@ -7657,25 +7621,13 @@
    "state": "off"
   },
   "valparaiso|Volleyball": {
-   "state": "on",
-   "last_check": "2026-11-15T00:02:05.067Z",
-   "last_detail": "live 0-1 · 3rd Set · Sets 0-2 · official_schedule+live_scoreboard",
-   "game": {
-    "key": "valparaiso|Volleyball||2026-11-14|1",
-    "title": "Valparaiso vs Northern Iowa",
-    "started_seen": "2026-11-14T23:53:38.045Z",
-    "live_passes": [
-     "2026-11-14T23:53:38.045Z",
-     "2026-11-14T23:54:59.246Z",
-     "2026-11-14T23:56:00.092Z",
-     "2026-11-14T23:57:00.777Z",
-     "2026-11-14T23:58:02.221Z",
-     "2026-11-14T23:59:02.949Z",
-     "2026-11-15T00:00:44.242Z",
-     "2026-11-15T00:02:05.067Z"
-    ],
-    "final_ok": false
-   }
+   "state": "done",
+   "last_check": "2026-11-15T05:52:12.257Z",
+   "last_detail": "final L, 0-3",
+   "game": null,
+   "verified_at": "2026-11-15T05:52:12.257Z",
+   "verified_game": "Valparaiso vs Northern Iowa",
+   "verified_detail": "final L, 0-3"
   },
   "belmont|Baseball": {
    "state": "off"
@@ -12797,6 +12749,6 @@
   }
  },
  "version": "4.304.1-volleyball-standings",
- "updated_at": "2026-11-15T00:02:05.087Z",
+ "updated_at": "2026-11-15T05:52:18.249Z",
  "base": "https://sas-sports.lovetogivepain.workers.dev"
 }
