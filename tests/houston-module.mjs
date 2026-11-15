@@ -80,7 +80,13 @@ const live=(sport,payloadFile,events,at,expected)=>{
   // The whole pipeline (download, parse) keeps the page data: the shared
   // compaction once cut uhcougars.com pages to the cards.
   recapFixtures.set(page('football'),fixture('football-schedule.html.gz'));
-  const {events}=await worker.fetchLive('houston','Football');
+  // On the page's own day (results through Oct 3): from Nov 15 the unscored
+  // Nov 13 game reads as played and its start time is no longer shown, so the
+  // clock is fixed, as in the Colorado test.
+  const RealDate=Date,day=new RealDate('2026-10-04T17:00:00Z');
+  globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[day.getTime()]))}static now(){return day.getTime()}};
+  let events;
+  try{({events}=await worker.fetchLive('houston','Football'));}finally{globalThis.Date=RealDate;}
   recapFixtures.delete(page('football'));
   assert.deepEqual(events.filter(e=>e.opponent==='Colorado').map(e=>e.display_time),['Nov 13, 9:15 PM'],'the feed keeps the published start time');
   // Expanded view: highlights from the game's own recap.
