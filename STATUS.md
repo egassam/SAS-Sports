@@ -2,8 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| montana-state | Basketball | 🔴 on | live 26-16 · 3:53 - 1st · official_schedule+live_scoreboard |
-| stanford | Basketball | 🔴 on | live 59-59 · 4:44 - 4th · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1406,6 +1404,7 @@
 | monmouth | Soccer | ✅ off (passed) | Men's · Monmouth vs Stony Brook · 2026-10-24T21:15:41.017Z |
 | montana | Soccer | ✅ off (passed) | Montana at N Arizona · 2026-10-23T07:27:20.343Z |
 | montana | Volleyball | ✅ off (passed) | Montana at Idaho St · 2026-10-23T07:27:20.390Z |
+| montana-state | Basketball | ✅ off (passed) | Men's · Montana State vs Cal Poly · 2026-11-16T03:01:23.208Z |
 | montana-state | Volleyball | ✅ off (passed) | Montana State at Weber St · 2026-10-23T07:27:21.166Z |
 | morehead-state | Basketball | ✅ off (passed) | Women's · Morehead State at Kentucky · 2026-11-03T06:08:38.831Z |
 | morehead-state | Soccer | ✅ off (passed) | Morehead State at W Illinois · 2026-10-25T21:48:16.263Z |
@@ -1726,6 +1725,7 @@
 | st-thomas | Hockey | ✅ off (passed) | St. Thomas at Miami (OH) · 2026-10-31T06:18:55.503Z |
 | st-thomas | Soccer | ✅ off (passed) | St. Thomas at Kansas City · 2026-10-30T02:51:02.127Z |
 | st-thomas | Volleyball | ✅ off (passed) | St. Thomas vs Omaha · 2026-11-07T08:58:05.603Z |
+| stanford | Basketball | ✅ off (passed) | Women's · Stanford vs Gonzaga · 2026-11-16T03:01:21.586Z |
 | stanford | Field Hockey | ✅ off (passed) | Stanford at UC Davis · 2026-10-16T23:47:53.732Z |
 | stanford | Football | ✅ off (passed) | Stanford vs Elon · 2026-10-18T06:34:59.134Z |
 | stanford | Soccer | ✅ off (passed) | Men's · Stanford at SMU · 2026-10-17T01:39:25.934Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1120/1956; on 2; off 832; failing 2.
+Done 1122/1956; on 0; off 832; failing 2.
