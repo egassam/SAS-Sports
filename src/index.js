@@ -52,7 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
-import {alumniLeaguesFor,ALUMNI_ROSTER_MS,ALUMNI_LINES_MS,alumniRosterKey,alumniLinesKey,rosterPlayers,draftYears,espnDraftUrl,mlbDraftUrl,espnDraftPicks,mlbDraftPicks,summaryLines,finishedGames,scoreboardUrls,mergeLines,schoolPros,schoolDraft,hubPros,hubDraft,collegeEspnId,stateName} from './pro-alumni.mjs';
+import {alumniLeaguesFor,ALUMNI_ROSTER_MS,ALUMNI_LINES_MS,alumniRosterKey,alumniLinesKey,rosterPlayers,draftYears,espnDraftUrl,mlbDraftUrl,espnDraftPicks,mlbDraftPicks,summaryLines,finishedGames,scoreboardUrls,mergeLines,schoolPros,schoolDraft,hubPros,hubDraft,teamRoster,ALUMNI_LEAGUE_BY_NAME,collegeEspnId,stateName} from './pro-alumni.mjs';
 import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories,leagueTeamIds} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
@@ -344,7 +344,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.308.5-pros-alumni';
+const VERSION='4.309.1-pro-rosters';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5051,9 +5051,15 @@ function alumniSchoolMatches(sch,school){
   if(sch.state&&school.state&&stateName(sch.state)!==school.state)return false;
   return scoreboardTeamMatchesSchool(sch,school);
 }
+// Each college school the app has, by ESPN's college id (a pro roster names
+// a player's college by that id).
+let collegeSchoolsCache=null;
+function collegeSchoolsByEspnId(){if(!collegeSchoolsCache){collegeSchoolsCache=new Map();for(const s of schools){if(s.level)continue;const id=collegeEspnId(s.id);if(id&&!collegeSchoolsCache.has(id))collegeSchoolsCache.set(id,{id:s.id,short_name:s.short_name||s.name})}}return collegeSchoolsCache}
 async function schoolProsAnswer(env,ctx,schoolId,sport){
   const entry=catalogSchool(schoolId),hub=proTeam(schoolId)?.kind==='hub'?proTeam(schoolId):null,collegeId=hub?null:collegeEspnId(schoolId);
-  const leagues=entry&&(hub||!entry.level&&collegeId)?alumniLeaguesFor(sport).filter(l=>!hub||l.id!=='nhl'):[];
+  // A pro team (NFL, NBA, WNBA, MLB, NHL): its own roster.
+  const ownLeague=!hub&&entry?.level==='pro'&&proTeam(schoolId)?.kind==='espn-team'?ALUMNI_LEAGUE_BY_NAME.get(entry.league)||null:null;
+  const leagues=ownLeague&&ownLeague.sport===sport?[ownLeague]:entry&&(hub||!entry.level&&collegeId)?alumniLeaguesFor(sport).filter(l=>!hub||l.id!=='nhl'):[];
   const hubColleges=hub?hub.colleges.map(id=>catalogSchool(id)).filter(Boolean).map(c=>({...c,espn_id:collegeEspnId(c.id)||hub.collegeEspnIds?.[c.id]||null})):[];
   const out=await Promise.all(leagues.map(async league=>{
     const now=new Date();
@@ -5062,9 +5068,9 @@ async function schoolProsAnswer(env,ctx,schoolId,sport){
       alumniDoc(env,ctx,alumniLinesKey(league.id),ALUMNI_LINES_MS,prev=>buildAlumniLines(league,prev,new Date())),
     ]);
     const teamsById=new Map(proLeagueTeams(league).map(t=>[t.id,t]));
-    const pros=hub?hubPros(index,lines,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),birthState:hub.birthState,collegeNames:new Map(hubColleges.map(c=>[String(c.espn_id),c.short_name]))},{teamsById}):schoolPros(index,lines,collegeId,{teamsById});
-    const draft=hub?hubDraft(index,hubColleges,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),state:hub.state,matches:alumniSchoolMatches}):schoolDraft(index,entry,collegeId,alumniSchoolMatches);
-    return{league:league.league,...(league.gender?{gender:league.gender}:{}),read:Boolean(index),pros,draft,roster_built:index?.built||null,lines_built:lines?.built||null,now:now.toISOString()};
+    const pros=ownLeague?teamRoster(index,lines,schoolId,{collegeSchools:collegeSchoolsByEspnId()}):hub?hubPros(index,lines,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),birthState:hub.birthState,collegeNames:new Map(hubColleges.map(c=>[String(c.espn_id),c.short_name]))},{teamsById}):schoolPros(index,lines,collegeId,{teamsById});
+    const draft=ownLeague?null:hub?hubDraft(index,hubColleges,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),state:hub.state,matches:alumniSchoolMatches}):schoolDraft(index,entry,collegeId,alumniSchoolMatches);
+    return{league:league.league,...(league.gender?{gender:league.gender}:{}),...(ownLeague?{team_roster:true}:{}),read:Boolean(index),pros,draft,roster_built:index?.built||null,lines_built:lines?.built||null,now:now.toISOString()};
   }));
   return{school:schoolId,sport,college_id:collegeId,leagues:out,read:out.length>0&&out.every(l=>l.read)};
 }
@@ -7259,7 +7265,8 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   // its players.
   {const entry=catalogSchool(school),hub=proTeam(school)?.kind==='hub';
    if(hub&&!groups.length&&alumniLeaguesFor(sport).length)groups.push({school_id:school,school:entry?.name||school,sport,in_season:true,season_label:'Players from Kansas',records:[],live:[],results:[],upcoming:[],other:[],latest_activity_at:null,next_activity_at:null});
-   if(entry&&(hub||!entry.level&&collegeEspnId(entry.id))&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
+   const ownLeague=entry?.level==='pro'&&proTeam(school)?.kind==='espn-team'?ALUMNI_LEAGUE_BY_NAME.get(entry.league):null;
+   if(entry&&(hub||ownLeague?.sport===sport||!entry.level&&collegeEspnId(entry.id))&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');

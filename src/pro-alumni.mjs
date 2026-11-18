@@ -163,7 +163,9 @@ export function scoreboardUrls(league,{now,first=false,board=null}={}){
     const week=Number(board.week?.number),type=Number(board.season?.type);
     return week>1?[`${base}?seasontype=${type}&week=${week-1}`]:[];
   }
-  const days=first?4:2,out=[];
+  // The last four days every build: a first build's games past its 20
+  // summaries are read by the next builds (each final once).
+  const days=4,out=[];
   for(let i=0;i<days;i++){const d=new Date(now.getTime()-i*864e5-5*3600e3).toISOString().slice(0,10).replaceAll('-','');out.push(`${base}?dates=${d}&limit=100`)}
   return out;
 }
@@ -239,4 +241,19 @@ export function hubDraft(index,colleges,{collegeIds=[],state=null,matches}={}){
     return school?{overall:p.o,round:p.r,pick:p.p,name:p.n,position:p.pos,team_id:p.t,team:p.tn,school}:null;
   }).filter(Boolean);
   return picks.length?{year:draft.year,picks}:null;
+}
+
+// A pro team's own roster (user, November 18: "I'm not seeing the pro roster
+// on the pro pages"): every player on its ESPN roster with position, number,
+// college (the app's college page when the app has the school) and the line
+// from the team's latest game.
+export const ALUMNI_LEAGUE_BY_NAME=new Map(ALUMNI_LEAGUES.map(l=>[l.league,l]));
+export function teamRoster(index,lines,teamId,{collegeSchools=new Map()}={}){
+  if(!index||!teamId)return[];
+  const seen=new Set();
+  return(index.players||[]).filter(p=>p.t===teamId&&!seen.has(p.i)&&seen.add(p.i)).map(p=>{
+    const college=collegeSchools.get(p.c)||null,line=lines?.lines?.[p.i]||null;
+    return{id:p.i,name:p.n,position:p.p,jersey:p.j,years:p.x,college:college?.short_name||p.cn||'',...(college?{college_id:college.id}:{}),
+      ...(line?{last_game:{date:line.d,opponent:line.o,result:line.r,line:line.s}}:{})};
+  }).sort((a,b)=>(b.last_game?1:0)-(a.last_game?1:0)||a.name.localeCompare(b.name));
 }

@@ -72,7 +72,7 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
   assert.deepEqual(A.finishedGames([fix('alumni-nfl-week10')]).length,14,'week 10: 14 finals');
   const week11={week:{number:11},season:{type:2}};
   assert.deepEqual(A.scoreboardUrls(NFL,{now:new Date(),board:week11}),['https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=10']);
-  assert.deepEqual(A.scoreboardUrls(NBA,{now:new Date('2026-11-18T03:00:00Z')}).map(u=>u.split('dates=')[1]),['20261117&limit=100','20261116&limit=100'],'Eastern days');
+  assert.deepEqual(A.scoreboardUrls(NBA,{now:new Date('2026-11-18T03:00:00Z')}).map(u=>u.split('dates=')[1]),['20261117&limit=100','20261116&limit=100','20261115&limit=100','20261114&limit=100'],'Eastern days, the last four');
   assert.equal(A.scoreboardUrls(NBA,{now:new Date(),first:true}).length,4);
 }
 
@@ -149,6 +149,20 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
   assert.equal(worker.alumniSchoolMatches({location:'Miami',displayName:'Miami',shortDisplayName:'Miami',state:'OH'},schools.find(s=>s.id==='miami')),false,'Miami of Ohio is not Miami (FL)');
   assert.equal(worker.alumniSchoolMatches({location:'Miami',displayName:'Miami',shortDisplayName:'Miami',state:'FL'},schools.find(s=>s.id==='miami')),true);
 
+  // A pro team's page: its own roster, each player's college linked to the
+  // app's college page (user, November 18: "I'm not seeing the pro roster on
+  // the pro pages").
+  {
+    const chiefs=(await ask('kansas-city-chiefs','Football')).body;
+    assert.equal(chiefs.read,true);
+    const [nfl]=chiefs.leagues;
+    assert.equal(nfl.team_roster,true);assert.equal(nfl.draft,null);
+    const kelce=nfl.pros.find(p=>p.name==='Travis Kelce');
+    assert.deepEqual([kelce.college,kelce.college_id,kelce.position],['Cincinnati','cincinnati','TE']);
+    assert.equal(nfl.pros.find(p=>p.name==='Felix Anudike-Uzomah').college_id,'kstate');
+    assert.ok(nfl.pros.every(p=>!p.team_id),'the team itself is not repeated');
+    assert.equal((await ask('kansas-city-chiefs','Basketball')).status,422,'a sport the team does not play');
+  }
   // A sport with no pro league, a high school and a pro team: no list.
   assert.deepEqual((await ask('kstate','Volleyball')).body.leagues,[]);
   assert.deepEqual((await ask('manhattan-ks','Football')).body.leagues,[]);
@@ -163,6 +177,8 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
   assert.match(page,/loadPros\(generation,feedController\.signal\)/);
   const worker=read('../src/index.js');
   assert.match(worker,/alumniLeaguesFor\(sport\)\.length\)for\(const group of groups\)group\.pros=true/);
+  assert.match(worker,/ownLeague\?\.sport===sport/,'a pro team page asks for its roster');
+  assert.match(page,/l\.team_roster\?`\$\{l\.pros\.length\} players`/);
 }
 console.log('pro alumni module: rosters, lines, drafts, /live/pros and the page OK');
 
