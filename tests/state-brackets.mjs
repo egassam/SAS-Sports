@@ -75,6 +75,17 @@ for(const s of schools.filter(s=>s.level==='high-school'&&(sponsoredSports[s.id]
 assert.equal(Object.keys(found).length,89);
 assert.equal(found['manhattan-ks'],'6A');assert.equal(found['wamego-ks'],'4A');assert.equal(found['onaga-ks'],'1A');
 
+// A bye is a game against "KSHSAA" (6-Player): not a game. A forfeit stays
+// in the bracket ("Forfeit", no score) but is not put on the schedule.
+const six=parseKshsaaBracket(json('bracket-6442-2026-11-18.json.gz'),{own:bracketMatcher(school('tescott-ks')),sport:'Football'});
+assert.ok(six.rounds.every(r=>r.games.every(g=>g.teams.every(t=>!t||t.name!=='KSHSAA'))));
+assert.deepEqual(ownBracketGames(six).map(g=>`${g.round} ${g.opponent}`),['Regional Pawnee Heights','Sectional Centre','Sub-State Otis-Bison']);
+const one=parseKshsaaBracket(json('bracket-6441-2026-11-18.json.gz'),{own:bracketMatcher(school('sterling-ks')),sport:'Football'});
+const forfeit=one.rounds[0].games.find(g=>g.teams.some(t=>t?.own));
+assert.equal(forfeit.forfeit,true);assert.equal(forfeit.extra,'Forfeit');assert.equal(forfeit.site,'Sterling');
+assert.deepEqual(forfeit.teams.map(t=>`${t.name} ${t.score}${t.winner?' W':''}`),['Sterling null W','Syracuse null']);
+assert.deepEqual(ownBracketGames(one).map(g=>g.round),['Regional','Sectional','Sub-State']);
+
 // Boys' soccer, 4-1A state: a shootout and the third-place game.
 const soccer=parseKshsaaBracket(json('bracket-6455-2026-11-18.json.gz'),{own:bracketMatcher({name:'Rose Hill High School'}),sport:'Soccer'});
 assert.deepEqual(soccer.rounds.map(r=>r.name),['State Semifinals','State Championship']);

@@ -671,27 +671,6 @@ feed.addEventListener('click',ev=>{
   const link=ev.target.closest('[data-pro-team]');
   if(link&&!ev.metaKey&&!ev.ctrlKey){ev.preventDefault();ev.stopPropagation();openTeam(link.dataset.proTeam)}
 });
-// Standings (user, November 11, 2026: "Something we should add to auto racing
-// and probably other sports is the overall team/driver standings"): the feed's
-// tables (drivers, teams, a class each in IMSA), the top 5 with Show all, a tab
-// per table. The chosen tab and Show all stay across the 15 s refresh.
-const STANDINGS_SHOWN=5,standingsState=new Map();
-function standingsBlock(g){
-  const tables=(Array.isArray(g.standings)?g.standings:[]).filter(x=>x?.rows?.length);if(!tables.length)return'';
-  const key=`${g.school_id||g.school}|${g.sport}`,st=standingsState.get(key)||{tab:0,all:false},tab=Math.min(st.tab,tables.length-1),t=tables[tab],lead=t.rows[0]?.points;
-  const cols=Array.isArray(t.columns)?t.columns:null,who=cols||/team|constructor|manufacturer/i.test(t.title)?'Team':'Driver';
-  // A team league's table (ESPN, user's next step after racing): its own
-  // columns (W-L, Pct, GB, ...), and the team's own row marked and always
-  // shown, also when it is below the top 5.
-  const ownAt=t.rows.findIndex(r=>r.own),shownRows=st.all?t.rows:t.rows.slice(0,STANDINGS_SHOWN).concat(ownAt>=STANDINGS_SHOWN?[t.rows[ownAt]]:[]);
-  const cells=r=>cols?cols.map(c=>`<td class="st-num st-c-${esc(c.key)}">${esc(r.values?.[c.key]??'')}</td>`).join(''):`${t.wins?`<td class="st-num">${esc(r.wins??0)}</td>`:''}<td class="st-num"><b>${esc(r.points)}</b>${typeof lead==='number'&&typeof r.points==='number'&&r.points<lead?`<span>−${lead-r.points}</span>`:''}</td>`;
-  const rows=shownRows.map(r=>`<tr${r.own?' class="st-own"':''}><td class="st-pos">${esc(r.pos??'')}</td><td class="st-name"><b>${esc(r.name)}</b>${r.detail?`<span>${esc(r.detail)}</span>`:''}</td>${cells(r)}</tr>`).join('');
-  const head=cols?cols.map(c=>`<th class="st-num st-c-${esc(c.key)}">${esc(c.label)}</th>`).join(''):`${t.wins?'<th class="st-num">Wins</th>':''}<th class="st-num">Pts</th>`;
-  const tabs=tables.length>1?`<div class="st-tabs" role="tablist">${tables.map((x,i)=>`<button type="button" class="st-tab${i===tab?' on':''}" role="tab" aria-selected="${i===tab}" data-st-tab="${i}">${esc(x.title)}</button>`).join('')}</div>`:`<div class="st-title">${esc(t.title)}</div>`;
-  const more=t.rows.length>STANDINGS_SHOWN?`<button type="button" class="ghost show-all-live" data-st-all>${st.all?`Show top ${STANDINGS_SHOWN}`:`Show all ${t.rows.length}`}</button>`:'';
-  const source=t.source?.name?(t.source.url?`<a class="st-source" href="${esc(t.source.url)}" target="_blank" rel="noopener">${esc(t.source.name)}</a>`:`<span class="st-source">${esc(t.source.name)}</span>`):'';
-  return`<div class="section standings" data-standings="${esc(key)}"><div class="section-label">Standings</div>${tabs}<table class="st-table${cols?' st-cols':''}"><thead><tr><th class="st-pos">Pos</th><th>${who}</th>${head}</tr></thead><tbody>${rows}</tbody></table>${more}${source}</div>`;
-}
 // State playoff bracket (user, November 18, 2026: "Start with 2"): the
 // school's KSHSAA bracket, its path game by game, what is next, and the whole
 // bracket a round at a time (the current round first). The open bracket and
@@ -710,7 +689,7 @@ function bracketBlock(g){
   const pathRows=mine.map(({r,x})=>{
     const i=x.teams.findIndex(t=>t?.own),me=x.teams[i],them=x.teams[1-i];
     const rel=r.level==='State'||i===0?'vs':'at';
-    const res=x.status==='Final'?`<b class="br-res ${me.winner?'w':them?.winner?'l':''}">${me.winner?'W':them?.winner?'L':'T'} ${esc(me.score)}-${esc(them?.score)}${x.extra?` ${esc(x.extra)}`:''}${me.pks!=null&&x.extra&&/pk/i.test(x.extra)?` (${esc(me.pks)}-${esc(them?.pks)})`:''}</b>`:`<b class="br-res next">Next</b>`;
+    const res=x.status==='Final'&&x.forfeit?`<b class="br-res ${me.winner?'w':'l'}">${me.winner?'W':'L'} · forfeit</b>`:x.status==='Final'?`<b class="br-res ${me.winner?'w':them?.winner?'l':''}">${me.winner?'W':them?.winner?'L':'T'} ${esc(me.score)}-${esc(them?.score)}${x.extra?` ${esc(x.extra)}`:''}${me.pks!=null&&x.extra&&/pk/i.test(x.extra)?` (${esc(me.pks)}-${esc(them?.pks)})`:''}</b>`:`<b class="br-res next">Next</b>`;
     return`<li class="br-step${x.status==='Final'?'':' br-next'}"><span class="br-round">${esc(r.name)}<span>${esc(bracketDay(x.date))}${x.status!=='Final'&&x.time?` · ${esc(bracketTime(x.time))}`:''}</span></span><span class="br-opp">${esc(rel)} ${bracketSeed(them)}${esc(them?.name||'TBD')}${x.status!=='Final'&&x.site&&x.site.toLowerCase()!==String(them?.name||'').toLowerCase()?`<span class="br-site">at ${esc(x.site)}</span>`:''}</span>${res}</li>`;
   }).join('');
   // Rounds still ahead of a team that is alive: where they lead.
@@ -735,6 +714,27 @@ feed.addEventListener('click',ev=>{
   bracketState.set(key,st);
   const g=(currentGroups||[]).find(x=>`${x.school_id||x.school}|${x.sport}`===key);if(g)box.outerHTML=bracketBlock(g);
 });
+// Standings (user, November 11, 2026: "Something we should add to auto racing
+// and probably other sports is the overall team/driver standings"): the feed's
+// tables (drivers, teams, a class each in IMSA), the top 5 with Show all, a tab
+// per table. The chosen tab and Show all stay across the 15 s refresh.
+const STANDINGS_SHOWN=5,standingsState=new Map();
+function standingsBlock(g){
+  const tables=(Array.isArray(g.standings)?g.standings:[]).filter(x=>x?.rows?.length);if(!tables.length)return'';
+  const key=`${g.school_id||g.school}|${g.sport}`,st=standingsState.get(key)||{tab:0,all:false},tab=Math.min(st.tab,tables.length-1),t=tables[tab],lead=t.rows[0]?.points;
+  const cols=Array.isArray(t.columns)?t.columns:null,who=cols||/team|constructor|manufacturer/i.test(t.title)?'Team':'Driver';
+  // A team league's table (ESPN, user's next step after racing): its own
+  // columns (W-L, Pct, GB, ...), and the team's own row marked and always
+  // shown, also when it is below the top 5.
+  const ownAt=t.rows.findIndex(r=>r.own),shownRows=st.all?t.rows:t.rows.slice(0,STANDINGS_SHOWN).concat(ownAt>=STANDINGS_SHOWN?[t.rows[ownAt]]:[]);
+  const cells=r=>cols?cols.map(c=>`<td class="st-num st-c-${esc(c.key)}">${esc(r.values?.[c.key]??'')}</td>`).join(''):`${t.wins?`<td class="st-num">${esc(r.wins??0)}</td>`:''}<td class="st-num"><b>${esc(r.points)}</b>${typeof lead==='number'&&typeof r.points==='number'&&r.points<lead?`<span>−${lead-r.points}</span>`:''}</td>`;
+  const rows=shownRows.map(r=>`<tr${r.own?' class="st-own"':''}><td class="st-pos">${esc(r.pos??'')}</td><td class="st-name"><b>${esc(r.name)}</b>${r.detail?`<span>${esc(r.detail)}</span>`:''}</td>${cells(r)}</tr>`).join('');
+  const head=cols?cols.map(c=>`<th class="st-num st-c-${esc(c.key)}">${esc(c.label)}</th>`).join(''):`${t.wins?'<th class="st-num">Wins</th>':''}<th class="st-num">Pts</th>`;
+  const tabs=tables.length>1?`<div class="st-tabs" role="tablist">${tables.map((x,i)=>`<button type="button" class="st-tab${i===tab?' on':''}" role="tab" aria-selected="${i===tab}" data-st-tab="${i}">${esc(x.title)}</button>`).join('')}</div>`:`<div class="st-title">${esc(t.title)}</div>`;
+  const more=t.rows.length>STANDINGS_SHOWN?`<button type="button" class="ghost show-all-live" data-st-all>${st.all?`Show top ${STANDINGS_SHOWN}`:`Show all ${t.rows.length}`}</button>`:'';
+  const source=t.source?.name?(t.source.url?`<a class="st-source" href="${esc(t.source.url)}" target="_blank" rel="noopener">${esc(t.source.name)}</a>`:`<span class="st-source">${esc(t.source.name)}</span>`):'';
+  return`<div class="section standings" data-standings="${esc(key)}"><div class="section-label">Standings</div>${tabs}<table class="st-table${cols?' st-cols':''}"><thead><tr><th class="st-pos">Pos</th><th>${who}</th>${head}</tr></thead><tbody>${rows}</tbody></table>${more}${source}</div>`;
+}
 feed.addEventListener('click',ev=>{
   const button=ev.target.closest('[data-st-tab],[data-st-all]'),box=button?.closest('[data-standings]');if(!box)return;
   ev.stopPropagation();const key=box.dataset.standings,st={...(standingsState.get(key)||{tab:0,all:false})};

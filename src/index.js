@@ -345,7 +345,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.311.1-state-brackets';
+const VERSION='4.311.2-state-brackets';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7314,10 +7314,10 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
     events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
   }
   const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings);
-  // Series and league standings (pro entries): one set for the sport.
-  if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   // A high school's state playoff bracket (KSHSAA), on its team's group.
   if(result.bracket)for(const group of groups)if(!result.bracket.team_label||!group.team_label||group.team_label===result.bracket.team_label)group.bracket=result.bracket;
+  // Series and league standings (pro entries): one set for the sport.
+  if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
   // A pro team has news on ESPN in a week without a game: the page asks
   // for it without waiting for a final with a recap.

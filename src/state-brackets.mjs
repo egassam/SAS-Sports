@@ -86,7 +86,10 @@ export function parseKshsaaBracket(payload,{own=null,sport=null}={}){
   const finalStatus=String(payload.FinalGameStatus??''),levelDates=payload.PlayoffLevelDates||{};
   const levels=Object.entries(levelDates).sort((a,b)=>String(a[1]).localeCompare(String(b[1]))).map(([name])=>name);
   const className=clean(g.class?.classdescription||g.Class),weekId=g.ID;
-  const raw=g.BracketsGameScores.filter(x=>x&&x.PlayoffLevel);
+  // A bye is listed as a game against "KSHSAA" (6-Player's first round,
+  // three copies each): not a game.
+  const bye=info=>/^kshsaa$/i.test(clean(info?.School));
+  const raw=g.BracketsGameScores.filter(x=>x&&x.PlayoffLevel&&!bye(x.Team1Info)&&!bye(x.Team2Info));
   for(const x of raw)if(!levels.includes(x.PlayoffLevel))levels.push(x.PlayoffLevel);
   // A team's seed from its first game ("3W"); later rounds often leave it blank.
   const seeds=new Map();
@@ -106,10 +109,15 @@ export function parseKshsaaBracket(payload,{own=null,sport=null}={}){
         const final=finalStatus!==''&&String(x.StatusOfGame)===finalStatus&&!!x.Team1Info?.School&&!!x.Team2Info?.School;
         const s1=Number(x.Team1Score),s2=Number(x.Team2Score),p1=Number(x.Team1PKs)||0,p2=Number(x.Team2PKs)||0;
         const pks=/^pks?$/i.test(clean(x.ExtraStatus));
+        // "Fri, 10/30 @ Sterling - (forfeit)": the winner is the team with a
+        // score (1, the other blank); no game was played.
+        const forfeit=final&&/forfeit/i.test(clean(x.GameInfo));
         const win1=final&&(s1>s2||s1===s2&&pks&&p1>p2),win2=final&&(s2>s1||s1===s2&&pks&&p2>p1);
         const team=(info,score,pk,win)=>info?.School?{name:bracketTeamName(info.School),source_name:info.School,seed:seeds.get(info.School)||null,score:final?score:null,...(final&&pks?{pks:pk}:{}),winner:win,own:!!own&&own(info.School)}:null;
-        return{level,date:at.date,time:at.time,site:at.site,info:clean(x.GameInfo)||null,status:final?'Final':'Scheduled',extra:clean(x.ExtraStatus)||null,third_place:!!Number(x.ThirdPlaceGame),
-          teams:[team(x.Team1Info,s1,p1,win1),team(x.Team2Info,s2,p2,win2)]};
+        const team1=team(x.Team1Info,s1,p1,win1),team2=team(x.Team2Info,s2,p2,win2);
+        if(forfeit)for(const t of [team1,team2])if(t)t.score=null;
+        return{level,date:at.date,time:at.time,site:at.site?.replace(/\s*-\s*\(forfeit\)$/i,'')||null,info:clean(x.GameInfo)||null,status:final?'Final':'Scheduled',extra:forfeit?'Forfeit':clean(x.ExtraStatus)||null,forfeit,third_place:!!Number(x.ThirdPlaceGame),
+          teams:[team1,team2]};
       });
       rounds.push({name:roundTitle(level,i+1,numbers.length,main),level,date:levelDates[level]||games.find(x=>x.date)?.date||null,games});
     });
@@ -136,7 +144,8 @@ export function parseKshsaaBracket(payload,{own=null,sport=null}={}){
 // opponent, home or away, and the score once final.
 export function ownBracketGames(bracket){
   if(!bracket)return[];
-  return bracket.rounds.flatMap(r=>r.games.filter(x=>x.teams.some(t=>t?.own)&&x.teams.every(Boolean)&&x.date).map(x=>{
+  // A forfeit was not played: it stays in the bracket, not the schedule.
+  return bracket.rounds.flatMap(r=>r.games.filter(x=>x.teams.some(t=>t?.own)&&x.teams.every(Boolean)&&x.date&&!x.forfeit).map(x=>{
     const i=x.teams.findIndex(t=>t.own),me=x.teams[i],them=x.teams[1-i];
     // Team1 is the host ("Fri, 11/20 @ Derby": Derby vs Manhattan; a
     // district stadium such as "CBAC" is still Team1's home); a state game
