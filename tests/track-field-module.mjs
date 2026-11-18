@@ -37,6 +37,7 @@ for(const s of track){
   assert.equal(config.kind,'world-athletics');assert.equal(config.sport,'Track & Field');assert.ok(config.calendars.length,s.id);
 }
 assert.ok(html.includes("sport==='Track & Field'?'Meets'"),'the third box reads Meets');
+assert.ok(html.includes("e.pro&&e.event_type==='MEET'?'Where':'Opponent'"),'a meet window names its place, not an opponent');
 
 // Names and places as World Athletics prints them, read for the page.
 assert.deepEqual(['Oblique SEVILLE','Andy DÍAZ HERNÁNDEZ','Khaleb MCRAE',"Ja'Kobe THARP",'Belgium','Mondo DUPLANTIS'].map(athleteName),['Oblique Seville','Andy Díaz Hernández','Khaleb McRae',"Ja'Kobe Tharp",'Belgium','Mondo Duplantis']);
