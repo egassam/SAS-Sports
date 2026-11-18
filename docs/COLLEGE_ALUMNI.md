@@ -15,7 +15,7 @@ Each college's own roster pages (`rosterUrls`, the same pages the app reads for 
 
 ## Colleges read
 
-`ALUMNI_COLLEGES` (20): K-State, KU, Wichita State, Iowa State, Oklahoma State, Iowa, Nebraska, Creighton, Missouri, Oklahoma, Tulsa, Missouri State, Saint Louis, Drake, Northern Iowa, Lindenwood, Southeast Missouri, Kansas City, Omaha, Oral Roberts. Wichita State, Drake and Oral Roberts have no sponsored sports in the catalog yet (no roster pages read).
+`ALUMNI_COLLEGES` (17): K-State, KU, Iowa State, Oklahoma State, Iowa, Nebraska, Creighton, Missouri, Oklahoma, Tulsa, Missouri State, Saint Louis, Northern Iowa, Lindenwood, Southeast Missouri, Kansas City, Omaha. Wichita State, Drake and Oral Roberts are in the catalog with no sponsored sports yet (no roster pages to read); they join when they have them.
 
 ## Matching
 
@@ -36,6 +36,7 @@ Nov 18, 2026, all 285 roster URLs of the 17 colleges with sports read from the s
 
 ## Not yet
 
+- A college sport the high school does not offer (rowing, gymnastics: Washburn Rural's three K-State rowers) has no high school page to show on.
 - Colleges outside the region; junior colleges and NAIA/Division II (Kansas's largest destinations) are not in the catalog.
 - College → high school links on a college's own roster (the index has them; the college page has no roster list).
 - MLB draft picks from Kansas high schools (MLB's draft API names the high school and state).

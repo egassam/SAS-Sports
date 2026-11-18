@@ -60,7 +60,7 @@ assert.equal(who('Junction City','Kansas City, Mo.'),null);
 // A college's index: K-State football's players from the app's schools.
 const index=collegeAlumniIndex({id:'kstate'},[{sport:'Football',team:null,players:ks}],match);
 assert.deepEqual(index.map(p=>`${p.name} ${p.school_id}`).sort(),['Holden Bass nemaha-central-ks','Jackson Hollie junction-city-ks','Jet Dineen lawrence-free-state-ks']);
-assert.ok(ALUMNI_COLLEGES.includes('kstate')&&ALUMNI_COLLEGES.includes('kansas')&&ALUMNI_COLLEGES.length===20);
+assert.ok(ALUMNI_COLLEGES.includes('kstate')&&ALUMNI_COLLEGES.includes('kansas')&&ALUMNI_COLLEGES.length===17);
 assert.equal(collegeAlumniKey('kstate'),'alumni:v1:college:kstate');
 
 // Through the Worker: K-State's index is built from its roster pages (only
@@ -82,9 +82,9 @@ const ctx={waitUntil:p=>waits.push(p)};
 const answer=await worker.schoolProsAnswer(env,ctx,'junction-city-ks','Football');
 assert.equal(answer.read,true);
 const college=answer.leagues[0];
-assert.deepEqual([college.league,college.college,college.colleges_read,college.colleges],['College',true,1,20]);
+assert.deepEqual([college.league,college.college,college.colleges_read,college.colleges],['College',true,1,17]);
 assert.deepEqual(college.pros.map(p=>[p.name,p.team,p.team_id]),[['Jackson Hollie','K-State','kstate']]);
-// Two of the 19 missing colleges are started in the background, not awaited.
+// Two of the 16 missing colleges are started in the background, not awaited.
 assert.equal(waits.length,2);await Promise.all(waits);
 assert.equal(kv.size,3);
 // Another sport, another school: none.

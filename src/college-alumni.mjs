@@ -14,7 +14,9 @@
 // - SIDEARM's classic list: `sidearm-roster-player-hometown`,
 //   `sidearm-roster-player-highschool`.
 
-export const ALUMNI_COLLEGES=['kstate','kansas','wichita-state','iowa-state','oklahoma-state','iowa','nebraska','creighton','missouri','oklahoma','tulsa','missouri-state','saint-louis','drake','northern-iowa','lindenwood','southeast-missouri','kansas-city','omaha','oral-roberts'];
+// Wichita State, Drake and Oral Roberts join when the catalog has their
+// sports (no roster pages to read yet, Nov 18, 2026).
+export const ALUMNI_COLLEGES=['kstate','kansas','iowa-state','oklahoma-state','iowa','nebraska','creighton','missouri','oklahoma','tulsa','missouri-state','saint-louis','northern-iowa','lindenwood','southeast-missouri','kansas-city','omaha'];
 export const COLLEGE_ALUMNI_MS=24*3600e3;
 export const collegeAlumniKey=id=>`alumni:v1:college:${id}`;
 
