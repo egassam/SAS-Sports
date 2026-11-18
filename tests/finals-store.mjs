@@ -217,6 +217,6 @@ const worker=Function(...Object.keys(deps),source+';return {withStoredFinals,set
   assert.deepEqual(out.events.map(e=>e.start_time.slice(0,10)),['2026-10-03'],'the retracted Sep 5 final is not listed; Oct 3 still is');
 }
 // Wired into every middle and high school build, and reported on /live/status.
-assert.ok(source.includes('if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);'));
+assert.ok(source.includes('if(isHighSchool(school))return withStoredFinals(await withStateBracket(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,now),school,sport,env,now,aiTargetId);'));
 assert.ok(source.includes('...(result.finals_store?{finals_store:result.finals_store}:{})'));
 console.log('finals-store: ok');

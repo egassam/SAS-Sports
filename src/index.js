@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBracket,bracketMatcher,ownBracketGames,bracketCurrent} from './state-brackets.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
@@ -344,7 +345,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.310.0-roster-tab';
+const VERSION='4.311.2-state-brackets';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4639,6 +4640,65 @@ function sourceFailure(url,r){
   const why=r.headers.get('x-sas-source'),upstream=r.headers.get('x-sas-upstream-status');
   return`${url}: HTTP ${r.status}${why==='backoff'?` (waiting out an earlier${upstream?` HTTP ${upstream}`:''} refusal; no request sent)`:why&&why!=='network'?` (${why})`:''}`;
 }
+// KSHSAA state playoff brackets (user, November 18, 2026: "Start with 2",
+// the state playoff brackets; src/state-brackets.mjs). A Kansas high school's
+// sport with a KSHSAA bracket reads the season's state sites (one read per
+// activity) and every class's bracket (about 40 KB each, kept 10 minutes and
+// shared by every school), its own class first. The bracket the school is in
+// goes on the feed (`bracket`) while it is current, and its games join the
+// schedule: a final the schedule has without a score takes KSHSAA's score; a
+// round the schedule lacks (Manhattan's Nov 20 Sub-State at Derby, on no
+// other source on Nov 18) is listed once both teams are known. A day the
+// schedule already has another game on keeps that game.
+async function stateBracketFor(school,sport,now){
+  const configs=KSHSAA_BRACKETS[sport];
+  if(!configs||!isHighSchool(school)||school.state!=='Kansas'||school.level!=='high-school')return null;
+  const own=bracketMatcher(school),today=new Date(schoolToday(now,school)).toISOString().slice(0,10);
+  for(const config of configs){
+    const sitesUrl=stateSitesUrl(config),sites=stateSiteBrackets(await readJson(sitesUrl,SOURCE_TTL.listing));
+    if(!sites.length)continue;
+    const ordered=[...sites].sort((a,b)=>Number(b.className===school.classification)-Number(a.className===school.classification));
+    const brackets=await Promise.all(ordered.map(async site=>{const url=bracketUrl(site.weekId);return{url,bracket:parseKshsaaBracket(await readJson(url,SOURCE_TTL.listing),{own,sport})}}));
+    const hit=brackets.find(x=>x.bracket&&bracketCurrent(x.bracket,today));
+    if(hit)return{...hit.bracket,team_label:config.team||null,source_urls:[sitesUrl,hit.url]};
+  }
+  return null;
+}
+async function withStateBracket(result,school,sport,now){
+  if(!result||!Array.isArray(result.events)||!KSHSAA_BRACKETS[sport])return result;
+  let bracket=null;try{bracket=await stateBracketFor(school,sport,now)}catch{}
+  if(!bracket)return result;
+  const module=highSchoolModule(school.id),team=(module?.sports?.[sport]||[]).some(t=>t.label)?bracket.team_label:null;
+  const events=[...result.events],day=e=>String(e.start_time||'').slice(0,10);
+  const scoreSource={name:bracket.source.name,url:bracket.source.url};
+  const added=[];
+  for(const game of ownBracketGames(bracket)){
+    const sameDay=events.filter(e=>day(e)===game.date&&(team==null||(e.team_label||null)===team));
+    const match=sameDay.find(e=>namesCompatible(e.opponent,game.opponent))||(sameDay.length===1&&isHighSchoolPlaceholder(sameDay[0].opponent)?sameDay[0]:null);
+    const contest=game.status==='Final'?{result:game.result,score:game.score,opponent_score:game.opponent_score,source:'kshsaa'}:null;
+    if(match){
+      match.playoff_round=game.round;
+      // A playoff round named only by its kind ("Sub-State Football") takes
+      // its opponent; a final with no score takes KSHSAA's.
+      const placeholder=isHighSchoolPlaceholder(match.opponent);
+      if((contest&&match.school_score==null)||(placeholder&&!contest&&match.status==='Upcoming')){
+        const relation=placeholder?game.relation:/ at /.test(match.title)?'at':'vs';
+        const event=highSchoolEvent({school,sport,team,date:game.date,time:match.start_time?.slice(11,16)!=='12:00'?match.start_time.slice(11,16):game.time,opponent:placeholder?game.opponent:match.opponent,relation,named:true,contest,sourceUrl:match.source?.url||bracket.source.url,sourceName:match.source?.name||bracket.source.name,now});
+        if(event){event.playoff_round=game.round;if(contest){event.score_source=scoreSource;delete event.maxpreps_url;}events[events.indexOf(match)]=event;added.push(game.round);}
+      }
+      continue;
+    }
+    if(sameDay.length)continue;
+    const event=highSchoolEvent({school,sport,team,date:game.date,time:game.time,opponent:game.opponent,relation:game.relation,named:true,contest,sourceUrl:bracket.source.url,sourceName:bracket.source.name,now});
+    if(!event)continue;
+    event.playoff_round=game.round;
+    if(contest){event.score_source=scoreSource;delete event.maxpreps_url;}
+    events.push(event);added.push(game.round);
+  }
+  events.sort((a,b)=>String(a.start_time).localeCompare(String(b.start_time)));
+  const {source_urls,...shown}=bracket;
+  return{...result,events,bracket:shown,source_urls:[...(result.source_urls||[]),...source_urls],...(added.length?{bracket_events:added}:{})};
+}
 async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   const module=highSchoolModule(school.id),teams=module?.sports[sport];
   if(!teams)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'Sport not built for this school'};
@@ -7043,7 +7103,7 @@ async function fetchLive(schoolId,sport,env=null,aiTargetId=null){
 async function fetchLiveSource(schoolId,sport,env=null,aiTargetId=null){
   const school=catalogSchool(schoolId),now=new Date();
   if(!school)return{events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error:'School not found'};
-  if(isHighSchool(school))return withStoredFinals(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,env,now,aiTargetId);
+  if(isHighSchool(school))return withStoredFinals(await withStateBracket(await fetchHighSchool(school,sport,now,aiTargetId,env),school,sport,now),school,sport,env,now,aiTargetId);
   if(isPro(school))return fetchPro(school,sport,now,aiTargetId);
   const urls=candidateUrls(school,sport),errors=[],successful=[];
   const scoreboardReads=[];
@@ -7254,6 +7314,8 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
     events=reconcileScoreboardEvents(previous.map(event=>event.status==='Live'?{...event,status:'Today'}:event),result.events);
   }
   const groups=await attachRankings(groupEvents(events),catalogSchool(school)||schoolModule(school)?.school,sport,result.rankings);
+  // A high school's state playoff bracket (KSHSAA), on its team's group.
+  if(result.bracket)for(const group of groups)if(!result.bracket.team_label||!group.team_label||group.team_label===result.bracket.team_label)group.bracket=result.bracket;
   // Series and league standings (pro entries): one set for the sport.
   if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
