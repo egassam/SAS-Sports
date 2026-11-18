@@ -5262,5 +5262,133 @@
     "panelDark": "#18060c",
     "line": "#77142d",
     "onAccent": "#ffffff"
+  },
+  "angel-city-fc": {
+    "primary": "#202121",
+    "secondary": "#898C8F",
+    "panel": "#101014",
+    "panelDark": "#08080b",
+    "line": "#202125",
+    "onAccent": "#ffffff"
+  },
+  "bay-fc": {
+    "primary": "#FF5049",
+    "secondary": "#0D2032",
+    "panel": "#411a1d",
+    "panelDark": "#1e0d0f",
+    "line": "#9b3a3b",
+    "onAccent": "#ffffff"
+  },
+  "boston-legacy-fc": {
+    "primary": "#00FF00",
+    "secondary": "#000000",
+    "panel": "#09410c",
+    "panelDark": "#051e07",
+    "line": "#0e9b13",
+    "onAccent": "#111111"
+  },
+  "chicago-stars-fc": {
+    "primary": "#C7102E",
+    "secondary": "#3AB5E8",
+    "panel": "#340c17",
+    "panelDark": "#18060c",
+    "line": "#7c172c",
+    "onAccent": "#ffffff"
+  },
+  "denver-summit-fc": {
+    "primary": "#20604E",
+    "secondary": "#E4B83E",
+    "panel": "#101e1e",
+    "panelDark": "#080e0f",
+    "line": "#20433e",
+    "onAccent": "#ffffff"
+  },
+  "gotham-fc": {
+    "primary": "#A9F1FD",
+    "secondary": "#000000",
+    "panel": "#2e3e44",
+    "panelDark": "#151d21",
+    "line": "#6b939e",
+    "onAccent": "#111111"
+  },
+  "houston-dash": {
+    "primary": "#FF6900",
+    "secondary": "#8AB7E9",
+    "panel": "#41200c",
+    "panelDark": "#1e0f07",
+    "line": "#9b4813",
+    "onAccent": "#ffffff"
+  },
+  "kansas-city-current": {
+    "primary": "#CF3339",
+    "secondary": "#62CBC9",
+    "panel": "#361419",
+    "panelDark": "#190a0d",
+    "line": "#802a32",
+    "onAccent": "#ffffff"
+  },
+  "north-carolina-courage": {
+    "primary": "#AB0033",
+    "secondary": "#00416B",
+    "panel": "#2e0918",
+    "panelDark": "#16050c",
+    "line": "#6c0e2f",
+    "onAccent": "#ffffff"
+  },
+  "orlando-pride": {
+    "primary": "#C5B5F2",
+    "secondary": "#14002F",
+    "panel": "#343042",
+    "panelDark": "#18171f",
+    "line": "#7b7298",
+    "onAccent": "#111111"
+  },
+  "portland-thorns-fc": {
+    "primary": "#99242B",
+    "secondary": "#000000",
+    "panel": "#2a1116",
+    "panelDark": "#14080c",
+    "line": "#63222b",
+    "onAccent": "#ffffff"
+  },
+  "racing-louisville-fc": {
+    "primary": "#C5B5F2",
+    "secondary": "#14002F",
+    "panel": "#343042",
+    "panelDark": "#18171f",
+    "line": "#7b7298",
+    "onAccent": "#111111"
+  },
+  "san-diego-wave-fc": {
+    "primary": "#032E62",
+    "secondary": "#21C6D9",
+    "panel": "#091322",
+    "panelDark": "#050911",
+    "line": "#102849",
+    "onAccent": "#ffffff"
+  },
+  "seattle-reign-fc": {
+    "primary": "#292431",
+    "secondary": "#2E407A",
+    "panel": "#121117",
+    "panelDark": "#09080c",
+    "line": "#25222e",
+    "onAccent": "#ffffff"
+  },
+  "utah-royals": {
+    "primary": "#AE122A",
+    "secondary": "#FDB71A",
+    "panel": "#2f0d16",
+    "panelDark": "#16060b",
+    "line": "#6e182a",
+    "onAccent": "#ffffff"
+  },
+  "washington-spirit": {
+    "primary": "#EDE939",
+    "secondary": "#000000",
+    "panel": "#3d3c19",
+    "panelDark": "#1c1c0d",
+    "line": "#918f32",
+    "onAccent": "#111111"
   }
 }
