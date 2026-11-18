@@ -5541,3 +5541,20 @@ User: "I have received all notifications for my favorites". The handoff's open i
 
 **Open.** First live NWSL card: the Championship, Nov 21.
 
+
+
+## November 18, 2026 — Pro: In the Pros, draft picks, minor league baseball, Kansas & Kansas City (PR #600)
+
+**Asked.** User: "What should we add in pro that's unique?" Answer given: features built on the app's school data (a school's alumni in the pros with their latest game line; draft tracker; a Kansas view) and leagues big apps cover poorly (minor leagues near home: Wind Surge, Mavericks, Thunder, Monarchs; women's leagues; rodeo). User: "Start 1-4".
+
+**Sources found.** ESPN team rosters carry each player's college by ESPN's college id (`college.id`, e.g. Cincinnati 2132), the same id `src/college-standings.json` maps for every college school; birthplace too. ESPN draft pages (`/draft?season=Y`) for NFL, NBA, WNBA, picks with the player's ESPN id (`alternativeId`) and the college by name; MLB's `statsapi.mlb.com/api/v1/draft/Y` names each pick's school and state (high schools too: Mill Valley HS). ESPN scoreboards reject date ranges (400); one read per day (NFL: per week). MLB's stats API has the Wind Surge (3898), Storm Chasers (541), Naturals (1350) with line scores and decisions, but the KC Monarchs (1885) with no games in 2025 or 2026. ECHL: echl.com (Livewire) and team sites show only the coming week's games as text, no results; LeagueStat data needs a key not published in their HTML.
+
+**Built** (4.308.0–4.308.5). `src/pro-alumni.mjs`, `/live/pros`, `prosBlock`/`loadPros` (page), KV indexes `pros:v1:roster:<league>` (daily) and `pros:v1:lines:<league>` (15 min, each final read once, at most 20 per build). MiLB reader `mlbStatsGames` (kind `mlb-stats`, season window March–September). Hub `kansas-pros` (kind `hub`): each team read by its own entry, team_label for per-team records, Sport box shown for a pro entry with several sports, Wichita State's ESPN id 2724 given in the hub config (absent from the standings map).
+
+**Found and fixed on the preview.** (1) MLB's API answered the app's default `Accept: text/html` with 406 (the draft endpoint) and the first schedule reads failed: MLB reads now ask for JSON, as Jolpica. (2) "Omaha" and "Wichita" aliases matched the Omaha Mavericks and Wichita State on scoreboards (`tests/scoreboard-match.mjs`): removed. (3) The MiLB expanded view: "Pitchers" wrapped and long team names pushed R/H/E off the line score; pitchers are Win/Loss/Save rows and the line score uses MLB's abbreviations (hydrate `team`); saved MiLB and hub expanded views rebuilt once (`|box3`). (4) MiLB read "In season" in November (MLB's window): MiLB has its own (March–September). (5) The hub showed one sport: the pro Sport box was always hidden.
+
+**Gate.** Local `npm test` passed; `test:release` 419/420 before the last fix (`isolation-local` counts the endpoints enforcing sponsored sports: now five), CI guardrails green on `7494358` (earlier runs red on that count and on `f1-module`'s exact Accept line, both updated). Preview: `verify:preview` kstate Football, Basketball, Baseball (36 refreshes each, results and expanded views) PASS; the three MiLB teams and kansas-pros all sports (3 refreshes) 36 PASS on 4.308.5; XC 18/20 and 26/21. Checked in Chromium at 390 px: K-State Football In the Pros (19 NFL players, 6 lines, 2026 draft Hecht and Payne), the hub's list (48, college and "born in Wichita, KS"), the Wind Surge page and expanded final; no page errors, no sideways scroll. Records checked against MLB's standings: Wind Surge 55-81, Storm Chasers 65-81, Naturals 57-79.
+
+**Merged** PR #600 as `8433306`; production `4.308.5-pros-alumni`; `verify:prod` kstate Football/Basketball/Baseball, the MiLB teams and kansas-pros (3 refreshes) 36 PASS, XC 18/20 and 26/21; `/live/pros` on production: K-State NFL 19 (draft 2), Kansas NBA 10 (draft 1), kansas-pros NFL 48 (draft 4).
+
+**Open.** Monarchs and ECHL need sources; MiLB colors approximate; the Royals' production feed shows only the 2027 schedule (no 2026 results; predates this PR); no NHL list on the hub; high schools get no In the Pros (ESPN rosters name no high school).
