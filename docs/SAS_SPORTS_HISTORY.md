@@ -5529,3 +5529,15 @@ User: "I have received all notifications for my favorites". The handoff's open i
 
 **Open.** Rename `connecticut-sun` to the Houston Comets when ESPN does; observe the first live WNBA card (May 2027) and the first meet under way (January 2027 indoor tour); not added: Diamond League points standings, marathon majors, Continental Tour.
 
+## November 18, 2026 — Ultimate Championship and Grand Slam Track question; NWSL in Pro (PR #598)
+
+**Question.** User: "Didn't forget to add the ultimate championships and the grand slam championships in track and field". The World Athletics Ultimate Championship (Budapest, Sep 11-13, 2026, 28 finals) was already in, under World Athletics → World Championships, shown on production. Grand Slam Track: World Athletics lists only its three 2025 slams (Kingston, Miami, Philadelphia); the league filed for Chapter 11 after its first season, its February 2026 plan named no second season, and World Athletics said it would not license its meets until debts are paid. Offered: wait for a new season, or add 2025 as an archive. User: "Don't". Not added, and not to be listed as an open item.
+
+**NWSL.** User: "Add NWSL next". ESPN `soccer/usa.nwsl`: 16 clubs (Boston Legacy 131562 and Denver Summit 131563 new in 2026), one standings group ("NWSL Regular Season", abbreviation "2026": now titled "NWSL"). Clubs' schedule pages checked (Houston's on houstondynamofc.com, Orlando's on orlandocitysc.com, Utah's on rsl.com; washingtonspirit.com 403 to automated reads). Playoff rounds are ESPN season types ("Playoffs - Quarterfinals"), read as "NWSL Playoffs · …" and "NWSL Championship". Kansas City 2026: 16-9-5 (ESPN's table), quarterfinal W 1-0 (AET) over Angel City, semifinal W 2-1 at Gotham (an own goal named as one), Championship at Washington Nov 21 (CBS). Soccer standings now serve any soccer league (record W-L-D, `espn.com/soccer/standings/_/league/<league>`); MLS unchanged.
+
+**Gate.** `test:release` 418/418 locally, CI guardrails and certification-matrix green; preview `verify:preview` 16 clubs plus Sporting KC, 3 refreshes each, PASS, XC 18/20 and 26/21; KC Current page in Chromium at 390 px.
+
+**Production.** Merge `ef336e4`, `4.307.0-nwsl`, catalog `d1`; `verify:prod` the same entries PASS, XC 18/20 and 26/21.
+
+**Open.** First live NWSL card: the Championship, Nov 21.
+
