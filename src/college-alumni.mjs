@@ -26,8 +26,30 @@ const text=s=>decode(String(s??'').replace(/<!--[\s\S]*?-->/g,'').replace(/<[^>]
 export function rosterHometowns(html,base=''){
   const raw=String(html||''),out=[];
   const abs=href=>{if(!href)return null;try{return new URL(decode(href),base||undefined).toString()}catch{return null}};
+  // SIDEARM's Nuxt pages keep the roster in `__NUXT_DATA__` (a flat array
+  // whose objects point at their values by index): every player's
+  // `full_name`, `hometown`, `high_school`, `previous_school`, `slug`, class
+  // and position, whatever the visible layout (Missouri's list shows no
+  // hometown at all).
+  const nuxt=raw.match(/<script[^>]*id="__NUXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if(nuxt){
+    try{
+      const data=JSON.parse(nuxt[1]);
+      const at=v=>typeof v==='number'&&v>=0&&v<data.length?data[v]:v;
+      const field=(o,k)=>{const v=at(o?.[k]);return typeof v==='string'?v:null};
+      const nested=(o,k,f)=>{const v=at(o?.[k]);return v&&typeof v==='object'?field(v,f):null};
+      for(const o of data){
+        if(!o||typeof o!=='object'||Array.isArray(o)||!('hometown' in o)||!('high_school' in o))continue;
+        const name=field(o,'full_name')||[field(o,'first_name'),field(o,'last_name')].filter(Boolean).join(' ');
+        const hometown=field(o,'hometown');if(!name||!hometown)continue;
+        const slug=field(o,'slug');
+        const href=slug?raw.match(new RegExp(`href="([^"]*/roster/(?:player/)?${slug.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}(?:/\\d+)?)"`))?.[1]:null;
+        out.push({name:text(name),hometown:text(hometown),high_school:text(field(o,'high_school')||''),previous_school:text(field(o,'previous_school')||'')||null,position:nested(o,'player_position','abbreviation')||nested(o,'player_position','name')||null,year:nested(o,'class_level','name')||null,url:abs(href)});
+      }
+    }catch{}
+  }
   // Cards: each card from its opening to the next.
-  const cards=raw.split(/<div[^>]*class="[^"]*\bs-person-card\b(?![-_])[^"]*"/).slice(1);
+  const cards=out.length?[]:raw.split(/<div[^>]*class="[^"]*\bs-person-card\b(?![-_])[^"]*"/).slice(1);
   for(const card of cards){
     const hometown=card.match(/<span class="sr-only">Hometown<\/span>([\s\S]*?)<\/span>/)?.[1];
     if(hometown==null)continue;

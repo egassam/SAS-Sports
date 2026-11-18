@@ -346,7 +346,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.311.2-state-brackets';
+const VERSION='4.312.0-in-college';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5128,12 +5128,18 @@ const alumniMatch=()=>alumniHighSchoolMatch||=alumniMatcher(schools.filter(s=>s.
 async function buildCollegeAlumni(college,now){
   const pages=[],reads=[];
   for(const sport of sponsoredSports[college.id]||[]){
+    // A sport's paths are alternatives ("womens-soccer", "wsoc", "soccer"),
+    // except a men's and a women's team: the first page with players for each
+    // team is read, the rest are not (fewer reads; KU refused a quick run of
+    // them on Nov 18).
+    const found=new Set();
     for(const url of rosterUrls(college,sport)){
+      const team=/\/womens-/.test(url)?'Women':/\/mens-/.test(url)?'Men':null;
+      if(team?found.has(team):found.size)continue;
       try{
         const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.listing,staleOnError:true});reads.push({url,status:r.status});if(!r.ok)continue;
         const players=rosterHometowns(await r.text(),r.url||url);if(!players.length)continue;
-        const team=/\/womens-/.test(url)?'Women':/\/mens-/.test(url)?'Men':null;
-        pages.push({sport,team,url,players});
+        found.add(team||'all');pages.push({sport,team,url,players});
       }catch(error){reads.push({url,error:String(error?.message||error).slice(0,120)})}
     }
   }
