@@ -240,3 +240,18 @@ export function hubDraft(index,colleges,{collegeIds=[],state=null,matches}={}){
   }).filter(Boolean);
   return picks.length?{year:draft.year,picks}:null;
 }
+
+// A pro team's own roster (user, November 18: "I'm not seeing the pro roster
+// on the pro pages"): every player on its ESPN roster with position, number,
+// college (the app's college page when the app has the school) and the line
+// from the team's latest game.
+export const ALUMNI_LEAGUE_BY_NAME=new Map(ALUMNI_LEAGUES.map(l=>[l.league,l]));
+export function teamRoster(index,lines,teamId,{collegeSchools=new Map()}={}){
+  if(!index||!teamId)return[];
+  const seen=new Set();
+  return(index.players||[]).filter(p=>p.t===teamId&&!seen.has(p.i)&&seen.add(p.i)).map(p=>{
+    const college=collegeSchools.get(p.c)||null,line=lines?.lines?.[p.i]||null;
+    return{id:p.i,name:p.n,position:p.p,jersey:p.j,years:p.x,college:college?.short_name||p.cn||'',...(college?{college_id:college.id}:{}),
+      ...(line?{last_game:{date:line.d,opponent:line.o,result:line.r,line:line.s}}:{})};
+  }).sort((a,b)=>(b.last_game?1:0)-(a.last_game?1:0)||a.name.localeCompare(b.name));
+}
