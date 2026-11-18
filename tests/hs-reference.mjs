@@ -27,6 +27,10 @@ const requestKey=(url,init={})=>`${String(init.method||'GET').toUpperCase()} ${u
 const unsaved=new Set();
 const fetch=async(url,init={})=>{
   const k=requestKey(String(url?.url||url),init),hit=saved[k];
+  // A source added after the recording (KSHSAA's playoff brackets, Nov 18,
+  // 2026) was not read that day: it answers 404 and the cards stay as
+  // recorded. Re-recording brings it in (docs/HIGH_SCHOOL_REFERENCE.md).
+  if(!hit&&k.startsWith('GET https://kshsaa-api.kshsaa.org/'))return new Response('',{status:404});
   if(!hit){unsaved.add(k);return new Response('',{status:404});}
   return new Response(hit.status?Buffer.from(hit.body,'base64'):null,{status:hit.status||599,headers:{'content-type':hit.type||'text/plain'}});
 };
