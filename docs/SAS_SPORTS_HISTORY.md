@@ -5558,3 +5558,12 @@ User: "I have received all notifications for my favorites". The handoff's open i
 **Merged** PR #600 as `8433306`; production `4.308.5-pros-alumni`; `verify:prod` kstate Football/Basketball/Baseball, the MiLB teams and kansas-pros (3 refreshes) 36 PASS, XC 18/20 and 26/21; `/live/pros` on production: K-State NFL 19 (draft 2), Kansas NBA 10 (draft 1), kansas-pros NFL 48 (draft 4).
 
 **Open.** Monarchs and ECHL need sources; MiLB colors approximate; the Royals' production feed shows only the 2027 schedule (no 2026 results; predates this PR); no NHL list on the hub; high schools get no In the Pros (ESPN rosters name no high school).
+
+
+## November 18, 2026 — Pro team pages: Roster (PR #602)
+
+**Asked.** User: "I'm not seeing the pro roster on the pro pages". PR #600 had put the player lists on college pages and the Kansas hub only; a pro team page had none (production feed: Chiefs `pros` flag absent).
+
+**Built** (4.309.0–4.309.1). `teamRoster` (`src/pro-alumni.mjs`): a pro team's players from the league's KV roster index, with college (linked by ESPN college id to the app's college page, `collegeSchoolsByEspnId`) and latest line; `/live/pros` answers a pro team (kind `espn-team` in NFL, NBA, WNBA, MLB, NHL) with `team_roster: true`, no draft; the page heads the section "Roster". Lines builds read the last four days every time (the Kraken had no lines: games past a first build's 20 summaries were never read).
+
+**Gate.** `test:release` 420/420 locally; CI guardrails green on `b0f0084`. Preview 4.309.1: `verify:preview` Chiefs, Celtics, Liberty, Royals, Kraken (3 refreshes) and K-State Football (36) 36 PASS, XC 18/20 and 26/21; Chiefs page checked in Chromium at 390 px (Roster, college links, lines). Merged as `ef5b321`; production `4.309.1-pro-rosters`, `verify:prod` Chiefs, Celtics, Kraken 18 PASS, XC 18/20 and 26/21; Chiefs roster 80 players, 33 with lines.
