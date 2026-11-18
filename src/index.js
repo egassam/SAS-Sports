@@ -68,7 +68,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails} from './pro-sports.mjs';
+import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -343,7 +343,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.305.1-pro-team-news';
+const VERSION='4.306.0-wnba-track';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4990,7 +4990,7 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
   if(target)await highSchoolTargetHighlights(target);
   return{events,...(rankings.length?{rankings}:{}),source_url:calendarUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null,scores_missing:scoresMissing,...(scoresErrors.length?{scores_errors:scoresErrors}:{}),...(youtube?{youtube}:{}),...(googleCalendar?{google_calendar:{read:googleCalendar.read,events:googleCalendar.payload?.events.length??null}}:{})};
 }
-// Professional teams and series (src/pro-sports.mjs): NFL, MLS, MLB, NBA and NHL teams
+// Professional teams and series (src/pro-sports.mjs): NFL, MLS, MLB, NBA, WNBA and NHL teams
 // from ESPN's team schedule, NASCAR races from NASCAR's own feeds.
 // ESPN reads carry the scoreboard identity (ESPN refuses a user agent with a
 // web address; see SCOREBOARD_USER_AGENT).
@@ -5074,9 +5074,16 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     // by name as well, the playoffs in April to June, and the NBA's play-in
     // tournament (its own season type) in April. The regular season's list is
     // kept six hours once it is over (May to September).
-    const winter=config.sport==='Basketball'||config.sport==='Hockey';
-    const ttl=url=>url.endsWith('seasontype=2')&&(config.sport==='Baseball'&&(month>=10||month<=2)||winter&&month>=5&&month<=9)?SOURCE_TTL.document:SOURCE_TTL.schedule;
+    // The WNBA (user, November 18: "Start with wnba") plays May to
+    // September, its playoffs in September and October: the regular season
+    // by name, the playoffs from September until the next season starts
+    // (kept six hours outside September and October, as is the regular
+    // season once it is over).
+    const wnba=config.espn.path==='basketball/wnba';
+    const winter=!wnba&&(config.sport==='Basketball'||config.sport==='Hockey');
+    const ttl=url=>(url.endsWith('seasontype=2')&&(config.sport==='Baseball'&&(month>=10||month<=2)||winter&&month>=5&&month<=9||wnba&&(month>=10||month<=4))||wnba&&url.endsWith('seasontype=3')&&(month>=11||month<=4))?SOURCE_TTL.document:SOURCE_TTL.schedule;
     if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}
+    if(wnba){urls[0]=`${base}?seasontype=2`;if(month>=9||month<=4)urls.push(`${base}?seasontype=3`);}
     if(winter){urls[0]=`${base}?seasontype=2`;if(month>=4&&month<=6)urls.push(`${base}?seasontype=3`);if(config.sport==='Basketball'&&month===4)urls.push(`${base}?seasontype=5`);}
     // The league's standings (one read for every team of the league, kept
     // 30 minutes): the team's division, its conference and the other one.
@@ -5152,6 +5159,7 @@ async function fetchPro(school,sport,now,aiTargetId=null){
   }
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
+  if(config.kind==='world-athletics')return fetchWorldAthletics(school,config,now,timeZone,aiTargetId,failed);
   return failed('Unknown pro source');
 }
 // Formula 1 (src/pro-sports.mjs): the calendar from Jolpica, the season's
@@ -5159,6 +5167,49 @@ async function fetchPro(school,sport,now,aiTargetId=null){
 // classification (kept six hours: a finished race does not change). A race
 // formula1.com has not listed yet takes Jolpica's results; one under way
 // reads ESPN's F1 board every 30 s.
+// Track and field (src/pro-sports.mjs, "Track and field"): World Athletics'
+// calendar for the entry's meets (the last 400 days and the next 400),
+// then each meet day's results page. A finished meet's pages are kept six
+// hours; a meet under way, two minutes; the calendar, ten.
+async function fetchWorldAthletics(school,config,now,timeZone,aiTargetId,failed){
+  const day=864e5,iso=t=>new Date(t).toISOString().slice(0,10),today=schoolToday(now,school);
+  const from=iso(today-400*day),to=iso(today+400*day);
+  const calendarUrls=config.calendars.map(filter=>worldAthleticsCalendarUrl(filter,from,to));
+  const pages=await Promise.all(calendarUrls.map(url=>readText(url,SOURCE_TTL.listing)));
+  if(!pages.some(Boolean))return failed(`${calendarUrls[0]}: unreadable`);
+  const meets=worldAthleticsCalendar(pages.filter(Boolean),{match:config.match});
+  if(!meets.length&&pages.some(p=>p&&!p.includes('__NEXT_DATA__')))return failed(`${calendarUrls[0]}: no calendar data`);
+  const sources=calendarUrls.slice(),finals=new Map(),dateOf=d=>Date.parse(`${d}T00:00:00Z`);
+  // Results: a meet that is over and has results, or one under way (its
+  // days so far). At most six pages at a time.
+  const reads=[];
+  for(const meet of meets){
+    const first=dateOf(meet.from),last=dateOf(meet.to);
+    if(first>today||(last<today&&!meet.hasResults))continue;
+    const days=worldAthleticsDays(meet);
+    for(let n=1;n<=days;n++)if(first+(n-1)*day<=today)reads.push({meet,n,ttl:last<today?SOURCE_TTL.document:SOURCE_TTL.schedule});
+  }
+  const pagesByMeet=new Map();
+  let next=0;
+  await Promise.all(Array.from({length:Math.min(6,reads.length)},async()=>{while(next<reads.length){const r=reads[next++],url=worldAthleticsResultsUrl(r.meet.id,r.n),parsed=worldAthleticsFinals(await readText(url,r.ttl));if(parsed){(pagesByMeet.get(r.meet.id)||pagesByMeet.set(r.meet.id,[]).get(r.meet.id)).push({n:r.n,events:parsed.events});sources.push(url);}}}));
+  for(const [id,list] of pagesByMeet){
+    const seen=new Map();
+    for(const {events} of list.sort((a,b)=>a.n-b.n))for(const e of events){const prev=seen.get(e.id);if(!prev||e.results.length>prev.results.length)seen.set(e.id,e);}
+    if(seen.size)finals.set(id,[...seen.values()]);
+  }
+  const events=worldAthleticsMeets(meets,{school,config,timeZone,now,finals});
+  const target=aiTargetId&&events.find(e=>e.id===aiTargetId);
+  if(target&&finals.has(target.world_athletics_id)){
+    const meet=meets.find(m=>m.id===target.world_athletics_id),details=worldAthleticsDetails(meet,finals.get(meet.id));
+    if(details){
+      target.results=details.rows;target.result_count=details.rows.length;
+      target.race_table=details.table;
+      target.highlights=details.lines;target.highlights_verified=true;target.game_stats=details.stats;
+      target.highlight_status='Every final from World Athletics\' results (place, athlete, country, mark, wind and records).';
+    }
+  }
+  return{events,source_url:config.schedule,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+}
 async function fetchF1(school,config,now,timeZone,aiTargetId,failed){
   const year=schoolNow(now,school).getUTCFullYear(),calendarUrl=`${JOLPICA_F1}${year}.json`,seasonUrl=`${F1_RESULTS}${year}/races`;
   const [calendarPayload,seasonHtml,driversHtml,teamsHtml]=await Promise.all([readJson(calendarUrl,SOURCE_TTL.listing),readText(seasonUrl,SOURCE_TTL.listing),readText(`${F1_RESULTS}${year}/drivers`,SOURCE_TTL.article),readText(`${F1_RESULTS}${year}/team`,SOURCE_TTL.article)]);
@@ -5516,9 +5567,13 @@ function eventMergeKey(e){const day=e.start_time?e.start_time.slice(0,10):'';ret
 function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:2,Live:3,Final:4},byKey=new Map();for(const events of eventLists)for(const e of events){const key=eventMergeKey(e),prev=byKey.get(key);if(!prev){byKey.set(key,e);continue;}const ew=statusWeight[e.status]??0,pw=statusWeight[prev.status]??0,ed=(e.recap_result_count?100:0)+(e.school_score&&e.opponent_score?2:0)+(e.result_count||0)+(e.highlights?.length||0)*2+(e.recap_url?2:0),pd=(prev.recap_result_count?100:0)+(prev.school_score&&prev.opponent_score?2:0)+(prev.result_count||0)+(prev.highlights?.length||0)*2+(prev.recap_url?2:0);if(ew>pw||(ew===pw&&ed>pd))byKey.set(key,e);}return[...byKey.values()];}
 // Pro leagues whose season is not the college one: MLS plays late February to
 // early December, MLB late March to the World Series (early November), the
-// NBA and NHL October to the June finals.
-const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]]};
-function inSeason(sport,month,pro=false){const windows=(pro&&PRO_SEASONS[sport])||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
+// NBA and NHL October to the June finals, professional track and field from
+// the indoor season (January) to the Diamond League final (September).
+const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};
+// A league whose season is not its sport's (by ESPN path): the WNBA plays
+// May to its October finals.
+const PRO_LEAGUE_SEASONS={'basketball/wnba':[[5,10]]};
+function inSeason(sport,month,pro=false,league=null){const windows=(pro&&(PRO_LEAGUE_SEASONS[league]||PRO_SEASONS[sport]))||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 // A sport's overall record this season (user, October 7: "the sports overall
 // win/loss record for every sport"), counted from its finals' W/L/T results
 // as the official schedule publishes them (games, duals, and gymnastics or
@@ -5566,7 +5621,7 @@ function seasonRecords(results){
 // "ITF Sectionals" (Ole Miss's spelling of the ITA Sectionals) stays.
 const PRO_TENNIS_EVENT=/^(?:#\d+\s+)?(?:(?:ATP|ITF|WTA)\b|UTR (?:Pro|PTT)\b)|\b[MW](?:15|25|35|50|60|75|80|100)\b|\bChallenger\b/i;
 const proTennisEvent=e=>e.sport==='Tennis'&&PRO_TENNIS_EVENT.test(e.opponent||'')&&!/\bSectionals?\b/i.test(e.opponent||'');
-function groupEvents(events,now=new Date()){events=events.filter(e=>!proTennisEvent(e));if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool)),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+function groupEvents(events,now=new Date()){events=events.filter(e=>!proTennisEvent(e));if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool),isPro(groupSchool)?proTeam(groupSchool.id)?.espn?.path:null),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
@@ -6061,6 +6116,12 @@ function scoreboardTeamMatchesSchool(team,school){
   // - ESPN's boards carry no high or middle school: Manhattan High School
   //   ("Manhattan") never takes the Manhattan Jaspers (Oct 23).
   if(school?.level==='high-school'||school?.level==='middle-school')return false;
+  // A pro team with ESPN's team id is never another id: "Liberty Flames"
+  // (Liberty University) is not the New York Liberty (WNBA, November 18).
+  // Ids repeat across ESPN's leagues (USC and the Jaguars are both 30), so
+  // the name must match as well.
+  const proId=school?.level==='pro'?(school.providers||[]).find(p=>p?.provider==='ESPN'&&p.provider_school_id)?.provider_school_id:null;
+  if(proId&&team?.id!=null&&String(team.id)!==String(proId))return false;
   // The school's own name and short name are never a nickname: UC Davis's
   // alias "UC-Davis" read as one and removed "UC Davis" (Nov 12).
   const own=new Set([school.name,school.short_name].map(normalizedTeamName));
@@ -6387,7 +6448,7 @@ const LIVE_NOW_COLLEGE_BOARDS=[
 function liveNowBoards(now=new Date()){
   const month=now.getUTCMonth()+1,pro=new Map();
   for(const school of schools){if(school.level!=='pro')continue;const config=proTeam(school.id);if(config?.kind==='espn-team'&&!pro.has(config.espn.path))pro.set(config.espn.path,{path:config.espn.path,sport:config.sport,level:'pro'});}
-  return[...LIVE_NOW_COLLEGE_BOARDS,...pro.values()].filter(board=>inSeason(board.sport,month,board.level==='pro'));
+  return[...LIVE_NOW_COLLEGE_BOARDS,...pro.values()].filter(board=>inSeason(board.sport,month,board.level==='pro',board.path));
 }
 // Push alerts read finished games too, and every catalog side of a game
 // (both teams can be someone's favorite): {states:['in','post'],allSides:true}.

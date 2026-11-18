@@ -6428,5 +6428,62 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "atlanta-dream": [
+    "Basketball"
+  ],
+  "chicago-sky": [
+    "Basketball"
+  ],
+  "connecticut-sun": [
+    "Basketball"
+  ],
+  "indiana-fever": [
+    "Basketball"
+  ],
+  "new-york-liberty": [
+    "Basketball"
+  ],
+  "toronto-tempo": [
+    "Basketball"
+  ],
+  "washington-mystics": [
+    "Basketball"
+  ],
+  "dallas-wings": [
+    "Basketball"
+  ],
+  "golden-state-valkyries": [
+    "Basketball"
+  ],
+  "las-vegas-aces": [
+    "Basketball"
+  ],
+  "los-angeles-sparks": [
+    "Basketball"
+  ],
+  "minnesota-lynx": [
+    "Basketball"
+  ],
+  "phoenix-mercury": [
+    "Basketball"
+  ],
+  "portland-fire": [
+    "Basketball"
+  ],
+  "seattle-storm": [
+    "Basketball"
+  ],
+  "diamond-league": [
+    "Track & Field"
+  ],
+  "world-athletics-championships": [
+    "Track & Field"
+  ],
+  "world-indoor-tour": [
+    "Track & Field"
+  ],
+  "usa-championships": [
+    "Track & Field"
   ]
 }

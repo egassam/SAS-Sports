@@ -5110,5 +5110,157 @@
     "panelDark": "#230304",
     "line": "#c54b4f",
     "onAccent": "#ffffff"
+  },
+  "atlanta-dream": {
+    "primary": "#E31837",
+    "secondary": "#5091CC",
+    "panel": "#3b0e19",
+    "panelDark": "#1b070d",
+    "line": "#8b1c31",
+    "onAccent": "#ffffff"
+  },
+  "chicago-sky": {
+    "primary": "#5091CD",
+    "secondary": "#FFD520",
+    "panel": "#1a283a",
+    "panelDark": "#0d131c",
+    "line": "#3a5e84",
+    "onAccent": "#ffffff"
+  },
+  "connecticut-sun": {
+    "primary": "#F05023",
+    "secondary": "#0A2240",
+    "panel": "#3d1a14",
+    "panelDark": "#1d0d0b",
+    "line": "#923a26",
+    "onAccent": "#ffffff"
+  },
+  "indiana-fever": {
+    "primary": "#002D62",
+    "secondary": "#E03A3E",
+    "panel": "#091222",
+    "panelDark": "#050911",
+    "line": "#0e2749",
+    "onAccent": "#ffffff"
+  },
+  "new-york-liberty": {
+    "primary": "#86CEBC",
+    "secondary": "#000000",
+    "panel": "#263636",
+    "panelDark": "#12191a",
+    "line": "#58807a",
+    "onAccent": "#111111"
+  },
+  "toronto-tempo": {
+    "primary": "#33476D",
+    "secondary": "#7B1B38",
+    "panel": "#141824",
+    "panelDark": "#0a0c12",
+    "line": "#2a354f",
+    "onAccent": "#ffffff"
+  },
+  "washington-mystics": {
+    "primary": "#E03A3E",
+    "secondary": "#002B5C",
+    "panel": "#3a151a",
+    "panelDark": "#1b0a0d",
+    "line": "#8a2e35",
+    "onAccent": "#ffffff"
+  },
+  "dallas-wings": {
+    "primary": "#002B5C",
+    "secondary": "#C4D600",
+    "panel": "#091221",
+    "panelDark": "#050910",
+    "line": "#0e2646",
+    "onAccent": "#ffffff"
+  },
+  "golden-state-valkyries": {
+    "primary": "#B38FCF",
+    "secondary": "#000000",
+    "panel": "#30283a",
+    "panelDark": "#16131c",
+    "line": "#715d85",
+    "onAccent": "#ffffff"
+  },
+  "las-vegas-aces": {
+    "primary": "#A7A8AA",
+    "secondary": "#000000",
+    "panel": "#2d2e32",
+    "panelDark": "#151518",
+    "line": "#6a6b70",
+    "onAccent": "#ffffff"
+  },
+  "los-angeles-sparks": {
+    "primary": "#552583",
+    "secondary": "#FDB927",
+    "panel": "#1b1129",
+    "panelDark": "#0d0814",
+    "line": "#3d235b",
+    "onAccent": "#ffffff"
+  },
+  "minnesota-lynx": {
+    "primary": "#266092",
+    "secondary": "#79BC43",
+    "panel": "#111e2d",
+    "panelDark": "#080e16",
+    "line": "#234363",
+    "onAccent": "#ffffff"
+  },
+  "phoenix-mercury": {
+    "primary": "#3C286E",
+    "secondary": "#FA4B0A",
+    "panel": "#161125",
+    "panelDark": "#0b0912",
+    "line": "#2f244f",
+    "onAccent": "#ffffff"
+  },
+  "portland-fire": {
+    "primary": "#CEE5EB",
+    "secondary": "#000000",
+    "panel": "#363b40",
+    "panelDark": "#191b1f",
+    "line": "#808c94",
+    "onAccent": "#111111"
+  },
+  "seattle-storm": {
+    "primary": "#2C5235",
+    "secondary": "#FEE11A",
+    "panel": "#121b18",
+    "panelDark": "#090d0d",
+    "line": "#273c30",
+    "onAccent": "#ffffff"
+  },
+  "diamond-league": {
+    "primary": "#1B365D",
+    "secondary": "#C5A35A",
+    "panel": "#0f1421",
+    "panelDark": "#070a11",
+    "line": "#1d2c46",
+    "onAccent": "#ffffff"
+  },
+  "world-athletics-championships": {
+    "primary": "#0062A8",
+    "secondary": "#F2C230",
+    "panel": "#091e31",
+    "panelDark": "#050e18",
+    "line": "#0e446f",
+    "onAccent": "#ffffff"
+  },
+  "world-indoor-tour": {
+    "primary": "#5B2C83",
+    "secondary": "#00A3E0",
+    "panel": "#1d1229",
+    "panelDark": "#0e0914",
+    "line": "#40275b",
+    "onAccent": "#ffffff"
+  },
+  "usa-championships": {
+    "primary": "#BF0A30",
+    "secondary": "#002868",
+    "panel": "#330b17",
+    "panelDark": "#18060c",
+    "line": "#77142d",
+    "onAccent": "#ffffff"
   }
 }

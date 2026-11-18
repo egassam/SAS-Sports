@@ -16239,5 +16239,483 @@
         "provider_school_id": "h20250204045158064e13d55a61e4348"
       }
     ]
+  },
+  {
+    "id": "atlanta-dream",
+    "name": "Atlanta Dream",
+    "short_name": "Dream",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://dream.wnba.com",
+    "aliases": [
+      "Dream",
+      "ATL",
+      "Atlanta Dream"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/atl",
+        "provider_school_id": "20"
+      }
+    ]
+  },
+  {
+    "id": "chicago-sky",
+    "name": "Chicago Sky",
+    "short_name": "Sky",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://sky.wnba.com",
+    "aliases": [
+      "Sky",
+      "CHI",
+      "Chicago Sky"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/chi",
+        "provider_school_id": "19"
+      }
+    ]
+  },
+  {
+    "id": "connecticut-sun",
+    "name": "Connecticut Sun",
+    "short_name": "Sun",
+    "state": "Connecticut",
+    "city": "Uncasville",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://sun.wnba.com",
+    "aliases": [
+      "Sun",
+      "CON",
+      "Connecticut Sun"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/con",
+        "provider_school_id": "18"
+      }
+    ]
+  },
+  {
+    "id": "indiana-fever",
+    "name": "Indiana Fever",
+    "short_name": "Fever",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://fever.wnba.com",
+    "aliases": [
+      "Fever",
+      "IND",
+      "Indiana Fever"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/ind",
+        "provider_school_id": "5"
+      }
+    ]
+  },
+  {
+    "id": "new-york-liberty",
+    "name": "New York Liberty",
+    "short_name": "Liberty",
+    "state": "New York",
+    "city": "Brooklyn",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://liberty.wnba.com",
+    "aliases": [
+      "Liberty",
+      "NY",
+      "New York Liberty"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/ny",
+        "provider_school_id": "9"
+      }
+    ]
+  },
+  {
+    "id": "toronto-tempo",
+    "name": "Toronto Tempo",
+    "short_name": "Tempo",
+    "state": "Ontario",
+    "city": "Toronto",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://tempo.wnba.com",
+    "aliases": [
+      "Tempo",
+      "TOR",
+      "Toronto Tempo"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/tor",
+        "provider_school_id": "131935"
+      }
+    ]
+  },
+  {
+    "id": "washington-mystics",
+    "name": "Washington Mystics",
+    "short_name": "Mystics",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "Eastern Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Eastern Conference",
+    "athletics_url": "https://mystics.wnba.com",
+    "aliases": [
+      "Mystics",
+      "WSH",
+      "Washington Mystics"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/wsh",
+        "provider_school_id": "16"
+      }
+    ]
+  },
+  {
+    "id": "dallas-wings",
+    "name": "Dallas Wings",
+    "short_name": "Wings",
+    "state": "Texas",
+    "city": "Arlington",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://wings.wnba.com",
+    "aliases": [
+      "Wings",
+      "DAL",
+      "Dallas Wings"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/dal",
+        "provider_school_id": "3"
+      }
+    ]
+  },
+  {
+    "id": "golden-state-valkyries",
+    "name": "Golden State Valkyries",
+    "short_name": "Valkyries",
+    "state": "California",
+    "city": "San Francisco",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://valkyries.wnba.com",
+    "aliases": [
+      "Valkyries",
+      "GS",
+      "Golden State Valkyries"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/gs",
+        "provider_school_id": "129689"
+      }
+    ]
+  },
+  {
+    "id": "las-vegas-aces",
+    "name": "Las Vegas Aces",
+    "short_name": "Aces",
+    "state": "Nevada",
+    "city": "Las Vegas",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://aces.wnba.com",
+    "aliases": [
+      "Aces",
+      "LV",
+      "Las Vegas Aces"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/lv",
+        "provider_school_id": "17"
+      }
+    ]
+  },
+  {
+    "id": "los-angeles-sparks",
+    "name": "Los Angeles Sparks",
+    "short_name": "Sparks",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://sparks.wnba.com",
+    "aliases": [
+      "Sparks",
+      "LA",
+      "Los Angeles Sparks"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/la",
+        "provider_school_id": "6"
+      }
+    ]
+  },
+  {
+    "id": "minnesota-lynx",
+    "name": "Minnesota Lynx",
+    "short_name": "Lynx",
+    "state": "Minnesota",
+    "city": "Minneapolis",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://lynx.wnba.com",
+    "aliases": [
+      "Lynx",
+      "MIN",
+      "Minnesota Lynx"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/min",
+        "provider_school_id": "8"
+      }
+    ]
+  },
+  {
+    "id": "phoenix-mercury",
+    "name": "Phoenix Mercury",
+    "short_name": "Mercury",
+    "state": "Arizona",
+    "city": "Phoenix",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://mercury.wnba.com",
+    "aliases": [
+      "Mercury",
+      "PHX",
+      "Phoenix Mercury"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/phx",
+        "provider_school_id": "11"
+      }
+    ]
+  },
+  {
+    "id": "portland-fire",
+    "name": "Portland Fire",
+    "short_name": "Fire",
+    "state": "Oregon",
+    "city": "Portland",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://fire.wnba.com",
+    "aliases": [
+      "Fire",
+      "POR",
+      "Portland Fire"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/por",
+        "provider_school_id": "132052"
+      }
+    ]
+  },
+  {
+    "id": "seattle-storm",
+    "name": "Seattle Storm",
+    "short_name": "Storm",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "Western Conference",
+    "league": "WNBA",
+    "pro_sport": "Basketball",
+    "level": "pro",
+    "division": "WNBA · Western Conference",
+    "athletics_url": "https://storm.wnba.com",
+    "aliases": [
+      "Storm",
+      "SEA",
+      "Seattle Storm"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "basketball/wnba/teams/sea",
+        "provider_school_id": "14"
+      }
+    ]
+  },
+  {
+    "id": "diamond-league",
+    "name": "Wanda Diamond League",
+    "short_name": "Diamond League",
+    "state": "Monaco",
+    "city": "Monaco",
+    "conference": "Diamond League",
+    "league": "Diamond League",
+    "pro_sport": "Track & Field",
+    "level": "pro",
+    "division": "Wanda Diamond League",
+    "athletics_url": "https://www.diamondleague.com",
+    "aliases": [
+      "Diamond League",
+      "DL",
+      "Wanda Diamond League"
+    ],
+    "providers": [
+      {
+        "provider": "World Athletics",
+        "slug": "worldathletics.org/competition/calendar-results",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "world-athletics-championships",
+    "name": "World Athletics Championships",
+    "short_name": "World Championships",
+    "state": "Monaco",
+    "city": "Monaco",
+    "conference": "World Athletics",
+    "league": "World Athletics",
+    "pro_sport": "Track & Field",
+    "level": "pro",
+    "division": "World Athletics Championships",
+    "athletics_url": "https://worldathletics.org",
+    "aliases": [
+      "World Championships",
+      "World Indoor Championships",
+      "Olympic Games",
+      "World Relays",
+      "World Athletics Ultimate Championship"
+    ],
+    "providers": [
+      {
+        "provider": "World Athletics",
+        "slug": "worldathletics.org/competition/calendar-results",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "world-indoor-tour",
+    "name": "World Athletics Indoor Tour Gold",
+    "short_name": "World Indoor Tour",
+    "state": "Monaco",
+    "city": "Monaco",
+    "conference": "World Athletics",
+    "league": "World Athletics",
+    "pro_sport": "Track & Field",
+    "level": "pro",
+    "division": "World Athletics Indoor Tour Gold",
+    "athletics_url": "https://worldathletics.org",
+    "aliases": [
+      "World Indoor Tour",
+      "Indoor Tour",
+      "World Athletics Indoor Tour"
+    ],
+    "providers": [
+      {
+        "provider": "World Athletics",
+        "slug": "worldathletics.org/competition/calendar-results",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "usa-championships",
+    "name": "USA Track & Field Championships",
+    "short_name": "USA Championships",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "conference": "USATF",
+    "league": "USATF",
+    "pro_sport": "Track & Field",
+    "level": "pro",
+    "division": "USA Track & Field Championships",
+    "athletics_url": "https://www.usatf.org",
+    "aliases": [
+      "USATF",
+      "USA Championships",
+      "USA Indoor Championships",
+      "U.S. Championships"
+    ],
+    "providers": [
+      {
+        "provider": "World Athletics",
+        "slug": "worldathletics.org/competition/calendar-results",
+        "provider_school_id": null
+      }
+    ]
   }
 ]

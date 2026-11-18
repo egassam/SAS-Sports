@@ -23,9 +23,12 @@ const pro=schools.filter(s=>s.level==='pro');
 // "Let's add soccer to the pro section"; tests/mls-module.mjs), then the 30
 // MLB teams (user, October 19: "Let's add MLB in the pro section including
 // playoff games"; tests/mlb-module.mjs), then the 30 NBA and 32 NHL teams
-// (user, November 8: "Add NBA then NHL"; tests/nba-module.mjs, tests/nhl-module.mjs).
-assert.equal(pro.length,158);
-assert.deepEqual(pro.filter(s=>!['MLS','MLB','NBA','NHL'].includes(s.league)).slice(-4).map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
+// (user, November 8: "Add NBA then NHL"; tests/nba-module.mjs, tests/nhl-module.mjs),
+// then the 15 WNBA teams (user, November 18: "Let's add more pro. Start with
+// wnba"; tests/wnba-module.mjs) and the four track and field entries (same
+// request; tests/track-field-module.mjs).
+assert.equal(pro.length,177);
+assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
 assert.deepEqual(divisions,{
@@ -62,7 +65,7 @@ const themes=JSON.parse(read('../src/team-themes.json'));
 for(const s of pro)assert.ok(themes[s.id]?.primary,`${s.id} theme`);
 // The Team box groups NFL teams under their division, always (user, October
 // 16: "Group them by division"); NASCAR's series sits under NASCAR.
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>s.league==='WNBA'?s.division:['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
 assert.ok(page.includes("const sectioned=!conf||level.id==='middle-school'||level.id==='high-school'||level.id==='pro';"));
 // One Sport box on Pro: the sport filter is hidden (a team plays one sport).
 assert.ok(page.includes("$('#sportField').hidden=level.id==='pro';"));
