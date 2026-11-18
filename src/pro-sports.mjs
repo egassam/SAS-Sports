@@ -294,7 +294,30 @@ export const PRO_TEAMS={
     calendars:['competitionGroupId=3731&query=USA%20Championships','competitionGroupId=3730&query=USA'],
     match:{name:/^USA\b/,venue:/\(USA\)$/},
     schedule:'https://www.usatf.org/events'
-  }
+  },
+  // Minor league baseball near home (user, November 18: "Start 1-4"): the
+  // Wichita Wind Surge (Double-A, Texas League) and the Royals' top two farm
+  // teams, the Omaha Storm Chasers (Triple-A, International League) and the
+  // Northwest Arkansas Naturals (Double-A, Texas League), read from MLB's own
+  // stats API (`statsapi.mlb.com`, the data MiLB.com shows; ESPN has no minor
+  // leagues). The Kansas City Monarchs (American Association) are not in it.
+  'wichita-wind-surge':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:12,teamId:3898},affiliate:'Minnesota Twins',league:'Texas League',schedule:'https://www.milb.com/wichita/schedule'},
+  'omaha-storm-chasers':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:11,teamId:541},affiliate:'Kansas City Royals',league:'International League',schedule:'https://www.milb.com/omaha/schedule'},
+  'northwest-arkansas-naturals':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:12,teamId:1350},affiliate:'Kansas City Royals',league:'Texas League',schedule:'https://www.milb.com/northwest-arkansas/schedule'},
+  // Kansas & Kansas City (user, November 18: "Start 1-4"): one page for the
+  // pro teams fans in Kansas follow and the players from Kansas. Each sport
+  // lists its teams' games (read by their own entries), each team its own
+  // record; NASCAR only at Kansas Speedway. In the Pros lists every player
+  // from Kansas, K-State and Wichita State and everyone born in Kansas, and
+  // the draft picks from those colleges (MLB: any school in Kansas, high
+  // schools included).
+  'kansas-pros':{kind:'hub',sport:null,sports:{
+    Football:{teams:['kansas-city-chiefs']},
+    Baseball:{teams:['kansas-city-royals','wichita-wind-surge','omaha-storm-chasers','northwest-arkansas-naturals']},
+    Basketball:{teams:[]},
+    Soccer:{teams:['sporting-kansas-city','kansas-city-current']},
+    'Auto Racing':{teams:['nascar-cup-series'],track:/\bKansas\b/i},
+  },colleges:['kansas','kstate','wichita-state'],collegeEspnIds:{'wichita-state':'2724'},birthState:'KS',state:'KS'},
 };
 export const proTeam=id=>PRO_TEAMS[id]||null;
 export const ESPN_SITE='https://site.api.espn.com/apis/site/v2/sports/';
@@ -1642,4 +1665,85 @@ export function worldAthleticsMeets(meets,{school,config,timeZone,now,finals=new
     events.push(event);
   }
   return events;
+}
+
+// ---- Minor league baseball (MLB's stats API) ----
+// One team's season from `statsapi.mlb.com/api/v1/schedule` with the line
+// score, venue and pitchers of record: regular season and playoffs (spring
+// and exhibition games are not listed). K-State's rules: a past game without
+// a final score, a postponed or cancelled game, is not listed.
+export const MLB_STATS_API='https://statsapi.mlb.com/api/v1/';
+export const mlbStatsScheduleUrl=(config,{season=null,date=null}={})=>`${MLB_STATS_API}schedule?sportId=${config.mlb.sportId}&teamId=${config.mlb.teamId}&${date?`date=${date}`:`season=${season}`}&hydrate=linescore,venue,decisions,team`;
+const MLB_PLAYOFF_TYPES={F:'Playoffs · First Round',D:'Playoffs · Division Series',L:'Playoffs · Championship Series',W:'Championship Series'};
+// The seasons to read: this year's; in its last months next year's as well
+// (its schedule is published in the fall), and in January to March last year's
+// (the season a fan last saw).
+export function mlbStatsSeasons(now){const y=now.getUTCFullYear(),m=now.getUTCMonth()+1;return m<=3?[y-1,y]:m>=10?[y,y+1]:[y]}
+const inningOrdinal=n=>ordinal(Number(n)||0);
+export function mlbStatsGames(payloads,{school,config,timeZone,now}){
+  const today=dayOf(wallClock(now,timeZone)),seen=new Map();
+  for(const payload of payloads)for(const date of payload?.dates||[])for(const g of date.games||[])seen.set(g.gamePk,g);
+  const events=[];
+  for(const g of seen.values()){
+    if(!['R','F','D','L','W'].includes(g.gameType))continue;
+    const state=g.status?.abstractGameState,detail=g.status?.detailedState||'';
+    if(/Postponed|Cancelled|Canceled|Suspended/i.test(detail))continue;
+    const ownSide=Number(g.teams?.home?.team?.id)===config.mlb.teamId?'home':Number(g.teams?.away?.team?.id)===config.mlb.teamId?'away':null;if(!ownSide)continue;
+    const own=g.teams[ownSide],opp=g.teams[ownSide==='home'?'away':'home'];
+    const timed=g.status?.startTimeTBD!==true,start=wallClock(g.gameDate,timeZone),day=dayOf(start);
+    const scored=own.score!=null&&opp.score!=null;
+    let status;
+    if(state==='Final'&&scored)status='Final';
+    else if(state==='Live'&&!/Warmup|Delayed Start/i.test(detail))status='Live';
+    else if(state!=='Final'&&day>=today)status=day===today?'Today':'Upcoming';
+    else continue;
+    const oppName=opp.team?.name||'Opponent',relation=ownSide==='away'?'at':'vs';
+    const postseason=g.gameType!=='R',round=postseason?(g.seriesDescription&&!/Regular/i.test(g.seriesDescription)?g.seriesDescription:MLB_PLAYOFF_TYPES[g.gameType]):null;
+    const event=baseEvent({school,sport:'Baseball',status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`MLB Stats API (${config.league})`,sourceUrl:config.schedule,now,key:`${g.gamePk}|${status}`});
+    event.mlb_game_pk=g.gamePk;event.espn_date=g.gameDate;event.opponent_short=opp.team?.teamName||opp.team?.name?.split(' ').slice(-1)[0]||oppName;
+    const abbr=t=>t.team?.abbreviation||t.team?.teamName||'';
+    if(g.venue?.name)event.venue=g.venue.name;
+    if(g.doubleHeader&&g.doubleHeader!=='N')event.game_number=Number(g.gameNumber)||1;
+    if(Number(g.scheduledInnings)&&Number(g.scheduledInnings)!==9)event.scheduled_innings=Number(g.scheduledInnings);
+    const line=g.linescore||{},innings=(line.innings||[]).length;
+    if(status==='Final'||status==='Live'){event.school_score=String(own.score);event.opponent_score=String(opp.score);}
+    if(status==='Final'){
+      const scheduled=Number(g.scheduledInnings)||9;
+      // A game past or short of its scheduled length names its innings ("W 5-3
+      // (11 inn)"); a seven-inning doubleheader game played in full does not.
+      event.headline=finalHeadline(own.score,opp.score,null,null,innings&&innings!==scheduled?`Final/${innings}`:'');
+      event.results=[{label:'Result',value:event.headline}];
+      // The pitchers of record: one row each (Win, Loss, Save).
+      const d=g.decisions||{};
+      for(const [label,x] of [['Win',d.winner],['Loss',d.loser],['Save',d.save]])if(x?.fullName)event.results.push({label,value:x.fullName});
+    }
+    if(status==='Live'){
+      const half=line.inningState||(line.isTopInning?'Top':'Bottom');
+      event.recency_label=line.currentInning?`${half} ${inningOrdinal(line.currentInning)}${line.outs!=null&&/Top|Bottom/.test(half)?` · ${line.outs} out${line.outs===1?'':'s'}`:''}`:'In progress';
+      event.headline=`${own.score}-${opp.score}`;event.live_score_source='MLB';
+    }
+    if(event.game_number)event.results.push({label:'Doubleheader',value:`Game ${event.game_number}`});
+    if(round){event.round=round;event.results.push({label:'Round',value:round});event.postseason=true;event.not_in_record=true;}
+    event.result_count=event.results.length;
+    // The box: inning by inning, runs, hits and errors (the MLB box's layout).
+    if((status==='Final'||status==='Live')&&innings){
+      const ownLine=ownSide==='home'?'home':'away',oppLine=ownSide==='home'?'away':'home';
+      event.box_score={teams:{ours:abbr(own)||school.short_name,theirs:abbr(opp)||event.opponent_short},line_title:'Line Score',scoring_title:'Scoring Plays',total_label:'R',
+        line:line.innings.map(i=>({label:String(i.num),ours:i[ownLine]?.runs!=null?String(i[ownLine].runs):'X',theirs:i[oppLine]?.runs!=null?String(i[oppLine].runs):'X'})),
+        totals:{ours:String(own.score),theirs:String(opp.score)},
+        columns:[{label:'H',ours:String(line.teams?.[ownLine]?.hits??''),theirs:String(line.teams?.[oppLine]?.hits??'')},{label:'E',ours:String(line.teams?.[ownLine]?.errors??''),theirs:String(line.teams?.[oppLine]?.errors??'')}],
+        stats:[],scoring:[]};
+    }
+    events.push(event);
+  }
+  return events.sort((a,b)=>String(a.espn_date).localeCompare(String(b.espn_date)));
+}
+// The expanded view of a final: the result written from the team's side, the
+// pitchers of record and the line score (no extra read).
+export function mlbStatsHighlights(event){
+  if(event.status!=='Final'||!event.box_score)return null;
+  const us=Number(event.school_score),them=Number(event.opponent_score),innings=event.box_score.line.length;
+  const lines=[`The ${event.school} ${us>them?'beat':us<them?'lost to':'tied'} the ${event.opponent} ${Math.max(us,them)}-${Math.min(us,them)}${innings!==(event.scheduled_innings||9)?` in ${innings} innings`:''}${event.title.includes(' at ')?' on the road':' at home'}${event.venue?` (${event.venue})`:''}${event.round?`, ${event.round}`:''}.`];
+  const pitchers=event.results.filter(r=>['Win','Loss','Save'].includes(r.label)).map(r=>`${r.label}: ${String(r.value).replace(/\.$/,'')}`);if(pitchers.length)lines.push(`${pitchers.join('. ')}.`);
+  return{lines,box_score:event.box_score};
 }
