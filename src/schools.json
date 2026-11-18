@@ -16717,5 +16717,403 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "angel-city-fc",
+    "name": "Angel City FC",
+    "short_name": "Angel City",
+    "state": "California",
+    "city": "Los Angeles",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://angelcity.com",
+    "aliases": [
+      "Angel City",
+      "LA",
+      "Angel City FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/21422",
+        "provider_school_id": "21422"
+      }
+    ]
+  },
+  {
+    "id": "bay-fc",
+    "name": "Bay FC",
+    "short_name": "Bay FC",
+    "state": "California",
+    "city": "San Jose",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://bayfc.com",
+    "aliases": [
+      "Bay FC",
+      "BAY"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/22187",
+        "provider_school_id": "22187"
+      }
+    ]
+  },
+  {
+    "id": "boston-legacy-fc",
+    "name": "Boston Legacy FC",
+    "short_name": "Boston Legacy",
+    "state": "Massachusetts",
+    "city": "Boston",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://bostonlegacyfc.com",
+    "aliases": [
+      "Boston Legacy",
+      "BOS",
+      "Boston Legacy FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/131562",
+        "provider_school_id": "131562"
+      }
+    ]
+  },
+  {
+    "id": "chicago-stars-fc",
+    "name": "Chicago Stars FC",
+    "short_name": "Chicago Stars",
+    "state": "Illinois",
+    "city": "Chicago",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://chicagostars.com",
+    "aliases": [
+      "Chicago Stars",
+      "CHI",
+      "Chicago Stars FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15360",
+        "provider_school_id": "15360"
+      }
+    ]
+  },
+  {
+    "id": "denver-summit-fc",
+    "name": "Denver Summit FC",
+    "short_name": "Denver Summit",
+    "state": "Colorado",
+    "city": "Denver",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.denversummitfc.com",
+    "aliases": [
+      "Denver Summit",
+      "DEN",
+      "Denver Summit FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/131563",
+        "provider_school_id": "131563"
+      }
+    ]
+  },
+  {
+    "id": "gotham-fc",
+    "name": "Gotham FC",
+    "short_name": "Gotham",
+    "state": "New Jersey",
+    "city": "Harrison",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.gothamfc.com",
+    "aliases": [
+      "Gotham",
+      "GFC",
+      "Gotham FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15364",
+        "provider_school_id": "15364"
+      }
+    ]
+  },
+  {
+    "id": "houston-dash",
+    "name": "Houston Dash",
+    "short_name": "Dash",
+    "state": "Texas",
+    "city": "Houston",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.houstondash.com",
+    "aliases": [
+      "Dash",
+      "HOU",
+      "Houston Dash"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/17346",
+        "provider_school_id": "17346"
+      }
+    ]
+  },
+  {
+    "id": "kansas-city-current",
+    "name": "Kansas City Current",
+    "short_name": "KC Current",
+    "state": "Missouri",
+    "city": "Kansas City",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.kansascitycurrent.com",
+    "aliases": [
+      "KC Current",
+      "KC",
+      "Kansas City Current"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/20907",
+        "provider_school_id": "20907"
+      }
+    ]
+  },
+  {
+    "id": "north-carolina-courage",
+    "name": "North Carolina Courage",
+    "short_name": "NC Courage",
+    "state": "North Carolina",
+    "city": "Cary",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.nccourage.com",
+    "aliases": [
+      "NC Courage",
+      "NC",
+      "North Carolina Courage"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15366",
+        "provider_school_id": "15366"
+      }
+    ]
+  },
+  {
+    "id": "orlando-pride",
+    "name": "Orlando Pride",
+    "short_name": "Pride",
+    "state": "Florida",
+    "city": "Orlando",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.orlandocitysc.com/pride",
+    "aliases": [
+      "Pride",
+      "ORL",
+      "Orlando Pride"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/18206",
+        "provider_school_id": "18206"
+      }
+    ]
+  },
+  {
+    "id": "portland-thorns-fc",
+    "name": "Portland Thorns FC",
+    "short_name": "Thorns",
+    "state": "Oregon",
+    "city": "Portland",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.thorns.com",
+    "aliases": [
+      "Thorns",
+      "POR",
+      "Portland Thorns FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15362",
+        "provider_school_id": "15362"
+      }
+    ]
+  },
+  {
+    "id": "racing-louisville-fc",
+    "name": "Racing Louisville FC",
+    "short_name": "Racing Louisville",
+    "state": "Kentucky",
+    "city": "Louisville",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.racingloufc.com",
+    "aliases": [
+      "Racing Louisville",
+      "LOU",
+      "Racing Louisville FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/20905",
+        "provider_school_id": "20905"
+      }
+    ]
+  },
+  {
+    "id": "san-diego-wave-fc",
+    "name": "San Diego Wave FC",
+    "short_name": "San Diego Wave",
+    "state": "California",
+    "city": "San Diego",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://sandiegowavefc.com",
+    "aliases": [
+      "San Diego Wave",
+      "SD",
+      "San Diego Wave FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/21423",
+        "provider_school_id": "21423"
+      }
+    ]
+  },
+  {
+    "id": "seattle-reign-fc",
+    "name": "Seattle Reign FC",
+    "short_name": "Seattle Reign",
+    "state": "Washington",
+    "city": "Seattle",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.reignfc.com",
+    "aliases": [
+      "Seattle Reign",
+      "SEA",
+      "Seattle Reign FC"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15363",
+        "provider_school_id": "15363"
+      }
+    ]
+  },
+  {
+    "id": "utah-royals",
+    "name": "Utah Royals",
+    "short_name": "Utah Royals",
+    "state": "Utah",
+    "city": "Sandy",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://www.rsl.com/utahroyals",
+    "aliases": [
+      "Utah Royals",
+      "UTA"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/19141",
+        "provider_school_id": "19141"
+      }
+    ]
+  },
+  {
+    "id": "washington-spirit",
+    "name": "Washington Spirit",
+    "short_name": "Spirit",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "conference": "NWSL",
+    "league": "NWSL",
+    "pro_sport": "Soccer",
+    "level": "pro",
+    "division": "NWSL",
+    "athletics_url": "https://washingtonspirit.com",
+    "aliases": [
+      "Spirit",
+      "WAS",
+      "Washington Spirit"
+    ],
+    "providers": [
+      {
+        "provider": "ESPN",
+        "slug": "soccer/usa.nwsl/teams/15365",
+        "provider_school_id": "15365"
+      }
+    ]
   }
 ]

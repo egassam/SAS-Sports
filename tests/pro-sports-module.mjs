@@ -26,8 +26,9 @@ const pro=schools.filter(s=>s.level==='pro');
 // (user, November 8: "Add NBA then NHL"; tests/nba-module.mjs, tests/nhl-module.mjs),
 // then the 15 WNBA teams (user, November 18: "Let's add more pro. Start with
 // wnba"; tests/wnba-module.mjs) and the four track and field entries (same
-// request; tests/track-field-module.mjs).
-assert.equal(pro.length,177);
+// request; tests/track-field-module.mjs), then the 16 NWSL clubs (user,
+// November 18: "Add NWSL next"; tests/nwsl-module.mjs).
+assert.equal(pro.length,193);
 assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);

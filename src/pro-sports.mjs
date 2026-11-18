@@ -98,6 +98,25 @@ export const PRO_TEAMS={
   'sporting-kansas-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'skc',id:186},fixtures:true,schedule:'https://www.sportingkc.com/schedule/'},
   'st-louis-city':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'stl',id:21812},fixtures:true,schedule:'https://www.stlcitysc.com/schedule/'},
   'vancouver-whitecaps':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.1',team:'van',id:9727},fixtures:true,schedule:'https://www.whitecapsfc.com/schedule/'},
+  // National Women's Soccer League (user, November 18: "Add NWSL next"):
+  // all 16 clubs of 2026 (Boston Legacy and Denver Summit joined that year),
+  // one table (no conferences), read like MLS (results and fixtures).
+  'angel-city-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'la',id:21422},fixtures:true,schedule:'https://angelcity.com/2026-schedule'},
+  'bay-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'bay',id:22187},fixtures:true,schedule:'https://bayfc.com/schedule/'},
+  'boston-legacy-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'bos',id:131562},fixtures:true,schedule:'https://bostonlegacyfc.com/pages/schedule'},
+  'chicago-stars-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'chi',id:15360},fixtures:true,schedule:'https://chicagostars.com/schedule/'},
+  'denver-summit-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'den',id:131563},fixtures:true,schedule:'https://www.denversummitfc.com/schedule/'},
+  'gotham-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'gfc',id:15364},fixtures:true,schedule:'https://www.gothamfc.com/schedule'},
+  'houston-dash':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'hou',id:17346},fixtures:true,schedule:'https://www.houstondynamofc.com/houstondash/schedule/'},
+  'kansas-city-current':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'kc',id:20907},fixtures:true,schedule:'https://www.kansascitycurrent.com/schedule'},
+  'north-carolina-courage':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'nc',id:15366},fixtures:true,schedule:'https://www.nccourage.com/schedule'},
+  'orlando-pride':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'orl',id:18206},fixtures:true,schedule:'https://www.orlandocitysc.com/pride/schedule/'},
+  'portland-thorns-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'por',id:15362},fixtures:true,schedule:'https://www.thorns.com/schedule'},
+  'racing-louisville-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'lou',id:20905},fixtures:true,schedule:'https://www.racingloufc.com/schedule/'},
+  'san-diego-wave-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'sd',id:21423},fixtures:true,schedule:'https://sandiegowavefc.com/schedule/'},
+  'seattle-reign-fc':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'sea',id:15363},fixtures:true,schedule:'https://www.reignfc.com/schedule'},
+  'utah-royals':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'uta',id:19141},fixtures:true,schedule:'https://www.rsl.com/utahroyals/schedule/'},
+  'washington-spirit':{kind:'espn-team',sport:'Soccer',espn:{path:'soccer/usa.nwsl',team:'was',id:15365},fixtures:true,schedule:'https://washingtonspirit.com/schedule/'},
   // Major League Baseball (user, October 19: "Let's add MLB in the pro
   // section including playoff games"): all 30 teams by division, AL then NL.
   // Division games give the header's "AL Central 30-22" (regular season);
@@ -365,7 +384,10 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       // ("NBA Cup · Group Play"); the Cup's championship game does not count
       // in the standings (the NBA's rule), so not in the record either.
       const cup=sport==='Basketball'&&!postseason&&typeof note==='string'&&/^(?:NBA Cup|WNBA Commissioner's Cup)\b/i.test(note)?note.replace(/^WNBA (?=Commissioner)/i,'').replace(/\s+-\s+/g,' · '):null;
-      event.round=postseason?(note?.label||(typeof note==='string'?note.replace(/^NBA Play-In\s+-\s+/i,'Play-In · ').replace(/\s+-\s+/g,' · '):null)||game.seasonType?.name||'Postseason'):cup||week;
+      // NWSL playoff rounds are season types too ("Playoffs - Quarterfinals",
+      // "Playoffs - Championship"): "NWSL Playoffs · Quarterfinals", "NWSL Championship".
+      const nwslRound=postseason&&config.espn.path==='soccer/usa.nwsl'&&/^Playoffs\s*-\s*/i.test(game.seasonType?.name||'')?game.seasonType.name.replace(/^Playoffs\s*-\s*/i,'').replace(/^Championship$/i,'NWSL Championship').replace(/^(?!NWSL Championship$)/,'NWSL Playoffs · '):null;
+      event.round=nwslRound||(postseason?(note?.label||(typeof note==='string'?note.replace(/^NBA Play-In\s+-\s+/i,'Play-In · ').replace(/\s+-\s+/g,' · '):null)||game.seasonType?.name||'Postseason'):cup||week);
       if(cup&&/Championship|Final\b/i.test(cup))event.not_in_record=true;
       if(note?.series&&postseason){event.series_name=note.series;event.series_game=note.game;}
       if(status==='Final'||status==='Live'){
@@ -1412,11 +1434,12 @@ const LEAGUE_STANDINGS={
   'basketball/wnba':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
   'baseball/mlb':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
   'hockey/nhl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-OT'},{key:'pts',label:'Pts'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
+  'soccer/usa.nwsl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''},
   'soccer/usa.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''}
 };
 function standingsRow(entry,league){
   const s=statsOf(entry),w=num(s.wins)??0,l=num(s.losses)??0,t=num(s.ties)??0,ot=num(s.otLosses)??num(s.overtimeLosses)??0;
-  const record=league==='hockey/nhl'?`${w}-${l}-${ot}`:league==='soccer/usa.1'?`${w}-${l}-${t}`:t?`${w}-${l}-${t}`:`${w}-${l}`;
+  const record=league==='hockey/nhl'?`${w}-${l}-${ot}`:league.startsWith('soccer/')?`${w}-${l}-${t}`:t?`${w}-${l}-${t}`:`${w}-${l}`;
   return{team:entry.team,w,l,seed:num(s.playoffSeed),rank:num(s.rank),points:num(s.points),gp:num(s.gamesPlayed)??(w+l+t+ot),pct:num(s.winPercent),
     values:{record,pct:shown(s.winPercent),div:shown(s.divisionRecord)||shown(s.vsdiv),gp:String(num(s.gamesPlayed)??(w+l+t+ot)),pts:shown(s.points)},
     detail:LEAGUE_STANDINGS[league].detail(s)};
@@ -1438,9 +1461,9 @@ export function espnLeagueStandings(payload,{config}={}){
   const own=team=>config.espn.id!=null?String(team?.id)===String(config.espn.id):String(team?.abbreviation||'').toLowerCase()===config.espn.team;
   const conferences=(payload.children||[]).filter(c=>entriesOf(c).length);
   const mine=conferences.find(c=>entriesOf(c).some(e=>own(e.team)));if(!mine)return[];
-  const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*MLS$/,'');
-  const source={name:`ESPN standings${season?` (${season} season)`:''}`,url:`https://www.espn.com/${league.split('/')[1]==='usa.1'?'soccer':league.split('/')[1]}/standings${league==='soccer/usa.1'?'/_/league/usa.1':''}`};
-  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4?c.abbreviation.replace(/^E(?:ast)?$/,'Eastern Conference').replace(/^W(?:est)?$/,'Western Conference'):c.name;
+  const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*(?:MLS|NWSL)$/,'');
+  const source={name:`ESPN standings${season?` (${season} season)`:''}`,url:`https://www.espn.com/${league.startsWith('soccer/')?'soccer':league.split('/')[1]}/standings${league.startsWith('soccer/')?`/_/league/${league.split('/')[1]}`:''}`};
+  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4&&!/^\d+$/.test(c.abbreviation)?c.abbreviation.replace(/^E(?:ast)?$/,'Eastern Conference').replace(/^W(?:est)?$/,'Western Conference'):String(c.name||'').replace(/\s+Regular Season$/,'');
   const row=e=>standingsRow(e,league),tables=[];
   const division=(mine.children||[]).find(d=>(d.standings?.entries||[]).some(e=>own(e.team)));
   if(division)tables.push(leagueTable(division.name,division.standings.entries.map(row),{league,own,ranked:false,source}));
