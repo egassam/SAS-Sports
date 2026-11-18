@@ -5567,3 +5567,12 @@ User: "I have received all notifications for my favorites". The handoff's open i
 **Built** (4.309.0–4.309.1). `teamRoster` (`src/pro-alumni.mjs`): a pro team's players from the league's KV roster index, with college (linked by ESPN college id to the app's college page, `collegeSchoolsByEspnId`) and latest line; `/live/pros` answers a pro team (kind `espn-team` in NFL, NBA, WNBA, MLB, NHL) with `team_roster: true`, no draft; the page heads the section "Roster". Lines builds read the last four days every time (the Kraken had no lines: games past a first build's 20 summaries were never read).
 
 **Gate.** `test:release` 420/420 locally; CI guardrails green on `b0f0084`. Preview 4.309.1: `verify:preview` Chiefs, Celtics, Liberty, Royals, Kraken (3 refreshes) and K-State Football (36) 36 PASS, XC 18/20 and 26/21; Chiefs page checked in Chromium at 390 px (Roster, college links, lines). Merged as `ef5b321`; production `4.309.1-pro-rosters`, `verify:prod` Chiefs, Celtics, Kraken 18 PASS, XC 18/20 and 26/21; Chiefs roster 80 players, 33 with lines.
+
+
+## November 18, 2026 — Roster tab and pill (PR #604)
+
+**Asked.** User: "I'm not seeing the roster anywhere. Can you make it more obvious?" The Roster / In the Pros section was rendered after Upcoming Schedule, at the bottom of a long page.
+
+**Built** (4.310.0, `public/index.html` only). A view tab `data-view="roster"` next to News, shown when the page's sport has `pros` ("Roster" on a pro team, "Pros" on a college or the Kansas page), rendering the full list (`renderRoster`, `prosBlock(g,{full:true})`); a pill under the team's record ("Roster · 80 players ›", "In the Pros · 19 players ›") opens the tab. `syncRosterTab` runs after the video dock in `render` (`tests/manhattan-ks-module.mjs` pins that order).
+
+**Gate.** `test:release` 419/420 locally, the one the render-order assertion (updated); CI green on `bf5170f`. Preview: Chiefs, Celtics, kansas-pros (3 refreshes), K-State Football (36) PASS; XC 18/20 and 26/21; `check-reference-page` all PASS; `verify:preview` Manhattan, Anthony MS, Eisenhower MS: Anthony and Eisenhower expanded views 404 ("Event not found") while ems.usd383.org answered the preview HTTP 520 (production served the same event, 200; the diff changes no server code); after 15 minutes Anthony 18/0 and Eisenhower 24/0 PASS. Merged `b6956be`; production `4.310.0-roster-tab`, `verify:prod` Chiefs PASS, XC 18/20 and 26/21; Chromium on production: Chiefs tab and pill (80 rows), K-State Pros tab (19 players), no errors, no sideways scroll.
