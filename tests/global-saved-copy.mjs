@@ -25,7 +25,9 @@ class MemoryKV{
   constructor(){this.store=new Map();this.writes=0;}
   async getWithMetadata(key){const hit=this.store.get(key);return hit?{value:hit.value,metadata:hit.metadata}:{value:null,metadata:null};}
   async get(key,type){const hit=this.store.get(key);return hit?(type==='json'?JSON.parse(hit.value):hit.value):null;}
-  async put(key,value,options={}){this.writes++;this.store.set(key,{value,metadata:options.metadata||null});}
+  // Feed copies are counted; a sport's series history copy (one a day,
+  // src/series-history.mjs) is not what this test is about.
+  async put(key,value,options={}){if(!String(key).startsWith('series:'))this.writes++;this.store.set(key,{value,metadata:options.metadata||null});}
 }
 const kv=new MemoryKV(),source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 // One Cloudflare location: its own cache, and whether the official sites answer it.
@@ -58,7 +60,7 @@ assert.equal(kv.writes,1,'at most one write an hour per sport');
 // Unless the number of events changed (new results posted): the copy saved
 // before them would otherwise stand for the hour.
 {
-  const key=[...kv.store.keys()][0],saved=kv.store.get(key);
+  const key=[...kv.store.keys()].find(k=>!k.startsWith('series:')),saved=kv.store.get(key);
   kv.store.set(key,{value:'[]',metadata:{...saved.metadata,events:0}});
   await atlanta('south-carolina','Football','&refresh=1');
   assert.equal(kv.writes,2,'a copy with a different number of events is rewritten within the hour');
@@ -70,7 +72,7 @@ assert.equal(kv.writes,1,'at most one write an hour per sport');
 // Paris cannot rebuild and has no copy of its own: it serves Atlanta's copy.
 // Whether the feed is quiet depends on the clock (a game within 18 hours is
 // not), so the copy is marked quiet here; the unmarked case is checked below.
-{const k=[...kv.store.keys()][0],v=kv.store.get(k);kv.store.set(k,{...v,metadata:{...v.metadata,quiet:true}});}
+{const k=[...kv.store.keys()].find(k=>!k.startsWith('series:')),v=kv.store.get(k);kv.store.set(k,{...v,metadata:{...v.metadata,quiet:true}});}
 for(const query of ['&refresh=1','','&cached=1']){
   const saved=await paris('south-carolina','Football',query);
   assert.equal(saved.status,200,`Paris ${query||'(plain)'}`);
@@ -84,14 +86,14 @@ for(const query of ['&refresh=1','','&cached=1']){
 // The shared copy says whether the feed was quiet; a copy with a game near now is not answered
 // without a rebuild (Paris cannot rebuild, so it falls back to the copy as before).
 {
-  const k=[...kv.store.keys()][0],saved=kv.store.get(k);
+  const k=[...kv.store.keys()].find(k=>!k.startsWith('series:')),saved=kv.store.get(k);
   kv.store.set(k,{...saved,metadata:{...saved.metadata,quiet:undefined}});
   assert.equal((await paris('south-carolina','Football')).headers.get('x-sas-cache'),'saved-global','not quiet: rebuilt first, the copy only as the fallback');
   kv.store.set(k,saved);
 }
 
 // A copy older than the week-long last-good limit is not served.
-const key=[...kv.store.keys()][0];
+const key=[...kv.store.keys()].find(k=>!k.startsWith('series:'));
 kv.store.get(key).metadata.fetched_at=new Date(Date.now()-8*24*60*60*1000).toISOString();
 assert.equal((await paris('south-carolina','Football','&refresh=1')).status,502);
 // An hour-old copy is replaced by the next build.
