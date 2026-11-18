@@ -163,9 +163,11 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
     assert.ok(nfl.pros.every(p=>!p.team_id),'the team itself is not repeated');
     assert.equal((await ask('kansas-city-chiefs','Basketball')).status,422,'a sport the team does not play');
   }
-  // A sport with no pro league, a high school and a pro team: no list.
+  // A sport with no pro league: no list.
   assert.deepEqual((await ask('kstate','Volleyball')).body.leagues,[]);
-  assert.deepEqual((await ask('manhattan-ks','Football')).body.leagues,[]);
+  // A high school: its players on college rosters (tests/college-alumni.mjs);
+  // with no college index built yet, nothing read.
+  {const hs=(await ask('manhattan-ks','Football')).body;assert.equal(hs.read,false);assert.deepEqual(hs.leagues.map(l=>[l.league,l.college,l.pros.length]),[['College',true,0]]);}
   assert.equal((await ask('kstate','')).status,400);
 }
 

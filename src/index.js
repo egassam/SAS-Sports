@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {ALUMNI_COLLEGES,COLLEGE_ALUMNI_MS,collegeAlumniKey,rosterHometowns,alumniMatcher,collegeAlumniIndex} from './college-alumni.mjs';
 import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBracket,bracketMatcher,ownBracketGames,bracketCurrent} from './state-brackets.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
@@ -345,7 +346,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.311.2-state-brackets';
+const VERSION='4.312.1-in-college';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5115,8 +5116,63 @@ function alumniSchoolMatches(sch,school){
 // a player's college by that id).
 let collegeSchoolsCache=null;
 function collegeSchoolsByEspnId(){if(!collegeSchoolsCache){collegeSchoolsCache=new Map();for(const s of schools){if(s.level)continue;const id=collegeEspnId(s.id);if(id&&!collegeSchoolsCache.has(id))collegeSchoolsCache.set(id,{id:s.id,short_name:s.short_name||s.name})}}return collegeSchoolsCache}
+// High school to college (user, November 18, 2026: item 1 of "What unique
+// things should we add now?"; src/college-alumni.mjs): the region's colleges'
+// roster pages, one index per college kept in KV a day, give each Kansas
+// high school its former players now on a college roster ("In College").
+// A college's index is built in the background (the cron builds the stalest
+// one every 10 minutes; a high school's page starts at most two), never while
+// a visitor waits.
+let alumniHighSchoolMatch=null;
+const alumniMatch=()=>alumniHighSchoolMatch||=alumniMatcher(schools.filter(s=>s.level==='high-school'&&s.state==='Kansas'));
+async function buildCollegeAlumni(college,now){
+  const pages=[],reads=[];
+  for(const sport of sponsoredSports[college.id]||[]){
+    // A sport's paths are alternatives ("womens-soccer", "wsoc", "soccer"),
+    // except a men's and a women's team: the first page with players for each
+    // team is read, the rest are not (fewer reads; KU refused a quick run of
+    // them on Nov 18).
+    const found=new Set();
+    for(const url of rosterUrls(college,sport)){
+      const team=/\/womens-/.test(url)?'Women':/\/mens-/.test(url)?'Men':null;
+      if(team?found.has(team):found.size)continue;
+      try{
+        const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.listing,staleOnError:true});reads.push({url,status:r.status});if(!r.ok)continue;
+        const players=rosterHometowns(await r.text(),r.url||url);if(!players.length)continue;
+        found.add(team||'all');pages.push({sport,team,url,players});
+      }catch(error){reads.push({url,error:String(error?.message||error).slice(0,120)})}
+    }
+  }
+  // One player once per sport (a sport's alternative paths can list the same roster).
+  const seen=new Set(),players=collegeAlumniIndex(college,pages,alumniMatch()).filter(p=>{const k=`${p.sport}|${p.name}`;if(seen.has(k))return false;seen.add(k);return true});
+  return{built:now.toISOString(),college_id:college.id,pages:pages.map(p=>({sport:p.sport,team:p.team,url:p.url,players:p.players.length})),reads:reads.length,players};
+}
+async function collegeAlumniDocs(env,ctx,{startBuilds=2}={}){
+  const store=env?.HIGHLIGHTS,docs=[],stale=[];
+  await Promise.all(ALUMNI_COLLEGES.map(async id=>{
+    let doc=null;try{doc=store?await store.get(collegeAlumniKey(id),'json'):null}catch{}
+    if(doc)docs.push(doc);
+    if(!doc||Date.now()-Date.parse(doc.built)>COLLEGE_ALUMNI_MS)stale.push({id,missing:!doc,built:doc?.built||''});
+  }));
+  stale.sort((a,b)=>Number(b.missing)-Number(a.missing)||a.built.localeCompare(b.built));
+  for(const {id} of stale.slice(0,startBuilds)){
+    const college=catalogSchool(id);if(!college||alumniBuilds.has(collegeAlumniKey(id)))continue;
+    const running=(async()=>{const fresh=await buildCollegeAlumni(college,new Date());if(fresh&&store)await store.put(collegeAlumniKey(id),JSON.stringify(fresh),{expirationTtl:14*86400});return fresh})().catch(()=>null).finally(()=>alumniBuilds.delete(collegeAlumniKey(id)));
+    alumniBuilds.set(collegeAlumniKey(id),running);ctx?.waitUntil?.(running);
+  }
+  return{docs,stale:stale.length};
+}
+async function highSchoolCollegeAnswer(env,ctx,schoolId,sport){
+  const {docs,stale}=await collegeAlumniDocs(env,ctx);
+  const pros=docs.flatMap(doc=>(doc.players||[]).filter(p=>p.school_id===schoolId&&p.sport===sport).map(p=>{
+    const college=catalogSchool(p.college_id);
+    return{name:p.name,position:p.position||null,year:p.year||null,team:college?.short_name||college?.name||p.college_id,team_id:p.college_id,team_label:p.team||null,url:p.url||null};
+  })).sort((a,b)=>a.team.localeCompare(b.team)||a.name.localeCompare(b.name));
+  return{school:schoolId,sport,leagues:[{league:'College',college:true,pros,draft:null,read:docs.length>0,colleges_read:docs.length,colleges:ALUMNI_COLLEGES.length,colleges_stale:stale}],read:docs.length>0};
+}
 async function schoolProsAnswer(env,ctx,schoolId,sport){
   const entry=catalogSchool(schoolId),hub=proTeam(schoolId)?.kind==='hub'?proTeam(schoolId):null,collegeId=hub?null:collegeEspnId(schoolId);
+  if(entry?.level==='high-school')return highSchoolCollegeAnswer(env,ctx,schoolId,sport);
   // A pro team (NFL, NBA, WNBA, MLB, NHL): its own roster.
   const ownLeague=!hub&&entry?.level==='pro'&&proTeam(schoolId)?.kind==='espn-team'?ALUMNI_LEAGUE_BY_NAME.get(entry.league)||null:null;
   const leagues=ownLeague&&ownLeague.sport===sport?[ownLeague]:entry&&(hub||!entry.level&&collegeId)?alumniLeaguesFor(sport).filter(l=>!hub||l.id!=='nhl'):[];
@@ -7329,6 +7385,8 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
    if(hub&&!groups.length&&alumniLeaguesFor(sport).length)groups.push({school_id:school,school:entry?.name||school,sport,in_season:true,season_label:'Players from Kansas',records:[],live:[],results:[],upcoming:[],other:[],latest_activity_at:null,next_activity_at:null});
    const ownLeague=entry?.level==='pro'&&proTeam(school)?.kind==='espn-team'?ALUMNI_LEAGUE_BY_NAME.get(entry.league):null;
    if(entry&&(hub||ownLeague?.sport===sport||!entry.level&&collegeEspnId(entry.id))&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
+  // A Kansas high school: its former players on the region's college rosters.
+  if(catalogSchool(school)?.level==='high-school'&&catalogSchool(school)?.state==='Kansas')for(const group of groups)group.pros=true;
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
@@ -7575,8 +7633,11 @@ async function routeRequest(request,env,ctx){
       const kept=await cache.match(key);if(kept)return kept;
       const answer=await schoolProsAnswer(env,ctx,school,sport);
       const response=json(answer);
-      response.headers.set('cache-control',answer.read?'public, max-age=900':'no-store');
-      if(answer.read)ctx.waitUntil(cache.put(key,response.clone()));
+      // A high school's answer while some college indexes are still being
+      // built is shown but not kept.
+      const whole=answer.read&&!answer.leagues?.some(l=>l.colleges_stale&&l.colleges_read<l.colleges);
+      response.headers.set('cache-control',whole?'public, max-age=900':'no-store');
+      if(whole)ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
     if(url.pathname==='/live/home'){
@@ -7625,6 +7686,8 @@ export default{
     // Two Cron Triggers: push alerts every 2 minutes, the feed refresh every 10.
     if(event?.cron===PUSH_CRON){ctx.waitUntil(runPushAlerts(env).catch(()=>null));return}
     ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
+    // The stalest college roster index (High school to college), one a run.
+    ctx.waitUntil(collegeAlumniDocs(env,ctx,{startBuilds:1}).catch(()=>null));
   },
   async fetch(request,env,ctx){return timedRequest(request,env,ctx);}
 };
