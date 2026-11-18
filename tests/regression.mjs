@@ -76,7 +76,7 @@ contains(worker,/'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application\/json'
 contains(worker,/'User-Agent':`Mozilla\/5\.0 \(compatible; SAS-Sports\/\$\{VERSION\}; \+\$\{BOT_INFO_URL\}\)`/,'School-site downloads keep the full identity with the info link');
 contains(worker,/import sponsoredSports from '.\/sponsored-sports\.json'/,'Worker must use the authoritative sponsored-sports manifest');
 contains(baylorModule,/'baylor\|Soccer':'https:\/\/baylorbears\.com\/sports\/womens-soccer\/schedule'/,'Baylor Soccer must use the populated women’s schedule route');
-assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),4,'Feed, athlete, highlight and news endpoints must all reject unsupported school-sport requests');
+assert.equal(count(worker,'const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;'),5,'Feed, athlete, highlight, news and pros endpoints must all reject unsupported school-sport requests');
 contains(worker,/eventType\(sport\)==='GAME'&&effective==='Final'&&!hasScore&&!hasOutcome/,'Games without a score or official outcome must not be classified as finals');
 contains(worker,/eventDay>today[\s\S]*effective='Upcoming';schoolScore=null;oppScore=null;resultLabel=null/,'Future games must discard leaked scores and remain upcoming');
 

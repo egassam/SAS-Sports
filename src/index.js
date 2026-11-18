@@ -52,6 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
+import {alumniLeaguesFor,ALUMNI_ROSTER_MS,ALUMNI_LINES_MS,alumniRosterKey,alumniLinesKey,rosterPlayers,draftYears,espnDraftUrl,mlbDraftUrl,espnDraftPicks,mlbDraftPicks,summaryLines,finishedGames,scoreboardUrls,mergeLines,schoolPros,schoolDraft,collegeEspnId,stateName} from './pro-alumni.mjs';
 import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories,leagueTeamIds} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
@@ -68,7 +69,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -343,7 +344,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.307.0-nwsl';
+const VERSION='4.308.0-pros-alumni';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -4998,6 +4999,72 @@ async function fetchHighSchool(school,sport,now,aiTargetId=null,env=null){
 // blanked the Chiefs for 28 of 36 preview refreshes, Oct 15).
 // Jolpica answers 406 to the HTML Accept header school pages are read with.
 async function readJson(url,ttl){try{const init=url.startsWith(ESPN_SITE)||url.startsWith(ESPN_STANDINGS)?{headers:{'User-Agent':SCOREBOARD_USER_AGENT,'Accept':'application/json'}}:url.startsWith(JOLPICA_F1)?{headers:{'Accept':'application/json'}}:{};const r=await sourceFetch(url,init,{ttl,staleOnError:true});if(!r.ok)return null;return JSON.parse(await r.text())}catch{return null}}
+// Pros from a school (src/pro-alumni.mjs; user, November 18: "Start 1-4").
+// A league's rosters and latest draft are one KV index (a day); its players'
+// latest lines a second (15 minutes). A stale index is served while a new one
+// is built after the answer; only a missing one is built before it.
+const proLeagueTeams=league=>schools.filter(s=>s.level==='pro'&&s.league===league.league);
+const espnProId=entry=>(entry?.providers||[]).find(p=>p?.provider==='ESPN')?.provider_school_id||null;
+async function buildAlumniRoster(league,now){
+  const teams=proLeagueTeams(league).filter(espnProId);
+  const rosters=await Promise.all(teams.map(t=>readJson(`${ESPN_SITE}${league.path}/teams/${espnProId(t)}/roster`,SOURCE_TTL.document).then(p=>p?rosterPlayers(p,t):null)));
+  // A league read with a fifth of its teams missing is not saved.
+  if(!teams.length||rosters.filter(r=>r&&r.length).length<teams.length*0.8)return null;
+  let draft=null;
+  for(const year of league.draft?draftYears(now,league):[]){
+    const picks=league.draft==='espn'?espnDraftPicks(await readJson(espnDraftUrl(league,year),SOURCE_TTL.document),{teamsByEspnId:new Map(teams.map(t=>[String(espnProId(t)),t]))})
+      :mlbDraftPicks(await readJson(mlbDraftUrl(year),SOURCE_TTL.document),{teamsByName:new Map(teams.map(t=>[t.name.toLowerCase(),t]))});
+    if(picks.length){draft={year,picks};break}
+  }
+  return{league:league.id,built:now.toISOString(),teams:teams.length,players:rosters.flatMap(r=>r||[]),draft};
+}
+async function buildAlumniLines(league,prev,now){
+  let boards;
+  if(league.weekly){const [url]=scoreboardUrls(league,{now}),current=await readJson(url,SOURCE_TTL.schedule);boards=[current,...await Promise.all((current?scoreboardUrls(league,{now,board:current}):[]).map(u=>readJson(u,SOURCE_TTL.listing)))]}
+  else boards=await Promise.all(scoreboardUrls(league,{now,first:!prev}).map(u=>readJson(u,SOURCE_TTL.schedule)));
+  if(!boards.some(Boolean))return null;
+  const read=new Set(prev?.read||[]);
+  // A final is read once; at most 20 a build (a full NBA or NFL day).
+  const todo=finishedGames(boards.filter(Boolean)).filter(g=>!read.has(g.id)).slice(0,20);
+  const games=(await Promise.all(todo.map(async g=>{const summary=await readJson(`${ESPN_SITE}${league.path}/summary?event=${g.id}`,SOURCE_TTL.document);const lines=summary&&summaryLines(summary,league);return lines?{id:g.id,lines}:null}))).filter(Boolean);
+  return mergeLines(prev,games,{now});
+}
+const alumniBuilds=new Map();
+async function alumniDoc(env,ctx,key,maxAge,build){
+  const store=env?.HIGHLIGHTS;let doc=null;
+  try{doc=store?await store.get(key,'json'):null}catch{}
+  const age=doc?.built?Date.now()-Date.parse(doc.built):Infinity;
+  if(doc&&age<=maxAge)return doc;
+  let running=alumniBuilds.get(key);
+  if(!running){
+    running=(async()=>{const fresh=await build(doc);if(fresh&&store)try{await store.put(key,JSON.stringify(fresh),{expirationTtl:14*86400})}catch{};return fresh})().catch(()=>null).finally(()=>alumniBuilds.delete(key));
+    alumniBuilds.set(key,running);
+  }
+  if(doc){ctx?.waitUntil?.(running);return doc}
+  return await running;
+}
+// A draft pick's college named by ESPN or MLB matched to a school: full names
+// only (scoreboardTeamMatchesSchool), and MLB's school state must be the
+// school's ("Miami" in Florida is not Miami of Ohio).
+function alumniSchoolMatches(sch,school){
+  if(!sch||!school)return false;
+  if(sch.state&&school.state&&stateName(sch.state)!==school.state)return false;
+  return scoreboardTeamMatchesSchool(sch,school);
+}
+async function schoolProsAnswer(env,ctx,schoolId,sport){
+  const entry=catalogSchool(schoolId),collegeId=collegeEspnId(schoolId);
+  const leagues=entry&&!entry.level&&collegeId?alumniLeaguesFor(sport):[];
+  const out=await Promise.all(leagues.map(async league=>{
+    const now=new Date();
+    const [index,lines]=await Promise.all([
+      alumniDoc(env,ctx,alumniRosterKey(league.id),ALUMNI_ROSTER_MS,()=>buildAlumniRoster(league,new Date())),
+      alumniDoc(env,ctx,alumniLinesKey(league.id),ALUMNI_LINES_MS,prev=>buildAlumniLines(league,prev,new Date())),
+    ]);
+    const teamsById=new Map(proLeagueTeams(league).map(t=>[t.id,t]));
+    return{league:league.league,...(league.gender?{gender:league.gender}:{}),read:Boolean(index),pros:schoolPros(index,lines,collegeId,{teamsById}),draft:schoolDraft(index,entry,collegeId,alumniSchoolMatches),roster_built:index?.built||null,lines_built:lines?.built||null,now:now.toISOString()};
+  }));
+  return{school:schoolId,sport,college_id:collegeId,leagues:out,read:out.length>0&&out.every(l=>l.read)};
+}
 // A high school final's expanded view: plain facts from the score and the
 // MaxPreps box score (a stored final's too).
 async function highSchoolTargetHighlights(target){
@@ -5156,6 +5223,23 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     }
     const standings=nascarStandings(points,{url:pointsUrl});
     return{events,...(standings.length?{standings}:{}),source_url:listUrl,source_urls:sources,fetched_at:now.toISOString(),live_source_used:true,error:null};
+  }
+  // Minor league baseball (src/pro-sports.mjs, "Minor league baseball"): the
+  // team's season from MLB's stats API; on a game day today's games again
+  // every 20 s for the live inning.
+  if(config.kind==='mlb-stats'){
+    const seasons=mlbStatsSeasons(schoolNow(now,school)),current=schoolNow(now,school).getUTCFullYear();
+    const urls=seasons.map(season=>mlbStatsScheduleUrl(config,{season}));
+    const payloads=await Promise.all(urls.map((url,i)=>readJson(url,seasons[i]<current?SOURCE_TTL.document:SOURCE_TTL.schedule)));
+    if(!payloads.some(p=>Array.isArray(p?.dates)))return failed(`${urls[0]}: unreadable`);
+    let events=mlbStatsGames(payloads.filter(Boolean),{school,config,timeZone,now});
+    if(events.some(e=>(e.status==='Live'||e.status==='Today')&&Date.parse(e.espn_date)<=now.getTime()+30*6e4)){
+      const todayUrl=mlbStatsScheduleUrl(config,{date:new Date(schoolToday(now,school)).toISOString().slice(0,10)}),board=await readJson(todayUrl,20);
+      if(board){urls.push(todayUrl);events=mlbStatsGames([...payloads.filter(Boolean),board],{school,config,timeZone,now});}
+    }
+    const target=aiTargetId&&events.find(e=>e.id===aiTargetId),details=target&&mlbStatsHighlights(target);
+    if(details){target.highlights=details.lines;target.highlights_verified=true;target.result_count=target.results.length;target.highlight_status='Line score and pitchers of record from MLB\'s stats API.';}
+    return{events,source_url:urls[0],source_urls:urls,fetched_at:now.toISOString(),live_source_used:true,error:null};
   }
   if(config.kind==='imsa')return fetchImsa(school,config,now,timeZone,aiTargetId,failed);
   if(config.kind==='f1')return fetchF1(school,config,now,timeZone,aiTargetId,failed);
@@ -7155,6 +7239,8 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   // A pro team has news on ESPN in a week without a game: the page asks
   // for it without waiting for a final with a recap.
   if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;
+  // A college sport with pro leagues: the page asks /live/pros for its pros.
+  {const entry=catalogSchool(school);if(entry&&!entry.level&&collegeEspnId(entry.id)&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');
@@ -7390,6 +7476,19 @@ async function routeRequest(request,env,ctx){
       const keep=Boolean(fresh);
       response.headers.set('cache-control',keep?'public, max-age=900':'no-store');
       if(keep)ctx.waitUntil(cache.put(key,new Response(response.clone().body,{headers:{...Object.fromEntries(response.headers),'cache-control':'public, max-age=1800'}})));
+      return response;
+    }
+    // Pros from a school: its former players on pro rosters and its picks in
+    // the latest draft (src/pro-alumni.mjs), kept 15 minutes at each location.
+    if(url.pathname==='/live/pros'){
+      const school=url.searchParams.get('school'),sport=url.searchParams.get('sport');if(!school||!sport)return json({detail:'school and sport are required'},400);
+      const unsupported=sponsoredSportError(school,sport);if(unsupported)return unsupported;
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/pros?school=${encodeURIComponent(school)}&sport=${encodeURIComponent(sport)}&v=${VERSION}`,url.origin).toString());
+      const kept=await cache.match(key);if(kept)return kept;
+      const answer=await schoolProsAnswer(env,ctx,school,sport);
+      const response=json(answer);
+      response.headers.set('cache-control',answer.read?'public, max-age=900':'no-store');
+      if(answer.read)ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
     if(url.pathname==='/live/home'){

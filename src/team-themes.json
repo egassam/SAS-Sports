@@ -5390,5 +5390,29 @@
     "panelDark": "#1c1c0d",
     "line": "#918f32",
     "onAccent": "#111111"
+  },
+  "omaha-storm-chasers": {
+    "primary": "#0C2340",
+    "secondary": "#F2A900",
+    "panel": "#09182a",
+    "panelDark": "#050c15",
+    "line": "#0e355d",
+    "onAccent": "#ffffff"
+  },
+  "northwest-arkansas-naturals": {
+    "primary": "#0C2340",
+    "secondary": "#C8102E",
+    "panel": "#09182a",
+    "panelDark": "#050c15",
+    "line": "#0e355d",
+    "onAccent": "#ffffff"
+  },
+  "wichita-wind-surge": {
+    "primary": "#0C2340",
+    "secondary": "#4FA3D9",
+    "panel": "#09182a",
+    "panelDark": "#050c15",
+    "line": "#0e355d",
+    "onAccent": "#ffffff"
   }
 }

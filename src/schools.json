@@ -17115,5 +17115,77 @@
         "provider_school_id": "15365"
       }
     ]
+  },
+  {
+    "id": "omaha-storm-chasers",
+    "name": "Omaha Storm Chasers",
+    "short_name": "Storm Chasers",
+    "state": "Nebraska",
+    "city": "Papillion",
+    "conference": "Triple-A",
+    "league": "MiLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MiLB · Triple-A · International League",
+    "athletics_url": "https://www.milb.com/omaha",
+    "aliases": [
+      "Storm Chasers",
+      "Omaha Storm Chasers"
+    ],
+    "providers": [
+      {
+        "provider": "MLB Stats API",
+        "slug": "milb/omaha-storm-chasers",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "northwest-arkansas-naturals",
+    "name": "Northwest Arkansas Naturals",
+    "short_name": "Naturals",
+    "state": "Arkansas",
+    "city": "Springdale",
+    "conference": "Double-A",
+    "league": "MiLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MiLB · Double-A · Texas League",
+    "athletics_url": "https://www.milb.com/northwest-arkansas",
+    "aliases": [
+      "Naturals",
+      "NW Arkansas Naturals"
+    ],
+    "providers": [
+      {
+        "provider": "MLB Stats API",
+        "slug": "milb/northwest-arkansas-naturals",
+        "provider_school_id": null
+      }
+    ]
+  },
+  {
+    "id": "wichita-wind-surge",
+    "name": "Wichita Wind Surge",
+    "short_name": "Wind Surge",
+    "state": "Kansas",
+    "city": "Wichita",
+    "conference": "Double-A",
+    "league": "MiLB",
+    "pro_sport": "Baseball",
+    "level": "pro",
+    "division": "MiLB · Double-A · Texas League",
+    "athletics_url": "https://www.milb.com/wichita",
+    "aliases": [
+      "Wind Surge",
+      "Wichita Wind Surge"
+    ],
+    "providers": [
+      {
+        "provider": "MLB Stats API",
+        "slug": "milb/wichita-wind-surge",
+        "provider_school_id": null
+      }
+    ]
   }
 ]
