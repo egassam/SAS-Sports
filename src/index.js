@@ -344,7 +344,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.308.4-pros-alumni';
+const VERSION='4.308.5-pros-alumni';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7324,7 +7324,7 @@ const HIGHLIGHT_STORE_TTL=30*24*60*60;
 // cross country highlights went from two lines to four).
 // Pro finals saved before the box-score and race-table layouts (4.98.2) are
 // rebuilt once.
-const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?'|box2':''}`;
+const highlightStoreKey=(school,sport,eventId)=>`v1:${school}|${sport}|${eventId}${schoolModule(school)?.school.highlightRevision?`|r${schoolModule(school).school.highlightRevision}`:''}${proTeam(school)?(['mlb-stats','hub'].includes(proTeam(school).kind)?'|box3':'|box2'):''}`;
 function isVerifiedFinal(event){return Boolean(event&&event.status==='Final'&&event.id&&(event.highlights_verified||event.meet_results_verified)&&(event.highlights||[]).length)}
 async function storedHighlights(env,key){
   if(!env?.HIGHLIGHTS)return null;

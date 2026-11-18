@@ -170,7 +170,7 @@ assert.deepEqual(box.scoring.at(-1),{period:'Q4',clock:'10:35',team:'ATL',ours:f
 // of the result rows.
 assert.ok(worker.includes('target.box_score=details.box_score;'));
 assert.ok(!worker.includes("details.scoring.map(value=>({label:'Scoring',value}))"));
-assert.ok(worker.includes("${proTeam(school)?'|box2':''}"),'saved pro expanded views are rebuilt once');
+assert.ok(worker.includes("${proTeam(school)?(['mlb-stats','hub'].includes(proTeam(school).kind)?'|box3':'|box2'):''}"),'saved pro expanded views are rebuilt once (MiLB and the hub: box3)');
 {
   const fn=name=>{const at=page.indexOf(`function ${name}(`);assert.ok(at>=0,name);return page.slice(at,page.indexOf('\n}\n',at)+2);};
   const line=start=>{const at=page.indexOf(start);assert.ok(at>=0,start);return page.slice(at,page.indexOf('\n',at));};
