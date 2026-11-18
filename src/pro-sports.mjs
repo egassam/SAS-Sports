@@ -1673,7 +1673,7 @@ export function worldAthleticsMeets(meets,{school,config,timeZone,now,finals=new
 // and exhibition games are not listed). K-State's rules: a past game without
 // a final score, a postponed or cancelled game, is not listed.
 export const MLB_STATS_API='https://statsapi.mlb.com/api/v1/';
-export const mlbStatsScheduleUrl=(config,{season=null,date=null}={})=>`${MLB_STATS_API}schedule?sportId=${config.mlb.sportId}&teamId=${config.mlb.teamId}&${date?`date=${date}`:`season=${season}`}&hydrate=linescore,venue,decisions`;
+export const mlbStatsScheduleUrl=(config,{season=null,date=null}={})=>`${MLB_STATS_API}schedule?sportId=${config.mlb.sportId}&teamId=${config.mlb.teamId}&${date?`date=${date}`:`season=${season}`}&hydrate=linescore,venue,decisions,team`;
 const MLB_PLAYOFF_TYPES={F:'Playoffs · First Round',D:'Playoffs · Division Series',L:'Playoffs · Championship Series',W:'Championship Series'};
 // The seasons to read: this year's; in its last months next year's as well
 // (its schedule is published in the fall), and in January to March last year's
@@ -1700,7 +1700,8 @@ export function mlbStatsGames(payloads,{school,config,timeZone,now}){
     const oppName=opp.team?.name||'Opponent',relation=ownSide==='away'?'at':'vs';
     const postseason=g.gameType!=='R',round=postseason?(g.seriesDescription&&!/Regular/i.test(g.seriesDescription)?g.seriesDescription:MLB_PLAYOFF_TYPES[g.gameType]):null;
     const event=baseEvent({school,sport:'Baseball',status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`MLB Stats API (${config.league})`,sourceUrl:config.schedule,now,key:`${g.gamePk}|${status}`});
-    event.mlb_game_pk=g.gamePk;event.espn_date=g.gameDate;event.opponent_short=opp.team?.name?.split(' ').slice(-1)[0]||oppName;
+    event.mlb_game_pk=g.gamePk;event.espn_date=g.gameDate;event.opponent_short=opp.team?.teamName||opp.team?.name?.split(' ').slice(-1)[0]||oppName;
+    const abbr=t=>t.team?.abbreviation||t.team?.teamName||'';
     if(g.venue?.name)event.venue=g.venue.name;
     if(g.doubleHeader&&g.doubleHeader!=='N')event.game_number=Number(g.gameNumber)||1;
     if(Number(g.scheduledInnings)&&Number(g.scheduledInnings)!==9)event.scheduled_innings=Number(g.scheduledInnings);
@@ -1712,9 +1713,9 @@ export function mlbStatsGames(payloads,{school,config,timeZone,now}){
       // (11 inn)"); a seven-inning doubleheader game played in full does not.
       event.headline=finalHeadline(own.score,opp.score,null,null,innings&&innings!==scheduled?`Final/${innings}`:'');
       event.results=[{label:'Result',value:event.headline}];
-      const d=g.decisions||{},who=x=>x?.fullName;
-      const pitchers=[d.winner&&`Win: ${who(d.winner)}`,d.loser&&`Loss: ${who(d.loser)}`,d.save&&`Save: ${who(d.save)}`].filter(Boolean);
-      if(pitchers.length)event.results.push({label:'Pitchers',value:pitchers.join(' · ')});
+      // The pitchers of record: one row each (Win, Loss, Save).
+      const d=g.decisions||{};
+      for(const [label,x] of [['Win',d.winner],['Loss',d.loser],['Save',d.save]])if(x?.fullName)event.results.push({label,value:x.fullName});
     }
     if(status==='Live'){
       const half=line.inningState||(line.isTopInning?'Top':'Bottom');
@@ -1727,7 +1728,7 @@ export function mlbStatsGames(payloads,{school,config,timeZone,now}){
     // The box: inning by inning, runs, hits and errors (the MLB box's layout).
     if((status==='Final'||status==='Live')&&innings){
       const ownLine=ownSide==='home'?'home':'away',oppLine=ownSide==='home'?'away':'home';
-      event.box_score={teams:{ours:school.short_name,theirs:event.opponent_short},line_title:'Line Score',scoring_title:'Scoring Plays',total_label:'R',
+      event.box_score={teams:{ours:abbr(own)||school.short_name,theirs:abbr(opp)||event.opponent_short},line_title:'Line Score',scoring_title:'Scoring Plays',total_label:'R',
         line:line.innings.map(i=>({label:String(i.num),ours:i[ownLine]?.runs!=null?String(i[ownLine].runs):'X',theirs:i[oppLine]?.runs!=null?String(i[oppLine].runs):'X'})),
         totals:{ours:String(own.score),theirs:String(opp.score)},
         columns:[{label:'H',ours:String(line.teams?.[ownLine]?.hits??''),theirs:String(line.teams?.[oppLine]?.hits??'')},{label:'E',ours:String(line.teams?.[ownLine]?.errors??''),theirs:String(line.teams?.[oppLine]?.errors??'')}],
@@ -1743,6 +1744,6 @@ export function mlbStatsHighlights(event){
   if(event.status!=='Final'||!event.box_score)return null;
   const us=Number(event.school_score),them=Number(event.opponent_score),innings=event.box_score.line.length;
   const lines=[`The ${event.school} ${us>them?'beat':us<them?'lost to':'tied'} the ${event.opponent} ${Math.max(us,them)}-${Math.min(us,them)}${innings!==(event.scheduled_innings||9)?` in ${innings} innings`:''}${event.title.includes(' at ')?' on the road':' at home'}${event.venue?` (${event.venue})`:''}${event.round?`, ${event.round}`:''}.`];
-  const pitchers=event.results.find(r=>r.label==='Pitchers');if(pitchers)lines.push(`${pitchers.value.split(' · ').map(x=>x.replace(/\.$/,'')).join('. ')}.`);
+  const pitchers=event.results.filter(r=>['Win','Loss','Save'].includes(r.label)).map(r=>`${r.label}: ${String(r.value).replace(/\.$/,'')}`);if(pitchers.length)lines.push(`${pitchers.join('. ')}.`);
   return{lines,box_score:event.box_score};
 }

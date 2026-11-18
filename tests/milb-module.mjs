@@ -2,7 +2,7 @@
 // add in pro that's unique?", then "Start 1-4"): Pro → Baseball → MiLB, the
 // Wichita Wind Surge (Double-A) and the Royals' Triple-A and Double-A teams,
 // read from MLB's stats API.
-// Fixtures, saved Nov 18, 2026: the Wind Surge's 2026 season (140 games: 136
+// Fixtures (with the team hydrate), saved Nov 18, 2026: the Wind Surge's 2026 season (140 games: 136
 // finals, 55-81 as MLB's standings; one postponed, two cancelled) and its 2027
 // schedule.
 import assert from 'node:assert/strict';
@@ -32,7 +32,7 @@ for(const s of milb){
   assert.equal(w.schoolTimeZone(s),CENTRAL,s.id);
 }
 assert.deepEqual(['wichita-wind-surge','omaha-storm-chasers','northwest-arkansas-naturals'].map(id=>proTeam(id).mlb.teamId),[3898,541,1350]);
-assert.equal(mlbStatsScheduleUrl(proTeam('wichita-wind-surge'),{season:2026}),'https://statsapi.mlb.com/api/v1/schedule?sportId=12&teamId=3898&season=2026&hydrate=linescore,venue,decisions');
+assert.equal(mlbStatsScheduleUrl(proTeam('wichita-wind-surge'),{season:2026}),'https://statsapi.mlb.com/api/v1/schedule?sportId=12&teamId=3898&season=2026&hydrate=linescore,venue,decisions,team');
 assert.deepEqual(mlbStatsSeasons(new Date('2026-11-18T12:00:00Z')),[2026,2027],'fall: this season and the next one published');
 assert.deepEqual(mlbStatsSeasons(new Date('2027-02-01T12:00:00Z')),[2026,2027],'winter: last season and the coming one');
 assert.deepEqual(mlbStatsSeasons(new Date('2027-06-01T12:00:00Z')),[2027]);
@@ -47,7 +47,8 @@ const record=w.seasonRecords(events,'Baseball');
 assert.match(JSON.stringify(record),/55-81/,JSON.stringify(record));
 const opener=finals[0];
 assert.deepEqual([opener.title,opener.display_time,opener.headline,opener.venue],['Wind Surge vs Northwest Arkansas Naturals','Apr 2, 6:35 PM','W 10-6','Equity Bank Park']);
-assert.deepEqual(opener.results,[{label:'Result',value:'W 10-6'},{label:'Pitchers',value:'Win: Mike Paredes · Loss: Chase Jessee'}]);
+assert.deepEqual(opener.results,[{label:'Result',value:'W 10-6'},{label:'Win',value:'Mike Paredes'},{label:'Loss',value:'Chase Jessee'}]);
+assert.deepEqual(opener.box_score.teams,{ours:'WCH',theirs:'NWA'},'abbreviations keep the line score narrow');
 assert.equal(opener.box_score.line.length,9);assert.deepEqual(opener.box_score.totals,{ours:'10',theirs:'6'});
 assert.deepEqual(opener.box_score.columns.map(c=>[c.label,c.ours,c.theirs]),[['H','9','8'],['E','2','1']]);
 // Extra innings name them; a seven-inning doubleheader game does not.
