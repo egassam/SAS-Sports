@@ -166,6 +166,26 @@ export const PRO_TEAMS={
   'memphis-grizzlies':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/nba',team:'mem',id:29},division:{name:'Southwest',members:['DAL','HOU','NO','SA']},schedule:'https://www.nba.com/grizzlies/schedule'},
   'new-orleans-pelicans':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/nba',team:'no',id:3},division:{name:'Southwest',members:['DAL','HOU','MEM','SA']},schedule:'https://www.nba.com/pelicans/schedule'},
   'san-antonio-spurs':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/nba',team:'sa',id:24},division:{name:'Southwest',members:['DAL','HOU','MEM','NO']},schedule:'https://www.nba.com/spurs/schedule'},
+  // Women's National Basketball Association (user, November 18: "Let's add
+  // more pro. Start with wnba"): all 15 teams of the 2026 season by
+  // conference (the WNBA has no divisions). The Connecticut Sun move to
+  // Houston (the Comets) for 2027; ESPN still lists the franchise (id 18) as
+  // the Sun.
+  'atlanta-dream':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'atl',id:20},division:{name:'Eastern Conference',members:['CHI','CON','IND','NY','TOR','WSH']},schedule:'https://dream.wnba.com/schedule'},
+  'chicago-sky':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'chi',id:19},division:{name:'Eastern Conference',members:['ATL','CON','IND','NY','TOR','WSH']},schedule:'https://sky.wnba.com/schedule'},
+  'connecticut-sun':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'con',id:18},division:{name:'Eastern Conference',members:['ATL','CHI','IND','NY','TOR','WSH']},schedule:'https://sun.wnba.com/schedule'},
+  'indiana-fever':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'ind',id:5},division:{name:'Eastern Conference',members:['ATL','CHI','CON','NY','TOR','WSH']},schedule:'https://fever.wnba.com/schedule'},
+  'new-york-liberty':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'ny',id:9},division:{name:'Eastern Conference',members:['ATL','CHI','CON','IND','TOR','WSH']},schedule:'https://liberty.wnba.com/schedule'},
+  'toronto-tempo':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'tor',id:131935},division:{name:'Eastern Conference',members:['ATL','CHI','CON','IND','NY','WSH']},schedule:'https://tempo.wnba.com/schedule'},
+  'washington-mystics':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'wsh',id:16},division:{name:'Eastern Conference',members:['ATL','CHI','CON','IND','NY','TOR']},schedule:'https://mystics.wnba.com/schedule'},
+  'dallas-wings':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'dal',id:3},division:{name:'Western Conference',members:['GS','LV','LA','MIN','PHX','POR','SEA']},schedule:'https://wings.wnba.com/schedule'},
+  'golden-state-valkyries':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'gs',id:129689},division:{name:'Western Conference',members:['DAL','LV','LA','MIN','PHX','POR','SEA']},schedule:'https://valkyries.wnba.com/schedule'},
+  'las-vegas-aces':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'lv',id:17},division:{name:'Western Conference',members:['DAL','GS','LA','MIN','PHX','POR','SEA']},schedule:'https://aces.wnba.com/schedule'},
+  'los-angeles-sparks':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'la',id:6},division:{name:'Western Conference',members:['DAL','GS','LV','MIN','PHX','POR','SEA']},schedule:'https://sparks.wnba.com/schedule'},
+  'minnesota-lynx':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'min',id:8},division:{name:'Western Conference',members:['DAL','GS','LV','LA','PHX','POR','SEA']},schedule:'https://lynx.wnba.com/schedule'},
+  'phoenix-mercury':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'phx',id:11},division:{name:'Western Conference',members:['DAL','GS','LV','LA','MIN','POR','SEA']},schedule:'https://mercury.wnba.com/schedule'},
+  'portland-fire':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'por',id:132052},division:{name:'Western Conference',members:['DAL','GS','LV','LA','MIN','PHX','SEA']},schedule:'https://fire.wnba.com/schedule'},
+  'seattle-storm':{kind:'espn-team',sport:'Basketball',espn:{path:'basketball/wnba',team:'sea',id:14},division:{name:'Western Conference',members:['DAL','GS','LV','LA','MIN','PHX','POR']},schedule:'https://storm.wnba.com/schedule'},
   // National Hockey League (same request): all 32 teams under their division
   // (ESPN's names, "Atlantic Division" … "Pacific Division", apart from the
   // NBA's). Utah's schedules name the Mammoth UTA (ESPN's team list: UTAH).
@@ -220,6 +240,41 @@ export const PRO_TEAMS={
   'formula-1':{
     kind:'f1',sport:'Auto Racing',
     schedule:'https://www.formula1.com/en/racing/2026'
+  },
+  // Track and field (user, November 18: "Start with wnba and track and
+  // field. Track will be hard with most results in other countries so you
+  // will need to be creative"): World Athletics' own calendar and results
+  // pages hold every meet worldwide in one form, in English, with each
+  // athlete's country and mark. Each entry is a group of meets, read from
+  // the calendar's filters (`calendars`: query strings of
+  // worldathletics.org/competition/calendar-results), optionally narrowed by
+  // name and place (`match`).
+  'diamond-league':{
+    kind:'world-athletics',sport:'Track & Field',
+    calendars:['competitionGroupId=627','competitionGroupId=3520'],
+    schedule:'https://worldathletics.org/competition/calendar-results?competitionGroupId=627'
+  },
+  'world-athletics-championships':{
+    kind:'world-athletics',sport:'Track & Field',
+    // The World Championships, World Indoor Championships, Olympic Games,
+    // World Relays and the Ultimate Championship (no group of its own).
+    calendars:['competitionGroupId=6','competitionGroupId=12','competitionGroupId=5','competitionGroupId=601','query=Ultimate%20Championship'],
+    match:{name:/World Athletics|Olympic Games|Ultimate Championship/i},
+    schedule:'https://worldathletics.org/competition/calendar-results?competitionGroupId=3806'
+  },
+  'world-indoor-tour':{
+    kind:'world-athletics',sport:'Track & Field',
+    // The Indoor Tour's Gold meetings (ranking category A).
+    calendars:['competitionGroupId=3677&rankingCategoryId=1'],
+    schedule:'https://worldathletics.org/competition/calendar-results?competitionGroupId=3677&rankingCategoryId=1'
+  },
+  'usa-championships':{
+    kind:'world-athletics',sport:'Track & Field',
+    // The national championships' search is loose ("USA" also finds
+    // Barbados's): only USA Track & Field's own, held in the United States.
+    calendars:['competitionGroupId=3731&query=USA%20Championships','competitionGroupId=3730&query=USA'],
+    match:{name:/^USA\b/,venue:/\(USA\)$/},
+    schedule:'https://www.usatf.org/events'
   }
 };
 export const proTeam=id=>PRO_TEAMS[id]||null;
@@ -305,10 +360,11 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
       const event=baseEvent({school,sport,status,title:`${school.short_name} ${relation} ${oppName}`,start,display:displayTime(start,{timed}),opponent:oppName,sourceName:`ESPN team schedule (${school.league||'NFL'})`,sourceUrl:config.schedule,now,key:`${game.id}|${status}`});
       event.espn_event_id=game.id;event.espn_date=game.date;
       if(tv.length)event.broadcast=tv.join(', ');
-      // An NBA Cup game is a regular-season game with its stage as the round
+      // An NBA Cup game (the WNBA's: a Commissioner's Cup game) is a
+      // regular-season game with its stage as the round
       // ("NBA Cup · Group Play"); the Cup's championship game does not count
       // in the standings (the NBA's rule), so not in the record either.
-      const cup=sport==='Basketball'&&!postseason&&typeof note==='string'&&/^NBA Cup\b/i.test(note)?note.replace(/\s+-\s+/g,' · '):null;
+      const cup=sport==='Basketball'&&!postseason&&typeof note==='string'&&/^(?:NBA Cup|WNBA Commissioner's Cup)\b/i.test(note)?note.replace(/^WNBA (?=Commissioner)/i,'').replace(/\s+-\s+/g,' · '):null;
       event.round=postseason?(note?.label||(typeof note==='string'?note.replace(/^NBA Play-In\s+-\s+/i,'Play-In · ').replace(/\s+-\s+/g,' · '):null)||game.seasonType?.name||'Postseason'):cup||week;
       if(cup&&/Championship|Final\b/i.test(cup))event.not_in_record=true;
       if(note?.series&&postseason){event.series_name=note.series;event.series_game=note.game;}
@@ -351,12 +407,14 @@ export function espnTeamGames(payloads,{school,config,timeZone,now}){
 // "Brewers won 4-0", "Tied 2-2"); on a coming game, the series as it stands.
 // A series is best of three (Wild Card), five (Division Series) or seven; an
 // "if necessary" game of a series already decided is not listed.
-const seriesLength=name=>/Wild Card/.test(name)?3:/DS$/.test(name)?5:7;
+// The WNBA (2026): First Round best of three, Semifinals best of five,
+// Finals best of seven.
+const seriesLength=(name,league)=>league==='WNBA'?(/First Round/i.test(name)?3:/Semifinal/i.test(name)?5:7):/Wild Card/.test(name)?3:/DS$/.test(name)?5:7;
 function mlbSeriesStatus(events,school){
   const series=new Map(),drop=new Set(),us=school.short_name;
   for(const e of events.filter(e=>e.series_name).sort((a,b)=>String(a.espn_date).localeCompare(String(b.espn_date))))(series.get(e.series_name)||series.set(e.series_name,[]).get(e.series_name)).push(e);
   for(const [name,games] of series){
-    const need=Math.floor(seriesLength(name)/2)+1;let won=0,lost=0;
+    const need=Math.floor(seriesLength(name,school.league)/2)+1;let won=0,lost=0;
     for(const e of games){
       if(e.status==='Live')continue;
       if(e.status==='Final'){const o=String(e.headline||'')[0];if(o==='W')won++;else if(o==='L')lost++;}
@@ -758,7 +816,7 @@ export function espnLiveDetails(competition,{ours,opponent,sport='Football',summ
   const ourId=teamIdOf(ours),theirId=teamIdOf(opponent),side=id=>id===ourId?'ours':id===theirId?'theirs':null;
   // The NBA's quarters and the NHL's periods by name; a college board's
   // periods stay numbered (men's college basketball plays halves).
-  const nba=league==='basketball/nba',nhl=league==='hockey/nhl';
+  const nba=league==='basketball/nba'||league==='basketball/wnba',nhl=league==='hockey/nhl';
   const label=n=>sport==='Football'?(n<=4?`Q${n}`:n===5?'OT':`OT${n-4}`):sport==='Soccer'?soccerPeriod(n):nba?basketballPeriod(n):nhl?hockeyPeriod(n,{postseason}):String(n);
   // Score by period ("Q1 3-0"); a period not yet played is not shown.
   const periods=c=>new Map((c?.linescores||[]).map((l,i)=>[Number(l.period??i+1),l.displayValue??(l.value!=null?String(l.value):null)]));
@@ -1333,7 +1391,7 @@ export function imsaStandingsTable(payload,{championship,url=null}={}){
 }
 
 // ---- Team league standings (ESPN) ----
-// The pro team leagues (NFL, NBA, NHL, MLB, MLS): ESPN's league standings,
+// The pro team leagues (NFL, NBA, WNBA, NHL, MLB, MLS): ESPN's league standings,
 // one read per league shared by every team (`?level=3`: conferences and their
 // divisions). A team's page shows its division first, then its conference
 // and the other conference by seed (MLS: the two conferences by rank). The
@@ -1351,6 +1409,7 @@ const gamesBack=(lead,r)=>{const g=((lead.w-r.w)+(r.l-lead.l))/2;return g<=0?'�
 const LEAGUE_STANDINGS={
   'football/nfl':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'div',label:'Div'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
   'basketball/nba':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
+  'basketball/wnba':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
   'baseball/mlb':{columns:[{key:'record',label:'W-L'},{key:'pct',label:'Pct'},{key:'gb',label:'GB'}],detail:s=>[shown(s.streak)&&`Streak ${shown(s.streak)}`,shown(s.lasttengames)&&lastTen(s)].filter(Boolean).join(' · ')},
   'hockey/nhl':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-OT'},{key:'pts',label:'Pts'}],detail:s=>shown(s.streak)?`Streak ${shown(s.streak)}`:''},
   'soccer/usa.1':{columns:[{key:'gp',label:'GP'},{key:'record',label:'W-L-D'},{key:'pts',label:'Pts'}],detail:s=>shown(s.pointDifferential)?`Goal difference ${shown(s.pointDifferential)}`:''}
@@ -1381,10 +1440,183 @@ export function espnLeagueStandings(payload,{config}={}){
   const mine=conferences.find(c=>entriesOf(c).some(e=>own(e.team)));if(!mine)return[];
   const season=(conferences.map(c=>c.standings?.seasonDisplayName||c.children?.find(d=>d.standings?.seasonDisplayName)?.standings?.seasonDisplayName).find(Boolean)||'').replace(/\s*MLS$/,'');
   const source={name:`ESPN standings${season?` (${season} season)`:''}`,url:`https://www.espn.com/${league.split('/')[1]==='usa.1'?'soccer':league.split('/')[1]}/standings${league==='soccer/usa.1'?'/_/league/usa.1':''}`};
-  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4?c.abbreviation.replace(/^East$/,'Eastern Conference').replace(/^West$/,'Western Conference'):c.name;
+  const conferenceName=c=>c.abbreviation&&c.abbreviation.length<=4?c.abbreviation.replace(/^E(?:ast)?$/,'Eastern Conference').replace(/^W(?:est)?$/,'Western Conference'):c.name;
   const row=e=>standingsRow(e,league),tables=[];
   const division=(mine.children||[]).find(d=>(d.standings?.entries||[]).some(e=>own(e.team)));
   if(division)tables.push(leagueTable(division.name,division.standings.entries.map(row),{league,own,ranked:false,source}));
   for(const c of [mine,...conferences.filter(c=>c!==mine)])tables.push(leagueTable(conferenceName(c),entriesOf(c).map(row),{league,own,ranked:true,source}));
   return tables.filter(Boolean);
+}
+
+// ---- Track and field (World Athletics calendar and results) ----
+// User, November 18: "Start with wnba and track and field. Track will be
+// hard with most results in other countries so you will need to be
+// creative". Most professional meets are abroad (the Diamond League's 15
+// meetings span Doha, Shanghai, Rome, Monaco, Zürich…), each with its own
+// site, language and timing company. World Athletics publishes all of them
+// in one form: its calendar and its results pages carry the page's data as
+// JSON (Next.js `__NEXT_DATA__`), in English, with every final's places,
+// athletes, countries, marks, wind and records. robots.txt allows them.
+// - Calendar: `/competition/calendar-results?<filters>&startDate&endDate`
+//   (`initialEvents.results`: id, name, venue, dates, hasResults).
+// - Results: `/competition/calendar-results/results/<id>?day=<n>`, one page
+//   per day of the meet (`calendarEventsResults.eventTitles[].events[].races`).
+// Meets carry dates, not start times. Finals only: heats, qualifying rounds
+// and youth events (a Diamond League meeting's U18 races) are left out.
+export const WORLD_ATHLETICS='https://worldathletics.org';
+export const worldAthleticsCalendarUrl=(filter,from,to)=>`${WORLD_ATHLETICS}/competition/calendar-results?${filter}&startDate=${from}&endDate=${to}`;
+export const worldAthleticsResultsUrl=(id,day=1)=>`${WORLD_ATHLETICS}/competition/calendar-results/results/${id}${day>1?`?day=${day}`:''}`;
+// The page's data, read without a regular expression over the whole page.
+export function worldAthleticsData(html){
+  const text=String(html||''),at=text.indexOf('<script id="__NEXT_DATA__"');if(at<0)return null;
+  const open=text.indexOf('>',at)+1,close=text.indexOf('</script>',open);if(!open||close<0)return null;
+  try{return JSON.parse(text.slice(open,close))?.props?.pageProps||null}catch{return null}
+}
+// The calendar's meets, narrowed by the entry's name and place filters.
+export function worldAthleticsCalendar(pages,{match=null}={}){
+  const seen=new Set(),meets=[];
+  for(const html of pages){
+    for(const m of worldAthleticsData(html)?.initialEvents?.results||[]){
+      if(!m?.id||seen.has(m.id)||!/^\d{4}-\d{2}-\d{2}$/.test(m.startDate||''))continue;
+      if(match?.name&&!match.name.test(m.name||''))continue;
+      if(match?.venue&&!match.venue.test(m.venue||''))continue;
+      seen.add(m.id);
+      meets.push({id:m.id,name:String(m.name||'').trim(),venue:String(m.venue||'').trim(),from:m.startDate,to:/^\d{4}-\d{2}-\d{2}$/.test(m.endDate||'')?m.endDate:m.startDate,hasResults:Boolean(m.hasResults||m.hasApiResults),category:m.rankingCategory||null,group:m.competitionGroup||null});
+    }
+  }
+  return meets.sort((a,b)=>a.from.localeCompare(b.from)||a.id-b.id);
+}
+// The meet's days, as World Athletics numbers them (day 1 is its first date).
+export function worldAthleticsDays(meet){return Math.max(1,Math.min(20,Math.round((Date.parse(`${meet.to}T00:00:00Z`)-Date.parse(`${meet.from}T00:00:00Z`))/864e5)+1));}
+// "Oblique SEVILLE" → "Oblique Seville"; "Andy DÍAZ HERNÁNDEZ" → "Andy Díaz
+// Hernández"; "Khaleb MCRAE" → "Khaleb McRae". Team names (relays) stay.
+export function athleteName(name){
+  return String(name||'').replace(/\s+/g,' ').trim().split(' ').map(word=>/\p{Ll}/u.test(word)||!/\p{Lu}.*\p{Lu}/u.test(word)?word:word.toLowerCase().replace(/(^|[-'’])(\p{L})/gu,(m,a,b)=>a+b.toUpperCase()).replace(/^Mc(\p{L})/u,(m,b)=>`Mc${b.toUpperCase()}`)).join(' ');
+}
+// "Men's 100 Metres" → "Men's 100m"; "Men's 35 Kilometres Race Walk" →
+// "Men's 35km Race Walk"; "Women's 4x100 Metres Relay" → "Women's 4x100m Relay".
+export const eventShortName=name=>String(name||'').replace(/\s+Metres\b/g,'m').replace(/\s+Kilometres\b/g,'km').replace(/\s+Miles?\b/g,' Mile').trim();
+// Records worth a tag (a personal or season best is not): world, area,
+// national, championship, meeting, Diamond League records; world leads.
+const RECORD_TAGS=/^(?:WR|WL|AR|NR|CR|MR|DLR|WU20R|=WR|=WL|=AR|=NR|=CR|=MR|=DLR|ER|AF|AM|AS|OC|SA|NACAC)$/;
+const recordTags=text=>String(text||'').split(/[,\s]+/).filter(t=>RECORD_TAGS.test(t));
+// A time ("1:41.80", "12:45.70", "9.90") in seconds, for sections of a final
+// run as separate races (an indoor 400 m, a 3000 m in two heats).
+const timeSeconds=mark=>{const m=String(mark||'').trim();if(!/^\d+(?::\d{1,2})*(?:\.\d+)?$/.test(m))return null;return m.split(':').reduce((t,p)=>t*60+Number(p),0)};
+// Each final of one results page: the event, its wind, and every finisher.
+// Sections whose title names youth events, and the separate events of a
+// combined event (its total is its own final), are left out.
+export function worldAthleticsFinals(html){
+  const data=worldAthleticsData(html)?.calendarEventsResults;if(!data)return null;
+  const out=new Map();
+  for(const title of data.eventTitles||[]){
+    if(/\bU1[68]\b|\bU2[03]\b|Youth|Junior|High School|Master|Para|Split times|Combined Events/i.test(title?.eventTitle||''))continue;
+    for(const ev of title?.events||[]){
+      const finals=(ev?.races||[]).filter(r=>/^Final\b/i.test(r?.race||'')&&(r.results||[]).length);
+      if(!finals.length)continue;
+      let rows=finals.flatMap(r=>(r.results||[]).map(x=>({x,wind:x.wind||r.wind||null})));
+      // A final in sections: one order by time, the places counted again.
+      if(finals.length>1&&rows.every(r=>timeSeconds(r.x.mark)!=null||!/^\d+\.$/.test(String(r.x.place||'')))){
+        rows=rows.slice().sort((a,b)=>(timeSeconds(a.x.mark)??Infinity)-(timeSeconds(b.x.mark)??Infinity));
+        let n=0;rows=rows.map(r=>({...r,place:timeSeconds(r.x.mark)!=null?String(++n):''}));
+      }
+      const results=rows.map(({x,wind,place})=>{
+        const p=place??String(x.place||'').replace(/\.$/,'').trim();
+        const members=(x.competitor?.teamMembers||[]).map(t=>athleteName(t.name)).filter(Boolean);
+        return{place:/^\d+$/.test(p)?Number(p):null,name:athleteName(x.competitor?.name),country:String(x.nationality||'').trim(),mark:String(x.mark||'').trim(),records:recordTags(x.records),wind:wind&&wind!=='NWI'?String(wind):null,...(members.length?{members}:{})};
+      }).filter(r=>r.name&&r.mark);
+      if(!results.length)continue;
+      // A meet can list one event twice in a section (a Diamond League
+      // meeting's "Diamond Discipline" again for its season winners): the
+      // fuller list. Its other sections ("Promotional Events", national
+      // races) can reuse the event's id for a separate race: their own.
+      const section=String(title?.eventTitle||'').trim(),own=!section||/Diamond Discipline|World Athletics Indoor Tour/i.test(section);
+      const key=`${own?'':`${section}|`}${ev.eventId||ev.event}`,prev=out.get(key);
+      if(prev&&prev.results.length>=results.length)continue;
+      const short=eventShortName(ev.event);
+      out.set(key,{id:key,name:String(ev.event||'').trim(),short:own?short:`${short} · ${section.replace(/\s+Events?$/i,'')}`,gender:ev.gender||null,relay:Boolean(ev.isRelay),...(own?{}:{side:true}),results});
+    }
+  }
+  return{competition:data.competition||null,days:(data.options?.days||[]).length||null,events:[...out.values()]};
+}
+const markText=r=>`${r.mark}${r.wind?` (${/^[+-]/.test(r.wind)?r.wind:`+${r.wind}`})`:''}`;
+const placeText=r=>r.place?ordinal(r.place):r.mark;
+// The card: each event's winner, records first (a world or meeting record,
+// a world lead), then the meet's own order; a meeting's side races
+// (promotional, national) after its main events.
+export function worldAthleticsWinners(events){
+  const rank=e=>{const t=e.results[0]?.records||[];return(e.side?4:0)+(t.some(x=>/WR$/.test(x))?0:t.some(x=>/(?:AR|CR|MR|DLR)$/.test(x))?1:t.some(x=>/WL$/.test(x))?2:3)};
+  return events.filter(e=>e.results[0]?.place===1).map((e,i)=>({e,i})).sort((a,b)=>rank(a.e)-rank(b.e)||a.i-b.i).map(({e})=>{const w=e.results[0];return{pos:1,driver:w.name,car:w.country,make:e.short,team:w.records.join(', '),laps_led:0,status:'',note:markText(w)}});
+}
+// The meet window: every final under its event, in the meet's order.
+export function worldAthleticsTable(events){
+  return events.flatMap(e=>e.results.map(r=>({group:e.short,pos:r.place??'',driver:r.name,car:r.country,make:r.records.join(', '),team:r.members?r.members.join(', '):'',laps_led:0,status:r.place?'':r.mark,note:r.place?markText(r):''})));
+}
+// Cross-country rows (shared result contract): each finalist with place and mark.
+export function worldAthleticsRows(events){
+  return events.flatMap(e=>e.results.map(r=>({group:e.short,participant:`${r.name}${r.country&&r.country!==r.name?` (${r.country})`:''}`,result:[placeText(r),r.place?markText(r):null,r.records.join(', ')||null].filter(Boolean).join(' · ')})));
+}
+const COUNTRY_NAMES={USA:'the United States'};
+// The window's lines and numbers: records, world leads, and the winners
+// from the United States.
+export function worldAthleticsDetails(meet,events){
+  if(!events?.length)return null;
+  const lines=[`${meet.name}, ${meet.venue}: ${events.length} final${events.length===1?'':'s'}.`];
+  const winners=events.map(e=>({e,w:e.results[0]})).filter(x=>x.w?.place===1);
+  const say=({e,w})=>`${w.name}${w.country&&w.country!==w.name?` (${w.country})`:''}, ${e.short}, ${markText(w)}`;
+  const tagged=re=>winners.filter(x=>x.w.records.some(t=>re.test(t)));
+  for(const [re,label] of [[/WR$/,'World record'],[/AR$/,'Area record'],[/^=?CR$/,'Championship record'],[/^=?(?:MR|DLR)$/,'Meeting record'],[/WL$/,'World lead']]){const list=tagged(re);if(list.length)lines.push(`${label}${list.length>1?'s':''}: ${list.map(say).join('; ')}.`);}
+  const american=winners.filter(x=>x.w.country==='USA');
+  if(american.length)lines.push(`Winners from ${COUNTRY_NAMES.USA}: ${american.map(say).join('; ')}.`);
+  const countries=new Set(winners.map(x=>x.w.country).filter(Boolean));
+  const stats=[{label:'Finals',value:String(events.length)},{label:'Venue',value:meet.venue}];
+  if(countries.size)stats.push({label:'Countries with a winner',value:String(countries.size)});
+  if(american.length)stats.push({label:'U.S. winners',value:String(american.length)});
+  return{lines,stats,rows:worldAthleticsRows(events),table:worldAthleticsTable(events)};
+}
+const meetDates=(from,to)=>{if(from===to){const [,m,d]=from.split('-').map(Number);return`${MONTHS[m-1]} ${d}`;}const [,m1,d1]=from.split('-').map(Number),[,m2,d2]=to.split('-').map(Number);return m1===m2?`${MONTHS[m1-1]} ${d1}-${d2}`:`${MONTHS[m1-1]} ${d1}-${MONTHS[m2-1]} ${d2}`};
+const CARD_WINNERS=6;
+// The town: "Letzigrund, Zürich (SUI)" → "Zürich (SUI)"; in the United
+// States with its state: "Hayward Field, Eugene, OR (USA)" → "Eugene, OR (USA)".
+export function meetPlace(venue){
+  const parts=String(venue||'').split(/,\s*/);
+  if(parts.length>=3&&/^[A-Z]{2} \(USA\)$/.test(parts.at(-1)))return`${parts.at(-2)}, ${parts.at(-1)}`;
+  return parts.at(-1)||String(venue||'');
+}
+// The entry's meets: a past meet with published finals is Final; a meet
+// under way is Today with the finals so far; a coming meet is Upcoming
+// with its venue and dates. A past meet with no results is not listed
+// (K-State's rule).
+// meets: worldAthleticsCalendar(); finals: Map id → [events] (every day read).
+export function worldAthleticsMeets(meets,{school,config,timeZone,now,finals=new Map()}){
+  const sport=config.sport,today=dayOf(wallClock(now,timeZone)),events=[];
+  const seasonOf=m=>m.from.slice(0,4),inSeason=new Map();
+  for(const m of meets)(inSeason.get(seasonOf(m))||inSeason.set(seasonOf(m),[]).get(seasonOf(m))).push(m);
+  for(const meet of meets){
+    const first=Date.parse(`${meet.from}T00:00:00Z`),last=Date.parse(`${meet.to}T00:00:00Z`),list=finals.get(meet.id)||[];
+    let status;
+    if(last<today){if(!list.length)continue;status='Final';}
+    else if(first<=today)status='Today';
+    else status='Upcoming';
+    const place=meetPlace(meet.venue);
+    const event=baseEvent({school,sport,status,title:meet.name,start:`${meet.from}T00:00:00.000Z`,display:meetDates(meet.from,meet.to),opponent:place,sourceName:list.length?'World Athletics results':'World Athletics calendar',sourceUrl:list.length?worldAthleticsResultsUrl(meet.id):config.schedule,now,key:`${meet.id}|${status}`});
+    event.event_type='MEET';event.world_athletics_id=meet.id;event.venue=meet.venue;event.season=Number(seasonOf(meet));
+    if(meet.to!==meet.from)event.end_time=`${meet.to}T23:59:00.000Z`;
+    if(list.length){
+      const winners=worldAthleticsWinners(list);
+      event.headline=`${list.length} final${list.length===1?'':'s'}`;
+      event.race_table=winners;event.race_card=winners.slice(0,CARD_WINNERS);
+      event.results=winners.map(w=>({participant:`${w.driver}${w.car&&w.car!==w.driver?` (${w.car})`:''}`,result:`${w.make} · ${w.note}${w.team?` · ${w.team}`:''}`}));
+      event.result_count=list.reduce((n,e)=>n+e.results.length,0);event.has_more_results=true;
+      if(status==='Today')event.recency_label=`Results so far: ${list.length} final${list.length===1?'':'s'}`;
+    }else{
+      event.results.push({label:'Venue',value:meet.venue});
+      event.results.push({label:'Dates',value:meetDates(meet.from,meet.to)});
+      const season=inSeason.get(seasonOf(meet))||[];
+      if(config.calendars?.length&&season.length>1&&/Diamond League/i.test(meet.group||''))event.results.push({label:'Meeting',value:`${season.indexOf(meet)+1} of ${season.length}`});
+      event.result_count=event.results.length;
+    }
+    events.push(event);
+  }
+  return events;
 }

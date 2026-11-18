@@ -47,7 +47,7 @@ assert.deepEqual([okc.name,okc.short_name,okc.conference,okc.state],['Oklahoma C
 assert.deepEqual(PRO_TEAMS['oklahoma-city-thunder'].division.members,['DEN','MIN','POR','UTAH']);
 assert.equal(w.schoolTimeZone(okc),CENTRAL);
 assert.equal(w.schoolTimeZone(nba.find(s=>s.id==='toronto-raptors')),'America/New_York');
-assert.ok(page.includes("sectionOf:s=>['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
+assert.ok(page.includes("sectionOf:s=>s.league==='WNBA'?s.division:['NFL','MLS','MLB','NBA','NHL'].includes(s.league)?s.conference:s.league}"));
 
 // The Worker reads the regular season by name, the playoffs in April to
 // June and the play-in in April; the NBA is in season October to June.
