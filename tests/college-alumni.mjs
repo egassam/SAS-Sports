@@ -17,7 +17,7 @@ const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse
 const noNuxt=html=>html.replace(/<script[^>]*id="__NUXT_DATA__"[\s\S]*?<\/script>/,'');
 
 // The three layouts, from the page's data and from its markup.
-const kstate=page('kstate-football-2026-11-18.html.gz'),nebraska=page('nebraska-soccer-2026-11-18.html.gz'),missouri=page('missouri-softball-2026-11-18.html.gz');
+const kstate=page('kstate-football-roster-2026-11-18.html.gz'),nebraska=page('nebraska-soccer-roster-2026-11-18.html.gz'),missouri=page('missouri-softball-roster-2026-11-18.html.gz');
 const ks=rosterHometowns(kstate,'https://www.kstatesports.com/sports/football/roster');
 assert.equal(ks.length,111);
 assert.deepEqual(ks.find(p=>p.name==='Jackson Hollie'),{name:'Jackson Hollie',hometown:'Junction City, Kan.',high_school:'Junction City',previous_school:null,position:ks.find(p=>p.name==='Jackson Hollie').position,year:ks.find(p=>p.name==='Jackson Hollie').year,url:ks.find(p=>p.name==='Jackson Hollie').url});
