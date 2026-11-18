@@ -172,7 +172,13 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
 // 7. The page asks only when the feed says so, and draws the section.
 {
   const page=read('../public/index.html');
-  assert.match(page,/function prosBlock\(g\)\{\n  if\(!g\?\.pros\)return'';/);
+  assert.match(page,/function prosBlock\(g,\{full=false\}=\{\}\)\{\n  if\(!g\?\.pros\)return'';/);
+  // The Roster (Pros) tab and the pill at the top of the sport (user,
+  // November 18: "I'm not seeing the roster anywhere. Can you make it more
+  // obvious?").
+  assert.match(page,/<button class="tab" data-view="roster" aria-pressed="false" hidden>Roster<\/button>/);
+  assert.match(page,/if\(currentView==='roster'&&!homeMode\(\)\)return renderRoster\(groups\);/);
+  assert.match(page,/\$\{recordLine\(g\)\}\$\{rosterPill\(g\)\}/);
   assert.match(page,/\$\{prosBlock\(g\)\}\$\{section\('Other'/);
   assert.match(page,/loadPros\(generation,feedController\.signal\)/);
   const worker=read('../src/index.js');
