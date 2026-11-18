@@ -2,7 +2,6 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
-| washington | Basketball | 🔴 on | live 15-8 · 15:36 - 1st · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -1905,6 +1904,7 @@
 | wake-forest | Football | ✅ off (passed) | Wake Forest vs Virginia · 2026-10-31T23:49:37.612Z |
 | wake-forest | Soccer | ✅ off (passed) | Women's · Wake Forest vs Florida St · 2026-10-16T00:29:05.736Z |
 | wake-forest | Volleyball | ✅ off (passed) | Wake Forest at California · 2026-10-18T22:34:28.163Z |
+| washington | Basketball | ✅ off (passed) | Men's · Washington vs Simon Fraser · 2026-11-18T11:31:14.415Z |
 | washington | Football | ✅ off (passed) | Washington at Purdue · 2026-10-17T06:14:53.186Z |
 | washington | Soccer | ✅ off (passed) | Women's · Washington at Minnesota · 2026-10-23T02:07:51.429Z |
 | washington | Volleyball | ✅ off (passed) | Washington at Wisconsin · 2026-10-24T07:12:57.528Z |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1122/1956; on 1; off 831; failing 2.
+Done 1123/1956; on 0; off 831; failing 2.
