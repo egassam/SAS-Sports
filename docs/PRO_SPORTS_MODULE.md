@@ -10,7 +10,7 @@ The level switch now reads **High School · College · Pro** (the order the hand
 
 | Box | Field | Values |
 | --- | --- | --- |
-| Sport | `pro_sport` | Football, Soccer, Baseball, Basketball, Hockey, Auto Racing, Track & Field |
+| Sport | `pro_sport` | Football, Soccer, Baseball, Basketball, Hockey, Auto Racing, Track & Field, Kansas |
 | League | `league` | NFL, MLS, NWSL, MLB, MiLB, NBA, WNBA, NHL, NASCAR, IMSA, Formula 1, Diamond League, World Athletics, USATF |
 | Team (Races for Auto Racing, Meets for Track & Field) | the entry | All 32 NFL teams, grouped by division (AFC East … NFC West); all 30 MLS clubs, grouped by conference; all 16 NWSL clubs (one table); all 30 MLB teams, grouped by division (AL East … NL West); all 30 NBA teams, grouped by division (Atlantic … Southwest); all 15 WNBA teams, grouped by conference; all 32 NHL teams, grouped by division (Atlantic Division … Pacific Division); NASCAR Cup Series; IMSA WeatherTech SportsCar Championship and IMSA Michelin Pilot Challenge; Formula 1 World Championship; the Diamond League, World Championships, World Indoor Tour Gold and USA Championships |
 
@@ -179,6 +179,14 @@ Pro → Baseball → **MiLB**: the **Wichita Wind Surge** (Double-A, Texas Leagu
 - **Cards:** result, pitchers of record ("Win: Mike Paredes · Loss: Chase Jessee"), doubleheader game number, round for playoff games (not in the record). A game past or short of its scheduled innings names them ("W 5-3 (11 inn)"); a seven-inning doubleheader game played in full does not. Expanded final: the result from the team's side and the line score (innings, R, H, E). Live: on a game day today's schedule every 20 s, the inning and outs ("Bottom 5th · 1 out").
 - Records checked against MLB's standings on Nov 18: Wind Surge 55-81, Storm Chasers 65-81, Naturals 57-79.
 - **Not added:** the **Kansas City Monarchs** (American Association) are listed in MLB's API with no games (2025 or 2026); the league's own stats site would be a reader of its own. The **ECHL** (Kansas City Mavericks, Wichita Thunder): echl.com and the team sites publish the coming week's games as page text only, with no results; the league's data (LeagueStat/HockeyTech) needs a key the sites do not publish. Team colors for the three MiLB teams are approximate (navy with each club's accent) until checked against the clubs.
+
+## Kansas & Kansas City (4.308.0, same request)
+
+Pro → **Kansas** → Kansas & KC → **Kansas & Kansas City** (`kansas-pros`, a hub: `kind:'hub'` in `PRO_TEAMS`). One page for the pro teams fans in Kansas follow and the players from Kansas:
+
+- **Sports:** Football (Chiefs), Baseball (Royals, Wind Surge, Storm Chasers, Naturals), Soccer (Sporting KC, KC Current), Auto Racing (NASCAR Cup races at Kansas Speedway only), Basketball (no team: its players only). Each team is read by its own entry (`fetchPro`) and listed under the hub with its name as the team label, so the header shows each team's own record and a card's expanded view reads the team's own source (event ids stay the team's).
+- **In the Pros:** every NFL, NBA, WNBA and MLB player who played at Kansas, K-State or Wichita State (ESPN id 2724, which the standings map lacks) or was born in Kansas (ESPN's birthplace), each with the college and "born in Wichita, KS"; the latest draft's picks from those three schools, and MLB's picks from any school in Kansas (colleges, junior colleges and high schools: MLB names the school's state). The NHL is not listed for the hub.
+- High schools: ESPN's rosters name no high school, so a Kansas high school's own page has no In the Pros list; its MLB draft picks appear on the hub.
 
 ## Limits
 

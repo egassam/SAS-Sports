@@ -165,3 +165,30 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
   assert.match(worker,/alumniLeaguesFor\(sport\)\.length\)for\(const group of groups\)group\.pros=true/);
 }
 console.log('pro alumni module: rosters, lines, drafts, /live/pros and the page OK');
+
+// 8. Kansas & Kansas City (the hub): players from Kansas, K-State and Wichita
+// State, and those born in Kansas; draft picks from those schools, and MLB's
+// from any school in Kansas.
+{
+  const ks={players:[
+    {i:'1',n:'A',p:'QB',j:'1',c:'2305',cn:'Kansas',bc:'Dallas',bs:'TX',x:3,t:'kansas-city-chiefs'},
+    {i:'2',n:'B',p:'WR',j:'2',c:'99',cn:'Nebraska',bc:'Wichita',bs:'KS',x:1,t:'kansas-city-chiefs'},
+    {i:'3',n:'C',p:'DE',j:'3',c:'99',cn:'Nebraska',bc:'Omaha',bs:'NE',x:5,t:'kansas-city-chiefs'}],
+    draft:{year:2026,picks:[
+      {o:10,r:'1',p:10,n:'D',pos:'P',ai:'',t:'',tn:'X',sch:{location:'Kansas State',displayName:'Kansas State',shortDisplayName:'Kansas State',state:'KS'}},
+      {o:20,r:'1',p:20,n:'E',pos:'SS',ai:'',t:'',tn:'X',sch:{location:'Mill Valley HS',displayName:'Mill Valley HS',shortDisplayName:'Mill Valley HS',state:'KS'}},
+      {o:30,r:'1',p:30,n:'F',pos:'C',ai:'',t:'',tn:'X',sch:{location:'Texas',displayName:'Texas',shortDisplayName:'Texas',state:'TX'}}]}};
+  const pros=A.hubPros(ks,null,{collegeIds:['2305','2306'],birthState:'KS',collegeNames:new Map([['2305','Kansas']])});
+  assert.deepEqual(pros.map(p=>[p.name,p.college,p.born||'']),[['A','Kansas',''],['B','Nebraska','Wichita, KS']]);
+  const colleges=[{id:'kstate',name:'Kansas State',short_name:'K-State',state:'Kansas',aliases:[],espn_id:'2306'}];
+  const matches=(sch,c)=>sch.location===c.name;
+  assert.deepEqual(A.hubDraft(ks,colleges,{collegeIds:['2306'],state:'KS',matches}).picks.map(p=>[p.name,p.school]),[['D','K-State'],['E','Mill Valley HS']]);
+}
+{
+  const page=read('../src/pro-sports.mjs');
+  assert.match(page,/'kansas-pros':\{kind:'hub'/);
+  const hub=schools.find(s=>s.id==='kansas-pros');
+  assert.deepEqual([hub.level,hub.pro_sport,hub.league],['pro','Kansas','Kansas & KC']);
+  assert.deepEqual(sponsoredSports['kansas-pros'],['Football','Baseball','Basketball','Soccer','Auto Racing']);
+}
+console.log('pro alumni module: Kansas & Kansas City hub OK');

@@ -52,7 +52,7 @@ import {ohioStateSchool,createOhioStateHandlers} from './schools/ohio-state.mjs'
 import {oregonSchool,createOregonHandlers} from './schools/oregon.mjs';
 import {pennStateSchool,createPennStateHandlers} from './schools/penn-state.mjs';
 import {createSourceFetch,SOURCE_TTL} from './source-fetch.mjs';
-import {alumniLeaguesFor,ALUMNI_ROSTER_MS,ALUMNI_LINES_MS,alumniRosterKey,alumniLinesKey,rosterPlayers,draftYears,espnDraftUrl,mlbDraftUrl,espnDraftPicks,mlbDraftPicks,summaryLines,finishedGames,scoreboardUrls,mergeLines,schoolPros,schoolDraft,collegeEspnId,stateName} from './pro-alumni.mjs';
+import {alumniLeaguesFor,ALUMNI_ROSTER_MS,ALUMNI_LINES_MS,alumniRosterKey,alumniLinesKey,rosterPlayers,draftYears,espnDraftUrl,mlbDraftUrl,espnDraftPicks,mlbDraftPicks,summaryLines,finishedGames,scoreboardUrls,mergeLines,schoolPros,schoolDraft,hubPros,hubDraft,collegeEspnId,stateName} from './pro-alumni.mjs';
 import {newsCandidates,storyFromHtml,storyFor,espnTeamNewsUrl,espnTeamStories,mergeStories,leagueTeamIds} from './news.mjs';
 import {createConferenceGames} from './conference-games.mjs';
 import {oneTournamentPerStory} from './sidearm-schedule-reader.mjs';
@@ -344,7 +344,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.308.0-pros-alumni';
+const VERSION='4.308.1-pros-alumni';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5052,8 +5052,9 @@ function alumniSchoolMatches(sch,school){
   return scoreboardTeamMatchesSchool(sch,school);
 }
 async function schoolProsAnswer(env,ctx,schoolId,sport){
-  const entry=catalogSchool(schoolId),collegeId=collegeEspnId(schoolId);
-  const leagues=entry&&!entry.level&&collegeId?alumniLeaguesFor(sport):[];
+  const entry=catalogSchool(schoolId),hub=proTeam(schoolId)?.kind==='hub'?proTeam(schoolId):null,collegeId=hub?null:collegeEspnId(schoolId);
+  const leagues=entry&&(hub||!entry.level&&collegeId)?alumniLeaguesFor(sport).filter(l=>!hub||l.id!=='nhl'):[];
+  const hubColleges=hub?hub.colleges.map(id=>catalogSchool(id)).filter(Boolean).map(c=>({...c,espn_id:collegeEspnId(c.id)||hub.collegeEspnIds?.[c.id]||null})):[];
   const out=await Promise.all(leagues.map(async league=>{
     const now=new Date();
     const [index,lines]=await Promise.all([
@@ -5061,7 +5062,9 @@ async function schoolProsAnswer(env,ctx,schoolId,sport){
       alumniDoc(env,ctx,alumniLinesKey(league.id),ALUMNI_LINES_MS,prev=>buildAlumniLines(league,prev,new Date())),
     ]);
     const teamsById=new Map(proLeagueTeams(league).map(t=>[t.id,t]));
-    return{league:league.league,...(league.gender?{gender:league.gender}:{}),read:Boolean(index),pros:schoolPros(index,lines,collegeId,{teamsById}),draft:schoolDraft(index,entry,collegeId,alumniSchoolMatches),roster_built:index?.built||null,lines_built:lines?.built||null,now:now.toISOString()};
+    const pros=hub?hubPros(index,lines,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),birthState:hub.birthState,collegeNames:new Map(hubColleges.map(c=>[String(c.espn_id),c.short_name]))},{teamsById}):schoolPros(index,lines,collegeId,{teamsById});
+    const draft=hub?hubDraft(index,hubColleges,{collegeIds:hubColleges.map(c=>c.espn_id).filter(Boolean),state:hub.state,matches:alumniSchoolMatches}):schoolDraft(index,entry,collegeId,alumniSchoolMatches);
+    return{league:league.league,...(league.gender?{gender:league.gender}:{}),read:Boolean(index),pros,draft,roster_built:index?.built||null,lines_built:lines?.built||null,now:now.toISOString()};
   }));
   return{school:schoolId,sport,college_id:collegeId,leagues:out,read:out.length>0&&out.every(l=>l.read)};
 }
@@ -5125,6 +5128,18 @@ async function withStoredFinals(result,school,sport,env,now,aiTargetId=null){
 async function fetchPro(school,sport,now,aiTargetId=null){
   const config=proTeam(school.id),timeZone=schoolTimeZone(school);
   const failed=error=>({events:[],source_url:null,source_urls:[],fetched_at:now.toISOString(),live_source_used:false,error});
+  // A hub (Kansas & Kansas City): each sport's teams read by their own
+  // entries, then listed together under the hub, each team with its own
+  // record (team_label). Event ids stay the team's, so an expanded view reads
+  // the team's own source.
+  if(config?.kind==='hub'){
+    const part=config.sports[sport];if(!part)return failed('Sport not built for this hub');
+    const teams=part.teams.map(id=>catalogSchool(id)).filter(Boolean);
+    const results=await Promise.all(teams.map(team=>fetchPro(team,sport,now,aiTargetId).catch(error=>failed(String(error?.message||error)))));
+    if(teams.length&&results.every(r=>r.error))return failed(results.map(r=>r.error).join('; '));
+    const events=results.flatMap((r,i)=>(r.events||[]).filter(e=>!part.track||part.track.test(String(e.track||e.title||''))).map(e=>({...e,school_id:school.id,school:school.name,team_label:teams[i].short_name,team_id:teams[i].id})));
+    return{events,source_url:results.find(r=>r.source_url)?.source_url||null,source_urls:results.flatMap(r=>r.source_urls||[]),fetched_at:now.toISOString(),live_source_used:true,error:null};
+  }
   if(!config||config.sport!==sport)return failed('Sport not built for this team');
   if(config.kind==='espn-team'){
     // MLS: the URL takes ESPN's numeric team id, and the schedule lists results
@@ -7240,7 +7255,11 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   // for it without waiting for a final with a recap.
   if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;
   // A college sport with pro leagues: the page asks /live/pros for its pros.
-  {const entry=catalogSchool(school);if(entry&&!entry.level&&collegeEspnId(entry.id)&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
+  // A hub's sport too, and one with no team (Basketball) is still listed for
+  // its players.
+  {const entry=catalogSchool(school),hub=proTeam(school)?.kind==='hub';
+   if(hub&&!groups.length&&alumniLeaguesFor(sport).length)groups.push({school_id:school,school:entry?.name||school,sport,in_season:true,season_label:'Players from Kansas',records:[],live:[],results:[],upcoming:[],other:[],latest_activity_at:null,next_activity_at:null});
+   if(entry&&(hub||!entry.level&&collegeEspnId(entry.id))&&alumniLeaguesFor(sport).length)for(const group of groups)group.pros=true;}
   const response=json(groups),stored=new Response(response.body,response);
   if(groups.some(group=>group.live?.length))stored.headers.set('x-sas-live','1');
   if(!feedActive(groups))stored.headers.set('x-sas-quiet','1');

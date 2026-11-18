@@ -28,8 +28,9 @@ const pro=schools.filter(s=>s.level==='pro');
 // wnba"; tests/wnba-module.mjs) and the four track and field entries (same
 // request; tests/track-field-module.mjs), then the 16 NWSL clubs (user,
 // November 18: "Add NWSL next"; tests/nwsl-module.mjs), then three minor
-// league baseball teams (user, November 18: "Start 1-4"; tests/milb-module.mjs).
-assert.equal(pro.length,196);
+// league baseball teams and the Kansas & Kansas City hub (user, November 18:
+// "Start 1-4"; tests/milb-module.mjs, tests/pro-alumni-module.mjs).
+assert.equal(pro.length,197);
 assert.deepEqual(pro.filter(s=>s.pro_sport==='Auto Racing').map(s=>s.id),['nascar-cup-series','imsa-weathertech','imsa-pilot-challenge','formula-1']);
 const nfl=pro.filter(s=>s.league==='NFL'),divisions={};
 for(const s of nfl)(divisions[s.conference]??=[]).push(s.short_name);
@@ -53,7 +54,7 @@ for(const s of nfl){
 }
 // The Raiders play in Las Vegas (Pacific time), not the Eastern default.
 assert.ok(worker.includes("Nevada:'America/Los_Angeles'"));
-for(const s of pro){assert.ok(proTeam(s.id),s.id);assert.deepEqual(sponsored[s.id],[proTeam(s.id).sport],s.id);}
+for(const s of pro){assert.ok(proTeam(s.id),s.id);assert.deepEqual(sponsored[s.id],proTeam(s.id).kind==='hub'?Object.keys(proTeam(s.id).sports):[proTeam(s.id).sport],s.id);}
 // The page: Pro menus are Sport, League, then Team (Races for racing); the
 // levels run Middle School, High School, College, Pro; the packaged catalog has the teams.
 assert.ok(page.includes("{id:'pro',label:'Pro',group:'Sport',groups:'All sports',team:'Team'"),'Pro level menus');

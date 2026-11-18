@@ -17187,5 +17187,23 @@
         "provider_school_id": null
       }
     ]
+  },
+  {
+    "id": "kansas-pros",
+    "name": "Kansas & Kansas City",
+    "short_name": "Kansas & KC",
+    "state": "Kansas",
+    "city": "Kansas City",
+    "conference": "Kansas & KC",
+    "league": "Kansas & KC",
+    "pro_sport": "Kansas",
+    "level": "pro",
+    "division": "Kansas & KC · pro teams and players",
+    "athletics_url": "https://www.chiefs.com",
+    "aliases": [
+      "Kansas pros",
+      "Kansas and Kansas City"
+    ],
+    "providers": []
   }
 ]

@@ -183,9 +183,9 @@ export function mergeLines(doc,games,{now}){
 
 // A school's pros in one league: roster players whose college is the school,
 // most recent line first, then by years in the league.
-export function schoolPros(index,lines,collegeId,{teamsById=new Map()}={}){
-  if(!index||!collegeId)return[];
-  const out=(index.players||[]).filter(p=>p.c===String(collegeId)).map(p=>{
+export function schoolPros(index,lines,collegeId,{teamsById=new Map(),all=false}={}){
+  if(!index||!collegeId&&!all)return[];
+  const out=(index.players||[]).filter(p=>all||p.c===String(collegeId)).map(p=>{
     const team=teamsById.get(p.t)||null,line=lines?.lines?.[p.i]||null;
     return{id:p.i,name:p.n,position:p.p,jersey:p.j,team_id:team?.id||'',team:team?.name||'',team_short:team?.short_name||'',years:p.x,
       ...(line?{last_game:{date:line.d,opponent:line.o,result:line.r,line:line.s}}:{})};
@@ -213,3 +213,30 @@ export const COLLEGE_ESPN_IDS=(()=>{const out=new Map();for(const [board,map] of
 export const collegeEspnId=schoolId=>COLLEGE_ESPN_IDS.get(schoolId)||null;
 export const US_STATES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
 export const stateName=v=>US_STATES[String(v||'').toUpperCase()]||String(v||'');
+
+// A pro hub's players (Kansas & Kansas City, user, November 18: "Start 1-4"):
+// everyone on a league's rosters who played college ball at one of the hub's
+// colleges or was born in its state, each with the college and birthplace.
+export function hubPros(index,lines,{collegeIds=[],birthState=null,collegeNames=new Map()}={},{teamsById=new Map()}={}){
+  if(!index)return[];
+  const ids=new Set(collegeIds.map(String));
+  const wanted=(index.players||[]).filter(p=>ids.has(p.c)||birthState&&p.bs===birthState);
+  const listed=schoolPros({players:wanted},lines,null,{teamsById,all:true});
+  const byId=new Map(wanted.map(p=>[p.i,p]));
+  return listed.map(p=>{const r=byId.get(p.id);return{...p,college:collegeNames.get(r.c)||r.cn||'',...(birthState&&r.bs===birthState&&r.bc?{born:`${r.bc}, ${r.bs}`}:{})}});
+}
+// A hub's draft picks: from its colleges (by roster id or name), and MLB's
+// picks from any school in its state (colleges, junior colleges and high
+// schools: MLB names the school's state).
+export function hubDraft(index,colleges,{collegeIds=[],state=null,matches}={}){
+  const draft=index?.draft;if(!draft?.picks?.length)return null;
+  const ids=new Set(collegeIds.map(String)),byId=new Map((index.players||[]).map(p=>[p.i,p]));
+  const picks=draft.picks.map(p=>{
+    const rostered=p.ai&&byId.get(p.ai);
+    let school=null;
+    if(rostered&&rostered.c)school=ids.has(rostered.c)?colleges.find(c=>String(c.espn_id)===rostered.c)?.short_name||rostered.cn:null;
+    else school=colleges.find(c=>matches(p.sch,c))?.short_name||(state&&p.sch.state===state?p.sch.displayName:null);
+    return school?{overall:p.o,round:p.r,pick:p.p,name:p.n,position:p.pos,team_id:p.t,team:p.tn,school}:null;
+  }).filter(Boolean);
+  return picks.length?{year:draft.year,picks}:null;
+}

@@ -5414,5 +5414,13 @@
     "panelDark": "#050c15",
     "line": "#0e355d",
     "onAccent": "#ffffff"
+  },
+  "kansas-pros": {
+    "primary": "#13294B",
+    "secondary": "#F2C230",
+    "panel": "#09182a",
+    "panelDark": "#050c15",
+    "line": "#0e355d",
+    "onAccent": "#ffffff"
   }
 }

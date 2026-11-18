@@ -304,6 +304,20 @@ export const PRO_TEAMS={
   'wichita-wind-surge':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:12,teamId:3898},affiliate:'Minnesota Twins',league:'Texas League',schedule:'https://www.milb.com/wichita/schedule'},
   'omaha-storm-chasers':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:11,teamId:541},affiliate:'Kansas City Royals',league:'International League',schedule:'https://www.milb.com/omaha/schedule'},
   'northwest-arkansas-naturals':{kind:'mlb-stats',sport:'Baseball',mlb:{sportId:12,teamId:1350},affiliate:'Kansas City Royals',league:'Texas League',schedule:'https://www.milb.com/northwest-arkansas/schedule'},
+  // Kansas & Kansas City (user, November 18: "Start 1-4"): one page for the
+  // pro teams fans in Kansas follow and the players from Kansas. Each sport
+  // lists its teams' games (read by their own entries), each team its own
+  // record; NASCAR only at Kansas Speedway. In the Pros lists every player
+  // from Kansas, K-State and Wichita State and everyone born in Kansas, and
+  // the draft picks from those colleges (MLB: any school in Kansas, high
+  // schools included).
+  'kansas-pros':{kind:'hub',sport:null,sports:{
+    Football:{teams:['kansas-city-chiefs']},
+    Baseball:{teams:['kansas-city-royals','wichita-wind-surge','omaha-storm-chasers','northwest-arkansas-naturals']},
+    Basketball:{teams:[]},
+    Soccer:{teams:['sporting-kansas-city','kansas-city-current']},
+    'Auto Racing':{teams:['nascar-cup-series'],track:/\bKansas\b/i},
+  },colleges:['kansas','kstate','wichita-state'],collegeEspnIds:{'wichita-state':'2724'},birthState:'KS',state:'KS'},
 };
 export const proTeam=id=>PRO_TEAMS[id]||null;
 export const ESPN_SITE='https://site.api.espn.com/apis/site/v2/sports/';
