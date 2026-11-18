@@ -749,6 +749,8 @@ function populateSportFilter(groups=[]){
   // sport is always chosen, so its page reads results and the whole schedule
   // instead of only its next game.
   if(!homeView&&currentLevel==='pro'&&!sportFilter.value&&ordered.length)sportFilter.value=ordered[0];
+  // The Kansas & Kansas City hub has several sports: its Sport box shows.
+  if(currentLevel==='pro')$('#sportField').hidden=homeView||ordered.length<=1;
 }
 function visibleGroup(g,q){
   const sportHit=(g.sport+' '+g.school).toLowerCase().includes(q);

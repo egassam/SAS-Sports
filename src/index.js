@@ -344,7 +344,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.308.2-pros-alumni';
+const VERSION='4.308.3-pros-alumni';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5671,7 +5671,7 @@ function mergeEvents(eventLists){const statusWeight={Unknown:0,Upcoming:1,Today:
 const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};
 // A league whose season is not its sport's (by ESPN path): the WNBA plays
 // May to its October finals.
-const PRO_LEAGUE_SEASONS={'basketball/wnba':[[5,10]]};
+const PRO_LEAGUE_SEASONS={'basketball/wnba':[[5,10]],'mlb-stats':[[3,9]]};
 function inSeason(sport,month,pro=false,league=null){const windows=(pro&&(PRO_LEAGUE_SEASONS[league]||PRO_SEASONS[sport]))||SEASONS[sport];if(!windows)return true;return windows.some(([a,b])=>a<=b?month>=a&&month<=b:month>=a||month<=b);}
 // A sport's overall record this season (user, October 7: "the sports overall
 // win/loss record for every sport"), counted from its finals' W/L/T results
@@ -5720,7 +5720,7 @@ function seasonRecords(results){
 // "ITF Sectionals" (Ole Miss's spelling of the ITA Sectionals) stays.
 const PRO_TENNIS_EVENT=/^(?:#\d+\s+)?(?:(?:ATP|ITF|WTA)\b|UTR (?:Pro|PTT)\b)|\b[MW](?:15|25|35|50|60|75|80|100)\b|\bChallenger\b/i;
 const proTennisEvent=e=>e.sport==='Tennis'&&PRO_TENNIS_EVENT.test(e.opponent||'')&&!/\bSectionals?\b/i.test(e.opponent||'');
-function groupEvents(events,now=new Date()){events=events.filter(e=>!proTennisEvent(e));if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool),isPro(groupSchool)?proTeam(groupSchool.id)?.espn?.path:null),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
+function groupEvents(events,now=new Date()){events=events.filter(e=>!proTennisEvent(e));if(!events.length)return[];const sport=events[0].sport,groupSchool=catalogSchool(events[0].school_id),local=schoolNow(now,groupSchool);if(!isHighSchool(groupSchool)&&!isPro(groupSchool))events=filterActiveSeason(events,sport,local);if(!events.length)return[];const school=events[0],live=[],results=[],upcoming=[],other=[],today=Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate());for(const e of events){if(e.status==='Live')live.push(e);else if(e.status==='Final')results.push(e);else if(e.status==='Upcoming'||e.status==='Today'){const eventDay=e.start_time?Date.parse(e.start_time.slice(0,10)+'T00:00:00Z'):NaN;const lastDay=e.end_time?Date.parse(String(e.end_time).slice(0,10)+'T00:00:00Z'):NaN;if(!Number.isFinite(eventDay)||eventDay>=today||Number.isFinite(lastDay)&&lastDay>=today)upcoming.push(e);}else other.push(e);}results.sort((a,b)=>(Date.parse(b.start_time)||0)-(Date.parse(a.start_time)||0));upcoming.sort((a,b)=>(Date.parse(a.start_time)||Infinity)-(Date.parse(b.start_time)||Infinity));const active=inSeason(sport,now.getUTCMonth()+1,isPro(groupSchool),isPro(groupSchool)?proTeam(groupSchool.id)?.espn?.path||proTeam(groupSchool.id)?.kind:null),latest=results.map(e=>e.start_time).filter(Boolean).sort().at(-1)||null,next=upcoming.map(e=>e.start_time).filter(Boolean).sort()[0]||null;return[{school_id:school.school_id,school:school.school,sport,in_season:active,season_label:active?'In season':'Out of season',records:seasonRecords(results),live,results,upcoming,other,latest_activity_at:latest,next_activity_at:next}];}
 function absoluteUrl(href,base){try{return new URL(decodeHtml(href),base).href}catch{return null}}
 function recapUrlsByEvent(raw,school,sport,sourceUrl,now){
   const map=new Map(),markers=[],seenMarker=new Set();
