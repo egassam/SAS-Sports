@@ -5592,3 +5592,15 @@ User: "I have received all notifications for my favorites". The handoff's open i
 **Merged** PR #606 (`1d7e7b5`) under the standing permission. Production `4.311.2-state-brackets`: `verify:prod` Manhattan Football and Soccer PASS, XC 18/20 and 26/21; Manhattan, Marysville, Perry-Lecompton carry their brackets.
 
 **Next.** Item 1 (high school → college → pro): SIDEARM roster cards (`s-person-card`) carry "Hometown" and "Last School" (K-State football: 106 players, 21 from Kansas); match the app's high schools by name and city ("Blue Valley, Leawood, Kan." is not Blue Valley High School, Randolph).
+
+## November 18, 2026 — In College (PR #608)
+
+**Asked.** Item 1 of the list ("Start with 2 then work your way through the rest"): high school → college (college → pro was already In the Pros).
+
+**Source and matching.** SIDEARM roster pages give "Hometown" and "Last School"/high school in four layouts: `__NUXT_DATA__` (a flat devalue array; Missouri's list layout shows no hometown, only the data has it), `s-person-card`, the `roster-table-cell--*` table (Nebraska's high school cell goes on "/ Utah / San Diego State"), the classic list. All 285 region roster URLs (`rosterUrls`) read from the sandbox one a second: 209 answered, 76 refused (KU, mixed 200/403 within one quick run; the Worker reads KU through its private source). 55 players matched the app's high schools by name and city, each checked; city is required ("Blue Valley" from Leawood/Stilwell is Blue Valley High, Overland Park, not Randolph's). Wichita State, Drake, Oral Roberts have no sponsored sports in the catalog: left out (17 colleges).
+
+**Built** (4.312.0, 4.312.1). `src/college-alumni.mjs`, `buildCollegeAlumni`/`collegeAlumniDocs`/`highSchoolCollegeAnswer` in the Worker (a sport's alternative roster paths stop at the first with players per team), cron builds one stale college per run, `/live/pros` for a high school answers a `College` league (cached only when every index is read), page `isCollegeList` (pill "In College", tab "College", section "In College"). `tests/college-alumni.mjs` with three roster fixtures; `pro-alumni-module` expects the College league for a high school.
+
+**Gate.** `npm test` all pass locally (parse-budget timed the roster fixtures as schedules: renamed `*-roster-*`, the test's own exclusion); CI green on `80dc16f`. Preview: all 17 indexes built in 10 requests 45 s apart; Junction City, Manhattan, Free State, Hayden, Eudora, Wamego lists checked; Chromium 390 px no errors, no sideways scroll; `check-reference-page` PASS; `verify:preview` Manhattan/Junction City/Free State PASS, XC 18/20 and 26/21; Anthony MS volleyball and Eisenhower MS football one expanded view each 404 while ems.usd383.org answered production HTTP 520 too, PASS after 15 minutes.
+
+**Merged** PR #608 (`d5ac896`). Production `4.312.1-in-college`: `verify:prod` Manhattan and Junction City (all sports) PASS, XC 18/20 and 26/21. Junction City Football, Manhattan Volleyball right; Free State Football answered no league once (`leagues: []`, not cached), right on the next request and for five other schools.
