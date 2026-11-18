@@ -72,7 +72,7 @@ assert.equal(A.collegeEspnId('kansas-city-chiefs'),null);
   assert.deepEqual(A.finishedGames([fix('alumni-nfl-week10')]).length,14,'week 10: 14 finals');
   const week11={week:{number:11},season:{type:2}};
   assert.deepEqual(A.scoreboardUrls(NFL,{now:new Date(),board:week11}),['https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=10']);
-  assert.deepEqual(A.scoreboardUrls(NBA,{now:new Date('2026-11-18T03:00:00Z')}).map(u=>u.split('dates=')[1]),['20261117&limit=100','20261116&limit=100'],'Eastern days');
+  assert.deepEqual(A.scoreboardUrls(NBA,{now:new Date('2026-11-18T03:00:00Z')}).map(u=>u.split('dates=')[1]),['20261117&limit=100','20261116&limit=100','20261115&limit=100','20261114&limit=100'],'Eastern days, the last four');
   assert.equal(A.scoreboardUrls(NBA,{now:new Date(),first:true}).length,4);
 }
 

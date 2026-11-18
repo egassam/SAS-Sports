@@ -163,7 +163,9 @@ export function scoreboardUrls(league,{now,first=false,board=null}={}){
     const week=Number(board.week?.number),type=Number(board.season?.type);
     return week>1?[`${base}?seasontype=${type}&week=${week-1}`]:[];
   }
-  const days=first?4:2,out=[];
+  // The last four days every build: a first build's games past its 20
+  // summaries are read by the next builds (each final once).
+  const days=4,out=[];
   for(let i=0;i<days;i++){const d=new Date(now.getTime()-i*864e5-5*3600e3).toISOString().slice(0,10).replaceAll('-','');out.push(`${base}?dates=${d}&limit=100`)}
   return out;
 }
