@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {SERIES_MS,seriesKey,opponentHistoryUrl,parseOpponentHistory,seriesFor,seriesSummary} from './series-history.mjs';
 import {ALUMNI_COLLEGES,COLLEGE_ALUMNI_MS,collegeAlumniKey,rosterHometowns,alumniMatcher,collegeAlumniIndex} from './college-alumni.mjs';
 import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBracket,bracketMatcher,ownBracketGames,bracketCurrent} from './state-brackets.mjs';
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
@@ -346,7 +347,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.312.1-in-college';
+const VERSION='4.313.0-series-history';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6617,6 +6618,53 @@ async function conferenceStandingsStatus(school,sport){
       ...(rows.length?{}:{sample:(()=>{const at=text.search(/<table[^>]*standings|<table/);return text.slice(at>=0?at:0,(at>=0?at:0)+2500)})()})}];
   }catch(error){return[{url,error:String(error?.message||error).slice(0,200)}];}
 }
+// Series history (user, November 18, 2026: item 3, rivalry pages;
+// src/series-history.mjs): a college game's all-time series with its
+// opponent from the school's own "Opponent History" page, kept in KV a day
+// (one ~1 MB page a sport; the stored copy holds each opponent's record,
+// streak, last ten and last five meetings). Coming and live games carry it.
+const seriesBuilds=new Map();
+async function buildSeriesDoc(school,sport){
+  const pages=[],found=new Set();
+  for(const url of [...new Set(rosterUrls(school,sport).map(opponentHistoryUrl))]){
+    const team=/\/womens-/.test(url)?"Women's":/\/mens-/.test(url)?"Men's":null;
+    if(team?found.has(team):found.size)continue;
+    try{
+      const r=await sourceFetch(url,{},{ttl:SOURCE_TTL.document,staleOnError:true});if(!r.ok)continue;
+      const entries=parseOpponentHistory(await r.text());if(!entries.length)continue;
+      found.add(team||'all');pages.push({team,url,entries});
+    }catch{}
+  }
+  return{built:new Date().toISOString(),school:school.id,sport,pages};
+}
+async function seriesDoc(env,school,sport){
+  const store=env?.HIGHLIGHTS,key=seriesKey(school.id,sport);let doc=null;
+  try{doc=store?await store.get(key,'json'):null}catch{}
+  if(doc&&Date.now()-Date.parse(doc.built)<=SERIES_MS)return doc;
+  let running=seriesBuilds.get(key);
+  if(!running){running=buildSeriesDoc(school,sport).then(async fresh=>{if(store&&(fresh.pages.length||!doc))try{await store.put(key,JSON.stringify(fresh),{expirationTtl:14*86400})}catch{};return fresh.pages.length||!doc?fresh:doc}).catch(()=>doc).finally(()=>seriesBuilds.delete(key));seriesBuilds.set(key,running);}
+  return await running;
+}
+async function attachSeries(groups,school,sport,env){
+  try{
+    if(!school||isHighSchool(school)||isPro(school))return groups;
+    const coming=groups.flatMap(g=>[...(g.live||[]),...(g.upcoming||[])]).filter(e=>e.opponent&&e.event_type!=='RACE');
+    if(!coming.length)return groups;
+    const doc=await seriesDoc(env,school,sport);if(!doc?.pages?.length)return groups;
+    const short=school.short_name||school.name;
+    for(const e of coming){
+      const page=doc.pages.find(p=>!p.team||!e.team_label||p.team===e.team_label)||null;if(!page)continue;
+      // The opponent's own names when the app has it ("Kansas" is the
+      // catalog's University of Kansas); an exact name match only.
+      const names=[e.opponent];
+      const wanted=matchText(e.opponent),other=schools.find(c=>c.id!==school.id&&!c.level&&[c.name,c.short_name,...(c.aliases||[])].some(n=>matchText(n)===wanted));
+      if(other)names.push(other.name,other.short_name,...(other.aliases||[]));
+      const summary=seriesSummary(seriesFor(page.entries,names),{school:short,opponent:e.opponent});
+      if(summary)e.series={...summary,source:{name:`${short} opponent history`,url:page.url}};
+    }
+  }catch{}
+  return groups;
+}
 async function attachCollegeStandings(groups,school,sport){
   try{
     if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
@@ -7375,6 +7423,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   // Series and league standings (pro entries): one set for the sport.
   if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
+  await attachSeries(groups,catalogSchool(school)||schoolModule(school)?.school,sport,env);
   // A pro team has news on ESPN in a week without a game: the page asks
   // for it without waiting for a final with a recap.
   if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;
