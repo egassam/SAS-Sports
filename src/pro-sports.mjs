@@ -355,6 +355,19 @@ function baseEvent({school,sport,status,title,start,display,opponent,sourceName,
 // MLB postseason rounds as ESPN's game notes name them ("ALCS - Game 5",
 // "NLWC - Game 2", "World Series - Game 7 If Necessary").
 const MLB_ROUNDS={ALWC:'AL Wild Card Series',NLWC:'NL Wild Card Series'};
+// MLB's team schedule (user, November 19, 2026: "Fix royals first"): after
+// the World Series ESPN answers a plain `seasontype=2` with the next season
+// (2027 from November 18, 2026) while its current season is still 2026, so
+// every team lost its results and postseason. The season is named: the one
+// that started in March (January and February: last year's), the postseason
+// in September to November, and from November to February the next season
+// too, for its coming games.
+export function mlbScheduleUrls(base,{month,year}){
+  const season=month>=3?year:year-1,urls=[`${base}?seasontype=2&season=${season}`];
+  if(month>=9&&month<=11)urls.push(`${base}?seasontype=3&season=${season}`);
+  if(month>=11||month<=2)urls.push(`${base}?seasontype=2&season=${season+1}`);
+  return urls;
+}
 export function mlbRound(note){
   const m=String(note||'').match(/^(.+?) - Game (\d+)( If Necessary)?/i);
   if(!m)return note?String(note).trim():null;
