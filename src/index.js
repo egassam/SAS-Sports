@@ -69,7 +69,7 @@ import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBr
 import KS_ALIASES from './schools/data/ks-aliases.json' with {type:'json'};
 import {collegeStandingsReads,collegeConferenceStandings,collegeHockeyReads,collegeHockeyStandings,conferenceStandingsUrl,conferenceSiteStandings,parseSidearmStandings} from './college-standings.mjs';
 import {FINALS_TABLE_SQL,FINALS_INDEX_SQL,isStoredFinal,mergeFinals,retractedFinal} from './finals-store.mjs';
-import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
+import {PUSH_TABLES_SQL,PUSH_EVENT_KEEP_DAYS,PUSH_FAILURES_TO_DROP,validSubscription,cleanFavorites,dueAlerts,alertMessage,pushEventKey,highSchoolGames,dueHighSchoolAlerts,vapidSigningKey,vapidKeyCheck,sendPush} from './push-alerts.mjs';
 import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refreshFeeds,nextBatch,nextStatus} from './scheduled-refresh.mjs';
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
@@ -349,7 +349,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.315.1-calendar';
+const VERSION='4.316.0-hs-alerts';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6933,7 +6933,9 @@ async function pushKeys(env){
 // Alerts cover the teams the live boards carry: college and pro (ESPN).
 // Middle and high schools have no board read often enough (MaxPreps refuses
 // frequent reads).
-const pushCovered=id=>{const school=catalogSchool(id);return Boolean(school&&((school.level||'college')==='college'||(school.level==='pro'&&proTeam(id)?.kind==='espn-team')))};
+// Middle and high schools too (item 6, Nov 19): MaxPreps' live score and
+// the posted final, from their feeds.
+const pushCovered=id=>{const school=catalogSchool(id);return Boolean(school&&((school.level||'college')==='college'||isHighSchool(school)||(school.level==='pro'&&proTeam(id)?.kind==='espn-team')))};
 function pushBoards(favorites,now=new Date()){
   const sports=new Set(),proPaths=new Set();
   for(const id of favorites){
@@ -6942,6 +6944,20 @@ function pushBoards(favorites,now=new Date()){
     else if((school.level||'college')==='college')for(const sport of sponsoredSports[id]||school.sponsored_sports||[])sports.add(sport);
   }
   return liveNowBoards(now).filter(board=>board.level==='pro'?proPaths.has(board.path):sports.has(board.sport));
+}
+async function highSchoolPushGames(favorites,origin,env,now){
+  const url=new URL(origin),month=now.getUTCMonth()+1,pairs=[];
+  for(const id of favorites){
+    const school=catalogSchool(id);if(!school||!isHighSchool(school))continue;
+    for(const sport of sponsoredSports[id]||[])if(inSeason(sport,month))pairs.push([school,sport]);
+  }
+  const out=[];
+  await Promise.all(pairs.slice(0,80).map(async([school,sport])=>{
+    const copy=await homeSavedFeed(url,env,caches.default,school.id,sport);if(!copy)return;
+    const local=schoolNow(now,school),today=new Date(Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())).toISOString().slice(0,10);
+    out.push(...highSchoolGames(copy.groups,{today,shortName:school.short_name||school.name}));
+  }));
+  return out;
 }
 async function runPushAlerts(env,{origin=`https://${PRODUCTION_HOST}`,now=new Date(),fetchImpl=fetch}={}){
   if(!pushConfigured(env))return{skipped:'not configured'};
@@ -6955,13 +6971,17 @@ async function runPushAlerts(env,{origin=`https://${PRODUCTION_HOST}`,now=new Da
   const boards=pushBoards(favorites,now);
   const reads=await Promise.all(boards.map(async board=>{const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}`;const payload=await readJson(url,30);return{board,payload,url,ok:Boolean(payload)}}));
   const games=liveNowGames(reads.filter(read=>read.ok),now,{states:['in','post'],allSides:true}).filter(game=>favorites.has(game.school_id));
-  const keys=[...new Set(games.map(pushEventKey))],seen=new Map();
+  // High schools (item 6, Nov 19): every 10 minutes, the favorites' saved
+  // feeds (rebuilt every 10 minutes by the scheduled refresh), in-season
+  // sports only, at most 80 reads a run.
+  const hsGames=now.getUTCMinutes()%10<2?await highSchoolPushGames(favorites,origin,env,now):[];
+  const keys=[...new Set([...games,...hsGames].map(pushEventKey))],seen=new Map();
   for(let i=0;i<keys.length;i+=50){
     const part=keys.slice(i,i+50);
     const rows=(await db.prepare(`SELECT event_key,state FROM push_events WHERE scope=? AND event_key IN (${part.map(()=>'?').join(',')})`).bind(scope,...part).all()).results||[];
     for(const row of rows)seen.set(row.event_key,row.state);
   }
-  const {alerts,rows}=dueAlerts(games,seen),at=now.toISOString();
+  const college=dueAlerts(games,seen),high=dueHighSchoolAlerts(hsGames,seen),alerts=[...college.alerts,...high.alerts],rows=[...college.rows,...high.rows],at=now.toISOString();
   // Recorded before sending: a run that overlaps never sends an alert twice.
   const writes=rows.map(row=>db.prepare('INSERT INTO push_events (scope,event_key,school_id,state,seen) VALUES (?,?,?,?,?) ON CONFLICT(scope,event_key) DO UPDATE SET state=excluded.state,seen=excluded.seen').bind(scope,row.key,row.school_id,row.state,at));
   writes.push(db.prepare('DELETE FROM push_events WHERE scope=? AND seen<?').bind(scope,new Date(now.getTime()-PUSH_EVENT_KEEP_DAYS*864e5).toISOString()));
@@ -6980,7 +7000,7 @@ async function runPushAlerts(env,{origin=`https://${PRODUCTION_HOST}`,now=new Da
     else{sub.failures+=1;updates.push(db.prepare('UPDATE push_subscriptions SET failures=? WHERE scope=? AND endpoint=?').bind(sub.failures,scope,sub.endpoint));}
   }
   if(updates.length)await db.batch(updates);
-  return{scope,subscriptions:subs.length,boards:boards.length,boards_read:reads.filter(read=>read.ok).length,games:games.length,alerts:alerts.map(alert=>({kind:alert.kind,school_id:alert.game.school_id,event:pushEventKey(alert.game)})),sent:results.filter(r=>r.result.ok).length,failed:results.filter(r=>!r.result.ok).map(r=>r.result.status),skipped_sends:Math.max(0,jobs.length-PUSH_MAX_SENDS)};
+  return{scope,subscriptions:subs.length,boards:boards.length,boards_read:reads.filter(read=>read.ok).length,games:games.length,high_school_games:hsGames.length,alerts:alerts.map(alert=>({kind:alert.kind,school_id:alert.game.school_id,event:pushEventKey(alert.game)})),sent:results.filter(r=>r.result.ok).length,failed:results.filter(r=>!r.result.ok).map(r=>r.result.status),skipped_sends:Math.max(0,jobs.length-PUSH_MAX_SENDS)};
 }
 async function readBody(request,limit=8192){
   const text=await request.text();if(text.length>limit)return null;
@@ -6992,7 +7012,7 @@ async function pushRoute(request,env,url){
   // reports only whether they work together, never the key.
   if(path==='/api/push/config'){
     const enabled=pushConfigured(env),key=enabled?await vapidKeyCheck(pushPublicKey(env),env.VAPID_PRIVATE_KEY):null;
-    return json({enabled:Boolean(enabled&&key?.ok),public_key:enabled&&key?.ok?pushPublicKey(env):null,covers:'College and pro teams: when a game starts and its final score',...(key&&!key.ok?{key_problem:key.problem}:{})});
+    return json({enabled:Boolean(enabled&&key?.ok),public_key:enabled&&key?.ok?pushPublicKey(env):null,covers:'College, pro, middle and high school teams: when a game starts and its final score',...(key&&!key.ok?{key_problem:key.problem}:{})});
   }
   if(path==='/api/push/run'){
     const secret=env?.SOURCE_FETCH_KEY,given=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
@@ -7354,10 +7374,12 @@ async function saveGlobalCopy(env,url,school,sport,body,fetchedAt,quiet=false){
     // Within the hour a copy is rewritten only when its number of events
     // changed (Oct 21: Manhattan golf's results from Prep.Golf waited behind an
     // empty copy saved before them, now that copies outlive a deploy).
-    let events=null;try{events=JSON.parse(body).reduce((n,g)=>n+['live','results','upcoming','other'].reduce((m,k)=>m+(g[k]?.length||0),0),0)}catch{}
+    // Nor when a score was posted or a game went live (the same number of
+    // events): high school score alerts read this copy (item 6, Nov 19).
+    let events=null,scored=null;try{const groups=JSON.parse(body);events=groups.reduce((n,g)=>n+['live','results','upcoming','other'].reduce((m,k)=>m+(g[k]?.length||0),0),0);scored=groups.reduce((n,g)=>n+(g.live?.length||0)+(g.results||[]).filter(e=>e.school_score!=null).length,0)}catch{}
     const {metadata}=await env.HIGHLIGHTS.getWithMetadata(key,'text');
-    if(Date.now()-Date.parse(metadata?.fetched_at||'')<globalCopyWriteMs(school)&&metadata?.events===events)return;
-    await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt,events,...(quiet?{quiet:true}:{})}});
+    if(Date.now()-Date.parse(metadata?.fetched_at||'')<globalCopyWriteMs(school)&&metadata?.events===events&&(metadata?.scored??scored)===scored)return;
+    await env.HIGHLIGHTS.put(key,body,{expirationTtl:Math.floor(LAST_GOOD_MS/1000),metadata:{fetched_at:fetchedAt,events,scored,...(quiet?{quiet:true}:{})}});
   }catch{}
 }
 async function globalCopy(env,url,school,sport){
