@@ -348,7 +348,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.314.0-game-weather';
+const VERSION='4.314.1-game-weather';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6672,6 +6672,10 @@ async function attachSeries(groups,school,sport,env){
 // its schedule names (SIDEARM's `site`). A place is geocoded once (KV, 180
 // days), its NWS point once (KV, 30 days); the hourly forecast is read
 // through the source cache (an hour). At most four games a feed.
+// api.weather.gov and Open-Meteo answer robots.txt "Disallow: /" (aimed at
+// crawlers; both publish these APIs for apps). The user chose to call them
+// anyway (November 19, 2026: "Go with 1", allow these two APIs): only these
+// three reads skip robots.txt; every other source still obeys it.
 const NWS_HEADERS={'User-Agent':'SAS-Sports (game-day forecasts)','Accept':'application/geo+json'};
 async function kvJson(env,key,maxAgeMs,build){
   const store=env?.HIGHLIGHTS;let doc=null;try{doc=store?await store.get(key,'json'):null}catch{}
@@ -6684,12 +6688,12 @@ async function kvJson(env,key,maxAgeMs,build){
 async function placePoint(env,place){
   const where=parsePlace(place);if(!where)return null;
   const point=await kvJson(env,placeKey(where.city,where.state),180*86400e3,async()=>{
-    const r=await sourceFetch(geocodeUrl(where),{headers:{'Accept':'application/json'}},{ttl:SOURCE_TTL.document,staleOnError:true});if(!r.ok)throw Error(`geocoder ${r.status}`);
+    const r=await sourceFetch(geocodeUrl(where),{headers:{'Accept':'application/json'}},{ttl:SOURCE_TTL.document,staleOnError:true,robots:false});if(!r.ok)throw Error(`geocoder ${r.status}`);
     return geocodeResult(JSON.parse(await r.text()),where);
   });
   if(!point)return null;
   const hourly=await kvJson(env,`nws:v1:point:${point.lat},${point.lon}`,30*86400e3,async()=>{
-    const r=await sourceFetch(pointsUrl(point),{headers:NWS_HEADERS},{ttl:SOURCE_TTL.document,staleOnError:true});if(!r.ok)throw Error(`nws ${r.status}`);
+    const r=await sourceFetch(pointsUrl(point),{headers:NWS_HEADERS},{ttl:SOURCE_TTL.document,staleOnError:true,robots:false});if(!r.ok)throw Error(`nws ${r.status}`);
     return JSON.parse(await r.text())?.properties?.forecastHourly||null;
   });
   return hourly?{...point,...where,hourly}:null;
@@ -6699,10 +6703,12 @@ async function attachWeather(groups,school,sport,env){
     if(!WEATHER_SPORTS.has(sport)||isPro(school))return groups;
     const now=Date.now(),soon=groups.flatMap(g=>g.upcoming||[]).filter(e=>e.site?.place&&/\d:\d\d|\d\s?[AP]M/i.test(e.display_time||'')).filter(e=>{const t=Date.parse(e.start_time);return t>=now-6*3600e3&&t<=now+6.5*86400e3}).slice(0,4);
     for(const e of soon){
-      const point=await placePoint(env,e.site.place);if(!point)continue;
-      const r=await sourceFetch(point.hourly,{headers:NWS_HEADERS},{ttl:SOURCE_TTL.listing*6,staleOnError:true});if(!r.ok)continue;
+      // A home game's place may name no state ("Norman"): the school's own.
+      const place=parsePlace(e.site.place)||e.site.indicator!=='H'||!school.state?e.site.place:`${e.site.place}, ${school.state}`;
+      const point=await placePoint(env,place);if(!point)continue;
+      const r=await sourceFetch(point.hourly,{headers:NWS_HEADERS},{ttl:SOURCE_TTL.listing*6,staleOnError:true,robots:false});if(!r.ok)continue;
       const w=forecastAt(JSON.parse(await r.text()),String(e.start_time).slice(0,16));
-      if(w)e.weather={...w,place:e.site.place,source:{name:'National Weather Service',url:`https://forecast.weather.gov/MapClick.php?lat=${point.lat}&lon=${point.lon}`}};
+      if(w)e.weather={...w,place,source:{name:'National Weather Service',url:`https://forecast.weather.gov/MapClick.php?lat=${point.lat}&lon=${point.lon}`}};
     }
   }catch{}
   return groups;

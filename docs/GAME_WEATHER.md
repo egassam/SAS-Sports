@@ -17,3 +17,7 @@ User, November 18, 2026: item 4 of "What unique things should we add now?" ("eac
 - Schedules that name no place: high schools (calendars, Bound, MaxPreps), college sites not on SIDEARM, pro teams.
 - A domed stadium still shows the city's forecast (labeled with the place).
 - A game whose published time is in another time zone than the venue's is matched by its published clock.
+
+## robots.txt
+
+`api.weather.gov` and `api.open-meteo.com`/`geocoding-api.open-meteo.com` answer robots.txt `User-agent: * / Disallow: /` (found on the first preview, Nov 18: no forecast was read because the app's fetcher obeys robots.txt). Both are public APIs published for programs; their robots.txt is aimed at crawlers. User, November 19, 2026, asked whether to allow these two APIs: "Go with 1". The three weather reads (geocoder, NWS point, NWS hourly forecast) pass `robots:false`; every other source still obeys robots.txt. NWS asks only for a User-Agent; Open-Meteo is free for non-commercial use.

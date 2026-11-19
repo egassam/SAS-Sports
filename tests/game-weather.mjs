@@ -23,6 +23,7 @@ assert.deepEqual(parsePlace('Chapel Hill, N.C.'),{city:'Chapel Hill',state:'NC'}
 assert.deepEqual(parsePlace('Ames, IA'),{city:'Ames',state:'IA'});
 assert.equal(parsePlace('Dublin, Ireland'),null,'outside the United States: none');
 assert.equal(parsePlace('TBA'),null);
+assert.deepEqual(parsePlace('Norman, Oklahoma'),{city:'Norman',state:'OK'},'a home place named without its state takes the school\'s');
 assert.equal(stateCode('Okla.'),'OK');assert.equal(stateCode('W.Va.'),'WV');assert.equal(stateCode('Kansas'),'KS');
 
 // Manhattan, Kansas, not New York.
