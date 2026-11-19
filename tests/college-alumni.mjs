@@ -59,7 +59,8 @@ assert.equal(who('Junction City','Kansas City, Mo.'),null);
 
 // A college's index: K-State football's players from the app's schools.
 const index=collegeAlumniIndex({id:'kstate'},[{sport:'Football',team:null,players:ks}],match);
-assert.deepEqual(index.map(p=>`${p.name} ${p.school_id}`).sort(),['Holden Bass nemaha-central-ks','Jackson Hollie junction-city-ks','Jet Dineen lawrence-free-state-ks']);
+assert.deepEqual(index.map(p=>`${p.name} ${p.school_id}`).sort(),['Ashton Moore louisburg-ks','Holden Bass nemaha-central-ks','Jackson Hollie junction-city-ks','Jet Dineen lawrence-free-state-ks']);
+// Ashton Moore (LB, Louisburg, Kan.; last school Louisburg) since Louisburg joined (November 19).
 assert.ok(ALUMNI_COLLEGES.includes('kstate')&&ALUMNI_COLLEGES.includes('kansas')&&ALUMNI_COLLEGES.length===17);
 assert.equal(collegeAlumniKey('kstate'),'alumni:v1:college:kstate');
 
@@ -74,7 +75,7 @@ const worker=Function(...Object.keys(deps),source+';return {buildCollegeAlumni,h
 const built=await worker.buildCollegeAlumni(worker.catalogSchool('kstate'),new Date('2026-11-18T20:00:00Z'));
 assert.equal(built.college_id,'kstate');
 assert.deepEqual(built.pages.map(p=>`${p.sport} ${p.players}`),['Football 111']);
-assert.deepEqual(built.players.map(p=>p.name).sort(),['Holden Bass','Jackson Hollie','Jet Dineen']);
+assert.deepEqual(built.players.map(p=>p.name).sort(),['Ashton Moore','Holden Bass','Jackson Hollie','Jet Dineen']);
 assert.ok(built.reads<40,`a sport's alternative paths stop at the first found (${built.reads} reads)`);
 const kv=new Map([[collegeAlumniKey('kstate'),JSON.stringify(built)]]),waits=[];
 const env={HIGHLIGHTS:{get:async(k,type)=>kv.has(k)?(type==='json'?JSON.parse(kv.get(k)):kv.get(k)):null,put:async(k,v)=>{kv.set(k,v)}}};
