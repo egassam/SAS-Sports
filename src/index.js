@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {TONIGHT_LEVELS,tonightGames,tonightCounties} from './kansas-tonight.mjs';
 import {CALENDAR_PAIRS_MAX,calendarIcs} from './calendar-ics.mjs';
 import {WEATHER_SPORTS,placeKey,parsePlace,geocodeResult,geocodeUrl,pointsUrl,forecastAt} from './game-weather.mjs';
 import {SERIES_MS,seriesKey,opponentHistoryUrl,parseOpponentHistory,seriesFor,seriesSummary} from './series-history.mjs';
@@ -349,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.316.0-hs-alerts';
+const VERSION='4.317.0-kansas-tonight';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7783,6 +7784,27 @@ async function routeRequest(request,env,ctx){
       const name=url.searchParams.get('name')?.slice(0,60)||(names.length===1?`${names[0]} · SAS Sports`:'My teams · SAS Sports');
       const response=new Response(calendarIcs(feeds,{name,appUrl:url.origin}),{headers:{'content-type':'text/calendar; charset=utf-8','content-disposition':'inline; filename="sas-sports.ics"','cache-control':'public, max-age=1800','access-control-allow-origin':'*'}});
       if(feeds.length===pairs.length)ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
+    }
+    // Kansas tonight (user, November 18, 2026: item 7; src/kansas-tonight.mjs):
+    // /live/tonight?level=high-school|middle-school, every school's games of
+    // its local today from the saved copies only (no source read), grouped by
+    // county. Kept two minutes at the edge.
+    if(url.pathname==='/live/tonight'){
+      const level=url.searchParams.get('level')||'high-school';if(!TONIGHT_LEVELS.has(level))return json({detail:'level is high-school or middle-school'},400);
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/tonight?level=${level}&v=${VERSION}`,url.origin).toString());
+      const kept=await cache.match(key);if(kept)return kept;
+      const now=new Date(),month=now.getUTCMonth()+1;
+      const pairs=refreshFeeds(HIGH_SCHOOL_MODULES).map(p=>({...p,entry:catalogSchool(p.school)})).filter(p=>p.entry?.level===level&&inSeason(p.sport,month));
+      let read=0;const games=[];
+      await Promise.all(pairs.map(async p=>{
+        const copy=await homeSavedFeed(url,env,cache,p.school,p.sport);if(!copy)return;read++;
+        const local=schoolNow(now,p.entry),today=new Date(Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())).toISOString().slice(0,10);
+        games.push(...tonightGames(copy.groups,{today,school:p.entry}));
+      }));
+      const local=schoolNow(now,{state:'Kansas'}),date=new Date(Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())).toISOString().slice(0,10);
+      const response=json({level,date,feeds:pairs.length,feeds_read:read,games:games.length,live:games.filter(g=>g.status==='Live').length,counties:tonightCounties(games),fetched_at:now.toISOString()});
+      response.headers.set('cache-control','public, max-age=120');ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
     if(url.pathname==='/live/home'){
