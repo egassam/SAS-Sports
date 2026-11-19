@@ -1,0 +1,136 @@
+{
+ "state": "ks",
+ "counties": [
+  "Linn"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "jayhawk-linn-ks",
+   "name": "Jayhawk Linn High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159745bd6d29ff9cf34d",
+    "slug": "jayhawklinnhs"
+   },
+   "maxpreps": {
+    "schoolId": "0187306e-2ebd-4326-8312-63df3286dda4",
+    "path": "mound-city/jayhawk-linn-jayhawks"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 168,
+    "code": "JL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Jayhawk Linn",
+    "milesplit": 21877,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "pleasanton-ks",
+   "name": "Pleasanton High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202457c7623a9ba35841",
+    "slug": "pleasantonhs"
+   },
+   "maxpreps": {
+    "schoolId": "f9ee0b63-2b50-40d2-8df6-dcb2160bda0e",
+    "path": "pleasanton/pleasanton-blue-jays"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 273,
+    "code": "PLS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf"
+    ],
+    "meetTeam": "Pleasanton",
+    "milesplit": 22042,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "prairie-view-ks",
+   "name": "Prairie View High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202510a4b598616de647",
+    "slug": "prairieviewhs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 104,
+    "code": "?"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Prairie View",
+    "milesplit": 21846
+   },
+   "maxpreps": {
+    "schoolId": "9996e546-633f-4230-b803-8bc50bee886e",
+    "path": "la-cygne/prairie-view-buffalos"
+   }
+  },
+  {
+   "id": "pleasanton-ms-ks",
+   "name": "Pleasanton Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045202457c7623a9ba35841",
+    "slug": "pleasantonhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Pleasanton"
+   }
+  }
+ ]
+}

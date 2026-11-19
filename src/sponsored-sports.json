@@ -6549,5 +6549,338 @@
     "Basketball",
     "Soccer",
     "Auto Racing"
+  ],
+  "louisburg-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "osawatomie-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Flag Football",
+    "Football",
+    "Golf",
+    "Softball",
+    "Swimming & Diving",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "paola-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "spring-hill-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Flag Football",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "louisburg-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "paola-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "spring-hill-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "jayhawk-linn-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "pleasanton-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Volleyball"
+  ],
+  "prairie-view-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "pleasanton-ms-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "humboldt-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "iola-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "marmaton-valley-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Volleyball"
+  ],
+  "marmaton-valley-ms-ks": [
+    "Football",
+    "Volleyball"
+  ],
+  "yates-center-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Softball",
+    "Volleyball"
+  ],
+  "doniphan-west-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "riverside-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "troy-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "doniphan-west-ms-ks": [
+    "Cross Country",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "riverside-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "troy-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "central-plains-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "ellinwood-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "great-bend-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "hoisington-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "central-plains-ms-ks": [
+    "Basketball",
+    "Track & Field"
+  ],
+  "ellinwood-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "great-bend-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "hoisington-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "beloit-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "beloit-st-john-s-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "beloit-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "lincoln-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Soccer",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "sylvan-lucas-unified-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
   ]
 }

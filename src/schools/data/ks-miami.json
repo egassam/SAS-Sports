@@ -1,0 +1,275 @@
+{
+ "state": "ks",
+ "counties": [
+  "Miami"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "louisburg-ks",
+   "name": "Louisburg High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452005087ee5c1e438424f",
+    "slug": "louisburghs"
+   },
+   "maxpreps": {
+    "schoolId": "7cb69546-a4f0-486a-947f-b810a8fdeb2b",
+    "path": "louisburg/louisburg-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 106,
+    "code": "LOU"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Louisburg",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "milesplit": 21835
+   }
+  },
+  {
+   "id": "osawatomie-ks",
+   "name": "Osawatomie High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520186893cb5afd7a3b4e",
+    "slug": "osawatomiehs"
+   },
+   "maxpreps": {
+    "schoolId": "d76049f6-03af-43af-91dc-dafcf21e5be1",
+    "path": "osawatomie/osawatomie-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 111,
+    "code": "OSW"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Osawatomie",
+    "paths": {
+     "Girls Flag Football": "flag-football/girls/fall"
+    },
+    "milesplit": 21834,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "paola-ks",
+   "name": "Paola High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452021290928a7d79be040",
+    "slug": "paolahs"
+   },
+   "maxpreps": {
+    "schoolId": "7fe75c53-3bc1-483c-a4a9-3b293d9af5b9",
+    "path": "paola/paola-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 113,
+    "code": "PAO"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Paola",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Paola HS",
+    "milesplit": 21827
+   }
+  },
+  {
+   "id": "spring-hill-ks",
+   "name": "Spring Hill High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206721b4f0d2bb5d1d41",
+    "slug": "springhillhs"
+   },
+   "maxpreps": {
+    "schoolId": "a18d4c9e-4975-412d-b1af-8e10ec365374",
+    "path": "spring-hill/spring-hill-broncos"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 118,
+    "code": "SHL"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Flag Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Spring Hill",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring",
+     "Girls Flag Football": "flag-football/girls/fall"
+    },
+    "tennis": "Spring Hill HS",
+    "milesplit": 21808
+   }
+  },
+  {
+   "id": "louisburg-ms-ks",
+   "name": "Louisburg Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260626030245365f5b1848c35b847",
+    "slug": "louisburgms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Louisburg MS",
+    "milesplit": 26641
+   }
+  },
+  {
+   "id": "paola-ms-ks",
+   "name": "Paola Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202604290341189029b651cf127b24b",
+    "slug": "paolamiddle"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Paola MS",
+    "milesplit": 26646
+   }
+  },
+  {
+   "id": "spring-hill-ms-ks",
+   "name": "Spring Hill Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250707010249849b9e8eab910fe40",
+    "slug": "springhillms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Spring Hill MS",
+    "milesplit": 26644
+   }
+  }
+ ]
+}

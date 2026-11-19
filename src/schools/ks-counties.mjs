@@ -37,8 +37,16 @@ import GREENWOOD from './data/ks-greenwood.json' with {type:'json'};
 import HARVEY from './data/ks-harvey.json' with {type:'json'};
 import RICE from './data/ks-rice.json' with {type:'json'};
 import ELLSWORTH from './data/ks-ellsworth.json' with {type:'json'};
+import MIAMI from './data/ks-miami.json' with {type:'json'};
+import LINN from './data/ks-linn.json' with {type:'json'};
+import ALLEN from './data/ks-allen.json' with {type:'json'};
+import WOODSON from './data/ks-woodson.json' with {type:'json'};
+import DONIPHAN from './data/ks-doniphan.json' with {type:'json'};
+import BARTON from './data/ks-barton.json' with {type:'json'};
+import MITCHELL from './data/ks-mitchell.json' with {type:'json'};
+import LINCOLN from './data/ks-lincoln.json' with {type:'json'};
 
-export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON,SHAWNEE,DOUGLAS,SALINE,JEFFERSON,OSAGE,FRANKLIN,MARION,MCPHERSON,CHASE,ATCHISON,BROWN,COFFEY,ANDERSON,GREENWOOD,HARVEY,RICE,ELLSWORTH];
+export const KS_COUNTY_FILES=[DICKINSON,WABAUNSEE,MORRIS,CLAY,MARSHALL,WASHINGTON,REPUBLIC,CLOUD,OTTAWA,JACKSON,NEMAHA,LYON,SHAWNEE,DOUGLAS,SALINE,JEFFERSON,OSAGE,FRANKLIN,MARION,MCPHERSON,CHASE,ATCHISON,BROWN,COFFEY,ANDERSON,GREENWOOD,HARVEY,RICE,ELLSWORTH,MIAMI,LINN,ALLEN,WOODSON,DONIPHAN,BARTON,MITCHELL,LINCOLN];
 const built=KS_COUNTY_FILES.map(file=>({file,schools:schoolsFromConfig(file)}));
 const atLevel=level=>built.flatMap(({file,schools})=>file.schools.filter(entry=>entry.level===level).map(entry=>schools[entry.id]));
 export const KS_COUNTY_HIGH_SCHOOLS=atLevel('high-school');

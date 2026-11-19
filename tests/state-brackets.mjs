@@ -72,7 +72,10 @@ for(const s of schools.filter(s=>s.level==='high-school'&&(sponsoredSports[s.id]
   assert.ok(hits.length<=1,`${s.id} is in ${hits.length} brackets`);
   if(hits.length)found[s.id]=hits[0].class_name;
 }
-assert.equal(Object.keys(found).length,89);
+// 89 until the sixth county batch (November 19) added 19: Louisburg, Paola and
+// Spring Hill among them, Great Bend in 4A football, the small schools in 8-Player.
+assert.equal(Object.keys(found).length,108);
+assert.equal(found['great-bend-ks'],'4A');assert.equal(found['sylvan-lucas-unified-ks'],'8P DII');
 assert.equal(found['manhattan-ks'],'6A');assert.equal(found['wamego-ks'],'4A');assert.equal(found['onaga-ks'],'1A');
 
 // A bye is a game against "KSHSAA" (6-Player): not a game. A forfeit stays

@@ -903,7 +903,9 @@ export function nameCase(text){
 // "2027 Titan Wrestling Invitational- Boys Non-Varsity").
 export function juniorVarsityOnly(title){
   const t=clean(title);
-  if(!/\bJV\b|\bjunior varsity\b|\bnon[- ]?varsity\b/i.test(t))return false;
+  // A middle school's "C Team" (Larned MS "B/C Team Tennis Tournament", Ellinwood MS,
+  // November 19) is its junior varsity, as check:reference-rules reads it.
+  if(!/\bJV\b|\bjunior varsity\b|\bnon[- ]?varsity\b|\bC[- ]Team\b/i.test(t))return false;
   return !/\bvarsity\b/i.test(t.replace(/\bjunior varsity\b|\bnon[- ]?varsity\b/ig,''))&&!/\bJV\s*[\/&]\s*V\b|\bV\s*[\/&]\s*JV\b/i.test(t);
 }
 export function boundSchedule(payloads,{school,acts,level,timeZone,noun='Meet'}){
