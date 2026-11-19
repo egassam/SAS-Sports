@@ -75,7 +75,7 @@ import {REFRESH_BATCH,REFRESH_GAP_MS,REFRESH_STATUS_KEY,REFRESH_PAUSE_KEY,refres
 import {GEARY_HIGH_SCHOOLS,GEARY_MIDDLE_SCHOOLS} from './schools/geary-ks.mjs';
 import {KAS_KS_HIGH_SCHOOLS} from './schools/kas-ks.mjs';
 import {KS_COUNTY_HIGH_SCHOOLS,KS_COUNTY_MIDDLE_SCHOOLS} from './schools/ks-counties.mjs';
-import {MLB_STATS_API,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
+import {MLB_STATS_API,mlbScheduleUrls,mlbStatsSeasons,mlbStatsScheduleUrl,mlbStatsGames,mlbStatsHighlights,proTeam,wallClock,espnTeamGames,espnGameHighlights,espnLiveDetails,applyEspnLive,nascarRaces,nascarDrivers,nascarRaceDetails,nascarFinishRows,nascarFinishTable,ESPN_SITE,NASCAR_FEEDS,IMSA_RESULTS,IMSA_CALENDARS,imsaListing,imsaRaceSessions,imsaResultsFile,imsaHourFolders,imsaTrack,imsaRaces,imsaRaceDetails,F1_RESULTS,JOLPICA_F1,f1SeasonResults,f1SeasonRow,f1Classification,f1JolpicaClassification,f1DriverTable,f1Calendar,f1CalendarOrSaved,f1Standings,nascarStandings,espnLeagueStandings,espnStandingsUrl,ESPN_STANDINGS,imsaPointsFolders,imsaStandingsFiles,imsaStandingsTable,f1Races,f1RaceDetails,f1LiveDetails,WORLD_ATHLETICS,worldAthleticsCalendarUrl,worldAthleticsResultsUrl,worldAthleticsCalendar,worldAthleticsDays,worldAthleticsFinals,worldAthleticsMeets,worldAthleticsDetails} from './pro-sports.mjs';
 import {purdueSchool,createPurdueHandlers} from './schools/purdue.mjs';
 import {rutgersSchool,createRutgersHandlers} from './schools/rutgers.mjs';
 import {uclaSchool,createUclaHandlers} from './schools/ucla.mjs';
@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.317.2-kansas-tonight';
+const VERSION='4.317.3-mlb-season';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -5289,8 +5289,8 @@ async function fetchPro(school,sport,now,aiTargetId=null){
     // season once it is over).
     const wnba=config.espn.path==='basketball/wnba';
     const winter=!wnba&&(config.sport==='Basketball'||config.sport==='Hockey');
-    const ttl=url=>(url.endsWith('seasontype=2')&&(config.sport==='Baseball'&&(month>=10||month<=2)||winter&&month>=5&&month<=9||wnba&&(month>=10||month<=4))||wnba&&url.endsWith('seasontype=3')&&(month>=11||month<=4))?SOURCE_TTL.document:SOURCE_TTL.schedule;
-    if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}
+    const ttl=url=>(config.sport==='Baseball'&&/seasontype=2&/.test(url)&&(month>=10||month<=2)||url.endsWith('seasontype=2')&&(winter&&month>=5&&month<=9||wnba&&(month>=10||month<=4))||wnba&&url.endsWith('seasontype=3')&&(month>=11||month<=4))?SOURCE_TTL.document:SOURCE_TTL.schedule;
+    if(config.sport==='Baseball')urls.splice(0,urls.length,...mlbScheduleUrls(base,{month,year:schoolNow(now,school).getUTCFullYear()}));
     if(wnba){urls[0]=`${base}?seasontype=2`;if(month>=9||month<=4)urls.push(`${base}?seasontype=3`);}
     if(winter){urls[0]=`${base}?seasontype=2`;if(month>=4&&month<=6)urls.push(`${base}?seasontype=3`);if(config.sport==='Basketball'&&month===4)urls.push(`${base}?seasontype=5`);}
     // The league's standings (one read for every team of the league, kept

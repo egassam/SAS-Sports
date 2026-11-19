@@ -7,7 +7,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {PRO_TEAMS,proTeam,espnTeamGames,espnGameHighlights,applyEspnLive,mlbRound} from '../src/pro-sports.mjs';
+import {PRO_TEAMS,proTeam,espnTeamGames,mlbScheduleUrls,espnGameHighlights,applyEspnLive,mlbRound} from '../src/pro-sports.mjs';
 const read=path=>readFileSync(new URL(path,import.meta.url),'utf8');
 const json=name=>JSON.parse(gunzipSync(readFileSync(new URL(`./fixtures/pro-sports/${name}.gz`,import.meta.url))).toString('utf8'));
 const schools=JSON.parse(read('../src/schools.json')),sponsored=JSON.parse(read('../src/sponsored-sports.json')),themes=JSON.parse(read('../src/team-themes.json'));
@@ -39,7 +39,25 @@ assert.ok(page.includes("sectionOf:s=>s.league==='WNBA'?s.division:['NFL','MLS',
 
 // The Worker reads the regular season by name and the postseason in its
 // months; MLB is in season March to November, and every month's games count.
-assert.ok(worker.includes("if(config.sport==='Baseball'){urls[0]=`${base}?seasontype=2`;if(month>=9&&month<=11)urls.push(`${base}?seasontype=3`);}"));
+assert.ok(worker.includes("if(config.sport==='Baseball')urls.splice(0,urls.length,...mlbScheduleUrls(base,{month,year:schoolNow(now,school).getUTCFullYear()}));"));
+// Each read names its season (user, November 19, 2026: "Fix royals first"):
+// from November 18, 2026 ESPN's plain `seasontype=2` answered 2027 while its
+// current season was 2026, and every team's page lost its 2026 results.
+const KC='https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/kc/schedule';
+assert.deepEqual(mlbScheduleUrls(KC,{month:7,year:2026}),[`${KC}?seasontype=2&season=2026`]);
+assert.deepEqual(mlbScheduleUrls(KC,{month:10,year:2026}),[`${KC}?seasontype=2&season=2026`,`${KC}?seasontype=3&season=2026`]);
+assert.deepEqual(mlbScheduleUrls(KC,{month:11,year:2026}),[`${KC}?seasontype=2&season=2026`,`${KC}?seasontype=3&season=2026`,`${KC}?seasontype=2&season=2027`]);
+assert.deepEqual(mlbScheduleUrls(KC,{month:1,year:2027}),[`${KC}?seasontype=2&season=2026`,`${KC}?seasontype=2&season=2027`]);
+assert.deepEqual(mlbScheduleUrls(KC,{month:3,year:2027}),[`${KC}?seasontype=2&season=2027`]);
+{
+  // The Royals on November 19, 2026: 2026's 162 finals and 2027's coming games.
+  const royals=mlb.find(s=>s.id==='kansas-city-royals'),kcNow=new Date('2026-11-19T19:00:00Z');
+  const kc=espnTeamGames([json('mlb-kc-2026.json'),json('mlb-kc-2027.json')],{school:royals,config:PRO_TEAMS['kansas-city-royals'],timeZone:'America/Chicago',now:kcNow});
+  const finals=kc.filter(e=>e.status==='Final'),coming=kc.filter(e=>e.status==='Upcoming');
+  assert.equal(finals.length,162);
+  assert.ok(finals.every(e=>e.espn_date.startsWith('2026-')));
+  assert.ok(coming.length>=150&&coming.every(e=>e.espn_date.startsWith('2027-')),String(coming.length));
+}
 assert.ok(worker.includes("const PRO_SEASONS={Soccer:[[2,12]],Baseball:[[3,11]],Basketball:[[10,6]],Hockey:[[10,6]],'Track & Field':[[1,9]]};"));
 assert.ok(worker.includes('const months=e.pro||isHighSchool(catalogSchool(e.school_id))?null:RECORD_MONTHS[e.sport]'));
 
