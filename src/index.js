@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {CALENDAR_PAIRS_MAX,calendarIcs} from './calendar-ics.mjs';
 import {WEATHER_SPORTS,placeKey,parsePlace,geocodeResult,geocodeUrl,pointsUrl,forecastAt} from './game-weather.mjs';
 import {SERIES_MS,seriesKey,opponentHistoryUrl,parseOpponentHistory,seriesFor,seriesSummary} from './series-history.mjs';
 import {ALUMNI_COLLEGES,COLLEGE_ALUMNI_MS,collegeAlumniKey,rosterHometowns,alumniMatcher,collegeAlumniIndex} from './college-alumni.mjs';
@@ -348,7 +349,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.314.1-game-weather';
+const VERSION='4.315.0-calendar';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -7736,6 +7737,30 @@ async function routeRequest(request,env,ctx){
       const whole=answer.read&&!answer.leagues?.some(l=>l.colleges_stale&&l.colleges_read<l.colleges);
       response.headers.set('cache-control',whole?'public, max-age=900':'no-store');
       if(whole)ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
+    }
+    // Calendar subscription (user, November 18, 2026: item 5;
+    // src/calendar-ics.mjs): /live/calendar.ics?pairs=school|Sport,... (12 at
+    // most) as iCalendar, from the saved feed copies Home reads; a pair with
+    // no copy here is built (at most four a request). Kept 30 minutes.
+    if(url.pathname==='/live/calendar.ics'){
+      const pairs=homeFeedPairs(url.searchParams.get('pairs'));
+      if(!pairs||!pairs.length||pairs.length>CALENDAR_PAIRS_MAX)return json({detail:`pairs is required: school|Sport,school|Sport (at most ${CALENDAR_PAIRS_MAX})`},400);
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/calendar?pairs=${encodeURIComponent(pairs.map(p=>p.join('|')).join(','))}&v=${VERSION}`,url.origin).toString());
+      const kept=await cache.match(key);if(kept)return kept;
+      await loadCatalogEntries(env,url,[...new Set(pairs.map(p=>p[0]))]);
+      let builds=0;
+      const feeds=(await Promise.all(pairs.map(async([school,sport])=>{
+        let copy=await homeSavedFeed(url,env,cache,school,sport);
+        if(!copy&&builds<4){builds++;try{const r=await freshGroupedFeed(url,school,sport,env,cache,feedCacheKey(url,school,sport));if(r){const groups=await r.json();if(Array.isArray(groups))copy={school,sport,groups}}}catch{}}
+        if(!copy)return null;
+        const entry=catalogSchool(school);
+        return{...copy,schoolName:entry?.name||school,timeZone:schoolTimeZone(entry||{id:school})};
+      }))).filter(Boolean);
+      const names=[...new Set(feeds.map(f=>catalogSchool(f.school)?.short_name||f.school))];
+      const name=url.searchParams.get('name')?.slice(0,60)||(names.length===1?`${names[0]} · SAS Sports`:'My teams · SAS Sports');
+      const response=new Response(calendarIcs(feeds,{name,appUrl:url.origin}),{headers:{'content-type':'text/calendar; charset=utf-8','content-disposition':'inline; filename="sas-sports.ics"','cache-control':'public, max-age=1800','access-control-allow-origin':'*'}});
+      if(feeds.length===pairs.length)ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
     if(url.pathname==='/live/home'){
