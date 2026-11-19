@@ -180,3 +180,38 @@ export async function sendPush(sub,message,{publicKey,signingKey,subject,ttl=360
     return{ok:r.status>=200&&r.status<300,status:r.status,gone:r.status===404||r.status===410};
   }catch(error){return{ok:false,status:0,gone:false,error:String(error?.message||error)}}
 }
+
+// High school alerts (user, November 18, 2026: item 6 of "What unique things
+// should we add now?": "a push alert when MaxPreps or Bound first posts a
+// score for a favorite high school"). High schools are on no live scoreboard;
+// their feeds (rebuilt every 10 minutes by the scheduled refresh) carry a
+// game's MaxPreps live score while the team enters it and the final once
+// MaxPreps or Bound posts it. A run reads the favorites' saved feeds and
+// alerts as the college boards do: a game first seen today before its result
+// ('pending') alerts when it goes live and when its final score is posted; a
+// game first seen already final is silent.
+export const highSchoolEventKey=e=>`hs|${e.school_id}|${e.sport}|${e.team_label||''}|${String(e.start_time||'').slice(0,10)}|${String(e.opponent||'').toLowerCase()}`;
+export function highSchoolGames(groups,{today,shortName=null}={}){
+  const out=[];
+  for(const g of groups||[]){
+    for(const e of [...(g.live||[]),...(g.upcoming||[]),...(g.results||[])]){
+      if(!e?.school_id||e.event_type!=='GAME'||String(e.start_time||'').slice(0,10)!==today)continue;
+      const scored=e.school_score!=null&&e.school_score!==''&&e.opponent_score!=null&&e.opponent_score!=='';
+      const status=e.status==='Final'?(scored?'Final':null):e.status==='Live'&&!e.meet_live?'Live':['Upcoming','Today'].includes(e.status)?'Pending':null;
+      if(!status)continue;
+      out.push({id:highSchoolEventKey(e),school_id:e.school_id,school:e.school,short_name:shortName,sport:e.sport,team_label:e.team_label||null,opponent:e.opponent,relation:/ at /.test(String(e.title||''))?'at':'vs',status,school_score:e.school_score??null,opponent_score:e.opponent_score??null,headline:status==='Live'?e.headline||null:null});
+    }
+  }
+  return out;
+}
+export function dueHighSchoolAlerts(games,seen){
+  const alerts=[],rows=[],done=new Set();
+  for(const game of games){
+    const key=pushEventKey(game);if(done.has(key))continue;done.add(key);
+    const before=seen.get(key)||null;
+    if(game.status==='Pending'){if(!before)rows.push({key,school_id:game.school_id,state:'pending'});}
+    else if(game.status==='Live'){if(!before||before==='pending'){if(before)alerts.push({kind:'start',game});rows.push({key,school_id:game.school_id,state:'live'});}}
+    else if(game.status==='Final'){if(before==='pending'||before==='live')alerts.push({kind:'final',game});if(before!=='final')rows.push({key,school_id:game.school_id,state:'final'});}
+  }
+  return{alerts,rows};
+}

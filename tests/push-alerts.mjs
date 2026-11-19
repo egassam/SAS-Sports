@@ -116,13 +116,13 @@ const fetch=async(input,init={})=>{
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const schools=JSON.parse(read('../src/schools.json')),sponsoredSports=JSON.parse(read('../src/sponsored-sports.json')),teamThemes=JSON.parse(read('../src/team-themes.json'));
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,teamThemes,rosterSocialInstagrams,extractText:async()=>({text:''}),fetch};
-const worker=Function(...Object.keys(deps),source+';return {handler,runPushAlerts,PRODUCTION_HOST,PUSH_CRON}')(...Object.values(deps));
+const worker=Function(...Object.keys(deps),source+';return {handler,runPushAlerts,PRODUCTION_HOST,PUSH_CRON,feedCacheKey}')(...Object.values(deps));
 const db=fakeD1();
 const env={CATALOG_DB:db,VAPID_PUBLIC_KEY,VAPID_PRIVATE_KEY,SOURCE_FETCH_KEY:'secret'};
 const host=worker.PRODUCTION_HOST,ctx={waitUntil(){}};
 const call=(path,body,{method='POST',headers={},on=env,at=host}={})=>worker.handler.fetch(new Request(`https://${at}${path}`,{method,headers:{'content-type':'application/json',...headers},...(method==='POST'?{body:JSON.stringify(body)}:{})}),on,ctx);
 
-assert.deepEqual(await (await call('/api/push/config',null,{method:'GET',on:{}})).json(),{enabled:false,public_key:null,covers:'College and pro teams: when a game starts and its final score'},'off without keys');
+assert.deepEqual(await (await call('/api/push/config',null,{method:'GET',on:{}})).json(),{enabled:false,public_key:null,covers:'College, pro, middle and high school teams: when a game starts and its final score'},'off without keys');
 assert.equal((await call('/api/push/subscribe',{subscription,favorites:['chicago-bulls']},{on:{}})).status,503);
 assert.equal((await (await call('/api/push/config',null,{method:'GET'})).json()).public_key,VAPID_PUBLIC_KEY);
 {
@@ -133,7 +133,7 @@ assert.equal((await (await call('/api/push/config',null,{method:'GET'})).json())
 }
 assert.equal((await call('/api/push/subscribe',{subscription:{endpoint:'nope'},favorites:[]})).status,400);
 const subscribed=await (await call('/api/push/subscribe',{subscription,favorites:['chicago-bulls','philadelphia-76ers','manhattan-ks','no-such-team']})).json();
-assert.deepEqual(subscribed,{subscribed:true,favorites:['chicago-bulls','philadelphia-76ers','manhattan-ks'],covered:['chicago-bulls','philadelphia-76ers']});
+assert.deepEqual(subscribed,{subscribed:true,favorites:['chicago-bulls','philadelphia-76ers','manhattan-ks'],covered:['chicago-bulls','philadelphia-76ers','manhattan-ks']});
 assert.equal((await call('/api/push/run',{})).status,401,'the run needs the source key');
 
 // No subscriptions on a host: nothing is read.
@@ -169,6 +169,33 @@ assert.match(phi.title,/^Final: /);assert.match(phi.body,/118, .* 116 \(W\)$/);
 assert.match(chi.body,/116, .* 118 \(L\)$/);
 run=await worker.runPushAlerts(env,{now:new Date('2026-11-08T22:42:00Z')});
 assert.equal(run.alerts.length,0,'one final per game');
+
+// A high school favorite (item 6, Nov 19): every 10 minutes its saved
+// feed is read; a game seen pending today alerts when its final score is
+// posted, once.
+{
+  const hsCopy=(status,extra={})=>{
+    const e={id:'hs-'+status,school_id:'manhattan-ks',school:'Manhattan High School',sport:'Football',event_type:'GAME',status,title:'Manhattan at Derby',opponent:'Derby',start_time:'2026-11-20T19:00:00.000Z',...extra};
+    const groups=[{school_id:'manhattan-ks',school:'Manhattan High School',sport:'Football',live:[],upcoming:status==='Final'?[]:[e],results:status==='Final'?[e]:[],other:[]}];
+    store.set(worker.feedCacheKey(new URL(`https://${host}/live/feed/grouped?school=manhattan-ks&sport=Football`),'manhattan-ks','Football').url,new Response(JSON.stringify(groups),{headers:{'content-type':'application/json','x-sas-fetched-at':new Date().toISOString()}}));
+  };
+  const before=sent.length;
+  hsCopy('Today');
+  run=await worker.runPushAlerts(env,{now:new Date('2026-11-21T01:00:00Z')});
+  assert.deepEqual([run.high_school_games,run.alerts.length],[1,0],'Nov 20, 7 PM Central: the game is seen, nothing sent');
+  run=await worker.runPushAlerts(env,{now:new Date('2026-11-21T01:04:00Z')});
+  assert.equal(run.high_school_games,0,'high school feeds are read every 10 minutes');
+  hsCopy('Final',{school_score:'28',opponent_score:'21',headline:'W, 28-21'});
+  run=await worker.runPushAlerts(env,{now:new Date('2026-11-21T03:10:00Z')});
+  assert.deepEqual(run.alerts.map(a=>`${a.kind} ${a.school_id}`),['final manhattan-ks']);
+  const m=decrypt(Buffer.from(sent.at(-1).init.body),ua,auth);
+  assert.deepEqual([m.title,m.body,m.url],['Final: Manhattan Football','Manhattan 28, Derby 21 (W)','/?school=manhattan-ks']);
+  assert.equal(sent.length,before+1);
+  run=await worker.runPushAlerts(env,{now:new Date('2026-11-21T03:20:00Z')});
+  assert.equal(run.alerts.length,0,'one final per game');
+  store.clear();
+  db.sqlite.prepare('UPDATE push_subscriptions SET last_sent=NULL').run();
+}
 
 // The test alert, then a phone that dropped the subscription (410) is deleted.
 const test=await (await call('/api/push/test',{endpoint:subscription.endpoint})).json();
