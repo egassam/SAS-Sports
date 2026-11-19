@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {WEATHER_SPORTS,placeKey,parsePlace,geocodeResult,geocodeUrl,pointsUrl,forecastAt} from './game-weather.mjs';
 import {SERIES_MS,seriesKey,opponentHistoryUrl,parseOpponentHistory,seriesFor,seriesSummary} from './series-history.mjs';
 import {ALUMNI_COLLEGES,COLLEGE_ALUMNI_MS,collegeAlumniKey,rosterHometowns,alumniMatcher,collegeAlumniIndex} from './college-alumni.mjs';
 import {KSHSAA_BRACKETS,stateSitesUrl,bracketUrl,stateSiteBrackets,parseKshsaaBracket,bracketMatcher,ownBracketGames,bracketCurrent} from './state-brackets.mjs';
@@ -347,7 +348,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.313.0-series-history';
+const VERSION='4.314.1-game-weather';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6665,6 +6666,53 @@ async function attachSeries(groups,school,sport,env){
   }catch{}
   return groups;
 }
+// Weather on outdoor games (user, November 18, 2026: item 4;
+// src/game-weather.mjs): a coming outdoor game within the National Weather
+// Service's hourly forecast carries the forecast for its start, at the place
+// its schedule names (SIDEARM's `site`). A place is geocoded once (KV, 180
+// days), its NWS point once (KV, 30 days); the hourly forecast is read
+// through the source cache (an hour). At most four games a feed.
+// api.weather.gov and Open-Meteo answer robots.txt "Disallow: /" (aimed at
+// crawlers; both publish these APIs for apps). The user chose to call them
+// anyway (November 19, 2026: "Go with 1", allow these two APIs): only these
+// three reads skip robots.txt; every other source still obeys it.
+const NWS_HEADERS={'User-Agent':'SAS-Sports (game-day forecasts)','Accept':'application/geo+json'};
+async function kvJson(env,key,maxAgeMs,build){
+  const store=env?.HIGHLIGHTS;let doc=null;try{doc=store?await store.get(key,'json'):null}catch{}
+  if(doc&&Date.now()-Date.parse(doc.built)<=maxAgeMs)return doc.value;
+  const value=await build().catch(()=>undefined);
+  if(value===undefined)return doc?.value??null;
+  try{await store?.put(key,JSON.stringify({built:new Date().toISOString(),value}),{expirationTtl:200*86400})}catch{}
+  return value;
+}
+async function placePoint(env,place){
+  const where=parsePlace(place);if(!where)return null;
+  const point=await kvJson(env,placeKey(where.city,where.state),180*86400e3,async()=>{
+    const r=await sourceFetch(geocodeUrl(where),{headers:{'Accept':'application/json'}},{ttl:SOURCE_TTL.document,staleOnError:true,robots:false});if(!r.ok)throw Error(`geocoder ${r.status}`);
+    return geocodeResult(JSON.parse(await r.text()),where);
+  });
+  if(!point)return null;
+  const hourly=await kvJson(env,`nws:v1:point:${point.lat},${point.lon}`,30*86400e3,async()=>{
+    const r=await sourceFetch(pointsUrl(point),{headers:NWS_HEADERS},{ttl:SOURCE_TTL.document,staleOnError:true,robots:false});if(!r.ok)throw Error(`nws ${r.status}`);
+    return JSON.parse(await r.text())?.properties?.forecastHourly||null;
+  });
+  return hourly?{...point,...where,hourly}:null;
+}
+async function attachWeather(groups,school,sport,env){
+  try{
+    if(!WEATHER_SPORTS.has(sport)||isPro(school))return groups;
+    const now=Date.now(),soon=groups.flatMap(g=>g.upcoming||[]).filter(e=>e.site?.place&&/\d:\d\d|\d\s?[AP]M/i.test(e.display_time||'')).filter(e=>{const t=Date.parse(e.start_time);return t>=now-6*3600e3&&t<=now+6.5*86400e3}).slice(0,4);
+    for(const e of soon){
+      // A home game's place may name no state ("Norman"): the school's own.
+      const place=parsePlace(e.site.place)||e.site.indicator!=='H'||!school.state?e.site.place:`${e.site.place}, ${school.state}`;
+      const point=await placePoint(env,place);if(!point)continue;
+      const r=await sourceFetch(point.hourly,{headers:NWS_HEADERS},{ttl:SOURCE_TTL.listing*6,staleOnError:true,robots:false});if(!r.ok)continue;
+      const w=forecastAt(JSON.parse(await r.text()),String(e.start_time).slice(0,16));
+      if(w)e.weather={...w,place,source:{name:'National Weather Service',url:`https://forecast.weather.gov/MapClick.php?lat=${point.lat}&lon=${point.lon}`}};
+    }
+  }catch{}
+  return groups;
+}
 async function attachCollegeStandings(groups,school,sport){
   try{
     if(!school||isHighSchool(school)||isPro(school)||!groups.length)return groups;
@@ -7424,6 +7472,7 @@ async function freshGroupedFeed(url,school,sport,env,cache,key,report=null){
   if(Array.isArray(result.standings)&&result.standings.length)for(const group of groups)group.standings=result.standings;
   else await attachCollegeStandings(groups,catalogSchool(school)||schoolModule(school)?.school,sport);
   await attachSeries(groups,catalogSchool(school)||schoolModule(school)?.school,sport,env);
+  await attachWeather(groups,catalogSchool(school)||schoolModule(school)?.school,sport,env);
   // A pro team has news on ESPN in a week without a game: the page asks
   // for it without waiting for a final with a recap.
   if(espnTeamNewsUrl(catalogSchool(school)))for(const group of groups)group.team_news=true;

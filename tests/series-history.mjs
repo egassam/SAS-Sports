@@ -65,5 +65,5 @@ assert.equal(hs[0].upcoming[0].series,undefined);
 // The page: a coming card's series line, the next game's last meetings.
 const html=read('../public/index.html');
 assert.match(html,/function seriesBlock\(e,full\)/);
-assert.match(html,/\$\{count\}\$\{seriesBlock\(e,true\)\}/);
+assert.match(html,/\$\{count\}\$\{weatherBlock\(e\)\}\$\{seriesBlock\(e,true\)\}/);
 console.log(`series-history: ok (K-State football ${entries.length} opponents; Kansas ${ku.games} games)`);

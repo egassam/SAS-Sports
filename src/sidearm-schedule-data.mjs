@@ -82,6 +82,10 @@ export function createScheduleDataEnricher({schoolId,host,slug,resultSports=new 
       const tv=tvSports.has(sport)?sidearmBroadcast(matches[0]):null;
       if(tv&&!event.broadcast)event.broadcast=tv;
       if(event.status!=='Final'){
+        // Where a coming game is played ("Manhattan, Kan."): the game-day
+        // forecast's place (src/game-weather.mjs).
+        const place=typeof matches[0].location==='string'?matches[0].location.replace(/\s+/g,' ').trim():'';
+        if(place&&!event.site)event.site={place,indicator:matches[0].location_indicator||null};
         const start=timeSports.has(sport)?sidearmStartTime(matches[0].date,matches[0].time):null;
         if(start)Object.assign(event,start);
         continue;
