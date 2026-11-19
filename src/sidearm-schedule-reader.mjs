@@ -137,6 +137,9 @@ export function createSidearmScheduleReader(config,{makeEvent,eventType=()=>'GAM
       const event=makeEvent({school,sport,status:final?'Final':'Upcoming',relation:relationOf(sport,game,meet),opponent,
         date:`${MONTHS[Number(day[2])-1]} ${Number(day[3])}, ${day[1]}`,time:start?start.display_time.replace(/^.*, /,''):null,
         schoolScore:scored?team:null,oppScore:scored?other:null,resultText:scored?`${outcome}, ${team}-${other}`:null,sourceUrl,now});
+      // Where a coming game is played, as the schedule names it ("Manhattan,
+      // Kan."; H/A/N): the game-day forecast's place (src/game-weather.mjs).
+      if(!final&&typeof game.location==='string'&&game.location.trim())event.site={place:game.location.replace(/\s+/g,' ').trim(),indicator:game.location_indicator||null};
       // Multi-day events end on their last day; while one is in progress it
       // is today's event, not a past one that drops off the schedule.
       if(lastDay>listedDay)event.end_time=`${lastDay}T23:59:59Z`;
