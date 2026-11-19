@@ -32,7 +32,7 @@ const cache=new MemoryCache();let reads=0;
 const fetch=async()=>{reads++;return new Response('',{status:404})};
 const source=read('../src/index.js').replace(/^import .*;\n/gm,'').replace('export default{','const handler={');
 const deps={...schoolModuleDeps,createSourceFetch,SOURCE_TTL,schools,sponsoredSports,rosterSocialInstagrams,extractText:async()=>({text:''}),fetch,caches:{default:cache}};
-const {handler,feedCacheKey}=Function(...Object.keys(deps),source+';return {handler,feedCacheKey};')(...Object.values(deps));
+const {handler,feedCacheKey,tonightDoc,refreshTonight}=Function(...Object.keys(deps),source+';return {handler,feedCacheKey,tonightDoc,refreshTonight};')(...Object.values(deps));
 const origin='https://sas.example',RealDate=Date,at=new RealDate('2026-11-21T01:30:00Z');
 globalThis.Date=class extends RealDate{constructor(...a){super(...(a.length?a:[at.getTime()]))}static now(){return at.getTime()}};
 try{
@@ -48,6 +48,18 @@ try{
   assert.deepEqual(riley.games.map(g=>[g.title,g.status,g.live,g.school_score]),[['Manhattan at Derby','Live','Q2 3:12','14']]);
   assert.equal(reads,0,'no source is read');
   assert.equal((await handler.fetch(new Request(`${origin}/live/tonight?level=college`),{},{waitUntil(){}})).status,400);
+  // The day's list in KV: found once, then reused; the 10-minute run picks
+  // the feeds whose games today lack a result (here the rebuild is refused:
+  // the stored games stay).
+  const kv=new Map(),env={HIGHLIGHTS:{get:async(k,t)=>kv.has(k)?(t==='json'?JSON.parse(kv.get(k)):kv.get(k)):null,put:async(k,v)=>{kv.set(k,v)},getWithMetadata:async()=>({value:null,metadata:null})}};
+  const doc=await tonightDoc(env,new URL(origin),'high-school',new Date());
+  assert.deepEqual(Object.keys(doc.pairs),['manhattan-ks|Football']);
+  assert.ok(kv.has('tonight:v1:sas.example:high-school'));
+  await cache.put(feedCacheKey(new URL(`${origin}/live/feed/grouped?school=manhattan-ks&sport=Football`),'manhattan-ks','Football'),new Response('[]',{headers:{'content-type':'application/json','x-sas-fetched-at':new Date().toISOString()}}));
+  assert.deepEqual(Object.keys((await tonightDoc(env,new URL(origin),'high-school',new Date())).pairs),['manhattan-ks|Football'],'the same day: the stored list, not a new scan');
+  const run=await refreshTonight(env,origin,new Date());
+  assert.deepEqual(run['high-school'],{feeds_with_games:1,due:1,rebuilt:0});
+  assert.ok(JSON.parse(kv.get('tonight:v1:sas.example:high-school')).refreshed);
 }finally{globalThis.Date=RealDate}
 
 // The page: a Tonight tab for the middle and high school levels.

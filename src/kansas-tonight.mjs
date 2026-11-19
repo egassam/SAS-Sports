@@ -16,7 +16,7 @@ export function tonightGames(groups,{today,school}){
     for(const e of [...(g.live||[]),...(g.upcoming||[]),...(g.results||[])]){
       const first=String(e?.start_time||'').slice(0,10),last=String(e?.end_time||e?.start_time||'').slice(0,10);
       if(!first||first>today||last<today)continue;
-      out.push({id:e.id,school_id:school.id,school:school.short_name||school.name,county:school.county||'Other',sport:e.sport,team_label:e.team_label||null,title:e.title,status:e.status,display_time:e.display_time||null,start_time:e.start_time,headline:e.headline||null,school_score:e.school_score??null,opponent_score:e.opponent_score??null,live:e.status==='Live'?(e.recency_label||e.headline||'Live'):null});
+      out.push({id:e.id,school_id:school.id,school:school.short_name||school.name,county:school.county||'Other',sport:e.sport,team_label:e.team_label||null,event_type:e.event_type||null,opponent:e.opponent||null,meet_live:e.meet_live||false,title:e.title,status:e.status,display_time:e.display_time||null,start_time:e.start_time,headline:e.headline||null,school_score:e.school_score??null,opponent_score:e.opponent_score??null,live:e.status==='Live'?(e.recency_label||e.headline||'Live'):null});
     }
   }
   return out;
