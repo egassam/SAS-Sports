@@ -5422,5 +5422,285 @@
     "panelDark": "#050c15",
     "line": "#0e355d",
     "onAccent": "#ffffff"
+  },
+  "louisburg-ks": {
+    "primary": "#4D2A82",
+    "secondary": "#A9AFAA",
+    "panel": "#23133b",
+    "panelDark": "#0f081a",
+    "line": "#7a5fa1",
+    "onAccent": "#ffffff"
+  },
+  "osawatomie-ks": {
+    "primary": "#F50604",
+    "secondary": "#000000",
+    "panel": "#6e0302",
+    "panelDark": "#310101",
+    "line": "#f84443",
+    "onAccent": "#ffffff"
+  },
+  "paola-ks": {
+    "primary": "#C5B358",
+    "secondary": "#000000",
+    "panel": "#595128",
+    "panelDark": "#272412",
+    "line": "#d4c682",
+    "onAccent": "#ffffff"
+  },
+  "spring-hill-ks": {
+    "primary": "#532C8B",
+    "secondary": "#FBC04B",
+    "panel": "#25143f",
+    "panelDark": "#11091c",
+    "line": "#7e61a8",
+    "onAccent": "#ffffff"
+  },
+  "louisburg-ms-ks": {
+    "primary": "#4D2A82",
+    "secondary": "#A9AFAA",
+    "panel": "#23133b",
+    "panelDark": "#0f081a",
+    "line": "#7a5fa1",
+    "onAccent": "#ffffff"
+  },
+  "paola-ms-ks": {
+    "primary": "#C5B358",
+    "secondary": "#000000",
+    "panel": "#595128",
+    "panelDark": "#272412",
+    "line": "#d4c682",
+    "onAccent": "#ffffff"
+  },
+  "spring-hill-ms-ks": {
+    "primary": "#552F97",
+    "secondary": "#FDD856",
+    "panel": "#261544",
+    "panelDark": "#11091e",
+    "line": "#8063b1",
+    "onAccent": "#ffffff"
+  },
+  "jayhawk-linn-ks": {
+    "primary": "#9E252B",
+    "secondary": "#000000",
+    "panel": "#471113",
+    "panelDark": "#200709",
+    "line": "#b65c60",
+    "onAccent": "#ffffff"
+  },
+  "pleasanton-ks": {
+    "primary": "#2B79FF",
+    "secondary": "#002D67",
+    "panel": "#133673",
+    "panelDark": "#091833",
+    "line": "#609bff",
+    "onAccent": "#ffffff"
+  },
+  "prairie-view-ks": {
+    "primary": "#22A148",
+    "secondary": "#000000",
+    "panel": "#0f4820",
+    "panelDark": "#07200e",
+    "line": "#59b976",
+    "onAccent": "#ffffff"
+  },
+  "pleasanton-ms-ks": {
+    "primary": "#2B79FF",
+    "secondary": "#002D67",
+    "panel": "#133673",
+    "panelDark": "#091833",
+    "line": "#609bff",
+    "onAccent": "#ffffff"
+  },
+  "humboldt-ks": {
+    "primary": "#FE4600",
+    "secondary": "#000000",
+    "panel": "#722000",
+    "panelDark": "#330e00",
+    "line": "#fe7440",
+    "onAccent": "#ffffff"
+  },
+  "iola-ks": {
+    "primary": "#034695",
+    "secondary": "#FECF09",
+    "panel": "#012043",
+    "panelDark": "#010e1e",
+    "line": "#4274b0",
+    "onAccent": "#ffffff"
+  },
+  "marmaton-valley-ks": {
+    "primary": "#F36523",
+    "secondary": "#000000",
+    "panel": "#6d2d10",
+    "panelDark": "#311407",
+    "line": "#f68c5a",
+    "onAccent": "#ffffff"
+  },
+  "marmaton-valley-ms-ks": {
+    "primary": "#F36523",
+    "secondary": "#000000",
+    "panel": "#6d2d10",
+    "panelDark": "#311407",
+    "line": "#f68c5a",
+    "onAccent": "#ffffff"
+  },
+  "yates-center-ks": {
+    "primary": "#242BDC",
+    "secondary": "#000000",
+    "panel": "#101363",
+    "panelDark": "#07092c",
+    "line": "#5b60e5",
+    "onAccent": "#ffffff"
+  },
+  "doniphan-west-ks": {
+    "primary": "#EC6912",
+    "secondary": "#00024E",
+    "panel": "#6a2f08",
+    "panelDark": "#2f1504",
+    "line": "#f18f4d",
+    "onAccent": "#ffffff"
+  },
+  "riverside-ks": {
+    "primary": "#B8E6FE",
+    "secondary": "#000000",
+    "panel": "#536872",
+    "panelDark": "#252e33",
+    "line": "#caecfe",
+    "onAccent": "#111111"
+  },
+  "troy-ks": {
+    "primary": "#0100FC",
+    "secondary": "#0A233E",
+    "panel": "#000071",
+    "panelDark": "#000032",
+    "line": "#4140fd",
+    "onAccent": "#ffffff"
+  },
+  "doniphan-west-ms-ks": {
+    "primary": "#EC6912",
+    "secondary": "#00024E",
+    "panel": "#6a2f08",
+    "panelDark": "#2f1504",
+    "line": "#f18f4d",
+    "onAccent": "#ffffff"
+  },
+  "riverside-ms-ks": {
+    "primary": "#B8E6FE",
+    "secondary": "#000000",
+    "panel": "#536872",
+    "panelDark": "#252e33",
+    "line": "#caecfe",
+    "onAccent": "#111111"
+  },
+  "troy-ms-ks": {
+    "primary": "#0100FC",
+    "secondary": "#0A233E",
+    "panel": "#000071",
+    "panelDark": "#000032",
+    "line": "#4140fd",
+    "onAccent": "#ffffff"
+  },
+  "central-plains-ks": {
+    "primary": "#014D33",
+    "secondary": "#C2C2C0",
+    "panel": "#002317",
+    "panelDark": "#000f0a",
+    "line": "#417a66",
+    "onAccent": "#ffffff"
+  },
+  "ellinwood-ks": {
+    "primary": "#EC3C43",
+    "secondary": "#DFDDDD",
+    "panel": "#6a1b1e",
+    "panelDark": "#2f0c0d",
+    "line": "#f16d72",
+    "onAccent": "#ffffff"
+  },
+  "great-bend-ks": {
+    "primary": "#E21617",
+    "secondary": "#000000",
+    "panel": "#660a0a",
+    "panelDark": "#2d0405",
+    "line": "#e95051",
+    "onAccent": "#ffffff"
+  },
+  "hoisington-ks": {
+    "primary": "#FD1000",
+    "secondary": "#F8BA00",
+    "panel": "#720700",
+    "panelDark": "#330300",
+    "line": "#fe4c40",
+    "onAccent": "#ffffff"
+  },
+  "central-plains-ms-ks": {
+    "primary": "#014D33",
+    "secondary": "#C2C2C0",
+    "panel": "#002317",
+    "panelDark": "#000f0a",
+    "line": "#417a66",
+    "onAccent": "#ffffff"
+  },
+  "ellinwood-ms-ks": {
+    "primary": "#EC3C43",
+    "secondary": "#DFDDDD",
+    "panel": "#6a1b1e",
+    "panelDark": "#2f0c0d",
+    "line": "#f16d72",
+    "onAccent": "#ffffff"
+  },
+  "great-bend-ms-ks": {
+    "primary": "#DF0707",
+    "secondary": "#000000",
+    "panel": "#640303",
+    "panelDark": "#2d0101",
+    "line": "#e74545",
+    "onAccent": "#ffffff"
+  },
+  "hoisington-ms-ks": {
+    "primary": "#FD1000",
+    "secondary": "#F8BA00",
+    "panel": "#720700",
+    "panelDark": "#330300",
+    "line": "#fe4c40",
+    "onAccent": "#ffffff"
+  },
+  "beloit-ks": {
+    "primary": "#DB622F",
+    "secondary": "#ABAAAA",
+    "panel": "#632c15",
+    "panelDark": "#2c1409",
+    "line": "#e48963",
+    "onAccent": "#ffffff"
+  },
+  "beloit-st-john-s-ks": {
+    "primary": "#283891",
+    "secondary": "#A9ABAD",
+    "panel": "#121941",
+    "panelDark": "#080b1d",
+    "line": "#5e6aad",
+    "onAccent": "#ffffff"
+  },
+  "beloit-ms-ks": {
+    "primary": "#DB622F",
+    "secondary": "#ABAAAA",
+    "panel": "#632c15",
+    "panelDark": "#2c1409",
+    "line": "#e48963",
+    "onAccent": "#ffffff"
+  },
+  "lincoln-ks": {
+    "primary": "#0304FE",
+    "secondary": "#05ABFE",
+    "panel": "#010272",
+    "panelDark": "#010133",
+    "line": "#4243fe",
+    "onAccent": "#ffffff"
+  },
+  "sylvan-lucas-unified-ks": {
+    "primary": "#E31836",
+    "secondary": "#000205",
+    "panel": "#660b18",
+    "panelDark": "#2d050b",
+    "line": "#ea5268",
+    "onAccent": "#ffffff"
   }
 }

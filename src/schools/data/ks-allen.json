@@ -1,0 +1,134 @@
+{
+ "state": "ks",
+ "counties": [
+  "Allen"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "humboldt-ks",
+   "name": "Humboldt High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159532cf2d684439b648",
+    "slug": "humboldths"
+   },
+   "maxpreps": {
+    "schoolId": "cdb30440-5997-4925-b38d-7cc5dd180a68",
+    "path": "humboldt/humboldt-cubs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 158,
+    "code": "HMB"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Humboldt",
+    "milesplit": 22025
+   }
+  },
+  {
+   "id": "iola-ks",
+   "name": "Iola High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159694e2d3bc0fcb5940",
+    "slug": "iolahs"
+   },
+   "maxpreps": {
+    "schoolId": "281f3371-45ea-4125-9609-fe2fa4dfda38",
+    "path": "iola/iola-mustangs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 99,
+    "code": "IOLA"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Iola",
+    "tennis": "Iola HS",
+    "milesplit": 21828,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "marmaton-valley-ks",
+   "name": "Marmaton Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452008047f99ca1840c04c",
+    "slug": "marmatonvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "847b83ae-6871-41b9-9a78-a230eda873f4",
+    "path": "moran/marmaton-valley-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Cross Country"
+    ],
+    "meetTeam": "Marmaton Valley",
+    "milesplit": 22038,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "marmaton-valley-ms-ks",
+   "name": "Marmaton Valley Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452008047f99ca1840c04c",
+    "slug": "marmatonvalleyhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball"
+    ],
+    "meetTeam": "Marmaton Valley"
+   }
+  }
+ ]
+}

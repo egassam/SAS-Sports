@@ -1,0 +1,37 @@
+{
+ "state": "ks",
+ "counties": [
+  "Woodson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "yates-center-ks",
+   "name": "Yates Center High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045209501f811675685624e",
+    "slug": "yatescenterhs"
+   },
+   "maxpreps": {
+    "schoolId": "3244f3b8-aedb-4b1b-8d5b-d4e5abd33822",
+    "path": "yates-center/yates-center-wildcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball"
+    ],
+    "meetTeam": "Yates",
+    "milesplit": 22030,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

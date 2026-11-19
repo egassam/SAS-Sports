@@ -1,0 +1,270 @@
+{
+ "state": "ks",
+ "counties": [
+  "Barton"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "central-plains-ks",
+   "name": "Central Plains High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155891fd7e4542f81c4d",
+    "slug": "cplains"
+   },
+   "maxpreps": {
+    "schoolId": "2d05372d-5fdf-4542-9fac-42d61605fde5",
+    "path": "claflin/central-plains-oilers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Track & Field"
+    ],
+    "meetTeam": "Central Plains",
+    "tennis": "Central Plains HS",
+    "milesplit": 36297,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "ellinwood-ks",
+   "name": "Ellinwood High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045157974c00530c601ca40",
+    "slug": "ellinwoodhs"
+   },
+   "maxpreps": {
+    "schoolId": "a59284da-beef-4e4e-8892-aceb236d3a17",
+    "path": "ellinwood/ellinwood-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 207,
+    "code": "EWD"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ellinwood",
+    "tennis": "Ellinwood HS",
+    "milesplit": 21856,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "great-bend-ks",
+   "name": "Great Bend High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451588529c27e93ccd8646",
+    "slug": "greatbendhs"
+   },
+   "maxpreps": {
+    "schoolId": "e1cddbe0-2a33-4b33-b6cd-f7d4d43e5322",
+    "path": "great-bend/great-bend-panthers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 39,
+    "code": "GB"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Great Bend",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Great Bend HS",
+    "milesplit": 16144
+   }
+  },
+  {
+   "id": "hoisington-ks",
+   "name": "Hoisington High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045159358051d5309faeb43",
+    "slug": "hoisingtonhs"
+   },
+   "maxpreps": {
+    "schoolId": "a56795bf-7883-4359-b8ba-bf8a6ef3e0b8",
+    "path": "hoisington/hoisington-cardinals"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 156,
+    "code": "HOIS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Hoisington",
+    "tennis": "Hoisington HS",
+    "milesplit": 21884
+   }
+  },
+  {
+   "id": "central-plains-ms-ks",
+   "name": "Central Plains Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045155891fd7e4542f81c4d",
+    "slug": "cplains"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Track & Field"
+    ],
+    "meetTeam": "Central Plains",
+    "milesplit": 33130
+   }
+  },
+  {
+   "id": "ellinwood-ms-ks",
+   "name": "Ellinwood Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045157974c00530c601ca40",
+    "slug": "ellinwoodhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Ellinwood",
+    "milesplit": 33132
+   }
+  },
+  {
+   "id": "great-bend-ms-ks",
+   "name": "Great Bend Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250612072816071abe5a84ff9b044",
+    "slug": "greatbendms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Great Bend MS",
+    "milesplit": 32823
+   }
+  },
+  {
+   "id": "hoisington-ms-ks",
+   "name": "Hoisington Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202601170343039666874d8ab69c84e",
+    "slug": "hoismsks"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Hoisington MS",
+    "milesplit": 40049
+   }
+  }
+ ]
+}

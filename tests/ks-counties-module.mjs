@@ -18,8 +18,8 @@ const TZ='America/Chicago';
 
 // The schools, by county and level.
 const modules=[...KS_COUNTY_HIGH_SCHOOLS,...KS_COUNTY_MIDDLE_SCHOOLS];
-const BATCH1=['Dickinson','Wabaunsee','Morris','Clay','Marshall'],BATCH2=['Washington','Republic','Cloud','Ottawa','Jackson','Nemaha','Lyon'],BATCH3=['Shawnee','Douglas','Saline'],BATCH4=['Jefferson','Osage','Franklin','Marion','McPherson','Chase'],BATCH5=['Atchison','Brown','Coffey','Anderson','Greenwood','Harvey','Rice','Ellsworth'];
-assert.deepEqual(KS_COUNTY_FILES.map(f=>f.counties[0]),[...BATCH1,...BATCH2,...BATCH3,...BATCH4,...BATCH5]);
+const BATCH1=['Dickinson','Wabaunsee','Morris','Clay','Marshall'],BATCH2=['Washington','Republic','Cloud','Ottawa','Jackson','Nemaha','Lyon'],BATCH3=['Shawnee','Douglas','Saline'],BATCH4=['Jefferson','Osage','Franklin','Marion','McPherson','Chase'],BATCH5=['Atchison','Brown','Coffey','Anderson','Greenwood','Harvey','Rice','Ellsworth'],BATCH6=['Miami','Linn','Allen','Woodson','Doniphan','Barton','Mitchell','Lincoln'];
+assert.deepEqual(KS_COUNTY_FILES.map(f=>f.counties[0]),[...BATCH1,...BATCH2,...BATCH3,...BATCH4,...BATCH5,...BATCH6]);
 const idsOf=(counties,level)=>KS_COUNTY_FILES.filter(f=>counties.includes(f.counties[0])).flatMap(f=>f.schools.filter(e=>e.level===level).map(e=>e.id));
 const inBatch1=new Set([...idsOf(BATCH1,'high-school'),...idsOf(BATCH1,'middle-school')]),inBatch2=new Set(idsOf(BATCH2,'high-school'));
 assert.deepEqual(idsOf(BATCH1,'high-school'),['abilene-ks','chapman-ks','herington-ks','solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks','clay-center-ks','wakefield-ks','marysville-ks','valley-heights-ks','frankfort-ks','axtell-ks']);
@@ -41,6 +41,11 @@ assert.deepEqual(idsOf(BATCH4,'middle-school'),['mclouth-ms-ks','oskaloosa-ms-ks
 assert.deepEqual(idsOf(BATCH5,'high-school'),['atchison-co-community-ks','atchison-ks','maur-hill-mount-ks','hiawatha-ks','horton-ks','burlington-ks','lebo-ks','southern-coffey-county-ks','waverly-ks',
   'anderson-county-ks','crest-ks','eureka-ks','madison-ks','burrton-ks','halstead-ks','hesston-ks','newton-ks','sedgwick-ks','chase-ks','little-river-ks','lyons-ks','sterling-ks','ellsworth-ks']);
 assert.deepEqual(idsOf(BATCH5,'middle-school'),['atchison-st-benedict-catholic-ms-ks','everest-ms-ks','newton-chisholm-ms-ks','little-river-ms-ks','sterling-ms-ks','ellsworth-ms-ks']);
+// The sixth batch (November 19, user: "Fix royals first then county adding"): Miami, Linn, Allen, Woodson, Doniphan, Barton, Mitchell and Lincoln.
+assert.deepEqual(idsOf(BATCH6,'high-school'),['louisburg-ks','osawatomie-ks','paola-ks','spring-hill-ks','jayhawk-linn-ks','pleasanton-ks','prairie-view-ks','humboldt-ks','iola-ks','marmaton-valley-ks','yates-center-ks',
+  'doniphan-west-ks','riverside-ks','troy-ks','central-plains-ks','ellinwood-ks','great-bend-ks','hoisington-ks','beloit-ks','beloit-st-john-s-ks','lincoln-ks','sylvan-lucas-unified-ks']);
+assert.deepEqual(idsOf(BATCH6,'middle-school'),['louisburg-ms-ks','paola-ms-ks','spring-hill-ms-ks','pleasanton-ms-ks','marmaton-valley-ms-ks','doniphan-west-ms-ks','riverside-ms-ks','troy-ms-ks',
+  'central-plains-ms-ks','ellinwood-ms-ks','great-bend-ms-ks','hoisington-ms-ks','beloit-ms-ks']);
 assert.match(index,/\.\.\.KS_COUNTY_HIGH_SCHOOLS,\.\.\.KS_COUNTY_MIDDLE_SCHOOLS\]/,'the Worker reads them');
 
 // Catalog: in Kansas, in its county, at its level, with a theme and the
@@ -74,7 +79,9 @@ const SPARSE=['solomon-ks','wabaunsee-ks','mission-valley-ks','council-grove-ks'
   'centre-ks','marion-ks','peabody-burns-ks','canton-galva-ks','inman-ks','moundridge-ks','chase-county-ks',
   // Fifth batch (November 10): Lebo 1 of 11 football games, Waverly 1 of 9, Southern Coffey County 1 of 14 volleyball matches, Burrton 2 volleyball matches, ...
   'atchison-co-community-ks','hiawatha-ks','horton-ks','burlington-ks','lebo-ks','southern-coffey-county-ks','waverly-ks','anderson-county-ks','crest-ks',
-  'eureka-ks','madison-ks','burrton-ks','sedgwick-ks','chase-ks','little-river-ks','sterling-ks'];
+  'eureka-ks','madison-ks','burrton-ks','sedgwick-ks','chase-ks','little-river-ks','sterling-ks',
+  // Sixth batch (November 19): Osawatomie 4 of 9 football games, Jayhawk-Linn 2 of 9, Iola 2 of 9, Central Plains 1 of 10, Yates Center 1 of 15 volleyball matches; Sylvan-Lucas and Beloit St. John's football and volleyball are on MaxPreps only.
+  'osawatomie-ks','jayhawk-linn-ks','pleasanton-ks','iola-ks','marmaton-valley-ks','yates-center-ks','doniphan-west-ks','troy-ks','central-plains-ks','ellinwood-ks','beloit-st-john-s-ks','lincoln-ks','sylvan-lucas-unified-ks'];
 for(const m of KS_COUNTY_HIGH_SCHOOLS){
   const flags=Object.values(m.sports).flat().filter(t=>t.maxpreps).map(t=>!!t.maxprepsSchedule);
   assert.ok(flags.length,`${m.id}: MaxPreps teams`);

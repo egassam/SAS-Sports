@@ -1,0 +1,166 @@
+{
+ "state": "ks",
+ "counties": [
+  "Doniphan"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "doniphan-west-ks",
+   "name": "Doniphan West High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451575776fc2afd4f2e543",
+    "slug": "doniphanwesths"
+   },
+   "maxpreps": {
+    "schoolId": "e9663430-9ecf-4e70-aad9-c7241be86e3c",
+    "path": "highland/doniphan-west-mustangs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Doniphan West",
+    "milesplit": 22037,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "riverside-ks",
+   "name": "Riverside High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250606085416519dfabcb639d4749",
+    "slug": "wathenariversidehs"
+   },
+   "maxpreps": {
+    "schoolId": "af289ade-02bf-494b-94c0-4b32c77a8786",
+    "path": "wathena/riverside-wathena-elwood-cyclones"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Wathena-Riverside",
+    "milesplit": 36369
+   }
+  },
+  {
+   "id": "troy-ks",
+   "name": "Troy High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452083638df836e51c4945",
+    "slug": "troyhs"
+   },
+   "maxpreps": {
+    "schoolId": "cebca363-ad9c-4f39-919c-839a01a61833",
+    "path": "troy/troy-trojans"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Troy",
+    "milesplit": 21923,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "doniphan-west-ms-ks",
+   "name": "Doniphan West Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040451575776fc2afd4f2e543",
+    "slug": "doniphanwesths"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Doniphan West"
+   }
+  },
+  {
+   "id": "riverside-ms-ks",
+   "name": "Riverside Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250606085416519dfabcb639d4749",
+    "slug": "wathenariversidehs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Wathena-Riverside",
+    "milesplit": 46852
+   }
+  },
+  {
+   "id": "troy-ms-ks",
+   "name": "Troy Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452083638df836e51c4945",
+    "slug": "troyhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Troy"
+   }
+  }
+ ]
+}

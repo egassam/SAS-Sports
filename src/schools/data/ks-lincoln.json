@@ -1,0 +1,71 @@
+{
+ "state": "ks",
+ "counties": [
+  "Lincoln"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "lincoln-ks",
+   "name": "Lincoln High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200400cf96811bc22d4a",
+    "slug": "lincolnhs"
+   },
+   "maxpreps": {
+    "schoolId": "e3f09284-3ca5-4459-8cf2-444771d3838a",
+    "path": "lincoln/lincoln-leopards"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Lincoln",
+    "milesplit": 21948,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "sylvan-lucas-unified-ks",
+   "name": "Sylvan Lucas Unified High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452071898e76a9517b4f4a",
+    "slug": "sylvanlucasusd299hs"
+   },
+   "maxpreps": {
+    "schoolId": "7d4910ff-a485-4784-b163-5d4436f4da53",
+    "path": "sylvan-grove/sylvan-lucas-mustangs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Volleyball",
+     "Football",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Sylvan Grove",
+    "milesplit": 21932,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

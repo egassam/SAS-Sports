@@ -1,0 +1,102 @@
+{
+ "state": "ks",
+ "counties": [
+  "Mitchell"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH6_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "beloit-ks",
+   "name": "Beloit High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045154951e4e672c278d441",
+    "slug": "beloitseniorhs"
+   },
+   "maxpreps": {
+    "schoolId": "d30e7d5f-e2b1-49c4-bb91-d819b8f2aead",
+    "path": "beloit/beloit-trojans"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 133,
+    "code": "BT"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Beloit",
+    "tennis": "Beloit HS",
+    "milesplit": 21875
+   }
+  },
+  {
+   "id": "beloit-st-john-s-ks",
+   "name": "Beloit St. John's High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206793a05bd59532f34b",
+    "slug": "stjohnscatholichs"
+   },
+   "maxpreps": {
+    "schoolId": "c306e8ce-d648-4dea-9399-d55a0fe7224f",
+    "path": "beloit/st-johns-tipton-catholic-blujays"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Football",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Track & Field"
+    ],
+    "meetTeam": "St. John's Catholic",
+    "milesplit": 21963,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "beloit-ms-ks",
+   "name": "Beloit Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045154951e4e672c278d441",
+    "slug": "beloitseniorhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Beloit",
+    "milesplit": 32810
+   }
+  }
+ ]
+}
