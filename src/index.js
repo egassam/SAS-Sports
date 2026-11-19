@@ -61,6 +61,7 @@ import {manhattanKsSchool} from './schools/manhattan-ks.mjs';
 import {anthonyMsSchool,eisenhowerMsSchool} from './schools/manhattan-ks-middle.mjs';
 import {RILEY_POTTAWATOMIE_HIGH_SCHOOLS,RILEY_POTTAWATOMIE_MIDDLE_SCHOOLS} from './schools/riley-pottawatomie-ks.mjs';
 import {milesplitSeasonQuery,milesplitSeasonIndex,milesplitIndexGames,milesplitHighSchoolRunner,usd437ScheduleRows} from './high-school.mjs';
+import {TONIGHT_LEVELS,tonightGames,tonightCounties} from './kansas-tonight.mjs';
 import {CALENDAR_PAIRS_MAX,calendarIcs} from './calendar-ics.mjs';
 import {WEATHER_SPORTS,placeKey,parsePlace,geocodeResult,geocodeUrl,pointsUrl,forecastAt} from './game-weather.mjs';
 import {SERIES_MS,seriesKey,opponentHistoryUrl,parseOpponentHistory,seriesFor,seriesSummary} from './series-history.mjs';
@@ -349,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.316.0-hs-alerts';
+const VERSION='4.317.2-kansas-tonight';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6945,18 +6946,65 @@ function pushBoards(favorites,now=new Date()){
   }
   return liveNowBoards(now).filter(board=>board.level==='pro'?proPaths.has(board.path):sports.has(board.sport));
 }
-async function highSchoolPushGames(favorites,origin,env,now){
-  const url=new URL(origin),month=now.getUTCMonth()+1,pairs=[];
-  for(const id of favorites){
-    const school=catalogSchool(id);if(!school||!isHighSchool(school))continue;
-    for(const sport of sponsoredSports[id]||[])if(inSeason(sport,month))pairs.push([school,sport]);
-  }
-  const out=[];
-  await Promise.all(pairs.slice(0,80).map(async([school,sport])=>{
-    const copy=await homeSavedFeed(url,env,caches.default,school.id,sport);if(!copy)return;
-    const local=schoolNow(now,school),today=new Date(Date.UTC(local.getUTCFullYear(),local.getUTCMonth(),local.getUTCDate())).toISOString().slice(0,10);
-    out.push(...highSchoolGames(copy.groups,{today,shortName:school.short_name||school.name}));
+// The day's list for Kansas tonight and high school alerts: every
+// middle or high school feed with a game today (the school's local day),
+// found once a day from the saved copies (one scan of every in-season feed),
+// then kept fresh by the 10-minute run, which rebuilds the feeds whose games
+// today still lack a result (at most six a level a run, longest unread
+// first). The scheduled refresh alone rebuilds each feed about once a day
+// (1,292 feeds, eight every 10 minutes).
+const TONIGHT_REBUILDS=6,tonightKey=(level,host)=>`tonight:v1:${host}:${level}`;
+const kansasToday=now=>{const l=schoolNow(now,{state:'Kansas'});return new Date(Date.UTC(l.getUTCFullYear(),l.getUTCMonth(),l.getUTCDate())).toISOString().slice(0,10)};
+function tonightPairs(level,now){const month=now.getUTCMonth()+1;return refreshFeeds(HIGH_SCHOOL_MODULES).map(p=>({...p,entry:catalogSchool(p.school)})).filter(p=>p.entry?.level===level&&inSeason(p.sport,month))}
+const localDay=(now,school)=>{const l=schoolNow(now,school);return new Date(Date.UTC(l.getUTCFullYear(),l.getUTCMonth(),l.getUTCDate())).toISOString().slice(0,10)};
+async function tonightDoc(env,url,level,now,{ctx=null}={}){
+  const store=env?.HIGHLIGHTS,key=tonightKey(level,url.hostname),date=kansasToday(now);
+  let doc=null;try{doc=store?await store.get(key,'json'):null}catch{}
+  if(doc?.date===date)return doc;
+  const pairs=tonightPairs(level,now),found={};
+  await Promise.all(pairs.map(async p=>{
+    const copy=await homeSavedFeed(url,env,caches.default,p.school,p.sport);if(!copy)return;
+    const games=tonightGames(copy.groups,{today:localDay(now,p.entry),school:p.entry});
+    if(games.length)found[`${p.school}|${p.sport}`]={games,read:copy.fetched_at||null};
   }));
+  doc={date,level,built:now.toISOString(),feeds:pairs.length,pairs:found};
+  const put=store?store.put(key,JSON.stringify(doc),{expirationTtl:2*86400}).catch(()=>null):null;
+  if(put){if(ctx)ctx.waitUntil(put);else await put;}
+  return doc;
+}
+const tonightOpen=g=>g.status!=='Final';
+async function refreshTonight(env,origin=`https://${PRODUCTION_HOST}`,now=new Date()){
+  const url=new URL(origin),out={};
+  for(const level of TONIGHT_LEVELS){
+    const doc=await tonightDoc(env,url,level,now);
+    const due=Object.entries(doc.pairs).filter(([,p])=>p.games.some(tonightOpen)&&p.games.some(g=>Date.parse(g.start_time)<=Date.parse(`${doc.date}T23:59:59Z`))).sort((a,b)=>String(a[1].read||'').localeCompare(String(b[1].read||''))).slice(0,TONIGHT_REBUILDS);
+    let rebuilt=0;
+    for(const [pair] of due){
+      const [school,sport]=pair.split('|'),entry=catalogSchool(school);
+      try{
+        const r=await freshGroupedFeed(url,school,sport,env,caches.default,feedCacheKey(url,school,sport));if(!r)continue;
+        const groups=await r.json();if(!Array.isArray(groups))continue;
+        doc.pairs[pair]={games:tonightGames(groups,{today:localDay(now,entry),school:entry}),read:now.toISOString()};rebuilt++;
+      }catch{}
+    }
+    doc.refreshed=now.toISOString();
+    try{await env?.HIGHLIGHTS?.put(tonightKey(level,url.hostname),JSON.stringify(doc),{expirationTtl:2*86400})}catch{}
+    out[level]={feeds_with_games:Object.keys(doc.pairs).length,due:due.length,rebuilt};
+  }
+  return out;
+}
+async function highSchoolPushGames(favorites,origin,env,now){
+  // The day's list (tonightDoc), kept fresh by the 10-minute run: the
+  // favorites' games of today, each feed rebuilt while a game lacks a result.
+  const url=new URL(origin),out=[];
+  for(const level of TONIGHT_LEVELS){
+    const doc=await tonightDoc(env,url,level,now);
+    for(const [pair,p] of Object.entries(doc.pairs)){
+      const [school]=pair.split('|');if(!favorites.has(school))continue;
+      const entry=catalogSchool(school);
+      out.push(...highSchoolGames([{results:p.games}],{today:localDay(now,entry),shortName:entry?.short_name||entry?.name}));
+    }
+  }
   return out;
 }
 async function runPushAlerts(env,{origin=`https://${PRODUCTION_HOST}`,now=new Date(),fetchImpl=fetch}={}){
@@ -7785,6 +7833,20 @@ async function routeRequest(request,env,ctx){
       if(feeds.length===pairs.length)ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
+    // Kansas tonight (user, November 18, 2026: item 7; src/kansas-tonight.mjs):
+    // /live/tonight?level=high-school|middle-school from the day's stored
+    // list (tonightDoc: the schools and sports with games today, kept fresh by
+    // the 10-minute run). Kept one minute at the edge.
+    if(url.pathname==='/live/tonight'){
+      const level=url.searchParams.get('level')||'high-school';if(!TONIGHT_LEVELS.has(level))return json({detail:'level is high-school or middle-school'},400);
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/tonight?level=${level}&v=${VERSION}`,url.origin).toString());
+      const kept=await cache.match(key);if(kept)return kept;
+      const doc=await tonightDoc(env,url,level,new Date(),{ctx});
+      const games=Object.values(doc.pairs).flatMap(p=>p.games);
+      const response=json({level,date:doc.date,feeds:doc.feeds,feeds_with_games:Object.keys(doc.pairs).length,games:games.length,live:games.filter(g=>g.status==='Live').length,counties:tonightCounties(games),built:doc.built,refreshed:doc.refreshed||null,fetched_at:new Date().toISOString()});
+      response.headers.set('cache-control','public, max-age=60');ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
+    }
     if(url.pathname==='/live/home'){
       const pairs=homeFeedPairs(url.searchParams.get('pairs'));if(!pairs)return json({detail:'pairs is required: school|Sport,school|Sport (at most '+HOME_PAIRS_MAX+')'},400);
       const feeds=await Promise.all(pairs.map(([school,sport])=>homeSavedFeed(url,env,caches.default,school,sport)));
@@ -7831,6 +7893,8 @@ export default{
     // Two Cron Triggers: push alerts every 2 minutes, the feed refresh every 10.
     if(event?.cron===PUSH_CRON){ctx.waitUntil(runPushAlerts(env).catch(()=>null));return}
     ctx.waitUntil(runRefreshBatch(env).catch(()=>null));
+    // Kansas tonight and high school alerts: the day's list, kept fresh.
+    ctx.waitUntil(refreshTonight(env).catch(()=>null));
     // The stalest college roster index (High school to college), one a run.
     ctx.waitUntil(collegeAlumniDocs(env,ctx,{startBuilds:1}).catch(()=>null));
   },
