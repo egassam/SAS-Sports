@@ -1316,10 +1316,10 @@ function renderTonight(){
 feed.addEventListener('click',ev=>{const a=ev.target.closest('[data-tonight-school]');if(!a||ev.metaKey||ev.ctrlKey)return;ev.preventDefault();ev.stopPropagation();currentView='all';tabs.querySelectorAll('.tab').forEach(x=>{const on=x.dataset.view==='all';x.classList.toggle('active',on);x.setAttribute('aria-pressed',String(on))});openTeam(a.dataset.tonightSchool)});
 setInterval(()=>{if(currentView==='tonight'&&!document.hidden)loadTonight()},60000);
 function render(groups){
-  syncVideoDock(groups);
-  if(currentView==='news')return renderNews();
   syncTonightTab();
   if(currentView==='tonight')return renderTonight();
+  syncVideoDock(groups);
+  if(currentView==='news')return renderNews();
   syncRosterTab(groups);
   if(currentView==='roster'&&!homeMode())return renderRoster(groups);
   if(homeMode())return renderHome(groups);
