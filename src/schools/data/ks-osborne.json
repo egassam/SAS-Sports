@@ -1,0 +1,102 @@
+{
+ "state": "ks",
+ "counties": [
+  "Osborne"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "lakeside-ks",
+   "name": "Lakeside High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200085f06e315536684b",
+    "slug": "lakesidehs"
+   },
+   "maxpreps": {
+    "schoolId": "e9e0fa55-7249-42be-8d07-70643c343572",
+    "path": "downs/lakeside-dragons"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Lakeside",
+    "milesplit": 21921,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "natoma-ks",
+   "name": "Natoma High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520121802118d99901b45",
+    "slug": "natomahs"
+   },
+   "maxpreps": {
+    "schoolId": "777b8ccc-a81f-463e-a987-22b6fed339a9",
+    "path": "natoma/natoma-tigers"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Volleyball",
+     "Football"
+    ],
+    "meetTeam": "Natoma",
+    "milesplit": 21926,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "osborne-ks",
+   "name": "Osborne High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045201901906f99a3b49d43",
+    "slug": "osbornehs"
+   },
+   "maxpreps": {
+    "schoolId": "ea38a7ae-5cb5-411a-bf44-7c90cb6c6e84",
+    "path": "osborne/osborne-bulldogs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 260,
+    "code": "OSB"
+   },
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Football",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Osborne",
+    "tennis": "Osborne HS",
+    "milesplit": 22026,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

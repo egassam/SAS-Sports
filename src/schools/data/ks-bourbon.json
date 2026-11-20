@@ -1,0 +1,111 @@
+{
+ "state": "ks",
+ "counties": [
+  "Bourbon"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "fort-scott-ks",
+   "name": "Fort Scott High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451583760e72d8f5deb148",
+    "slug": "fortscotths"
+   },
+   "maxpreps": {
+    "schoolId": "f0900a89-1ba0-4473-b3c0-710ce5c7492f",
+    "path": "fort-scott/fort-scott-tigers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 88,
+    "code": "FTS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming"
+    ],
+    "meetTeam": "Fort Scott",
+    "tennis": "Fort Scott HS",
+    "milesplit": 21844,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "uniontown-ks",
+   "name": "Uniontown High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452085828e7c196a4fb146",
+    "slug": "uniontownhs"
+   },
+   "maxpreps": {
+    "schoolId": "0fc40610-a67e-4057-84d0-5dcd029c2d35",
+    "path": "uniontown/uniontown-eagles"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 250,
+    "code": "UN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Uniontown",
+    "milesplit": 21998,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "uniontown-ms-ks",
+   "name": "Uniontown Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452085828e7c196a4fb146",
+    "slug": "uniontownhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball"
+    ],
+    "meetTeam": "Uniontown"
+   }
+  }
+ ]
+}

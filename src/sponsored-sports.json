@@ -6882,5 +6882,312 @@
     "Track & Field",
     "Volleyball",
     "Wrestling"
+  ],
+  "basehor-linwood-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "bonner-springs-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "lansing-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "leavenworth-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "pleasant-ridge-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "tonganoxie-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "basehor-linwood-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "bonner-springs-robert-e-clark-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "fort-leavenworth-patton-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "leavenworth-warren-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "leavenworth-xavier-catholic-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "tonganoxie-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "fort-scott-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Swimming & Diving",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "uniontown-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "uniontown-ms-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "chanute-ks": [
+    "Baseball",
+    "Basketball",
+    "Bowling",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Soccer",
+    "Softball",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "erie-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Golf",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "st-paul-ks": [
+    "Baseball",
+    "Basketball",
+    "Football",
+    "Softball",
+    "Volleyball"
+  ],
+  "fredonia-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "neodesha-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Tennis",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "fredonia-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Track & Field",
+    "Wrestling"
+  ],
+  "neodesha-ms-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Wrestling"
+  ],
+  "elk-valley-ks": [
+    "Basketball",
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "west-elk-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "russell-ks": [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Softball",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "russell-ms-ks": [
+    "Football",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "lakeside-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
+  ],
+  "natoma-ks": [
+    "Basketball",
+    "Football",
+    "Volleyball"
+  ],
+  "osborne-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Tennis",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "smith-center-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Golf",
+    "Track & Field",
+    "Volleyball",
+    "Wrestling"
+  ],
+  "thunder-ridge-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Volleyball"
+  ],
+  "smith-center-ms-ks": [
+    "Basketball",
+    "Track & Field"
+  ],
+  "rock-hills-ks": [
+    "Basketball",
+    "Cross Country",
+    "Football",
+    "Softball",
+    "Track & Field",
+    "Volleyball"
   ]
 }

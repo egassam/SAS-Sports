@@ -1,0 +1,427 @@
+{
+ "state": "ks",
+ "counties": [
+  "Leavenworth"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "basehor-linwood-ks",
+   "name": "Basehor Linwood High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20241023083448515ed35c0b6384d4b",
+    "slug": "basehorlinwood"
+   },
+   "maxpreps": {
+    "schoolId": "2282c7af-84b1-46da-9217-57608d22dbbe",
+    "path": "basehor/basehor-linwood-bobcats"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Basehor-Linwood",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Basehor-Linwood HS",
+    "milesplit": 18715
+   }
+  },
+  {
+   "id": "bonner-springs-ks",
+   "name": "Bonner Springs High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045155425e0b93f531c0c46",
+    "slug": "bonnerspringshs"
+   },
+   "maxpreps": {
+    "schoolId": "22289b8e-a068-49b3-ac00-73bf9428ecf7",
+    "path": "bonner-springs/bonner-springs-braves"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 35,
+    "code": "BSP"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Bonner Springs",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Bonner Springs HS",
+    "milesplit": 19095
+   }
+  },
+  {
+   "id": "lansing-ks",
+   "name": "Lansing High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452001405eedc1d28c4243",
+    "slug": "lansinghs"
+   },
+   "maxpreps": {
+    "schoolId": "f17d9c34-137c-4d9d-8018-0879c3a36a09",
+    "path": "lansing/lansing-lions"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 44,
+    "code": "LSG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Lansing",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Lansing HS",
+    "milesplit": 21790
+   }
+  },
+  {
+   "id": "leavenworth-ks",
+   "name": "Leavenworth High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045200255864feb3b73134c",
+    "slug": "leavenworthhs"
+   },
+   "maxpreps": {
+    "schoolId": "53d3747b-735e-49ca-9ec6-d42313206b62",
+    "path": "leavenworth/leavenworth-pioneers"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 45,
+    "code": "LV"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Swimming & Diving",
+     "Girls Swimming",
+     "Boys Swimming",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Leavenworth",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Leavenworth HS",
+    "milesplit": 15616
+   }
+  },
+  {
+   "id": "pleasant-ridge-ks",
+   "name": "Pleasant Ridge High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045202425693d763314af40",
+    "slug": "pleasantridgehs"
+   },
+   "maxpreps": {
+    "schoolId": "a52aeaf9-d20d-4070-aa5c-1af8004cce57",
+    "path": "easton/pleasant-ridge-rams"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Pleasant Ridge",
+    "milesplit": 21903,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "tonganoxie-ks",
+   "name": "Tonganoxie High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404520804420c2a2fe853b4a",
+    "slug": "tonganoxiehs"
+   },
+   "maxpreps": {
+    "schoolId": "60f7a689-9322-486b-bd77-cf22fea628ab",
+    "path": "tonganoxie/tonganoxie-chieftains"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 120,
+    "code": "TNG"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling"
+    ],
+    "meetTeam": "Tonganoxie",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "milesplit": 15910
+   }
+  },
+  {
+   "id": "basehor-linwood-ms-ks",
+   "name": "Basehor Linwood Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202506090700128563bb380ef620f43",
+    "slug": "basehorlinwoodms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Basehor-Linwood MS",
+    "milesplit": 31925
+   }
+  },
+  {
+   "id": "bonner-springs-robert-e-clark-ms-ks",
+   "name": "Robert E. Clark Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202507071256464300b47c2321ae745",
+    "slug": "clarkms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Clark Middle School",
+    "milesplit": 31922
+   }
+  },
+  {
+   "id": "fort-leavenworth-patton-ms-ks",
+   "name": "Patton Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202507100656442204dad3ba6259240",
+    "slug": "pattonms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Patton MS",
+    "milesplit": 32909
+   }
+  },
+  {
+   "id": "leavenworth-warren-ms-ks",
+   "name": "Leavenworth Warren Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202506130702393674ba41c1258a44c",
+    "slug": "richardwarrenms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Richard Warren MS"
+   }
+  },
+  {
+   "id": "leavenworth-xavier-catholic-ms-ks",
+   "name": "Xavier Catholic School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20260427014707288863c9183e4bb46",
+    "slug": "xaivercathms"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Xavier Catholic MS"
+   }
+  },
+  {
+   "id": "tonganoxie-ms-ks",
+   "name": "Tonganoxie Middle School",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202507070624525415ede92a36dc743",
+    "slug": "tonganoxiems"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Tonganoxie MS"
+   }
+  }
+ ]
+}

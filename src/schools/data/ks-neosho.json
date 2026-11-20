@@ -1,0 +1,123 @@
+{
+ "state": "ks",
+ "counties": [
+  "Neosho"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "chanute-ks",
+   "name": "Chanute High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h2025020404515601445e5fd46b2494b",
+    "slug": "chanutehs"
+   },
+   "maxpreps": {
+    "schoolId": "d0d56796-f8cc-40df-9c67-4d5b09222ed1",
+    "path": "chanute/chanute-comets"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 77,
+    "code": "CHAN"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Soccer",
+     "Girls Soccer",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Boys Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field",
+     "Bowling",
+     "Girls Bowling",
+     "Boys Bowling"
+    ],
+    "meetTeam": "Chanute",
+    "paths": {
+     "Girls Soccer": "soccer/girls/spring"
+    },
+    "tennis": "Chanute HS",
+    "milesplit": 21847,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "erie-ks",
+   "name": "Erie High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451581503349489cda6d4c",
+    "slug": "eriehs"
+   },
+   "maxpreps": {
+    "schoolId": "8b2a513e-6e45-4704-845a-7d523c41bd52",
+    "path": "erie/erie-red-devils"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 145,
+    "code": "ERIE"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Erie",
+    "milesplit": 21895,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "st-paul-ks",
+   "name": "St. Paul High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452056803384be7afca441",
+    "slug": "saintpaulhs"
+   },
+   "maxpreps": {
+    "schoolId": "5f56575d-8db4-4191-92f5-9ad4eb0cfd9e",
+    "path": "st-paul/st-paul-indians"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball"
+    ],
+    "meetTeam": "Saint Paul",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

@@ -17240,6 +17240,955 @@
     ]
   },
   {
+    "id": "basehor-linwood-ks",
+    "name": "Basehor Linwood High School",
+    "short_name": "Basehor Linwood",
+    "state": "Kansas",
+    "city": "Basehor",
+    "county": "Leavenworth County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd458.org/blhs/Home",
+    "aliases": [
+      "Basehor Linwood High School",
+      "Basehor Linwood",
+      "Basehor-Linwood HS",
+      "Basehor Linwood Bobcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/basehorlinwood",
+        "provider_school_id": "h20241023083448515ed35c0b6384d4b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/basehor/basehor-linwood-bobcats",
+        "provider_school_id": "2282c7af-84b1-46da-9217-57608d22dbbe"
+      }
+    ]
+  },
+  {
+    "id": "bonner-springs-ks",
+    "name": "Bonner Springs High School",
+    "short_name": "Bonner Springs",
+    "state": "Kansas",
+    "city": "Bonner Springs",
+    "county": "Leavenworth County",
+    "conference": "Frontier League",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd204.net",
+    "aliases": [
+      "Bonner Springs High School",
+      "Bonner Springs",
+      "Bonner Springs HS",
+      "Bonner Springs Braves"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/bonnerspringshs",
+        "provider_school_id": "h20250204045155425e0b93f531c0c46"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/bonner-springs/bonner-springs-braves",
+        "provider_school_id": "22289b8e-a068-49b3-ac00-73bf9428ecf7"
+      }
+    ]
+  },
+  {
+    "id": "lansing-ks",
+    "name": "Lansing High School",
+    "short_name": "Lansing",
+    "state": "Kansas",
+    "city": "Lansing",
+    "county": "Leavenworth County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd469.net",
+    "aliases": [
+      "Lansing High School",
+      "Lansing",
+      "Lansing Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lansinghs",
+        "provider_school_id": "h202502040452001405eedc1d28c4243"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/lansing/lansing-lions",
+        "provider_school_id": "f17d9c34-137c-4d9d-8018-0879c3a36a09"
+      }
+    ]
+  },
+  {
+    "id": "leavenworth-ks",
+    "name": "Leavenworth High School",
+    "short_name": "Leavenworth",
+    "state": "Kansas",
+    "city": "Leavenworth",
+    "county": "Leavenworth County",
+    "conference": "United Kansas Conference",
+    "classification": "5A",
+    "level": "high-school",
+    "division": "KSHSAA 5A",
+    "athletics_url": "https://www.usd453.org",
+    "aliases": [
+      "Leavenworth High School",
+      "Leavenworth",
+      "Leavenworth Pioneers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/leavenworthhs",
+        "provider_school_id": "h20250204045200255864feb3b73134c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/leavenworth/leavenworth-pioneers",
+        "provider_school_id": "53d3747b-735e-49ca-9ec6-d42313206b62"
+      }
+    ]
+  },
+  {
+    "id": "pleasant-ridge-ks",
+    "name": "Pleasant Ridge High School",
+    "short_name": "Pleasant Ridge",
+    "state": "Kansas",
+    "city": "Easton",
+    "county": "Leavenworth County",
+    "conference": "Northeast Kansas League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.easton449.org",
+    "aliases": [
+      "Pleasant Ridge High School",
+      "Pleasant Ridge",
+      "Pleasant Ridge Rams"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/pleasantridgehs",
+        "provider_school_id": "h20250204045202425693d763314af40"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/easton/pleasant-ridge-rams",
+        "provider_school_id": "a52aeaf9-d20d-4070-aa5c-1af8004cce57"
+      }
+    ]
+  },
+  {
+    "id": "tonganoxie-ks",
+    "name": "Tonganoxie High School",
+    "short_name": "Tonganoxie",
+    "state": "Kansas",
+    "city": "Tonganoxie",
+    "county": "Leavenworth County",
+    "conference": "Frontier League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.tong464.org",
+    "aliases": [
+      "Tonganoxie High School",
+      "Tonganoxie",
+      "Tonganoxie Chieftains"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/tonganoxiehs",
+        "provider_school_id": "h2025020404520804420c2a2fe853b4a"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/tonganoxie/tonganoxie-chieftains",
+        "provider_school_id": "60f7a689-9322-486b-bd77-cf22fea628ab"
+      }
+    ]
+  },
+  {
+    "id": "basehor-linwood-ms-ks",
+    "name": "Basehor Linwood Middle School",
+    "short_name": "Basehor Linwood",
+    "state": "Kansas",
+    "city": "Basehor",
+    "county": "Leavenworth County",
+    "conference": "Kaw Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "http://www.usd458.org/Schools/BasehorLinwood_Middle_School",
+    "aliases": [
+      "Basehor Linwood Middle School",
+      "Basehor Linwood",
+      "Basehor-Linwood MS",
+      "Basehor Linwood Bobcats"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/basehorlinwoodms",
+        "provider_school_id": "h202506090700128563bb380ef620f43"
+      }
+    ]
+  },
+  {
+    "id": "bonner-springs-robert-e-clark-ms-ks",
+    "name": "Robert E. Clark Middle School",
+    "short_name": "Robert E. Clark",
+    "state": "Kansas",
+    "city": "Bonner Springs",
+    "county": "Leavenworth County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd204.net",
+    "aliases": [
+      "Robert E. Clark Middle School",
+      "Robert E. Clark",
+      "Bonner Springs-Robert E Clark Middle School",
+      "Bonner Springs-Robert E Clark",
+      "Clark Middle School",
+      "Bonner Springs-Robert E Clark Braves"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/clarkms",
+        "provider_school_id": "h202507071256464300b47c2321ae745"
+      }
+    ]
+  },
+  {
+    "id": "fort-leavenworth-patton-ms-ks",
+    "name": "Patton Junior High",
+    "short_name": "Patton",
+    "state": "Kansas",
+    "city": "Fort Leavenworth",
+    "county": "Leavenworth County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd207.org",
+    "aliases": [
+      "Patton Junior High",
+      "Patton",
+      "Fort Leavenworth-Patton Junior High",
+      "Fort Leavenworth-Patton",
+      "Patton MS",
+      "Fort Leavenworth-Patton Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/pattonms",
+        "provider_school_id": "h202507100656442204dad3ba6259240"
+      }
+    ]
+  },
+  {
+    "id": "leavenworth-warren-ms-ks",
+    "name": "Leavenworth Warren Middle School",
+    "short_name": "Leavenworth Warren",
+    "state": "Kansas",
+    "city": "Leavenworth",
+    "county": "Leavenworth County",
+    "conference": "Kaw Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://rws.usd453.org",
+    "aliases": [
+      "Leavenworth Warren Middle School",
+      "Leavenworth Warren",
+      "Richard Warren MS",
+      "Leavenworth Warren Pioneers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/richardwarrenms",
+        "provider_school_id": "h202506130702393674ba41c1258a44c"
+      }
+    ]
+  },
+  {
+    "id": "leavenworth-xavier-catholic-ms-ks",
+    "name": "Xavier Catholic School",
+    "short_name": "Xavier Catholic School",
+    "state": "Kansas",
+    "city": "Leavenworth",
+    "county": "Leavenworth County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://leavenworthcatholicschools.org",
+    "aliases": [
+      "Xavier Catholic School",
+      "Leavenworth Xavier Catholic School Middle School",
+      "Leavenworth Xavier Catholic School",
+      "Xavier Catholic MS",
+      "Leavenworth Xavier Catholic School Hawks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/xaivercathms",
+        "provider_school_id": "h20260427014707288863c9183e4bb46"
+      }
+    ]
+  },
+  {
+    "id": "tonganoxie-ms-ks",
+    "name": "Tonganoxie Middle School",
+    "short_name": "Tonganoxie",
+    "state": "Kansas",
+    "city": "Tonganoxie",
+    "county": "Leavenworth County",
+    "conference": null,
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.tong464.org",
+    "aliases": [
+      "Tonganoxie Middle School",
+      "Tonganoxie",
+      "Tonganoxie MS",
+      "Tonganoxie Warriors"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/tonganoxiems",
+        "provider_school_id": "h202507070624525415ede92a36dc743"
+      }
+    ]
+  },
+  {
+    "id": "fort-scott-ks",
+    "name": "Fort Scott High School",
+    "short_name": "Fort Scott",
+    "state": "Kansas",
+    "city": "Fort Scott",
+    "county": "Bourbon County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd234.org",
+    "aliases": [
+      "Fort Scott High School",
+      "Fort Scott",
+      "Fort Scott Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fortscotths",
+        "provider_school_id": "h202502040451583760e72d8f5deb148"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/fort-scott/fort-scott-tigers",
+        "provider_school_id": "f0900a89-1ba0-4473-b3c0-710ce5c7492f"
+      }
+    ]
+  },
+  {
+    "id": "uniontown-ks",
+    "name": "Uniontown High School",
+    "short_name": "Uniontown",
+    "state": "Kansas",
+    "city": "Uniontown",
+    "county": "Bourbon County",
+    "conference": "Three Rivers League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.uniontown235.org",
+    "aliases": [
+      "Uniontown High School",
+      "Uniontown",
+      "Uniontown Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/uniontownhs",
+        "provider_school_id": "h202502040452085828e7c196a4fb146"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/uniontown/uniontown-eagles",
+        "provider_school_id": "0fc40610-a67e-4057-84d0-5dcd029c2d35"
+      }
+    ]
+  },
+  {
+    "id": "uniontown-ms-ks",
+    "name": "Uniontown Junior High",
+    "short_name": "Uniontown",
+    "state": "Kansas",
+    "city": "Uniontown",
+    "county": "Bourbon County",
+    "conference": "Three Rivers League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.uniontown235.org",
+    "aliases": [
+      "Uniontown Junior High",
+      "Uniontown",
+      "Uniontown Eagles"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/uniontownhs",
+        "provider_school_id": "h202502040452085828e7c196a4fb146"
+      }
+    ]
+  },
+  {
+    "id": "chanute-ks",
+    "name": "Chanute High School",
+    "short_name": "Chanute",
+    "state": "Kansas",
+    "city": "Chanute",
+    "county": "Neosho County",
+    "conference": "Southeast Kansas League",
+    "classification": "4A",
+    "level": "high-school",
+    "division": "KSHSAA 4A",
+    "athletics_url": "https://www.usd413.org",
+    "aliases": [
+      "Chanute High School",
+      "Chanute",
+      "Chanute Blue Comets"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/chanutehs",
+        "provider_school_id": "h2025020404515601445e5fd46b2494b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/chanute/chanute-comets",
+        "provider_school_id": "d0d56796-f8cc-40df-9c67-4d5b09222ed1"
+      }
+    ]
+  },
+  {
+    "id": "erie-ks",
+    "name": "Erie High School",
+    "short_name": "Erie",
+    "state": "Kansas",
+    "city": "Erie",
+    "county": "Neosho County",
+    "conference": "Three Rivers League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd101.com",
+    "aliases": [
+      "Erie High School",
+      "Erie",
+      "Erie Red Devils"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/eriehs",
+        "provider_school_id": "h202502040451581503349489cda6d4c"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/erie/erie-red-devils",
+        "provider_school_id": "8b2a513e-6e45-4704-845a-7d523c41bd52"
+      }
+    ]
+  },
+  {
+    "id": "st-paul-ks",
+    "name": "St. Paul High School",
+    "short_name": "St. Paul",
+    "state": "Kansas",
+    "city": "St. Paul",
+    "county": "Neosho County",
+    "conference": "Three Rivers League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd505.org",
+    "aliases": [
+      "St. Paul High School",
+      "St. Paul",
+      "Saint Paul",
+      "St. Paul Indians"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/saintpaulhs",
+        "provider_school_id": "h202502040452056803384be7afca441"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/st-paul/st-paul-indians",
+        "provider_school_id": "5f56575d-8db4-4191-92f5-9ad4eb0cfd9e"
+      }
+    ]
+  },
+  {
+    "id": "fredonia-ks",
+    "name": "Fredonia High School",
+    "short_name": "Fredonia",
+    "state": "Kansas",
+    "city": "Fredonia",
+    "county": "Wilson County",
+    "conference": "Tri-Valley League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.fredoniaks.com",
+    "aliases": [
+      "Fredonia High School",
+      "Fredonia",
+      "Fredonia Yellowjacket"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fredoniahs",
+        "provider_school_id": "h20250204045158457d66edfb7d6bb4f"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/fredonia/fredonia-yellowjackets",
+        "provider_school_id": "28ad2521-775a-4bc6-84c5-47e5154bdb4a"
+      }
+    ]
+  },
+  {
+    "id": "neodesha-ks",
+    "name": "Neodesha High School",
+    "short_name": "Neodesha",
+    "state": "Kansas",
+    "city": "Neodesha",
+    "county": "Wilson County",
+    "conference": "Tri-Valley League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.neodesha.k12.ks.us/neodesh",
+    "aliases": [
+      "Neodesha High School",
+      "Neodesha",
+      "Neodesha Bluestreaks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/neodeshahs",
+        "provider_school_id": "h202502040452012759dd89aa34eec4b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/neodesha/neodesha-blue-streaks",
+        "provider_school_id": "76226870-75ed-4e02-b643-31ad8ccd2486"
+      }
+    ]
+  },
+  {
+    "id": "fredonia-ms-ks",
+    "name": "Fredonia Junior High",
+    "short_name": "Fredonia",
+    "state": "Kansas",
+    "city": "Fredonia",
+    "county": "Wilson County",
+    "conference": "Tri-Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.fredoniaks.com",
+    "aliases": [
+      "Fredonia Junior High",
+      "Fredonia",
+      "Fredonia Yellowjacket"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/fredoniahs",
+        "provider_school_id": "h20250204045158457d66edfb7d6bb4f"
+      }
+    ]
+  },
+  {
+    "id": "neodesha-ms-ks",
+    "name": "Neodesha Junior High",
+    "short_name": "Neodesha",
+    "state": "Kansas",
+    "city": "Neodesha",
+    "county": "Wilson County",
+    "conference": "Tri-Valley League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://beta.gobound.com/ks/schools/neodeshahs",
+    "aliases": [
+      "Neodesha Junior High",
+      "Neodesha",
+      "Neodesha Bluestreaks"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/neodeshahs",
+        "provider_school_id": "h202502040452012759dd89aa34eec4b"
+      }
+    ]
+  },
+  {
+    "id": "elk-valley-ks",
+    "name": "Elk Valley High School",
+    "short_name": "Elk Valley",
+    "state": "Kansas",
+    "city": "Longton",
+    "county": "Elk County",
+    "conference": "South Central Border League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd283.org",
+    "aliases": [
+      "Elk Valley High School",
+      "Elk Valley",
+      "Elk Valley Lions"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/elkvalleyhs",
+        "provider_school_id": "h202502040451578069383f2a5c6ed45"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/longton/elk-valley-lions",
+        "provider_school_id": "3b9e7572-9f62-4ad8-b797-23a11c3b2d3d"
+      }
+    ]
+  },
+  {
+    "id": "west-elk-ks",
+    "name": "West Elk High School",
+    "short_name": "West Elk",
+    "state": "Kansas",
+    "city": "Howard",
+    "county": "Elk County",
+    "conference": "South Central Border League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.westelk.us",
+    "aliases": [
+      "West Elk High School",
+      "West Elk",
+      "West Elk Patriots"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/westelkhs",
+        "provider_school_id": "h20250204045209129a1c6976c554849"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/howard/west-elk-patriots",
+        "provider_school_id": "af598fee-79d8-4c05-84e1-c6eeb5dc9033"
+      }
+    ]
+  },
+  {
+    "id": "russell-ks",
+    "name": "Russell High School",
+    "short_name": "Russell",
+    "state": "Kansas",
+    "city": "Russell",
+    "county": "Russell County",
+    "conference": "Mid-Continent League",
+    "classification": "3A",
+    "level": "high-school",
+    "division": "KSHSAA 3A",
+    "athletics_url": "https://www.usd407.org",
+    "aliases": [
+      "Russell High School",
+      "Russell",
+      "Russell Broncos"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/russellhs",
+        "provider_school_id": "h20250204045205147aac37514cb5547"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/russell/russell-broncos",
+        "provider_school_id": "37551b84-641b-4171-a7c5-d8870e7281cb"
+      }
+    ]
+  },
+  {
+    "id": "russell-ms-ks",
+    "name": "Russell Junior High",
+    "short_name": "Russell",
+    "state": "Kansas",
+    "city": "Russell",
+    "county": "Russell County",
+    "conference": "Mid-Continent League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd407.org",
+    "aliases": [
+      "Russell Junior High",
+      "Russell",
+      "Russell Broncos"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/russellhs",
+        "provider_school_id": "h20250204045205147aac37514cb5547"
+      }
+    ]
+  },
+  {
+    "id": "lakeside-ks",
+    "name": "Lakeside High School",
+    "short_name": "Lakeside",
+    "state": "Kansas",
+    "city": "Downs",
+    "county": "Osborne County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd272.org",
+    "aliases": [
+      "Lakeside High School",
+      "Lakeside",
+      "Lakeside Knights"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/lakesidehs",
+        "provider_school_id": "h20250204045200085f06e315536684b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/downs/lakeside-dragons",
+        "provider_school_id": "e9e0fa55-7249-42be-8d07-70643c343572"
+      }
+    ]
+  },
+  {
+    "id": "natoma-ks",
+    "name": "Natoma High School",
+    "short_name": "Natoma",
+    "state": "Kansas",
+    "city": "Natoma",
+    "county": "Osborne County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd399.com",
+    "aliases": [
+      "Natoma High School",
+      "Natoma",
+      "Natoma Tigers"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/natomahs",
+        "provider_school_id": "h2025020404520121802118d99901b45"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/natoma/natoma-tigers",
+        "provider_school_id": "777b8ccc-a81f-463e-a987-22b6fed339a9"
+      }
+    ]
+  },
+  {
+    "id": "osborne-ks",
+    "name": "Osborne High School",
+    "short_name": "Osborne",
+    "state": "Kansas",
+    "city": "Osborne",
+    "county": "Osborne County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://beta.gobound.com/ks/schools/osbornehs",
+    "aliases": [
+      "Osborne High School",
+      "Osborne",
+      "Osborne Bulldogs"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/osbornehs",
+        "provider_school_id": "h20250204045201901906f99a3b49d43"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/osborne/osborne-bulldogs",
+        "provider_school_id": "ea38a7ae-5cb5-411a-bf44-7c90cb6c6e84"
+      }
+    ]
+  },
+  {
+    "id": "smith-center-ks",
+    "name": "Smith Center High School",
+    "short_name": "Smith Center",
+    "state": "Kansas",
+    "city": "Smith Center",
+    "county": "Smith County",
+    "conference": "Mid-Continent League",
+    "classification": "2A",
+    "level": "high-school",
+    "division": "KSHSAA 2A",
+    "athletics_url": "https://www.usd237.org",
+    "aliases": [
+      "Smith Center High School",
+      "Smith Center",
+      "Smith Center Redmen"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/smithcenterhs",
+        "provider_school_id": "h20250204045206323843293a923194b"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/smith-center/smith-center-redmen",
+        "provider_school_id": "0b260b0a-8ba1-4460-9d5b-d61f40557085"
+      }
+    ]
+  },
+  {
+    "id": "thunder-ridge-ks",
+    "name": "Thunder Ridge High School",
+    "short_name": "Thunder Ridge",
+    "state": "Kansas",
+    "city": "Kensington",
+    "county": "Smith County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd110.net",
+    "aliases": [
+      "Thunder Ridge High School",
+      "Thunder Ridge",
+      "Thunder Ridge Longhorns"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/thunderridgehs",
+        "provider_school_id": "h202502040452079844add905ac5cc45"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/kensington/thunder-ridge-longhorns",
+        "provider_school_id": "6c373b30-e37e-4571-b95b-9abf672bcb04"
+      }
+    ]
+  },
+  {
+    "id": "smith-center-ms-ks",
+    "name": "Smith Center Junior High",
+    "short_name": "Smith Center",
+    "state": "Kansas",
+    "city": "Smith Center",
+    "county": "Smith County",
+    "conference": "Mid-Continent League",
+    "classification": "Middle School",
+    "level": "middle-school",
+    "division": "Middle school",
+    "athletics_url": "https://www.usd237.com",
+    "aliases": [
+      "Smith Center Junior High",
+      "Smith Center",
+      "Smith Center Redmen"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/smithcenterhs",
+        "provider_school_id": "h20250204045206323843293a923194b"
+      }
+    ]
+  },
+  {
+    "id": "rock-hills-ks",
+    "name": "Rock Hills High School",
+    "short_name": "Rock Hills",
+    "state": "Kansas",
+    "city": "Mankato",
+    "county": "Jewell County",
+    "conference": "Northern Plains League",
+    "classification": "1A",
+    "level": "high-school",
+    "division": "KSHSAA 1A",
+    "athletics_url": "https://www.usd107.org",
+    "aliases": [
+      "Rock Hills High School",
+      "Rock Hills",
+      "Rock Hills Grizzlies"
+    ],
+    "providers": [
+      {
+        "provider": "BOUND",
+        "slug": "ks/schools/rockhillshs",
+        "provider_school_id": "h20250204045204557296f4114309146"
+      },
+      {
+        "provider": "MAXPREPS",
+        "slug": "ks/mankato/rock-hills-grizzlies",
+        "provider_school_id": "feaa6067-8a4d-437d-a9ce-52117fb0708f"
+      }
+    ]
+  },
+  {
     "id": "atlanta-dream",
     "name": "Atlanta Dream",
     "short_name": "Dream",

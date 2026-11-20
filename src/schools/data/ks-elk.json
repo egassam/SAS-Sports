@@ -1,0 +1,68 @@
+{
+ "state": "ks",
+ "counties": [
+  "Elk"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "elk-valley-ks",
+   "name": "Elk Valley High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040451578069383f2a5c6ed45",
+    "slug": "elkvalleyhs"
+   },
+   "maxpreps": {
+    "schoolId": "3b9e7572-9f62-4ad8-b797-23a11c3b2d3d",
+    "path": "longton/elk-valley-lions"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Volleyball",
+     "Football",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Elk Valley",
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "west-elk-ks",
+   "name": "West Elk High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045209129a1c6976c554849",
+    "slug": "westelkhs"
+   },
+   "maxpreps": {
+    "schoolId": "af598fee-79d8-4c05-84e1-c6eeb5dc9033",
+    "path": "howard/west-elk-patriots"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "West Elk",
+    "milesplit": 15955,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}
