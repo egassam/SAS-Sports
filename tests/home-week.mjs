@@ -94,16 +94,13 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   env.homeView=false;assert.equal(api.weekSections().others.length,0,'a team\'s own page shows only its own games');env.homeView=true;
   // The card: ESPN's look.
   const card=api.weekCard(mine.find(x=>x.g.id==='a'));
-  assert.match(card,/class="wk-card"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'opens the favorite\'s football');
-  const rows=card.match(/<div class="wk-row">[\s\S]*?<\/span><\/div>/g);
-  assert.equal(rows.length,2,'two team rows, away on top');
-  assert.match(rows[0],/wk-rank">19<\/span>Arizona[\s\S]*wk-odds">-7\.5<[\s\S]*wk-time">\d{1,2}:\d{2} [AP]M</,'away: rank, name, the line, the time');
-  assert.match(rows[1],/wk-name mine">Kansas State[\s\S]*wk-odds">T:51\.5</,'home: the favorite in gold, the total');
-  assert.match(card,/class="wk-tv">[\s\S]*FS1</,'the TV chip');
-  assert.match(card,/aria-label="Arizona at Kansas State, Football, /);
+  assert.match(card,/class="wk-card wk-line"[^>]*data-open-team="kstate"[^>]*data-open-sport="Football"/,'one slim row that opens the favorite\'s football');
+  assert.match(card,/wk-when">\d{1,2}:\d{2} [AP]M</,'the time first');
+  assert.match(card,/wk-match"><span class="wk-team"><small class="wk-rank">19<\/small>Arizona<\/span><i>at<\/i><span class="wk-team mine">Kansas State</,'away at home, rank, the favorite in gold');
+  assert.match(card,/wk-meta">Football · ARI -7\.5 · O\/U 51\.5</,'sport, the line on the favored team, the total');
+  assert.match(card,/class="wk-tv">[\s\S]*FS1</,'the TV');
   const nfl=api.weekCard(mine.find(x=>x.g.id==='b'));
-  assert.match(nfl,/wk-tag">NFL · Football</,'a pro game names its league');
-  assert.match(nfl.match(/<div class="wk-row">[\s\S]*?<\/span><\/div>/g)[1],/Bills[\s\S]*wk-odds">-3</,'the home favorite\'s line on the home row');
+  assert.match(nfl,/wk-meta">NFL · Football · BIL -3 · O\/U 50\.5</,'a pro game names its league; the home favorite\'s line');
   // Coming up drops a game the week ahead shows.
   const coming=[{school_id:'kstate',sport:'Football',e:{},day:mine.find(x=>x.g.id==='a').day},{school_id:'kstate',sport:'Volleyball',e:{},day:mine[0].day}];
   assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.sport),['Volleyball']);
@@ -128,6 +125,7 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
     {school_id:'kstate',school:'Kansas State',sport:'Football',e:{id:'k1',title:'K-State vs Arizona',opponent:'Arizona',event_type:'GAME'},day:aDay},
     {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Basketball',e:{id:'m1',title:'Girls · Manhattan at Hays',opponent:'Hays',team_label:'Girls',event_type:'GAME'},day:local(3),time:'6:00 PM'},
     {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Cross Country',e:{id:'m2',title:'Flint Hills Invitational',event_type:'MEET'},day:local(4)},
+    {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Wrestling',e:{id:'m4',title:'Boys · Manhattan at Junction City',opponent:'Junction City',team_label:'Boys',event_type:'GAME'},day:local(0),time:'11:59 PM'},
     {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Basketball',e:{id:'m3',title:'Boys · Manhattan vs Salina South',opponent:'Salina South',team_label:'Boys',event_type:'GAME'},day:local(40),time:'7:00 PM'},
     {school_id:'not-a-favorite',school:'Other',sport:'Football',e:{id:'o1',title:'Other vs X',opponent:'X'},day:local(3)}
   ];
@@ -135,16 +133,14 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.equal(mine.filter(x=>x.g?.id==='a').length,1,'the official game and ESPN\'s are one card');
   assert.equal(mine.find(x=>x.g?.id==='a').fid,'k1','ESPN\'s card stands for the official game');
   assert.ok(mine.some(x=>x.g?.id==='b'),'a game only ESPN lists still shows');
-  assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2'],'high school game and meet; not beyond next Sunday, not other teams');
+  assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2','m4'],'high school game and meet, today\'s game too (Today folded in); not beyond next Sunday, not other teams');
   const hs=api.weekCard(mine.find(x=>x.f?.e.id==='m1'));
-  const rows=hs.match(/<div class="wk-row">[\s\S]*?<\/span><\/div>/g);
-  assert.match(rows[0],/wk-mono[^>]*>MHS<[\s\S]*wk-name mine">Manhattan<[\s\S]*wk-time">6:00 PM</,'the school away, on top, in gold, with its initials');
-  assert.match(rows[1],/wk-mono[^>]*>HAYS<[\s\S]*wk-name">Hays</);
-  assert.match(hs,/wk-tag">Girls Basketball · High school</);
+  assert.match(hs,/wk-when">6:00 PM<[\s\S]*wk-match"><span class="wk-team mine">Manhattan<\/span><i>at<\/i><span class="wk-team">Hays</,'"Manhattan at Hays" as written, the school in gold');
+  assert.match(hs,/wk-meta">Girls Basketball · High school</);
   assert.match(hs,/data-open-team="manhattan-ks" data-open-sport="Basketball"/);
   const meet=api.weekCard(mine.find(x=>x.f?.e.id==='m2'));
-  assert.equal((meet.match(/class="wk-row"/g)||[]).length,1,'a meet is one row');
-  assert.match(meet,/Flint Hills Invitational[\s\S]*wk-time tba">TBA</);
+  assert.match(meet,/wk-when tba">TBA<[\s\S]*wk-match"><span class="wk-team mine">Flint Hills Invitational<\/span><\/span>/,'a meet: its name, no opponent');
+  assert.match(meet,/wk-meta">Cross Country · High school · Manhattan</);
   assert.ok(!/<img/.test(hs+meet+api.weekCard(mine.find(x=>x.g?.id==='a'))),'no logos');
   const coming=[{school_id:'kstate',sport:'Football',e:{id:'k1'},day:aDay},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m1'},day:local(3)},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m3'},day:local(40)}];
   assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.e.id),['m3'],'Coming up keeps only what is after next Sunday');

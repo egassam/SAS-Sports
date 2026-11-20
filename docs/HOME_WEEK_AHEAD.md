@@ -1,8 +1,8 @@
 # Home: the week ahead
 
-Added November 20, 2026 (`4.320.1-week-ahead`).
+Added November 20, 2026 (`4.320.1-week-ahead`, PR #621); moved up and made into rows the same day (`4.321.0-week-rows`).
 
-**User, November 20, 2026:** "I had a suggestion to make upcoming college and pro games more obvious so you know who's playing a weekend in advance." Asked whose games, they chose favorites first, then everything else: "Do number one but shouldn't it be M-Sunday because of Monday night and Thursday night football and all other sports on different days?" With a screenshot of ESPN's game card: "Can we also make them look like this?" Then "Can't we look elsewhere for upcoming schedules?", and asked about logos (their Oct 15 rule, "Leave the logos out") and other levels: **"No logos and all levels"**.
+**User, November 20, 2026:** "I had a suggestion to make upcoming college and pro games more obvious so you know who's playing a weekend in advance." Asked whose games, they chose favorites first, then everything else: "Do number one but shouldn't it be M-Sunday because of Monday night and Thursday night football and all other sports on different days?" With a screenshot of ESPN's game card: "Can we also make them look like this?" Then "Can't we look elsewhere for upcoming schedules?", and asked about logos (their Oct 15 rule, "Leave the logos out") and other levels: **"No logos and all levels"**. After it went live: "how do we make the upcoming better than it is. Maybe add rows and move it higher?" They chose the top of Home with Today folded in, and compact rows.
 
 ## What Home shows
 
@@ -17,6 +17,11 @@ Added November 20, 2026 (`4.320.1-week-ahead`).
 - **Coming up** leaves out any game the week ahead already shows, so it holds each team's next game after next Sunday.
 - The jump row gains "This week" and "Week everywhere". The Upcoming tab shows both sections; Live and Results do not.
 - A team's own page with no sport chosen shows its own week ahead.
+
+## Position and rows (November 20, `4.321.0-week-rows`)
+
+- The week ahead now comes right after Live now, above the countdown box. Today is its first day: today's games not yet started are listed there, and the Today section keeps only today's finals. The jump row calls it "Upcoming".
+- Each game is one slim row (about 49 px, against about 140 px for the earlier two-line card): the time, then the matchup ("19 Arizona at Kansas State", the favorite in gold), with the sport, the line on the favored team ("ARIZ -7.5"), the total ("O/U 51.5") and ESPN's note on the line below, and the TV on the right. A meet or race reads its name. Two rows sit side by side on wide screens. On a phone the TV moves to the second line, so the matchup gets the full width. Everywhere uses the same rows.
 
 ## Source and cost
 
