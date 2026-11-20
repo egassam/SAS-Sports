@@ -1,0 +1,130 @@
+{
+ "state": "ks",
+ "counties": [
+  "Wilson"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "fredonia-ks",
+   "name": "Fredonia High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045158457d66edfb7d6bb4f",
+    "slug": "fredoniahs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 148,
+    "code": "FRE"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Fredonia",
+    "milesplit": 21874,
+    "maxprepsSchedule": true
+   },
+   "maxpreps": {
+    "schoolId": "28ad2521-775a-4bc6-84c5-47e5154bdb4a",
+    "path": "fredonia/fredonia-yellowjackets"
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "neodesha-ks",
+   "name": "Neodesha High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452012759dd89aa34eec4b",
+    "slug": "neodeshahs"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 169,
+    "code": "ND"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Girls Golf",
+     "Tennis",
+     "Girls Tennis",
+     "Boys Tennis",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Neodesha",
+    "tennis": "Neodesha HS",
+    "milesplit": 21902
+   },
+   "maxpreps": {
+    "schoolId": "76226870-75ed-4e02-b643-31ad8ccd2486",
+    "path": "neodesha/neodesha-blue-streaks"
+   }
+  },
+  {
+   "id": "fredonia-ms-ks",
+   "name": "Fredonia Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045158457d66edfb7d6bb4f",
+    "slug": "fredoniahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Fredonia",
+    "milesplit": 39183
+   }
+  },
+  {
+   "id": "neodesha-ms-ks",
+   "name": "Neodesha Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h202502040452012759dd89aa34eec4b",
+    "slug": "neodeshahs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Basketball",
+     "Cross Country",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling"
+    ],
+    "meetTeam": "Neodesha"
+   }
+  }
+ ]
+}

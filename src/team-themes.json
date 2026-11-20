@@ -5702,5 +5702,269 @@
     "panelDark": "#2d050b",
     "line": "#ea5268",
     "onAccent": "#ffffff"
+  },
+  "basehor-linwood-ks": {
+    "primary": "#2B5235",
+    "secondary": "#FAB326",
+    "panel": "#132518",
+    "panelDark": "#09100b",
+    "line": "#607d68",
+    "onAccent": "#ffffff"
+  },
+  "bonner-springs-ks": {
+    "primary": "#EC611F",
+    "secondary": "#9E9EA1",
+    "panel": "#6a2c0e",
+    "panelDark": "#2f1306",
+    "line": "#f18957",
+    "onAccent": "#ffffff"
+  },
+  "lansing-ks": {
+    "primary": "#A51715",
+    "secondary": "#000000",
+    "panel": "#4a0a09",
+    "panelDark": "#210504",
+    "line": "#bc5150",
+    "onAccent": "#ffffff"
+  },
+  "leavenworth-ks": {
+    "primary": "#0369BE",
+    "secondary": "#000000",
+    "panel": "#012f56",
+    "panelDark": "#011526",
+    "line": "#428fce",
+    "onAccent": "#ffffff"
+  },
+  "pleasant-ridge-ks": {
+    "primary": "#FFCC00",
+    "secondary": "#000033",
+    "panel": "#735c00",
+    "panelDark": "#332900",
+    "line": "#ffd940",
+    "onAccent": "#111111"
+  },
+  "tonganoxie-ks": {
+    "primary": "#D71921",
+    "secondary": "#D7A943",
+    "panel": "#610b0f",
+    "panelDark": "#2b0507",
+    "line": "#e15359",
+    "onAccent": "#ffffff"
+  },
+  "basehor-linwood-ms-ks": {
+    "primary": "#1D4830",
+    "secondary": "#FBB726",
+    "panel": "#0d2016",
+    "panelDark": "#060e0a",
+    "line": "#567664",
+    "onAccent": "#ffffff"
+  },
+  "bonner-springs-robert-e-clark-ms-ks": {
+    "primary": "#E44F0B",
+    "secondary": "#000000",
+    "panel": "#672405",
+    "panelDark": "#2e1002",
+    "line": "#eb7b48",
+    "onAccent": "#ffffff"
+  },
+  "fort-leavenworth-patton-ms-ks": {
+    "primary": "#1F3161",
+    "secondary": "#D5782B",
+    "panel": "#0e162c",
+    "panelDark": "#060a13",
+    "line": "#576589",
+    "onAccent": "#ffffff"
+  },
+  "leavenworth-warren-ms-ks": {
+    "primary": "#025392",
+    "secondary": "#979CA0",
+    "panel": "#012542",
+    "panelDark": "#00111d",
+    "line": "#417ead",
+    "onAccent": "#ffffff"
+  },
+  "leavenworth-xavier-catholic-ms-ks": {
+    "primary": "#000000",
+    "secondary": "#FFFFFF",
+    "panel": "#000000",
+    "panelDark": "#000000",
+    "line": "#404040",
+    "onAccent": "#ffffff"
+  },
+  "tonganoxie-ms-ks": {
+    "primary": "#DA1F28",
+    "secondary": "#000000",
+    "panel": "#620e12",
+    "panelDark": "#2c0608",
+    "line": "#e3575e",
+    "onAccent": "#ffffff"
+  },
+  "fort-scott-ks": {
+    "primary": "#EF3A43",
+    "secondary": "#000000",
+    "panel": "#6c1a1e",
+    "panelDark": "#300c0d",
+    "line": "#f36b72",
+    "onAccent": "#ffffff"
+  },
+  "uniontown-ks": {
+    "primary": "#FF9633",
+    "secondary": "#000000",
+    "panel": "#734417",
+    "panelDark": "#331e0a",
+    "line": "#ffb066",
+    "onAccent": "#ffffff"
+  },
+  "uniontown-ms-ks": {
+    "primary": "#FF9633",
+    "secondary": "#000000",
+    "panel": "#734417",
+    "panelDark": "#331e0a",
+    "line": "#ffb066",
+    "onAccent": "#ffffff"
+  },
+  "chanute-ks": {
+    "primary": "#5896C4",
+    "secondary": "#000000",
+    "panel": "#284458",
+    "panelDark": "#121e27",
+    "line": "#82b0d3",
+    "onAccent": "#ffffff"
+  },
+  "erie-ks": {
+    "primary": "#EC1938",
+    "secondary": "#000000",
+    "panel": "#6a0b19",
+    "panelDark": "#2f050b",
+    "line": "#f1536a",
+    "onAccent": "#ffffff"
+  },
+  "st-paul-ks": {
+    "primary": "#7E3D34",
+    "secondary": "#000000",
+    "panel": "#391b17",
+    "panelDark": "#190c0a",
+    "line": "#9e6e67",
+    "onAccent": "#ffffff"
+  },
+  "fredonia-ks": {
+    "primary": "#DE9F3C",
+    "secondary": "#000000",
+    "panel": "#64481b",
+    "panelDark": "#2c200c",
+    "line": "#e6b76d",
+    "onAccent": "#ffffff"
+  },
+  "neodesha-ks": {
+    "primary": "#0800AD",
+    "secondary": "#000000",
+    "panel": "#04004e",
+    "panelDark": "#020023",
+    "line": "#4640c2",
+    "onAccent": "#ffffff"
+  },
+  "fredonia-ms-ks": {
+    "primary": "#DE9F3C",
+    "secondary": "#000000",
+    "panel": "#64481b",
+    "panelDark": "#2c200c",
+    "line": "#e6b76d",
+    "onAccent": "#ffffff"
+  },
+  "neodesha-ms-ks": {
+    "primary": "#0800AD",
+    "secondary": "#000000",
+    "panel": "#04004e",
+    "panelDark": "#020023",
+    "line": "#4640c2",
+    "onAccent": "#ffffff"
+  },
+  "elk-valley-ks": {
+    "primary": "#FE5C07",
+    "secondary": "#000000",
+    "panel": "#722903",
+    "panelDark": "#331201",
+    "line": "#fe8545",
+    "onAccent": "#ffffff"
+  },
+  "west-elk-ks": {
+    "primary": "#64699C",
+    "secondary": "#030871",
+    "panel": "#2d2f46",
+    "panelDark": "#14151f",
+    "line": "#8b8fb5",
+    "onAccent": "#ffffff"
+  },
+  "russell-ks": {
+    "primary": "#100B9E",
+    "secondary": "#D20000",
+    "panel": "#070547",
+    "panelDark": "#030220",
+    "line": "#4c48b6",
+    "onAccent": "#ffffff"
+  },
+  "russell-ms-ks": {
+    "primary": "#100B9E",
+    "secondary": "#D20000",
+    "panel": "#070547",
+    "panelDark": "#030220",
+    "line": "#4c48b6",
+    "onAccent": "#ffffff"
+  },
+  "lakeside-ks": {
+    "primary": "#525252",
+    "secondary": "#B3B3B3",
+    "panel": "#252525",
+    "panelDark": "#101010",
+    "line": "#7d7d7d",
+    "onAccent": "#ffffff"
+  },
+  "natoma-ks": {
+    "primary": "#F59518",
+    "secondary": "#000000",
+    "panel": "#6e430b",
+    "panelDark": "#311e05",
+    "line": "#f8b052",
+    "onAccent": "#ffffff"
+  },
+  "osborne-ks": {
+    "primary": "#F3C301",
+    "secondary": "#892732",
+    "panel": "#6d5800",
+    "panelDark": "#312700",
+    "line": "#f6d241",
+    "onAccent": "#111111"
+  },
+  "smith-center-ks": {
+    "primary": "#DE0019",
+    "secondary": "#0A233E",
+    "panel": "#64000b",
+    "panelDark": "#2c0005",
+    "line": "#e64053",
+    "onAccent": "#ffffff"
+  },
+  "thunder-ridge-ks": {
+    "primary": "#003380",
+    "secondary": "#A4A39C",
+    "panel": "#00173a",
+    "panelDark": "#000a1a",
+    "line": "#4066a0",
+    "onAccent": "#ffffff"
+  },
+  "smith-center-ms-ks": {
+    "primary": "#DE0019",
+    "secondary": "#0A233E",
+    "panel": "#64000b",
+    "panelDark": "#2c0005",
+    "line": "#e64053",
+    "onAccent": "#ffffff"
+  },
+  "rock-hills-ks": {
+    "primary": "#8D0915",
+    "secondary": "#000000",
+    "panel": "#3f0409",
+    "panelDark": "#1c0204",
+    "line": "#aa4750",
+    "onAccent": "#ffffff"
   }
 }

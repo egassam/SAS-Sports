@@ -1,0 +1,38 @@
+{
+ "state": "ks",
+ "counties": [
+  "Jewell"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "rock-hills-ks",
+   "name": "Rock Hills High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045204557296f4114309146",
+    "slug": "rockhillshs"
+   },
+   "maxpreps": {
+    "schoolId": "feaa6067-8a4d-437d-a9ce-52117fb0708f",
+    "path": "mankato/rock-hills-grizzlies"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country",
+     "Track & Field"
+    ],
+    "meetTeam": "Rock Hills",
+    "milesplit": 21946,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  }
+ ]
+}

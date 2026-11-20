@@ -1,0 +1,91 @@
+{
+ "state": "ks",
+ "counties": [
+  "Smith"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "smith-center-ks",
+   "name": "Smith Center High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045206323843293a923194b",
+    "slug": "smithcenterhs"
+   },
+   "maxpreps": {
+    "schoolId": "0b260b0a-8ba1-4460-9d5b-d61f40557085",
+    "path": "smith-center/smith-center-redmen"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 242,
+    "code": "SC"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Smith Center",
+    "milesplit": 21997,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "thunder-ridge-ks",
+   "name": "Thunder Ridge High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h202502040452079844add905ac5cc45",
+    "slug": "thunderridgehs"
+   },
+   "maxpreps": {
+    "schoolId": "6c373b30-e37e-4571-b95b-9abf672bcb04",
+    "path": "kensington/thunder-ridge-longhorns"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Softball",
+     "Cross Country"
+    ],
+    "meetTeam": "Thunder Ridge",
+    "milesplit": 21966,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "smith-center-ms-ks",
+   "name": "Smith Center Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045206323843293a923194b",
+    "slug": "smithcenterhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Basketball",
+     "Track & Field"
+    ],
+    "meetTeam": "Smith Center",
+    "milesplit": 32816
+   }
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "state": "ks",
+ "counties": [
+  "Russell"
+ ],
+ "module_doc": "docs/KS_COUNTIES_BATCH7_MODULE.md",
+ "note": "Schools whose schedule is on Bound, as data (src/high-school-builders.mjs schoolFromConfig), from scripts/onboard-hs.mjs and scripts/add-county.mjs. Schools left out are listed in the module doc.",
+ "schools": [
+  {
+   "id": "russell-ks",
+   "name": "Russell High School",
+   "level": "high-school",
+   "bound": {
+    "school": "h20250204045205147aac37514cb5547",
+    "slug": "russellhs"
+   },
+   "maxpreps": {
+    "schoolId": "37551b84-641b-4171-a7c5-d8870e7281cb",
+    "path": "russell/russell-broncos"
+   },
+   "meetPro": "letsgorun",
+   "prepGolf": {
+    "school": 180,
+    "code": "RS"
+   },
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Basketball",
+     "Baseball",
+     "Softball",
+     "Cross Country",
+     "Golf",
+     "Boys Golf",
+     "Wrestling",
+     "Girls Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Russell",
+    "milesplit": 21837,
+    "maxprepsSchedule": true
+   },
+   "note": "Enters few of its own games on Bound: its games also read MaxPreps' schedule (sports.maxprepsSchedule)."
+  },
+  {
+   "id": "russell-ms-ks",
+   "name": "Russell Junior High",
+   "level": "middle-school",
+   "bound": {
+    "school": "h20250204045205147aac37514cb5547",
+    "slug": "russellhs"
+   },
+   "meetPro": "letsgorun",
+   "sports": {
+    "has": [
+     "Football",
+     "Volleyball",
+     "Wrestling",
+     "Boys Wrestling",
+     "Track & Field"
+    ],
+    "meetTeam": "Russell",
+    "milesplit": 32815
+   }
+  }
+ ]
+}
