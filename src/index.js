@@ -350,7 +350,7 @@ import {southernSchool,createSouthernHandlers} from './schools/southern.mjs';
 import {handleLiveScoring} from './live-scoring/api.mjs';
 import {applyCollegeXcTimerMeets} from './college-xc-timers.mjs';
 
-const VERSION='4.319.0-ks-counties-7';
+const VERSION='4.320.1-week-ahead';
 
 const FEED_FRESH_MS=25*1000;
 // A feed with a game in progress is rebuilt sooner: the page re-fetches it
@@ -6771,8 +6771,9 @@ function liveNowBoards(now=new Date()){
 }
 // Push alerts read finished games too, and every catalog side of a game
 // (both teams can be someone's favorite): {states:['in','post'],allSides:true}.
-function liveNowGames(boards,now=new Date(),{states=['in'],allSides=false}={}){
-  const games=[],seen=new Set();
+// A board's team as a catalog school: a college that sponsors the sport, or
+// the league's own pro team (by ESPN id or abbreviation).
+function boardTeamMatcher(){
   const college=schools.filter(school=>(school.level||'college')==='college');
   const index=new Map();
   for(const school of college)for(const name of [school.name,school.short_name,...(school.aliases||[])]){const key=normalizedTeamName(name);if(key.length<2)continue;if(!index.has(key))index.set(key,[]);index.get(key).push(school);}
@@ -6782,13 +6783,18 @@ function liveNowGames(boards,now=new Date(),{states=['in'],allSides=false}={}){
     return[...found].find(school=>(sponsoredSports[school.id]||school.sponsored_sports||[]).includes(sport)&&scoreboardTeamMatchesSchool(team,school))||null;
   };
   const proMatch=(team,path)=>schools.find(school=>{if(school.level!=='pro')return false;const config=proTeam(school.id);if(config?.kind!=='espn-team'||config.espn.path!==path)return false;return config.espn.id!=null?String(config.espn.id)===String(team?.id):String(config.espn.team||'').toLowerCase()===String(team?.abbreviation||'').toLowerCase();})||null;
+  return(team,board)=>board.level==='pro'?proMatch(team,board.path):collegeMatch(team,board.sport);
+}
+function liveNowGames(boards,now=new Date(),{states=['in'],allSides=false}={}){
+  const games=[],seen=new Set();
+  const match=boardTeamMatcher();
   for(const {board,payload,url} of boards){
     for(const item of payload?.events||[]){
       const competition=item?.competitions?.[0],state=String(competition?.status?.type?.state||item?.status?.type?.state||'').toLowerCase();
       if(!states.includes(state)||seen.has(`${board.path}|${item.id}`))continue;
       const sides=[...(competition?.competitors||[])].sort((a,b)=>(a.homeAway==='home'?0:1)-(b.homeAway==='home'?0:1));
       const matched=[];
-      for(const side of sides){const found=board.level==='pro'?proMatch(side.team,board.path):collegeMatch(side.team,board.sport);if(found&&!matched.includes(found))matched.push(found);if(found&&!allSides)break;}
+      for(const side of sides){const found=match(side.team,board);if(found&&!matched.includes(found))matched.push(found);if(found&&!allSides)break;}
       if(!matched.length)continue;
       seen.add(`${board.path}|${item.id}`);
       for(const school of matched){
@@ -7107,6 +7113,53 @@ async function liveNow(now=new Date(),env=null){
   const highSchool=await hsLiveGames(now,env).catch(()=>[]);
   const college=await rankLiveNowGames(liveNowGames(reads.filter(read=>read.ok),now));
   return{fetched_at:now.toISOString(),games:[...college,...highSchool],featured:featuredMeets(now),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
+}
+// The week ahead (user, November 20, 2026: "make upcoming college and pro
+// games more obvious so you know who's playing a weekend in advance", then
+// Monday to Sunday "because of Monday night and Thursday night football and
+// all other sports on different days", in ESPN's matchup look: both teams,
+// the line and total, the time and the TV; no logos, user, October 15: "Leave
+// the logos out", kept November 20). One day of
+// every in-season college and pro board per request (ESPN's boards take no
+// date range: HTTP 400), so a week is a handful of small cached requests and
+// no single request reads more than one day. Games not yet started with at
+// least one catalog team, compact. "featured": a pro game, a ranked team or
+// a national TV game (Home's Everywhere shows these first).
+const WEEK_TV=/^(?:ABC|CBS|NBC|FOX|ESPN|ESPN2|ESPNU|FS1|FS2|BTN|SECN|ACCN|TNT|TBS|truTV|CBSSN|NFL Net|NBA TV|NHL Net|Peacock|Prime Video|Netflix|USA Net|The CW|CW|SEC Network|ACC Network|Big Ten Network|CBS Sports Network|NFL Network|NBA TV|ESPNEWS|Fox Sports 1|FOX Sports 1)$/i;
+const WEEK_MAX_DAYS=14;
+function weekDayKey(day){return/^\d{4}-\d{2}-\d{2}$/.test(day||'')&&Number.isFinite(Date.parse(`${day}T12:00:00Z`))?day:null}
+function weekLine(details,abbr){const text=clean(details||'');if(!text)return null;const rest=abbr&&text.toUpperCase().startsWith(String(abbr).toUpperCase()+' ')?text.slice(String(abbr).length+1):text;return rest.length<=12?rest:null}
+function weekGamesFromBoards(reads){
+  const match=boardTeamMatcher(),games=[],seen=new Set();
+  for(const {board,payload} of reads){
+    const league=board.level==='pro'?clean(payload?.leagues?.[0]?.abbreviation||''):null;
+    for(const item of payload?.events||[]){
+      const competition=item?.competitions?.[0],state=String(competition?.status?.type?.state||item?.status?.type?.state||'').toLowerCase();
+      if(state!=='pre'||seen.has(`${board.path}|${item.id}`))continue;
+      const start=Date.parse(item.date||competition?.date||'');if(!Number.isFinite(start))continue;
+      const sides=competition?.competitors||[];const away=sides.find(s=>s.homeAway==='away'),home=sides.find(s=>s.homeAway==='home');if(!away||!home)continue;
+      const side=s=>{const found=match(s.team,board),rank=Number(s.curatedRank?.current),record=(s.records||[]).find(r=>/^(?:overall|total|ytd)$/i.test(r.type||r.name||''))||s.records?.[0];
+        return{id:found?.id||null,name:clean(board.level==='pro'?(s.team?.shortDisplayName||s.team?.displayName):(s.team?.location||s.team?.shortDisplayName||s.team?.displayName))||(found?(found.short_name||found.name):'TBA'),abbr:s.team?.abbreviation||null,...(rank>=1&&rank<=25?{rank}:{}),...(record?.summary?{record:record.summary}:{})}};
+      const a=side(away),h=side(home);if(!a.id&&!h.id)continue;
+      seen.add(`${board.path}|${item.id}`);
+      const odds=competition?.odds?.[0],favHome=odds?.homeTeamOdds?.favorite===true,favAway=odds?.awayTeamOdds?.favorite===true;
+      const line=odds?weekLine(odds.details,favHome?h.abbr:favAway?a.abbr:null):null,total=Number(odds?.overUnder);
+      const tv=[...new Set((competition?.broadcasts||[]).flatMap(b=>b.names||[]).concat((competition?.geoBroadcasts||[]).map(b=>b.media?.shortName)).map(clean).filter(Boolean))].slice(0,3);
+      const note=clean((competition?.notes||[]).map(n=>n.headline).filter(Boolean)[0]||'');
+      games.push({id:`espn-${board.path.replace(/\//g,'-')}-${item.id}`,espn_event_id:String(item.id),sport:board.sport,...(board.team_label?{team_label:board.team_label}:{}),...(league?{league}:{}),level:board.level,start_utc:new Date(start).toISOString(),...(competition?.timeValid===false?{time_tba:true}:{}),
+        away:a,home:h,...(competition?.neutralSite?{neutral:true}:{}),...(note?{note}:{}),...(tv.length?{tv}:{}),
+        ...(line||Number.isFinite(total)?{odds:{...(line?{line,favorite:favHome?'home':favAway?'away':null}:{}),...(Number.isFinite(total)&&total>0?{total}:{})}}:{}),
+        featured:board.level==='pro'||Boolean(a.rank||h.rank)||tv.some(name=>WEEK_TV.test(name))});
+    }
+  }
+  return games.sort((x,y)=>Date.parse(x.start_utc)-Date.parse(y.start_utc)||String(x.sport).localeCompare(String(y.sport)));
+}
+async function weekDay(day,now=new Date()){
+  const at=new Date(`${day}T17:00:00Z`),boards=liveNowBoards(at),today=wallClock(now,'America/New_York').slice(0,10);
+  // Today's board changes as games start; later days hardly change.
+  const ttl=day<=today?SOURCE_TTL.listing:3*3600,dates=day.replaceAll('-','');
+  const reads=await Promise.all(boards.map(async board=>{const url=`${ESPN_SITE}${board.path}/scoreboard?${scoreboardQuery(board)}&dates=${dates}`;const payload=await readJson(url,ttl);return{board,payload,ok:Boolean(payload)}}));
+  return{day,fetched_at:now.toISOString(),games:weekGamesFromBoards(reads.filter(read=>read.ok)),boards:reads.map(read=>({path:read.board.path,sport:read.board.sport,ok:read.ok,events:read.payload?.events?.length??null}))};
 }
 function reconcileScoreboardEvents(scheduleEvents,scoreEvents,{keepUnjoined=false}={}){
   const events=scheduleEvents.slice(),joined=new Set();
@@ -7754,6 +7807,19 @@ async function routeRequest(request,env,ctx){
       const cached=await cache.match(key);if(cached)return cached;
       const response=json(await liveNow(new Date(),env));
       response.headers.set('cache-control','public, max-age=60');
+      ctx.waitUntil(cache.put(key,response.clone()));
+      return response;
+    }
+    // The week ahead, one day at a time (?day=YYYY-MM-DD, Eastern, from
+    // yesterday through WEEK_MAX_DAYS ahead), shared at each location: 10
+    // minutes for today, an hour for later days.
+    if(url.pathname==='/live/week'){
+      const day=weekDayKey(url.searchParams.get('day')),today=wallClock(new Date(),'America/New_York').slice(0,10),offset=day?Math.round((Date.parse(`${day}T12:00:00Z`)-Date.parse(`${today}T12:00:00Z`))/864e5):NaN;
+      if(!day||offset<-1||offset>WEEK_MAX_DAYS)return json({detail:`day must be a date from yesterday through ${WEEK_MAX_DAYS} days ahead (YYYY-MM-DD)`},400);
+      const cache=caches.default,key=new Request(new URL(`/__sas_cache/live-week?v=${VERSION}&day=${day}&today=${today}`,url.origin).toString());
+      const cached=await cache.match(key);if(cached)return cached;
+      const response=json(await weekDay(day));
+      response.headers.set('cache-control',`public, max-age=${offset<=0?600:3600}`);
       ctx.waitUntil(cache.put(key,response.clone()));
       return response;
     }
