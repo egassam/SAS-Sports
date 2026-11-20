@@ -5767,3 +5767,15 @@ Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas count
 
 **Open.** Alerts cover college and pro favorites only, so the bell on a high school day opens the same Alerts panel, which says so. The week ahead's Everywhere covers ESPN's college and pro boards only.
 
+## November 20, 2026 — The week ahead at the top, in rows (PR #623)
+
+**Conversation.** Asked for "Suggestion for making this better?", the agent offered additions (weather, last meeting, calendar, a week strip, a same-time warning, top matchups, venue). The user clarified: "I meant how do we make the upcoming better than it is. Maybe add rows and move it higher?" They chose the top of Home with Today folded in (over keeping Today separate, or just above Today) and compact rows (over slimmer cards).
+
+**Built.** The week ahead follows Live now, above the countdown box. Today's games not yet started (feeds and ESPN) lead it; the Today section keeps only today's finals; the jump row calls it "Upcoming". Each game is one row (about 49 to 54 px, against about 140 px for the card): the time, the matchup with ranks and the favorite in gold, a line with the sport, the line on the favored team, O/U and ESPN's note, and the TV on the right (on a phone, on the second line). Two rows side by side from 1000 px; Everywhere uses the same rows. Still no logos.
+
+**Tests.** `tests/home-week.mjs` (rows, a high school game, a meet, today's game folded in); `tests/regression.mjs` (the new section order). `npm test` locally and CI `guardrails` green on `22412dc`.
+
+**Gate.** Preview: `check-reference-page` PASS; `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 PASS (K-State Football, 36 refreshes); XC 18/20 and 26/21; the page in Chromium (week ahead first, 18 rows, no sideways scroll, no errors).
+
+**Production `4.321.0-week-rows`** (merge `aae3e7c`): `verify:prod` 99 PASS for the four schools, XC 18/20 and 26/21, `check-reference-page` PASS, the page in Chromium as on the preview.
+

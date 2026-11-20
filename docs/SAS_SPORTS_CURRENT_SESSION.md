@@ -1,6 +1,8 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 1:45 PM). **Home: the week ahead** (user: "make upcoming college and pro games more obvious so you know who's playing a weekend in advance", Monday to Sunday, ESPN's matchup look, then "No logos and all levels"; PR #621, merge `bc96e6a`, `4.320.1-week-ahead`; `docs/HOME_WEEK_AHEAD.md`).
+Last updated: November 20, 2026 (Central, about 5:15 PM). **The week ahead moved to the top, in rows** (user: "Maybe add rows and move it higher?"; chose the top with Today folded in, and compact rows; PR #623, merge `aae3e7c`, `4.321.0-week-rows`). It follows Live now; today's games not yet started lead it and Today keeps today's finals; one slim row per game (about 3x as many per screen). Gate: CI green on `22412dc`; preview `verify:preview` 69 + 6 PASS, XC 18/20 and 26/21, `check-reference-page` PASS; production `verify:prod` 99 PASS, XC 18/20 and 26/21, `check-reference-page` PASS, page checked in Chromium.
+
+Earlier today: **Home: the week ahead** (user: "make upcoming college and pro games more obvious so you know who's playing a weekend in advance", Monday to Sunday, ESPN's matchup look, then "No logos and all levels"; PR #621, merge `bc96e6a`, `4.320.1-week-ahead`; `docs/HOME_WEEK_AHEAD.md`).
 - **My Teams:** every game, meet and race a favorite has after today through next Sunday, every level, from the official schedules; ESPN's same game adds line, total, rank, record and TV. Badges stand where logos would be (the Oct 15 no-logos test unchanged). Coming up keeps only games after next Sunday; `HOME_AHEAD_DAYS` 7 → 14.
 - **Everywhere:** ESPN's college and pro boards a day at a time (`/live/week?day=`, one Eastern day per request: ESPN refuses date ranges), featured first.
 - **Gate:** `npm test` and CI `guardrails` green on `6aaeefe`; preview `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes), XC 18/20 and 26/21, `check-reference-page` PASS. No feed changed (page and a new endpoint only), so no `diff:feeds`.
@@ -36,7 +38,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.320.1-week-ahead`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.321.0-week-rows`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -357,3 +359,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 19 — MLB season named in ESPN schedule reads (PR #616, `4.317.3-mlb-season`); Miami, Linn, Allen, Woodson, Doniphan, Barton, Mitchell and Lincoln counties, 35 schools, and C Team read as junior varsity (PR #617, `4.318.1-ks-counties-6`); both verified in production.
 - Nov 20 — Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell counties, 33 schools (PR #619, `4.319.0-ks-counties-7`, verified in production).
 - Nov 20 — Home: the week ahead, every level, ESPN's matchup look without logos (PR #621, `4.320.1-week-ahead`, verified in production).
+- Nov 20 — The week ahead at the top with today folded in, one slim row per game (PR #623, `4.321.0-week-rows`, verified in production).
