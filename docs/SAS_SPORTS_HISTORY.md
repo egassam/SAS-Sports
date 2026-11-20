@@ -5714,3 +5714,29 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 - Built: manifest, icons (`scripts/make-pwa-icons.cjs`), `public/sw.js` (pages network first with an offline page; icons from the device; `/api`, `/live`, feeds and scores never cached), "Install app" button (Android/desktop prompt; iPhone Share → Add to Home Screen hint). Detail in `docs/PWA.md`.
 - Found: Cloudflare redirects `/offline.html` to `/offline`, and a redirected answer cannot stand in for a page: the worker uses `/offline` (test guards it).
 - Gate: `test:release` passed locally (408 commands) and CI guardrails and certification-matrix green on `2e69e7b`; preview checked in Chromium (installable, offline page, K-State page loads under the service worker) and `verify:preview` K-State XC/Football 3 refreshes all PASS.
+
+## November 20, 2026 — Seventh Kansas county batch (PR #619)
+
+**Conversation.** The user said "Start the next counties". Chosen: Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell. Reno and Butler were left for the next batch because they are larger.
+
+**Survey.** `onboard-hs` for the nine counties took about 50 minutes; no MaxPreps 403s this time.
+- **Fredonia and Neodesha:** the guesses missed (`fredonia-yellowjacket`, `neodesha-bluestreaks`). Found by hand 30 s apart: `fredonia/fredonia-yellowjackets` (`28ad2521-…`) and `neodesha/neodesha-blue-streaks` (`76226870-…`).
+- **Read MaxPreps' schedule** (sports MaxPreps has and Bound lacks): Fredonia Football; Elk Valley Football, Volleyball and Basketball; Natoma the same (no Bound events at all); Osborne Football and Volleyball.
+- **Skipped:**
+  - Middle schools sharing their high school's Bound id with no events: St. Paul, Lakeside, Natoma, Osborne and Rock Hills.
+  - Not on Bound: Altoona-Midway HS and MS, Lansing MS, Pleasant Ridge MS, Fort Scott MS, Chanute's middle schools, West Elk JH, Elk Valley MS and Ruppenthal MS.
+- **Names tidied:** Xavier Catholic School, Patton Junior High, Robert E. Clark Middle School; Thunder Ridge's town "KENSINGTON" is now Kensington.
+
+**Tests.**
+- `ks-counties-module` (BATCH7, the sparse list) and `catalog-module`.
+- `hs-live-now`: Basehor-Linwood joins the Nov 6 list; Sylvan-Lucas at Thunder Ridge is one game, under Thunder Ridge; 18 games.
+- `state-brackets`: 124 football schools. Lansing and Bonner Springs are in 4A; Lansing was checked in the fixture (`bracket-6445`, "Lansing HS").
+- `college-alumni`: K-State WR Nash Morrison (Basehor, Kan.; last school Basehor-Linwood).
+- `npm test` passed locally.
+
+**Gate.**
+- `verify:preview` (3 refreshes): 321 PASS (Leavenworth), 258 (Bourbon, Neosho, Wilson, Elk), 153 (Russell, Osborne, Smith, Jewell), 69 (Manhattan, Anthony, Eisenhower).
+- `check-reference-page` PASS; `check:reference-rules` for the nine counties: 33 schools, 241 feeds, 3,048 cards, 0 FAIL, 14 NOTE.
+- No shared code changed, so no `diff:feeds`. CI green on `adce0d2`.
+
+**Production `4.319.0-ks-counties-7`.** `verify:prod` for Manhattan, Lansing, Basehor-Linwood, Xavier Catholic, Fort Scott, Fredonia, Natoma, Elk Valley, Smith Center JH and Rock Hills: 233 PASS. K-State XC read 0/0 on the first read; the immediate rerun gave 18/20 with KU 26/21 and all K-State XC checks passing (the transient `verify-release.mjs` describes). `check-reference-page` PASS.
