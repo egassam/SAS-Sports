@@ -5740,3 +5740,30 @@ Earlier (November 8): **Push alerts live and confirmed on the user's phone** (te
 - No shared code changed, so no `diff:feeds`. CI green on `adce0d2`.
 
 **Production `4.319.0-ks-counties-7`.** `verify:prod` for Manhattan, Lansing, Basehor-Linwood, Xavier Catholic, Fort Scott, Fredonia, Natoma, Elk Valley, Smith Center JH and Rock Hills: 233 PASS. K-State XC read 0/0 on the first read; the immediate rerun gave 18/20 with KU 26/21 and all K-State XC checks passing (the transient `verify-release.mjs` describes). `check-reference-page` PASS.
+
+## Archived from the current-session file (November 20, 2026, week ahead)
+
+Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas county batch live** (user: "Start the next counties"; PR #619, merge `e0f374e`, `4.319.0-ks-counties-7`).
+- **Counties:** Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell; 33 schools (22 high, 11 middle; `docs/KS_COUNTIES_BATCH7_MODULE.md`).
+- **Fixed by hand:** Fredonia's and Neodesha's MaxPreps pages; Fredonia, Elk Valley, Natoma and Osborne football (and volleyball and basketball) read from MaxPreps; three middle school names tidied.
+- **No shared code changed** (no `diff:feeds` needed). Tests: Basehor-Linwood live on Nov 6; Sylvan-Lucas at Thunder Ridge once; brackets 124 (Lansing and Bonner Springs play 4A football); In College adds K-State WR Nash Morrison (Basehor-Linwood).
+- **Preview gate (3 refreshes):** `verify:preview` 321 + 258 + 153 PASS for the new schools and 69 for the Manhattan reference schools; `check-reference-page` PASS; `check:reference-rules` 0 FAIL on 3,048 cards; `npm test` passed locally; CI green.
+- **Production:** `verify:prod` 233 PASS for Manhattan and 9 new schools, KU XC 26/21. K-State XC read 0/0 once (the known first-read transient) and 18/20 on the immediate rerun; `check-reference-page` PASS.
+
+## November 20, 2026 — Home: the week ahead (PR #621)
+
+**Conversation.** The user: "I had a suggestion to make upcoming college and pro games more obvious so you know who's playing a weekend in advance." Asked whose games (favorites first, then more; favorites only; everything): "Do number one but shouldn't it be M-Sunday because of Monday night and Thursday night football and all other sports on different days?" Then a screenshot of ESPN's game card: "Can we also make them look like this?" (logos, spread on the favorite, total, time, TV chip, "Get Notifications"). Then: "Can't we look elsewhere for upcoming schedules?" The agent explained that the favorites' official schedules can lead (no extra reads, every level), with ESPN kept for Everywhere. The first build showed ESPN logos, which broke the Oct 15 rule ("Leave the logos out", `tests/pro-sports-module.mjs`); the agent asked rather than loosen the test. User: **"No logos and all levels."**
+
+**Built.**
+- `/live/week?day=YYYY-MM-DD`: one Eastern day of every in-season college and pro board (`liveNowBoards`, 17 in November). It returns games not yet started with a catalog team, with compact sides (name, abbreviation, rank, record), line, total, TV, note and a featured flag (pro, ranked or national TV). ESPN answers a date range with HTTP 400 ("Failed to get events endpoint"), so it reads one day per request (about 17 reads, each about 3 subrequests). Board reads are kept 10 min for today and 3 h later; responses are shared at the edge for 10 min or 1 h. `boardTeamMatcher` was taken out of `liveNowGames` unchanged.
+- Home, the week ahead · My Teams (after Today): favorites' official schedules from tomorrow through next Sunday, "This week" and "Next week", a day heading with an alerts bell (opens Alerts). ESPN's matching game card stands in when it exists (same team, sport, label, day ±1). Cards have badges instead of logos; high school and middle school cards say their level; a meet is one row. Two favorites meeting show once. `HOME_AHEAD_DAYS` 7 → 14 so every sport playing in the window is loaded. Coming up keeps only games after next Sunday.
+- Home, the week ahead · Everywhere (after Live Everywhere): day buttons, sport marquees, featured first, 12 per sport, then "Show all".
+
+**Tests.** `tests/home-week.mjs` (new): ESPN fixtures for college football Nov 21 (trimmed to 7 games) and NFL Nov 26; the page's own code for the sections, the cards, a high school game, a meet, the ESPN match and Coming up. `tests/regression.mjs`: section order. `npm test` passed locally. CI `guardrails` failed on `0cd95ef` (the logo test, by design until the user decided) and passed on `6aaeefe`.
+
+**Gate.** Preview: `verify:preview` manhattan-ks, anthony-ms-ks and eisenhower-ms-ks (all sports, 3 refreshes) 69 PASS; kstate Football (36 refreshes) 6 PASS; XC 18/20 and 26/21; `check-reference-page` PASS; the page checked in Chromium at 390 px and 1280 px (no sideways scroll, no images).
+
+**Production `4.320.1-week-ahead`** (merge `bc96e6a`). `verify:prod` for Manhattan, Anthony, Eisenhower and K-State (all sports): 99 PASS, XC 18/20 and 26/21. `check-reference-page` PASS. `/live/week` for Nov 21 and Nov 26: 17/17 boards, 261 and 33 games, no logos. The Home page with Riley County MS, Blue Valley-Randolph, Christ Prep and K-State as favorites showed the week ahead in Chromium.
+
+**Open.** Alerts cover college and pro favorites only, so the bell on a high school day opens the same Alerts panel, which says so. The week ahead's Everywhere covers ESPN's college and pro boards only.
+

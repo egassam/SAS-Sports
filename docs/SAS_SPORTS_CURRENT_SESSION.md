@@ -1,11 +1,12 @@
 # SAS Sports — Current State and Next Session
 
-Last updated: November 20, 2026 (Central, about 8:15 PM). **Seventh Kansas county batch live** (user: "Start the next counties"; PR #619, merge `e0f374e`, `4.319.0-ks-counties-7`).
-- **Counties:** Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell; 33 schools (22 high, 11 middle; `docs/KS_COUNTIES_BATCH7_MODULE.md`).
-- **Fixed by hand:** Fredonia's and Neodesha's MaxPreps pages; Fredonia, Elk Valley, Natoma and Osborne football (and volleyball and basketball) read from MaxPreps; three middle school names tidied.
-- **No shared code changed** (no `diff:feeds` needed). Tests: Basehor-Linwood live on Nov 6; Sylvan-Lucas at Thunder Ridge once; brackets 124 (Lansing and Bonner Springs play 4A football); In College adds K-State WR Nash Morrison (Basehor-Linwood).
-- **Preview gate (3 refreshes):** `verify:preview` 321 + 258 + 153 PASS for the new schools and 69 for the Manhattan reference schools; `check-reference-page` PASS; `check:reference-rules` 0 FAIL on 3,048 cards; `npm test` passed locally; CI green.
-- **Production:** `verify:prod` 233 PASS for Manhattan and 9 new schools, KU XC 26/21. K-State XC read 0/0 once (the known first-read transient) and 18/20 on the immediate rerun; `check-reference-page` PASS.
+Last updated: November 20, 2026 (Central, about 1:45 PM). **Home: the week ahead** (user: "make upcoming college and pro games more obvious so you know who's playing a weekend in advance", Monday to Sunday, ESPN's matchup look, then "No logos and all levels"; PR #621, merge `bc96e6a`, `4.320.1-week-ahead`; `docs/HOME_WEEK_AHEAD.md`).
+- **My Teams:** every game, meet and race a favorite has after today through next Sunday, every level, from the official schedules; ESPN's same game adds line, total, rank, record and TV. Badges stand where logos would be (the Oct 15 no-logos test unchanged). Coming up keeps only games after next Sunday; `HOME_AHEAD_DAYS` 7 → 14.
+- **Everywhere:** ESPN's college and pro boards a day at a time (`/live/week?day=`, one Eastern day per request: ESPN refuses date ranges), featured first.
+- **Gate:** `npm test` and CI `guardrails` green on `6aaeefe`; preview `verify:preview` 69 PASS (Manhattan, Anthony, Eisenhower, 3 refreshes) and 6 (K-State Football, 36 refreshes), XC 18/20 and 26/21, `check-reference-page` PASS. No feed changed (page and a new endpoint only), so no `diff:feeds`.
+- **Production:** `verify:prod` 99 PASS (the four schools, all sports), XC 18/20 and 26/21, `check-reference-page` PASS; `/live/week` 17/17 boards, no logos; page checked in Chromium.
+
+Earlier today: PR #619 (`4.319.0-ks-counties-7`): Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell counties, 33 schools (`docs/KS_COUNTIES_BATCH7_MODULE.md`).
 
 Earlier: November 19, 2026. PR #616 (`4.317.3-mlb-season`): ESPN's MLB team schedule is now read by season name. PR #617 (`4.318.1-ks-counties-6`): Miami, Linn, Allen, Woodson, Doniphan, Barton, Mitchell and Lincoln, 35 schools, with "C Team" read as junior varsity. Full record in the history file.
 
@@ -35,7 +36,7 @@ Older entries moved to `docs/SAS_SPORTS_HISTORY.md` (November 19, "Archived from
 | Item | Value |
 | --- | --- |
 | Repository / default branch | `egassam/SAS-Sports` / `main` |
-| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.319.0-ks-counties-7`, `catalog.source` `d1`) |
+| Production | https://sas-sports.lovetogivepain.workers.dev (`/api/status` → `4.320.1-week-ahead`, `catalog.source` `d1`) |
 | Branch preview | `https://<branch>-sas-sports.lovetogivepain.workers.dev` |
 | XC baselines (every gate) | K-State 18/20 (Gans Creek / Platte River), KU 26/21 (Gans Creek / Bob Timmons) |
 | Recovery checkpoint | branch `checkpoint/kstate-xc-verified-20260926` (do not move) |
@@ -355,3 +356,4 @@ Newest last. One short entry per session here; the full record goes at the end o
 - Nov 18 — Series history (#610), weather on outdoor games (#611, robots.txt exception approved), calendar subscription (#612), high school score alerts (#613), Kansas tonight with the day's list that keeps alerts fresh (#614); all verified in production.
 - Nov 19 — MLB season named in ESPN schedule reads (PR #616, `4.317.3-mlb-season`); Miami, Linn, Allen, Woodson, Doniphan, Barton, Mitchell and Lincoln counties, 35 schools, and C Team read as junior varsity (PR #617, `4.318.1-ks-counties-6`); both verified in production.
 - Nov 20 — Leavenworth, Bourbon, Neosho, Wilson, Elk, Russell, Osborne, Smith and Jewell counties, 33 schools (PR #619, `4.319.0-ks-counties-7`, verified in production).
+- Nov 20 — Home: the week ahead, every level, ESPN's matchup look without logos (PR #621, `4.320.1-week-ahead`, verified in production).
