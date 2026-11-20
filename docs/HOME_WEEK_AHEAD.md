@@ -1,6 +1,6 @@
 # Home: the week ahead
 
-Added November 20, 2026 (`4.320.0-week-ahead`).
+Added November 20, 2026 (`4.320.1-week-ahead`).
 
 **User, November 20, 2026:** "I had a suggestion to make upcoming college and pro games more obvious so you know who's playing a weekend in advance." Asked whose games, they chose favorites first, then everything else: "Do number one but shouldn't it be M-Sunday because of Monday night and Thursday night football and all other sports on different days?" With a screenshot of ESPN's game card: "Can we also make them look like this?" Then "Can't we look elsewhere for upcoming schedules?", and asked about logos (their Oct 15 rule, "Leave the logos out") and other levels: **"No logos and all levels"**.
 
