@@ -25,7 +25,7 @@ const cfbBoard={path:'football/college-football',sport:'Football',level:'college
   assert.ok(ku,'BYU at Kansas is listed');
   assert.equal(ku.away.id,'byu');assert.equal(ku.away.name,'BYU');assert.equal(ku.home.name,'Kansas','ESPN\'s own name, not the catalog\'s "KU"');
   assert.equal(ku.away.rank,10);assert.equal(ku.home.rank,undefined,'unranked (ESPN 99) shows no rank');
-  assert.equal(ku.away.record,'8-2');assert.match(ku.away.logo,/^https:\/\/a\.espncdn\.com\//);
+  assert.equal(ku.away.record,'8-2');assert.equal(ku.away.abbr,'BYU');assert.ok(!JSON.stringify(games).includes('espncdn'),'no logos (user, October 15 and November 20)');
   assert.deepEqual(ku.odds,{line:'-5.5',favorite:'away',total:46.5},'the line on the favorite, and the total');
   assert.deepEqual(ku.tv,['ABC']);assert.equal(ku.featured,true);assert.equal(ku.start_utc,'2026-11-21T17:00:00.000Z');
   assert.ok(games.some(g=>g.home.id==='kstate'&&g.away.id==='arizona'),'Arizona at Kansas State');
@@ -58,11 +58,11 @@ const page=read('../public/index.html');
 const block=page.slice(page.indexOf('// The week ahead (user, November 20, 2026'),page.indexOf("// The overview's countdown box"));
 assert.ok(block.length>2000,'the block is found');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>`&#${c.charCodeAt(0)};`);
-const catalog={kstate:{level:'college',theme:{}},kansas:{level:'college'},'kansas-city-chiefs':{level:'pro'},byu:{level:'college'}};
+const catalog={'manhattan-ks':{level:'high-school',name:'Manhattan High School',short_name:'Manhattan'},kstate:{level:'college',name:'Kansas State',short_name:'K-State',theme:{}},kansas:{level:'college'},'kansas-city-chiefs':{level:'pro'},byu:{level:'college'}};
 const env={homeView:true,teams:['kstate','kansas-city-chiefs'],view:'all',q:''};
 const api=Function('esc','homeTeams','catalogEntry','knownColors','search','marqueeOf','slug','sectionHead','homeSectionOpen','comingDay','apiFetch','homeMode','render','displayedGroups','viewerTimeZone','env','document',
   block.replace(/\bhomeView\b/g,'env.homeView').replace(/\bcurrentView\b/g,'env.view')+';return{weekSections,weekCard,withoutWeek,weekEverywhere,weekRequestDays,weekBounds,weekSection,set:m=>{weekDays=m}};')(
-  esc,()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
+  esc,()=>env.teams,id=>catalog[id],()=>null,{get value(){return env.q}},()=>['#fff','●'],s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-'),(t,sub)=>`<h2>${t}</h2><p>${sub}</p>`,t=>`<section id="${t}">`,x=>({day:x.day,at:x.at??Date.parse(`${x.day}T18:00:00Z`),time:x.time??null}),null,()=>true,()=>{},()=>[],'America/Chicago',env,{querySelector:()=>({hidden:false,classList:{contains:()=>false}})});
 // The days asked for: today through next week's Sunday (Eastern).
 {
   const fri=api.weekRequestDays(Date.parse('2026-11-20T18:00:00Z'));
@@ -74,7 +74,7 @@ const api=Function('esc','homeTeams','catalogEntry','knownColors','search','marq
 }
 const day=n=>new Date(Date.now()+n*864e5);
 const iso=n=>day(n).toISOString();
-const side=(id,name,extra={})=>({id,name,abbr:name.slice(0,3).toUpperCase(),logo:'https://a.espncdn.com/x.png',...extra});
+const side=(id,name,extra={})=>({id,name,abbr:name.slice(0,3).toUpperCase(),...extra});
 const games=[
   {id:'a',sport:'Football',level:'college',start_utc:iso(2),away:side('arizona','Arizona',{rank:19}),home:side('kstate','Kansas State'),odds:{line:'-7.5',favorite:'away',total:51.5},tv:['FS1'],featured:true},
   {id:'b',sport:'Football',level:'pro',league:'NFL',start_utc:iso(3),away:side('kansas-city-chiefs','Chiefs'),home:side('buffalo-bills','Bills'),odds:{line:'-3',favorite:'home',total:50.5},tv:['CBS'],featured:true},
@@ -118,10 +118,43 @@ api.set(new Map([['d1',{at:Date.now(),games}],['d2',{at:Date.now(),games:[games[
   assert.match(section,/data-week-alerts>[\s\S]*?Get alerts</,'each day carries the alerts bell');
   assert.equal(api.weekSection('The week ahead',[]),'','no games, no section');
 }
+// All levels from the official schedules (user, November 20: "No logos and
+// all levels"): ESPN's same game lends its line; a high school game, a meet.
+{
+  env.teams=['kstate','kansas-city-chiefs','manhattan-ks'];
+  const local=n=>new Date(Date.now()+n*864e5).toLocaleDateString('en-CA',{timeZone:'America/Chicago'});
+  const aDay=api.weekSections().mine.find(x=>x.g?.id==='a').day;
+  const feed=[
+    {school_id:'kstate',school:'Kansas State',sport:'Football',e:{id:'k1',title:'K-State vs Arizona',opponent:'Arizona',event_type:'GAME'},day:aDay},
+    {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Basketball',e:{id:'m1',title:'Girls · Manhattan at Hays',opponent:'Hays',team_label:'Girls',event_type:'GAME'},day:local(3),time:'6:00 PM'},
+    {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Cross Country',e:{id:'m2',title:'Flint Hills Invitational',event_type:'MEET'},day:local(4)},
+    {school_id:'manhattan-ks',school:'Manhattan High School',sport:'Basketball',e:{id:'m3',title:'Boys · Manhattan vs Salina South',opponent:'Salina South',team_label:'Boys',event_type:'GAME'},day:local(40),time:'7:00 PM'},
+    {school_id:'not-a-favorite',school:'Other',sport:'Football',e:{id:'o1',title:'Other vs X',opponent:'X'},day:local(3)}
+  ];
+  const {mine}=api.weekSections(feed);
+  assert.equal(mine.filter(x=>x.g?.id==='a').length,1,'the official game and ESPN\'s are one card');
+  assert.equal(mine.find(x=>x.g?.id==='a').fid,'k1','ESPN\'s card stands for the official game');
+  assert.ok(mine.some(x=>x.g?.id==='b'),'a game only ESPN lists still shows');
+  assert.deepEqual(mine.filter(x=>x.f).map(x=>x.f.e.id).sort(),['m1','m2'],'high school game and meet; not beyond next Sunday, not other teams');
+  const hs=api.weekCard(mine.find(x=>x.f?.e.id==='m1'));
+  const rows=hs.match(/<div class="wk-row">[\s\S]*?<\/span><\/div>/g);
+  assert.match(rows[0],/wk-mono[^>]*>MHS<[\s\S]*wk-name mine">Manhattan<[\s\S]*wk-time">6:00 PM</,'the school away, on top, in gold, with its initials');
+  assert.match(rows[1],/wk-mono[^>]*>HAYS<[\s\S]*wk-name">Hays</);
+  assert.match(hs,/wk-tag">Girls Basketball · High school</);
+  assert.match(hs,/data-open-team="manhattan-ks" data-open-sport="Basketball"/);
+  const meet=api.weekCard(mine.find(x=>x.f?.e.id==='m2'));
+  assert.equal((meet.match(/class="wk-row"/g)||[]).length,1,'a meet is one row');
+  assert.match(meet,/Flint Hills Invitational[\s\S]*wk-time tba">TBA</);
+  assert.ok(!/<img/.test(hs+meet+api.weekCard(mine.find(x=>x.g?.id==='a'))),'no logos');
+  const coming=[{school_id:'kstate',sport:'Football',e:{id:'k1'},day:aDay},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m1'},day:local(3)},{school_id:'manhattan-ks',sport:'Basketball',e:{id:'m3'},day:local(40)}];
+  assert.deepEqual(api.withoutWeek(coming,mine).map(x=>x.e.id),['m3'],'Coming up keeps only what is after next Sunday');
+  env.teams=['kstate','kansas-city-chiefs'];
+}
 assert.match(page,/weekSection\('The week ahead',week\.mine\)/,'My Teams after Today');
 assert.match(page,/weekSection\('The week ahead · Everywhere',week\.others,true\)/,'Everywhere');
 assert.match(page,/'The week ahead':\['upcoming','The week ahead'/,'the My Teams banner');
 assert.match(page,/loadWeek\(signal\)/,'loaded with Home');
+assert.match(page,/const HOME_AHEAD_DAYS=14,/,'Home reads every favorite sport playing through next Sunday');
 assert.match(page,/feed\.querySelectorAll\('\[data-week-day\]'\)/,'day buttons wired');
 assert.match(page,/feed\.querySelectorAll\('\[data-week-alerts\]'\)/,'the bell opens Alerts');
 console.log('home-week: ok (ESPN boards a day at a time, My Teams and Everywhere, ESPN\'s matchup card, day buttons)');

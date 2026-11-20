@@ -7117,8 +7117,9 @@ async function liveNow(now=new Date(),env=null){
 // The week ahead (user, November 20, 2026: "make upcoming college and pro
 // games more obvious so you know who's playing a weekend in advance", then
 // Monday to Sunday "because of Monday night and Thursday night football and
-// all other sports on different days", in ESPN's matchup look: both teams
-// with their logos, the line and total, the time and the TV). One day of
+// all other sports on different days", in ESPN's matchup look: both teams,
+// the line and total, the time and the TV; no logos, user, October 15: "Leave
+// the logos out", kept November 20). One day of
 // every in-season college and pro board per request (ESPN's boards take no
 // date range: HTTP 400), so a week is a handful of small cached requests and
 // no single request reads more than one day. Games not yet started with at
@@ -7138,7 +7139,7 @@ function weekGamesFromBoards(reads){
       const start=Date.parse(item.date||competition?.date||'');if(!Number.isFinite(start))continue;
       const sides=competition?.competitors||[];const away=sides.find(s=>s.homeAway==='away'),home=sides.find(s=>s.homeAway==='home');if(!away||!home)continue;
       const side=s=>{const found=match(s.team,board),rank=Number(s.curatedRank?.current),record=(s.records||[]).find(r=>/^(?:overall|total|ytd)$/i.test(r.type||r.name||''))||s.records?.[0];
-        return{id:found?.id||null,name:clean(board.level==='pro'?(s.team?.shortDisplayName||s.team?.displayName):(s.team?.location||s.team?.shortDisplayName||s.team?.displayName))||(found?(found.short_name||found.name):'TBA'),abbr:s.team?.abbreviation||null,logo:/^https:\/\/a\.espncdn\.com\//.test(s.team?.logo||'')?s.team.logo:null,...(rank>=1&&rank<=25?{rank}:{}),...(record?.summary?{record:record.summary}:{})}};
+        return{id:found?.id||null,name:clean(board.level==='pro'?(s.team?.shortDisplayName||s.team?.displayName):(s.team?.location||s.team?.shortDisplayName||s.team?.displayName))||(found?(found.short_name||found.name):'TBA'),abbr:s.team?.abbreviation||null,...(rank>=1&&rank<=25?{rank}:{}),...(record?.summary?{record:record.summary}:{})}};
       const a=side(away),h=side(home);if(!a.id&&!h.id)continue;
       seen.add(`${board.path}|${item.id}`);
       const odds=competition?.odds?.[0],favHome=odds?.homeTeamOdds?.favorite===true,favAway=odds?.awayTeamOdds?.favorite===true;

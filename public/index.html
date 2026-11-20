@@ -302,12 +302,12 @@ body{background:radial-gradient(ellipse at top left,color-mix(in srgb,var(--team
 .wk-card{min-width:0;padding:10px 14px 12px;border-radius:14px;background:#141a22;border:1px solid #2a3442;border-left:4px solid var(--team-primary,#3b4a5e);cursor:pointer;transition:background .12s}.wk-card:hover{background:#1a222c}.wk-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wk-tag{margin-bottom:6px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wk-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto 78px;align-items:center;gap:10px;min-height:34px}
-.wk-logo{width:28px;height:28px;object-fit:contain}.wk-mono{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#243041;color:#cbd5e1;font-size:9px;font-weight:900}
+.wk-mono{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#243041;color:#cbd5e1;font-size:9px;font-weight:900}
 .wk-name{min-width:0;font-size:18px;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wk-name.mine{color:var(--warn)}.wk-rank{margin-right:5px;font-size:12px;font-weight:800;color:var(--muted)}.wk-rec{margin-left:6px;font-size:11px;font-weight:700;color:#7f8ea3}
 .wk-odds{font-size:15px;color:#9aa4b2;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 .wk-time{font-size:16px;font-weight:700;color:#f8fafc;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.wk-time.tba{color:var(--muted)}
 .wk-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}.wk-foot:empty{display:none}.wk-tv{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:7px;border:1px solid #3a4554;background:#1d2530;color:#c8d0da;font-size:13px}.wk-note{font-size:12px;color:var(--muted)}
-@media(max-width:560px){.wk-row{grid-template-columns:26px minmax(0,1fr) auto 66px;gap:8px}.wk-name{font-size:16px}.wk-time{font-size:14px}.wk-odds{font-size:13px}.wk-logo,.wk-mono{width:24px;height:24px}.wk-day h3{font-size:17px}.wk-card{padding:9px 11px 11px}}
+@media(max-width:560px){.wk-row{grid-template-columns:26px minmax(0,1fr) auto 66px;gap:8px}.wk-name{font-size:16px}.wk-time{font-size:14px}.wk-odds{font-size:13px}.wk-mono{width:24px;height:24px;font-size:8px}.wk-day h3{font-size:17px}.wk-card{padding:9px 11px 11px}}
 @media(forced-colors:active){.wk-card,.wk-tv{border:2px solid CanvasText}}
 </style>
 </head>
@@ -977,7 +977,9 @@ function readActivity(id,sp,now){
 // 7: "It's broke", Manhattan's page without football: the playoff game vs
 // Garden City was scheduled after this device's last football copy, which
 // showed nothing within a week, so football was never read again).
-const HOME_AHEAD_DAYS=7,HOME_BEHIND_DAYS=7,HOME_RECHECK_HOURS=12;
+// Ahead: 14 days, so the week ahead (through next Sunday, up to 13 days on a
+// Monday) has every favorite sport that plays in it (November 20).
+const HOME_AHEAD_DAYS=14,HOME_BEHIND_DAYS=7,HOME_RECHECK_HOURS=12;
 function homeCurrent(id,sp){const a=feedActivity(id,sp);return!a||a.ageHours>HOME_RECHECK_HOURS||a.live||a.today||a.nextDays<=HOME_AHEAD_DAYS||a.lastDays<=HOME_BEHIND_DAYS}
 // Live and today's games first, then the next few days, then recent
 // results, then sports this device has not read yet.
@@ -1120,11 +1122,14 @@ function homeSection(title,items,kind){const field=kind==='live'&&homeView&&titl
 // The week ahead (user, November 20, 2026: "make upcoming college and pro
 // games more obvious so you know who's playing a weekend in advance", Monday
 // to Sunday "because of Monday night and Thursday night football and all
-// other sports on different days", in ESPN's matchup look). /live/week gives
-// one Eastern day of ESPN's college and pro boards; the page asks for today
-// through next week's Sunday. My Teams: every game a favorite plays after
-// today (today is Today's). Everywhere: the rest, by sport, the featured
-// games (pro, ranked, national TV) first, WEEK_SHOWN a sport until Show all.
+// other sports on different days", in ESPN's matchup look; no logos and all
+// levels, user, November 20: "No logos and all levels"). My Teams: every game,
+// meet or race a favorite plays after today (today is Today's) through next
+// week's Sunday, from its official schedule (the feeds Home already loads);
+// ESPN's board adds the line, total, rank, record and TV where it has the same
+// game. /live/week gives one Eastern day of ESPN's college and pro boards; the
+// page asks for today through next Sunday. Everywhere: the rest of those
+// boards, a day at a time, featured (pro, ranked, national TV) first.
 const WEEK_SHOWN=12,WEEK_FRESH_MS=10*60e3;let weekDays=new Map(),weekRenderTimer=null;const expandedWeekSports=new Set();
 const zoneDay=(t,zone)=>new Date(t).toLocaleDateString('en-CA',zone?{timeZone:zone}:{});
 function weekBounds(now=Date.now()){const today=zoneDay(now,viewerTimeZone),d=new Date(`${today}T12:00:00Z`),wd=(d.getUTCDay()+6)%7,add=n=>{const x=new Date(d);x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};return{today,thisSunday:add(6-wd),nextSunday:add(13-wd)}}
@@ -1141,25 +1146,59 @@ function loadWeek(signal){
 // A game's day: the viewer's own; a time to be announced keeps ESPN's
 // Eastern date (its midnight start would fall on the day before).
 const weekDayOf=g=>g.time_tba?zoneDay(g.start_utc,'America/New_York'):zoneDay(g.start_utc,viewerTimeZone);
-function weekSections(){
+const weekPlain=v=>String(v||'').toLowerCase().replace(/^#\d+\s+/,'').replace(/[^a-z0-9]+/g,' ').trim();
+function weekSections(feed=[]){
   if(currentView!=='all'&&currentView!=='upcoming')return{mine:[],others:[]};
-  const teams=homeTeams(),q=search.value.trim().toLowerCase(),{today,nextSunday}=weekBounds(),seen=new Set(),all=[];
-  for(const {games} of weekDays.values())for(const g of games||[]){if(seen.has(g.id))continue;seen.add(g.id);const day=weekDayOf(g);if(day<today||day>nextSunday||(!g.time_tba&&Date.parse(g.start_utc)<=Date.now()))continue;if(q&&!`${g.away?.name} ${g.home?.name} ${g.sport} ${g.team_label||''}`.toLowerCase().includes(q))continue;all.push({g,day,at:Date.parse(g.start_utc)})}
-  all.sort((a,b)=>a.day.localeCompare(b.day)||(a.g.time_tba?1:0)-(b.g.time_tba?1:0)||a.at-b.at);
+  const teams=homeTeams(),q=search.value.trim().toLowerCase(),{today,nextSunday}=weekBounds(),seen=new Set(),boards=[];
+  for(const {games} of weekDays.values())for(const g of games||[]){if(seen.has(g.id))continue;seen.add(g.id);const day=weekDayOf(g);if(day<today||day>nextSunday||(!g.time_tba&&Date.parse(g.start_utc)<=Date.now()))continue;if(q&&!`${g.away?.name} ${g.home?.name} ${g.sport} ${g.team_label||''}`.toLowerCase().includes(q))continue;boards.push({g,day,at:Date.parse(g.start_utc)})}
   const mineOf=g=>teams.find(id=>id===g.away?.id||id===g.home?.id);
-  return{mine:all.filter(x=>mineOf(x.g)&&x.day>today).map(x=>({...x,team:mineOf(x.g)})),others:homeView?all.filter(x=>!mineOf(x.g)):[]};
+  const mineBoards=boards.filter(x=>mineOf(x.g)&&x.day>today),others=homeView?boards.filter(x=>!mineOf(x.g)):[];
+  // The official schedules lead; the same game on ESPN's board lends its
+  // line, rank, record and TV. Two favorites playing each other show once,
+  // under the one first in the viewer's order.
+  const names=id=>{const c=catalogEntry(id);return new Set([c?.name,c?.short_name,...(c?.aliases||[])].map(weekPlain).filter(Boolean))};
+  const levelOf=id=>catalogEntry(id)?.level||'college',used=new Set(),mine=[];
+  const items=feed.filter(x=>teams.includes(x.school_id)).map(x=>({x,c:comingDay(x)})).filter(({x,c})=>c.day>today&&c.day<=nextSunday&&(!q||`${x.e.title} ${x.school} ${x.sport}`.toLowerCase().includes(q)));
+  for(const {x,c} of items){
+    const match=mineBoards.find(w=>!used.has(w.g.id)&&w.g.sport===x.sport&&(w.g.home?.id===x.school_id||w.g.away?.id===x.school_id)&&(!x.e.team_label||!w.g.team_label||x.e.team_label===w.g.team_label)&&Math.abs(Date.parse(`${w.day}T12:00:00Z`)-Date.parse(`${c.day}T12:00:00Z`))<=864e5);
+    if(match){used.add(match.g.id);mine.push({...match,team:x.school_id,fid:x.e.id});continue}
+    const other=teams.find(id=>id!==x.school_id&&levelOf(id)===levelOf(x.school_id)&&names(id).has(weekPlain(x.e.opponent)));
+    if(other&&teams.indexOf(other)<teams.indexOf(x.school_id)&&items.some(y=>y.x.school_id===other&&y.x.sport===x.sport&&y.c.day===c.day))continue;
+    mine.push({f:x,day:c.day,at:c.at,time:c.time,team:x.school_id});
+  }
+  // A favorite's game on ESPN's board its schedule does not list (or not yet loaded).
+  for(const w of mineBoards)if(!used.has(w.g.id))mine.push({...w,team:mineOf(w.g)});
+  mine.sort((a,b)=>a.day.localeCompare(b.day)||((a.g?a.g.time_tba:!a.time)?1:0)-((b.g?b.g.time_tba:!b.time)?1:0)||a.at-b.at);
+  others.sort((a,b)=>a.day.localeCompare(b.day)||(a.g.time_tba?1:0)-(b.g.time_tba?1:0)||a.at-b.at);
+  return{mine,others};
 }
 const weekSportName=g=>g.league?`${g.league} · ${g.sport}`:g.team_label?`${g.team_label} ${g.sport}`:g.sport;
-const weekTime=x=>x.g.time_tba?'TBA':new Date(x.at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...(viewerTimeZone?{timeZone:viewerTimeZone}:{})});
+const weekTime=x=>x.f?(x.time||'TBA'):x.g.time_tba?'TBA':new Date(x.at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',...(viewerTimeZone?{timeZone:viewerTimeZone}:{})});
 const WEEK_TV_ICON='<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="1" y="2" width="14" height="10" rx="2" fill="currentColor"/><path d="M7 5v4.2l3.4-2.1z" fill="#1d2530"/><path d="M5 14.2h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
 const WEEK_BELL_ICON='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 1.8a4 4 0 0 0-4 4v2.8L2.6 11h10.8L12 8.6V5.8a4 4 0 0 0-4-4zM6.4 12.6a1.6 1.6 0 0 0 3.2 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+// A team's badge where a logo would be (no logos: user, October 15 and
+// November 20): ESPN's abbreviation, else the name's initials.
+const weekMono=(abbr,name)=>{const words=String(name||'').replace(/[^A-Za-z0-9 ]+/g,' ').trim().split(/\s+/).filter(Boolean);return String(abbr||(words.length>1?words.map(w=>w[0]).join(''):words[0]||'')).slice(0,4).toUpperCase()};
+const weekRow=({name,abbr,rank,record,mine,odd='',time=null,tba=false})=>`<div class="wk-row"><span class="wk-mono" aria-hidden="true">${esc(weekMono(abbr,name))}</span><span class="wk-name${mine?' mine':''}">${rank?`<span class="wk-rank">${esc(rank)}</span>`:''}${esc(name||'TBA')}${record?`<span class="wk-rec">${esc(record)}</span>`:''}</span><span class="wk-odds">${esc(odd)}</span><span class="wk-time${tba?' tba':''}">${time==null?'':esc(time)}</span></div>`;
 function weekCard(x,{tag=true}={}){
+  if(x.f)return weekFeedCard(x,{tag});
   const g=x.g,teams=homeTeams(),open=x.team||(catalogEntry(g.home?.id)?g.home.id:catalogEntry(g.away?.id)?g.away.id:g.home?.id||g.away?.id),c=knownColors(catalogEntry(open)?.theme);
   const odds=g.odds||{},lineSide=odds.line?(odds.favorite==='home'?'home':'away'):null,totalSide=odds.total?(lineSide==='away'?'home':lineSide==='home'?'away':'home'):null;
-  const row=(side,first)=>{const t=g[side]||{},mine=t.id&&teams.includes(t.id),odd=lineSide===side?odds.line:totalSide===side?`T:${odds.total}`:'';
-    return`<div class="wk-row">${t.logo?`<img class="wk-logo" src="${esc(t.logo)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-mono="${esc(String(t.abbr||t.name||'').slice(0,4))}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'wk-mono',textContent:this.dataset.mono}))">`:`<span class="wk-mono">${esc(String(t.abbr||t.name||'').slice(0,4))}</span>`}<span class="wk-name${mine?' mine':''}">${t.rank?`<span class="wk-rank">${esc(t.rank)}</span>`:''}${esc(t.name||'TBA')}${t.record?`<span class="wk-rec">${esc(t.record)}</span>`:''}</span><span class="wk-odds">${esc(odd)}</span><span class="wk-time${first&&g.time_tba?' tba':''}">${first?esc(weekTime(x)):''}</span></div>`};
+  const row=(side,first)=>{const t=g[side]||{};return weekRow({...t,mine:t.id&&teams.includes(t.id),odd:lineSide===side?odds.line:totalSide===side?`T:${odds.total}`:'',time:first?weekTime(x):null,tba:first&&g.time_tba})};
   const label=`${g.away?.name||'TBA'} ${g.neutral?'vs':'at'} ${g.home?.name||'TBA'}, ${weekSportName(g)}, ${weekTime(x)}${g.tv?.length?`, on ${g.tv.join(', ')}`:''}`;
   return`<div class="wk-card" role="button" tabindex="0" aria-label="${esc(label)}"${open?` data-open-team="${esc(open)}" data-open-sport="${esc(g.sport)}"`:''}${c?` style="--team-primary:${c.main}"`:''}>${tag?`<div class="wk-tag">${esc(weekSportName(g))}${g.neutral?' · Neutral site':''}</div>`:''}${row('away',true)}${row('home',false)}<div class="wk-foot">${(g.tv||[]).map(n=>`<span class="wk-tv">${WEEK_TV_ICON}${esc(n)}</span>`).join('')}${g.note?`<span class="wk-note">${esc(g.note)}</span>`:''}</div></div>`;
+}
+// A game, meet or race from the official schedule ESPN's boards do not carry
+// (high and middle schools, meets, races, other pro leagues): the same card,
+// the school's side in gold. "Manhattan at Hays" puts the school on top.
+function weekFeedCard(x,{tag=true}={}){
+  const e=x.f.e,entry=catalogEntry(x.team),me=entry?.short_name||entry?.name||x.f.school,c=knownColors(entry?.theme),time=weekTime(x),tba=!x.time;
+  const bare=String(e.title||'').replace(/^(?:Boys|Girls|Men's|Women's|JV|C Team|Varsity)\s*·\s*/i,'');
+  const away=/\sat\s/i.test(` ${bare} `)&&!/\s(?:vs\.?|v\.?)\s/i.test(` ${bare} `),opp=e.opponent&&!/^(?:MEET|RACE)$/i.test(e.event_type||'')?e.opponent:null;
+  const myAbbr=weekMono(null,entry?.name||me),sport=[e.team_label,x.f.sport].filter(Boolean).join(' '),level=entry?.level==='high-school'?'High school':entry?.level==='middle-school'?'Middle school':'';
+  const rows=opp?(away?weekRow({name:me,abbr:myAbbr,mine:true,time,tba})+weekRow({name:opp}):weekRow({name:opp,time,tba})+weekRow({name:me,abbr:myAbbr,mine:true})):weekRow({name:bare||me,abbr:myAbbr,mine:true,time,tba});
+  const label=`${opp?(away?`${me} at ${opp}`:`${opp} at ${me}`):bare||me}, ${sport}, ${time}${e.broadcast?`, on ${e.broadcast}`:''}`;
+  return`<div class="wk-card" role="button" tabindex="0" aria-label="${esc(label)}" data-open-team="${esc(x.team)}" data-open-sport="${esc(x.f.sport)}"${c?` style="--team-primary:${c.main}"`:''}>${tag?`<div class="wk-tag">${esc(sport)}${level?` · ${level}`:''}${opp?'':` · ${esc(me)}`}</div>`:''}${rows}<div class="wk-foot">${e.broadcast?`<span class="wk-tv">${WEEK_TV_ICON}${esc(e.broadcast)}</span>`:''}${e.location?`<span class="wk-note">${esc(e.location)}</span>`:''}</div></div>`;
 }
 // The alerts bell beside each day of My Teams opens the Alerts panel (alerts
 // cover the favorites' college and pro games).
@@ -1186,9 +1225,9 @@ function weekEverywhere(items){
   return dayChips+weekDayHead(day,false)+chips+sports.map(s=>{const list=bySport.get(s),key=`${day}|${s}`,open=expandedWeekSports.has(key),featured=list.filter(x=>x.g.featured),shown=open?list:(featured.length?featured:list).slice(0,WEEK_SHOWN),[color,mark]=marqueeOf(s);
     return`<div class="mq-group" style="--mq:${color}"><div class="sport-marquee" style="--mq:${color}" id="${esc(`week-${slug(s)}`)}" role="heading" aria-level="3"><span class="mq-mark" aria-hidden="true">${mark}</span><span class="mq-name">${esc(s)}</span><span class="mq-count">${list.length} game${list.length===1?'':'s'}</span></div><div class="wk-grid">${shown.map(x=>weekCard(x)).join('')}</div>${list.length>shown.length?`<button type="button" class="ghost show-all-live mq-more" data-week-sport="${esc(key)}">Show all ${list.length} ${esc(s)} games</button>`:''}</div>`}).join('');
 }
-function weekSection(title,items,everywhere=false){if(!items.length)return'';const sub=everywhere?"Every college and pro game on ESPN's boards, today through next Sunday · pick a day":"Every college and pro game your teams play, through next Sunday";return`${homeSectionOpen(title)}${sectionHead(title,sub)}<div class="section">${everywhere?weekEverywhere(items):weekList(items,{bell:true})}</div></section>`}
+function weekSection(title,items,everywhere=false){if(!items.length)return'';const sub=everywhere?"Every college and pro game on ESPN's boards, today through next Sunday · pick a day":"Every game, meet and race your teams have, through next Sunday";return`${homeSectionOpen(title)}${sectionHead(title,sub)}<div class="section">${everywhere?weekEverywhere(items):weekList(items,{bell:true})}</div></section>`}
 // Coming up leaves out the games the week ahead already shows.
-function withoutWeek(coming,mine){if(!mine.length)return coming;return coming.filter(x=>{const d=comingDay(x).day;return!mine.some(w=>w.g.sport===x.sport&&(w.g.home?.id===x.school_id||w.g.away?.id===x.school_id)&&(!x.e.team_label||!w.g.team_label||x.e.team_label===w.g.team_label)&&Math.abs(Date.parse(`${w.day}T12:00:00Z`)-Date.parse(`${d}T12:00:00Z`))<=864e5)})}
+function withoutWeek(coming,mine){if(!mine.length)return coming;const ids=new Set(mine.map(m=>m.f?.e?.id||m.fid).filter(Boolean));return coming.filter(x=>{if(ids.has(x.e?.id))return false;const d=comingDay(x).day;return!mine.some(w=>w.g&&w.g.sport===x.sport&&(w.g.home?.id===x.school_id||w.g.away?.id===x.school_id)&&(!x.e.team_label||!w.g.team_label||x.e.team_label===w.g.team_label)&&Math.abs(Date.parse(`${w.day}T12:00:00Z`)-Date.parse(`${d}T12:00:00Z`))<=864e5)})}
 // The overview's countdown box: the soonest game, meet or race still to
 // start among the team's (or the favorites') schedules, named by team and
 // sport on Home.
@@ -1223,7 +1262,7 @@ async function readFieldHome(){
   fieldTimer=setTimeout(loadFieldHome,games.length?3000:30000);
 }
 function renderHome(groups){
-  const {live,everywhere,todays,recent,coming:upcoming}=homeSections(groups),week=weekSections(),coming=withoutWeek(upcoming,week.mine),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
+  const {live,everywhere,todays,recent,coming:upcoming}=homeSections(groups),week=weekSections(groups.flatMap(g=>(g.upcoming||[]).map(e=>({e,bucket:'upcoming',school:g.school,sport:g.sport,school_id:g.school_id})))),coming=withoutWeek(upcoming,week.mine),names=homeTeams().map(id=>catalogEntry(id)?.short_name||catalogEntry(id)?.name||id);
   const news=currentView==='all'?homeNews():[];
   const mine=homeView&&everywhere.length?'Live now · My Teams':'Live now';
   const field=homeView&&(currentView==='all'||currentView==='live')?fieldHome:[];homeField=field;
