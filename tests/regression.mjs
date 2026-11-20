@@ -320,7 +320,7 @@ assert.ok(!/searchParams\.set\('school'/.test(page),'Browsing a team must not wr
 contains(page,/data-home aria-pressed/,'Home must be a level button before Middle School');
 contains(page,/\.home-view \.finder,\.home-view #favorite/,'Home must hide the level, team and sport menus');
 contains(page,/const sports=sponsored\?active\.filter\(sp=>sponsored\.includes\(sp\)\)/,'The home screen must read only in-season sports the team sponsors, smaller sports first');
-contains(page,/homeSection\(mine,live,'live'\)\+nextUpBox\(todays,coming\)\+homeSection\('Today',todays\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml/,'Home must lead with the favorites (user, November 2): Live now, the countdown, Today, Recent results, Coming up and News, then every other live game');
+contains(page,/homeSection\(mine,live,'live'\)\+nextUpBox\(todays,coming\)\+homeSection\('Today',todays\)\+weekSection\('The week ahead',week\.mine\)\+homeSection\('Recent results',recent\)\+homeSection\('Coming up',coming,'upcoming'\)\+homeSection\('News',news\)\+everywhereHtml\+weekEverywhereHtml/,'Home must lead with the favorites (user, November 2): Live now, the countdown, Today, the week ahead (user, November 20), Recent results, Coming up and News, then every other live game and the week ahead everywhere');
 contains(page,/bucket==='results'&&!isToday\(x\)&&day\(x\)<\(today\.get[^\n]*day\(x\)>=since\(x\.school_id\)/,'Recent results must hold the finals of the last days before today only');
 contains(page,/class="home-row home-result" data-event-id/,'Each recent result must be one row that opens the game');
 contains(page,/apiFetch\(`\/live\/news\?school=/,'Home must read its news from /live/news');
