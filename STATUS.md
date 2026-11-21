@@ -2,6 +2,8 @@
 | --- | --- | --- | --- |
 | njit | Volleyball | ❌ failing | NJIT at UAlbany: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
 | towson | Soccer | ❌ failing | Women's · Towson at UNC Wilmington: the game is live and also still in upcoming (scoreboard not joined to the official schedule) |
+| chattanooga | Football | 🔴 on | live 0-12 · 11:38 - 2nd · ball: school (4th & 2 at UTC 33) · official_schedule+live_scoreboard |
+| usc-upstate | Basketball | 🔴 on | live 34-29 · Halftime · official_schedule+live_scoreboard |
 | abilene-christian | Baseball | ⚪ off (waiting) |  |
 | abilene-christian | Football | ⚪ off (waiting) |  |
 | abilene-christian | Softball | ⚪ off (waiting) |  |
@@ -117,7 +119,6 @@
 | charlotte | Baseball | ⚪ off (waiting) |  |
 | charlotte | Lacrosse | ⚪ off (waiting) |  |
 | charlotte | Softball | ⚪ off (waiting) |  |
-| chattanooga | Football | ⚪ off (waiting) |  |
 | chattanooga | Softball | ⚪ off (waiting) |  |
 | chicago-state | Football | ⚪ off (waiting) |  |
 | cincinnati | Baseball | ⚪ off (waiting) |  |
@@ -756,7 +757,6 @@
 | usc | Lacrosse | ⚪ off (waiting) |  |
 | usc | Water Polo | ⚪ off (waiting) |  |
 | usc-upstate | Baseball | ⚪ off (waiting) |  |
-| usc-upstate | Basketball | ⚪ off (waiting) |  |
 | usc-upstate | Soccer | ⚪ off (waiting) |  |
 | usc-upstate | Softball | ⚪ off (waiting) |  |
 | usc-upstate | Volleyball | ⚪ off (waiting) |  |
@@ -1957,4 +1957,4 @@
 | youngstown-state | Soccer | ✅ off (passed) | Youngstown State at Robert Morris · 2026-10-31T20:40:53.113Z |
 | youngstown-state | Volleyball | ✅ off (passed) | Youngstown State vs N Illinois · 2026-10-24T21:15:41.745Z |
 
-Done 1124/1956; on 0; off 830; failing 2.
+Done 1124/1956; on 2; off 828; failing 2.
